@@ -259,6 +259,10 @@ Future registerReadyView(Model.AppClientState appState,
                          String token) {
   Model.UIReceptionistclientReady uiReady =
       new Model.UIReceptionistclientReady('receptionistclient-ready');
+
+  ORService.RESTCalendarStore calendarStore = new ORService.RESTCalendarStore
+      (clientConfig.contactServerUri, token, new ORTransport.Client());
+
   ORService.RESTContactStore contactStore = new ORService.RESTContactStore
       (clientConfig.contactServerUri, token, new ORTransport.Client());
   ORService.RESTEndpointStore endpointStore = new ORService.RESTEndpointStore
@@ -270,7 +274,7 @@ Future registerReadyView(Model.AppClientState appState,
       (clientConfig.receptionServerUri, token, new ORTransport.Client());
   Controller.Reception receptionController = new Controller.Reception(receptionStore);
   Controller.Endpoint endpointController = new Controller.Endpoint(endpointStore);
-  Controller.Calendar calendarController = new Controller.Calendar(contactStore, receptionStore);
+  Controller.Calendar calendarController = new Controller.Calendar(calendarStore);
   Controller.Call callController = new Controller.Call(callFlowControl, appState);
 
   View.Popup popup  = new View.Popup(new Uri.file('/images/popup_error.png'),

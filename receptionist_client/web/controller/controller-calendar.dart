@@ -14,13 +14,12 @@
 part of controller;
 
 class Calendar {
-  final ORService.RESTContactStore _contactStore;
-  final ORService.RESTReceptionStore _receptionStore;
+  final ORService.RESTCalendarStore _calendarStore;
 
   /**
    * Constructor.
    */
-  Calendar(this._contactStore, this._receptionStore);
+  Calendar(this._calendarStore);
 
   /**
    * Return the latest entry change information for the [entryId]
@@ -28,9 +27,7 @@ class Calendar {
    */
   Future<Iterable<ORModel.CalendarEntryChange>> calendarEntryChanges
     (ORModel.CalendarEntry entry) =>
-      entry.isOwnedByContact
-          ? _contactStore.calendarEntryChanges(entry.ID)
-          : _receptionStore.calendarEntryChanges(entry.ID);
+        _calendarStore.calendarEntryChanges(entry.ID);
 
   /**
    * Return the latest entry change information for the [entryId]
@@ -38,46 +35,38 @@ class Calendar {
    */
   Future<ORModel.CalendarEntryChange> calendarEntryLatestChange
     (ORModel.CalendarEntry entry) =>
-      entry.isOwnedByContact
-          ? _contactStore.calendarEntryLatestChange(entry.ID)
-          : _receptionStore.calendarEntryLatestChange(entry.ID);
+        _calendarStore.calendarEntryLatestChange(entry.ID);
 
   /**
    * Save [entry] to the database.
    */
   Future createCalendarEvent(ORModel.CalendarEntry entry) =>
-      entry.isOwnedByContact
-          ? _contactStore.calendarEventCreate(entry)
-          : _receptionStore.calendarEventCreate(entry);
+      _calendarStore.calendarEntryChanges(entry.ID);
 
   /**
    * Delete [entry] from the database.
    */
   Future deleteCalendarEvent(ORModel.CalendarEntry entry) =>
-      entry.isOwnedByContact
-          ? _contactStore.calendarEventRemove(entry)
-          : _receptionStore.calendarEventRemove(entry);
+      _calendarStore.remove(entry.ID);
 
   /**
    * Return all the [ORModel.CalendarEntry]'s of a [reception].
    */
   Future<Iterable<ORModel.CalendarEntry>> receptionCalendar
-    (ORModel.Reception reception) => _receptionStore.calendar(reception.ID);
+    (ORModel.Reception reception) =>
+        _calendarStore.list(new ORModel.Owner.reception(reception.ID));
 
   /**
    * Return all the [contact] [ORModel.CalendarEntry]'s.
    */
   Future<Iterable<ORModel.CalendarEntry>> contactCalendar
     (ORModel.Contact contact) =>
-      _contactStore.calendar(contact.ID, contact.receptionID);
+        _calendarStore.list
+          (new ORModel.Owner.contact(contact.ID, contact.receptionID));
 
   /**
    * Save [entry] to the database.
    */
   Future saveCalendarEvent(ORModel.CalendarEntry entry) =>
-      entry.isOwnedByContact
-          ? _contactStore.calendarEventUpdate(entry)
-          : _receptionStore.calendarEventUpdate(entry);
-
-
+      _calendarStore.update(entry);
 }

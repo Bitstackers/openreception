@@ -23,6 +23,7 @@ class ContactCalendar extends ViewWidget {
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIContactCalendar   _uiModel;
   final Controller.Contact        _contactController;
+  final Controller.Calendar       _calendarController;
 
   /**
    * Constructor.
@@ -32,6 +33,7 @@ class ContactCalendar extends ViewWidget {
                   Model.UIContactSelector this._contactSelector,
                   Model.UIReceptionSelector this._receptionSelector,
                   Controller.Contact this._contactController,
+                  Controller.Calendar this._calendarController,
                   Controller.Notification this._notification) {
     _ui.setHint('alt+k');
 
@@ -64,7 +66,7 @@ class ContactCalendar extends ViewWidget {
    * Fetch all calendar entries for [contact].
    */
   void _fetchCalendar(ORModel.Contact contact) {
-    _contactController.getCalendar(contact)
+    _calendarController.contactCalendar(contact)
         .then((Iterable<ORModel.CalendarEntry> entries) {
           _ui.calendarEntries = entries.toList()
               ..sort((a,b) => a.start.compareTo(b.start));

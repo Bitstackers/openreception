@@ -22,24 +22,6 @@ class Contact {
   Contact(this._store);
 
   /**
-   * Save [entry] to the database.
-   */
-  Future createCalendarEvent (ORModel.CalendarEntry entry) =>
-      _store.calendarEventCreate (entry);
-
-  /**
-   * Delete [entry] from the database.
-   */
-  Future deleteCalendarEvent (ORModel.CalendarEntry entry) =>
-      _store.calendarEventRemove (entry);
-
-  /**
-   * Return all the [contact] [ORModel.CalendarEntry]'s.
-   */
-  Future<Iterable<ORModel.CalendarEntry>> getCalendar(ORModel.Contact contact) =>
-      _store.calendar(contact.ID, contact.receptionID);
-
-  /**
    * Return all the [Model.Contact]'s that belong to [reception].
    */
   Future<Iterable<ORModel.Contact>> list(ORModel.Reception reception) =>
@@ -57,9 +39,4 @@ class Contact {
   Future<Iterable<ORModel.PhoneNumber>> phones(ORModel.Contact contact) =>
       _store.phones(contact.ID, contact.receptionID);
 
-  /**
-   * Save [entry] to the database.
-   */
-  Future saveCalendarEvent (ORModel.CalendarEntry entry) =>
-      _store.calendarEventUpdate(entry);
 }

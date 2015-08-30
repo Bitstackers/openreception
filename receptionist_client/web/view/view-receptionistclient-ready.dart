@@ -154,6 +154,7 @@ class ReceptionistclientReady {
          uiContactSelector,
          uiReceptionSelector,
          _contactController,
+         _calendarController,
          _notification);
 
     _contactData = new ContactData
