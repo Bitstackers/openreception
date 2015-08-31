@@ -4,6 +4,34 @@ abstract class Notification {
 
   static const String className = '$libraryName.Notification';
   static final Logger log       = new Logger(Notification.className);
+  static List _stats = [];
+  static int _sendCountBuffer = 0;
+
+  static initStats () {
+
+    new Timer.periodic(new Duration(seconds : 1), _tick);
+  }
+
+  static _tick(_) {
+    if (_stats.length > 60) {
+      _stats.removeAt(0);
+    }
+
+    _stats.add(_sendCountBuffer);
+    _sendCountBuffer = 0;
+
+  }
+
+  static void statistics(HttpRequest request) {
+    List retval = [];
+
+    int i = 0;
+    _stats.forEach((int num) {
+      retval.add([i, num]);
+      i++;
+    });
+    ORhttp.writeAndClose(request, JSON.encode(retval));
+  }
 
   /**
    * Broadcasts a message to every connected websocket.
@@ -34,8 +62,8 @@ abstract class Notification {
           String contentString = JSON.encode(content);
 
           ws.add(contentString);
+          _sendCountBuffer += contentString.codeUnits.length;
           success++;
-
           return true;
         } catch (error, stackTrace) {
           failure++;
