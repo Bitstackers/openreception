@@ -445,7 +445,7 @@ WHERE
    * Contact Calendar entry associations will be deleted by CASCADE rule in
    * the database.
    */
-  Future remove(int contactID, int receptionID, int eventID) {
+  Future remove(entryId) {
     String sql = '''
   DELETE FROM 
      calendar_events 
@@ -453,7 +453,7 @@ WHERE
     id     = @eventID
 ''';
 
-    Map parameters = {'eventID': eventID};
+    Map parameters = {'eventID': entryId};
 
     return _connection
         .execute(sql, parameters)
