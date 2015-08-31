@@ -191,13 +191,15 @@ abstract class ContactStore {
    * The expected behaviour is that the server should return a list of
    * CalendarEntry objects.
    */
-  static void existingContactCalendar (Service.RESTContactStore contactStore) {
-    int receptionID = 1;
-    int contactID = 4;
+  static Future existingContactCalendar (Storage.Calendar calendarStore) {
+    int receptionId = 1;
+    int contactId = 4;
 
-    log.info('Looking up calendar list for contact $contactID@$receptionID.');
+    log.info('Looking up calendar list for contact $contactId@$receptionId.');
 
-    return expect(contactStore.calendar (contactID, receptionID), isNotNull);
+    return calendarStore.list(new Model.Owner.contact(contactId, receptionId))
+      .then((value) => expect(value, isNotNull));
+
   }
 
   /**
