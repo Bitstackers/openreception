@@ -213,7 +213,8 @@ runContactTests () {
     Transport.Client transport = null;
     Service.RESTEndpointStore endpointStore;
 
-    Service.RESTContactStore contactStore = null;
+    Service.RESTContactStore contactStore;
+    Service.RESTCalendarStore calendarStore;
     Receptionist r;
 
     setUp (() {
@@ -281,6 +282,26 @@ runContactTests () {
         () => ContactStore.listByReception(contactStore));
     test ('List contacts by Non-existing reception',
         () => ContactStore.listContactsByNonExistingReception(contactStore));
+
+    setUp (() {
+      transport = new Transport.Client();
+      contactStore = new Service.RESTContactStore
+         (Config.contactStoreUri, Config.serverToken, transport);
+
+      calendarStore = new Service.RESTCalendarStore
+         (Config.contactStoreUri, Config.serverToken, transport);
+
+      endpointStore = new Service.RESTEndpointStore
+         (Config.contactStoreUri, Config.serverToken, transport);
+    });
+
+    tearDown (() {
+      calendarStore = null;
+      contactStore = null;
+      endpointStore = null;
+      transport.client.close(force : true);
+    });
+
 
     test ('Calendar event listing',
         () => ContactStore.existingContactCalendar(contactStore));
