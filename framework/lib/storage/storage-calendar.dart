@@ -18,13 +18,9 @@ abstract class Calendar {
 
   Future<Model.CalendarEntry> get(int entryId);
 
-  Future<Model.CalendarEntry> create(Model.CalendarEntry entry);
+  Future remove (int entryId);
 
-  Future<Model.CalendarEntry> update(Model.CalendarEntry entry);
+  Future<Iterable<Model.CalendarEntryChange>> changes(entryID);
 
-  Future remove(int entryId);
-
-  Future<Iterable<Model.CalendarEntryChange>> calendarEntryChanges(entryID);
-
-  Future<Model.CalendarEntryChange> calendarEntryLatestChange(entryID);
+  Future<Model.CalendarEntryChange> latestChange(entryID);
 }
