@@ -241,3 +241,42 @@ Model.PhoneNumber _mapToPhone (Map map) {
 
   return p;
 }
+
+/**
+ * Creates a [CalendarEventChange] from a database row.
+ */
+Model.CalendarEntryChange _rowToCalendarEventChange(var row) =>
+    new Model.CalendarEntryChange()
+    ..userID = row.user_id
+    ..changedAt = row.updated_at
+    ..username = row.name;
+
+/**
+ * Creates an owner-less [CalendarEntry] from a database row.
+ */
+Model.CalendarEntry _rowToCalendarEntry(var row) =>
+    new Model.CalendarEntry.empty()
+  ..ID = row.id
+  ..beginsAt = row.start
+  ..until = row.stop
+  ..content = row.message;
+
+/**
+ * Creates [CalendarEntry] owned by a [Reception] from a database row.
+ */
+Model.CalendarEntry _rowToReceptionCalendarEntry(var row) =>
+    new Model.CalendarEntry.reception(row.reception_id)
+  ..ID = row.id
+  ..beginsAt = row.start
+  ..until = row.stop
+  ..content = row.message;
+
+/**
+ * Creates [CalendarEntry] owned by a [Contact] from a database row.
+ */
+Model.CalendarEntry _rowToContactCalendarEntry(var row) =>
+    new Model.CalendarEntry.contact(row.contact_id, row.reception_id)
+  ..ID = row.id
+  ..beginsAt = row.start
+  ..until = row.stop
+  ..content = row.message;
