@@ -24,6 +24,7 @@ import 'event.dart' as Event;
 import 'package:logging/logging.dart';
 
 part 'service/service-auth.dart';
+part 'service/service-calendar.dart';
 part 'service/service-call_flow_control.dart';
 part 'service/service-cdr.dart';
 part 'service/service-configuration.dart';
