@@ -261,7 +261,8 @@ Future registerReadyView(Model.AppClientState appState,
       new Model.UIReceptionistclientReady('receptionistclient-ready');
 
   ORService.RESTCalendarStore calendarStore = new ORService.RESTCalendarStore
-      (clientConfig.contactServerUri, token, new ORTransport.Client());
+      (clientConfig.contactServerUri, clientConfig.receptionServerUri,
+          token, new ORTransport.Client());
 
   ORService.RESTContactStore contactStore = new ORService.RESTContactStore
       (clientConfig.contactServerUri, token, new ORTransport.Client());
