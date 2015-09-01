@@ -20,16 +20,18 @@ class RESTCalendarStore implements Storage.Calendar {
   static final Logger log = new Logger('${libraryName}.RESTCalendarStore');
 
   WebService _backend = null;
-  Uri _host;
+  final Uri _contactHost;
+  final Uri _receptionHost;
   String _token = '';
 
-  RESTCalendarStore(Uri this._host, String this._token, this._backend);
+  RESTCalendarStore(Uri this._contactHost, this._receptionHost,
+      String this._token, this._backend);
 
   Future<Iterable<Model.CalendarEntry>> list(Model.Owner owner) {
-    Uri url = owner.contactId != Model.Contact.noID
-        ? Resource.Calendar.listReception(_host, owner.receptionId)
+    Uri url = owner.contactId == Model.Contact.noID
+        ? Resource.Calendar.listReception(_receptionHost, owner.receptionId)
         : Resource.Calendar.listContact(
-            _host, owner.contactId, owner.receptionId);
+            _contactHost, owner.contactId, owner.receptionId);
 
     url = appendToken(url, this._token);
 
@@ -42,7 +44,7 @@ class RESTCalendarStore implements Storage.Calendar {
     }
 
   Future<Model.CalendarEntry> get(int entryId) {
-    Uri url = Resource.Calendar.single(_host, entryId);
+    Uri url = Resource.Calendar.single(_contactHost, entryId);
 
     return this._backend.get(url)
       .then(JSON.decode)
@@ -50,7 +52,7 @@ class RESTCalendarStore implements Storage.Calendar {
   }
 
   Future<Model.CalendarEntry> create(Model.CalendarEntry entry) {
-    Uri url = Resource.Calendar.single(_host, entry.ID);
+    Uri url = Resource.Calendar.single(_contactHost, entry.ID);
 
     return this._backend.post(url, JSON.encode(entry))
       .then(JSON.decode)
@@ -58,7 +60,7 @@ class RESTCalendarStore implements Storage.Calendar {
   }
 
   Future<Model.CalendarEntry> update(Model.CalendarEntry entry) {
-    Uri url = Resource.Calendar.single(_host, entry.ID);
+    Uri url = Resource.Calendar.single(_contactHost, entry.ID);
 
     return this._backend.put(url, JSON.encode(entry))
       .then(JSON.decode)
@@ -66,7 +68,7 @@ class RESTCalendarStore implements Storage.Calendar {
   }
 
   Future remove(int entryId) {
-    Uri url = Resource.Calendar.single(_host, entryId);
+    Uri url = Resource.Calendar.single(_contactHost, entryId);
 
     return this._backend.delete(url)
       .then(JSON.decode)
@@ -74,7 +76,7 @@ class RESTCalendarStore implements Storage.Calendar {
   }
 
   Future<Iterable<Model.CalendarEntryChange>> changes(entryId) {
-    Uri url = Resource.Calendar.changeList(_host, entryId);
+    Uri url = Resource.Calendar.changeList(_contactHost, entryId);
 
     url = appendToken(url, this._token);
 
@@ -87,7 +89,7 @@ class RESTCalendarStore implements Storage.Calendar {
   }
 
   Future<Model.CalendarEntryChange> latestChange(entryId) {
-    Uri url = Resource.Calendar.latestChange(_host, entryId);
+    Uri url = Resource.Calendar.latestChange(_contactHost, entryId);
 
     url = appendToken(url, this._token);
 
