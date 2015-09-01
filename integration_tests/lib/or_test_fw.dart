@@ -48,6 +48,10 @@ part 'callflowcontrol/src/user_state.dart';
 part 'configserver/src/config_service.dart';
 part 'configserver/tests.dart';
 
+/// Calendar tests
+part 'calendar/tests.dart';
+part 'calendar/src/rest_calendar_store.dart';
+
 /// Contact store tests
 part 'contact/src/contact_store.dart';
 part 'contact/all_tests.dart';
