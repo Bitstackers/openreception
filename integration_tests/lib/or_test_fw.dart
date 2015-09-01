@@ -50,6 +50,7 @@ part 'configserver/tests.dart';
 
 /// Calendar tests
 part 'calendar/tests.dart';
+part 'calendar/src/database_calendar.dart';
 part 'calendar/src/rest_calendar_store.dart';
 
 /// Contact store tests
