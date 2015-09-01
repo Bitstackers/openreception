@@ -2,33 +2,6 @@ part of or_test_fw;
 
 runContactTests () {
 
-  group ('Database.Calendar', () {
-    Database.Calendar calendarDB;
-    Database.Connection connection;
-    setUp(() {
-
-      return Database.Connection
-          .connect(Config.dbDSN)
-          .then((Database.Connection conn) {
-        connection = conn;
-        calendarDB = new Database.Calendar(connection);
-      });
-    });
-
-    tearDown (() {
-      return connection.close();
-    });
-
-    test ('list',
-        () => ContactStore.existingContactCalendar(calendarDB));
-
-//    test ('create',
-//        () => ContactStore.distributionRecipientAdd(distributionListDB));
-//
-//    test ('remove',
-//        () => ContactStore.distributionRecipientRemove(distributionListDB));
-  });
-
 
   group ('Database.DistributionList', () {
     Database.DistributionList distributionListDB;
@@ -214,7 +187,6 @@ runContactTests () {
     Service.RESTEndpointStore endpointStore;
 
     Service.RESTContactStore contactStore;
-    Service.RESTCalendarStore calendarStore;
     Receptionist r;
 
     setUp (() {
@@ -288,15 +260,11 @@ runContactTests () {
       contactStore = new Service.RESTContactStore
          (Config.contactStoreUri, Config.serverToken, transport);
 
-      calendarStore = new Service.RESTCalendarStore
-         (Config.contactStoreUri, Config.serverToken, transport);
-
       endpointStore = new Service.RESTEndpointStore
          (Config.contactStoreUri, Config.serverToken, transport);
     });
 
     tearDown (() {
-      calendarStore = null;
       contactStore = null;
       endpointStore = null;
       transport.client.close(force : true);
@@ -304,7 +272,7 @@ runContactTests () {
 
 
     test ('Calendar event listing',
-        () => ContactStore.existingContactCalendar(contactStore));
+        () => RESTCalendarStore.existingContactCalendar(contactStore));
     test ('Calendar event creation',
         () => ContactStore.calendarEntryCreate(contactStore));
     test ('Calendar event update',
