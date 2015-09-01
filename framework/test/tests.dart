@@ -58,6 +58,7 @@ part 'src/model/model-user.dart';
 part 'src/model/model-user_status.dart';
 
 part 'src/resource/resource-authentication.dart';
+part 'src/resource/resource-calendar.dart';
 part 'src/resource/resource-call_flow_control.dart';
 part 'src/resource/resource-cdr.dart';
 part 'src/resource/resource-config.dart';
@@ -107,6 +108,7 @@ void main() {
   testModelUser();
 
   testResourceAuthentication();
+  testResourceCalendar();
   testResourceCallFlowControl();
   testResourceCDR();
   testResourceConfig();
