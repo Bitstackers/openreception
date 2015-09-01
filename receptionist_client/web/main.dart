@@ -20,7 +20,7 @@ import 'controller/controller.dart' as Controller;
 import 'lang.dart' as Lang;
 import 'model/model.dart' as Model;
 import 'view/view.dart' as View;
-import 'simulation.dart';
+//import 'simulation.dart';
 
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
