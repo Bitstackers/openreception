@@ -12,8 +12,8 @@ Future<shelf.Response> refresher(shelf.Request request) {
     Uri url = Uri.parse('https://www.googleapis.com/oauth2/v3/token');
     Map body = {
       'refresh_token': refreshToken,
-      'client_id': config.clientId,
-      'client_secret': config.clientSecret,
+      'client_id': json.config.clientId,
+      'client_secret': json.config.clientSecret,
       'grant_type': 'refresh_token'
     };
 

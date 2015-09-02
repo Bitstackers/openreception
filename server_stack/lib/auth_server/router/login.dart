@@ -13,7 +13,7 @@ shelf.Response login(shelf.Request request) {
     //Because the library does not allow to set custom query parameters
     Map googleParameters = {
       'access_type': 'offline',
-      'state': config.clientURL
+      'state': json.config.clientURL
     };
 
     if (returnUrlString.isNotEmpty) {
@@ -23,7 +23,7 @@ shelf.Response login(shelf.Request request) {
     }
 
     Uri authUrl =
-        googleAuthUrl(config.clientId, config.clientSecret, config.redirectUri);
+        googleAuthUrl(json.config.clientId, json.config.clientSecret, json.config.redirectUri);
 
     googleParameters.addAll(authUrl.queryParameters);
     Uri googleOauthRequestUrl = new Uri(

@@ -4,7 +4,7 @@ import 'package:args/args.dart';
 import 'package:path/path.dart';
 
 import 'package:logging/logging.dart';
-import '../lib/auth_server/configuration.dart' as auth;
+import '../lib/auth_server/configuration.dart' as json;
 import '../lib/configuration.dart';
 import '../lib/auth_server/database.dart';
 import '../lib/auth_server/router.dart' as router;
@@ -30,12 +30,12 @@ void main(List<String> args) {
     if(showHelp()) {
       print(parser.usage);
     } else {
-      auth.config = new auth.Configuration(parsedArgs);
-      auth.config.whenLoaded()
-        .then((_) => log.fine(auth.config.toString()))
+      json.config = new json.Configuration(parsedArgs);
+      json.config.whenLoaded()
+        .then((_) => log.fine(json.config.toString()))
         .then((_) => startDatabase())
         .then((_) => watcher.setup())
-        .then((_) => vault.loadFromDirectory(auth.config.serverTokenDir))
+        .then((_) => vault.loadFromDirectory(json.config.serverTokenDir))
         .then((_) => router.start())
         .catchError(log.shout);
     }

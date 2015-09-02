@@ -5,8 +5,8 @@ shelf.Response validateToken(shelf.Request request) {
       'token') ? shelf_route.getPathParameter(request, 'token') : '';
 
   if (token.isNotEmpty) {
-    bool exists = vault.containsToken(token);
-    if (exists) {
+
+    if (vault.containsToken(token)) {
       try {
         watcher.seen(token);
       } catch (error, stacktrace) {
