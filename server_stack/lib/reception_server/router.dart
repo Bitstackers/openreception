@@ -5,7 +5,9 @@ import 'dart:convert';
 
 import 'dart:io' as IO;
 
-import 'configuration.dart';
+import 'configuration.dart' as json;
+import '../configuration.dart';
+
 import 'database.dart' as db;
 
 import 'package:logging/logging.dart';
@@ -37,16 +39,16 @@ Database.Reception _receptionDB = new Database.Reception (_connection);
 
 void connectAuthService() {
   AuthService = new Service.Authentication
-      (config.authUrl, config.serverToken, new Service_IO.Client());
+      (json.config.authUrl, Configuration.receptionServer.serverToken, new Service_IO.Client());
 }
 
 void connectNotificationService() {
   Notification = new Service.NotificationService
-      (config.notificationServer, config.serverToken, new Service_IO.Client());
+      (json.config.notificationServer, Configuration.receptionServer.serverToken, new Service_IO.Client());
 }
 
 Future startDatabase() =>
-  Database.Connection.connect('postgres://${config.dbuser}:${config.dbpassword}@${config.dbhost}:${config.dbport}/${config.dbname}')
+  Database.Connection.connect('postgres://${json.config.dbuser}:${json.config.dbpassword}@${json.config.dbhost}:${json.config.dbport}/${json.config.dbname}')
     .then((Database.Connection newConnection) => _connection = newConnection);
 
 shelf.Middleware checkAuthentication =

@@ -4,7 +4,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' as IO;
 
-import 'configuration.dart';
+import 'configuration.dart' as json;
+import '../configuration.dart';
 import 'database.dart' as db;
 
 import 'package:logging/logging.dart';
@@ -42,12 +43,12 @@ const Map corsHeaders = const
 
 void connectAuthService() {
   AuthService = new Service.Authentication
-      (config.authUrl, config.serverToken, new Service_IO.Client());
+      (json.config.authUrl, Configuration.contactServer.serverToken, new Service_IO.Client());
 }
 
 void connectNotificationService() {
   Notification = new Service.NotificationService
-      (config.notificationServer, config.serverToken, new Service_IO.Client());
+      (json.config.notificationServer, Configuration.contactServer.serverToken, new Service_IO.Client());
 }
 
 shelf.Middleware checkAuthentication =
