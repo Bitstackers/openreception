@@ -4,7 +4,8 @@ import 'dart:async';
 import 'dart:io' as IO;
 import 'dart:convert';
 
-import 'configuration.dart';
+import 'configuration.dart' as json;
+import '../configuration.dart';
 
 import 'controller/controller.dart' as Controller;
 import 'model/model.dart' as Model;
@@ -40,12 +41,12 @@ Service.NotificationService Notification = null;
 
 void connectAuthService() {
   AuthService = new Service.Authentication
-      (config.authUrl, config.serverToken, new Service_IO.Client());
+      (json.config.authUrl, Configuration.callFlowControl.serverToken, new Service_IO.Client());
 }
 
 void connectNotificationService() {
   Notification = new Service.NotificationService
-      (config.notificationServer, config.serverToken, new Service_IO.Client());
+      (json.config.notificationServer, Configuration.callFlowControl.serverToken, new Service_IO.Client());
 }
 
 shelf.Middleware checkAuthentication =
