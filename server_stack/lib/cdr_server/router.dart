@@ -7,10 +7,11 @@ import 'dart:convert';
 import 'package:route/pattern.dart';
 import 'package:route/server.dart';
 
-import 'configuration.dart';
+import 'configuration.dart' as json;
 import 'database.dart' as db;
 import 'package:openreception_framework/model.dart' as Model;
 import 'package:openreception_framework/httpserver.dart';
+import 'package:logging/logging.dart';
 
 part 'router/cdr.dart';
 part 'router/create_checkpoint.dart';
@@ -24,9 +25,11 @@ final Pattern checkpointResource = new UrlPattern(r'/checkpoint');
 
 final List<Pattern> allUniqueUrls = [cdrResource, checkpointResource];
 
+final Logger log = new Logger('cdrserver.router');
+
 Router setup(HttpServer server) =>
   new Router(server)
-    ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
+    ..filter(matchAny(allUniqueUrls), auth(json.config.authUrl))
     ..serve(cdrResource,    method: 'GET').listen(cdrHandler)
     ..serve(newcdrResource, method: 'POST').listen(insertCdrData)
     ..serve(checkpointResource, method: 'GET').listen(getCheckpoints)
