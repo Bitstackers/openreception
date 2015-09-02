@@ -30,7 +30,7 @@ void main(List<String> args) {
         .then((_) => router.connectAuthService())
         .then((_) => router.connectNotificationService())
         .then((_) => router.startDatabase())
-        .then((_) => router.start(port : json.config.httpport))
+        .then((_) => router.start(port : 4030))
         .catchError(log.shout);
     }
   } catch(error, stackTrace) {
