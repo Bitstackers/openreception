@@ -21,23 +21,27 @@ const String libraryName = "notificationserver.router";
 
 final Pattern anything = new UrlPattern(r'/(.*)');
 final Pattern notificationSocketResource = new UrlPattern(r'/notifications');
-final Pattern broadcastResource          = new UrlPattern(r'/broadcast');
-final Pattern sendResource               = new UrlPattern(r'/send');
-final Pattern connectionsResource        = new UrlPattern(r'/connection');
-final Pattern connectionResource         = new UrlPattern(r'/connection/(\d+)');
-final Pattern statisticsResource         = new UrlPattern(r'/stats');
+final Pattern broadcastResource = new UrlPattern(r'/broadcast');
+final Pattern sendResource = new UrlPattern(r'/send');
+final Pattern connectionsResource = new UrlPattern(r'/connection');
+final Pattern connectionResource = new UrlPattern(r'/connection/(\d+)');
+final Pattern statisticsResource = new UrlPattern(r'/stats');
 
+final List<Pattern> allUniqueUrls = [
+  notificationSocketResource,
+  broadcastResource,
+  sendResource,
+  connectionResource,
+  connectionsResource,
+  statisticsResource
+];
 
-final List<Pattern> allUniqueUrls = [notificationSocketResource , broadcastResource,
-            sendResource, connectionResource, connectionsResource,
-            statisticsResource];
-
-Map<int,List<WebSocket>> clientRegistry = new Map<int,List<WebSocket>>();
+Map<int, List<WebSocket>> clientRegistry = new Map<int, List<WebSocket>>();
 Service.Authentication AuthService = null;
 
 void connectAuthService() {
-  AuthService = new Service.Authentication
-      (config.authUrl, '', new Service_IO.Client());
+  AuthService =
+      new Service.Authentication(config.authUrl, '', new Service_IO.Client());
 }
 
 void registerHandlers(HttpServer server) {
@@ -45,14 +49,27 @@ void registerHandlers(HttpServer server) {
   var router = new Router(server);
 
   router
-    ..filter(matchAny(allUniqueUrls), ORhttp.auth(config.authUrl))
-    ..serve(notificationSocketResource, method : "GET" ).listen(Notification.connect) // The upgrade-request is found in the header of a GET request.
-    ..serve(         broadcastResource, method : "POST").listen(Notification.broadcast)
-    ..serve(              sendResource, method : "POST").listen(Notification.send)
-    ..serve(       connectionsResource, method : "GET" ).listen(Notification.connectionList)
-    ..serve(        statisticsResource, method : "GET" ).listen(Notification.statistics)
-    ..serve(        connectionResource, method : "GET" ).listen(Notification.connection)
+    ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
+    ..serve(notificationSocketResource, method: "GET").listen(
+        Notification.connect) // The upgrade-request is found in the header of a GET request.
+    ..serve(broadcastResource, method: "POST").listen(Notification.broadcast)
+    ..serve(sendResource, method: "POST").listen(Notification.send)
+    ..serve(connectionsResource, method: "GET")
+        .listen(Notification.connectionList)
+    ..serve(statisticsResource, method: "GET").listen(Notification.statistics)
+    ..serve(connectionResource, method: "GET").listen(Notification.connection)
     ..serve(anything, method: 'OPTIONS').listen(ORhttp.preFlight)
     ..defaultStream.listen(ORhttp.page404);
 }
 
+Filter auth(Uri authUrl) {
+  return (HttpRequest request) {
+    if (request.uri.queryParameters.containsKey('token')) return AuthService
+        .validate(request.uri.queryParameters['token'])
+        .then((_) => true)
+        .catchError((_) => false);
+    request.response.statusCode = HttpStatus.FORBIDDEN;
+    ORhttp.writeAndClose(
+        request, JSON.encode({'description': 'Authorization failure.'}));
+  };
+}
