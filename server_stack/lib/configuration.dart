@@ -29,7 +29,7 @@ class ConfigServer extends StandardConfig {
 }
 
 class AuthServer extends StandardConfig {
-  final int tokenexpiretime = 3600;
+  final Duration tokenexpiretime = new Duration(hours : 12);
 }
 
 class ContactServer extends StandardConfig {}
