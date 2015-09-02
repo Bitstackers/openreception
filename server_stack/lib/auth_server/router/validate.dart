@@ -5,6 +5,9 @@ shelf.Response validateToken(shelf.Request request) {
       'token') ? shelf_route.getPathParameter(request, 'token') : '';
 
   if (token.isNotEmpty) {
+    if(token == Configuration.authServer.serverToken) {
+      return new shelf.Response.ok(JSON.encode(const {}));
+    }
 
     if (vault.containsToken(token)) {
       try {
