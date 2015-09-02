@@ -1,10 +1,8 @@
 library spawner;
 
-import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:math';
-import 'package:crypto/crypto.dart';
 
 const bool CHECKED = false;
 const bool USE_OBSERVATORY = false;
@@ -13,8 +11,6 @@ Random rand = new Random();
 const int MAX_RANDOM_INT = (1<<32)-1;
 
 void main(List<String> arguments) {
-  List<String> tokens = new List(5).map((_) => generateToken()).toList(growable: false);
-  int index = 0;
   String ServerTokenDir = '/tmp/tokens${rand.nextInt(MAX_RANDOM_INT)}';
 
   if(arguments.length > 0) {
@@ -32,7 +28,7 @@ void main(List<String> arguments) {
     },
     'CallFlow': {
       'path': 'bin/callflowcontrol.dart',
-      'args': ['--servertoken', tokens[index++]]
+      'args': []
     },
     'CDRServer': {
       'path': 'bin/cdrserver.dart',
@@ -40,15 +36,15 @@ void main(List<String> arguments) {
     },
     'ContactServer': {
       'path': 'bin/contactserver.dart',
-      'args': ['--servertoken', tokens[index++]]
+      'args': []
     },
     'ManagementServer': {
       'path': 'bin/managementserver.dart',
-      'args': ['--servertoken', tokens[index++]]
+      'args': []
     },
     'MessageServer': {
       'path': 'bin/messageserver.dart',
-      'args': ['--servertoken', tokens[index++]]
+      'args': []
     },
     'MessageDispatcher': {
       'path': 'bin/messagedispatcher.dart',
@@ -64,7 +60,7 @@ void main(List<String> arguments) {
     },
     'ReceptionServer': {
       'path': 'bin/receptionserver.dart',
-      'args': ['--servertoken', tokens[index++]]
+      'args': []
     },
     'UserServer': {
       'path': 'bin/userserver.dart',
@@ -89,7 +85,7 @@ void main(List<String> arguments) {
   });
 
   int opservatoryCount = 8182;
-  writeTokensToDisk(tokens, serverTokenDirAbsolutPath).then((_) =>
+
   Servers.forEach((String serverName, Map server) {
     print('Starting ${serverName}..');
 
@@ -110,36 +106,6 @@ void main(List<String> arguments) {
         print('${serverName} (errors): ${line}');
       });
     });
-  }));
-
-}
-
-Future writeTokensToDisk(List<String> tokens, String dir) {
-  tokens.forEach(print);
-  Map content =
-    {"access_token":"none",
-     "expires_in":3600,
-     "id_token":"none",
-     "expiresAt":"2042-12-31 00:00:00.000",
-     "identity":{
-       "name":"ServerToken",
-       "groups":["Receptionist","Administrator","Service agent"],
-       "identities":[],"remote_attributes":{}}};
-
-  return Future.forEach(tokens, (String token) {
-    File file = new File('${dir}/${token}.servertoken');
-    return file.writeAsString(JSON.encode(content));
   });
-}
 
-String generateToken() {
-
-  List<int> shaContent = new List<int>();
-  for(int i = 0; i < 100000; i++) {
-    shaContent.add(rand.nextInt(MAX_RANDOM_INT));
-  }
-
-  SHA256 sha = new SHA256()
-    ..add(shaContent);
-  return CryptoUtils.bytesToHex(sha.close());
 }
