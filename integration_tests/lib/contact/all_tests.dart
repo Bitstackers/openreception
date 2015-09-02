@@ -270,9 +270,6 @@ runContactTests () {
       transport.client.close(force : true);
     });
 
-
-    test ('Calendar event listing',
-        () => RESTCalendarStore.existingContactCalendar(contactStore));
     test ('Calendar event creation',
         () => ContactStore.calendarEntryCreate(contactStore));
     test ('Calendar event update',
