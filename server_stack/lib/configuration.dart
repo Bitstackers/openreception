@@ -13,6 +13,7 @@ class ConfigServerDefault {
 }
 abstract class StandardConfig {
   final Log log = Configuration.logDefaults;
+  final String serverToken = 'ielooch6eig8ie5U';
 }
 
 class CallFlowControl extends StandardConfig {
@@ -25,6 +26,10 @@ class CallFlowControl extends StandardConfig {
 
 class ConfigServer extends StandardConfig {
   final ConfigServerDefault defaults = new ConfigServerDefault ();
+}
+
+class AuthServer extends StandardConfig {
+  final int tokenexpiretime = 3600;
 }
 
 class ContactServer extends StandardConfig {}
@@ -47,6 +52,7 @@ void logEntryDispatch(LogRecord record) {
 abstract class Configuration {
   static final logDefaults = new Log();
 
+  static final AuthServer authServer = new AuthServer();
   static final CallFlowControl callFlowControl = new CallFlowControl();
   static final ConfigServer configserver = new ConfigServer();
   static final ContactServer contactServer = new ContactServer();
