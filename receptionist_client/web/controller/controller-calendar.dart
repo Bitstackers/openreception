@@ -68,5 +68,7 @@ class Calendar {
    * Save [entry] to the database.
    */
   Future saveCalendarEvent(ORModel.CalendarEntry entry) =>
-      _calendarStore.update(entry);
+      entry.ID == ORModel.CalendarEntry.noID
+      ? createCalendarEvent(entry)
+      : _calendarStore.update(entry);
 }
