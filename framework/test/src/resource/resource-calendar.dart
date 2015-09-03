@@ -15,6 +15,9 @@ part of openreception.test;
 
 void testResourceCalendar() {
   group('Resource.Calendar', () {
+    test('singleContact', ResourceCalendar.singleContact);
+    test('singleReception', ResourceCalendar.singleReception);
+
     test('listContact', ResourceCalendar.listContact);
     test('listReception', ResourceCalendar.listReception);
     test('single', ResourceCalendar.single);
@@ -25,6 +28,15 @@ void testResourceCalendar() {
 
 abstract class ResourceCalendar {
   static final Uri _host = Uri.parse('http://localhost:4010');
+
+  static void singleContact () =>
+      expect(Resource.Calendar.singleContact(_host, 2, 3, 4),
+        equals(Uri.parse('${_host}/contact/4/reception/3/calendar/event/2')));
+
+  static void singleReception () =>
+      expect(Resource.Calendar.singleReception(_host, 2, 3),
+        equals(Uri.parse('${_host}/reception/3/calendar/event/2')));
+
   static void listContact () =>
       expect(Resource.Calendar.listContact(_host, 4, 2),
         equals(Uri.parse('${_host}/contact/4/reception/2/calendar')));
