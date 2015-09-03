@@ -6,22 +6,33 @@ DB_SCHEMA=schema.sql
 DB_DATA=test_data_$(TESTDATA_LANG).sql
 TIMESTAMP=$(shell date +%s)
 
-PREFIX?=/usr/local/databaseservers
+PREFIX?=/opt/openreception/bin
 
-OUTPUT_DIRECTORY=out
+RELEASE=$(shell git tag | tail -n1)
+GIT_REV=$(shell git rev-parse --short HEAD)
 
-AuthBinary=AuthServer.dart
-CallFlowBinary=CallFlow.dart
-ContactBinary=ContactServer.dart
-MessageBinary=MessageServer.dart
-MessageDispatcherBinary=MessageDispatcher.dart
-MiscBinary=MiscServer.dart
-NotificationBinary=NotificationServer.dart
-ReceptionBinary=ReceptionServer.dart
-SpawnerBinary=Spawner.dart
+BUILD_DIR=build
 
+all: build
 
-all: $(OUTPUT_DIRECTORY) auth callflow contact message messagedispatcher misc reception spawner notification
+build: snapshots
+	cp bin/config.json $(BUILD_DIR)/
+
+snapshots: $(BUILD_DIR)/authserver-$(GIT_REV).dart \
+           $(BUILD_DIR)/callflowcontrol-$(GIT_REV).dart \
+           $(BUILD_DIR)/cdrserver-$(GIT_REV).dart \
+           $(BUILD_DIR)/configserver-$(GIT_REV).dart \
+           $(BUILD_DIR)/contactserver-$(GIT_REV).dart \
+           $(BUILD_DIR)/managementserver-$(GIT_REV).dart \
+           $(BUILD_DIR)/messagedispatcher-$(GIT_REV).dart \
+           $(BUILD_DIR)/messageserver-$(GIT_REV).dart \
+           $(BUILD_DIR)/notificationserver-$(GIT_REV).dart \
+           $(BUILD_DIR)/receptionserver-$(GIT_REV).dart \
+           $(BUILD_DIR)/userserver-$(GIT_REV).dart
+
+build/%-$(GIT_REV).dart: bin/%.dart
+	-@mkdir $(BUILD_DIR)
+	dart --snapshot=$@ $<
 
 analyze-all: analyze analyze-hints
 
@@ -40,9 +51,51 @@ upgrade-dependency:
 clean: 
 	rm -rf $(OUTPUT_DIRECTORY)
 
-install: all
+install: build
 	install --directory ${PREFIX}
-	install --target-directory=${PREFIX} $(OUTPUT_DIRECTORY)/*.dart
+	install --target-directory=${PREFIX} $(BUILD_DIR)/authserver-$(GIT_REV).dart
+	install --target-directory=${PREFIX} \
+           $(BUILD_DIR)/authserver-$(GIT_REV).dart \
+           $(BUILD_DIR)/callflowcontrol-$(GIT_REV).dart \
+           $(BUILD_DIR)/cdrserver-$(GIT_REV).dart \
+           $(BUILD_DIR)/configserver-$(GIT_REV).dart \
+           $(BUILD_DIR)/contactserver-$(GIT_REV).dart \
+           $(BUILD_DIR)/managementserver-$(GIT_REV).dart \
+           $(BUILD_DIR)/messagedispatcher-$(GIT_REV).dart \
+           $(BUILD_DIR)/messageserver-$(GIT_REV).dart \
+           $(BUILD_DIR)/notificationserver-$(GIT_REV).dart \
+           $(BUILD_DIR)/receptionserver-$(GIT_REV).dart \
+           $(BUILD_DIR)/userserver-$(GIT_REV).dart
+
+install-symlinks: install
+	ln -s ${PREFIX}/authserver-$(GIT_REV).dart ${PREFIX}/authserver.dart
+	ln -s ${PREFIX}/callflowcontrol-$(GIT_REV).dart ${PREFIX}/callflowcontrol.dart
+	ln -s ${PREFIX}/cdrserver-$(GIT_REV).dart ${PREFIX}/cdrserver.dart
+	ln -s ${PREFIX}/configserver-$(GIT_REV).dart ${PREFIX}/configserver.dart
+	ln -s ${PREFIX}/contactserver-$(GIT_REV).dart ${PREFIX}/contactserver.dart
+	ln -s ${PREFIX}/managementserver-$(GIT_REV).dart ${PREFIX}/managementserver.dart
+	ln -s ${PREFIX}/messagedispatcher-$(GIT_REV).dart ${PREFIX}/messagedispatcher.dart
+	ln -s ${PREFIX}/messageserver-$(GIT_REV).dart ${PREFIX}/messageserver.dart
+	ln -s ${PREFIX}/notificationserver-$(GIT_REV).dart ${PREFIX}/notificationserver.dart
+	ln -s ${PREFIX}/receptionserver-$(GIT_REV).dart ${PREFIX}/receptionserver.dart
+	ln -s ${PREFIX}/userserver-$(GIT_REV).dart ${PREFIX}/userserver.dart
+	
+remove-symlinks: 
+	-rm ${PREFIX}/authserver.dart
+	-rm ${PREFIX}/callflowcontrol.dart
+	-rm ${PREFIX}/cdrserver.dart
+	-rm ${PREFIX}/configserver.dart
+	-rm ${PREFIX}/contactserver.dart
+	-rm ${PREFIX}/managementserver.dart
+	-rm ${PREFIX}/messagedispatcher.dart
+	-rm ${PREFIX}/messageserver.dart
+	-rm ${PREFIX}/notificationserver.dart
+	-rm ${PREFIX}/receptionserver.dart
+	-rm ${PREFIX}/userserver.dart
+
+install-config:
+	@install --directory ${PREFIX}
+	@install bin/config.json ${PREFIX}/config.json
 
 install-default-config:
 	@install --directory ${PREFIX}
