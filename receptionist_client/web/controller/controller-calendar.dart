@@ -26,28 +26,26 @@ class Calendar {
    * calendar entry.
    */
   Future<Iterable<ORModel.CalendarEntryChange>> calendarEntryChanges
-    (ORModel.CalendarEntry entry) =>
-        _calendarStore.calendarEntryChanges(entry.ID);
+    (ORModel.CalendarEntry entry) => _calendarStore.changes(entry.ID);
 
   /**
    * Return the latest entry change information for the [entryId]
    * calendar entry.
    */
   Future<ORModel.CalendarEntryChange> calendarEntryLatestChange
-    (ORModel.CalendarEntry entry) =>
-        _calendarStore.calendarEntryLatestChange(entry.ID);
+    (ORModel.CalendarEntry entry) => _calendarStore.latestChange(entry.ID);
 
   /**
    * Save [entry] to the database.
    */
   Future createCalendarEvent(ORModel.CalendarEntry entry) =>
-      _calendarStore.calendarEntryChanges(entry.ID);
+      _calendarStore.create(entry);
 
   /**
    * Delete [entry] from the database.
    */
   Future deleteCalendarEvent(ORModel.CalendarEntry entry) =>
-      _calendarStore.remove(entry.ID);
+      _calendarStore.remove(entry);
 
   /**
    * Return all the [ORModel.CalendarEntry]'s of a [reception].
