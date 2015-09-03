@@ -28,6 +28,12 @@ abstract class Calendar {
   static Uri single(Uri host, int entryId) =>
     Uri.parse('$host/calendar/entry/${entryId}');
 
+  static Uri singleContact(Uri host, int entryId, int rid, int cid) =>
+    Uri.parse('$host/contact/${cid}/reception/${rid}/calendar/event/${entryId}');
+
+  static Uri singleReception(Uri host, int entryId, int rid) =>
+    Uri.parse('$host/reception/${rid}/calendar/event/${entryId}');
+
   static Uri changeList(Uri host, int eventID) =>
     Uri.parse('${host}/calendarentry/${eventID}/change');
 

@@ -53,7 +53,11 @@ class RESTCalendarStore implements Storage.Calendar {
   }
 
   Future<Model.CalendarEntry> create(Model.CalendarEntry entry) {
-    Uri url = Resource.Calendar.single(_contactHost, entry.ID);
+    Uri url = entry.owner.contactId == Model.Contact.noID
+        ? Resource.Calendar.listReception(_receptionHost, entry.receptionID)
+        : Resource.Calendar.listContact(
+            _contactHost, entry.contactID, entry.receptionID);
+
     url = appendToken(url, this._token);
 
     return this._backend.post(url, JSON.encode(entry))
@@ -62,7 +66,9 @@ class RESTCalendarStore implements Storage.Calendar {
   }
 
   Future<Model.CalendarEntry> update(Model.CalendarEntry entry) {
-    Uri url = Resource.Calendar.single(_contactHost, entry.ID);
+    Uri url = entry.owner.contactId == Model.Contact.noID
+        ? Resource.Calendar.singleReception(_receptionHost, entry.ID, entry.receptionID)
+        : Resource.Calendar.singleContact(_contactHost, entry.ID, entry.receptionID, entry.contactID);
     url = appendToken(url, this._token);
 
     return this._backend.put(url, JSON.encode(entry))
@@ -70,8 +76,10 @@ class RESTCalendarStore implements Storage.Calendar {
       .then(Model.CalendarEntry.decode);
   }
 
-  Future remove(int entryId) {
-    Uri url = Resource.Calendar.single(_contactHost, entryId);
+  Future remove(Model.CalendarEntry entry) {
+    Uri url = entry.owner.contactId == Model.Contact.noID
+        ? Resource.Calendar.singleReception(_receptionHost, entry.ID, entry.receptionID)
+        : Resource.Calendar.singleContact(_contactHost, entry.ID, entry.receptionID, entry.contactID);
     url = appendToken(url, this._token);
 
     return this._backend.delete(url)
