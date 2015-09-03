@@ -45,6 +45,7 @@ class RESTCalendarStore implements Storage.Calendar {
 
   Future<Model.CalendarEntry> get(int entryId) {
     Uri url = Resource.Calendar.single(_contactHost, entryId);
+    url = appendToken(url, this._token);
 
     return this._backend.get(url)
       .then(JSON.decode)
@@ -53,6 +54,7 @@ class RESTCalendarStore implements Storage.Calendar {
 
   Future<Model.CalendarEntry> create(Model.CalendarEntry entry) {
     Uri url = Resource.Calendar.single(_contactHost, entry.ID);
+    url = appendToken(url, this._token);
 
     return this._backend.post(url, JSON.encode(entry))
       .then(JSON.decode)
@@ -61,6 +63,7 @@ class RESTCalendarStore implements Storage.Calendar {
 
   Future<Model.CalendarEntry> update(Model.CalendarEntry entry) {
     Uri url = Resource.Calendar.single(_contactHost, entry.ID);
+    url = appendToken(url, this._token);
 
     return this._backend.put(url, JSON.encode(entry))
       .then(JSON.decode)
@@ -69,6 +72,7 @@ class RESTCalendarStore implements Storage.Calendar {
 
   Future remove(int entryId) {
     Uri url = Resource.Calendar.single(_contactHost, entryId);
+    url = appendToken(url, this._token);
 
     return this._backend.delete(url)
       .then(JSON.decode)
@@ -77,7 +81,6 @@ class RESTCalendarStore implements Storage.Calendar {
 
   Future<Iterable<Model.CalendarEntryChange>> changes(entryId) {
     Uri url = Resource.Calendar.changeList(_contactHost, entryId);
-
     url = appendToken(url, this._token);
 
     Iterable<Model.CalendarEntryChange> convertMaps(Iterable<Map> maps) =>
