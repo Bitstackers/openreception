@@ -178,7 +178,7 @@ class _Simulation {
    */
   void hangupCall () {
     _callController.hangup(_appState.activeCall).then((_) {
-      log.info('Hun up call, returning to idle.');
+      log.info('Hung up call, returning to idle.');
       _state = ReceptionistState.IDLE;
 
     });
