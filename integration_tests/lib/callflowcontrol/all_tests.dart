@@ -105,8 +105,12 @@ void runCallFlowTests() {
          callee.teardown()]);
     });
 
+    test ('inboundCall Call list length checks',
+        () => Transfer.inboundCallListLength(receptionist, caller, callee));
+
     test ('Inbound Call',
         () => Transfer.transferParkedInboundCall(receptionist, caller, callee));
+
     test ('Outbound Call',
         () => Transfer.transferParkedOutboundCall(receptionist, caller, callee));
   });
@@ -254,6 +258,10 @@ void runCallFlowTests() {
 
     test ('originationToPeer',
         () => Originate.originationToPeer(receptionist, customer));
+
+    test ('originationToPeerCheckforduplicate',
+        () => Originate.originationToPeerCheckforduplicate(receptionist, customer));
+
   });
 
   /**
@@ -280,6 +288,9 @@ void runCallFlowTests() {
          customer.teardown()]);
     });
 
+    test ('parkCallListLength',
+        () => CallPark.parkCallListLength(receptionist, customer));
+
     test ('explicitParkPickup',
         () => CallPark.explicitParkPickup(receptionist, customer));
 
@@ -288,7 +299,6 @@ void runCallFlowTests() {
 
     test ('parkNonexistingCall',
         () => CallPark.parkNonexistingCall(receptionist));
-
   });
 
   /**
