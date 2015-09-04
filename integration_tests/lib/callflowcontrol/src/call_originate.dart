@@ -71,12 +71,12 @@ abstract class Originate {
         throwsA(new isInstanceOf<Storage.ClientError>()));
   }
 
-  static Future originationToPeer(Receptionist receptionist, String peerUri) {
+  static Future originationToPeer(Receptionist receptionist, Customer customer) {
     int contactID = 4;
     int receptionID = 1;
 
     return receptionist
-        .originate(peerUri, contactID, receptionID)
+        .originate(customer.extension, contactID, receptionID)
         .then((_) => receptionist.waitForInboundCall());
   }
 }

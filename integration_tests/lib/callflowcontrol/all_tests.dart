@@ -253,7 +253,7 @@ void runCallFlowTests() {
         () => Originate.originationToForbiddenNumber(receptionist));
 
     test ('originationToPeer',
-        () => Originate.originationToPeer(receptionist, customer.extension));
+        () => Originate.originationToPeer(receptionist, customer));
   });
 
   /**
