@@ -33,6 +33,9 @@ enum ReceptionistState {
   RECEIVING_CALL
 }
 
+///Important. Fill out this one with actual PSTN numbers.
+List<String> calleeNumbers = [];
+
 /**
  * Automated simulation of the UI.
  */
@@ -44,7 +47,6 @@ class _Simulation {
   final Logger log = new Logger('_Simulation');
   ReceptionistState _state = ReceptionistState.IDLE;
   Controller.Call _callController;
-
 
   ReceptionistState get state => _state;
   set state(ReceptionistState newState) {
@@ -72,6 +74,15 @@ class _Simulation {
 
   int get randomResponseTime => rand.nextInt(900) + 100;
 
+  static dynamic _randomChoice (List pool) {
+    if(pool.isEmpty) {
+      throw new ArgumentError('Cannot find a random value in an empty list');
+    }
+
+    int index = rand.nextInt(pool.length);
+
+    return pool[index];
+  }
   void refreshInfo() {
     _stateBox.text = '${_state} (in call:$isInCall)';
   }
@@ -154,7 +165,11 @@ class _Simulation {
     if (isInCall) {
       log.info('Recieved a call, hanging it up immidiately.');
       state = ReceptionistState.ACTIVE_CALL;
-      new Future.delayed(new Duration(milliseconds: 100), hangupCall);
+
+      _callController.dial(_randomChoice(calleeNumbers),
+          ORModel.Reception.selectedReception, ORModel.Contact.selectedContact);
+
+      new Future.delayed(new Duration(milliseconds: 1000), hangupCall);
     }
   }
 
