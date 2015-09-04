@@ -77,6 +77,6 @@ abstract class Originate {
 
     return receptionist
         .originate(customer.extension, contactID, receptionID)
-        .then((_) => receptionist.waitForInboundCall());
+        .then((_) => customer.waitForInboundCall());
   }
 }
