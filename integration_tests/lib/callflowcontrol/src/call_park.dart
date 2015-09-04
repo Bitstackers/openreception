@@ -105,4 +105,29 @@ abstract class CallPark {
           timeoutSeconds: 1));
 
   }
+
+  /**
+   * Tests the call list length.
+   */
+  static Future parkCallListLength(Receptionist receptionist, Customer caller) {
+    String receptionNumber = '12340005';
+
+    Model.Call targetedCall;
+
+    return Future.wait([])
+      .then((_) => log.info ('Caller dials the reception at $receptionNumber'))
+      .then((_) => caller.dial(receptionNumber))
+      .then((_) => log.info ('Receptionist tries to hunt down the next call'))
+      .then((_) => receptionist.huntNextCall()
+        .then((Model.Call call) => targetedCall = call))
+      .then((_) => log.info ('Receptionist parks call $targetedCall'))
+      .then((_) => receptionist.park(targetedCall, waitForEvent : true)
+        .then((Model.Call parkedCall) {
+          expect (parkedCall.assignedTo, equals(receptionist.user.ID));
+          expect (parkedCall.state, equals(Model.CallState.Parked));
+        }))
+      .then((_) => log.info ('Checking call list length'))
+      .then((_) => CallList._validateListLength(receptionist.callFlowControl, 1))
+      .then((_) => log.info ('Test succeeded'));
+  }
 }
