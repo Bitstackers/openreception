@@ -79,4 +79,17 @@ abstract class Originate {
         .originate(customer.extension, contactID, receptionID)
         .then((_) => customer.waitForInboundCall());
   }
+
+  static Future assertCallQueueLength (Service.CallFlowControl callFlow, int length) =>
+      callFlow.callList().then((Iterable<Model.Call> calls) => expect (calls.length, equals(length)));
+
+  static Future originationToPeerCheckforduplicate(Receptionist receptionist, Customer customer) {
+    int contactID = 4;
+    int receptionID = 1;
+
+    return receptionist
+        .originate(customer.extension, contactID, receptionID)
+        .then((_) => customer.waitForInboundCall())
+        .then((_) => assertCallQueueLength (receptionist.callFlowControl, 1));
+  }
 }
