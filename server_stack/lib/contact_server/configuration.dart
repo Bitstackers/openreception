@@ -5,8 +5,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:args/args.dart';
+import 'package:logging/logging.dart';
 
-import 'package:openreception_framework/common.dart';
+Logger log = new Logger('contactserver.json_configuration');
 
 Configuration config;
 
@@ -71,8 +72,8 @@ class Configuration {
   bool hasArgument(String name) {
     try {
       return _args[name] != null && _args[name].trim() != '';
-    } catch(e) {
-      logger.error('contactserver.configuration.hasArgument() Name: "${name}" value: "${_args[name]}" gave $e');
+    } catch(e, s) {
+      log.severe('contactserver.configuration.hasArgument() Name: "${name}" value: "${_args[name]}"', e, s);
       return false;
     }
   }
@@ -134,8 +135,8 @@ class Configuration {
         }
       }
     })
-    .catchError((err) {
-      log('Failed to read "$configfile". Error: $err');
+    .catchError((err, stackTrace) {
+      log.shout('Failed to read "$configfile".', err, stackTrace);
     });
   }
 
@@ -190,8 +191,8 @@ class Configuration {
         _serverToken = _args['servertoken'];
       }
 
-    }).catchError((error) {
-      log('Failed loading commandline arguments. $error');
+    }).catchError((error, stackTrace) {
+      log.shout('Failed to read "$configfile".', error, stackTrace);
       throw error;
     });
   }

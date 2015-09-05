@@ -5,8 +5,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:args/args.dart';
+import 'package:logging/logging.dart';
 
-import 'package:openreception_framework/common.dart';
+Logger log = new Logger('userserver.json_configuration');
 
 Configuration config;
 
@@ -119,8 +120,8 @@ class Configuration {
         _dbname = config['dbname'];
       }
     })
-    .catchError((err) {
-      log('Failed to read "$configfile". Error: $err');
+    .catchError((err, stackTrace) {
+      log.shout('Failed to read "$configfile".', err, stackTrace);
     });
   }
 
@@ -158,8 +159,8 @@ class Configuration {
         _serverToken = _args['servertoken'];
       }
 
-    }).catchError((error) {
-      log('Failed loading commandline arguments. $error');
+    }).catchError((error, stackTrace) {
+      log.shout('Failed to read "$configfile".', error, stackTrace);
       throw error;
     });
   }
