@@ -2,8 +2,6 @@ part of cdrserver.database;
 
 Future<List> cdrList(bool inbound, DateTime start, DateTime end) {
 
-  final context = libraryName + ".cdrList";
-
   String sql = '''
   SELECT 
             (org.id)        AS org_id,
@@ -34,7 +32,7 @@ Future<List> cdrList(bool inbound, DateTime start, DateTime end) {
                     'end'     : end};
 
   return connection.query(sql, parameters).then((rows) {
-    logger.debugContext("Returned ${rows.length} reception cdr stats.", context);
+    _log.finest("Returned ${rows.length} reception cdr stats.");
 
     List cdr = new List();
 
