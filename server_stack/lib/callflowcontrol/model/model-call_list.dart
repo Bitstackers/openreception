@@ -171,7 +171,52 @@ class CallList extends IterableBase<ORModel.Call> {
 
   void _handleCustom (ESL.Event event) {
     switch (event.eventSubclass) {
-      case (PBXEvent.OR_PRE_QUEUE_ENTER):
+
+      /// Entering the prequeue (not yet answered).
+      case (PBXEvent._OR_PRE_QUEUE_ENTER):
+        this._createCall(event);
+
+        this.get(event.uniqueID)
+            ..receptionID =
+              event.contentAsMap.containsKey('variable_reception_id')
+                        ? int.parse(event.field('variable_reception_id'))
+                        : 0
+            ..changeState(ORModel.CallState.Created);
+
+        break;
+
+      /// Leaving the prequeue (Playing greeting and locking the call)
+      case (PBXEvent._OR_PRE_QUEUE_LEAVE):
+        log.finest('Locking ${event.uniqueID}');
+        CallList.instance.get (event.uniqueID)
+          ..changeState (ORModel.CallState.Transferring)
+          ..locked = true;
+        break;
+
+      /// Entering the wait queue (Playing queue music)
+      case (PBXEvent._OR_WAIT_QUEUE_ENTER):
+        log.finest('Unlocking ${event.uniqueID}');
+        CallList.instance.get (event.uniqueID)
+          ..locked = false
+          ..greetingPlayed = true //TODO: Change this into a packet.variable.get ('greetingPlayed')
+          ..changeState (ORModel.CallState.Queued);
+        break;
+
+      /// Call is parked
+      case (PBXEvent._OR_PARKING_LOT_ENTER):
+        CallList.instance.get (event.uniqueID)
+          ..changeState (ORModel.CallState.Parked);
+        break;
+
+      /// Call is unparked
+      case (PBXEvent._OR_PARKING_LOT_LEAVE):
+        CallList.instance.get (event.uniqueID)
+          ..changeState (ORModel.CallState.Transferring);
+        break;
+
+
+      //FIXME: Remove this duplicate block when all dialplans have been updated
+      case (PBXEvent._AH_PRE_QUEUE_ENTER):
         this._createCall(event);
 
         this.get(event.uniqueID)
@@ -188,15 +233,16 @@ class CallList extends IterableBase<ORModel.Call> {
 //         this._createCall(event);
 //
 //         break;
-
-      case (PBXEvent.OR_PRE_QUEUE_LEAVE):
+      //FIXME: Remove this duplicate block when all dialplans have been updated
+      case (PBXEvent._AH_PRE_QUEUE_LEAVE):
         log.finest('Locking ${event.uniqueID}');
         CallList.instance.get (event.uniqueID)
           ..changeState (ORModel.CallState.Transferring)
           ..locked = true;
         break;
 
-      case (PBXEvent.OR_WAIT_QUEUE_ENTER):
+      //FIXME: Remove this duplicate block when all dialplans have been updated
+      case (PBXEvent._AH_WAIT_QUEUE_ENTER):
         log.finest('Unlocking ${event.uniqueID}');
         CallList.instance.get (event.uniqueID)
           ..locked = false
@@ -204,12 +250,14 @@ class CallList extends IterableBase<ORModel.Call> {
           ..changeState (ORModel.CallState.Queued);
         break;
 
-      case (PBXEvent.OR_PARKING_LOT_ENTER):
+      //FIXME: Remove this duplicate block when all dialplans have been updated
+      case (PBXEvent._AH_PARKING_LOT_ENTER):
         CallList.instance.get (event.uniqueID)
           ..changeState (ORModel.CallState.Parked);
         break;
 
-      case (PBXEvent.OR_PARKING_LOT_LEAVE):
+      //FIXME: Remove this duplicate block when all dialplans have been updated
+      case (PBXEvent._AH_PARKING_LOT_LEAVE):
         CallList.instance.get (event.uniqueID)
           ..changeState (ORModel.CallState.Transferring);
         break;
