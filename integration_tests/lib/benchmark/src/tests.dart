@@ -75,7 +75,11 @@ abstract class Benchmark {
         .then((_) => receptionists.first.callFlowControl
             .callList()
             .then((Iterable<Model.Call> calls) {
-      expect(calls, isEmpty);
+
+      return new Future.delayed(new Duration(milliseconds : 100), () {
+        expect(calls, isEmpty);
+      });
+
     })).then((_) => log.info('Test done'));
   }
 }
