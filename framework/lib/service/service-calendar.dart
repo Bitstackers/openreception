@@ -76,15 +76,20 @@ class RESTCalendarStore implements Storage.Calendar {
       .then(Model.CalendarEntry.decode);
   }
 
-  Future remove(Model.CalendarEntry entry) {
+  Future removeEntry(Model.CalendarEntry entry) {
     Uri url = entry.owner.contactId == Model.Contact.noID
         ? Resource.Calendar.singleReception(_receptionHost, entry.ID, entry.receptionID)
         : Resource.Calendar.singleContact(_contactHost, entry.ID, entry.receptionID, entry.contactID);
     url = appendToken(url, this._token);
 
-    return this._backend.delete(url)
-      .then(JSON.decode)
-      .then(Model.CalendarEntry.decode);
+    return this._backend.delete(url);
+  }
+
+  Future remove(int entryId) {
+    Uri url =  Resource.Calendar.single(_contactHost, entryId);
+    url = appendToken(url, this._token);
+
+    return this._backend.delete(url);
   }
 
   Future<Iterable<Model.CalendarEntryChange>> changes(entryId) {
