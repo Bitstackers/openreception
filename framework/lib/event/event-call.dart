@@ -120,3 +120,19 @@ class QueueLeave extends CallEvent {
   QueueLeave (Call call) : super(call);
   QueueLeave.fromMap (Map map) : super.fromMap(map);
 }
+
+class CallStateReload implements Event {
+
+  final String   eventName = Key.callStateReload;
+  final DateTime timestamp;
+
+  CallStateReload () : this.timestamp = new DateTime.now();
+
+  Map toJson() => this.asMap;
+  String toString() => this.asMap.toString();
+
+  Map get asMap => EventTemplate._rootElement(this);
+
+  CallStateReload.fromMap (Map map) :
+    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
+}

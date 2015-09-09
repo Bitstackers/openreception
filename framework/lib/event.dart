@@ -83,6 +83,7 @@ abstract class Key {
   static const channelState = 'channel_state';
   static const userState = 'userState';
   static const state = 'state';
+  static const callStateReload = 'callStateReload';
 
   static const contactCalendarEntryCreate = 'contactCalendarEntryCreate';
   static const contactCalendarEntryUpdate = 'contactCalendarEntryUpdate';
@@ -184,6 +185,9 @@ abstract class Event {
 
         case Key.userChange:
           return new UserChange.fromMap(map);
+
+        case Key.callStateReload:
+          return new CallStateReload.fromMap(map);
 
         default:
           log.severe('Unsupported event type: ${map['event']}');
