@@ -45,7 +45,7 @@ class Calendar {
    * Delete [entry] from the database.
    */
   Future deleteCalendarEvent(ORModel.CalendarEntry entry) =>
-      _calendarStore.remove(entry);
+      _calendarStore.removeEntry(entry);
 
   /**
    * Return all the [ORModel.CalendarEntry]'s of a [reception].
