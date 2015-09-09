@@ -1,39 +1,12 @@
 part of callflowcontrol.model;
 
-String channelName(ESL.Channel channel) => channel.fields['Channel-Name'];
-
-
-bool isInbound (ESL.Channel channel)
-  => channel.fields['Call-Direction'] == 'inbound' ? true : false;
-
-
-bool isInternal (ESL.Channel channel) {
-  String cName = channelName (channel);
-
-  if (!cName.startsWith('sofia/')) {
-    throw new ArgumentError('only sofia channels are supported. Got: $cName');
-  }
-
-  String profile = cName.split('/')[1];
-
-  if (profile == 'internal') {
-    return true;
-  }
-  else if (profile == 'external') {
-    return false;
-  }
-
-  throw new ArgumentError('Failed to detect profile in channel name \'$cName\'.');
-}
-
 String ownedByPeer (ESL.Channel channel) {
-  String cName = channelName (channel);
 
-  if (!cName.startsWith('sofia/')) {
+  if (!channel.channelName().startsWith('sofia/')) {
     throw new ArgumentError('only sofia channels are supported.');
   }
 
-  return cName.split('/')[2];
+  return channel.channelName().split('/')[2];
 }
 
 String channelOwnedByPeer (String channelName) {
@@ -113,7 +86,7 @@ class ChannelEvent {
   @override
   String toString () => this.asMap.toString();
 
-  bool   get isExternalChannel => !isInternal(this.channel);
+  bool   get isExternalChannel => !this.channel.isInternal();
 
   String get ownerPeer         => simplePeerName (ownedByPeer (this.channel));
 
@@ -138,7 +111,6 @@ class ChannelList extends ESL.ChannelList {
 
   static Stream<ChannelEvent> event = _eventController.stream;
 
-
   /**
    * Determine if a peer has any active channels.
    */
@@ -156,8 +128,8 @@ class ChannelList extends ESL.ChannelList {
     bool newChannel = false;
 
     log.finest ('Updating:'
-        ' channelName:${channelName (channel)}'
-        ' internal:${isInternal (channel)}, '
+        ' channelName:${channel.channelName ()}'
+        ' internal:${channel.isInternal ()}, '
         ' ownedby :${ownedByPeer (channel)}'
         ' simplePeerName  :${simplePeerName (ownedByPeer (channel))}');
 
