@@ -18,6 +18,7 @@ class Customer {
   Phonio.SIPPhone _phone = null;
   Stream<Phonio.Event> get phoneEvents => _phone.eventStream;
   String get name => this._phone.defaultAccount.username;
+  StreamSubscription eventSubscription = null;
 
   Customer (this._phone);
 
@@ -34,14 +35,20 @@ class Customer {
    *
    */
   Future initialize() => this._phone.initialize()
-      .then((_) => this._phone.eventStream.listen(this._onPhoneEvent));
+      .then((_) => eventSubscription = this._phone.eventStream.listen(this._onPhoneEvent, onDone : () => log.info('$this closing event listener.')));
 
-  teardown() => this._phone.teardown()
+  teardown() {
+    log.info('$this Waiting for teardown');
+
+    return this._phone.teardown()
+      .then ((_) => log.info('$this Got phone teardown'))
       .then((_) => this.currentCall = null)
+      .then ((_) => log.info('$this is done teardown'))
       .catchError((error, stackTrace) {
         log.severe('Potential race condition in teardown of Customer, ignoring as test error, but logging it');
         log.severe(error, stackTrace);
       });
+  }
 
 
   Future Wait_For_Dialtone() => this.waitForInboundCall();
@@ -87,6 +94,10 @@ class Customer {
 
   Future hangupAll() => this._phone.hangupAll();
 
+  Future finalize() =>
+      _phone.ready
+      ? teardown().then((_) => _phone.finalize())
+      : _phone.finalize();
 
   /**
    * Returns a Future that completes when an outbound call is confirmed placed.

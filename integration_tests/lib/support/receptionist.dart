@@ -23,6 +23,7 @@ class Receptionist {
 
   Phonio.Call currentCall = null;
 
+
   Map toJson() => {
     'id' : this.hashCode,
     'user' : user,
@@ -63,9 +64,9 @@ class Receptionist {
 
     return wsc.connect(
         Uri.parse('${Config.NotificationSocketUri}?token=${this.authToken}'))
-    .then((_) => this.notificationSocket.eventStream.listen(this._handleEvent))
+    .then((_) => this.notificationSocket.eventStream.listen(this._handleEvent, onDone : () => log.info('$this closing notification listener.')))
     .then((_) => this._phone.initialize())
-    .then((_) => this._phone.eventStream.listen(this._onPhoneEvent))
+    .then((_) => this._phone.eventStream.listen(this._onPhoneEvent, onDone : () => log.info('$this closing event listener.')))
     .then((_) => this._phone.autoAnswer(true))
     .then((_) => this._phone.register())
     .then((_) => this.callFlowControl.userStateIdle(this.user.ID))
@@ -101,6 +102,11 @@ class Receptionist {
         log.severe(error, stackTrace);
     });
   }
+
+  Future finalize() =>
+      _phone.ready
+      ? teardown().then((_) => _phone.finalize())
+      : _phone.finalize();
 
   /**
    * Future that enables you the wait for the object to become ready.
