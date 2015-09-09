@@ -127,8 +127,11 @@ void loadPeerListFromPacket (ESL.Response response) {
 }
 
 Future loadChannelListFromPacket (ESL.Response response) {
-  Iterable<String> channelUUIDs = JSON.decode(response.rawBody)['rows']
-    .map((Map m) => m['uuid']);
+  Map responseBody = JSON.decode(response.rawBody);
+  Iterable<String> channelUUIDs =
+      responseBody.containsKey('rows')
+      ? JSON.decode(response.rawBody)['rows'].map((Map m) => m['uuid'])
+      : [];
 
   return Future.forEach(channelUUIDs, (String channelUUID) {
     return Model.PBXClient.instance.api('uuid_dump $channelUUID')
