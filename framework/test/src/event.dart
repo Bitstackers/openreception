@@ -23,6 +23,7 @@ void testEvent() {
     test('messageChangeState', EventTests.messageChangeState);
     test('calendarEntryState', EventTests.calendarEntryState);
     test('userChange', EventTests.userChange);
+    test('callStateReload', EventTests.callStateReload);
   });
 }
 
@@ -145,5 +146,17 @@ abstract class EventTests {
 
     expect (builtEvent.userID, equals(userID));
     expect (builtEvent.state, equals(Event.UserObjectState.DELETED));
-}
+  }
+
+  static void callStateReload () {
+
+    Event.CallStateReload testEvent = new Event.CallStateReload();
+
+    Event.CallStateReload builtEvent = new Event.Event.parse(testEvent.asMap);
+
+    expect (builtEvent.timestamp.difference(testEvent.timestamp).inMilliseconds.abs(), lessThan(1000));
+    expect (builtEvent.eventName, equals(Event.Key.callStateReload));
+    expect (builtEvent.eventName, testEvent.eventName);
+  }
+
 }
