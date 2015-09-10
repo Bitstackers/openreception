@@ -7,7 +7,7 @@ import 'dart:convert';
 import 'configuration.dart' as json;
 import '../configuration.dart';
 
-import 'controller/controller.dart' as Controller;
+import 'controller.dart' as Controller;
 import 'model/model.dart' as Model;
 
 import 'package:openreception_framework/storage.dart'  as ORStorage;

@@ -7,6 +7,7 @@ import 'package:path/path.dart';
 
 import '../lib/callflowcontrol/configuration.dart' as json;
 import '../lib/callflowcontrol/router.dart' as router;
+import '../lib/callflowcontrol/controller.dart' as Controller;
 import '../lib/callflowcontrol/model/model.dart' as Model;
 import 'package:esl/esl.dart' as ESL;
 import 'package:logging/logging.dart';
