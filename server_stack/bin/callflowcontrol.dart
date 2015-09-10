@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:args/args.dart';
 import 'package:path/path.dart';
