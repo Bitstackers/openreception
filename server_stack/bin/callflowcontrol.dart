@@ -74,10 +74,8 @@ void connectESLClient() {
              (Model.PBXEvent.requiredSubscriptions,
                 format : ESL.EventFormat.Json)
             ..catchError(log.shout))
-          .then((_) => Model.PBXClient.instance.api('list_users')
-            .then(loadPeerListFromPacket))
-          .then((_) => Model.PBXClient.instance.api('show channels as json')
-            .then(loadChannelListFromPacket));
+          .then((_) => Controller.PBX.loadPeers())
+          .then((_) => Controller.PBX.loadChannels());
 
       break;
       default:
@@ -112,65 +110,3 @@ void registerAndParseCommandlineArguments(List<String> arguments) {
 
 bool showHelp() => parsedArgs['help'];
 
-void loadPeerListFromPacket (ESL.Response response) {
-
-  bool peerIsInAcceptedContext(ESL.Peer peer) =>
-    Configuration.callFlowControl.peerContexts.contains(peer.context);
-
-  ESL.PeerList loadedList = new ESL.PeerList.fromMultilineBuffer(response.rawBody);
-
-  loadedList.where(peerIsInAcceptedContext).forEach((ESL.Peer peer) {
-    Model.PeerList.instance.add(peer);
-  });
-
-  log.info('Loaded ${Model.PeerList.instance.length} of ${loadedList.length} '
-           'peers from FreeSWITCH');
-}
-
-Future loadChannelListFromPacket (ESL.Response response) {
-  Map responseBody = JSON.decode(response.rawBody);
-  Iterable<String> channelUUIDs =
-      responseBody.containsKey('rows')
-      ? JSON.decode(response.rawBody)['rows'].map((Map m) => m['uuid'])
-      : [];
-
-  return Future.forEach(channelUUIDs, (String channelUUID) {
-    return Model.PBXClient.instance.api('uuid_dump $channelUUID')
-        .then((ESL.Response response) {
-
-      List<String> lines = response.rawBody.split('\n');
-
-      Map<String, String> fields= {};
-      Map<String, dynamic> variables= {};
-
-      lines.forEach((String line) {
-        int splitIndex = line.indexOf(':');
-        if (splitIndex > 0) {
-          String key = line.substring(0, splitIndex).trim();
-          String value = Uri.decodeFull(line.substring(splitIndex+1)).trim();
-
-          if (key.startsWith("variable_")) {
-
-            String keyNoPrefix = (key.split("variable_")[1]);
-            variables[keyNoPrefix] = value;
-          }
-          fields[key] = value;
-
-        }
-        else {
-          log.warning('Skipping bad buffer $line');
-        }
-      });
-
-      Model.ChannelList.instance.update
-        (new ESL.Channel.assemble(fields, variables));
-
-    });
-
-  })
-  .then((_) {
-    //TODO Reload call list based in the information in channel list.
-    log.info('Loaded information about ${Model.ChannelList.instance.length} active channels into channel list');
-  });
-
-}
