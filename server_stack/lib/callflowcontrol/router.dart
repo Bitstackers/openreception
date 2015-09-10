@@ -86,6 +86,7 @@ void startNotifier() {
 }
 
 Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4242}) {
+  Controller.State stateController = new Controller.State();
 
   var router = shelf_route.router()
     ..get('/peer/list', Peer.list)
@@ -100,6 +101,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4242}) {
     ..get('/userstate', UserState.list)
     ..get('/call/{callid}', Call.get)
     ..get('/call', Call.list)
+    ..post('/state/reload', stateController.reloadAll)
     ..get('/channel/list', Channel.list)
     ..get('/channel', Channel.list)
     ..post('/call/{callid}/hangup', Call.hangupSpecific)
