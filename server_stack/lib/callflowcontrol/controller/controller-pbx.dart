@@ -27,11 +27,14 @@ class CallRejected extends PBXException {
 
 abstract class PBX {
 
-  static final Logger log             = new Logger('${libraryName}.PBX');
-  static const String callerID        = '39990141';
-  static const int    timeOutSeconds  = 10;
-  static const String dialplan        = 'xml receptions';
-  static const String originationChan = 'or_origination_channel';
+  static final Logger _log             = new Logger('${libraryName}.PBX');
+  static const String _callerID        = '39990141';
+  static const int    _timeOutSeconds  = 10;
+  static const String _dialplan        = 'xml receptions';
+
+  static const String _namespace = 'openreception';
+  static const String agentChan = '${_namespace}_agent_chan';
+  static const String ownerUid = '${_namespace}_owner_uid';
 
   /**
    * Starts an origination in the PBX.
@@ -42,7 +45,7 @@ abstract class PBX {
    */
   static Future<String> originate (String extension, int contactID, int receptionID, ORModel.User user) {
     /// Tag the A-leg as a primitive origination channel.
-    List<String> a_legvariables = ['${originationChan}=true'];
+    List<String> a_legvariables = ['${agentChan}=true'];
 
     List<String> b_legvariables = ['reception_id=${receptionID}',
                                    'owner=${user.ID}',
@@ -51,7 +54,7 @@ abstract class PBX {
     return Model.PBXClient.api
         ('originate {${a_legvariables.join(',')}}user/${user.peer} '
          '&bridge([${b_legvariables.join(',')}]sofia/external/${extension}) '
-         '${dialplan} $callerID $callerID $timeOutSeconds')
+         '${_dialplan} $_callerID $_callerID $_timeOutSeconds')
         .then((ESL.Response response) {
           if (response.status != ESL.Response.OK) {
             throw new StateError('ESL returned ${response.rawBody}');
@@ -73,16 +76,16 @@ abstract class PBX {
       final String new_call_uuid = response.rawBody;
       final String destination = 'user/${user.peer}';
 
-      log.finest ('New uuid: $new_call_uuid');
-      log.finest ('Dialing receptionist at user/${user.peer}');
+      _log.finest ('New uuid: $new_call_uuid');
+      _log.finest ('Dialing receptionist at user/${user.peer}');
 
       return Model.PBXClient.api('originate '
                                   '{ignore_early_media=true,'
-                                  '${originationChan}=true,'
+                                  '${agentChan}=true,'
                                   'origination_uuid=$new_call_uuid,'
-                                  'originate_timeout=$timeOutSeconds,'
-                                  'origination_caller_id_name=$callerID,'
-                                  'origination_caller_id_number=$callerID}'
+                                  'originate_timeout=$_timeOutSeconds,'
+                                  'origination_caller_id_name=$_callerID,'
+                                  'origination_caller_id_number=$_callerID}'
                                   '${destination}'
                                   ' &park()')
        .then((ESL.Response response) {
@@ -106,7 +109,7 @@ abstract class PBX {
                '($destination). PBX responded: ${response.status}');
          }
 
-         log.warning('Bad reply from PBX', error);
+         _log.warning('Bad reply from PBX', error);
 
          return new Future.error(error);
 
@@ -122,7 +125,7 @@ abstract class PBX {
         .then((_) => Model.PBXClient.api
           ('uuid_setvar $uuid effective_caller_id_name testname'))
         .then((_) => Model.PBXClient.bgapi
-          ('uuid_transfer $uuid $extension ${dialplan}'))
+          ('uuid_transfer $uuid $extension ${_dialplan}'))
         .then((ESL.Reply reply) =>
             reply.status != ESL.Reply.OK
               ? new Future.error(new PBXException(reply.replyRaw))
@@ -139,7 +142,7 @@ abstract class PBX {
                               'owner=${user.ID}',
                               'recordpath=${soundFilePath}'];
 
-    String command = 'originate {${variables.join(',')}}user/${user.peer} ${recordExtension} ${dialplan} $callerID $callerID $timeOutSeconds';
+    String command = 'originate {${variables.join(',')}}user/${user.peer} ${recordExtension} ${_dialplan} $_callerID $_callerID $_timeOutSeconds';
     return Model.PBXClient.api(command)
         .then((ESL.Response response) {
           if (response.status != ESL.Response.OK) {
@@ -161,13 +164,13 @@ abstract class PBX {
     List<String> variables = ['reception_id=${receptionID}',
                               'owner=${user.ID}',
                               'contact_id=${contactID}',
-                              'origination_caller_id_name=$callerID',
-                              'origination_caller_id_number=$callerID',
-                              'originate_timeout=$timeOutSeconds',
+                              'origination_caller_id_name=$_callerID',
+                              'origination_caller_id_number=$_callerID',
+                              'originate_timeout=$_timeOutSeconds',
                               'return_ring_ready=true'];
 
     return Model.PBXClient.api
-        ('originate {${variables.join(',')}}sofia/external/${extension}@${json.config.dialoutgateway} &bridge(user/${user.peer}) ${dialplan} $callerID $callerID $timeOutSeconds')
+        ('originate {${variables.join(',')}}sofia/external/${extension}@${json.config.dialoutgateway} &bridge(user/${user.peer}) ${_dialplan} $_callerID $_callerID $_timeOutSeconds')
         .then((ESL.Response response) {
           if (response.status != ESL.Response.OK) {
             throw new StateError('ESL returned ${response.rawBody}');
@@ -270,7 +273,7 @@ abstract class PBX {
       Model.PeerList.instance.add(peer);
     });
 
-    log.info('Loaded ${Model.PeerList.instance.length} of ${loadedList.length} '
+    _log.info('Loaded ${Model.PeerList.instance.length} of ${loadedList.length} '
              'peers from FreeSWITCH');
   }
 
@@ -311,7 +314,7 @@ abstract class PBX {
 
           }
           else {
-            log.warning('Skipping bad buffer $line');
+            _log.warning('Skipping bad buffer $line');
           }
         });
 
@@ -323,7 +326,7 @@ abstract class PBX {
     })
     .then((_) {
       //TODO Reload call list based in the information in channel list.
-      log.info('Loaded information about ${Model.ChannelList.instance.length} active channels into channel list');
+      _log.info('Loaded information about ${Model.ChannelList.instance.length} active channels into channel list');
     });
   }
 }

@@ -312,7 +312,7 @@ class CallList extends IterableBase<ORModel.Call> {
    * These will, in their good right, spawn CHANNEL_ORIGINATE events which we
    * manually need to filter :-\
    * For now, the filter for origination is done by tagging the channels with a
-   * variable ([Controller.PBX.originationChan]) by the origination request.
+   * variable ([agentChan]) by the origination request.
    * This is picked up by this function which then filters the channels from the
    * call list.
    * Upon call transfer, we also create a channel, but cannot (easily) tag the
@@ -323,7 +323,7 @@ class CallList extends IterableBase<ORModel.Call> {
    */
   void _createCall(ESL.Event event) {
     /// Skip local channels
-    if (event.contentAsMap.containsKey ('variable_${Controller.PBX.originationChan}')) {
+    if (event.contentAsMap.containsKey ('variable_${Controller.PBX.agentChan}')) {
       log.finest('Skipping origination channel ${event.uniqueID}');
       return;
     }
