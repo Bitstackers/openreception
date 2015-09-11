@@ -634,6 +634,8 @@ abstract class Call {
           .then((String uuid) {
             /// Channel bridging
             return Controller.PBX.bridgeChannel(uuid, assignedCall)
+              .then((_) =>Controller.PBX.setVariable (assignedCall.channel,
+                  'openreception_assigned_uid', user.ID.toString()))
               .then((_) {
                 /// Update the user state
                 Model.UserStatusList.instance.update

@@ -329,4 +329,10 @@ abstract class PBX {
       _log.info('Loaded information about ${Model.ChannelList.instance.length} active channels into channel list');
     });
   }
+
+  /**
+   * Attach a variable to a channel.
+   */
+  static Future setVariable(String uuid, String identifier, String value) =>
+    Model.PBXClient.instance.api('uuid_setvar $uuid $identifier $value');
 }
