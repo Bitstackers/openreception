@@ -45,6 +45,12 @@ class CallList extends IterableBase<ORModel.Call> {
     eventStream.listen(_handleEvent);
   }
 
+  /**
+   * WIP. The main idea of this was that call list was merely a reflection of
+   * the current channel list (which could be reloaded at arbitrary times).
+   * The gain of this would be that no pseudo-state would be present in the
+   * call-flow-control service.
+   */
   void subscribeChannelEvents(Stream<ChannelEvent> eventStream) {
     //eventStream.listen(_handleChannelsEvent);
   }
