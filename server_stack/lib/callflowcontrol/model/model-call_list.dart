@@ -55,47 +55,6 @@ class CallList extends IterableBase<ORModel.Call> {
     //eventStream.listen(_handleChannelsEvent);
   }
 
-//  void _handleChannelsEvent(ChannelEvent channelEvent) {
-//
-//    void handleCreate () {}
-//    void handleUpdate () {}
-//
-//
-//    void handleRemove () {}
-//
-//    void dispatch () {
-//      switch (channelEvent.eventName) {
-//
-//        case (ChannelEventName.CREATE):
-//          handleCreate ();
-//          break;
-//
-//        case (ChannelEventName.UPDATE):
-//          handleUpdate();
-//          break;
-//
-//        case (ChannelEventName.DESTROY):
-//          handleRemove();
-//          break;
-//
-//        case (ChannelEventName.CREATE):
-//          break;
-//
-//        default:
-//          throw new ArgumentError('Bad channel event name: '
-//                                  ' ${channelEvent.eventName}');
-//      }
-//    }
-//
-//
-//  try {
-//    dispatch();
-//  } catch (error, stackTrace) {
-//    log.severe('Failed to dispatch channelEvent $channelEvent');
-//    log.severe(error, stackTrace);
-//    }
-//  }
-
   List<ORModel.Call> callsOf(int userID) =>
       this.where((ORModel.Call call) => call.assignedTo == userID).toList();
 
