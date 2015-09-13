@@ -22,6 +22,14 @@ abstract class CallFlowControl {
   static String nameSpace = 'call';
 
   /**
+   * Builds a Uri to to request a state update.
+   * The output format is:
+   *    http://hostname//state/reload
+   */
+  static Uri stateReload(Uri host)
+    => Uri.parse('${host}/state/reload');
+
+  /**
    * Builds a Uri to retrieve a userstatus resource.
    * The output format is:
    *    http://hostname/userstate/${userID}
