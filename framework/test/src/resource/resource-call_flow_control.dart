@@ -15,6 +15,7 @@ part of openreception.test;
 
 void testResourceCallFlowControl() {
   group('Resource.CallFlowControl', () {
+    test('stateReload', ResourceCallFlowControl.stateReload);
     test('userStatusMap', ResourceCallFlowControl.userStatusMap);
     test('channelList', ResourceCallFlowControl.channelList);
     test('userStatusIdle', ResourceCallFlowControl.userStatusIdle);
@@ -32,6 +33,10 @@ void testResourceCallFlowControl() {
 }
 abstract class ResourceCallFlowControl {
   static Uri callFlowControlUri = Uri.parse('http://localhost:4242');
+
+  static void stateReload() => expect(
+      Resource.CallFlowControl.stateReload(callFlowControlUri),
+      equals(Uri.parse('${callFlowControlUri}/state/reload')));
 
   static void userStatusMap() => expect(
       Resource.CallFlowControl.userStatus(callFlowControlUri, 1),
