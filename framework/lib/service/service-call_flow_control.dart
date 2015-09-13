@@ -27,6 +27,16 @@ class CallFlowControl {
   CallFlowControl(Uri this._host, String this._token, this._backend);
 
   /**
+   * Asks the server to perform a reload.
+   */
+  Future stateReload() {
+    Uri uri = Resource.CallFlowControl.stateReload(_host);
+    uri = appendToken(uri, _token);
+
+    return _backend.post(uri, '');
+  }
+
+  /**
    * Returns a Map representation of the [Model.UserStatus] object associated
    * with [userID].
    */
