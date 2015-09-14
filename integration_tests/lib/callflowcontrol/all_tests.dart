@@ -336,4 +336,59 @@ void runCallFlowTests() {
         () => UserState.pickupForbidden(receptionist, customer, customer2));
 
   });
+
+  /**
+   * CallFlowControl state reload.
+   */
+  group('CallFlowControl.StateReload', () {
+    Receptionist receptionist = null;
+    Customer customer = null;
+    Customer customer2 = null;
+
+    setUp (() {
+      receptionist = ReceptionistPool.instance.aquire();
+      customer = CustomerPool.instance.aquire();
+
+      return Future.wait(
+        [receptionist.initialize(),
+         customer.initialize()]);
+    });
+
+    tearDown (() {
+      ReceptionistPool.instance.release(receptionist);
+      CustomerPool.instance.release(customer);
+
+      return Future.wait(
+        [receptionist.teardown(),
+         customer.teardown()]);
+    });
+
+    test ('inboundCallUnanswered',
+        () => StateReload.inboundUnansweredCall(receptionist, customer));
+
+    test ('inboundAnsweredCall',
+        () => StateReload.inboundAnsweredCall(receptionist, customer));
+
+    setUp (() {
+      receptionist = ReceptionistPool.instance.aquire();
+      customer = CustomerPool.instance.aquire();
+      customer2 = CustomerPool.instance.aquire();
+      return Future.wait(
+        [receptionist.initialize(),
+         customer.initialize(),
+         customer2.initialize()]);
+    });
+
+    tearDown (() {
+      ReceptionistPool.instance.release(receptionist);
+      CustomerPool.instance.release(customer);
+
+      return Future.wait(
+        [receptionist.teardown(),
+         customer.teardown(),
+         customer2.teardown()]);
+    });
+
+
+  });
 }
