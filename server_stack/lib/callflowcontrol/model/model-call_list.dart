@@ -55,6 +55,77 @@ class CallList extends IterableBase<ORModel.Call> {
     //eventStream.listen(_handleChannelsEvent);
   }
 
+  /**
+   * Reload the call list from an Iterable of channels.
+   */
+  void reloadFromChannels (Iterable<ESL.Channel> channels) {
+    Map<String, ORModel.Call> calls = {};
+
+    channels.forEach((ESL.Channel channel) {
+      print(channel.variables[Controller.PBX.locked]);
+
+      if (!channel.variables.containsKey(Controller.PBX.agentChan)) {
+        calls[channel.UUID] = new ORModel.Call.empty(channel.UUID)
+        ..arrived = new DateTime.fromMillisecondsSinceEpoch(int.parse(channel.fields['Caller-Channel-Created-Time'])~/1000)
+        ..assignedTo = channel.variables.containsKey(Controller.PBX.ownerUid)
+          ? int.parse(channel.variables[Controller.PBX.ownerUid])
+          : ORModel.User.noID
+        ..b_Leg = channel.fields['Other-Leg-Unique-ID']
+        ..greetingPlayed = channel.variables.containsKey(Controller.PBX.greetingPlayed)
+            ? channel.variables[Controller.PBX.greetingPlayed] == 'true'
+            : false
+        ..locked = channel.variables.containsKey(Controller.PBX.locked)
+            ? channel.variables[Controller.PBX.locked] == 'true'
+            : false
+        ..inbound = (channel.fields['Call-Direction'] == 'inbound' ? true : false)
+        ..callerID = channel.fields['Caller-Caller-ID-Number']
+        ..destination = channel.fields['Caller-Destination-Number']
+        ..receptionID = channel.variables.containsKey('reception_id')
+            ? int.parse(channel.variables['reception_id'])
+            : ORModel.Reception.noID
+          ;
+
+          log.info(calls[channel.UUID].arrived);
+      }
+      else {
+        log.info('Ignoring local channel ${channel.UUID}');
+      }
+
+    });
+
+    ///Extract the call state.
+    calls.values.forEach((ORModel.Call call) {
+      if(call.b_Leg != null) {
+        log.info('$call is bridged.');
+        final ESL.Channel aLeg = ChannelList.instance.get(call.channel);
+        final ESL.Channel bLeg = ChannelList.instance.get(call.b_Leg);
+
+        if (isCall(aLeg) && isCall(bLeg)) {
+          call.state = ORModel.CallState.Transferred;
+        }
+        else {
+          call.state = ORModel.CallState.Speaking;
+        }
+
+      } else {
+        log.info('$call is not bridged.');
+
+        if (call.destination == 'waitqueue') {
+          call.state = ORModel.CallState.Queued;
+        }
+        else if (call.destination == 'park') {
+          call.state = ORModel.CallState.Parked;
+        }
+
+        else {
+          log.severe('state of $call not updated!');
+        }
+      }
+    });
+
+    this._map = calls;
+  }
+
   List<ORModel.Call> callsOf(int userID) =>
       this.where((ORModel.Call call) => call.assignedTo == userID).toList();
 
