@@ -158,18 +158,28 @@ class CallList extends IterableBase<ORModel.Call> {
 
       /// Leaving the prequeue (Playing greeting and locking the call)
       case (PBXEvent._OR_PRE_QUEUE_LEAVE):
+        ESL.Channel channel = new ESL.Channel.fromPacket(event);
+
         log.finest('Locking ${event.uniqueID}');
         CallList.instance.get (event.uniqueID)
           ..changeState (ORModel.CallState.Transferring)
-          ..locked = true;
+          ..locked = channel.variables.containsKey(Controller.PBX.locked)
+              ? channel.variables[Controller.PBX.locked] == 'true'
+              : false;
         break;
 
       /// Entering the wait queue (Playing queue music)
       case (PBXEvent._OR_WAIT_QUEUE_ENTER):
+        ESL.Channel channel = new ESL.Channel.fromPacket(event);
+
         log.finest('Unlocking ${event.uniqueID}');
         CallList.instance.get (event.uniqueID)
-          ..locked = false
-          ..greetingPlayed = true //TODO: Change this into a packet.variable.get ('greetingPlayed')
+          ..destination = event.field('Caller-Destination-Number')
+          ..locked = channel.variables.containsKey(Controller.PBX.locked)
+              ? channel.variables[Controller.PBX.locked] == 'true'
+              : false
+
+        ..greetingPlayed = true //TODO: Change this into a packet.variable.get ('greetingPlayed')
           ..changeState (ORModel.CallState.Queued);
         break;
 
@@ -323,6 +333,7 @@ class CallList extends IterableBase<ORModel.Call> {
                    : ORModel.User.noID;
 
     ORModel.Call createdCall = new ORModel.Call.empty(event.uniqueID)
+        ..arrived = new DateTime.fromMillisecondsSinceEpoch(int.parse(event.field('Caller-Channel-Created-Time'))~/1000)
         ..inbound = (event.field('Call-Direction') == 'inbound' ? true : false)
         ..callerID = event.field('Caller-Caller-ID-Number')
         ..destination = event.field('Caller-Destination-Number')
