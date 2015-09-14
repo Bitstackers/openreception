@@ -42,6 +42,7 @@ part 'callflowcontrol/src/call_park.dart';
 part 'callflowcontrol/src/call_pickup.dart';
 part 'callflowcontrol/src/call_transfer.dart';
 part 'callflowcontrol/src/peer.dart';
+part 'callflowcontrol/src/state_reload.dart';
 part 'callflowcontrol/src/user_state.dart';
 
 /// Config service tests
