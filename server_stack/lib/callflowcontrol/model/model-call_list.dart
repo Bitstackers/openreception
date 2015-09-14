@@ -147,6 +147,7 @@ class CallList extends IterableBase<ORModel.Call> {
         this._createCall(event);
 
         this.get(event.uniqueID)
+            ..destination = event.field('Caller-Destination-Number')
             ..receptionID =
               event.contentAsMap.containsKey('variable_reception_id')
                         ? int.parse(event.field('variable_reception_id'))
@@ -190,6 +191,7 @@ class CallList extends IterableBase<ORModel.Call> {
         this._createCall(event);
 
         this.get(event.uniqueID)
+            ..destination = event.field('Caller-Destination-Number')
             ..receptionID =
               event.contentAsMap.containsKey('variable_reception_id')
                         ? int.parse(event.field('variable_reception_id'))
@@ -215,6 +217,7 @@ class CallList extends IterableBase<ORModel.Call> {
       case (PBXEvent._AH_WAIT_QUEUE_ENTER):
         log.finest('Unlocking ${event.uniqueID}');
         CallList.instance.get (event.uniqueID)
+          ..destination = event.field('Caller-Destination-Number')
           ..locked = false
           ..greetingPlayed = true //TODO: Change this into a packet.variable.get ('greetingPlayed')
           ..changeState (ORModel.CallState.Queued);
