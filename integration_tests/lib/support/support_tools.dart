@@ -87,11 +87,11 @@ class SupportTools {
     .whenComplete(() =>
         CustomerPool.instance = new CustomerPool(customers));
 
-  Future tearDownReceptionists () => Future.forEach(receptionists,
-      ((Receptionist receptionist) => receptionist.finalize()));
+  Future tearDownReceptionists () => Future.wait
+    (receptionists.map((Receptionist receptionist) => receptionist.finalize()));
 
-  Future tearDownCustomers () => Future.forEach(customers,
-      ((Customer customer) => customer.finalize()));
+  Future tearDownCustomers () => Future.wait
+    (customers.map((Customer customer) => customer.finalize()));
 
   Future _initialize() =>
       this.buildUserMap()
