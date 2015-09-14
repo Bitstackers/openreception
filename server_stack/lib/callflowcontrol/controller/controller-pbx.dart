@@ -32,9 +32,11 @@ abstract class PBX {
   static const int    _timeOutSeconds  = 10;
   static const String _dialplan        = 'xml receptions';
 
-  static const String _namespace = 'openreception';
-  static const String agentChan = '${_namespace}_agent_chan';
-  static const String ownerUid = '${_namespace}_owner_uid';
+  static const String _namespace = 'openreception::';
+  static const String agentChan = '${_namespace}agent_chan';
+  static const String ownerUid = '${_namespace}owner_uid';
+  static const String locked = '${_namespace}locked';
+  static const String greetingPlayed = '${_namespace}greeting-played';
 
   /**
    * Starts an origination in the PBX.
