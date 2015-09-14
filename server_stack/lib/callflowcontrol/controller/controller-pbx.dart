@@ -293,31 +293,21 @@ abstract class PBX {
         : [];
 
     return Future.forEach(channelUUIDs, (String channelUUID) {
-      return Model.PBXClient.instance.api('uuid_dump $channelUUID')
+      return Model.PBXClient.instance.api('uuid_dump $channelUUID json')
           .then((ESL.Response response) {
 
-        List<String> lines = response.rawBody.split('\n');
+        Map<String, dynamic> value = JSON.decode(response.rawBody);
 
         Map<String, String> fields= {};
         Map<String, dynamic> variables= {};
 
-        lines.forEach((String line) {
-          int splitIndex = line.indexOf(':');
-          if (splitIndex > 0) {
-            String key = line.substring(0, splitIndex).trim();
-            String value = Uri.decodeFull(line.substring(splitIndex+1)).trim();
-
+        value.keys.forEach((String key) {
             if (key.startsWith("variable_")) {
 
               String keyNoPrefix = (key.split("variable_")[1]);
-              variables[keyNoPrefix] = value;
+              variables[keyNoPrefix] = value[key];
             }
-            fields[key] = value;
-
-          }
-          else {
-            _log.warning('Skipping bad buffer $line');
-          }
+            fields[key] = value[key];
         });
 
         Model.ChannelList.instance.update
