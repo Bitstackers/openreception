@@ -107,15 +107,20 @@ class CallList extends IterableBase<ORModel.Call> {
     log.finest('Bridging channel ${aLeg} and channel ${bLeg}');
 
     if (isCall(aLeg) && isCall(bLeg)) {
+      CallList.instance.get(aLeg.UUID).b_Leg = bLeg.UUID;
+      CallList.instance.get(bLeg.UUID).b_Leg = aLeg.UUID;
+
       CallList.instance.get(aLeg.UUID).changeState (ORModel.CallState.Transferred);
       CallList.instance.get(bLeg.UUID).changeState (ORModel.CallState.Transferred);
     }
 
     else if (isCall(aLeg)) {
+      CallList.instance.get(aLeg.UUID).b_Leg = bLeg.UUID;
       CallList.instance.get(aLeg.UUID).changeState (ORModel.CallState.Speaking);
     }
 
     else if (isCall(bLeg)) {
+      CallList.instance.get(bLeg.UUID).b_Leg = aLeg.UUID;
       CallList.instance.get(bLeg.UUID).changeState (ORModel.CallState.Speaking);
     }
 
