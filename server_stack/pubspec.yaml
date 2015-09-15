@@ -20,7 +20,7 @@ dependencies:
       ref: master
       url: https://github.com/AdaHeads/libdialplan.git
   logging: any
-  oauth2: any
+  oauth2: '<1.0.0'
   openreception_framework:
     git:
       ref: master
