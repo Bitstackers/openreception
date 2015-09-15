@@ -369,6 +369,9 @@ void runCallFlowTests() {
     test ('inboundAnsweredCall',
         () => StateReload.inboundAnsweredCall(receptionist, customer));
 
+    test ('inboundParkedCall',
+        () => StateReload.inboundParkedCall(receptionist, customer));
+
     setUp (() {
       receptionist = ReceptionistPool.instance.aquire();
       customer = CustomerPool.instance.aquire();
