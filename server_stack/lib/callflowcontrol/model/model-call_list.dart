@@ -62,8 +62,6 @@ class CallList extends IterableBase<ORModel.Call> {
     Map<String, ORModel.Call> calls = {};
 
     channels.forEach((ESL.Channel channel) {
-      print(channel.variables[Controller.PBX.locked]);
-
       if (!channel.variables.containsKey(Controller.PBX.agentChan)) {
         calls[channel.UUID] = new ORModel.Call.empty(channel.UUID)
         ..arrived = new DateTime.fromMillisecondsSinceEpoch(int.parse(channel.fields['Caller-Channel-Created-Time'])~/1000)
