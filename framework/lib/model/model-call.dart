@@ -47,9 +47,9 @@ class Call {
   DateTime               arrived         = new DateTime.now();
   int                    assignedTo      = User.noID;
   String                 b_Leg           = null;
-  String                 callerID        = null;
-  int                    contactID       = null;
-  String                 destination     = null;
+  String                 callerID        = '';
+  int                    contactID       = Contact.noID;
+  String                 destination     = '';
   bool                   greetingPlayed  = false;
   String                 _ID             = noID;
   bool                   inbound         = null;
