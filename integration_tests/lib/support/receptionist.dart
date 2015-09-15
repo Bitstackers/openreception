@@ -70,7 +70,9 @@ class Receptionist {
     .then((_) => this._phone.autoAnswer(true))
     .then((_) => this._phone.register())
     .then((_) => this.callFlowControl.userStateIdle(this.user.ID))
-    .whenComplete((this.readyCompleter.complete));
+    .then((_) => eventStack.clear())
+    .then((_) => currentCall = null)
+    .whenComplete(this.readyCompleter.complete);
   }
 
   /**
@@ -83,10 +85,6 @@ class Receptionist {
     if (this._transport != null) {
       this._transport.client.close(force : true);
     }
-
-    this.eventStack.clear();
-    this.currentCall = null;
-
     Future notificationSocketTeardown =
         this.notificationSocket == null
         ? new Future.value()
