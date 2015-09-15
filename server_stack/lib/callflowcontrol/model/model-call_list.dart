@@ -227,13 +227,11 @@ class CallList extends IterableBase<ORModel.Call> {
 
       /// Leaving the prequeue (Playing greeting and locking the call)
       case (PBXEvent._OR_PRE_QUEUE_LEAVE):
-        ESL.Channel channel = new ESL.Channel.fromPacket(event);
-
         log.finest('Locking ${event.uniqueID}');
         CallList.instance.get (event.uniqueID)
           ..changeState (ORModel.CallState.Transferring)
-          ..locked = channel.variables.containsKey(Controller.PBX.locked)
-              ? channel.variables[Controller.PBX.locked] == 'true'
+          ..locked = event.contentAsMap.containsKey(Controller.PBX.locked)
+              ? event.field(Controller.PBX.locked) == 'true'
               : false;
         break;
 
