@@ -257,6 +257,8 @@ class CallList extends IterableBase<ORModel.Call> {
       /// Call is parked
       case (PBXEvent._OR_PARKING_LOT_ENTER):
         CallList.instance.get (event.uniqueID)
+          ..destination = event.field('Caller-Destination-Number')
+          ..b_Leg = null
           ..changeState (ORModel.CallState.Parked);
         break;
 
