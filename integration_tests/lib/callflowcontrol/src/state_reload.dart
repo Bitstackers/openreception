@@ -74,7 +74,6 @@ abstract class StateReload {
         .then((_) => caller.dial(receptionNumber))
         .then((_) => log.info('Receptionist hunt down the call'))
         .then((_) => receptionist.huntNextCall())
-        .then((_) => new Future.delayed(new Duration(milliseconds : 100)))
         .then((_) => log.info('Receptionist got call'))
         .then((_) => receptionist.callFlowControl.callList()
           .then((Iterable<Model.Call> calls) {
