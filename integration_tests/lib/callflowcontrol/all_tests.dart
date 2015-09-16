@@ -372,6 +372,15 @@ void runCallFlowTests() {
     test ('inboundParkedCall',
         () => StateReload.inboundParkedCall(receptionist, customer));
 
+    test ('inboundUnparkedCall',
+        () => StateReload.inboundUnparkedCall(receptionist, customer));
+
+    test ('outboundUnansweredCall',
+        () => StateReload.outboundUnansweredCall(receptionist, customer));
+
+    test ('outboundAnsweredCall',
+        () => StateReload.outboundAnsweredCall(receptionist, customer));
+
     setUp (() {
       receptionist = ReceptionistPool.instance.aquire();
       customer = CustomerPool.instance.aquire();
@@ -391,6 +400,10 @@ void runCallFlowTests() {
          customer.teardown(),
          customer2.teardown()]);
     });
+
+    test ('transferredCalls',
+        () => StateReload.transferredCalls(receptionist, customer, customer2));
+
 
 
   });
