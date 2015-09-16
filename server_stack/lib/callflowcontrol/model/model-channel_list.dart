@@ -1,5 +1,8 @@
 part of callflowcontrol.model;
 
+/**
+ * Utility function. Returns the name of the peer owning the channel.
+ */
 String ownedByPeer (ESL.Channel channel) {
 
   if (!channel.channelName().startsWith('sofia/')) {
@@ -9,6 +12,10 @@ String ownedByPeer (ESL.Channel channel) {
   return channel.channelName().split('/')[2];
 }
 
+/**
+ * Utility function. Returns the name of the peer owning the channel
+ * (string representation).
+ */
 String channelOwnedByPeer (String channelName) {
   if (!channelName.startsWith('sofia/')) {
     throw new ArgumentError('only sofia channels are supported.');
@@ -17,6 +24,10 @@ String channelOwnedByPeer (String channelName) {
   return channelName.split('/')[2];
 }
 
+/**
+ * Returns the uuid (either leg) owned by [peerName]. Throws [ArgumentError] if
+ * the peer has no relation to the channel.
+ */
 String channelUUIDOfPeer (ESL.Channel channel, String peerName) {
   String channelName = channel.fields['Channel-Name'];
   String otherChannelName = channel.fields['Other-Leg-Channel-Name'];
@@ -31,16 +42,24 @@ String channelUUIDOfPeer (ESL.Channel channel, String peerName) {
   throw new ArgumentError('Peer $peerName has no relation to Channel $channel');
 }
 
+/**
+ * Strips the sip: and domain part from a sip contact string.
+ */
 String simplePeerName (String peerName) =>
   peerName.split('@')[0].replaceAll('sip:', '');
 
-
-class ChannelEventName {
+/**
+ * Channel event name string constants.
+ */
+abstract class ChannelEventName {
   static const String CREATE  = 'chan_create';
   static const String UPDATE  = 'chan_update';
   static const String DESTROY = 'chan_destroy';
 }
 
+/**
+ * Event name constants
+ */
 abstract class PBXEvent {
   static const String CUSTOM = 'CUSTOM';
   static const String CHANNEL_BRIDGE = 'CHANNEL_BRIDGE';
@@ -72,11 +91,13 @@ abstract class PBXEvent {
         _AH_PARKING_LOT_ENTER, _AH_PARKING_LOT_LEAVE,
         _AH_PRE_QUEUE_ENTER, _AH_PRE_QUEUE_LEAVE, _AH_WAIT_QUEUE_ENTER,
         _OR_PARKING_LOT_ENTER, _OR_PARKING_LOT_LEAVE,
-        _OR_PRE_QUEUE_ENTER, _OR_PRE_QUEUE_LEAVE, _OR_WAIT_QUEUE_ENTER
-
-        ];
+        _OR_PRE_QUEUE_ENTER, _OR_PRE_QUEUE_LEAVE, _OR_WAIT_QUEUE_ENTER];
 }
 
+/**
+ * An event that has preparsed useful information for, for example, use of a
+ * call-list event listener.
+ */
 class ChannelEvent {
   final String      eventName;
   final ESL.Channel channel;
@@ -99,9 +120,14 @@ class ChannelEvent {
   };
 }
 
-
+/**
+ * The channel list is a replicated view of the channels currently in the PBX.
+ * It is maintained in the call-flow-control server to enable detection of
+ * duplicate channels for clients.
+ */
 class ChannelList extends ESL.ChannelList {
 
+  ///Internal logger
   static final Logger log       = new Logger('${libraryName}.ChanneList');
 
   static ChannelList instance = new ChannelList();
