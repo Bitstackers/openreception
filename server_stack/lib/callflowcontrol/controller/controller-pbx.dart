@@ -123,9 +123,9 @@ abstract class PBX {
     (String uuid, String extension, ORModel.User user) {
     return
       Model.PBXClient.api
-        ('uuid_setvar $uuid effective_caller_id_number test')
+        ('uuid_setvar $uuid effective_caller_id_number ${user.peer}')
         .then((_) => Model.PBXClient.api
-          ('uuid_setvar $uuid effective_caller_id_name testname'))
+          ('uuid_setvar $uuid effective_caller_id_name ${user.name}'))
         .then((_) => Model.PBXClient.bgapi
           ('uuid_transfer $uuid $extension ${_dialplan}'))
         .then((ESL.Reply reply) =>
