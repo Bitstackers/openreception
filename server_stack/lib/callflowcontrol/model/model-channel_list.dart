@@ -156,6 +156,8 @@ class ChannelList extends ESL.ChannelList {
     log.finest ('Updating:'
         ' channelName:${channel.channelName ()}'
         ' internal:${channel.isInternal ()}, '
+        ' state:${channel.state}, '
+        ' callstate:${channel.fields['Answer-State']}, '
         ' ownedby :${ownedByPeer (channel)}'
         ' simplePeerName  :${simplePeerName (ownedByPeer (channel))}');
 
