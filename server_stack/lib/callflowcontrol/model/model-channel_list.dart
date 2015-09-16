@@ -128,7 +128,7 @@ class ChannelEvent {
 class ChannelList extends ESL.ChannelList {
 
   ///Internal logger
-  static final Logger log       = new Logger('${libraryName}.ChanneList');
+  static final Logger _log       = new Logger('${libraryName}.ChanneList');
 
   static ChannelList instance = new ChannelList();
 
@@ -153,7 +153,7 @@ class ChannelList extends ESL.ChannelList {
   void update (ESL.Channel channel) {
     bool newChannel = false;
 
-    log.finest ('Updating:'
+    _log.finest ('Updating:'
         ' channelName:${channel.channelName ()}'
         ' internal:${channel.isInternal ()}, '
         ' state:${channel.state}, '
@@ -207,8 +207,8 @@ class ChannelList extends ESL.ChannelList {
     try {
       dispatch();
     } catch (error, stackTrace) {
-      log.severe('Failed to dispatch ${packet.eventName}');
-      log.severe(error, stackTrace);
+      _log.severe('Failed to dispatch ${packet.eventName}');
+      _log.severe(error, stackTrace);
     }
   }
 }
