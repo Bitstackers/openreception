@@ -6,8 +6,8 @@ abstract class StateReload {
   static void _validateCallLists(
       Iterable<Model.Call> list1, Iterable<Model.Call> list2) {
 
-    log.info(list1.map((c) => c.toJson()));
-    log.info(list2.map((c) => c.toJson()));
+    log.info('List 1:\n  ${list1.map((c) => c.toJson()).join('\n  ')}');
+    log.info('List 2:\n  ${list2.map((c) => c.toJson()).join('\n  ')}');
 
     expect(list1.length, equals(list2.length));
 
