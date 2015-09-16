@@ -2,11 +2,6 @@ part of callflowcontrol.router;
 
 
 /// Reply templates.
-Map _hangupCommandOK(peerID) => {
-  'status': 'ok',
-  'description': 'Request for ${peerID} to hang up sent.'
-};
-
 Map _orignateOK(channelUUID) => {
   'status': 'ok',
   'call': {
