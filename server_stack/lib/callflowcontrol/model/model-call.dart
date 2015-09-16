@@ -1,20 +1,5 @@
 part of callflowcontrol.model;
 
-abstract class CallState {
-
-   static const String Unknown      = 'UNKNOWN';
-   static const String Created      = 'CREATED';
-   static const String Ringing      = 'RINGING';
-   static const String Queued       = 'QUEUED';
-   static const String Unparked     = 'UNPARKED';
-   static const String Hungup       = 'HUNGUP';
-   static const String Transferring = 'TRANSFERRING';
-   static const String Transferred  = 'TRANSFERRED';
-   static const String Speaking     = 'SPEAKING';
-   static const String Parked       = 'PARKED';
-}
-
-
 class Call extends ORModel.Call {
 
   @override
