@@ -349,10 +349,20 @@ abstract class Call {
                 call.assignedTo = user.ID;
                 call.receptionID = receptionID;
                 call.contactID = contactID;
+                call.b_Leg = uuid;
 
                 call.changeState(ORModel.CallState.Ringing);
 
-                return new shelf.Response.ok(JSON.encode(call));
+                return
+                    Controller.PBX.setVariable
+                    (call.channel, Controller.PBX.ownerUid, user.ID.toString())
+                    .then((_) =>
+                      Controller.PBX.setVariable
+                        (call.channel, 'reception_id', receptionID.toString()))
+                    .then((_) =>
+                      Controller.PBX.setVariable
+                         (call.channel, 'contact_id', contactID.toString()))
+                    .then((_) => new shelf.Response.ok(JSON.encode(call)));
               })
               .timeout(new Duration (seconds : 3));
             });
