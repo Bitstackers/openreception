@@ -384,7 +384,7 @@ abstract class Call {
               Model.ChannelList.instance.activeChannelCount(user.peer);
 
             if (channelCount > 0) {
-              log.shout('Phone has lingering channels, and '
+              log.shout('Phone has lingering channels and '
                          'CallFlow state may be inconsistent');
             }
 
