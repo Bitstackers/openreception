@@ -127,14 +127,17 @@ class ChannelEvent {
  */
 class ChannelList extends ESL.ChannelList {
 
-  ///Internal logger
+  /// Internal logger
   static final Logger _log       = new Logger('${libraryName}.ChanneList');
 
+  /// Singleton instance.
   static ChannelList instance = new ChannelList();
 
+  /// Controller for injecting events into [event] stream.
   static StreamController<ChannelEvent> _eventController
     = new StreamController<ChannelEvent>.broadcast();
 
+  /// Broadcast stream for channel events.
   static Stream<ChannelEvent> event = _eventController.stream;
 
   /**
@@ -149,7 +152,9 @@ class ChannelList extends ESL.ChannelList {
   int activeChannelCount (String peerID) =>
       this.where((ESL.Channel channel) => simplePeerName(ownedByPeer(channel)) == peerID).length;
 
-
+  /**
+   * Updates, removes or adds a channel, based on the state of [channel].
+   */
   void update (ESL.Channel channel) {
     bool newChannel = false;
 
@@ -181,6 +186,9 @@ class ChannelList extends ESL.ChannelList {
     //Notification.broadcast(ClientNotification.channelUpdate (channel));
   }
 
+  /**
+   * Handle an incoming [ESL.Event] packet
+   */
   void handleEvent(ESL.Event packet) {
 
     void dispatch() {
