@@ -124,4 +124,157 @@ abstract class StateReload {
                 _validateCallLists(orignalCallQueue, calls)))
         .then((_) => log.info('Test Succeeded'));
   }
+
+  static Future inboundUnparkedCall(
+      Receptionist receptionist, Customer caller) {
+    String receptionNumber = '12340001';
+
+    Iterable<Model.Call> orignalCallQueue;
+    Model.Call assignedCall;
+
+    return Future
+        .wait([])
+        .then((_) => log.info('Caller dials the reception at $receptionNumber'))
+        .then((_) => caller.dial(receptionNumber))
+        .then((_) => log.info('Receptionist hunt down the call'))
+        .then((_) => receptionist.huntNextCall().then((Model.Call call)
+           => assignedCall = call))
+        .then((_) => log.info('Receptionist got call'))
+        .then((_) => log.info('Receptionist parks call'))
+        .then((_) => receptionist.park(assignedCall, waitForEvent: true))
+        .then((_) => log.info('Receptionist picks up call again'))
+        .then((_) => receptionist.pickup(assignedCall, waitForEvent: true))
+        .then((_) => log.info('Fetching original call list'))
+        .then((_) => receptionist.callFlowControl.callList()
+          .then((Iterable<Model.Call> calls) {
+            expect(calls.length, equals(1));
+            expect(calls.first.assignedTo, equals(receptionist.user.ID));
+            orignalCallQueue = calls;
+          }))
+        .then((_) => log.info('Performing state reload'))
+        .then((_) => receptionist.callFlowControl.stateReload())
+        .then((_) => log.info('Comparing reloaded list with original list'))
+        .then((_) => receptionist.callFlowControl
+            .callList()
+            .then((Iterable<Model.Call> calls) =>
+                _validateCallLists(orignalCallQueue, calls)))
+        .then((_) => log.info('Test Succeeded'));
+  }
+
+  static Future outboundUnansweredCall (Receptionist receptionist, Customer callee) {
+    Iterable<Model.Call> orignalCallQueue;
+    Model.Call outboundCall;
+
+    return Future
+        .wait([])
+        .then((_) => log.info('Receptionist dials the callee at ${callee.extension}'))
+        .then((_) => receptionist.originate(callee.extension, 1,2)
+          .then((Model.Call call)
+            => outboundCall = call))
+        .then((_) => log.info('Fetching original call list'))
+        .then((_) => receptionist.callFlowControl.callList()
+          .then((Iterable<Model.Call> calls) {
+            expect(calls.length, equals(1));
+            expect(calls.first.assignedTo, equals(receptionist.user.ID));
+            expect(calls, contains(outboundCall));
+            orignalCallQueue = calls;
+          }))
+        .then((_) => log.info('Performing state reload'))
+        .then((_) => receptionist.callFlowControl.stateReload())
+        .then((_) => log.info('Comparing reloaded list with original list'))
+        .then((_) => receptionist.callFlowControl
+            .callList()
+            .then((Iterable<Model.Call> calls) =>
+                _validateCallLists(orignalCallQueue, calls)))
+        .then((_) => log.info('Test Succeeded'));
+  }
+
+  static Future outboundAnsweredCall (Receptionist receptionist, Customer callee) {
+    Iterable<Model.Call> orignalCallQueue;
+    Model.Call outboundCall;
+
+    return Future
+        .wait([])
+        .then((_) => log.info('Receptionist dials the callee at ${callee.extension}'))
+        .then((_) => receptionist.originate(callee.extension, 2,3)
+          .then((Model.Call call) => outboundCall = call))
+        .then((_) => callee.waitForInboundCall())
+        .then((_) => callee.pickupCall())
+        .then((_) => receptionist.waitFor(eventType: Event.Key.callPickup))
+        .then((_) => log.info('Fetching original call list'))
+        .then((_) => receptionist.callFlowControl.callList()
+          .then((Iterable<Model.Call> calls) {
+            expect(calls.length, equals(1));
+            expect(calls.first.assignedTo, equals(receptionist.user.ID));
+            expect(calls, contains(outboundCall));
+            orignalCallQueue = calls;
+          }))
+        .then((_) => log.info('Performing state reload'))
+        .then((_) => receptionist.callFlowControl.stateReload())
+        .then((_) => log.info('Comparing reloaded list with original list'))
+        .then((_) => receptionist.callFlowControl
+            .callList()
+            .then((Iterable<Model.Call> calls) =>
+                _validateCallLists(orignalCallQueue, calls)))
+        .then((_) => log.info('Test Succeeded'));
+  }
+
+  static Future transferredCalls
+    (Receptionist receptionist, Customer caller, Customer callee) {
+    final String receptionNumber = '12340001';
+
+    Iterable<Model.Call> orignalCallQueue;
+
+    Model.Call inboundCall;
+    Model.Call outboundCall;
+
+    return Future
+        .wait([])
+        .then((_) => log.info('Caller dials the reception at $receptionNumber'))
+        .then((_) => caller.dial(receptionNumber))
+        .then((_) => log.info('Receptionist hunt down the call'))
+        .then((_) => receptionist.huntNextCall().then((Model.Call call)
+           => inboundCall = call))
+        .then((_) => log.info('Receptionist parks call'))
+        .then((_) => receptionist.park(inboundCall, waitForEvent: true))
+        .then((_) => log.info('Receptionist dials the callee at ${callee.extension}'))
+        .then((_) => receptionist.originate(callee.extension, 2,3)
+          .then((Model.Call call) => outboundCall = call))
+        .then((_) => callee.waitForInboundCall())
+        .then((_) => callee.pickupCall())
+        .then((_) => receptionist.waitFor(eventType: Event.Key.callPickup, callID: outboundCall.ID))
+        .then((_) => log.info('Fetching original call list'))
+        .then((_) => receptionist.callFlowControl.callList()
+          .then((Iterable<Model.Call> calls) {
+            expect(calls.length, equals(2));
+            expect(calls.first.assignedTo, equals(receptionist.user.ID));
+            expect(calls, contains(outboundCall));
+            orignalCallQueue = calls;
+          }))
+        .then((_) => log.info('Performing state reload'))
+        .then((_) => receptionist.callFlowControl.stateReload())
+        .then((_) => log.info('Comparing reloaded list with original list'))
+        .then((_) => receptionist.callFlowControl
+            .callList()
+            .then((Iterable<Model.Call> calls) =>
+                _validateCallLists(orignalCallQueue, calls)))
+        .then((_) => receptionist.transferCall(outboundCall, inboundCall))
+        .then((_) => receptionist.waitFor(eventType: Event.Key.callTransfer))
+                .then((_) => log.info('Fetching original call list'))
+        .then((_) => receptionist.callFlowControl.callList()
+          .then((Iterable<Model.Call> calls) {
+            expect(calls.length, equals(2));
+            expect(calls.first.assignedTo, equals(receptionist.user.ID));
+            expect(calls, contains(outboundCall));
+            orignalCallQueue = calls;
+          }))
+        .then((_) => log.info('Performing state reload'))
+        .then((_) => receptionist.callFlowControl.stateReload())
+        .then((_) => log.info('Comparing reloaded list with original list'))
+        .then((_) => receptionist.callFlowControl
+            .callList()
+            .then((Iterable<Model.Call> calls) =>
+                _validateCallLists(orignalCallQueue, calls)))
+        .then((_) => log.info('Test Succeeded'));
+  }
 }
