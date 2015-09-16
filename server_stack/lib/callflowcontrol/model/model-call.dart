@@ -1,26 +1,14 @@
 part of callflowcontrol.model;
 
+/**
+ * Local specialization of a [ORModel.Call] class.
+ */
 class Call extends ORModel.Call {
-
-  @override
-  static final Logger log = new Logger('${libraryName}.Call');
-
-  @override
-  bool     _locked     = false;
-  @override
-  int      _assignedTo = ORModel.User.noID;
-
-  @override
-  String get channel => this.ID;
-
 
   void set assignedTo(int userID) {
     log.finest('Assigning $this to $userID');
     this._assignedTo = userID;
   }
-
-  @override
-  int get assignedTo => this._assignedTo;
 
   @override
   bool get locked              => this._locked;
@@ -38,17 +26,10 @@ class Call extends ORModel.Call {
   Call(String ID) : super.empty(ID);
 
   @override
-  operator == (Call other) => this.ID == other.ID;
-
-  @override
-  int get hashCode => this.ID.hashCode;
-
-  @override
   void release() {
     log.finest('Releasing call assigned to: ${this.assignedTo}');
 
     if (this.assignedTo != ORModel.User.noID) {
-      //UserStatusList.instance.getOrCreate (this.assignedTo).callsHandled++;
       UserStatusList.instance.update(this.assignedTo, ORModel.UserState.WrappingUp);
     }
 
