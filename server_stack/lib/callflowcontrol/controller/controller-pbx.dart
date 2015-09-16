@@ -295,24 +295,27 @@ abstract class PBX {
     return Future.forEach(channelUUIDs, (String channelUUID) {
       return Model.PBXClient.instance.api('uuid_dump $channelUUID json')
           .then((ESL.Response response) {
+        if(response.status != ESL.Response.ERROR) {
+          Map<String, dynamic> value = JSON.decode(response.rawBody);
 
-        Map<String, dynamic> value = JSON.decode(response.rawBody);
+          Map<String, String> fields= {};
+          Map<String, dynamic> variables= {};
 
-        Map<String, String> fields= {};
-        Map<String, dynamic> variables= {};
+          value.keys.forEach((String key) {
+              if (key.startsWith("variable_")) {
 
-        value.keys.forEach((String key) {
-            if (key.startsWith("variable_")) {
+                String keyNoPrefix = (key.split("variable_")[1]);
+                variables[keyNoPrefix] = value[key];
+              }
+              fields[key] = value[key];
+          });
 
-              String keyNoPrefix = (key.split("variable_")[1]);
-              variables[keyNoPrefix] = value[key];
-            }
-            fields[key] = value[key];
-        });
+          Model.ChannelList.instance.update
+            (new ESL.Channel.assemble(fields, variables));
 
-        Model.ChannelList.instance.update
-          (new ESL.Channel.assemble(fields, variables));
-
+        } else {
+          _log.info('Skipping channel loading. Reason: ${response.rawBody}');
+        }
       });
 
     })
