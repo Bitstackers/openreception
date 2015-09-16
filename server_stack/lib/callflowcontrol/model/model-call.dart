@@ -65,21 +65,6 @@ class Call extends ORModel.Call {
    @override
   String toString () => this.ID;
 
-   Map toJson () => {
-     'id'              : this.ID,
-     "state"           : this.state,
-     "b_leg"           : (this.bLeg != null ? this.bLeg : null),
-     "locked"          : this.locked,
-     "inbound"         : this.inbound,
-     "is_call"         : true,
-     "destination"     : this.destination,
-     "caller_id"       : this.callerID,
-     "greeting_played" : this.greetingPlayed,
-     "reception_id"    : this.receptionID,
-     "assigned_to"     : this.assignedTo,
-     "channel"         : this.channel,
-     "arrival_time"    : Util.dateTimeToUnixTimestamp (this.arrived)};
-
    Future park (ORModel.User user) {
      return Controller.PBX.park (this, user);
    }
