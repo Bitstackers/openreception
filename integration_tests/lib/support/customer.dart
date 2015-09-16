@@ -44,6 +44,7 @@ class Customer {
       .then ((_) => log.info('$this Got phone teardown'))
       .then((_) => this.currentCall = null)
       .then ((_) => log.info('$this is done teardown'))
+      .then ((_) => new Future.delayed(new Duration(milliseconds : 10)))
       .catchError((error, stackTrace) {
         log.severe('Potential race condition in teardown of Customer, ignoring as test error, but logging it');
         log.severe(error, stackTrace);

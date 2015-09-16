@@ -94,7 +94,8 @@ class Receptionist {
     Future phoneTeardown = this._phone.teardown();
 
     return Future.wait([notificationSocketTeardown,
-                        phoneTeardown])
+                        phoneTeardown,
+                        new Future.delayed(new Duration(milliseconds : 10))])
       .catchError((error, stackTrace) {
         log.severe('Potential race condition in teardown of Receptionist, ignoring as test error, but logging it');
         log.severe(error, stackTrace);
