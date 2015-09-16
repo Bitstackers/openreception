@@ -241,22 +241,6 @@ abstract class PBX {
   }
 
   /**
-   * Kills the active channel for a call.
-   */
-  static Future hangupCommand (ESL.Peer peer) {
-/*    if (Conf.config.phoneType != Conf.PhoneType.SNOM) {
-      return new Future.error(new StateError ("Sending hangup commands is only supported for SNOM phones."));
-    }
-*/
-    return Model.PBXClient.api('snom_command */${peer.ID} key cancel')
-        .then((ESL.Response response) {
-          if (response.status != ESL.Response.OK) {
-            throw new StateError('ESL returned ${response.rawBody}');
-          }
-        });
-  }
-
-  /**
    * Parks a call in the parking lot for the user.
    * TODO: Log NO_ANSWER events and figure out why they are coming.
    */

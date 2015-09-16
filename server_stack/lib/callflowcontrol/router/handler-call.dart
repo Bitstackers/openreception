@@ -53,19 +53,22 @@ abstract class Call {
 
     return AuthService.userOf(_tokenFrom(request)).then((ORModel.User user) {
 
-      ESL.Peer peer = Model.PeerList.get(user.peer);
+      ORModel.Call call = Model.CallList.instance
+          .firstWhere((ORModel.Call call) => call.assignedTo == user.ID,
+          orElse: () => ORModel.Call.noCall);
+
+      if (call == ORModel.Call.noCall) {
+        return new shelf.Response.notFound('{}');
+      }
 
       Model.UserStatusList.instance.update
         (user.ID, ORModel.UserState.HangingUp);
 
-      return Controller.PBX.hangupCommand(peer)
-        .then((_) {
+      return Controller.PBX.hangup(call)
+        .then((_) =>
           Model.UserStatusList.instance.update
-            (user.ID, ORModel.UserState.HandlingOffHook);
-
-          return new shelf.Response.ok(JSON.encode(_hangupCommandOK(peer.ID)));
-
-        })
+            (user.ID, ORModel.UserState.HandlingOffHook)
+        )
         .catchError((error, stackTrace) {
           Model.UserStatusList.instance.update
             (user.ID, ORModel.UserState.Unknown);
