@@ -264,6 +264,9 @@ abstract class PBX {
     return transfer(call, 'park');
   }
 
+  /**
+   * Loads the peer list from an [ESL.Response].
+   */
   static void _loadPeerListFromPacket (ESL.Response response) {
 
     bool peerIsInAcceptedContext(ESL.Peer peer) =>
@@ -279,12 +282,21 @@ abstract class PBX {
              'peers from FreeSWITCH');
   }
 
+  /**
+   * Request a reload of peers.
+   */
   static Future loadPeers () => Model.PBXClient.instance.api('list_users')
     .then(_loadPeerListFromPacket);
 
+  /**
+   * Request a reload of channels
+   */
   static Future loadChannels() => Model.PBXClient.instance.api('show channels as json')
       .then(_loadChannelListFromPacket);
 
+  /**
+   * Loads the channel list from an [ESL.Response].
+   */
   static Future _loadChannelListFromPacket (ESL.Response response) {
     Map responseBody = JSON.decode(response.rawBody);
     Iterable<String> channelUUIDs =
@@ -320,8 +332,8 @@ abstract class PBX {
 
     })
     .then((_) {
-      //TODO Reload call list based in the information in channel list.
-      _log.info('Loaded information about ${Model.ChannelList.instance.length} active channels into channel list');
+      _log.info('Loaded information about '
+          '${Model.ChannelList.instance.length} active channels into channel list');
     });
   }
 
