@@ -37,7 +37,7 @@ abstract class Call {
       ORModel.Call call = Model.CallList.instance.get(callID);
       return new shelf.Response.ok(JSON.encode(call));
     } catch (error, stackTrace) {
-      if (error is Model.NotFound) {
+      if (error is ORStorage.NotFound) {
         return new shelf.Response.notFound('{}');
       } else {
         log.severe(error, stackTrace);
@@ -111,7 +111,7 @@ abstract class Call {
         ORModel.Call targetCall = null;
         try {
           targetCall = Model.CallList.instance.get(callID);
-        } on Model.NotFound catch (_) {
+        } on ORStorage.NotFound catch (_) {
           return new shelf.Response.notFound
             (JSON.encode({'call_id': callID}));
         }
@@ -447,7 +447,7 @@ abstract class Call {
       });
 
     }).catchError((error, stackTrace) {
-      if (error is Model.NotFound) {
+      if (error is ORStorage.NotFound) {
         return new shelf.Response.notFound
             (JSON.encode({'description': 'callID : $callID'}));
       } else {
@@ -535,17 +535,17 @@ abstract class Call {
         });
 
       }).catchError((error, stackTrace) {
-        if (error is Model.Busy) {
+        if (error is ORStorage.Conflict) {
           return new shelf.Response(409, body : JSON.encode({
             'error': 'Call not currently available.'
           }));
         }
-        else if (error is Model.NotFound) {
+        else if (error is ORStorage.NotFound) {
             return new shelf.Response.notFound(JSON.encode({
               'error': 'No calls available.'
             }));
         }
-        else if (error is Model.Forbidden) {
+        else if (error is ORStorage.Forbidden) {
           return new shelf.Response.forbidden(JSON.encode({
               'error': 'Call already assigned.'
             }));
@@ -558,7 +558,7 @@ abstract class Call {
         }
       });
     }).catchError((error, stackTrace) {
-      if (error is Model.NotFound) {
+      if (error is ORStorage.NotFound) {
         return new shelf.Response.notFound(JSON.encode({
           'reason': 'No calls available.'
         }));
@@ -657,17 +657,17 @@ abstract class Call {
             });
 
       }).catchError((error, stackTrace) {
-        if (error is Model.Busy) {
+        if (error is ORStorage.Conflict) {
           return new shelf.Response(409, body : JSON.encode({
             'error': 'Call not currently available.'
           }));
         }
-        else if (error is Model.NotFound) {
+        else if (error is ORStorage.NotFound) {
             return new shelf.Response.notFound(JSON.encode({
               'error': 'No calls available.'
             }));
         }
-        else if (error is Model.Forbidden) {
+        else if (error is ORStorage.Forbidden) {
           return new shelf.Response.forbidden(JSON.encode({
               'error': 'Call already assigned.'
             }));
@@ -680,7 +680,7 @@ abstract class Call {
         }
       });
     }).catchError((error, stackTrace) {
-      if (error is Model.NotFound) {
+      if (error is ORStorage.NotFound) {
         return new shelf.Response.notFound(JSON.encode({
           'reason': 'No calls available.'
         }));
@@ -824,7 +824,7 @@ abstract class Call {
     try {
       sourceCall = Model.CallList.instance.get(sourceCallID);
       destinationCall = Model.CallList.instance.get(destinationCallID);
-    } on Model.NotFound catch (_) {
+    } on ORStorage.NotFound catch (_) {
       return new Future.value(new shelf.Response.notFound(JSON.encode({
         'description': 'At least one of the calls are ' 'no longer available'
       })));

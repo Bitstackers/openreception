@@ -1,29 +1,5 @@
 part of callflowcontrol.model;
 
-class NotFound implements Exception {
-
-  final String message;
-  const NotFound([this.message = ""]);
-
-  String toString() => "NotFound: $message";
-}
-
-class Forbidden implements Exception {
-
-  final String message;
-  const Forbidden([this.message = ""]);
-
-  String toString() => "Forbidden: $message";
-}
-
-class Busy implements Exception {
-
-  final String message;
-  const Busy([this.message = ""]);
-
-  String toString() => "Forbidden: $message";
-}
-
 class CallList extends IterableBase<ORModel.Call> {
 
   static final Logger log = new Logger('${libraryName}.CallList');
@@ -132,7 +108,7 @@ class CallList extends IterableBase<ORModel.Call> {
     if (this._map.containsKey(callID)) {
       return this._map[callID];
     } else {
-      throw new NotFound(callID);
+      throw new ORStorage.NotFound(callID);
     }
   }
 
@@ -140,14 +116,14 @@ class CallList extends IterableBase<ORModel.Call> {
     if (this._map.containsKey(callID)) {
       this._map.remove(callID);
     } else {
-      throw new NotFound(callID);
+      throw new ORStorage.NotFound(callID);
     }
   }
 
   ORModel.Call requestCall(user) =>
     //TODO: Implement a real algorithm for selecting calls.
     this.firstWhere((ORModel.Call call) => call.assignedTo == ORModel.User.noID &&
-      !call.locked, orElse: () => throw new NotFound ("No calls available"));
+      !call.locked, orElse: () => throw new ORStorage.NotFound ("No calls available"));
 
   ORModel.Call requestSpecificCall(String callID, ORModel.User user )  {
 
@@ -155,10 +131,10 @@ class CallList extends IterableBase<ORModel.Call> {
 
     if (![user.ID, ORModel.User.noID].contains(call.assignedTo)) {
       log.warning('Call ${callID} already assigned to uid: ${call.assignedTo}');
-      throw new Forbidden(callID);
+      throw new ORStorage.Forbidden(callID);
     } else if (call.locked) {
       log.fine('Uid ${user.ID} requested locked call $callID');
-      throw new Busy(callID);
+      throw new ORStorage.Conflict(callID);
     }
 
     return call;
