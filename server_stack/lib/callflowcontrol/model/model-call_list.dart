@@ -57,9 +57,11 @@ class CallList extends IterableBase<ORModel.Call> {
         ..receptionID = channel.variables.containsKey('reception_id')
             ? int.parse(channel.variables['reception_id'])
             : ORModel.Reception.noID
-          ;
-
-          log.info(calls[channel.UUID].arrived);
+        ..contactID = channel.variables.containsKey('contact_id')
+            ? int.parse(channel.variables['contact_id'])
+            : ORModel.Contact.noID
+        ..event.listen(this._callEvent.fire);
+;
       }
       else {
         log.info('Ignoring local channel ${channel.UUID}');
@@ -78,7 +80,9 @@ class CallList extends IterableBase<ORModel.Call> {
           call.state = ORModel.CallState.Transferred;
         }
         else {
-          call.state = ORModel.CallState.Speaking;
+          call.state = aLeg.fields['Answer-State'] == 'ringing'
+              ? ORModel.CallState.Ringing
+              : ORModel.CallState.Speaking;
         }
 
       } else {
@@ -143,30 +147,45 @@ class CallList extends IterableBase<ORModel.Call> {
   bool isCall (ESL.Channel channel) =>
       this.containsID (channel.UUID);
 
-
+  /**
+   * Handle CHANNEL_BRIDGE event packets.
+   */
   void _handleBridge(ESL.Packet packet) {
 
-    final ESL.Channel aLeg = ChannelList.instance.get(packet.field('Bridge-A-Unique-ID'));
-    final ESL.Channel bLeg = ChannelList.instance.get(packet.field('Bridge-B-Unique-ID'));
+    final ESL.Channel uuid = ChannelList.instance.get(packet.field('Unique-ID'));
+    final ESL.Channel otherLeg = ChannelList.instance.get(packet.field('Other-Leg-Unique-ID'));
 
-    log.finest('Bridging channel ${aLeg} and channel ${bLeg}');
+    log.finest('Bridging channel ${uuid.UUID} and channel ${otherLeg.UUID}');
 
-    if (isCall(aLeg) && isCall(bLeg)) {
-      CallList.instance.get(aLeg.UUID).b_Leg = bLeg.UUID;
-      CallList.instance.get(bLeg.UUID).b_Leg = aLeg.UUID;
+    /// For, an uninvestigated reason, the caller-id needs to updated to match
+    /// the state of the PBX (to enable reload at a later time).
+    if (isCall(uuid) && isCall(otherLeg)) {
+      log.finest('Channel ${uuid.UUID} and channel ${otherLeg.UUID} are both calls');
+      CallList.instance.get(uuid.UUID)
+        ..callerID = packet.field('Caller-Caller-ID-Number')
+        ..b_Leg = otherLeg.UUID;
+      CallList.instance.get(otherLeg.UUID)
+        ..callerID = packet.field('Caller-Caller-ID-Number')
+        ..b_Leg = uuid.UUID;
 
-      CallList.instance.get(aLeg.UUID).changeState (ORModel.CallState.Transferred);
-      CallList.instance.get(bLeg.UUID).changeState (ORModel.CallState.Transferred);
+      CallList.instance.get(uuid.UUID).changeState (ORModel.CallState.Transferred);
+      CallList.instance.get(otherLeg.UUID).changeState (ORModel.CallState.Transferred);
     }
 
-    else if (isCall(aLeg)) {
-      CallList.instance.get(aLeg.UUID).b_Leg = bLeg.UUID;
-      CallList.instance.get(aLeg.UUID).changeState (ORModel.CallState.Speaking);
+    else if (isCall(uuid)) {
+      log.finest('Channel ${uuid.UUID} is a call');
+      CallList.instance.get(uuid.UUID)
+        ..callerID = packet.field('Caller-Caller-ID-Number')
+        ..b_Leg = otherLeg.UUID;
+      CallList.instance.get(uuid.UUID).changeState (ORModel.CallState.Speaking);
     }
 
-    else if (isCall(bLeg)) {
-      CallList.instance.get(bLeg.UUID).b_Leg = aLeg.UUID;
-      CallList.instance.get(bLeg.UUID).changeState (ORModel.CallState.Speaking);
+    else if (isCall(otherLeg)) {
+      log.finest('Channel ${otherLeg.UUID} is a call');
+      CallList.instance.get(otherLeg.UUID)
+        ..callerID = packet.field('Caller-Caller-ID-Number')
+        ..b_Leg = uuid.UUID;
+      CallList.instance.get(otherLeg.UUID).changeState (ORModel.CallState.Speaking);
     }
 
     // Local calls??
