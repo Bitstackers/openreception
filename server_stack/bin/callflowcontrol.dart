@@ -74,11 +74,13 @@ void connectESLClient() {
                 format : ESL.EventFormat.Json)
             ..catchError(log.shout))
           .then((_) => Controller.PBX.loadPeers())
-          .then((_) => Controller.PBX.loadChannels());
+          .then((_) => Controller.PBX.loadChannels()
+          .then((_) => Model.CallList.instance.reloadFromChannels
+            (Model.ChannelList.instance)));
 
-      break;
+        break;
+
       default:
-
         break;
     }
   });
