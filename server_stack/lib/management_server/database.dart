@@ -1,4 +1,17 @@
-library adaheads.server.database;
+/*                  This file is part of OpenReception
+                   Copyright (C) 2014-, BitStackers K/S
+
+  This is free software;  you can redistribute it and/or modify it
+  under terms of the  GNU General Public License  as published by the
+  Free Software  Foundation;  either version 3,  or (at your  option) any
+  later version. This software is distributed in the hope that it will be
+  useful, but WITHOUT ANY WARRANTY;  without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  You should have received a copy of the GNU General Public License along with
+  this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
+*/
+
+library openreception.management_server.database;
 
 import 'dart:async';
 
@@ -13,7 +26,7 @@ import 'configuration.dart';
 part 'database/dialplan.dart';
 
 ORDatabase.Connection _connection;
-const String libraryName = 'adaheads.server.database';
+const String _libraryName = 'openreception.management_server.database';
 
 Future<Database> setupDatabase(Configuration config) {
   Database db = new Database(config.dbuser, config.dbpassword, config.dbhost, config.dbport, config.dbname);
