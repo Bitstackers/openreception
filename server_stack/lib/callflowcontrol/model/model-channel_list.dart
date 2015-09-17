@@ -71,13 +71,6 @@ abstract class PBXEvent {
   static const String SOFIA_REGISTER = 'sofia::register';
   static const String SOFIA_UNREGISTER = 'sofia::unregister';
 
-  static const String _AH_PRE_QUEUE_ENTER = 'AdaHeads::pre-queue-enter';
-  static const String _AH_PRE_QUEUE_LEAVE = 'AdaHeads::pre-queue-leave';
-
-  static const String _AH_WAIT_QUEUE_ENTER = 'AdaHeads::wait-queue-enter';
-  static const String _AH_PARKING_LOT_ENTER = 'AdaHeads::parking-lot-enter';
-  static const String _AH_PARKING_LOT_LEAVE = 'AdaHeads::parking-lot-leave';
-
   static const String _OR_PRE_QUEUE_ENTER = 'openreception::pre-queue-enter';
   static const String _OR_PRE_QUEUE_LEAVE = 'openreception::pre-queue-leave';
 
@@ -88,8 +81,6 @@ abstract class PBXEvent {
   static const List<String> requiredSubscriptions = const
       [CHANNEL_BRIDGE, CHANNEL_CREATE, CHANNEL_DESTROY, CHANNEL_STATE,
         CHANNEL_ORIGINATE, CUSTOM, SOFIA_REGISTER, SOFIA_UNREGISTER,
-        _AH_PARKING_LOT_ENTER, _AH_PARKING_LOT_LEAVE,
-        _AH_PRE_QUEUE_ENTER, _AH_PRE_QUEUE_LEAVE, _AH_WAIT_QUEUE_ENTER,
         _OR_PARKING_LOT_ENTER, _OR_PARKING_LOT_LEAVE,
         _OR_PRE_QUEUE_ENTER, _OR_PRE_QUEUE_LEAVE, _OR_WAIT_QUEUE_ENTER];
 }

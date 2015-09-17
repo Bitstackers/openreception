@@ -260,56 +260,6 @@ class CallList extends IterableBase<ORModel.Call> {
         CallList.instance.get (event.uniqueID)
           ..changeState (ORModel.CallState.Transferring);
         break;
-
-
-      //FIXME: Remove this duplicate block when all dialplans have been updated
-      case (PBXEvent._AH_PRE_QUEUE_ENTER):
-        this._createCall(event);
-
-        this.get(event.uniqueID)
-            ..destination = event.field('Caller-Destination-Number')
-            ..receptionID =
-              event.contentAsMap.containsKey('variable_reception_id')
-                        ? int.parse(event.field('variable_reception_id'))
-                        : 0
-            ..changeState(ORModel.CallState.Created);
-
-        break;
-
-//      case ("AdaHeads::outbound-call"):
-//         log.finest('Outbound call: ${event.uniqueID}');
-//         this._createCall(event);
-//
-//         break;
-      //FIXME: Remove this duplicate block when all dialplans have been updated
-      case (PBXEvent._AH_PRE_QUEUE_LEAVE):
-        log.finest('Locking ${event.uniqueID}');
-        CallList.instance.get (event.uniqueID)
-          ..changeState (ORModel.CallState.Transferring)
-          ..locked = true;
-        break;
-
-      //FIXME: Remove this duplicate block when all dialplans have been updated
-      case (PBXEvent._AH_WAIT_QUEUE_ENTER):
-        log.finest('Unlocking ${event.uniqueID}');
-        CallList.instance.get (event.uniqueID)
-          ..destination = event.field('Caller-Destination-Number')
-          ..locked = false
-          ..greetingPlayed = true //TODO: Change this into a packet.variable.get ('greetingPlayed')
-          ..changeState (ORModel.CallState.Queued);
-        break;
-
-      //FIXME: Remove this duplicate block when all dialplans have been updated
-      case (PBXEvent._AH_PARKING_LOT_ENTER):
-        CallList.instance.get (event.uniqueID)
-          ..changeState (ORModel.CallState.Parked);
-        break;
-
-      //FIXME: Remove this duplicate block when all dialplans have been updated
-      case (PBXEvent._AH_PARKING_LOT_LEAVE):
-        CallList.instance.get (event.uniqueID)
-          ..changeState (ORModel.CallState.Transferring);
-        break;
     }
   }
 
