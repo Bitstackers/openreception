@@ -8,8 +8,8 @@ class CallList extends IterableBase<ORModel.Call> {
 
   Iterator get iterator => this._map.values.iterator;
 
-  Bus<OREvent.CallEvent> _callEvent = new Bus<OREvent.CallEvent>();
-  Stream<OREvent.CallEvent> get onEvent => this._callEvent.stream;
+  Bus<OREvent.Event> _callEvent = new Bus<OREvent.Event>();
+  Stream<OREvent.Event> get onEvent => this._callEvent.stream;
 
   static CallList instance = new CallList();
 
