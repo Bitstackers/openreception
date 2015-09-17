@@ -102,6 +102,8 @@ class CallList extends IterableBase<ORModel.Call> {
     });
 
     this._map = calls;
+
+    this._callEvent.fire(new OREvent.CallStateReload());
   }
 
   List<ORModel.Call> callsOf(int userID) =>
