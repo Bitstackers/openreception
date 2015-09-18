@@ -25,6 +25,7 @@ const String receptionServerURI = 'receptionServerURI';
 const String contactServerURI = 'contactServerURI';
 const String messageServerURI = 'messageServerURI';
 const String authServerURI = 'authServerURI';
+const String userServerURI = 'userServerURI';
 const String interface = 'interface';
 const String systemLanguage = 'systemLanguage';
 const String notificationServerUri = 'notificationServerUri';

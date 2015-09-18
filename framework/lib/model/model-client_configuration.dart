@@ -29,6 +29,7 @@ class ClientConfiguration {
   Uri authServerUri;
   Uri notificationSocketUri;
   Uri notificationServerUri;
+  Uri userServerUri;
 
   /**
    * Returns a map reflection of the object suitable for data transfer.
@@ -39,6 +40,7 @@ class ClientConfiguration {
      Key.contactServerURI : this.contactServerUri.toString(),
      Key.messageServerURI  : this.messageServerUri.toString(),
      Key.authServerURI  : this.authServerUri.toString(),
+     Key.userServerURI  : this.userServerUri.toString(),
      Key.systemLanguage : this.systemLanguage,
      Key.notificationServerUri : this.notificationServerUri.toString(),
 
@@ -78,6 +80,7 @@ class ClientConfiguration {
         Uri.parse(map [Key.messageServerURI]);
     this.authServerUri =
         Uri.parse(map[Key.authServerURI]);
+    this.userServerUri = Uri.parse(map[Key.userServerURI]);
     this.notificationServerUri =
         Uri.parse(map [Key.notificationServerUri]);
     this.notificationSocketUri =
