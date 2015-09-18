@@ -48,7 +48,7 @@ class NotificationService {
     Uri uri = Resource.Notification.broadcast(this._host);
         uri = appendToken(uri, this._token);
 
-    log.finest('POST $uri body:${event.asMap}');
+    log.finest('Broadcasting ${event.runtimeType}');
 
     return _enqueue (new NotificationRequest()..body     = event.asMap
                                               ..resource = uri);
