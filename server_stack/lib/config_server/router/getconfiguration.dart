@@ -13,22 +13,17 @@
 
 part of openreception.configuration_server.router;
 
-final Map client_config =
-  {
-      "callFlowServerURI"     : config.callFlowServerUri.toString(),
-      "receptionServerURI"    : config.receptionServerUri.toString(),
-      "contactServerURI"      : config.contactServerUri.toString(),
-      "messageServerURI"      : config.messageServerUri.toString(),
-      "logServerURI"          : config.logServerUri.toString(),
-      "authServerURI"         : config.authServerUri.toString(),
-      "systemLanguage"        : config.systemLanguage,
-      "notificationServerUri" : config.notificationServerUri.toString(),
-
-      "notificationSocket": {
-          "interface": config.notificationSocketUri.toString(),
-          "reconnectInterval": 2000
-      }
-  };
+final ORModel.ClientConfiguration client_config =
+  new ORModel.ClientConfiguration.empty()
+    ..authServerUri = config.authServerUri
+    ..callFlowServerUri = config.callFlowServerUri
+    ..contactServerUri = config.contactServerUri
+    ..messageServerUri = config.messageServerUri
+    ..notificationServerUri = config.notificationServerUri
+    ..notificationSocketUri = config.notificationSocketUri
+    ..receptionServerUri = config.receptionServerUri
+    ..systemLanguage = config.systemLanguage
+    ..userServerUri = config.userServerUri;
 
 shelf.Response getBobConfig(shelf.Request request) =>
   new shelf.Response.ok(JSON.encode(client_config));

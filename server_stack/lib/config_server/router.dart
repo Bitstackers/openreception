@@ -22,6 +22,7 @@ import 'package:logging/logging.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
+import 'package:openreception_framework/model.dart' as ORModel;
 
 part 'router/getconfiguration.dart';
 

@@ -34,6 +34,7 @@ class Configuration {
   Uri        _receptionServerUri = Uri.parse('http://localhost:4000/');
   Uri        _contactServerUri = Uri.parse('http://localhost:4000/');
   Uri        _messageServerUri = Uri.parse('http://localhost:4000/');
+  Uri        _userServerUri = Uri.parse('http://localhost:4030/');
   Uri        _logServerUri = Uri.parse('http://localhost:4000/');
   Uri        _authServerUri = Uri.parse('http://localhost:4000/');
   Uri        _notificationSocketUri = Uri.parse('ws://localhost:4200/notifications');
@@ -51,6 +52,7 @@ class Configuration {
   Uri    get authServerUri => _authServerUri;
   Uri    get notificationSocketUri => _notificationSocketUri;
   Uri    get notificationServerUri => _notificationServerUri;
+  Uri    get userServerUri => _userServerUri;
 
   factory Configuration(ArgResults args) {
     if(_configuration == null) {
@@ -108,6 +110,10 @@ class Configuration {
 
       if(config.containsKey('messageServerUri')) {
         _messageServerUri = Uri.parse(config['messageServerUri']);
+      }
+
+      if(config.containsKey('userServerUri')) {
+        _userServerUri = Uri.parse(config['userServerUri']);
       }
 
       if(config.containsKey('authServerUri')) {
