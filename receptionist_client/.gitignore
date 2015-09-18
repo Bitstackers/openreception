@@ -1,3 +1,6 @@
+# Don't track .packages
+.packages
+
 # Don't track pubspec.lock
 pubspec.lock
 
