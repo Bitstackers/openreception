@@ -60,6 +60,11 @@ class ClientConfiguration {
   };
 
   /**
+   *
+   */
+  Map toJson() => this.asMap;
+
+  /**
    * Build an uninitialized object
    */
   ClientConfiguration.empty();
