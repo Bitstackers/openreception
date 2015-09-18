@@ -23,14 +23,29 @@ void testModelClientConfiguration() {
 }
 
 abstract class ModelClientConfiguration {
-  static void serializationDeserialization () =>
-      expect(new Model.ClientConfiguration.fromMap(Test_Data.configMap).asMap,
-        equals(Test_Data.configMap));
-  /**
-   * Merely asserts that no exceptions arise.
-   */
-  static void serialization () =>
-      expect(new Model.ClientConfiguration.fromMap(Test_Data.configMap), isNotNull);
+  static void serialization() {
+    Model.ClientConfiguration builtObject = buildObject();
+    String serializedObject = JSON.encode(builtObject);
+
+    expect(serializedObject, isNotNull);
+    expect(serializedObject, isNotEmpty);
+  }
+
+  static void serializationDeserialization() {
+    Model.ClientConfiguration builtObject = buildObject();
+    Model.ClientConfiguration deserializedObject =
+        new Model.ClientConfiguration.fromMap(JSON.decode(JSON.encode(builtObject)));
+
+    expect(builtObject.authServerUri, equals(deserializedObject.authServerUri));
+    expect(builtObject.userServerUri, equals(deserializedObject.userServerUri));
+    expect(builtObject.callFlowServerUri, equals(deserializedObject.callFlowServerUri));
+    expect(builtObject.contactServerUri, equals(deserializedObject.contactServerUri));
+    expect(builtObject.messageServerUri, equals(deserializedObject.messageServerUri));
+    expect(builtObject.notificationServerUri, equals(deserializedObject.notificationServerUri));
+    expect(builtObject.notificationSocketUri, equals(deserializedObject.notificationSocketUri));
+    expect(builtObject.receptionServerUri, equals(deserializedObject.receptionServerUri));
+    expect(builtObject.systemLanguage, equals(deserializedObject.systemLanguage));
+  }
 
   /**
    * Build an object, and check that the expected values are present.
@@ -38,6 +53,7 @@ abstract class ModelClientConfiguration {
   static Model.ClientConfiguration buildObject () {
 
     final Uri authServerUri = Uri.parse('http://authserver.example.com');
+    final Uri userServerUri = Uri.parse('http://userserver.example.com');
     final Uri callFlowServerUri = Uri.parse('http://callFlow.example.com');
     final Uri contactServerUri = Uri.parse('http://contact.example.com');
     final Uri messageServerUri = Uri.parse('http://message.example.com');
@@ -54,9 +70,11 @@ abstract class ModelClientConfiguration {
       ..notificationServerUri = notificationServerUri
       ..notificationSocketUri = notificationSocketUri
       ..receptionServerUri = receptionServerUri
+      ..userServerUri = userServerUri
       ..systemLanguage = systemLanguage;
 
     expect(config.authServerUri, equals(authServerUri));
+    expect(config.userServerUri, equals(userServerUri));
     expect(config.callFlowServerUri, equals(callFlowServerUri));
     expect(config.contactServerUri, equals(contactServerUri));
     expect(config.messageServerUri, equals(messageServerUri));
