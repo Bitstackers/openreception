@@ -20,6 +20,12 @@ abstract class Originate {
     }));
   }
 
+  /**
+   * Tests the system behaviour whenever a channel being established to an
+   * agent that has disabled autoanswer and rejects the call.
+   * Expected behaviour is that the server should detect the reject and send
+   * a [Storage.ClientError].
+   */
   static Future originationOnAgentCallRejected(Receptionist receptionist) {
     String originationNumber = '12340005';
     int contactID = 4;
@@ -41,6 +47,12 @@ abstract class Originate {
             throwsA(new isInstanceOf<Storage.ClientError>())));
   }
 
+  /**
+   * Tests the system behaviour whenever a channel being established to an
+   * agent that has disabled autoanswer and never accepts the call.
+   * Expected behaviour is that the server should detect the reject and send
+   * a [Storage.ClientError].
+   */
   static Future originationOnAgentAutoAnswer(Receptionist receptionist) {
     String originationNumber = '12340005';
     int contactID = 4;
