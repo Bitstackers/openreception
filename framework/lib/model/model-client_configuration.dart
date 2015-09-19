@@ -48,15 +48,6 @@ class ClientConfiguration {
         Key.interface: this.notificationSocketUri.toString(),
         "reconnectInterval": 2000
       },
-
-      "serverLog": {
-          "level": "info",
-          "interface": {
-              "critical": "/log/critical",
-              "error": "/log/error",
-              "info": "/log/info"
-          }
-      }
   };
 
   /**
