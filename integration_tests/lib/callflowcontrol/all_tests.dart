@@ -248,10 +248,10 @@ void runCallFlowTests() {
 //        () => Originate.originationToHostedNumber(receptionist));
 
     test ('originationOnAgentCallRejected',
-        () => Originate.originationOnAgentCallRejected(receptionist));
+        () => Originate.originationOnAgentCallRejected(receptionist, customer));
 
     test ('originationOnAgentAutoAnswer',
-        () => Originate.originationOnAgentAutoAnswer(receptionist));
+        () => Originate.originationOnAgentAutoAnswerDisabled(receptionist, customer));
 
     test ('originationToForbiddenNumber',
         () => Originate.originationToForbiddenNumber(receptionist));

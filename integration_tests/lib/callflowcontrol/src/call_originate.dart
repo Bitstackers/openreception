@@ -28,8 +28,7 @@ abstract class Originate {
    * Expected behaviour is that the server should detect the reject and send
    * a [Storage.ClientError].
    */
-  static Future originationOnAgentCallRejected(Receptionist receptionist) {
-    String originationNumber = '12340005';
+  static Future originationOnAgentCallRejected(Receptionist receptionist, Customer customer) {
     int contactID = 4;
     int receptionID = 1;
 
@@ -38,7 +37,7 @@ abstract class Originate {
     return receptionist.autoAnswer(false).then((_) {
       /// Asynchronous origination.
       receptionist
-          .originate(originationNumber, contactID, receptionID)
+          .originate(customer.extension, contactID, receptionID)
           .then(callRejectExpectation.complete)
           .catchError(callRejectExpectation.completeError);
     })
@@ -55,8 +54,8 @@ abstract class Originate {
    * Expected behaviour is that the server should detect the reject and send
    * a [Storage.ClientError].
    */
-  static Future originationOnAgentAutoAnswer(Receptionist receptionist) {
-    String originationNumber = '12340005';
+  static Future originationOnAgentAutoAnswerDisabled
+   (Receptionist receptionist, Customer customer) {
     int contactID = 4;
     int receptionID = 1;
 
@@ -65,7 +64,7 @@ abstract class Originate {
     return receptionist.autoAnswer(false).then((_) {
       /// Asynchronous origination.
       receptionist
-          .originate(originationNumber, contactID, receptionID)
+          .originate(customer.extension, contactID, receptionID)
           .then((_) => callRejectExpectation.complete())
           .catchError(callRejectExpectation.completeError);
     })
