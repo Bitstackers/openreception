@@ -1,7 +1,9 @@
 part of or_test_fw;
 
 abstract class Originate {
-  static Logger log = new Logger('$libraryName.CallFlowControl.Originate');
+
+  ///Internal logger.
+  static Logger _log = new Logger('$libraryName.CallFlowControl.Originate');
 
   //TODO
   //static Future  originationToLookedUNumber()
@@ -37,11 +39,11 @@ abstract class Originate {
       /// Asynchronous origination.
       receptionist
           .originate(originationNumber, contactID, receptionID)
-          .then((_) => callRejectExpectation.complete())
+          .then(callRejectExpectation.complete)
           .catchError(callRejectExpectation.completeError);
     })
         .then((_) => receptionist.waitForInboundCall())
-        .then((_) => log.info('Receptionist $receptionist rejects the call'))
+        .then((_) => _log.info('Receptionist $receptionist rejects the call'))
         .then((_) => receptionist._phone.hangupAll())
         .then((_) => expect(callRejectExpectation.future,
             throwsA(new isInstanceOf<Storage.ClientError>())));
@@ -68,11 +70,15 @@ abstract class Originate {
           .catchError(callRejectExpectation.completeError);
     })
         .then((_) => receptionist.waitForInboundCall())
-        .then((_) => log.info('Receptionist $receptionist ignores the call'))
+        .then((_) => _log.info('Receptionist $receptionist ignores the call'))
         .then((_) => expect(callRejectExpectation.future,
             throwsA(new isInstanceOf<Storage.ClientError>())));
   }
 
+  /**
+   * Origination to a number that is known (by the call-flow-control server) to
+   * be forbidden.
+   */
   static void originationToForbiddenNumber(Receptionist receptionist) {
     String receptionNumber = 'X';
     int contactID = 4;
@@ -83,6 +89,9 @@ abstract class Originate {
         throwsA(new isInstanceOf<Storage.ClientError>()));
   }
 
+  /**
+   * Test if the system is able to originate to another peer.
+   */
   static Future originationToPeer(Receptionist receptionist, Customer customer) {
     int contactID = 4;
     int receptionID = 1;
@@ -92,6 +101,10 @@ abstract class Originate {
         .then((_) => customer.waitForInboundCall());
   }
 
+  /**
+   * Check that only one call is present in the call list when performing an
+   * outbound dial.
+   */
   static Future originationToPeerCheckforduplicate(Receptionist receptionist, Customer customer) {
     int contactID = 4;
     int receptionID = 1;
