@@ -14,6 +14,14 @@
 part of model;
 
 /**
+ * This handles that we want to link out of our own domain. The default UriPolicy
+ * limits all links to same origin, which does not work for us.
+ */
+class _AllUriPolicy implements UriPolicy {
+  bool allowsUri(_) => true;
+}
+
+/**
  * Provides access to methods and fields in the mini wiki UX component.
  */
 class UIReceptionMiniWiki extends UIModel {
@@ -21,7 +29,7 @@ class UIReceptionMiniWiki extends UIModel {
   final NodeValidatorBuilder _validator = new NodeValidatorBuilder()
                                                 ..allowHtml5()
                                                 ..allowTextElements()
-                                                ..allowElement('a', attributes: ['href']);
+                                                ..allowNavigation(new _AllUriPolicy());
 
   /**
    * Constructor.
