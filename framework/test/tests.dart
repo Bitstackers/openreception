@@ -63,6 +63,7 @@ part 'src/resource/resource-call_flow_control.dart';
 part 'src/resource/resource-cdr.dart';
 part 'src/resource/resource-config.dart';
 part 'src/resource/resource-contact.dart';
+part 'src/resource/resource-distribution_list.dart';
 part 'src/resource/resource-endpoint.dart';
 part 'src/resource/resource-message.dart';
 part 'src/resource/resource-notification.dart';
@@ -113,6 +114,7 @@ void main() {
   testResourceCDR();
   testResourceConfig();
   testResourceContact();
+  testResourceDistributionList();
   testResourceEndpoint();
   testResourceMessage();
   testResourceNotification();
