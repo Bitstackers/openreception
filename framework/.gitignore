@@ -1,6 +1,7 @@
-# Don’t commit the following directories created by pub.
+# Don’t commit the following directories/files created by pub.
 build/
 packages
+.packages
 .pub
 
 # Or the files created by dart2js.
