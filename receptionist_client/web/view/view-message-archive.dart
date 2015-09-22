@@ -20,13 +20,15 @@ class MessageArchive extends ViewWidget {
   final Controller.Message     _message;
   final Controller.Destination _myDestination;
   final Model.UIMessageArchive _uiModel;
+  final Controller.User        _user;
 
   /**
    * Constructor.
    */
   MessageArchive(Model.UIMessageArchive this._uiModel,
                  Controller.Destination this._myDestination,
-                 Controller.Message this._message) {
+                 Controller.Message this._message,
+                 Controller.User this._user) {
     _observers();
   }
 
@@ -35,8 +37,12 @@ class MessageArchive extends ViewWidget {
 
   @override void _onBlur(_) {}
   @override void _onFocus(_) {
-    final ORModel.MessageFilter filter = new ORModel.MessageFilter.empty();
-    _message.list(filter).then((Iterable<ORModel.Message> list) => _ui.messages = list);
+    _user.list().then((Iterable<ORModel.User> users) {
+      _ui.users = users;
+
+      _message.list(new ORModel.MessageFilter.empty())
+        .then((Iterable<ORModel.Message> messages) => _ui.messages = messages);
+    });
   }
 
   /**

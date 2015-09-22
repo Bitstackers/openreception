@@ -17,14 +17,14 @@ part of controller;
  * Methods for getting and setting user state.
  */
 class User {
-
   final ORService.CallFlowControl _service;
   final ORService.NotificationService _connectionService;
+  final ORService.RESTUserStore _user;
 
   /**
    * Constructor.
    */
-  User(this._service, this._connectionService);
+  User(this._service, this._connectionService, this._user);
 
   /**
    * Fetches the last known connection state of users.
@@ -39,10 +39,20 @@ class User {
     _connectionService.clientConnection(user.ID);
 
   /**
+   *
+   */
+  Future<ORModel.User> get(int userID) => _user.get(userID);
+
+  /**
    * Get the [Model.UserStatus] for the current user.
    */
   Future<ORModel.UserStatus> getState(ORModel.User user) =>
     _service.userStatus(user.ID);
+
+  /**
+   * Return the users list.
+   */
+  Future<Iterable<ORModel.User>> list() => _user.list();
 
   /**
    * Set the user idle.

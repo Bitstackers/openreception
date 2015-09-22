@@ -39,7 +39,6 @@ StreamSubscription<Event>       windowOnBeforeUnload;
 StreamSubscription<Event>       windowOnUnload;
 
 main() async {
-
   final Model.AppClientState   appState = new Model.AppClientState();
   Uri                          appUri;
   ORModel.ClientConfiguration  clientConfig;
@@ -106,13 +105,12 @@ main() async {
 
         ORService.CallFlowControl callFlowControl = new ORService.CallFlowControl
             (clientConfig.callFlowServerUri, token, new ORTransport.Client());
-
         ORService.NotificationService notificationService = new ORService.NotificationService
             (clientConfig.notificationServerUri, token, new ORTransport.Client());
+        ORService.RESTUserStore userService = new ORService.RESTUserStore
+            (clientConfig.userServerUri, token, new ORTransport.Client());
 
-        Controller.User controllerUser = new Controller.User(callFlowControl, notificationService);
-
-
+        Controller.User controllerUser = new Controller.User(callFlowControl, notificationService, userService);
 
         observers(controllerUser, appState);
 
@@ -273,6 +271,8 @@ Future registerReadyView(Model.AppClientState appState,
   Controller.Message messageController = new Controller.Message(messageStore);
   ORService.RESTReceptionStore receptionStore = new ORService.RESTReceptionStore
       (clientConfig.receptionServerUri, token, new ORTransport.Client());
+  ORService.RESTUserStore userStore = new ORService.RESTUserStore
+      (clientConfig.userServerUri, token, new ORTransport.Client());
   Controller.Reception receptionController = new Controller.Reception(receptionStore);
   Controller.Endpoint endpointController = new Controller.Endpoint(endpointStore);
   Controller.Calendar calendarController = new Controller.Calendar(calendarStore);

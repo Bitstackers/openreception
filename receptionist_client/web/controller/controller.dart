@@ -22,8 +22,8 @@ import 'package:okeyee/okeyee.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/bus.dart';
 import 'package:openreception_framework/event.dart' as OREvent;
-import 'package:openreception_framework/service.dart' as ORService;
 import 'package:openreception_framework/model.dart' as ORModel;
+import 'package:openreception_framework/service.dart' as ORService;
 
 part 'controller-calendar.dart';
 part 'controller-call.dart';

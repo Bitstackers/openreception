@@ -18,6 +18,7 @@ part of model;
  */
 class UIMessageArchive extends UIModel {
   final DivElement      _myRoot;
+  Map<int, String>      _users = new Map<int, String>();
   final ORUtil.WeekDays _weekDays;
 
   /**
@@ -39,11 +40,12 @@ class UIMessageArchive extends UIModel {
   TableSectionElement get _sentTbody  => _root.querySelector('table tbody.sent-messages-tbody');
 
   /**
-   *
-   * TODO(krc,tl): Figure out how to fetch the usernames.
+   * Add the agent name to the table.
    */
-  TableCellElement _buildAgentCell(ORModel.Message msg) =>
-      new TableCellElement()..text = msg.senderId.toString();
+  TableCellElement _buildAgentCell(ORModel.Message msg) {
+    String agent = _users[msg.senderId] ?? msg.senderId.toString();
+    return new TableCellElement()..text = agent;
+  }
 
   /**
    *
@@ -171,5 +173,14 @@ class UIMessageArchive extends UIModel {
    */
   void _setupLocalKeys() {
     _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap());
+  }
+
+  /**
+   *
+   */
+  set users(Iterable<ORModel.User> list) {
+    list.forEach((ORModel.User user) {
+      _users[user.ID] = user.name;
+    });
   }
 }
