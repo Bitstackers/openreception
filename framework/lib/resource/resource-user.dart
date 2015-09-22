@@ -27,7 +27,7 @@ abstract class User {
     => Uri.parse('${root(host)}/${userID}');
 
   static Uri root(Uri host)
-    => Uri.parse('$host/$_user');
+    => Uri.parse('${Util.removeTailingSlashes(host)}/$_user');
 
   static Uri list(Uri host)
     => Uri.parse('${root(host)}');
@@ -36,10 +36,10 @@ abstract class User {
     => Uri.parse('${single(host, userID)}/$_group');
 
   static Uri group(Uri host)
-    => Uri.parse('$host/$_group');
+    => Uri.parse('${Util.removeTailingSlashes(host)}/$_group');
 
   static Uri userGroupByID(Uri host, int userID, int groupID)
-      => Uri.parse('$host/user/$userID/$_group/$groupID');
+      => Uri.parse('${Util.removeTailingSlashes(host)}/user/$userID/$_group/$groupID');
 
   static Uri userIndentities(Uri host, int userID)
   => Uri.parse('$host/$_user/$userID/$_identity');
