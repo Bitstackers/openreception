@@ -25,6 +25,7 @@ import 'model/model.dart' as Model;
 import 'configuration.dart' as json;
 import '../configuration.dart';
 
+part 'controller/controller-client_notifier.dart';
 part 'controller/controller-pbx.dart';
 part 'controller/controller-state.dart';
 
