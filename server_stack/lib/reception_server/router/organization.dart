@@ -93,7 +93,7 @@ abstract class Organization {
             new Event.OrganizationChange(createdOrganization.id,
                 Event.OrganizationState.CREATED);
 
-        Notification.broadcastEvent(changeEvent);
+        _notification.broadcastEvent(changeEvent);
 
         return new shelf.Response.ok(JSON.encode(createdOrganization));
       }).catchError((error, stackTrace) {
@@ -129,7 +129,7 @@ abstract class Organization {
         Event.OrganizationChange changeEvent =
             new Event.OrganizationChange(organizationID, Event.OrganizationState.UPDATED);
 
-        Notification.broadcastEvent(changeEvent);
+        _notification.broadcastEvent(changeEvent);
 
         return new shelf.Response.ok(JSON.encode(organization));
       }).catchError((error, stackTrace) {
@@ -155,7 +155,7 @@ abstract class Organization {
       Event.OrganizationChange changeEvent =
           new Event.OrganizationChange(organizationID, Event.OrganizationState.DELETED);
 
-      Notification.broadcastEvent(changeEvent);
+      _notification.broadcastEvent(changeEvent);
 
       return new shelf.Response.ok(
           JSON.encode({'status': 'ok', 'description': 'Organization deleted'}));

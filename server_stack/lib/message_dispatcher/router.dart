@@ -20,7 +20,6 @@ import 'dart:convert';
 import 'package:route/pattern.dart';
 import 'package:route/server.dart';
 
-import 'configuration.dart' as json;
 import '../configuration.dart';
 import 'package:openreception_framework/httpserver.dart';
 
@@ -42,7 +41,7 @@ final List<Pattern> allUniqueUrls = [messageQueueListResource, messageQueueItemR
 
 Router setup(HttpServer server) =>
   new Router(server)
-    ..filter(matchAny(allUniqueUrls), auth(json.config.authUrl))
+    ..filter(matchAny(allUniqueUrls), auth(config.authServer.externalUri))
     ..serve(messageQueueListResource,   method: 'GET'   ).listen(messageQueueList)
     ..serve(messageDispatchAllResource, method: 'GET'   ).listen(messageDispatchAll)
 
@@ -55,15 +54,15 @@ Database.Connection connection = null;
 Storage.Message      messageStore;
 Storage.MessageQueue messageQueueStore;
 
-Service.NotificationService Notification = null;
+Service.NotificationService _notification = null;
 
 void connectNotificationService() {
-  Notification = new Service.NotificationService
-      (json.config.notificationServer, Configuration.messageDispatcher.serverToken, new Service_IO.Client());
+  _notification = new Service.NotificationService
+      (config.notificationServer.externalUri, config.userServer.serverToken, new Service_IO.Client());
 }
 
 Future startDatabase() =>
-    Database.Connection.connect('postgres://${json.config.dbuser}:${json.config.dbpassword}@${json.config.dbhost}:${json.config.dbport}/${json.config.dbname}')
+    Database.Connection.connect(config.database.dsn)
       .then((Database.Connection newConnection) {
         connection = newConnection;
         messageStore     = new Database.Message(connection);

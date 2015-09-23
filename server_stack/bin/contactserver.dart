@@ -19,7 +19,6 @@ import 'package:args/args.dart';
 import 'package:path/path.dart';
 import 'package:logging/logging.dart';
 
-import '../lib/contact_server/configuration.dart' as json;
 import '../lib/contact_server/database.dart';
 import '../lib/contact_server/router.dart' as router;
 import '../lib/configuration.dart';
@@ -31,8 +30,8 @@ ArgParser  parser = new ArgParser();
 void main(List<String> args) {
 
   ///Init logging. Inherit standard values.
-  Logger.root.level = Configuration.contactServer.log.level;
-  Logger.root.onRecord.listen(Configuration.contactServer.log.onRecord);
+  Logger.root.level = config.contactServer.log.level;
+  Logger.root.onRecord.listen(config.contactServer.log.onRecord);
 
   try {
     Directory.current = dirname(Platform.script.toFilePath());
@@ -42,13 +41,10 @@ void main(List<String> args) {
     if(showHelp()) {
       print(parser.usage);
     } else {
-      json.config = new json.Configuration(parsedArgs);
-      json.config.whenLoaded()
-        .then((_) => router.connectAuthService())
-        .then((_) => router.connectNotificationService())
-        .then((_) => log.finest(json.config.toString()))
-        .then((_) => startDatabase())
-        .then((_) => router.start())
+        router.connectAuthService();
+        router.connectNotificationService();
+        startDatabase()
+        .then((_) => router.start(port : config.contactServer.httpPort))
         .catchError(log.shout);
     }
   } catch(error, stackTrace) {

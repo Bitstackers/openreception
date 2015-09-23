@@ -20,7 +20,7 @@ import 'dart:convert';
 import 'package:route/pattern.dart';
 import 'package:route/server.dart';
 
-import 'configuration.dart' as json;
+import '../configuration.dart';
 import 'database.dart' as db;
 import 'package:openreception_framework/model.dart' as Model;
 import 'package:openreception_framework/httpserver.dart';
@@ -42,7 +42,7 @@ final Logger log = new Logger('cdrserver.router');
 
 Router setup(HttpServer server) =>
   new Router(server)
-    ..filter(matchAny(allUniqueUrls), auth(json.config.authUrl))
+    ..filter(matchAny(allUniqueUrls), auth(config.authServer.externalUri))
     ..serve(cdrResource,    method: 'GET').listen(cdrHandler)
     ..serve(newcdrResource, method: 'POST').listen(insertCdrData)
     ..serve(checkpointResource, method: 'GET').listen(getCheckpoints)

@@ -17,9 +17,7 @@ import 'dart:io';
 import 'dart:async';
 
 import 'package:args/args.dart';
-import 'package:path/path.dart';
 
-import '../lib/callflowcontrol/configuration.dart' as json;
 import '../lib/callflowcontrol/router.dart' as router;
 import '../lib/callflowcontrol/controller.dart' as Controller;
 import '../lib/callflowcontrol/model/model.dart' as Model;
@@ -34,24 +32,18 @@ ArgParser parser = new ArgParser();
 void main(List<String> args) {
 
   ///Init logging. Inherit standard values.
-  Logger.root.level = Configuration.callFlowControl.log.level;
-  Logger.root.onRecord.listen(Configuration.callFlowControl.log.onRecord);
+  Logger.root.level = config.callFlowControl.log.level;
+  Logger.root.onRecord.listen(config.callFlowControl.log.onRecord);
 
   try {
-    Directory.current = dirname(Platform.script.toFilePath());
-
     registerAndParseCommandlineArguments(args);
 
     if (showHelp()) {
       print(parser.usage);
     } else {
-      json.config = new json.Configuration(parsedArgs);
-      json.config.whenLoaded()
-        .then((_) => router.connectAuthService())
-        .then((_) => router.connectNotificationService())
-        .then((_) => router.startNotifier())
-        .then((_) => connectESLClient())
-        .then((_) => router.start(port : json.config.httpport))
+        router.connectAuthService();
+        connectESLClient();
+        router.start(port : config.callFlowControl.httpPort)
         .catchError(log.shout);
     }
   } catch(error, stackTrace) {
@@ -62,8 +54,11 @@ void main(List<String> args) {
 void connectESLClient() {
 
   Duration period = new Duration(seconds : 3);
+  final String hostname = config.callFlowControl.eslConfig.hostname;
+  final String password = config.callFlowControl.eslConfig.password;
+  final int port = config.callFlowControl.eslConfig.port;
 
-  log.info('Connecting to ${json.config.eslHostname}:${json.config.eslPort}');
+  log.info('Connecting to ${hostname}:${port}');
 
   Model.PBXClient.instance = new ESL.Connection();
 
@@ -82,8 +77,8 @@ void connectESLClient() {
   Model.PBXClient.instance.requestStream.listen((ESL.Packet packet) {
     switch (packet.contentType) {
       case (ESL.ContentType.Auth_Request):
-        log.info('Connected to ${json.config.eslHostname}:${json.config.eslPort}');
-        Model.PBXClient.instance.authenticate(json.config.eslPassword)
+        log.info('Connected to ${hostname}:${port}');
+        Model.PBXClient.instance.authenticate(password)
           .then((_) => Model.PBXClient.instance.event
              (Model.PBXEvent.requiredSubscriptions,
                 format : ESL.EventFormat.Json)
@@ -101,13 +96,13 @@ void connectESLClient() {
   });
 
   void tryConnect () {
-    Model.PBXClient.instance.connect(json.config.eslHostname, json.config.eslPort).catchError((error, stackTrace) {
+    Model.PBXClient.instance.connect(hostname, port).catchError((error, stackTrace) {
       if (error is SocketException) {
         log.severe('ESL Connection failed - reconnecting in ${period.inSeconds} seconds');
         new Timer(period, tryConnect);
 
       } else {
-        log.severe('Failed to connect to FreeSWTICH.', error, stackTrace);
+        log.severe('Failed to connect to FreeSWITCH.', error, stackTrace);
       }
     });
   }
@@ -118,7 +113,7 @@ void connectESLClient() {
 void registerAndParseCommandlineArguments(List<String> arguments) {
   parser..addFlag('help', abbr: 'h', help: 'Output this help')
         ..addOption('configfile', help: 'The JSON configuration file. Defaults to config.json')
-        ..addOption('httpport', help: 'The port the HTTP server listens on.  Defaults to ${json.Default.httpport}')
+        ..addOption('httpport', help: 'The port the HTTP server listens on.')
         ..addOption('servertoken', help: 'servertoken');
 
   parsedArgs = parser.parse(arguments);

@@ -122,7 +122,6 @@ class CallList extends IterableBase<ORModel.Call> {
   List<ORModel.Call> callsOf(int userID) =>
       this.where((ORModel.Call call) => call.assignedTo == userID).toList();
 
-
   ORModel.Call get(String callID) {
     if (this._map.containsKey(callID)) {
       return this._map[callID];

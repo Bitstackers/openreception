@@ -18,7 +18,6 @@ import 'dart:convert';
 
 import 'dart:io' as IO;
 
-import 'configuration.dart' as json;
 import '../configuration.dart';
 
 import 'database.dart' as db;
@@ -44,24 +43,24 @@ const String libraryName = 'receptionserver.router';
 final Logger log = new Logger (libraryName);
 
 Database.Connection _connection = null;
-Service.Authentication      AuthService  = null;
-Service.NotificationService Notification = null;
+Service.Authentication      _authService  = null;
+Service.NotificationService _notification = null;
 Database.Organization _organizationDB = new Database.Organization (_connection);
 Database.Reception _receptionDB = new Database.Reception (_connection);
 
 
 void connectAuthService() {
-  AuthService = new Service.Authentication
-      (json.config.authUrl, Configuration.receptionServer.serverToken, new Service_IO.Client());
+  _authService = new Service.Authentication
+      (config.authServer.externalUri, config.userServer.serverToken, new Service_IO.Client());
 }
 
 void connectNotificationService() {
-  Notification = new Service.NotificationService
-      (json.config.notificationServer, Configuration.receptionServer.serverToken, new Service_IO.Client());
+  _notification = new Service.NotificationService
+      (config.notificationServer.externalUri, config.userServer.serverToken, new Service_IO.Client());
 }
 
 Future startDatabase() =>
-  Database.Connection.connect('postgres://${json.config.dbuser}:${json.config.dbpassword}@${json.config.dbhost}:${json.config.dbport}/${json.config.dbname}')
+  Database.Connection.connect(config.database.dsn)
     .then((Database.Connection newConnection) => _connection = newConnection);
 
 shelf.Middleware checkAuthentication =
@@ -71,7 +70,7 @@ shelf.Middleware checkAuthentication =
 Future<shelf.Response> _lookupToken(shelf.Request request) {
   var token = request.requestedUri.queryParameters['token'];
 
-  return AuthService.validate(token).then((_) => null)
+  return _authService.validate(token).then((_) => null)
   .catchError((error) {
     if (error is Storage.NotFound) {
       return new shelf.Response.forbidden('Invalid token');

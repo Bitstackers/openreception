@@ -71,7 +71,7 @@ abstract class Reception {
             new Event.ReceptionChange(createdReception.ID,
                 Event.ReceptionState.CREATED);
 
-        Notification.broadcastEvent(changeEvent);
+        _notification.broadcastEvent(changeEvent);
 
         return new shelf.Response.ok(JSON.encode(createdReception));
       }).catchError((error, stackTrace) {
@@ -107,7 +107,7 @@ abstract class Reception {
         Event.ReceptionChange changeEvent =
             new Event.ReceptionChange(receptionID, Event.ReceptionState.UPDATED);
 
-        Notification.broadcastEvent(changeEvent);
+        _notification.broadcastEvent(changeEvent);
 
         return new shelf.Response.ok(JSON.encode(reception));
       }).catchError((error, stackTrace) {
@@ -133,7 +133,7 @@ abstract class Reception {
       Event.ReceptionChange changeEvent =
           new Event.ReceptionChange(receptionID, Event.ReceptionState.DELETED);
 
-      Notification.broadcastEvent(changeEvent);
+      _notification.broadcastEvent(changeEvent);
 
       return new shelf.Response.ok(
           JSON.encode({'status': 'ok', 'description': 'Reception deleted'}));

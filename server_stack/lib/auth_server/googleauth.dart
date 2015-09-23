@@ -27,7 +27,7 @@ Uri googleAuthUrl(String identifier, String secret, Uri redirectUrl) {
     oauth2.AuthorizationCodeGrant grant = new oauth2.AuthorizationCodeGrant(identifier, secret, authorizationEndpoint, tokenEndpoint);
     _AuthorizationUrl = grant.getAuthorizationUrl(redirectUrl, scopes:_scopes);
   }
-  
+
   return _AuthorizationUrl;
 }
 

@@ -21,7 +21,7 @@ import 'package:openreception_framework/model.dart'    as Model;
 import 'package:openreception_framework/keys.dart'     as Key;
 import 'package:openreception_framework/storage.dart'  as Storage;
 import 'package:openreception_framework/util.dart'     as Util;
-import 'configuration.dart';
+import '../configuration.dart';
 
 part 'db/contact-calendar.dart';
 
@@ -30,5 +30,5 @@ const String libraryName = 'contactserver.database';
 Database.Connection connection = null;
 
 Future startDatabase() =>
-    Database.Connection.connect('postgres://${config.dbuser}:${config.dbpassword}@${config.dbhost}:${config.dbport}/${config.dbname}')
+    Database.Connection.connect(config.database.dsn)
       .then((Database.Connection newConnection) => connection = newConnection);

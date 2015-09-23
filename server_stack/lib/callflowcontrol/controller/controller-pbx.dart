@@ -185,7 +185,7 @@ abstract class PBX {
                               'return_ring_ready=true'];
 
     return Model.PBXClient.api
-        ('originate {${variables.join(',')}}sofia/external/${extension}@${json.config.dialoutgateway} &bridge(user/${user.peer}) ${_dialplan} $_callerID $_callerID $_timeOutSeconds')
+        ('originate {${variables.join(',')}}sofia/external/${extension}@${config.callFlowControl.dialoutGateway} &bridge(user/${user.peer}) ${_dialplan} $_callerID $_callerID $_timeOutSeconds')
         .then((ESL.Response response) {
           if (response.status != ESL.Response.OK) {
             throw new StateError('ESL returned ${response.rawBody}');
@@ -267,7 +267,7 @@ abstract class PBX {
   static void _loadPeerListFromPacket (ESL.Response response) {
 
     bool peerIsInAcceptedContext(ESL.Peer peer) =>
-      Configuration.callFlowControl.peerContexts.contains(peer.context);
+      config.callFlowControl.peerContexts.contains(peer.context);
 
     ESL.PeerList loadedList = new ESL.PeerList.fromMultilineBuffer(response.rawBody);
 

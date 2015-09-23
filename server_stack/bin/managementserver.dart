@@ -16,10 +16,8 @@ library openreception.management_server;
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:path/path.dart';
 import 'package:logging/logging.dart';
 
-import '../lib/management_server/configuration.dart' as json;
 import '../lib/configuration.dart';
 import '../lib/management_server/database.dart';
 import '../lib/management_server/router.dart';
@@ -30,10 +28,8 @@ Logger log = new Logger ('managementserver.main');
 
 void main(List<String> args) {
   ///Init logging. Inherit standard values.
-  Logger.root.level = Configuration.managementServer.log.level;
-  Logger.root.onRecord.listen(Configuration.managementServer.log.onRecord);
-
-  Directory.current = dirname(Platform.script.toFilePath());
+  Logger.root.level = config.managementServer.log.level;
+  Logger.root.onRecord.listen(config.managementServer.log.onRecord);
 
   ArgParser parser = new ArgParser();
   ArgResults parsedArgs = registerAndParseCommandlineArguments(parser, args);
@@ -42,16 +38,12 @@ void main(List<String> args) {
     print(parser.usage);
   }
 
-  json.config = new json.Configuration(parsedArgs)
-    ..parse();
-  log.fine(json.config);
-
-  setupDatabase(json.config)
-    .then((db) => setupControllers(db, json.config))
+  setupDatabase(config)
+    .then((db) => setupControllers(db, config))
     .then((_) => connectNotificationService())
-    .then((_) => makeServer(json.config.httpport))
+    .then((_) => makeServer(config.managementServer.httpPort))
     .then((HttpServer server) {
-      setupRoutes(server, json.config);
+      setupRoutes(server, config);
       log.fine('Server listening on ${server.address}, port ${server.port}');
     });
 }

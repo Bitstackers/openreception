@@ -21,7 +21,7 @@ import 'package:libdialplan/libdialplan.dart';
 import 'package:libdialplan/ivr.dart';
 import 'package:path/path.dart' as path;
 
-import '../configuration.dart';
+import '../../configuration.dart';
 import '../database.dart';
 import 'package:openreception_framework/model.dart';
 import '../view/audiofile.dart';
@@ -47,7 +47,8 @@ class DialplanController {
     final int receptionId = orf_http.pathParameter(request.uri, 'reception');
     final String token = request.uri.queryParameters['token'];
 
-    service.getAudioFileList(config.dialplanCompilerServer, receptionId, token).then((http.Response response) {
+    service.getAudioFileList(config.managementServer.dialplanCompilerServer,
+        receptionId, token).then((http.Response response) {
       if(response.statusCode == 200) {
         List<String> files = JSON.decode(response.body)['files'];
         List<Audiofile> audioFiles = files.map((String file) => new Audiofile(file, file.split('/').last)).toList();
@@ -94,7 +95,9 @@ class DialplanController {
     final int receptionId = orf_http.pathParameter(request.uri, 'reception');
     final String token = request.uri.queryParameters['token'];
     db.getDialplan(receptionId).then((Dialplan dialplan) {
-      return service.compileDialplan(config.dialplanCompilerServer, receptionId, dialplanAsJson(dialplan), token);
+      return service.compileDialplan
+          (config.managementServer.dialplanCompilerServer,
+              receptionId, dialplanAsJson(dialplan), token);
     }).then((http.Response response) {
       if(response.statusCode == 200) {
         return db.markDialplanAsCompiled(receptionId).then((_) => orf_http.allOk(request));
@@ -130,7 +133,7 @@ class DialplanController {
     orf_http.extractContent(request)
       .then(JSON.decode)
       .then((Map ivrMenu) => db.updateIvr(receptionId, ivrMenu)
-        .then((_) => service.compileIvrMenu(config.dialplanCompilerServer, receptionId, JSON.encode(ivrMenu), token)))
+        .then((_) => service.compileIvrMenu(config.managementServer.dialplanCompilerServer, receptionId, JSON.encode(ivrMenu), token)))
       .then((_) => orf_http.allOk(request) )
       .catchError((error, stack) {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}" ${stack}', context);
@@ -165,7 +168,7 @@ class DialplanController {
           data['chimelist'],
           data['chimefreq'],
           data['chimemax'])
-        .then((int id) => service.compilePlaylist(config.dialplanCompilerServer, id, JSON.encode(data), token)
+        .then((int id) => service.compilePlaylist(config.managementServer.dialplanCompilerServer, id, JSON.encode(data), token)
         .then((_) => id)))
       .then((int id) => orf_http.writeAndClose(request, playlistIdAsJson(id)))
       .catchError((error, stack) {
@@ -220,7 +223,7 @@ class DialplanController {
           data['chimelist'],
           data['chimefreq'],
           data['chimemax'])
-        .then((_) => service.compilePlaylist(config.dialplanCompilerServer, playlistId, JSON.encode(data), token)))
+        .then((_) => service.compilePlaylist(config.managementServer.dialplanCompilerServer, playlistId, JSON.encode(data), token)))
       .then((_) => orf_http.allOk(request))
       .catchError((error) {
         orf.logger.errorContext('url: "${request.uri}" gave error "${error}"', context);
@@ -250,14 +253,14 @@ class DialplanController {
       return;
     }
 
-    String filepath = path.join(config.recordingsDirectory, receptionId.toString(), filename);
+    String filepath = path.join(config.managementServer.recordingsDirectory, receptionId.toString(), filename);
 
-    if(!path.normalize(filepath).startsWith(config.recordingsDirectory)) {
+    if(!path.normalize(filepath).startsWith(config.managementServer.recordingsDirectory)) {
       orf_http.clientError(request, 'As of now, are you only able to access files inside the recordingdirectory.');
       return;
     }
 
-    service.record(config.callFlowServer, receptionId, filepath, token).then((http.Response repsonse) {
+    service.record(config.callFlowControl.externalUri, receptionId, filepath, token).then((http.Response repsonse) {
       orf_http.allOk(request);
     }).catchError((error, stack) {
       String logMessage = 'Error ${error}, Stack: ${stack}';
@@ -276,14 +279,14 @@ class DialplanController {
       return;
     }
 
-    final String filepath = path.join(config.recordingsDirectory, receptionId.toString(), filename);
+    final String filepath = path.join(config.managementServer.recordingsDirectory, receptionId.toString(), filename);
 
-    if(!path.normalize(filepath).startsWith(config.recordingsDirectory)) {
+    if(!path.normalize(filepath).startsWith(config.managementServer.recordingsDirectory)) {
       orf_http.clientError(request, 'As of now, are you only able to access files inside the recordingdirectory.');
       return;
     }
 
-    service.deleteRecording(config.dialplanCompilerServer, filepath, token).then((http.Response repsonse) {
+    service.deleteRecording(config.managementServer.dialplanCompilerServer, filepath, token).then((http.Response repsonse) {
       orf_http.allOk(request);
     }).catchError((error, stack) {
       String logMessage = 'Error ${error}, Stack: ${stack}';

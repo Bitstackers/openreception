@@ -17,7 +17,7 @@ import 'dart:async';
 import 'dart:io' as IO;
 import 'dart:convert';
 
-import 'configuration.dart';
+import '../configuration.dart';
 import 'package:logging/logging.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
@@ -26,7 +26,6 @@ import 'package:openreception_framework/model.dart' as ORModel;
 
 part 'router/getconfiguration.dart';
 
-final String configurationUrl = '/configuration';
 final Logger log = new Logger ('configserver.router');
 
 shelf.Middleware addCORSHeaders =
@@ -52,7 +51,7 @@ void _accessLogger(String msg, bool isError) {
 }
 Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 8000}) {
   var router = shelf_route.router(fallbackHandler : send404)
-      ..get(configurationUrl, getBobConfig);
+      ..get('/configuration', getClientConfig);
 
   var handler = const shelf.Pipeline()
       .addMiddleware(shelf.logRequests(logger : _accessLogger))

@@ -24,7 +24,7 @@ abstract class ContactCalendar {
     int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
     Model.User user;
 
-    return AuthService.userOf(_tokenFrom(request))
+    return _authService.userOf(_tokenFrom(request))
       .then((Model.User fetchedUser) => user = fetchedUser)
       .then((_) =>
         request.readAsString().then((String content) {
@@ -51,7 +51,7 @@ abstract class ContactCalendar {
 
           log.finest('Created event for ${contactID}@${receptionID}');
 
-          Notification.broadcastEvent (changeEvent);
+          _notification.broadcastEvent (changeEvent);
 
           return new shelf.Response.ok(JSON.encode(entry));
         }).catchError((error, stackTrace) {
@@ -73,7 +73,7 @@ abstract class ContactCalendar {
 
     Model.User user;
 
-    return AuthService.userOf(_tokenFrom(request))
+    return _authService.userOf(_tokenFrom(request))
       .then((Model.User fetchedUser) => user = fetchedUser)
       .then((_) => request.readAsString().then((String content) {
       Model.CalendarEntry entry;
@@ -98,7 +98,7 @@ abstract class ContactCalendar {
               (entry.ID, entry.contactID, entry.receptionID,
                Event.CalendarEntryState.UPDATED);
 
-          Notification.broadcastEvent (changeEvent);
+          _notification.broadcastEvent (changeEvent);
 
           return new shelf.Response.ok(JSON.encode(entry));
         }).catchError((error, stackTrace) {
@@ -130,7 +130,7 @@ abstract class ContactCalendar {
           new Event.CalendarChange
             (entryID, contactID, receptionID, Event.CalendarEntryState.DELETED);
 
-            Notification.broadcastEvent (changeEvent);
+            _notification.broadcastEvent (changeEvent);
             return new shelf.Response.ok
               (JSON.encode({'status' : 'ok', 'description' : 'Event deleted'}));
         })

@@ -26,7 +26,6 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 
-import 'configuration.dart' as json;
 import '../configuration.dart';
 import 'database.dart' as db;
 import 'googleauth.dart';

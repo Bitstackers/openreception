@@ -79,7 +79,7 @@ class TokenVault {
   }
 
   Future loadFromDirectory(String directory) {
-    if(directory != null) {
+    if(directory != null && directory.isNotEmpty) {
       return list(directory).then((List<FileSystemEntity> list) {
 
         return Future.forEach(list, (FileSystemEntity item) {

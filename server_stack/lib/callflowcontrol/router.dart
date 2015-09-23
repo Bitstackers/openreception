@@ -17,7 +17,6 @@ import 'dart:async';
 import 'dart:io' as IO;
 import 'dart:convert';
 
-import 'configuration.dart' as json;
 import '../configuration.dart';
 
 import 'controller.dart' as Controller;
@@ -54,12 +53,8 @@ Service.NotificationService Notification = null;
 
 void connectAuthService() {
   AuthService = new Service.Authentication
-      (json.config.authUrl, Configuration.callFlowControl.serverToken, new Service_IO.Client());
-}
-
-void connectNotificationService() {
-  Notification = new Service.NotificationService
-      (json.config.notificationServer, Configuration.callFlowControl.serverToken, new Service_IO.Client());
+      (config.authServer.externalUri,
+          config.callFlowControl.serverToken, new Service_IO.Client());
 }
 
 shelf.Middleware checkAuthentication =

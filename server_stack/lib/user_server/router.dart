@@ -17,7 +17,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' as IO;
 
-import 'configuration.dart' as json;
 import '../configuration.dart';
 
 import 'package:logging/logging.dart';
@@ -51,16 +50,16 @@ const Map corsHeaders = const
 
 void connectAuthService() {
   _authService = new Service.Authentication
-      (json.config.authUrl, Configuration.userServer.serverToken, new Service_IO.Client());
+      (config.authServer.externalUri, config.userServer.serverToken, new Service_IO.Client());
 }
 
 void connectNotificationService() {
   _notification = new Service.NotificationService
-      (json.config.notificationServer, Configuration.userServer.serverToken, new Service_IO.Client());
+      (config.notificationServer.externalUri, config.userServer.serverToken, new Service_IO.Client());
 }
 
 Future startDatabase() =>
-  Database.Connection.connect('postgres://${json.config.dbuser}:${json.config.dbpassword}@${json.config.dbhost}:${json.config.dbport}/${json.config.dbname}')
+  Database.Connection.connect(config.database.dsn)
     .then((Database.Connection newConnection) => _connection = newConnection);
 
 shelf.Middleware checkAuthentication =

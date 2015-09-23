@@ -15,21 +15,21 @@ part of openreception.configuration_server.router;
 
 final ORModel.ClientConfiguration client_config =
   new ORModel.ClientConfiguration.empty()
-    ..authServerUri = config.authServerUri
-    ..callFlowServerUri = config.callFlowServerUri
-    ..contactServerUri = config.contactServerUri
-    ..messageServerUri = config.messageServerUri
-    ..notificationServerUri = config.notificationServerUri
-    ..notificationSocketUri = config.notificationSocketUri
-    ..receptionServerUri = config.receptionServerUri
+    ..authServerUri = config.authServer.externalUri
+    ..callFlowServerUri = config.callFlowControl.externalUri
+    ..contactServerUri = config.contactServer.externalUri
+    ..messageServerUri = config.messageServer.externalUri
+    ..notificationServerUri = config.notificationServer.externalUri
+    ..notificationSocketUri = config.notificationServer.notificationUri
+    ..receptionServerUri = config.receptionServer.externalUri
     ..systemLanguage = config.systemLanguage
-    ..userServerUri = config.userServerUri;
+    ..userServerUri = config.userServer.externalUri;
 
-shelf.Response getBobConfig(shelf.Request request) =>
+shelf.Response getClientConfig(shelf.Request request) =>
   new shelf.Response.ok(JSON.encode(client_config));
 
-shelf.Response send404(shelf.Request request) {
-  return new shelf.Response.notFound(JSON.encode({"error" : "Not Found"}));
-}
+shelf.Response send404(shelf.Request request) =>
+  new shelf.Response.notFound(JSON.encode({"error" : "Not Found"}));
+
 
 

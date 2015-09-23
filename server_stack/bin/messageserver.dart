@@ -19,7 +19,6 @@ import 'package:args/args.dart';
 import 'package:path/path.dart';
 
 import 'package:logging/logging.dart';
-import '../lib/message_server/configuration.dart' as json;
 import '../lib/configuration.dart';
 import '../lib/message_server/router.dart' as router;
 
@@ -29,8 +28,8 @@ ArgParser  parser = new ArgParser();
 
 void main(List<String> args) {
   ///Init logging. Inherit standard values.
-  Logger.root.level = Configuration.messageServer.log.level;
-  Logger.root.onRecord.listen(Configuration.messageServer.log.onRecord);
+  Logger.root.level = config.messageServer.log.level;
+  Logger.root.onRecord.listen(config.messageServer.log.onRecord);
 
   try {
     Directory.current = dirname(Platform.script.toFilePath());
@@ -40,12 +39,10 @@ void main(List<String> args) {
     if(showHelp()) {
       print(parser.usage);
     } else {
-      json.config = new json.Configuration(parsedArgs);
-      json.config.whenLoaded()
-        .then((_) => router.connectAuthService())
-        .then((_) => router.connectNotificationService())
-        .then((_) => router.startDatabase())
-        .then((_) => router.start(port : json.config.httpport))
+        router.connectAuthService();
+        router.connectNotificationService();
+        router.startDatabase()
+        .then((_) => router.start(port : config.messageServer.httpPort))
         .catchError(log.shout);
     }
   } catch(error, stackTrace) {

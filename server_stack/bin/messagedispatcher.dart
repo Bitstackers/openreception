@@ -24,8 +24,7 @@ import 'package:logging/logging.dart';
 import 'package:openreception_framework/model.dart' as Model;
 
 import '../lib/configuration.dart';
-import '../lib/message_dispatcher/configuration.dart' as msgdisp;
-import '../lib/message_dispatcher/router.dart' as Router;
+import '../lib/message_dispatcher/router.dart' as router;
 
 ArgResults parsedArgs;
 ArgParser parser = new ArgParser();
@@ -38,8 +37,8 @@ final Logger log = new Logger ('MessageDispatcher');
 
 void main(List<String> args) {
   ///Init logging. Inherit standard values.
-  Logger.root.level = Configuration.messageDispatcher.log.level;
-  Logger.root.onRecord.listen(Configuration.messageDispatcher.log.onRecord);
+  Logger.root.level = config.messageDispatcher.log.level;
+  Logger.root.onRecord.listen(config.messageDispatcher.log.onRecord);
 
   try {
     Directory.current = dirname(Platform.script.toFilePath());
@@ -52,10 +51,8 @@ void main(List<String> args) {
       exit(1);
 
     } else {
-      msgdisp.config = new msgdisp.Configuration(parsedArgs);
-      msgdisp.config.whenLoaded()
-        .then((_) => Router.startDatabase())
-        .then((_) => Router.connectNotificationService())
+        router.startDatabase()
+        .then((_) => router.connectNotificationService())
 
         // HTTP interface is currently unsupported, due to database schema changes.
       // .then((_) => http.start(config.httpport, router.setup))
@@ -83,9 +80,9 @@ void main(List<String> args) {
 void periodicEmailSend() {
   DateTime start = new DateTime.now();
 
-  Router.messageQueueStore.list(maxTries : msgdisp.config.maxTries).then((List<Model.MessageQueueItem> queuedMessages) {
+  router.messageQueueStore.list(maxTries : config.messageDispatcher.maxTries).then((List<Model.MessageQueueItem> queuedMessages) {
     Future.forEach(queuedMessages, tryDispatch).whenComplete(() {
-      log.info('Processed ${queuedMessages.length} messages in ${(new DateTime.now().difference(start)).inMilliseconds} milliseconds. Sleeping for ${msgdisp.config.mailerPeriod} seconds');
+      log.info('Processed ${queuedMessages.length} messages in ${(new DateTime.now().difference(start)).inMilliseconds} milliseconds. Sleeping for ${config.messageDispatcher.mailerPeriod} seconds');
       //reSchedule();
     });
   }).catchError((error, stackTrace) {
@@ -102,7 +99,8 @@ void periodicEmailSend() {
 void registerAndParseCommandlineArguments(List<String> arguments) {
   parser.addFlag('help', abbr: 'h', help: 'Output this help');
   parser.addOption('configfile', help: 'The JSON configuration file. Defaults to config.json');
-  parser.addOption('httpport', help: 'The port the HTTP server listens on.  Defaults to ${msgdisp.Default.HTTPPort}');
+  parser.addOption('httpport', help: 'The port the HTTP server listens on.',
+      defaultsTo: config.messageDispatcher.httpPort.toString());
   parser.addOption('dbuser', help: 'The database user');
   parser.addOption('dbpassword', help: 'The database password');
   parser.addOption('dbhost', help: 'The database host. Defaults to localhost');
@@ -116,7 +114,7 @@ void registerAndParseCommandlineArguments(List<String> arguments) {
  *
  */
 Timer reSchedule() =>
-    new Timer(new Duration(seconds: msgdisp.config.mailerPeriod), periodicEmailSend);
+    new Timer(config.messageDispatcher.mailerPeriod, periodicEmailSend);
 
 /**
  *

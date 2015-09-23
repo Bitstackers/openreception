@@ -146,7 +146,7 @@ abstract class Notification {
     final String token = request.uri.queryParameters['token'];
 
     if (WebSocketTransformer.isUpgradeRequest(request)) {
-      return AuthService.userOf(token).then((Model.User user) {
+      return _authService.userOf(token).then((Model.User user) {
         return WebSocketTransformer.upgrade(request).then((WebSocket webSocket) {
           return Notification._register(webSocket, user.ID);
         }).then((_) {

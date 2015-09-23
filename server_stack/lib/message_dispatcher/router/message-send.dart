@@ -41,7 +41,7 @@ void messageSend(HttpRequest request) {
         writeAndClose(request, response);
         return null;
       }
-     
+
       if(data.containsKey('bcc') && !(data['bcc'] is List)) {
         request.response.statusCode = HttpStatus.BAD_REQUEST;
         String response = JSON.encode(
@@ -71,7 +71,7 @@ void messageSend(HttpRequest request) {
     }
 
     //    writeAndClose(request, JSON.encode({'status': 'Success'}));
-    
+
     String message     = data['message'];
     String subject     = data['subject'];
     int toContactId    = data['to_contact_id'];
@@ -80,20 +80,20 @@ void messageSend(HttpRequest request) {
     bool urgent             = data['urgent'];
     DateTime createdAt      = new DateTime.now();
 
-    
+
 //    return tempSMTP(message, subject, ['kim.rostgaard@gmail.com']).then((_) {
 //      writeAndClose(request, JSON.encode({'status': 'Success'}));
 //    });
-    
-    
+
+
     return db.createSendMessage(message, subject, toContactId, takenFrom, takeByAgent, urgent, createdAt).then((Map result) {
       db.Message message = new db.Message(result['id']);
-      
+
       // Harvest each field for recipients.
       ['bcc','cc','to'].forEach ((String role) {
         (data[role] as List).forEach((contact_string) =>  message.addRecipient(new db.Messaging_Contact(contact_string, role)));
       });
-      
+
       return db.addRecipientsToSendMessage(message.sqlRecipients()).then((Map result) {
         db.populateQueue(message).then((queueSize) {
           logger.debugContext("inserted $queueSize elements in queue.", context);
@@ -102,13 +102,13 @@ void messageSend(HttpRequest request) {
         writeAndClose(request, JSON.encode(result));
       });
     });
-       
+
   }).catchError((error) => serverError(request, error.toString()));
 }
 
 Future<int> getUserID (HttpRequest request, Uri authUrl) {
     try {
-      if(request.uri.queryParameters.containsKey('token')) {      
+      if(request.uri.queryParameters.containsKey('token')) {
         String path = 'token/${request.uri.queryParameters['token']}/validate';
         Uri url = new Uri(scheme: authUrl.scheme, host: authUrl.host, port: authUrl.port, path: path);
         return http.get(url).then((response) {
@@ -121,7 +121,7 @@ Future<int> getUserID (HttpRequest request, Uri authUrl) {
         }).catchError((error) {
           return 0;
         });
-        
+
       } else {
         return new Future.value(false);
       }
@@ -129,7 +129,7 @@ Future<int> getUserID (HttpRequest request, Uri authUrl) {
       logger.critical('utilities.httpserver.auth() ${e} authUrl: "${authUrl}"');
     }
 }
-  
+
 Future tempSMTP(String message, String subject, List<String> recipients) {
   // If you want to use an arbitrary SMTP server, go with `new SmtpOptions()`.
   // This class below is just for convenience. There are more similar classes available.
@@ -137,10 +137,10 @@ Future tempSMTP(String message, String subject, List<String> recipients) {
     ..username = config.emailUsername
     ..password = config.emailPassword; // Note: if you have Google's "app specific passwords" enabled,
                                         // you need to use one of those here.
-  
+
   // Create our email transport.
   var emailTransport = new SmtpTransport(options);
-  
+
   // Create our mail/envelope.
   var envelope = new Envelope()
     ..fromName = config.emailFromName

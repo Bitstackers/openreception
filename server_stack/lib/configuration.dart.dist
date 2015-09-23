@@ -105,7 +105,7 @@ class AuthServer extends StandardConfig {
   final String serverTokendir = '';
   Uri get clientUri => Uri.parse('http://localhost:3030/Bob/web/bob.html');
 
-  Uri get redirectUri => Uri.parse('${externalHostName}/token/oauth2callback');
+  Uri get redirectUri => Uri.parse('${externalUri}/token/oauth2callback');
 
   @override
   final int httpPort = 4050;

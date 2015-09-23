@@ -15,7 +15,7 @@ library openreception.authentication_server.database;
 
 import 'dart:async';
 
-import 'configuration.dart';
+import '../configuration.dart';
 import 'package:openreception_framework/database.dart' as Database;
 
 part 'db/getuser.dart';
@@ -23,5 +23,5 @@ part 'db/getuser.dart';
 Database.Connection connection = null;
 
 Future startDatabase() =>
-    Database.Connection.connect('postgres://${config.dbuser}:${config.dbpassword}@${config.dbhost}:${config.dbport}/${config.dbname}')
+    Database.Connection.connect(config.database.dsn)
       .then((Database.Connection newConnection) => connection = newConnection);

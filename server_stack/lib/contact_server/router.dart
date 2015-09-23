@@ -17,7 +17,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' as IO;
 
-import 'configuration.dart' as json;
 import '../configuration.dart';
 import 'database.dart' as db;
 
@@ -43,8 +42,8 @@ part 'router/phone.dart';
 const String libraryName = 'contactserver.router';
 final Logger log = new Logger (libraryName);
 
-Service.Authentication      AuthService  = null;
-Service.NotificationService Notification = null;
+Service.Authentication      _authService  = null;
+Service.NotificationService _notification = null;
 Database.Contact _contactDB = new Database.Contact (db.connection);
 Database.Endpoint _endpointDB = new Database.Endpoint (db.connection);
 Database.DistributionList _dlistDB = new Database.DistributionList (db.connection);
@@ -54,15 +53,15 @@ const Map corsHeaders = const
   {'Access-Control-Allow-Origin': '*',
    'Access-Control-Allow-Methods' : 'GET, PUT, POST, DELETE'};
 
-void connectAuthService() {
-  AuthService = new Service.Authentication
-      (json.config.authUrl, Configuration.contactServer.serverToken, new Service_IO.Client());
-}
+   void connectAuthService() {
+     _authService = new Service.Authentication
+         (config.authServer.externalUri, config.userServer.serverToken, new Service_IO.Client());
+   }
 
-void connectNotificationService() {
-  Notification = new Service.NotificationService
-      (json.config.notificationServer, Configuration.contactServer.serverToken, new Service_IO.Client());
-}
+   void connectNotificationService() {
+     _notification = new Service.NotificationService
+         (config.notificationServer.externalUri, config.userServer.serverToken, new Service_IO.Client());
+   }
 
 shelf.Middleware checkAuthentication =
   shelf.createMiddleware(requestHandler: _lookupToken, responseHandler: null);
@@ -71,7 +70,7 @@ shelf.Middleware checkAuthentication =
 Future<shelf.Response> _lookupToken(shelf.Request request) {
   var token = request.requestedUri.queryParameters['token'];
 
-  return AuthService.validate(token).then((_) => null)
+  return _authService.validate(token).then((_) => null)
   .catchError((error) {
     if (error is Storage.NotFound) {
       return new shelf.Response.forbidden('Invalid token');

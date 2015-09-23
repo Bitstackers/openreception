@@ -30,9 +30,9 @@ Future<shelf.Response> oauthCallback(shelf.Request request) {
   final Map postBody = {
     "grant_type": "authorization_code",
     "code": request.url.queryParameters['code'],
-    "redirect_uri": json.config.redirectUri.toString(),
-    "client_id": json.config.clientId,
-    "client_secret": json.config.clientSecret
+    "redirect_uri":  config.authServer.redirectUri.toString(),
+    "client_id":  config.authServer.clientId,
+    "client_secret":  config.authServer.clientSecret
   };
 
   log.finest(
@@ -49,7 +49,7 @@ Future<shelf.Response> oauthCallback(shelf.Request request) {
     } else {
       ///FIXME: Change to use format from framework AND update the dummy tokens.
       json['expiresAt'] =
-          new DateTime.now().add(Configuration.authServer.tokenexpiretime).toString();
+          new DateTime.now().add(config.authServer.tokenLifetime).toString();
       return getUserInfo(json['access_token']).then((Map userData) {
         if (userData == null || userData.isEmpty) {
           log.finest('authenticationserver.router.oauthCallback() '

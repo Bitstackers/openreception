@@ -20,9 +20,9 @@ import 'package:logging/logging.dart';
 
 import 'package:esl/esl.dart' as ESL;
 import 'package:openreception_framework/model.dart' as ORModel;
+import 'package:openreception_framework/service.dart' as ORService;
 
 import 'model/model.dart' as Model;
-import 'configuration.dart' as json;
 import '../configuration.dart';
 
 part 'controller/controller-client_notifier.dart';

@@ -13,50 +13,36 @@
 
 library openreception.configuration_server;
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:path/path.dart';
 import 'package:logging/logging.dart';
 
-import '../lib/config_server/configuration.dart' as json_conf;
 import '../lib/configuration.dart';
 import '../lib/config_server/router.dart' as router;
 
-ArgResults    parsedArgs;
-ArgParser     parser = new ArgParser();
-final Logger  log = new Logger ('configserver');
-
-void main(List<String> args) {
+Future main(List<String> args) {
   ///Init logging.
-  Logger.root.level = Configuration.configserver.log.level;
-  Logger.root.onRecord.listen(Configuration.configserver.log.onRecord);
+  final Logger log = new Logger('configserver');
+  Logger.root.level = config.configserver.log.level;
+  Logger.root.onRecord.listen(config.configserver.log.onRecord);
 
-  try {
-    Directory.current = dirname(Platform.script.toFilePath());
+  ///Handle argument parsing.
+  ArgParser parser = new ArgParser()
+    ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
+    ..addOption('httpport',
+        defaultsTo: config.configserver.httpPort.toString(),
+        help: 'The port the HTTP server listens on.');
 
-    registerAndParseCommandlineArguments(args);
+  ArgResults parsedArgs = parser.parse(args);
 
-    if(showHelp()) {
-      print(parser.usage);
-    } else {
-      json_conf.config = new json_conf.Configuration(parsedArgs);
-      json_conf.config.whenLoaded()
-        .then((_) => router.start(port : json_conf.config.httpport))
-        .catchError(log.shout);
-    }
-  } catch(error, stackTrace) {
-    log.shout(error, stackTrace);
+  if (parsedArgs['help']) {
+    print(parser.usage);
+    exit(1);
   }
+
+  return router
+      .start(port: int.parse(parsedArgs['httpport']))
+      .catchError(log.shout);
 }
-
-void registerAndParseCommandlineArguments(List<String> arguments) {
-  parser.addFlag  ('help', abbr: 'h', help: 'Output this help');
-  parser.addOption('configfile',      help: 'The JSON configuration file. Defaults to config.json');
-  parser.addOption('httpport',        help: 'The port the HTTP server listens on.'
-     'Defaults to ${Configuration.configserver.defaults.HttpPort}');
-
-  parsedArgs = parser.parse(arguments);
-}
-
-bool showHelp() => parsedArgs['help'];

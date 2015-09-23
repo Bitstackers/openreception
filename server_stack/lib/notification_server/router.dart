@@ -20,7 +20,7 @@ import 'dart:convert';
 import 'package:route/pattern.dart';
 import 'package:route/server.dart';
 
-import 'configuration.dart';
+import '../configuration.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/httpserver.dart' as ORhttp;
 import 'package:openreception_framework/model.dart' as Model;
@@ -50,19 +50,20 @@ final List<Pattern> allUniqueUrls = [
 ];
 
 Map<int, List<WebSocket>> clientRegistry = new Map<int, List<WebSocket>>();
-Service.Authentication AuthService = null;
+Service.Authentication _authService = null;
 
 void connectAuthService() {
-  AuthService =
-      new Service.Authentication(config.authUrl, '', new Service_IO.Client());
+  _authService = new Service.Authentication
+      (config.authServer.externalUri, config.userServer.serverToken, new Service_IO.Client());
 }
+
 
 void registerHandlers(HttpServer server) {
   Notification.initStats();
   var router = new Router(server);
 
   router
-    ..filter(matchAny(allUniqueUrls), auth(config.authUrl))
+    ..filter(matchAny(allUniqueUrls), auth(config.authServer.externalUri))
     ..serve(notificationSocketResource, method: "GET").listen(
         Notification.connect) // The upgrade-request is found in the header of a GET request.
     ..serve(broadcastResource, method: "POST").listen(Notification.broadcast)
@@ -77,7 +78,7 @@ void registerHandlers(HttpServer server) {
 
 Filter auth(Uri authUrl) {
   return (HttpRequest request) {
-    if (request.uri.queryParameters.containsKey('token')) return AuthService
+    if (request.uri.queryParameters.containsKey('token')) return _authService
         .validate(request.uri.queryParameters['token'])
         .then((_) => true)
         .catchError((_) => false);

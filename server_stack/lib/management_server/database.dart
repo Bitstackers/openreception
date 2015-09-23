@@ -21,29 +21,28 @@ import 'package:libdialplan/ivr.dart';
 
 import 'package:openreception_framework/model.dart' as model;
 
-import 'configuration.dart';
+import '../configuration.dart';
 
 part 'database/dialplan.dart';
 
-ORDatabase.Connection _connection;
+
 const String _libraryName = 'openreception.management_server.database';
 
 Future<Database> setupDatabase(Configuration config) {
-  Database db = new Database(config.dbuser, config.dbpassword, config.dbhost, config.dbport, config.dbname);
+  Database db = new Database(config);
   return db.start().then((_) => db);
 }
 
 class Database {
-  String user, password, host, name;
-  int port, minimumConnections, maximumConnections;
+  final Configuration _config;
+  ORDatabase.Connection _connection;
 
-  Database(String this.user, String this.password, String this.host, int this.port, String this.name, {int this.minimumConnections: 1, int this.maximumConnections: 10});
+  Database(this._config);
 
   Future start() {
-    String connectString = 'postgres://${user}:${password}@${host}:${port}/${name}';
-
-    return ORDatabase.Connection.connect (connectString)
-        .then((ORDatabase.Connection newConnection) => _connection = newConnection);
+    return ORDatabase.Connection.connect (_config.database.dsn)
+      .then((ORDatabase.Connection newConnection) =>
+          _connection = newConnection);
   }
 
   /* ***********************************************

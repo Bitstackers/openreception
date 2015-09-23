@@ -18,7 +18,6 @@ import 'dart:io';
 import 'package:route/pattern.dart';
 import 'package:route/server.dart';
 
-import 'configuration.dart' as json;
 import '../configuration.dart';
 import 'controller/dialplan.dart';
 import 'utilities/http.dart';
@@ -61,13 +60,15 @@ Service.NotificationService Notification = null;
 
 void connectNotificationService() {
   Notification = new Service.NotificationService(
-      json.config.notificationServer, Configuration.authServer.serverToken, new Service_IO.Client());
+      config.notificationServer.externalUri,
+      config.authServer.serverToken, new Service_IO.Client());
 }
 
-Router setupRoutes(HttpServer server, json.Configuration config) =>
+Router setupRoutes(HttpServer server, Configuration config) =>
     new Router(server)
   ..filter(matchAny(Serviceagents), (HttpRequest req) =>
-      authorizedRole(req, json.config.authUrl, ['Service agent', 'Administrator']))
+      authorizedRole(req, config.authServer.externalUri,
+          ['Service agent', 'Administrator']))
   ..serve(_receptionRecordUrl, method: HttpMethod.POST)
       .listen(_dialplan.recordSound)
   ..serve(_receptionRecordUrl, method: HttpMethod.DELETE)
@@ -92,6 +93,6 @@ Router setupRoutes(HttpServer server, json.Configuration config) =>
   ..serve(_anyThing, method: HttpMethod.OPTIONS).listen(orf_http.preFlight)
   ..defaultStream.listen(orf_http.page404);
 
-void setupControllers(Database db, json.Configuration config) {
-  _dialplan = new DialplanController(db, json.config);
+void setupControllers(Database db, Configuration config) {
+  _dialplan = new DialplanController(db, config);
 }

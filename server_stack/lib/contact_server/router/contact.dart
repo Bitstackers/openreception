@@ -64,7 +64,7 @@ abstract class Contact {
         Event.ContactChange changeEvent =
             new Event.ContactChange(createdContact.id, Event.ContactState.CREATED);
 
-        Notification.broadcastEvent(changeEvent);
+        _notification.broadcastEvent(changeEvent);
 
         return new shelf.Response.ok(JSON.encode(contact));
       }).catchError((error, stackTrace) {
@@ -171,7 +171,7 @@ abstract class Contact {
       Event.ContactChange changeEvent =
           new Event.ContactChange(contactID, Event.ContactState.DELETED);
 
-      Notification.broadcastEvent(changeEvent);
+      _notification.broadcastEvent(changeEvent);
 
       return new shelf.Response.ok(
           JSON.encode({'status': 'ok', 'description': 'Contact deleted'}));
@@ -212,7 +212,7 @@ abstract class Contact {
         Event.ContactChange changeEvent =
             new Event.ContactChange(contactID, Event.ContactState.UPDATED);
 
-        Notification.broadcastEvent(changeEvent);
+        _notification.broadcastEvent(changeEvent);
 
         return new shelf.Response.ok(JSON.encode(contact));
       }).catchError((error, stackTrace) {
@@ -272,7 +272,7 @@ abstract class Contact {
         Event.ContactChange changeEvent =
             new Event.ContactChange(createdContact.ID, Event.ContactState.UPDATED);
 
-        Notification.broadcastEvent(changeEvent);
+        _notification.broadcastEvent(changeEvent);
 
         return new shelf.Response.ok(JSON.encode(contact));
       }).catchError((error, stackTrace) {
@@ -310,7 +310,7 @@ abstract class Contact {
         Event.ContactChange changeEvent =
             new Event.ContactChange(contact.ID, Event.ContactState.UPDATED);
 
-        Notification.broadcastEvent(changeEvent);
+        _notification.broadcastEvent(changeEvent);
 
         return new shelf.Response.ok(JSON.encode(contact));
       }).catchError((error, stackTrace) {
@@ -333,7 +333,7 @@ abstract class Contact {
         Event.ContactChange changeEvent =
             new Event.ContactChange(cid, Event.ContactState.UPDATED);
 
-        Notification.broadcastEvent(changeEvent);
+        _notification.broadcastEvent(changeEvent);
 
         return new shelf.Response.ok(JSON.encode(const {}));
       }).catchError((error, stackTrace) {

@@ -13,74 +13,61 @@
 
 library openreception.authentication_server;
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:path/path.dart';
 
 import 'package:logging/logging.dart';
-import '../lib/auth_server/configuration.dart' as json;
 import '../lib/configuration.dart';
 import '../lib/auth_server/database.dart';
 import '../lib/auth_server/router.dart' as router;
 import '../lib/auth_server/token_vault.dart';
 import '../lib/auth_server/token_watcher.dart' as watcher;
 
-ArgResults    parsedArgs;
-ArgParser     parser = new ArgParser();
+ArgResults parsedArgs;
+ArgParser parser = new ArgParser();
 
-final Logger log = new Logger ('AuthServer');
+final Logger log = new Logger('AuthServer');
 
-void main(List<String> args) {
+Future main(List<String> args) {
+  ///Init logging.
+  final Logger log = new Logger('configserver');
+  Logger.root.level = config.authServer.log.level;
+  Logger.root.onRecord.listen(config.authServer.log.onRecord);
 
-  ///Init logging. Inherit standard values.
-  Logger.root.level = Configuration.logDefaults.level;
-  Logger.root.onRecord.listen(Configuration.logDefaults.onRecord);
+  ///Handle argument parsing.
+  ArgParser parser = new ArgParser()
+    ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
+    ..addOption('httpport',
+        help: 'The port the HTTP server listens on.',
+        defaultsTo: config.authServer.httpPort.toString())
+    ..addOption('clientid',
+        help: 'The client id from google',
+        defaultsTo: config.authServer.clientId)
+    ..addOption('clientsecret',
+        help: 'The client secret from google',
+        defaultsTo: config.authServer.clientSecret)
+    ..addOption('redirecturi', help: 'The URI google redirects to after '
+        'an authentication attempt.',
+        defaultsTo: config.authServer.redirectUri.toString())
+    ..addOption('tokenlifetime',
+        help: 'The time in seconds a token is valid. Refreshed on use.',
+        defaultsTo: config.authServer.tokenLifetime.toString())
+    ..addOption('servertokendir',
+        help: 'A location where some predefined tokens will be loaded from.',
+        defaultsTo: config.authServer.serverTokendir);
 
-  try {
-    Directory.current = dirname(Platform.script.toFilePath());
+  ArgResults parsedArgs = parser.parse(args);
 
-    registerAndParseCommandlineArguments(args);
-
-    if(showHelp()) {
-      print(parser.usage);
-    } else {
-      json.config = new json.Configuration(parsedArgs);
-      json.config.whenLoaded()
-        .then((_) => log.fine(json.config.toString()))
-        .then((_) => startDatabase())
-        .then((_) => watcher.setup())
-        .then((_) => vault.loadFromDirectory(json.config.serverTokenDir))
-        .then((_) => router.start())
-        .catchError(log.shout);
-    }
-  } on ArgumentError catch(e) {
-    log.severe('main() ArgumentError ${e}.');
-    print (parser.usage);
-
-  } on FormatException catch(e) {
-    log.severe('main() FormatException ${e}');
+  if (parsedArgs['help']) {
     print(parser.usage);
-
-  } catch(e) {
-    log.severe('main() exception ${e}');
+    exit(1);
   }
+
+  return startDatabase()
+      .then((_) => watcher.setup())
+      .then((_) => vault.loadFromDirectory(parsedArgs['servertokendir']))
+      .then((_) => router.start(port: int.parse(parsedArgs['httpport'])))
+      .catchError(log.shout);
 }
-
-void registerAndParseCommandlineArguments(List<String> arguments) {
-  parser
-    ..addFlag  ('help', abbr: 'h', help: 'Output this help')
-    ..addOption('clientid',        help: 'The client id from google')
-    ..addOption('clientsecret',    help: 'The client secret from google')
-    ..addOption('configfile',      help: 'The JSON configuration file. Defaults to config.json')
-    ..addOption('httpport',        help: 'The port the HTTP server listens on.  Defaults to 8080')
-    ..addOption('redirecturi',     help: 'The URI google redirects to after an authtication attempt. Defaults to http://localhost:8080/oauth2callback')
-    ..addOption('tokenexpiretime', help: 'The time in seconds a token is valid. Refreshed on use. Defaults to 3600')
-    ..addFlag('syslog',            help: 'Enable logging by syslog', defaultsTo: false)
-    ..addOption('sysloghost',      help: 'The syslog host. Defaults to localhost')
-    ..addOption('servertokendir',  help: 'A location where some predefined tokens will be loaded from.');
-
-  parsedArgs = parser.parse(arguments);
-}
-
-bool showHelp() => parsedArgs['help'];

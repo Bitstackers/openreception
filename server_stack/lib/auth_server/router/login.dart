@@ -14,11 +14,8 @@
 part of openreception.authentication_server.router;
 
 shelf.Response login(shelf.Request request) {
-  final String returnUrlString =
-      request.url.queryParameters
-          .containsKey('returnurl')
-      ? request.url.queryParameters['returnurl']
-      : '';
+  final String returnUrlString = request.url.queryParameters
+      .containsKey('returnurl') ? request.url.queryParameters['returnurl'] : '';
 
   log.finest('returnUrlString:$returnUrlString');
 
@@ -26,7 +23,7 @@ shelf.Response login(shelf.Request request) {
     //Because the library does not allow to set custom query parameters
     Map googleParameters = {
       'access_type': 'offline',
-      'state': json.config.clientURL
+      'state': config.authServer.clientUri.toString()
     };
 
     if (returnUrlString.isNotEmpty) {
@@ -35,8 +32,9 @@ shelf.Response login(shelf.Request request) {
       googleParameters['state'] = returnUrl.toString();
     }
 
-    Uri authUrl =
-        googleAuthUrl(json.config.clientId, json.config.clientSecret, json.config.redirectUri);
+    Uri authUrl = googleAuthUrl(config.authServer.clientId,
+        config.authServer.clientSecret,
+        config.authServer.redirectUri);
 
     googleParameters.addAll(authUrl.queryParameters);
     Uri googleOauthRequestUrl = new Uri(

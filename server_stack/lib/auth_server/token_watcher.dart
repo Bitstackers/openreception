@@ -16,7 +16,7 @@ library openreception.authentication_server.token_watcher;
 import 'dart:async';
 
 import 'package:logging/logging.dart';
-import 'configuration.dart';
+import '../configuration.dart';
 import 'token_vault.dart';
 import 'package:openreception_framework/common.dart';
 
@@ -32,7 +32,8 @@ void setup() {
 
 void seen(String token) {
   Map data = vault.getToken(token);
-  data['expiresAt'] = dateTimeToJson(new DateTime.now().add(config.tokenexpiretime));
+  data['expiresAt'] = dateTimeToJson
+      (new DateTime.now().add(config.authServer.tokenLifetime));
   vault.updateToken(token, data);
 }
 

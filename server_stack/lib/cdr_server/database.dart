@@ -15,7 +15,7 @@ library openreception.cdr_server.database;
 
 import 'dart:async';
 
-import 'configuration.dart';
+import '../configuration.dart';
 import 'package:openreception_framework/model.dart' as Model;
 import 'package:openreception_framework/database.dart' as Database;
 import 'package:logging/logging.dart';
@@ -38,5 +38,5 @@ class CreateFailed extends StateError {
 Database.Connection connection = null;
 
 Future startDatabase() =>
-    Database.Connection.connect('postgres://${config.dbuser}:${config.dbpassword}@${config.dbhost}:${config.dbport}/${config.dbname}')
+    Database.Connection.connect(config.database.dsn)
       .then((Database.Connection newConnection) => connection = newConnection);

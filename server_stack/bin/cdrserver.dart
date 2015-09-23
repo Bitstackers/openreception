@@ -19,7 +19,6 @@ import 'package:args/args.dart';
 import 'package:path/path.dart';
 import 'package:logging/logging.dart';
 
-import '../lib/cdr_server/configuration.dart' as json;
 import '../lib/configuration.dart';
 import '../lib/cdr_server/database.dart';
 import 'package:openreception_framework/httpserver.dart' as http;
@@ -32,8 +31,8 @@ ArgParser  parser = new ArgParser();
 
 void main(List<String> args) {
   ///Init logging.
-  Logger.root.level = Configuration.cdrServer.log.level;
-  Logger.root.onRecord.listen(Configuration.cdrServer.log.onRecord);
+  Logger.root.level = config.cdrServer.log.level;
+  Logger.root.onRecord.listen(config.cdrServer.log.onRecord);
 
   try {
     Directory.current = dirname(Platform.script.toFilePath());
@@ -43,10 +42,8 @@ void main(List<String> args) {
     if(showHelp()) {
       print(parser.usage);
     } else {
-      json.config = new json.Configuration(parsedArgs);
-      json.config.whenLoaded()
-        .then((_) => startDatabase())
-        .then((_) => http.start(json.config.httpport, router.setup))
+        startDatabase()
+        .then((_) => http.start(config.cdrServer.httpPort, router.setup))
         .catchError(log.shout);
     }
   } catch(error, stackTrace) {
