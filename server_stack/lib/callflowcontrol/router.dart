@@ -92,14 +92,19 @@ void _accessLogger(String msg, bool isError) {
     log.finest(msg);
   }
 }
-
-void startNotifier() {
-  log.info('Starting client notifier');
-  Model.CallList.instance.onEvent.listen(Notification.broadcastEvent);
-}
+Controller.ClientNotifier notififer;
 
 Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4242}) {
   Controller.State stateController = new Controller.State();
+  log.info('Starting client notifier');
+
+  Notification = new Service.NotificationService
+      (config.notificationServer.externalUri,
+          config.callFlowControl.serverToken, new Service_IO.Client());
+
+  notififer = new Controller.ClientNotifier(Notification)
+              ..listenForCallEvents(Model.CallList.instance);
+
 
   var router = shelf_route.router()
     ..get('/peer/list', Peer.list)
