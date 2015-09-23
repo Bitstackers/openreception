@@ -115,3 +115,14 @@ String humanReadableTimestamp(DateTime timestamp, WeekDays weekDays) {
 
   return sb.toString();
 }
+
+/**
+ * Obfuscate a password of length 3 or above.
+ */
+String obfuscatePassword(String string) => string.length > 3
+    ? '${string.split('').first}'
+        '${string.split('').skip(1).take(string.length-2)
+          .map((_) => '*').join('')}'
+        '${string.substring(string.length -1)}'
+    : string;
+
