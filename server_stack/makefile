@@ -13,12 +13,13 @@ GIT_REV=$(shell git rev-parse --short HEAD)
 
 BUILD_DIR=build
 
-all: build
+all: $(BUILD_DIR) snapshots
 
-build: snapshots
-	cp bin/config.json $(BUILD_DIR)/
+$(BUILD_DIR):
+	-@mkdir $(BUILD_DIR)
 
-snapshots: $(BUILD_DIR)/authserver-$(GIT_REV).dart \
+snapshots: $(BUILD_DIR) \
+           $(BUILD_DIR)/authserver-$(GIT_REV).dart \
            $(BUILD_DIR)/callflowcontrol-$(GIT_REV).dart \
            $(BUILD_DIR)/cdrserver-$(GIT_REV).dart \
            $(BUILD_DIR)/configserver-$(GIT_REV).dart \
@@ -31,7 +32,6 @@ snapshots: $(BUILD_DIR)/authserver-$(GIT_REV).dart \
            $(BUILD_DIR)/userserver-$(GIT_REV).dart
 
 build/%-$(GIT_REV).dart: bin/%.dart
-	-@mkdir $(BUILD_DIR)
 	dart --snapshot=$@ $<
 
 analyze-all: analyze analyze-hints
@@ -49,7 +49,7 @@ upgrade-dependency:
 	pub upgrade
 
 clean: 
-	rm -rf $(OUTPUT_DIRECTORY)
+	-rm -rf $(BUILD_DIR)
 
 install: build
 	install --directory ${PREFIX}
@@ -93,13 +93,9 @@ remove-symlinks:
 	-rm ${PREFIX}/receptionserver.dart
 	-rm ${PREFIX}/userserver.dart
 
-install-config:
+default-config:
 	@install --directory ${PREFIX}
-	@install bin/config.json ${PREFIX}/config.json
-
-install-default-config:
-	@install --directory ${PREFIX}
-	@install bin/config.json.dist ${PREFIX}/config.json
+	@install lib/configuration.dart.dist lib/configuration.dart
 
 install_db:
 	PGOPTIONS='--client-min-messages=warning' psql ${PGARGS} --dbname=${PGDB} --file=${DB_SRC}/${DB_SCHEMA} --host=${PGHOST} --username=${PGUSER} -w
@@ -115,55 +111,3 @@ latest_db_install:
 	psql -c "CREATE DATABASE ${PGDB} WITH OWNER = ${PGUSER} ENCODING='UTF8' LC_COLLATE='en_DK.UTF-8' LC_CTYPE='en_DK.UTF-8' TEMPLATE = template0;" --host=${PGHOST} --username=${PG_SUPER_USER} -w
 	PGOPTIONS='--client-min-messages=warning' psql ${PGARGS} --dbname=${PGDB} --file=${DB_SRC}/${DB_SCHEMA} --host=${PGHOST} --username=${PGUSER} -w
 	LANG=C.UTF-8 PGOPTIONS='--client-min-messages=warning' psql ${PGARGS} --dbname=${PGDB} --file=${DB_SRC}/${DB_DATA} --host=${PGHOST} --username=${PGUSER} -w
-
-#####
-# Deprecated rules below.
-
-$(OUTPUT_DIRECTORY):
-	mkdir -p $(OUTPUT_DIRECTORY)
-
-auth:notify-build-deprecated
-callflow:notify-build-deprecated 
-contact:notify-build-deprecated
-message:notify-build-deprecated
-messagedispatcher:notify-build-deprecated
-misc:notify-build-deprecated
-notification:notify-build-deprecated
-reception:notify-build-deprecated
-spawner:notify-build-deprecated
- 
-configs: */bin/config.json.dist
-	for source in */bin/config.json.dist; do \
-	   target=$${source%%.dist}; \
-	   cp -np $${source} $${target}; \
-	done
-
-notify-build-deprecated:
-	@echo "WARN: Build type is deprecated, if you insist, use the make <servername>-deprecated command"
-
-auth-deprecated: 
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${AuthBinary} --categories=Server bin/authserver.dart
-
-callflow-deprecated:
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${CallFlowBinary} --categories=Server bin/callflowcontrol.dart
-
-contact-deprecated:
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${ContactBinary} --categories=Server bin/contactserver.dart
-
-message-deprecated:
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${MessageBinary} --categories=Server bin/messageserver.dart
-
-messagedispatcher-deprecated:
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${MessageDispatcherBinary} --categories=Server bin/messagedispatcher.dart
-
-misc-deprecated:
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${MiscBinary} --categories=Server bin/configserver.dart
-
-notification-deprecated:
-	dart2js --output-type=dart --checked --verbose --out=$(OUTPUT_DIRECTORY)/${NotificationBinary} --categories=Server bin/notificationserver.dart
-
-reception-deprecated:
-	dart2js --output-type=dart --checked --verbose --out=${OUTPUT_DIRECTORY}/${ReceptionBinary} --categories=Server bin/receptionserver.dart
-
-spawner-deprecated:
-	dart2js --output-type=dart --checked --verbose --out=${OUTPUT_DIRECTORY}/${SpawnerBinary} --categories=Server bin/spawner.dart
