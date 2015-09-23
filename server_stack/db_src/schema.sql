@@ -131,8 +131,8 @@ CREATE TABLE messages (
    recipients                JSON      NOT NULL DEFAULT '[]',
    context_contact_id        INTEGER  NOT NULL REFERENCES contacts   (id),
    context_reception_id      INTEGER   NOT NULL REFERENCES receptions (id),
-   context_contact_name      TEXT          NULL DEFAULT NULL, --  Dereferenced contact name.
-   context_reception_name    TEXT      NOT NULL,              --  Dereferenced reception name.
+   context_contact_name      TEXT      NOT NULL DEFAULT '', --  Dereferenced contact name.
+   context_reception_name    TEXT      NOT NULL DEFAULT '', --  Dereferenced reception name.
    taken_from_name           TEXT      NOT NULL DEFAULT '',
    taken_from_company        TEXT      NOT NULL DEFAULT '',
    taken_from_phone          TEXT      NOT NULL DEFAULT '',
