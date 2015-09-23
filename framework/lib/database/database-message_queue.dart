@@ -81,13 +81,18 @@ class MessageQueue implements Storage.MessageQueue {
 
       for (var row in rows) {
 
-        queue.add(new Model.MessageQueueItem.fromMap({
-          'id'                 : row.id,
-          'message_id'         : row.message_id,
-          'unhandled_endpoints': row.unhandled_endpoints,
-          'tries'              : row.tries,
-          'last_try'           : row.last_try
-        }));
+        Iterable<Model.MessageRecipient> recipients =
+            (row.unhandled_endpoints as Iterable).map
+            (Model.MessageRecipient.decode);
+
+        queue.add(new Model.MessageQueueItem.empty()
+          ..ID = row.id
+          ..messageID =  row.message_id
+          ..unhandledRecipients = recipients.toList()
+          //'unhandled_endpoints': row.unhandled_endpoints,
+          ..tries = row.tries
+          ..lastTry =  row.last_try);
+
       }
 
       return queue;

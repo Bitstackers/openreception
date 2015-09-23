@@ -17,6 +17,7 @@ class MessageQueueItem {
   int ID;
   int tries = 0;
   int messageID = Message.noID;
+  DateTime lastTry;
   List<MessageRecipient> handledRecipients = [];
   List<MessageRecipient> unhandledRecipients = [];
 
