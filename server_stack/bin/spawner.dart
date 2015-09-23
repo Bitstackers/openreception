@@ -63,7 +63,7 @@ void main(List<String> arguments) {
       'path': 'bin/messagedispatcher.dart',
       'args': []
     },
-    'MiscServer': {
+    'ConfigServer': {
       'path': 'bin/configserver.dart',
       'args': []
     },
