@@ -7,7 +7,8 @@ CREATE TABLE users (
    send_from        TEXT    NULL,
    extension        TEXT    NULL,
    google_username  TEXT    NOT NULL DEFAULT '',
-   google_appcode   TEXT    NOT NULL DEFAULT ''
+   google_appcode   TEXT    NOT NULL DEFAULT '',
+   enabled          BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE groups (
