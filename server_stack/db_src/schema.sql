@@ -153,6 +153,7 @@ CREATE TABLE message_queue (
    message_id          INTEGER   NOT NULL REFERENCES messages (id),
    enqueued_at         TIMESTAMPTZ NOT NULL DEFAULT NOW(),
    last_try            TIMESTAMPTZ     NULL DEFAULT NULL,
+   handled_endpoints   JSON      NOT NULL DEFAULT '[]',
    unhandled_endpoints JSON      NOT NULL DEFAULT '[]',
    tries               INTEGER   NOT NULL DEFAULT 0
 );
