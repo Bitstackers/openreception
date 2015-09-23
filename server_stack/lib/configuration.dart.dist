@@ -16,44 +16,191 @@ library openreception.configuration;
 import 'dart:io' as IO;
 import 'package:logging/logging.dart';
 
+/**
+ * Log configuration values.
+ */
 class Log {
   final Level level = Level.ALL;
   final onRecord = logEntryDispatch;
+
+  const Log();
 }
 
-class ConfigServerDefault {
-  int HttpPort = 4080;
+/**
+ * ESL configuration values.
+ */
+class EslConfig {
+  final String hostname = 'localhost';
+  final String password = 'ClueCon';
+  final int port = 8021;
+
+  const EslConfig();
 }
+
+/**
+ * Standard configuration values, common among all configurations.
+ */
 abstract class StandardConfig {
-  final Log log = Configuration.logDefaults;
-  final String serverToken = 'ielooch6eig8ie5U';
+  String get externalHostName => 'localhost';
+
+  Log get log => config.logDefaults;
+
+  String get serverToken => 'veeerysecret';
+
+  int get httpPort;
+
+  Uri get externalUri => Uri.parse('http://${externalHostName}:$httpPort');
+
+  const StandardConfig();
 }
 
+/**
+ * Database configuration values.
+ */
+
+class DatabaseConfig {
+  final String dsn =
+      'postgres://openreception:goodpass@localhost:5432/openreception';
+
+  const DatabaseConfig();
+}
+
+/**
+ * Call-flow-control server configuration values.
+ */
 class CallFlowControl extends StandardConfig {
   final String dialoutPrefix = '';
+  final String dialoutGateway = 'friendly-gw.sip';
+
+  final EslConfig eslConfig = const EslConfig();
+
+  int get httpPort => 4242;
 
   /// The user contexts to load peers from. All other contexts will be ignored.
-  final Iterable<String> peerContexts =
-    ['default', 'receptions', 'test-receptions'];
+  final Iterable<String> peerContexts = const [
+    'default',
+    'receptions',
+    'test-receptions'
+  ];
+
+  const CallFlowControl();
 }
 
+/**
+ * Configuration server configuration values.
+ */
 class ConfigServer extends StandardConfig {
-  final ConfigServerDefault defaults = new ConfigServerDefault ();
+  int get httpPort => 4080;
+
+  const ConfigServer();
 }
 
+/**
+ * Authentication server configuration values.
+ */
 class AuthServer extends StandardConfig {
-  final Duration tokenexpiretime = new Duration(hours : 12);
+  final Duration tokenLifetime = const Duration(hours: 12);
+  final String clientId = 'google-client-id';
+  final String clientSecret = 'google-client-secret';
+  final String serverTokendir = '';
+  Uri get clientUri => Uri.parse('http://localhost:3030/Bob/web/bob.html');
+
+  Uri get redirectUri => Uri.parse('${externalHostName}/token/oauth2callback');
+
+  @override
+  final int httpPort = 4050;
+
+  const AuthServer();
 }
 
-class ContactServer extends StandardConfig {}
-class CDRServer extends StandardConfig {}
-class MessageDispatcher extends StandardConfig {}
-class UserServer extends StandardConfig {}
-class ManagementServer extends StandardConfig {}
-class MessageServer extends StandardConfig {}
-class NotificationServer extends StandardConfig {}
-class ReceptionServer extends StandardConfig {}
+/**
+ * Contact server configuration values.
+ */
+class ContactServer extends StandardConfig {
+  @override
+  final int httpPort = 4010;
 
+  const ContactServer();
+}
+
+/**
+ * CDR server configuration values.
+ */
+class CDRServer extends StandardConfig {
+  @override
+  final int httpPort = 4090;
+
+  const CDRServer();
+}
+
+/**
+ * Message dispatcher configuration values.
+ */
+class MessageDispatcher extends StandardConfig {
+  final int maxTries = 10;
+  final mailerPeriod = const Duration(seconds: 60);
+
+  @override
+  final int httpPort = 4070;
+
+  const MessageDispatcher();
+}
+
+class UserServer extends StandardConfig {
+  @override
+  final int httpPort = 4030;
+
+  const UserServer();
+}
+
+/**
+ * Mangement server configuration values
+ */
+class ManagementServer extends StandardConfig {
+  @override
+  final int httpPort = 4100;
+  Uri get dialplanCompilerServer => Uri.parse('http://localhost:4210');
+  final String recordingsDirectory = '/usr/local/freeswitch/sounds/incoming';
+
+  const ManagementServer();
+}
+
+/**
+ * Message server configuration values
+ */
+class MessageServer extends StandardConfig {
+  @override
+  final int httpPort = 4040;
+
+  const MessageServer();
+}
+
+/**
+ * Nofication server configuration values
+ */
+class NotificationServer extends StandardConfig {
+  @override
+  final int httpPort = 4200;
+
+  Uri get notificationUri =>
+      Uri.parse('ws://${externalHostName}:$httpPort/notifications');
+
+  const NotificationServer();
+}
+
+/**
+ * Reception server configuration values
+ */
+class ReceptionServer extends StandardConfig {
+  @override
+  final int httpPort = 4000;
+
+  const ReceptionServer();
+}
+
+/**
+ *
+ */
 void logEntryDispatch(LogRecord record) {
   if (record.level.value > Level.INFO.value) {
     IO.stderr.writeln(record);
@@ -62,19 +209,28 @@ void logEntryDispatch(LogRecord record) {
   }
 }
 
-abstract class Configuration {
-  static final logDefaults = new Log();
+Configuration config = const Configuration();
 
-  static final AuthServer authServer = new AuthServer();
-  static final CallFlowControl callFlowControl = new CallFlowControl();
-  static final ConfigServer configserver = new ConfigServer();
-  static final ContactServer contactServer = new ContactServer();
-  static final MessageDispatcher messageDispatcher = new MessageDispatcher();
-  static final CDRServer cdrServer= new CDRServer();
-  static final ManagementServer managementServer= new ManagementServer();
-  static final MessageServer messageServer= new MessageServer();
-  static final NotificationServer notificationServer= new NotificationServer();
-  static final ReceptionServer receptionServer= new ReceptionServer();
-  static final UserServer userServer= new UserServer();
+/**
+ *
+ */
+class Configuration {
+  final logDefaults = const Log();
+  final DatabaseConfig database = const DatabaseConfig();
 
+  /// May be 'en' or 'da'
+  final systemLanguage = 'en';
+  final AuthServer authServer = const AuthServer();
+  final CallFlowControl callFlowControl = const CallFlowControl();
+  final ConfigServer configserver = const ConfigServer();
+  final ContactServer contactServer = const ContactServer();
+  final MessageDispatcher messageDispatcher = const MessageDispatcher();
+  final CDRServer cdrServer = const CDRServer();
+  final ManagementServer managementServer = const ManagementServer();
+  final MessageServer messageServer = const MessageServer();
+  final NotificationServer notificationServer = const NotificationServer();
+  final ReceptionServer receptionServer = const ReceptionServer();
+  final UserServer userServer = const UserServer();
+
+  const Configuration();
 }
