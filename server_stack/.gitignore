@@ -10,6 +10,7 @@ bin/mailer_conf.py
 bin/mailer_conf.pyc
 *mailer_conf.py
 *config.json
+lib/configuration.dart
 
 # Don't track out/
 out/
