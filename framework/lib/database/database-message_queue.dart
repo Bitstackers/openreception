@@ -34,6 +34,7 @@ class MessageQueue implements Storage.MessageQueue {
       RETURNING 
          mq.message_id, 
          mq.enqueued_at, 
+         mq.handled_endpoints,
          mq.last_try, 
          mq.tries
   )
@@ -41,11 +42,13 @@ class MessageQueue implements Storage.MessageQueue {
     message_queue_history (
         message_id,
         enqueued_at,
+        handled_endpoints,
         last_try,
         tries) 
     (SELECT 
        message_id, 
-       enqueued_at, 
+       enqueued_at,
+       handled_endpoints,
        last_try, 
        tries 
      FROM moved_rows); ''';
@@ -70,7 +73,7 @@ class MessageQueue implements Storage.MessageQueue {
        mq.tries <= $maxTries
    ORDER BY
        mq.last_try DESC,
-       mq.message_id DESC
+       mq.tries ASC
    LIMIT ${limit} 
   ''';
 
@@ -89,10 +92,8 @@ class MessageQueue implements Storage.MessageQueue {
           ..ID = row.id
           ..messageID =  row.message_id
           ..unhandledRecipients = recipients.toList()
-          //'unhandled_endpoints': row.unhandled_endpoints,
           ..tries = row.tries
           ..lastTry =  row.last_try);
-
       }
 
       return queue;

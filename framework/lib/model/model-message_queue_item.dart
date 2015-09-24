@@ -17,15 +17,26 @@ class MessageQueueItem {
   int ID;
   int tries = 0;
   int messageID = Message.noID;
-  DateTime lastTry;
-  List<MessageRecipient> handledRecipients = [];
-  List<MessageRecipient> unhandledRecipients = [];
+  DateTime lastTry = Util._epoch; //epoch == Never tried.
+
+  Set<MessageRecipient> _handledRecipients = new Set();
+  Set<MessageRecipient> _unhandledRecipients = new Set();
+
+  Iterable<MessageRecipient> get handledRecipients => _handledRecipients;
+  Iterable<MessageRecipient> get unhandledRecipients => _unhandledRecipients;
 
   /**
-   * Default constructor.
+   * Update the handled recipients set. This operation will automatically
+   * remove the handled recipients from the unhandled set.
    */
-  @deprecated
-  MessageQueueItem();
+  set handledRecipients(Iterable<MessageRecipient> handled) {
+    _unhandledRecipients = _unhandledRecipients.difference(handled.toSet());
+    _handledRecipients.addAll(handled);
+  }
+
+  set unhandledRecipients (Iterable<MessageRecipient> unhandled) {
+    _unhandledRecipients = new Set()..addAll(unhandled);
+  }
 
   /**
    * Default empty constructor.
@@ -36,11 +47,26 @@ class MessageQueueItem {
    * Creates a message from the information given in [map].
    */
   MessageQueueItem.fromMap(Map map) {
-    throw new UnimplementedError();
+    ID = map[Key.id];
+    tries = map[Key.tries];
+    messageID = map[Key.messageId];
+    lastTry = Util.unixTimestampToDateTime(map[Key.lastTry]);
+    handledRecipients = map[Key.handledRecipients]
+      .map(MessageRecipient.decode).toList(growable : false);
+    unhandledRecipients = map[Key.unhandledRecipients]
+      .map(MessageRecipient.decode).toList(growable : false);
   }
-
   /**
    * Serialization function
    */
-  Map toJson() => throw new UnimplementedError();
+  Map toJson() => {
+        Key.id: ID,
+        Key.tries: tries,
+        Key.messageId: messageID,
+        Key.lastTry: Util.dateTimeToUnixTimestamp(lastTry),
+        Key.handledRecipients: handledRecipients
+          .map((r) => r.asMap).toList(growable : false),
+        Key.unhandledRecipients: unhandledRecipients
+          .map((r) => r.asMap).toList(growable : false)
+      };
 }

@@ -104,6 +104,12 @@ const String assignedCalls = 'assignedCalls';
 const String start = 'start';
 const String end = 'end';
 
+const String tries = 'tries';
+const String messageId = 'messageId';
+const String lastTry = 'lastTry';
+const String handledRecipients = 'handledRecipients';
+const String unhandledRecipients = 'unhandledRecipients';
+
 ///Message flags
 const String pleaseCall = 'pleaseCall';
 const String willCallBack = 'willCallBack';
