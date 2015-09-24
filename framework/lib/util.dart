@@ -126,3 +126,13 @@ String obfuscatePassword(String string) => string.length > 3
         '${string.substring(string.length -1)}'
     : string;
 
+/**
+ *
+ */
+final DateTime never = _epoch;
+
+/**
+ *
+ */
+final DateTime _epoch = new
+  DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
