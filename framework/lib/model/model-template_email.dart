@@ -19,29 +19,30 @@ abstract class Label {
 
 class TemplateEmail extends Template {
   final DateFormat      _dateFormat = new DateFormat("dd-MM-yyyy' kl. 'HH:mm:ss");
-  List<MessageEndpoint> _endpoints;
+  Iterable<MessageRecipient> _recipients;
   final Message         _message;
   final User _sender;
 
   /**
    * Constructor.
    */
-  TemplateEmail(Message this._message, List<MessageEndpoint> this._endpoints, final User this._sender);
+  TemplateEmail(Message this._message, Iterable<MessageRecipient>
+    this._recipients, final User this._sender);
 
   /**
    *
    */
-  String _renderEmailAddress(MessageEndpoint endpoint) =>
-      '"${endpoint.recipient.contactName}" <${endpoint.address}>';
+  String _renderEmailAddress(MessageRecipient recipient) =>
+      '"${recipient.name}" <${recipient.address}>';
 
-  Iterable<MessageEndpoint> _filterRole (List<MessageEndpoint> endpoints, String role)
-     => endpoints.where((MessageEndpoint endpoint) => endpoint.recipient.role == role);
+  Iterable<MessageRecipient> _filterRole (List<MessageRecipient> recipients, String role)
+     => recipients.where((MessageRecipient recipient) => recipient.role == role);
 
-  Iterable<String> get toRecipients => _filterRole(_endpoints, Role.TO).map(_renderEmailAddress);
+  Iterable<String> get toRecipients => _filterRole(_recipients, Role.TO).map(_renderEmailAddress);
 
-  Iterable<String> get ccRecipients => _filterRole(_endpoints, Role.CC).map(_renderEmailAddress);
+  Iterable<String> get ccRecipients => _filterRole(_recipients, Role.CC).map(_renderEmailAddress);
 
-  Iterable<String> get bccRecipients => _filterRole(_endpoints, Role.BCC).map(_renderEmailAddress);
+  Iterable<String> get bccRecipients => _filterRole(_recipients, Role.BCC).map(_renderEmailAddress);
 
 
   /**
