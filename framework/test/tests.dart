@@ -45,7 +45,7 @@ part 'src/model/model-message_context.dart';
 //part 'src/model-message_header.dart';
 //part 'src/model-message_endpoint.dart';
 part 'src/model/model-message_filter.dart';
-//part 'src/model-message_queue_item.dart';
+part 'src/model/model-message_queue_entry.dart';
 part 'src/model/model-message_recipient.dart';
 part 'src/model/model-organization.dart';
 //part 'src/model-peer.dart';
@@ -102,6 +102,7 @@ void main() {
   testModelCallerInfo();
   testModelMessageContext();
   testModelMessageFilter();
+  testModelMessageQueueEntry();
   testModelMessageRecipient();
 
   testModelPhoneNumber();
