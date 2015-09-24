@@ -45,8 +45,14 @@ class Message {
 
   Message.empty();
 
-  @deprecated
-  Message.stub(this.ID);
+  Iterable<MessageRecipient> get to =>
+    recipients.where((MessageRecipient r) => r.role == Role.TO);
+
+  Iterable<MessageRecipient> get cc =>
+    recipients.where((MessageRecipient r) => r.role == Role.CC);
+
+  Iterable<MessageRecipient> get bcc =>
+    recipients.where((MessageRecipient r) => r.role == Role.BCC);
 
   bool get hasRecpients => recipients.isNotEmpty;
 
