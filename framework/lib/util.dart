@@ -61,7 +61,7 @@ class WeekDays {
  */
 int dateTimeToUnixTimestamp(DateTime time) =>
   time != null
-    ? time.millisecondsSinceEpoch~/1000
+    ? time.millisecondsSinceEpoch
     : null;
 
 /**
@@ -71,7 +71,7 @@ int dateTimeToUnixTimestamp(DateTime time) =>
  */
 DateTime unixTimestampToDateTime(int secondsSinceEpoch) =>
   secondsSinceEpoch != null
-    ? new DateTime.fromMillisecondsSinceEpoch(secondsSinceEpoch*1000)
+    ? new DateTime.fromMillisecondsSinceEpoch(secondsSinceEpoch)
     : null;
 
 
