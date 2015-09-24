@@ -48,7 +48,7 @@ class TemplateEmail extends Template {
   /**
    * TODO: Add caller number and company.
    */
-  String _renderSubject() =>
+  String renderSubject() =>
       '${this._message.flag.urgent ? '[${Label.URGENT.toUpperCase()}]' : ''} '
       'Besked fra ${this._message.callerInfo.name}, '
       '${this._message.callerInfo.company} ${this._message.callerInfo.phone}';
@@ -64,7 +64,7 @@ class TemplateEmail extends Template {
  * This is the actual "template". It uses a lot of iternal formatting
  * functions, but should be relatively easy to customize.
  */
-  String get _renderedBody =>
+  String get renderedBody =>
 '''Til ${_message.context.contactName}.
 
 Der er besked fra ${_message.callerInfo.name}, ${this._message.callerInfo.company}.
@@ -87,9 +87,9 @@ Responsum K/S
   Map toJson() => {Role.TO        :toRecipients,
                    Role.CC        : ccRecipients,
                    Role.BCC       : bccRecipients,
-                   'message_body' : _renderedBody,
+                   'message_body' : renderedBody,
                    'from'         : _sender.address,
-                   'subject'      : _renderSubject()};
+                   'subject'      : renderSubject()};
 
   /**
    * Renders the email for Dart:mailer. TODO!
