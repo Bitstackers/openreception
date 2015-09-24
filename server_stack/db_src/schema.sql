@@ -65,7 +65,8 @@ CREATE TABLE receptions (
    dialplan          JSON         NOT NULL DEFAULT '{}',
    dialplan_compiled BOOLEAN      NOT NULL DEFAULT FALSE,
    ivr               JSON         NOT NULL DEFAULT '{}',
-   last_check        TIMESTAMPTZ  NOT NULL DEFAULT '-infinity',
+-- last_check        TIMESTAMPTZ  NOT NULL DEFAULT '-infinity',
+   last_check        TIMESTAMPTZ  NOT NULL DEFAULT 'epoch',
    enabled           BOOLEAN      NOT NULL DEFAULT TRUE
 );
 
@@ -152,7 +153,8 @@ CREATE TABLE message_queue (
    id                  INTEGER     NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    message_id          INTEGER     NOT NULL REFERENCES messages (id),
    enqueued_at         TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-   last_try            TIMESTAMPTZ NOT NULL DEFAULT 'infinity',
+-- last_try            TIMESTAMPTZ NOT NULL DEFAULT 'infinity',
+   last_try            TIMESTAMPTZ NOT NULL DEFAULT 'epoch',
    handled_endpoints   JSON        NOT NULL DEFAULT '[]',
    unhandled_endpoints JSON        NOT NULL DEFAULT '[]',
    tries               INTEGER     NOT NULL DEFAULT 0
@@ -164,7 +166,8 @@ CREATE TABLE message_queue_history (
    enqueued_at       TIMESTAMPTZ NOT NULL,
    handled_endpoints JSON        NOT NULL DEFAULT '[]',
    sent_at           TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-   last_try          TIMESTAMPTZ NOT NULL DEFAULT '-infinity',
+-- last_try          TIMESTAMPTZ NOT NULL DEFAULT '-infinity',
+   last_try          TIMESTAMPTZ NOT NULL DEFAULT 'epoch',
    tries             INTEGER     NOT NULL DEFAULT 0
 );
 
