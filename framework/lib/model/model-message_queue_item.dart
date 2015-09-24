@@ -17,7 +17,7 @@ class MessageQueueItem {
   int ID;
   int tries = 0;
   int messageID = Message.noID;
-  DateTime lastTry = Util._epoch; //epoch == Never tried.
+  DateTime lastTry = Util.never;
 
   Set<MessageRecipient> _handledRecipients = new Set();
   Set<MessageRecipient> _unhandledRecipients = new Set();
