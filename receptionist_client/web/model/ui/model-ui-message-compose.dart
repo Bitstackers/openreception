@@ -17,18 +17,18 @@ part of model;
  * Provides methods to manipulate and extract data from the widget UX parts.
  */
 class UIMessageCompose extends UIModel {
-  HtmlElement      _myFirstTabElement;
-  HtmlElement      _myFocusElement;
-  HtmlElement      _myLastTabElement;
+  HtmlElement _myFirstTabElement;
+  HtmlElement _myFocusElement;
+  HtmlElement _myLastTabElement;
   final DivElement _myRoot;
 
   /**
    * Constructor.
    */
   UIMessageCompose(DivElement this._myRoot) {
-    _myFocusElement    = _messageTextarea;
+    _myFocusElement = _messageTextarea;
     _myFirstTabElement = _callerNameInput;
-    _myLastTabElement  = _urgentInput;
+    _myLastTabElement = _urgentInput;
 
     _haveCalledInput.checked = true;
 
@@ -37,34 +37,45 @@ class UIMessageCompose extends UIModel {
   }
 
   @override HtmlElement get _firstTabElement => _myFirstTabElement;
-  @override HtmlElement get _focusElement    => _myFocusElement;
-  @override HtmlElement get _lastTabElement  => _myLastTabElement;
-  @override HtmlElement get _root            => _myRoot;
+  @override HtmlElement get _focusElement => _myFocusElement;
+  @override HtmlElement get _lastTabElement => _myLastTabElement;
+  @override HtmlElement get _root => _myRoot;
 
-  InputElement         get _callerNameInput    => _root.querySelector('.names input.caller');
-  InputElement         get _callsBackInput     => _root.querySelector('.checks .calls-back');
-  InputElement         get _cellphoneInput     => _root.querySelector('.phone-numbers input.cell');
-  InputElement         get _companyNameInput   => _root.querySelector('.names input.company');
-  InputElement         get _extensionInput     => _root.querySelector('.phone-numbers input.extension');
-  InputElement         get _haveCalledInput    => _root.querySelector('.checks .have-called');
-  InputElement         get _landlineInput      => _root.querySelector('.phone-numbers input.landline');
-  TextAreaElement      get _messageTextarea    => _root.querySelector('.message textarea');
-  InputElement         get _pleaseCallInput    => _root.querySelector('.checks .please-call');
-  DivElement           get _prerequisites      => _root.querySelector('.prerequisites');
-  DivElement           get _recipientsDiv      => _root.querySelector('.recipients');
-  OListElement         get _recipientsList     => _root.querySelector('.recipients .generic-widget-list');
-  ButtonElement        get _saveButton         => _root.querySelector('.buttons .save');
-  ButtonElement        get _sendButton         => _root.querySelector('.buttons .send');
-  SpanElement          get _showRecipientsSpan => _root.querySelector('.show-recipients');
-  ElementList<Element> get _tabElements        => _root.querySelectorAll('[tabindex]');
-  InputElement         get _urgentInput        => _root.querySelector('.checks .urgent');
+  InputElement get _callerNameInput =>
+      _root.querySelector('.names input.caller');
+  InputElement get _callsBackInput =>
+      _root.querySelector('.checks .calls-back');
+  InputElement get _cellphoneInput =>
+      _root.querySelector('.phone-numbers input.cell');
+  InputElement get _companyNameInput =>
+      _root.querySelector('.names input.company');
+  InputElement get _extensionInput =>
+      _root.querySelector('.phone-numbers input.extension');
+  InputElement get _haveCalledInput =>
+      _root.querySelector('.checks .have-called');
+  InputElement get _landlineInput =>
+      _root.querySelector('.phone-numbers input.landline');
+  TextAreaElement get _messageTextarea =>
+      _root.querySelector('.message textarea');
+  InputElement get _pleaseCallInput =>
+      _root.querySelector('.checks .please-call');
+  DivElement get _prerequisites => _root.querySelector('.prerequisites');
+  DivElement get _recipientsDiv => _root.querySelector('.recipients');
+  OListElement get _recipientsList =>
+      _root.querySelector('.recipients .generic-widget-list');
+  ButtonElement get _saveButton => _root.querySelector('.buttons .save');
+  ButtonElement get _sendButton => _root.querySelector('.buttons .send');
+  SpanElement get _showRecipientsSpan =>
+      _root.querySelector('.show-recipients');
+  ElementList<Element> get _tabElements => _root.querySelectorAll('[tabindex]');
+  InputElement get _urgentInput => _root.querySelector('.checks .urgent');
 
   /**
    * If a valid input field detects a mouse click, focus it. Valid input fields
    * are those that are part of the [_tabElements] list.
    */
   void _focusFromClick(MouseEvent event) {
-    if(_tabElements.contains(event.target) || (event.target is LabelElement)) {
+    if (_tabElements.contains(event.target) || (event.target is LabelElement)) {
       (event.target as HtmlElement).focus();
     } else {
       event.preventDefault();
@@ -80,28 +91,29 @@ class UIMessageCompose extends UIModel {
   }
 
   /**
-   * Extracts a Message from the information stored in the widget.
+   * Extracts a ORModel.Message from the information stored in the widget.
    *
-   * This does NOT set the 'context' and 'recipients' fields. Only what can be
-   * harvested from the form is set.
+   * This does NOT set the 'context' field.
    */
-  Map get messageDataFromForm =>
-      {'message'   : _messageTextarea.value,
-       'caller'    : {
-                      'name'          : _callerNameInput.value,
-                      'company'       : _companyNameInput.value,
-                      'phone'         : _landlineInput.value,
-                      'cellphone'     : _cellphoneInput.value,
-                      'localExtension': _extensionInput.value
-                     },
-       'context'   : null,
-       'flags'     : [
-                      _pleaseCallInput.checked ? ORKey.pleaseCall  : null,
-                      _callsBackInput.checked  ? ORKey.willCallBack: null,
-                      _haveCalledInput.checked ? ORKey.called      : null,
-                      _urgentInput.checked     ? ORKey.urgent      : null
-                     ].where((element) => element != null).toList(growable: false),
-       'created_at': new DateTime.now().millisecondsSinceEpoch~/1000};
+  ORModel.Message get message {
+    final ORModel.CallerInfo callerInfo = new ORModel.CallerInfo.empty()
+      ..cellPhone = _cellphoneInput.value.trim()
+      ..company = _companyNameInput.value.trim()
+      ..localExtension = _extensionInput.value.trim()
+      ..name = _callerNameInput.value.trim()
+      ..phone = _landlineInput.value.trim();
+    final ORModel.MessageFlag messageFlag = new ORModel.MessageFlag.empty()
+      ..called = _haveCalledInput.checked
+      ..pleaseCall = _pleaseCallInput.checked
+      ..urgent = _urgentInput.checked
+      ..willCallBack = _callsBackInput.checked;
+
+    return new ORModel.Message.empty()
+      ..body = _messageTextarea.value.trim()
+      ..callerInfo = callerInfo
+      ..flag = messageFlag
+      ..recipients = recipients;
+  }
 
   /**
    * Return the click event stream for the save button.
@@ -123,7 +135,8 @@ class UIMessageCompose extends UIModel {
 
     /// Enables focused element memory for this widget.
     _tabElements.forEach((HtmlElement element) {
-      element.onFocus.listen((Event event) => _myFocusElement = (event.target as HtmlElement));
+      element.onFocus.listen(
+          (Event event) => _myFocusElement = (event.target as HtmlElement));
     });
 
     _showRecipientsSpan.onClick.listen(_toggleRecipients);
@@ -136,7 +149,7 @@ class UIMessageCompose extends UIModel {
    * Set the message prerequisites for the current contact.
    */
   void set messagePrerequisites(List<String> prerequisites) {
-    if(prerequisites != null && prerequisites.isNotEmpty) {
+    if (prerequisites != null && prerequisites.isNotEmpty) {
       _prerequisites.style.display = '';
       _prerequisites.text = prerequisites.join(", ");
     } else {
@@ -150,10 +163,11 @@ class UIMessageCompose extends UIModel {
   Set<ORModel.MessageRecipient> get recipients {
     final String recipientsList = _recipientsList.dataset['recipients-list'];
 
-    if(recipientsList != null && recipientsList.isNotEmpty) {
-
-      return JSON.decode(recipientsList)
-          .map(ORModel.MessageRecipient.decode).toSet();
+    if (recipientsList != null && recipientsList.isNotEmpty) {
+      return JSON
+          .decode(recipientsList)
+          .map(ORModel.MessageRecipient.decode)
+          .toSet();
     } else {
       return new Set<ORModel.MessageRecipient>();
     }
@@ -163,18 +177,14 @@ class UIMessageCompose extends UIModel {
    * Add [recipients] to the recipients list.
    */
   void set recipients(Set<ORModel.MessageRecipient> recipients) {
+    Iterable<ORModel.MessageRecipient> toRecipients() => recipients
+        .where((ORModel.MessageRecipient r) => r.role == ORModel.Role.TO);
 
-    Iterable<ORModel.MessageRecipient> toRecipients () =>
-      recipients.where((ORModel.MessageRecipient r) =>
-          r.role == ORModel.Role.TO);
+    Iterable<ORModel.MessageRecipient> ccRecipients() => recipients
+        .where((ORModel.MessageRecipient r) => r.role == ORModel.Role.CC);
 
-    Iterable<ORModel.MessageRecipient> ccRecipients () =>
-      recipients.where((ORModel.MessageRecipient r) =>
-          r.role == ORModel.Role.CC);
-
-    Iterable<ORModel.MessageRecipient> bccRecipients () =>
-      recipients.where((ORModel.MessageRecipient r) =>
-          r.role == ORModel.Role.BCC);
+    Iterable<ORModel.MessageRecipient> bccRecipients() => recipients
+        .where((ORModel.MessageRecipient r) => r.role == ORModel.Role.BCC);
 
     List<LIElement> list = new List<LIElement>();
 
@@ -182,17 +192,20 @@ class UIMessageCompose extends UIModel {
     _recipientsList.dataset['recipients-list'] = JSON.encode(maps.toList());
 
     toRecipients().forEach((ORModel.MessageRecipient recipient) {
-      list.add(new LIElement()..text = '${recipient.name} (${recipient.address})');
+      list.add(
+          new LIElement()..text = '${recipient.name} (${recipient.address})');
     });
 
     ccRecipients().forEach((ORModel.MessageRecipient recipient) {
-      list.add(new LIElement()..text = '${recipient.name} (${recipient.address})'
-                        ..classes.add('cc'));
+      list.add(new LIElement()
+        ..text = '${recipient.name} (${recipient.address})'
+        ..classes.add('cc'));
     });
 
     bccRecipients().forEach((ORModel.MessageRecipient recipient) {
-      list.add(new LIElement()..text = '${recipient.name} (${recipient.address})'
-                        ..classes.add('bcc'));
+      list.add(new LIElement()
+        ..text = '${recipient.name} (${recipient.address})'
+        ..classes.add('bcc'));
     });
 
     _recipientsList.children = list;
@@ -220,13 +233,13 @@ class UIMessageCompose extends UIModel {
     _pleaseCallInput.checked = false;
     _urgentInput.checked = false;
 
-    _myFocusElement    = _messageTextarea;
+    _myFocusElement = _messageTextarea;
     _myFirstTabElement = _callerNameInput;
-    _myLastTabElement  = _urgentInput;
+    _myLastTabElement = _urgentInput;
 
     _toggleButtons(null);
 
-    if(pristine) {
+    if (pristine) {
       _recipientsList.dataset['recipients-list'] = '';
       _recipientsList.children.clear();
       _recipientsDiv.classes.toggle('recipients-hidden', true);
@@ -238,10 +251,11 @@ class UIMessageCompose extends UIModel {
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
-    final Map<String, EventListener> bindings =
-        {'Ctrl+enter': (_) => _sendButton.click(),
-         'Ctrl+s'    : (_) => _saveButton.click(),
-         'Ctrl+Space': _toggleRecipients};
+    final Map<String, EventListener> bindings = {
+      'Ctrl+enter': (_) => _sendButton.click(),
+      'Ctrl+s': (_) => _saveButton.click(),
+      'Ctrl+Space': _toggleRecipients
+    };
 
     _hotKeys.registerKeysPreventDefault(_keyboard, bindings);
     _hotKeys.registerKeys(_keyboard, _defaultKeyMap());
@@ -252,7 +266,8 @@ class UIMessageCompose extends UIModel {
    * [_myLastTabElement] as this depends on the state of the buttons.
    */
   void _toggleButtons(_) {
-    final bool toggle = !(_callerNameInput.value.trim().isNotEmpty && _messageTextarea.value.trim().isNotEmpty);
+    final bool toggle = !(_callerNameInput.value.trim().isNotEmpty &&
+        _messageTextarea.value.trim().isNotEmpty);
 
     _saveButton.disabled = toggle || _recipientsList.children.isEmpty;
     _sendButton.disabled = toggle || _recipientsList.children.isEmpty;
