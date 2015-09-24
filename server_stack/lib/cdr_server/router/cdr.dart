@@ -26,8 +26,8 @@ void cdrHandler(HttpRequest request) {
   DateTime start, end;
   bool inbound;
   try {
-    start = new DateTime.fromMillisecondsSinceEpoch(int.parse (request.uri.queryParameters['date_from'])*1000);
-    end   = new DateTime.fromMillisecondsSinceEpoch(int.parse (request.uri.queryParameters['date_to'])*1000);
+    start = util.unixTimestampToDateTime (int.parse (request.uri.queryParameters['date_from']));
+    end   = util.unixTimestampToDateTime (int.parse (request.uri.queryParameters['date_to']));
     inbound   = false;
   } catch(error) {
     clientError(request, 'Bad parameter: ${error}');
