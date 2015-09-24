@@ -1,5 +1,5 @@
 /*                  This file is part of OpenReception
-                   Copyright (C) 2014-, BitStackers K/S
+                   Copyright (C) 2015-, BitStackers K/S
 
   This is free software;  you can redistribute it and/or modify it
   under terms of the  GNU General Public License  as published by the
@@ -11,12 +11,15 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.message_dispatcher.router;
+library openreception.message_dispatcher.controller;
 
-void messageSingle(HttpRequest request) {
-  int messageID  = pathParameter(request.uri, 'message');
+import 'dart:async';
+import 'dart:convert';
 
-  db.messageSingle(messageID).then((Map value) {
-    writeAndClose(request, JSON.encode(value));
-  }).catchError((error) => serverError(request, error.toString()));
-}
+import 'package:shelf/shelf.dart' as shelf;
+import 'package:openreception_framework/storage.dart' as Storage;
+import 'package:openreception_framework/model.dart' as Model;
+
+import '../configuration.dart';
+
+part 'controller/controller-message_queue.dart';

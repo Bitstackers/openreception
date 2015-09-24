@@ -19,15 +19,11 @@ import 'dart:async';
 
 import 'package:args/args.dart';
 //import 'package:emailer/emailer.dart';
-import 'package:path/path.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/model.dart' as Model;
 
 import '../lib/configuration.dart';
 import '../lib/message_dispatcher/router.dart' as router;
-
-ArgResults parsedArgs;
-ArgParser parser = new ArgParser();
 
 /**
  * TODO: Initialize serverToken
@@ -40,37 +36,40 @@ void main(List<String> args) {
   Logger.root.level = config.messageDispatcher.log.level;
   Logger.root.onRecord.listen(config.messageDispatcher.log.onRecord);
 
-  try {
-    Directory.current = dirname(Platform.script.toFilePath());
+  ArgParser parser = new ArgParser()
+    ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
+    ..addOption('httpport', help: 'The port the HTTP server listens on.',
+        defaultsTo: config.messageDispatcher.httpPort.toString());
 
-    registerAndParseCommandlineArguments(args);
+  ArgResults parsedArgs = parser.parse(args);
 
-    if (showHelp()) {
-      print(parser.usage);
-
-      exit(1);
-
-    } else {
-        router.startDatabase()
-        .then((_) => router.connectNotificationService())
-
-        // HTTP interface is currently unsupported, due to database schema changes.
-      // .then((_) => http.start(config.httpport, router.setup))
-      .then((_) => periodicEmailSend())
-      .catchError(log.shout);
-    }
-  } catch(error, stackTrace) {
-    log.shout(error, stackTrace);
+  if (parsedArgs['help']) {
+    print(parser.usage);
+    exit(1);
   }
+
+  router.start(port : int.parse(parsedArgs['httpport']))
+    .then((_) => periodicEmailSend())
+    .catchError(log.shout);
+
 }
-//
-///**
-// *
-// */
-//List<Model.MessageEndpoint> emailEndpoints(List<Model.MessageEndpoint> endpoints) =>
-//    endpoints.where((Model.MessageEndpoint endpoint) =>
-//        endpoint.type == Model.MessageEndpointType.EMAIL).toList();
-//
+
+
+/**
+ *
+ */
+Iterable<Model.MessageRecipient>
+  emailRecipients(Iterable<Model.MessageRecipient> rcps) =>
+    rcps.where((Model.MessageRecipient rcp) =>
+        rcp.type == Model.MessageEndpointType.EMAIL);
+
+/**
+ *
+ */
+Iterable<Model.MessageRecipient>
+  smsRecipients(Iterable<Model.MessageRecipient> rcps) =>
+    rcps.where((Model.MessageRecipient rcp) =>
+        rcp.type == Model.MessageEndpointType.SMS);
 
 
 /**
@@ -80,34 +79,25 @@ void main(List<String> args) {
 void periodicEmailSend() {
   DateTime start = new DateTime.now();
 
-  router.messageQueueStore.list(maxTries : config.messageDispatcher.maxTries).then((List<Model.MessageQueueItem> queuedMessages) {
+  router.messageQueueStore.list(maxTries : config.messageDispatcher.maxTries)
+  .then((List<Model.MessageQueueItem> queuedMessages) {
     Future.forEach(queuedMessages, tryDispatch).whenComplete(() {
-      log.info('Processed ${queuedMessages.length} messages in ${(new DateTime.now().difference(start)).inMilliseconds} milliseconds. Sleeping for ${config.messageDispatcher.mailerPeriod} seconds');
-      //reSchedule();
+      log.info('Processed ${queuedMessages.length} messages in '
+      '${(new DateTime.now().difference(start)).inMilliseconds} milliseconds.'
+      ' Sleeping for ${config.messageDispatcher.mailerPeriod} seconds');
+      reSchedule();
     });
   }).catchError((error, stackTrace) {
     /// TODO (KRC, TL): We need to figure out what to do here. As it stands we
     /// stop dispatching if the messageQueueStore call fails for some reason.
+    ///
+    /// A: If the messageQueueStore fails, we are in serious shit. Better to
+    /// let the process die, and let supervisor restart it, rather than trying
+    /// to recover at this point.
     log.severe('Failed to load database message');
     log.severe (error, stackTrace);
+    exit(1);
   });
-}
-
-/**
- *
- */
-void registerAndParseCommandlineArguments(List<String> arguments) {
-  parser.addFlag('help', abbr: 'h', help: 'Output this help');
-  parser.addOption('configfile', help: 'The JSON configuration file. Defaults to config.json');
-  parser.addOption('httpport', help: 'The port the HTTP server listens on.',
-      defaultsTo: config.messageDispatcher.httpPort.toString());
-  parser.addOption('dbuser', help: 'The database user');
-  parser.addOption('dbpassword', help: 'The database password');
-  parser.addOption('dbhost', help: 'The database host. Defaults to localhost');
-  parser.addOption('dbport', help: 'The database port. Defaults to 5432');
-  parser.addOption('dbname', help: 'The database name');
-
-  parsedArgs = parser.parse(arguments);
 }
 
 /**
@@ -119,63 +109,39 @@ Timer reSchedule() =>
 /**
  *
  */
-bool showHelp() => parsedArgs['help'];
-//
-///**
-// *
-// */
-//List<Model.DistributionListEntry> smsRecipients(Model.Message message) =>
-//    message.recipients.where((Model.DistributionListEntry recipient) =>
-//        recipient.endpoints.contains(Model.MessageEndpointType.SMS)).toList();
+Future tryDispatch(Model.MessageQueueItem queueItem) async {
+  Model.Message message = await router.messageStore.get(queueItem.messageID);
+  Model.User user = await router.userStore.get(message.senderId);
 
-/**
- *
- */
-Future tryDispatch(Model.MessageQueueItem queueItem) {
-  return new Future(() {
-    log.severe('MessageDispatcher is currently disable due to heavy refactoring');
-  });
+  if(queueItem.unhandledRecipients.isEmpty) {
+    log.info ("No recipients left detected on message with ID ${message.ID}!");
+    return router.messageQueueStore.archive(queueItem);
+  }
 
-//  return queueItem.message(Router.messageStore).then((Model.Message message) {
-//
-//    if (!message.recipients.hasRecipients) {
-//      log.severe ("No recipients detected on message with ID ${message.ID}!");
-//      queueItem.tries++;
-//      queueItem.create(Router.messageQueueStore);
-//
-//    } else {
-//
-//      return new Future(() {
-//        log.fine('Dispatching messageID ${message.ID} - queueID: ${queueItem.ID}');
-//        Model.Template email = new Model.TemplateEmail(message, emailEndpoints(queueItem.unhandledRecipients));
-//        log.fine(email.toString());
+  log.fine('Dispatching messageID ${message.ID} - queueID: ${queueItem.ID}');
+  queueItem.tries++;
 
-//        process.exitCode.then((int exitCode) {
-//          if (exitCode != 0) {
-//            log.severe('Python mailer prematurely exits with code: ${exitCode},');
-//          } else {
-//            /// Remove the email endpoints, as they are now dispatched to.
-//            queueItem.unhandledEndpoints.removeWhere((Model.MessageEndpoint ep)
-//                => emailEndpoints(queueItem.unhandledEndpoints).contains(ep));
-//          }
-//
-//        }).whenComplete(() {
-//          queueItem.tries++;
-//
-//          if (queueItem.unhandledEndpoints.isEmpty) {
-//            queueItem.archive(Router.messageQueueStore);
-//          }
-//          else {
-//            if (queueItem.tries >= msgdisp.config.maxTries) {
-//              //TODO: Figure out what to do with the message, once it reaches
-//              // this point.
-//
-//            }
-//            queueItem.save(Router.messageQueueStore);
-//          }
-//        });
-//
-//      });
-//    }
-// });
+  ///Dispatch email recipients.
+  Iterable<Model.MessageRecipient> currentRecipients =
+      emailRecipients(queueItem.unhandledRecipients);
+  Model.Template email =
+      new Model.TemplateEmail (message, currentRecipients, user);
+  log.fine(email.toString());
+
+   ///FIXME(TL): Do magic emailer-related-rainbow-magic-stuff here.
+
+  queueItem.handledRecipients = currentRecipients;
+  print(queueItem.unhandledRecipients);
+
+
+  ///Dispatch sms recipients.
+  currentRecipients = smsRecipients(queueItem.unhandledRecipients);
+
+//  Model.Template sms =
+//      new Model.TemplateSms (message, currentRecipients, user);
+//  log.fine(sms.toString());
+  queueItem.handledRecipients = currentRecipients;
+
+
+  return router.messageQueueStore.save(queueItem);
 }

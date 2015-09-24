@@ -13,58 +13,71 @@
 
 library openreception.message_dispatcher.router;
 
-import 'dart:io';
 import 'dart:async';
-import 'dart:convert';
+import 'dart:io' as IO;
 
-import 'package:route/pattern.dart';
-import 'package:route/server.dart';
+import 'package:logging/logging.dart';
+import 'package:shelf/shelf.dart' as shelf;
+import 'package:shelf/shelf_io.dart' as shelf_io;
+import 'package:shelf_route/shelf_route.dart' as shelf_route;
+
+import 'package:openreception_framework/database.dart' as database;
 
 import '../configuration.dart';
-import 'package:openreception_framework/httpserver.dart';
+import 'controller.dart' as Controller;
 
-import 'package:openreception_framework/database.dart'   as Database;
-import 'package:openreception_framework/model.dart'      as Model;
-import 'package:openreception_framework/storage.dart'    as Storage;
-import 'package:openreception_framework/service.dart'    as Service;
-import 'package:openreception_framework/service-io.dart' as Service_IO;
+final Logger log = new Logger ('message_dispatcher.router');
 
-part 'router/message-queue-single.dart';
-part 'router/message-queue-list.dart';
+shelf.Middleware addCORSHeaders =
+  shelf.createMiddleware(requestHandler: _options, responseHandler: _cors);
 
-final Pattern anything = new UrlPattern(r'/(.*)');
-final Pattern messageQueueListResource = new UrlPattern(r'/message/queue/list');
-final Pattern messageQueueItemResource = new UrlPattern(r'/message/queue/(\d+)');
-final Pattern messageDispatchAllResource = new UrlPattern(r'/message/queue/dispatchAll');
+const Map<String, String> textHtmlHeader = const {IO.HttpHeaders.CONTENT_TYPE: 'text/html'};
+const Map<String, String> CORSHeader = const {'Access-Control-Allow-Origin': '*'};
 
-final List<Pattern> allUniqueUrls = [messageQueueListResource, messageQueueItemResource, messageDispatchAllResource];
+shelf.Response _options(shelf.Request request) =>
+    (request.method == 'OPTIONS')
+      ? new shelf.Response.ok(null, headers: CORSHeader)
+      : null;
 
-Router setup(HttpServer server) =>
-  new Router(server)
-    ..filter(matchAny(allUniqueUrls), auth(config.authServer.externalUri))
-    ..serve(messageQueueListResource,   method: 'GET'   ).listen(messageQueueList)
-    ..serve(messageDispatchAllResource, method: 'GET'   ).listen(messageDispatchAll)
+shelf.Response _cors(shelf.Response response) => response.change(headers: CORSHeader);
 
-    //..serve(messageQueueItemResource, method: 'GET'   ).listen(messageQueueSingle)
-   ..serve(anything, method: 'OPTIONS').listen(preFlight)
-   ..defaultStream.listen(page404);
+database.MessageQueue messageQueueStore;
+database.Message messageStore;
+database.User userStore;
 
-Database.Connection connection = null;
-
-Storage.Message      messageStore;
-Storage.MessageQueue messageQueueStore;
-
-Service.NotificationService _notification = null;
-
-void connectNotificationService() {
-  _notification = new Service.NotificationService
-      (config.notificationServer.externalUri, config.userServer.serverToken, new Service_IO.Client());
+/// Simple access logging.
+void _accessLogger(String msg, bool isError) {
+  if (isError) {
+    log.severe(msg);
+  } else {
+    log.finest(msg);
+  }
 }
 
-Future startDatabase() =>
-    Database.Connection.connect(config.database.dsn)
-      .then((Database.Connection newConnection) {
-        connection = newConnection;
-        messageStore     = new Database.Message(connection);
-        messageQueueStore = new Database.MessageQueue(connection);
-      });
+Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4060}) {
+
+  Future<shelf.Pipeline> setup () =>
+    database.Connection.connect(config.database.dsn)
+      .then((database.Connection conn) {
+    database.MessageQueue mqdb = new database.MessageQueue(conn);
+    messageStore = new database.Message(conn);
+    userStore = new database.User(conn);
+    messageQueueStore = mqdb;
+    Controller.MessageQueue mq = new Controller.MessageQueue(mqdb);
+
+    var router = shelf_route.router()
+        ..get('/messagequeue', mq.list);
+
+    var handler = const shelf.Pipeline()
+        .addMiddleware(shelf.logRequests(logger : _accessLogger))
+        .addMiddleware(addCORSHeaders)
+        .addHandler(router.handler);
+
+    log.fine('Serving interfaces:');
+    shelf_route.printRoutes(router, printer : log.fine);
+
+    return handler;
+  });
+
+  return setup().then((pipeline) => shelf_io.serve(pipeline, hostname, port));
+}
