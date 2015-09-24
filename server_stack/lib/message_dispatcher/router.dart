@@ -56,7 +56,7 @@ void _accessLogger(String msg, bool isError) {
 
 Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4060}) {
 
-  Future<shelf.Pipeline> setup () =>
+  Future setup () =>
     database.Connection.connect(config.database.dsn)
       .then((database.Connection conn) {
     database.MessageQueue mqdb = new database.MessageQueue(conn);
@@ -79,5 +79,5 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4060}) {
     return handler;
   });
 
-  return setup().then((pipeline) => shelf_io.serve(pipeline, hostname, port));
+  return setup().then((handler) => shelf_io.serve(handler, hostname, port));
 }
