@@ -47,7 +47,14 @@ class User implements Storage.User {
 
     return _connection
         .query(sql, parameters)
-        .then((rows) => user..ID = rows.first.id);
+        .then((Iterable rows) => rows.isEmpty
+            ? throw new Storage.ServerError('User not created')
+            : user..ID = rows.first.id)
+        .catchError((error, stackTrace) {
+      log.severe('sql:$sql \nparameters:$parameters', error, stackTrace);
+
+      return new Future.error(error, stackTrace);
+    });
   }
 
   /**
@@ -60,7 +67,12 @@ class User implements Storage.User {
     ''';
 
     Map parameters = {'id': userId};
-    return _connection.execute(sql, parameters);
+    return _connection.execute(sql, parameters)
+        .catchError((error, stackTrace) {
+      log.severe('sql:$sql :: parameters:$parameters', error, stackTrace);
+
+      return new Future.error(error, stackTrace);
+    });
   }
 
   /**
@@ -74,7 +86,7 @@ SELECT
   outer_user.send_from,
   outer_user.enabled,
   outer_user.extension,
-  (SELECT array_to_json(array_agg(row_to_json(tmp_groups)))
+  COALESCE((SELECT array_to_json(array_agg(row_to_json(tmp_groups)))
    FROM 
    (SELECT 
      groups.id, groups.name
@@ -85,9 +97,9 @@ SELECT
     JOIN groups ON user_groups.group_id = groups.id
     WHERE user_groups.user_id = outer_user.id
    ) tmp_groups
-  ) AS groups,
+  ),'[]') AS groups,
 
-  (SELECT array_to_json(array_agg(row_to_json(tmp_iden)))
+  COALESCE((SELECT array_to_json(array_agg(row_to_json(tmp_iden)))
    FROM 
    (SELECT 
      users.id as user_id, 
@@ -98,7 +110,7 @@ SELECT
       auth_identities ON auth_identities.user_id = users.id
     WHERE auth_identities.user_id = outer_user.id
    ) tmp_iden
-  ) AS identities
+  ),'[]') AS identities
 FROM
   users as outer_user
 WHERE 
@@ -113,7 +125,9 @@ WHERE
             : _rowToUser(rows.first))
         .catchError((error, stackTrace) {
       if (error is! Storage.NotFound) {
-        log.severe('sql:$sql :: parameters:$parameters');
+        log.severe(error);
+        log.severe(stackTrace);
+        log.severe('sql:$sql :: parameters:$parameters', error, stackTrace);
       }
 
       return new Future.error(error, stackTrace);
@@ -137,7 +151,14 @@ WHERE
       'id': user.ID
     };
 
-    return _connection.execute(sql, parameters).then((_) => user);
+    return _connection
+        .execute(sql, parameters)
+        .then((_) => user)
+        .catchError((error, stackTrace) {
+      log.severe('sql:$sql :: parameters:$parameters', error, stackTrace);
+
+      return new Future.error(error, stackTrace);
+    });
   }
 
   /**
@@ -161,6 +182,10 @@ WHERE
           ..name = row.name);
       }
       return userGroups;
+    }).catchError((error, stackTrace) {
+      log.severe('sql:$sql :: parameters:$parameters', error, stackTrace);
+
+      return new Future.error(error, stackTrace);
     });
   }
 
@@ -181,6 +206,10 @@ WHERE
           ..name = row.name);
       }
       return userGroups;
+    }).catchError((error, stackTrace) {
+      log.severe('sql:$sql', error, stackTrace);
+
+      return new Future.error(error, stackTrace);
     });
   }
 
@@ -195,7 +224,11 @@ WHERE
 
     Map parameters = {'userid': userId, 'groupid': groupId};
 
-    return _connection.execute(sql, parameters);
+    return _connection.execute(sql, parameters).catchError((error, stackTrace) {
+      log.severe('sql:$sql :: parameters:$parameters', error, stackTrace);
+
+      return new Future.error(error, stackTrace);
+    });
   }
 
   /**
@@ -209,7 +242,11 @@ WHERE
 
     Map parameters = {'userid': userId, 'groupid': groupId};
 
-    return _connection.execute(sql, parameters);
+    return _connection.execute(sql, parameters).catchError((error, stackTrace) {
+      log.severe('sql:$sql :: parameters:$parameters', error, stackTrace);
+
+      return new Future.error(error, stackTrace);
+    });
   }
 
   /**
@@ -232,6 +269,10 @@ WHERE
           ..userId = row.user_id);
       }
       return userIdentities;
+    }).catchError((error, stackTrace) {
+      log.severe('sql:$sql :: parameters:$parameters', error, stackTrace);
+
+      return new Future.error(error, stackTrace);
     });
   }
 
@@ -247,10 +288,16 @@ WHERE
 
     Map parameters = {'identity': identity.identity, 'userid': identity.userId};
 
-    return _connection.query(sql, parameters).then(
-        (rows) => new Model.UserIdentity.empty()
-      ..identity = rows.first.identity
-      ..userId = identity.userId);
+    return _connection
+        .query(sql, parameters)
+        .then((rows) => new Model.UserIdentity.empty()
+          ..identity = rows.first.identity
+          ..userId = identity.userId)
+        .catchError((error, stackTrace) {
+      log.severe('sql:$sql :: parameters:$parameters', error, stackTrace);
+
+      return new Future.error(error, stackTrace);
+    });
   }
 
   /**
@@ -264,74 +311,10 @@ WHERE
 
     Map parameters = {'userid': identity.userId, 'identity': identity.identity};
 
-    return _connection.execute(sql, parameters);
-  }
+    return _connection.execute(sql, parameters).catchError((error, stackTrace) {
+      log.severe('sql:$sql :: parameters:$parameters', error, stackTrace);
 
-  /**
-   * Retrieve a user by it's identity.
-   */
-  Future<Model.User> getByIdentity(String identity) {
-    String sql = '''
-    SELECT id, name, extension, enabled,
-     (SELECT array_to_json(array_agg(name)) 
-      FROM user_groups JOIN groups ON user_groups.group_id = groups.id
-      WHERE user_groups.user_id = id) AS groups,
-     (SELECT array_to_json(array_agg(identity)) 
-      FROM auth_identities 
-      WHERE user_id = id) AS identities
-    FROM auth_identities JOIN users ON auth_identities.user_id = users.id 
-    WHERE identity = @email;''';
-
-    Map parameters = {'email': identity};
-
-    return this._connection.query(sql, parameters).then((rows) {
-      Map data = {};
-      if (rows.length == 1) {
-        var row = rows.first;
-        data = {
-          'id': row.id,
-          'name': row.name,
-          'extension': row.extension,
-          'groups': row.groups,
-          'identities': row.identities
-        };
-      }
-
-      return data;
-    });
-  }
-
-  /**
-   * Retrieve a user by it's id.
-   */
-  Future<Map> getUserFromId(int userId) {
-    String sql = '''
-    SELECT id, name, extension, enabled,
-     (SELECT array_to_json(array_agg(name)) 
-      FROM user_groups JOIN groups ON user_groups.group_id = groups.id
-      WHERE user_groups.user_id = id) AS groups,
-     (SELECT array_to_json(array_agg(identity)) 
-      FROM auth_identities 
-      WHERE user_id = id) AS identities
-    FROM auth_identities JOIN users ON auth_identities.user_id = users.id 
-    WHERE id = @userid;''';
-
-    Map parameters = {'userid': userId};
-
-    return _connection.query(sql, parameters).then((rows) {
-      Map data = {};
-      if (rows.length == 1) {
-        var row = rows.first;
-        data = {
-          'id': row.id,
-          'name': row.name,
-          'extension': row.extension,
-          'groups': row.groups,
-          'identities': row.identities
-        };
-      }
-
-      return data;
+      return new Future.error(error, stackTrace);
     });
   }
 
@@ -339,14 +322,14 @@ WHERE
    * List every user in the database.
    */
   Future<Iterable<Model.User>> list() {
-    const String sql = '''
+    final String sql = '''
 SELECT
   outer_user.id,
   outer_user.name,
-  outer_user.enabled,
   outer_user.send_from,
+  outer_user.enabled,
   outer_user.extension,
-  (SELECT array_to_json(array_agg(row_to_json(tmp_groups)))
+  COALESCE((SELECT array_to_json(array_agg(row_to_json(tmp_groups)))
    FROM 
    (SELECT 
      groups.id, groups.name
@@ -357,25 +340,31 @@ SELECT
     JOIN groups ON user_groups.group_id = groups.id
     WHERE user_groups.user_id = outer_user.id
    ) tmp_groups
-  ) AS groups,
+  ),'[]') AS groups,
 
-  (SELECT array_to_json(array_agg(row_to_json(tmp_iden)))
+  COALESCE((SELECT array_to_json(array_agg(row_to_json(tmp_iden)))
    FROM 
    (SELECT 
      users.id as user_id, 
      auth_identities.identity
     FROM
      users 
-    LEFT JOIN
+    JOIN
       auth_identities ON auth_identities.user_id = users.id
     WHERE auth_identities.user_id = outer_user.id
    ) tmp_iden
-  ) AS identities
+  ),'[]') AS identities
 FROM
   users as outer_user
+WHERE enabled
 ''';
 
-    return _connection.query(sql).then((Iterable rows) =>
-      rows.map(_rowToUser));
+    return _connection
+        .query(sql)
+        .then((Iterable rows) => rows.map(_rowToUser))
+        .catchError((error, stackTrace) {
+      log.severe('$sql', error, stackTrace);
+      return new Future.error(error, stackTrace);
+    });
   }
 }
