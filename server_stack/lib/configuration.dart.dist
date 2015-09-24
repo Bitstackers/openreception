@@ -38,6 +38,14 @@ class EslConfig {
 }
 
 /**
+ * SMTP configuration values
+ */
+class SmtpConfig {
+  final int port = 25;
+  final hostname = 'mail.example.com';
+}
+
+/**
  * Standard configuration values, common among all configurations.
  */
 abstract class StandardConfig {
@@ -138,19 +146,14 @@ class CDRServer extends StandardConfig {
  */
 class MessageDispatcher extends StandardConfig {
   final int maxTries = 10;
-  final mailerPeriod = const Duration(seconds: 60);
+  final mailerPeriod = const Duration(seconds: 1);
 
   @override
   final int httpPort = 4070;
 
+  final SmtpConfig smtp = const SmtpConfig();
+
   const MessageDispatcher();
-}
-
-class UserServer extends StandardConfig {
-  @override
-  final int httpPort = 4030;
-
-  const UserServer();
 }
 
 /**

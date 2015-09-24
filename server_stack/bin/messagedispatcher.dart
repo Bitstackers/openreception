@@ -18,7 +18,7 @@ import 'dart:core';
 import 'dart:async';
 
 import 'package:args/args.dart';
-//import 'package:emailer/emailer.dart';
+import 'package:emailer/emailer.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/model.dart' as Model;
 
@@ -29,16 +29,25 @@ import '../lib/message_dispatcher/router.dart' as router;
  * TODO: Initialize serverToken
  */
 
-final Logger log = new Logger ('MessageDispatcher');
+final Logger log = new Logger('MessageDispatcher');
+
+SmtpClient _smtpClient;
 
 void main(List<String> args) {
+  SmtpOptions options = new SmtpOptions()
+    ..hostName = config.messageDispatcher.smtp.hostname
+    ..port = config.messageDispatcher.smtp.port;
+
+  _smtpClient = new SmtpClient(options);
+
   ///Init logging. Inherit standard values.
   Logger.root.level = config.messageDispatcher.log.level;
   Logger.root.onRecord.listen(config.messageDispatcher.log.onRecord);
 
   ArgParser parser = new ArgParser()
     ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
-    ..addOption('httpport', help: 'The port the HTTP server listens on.',
+    ..addOption('httpport',
+        help: 'The port the HTTP server listens on.',
         defaultsTo: config.messageDispatcher.httpPort.toString());
 
   ArgResults parsedArgs = parser.parse(args);
@@ -48,29 +57,27 @@ void main(List<String> args) {
     exit(1);
   }
 
-  router.start(port : int.parse(parsedArgs['httpport']))
-    .then((_) => periodicEmailSend())
-    .catchError(log.shout);
-
+  router
+      .start(port: int.parse(parsedArgs['httpport']))
+      .then((_) => periodicEmailSend())
+      .catchError(log.shout);
 }
-
 
 /**
  *
  */
-Iterable<Model.MessageRecipient>
-  emailRecipients(Iterable<Model.MessageRecipient> rcps) =>
+Iterable<Model.MessageRecipient> emailRecipients(
+        Iterable<Model.MessageRecipient> rcps) =>
     rcps.where((Model.MessageRecipient rcp) =>
         rcp.type == Model.MessageEndpointType.EMAIL);
 
 /**
  *
  */
-Iterable<Model.MessageRecipient>
-  smsRecipients(Iterable<Model.MessageRecipient> rcps) =>
+Iterable<Model.MessageRecipient> smsRecipients(
+        Iterable<Model.MessageRecipient> rcps) =>
     rcps.where((Model.MessageRecipient rcp) =>
         rcp.type == Model.MessageEndpointType.SMS);
-
 
 /**
  * The Periodic task that passes emails on to the SMTP server.
@@ -79,12 +86,13 @@ Iterable<Model.MessageRecipient>
 void periodicEmailSend() {
   DateTime start = new DateTime.now();
 
-  router.messageQueueStore.list(maxTries : config.messageDispatcher.maxTries)
-  .then((List<Model.MessageQueueItem> queuedMessages) {
+  router.messageQueueStore
+      .list(maxTries: config.messageDispatcher.maxTries)
+      .then((Iterable<Model.MessageQueueItem> queuedMessages) {
     Future.forEach(queuedMessages, tryDispatch).whenComplete(() {
       log.info('Processed ${queuedMessages.length} messages in '
-      '${(new DateTime.now().difference(start)).inMilliseconds} milliseconds.'
-      ' Sleeping for ${config.messageDispatcher.mailerPeriod} seconds');
+          '${(new DateTime.now().difference(start)).inMilliseconds} milliseconds.'
+          ' Sleeping for ${config.messageDispatcher.mailerPeriod} seconds');
       reSchedule();
     });
   }).catchError((error, stackTrace) {
@@ -95,7 +103,7 @@ void periodicEmailSend() {
     /// let the process die, and let supervisor restart it, rather than trying
     /// to recover at this point.
     log.severe('Failed to load database message');
-    log.severe (error, stackTrace);
+    log.severe(error, stackTrace);
     exit(1);
   });
 }
@@ -113,8 +121,8 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
   Model.Message message = await router.messageStore.get(queueItem.messageID);
   Model.User user = await router.userStore.get(message.senderId);
 
-  if(queueItem.unhandledRecipients.isEmpty) {
-    log.info ("No recipients left detected on message with ID ${message.ID}!");
+  if (queueItem.unhandledRecipients.isEmpty) {
+    log.info("No recipients left detected on message with ID ${message.ID}!");
     return router.messageQueueStore.archive(queueItem);
   }
 
@@ -124,24 +132,45 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
   ///Dispatch email recipients.
   Iterable<Model.MessageRecipient> currentRecipients =
       emailRecipients(queueItem.unhandledRecipients);
-  Model.Template email =
-      new Model.TemplateEmail (message, currentRecipients, user);
-  log.fine(email.toString());
+  Model.TemplateEmail template =
+      new Model.TemplateEmail(message, currentRecipients, user);
+  log.fine(template.toString());
 
-   ///FIXME(TL): Do magic emailer-related-rainbow-magic-stuff here.
+  List to = currentRecipients.where((mr) => mr.role == Model.Role.TO)
+      .map((mrto) => new Address(mrto.address, mrto.name))
+      .toList(growable: false);
+
+  List cc = currentRecipients.where((mr) => mr.role == Model.Role.CC)
+      .map((mrto) => new Address(mrto.address, mrto.name))
+      .toList(growable: false);
+
+  List bcc = currentRecipients.where((mr) => mr.role == Model.Role.BCC)
+      .map((mrto) => new Address(mrto.address, mrto.name))
+      .toList(growable: false);
+
+  Email email =
+    new Email(new Address(user.googleUsername, user.name), 'home.gir.dk')
+     ..to = to
+     ..cc = cc
+     ..bcc = bcc
+     ..subject = template.renderSubject()
+     ..partText = template.renderedBody;
+
+  _smtpClient.send(email);
+
+  /// Update the handled recipient set.
 
   queueItem.handledRecipients = currentRecipients;
   print(queueItem.unhandledRecipients);
 
-
   ///Dispatch sms recipients.
   currentRecipients = smsRecipients(queueItem.unhandledRecipients);
 
+  ///FIXME(TL): Do aweome-sms-emailer-related-rainbow-magic-stuff here.
 //  Model.Template sms =
 //      new Model.TemplateSms (message, currentRecipients, user);
 //  log.fine(sms.toString());
   queueItem.handledRecipients = currentRecipients;
-
 
   return router.messageQueueStore.save(queueItem);
 }
