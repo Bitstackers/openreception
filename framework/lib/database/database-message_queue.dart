@@ -23,6 +23,9 @@ class MessageQueue implements Storage.MessageQueue {
 
   MessageQueue(this._connection);
 
+  /**
+   * Archive a single message queue entry.
+   */
   Future archive(Model.MessageQueueItem queueItem) {
 
     String sql = '''
@@ -55,9 +58,14 @@ class MessageQueue implements Storage.MessageQueue {
 
     return this._connection.execute(sql).then((rows) {
       log.finest('Archived message queue entry.');
+    }).catchError((error, stackTrace) {
+      log.severe('sql:$sql', error, stackTrace);
     });
   }
 
+  /**
+   * List all queue entries.
+   */
   Future<List<Model.MessageQueueItem>> list({int limit: 100, int maxTries : 10}) {
 
     String sql = '''
@@ -70,12 +78,17 @@ class MessageQueue implements Storage.MessageQueue {
    FROM 
        message_queue mq
    WHERE 
-       mq.tries <= $maxTries
+       mq.tries <= @maxTries
    ORDER BY
        mq.last_try DESC,
        mq.tries ASC
-   LIMIT ${limit} 
+   LIMIT @limit
   ''';
+
+  final Map parameters = {
+    'maxTries' : maxTries,
+    'limit' : limit
+  };
 
     return this._connection.query(sql).then((rows) {
       log.finest('Returned ${rows.length} queued messages (limit $limit).');
@@ -97,9 +110,14 @@ class MessageQueue implements Storage.MessageQueue {
       }
 
       return queue;
+    }).catchError((error, stackTrace) {
+      log.severe('sql:$sql \nparameters:$parameters', error, stackTrace);
     });
   }
 
+  /**
+   * Retrieve a single queue entry.
+   */
   Future<Model.MessageQueueItem> get(int queueID) {
 
     String sql = '''
@@ -112,7 +130,7 @@ class MessageQueue implements Storage.MessageQueue {
    FROM 
       message_queue mq
   WHERE
-      mq.id = queueID''';
+      mq.id = $queueID''';
 
     return this._connection.query(sql).then((rows) {
 
@@ -125,6 +143,8 @@ class MessageQueue implements Storage.MessageQueue {
         'tries'              : row.tries,
         'last_try'           : row.last_try
       });
+    }).catchError((error, stackTrace) {
+      log.severe('sql:$sql', error, stackTrace);
     });
   }
 
@@ -154,56 +174,34 @@ class MessageQueue implements Storage.MessageQueue {
 
     List<Map> unhandled_endpoints =
         queueItem.unhandledRecipients.map((Model.MessageRecipient r) =>
-            r.asMap).toList();
+            r.asMap).toList(growable: false);
 
     List<Map> handled_endpoints =
         queueItem.handledRecipients.map((Model.MessageRecipient r) =>
-            r.asMap).toList();
+            r.asMap).toList(growable: false);
 
     final String sql = '''
     UPDATE message_queue
        SET last_try=NOW(), 
-       unhandled_endpoints='${unhandled_endpoints}',
-       handled_endpoints='${handled_endpoints}',
-       tries=${queueItem.tries}
-    WHERE id=${queueItem.ID};''';
+       unhandled_endpoints=@unhandledEndpoints,
+       handled_endpoints=@handledEndpoints,
+       tries=@tries
+    WHERE id=@id''';
 
-    return this._connection.execute(sql).then((_) => queueItem);
-  }
+    final Map parameters = {
+      'id' : queueItem.ID,
+      'tries' : queueItem.tries,
+      'handledEndpoints' : JSON.encode(handled_endpoints),
+      'unhandledEndpoints' : JSON.encode(unhandled_endpoints),
+    };
 
-  /**
-   * Returns a list of endpoints associated with the message with id [messageID].
-   */
-  Future<List<Model.MessageEndpoint>> endpoints(int messageID) {
-    String sql = '''
-    SELECT
-      mr.contact_name as name,
-      mr.recipient_role as role,
-      mep.address as address,
-      mep.address_type as type
-    FROM message_queue mq
-      JOIN messages msg ON mq.message_id = msg.id
-      JOIN message_recipients mr ON mr.message_id = msg.id
-      JOIN messaging_end_points mep ON mep.reception_id = mr.reception_id AND
-                                       mep.contact_id = mr.contact_id
-    WHERE mq.message_id = $messageID
-    ''';
-
-    return this._connection.query(sql).then((rows) {
-      log.finest(rows.length.toString());
-
-      List<Model.MessageEndpoint> endpoints = new List<Model.MessageEndpoint>();
-
-      for (var row in rows) {
-        endpoints.add(new Model.MessageEndpoint.fromMap({
-          'name': row.name,
-          'role': row.role,
-          'address': row.address,
-          'type': row.type,
-        }));
-      }
-
-      return endpoints;
+    return this._connection.execute(sql, parameters)
+        .then((rowCount) =>
+            rowCount == 0
+            ? throw new Storage.NotFound()
+            : queueItem)
+            .catchError((error, stackTrace) {
+      log.severe('sql:$sql \nparameters:$parameters', error, stackTrace);
     });
   }
 }
