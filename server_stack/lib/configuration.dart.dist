@@ -43,6 +43,8 @@ class EslConfig {
 class SmtpConfig {
   final int port = 25;
   final hostname = 'mail.example.com';
+  
+  const SmtpConfig();
 }
 
 /**
