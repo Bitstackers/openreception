@@ -72,6 +72,7 @@ SELECT
   outer_user.id,
   outer_user.name,
   outer_user.send_from,
+  outer_user.enabled,
   outer_user.extension,
   (SELECT array_to_json(array_agg(row_to_json(tmp_groups)))
    FROM 
@@ -271,7 +272,7 @@ WHERE
    */
   Future<Model.User> getByIdentity(String identity) {
     String sql = '''
-    SELECT id, name, extension, 
+    SELECT id, name, extension, enabled,
      (SELECT array_to_json(array_agg(name)) 
       FROM user_groups JOIN groups ON user_groups.group_id = groups.id
       WHERE user_groups.user_id = id) AS groups,
@@ -305,7 +306,7 @@ WHERE
    */
   Future<Map> getUserFromId(int userId) {
     String sql = '''
-    SELECT id, name, extension, 
+    SELECT id, name, extension, enabled,
      (SELECT array_to_json(array_agg(name)) 
       FROM user_groups JOIN groups ON user_groups.group_id = groups.id
       WHERE user_groups.user_id = id) AS groups,
@@ -342,6 +343,7 @@ WHERE
 SELECT
   outer_user.id,
   outer_user.name,
+  outer_user.enabled,
   outer_user.send_from,
   outer_user.extension,
   (SELECT array_to_json(array_agg(row_to_json(tmp_groups)))

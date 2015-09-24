@@ -24,6 +24,7 @@ class User {
   String             address;
   List<UserGroup>    groups = [];
   int                ID;
+  bool               enabled = true;
   List<UserIdentity> identities = [];
   String             name;
   String             peer;
