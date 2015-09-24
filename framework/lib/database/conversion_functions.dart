@@ -26,7 +26,9 @@ Model.Reception _rowToReception(var row) => new Model.Reception.empty()
   ..fullName = row.full_name
   ..organizationId = row.organization_id
   ..enabled = row.enabled
-  ..extraData = row.extradatauri != null ? Uri.parse(row.extradatauri) : null
+  ..extraData = row.extradatauri.isNotEmpty
+      ? Uri.parse(row.extradatauri)
+      : Uri.parse('.')
   ..extension = row.reception_telephonenumber
   ..lastChecked = row.last_check
   ..attributes = row.attributes;
@@ -43,11 +45,12 @@ Model.BaseContact _rowToBaseContact(var row) => new Model.BaseContact.empty()
 /**
  * Convert a database row into an [Organization].
  */
-Model.Organization _rowToOrganization(var row) => new Model.Organization.empty()
-  ..billingType = row.billing_type
-  ..flag = row.flag
-  ..id = row.id
-  ..fullName = row.full_name;
+Model.Organization _rowToOrganization(var row) =>
+  new Model.Organization.empty()
+    ..billingType = row.billing_type
+    ..flag = row.flag
+    ..id = row.id
+    ..fullName = row.full_name;
 
 /**
  * Convert a database row into an [User].
@@ -55,10 +58,15 @@ Model.Organization _rowToOrganization(var row) => new Model.Organization.empty()
 Model.User _rowToUser(var row) => new Model.User.empty()
   ..ID = row.id
   ..name = row.name
+  ..enabled = row.enabled
   ..address = row.send_from
   ..peer = row.extension
-  ..groups = row.groups != null ? row.groups.map (Model.UserGroup.decode).toList() : []
-  ..identities = row.identities != null ? row.identities.map (Model.UserIdentity.decode).toList() : [];
+  ..groups = row.groups.isNotEmpty
+    ? row.groups.map (Model.UserGroup.decode).toList()
+    : []
+  ..identities = row.identities.isNotEmpty
+    ? row.identities.map (Model.UserIdentity.decode).toList()
+    : [];
 
 
 /**
@@ -119,7 +127,7 @@ Model.Contact _rowToContact (var row) {
     row.endpoints.map((Map map) =>
       new Model.MessageEndpoint.fromMap(map));
 
-  Iterable<Model.PhoneNumber> phoneIterable = row.phone == null
+  Iterable<Model.PhoneNumber> phoneIterable = row.phone.isNotEmpty
      ? []
      : row.phone.map ((Map map) =>
          new Model.PhoneNumber.fromMap(map));
@@ -137,7 +145,7 @@ Model.Contact _rowToContact (var row) {
   List responsibilities = [];
   List messagePrerequisites = [];
 
-  if(row.attributes != null) {
+  if(row.attributes.isNotEmpty) {
     if (row.attributes.containsKey (Key.backup)) {
       backupContacts = row.attributes[Key.backup];
     }
