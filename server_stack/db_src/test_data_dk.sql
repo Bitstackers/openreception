@@ -1177,8 +1177,8 @@ VALUES ('kim.rostgaard@gmail.com', 2),
 INSERT INTO  messages (id, message, context_contact_id, context_reception_id, context_contact_name, context_reception_name, taken_from_name, taken_from_company, taken_from_phone, taken_from_cellphone, taken_by_agent, flags, created_at)
 VALUES (1, 'Det drejer sig om kosten i gangen - du ved hvad der skal gøres.',4, 1, 'Kim Rostgaard', 'BitStackers', 'Jens Olsen', 'Blik A/S', '22114411', '33551122', 2, '["urgent"]', NOW());
 
-INSERT INTO message_queue (message_id)
-VALUES (1000000, 1;
+INSERT INTO message_queue (id, message_id)
+VALUES (1000000, 1);
 
 INSERT INTO phone_numbers (id, value, kind) VALUES
 (1, '11223344', 'PSTN'),
