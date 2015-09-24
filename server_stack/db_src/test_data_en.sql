@@ -1073,13 +1073,13 @@ VALUES --  BitStackers
 INSERT INTO users (id, name, extension, send_from)
 VALUES (1,  'Thomas Pedersen',           1001, 'tp@bitstack.dk'),
        (2,  'Kim Rostgaard Christensen', 1002, 'krc@bitstack.dk'),
-       (3,  'Agent 3',                   1003, null),
+       (3,  'Agent 3',                   1003, ''),
        (4,  'Thomas Løcke',              1004, 'thomas@responsum.dk'),
        (5,  'Morten Jensen',             1005, 'tomren3000@gmail.com'),
-       (6,  'Agent 6',                   1006, null),
-       (7,  'Agent 7',                   1007, null),
+       (6,  'Agent 6',                   1006, ''),
+       (7,  'Agent 7',                   1007, ''),
        (8,  'Stanislav Sinyagin',        1008, 'ssinyagin@gmail.com'),
-       (9,  'Casper Bergsø',             1009, null),
+       (9,  'Casper Bergsø',             1009, ''),
        (10, 'Testagent 1100',            1100, 'noreply@bitstack.dk'),
        (11, 'Testagent 1101',            1101, 'noreply@bitstack.dk'),
        (12, 'Testagent 1102',            1102, 'noreply@bitstack.dk'),
@@ -1177,8 +1177,8 @@ VALUES ('kim.rostgaard@gmail.com', 2),
 INSERT INTO  messages (id, message, context_contact_id, context_reception_id, context_contact_name, context_reception_name, taken_from_name, taken_from_company, taken_from_phone, taken_from_cellphone, taken_by_agent, flags, created_at)
 VALUES (1, 'About Car rental; are there convertibles in stock?',4, 1, 'Kim Rostgaard', 'BitStackers', 'John Johnson', 'AnyCorp', '22114411', '33551122', 2, '["urgent"]', NOW());
 
-INSERT INTO message_queue (id, message_id, enqueued_at, last_try, tries)
-VALUES (1000000, 1, NOW(), NULL, 0);
+INSERT INTO message_queue (id, message_id)
+VALUES (1000000, 1);
 
 INSERT INTO phone_numbers (id, value, kind) VALUES
 (1, '11223344', 'PSTN'),
