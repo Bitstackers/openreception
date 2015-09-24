@@ -4,8 +4,8 @@
 CREATE TABLE users (
    id               INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    name             TEXT    NOT NULL,
-   send_from        TEXT    NULL,
-   extension        TEXT    NULL,
+   send_from        TEXT    NOT NULL DEFAULT '',
+   extension        TEXT    NOT NULL DEFAULT '',
    google_username  TEXT    NOT NULL DEFAULT '',
    google_appcode   TEXT    NOT NULL DEFAULT '',
    enabled          BOOLEAN NOT NULL DEFAULT TRUE
@@ -17,7 +17,7 @@ CREATE TABLE groups (
 );
 
 CREATE TABLE user_groups (
-   user_id  INTEGER NOT NULL REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE,
+   user_id  INTEGER NOT NULL REFERENCES users  (id) ON UPDATE CASCADE ON DELETE CASCADE,
    group_id INTEGER NOT NULL REFERENCES groups (id) ON UPDATE CASCADE ON DELETE CASCADE,
 
   PRIMARY KEY (user_id, group_id)
@@ -56,27 +56,27 @@ CREATE TABLE organizations (
    flag         TEXT NOT NULL);
 
 CREATE TABLE receptions (
-   id                INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-   organization_id   INTEGER NOT NULL REFERENCES organizations(id) ON UPDATE CASCADE ON DELETE CASCADE,
-   full_name         TEXT    NOT NULL,
-   attributes        JSON    NOT NULL,
-   extradatauri      TEXT,
-   reception_telephonenumber TEXT UNIQUE,
-   dialplan          JSON,
-   dialplan_compiled BOOLEAN NOT NULL DEFAULT FALSE,
-   ivr               JSON,
-   last_check        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-   enabled           BOOLEAN NOT NULL DEFAULT TRUE
+   id                INTEGER      NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   organization_id   INTEGER      NOT NULL REFERENCES organizations(id) ON UPDATE CASCADE ON DELETE CASCADE,
+   full_name         TEXT         NOT NULL,
+   attributes        JSON         NOT NULL,
+   extradatauri      TEXT         NOT NULL DEFAULT '',
+   reception_telephonenumber TEXT NOT NULL UNIQUE,
+   dialplan          JSON         NOT NULL DEFAULT '{}',
+   dialplan_compiled BOOLEAN      NOT NULL DEFAULT FALSE,
+   ivr               JSON         NOT NULL DEFAULT '{}',
+   last_check        TIMESTAMPTZ  NOT NULL DEFAULT '-infinity',
+   enabled           BOOLEAN      NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE reception_contacts (
    reception_id         INTEGER NOT NULL REFERENCES receptions (id) ON UPDATE CASCADE ON DELETE CASCADE,
    contact_id           INTEGER NOT NULL REFERENCES contacts (id) ON UPDATE CASCADE ON DELETE CASCADE,
    wants_messages       BOOLEAN NOT NULL DEFAULT TRUE,
-   attributes           JSON,
-   phonenumbers		JSON,
+   attributes           JSON NOT NULL DEFAULT '{}',
+   phonenumbers		JSON NOT NULL DEFAULT '[]',
    enabled              BOOLEAN NOT NULL DEFAULT TRUE,
-   data_contact    	BOOLEAN NOT NULL DEFAULT FALSE,
+   data_contact         BOOLEAN NOT NULL DEFAULT FALSE,
    status_email         BOOLEAN NOT NULL DEFAULT TRUE,
    PRIMARY KEY (reception_id, contact_id)
 );
@@ -126,20 +126,20 @@ INSERT INTO recipient_visibilities VALUES ('to'), ('cc'), ('bcc');
 --  Message dispatching:
 
 CREATE TABLE messages (
-   id                        INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-   message                   TEXT      NOT NULL,
-   recipients                JSON      NOT NULL DEFAULT '[]',
-   context_contact_id        INTEGER  NOT NULL REFERENCES contacts   (id),
-   context_reception_id      INTEGER   NOT NULL REFERENCES receptions (id),
-   context_contact_name      TEXT      NOT NULL DEFAULT '', --  Dereferenced contact name.
-   context_reception_name    TEXT      NOT NULL DEFAULT '', --  Dereferenced reception name.
-   taken_from_name           TEXT      NOT NULL DEFAULT '',
-   taken_from_company        TEXT      NOT NULL DEFAULT '',
-   taken_from_phone          TEXT      NOT NULL DEFAULT '',
-   taken_from_cellphone      TEXT      NOT NULL DEFAULT '',
-   taken_from_localexten     TEXT      NOT NULL DEFAULT '',
-   taken_by_agent            INTEGER   NOT NULL REFERENCES users (id),
-   flags                     JSON      NOT NULL DEFAULT '[]',
+   id                        INTEGER     NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   message                   TEXT        NOT NULL,
+   recipients                JSON        NOT NULL DEFAULT '[]',
+   context_contact_id        INTEGER     NOT NULL REFERENCES contacts   (id),
+   context_reception_id      INTEGER     NOT NULL REFERENCES receptions (id),
+   context_contact_name      TEXT        NOT NULL DEFAULT '', --  Dereferenced contact name.
+   context_reception_name    TEXT        NOT NULL DEFAULT '', --  Dereferenced reception name.
+   taken_from_name           TEXT        NOT NULL DEFAULT '',
+   taken_from_company        TEXT        NOT NULL DEFAULT '',
+   taken_from_phone          TEXT        NOT NULL DEFAULT '',
+   taken_from_cellphone      TEXT        NOT NULL DEFAULT '',
+   taken_from_localexten     TEXT        NOT NULL DEFAULT '',
+   taken_by_agent            INTEGER     NOT NULL REFERENCES users (id),
+   flags                     JSON        NOT NULL DEFAULT '[]',
    created_at                TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -149,39 +149,40 @@ CREATE TABLE messages (
 --  to be dispatched.
 
 CREATE TABLE message_queue (
-   id                  INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-   message_id          INTEGER   NOT NULL REFERENCES messages (id),
+   id                  INTEGER     NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   message_id          INTEGER     NOT NULL REFERENCES messages (id),
    enqueued_at         TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-   last_try            TIMESTAMPTZ     NULL DEFAULT NULL,
-   handled_endpoints   JSON      NOT NULL DEFAULT '[]',
-   unhandled_endpoints JSON      NOT NULL DEFAULT '[]',
-   tries               INTEGER   NOT NULL DEFAULT 0
+   last_try            TIMESTAMPTZ NOT NULL DEFAULT 'infinity',
+   handled_endpoints   JSON        NOT NULL DEFAULT '[]',
+   unhandled_endpoints JSON        NOT NULL DEFAULT '[]',
+   tries               INTEGER     NOT NULL DEFAULT 0
 );
 
 CREATE TABLE message_queue_history (
-   id             INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-   message_id     INTEGER   NOT NULL REFERENCES messages (id),
-   enqueued_at    TIMESTAMPTZ NOT NULL,
-   sent_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-   last_try       TIMESTAMPTZ     NULL DEFAULT NULL,
-   tries          INTEGER   NOT NULL DEFAULT 0
+   id                INTEGER     NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   message_id        INTEGER     NOT NULL REFERENCES messages (id),
+   enqueued_at       TIMESTAMPTZ NOT NULL,
+   handled_endpoints JSON        NOT NULL DEFAULT '[]',
+   sent_at           TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+   last_try          TIMESTAMPTZ NOT NULL DEFAULT '-infinity',
+   tries             INTEGER     NOT NULL DEFAULT 0
 );
 
 -------------------------------------------------------------------------------
 --  Calendar events:
 
 CREATE TABLE calendar_events (
-   id      INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   id      INTEGER     NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    start   TIMESTAMPTZ NOT NULL,
    stop    TIMESTAMPTZ NOT NULL,
-   message TEXT      NOT NULL
+   message TEXT        NOT NULL
 );
 
 CREATE TABLE calendar_entry_changes (
-   id         INTEGER   NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-   entry_id   INTEGER   NOT NULL REFERENCES calendar_events (id)
-     ON UPDATE CASCADE ON DELETE CASCADE,
-   user_id    INTEGER   NOT NULL,
+   id         INTEGER     NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   entry_id   INTEGER     NOT NULL REFERENCES calendar_events (id)
+                                   ON UPDATE CASCADE ON DELETE CASCADE,
+   user_id    INTEGER     NOT NULL,
    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 
 );
@@ -204,9 +205,9 @@ CREATE TABLE contact_calendar (
 
 CREATE TABLE reception_calendar (
    reception_id INTEGER NOT NULL REFERENCES receptions (id)
-       ON UPDATE CASCADE ON DELETE CASCADE,
+                                 ON UPDATE CASCADE ON DELETE CASCADE,
    event_id     INTEGER NOT NULL REFERENCES calendar_events (id)
-       ON UPDATE CASCADE ON DELETE CASCADE,
+                                 ON UPDATE CASCADE ON DELETE CASCADE,
 
    PRIMARY KEY (reception_id, event_id)
 );
@@ -220,7 +221,8 @@ CREATE TABLE distribution_list (
   id                     INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
   owner_reception_id     INTEGER NOT NULL,
   owner_contact_id       INTEGER NOT NULL,
-  role                   TEXT    NOT NULL REFERENCES distribution_list_roles(value) ON UPDATE CASCADE ON DELETE CASCADE,
+  role                   TEXT    NOT NULL REFERENCES distribution_list_roles(value)
+                                          ON UPDATE CASCADE ON DELETE CASCADE,
   recipient_reception_id INTEGER NOT NULL,
   recipient_contact_id   INTEGER NOT NULL,
   UNIQUE(owner_reception_id, owner_contact_id, recipient_reception_id, recipient_contact_id),
@@ -250,7 +252,8 @@ CREATE TABLE phone_numbers (
 CREATE TABLE contact_phone_numbers (
    reception_id    INTEGER NOT NULL,
    contact_id      INTEGER NOT NULL,
-   phone_number_id INTEGER NOT NULL REFERENCES phone_numbers (id) ON UPDATE CASCADE ON DELETE CASCADE,
+   phone_number_id INTEGER NOT NULL REFERENCES phone_numbers (id)
+                                    ON UPDATE CASCADE ON DELETE CASCADE,
 
    PRIMARY KEY (contact_id, reception_id, phone_number_id),
 
@@ -263,26 +266,25 @@ CREATE TABLE contact_phone_numbers (
 --  CDR data
 
 CREATE TABLE cdr_entries (
-   uuid         TEXT      NOT NULL PRIMARY KEY,
-   inbound      BOOLEAN   NOT NULL,
-   reception_id INTEGER   NOT NULL REFERENCES receptions (id),
-   extension    TEXT      NOT NULL,
-   duration     INTEGER   NOT NULL,
-   wait_time    INTEGER   NOT NULL,
+   uuid         TEXT        NOT NULL PRIMARY KEY,
+   inbound      BOOLEAN     NOT NULL,
+   reception_id INTEGER     NOT NULL REFERENCES receptions (id),
+   extension    TEXT        NOT NULL,
+   duration     INTEGER     NOT NULL,
+   wait_time    INTEGER     NOT NULL,
    started_at   TIMESTAMPTZ NOT NULL,
-   json         JSON      NOT NULL
+   json         JSON        NOT NULL
 );
 
 CREATE INDEX cdr_entries_index ON cdr_entries (started_at);
 
 CREATE TABLE cdr_checkpoints (
-   id          INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   id          INTEGER     NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    startDate   TIMESTAMPTZ NOT NULL,
    endDate     TIMESTAMPTZ NOT NULL,
-   name	       TEXT	 NOT NULL,
+   name	       TEXT	   NOT NULL,
    UNIQUE(startDate, endDate)
 );
-
 
 CREATE TABLE playlists (
    id           INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
