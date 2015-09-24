@@ -80,7 +80,7 @@ class MessageCompose extends ViewWidget {
       ..recipients = recipients
       ..context    = messageContext
       ..body       = messageMap['message']
-      ..flag       = messageMap['flags']
+      ..flag       = new ORModel.MessageFlag(messageMap['flags'])
       ..createdAt  = new DateTime.now()
       ..callerInfo = callerInfo;
 
