@@ -73,6 +73,7 @@ class MessageQueue implements Storage.MessageQueue {
        mq.id,
        mq.message_id,
        mq.unhandled_endpoints,
+       mq.handled_endpoints,
        mq.last_try,
        mq.tries
    FROM 
@@ -90,21 +91,26 @@ class MessageQueue implements Storage.MessageQueue {
     'limit' : limit
   };
 
-    return this._connection.query(sql).then((rows) {
+    return this._connection.query(sql, parameters).then((rows) {
       log.finest('Returned ${rows.length} queued messages (limit $limit).');
 
       List<Model.MessageQueueItem> queue = [];
 
       for (var row in rows) {
 
-        Iterable<Model.MessageRecipient> recipients =
+        Iterable<Model.MessageRecipient> unhandled_recipients =
             (row.unhandled_endpoints as Iterable).map
+            (Model.MessageRecipient.decode);
+
+        Iterable<Model.MessageRecipient> handled_recipients =
+            (row.handled_endpoints as Iterable).map
             (Model.MessageRecipient.decode);
 
         queue.add(new Model.MessageQueueItem.empty()
           ..ID = row.id
           ..messageID =  row.message_id
-          ..unhandledRecipients = recipients.toList()
+          ..handledRecipients = handled_recipients
+          ..unhandledRecipients= unhandled_recipients
           ..tries = row.tries
           ..lastTry =  row.last_try);
       }
