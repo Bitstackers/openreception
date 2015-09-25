@@ -167,6 +167,9 @@ class MessageDispatcher extends StandardConfig {
   const MessageDispatcher();
 }
 
+/**
+ * User server configurations values.
+ */
 class UserServer extends StandardConfig {
   @override
   final int httpPort = 4030;
@@ -220,7 +223,7 @@ class ReceptionServer extends StandardConfig {
 }
 
 /**
- *
+ * Logs [record] to STDOUT | STDERR depending on [record] level.
  */
 void logEntryDispatch(LogRecord record) {
   if (record.level.value > Level.INFO.value) {
@@ -233,7 +236,7 @@ void logEntryDispatch(LogRecord record) {
 Configuration config = const Configuration();
 
 /**
- *
+ * One configuration class to rule them all...
  */
 class Configuration {
   final logDefaults = const Log();
