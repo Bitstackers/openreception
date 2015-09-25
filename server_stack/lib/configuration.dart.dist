@@ -158,6 +158,13 @@ class MessageDispatcher extends StandardConfig {
   const MessageDispatcher();
 }
 
+class UserServer extends StandardConfig {
+  @override
+  final int httpPort = 4030;
+
+  const UserServer();
+}
+
 /**
  * Mangement server configuration values
  */
