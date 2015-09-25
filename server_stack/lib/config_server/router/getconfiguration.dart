@@ -15,15 +15,15 @@ part of openreception.configuration_server.router;
 
 final ORModel.ClientConfiguration client_config =
   new ORModel.ClientConfiguration.empty()
-    ..authServerUri = config.authServer.externalUri
-    ..callFlowServerUri = config.callFlowControl.externalUri
-    ..contactServerUri = config.contactServer.externalUri
-    ..messageServerUri = config.messageServer.externalUri
-    ..notificationServerUri = config.notificationServer.externalUri
-    ..notificationSocketUri = config.notificationServer.notificationUri
-    ..receptionServerUri = config.receptionServer.externalUri
+    ..authServerUri = config.configserver.authServerUri
+    ..callFlowServerUri = config.configserver.callFlowControlUri
+    ..contactServerUri = config.configserver.contactServerUri
+    ..messageServerUri = config.configserver.messageServerUri
+    ..notificationServerUri = config.configserver.notificationServerUri
+    ..notificationSocketUri = config.configserver.notificationSocketUri
+    ..receptionServerUri = config.configserver.receptionServerUri
     ..systemLanguage = config.systemLanguage
-    ..userServerUri = config.userServer.externalUri;
+    ..userServerUri = config.configserver.userServerUri;
 
 shelf.Response getClientConfig(shelf.Request request) =>
   new shelf.Response.ok(JSON.encode(client_config));
