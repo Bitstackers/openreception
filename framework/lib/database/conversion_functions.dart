@@ -127,7 +127,7 @@ Model.Contact _rowToContact (var row) {
     row.endpoints.map((Map map) =>
       new Model.MessageEndpoint.fromMap(map));
 
-  Iterable<Model.PhoneNumber> phoneIterable = row.phone.isNotEmpty
+  Iterable<Model.PhoneNumber> phoneIterable = row.phone.isEmpty
      ? []
      : row.phone.map ((Map map) =>
          new Model.PhoneNumber.fromMap(map));
