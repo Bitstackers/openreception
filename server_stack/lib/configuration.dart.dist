@@ -103,6 +103,15 @@ class ConfigServer extends StandardConfig {
   int get httpPort => 4080;
 
   const ConfigServer();
+  
+  Uri get authServerUri => config.authServer.externalUri;
+  Uri get callFlowControlUri => config.callFlowControl.externalUri;
+  Uri get contactServerUri => config.contactServer.externalUri;
+  Uri get messageServerUri => config.messageServer.externalUri;
+  Uri get notificationServerUri => config.notificationServer.externalUri;
+  Uri get notificationSocketUri => config.notificationServer.notificationUri;
+  Uri get receptionServerUri => config.receptionServer.externalUri;
+  Uri get userServerUri => config.userServer.externalUri;
 }
 
 /**
