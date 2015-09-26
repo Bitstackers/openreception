@@ -226,12 +226,21 @@ class ReceptionServer extends StandardConfig {
  * Logs [record] to STDOUT | STDERR depending on [record] level.
  */
 void logEntryDispatch(LogRecord record) {
+  final String error =
+      '${record.error != null
+      ? ' - ${record.error}'
+      : ''}'
+      '${record.stackTrace != null
+        ? ' - ${record.stackTrace}'
+        : ''}';
+
   if (record.level.value > Level.INFO.value) {
-    IO.stderr.writeln(record);
+    IO.stderr.writeln('${record.time} - ${record}$error');
   } else {
-    IO.stdout.writeln(record);
+    IO.stdout.writeln('${record.time} - ${record}$error');
   }
 }
+
 
 Configuration config = const Configuration();
 
