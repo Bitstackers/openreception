@@ -638,20 +638,19 @@ abstract class Call {
           Model.UserStatusList.instance.activeCallsAt(user.ID),
           (ORModel.Call call) => Controller.PBX.park(call, user)).then((_) {
 
-        /// Request the specified call.
-        ORModel.Call assignedCall =
-            Model.CallList.instance.requestSpecificCall(callID, user);
-        assignedCall.assignedTo = user.ID;
-
-        log.finest('Assigned call ${assignedCall.ID} to user with '
-                   'ID ${user.ID}');
-
         /// Update the user state
         Model.UserStatusList.instance.update
           (user.ID, ORModel.UserState.Receiving);
 
         return Controller.PBX.createAgentChannel(user)
           .then((String uuid) {
+          /// Request the specified call.
+            ORModel.Call assignedCall =
+                Model.CallList.instance.requestSpecificCall(callID, user);
+            assignedCall.assignedTo = user.ID;
+
+            log.finest('Assigned call ${assignedCall.ID} to user with '
+                       'ID ${user.ID}');
             /// Channel bridging
             return Controller.PBX.bridgeChannel(uuid, assignedCall)
               .then((_) =>Controller.PBX.setVariable (assignedCall.channel,
