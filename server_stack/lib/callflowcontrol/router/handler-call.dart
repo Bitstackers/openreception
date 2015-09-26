@@ -674,7 +674,10 @@ abstract class Call {
             Model.UserStatusList.instance.update(
             user.ID,
             ORModel.UserState.Unknown);
-            });
+            return new shelf.Response.internalServerError
+                (body : 'Could not create agent channel');
+        });
+
 
       }).catchError((error, stackTrace) {
         if (error is ORStorage.Conflict) {
