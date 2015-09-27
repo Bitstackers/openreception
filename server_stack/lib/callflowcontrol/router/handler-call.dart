@@ -482,240 +482,158 @@ abstract class Call {
     });
   }
 
-  /**
-   * Pickup a specific call.
-   * TODO: Wait with parking until the channelchek is done
-   */
-  static Future<shelf.Response> pickup(shelf.Request request) {
+  static shelf.Response _clientError(String reason) =>
+      new shelf.Response(400, body : reason);
 
-    final String callID = shelf_route.getPathParameter(request, 'callid');
+  static shelf.Response _serverError(String reason) =>
+      new shelf.Response(500, body : reason);
 
-    if (callID == null || callID == "") {
-      return new Future.value
-          (new shelf.Response(400, body : 'Empty call_id in path.'));
+  static bool _phoneUnreachable(ORModel.User user)  {
+    /// Check user state. If the user is currently performing an action - or
+    /// has an active channel - deny the request.
+    String userState = Model.UserStatusList.instance.getOrCreate(user.ID).state;
+
+    bool inTransition = ORModel.UserState.TransitionStates.contains(userState);
+    bool hasChannels = Model.ChannelList.instance.hasActiveChannels(user.peer);
+
+    if(inTransition || hasChannels) {
+      return true;
     }
 
-    return AuthService.userOf(_tokenFrom(request)).then((ORModel.User user) {
-      try {
-        if (!Model.PeerList.get(user.peer).registered) {
-          return new shelf.Response(400, body : 'User with ${user.ID} has no peer available');
-        }
-      } catch (error) {
-        log.severe
-          ('Failed to lookup peer for user with ID ${user.ID}. Error : $error');
-        return new shelf.Response(400, body : 'User with ${user.ID} has no peer available');
-      }
+    return false;
+  }
 
-      /// Check user state. If the user is currently performing an action - or
-      /// has an active channel - deny the request.
-      String userState = Model.UserStatusList.instance.getOrCreate(user.ID).state;
+  static String _stateString (ORModel.User user) {
+    String userState = Model.UserStatusList.instance.getOrCreate(user.ID).state;
+    bool hasChannels = Model.ChannelList.instance.hasActiveChannels(user.peer);
 
-      bool inTransition =
-          ORModel.UserState.TransitionStates.contains(userState);
-      bool hasChannels =
-          Model.ChannelList.instance.hasActiveChannels(user.peer);
-
-      if (inTransition || hasChannels) {
-        return new shelf.Response
-            (400, body : 'Phone is not ready. '
-              'state:{$userState}, hasChannels:{$hasChannels}');
-      }
-
-      /// Park all the users calls.
-      return Future.forEach(
-          Model.UserStatusList.instance.activeCallsAt(user.ID),
-          (ORModel.Call call) => Controller.PBX.park(call, user)).then((_) {
-
-        /// Request the specified call.
-        ORModel.Call assignedCall =
-            Model.CallList.instance.requestSpecificCall(callID, user);
-        assignedCall.assignedTo = user.ID;
-
-        log.finest('Assigned call ${assignedCall.ID} to user with '
-                   'ID ${user.ID}');
-
-        /// Update the user state
-        Model.UserStatusList.instance.update
-          (user.ID, ORModel.UserState.Receiving);
-
-        return Controller.PBX.transfer(assignedCall, user.peer).then((_) {
-          Model.UserStatusList.instance.update(
-              user.ID,
-              ORModel.UserState.Speaking);
-
-          return new shelf.Response.ok(JSON.encode(pickupOK(assignedCall)));
-
-        }).catchError((error, stackTrace) {
-          Model.UserStatusList.instance.update(
-              user.ID,
-              ORModel.UserState.Unknown);
-
-          log.severe(error, stackTrace);
-          return new shelf.Response.internalServerError();
-        });
-
-      }).catchError((error, stackTrace) {
-        if (error is ORStorage.Conflict) {
-          return new shelf.Response(409, body : JSON.encode({
-            'error': 'Call not currently available.'
-          }));
-        }
-        else if (error is ORStorage.NotFound) {
-            return new shelf.Response.notFound(JSON.encode({
-              'error': 'No calls available.'
-            }));
-        }
-        else if (error is ORStorage.Forbidden) {
-          return new shelf.Response.forbidden(JSON.encode({
-              'error': 'Call already assigned.'
-            }));
-        } else {
-          Model.UserStatusList.instance.update(
-              user.ID,
-              ORModel.UserState.Unknown);
-          log.severe(error, stackTrace);
-          return new shelf.Response.internalServerError();
-        }
-      });
-    }).catchError((error, stackTrace) {
-      if (error is ORStorage.NotFound) {
-        return new shelf.Response.notFound(JSON.encode({
-          'reason': 'No calls available.'
-        }));
-      } else {
-
-        log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError(body : error.toString());
-      }
-    })
-    .catchError((error, stackTrace) {
-      log.severe(error, stackTrace);
-      return new shelf.Response.internalServerError(body : error.toString());
-    });
+    return 'state:{$userState}, hasChannels:{$hasChannels}';
   }
 
   /**
    * Pickup a specific call.
-   * TODO: Wait with parking until the channelchek is done
+   * TODO: Wait with parking until the channelcheck is done
    */
-  static Future<shelf.Response> pickupViaPark(shelf.Request request) {
+  static Future<shelf.Response> pickupViaPark(shelf.Request request) async {
 
     final String callID = shelf_route.getPathParameter(request, 'callid');
+    ORModel.User user;
+    Model.Peer peer;
+    ORModel.Call assignedCall;
+    String agentChannel;
 
+    /// Parameter check.
     if (callID == null || callID == "") {
-      return new Future.value
-          (new shelf.Response(400, body : 'Empty call_id in path.'));
+      return new Future.value(_clientError('Empty call_id in path.'));
     }
 
-    return AuthService.userOf(_tokenFrom(request)).then((ORModel.User user) {
-      try {
-        if (!Model.PeerList.get(user.peer).registered) {
-          return new shelf.Response(400, body : 'User with ${user.ID} has no peer available');
-        }
-      } catch (error) {
-        log.severe
-          ('Failed to lookup peer for user with ID ${user.ID}. Error : $error');
-        return new shelf.Response(400, body : 'User with ${user.ID} has no peer available');
-      }
+    /// User object fetching.
+    try {
+      user = await AuthService.userOf(_tokenFrom(request));
+    }
+    catch (error, stackTrace) {
+      final String msg = 'Failed to contact authserver';
+      log.severe(msg, error, stackTrace);
 
-      /// Check user state. If the user is currently performing an action - or
-      /// has an active channel - deny the request.
-      String userState = Model.UserStatusList.instance.getOrCreate(user.ID).state;
+      return _serverError(msg);
+    }
 
-      bool inTransition =
-          ORModel.UserState.TransitionStates.contains(userState);
-      bool hasChannels =
-          Model.ChannelList.instance.hasActiveChannels(user.peer);
+    /// Retrieve peer information.
+    peer = Model.PeerList.get(user.peer);
 
-      if (inTransition || hasChannels) {
-        return new shelf.Response
-            (400, body : 'Phone is not ready. '
-              'state:{$userState}, hasChannels:{$hasChannels}');
-      }
+    /// The user has not registered its peer to transfer the call to. Abort.
+    if (peer == null || !peer.registered) {
+      return _clientError('User with ${user.ID} has no peer available');
+    }
 
-      /// Park all the users calls.
-      return Future.forEach(
-          Model.UserStatusList.instance.activeCallsAt(user.ID),
-          (ORModel.Call call) => Controller.PBX.park(call, user)).then((_) {
+    /// The user has no reachable phone to transfer the call to. Abort.
+    if (_phoneUnreachable(user)) {
+      return _clientError('Phone is not ready. ${_stateString(user)}');
+    }
 
-        /// Request the specified call.
-        ORModel.Call assignedCall =
-            Model.CallList.instance.requestSpecificCall(callID, user);
-        assignedCall.assignedTo = user.ID;
+    try {
+      /// Request the specified call.
+      assignedCall = Model.CallList.instance.requestSpecificCall(callID, user);
+      assignedCall.assignedTo = user.ID;
+    }
 
-        log.finest('Assigned call ${assignedCall.ID} to user with '
-                   'ID ${user.ID}');
+    on ORStorage.Conflict {
+      return new shelf.Response(409, body : JSON.encode({
+        'error': 'Call not currently available.'
+      }));
+    }
 
-        /// Update the user state
-        Model.UserStatusList.instance.update
-          (user.ID, ORModel.UserState.Receiving);
+    on ORStorage.NotFound {
+      return new shelf.Response.notFound(JSON.encode({
+        'error': 'No calls available.'
+      }));
+    }
 
-        return Controller.PBX.createAgentChannel(user)
-          .then((String uuid) {
-            /// Channel bridging
-            return Controller.PBX.bridgeChannel(uuid, assignedCall)
-              .then((_) =>Controller.PBX.setVariable (assignedCall.channel,
-                  Controller.PBX.ownerUid, user.ID.toString()))
-              .then((_) {
-                /// Update the user state
-                Model.UserStatusList.instance.update
-                  (user.ID, ORModel.UserState.Speaking);
+    on ORStorage.Forbidden {
+      return new shelf.Response.forbidden(JSON.encode({
+          'error': 'Call already assigned.'
+      }));
+    }
+    catch (error, stackTrace) {
+      final String msg = 'Failed retrieve call from call list';
+      log.severe(msg, error, stackTrace);
 
-                return new shelf.Response.ok(JSON.encode(assignedCall));
-              })
-              .catchError((error, stackTrace) {
-                log.severe(error, stackTrace);
-                Model.UserStatusList.instance.update
-                  (user.ID, ORModel.UserState.Unknown);
-                return new shelf.Response.internalServerError();
-              });
-          })
-          .catchError((error, stackTrace) {
-            log.severe(error, stackTrace);
-            Model.UserStatusList.instance.update(
-            user.ID,
-            ORModel.UserState.Unknown);
-            return new shelf.Response.internalServerError();
-            });
+      return _serverError(msg);
+    }
 
-      }).catchError((error, stackTrace) {
-        if (error is ORStorage.Conflict) {
-          return new shelf.Response(409, body : JSON.encode({
-            'error': 'Call not currently available.'
-          }));
-        }
-        else if (error is ORStorage.NotFound) {
-            return new shelf.Response.notFound(JSON.encode({
-              'error': 'No calls available.'
-            }));
-        }
-        else if (error is ORStorage.Forbidden) {
-          return new shelf.Response.forbidden(JSON.encode({
-              'error': 'Call already assigned.'
-            }));
-        } else {
-          Model.UserStatusList.instance.update(
-              user.ID,
-              ORModel.UserState.Unknown);
-          log.severe(error, stackTrace);
-          return new shelf.Response.internalServerError();
-        }
+    /// Update the user state
+    Model.UserStatusList.instance.update (user.ID, ORModel.UserState.Receiving);
+
+    log.finest('Assigned call ${assignedCall.ID} to user with ID ${user.ID}');
+
+    /// Create an agent channel
+    try {
+      agentChannel = await Controller.PBX.createAgentChannel(user);
+    } catch (error, stackTrace) {
+      final String msg = 'Failed to create agent channel';
+      log.severe(msg, error, stackTrace);
+
+      Model.UserStatusList.instance.update (user.ID, ORModel.UserState.Unknown);
+
+      return _serverError(msg);
+    }
+
+    /// Channel bridging
+    try {
+      await Controller.PBX.bridgeChannel(agentChannel, assignedCall);
+    }
+    catch (error, stackTrace) {
+      final String msg = 'Failed to bridge channels: '
+          '$agentChannel and $assignedCall. '
+          'Killing agent channel $agentChannel';
+      log.severe(msg, error, stackTrace);
+
+      Model.UserStatusList.instance.update (user.ID, ORModel.UserState.Unknown);
+
+      /// Make sure the agent channel is closed before returning a response.
+      return Controller.PBX.killChannel(agentChannel)
+        .then((_) =>  _serverError(msg))
+        .catchError((error, stackTrace) {
+            log.severe('Failed to close agent channel', error, stackTrace);
+        return _serverError(msg);
       });
-    }).catchError((error, stackTrace) {
-      if (error is ORStorage.NotFound) {
-        return new shelf.Response.notFound(JSON.encode({
-          'reason': 'No calls available.'
-        }));
-      } else {
+    }
 
-        log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError(body : error.toString());
-      }
-    })
-    .catchError((error, stackTrace) {
-      log.severe(error, stackTrace);
-      return new shelf.Response.internalServerError(body : error.toString());
-    });
+    /// Tag the channel as assigned to the user.
+    try {
+      await Controller.PBX.setVariable
+        (assignedCall.channel, Controller.PBX.ownerUid, user.ID.toString());
+    }
+    catch (error, stackTrace) {
+      final String msg = 'Failed set user id for channel $agentChannel.'
+          'Channel reload will be inaccurate.';
+      log.warning(msg, error, stackTrace);
+    }
+
+    /// Update the user state. At this point, all is well.
+    Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Speaking);
+
+    return new shelf.Response.ok(JSON.encode(assignedCall));
   }
 
   /**
