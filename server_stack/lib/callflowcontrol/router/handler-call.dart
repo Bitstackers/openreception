@@ -56,50 +56,65 @@ abstract class Call {
   /**
    * Hangup the current call of the agent.
    */
-  static Future<shelf.Response> hangup(shelf.Request request) {
+  static Future<shelf.Response> hangup(shelf.Request request) async {
 
-    return AuthService.userOf(_tokenFrom(request)).then((ORModel.User user) {
+    ORModel.User user;
 
-      ORModel.Call call = Model.CallList.instance
-          .firstWhere((ORModel.Call call) => call.assignedTo == user.ID,
-          orElse: () => ORModel.Call.noCall);
+    /// User object fetching.
+    try {
+      user = await AuthService.userOf(_tokenFrom(request));
+    }
+    catch (error, stackTrace) {
+      final String msg = 'Failed to contact authserver';
+      log.severe(msg, error, stackTrace);
 
-      if (call == ORModel.Call.noCall) {
-        return new shelf.Response.notFound('{}');
-      }
+      return _serverError(msg);
+    }
 
+    ///Find the current call of the agent.
+    ORModel.Call call = Model.CallList.instance
+        .firstWhere((ORModel.Call call) =>
+            call.assignedTo == user.ID &&
+            call.state == ORModel.CallState.Speaking,
+        orElse: () => ORModel.Call.noCall);
+
+    /// The agent currently has no call assigned.
+    if (call == ORModel.Call.noCall) {
+      return new shelf.Response.notFound('{}');
+    }
+
+    ///There is an active call, update the user state.
+    Model.UserStatusList.instance.update(user.ID, ORModel.UserState.HangingUp);
+
+
+    try {
+      await Controller.PBX.hangup(call);
       Model.UserStatusList.instance.update
-        (user.ID, ORModel.UserState.HangingUp);
+      (user.ID, ORModel.UserState.HandlingOffHook);
 
-      return Controller.PBX.hangup(call)
-        .then((_) =>
-          Model.UserStatusList.instance.update
-            (user.ID, ORModel.UserState.HandlingOffHook)
-        )
-        .catchError((error, stackTrace) {
-          Model.UserStatusList.instance.update
-            (user.ID, ORModel.UserState.Unknown);
+      return new shelf.Response.ok('{}');
+    }
+    catch (error, stackTrace) {
+      final String msg = 'Failed retrieve call from call list';
+      log.severe(msg, error, stackTrace);
 
-          log.severe(error, stackTrace);
-          return new shelf.Response.internalServerError();
+      /// We can no longer assume anything about the users' state.
+      Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Unknown);
 
-        });
-
-    })
-    .catchError((error, stackTrace) {
-      log.severe(error, stackTrace);
-      return new shelf.Response.internalServerError();
-
-    });
+      return _serverError(msg);
+    }
   }
 
   /**
    * Hangup a specific call identified by the supplied call id.
    */
-  static Future<shelf.Response> hangupSpecific(shelf.Request request) {
+  static Future<shelf.Response> hangupSpecific(shelf.Request request) async {
 
     final String callID = shelf_route.getPathParameter(request, 'callid');
 
+    ORModel.User user;
+
+    /// Groups able to hangup any call.
     List<String> hangupGroups = ['Administrator'];
 
     bool aclCheck(ORModel.User user) =>
@@ -111,59 +126,64 @@ abstract class Call {
           (new shelf.Response(400, body : 'Empty call_id in path.'));
     }
 
-    return AuthService.userOf(_tokenFrom(request))
-      .then((ORModel.User user) {
-        if (!aclCheck(user)) {
-          return new shelf.Response.forbidden ('Insufficient privileges.');
-        }
+    /// User object fetching.
+    try {
+      user = await AuthService.userOf(_tokenFrom(request));
+    }
+    catch (error, stackTrace) {
+      final String msg = 'Failed to contact authserver';
+      log.severe(msg, error, stackTrace);
 
-        /// Verify existence of call targeted for hangup.
-        ORModel.Call targetCall = null;
-        try {
-          targetCall = Model.CallList.instance.get(callID);
-        } on ORStorage.NotFound catch (_) {
-          return new shelf.Response.notFound
-            (JSON.encode({'call_id': callID}));
-        }
+      return _serverError(msg);
+    }
 
-        /// Update user state.
-        Model.UserStatusList.instance.update
-          (user.ID, ORModel.UserState.HangingUp);
+    /// The agent is not allowed to terminate the call.
+    if (!aclCheck(user)) {
+       return new shelf.Response.forbidden ('Insufficient privileges.');
+    }
 
-        Completer<ORModel.Call> completer = new Completer<ORModel.Call>();
+    /// Verify existence of call targeted for hangup.
+    ORModel.Call targetCall;
+    try {
+      targetCall = Model.CallList.instance.get(callID);
+    } on ORStorage.NotFound catch (_) {
+      return new shelf.Response.notFound(JSON.encode({'call_id': callID}));
+    }
 
-        Model.CallList.instance.onEvent.
-          firstWhere((OREvent.CallEvent event) =>
-              event is OREvent.CallHangup && event.call.ID == callID)
-            .then ((OREvent.CallHangup hangupEvent) =>
-                  completer.complete(hangupEvent.call));
+    /// Update user state.
+    Model.UserStatusList.instance.update(user.ID, ORModel.UserState.HangingUp);
 
-        return Controller.PBX.hangup(targetCall)
-          .then((_) {
+    ///Completer
+    Completer<ORModel.Call> completer = new Completer<ORModel.Call>();
 
-            return completer.future.then((ORModel.Call hungupCall) {
-              /// Update user state.
-              Model.UserStatusList.instance.update
-                (user.ID, ORModel.UserState.WrappingUp);
+    Model.CallList.instance.onEvent.
+      firstWhere((OREvent.CallEvent event) =>
+          event is OREvent.CallHangup && event.call.ID == callID)
+        .then ((OREvent.CallHangup hangupEvent) =>
+              completer.complete(hangupEvent.call));
 
-              return new shelf.Response.ok(JSON.encode(hungupCall));
-            }).timeout(new Duration(seconds : 3));
+    return Controller.PBX.hangup(targetCall)
+      .then((_) {
+
+        return completer.future.then((ORModel.Call hungupCall) {
+          /// Update user state.
+          Model.UserStatusList.instance.update
+            (user.ID, ORModel.UserState.WrappingUp);
+
+          return new shelf.Response.ok(JSON.encode(hungupCall));
+        }).timeout(new Duration(seconds : 3));
 
 
-          })
-          .catchError((error, stackTrace) {
-            /// Update user state.
-            Model.UserStatusList.instance.update
-              (user.ID, ORModel.UserState.Unknown);
-
-            log.severe(error, stackTrace);
-            return new shelf.Response.internalServerError();
-          });
       })
       .catchError((error, stackTrace) {
+        /// Update user state.
+        Model.UserStatusList.instance.update
+          (user.ID, ORModel.UserState.Unknown);
+
         log.severe(error, stackTrace);
         return new shelf.Response.internalServerError();
       });
+
   }
 
   /**
