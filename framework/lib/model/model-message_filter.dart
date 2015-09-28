@@ -24,8 +24,9 @@ abstract class MessageState {
   static const Saved   = 'saved';
   static const Sent    = 'sent';
   static const Pending = 'pending';
+  static const NotSaved = 'notSaved';
 
-  static List<String> validStates = [Saved, Sent, Pending];
+  static List<String> validStates = [Saved, Sent, Pending, NotSaved];
 
   static String ofMessage (Message message) {
     if (message.enqueued) {
@@ -34,6 +35,8 @@ abstract class MessageState {
       return Sent;
     } else if (!message.sent && ! message.enqueued){
       return Saved;
+    } else if (!message.sent || ! message.enqueued){
+      return NotSaved;
     } else {
       return null;
     }
@@ -176,6 +179,9 @@ class MessageFilter {
 
       case MessageState.Saved :
         retval.add('NOT enqueued AND NOT sent');
+
+      case MessageState.NotSaved :
+        retval.add('NOT enqueued OR NOT sent');
         break;
     }
 
