@@ -105,12 +105,7 @@ abstract class Message {
     if (_filterFrom(request) != null) {
       try {
         Map map = JSON.decode(_filterFrom(request));
-        filter..messageState   = map ['state']
-              ..contactID      = map ['contact_id']
-              ..receptionID    = map ['reception_id']
-              ..userID         = map ['user_id']
-              ..limitCount     = map ['limit']
-              ..upperMessageID = map ['upper_message_id'];
+        filter = new Model.MessageFilter.fromMap(map);
 
       } catch (error, stackTrace) {
         log.warning(error, stackTrace);
