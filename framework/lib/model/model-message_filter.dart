@@ -18,7 +18,9 @@ class InvalidState implements Exception {
   InvalidState (this._state);
 }
 
-
+/**
+ * Message state 'enum'.
+ */
 abstract class MessageState {
 
   static const Saved   = 'saved';
@@ -111,6 +113,9 @@ class MessageFilter {
     }
   }
 
+  /**
+   * Check if this filter is active (any field is set).
+   */
   bool get active =>
       userID != User.noID ||
       receptionID != Reception.noID ||
@@ -134,6 +139,10 @@ class MessageFilter {
   Iterable<Message> filter (Iterable<Message> messages) =>
       messages.where((Message message) => this.appliesTo (message));
 
+  /**
+   * Equals operator override. All fields of filter needs match in order for
+   * two filter instances to be equal.
+   */
   @override
   operator == (MessageFilter other) =>
       this.upperMessageID == other.upperMessageID &&
@@ -143,8 +152,14 @@ class MessageFilter {
       this.receptionID    == other.receptionID &&
       this.contactID      == other.contactID;
 
+  /**
+   * JSON serialization function.
+   */
   Map toJson() => this.asMap;
 
+  /**
+   * Returns a map representation of the object.
+   */
   Map get asMap {
     Map retval = {};
 
@@ -175,7 +190,10 @@ class MessageFilter {
     return retval;
   }
 
-  List<String> get activeFields {
+  /**
+   * Returns a list of active limit fields used in SQL filter function.
+   */
+  List<String> get _activeFields {
     List<String> retval = [];
 
     if (this.upperMessageID != Message.noID) {
@@ -216,7 +234,13 @@ class MessageFilter {
     return retval;
   }
 
+  /**
+   * Return this filter as an SQL 'Where' clause.
+   *
+   * FIXME: This does not perform any form of expression checking and is, thus,
+   * vulnerable to SQL injection.
+   */
   String get asSQL =>
-      (this.active ? 'WHERE ${this.activeFields.join(' AND ')}' : '');
+      (this.active ? 'WHERE ${this._activeFields.join(' AND ')}' : '');
 
 }
