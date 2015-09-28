@@ -48,12 +48,12 @@ abstract class MessageState {
  * a client to a server.
  */
 class MessageFilter {
-  String    _messageState  = null;
+  String    _messageState  = '';
 
   int    upperMessageID = Message.noID;
-  int    userID         = null;
-  int    receptionID    = null;
-  int    contactID      = null;
+  int    userID         = User.noID;
+  int    receptionID    = Reception.noID;
+  int    contactID      = Contact.noID;
   int    limitCount     = 100;
 
   /**
@@ -65,12 +65,30 @@ class MessageFilter {
    * Deserializing constructor.
    */
   MessageFilter.fromMap(Map map) {
-    userID = map['user_id'];
-    messageState = map['state'];
-    receptionID = map['reception_id'];
-    contactID = map['contact_id'];
-    upperMessageID = map['upper_message_id'];
-    limitCount = map['limit'];
+
+    userID = map.containsKey('user_id')
+        ? map['user_id']
+        : userID;
+
+    messageState = map.containsKey('state')
+        ? map['state']
+        : messageState;
+
+    receptionID = map.containsKey('reception_id')
+        ? map['reception_id']
+        : receptionID;
+
+    contactID = map.containsKey('contact_id')
+        ? map['contact_id']
+        : contactID;
+
+    upperMessageID = map.containsKey('upper_message_id')
+        ? map['upper_message_id']
+        : upperMessageID;
+
+    limitCount = map.containsKey('limit')
+        ? map['limit']
+        : limitCount;
   }
 
   /**
@@ -86,7 +104,7 @@ class MessageFilter {
 
       this._messageState = newState.toLowerCase();
     } else {
-      this._messageState = null;
+      this._messageState = '';
     }
   }
 
@@ -98,15 +116,17 @@ class MessageFilter {
   /**
    * Check if the filter applies to [message].
    */
-  bool appliesTo (Message message) => [message.context.contactID, null].contains(this.contactID) &&
-                                      [message.context.receptionID, null].contains(this.receptionID) &&
-                                      [message.senderId, null].contains(this.userID) &&
-                                      [MessageState.ofMessage(message), null].contains(this.contactID);
+  bool appliesTo (Message message) =>
+      [message.context.contactID, Contact.noID].contains(this.contactID) &&
+      [message.context.receptionID, Reception.noID].contains(this.receptionID) &&
+      [message.senderId, User.noID].contains(this.userID) &&
+      [MessageState.ofMessage(message), Message.noID].contains(this.contactID);
 
   /**
    * Filters [messages] using this filter.
    */
-  Iterable<Message> filter (Iterable<Message> messages) => messages.where((Message message) => this.appliesTo (message));
+  Iterable<Message> filter (Iterable<Message> messages) =>
+      messages.where((Message message) => this.appliesTo (message));
 
   @override
   operator == (MessageFilter other) =>
@@ -122,19 +142,19 @@ class MessageFilter {
   Map get asMap {
     Map retval = {};
 
-    if (this.userID != null) {
+    if (this.userID != User.noID) {
       retval['user_id'] = this.userID;
     }
 
-    if (this.messageState != null) {
+    if (this.messageState != Message.noID) {
       retval['state'] = this.messageState;
     }
 
-    if (this.receptionID != null) {
+    if (this.receptionID != Reception.noID) {
       retval['reception_id'] = this.receptionID;
     }
 
-    if (this.contactID != null) {
+    if (this.contactID != Contact.noID) {
       retval['contact_id'] = this.contactID;
     }
 
@@ -188,6 +208,7 @@ class MessageFilter {
     return retval;
   }
 
-  String get asSQL => (this.active ? 'WHERE ${this.activeFields.join(' AND ')}' : '');
+  String get asSQL =>
+      (this.active ? 'WHERE ${this.activeFields.join(' AND ')}' : '');
 
 }
