@@ -95,7 +95,11 @@ class MessageFilter {
   String get messageState  => this._messageState;
   void   set messageState (String newState) {
 
-    if (newState != null) {
+    if (newState == null) {
+      throw new ArgumentError.notNull(newState);
+    }
+
+    if (newState.isNotEmpty) {
       if (!MessageState.validStates.contains(newState.toLowerCase())) {
         throw new ArgumentError.value (newState, 'newState',
             'State must one of: ${MessageState.validStates}');
