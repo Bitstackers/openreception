@@ -201,8 +201,9 @@ class MessageFilter {
         break;
 
       case MessageState.NotSaved :
-        retval.add('NOT enqueued OR NOT sent');
+        retval.add('enqueued OR sent');
         break;
+
     }
 
     return retval;
