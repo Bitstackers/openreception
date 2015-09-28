@@ -24,7 +24,7 @@ abstract class MessageState {
   static const Saved   = 'saved';
   static const Sent    = 'sent';
   static const Pending = 'pending';
-  static const NotSaved = 'notSaved';
+  static const NotSaved = 'notsaved';
 
   static List<String> validStates = [Saved, Sent, Pending, NotSaved];
 
@@ -35,10 +35,8 @@ abstract class MessageState {
       return Sent;
     } else if (!message.sent && ! message.enqueued){
       return Saved;
-    } else if (!message.sent || ! message.enqueued){
-      return NotSaved;
     } else {
-      return null;
+      return '';
     }
   }
 }
@@ -99,7 +97,8 @@ class MessageFilter {
 
     if (newState != null) {
       if (!MessageState.validStates.contains(newState.toLowerCase())) {
-        throw new InvalidState (newState.toLowerCase());
+        throw new ArgumentError.value (newState, 'newState',
+            'State must one of: ${MessageState.validStates}');
       }
 
       this._messageState = newState.toLowerCase();
