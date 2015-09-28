@@ -192,7 +192,9 @@ class ReceptionistclientReady {
         (new Model.UIMessageArchive(querySelector('#message-archive'), _weekDays),
          new Controller.Destination(Controller.Context.Messages, Controller.Widget.MessageArchive),
          _messageController,
-         _userController);
+         _userController,
+         uiContactSelector,
+         uiReceptionSelector);
 
     _messageCompose = new MessageCompose
         (new Model.UIMessageCompose(querySelector('#message-compose')),

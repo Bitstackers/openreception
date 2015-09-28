@@ -17,27 +17,30 @@ part of model;
  * Provides access to the MessageArchive UX components.
  */
 class UIMessageArchive extends UIModel {
-  final DivElement      _myRoot;
-  Map<int, String>      _users = new Map<int, String>();
+  final Bus<int> _scrollBus = new Bus<int>();
+  final DivElement _myRoot;
+  Map<int, String> _users = new Map<int, String>();
   final ORUtil.WeekDays _weekDays;
 
   /**
    * Constructor.
    */
-  UIMessageArchive(DivElement this._myRoot,
-                   ORUtil.WeekDays this._weekDays) {
+  UIMessageArchive(DivElement this._myRoot, ORUtil.WeekDays this._weekDays) {
     _setupLocalKeys();
     _observers();
   }
 
   @override HtmlElement get _firstTabElement => _body;
-  @override HtmlElement get _focusElement    => _body;
-  @override HtmlElement get _lastTabElement  => _body;
-  @override HtmlElement get _root            => _myRoot;
+  @override HtmlElement get _focusElement => _body;
+  @override HtmlElement get _lastTabElement => _body;
+  @override HtmlElement get _root => _myRoot;
 
-  DivElement          get _body       => _root.querySelector('.generic-widget-body');
-  TableSectionElement get _savedTbody => _root.querySelector('table tbody.saved-messages-tbody');
-  TableSectionElement get _sentTbody  => _root.querySelector('table tbody.sent-messages-tbody');
+  DivElement get _body => _root.querySelector('.generic-widget-body');
+  TableSectionElement get _savedTbody =>
+      _root.querySelector('table tbody.saved-messages-tbody');
+  TableSectionElement get _notSavedTbody =>
+      _root.querySelector('table tbody.not-saved-messages-tbody');
+  DivElement get _tableContainer => _body.querySelector('div');
 
   /**
    * Add the agent name to the table.
@@ -56,9 +59,9 @@ class UIMessageArchive extends UIModel {
     final ButtonElement buttonCopy = new ButtonElement()..text = 'Kopier';
 
     return new TableCellElement()
-                ..classes.addAll(['td-center',  'button-cell'])
-                ..children.addAll([buttonSend, buttonDelete, buttonCopy]);
-    }
+      ..classes.addAll(['td-center', 'button-cell'])
+      ..children.addAll([buttonSend, buttonDelete, buttonCopy]);
+  }
 
   /**
    *
@@ -71,13 +74,13 @@ class UIMessageArchive extends UIModel {
    */
   TableCellElement _buildMessageCell(ORModel.Message msg) {
     final DivElement div = new DivElement()
-                                ..classes.add('slim')
-                                ..appendHtml(msg.body.replaceAll("\n", '<br>'));
+      ..classes.add('slim')
+      ..appendHtml(msg.body.replaceAll("\n", '<br>'));
     div.onClick.listen((_) => div.classes.toggle('slim'));
 
     return new TableCellElement()
-                ..classes.add('message-cell')
-                ..children.add(div);
+      ..classes.add('message-cell')
+      ..children.add(div);
   }
 
   /**
@@ -90,21 +93,25 @@ class UIMessageArchive extends UIModel {
    *
    */
   TableRowElement _buildRow(ORModel.Message msg) {
-    final TableRowElement row = new TableRowElement();
+    final TableRowElement row = new TableRowElement()
+      ..dataset['message-id'] = msg.ID.toString()
+      ..dataset['contact-string'] = msg.context.contactString;
 
     final TableCellElement dateCell = new TableCellElement()
-                                            ..text = ORUtil.humanReadableTimestamp(msg.createdAt, _weekDays);
+      ..text = ORUtil.humanReadableTimestamp(msg.createdAt, _weekDays);
     final TableCellElement receptionCell = new TableCellElement();
     final TableCellElement contactCell = new TableCellElement();
     final TableCellElement agentCell = new TableCellElement();
 
-    row.children.addAll([dateCell,
-                         _buildReceptionCell(msg),
-                         _buildContactCell(msg),
-                         _buildAgentCell(msg),
-                         _buildMessageCell(msg),
-                         _buildStatusCell(msg),
-                         _buildButtonCell(msg)]);
+    row.children.addAll([
+      dateCell,
+      _buildReceptionCell(msg),
+      _buildContactCell(msg),
+      _buildAgentCell(msg),
+      _buildMessageCell(msg),
+      _buildStatusCell(msg),
+      _buildButtonCell(msg)
+    ]);
 
     return row;
   }
@@ -114,8 +121,8 @@ class UIMessageArchive extends UIModel {
    */
   TableCellElement _buildStatusCell(ORModel.Message msg) =>
       new TableCellElement()
-            ..classes.add('td-center')
-            ..text = _getStatus(msg);
+        ..classes.add('td-center')
+        ..text = _getStatus(msg);
 
   /**
    * Remove all data from the body and clear the header.
@@ -126,18 +133,25 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
+   * Clear the message lists.
+   */
+  void clearNotSavedList() {
+    _notSavedTbody.children.clear();
+  }
+
+  /**
    *
    */
   String _getStatus(ORModel.Message msg) {
-    if(msg.sent) {
+    if (msg.sent) {
       return 'SENT';
     }
 
-    if(msg.enqueued) {
+    if (msg.enqueued) {
       return 'QUEUED';
     }
 
-    if(!msg.sent && !msg.enqueued) {
+    if (!msg.sent && !msg.enqueued) {
       return 'SAVED';
     }
 
@@ -145,18 +159,24 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
+   * Return the [ORModel.MessageContext.contactString] if there are messages in
+   * the not saved list.
+   * Return empty String if there are no messages in the not saved list.
+   */
+  String get notSavedLastContactString {
+    if(_notSavedTbody.children.isNotEmpty) {
+      return _notSavedTbody.children.last.dataset['contact-string'];
+    } else {
+      return '';
+    }
+  }
+
+  /**
    *
    */
-  set messages(Iterable<ORModel.Message> list) {
-    _savedTbody.children.clear();
-    _sentTbody.children.clear();
-
-    list.where((ORModel.Message msg) => !msg.sent && !msg.enqueued).forEach((ORModel.Message msg) {
-      _savedTbody.children.add(_buildRow(msg));
-    });
-
-    list.where((ORModel.Message msg) => msg.sent || msg.enqueued).forEach((ORModel.Message msg) {
-      _sentTbody.children.add(_buildRow(msg));
+  set notSavedMessages(Iterable<ORModel.Message> list) {
+    list.forEach((ORModel.Message msg) {
+      _notSavedTbody.children.add(_buildRow(msg));
     });
   }
 
@@ -166,6 +186,23 @@ class UIMessageArchive extends UIModel {
   void _observers() {
     _root.onKeyDown.listen(_keyboard.press);
     _root.onClick.listen((_) => _body.focus());
+
+    _tableContainer.onScroll.listen((Event event) {
+      if(_tableContainer.getBoundingClientRect().height + _tableContainer.scrollTop >= _tableContainer.scrollHeight) {
+        _scrollBus.fire(int.parse(_notSavedTbody.children.last.dataset['message-id']));
+      }
+    });
+  }
+
+  /**
+   *
+   */
+  set savedMessages(Iterable<ORModel.Message> list) {
+    _savedTbody.children.clear();
+
+    list.forEach((ORModel.Message msg) {
+      _savedTbody.children.add(_buildRow(msg));
+    });
   }
 
   /**
@@ -174,6 +211,12 @@ class UIMessageArchive extends UIModel {
   void _setupLocalKeys() {
     _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap());
   }
+
+  /**
+   * Fires the ID of the last ORModel.Message when the message list box is
+   * scrolled to the bottom.
+   */
+  Stream<int> get scrolledToBottom => _scrollBus.stream;
 
   /**
    *

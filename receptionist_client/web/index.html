@@ -647,35 +647,36 @@
             <span class="extra-header"></span>
           </h4>
           <div class="generic-widget-body" tabindex="-1">
-            <input type="text" class="archive-filter" placeholder="::message-archive-filter::" tabindex="-1" data-lang-placeholder="filter">
-            <table class="saved-messages-table">
-              <thead>
-                <tr>
-                  <td data-lang-text="date">::date::</td>
-                  <td data-lang-text="reception">::reception::</td>
-                  <td data-lang-text="contact">::contact::</td>
-                  <td data-lang-text="agent">::agent::</td>
-                  <td data-lang-text="message">::message::</td>
-                  <td data-lang-text="status">::status::</td>
-                  <td data-lang-text="actions">::actions::</td>
-                </tr>
-              </thead>
-              <tbody class="saved-messages-tbody zebra"></tbody>
-            </table>
-            <table class="sent-messages-table">
-              <thead>
-                <tr>
-                  <td data-lang-text="date">::date::</td>
-                  <td data-lang-text="reception">::reception::</td>
-                  <td data-lang-text="contact">::contact::</td>
-                  <td data-lang-text="agent">::agent::</td>
-                  <td data-lang-text="message">::message::</td>
-                  <td data-lang-text="status">::status::</td>
-                  <td data-lang-text="actions">::actions::</td>
-                </tr>
-              </thead>
-              <tbody class="sent-messages-tbody zebra"></tbody>
-            </table>
+            <div style="height: 100%; overflow: auto;">
+              <table class="saved-messages-table">
+                <thead>
+                  <tr>
+                    <td data-lang-text="date">::date::</td>
+                    <td data-lang-text="reception">::reception::</td>
+                    <td data-lang-text="contact">::contact::</td>
+                    <td data-lang-text="agent">::agent::</td>
+                    <td data-lang-text="message">::message::</td>
+                    <td data-lang-text="status">::status::</td>
+                    <td data-lang-text="actions">::actions::</td>
+                  </tr>
+                </thead>
+                <tbody class="saved-messages-tbody zebra"></tbody>
+              </table>
+              <table class="not-saved-messages-table">
+                <thead>
+                  <tr>
+                    <td data-lang-text="date">::date::</td>
+                    <td data-lang-text="reception">::reception::</td>
+                    <td data-lang-text="contact">::contact::</td>
+                    <td data-lang-text="agent">::agent::</td>
+                    <td data-lang-text="message">::message::</td>
+                    <td data-lang-text="status">::status::</td>
+                    <td data-lang-text="actions">::actions::</td>
+                  </tr>
+                </thead>
+                <tbody class="not-saved-messages-tbody zebra"></tbody>
+              </table>
+            </div>
           </div>
         </div>
 
