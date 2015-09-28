@@ -147,6 +147,7 @@ class Message implements Storage.Message {
         .query(sql)
         .then((rows) => (rows as Iterable).map(_rowToMessage))
         .catchError((error, stackTrace) {
+      log.severe('sql:$sql', error, stackTrace);
       return new Future.error(error, stackTrace);
     });
   }
