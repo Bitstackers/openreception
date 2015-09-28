@@ -244,14 +244,18 @@ abstract class PBX {
   /**
    * Kills the active channel for a call.
    */
-  static Future hangup (ORModel.Call call) {
-    return Model.PBXClient.api('uuid_kill ${call.channel}')
+  static Future hangup (ORModel.Call call) => killChannel(call.channel);
+
+  /**
+   * Kills the active channel for a call.
+   */
+  static Future killChannel (String uuid) =>
+    Model.PBXClient.api('uuid_kill $uuid')
         .then((ESL.Response response) {
           if (response.status != ESL.Response.OK) {
             throw new StateError('ESL returned ${response.rawBody}');
           }
-        });
-  }
+    });
 
   /**
    * Parks a call in the parking lot for the user.
