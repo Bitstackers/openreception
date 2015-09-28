@@ -175,15 +175,15 @@ class MessageFilter {
       retval.add('message.id <= ${this.upperMessageID}');
     }
 
-    if (userID != null) {
+    if (userID != User.noID) {
        retval.add('taken_by_agent = ${this.userID}');
     }
 
-    if (receptionID != null) {
+    if (receptionID != Reception.noID) {
        retval.add('context_reception_id = ${this.receptionID}');
     }
 
-    if (contactID != null) {
+    if (contactID != Contact.noID) {
        retval.add('context_contact_id = ${this.contactID}');
     }
 
