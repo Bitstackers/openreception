@@ -107,9 +107,12 @@ class MessageFilter {
     }
   }
 
-  bool get active => [userID, receptionID, contactID, upperMessageID]
-                      .any((int field) => field != null && field != Message.noID)
-                      || messageState != null;
+  bool get active =>
+      userID != User.noID ||
+      receptionID != Reception.noID ||
+      contactID != Contact.noID ||
+      upperMessageID != Message.noID ||
+      messageState.isNotEmpty;
 
 
   /**
