@@ -64,28 +64,28 @@ class MessageFilter {
    */
   MessageFilter.fromMap(Map map) {
 
-    userID = map.containsKey('user_id')
-        ? map['user_id']
+    userID = map.containsKey(Key.userID)
+        ? map[Key.userID]
         : userID;
 
-    messageState = map.containsKey('state')
-        ? map['state']
+    messageState = map.containsKey(Key.state)
+        ? map[Key.state]
         : messageState;
 
-    receptionID = map.containsKey('reception_id')
-        ? map['reception_id']
+    receptionID = map.containsKey(Key.receptionID)
+        ? map[Key.receptionID]
         : receptionID;
 
-    contactID = map.containsKey('contact_id')
-        ? map['contact_id']
+    contactID = map.containsKey(Key.contactID)
+        ? map[Key.contactID]
         : contactID;
 
-    upperMessageID = map.containsKey('upper_message_id')
-        ? map['upper_message_id']
+    upperMessageID = map.containsKey(Key.upperMessageId)
+        ? map[Key.upperMessageId]
         : upperMessageID;
 
-    limitCount = map.containsKey('limit')
-        ? map['limit']
+    limitCount = map.containsKey(Key.limit)
+        ? map[Key.limit]
         : limitCount;
   }
 
@@ -149,27 +149,27 @@ class MessageFilter {
     Map retval = {};
 
     if (this.userID != User.noID) {
-      retval['user_id'] = this.userID;
+      retval[Key.userID] = this.userID;
     }
 
     if (this.messageState != Message.noID) {
-      retval['state'] = this.messageState;
+      retval[Key.state] = this.messageState;
     }
 
     if (this.receptionID != Reception.noID) {
-      retval['reception_id'] = this.receptionID;
+      retval[Key.receptionID] = this.receptionID;
     }
 
     if (this.contactID != Contact.noID) {
-      retval['contact_id'] = this.contactID;
+      retval[Key.contactID] = this.contactID;
     }
 
     if (this.upperMessageID != Message.noID) {
-      retval['upper_message_id'] = upperMessageID;
+      retval[Key.upperMessageId] = upperMessageID;
     }
 
     if (this.limitCount != Message.noID) {
-      retval['limit'] = this.limitCount;
+      retval[Key.limit] = this.limitCount;
     }
 
     return retval;

@@ -116,3 +116,7 @@ const String willCallBack = 'willCallBack';
 const String called = 'called';
 const String urgent = 'urgent';
 const String manuallyClosed = 'manuallyClosed';
+
+///Message filter keys
+const String upperMessageId = 'upper_message_id';
+const String limit = 'limit';
