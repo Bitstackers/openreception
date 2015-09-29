@@ -199,7 +199,7 @@ abstract class Call {
    * Originate a new call by first creating a parked phone channel to the
    * agent and then perform the orgination in the background.
    */
-  static Future<shelf.Response> originateViaPark(shelf.Request request) async {
+  static Future<shelf.Response> originate(shelf.Request request) async {
 
     final int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
     final int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
@@ -463,7 +463,7 @@ abstract class Call {
    * Pickup a specific call.
    * TODO: Wait with parking until the channelcheck is done
    */
-  static Future<shelf.Response> pickupViaPark(shelf.Request request) async {
+  static Future<shelf.Response> pickup(shelf.Request request) async {
 
     final String callID = shelf_route.getPathParameter(request, 'callid');
     ORModel.User user;
