@@ -74,7 +74,7 @@ class CallList extends IterableBase<ORModel.Call> {
             ? int.parse(channel.variables['contact_id'])
             : ORModel.Contact.noID
         ..event.listen(this._callEvent.fire);
-;
+
       }
       else {
         log.info('Ignoring local channel ${channel.UUID}');
