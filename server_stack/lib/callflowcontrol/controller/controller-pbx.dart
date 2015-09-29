@@ -43,6 +43,7 @@ abstract class PBX {
   static final Logger _log             = new Logger('${libraryName}.PBX');
   static const String _callerID        = '39990141';
   static const int    _timeOutSeconds  = 10;
+  static const int    _agentChantimeOut= 3;
   static const String _dialplan        = 'xml receptions';
 
   static const String _namespace = 'openreception::';
@@ -98,7 +99,7 @@ abstract class PBX {
                                   '{ignore_early_media=true,'
                                   '${agentChan}=true,'
                                   'origination_uuid=$new_call_uuid,'
-                                  'originate_timeout=$_timeOutSeconds,'
+                                  'originate_timeout=$_agentChantimeOut,'
                                   'origination_caller_id_name=$_callerID,'
                                   'origination_caller_id_number=$_callerID}'
                                   '${destination}'
