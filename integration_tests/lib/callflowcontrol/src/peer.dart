@@ -12,7 +12,8 @@ abstract class Peer {
     String peerName = receptionist._phone.defaultAccount.username;
 
     return
-      Future.wait([])
+      new Future.delayed(new Duration(milliseconds : 50))
+      .then((_) => receptionist.eventStack.clear())
       .then((_) => log.info ('Unregistering peer $peerName to assert state'))
       .then((_) => receptionist._phone.unregister())
       .then((_) =>
