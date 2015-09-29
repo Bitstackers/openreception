@@ -156,9 +156,7 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
   new SmtpClient(options).send(email);
 
   /// Update the handled recipient set.
-
   queueItem.handledRecipients = currentRecipients;
-  print(queueItem.unhandledRecipients);
 
   ///Dispatch sms recipients.
   currentRecipients = smsRecipients(queueItem.unhandledRecipients);
