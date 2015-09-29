@@ -52,6 +52,30 @@ abstract class PBX {
   static const String locked = '${_namespace}locked';
   static const String greetingPlayed = '${_namespace}greeting-played';
 
+  static final Logger log = new Logger ('${libraryName}.PBX');
+
+  static ESL.Connection client = null;
+
+  static Future<ESL.Response> api (String command) {
+    return client.api(command, timeoutSeconds: 20)
+        .then((ESL.Response response) {
+
+      final int maxLen = 200;
+      final truncated = response.rawBody.length > maxLen
+          ?'${response.rawBody.substring(0, maxLen)}...'
+          : response.rawBody;
+
+      log.finest('api $command => $truncated');
+      return response;
+    });
+  }
+
+  static Future<ESL.Reply> bgapi (String command) {
+    return client.bgapi(command).then((ESL.Reply response) {
+      log.finest('bgapi $command => ${response.content}');
+      return response;
+    });
+  }
   /**
    * Starts an origination in the PBX.
    *
@@ -67,7 +91,7 @@ abstract class PBX {
                                    'owner=${user.ID}',
                                    'contact_id=${contactID}'];
 
-    return Model.PBXClient.api
+    return api
         ('originate {${a_legvariables.join(',')}}user/${user.peer} '
          '&bridge([${b_legvariables.join(',')}]sofia/external/${extension}) '
          '${_dialplan} $_callerID $_callerID $_timeOutSeconds')
@@ -87,15 +111,15 @@ abstract class PBX {
    *
    * Returns the UUID of the new channel.
    */
-  static Future<String> createAgentChannel (ORModel.User user) {
-    return Model.PBXClient.api('create_uuid').then((ESL.Response response) {
+  static Future<String> createAgentChannel (ORModel.User user) =>
+    api('create_uuid').then((ESL.Response response) {
       final String new_call_uuid = response.rawBody;
       final String destination = 'user/${user.peer}';
 
       _log.finest ('New uuid: $new_call_uuid');
       _log.finest ('Dialing receptionist at user/${user.peer}');
 
-      return Model.PBXClient.api('originate '
+      return api('originate '
                                   '{ignore_early_media=true,'
                                   '${agentChan}=true,'
                                   'origination_uuid=$new_call_uuid,'
@@ -131,16 +155,16 @@ abstract class PBX {
 
        });
      });
-  }
+
 
   static Future transferUUIDToExtension
     (String uuid, String extension, ORModel.User user) {
     return
-      Model.PBXClient.api
+      api
         ('uuid_setvar $uuid effective_caller_id_number ${user.peer}')
-        .then((_) => Model.PBXClient.api
+        .then((_) => api
           ('uuid_setvar $uuid effective_caller_id_name ${user.name}'))
-        .then((_) => Model.PBXClient.bgapi
+        .then((_) => bgapi
           ('uuid_transfer $uuid $extension ${_dialplan}'))
         .then((ESL.Reply reply) =>
             reply.status != ESL.Reply.OK
@@ -159,7 +183,7 @@ abstract class PBX {
                               'recordpath=${soundFilePath}'];
 
     String command = 'originate {${variables.join(',')}}user/${user.peer} ${recordExtension} ${_dialplan} $_callerID $_callerID $_timeOutSeconds';
-    return Model.PBXClient.api(command)
+    return api(command)
         .then((ESL.Response response) {
           if (response.status != ESL.Response.OK) {
             throw new StateError('ESL returned ${response.rawBody}');
@@ -185,7 +209,7 @@ abstract class PBX {
                               'originate_timeout=$_timeOutSeconds',
                               'return_ring_ready=true'];
 
-    return Model.PBXClient.api
+    return api
         ('originate {${variables.join(',')}}sofia/external/${extension}@${config.callFlowControl.dialoutGateway} &bridge(user/${user.peer}) ${_dialplan} $_callerID $_callerID $_timeOutSeconds')
         .then((ESL.Response response) {
           if (response.status != ESL.Response.OK) {
@@ -201,7 +225,7 @@ abstract class PBX {
    * Bridges two active calls.
    */
   static Future bridge (ORModel.Call source, ORModel.Call destination) {
-    return Model.PBXClient.api ('uuid_bridge ${source.ID} ${destination.ID}')
+    return api ('uuid_bridge ${source.ID} ${destination.ID}')
         .then((ESL.Response response) {
 
           if (response.status != ESL.Response.OK) {
@@ -220,14 +244,14 @@ abstract class PBX {
     ESL.Response bridgeResponse;
 
     return
-        Model.PBXClient.api ('uuid_answer ${destination.channel}')
-        .then ((_) => Model.PBXClient.api ('uuid_setvar ${destination.channel} hangup_after_bridge true')
+        api ('uuid_answer ${destination.channel}')
+        .then ((_) => api ('uuid_setvar ${destination.channel} hangup_after_bridge true')
           .then((response) => bridgeResponse = response))
-        .then ((_) => Model.PBXClient.api ('uuid_setvar ${uuid} hangup_after_bridge true')
+        .then ((_) => api ('uuid_setvar ${uuid} hangup_after_bridge true')
           .then((response) => bridgeResponse = response))
-        .then ((_) => Model.PBXClient.api ('uuid_bridge ${destination.channel} ${uuid}')
+        .then ((_) => api ('uuid_bridge ${destination.channel} ${uuid}')
           .then((response) => bridgeResponse = response))
-        .then ((_) => Model.PBXClient.api ('uuid_break ${destination.channel}').then((_) => bridgeResponse));
+        .then ((_) => api ('uuid_break ${destination.channel}').then((_) => bridgeResponse));
  }
 
   /**
@@ -237,9 +261,9 @@ abstract class PBX {
 
     ESL.Response transferResponse;
 
-    return Model.PBXClient.api ('uuid_transfer ${source.channel} ${extension}')
+    return api ('uuid_transfer ${source.channel} ${extension}')
                                 .then((response) => transferResponse = response)
-        .then ((_) => Model.PBXClient.api ('uuid_break ${source.channel}').then((_) => transferResponse));
+        .then ((_) => api ('uuid_break ${source.channel}').then((_) => transferResponse));
   }
 
   /**
@@ -251,7 +275,7 @@ abstract class PBX {
    * Kills the active channel for a call.
    */
   static Future killChannel (String uuid) =>
-    Model.PBXClient.api('uuid_kill $uuid')
+    api('uuid_kill $uuid')
         .then((ESL.Response response) {
           if (response.status != ESL.Response.OK) {
             throw new StateError('ESL returned ${response.rawBody}');
@@ -287,13 +311,13 @@ abstract class PBX {
   /**
    * Request a reload of peers.
    */
-  static Future loadPeers () => Model.PBXClient.instance.api('list_users')
+  static Future loadPeers () => api('list_users')
     .then(_loadPeerListFromPacket);
 
   /**
    * Request a reload of channels
    */
-  static Future loadChannels() => Model.PBXClient.instance.api('show channels as json')
+  static Future loadChannels() => api('show channels as json')
       .then(_loadChannelListFromPacket);
 
   /**
@@ -307,7 +331,7 @@ abstract class PBX {
         : [];
 
     return Future.forEach(channelUUIDs, (String channelUUID) {
-      return Model.PBXClient.instance.api('uuid_dump $channelUUID json')
+      return api('uuid_dump $channelUUID json')
           .then((ESL.Response response) {
         if(response.status != ESL.Response.ERROR) {
           Map<String, dynamic> value = JSON.decode(response.rawBody);
@@ -343,5 +367,5 @@ abstract class PBX {
    * Attach a variable to a channel.
    */
   static Future setVariable(String uuid, String identifier, String value) =>
-    Model.PBXClient.instance.api('uuid_setvar $uuid $identifier $value');
+    api('uuid_setvar $uuid $identifier $value');
 }

@@ -313,7 +313,7 @@ abstract class Call {
         event.channel.fields['Other-Leg-Unique-ID'] == uuid;
 
     Future<ORModel.Call> outboundCall =
-        Model.PBXClient.instance.eventStream.firstWhere
+        Controller.PBX.client.eventStream.firstWhere
         (outboundCallWithUuid, defaultValue : () => null)
         .then((ESL.Event event) =>
           Model.CallList.instance.createCall(event));
