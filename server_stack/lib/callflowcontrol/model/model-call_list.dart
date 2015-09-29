@@ -289,10 +289,10 @@ class CallList extends IterableBase<ORModel.Call> {
 //          this._handleChannelState(event);
 //          break;
 
-        /// OUtbound calls
-        case (PBXEvent.CHANNEL_ORIGINATE):
-          this._createCall(event);
-          break;
+//        /// OUtbound calls
+//        case (PBXEvent.CHANNEL_ORIGINATE):
+//          this._createCall(event);
+//          break;
 
         case (PBXEvent.CHANNEL_DESTROY):
           this._handleChannelDestroy(event);
@@ -312,6 +312,11 @@ class CallList extends IterableBase<ORModel.Call> {
       log.severe('Failed to dispatch event ${event.eventName}');
       log.severe(error, stackTrace);
     }
+  }
+
+  ORModel.Call createCall(ESL.Event event) {
+    _createCall(event);
+    return get(event.uniqueID);
   }
 
   /**
