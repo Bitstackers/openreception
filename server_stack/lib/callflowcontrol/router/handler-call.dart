@@ -192,17 +192,23 @@ abstract class Call {
   static shelf.Response list(shelf.Request request) =>
     new shelf.Response.ok(JSON.encode(Model.CallList.instance));
 
+
   /**
    * Originate a new call by first creating a parked phone channel to the
    * agent and then perform the orgination in the background.
    */
-  static Future<shelf.Response> originateViaPark(shelf.Request request) {
+  static Future<shelf.Response> originateViaPark(shelf.Request request) async {
 
     final int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
     final int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
     String extension = shelf_route.getPathParameter(request, 'extension');
     final String host = shelf_route.getPathParameter(request, 'host');
     final String port = shelf_route.getPathParameter(request, 'port');
+    ORModel.User user;
+    Model.Peer peer;
+
+    void setUserStateUnknown () => Model.UserStatusList.instance.update
+        (user.ID, ORModel.UserState.Unknown);
 
     if (host != null) {
       extension = '$extension@$host:$port';
@@ -217,128 +223,143 @@ abstract class Call {
     bool validExtension(String extension) =>
         extension != null && extension.length > 1;
 
-    return AuthService.userOf(_tokenFrom(request)).then((ORModel.User user) {
-      if (!aclCheck(user)) {
-        return new shelf.Response.forbidden ('Insufficient privileges.');
-      }
+    /// User object fetching.
+    try {
+      user = await AuthService.userOf(_tokenFrom(request));
+    }
+    catch (error, stackTrace) {
+      final String msg = 'Failed to contact authserver';
+      log.severe(msg, error, stackTrace);
 
-      if (!validExtension(extension)) {
-        return new shelf.Response(400, body : 'Invalid extension: $extension');
-      }
+      return _serverError(msg);
+    }
 
-      String userState = Model.UserStatusList.instance.getOrCreate(user.ID).state;
+    if (!aclCheck(user)) {
+      return new shelf.Response.forbidden ('Insufficient privileges.');
+    }
 
-      bool inTransition =
-          ORModel.UserState.TransitionStates.contains(userState);
-      bool hasChannels =
-          Model.ChannelList.instance.hasActiveChannels(user.peer);
+    if (!validExtension(extension)) {
+      return new shelf.Response(400, body : 'Invalid extension: $extension');
+    }
 
-      if (inTransition || hasChannels) {
-        return new shelf.Response(400, body : 'Phone is not ready. '
-          'state:{$userState}, hasChannels:{$hasChannels}');
-      }
+    /// Retrieve peer information.
+    peer = Model.PeerList.get(user.peer);
 
-      /// Update the user state
-      Model.UserStatusList.instance.update
-        (user.ID, ORModel.UserState.Dialing);
+    /// The user has not registered its peer to transfer the call to. Abort.
+    if (peer == null || !peer.registered) {
+      setUserStateUnknown ();
+      return _clientError('User with ${user.ID} has no peer available');
+    }
 
-      bool isSpeaking (ORModel.Call call) =>
-          call.state == ORModel.CallState.Speaking;
+    /// The user has no reachable phone to transfer the call to. Abort.
+    if (_phoneUnreachable(user)) {
+      setUserStateUnknown ();
+      return _clientError('Phone is not ready. ${_stateString(user)}');
+    }
 
-      Future parkIt (ORModel.Call call) => Controller.PBX.park(call, user);
+    /// Update the user state
+    Model.UserStatusList.instance.update
+      (user.ID, ORModel.UserState.Dialing);
 
-      /// Park all the users calls.
-      return Future.forEach
-        (Model.CallList.instance.callsOf(user.ID).where(isSpeaking), parkIt)
-        .then((_) {
+    bool isSpeaking (ORModel.Call call) =>
+        call.state == ORModel.CallState.Speaking;
 
-        /// Check user state. If the user is currently performing an action - or
-        /// has an active channel - deny the request.
-        Future<ORModel.Call> outboundCall;
+    Future parkIt (ORModel.Call call) => Controller.PBX.park(call, user);
 
-        return Controller.PBX.createAgentChannel(user)
-          .then((String uuid) {
-          bool outboundCallWithUuid (ESL.Event event) {
-            return event.eventName == 'CHANNEL_ORIGINATE' &&
-                event.channel.fields['Other-Leg-Unique-ID'] == uuid;
-          }
+    /// Park all the users calls.
+    try {
+      await Future.forEach(Model.CallList.instance.callsOf(user.ID)
+          .where(isSpeaking),
+          parkIt);
+    }
+    catch (error, stackTrace) {
+      final String msg = 'Failed to park user\'s active calls';
+      log.severe(msg, error, stackTrace);
+      setUserStateUnknown ();
 
-          outboundCall =
-              Model.PBXClient.instance.eventStream.firstWhere
-              (outboundCallWithUuid, defaultValue : () => null)
-              .then((ESL.Event event) =>
-                Model.CallList.instance.get(event.uniqueID));
+      return _serverError(msg);
+    }
 
-          /// Perform the origination via the PBX.
-          return Controller.PBX.transferUUIDToExtension(uuid, extension, user)
-            .then((_) {
-              /// Update the user state
-              Model.UserStatusList.instance.update(
-                user.ID,
-                ORModel.UserState.Speaking);
+    /// Create an agent channel;
+    String uuid;
+    try {
+      uuid = await Controller.PBX.createAgentChannel(user);
+    }
+    on Controller.CallRejected {
+      setUserStateUnknown ();
 
-              return outboundCall
-                .then((ORModel.Call call) {
-                call.assignedTo = user.ID;
-                call.receptionID = receptionID;
-                call.contactID = contactID;
-                call.b_Leg = uuid;
+      return _clientError('Phone is not reachable'
+      ' (call rejected). Check configuration.');
+    }
+    on Controller.NoAnswer {
+      setUserStateUnknown ();
 
-                call.changeState(ORModel.CallState.Ringing);
+      return _clientError('Phone is not reachable'
+        ' (no answer). Check autoanswer.');
+    }
+    catch (error, stackTrace) {
+      final String msg = 'Failed to create agent channel';
+      log.severe(msg, error, stackTrace);
+      setUserStateUnknown ();
 
-                return
-                    Controller.PBX.setVariable
-                    (call.channel, Controller.PBX.ownerUid, user.ID.toString())
-                    .then((_) =>
-                      Controller.PBX.setVariable
-                        (call.channel, 'reception_id', receptionID.toString()))
-                    .then((_) =>
-                      Controller.PBX.setVariable
-                         (call.channel, 'contact_id', contactID.toString()))
-                    .then((_) => new shelf.Response.ok(JSON.encode(call)));
-              })
-              .timeout(new Duration (seconds : 3));
-            });
-          });
-        })
-        .catchError((error, stackTrace) {
-          shelf.Response response;
+      return _serverError(msg);
+    }
 
-          Model.UserStatusList.instance.update
-            (user.ID, ORModel.UserState.Unknown);
+    /// Create a subscription that listens for the next outbound call.
+    bool outboundCallWithUuid (ESL.Event event) =>
+        event.eventName == 'CHANNEL_ORIGINATE' &&
+        event.channel.fields['Other-Leg-Unique-ID'] == uuid;
 
-          if (error is Controller.NoAnswer) {
-            response = new shelf.Response(400, body : 'Phone is not reachable'
-              ' (no answer). Check autoanswer.');
-          }
+    Future<ORModel.Call> outboundCall =
+        Model.PBXClient.instance.eventStream.firstWhere
+        (outboundCallWithUuid, defaultValue : () => null)
+        .then((ESL.Event event) =>
+          Model.CallList.instance.createCall(event));
 
-          else if (error is TimeoutException) {
-            int channelCount =
-              Model.ChannelList.instance.activeChannelCount(user.peer);
+    /// At this point, we have an active agent channel and may perform
+    /// the origination through the PBX by transferring our active agent
+    /// channel to the outbound extension.
+    ORModel.Call call;
+    try {
+      await Controller.PBX.transferUUIDToExtension(uuid, extension, user);
+      call = await outboundCall.timeout(new Duration (seconds : 1));
+    }
+    catch (error, stackTrace) {
+      final String msg = 'Failed to get call channel';
+      log.severe(msg, error, stackTrace);
 
-            if (channelCount > 0) {
-              log.shout('Phone has lingering channels and '
-                         'CallFlow state may be inconsistent');
-            }
+      setUserStateUnknown ();
 
-            response = new shelf.Response.internalServerError
-              (body : 'Failed to originate to'
-                ' $extension. Check PBX configuration.');
-          }
+      return _serverError(msg);
+    }
 
-          else if (error is Controller.CallRejected) {
-            response =  new shelf.Response(400, body : 'Phone is not reachable'
-            ' (call rejected). Check configuration.');
-          }
+    /// Update the call with the info from the originate request.
+    call..assignedTo = user.ID
+        ..receptionID = receptionID
+        ..contactID = contactID
+        ..b_Leg = uuid;
 
-          else {
-            log.severe(error, stackTrace);
-            response = new shelf.Response.internalServerError();
-          }
+    /// Update call and user state information.
+    call.changeState(ORModel.CallState.Ringing);
+    Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Speaking);
 
-          return response;
-        });
-      });
+    try {
+      await Controller.PBX.setVariable
+          (call.channel, Controller.PBX.ownerUid, user.ID.toString());
+      await Controller.PBX.setVariable
+        (call.channel, 'reception_id', receptionID.toString());
+      await Controller.PBX.setVariable
+         (call.channel, 'contact_id', contactID.toString());
+    }
+    catch (error, stackTrace) {
+      final String msg = 'Failed to create agent channel';
+      log.severe(msg, error, stackTrace);
+      setUserStateUnknown ();
+
+      return _serverError(msg);
+    }
+
+    return new shelf.Response.ok(JSON.encode(call));
   }
 
   /**
