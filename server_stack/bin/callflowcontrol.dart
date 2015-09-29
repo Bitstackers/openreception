@@ -60,29 +60,26 @@ void connectESLClient() {
 
   log.info('Connecting to ${hostname}:${port}');
 
-  Model.PBXClient.instance = new ESL.Connection();
+  Controller.PBX.apiClient = new ESL.Connection();
+  Controller.PBX.eventClient = new ESL.Connection();
 
-  Model.CallList.instance.subscribe(Model.PBXClient.instance.eventStream);
+  Model.CallList.instance.subscribe(Controller.PBX.eventClient.eventStream);
 
   //TODO: Channel-List subscriptions.
-  Model.CallList.instance.subscribeChannelEvents(Model.ChannelList.event);
+  //Model.CallList.instance.subscribeChannelEvents(Model.ChannelList.event);
 
-  Model.PBXClient.instance.eventStream
+  Controller.PBX.eventClient.eventStream
     .listen(Model.ChannelList.instance.handleEvent)
     .onDone(connectESLClient); // Reconnect
 
-  Model.PeerList.subscribe(Model.PBXClient.instance.eventStream);
+  Model.PeerList.subscribe(Controller.PBX.eventClient.eventStream);
 
-  /// Respond to server requests.
-  Model.PBXClient.instance.requestStream.listen((ESL.Packet packet) {
+  /// Connect API client.
+  Controller.PBX.apiClient.requestStream.listen((ESL.Packet packet) {
     switch (packet.contentType) {
       case (ESL.ContentType.Auth_Request):
         log.info('Connected to ${hostname}:${port}');
-        Model.PBXClient.instance.authenticate(password)
-          .then((_) => Model.PBXClient.instance.event
-             (Model.PBXEvent.requiredSubscriptions,
-                format : ESL.EventFormat.Json)
-            ..catchError(log.shout))
+      Controller.PBX.apiClient.authenticate(password)
           .then((_) => Controller.PBX.loadPeers())
           .then((_) => Controller.PBX.loadChannels()
           .then((_) => Model.CallList.instance.reloadFromChannels
@@ -95,11 +92,29 @@ void connectESLClient() {
     }
   });
 
-  void tryConnect () {
-    Model.PBXClient.instance.connect(hostname, port).catchError((error, stackTrace) {
+  /// Connect event client.
+  Controller.PBX.eventClient.requestStream.listen((ESL.Packet packet) {
+    switch (packet.contentType) {
+      case (ESL.ContentType.Auth_Request):
+        log.info('Connected to ${hostname}:${port}');
+      Controller.PBX.eventClient.authenticate(password)
+          .then((_) => Controller.PBX.eventClient.event
+             (Model.PBXEvent.requiredSubscriptions,
+                format : ESL.EventFormat.Json)
+            ..catchError(log.shout));
+
+        break;
+
+      default:
+        break;
+    }
+  });
+
+  void tryConnect (ESL.Connection client) {
+    client.connect(hostname, port).catchError((error, stackTrace) {
       if (error is SocketException) {
         log.severe('ESL Connection failed - reconnecting in ${period.inSeconds} seconds');
-        new Timer(period, tryConnect);
+        new Timer(period, () => tryConnect (client));
 
       } else {
         log.severe('Failed to connect to FreeSWITCH.', error, stackTrace);
@@ -107,7 +122,8 @@ void connectESLClient() {
     });
   }
 
-  tryConnect ();
+  tryConnect (Controller.PBX.apiClient);
+  tryConnect (Controller.PBX.eventClient);
 }
 
 void registerAndParseCommandlineArguments(List<String> arguments) {

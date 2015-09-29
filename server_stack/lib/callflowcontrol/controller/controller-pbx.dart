@@ -54,10 +54,11 @@ abstract class PBX {
 
   static final Logger log = new Logger ('${libraryName}.PBX');
 
-  static ESL.Connection client = null;
+  static ESL.Connection apiClient;
+  static ESL.Connection eventClient;
 
   static Future<ESL.Response> api (String command) {
-    return client.api(command, timeoutSeconds: 20)
+    return apiClient.api(command, timeoutSeconds: 20)
         .then((ESL.Response response) {
 
       final int maxLen = 200;
@@ -71,7 +72,7 @@ abstract class PBX {
   }
 
   static Future<ESL.Reply> bgapi (String command) {
-    return client.bgapi(command).then((ESL.Reply response) {
+    return apiClient.bgapi(command).then((ESL.Reply response) {
       log.finest('bgapi $command => ${response.content}');
       return response;
     });
