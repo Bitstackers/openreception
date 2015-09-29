@@ -44,6 +44,10 @@ part 'router/handler-peer.dart';
 const String libraryName = "callflowcontrol.router";
 final Logger log = new Logger (libraryName);
 
+Controller.State _stateController;
+Controller.ClientNotifier _notififer;
+
+
 const Map corsHeaders = const
   {'Access-Control-Allow-Origin': '*',
    'Access-Control-Allow-Methods' : 'GET, PUT, POST, DELETE'};
@@ -87,17 +91,16 @@ void _accessLogger(String msg, bool isError) {
     log.finest(msg);
   }
 }
-Controller.ClientNotifier notififer;
 
 Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4242}) {
-  Controller.State stateController = new Controller.State();
+  _stateController = new Controller.State();
   log.info('Starting client notifier');
 
   Notification = new Service.NotificationService
       (config.notificationServer.externalUri,
           config.callFlowControl.serverToken, new Service_IO.Client());
 
-  notififer = new Controller.ClientNotifier(Notification)
+  _notififer = new Controller.ClientNotifier(Notification)
               ..listenForCallEvents(Model.CallList.instance);
 
 
@@ -114,7 +117,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4242}) {
     ..get('/userstate', UserState.list)
     ..get('/call/{callid}', Call.get)
     ..get('/call', Call.list)
-    ..post('/state/reload', stateController.reloadAll)
+    ..post('/state/reload', _stateController.reloadAll)
     ..get('/channel/list', Channel.list)
     ..get('/channel', Channel.list)
     ..post('/call/{callid}/hangup', Call.hangupSpecific)
