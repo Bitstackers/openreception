@@ -36,19 +36,12 @@ class UIMessageArchive extends UIModel {
   @override HtmlElement get _root => _myRoot;
 
   DivElement get _body => _root.querySelector('.generic-widget-body');
+  String get header => _root.querySelector('h4 span.extra-header').text;
   TableSectionElement get _savedTbody =>
       _root.querySelector('table tbody.saved-messages-tbody');
   TableSectionElement get _notSavedTbody =>
       _root.querySelector('table tbody.not-saved-messages-tbody');
   DivElement get _tableContainer => _body.querySelector('div');
-
-  /**
-   * Add the agent name to the table.
-   */
-  TableCellElement _buildAgentCell(ORModel.Message msg) {
-    String agent = _users[msg.senderId] ?? msg.senderId.toString();
-    return new TableCellElement()..text = agent;
-  }
 
   /**
    *
@@ -62,12 +55,6 @@ class UIMessageArchive extends UIModel {
       ..classes.addAll(['td-center', 'button-cell'])
       ..children.addAll([buttonSend, buttonDelete, buttonCopy]);
   }
-
-  /**
-   *
-   */
-  TableCellElement _buildContactCell(ORModel.Message msg) =>
-      new TableCellElement()..text = msg.context.contactName;
 
   /**
    *
@@ -86,43 +73,30 @@ class UIMessageArchive extends UIModel {
   /**
    *
    */
-  TableCellElement _buildReceptionCell(ORModel.Message msg) =>
-      new TableCellElement()..text = msg.context.receptionName;
-
-  /**
-   *
-   */
   TableRowElement _buildRow(ORModel.Message msg) {
     final TableRowElement row = new TableRowElement()
       ..dataset['message-id'] = msg.ID.toString()
       ..dataset['contact-string'] = msg.context.contactString;
 
-    final TableCellElement dateCell = new TableCellElement()
-      ..text = ORUtil.humanReadableTimestamp(msg.createdAt, _weekDays);
-    final TableCellElement receptionCell = new TableCellElement();
-    final TableCellElement contactCell = new TableCellElement();
-    final TableCellElement agentCell = new TableCellElement();
-
     row.children.addAll([
-      dateCell,
-      _buildReceptionCell(msg),
-      _buildContactCell(msg),
-      _buildAgentCell(msg),
+      new TableCellElement()
+        ..text = ORUtil.humanReadableTimestamp(msg.createdAt, _weekDays),
+      new TableCellElement()
+        ..text = _users[msg.senderId] ?? msg.senderId.toString(),
+      new TableCellElement()..text = msg.callerInfo.name,
+      new TableCellElement()..text = msg.callerInfo.company,
+      new TableCellElement()..text = msg.callerInfo.phone,
+      new TableCellElement()..text = msg.callerInfo.cellPhone,
+      new TableCellElement()..text = msg.callerInfo.localExtension,
       _buildMessageCell(msg),
-      _buildStatusCell(msg),
+      new TableCellElement()
+        ..classes.add('td-center')
+        ..text = _getStatus(msg),
       _buildButtonCell(msg)
     ]);
 
     return row;
   }
-
-  /**
-   *
-   */
-  TableCellElement _buildStatusCell(ORModel.Message msg) =>
-      new TableCellElement()
-        ..classes.add('td-center')
-        ..text = _getStatus(msg);
 
   /**
    * Remove all data from the body and clear the header.
@@ -164,7 +138,7 @@ class UIMessageArchive extends UIModel {
    * Return empty String if there are no messages in the not saved list.
    */
   String get notSavedLastContactString {
-    if(_notSavedTbody.children.isNotEmpty) {
+    if (_notSavedTbody.children.isNotEmpty) {
       return _notSavedTbody.children.last.dataset['contact-string'];
     } else {
       return '';
@@ -188,8 +162,13 @@ class UIMessageArchive extends UIModel {
     _root.onClick.listen((_) => _body.focus());
 
     _tableContainer.onScroll.listen((Event event) {
-      if(_tableContainer.getBoundingClientRect().height + _tableContainer.scrollTop >= _tableContainer.scrollHeight) {
-        _scrollBus.fire(int.parse(_notSavedTbody.children.last.dataset['message-id']));
+      if (_tableContainer.getBoundingClientRect().height +
+              _tableContainer.scrollTop >=
+          _tableContainer.scrollHeight) {
+        if (_notSavedTbody.children.isNotEmpty) {
+          _scrollBus.fire(
+              int.parse(_notSavedTbody.children.last.dataset['message-id']));
+        }
       }
     });
   }

@@ -42,7 +42,9 @@ abstract class Key {
   static const String callStateUnparked               = 'callstate-unparked';
 
   static const String cancel                          = 'cancel';
-  static const String contact                         = 'contact';
+  static const String cellPhone                       = 'cell-phone';
+  static const String company                         = 'company';
+
   static const String contactCalendarHeader           = 'contact-calendar-header';
   static const String contactDataAddInfo              = 'contact-data-add-info';
   static const String contactDataBackup               = 'contact-data-backup';
@@ -74,6 +76,7 @@ abstract class Key {
   static const String editDelete                      = 'edit-delete';
   static const String editorNew                       = 'editor-new';
   static const String error                           = 'error';
+  static const String extension                       = 'extension';
 
   static const String filter                          = 'filter';
 
@@ -100,9 +103,11 @@ abstract class Key {
   static const String messageSendSuccessTitle         = 'message-send-success';
   static const String myQueuedCallsHeader             = 'my-queued-calls-header';
 
-  static const String paused                          = 'paused';
+  static const String name                            = 'name';
 
-  static const String reception                       = 'reception';
+  static const String paused                          = 'paused';
+  static const String phone                           = 'phone';
+
   static const String receptionAddressesHeader        = 'reception-addresses-header';
   static const String receptionAltNamesHeader         = 'reception-alt-names-header';
   static const String receptionBankInfoHeader         = 'reception-bank-info-header';
@@ -161,7 +166,9 @@ Map<String, String> da =
    Key.callStateUnparked              : 'Ikke parkeret',
 
    Key.cancel                         : 'Annuller',
-   Key.contact                        : 'Kontakt',
+   Key.cellPhone                      : 'Mobilnummer',
+   Key.company                        : 'Virksomhed',
+
    Key.contactCalendarHeader          : 'Kontakt kalender',
    Key.contactDataAddInfo             : 'Diverse',
    Key.contactDataBackup              : 'Backup',
@@ -193,6 +200,7 @@ Map<String, String> da =
    Key.editDelete                     : 'ret/slet',
    Key.editorNew                      : 'ny',
    Key.error                          : 'fejl',
+   Key.extension                      : 'Lokalnummer',
 
    Key.filter                         : 'filter...',
 
@@ -219,9 +227,11 @@ Map<String, String> da =
    Key.messageSendSuccessTitle        : 'Beskeden blev sendt',
    Key.myQueuedCallsHeader            : 'Mine kald',
 
-   Key.paused                         : 'Pause',
+   Key.name                           : 'Navn',
 
-   Key.reception                      : 'Reception',
+   Key.paused                         : 'Pause',
+   Key.phone                          : 'Telefon',
+
    Key.receptionAddressesHeader       : 'Adresser',
    Key.receptionAltNamesHeader        : 'Alternative navne',
    Key.receptionBankInfoHeader        : 'Bank',
@@ -279,7 +289,9 @@ Map<String, String> en =
    Key.callStateUnparked              : 'Unparked',
 
    Key.cancel                         : 'Cancel',
-   Key.contact                        : 'Contact',
+   Key.cellPhone                      : 'Cell phone',
+   Key.company                        : 'Company',
+
    Key.contactCalendarHeader          : 'Contact calendar',
    Key.contactDataAddInfo             : 'Miscellaneous',
    Key.contactDataBackup              : 'Backup',
@@ -311,6 +323,7 @@ Map<String, String> en =
    Key.editDelete                     : 'edit/delete',
    Key.editorNew                      : 'new',
    Key.error                          : 'error',
+   Key.extension                      : 'Extension',
 
    Key.filter                         : 'filter...',
 
@@ -337,9 +350,11 @@ Map<String, String> en =
    Key.messageSendSuccessTitle        : 'Message sent',
    Key.myQueuedCallsHeader            : 'My calls',
 
-   Key.paused                         : 'Paused',
+   Key.name                           : 'Name',
 
-   Key.reception                      : 'Reception',
+   Key.paused                         : 'Paused',
+   Key.phone                          : 'Phone',
+
    Key.receptionAddressesHeader       : 'Addresses',
    Key.receptionAltNamesHeader        : 'Alternative names',
    Key.receptionBankInfoHeader        : 'Bank',

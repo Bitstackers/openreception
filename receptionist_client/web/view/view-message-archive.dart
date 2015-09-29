@@ -18,11 +18,12 @@ part of view;
  */
 class MessageArchive extends ViewWidget {
   final Model.UIContactSelector _contactSelector;
+  bool _getMessagesOnScroll = true;
   final Controller.Message _message;
   final Controller.Destination _myDestination;
   final ORModel.MessageFilter _notSavedFilter =
       new ORModel.MessageFilter.empty()
-        ..limitCount = 2
+        ..limitCount = 100
         ..messageState = ORModel.MessageState.NotSaved;
   final Model.UIReceptionSelector _receptionSelector;
   final ORModel.MessageFilter _savedFilter = new ORModel.MessageFilter.empty()
@@ -49,8 +50,14 @@ class MessageArchive extends ViewWidget {
 
   @override void _onBlur(_) {}
   @override void _onFocus(_) {
-    final String selectedContactString =
-        '${_contactSelector.selectedContact.ID}@${_receptionSelector.selectedReception.ID}';
+    String header =
+        '(${_contactSelector.selectedContact.fullName} @ ${_receptionSelector.selectedReception.name})';
+
+    if (_receptionSelector.selectedReception == ORModel.Reception.noReception) {
+      header = '';
+      _ui.headerExtra = '';
+      _ui.clearNotSavedList();
+    }
 
     _user.list().then((Iterable<ORModel.User> users) {
       _ui.users = users;
@@ -58,9 +65,8 @@ class MessageArchive extends ViewWidget {
       _message.list(_savedFilter).then(
           (Iterable<ORModel.Message> messages) => _ui.savedMessages = messages);
 
-      if (selectedContactString != _ui.notSavedLastContactString) {
-        print(
-            'DIFFERENT CONTACT THAN ALREADY PRESENT! CLEAR LIST AND LOAD ANEW');
+      if (header != _ui.header) {
+        _ui.headerExtra = header;
         _ui.clearNotSavedList();
         if (_receptionSelector.selectedReception.isNotEmpty &&
             _contactSelector.selectedContact.isNotEmpty) {
@@ -84,6 +90,36 @@ class MessageArchive extends ViewWidget {
   }
 
   /**
+   * Fetch more messages when the user scroll to the bottom of the messages
+   * list.
+   *
+   * NOTE: No matter how frantically the user spams his/her scroll wheel, this
+   * method caps the load on the server to one hit per 2 seconds.
+   */
+  void _handleScrolling(int messageId) {
+    if (messageId > 1 && _getMessagesOnScroll) {
+      _getMessagesOnScroll = false;
+
+      final ORModel.MessageFilter filter = new ORModel.MessageFilter.empty()
+        ..limitCount = 100
+        ..messageState = ORModel.MessageState.NotSaved
+        ..upperMessageID = messageId - 1
+        ..contactID = _contactSelector.selectedContact.ID
+        ..receptionID = _receptionSelector.selectedReception.ID;
+
+      _message
+          .list(filter)
+          .then((Iterable<ORModel.Message> messages) =>
+              _ui.notSavedMessages = messages)
+          .whenComplete(() {
+        new Timer(new Duration(seconds: 2), () {
+          _getMessagesOnScroll = true;
+        });
+      });
+    }
+  }
+
+  /**
    * Observers.
    */
   void _observers() {
@@ -91,8 +127,6 @@ class MessageArchive extends ViewWidget {
 
     _ui.onClick.listen(_activateMe);
 
-    _ui.scrolledToBottom.listen((int messageId) {
-      print('messageId from VIEW ${messageId}');
-    });
+    _ui.scrolledToBottom.listen(_handleScrolling);
   }
 }
