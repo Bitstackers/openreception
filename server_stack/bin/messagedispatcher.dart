@@ -31,14 +31,11 @@ import '../lib/message_dispatcher/router.dart' as router;
 
 final Logger log = new Logger('MessageDispatcher');
 
-SmtpClient _smtpClient;
+SmtpOptions options = new SmtpOptions()
+  ..hostName = config.messageDispatcher.smtp.hostname
+  ..port = config.messageDispatcher.smtp.port;
 
 void main(List<String> args) {
-  SmtpOptions options = new SmtpOptions()
-    ..hostName = config.messageDispatcher.smtp.hostname
-    ..port = config.messageDispatcher.smtp.port;
-
-  _smtpClient = new SmtpClient(options);
 
   ///Init logging. Inherit standard values.
   Logger.root.level = config.messageDispatcher.log.level;
@@ -156,7 +153,7 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
      ..subject = template.renderSubject()
      ..partText = template.renderedBody;
 
-  _smtpClient.send(email);
+  new SmtpClient(options).send(email);
 
   /// Update the handled recipient set.
 
