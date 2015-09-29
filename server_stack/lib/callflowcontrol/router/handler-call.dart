@@ -689,12 +689,13 @@ abstract class Call {
   /**
    * Transfer (bridge) two calls in the PBX.
    */
-  static Future<shelf.Response> transfer(shelf.Request request) {
+  static Future<shelf.Response> transfer(shelf.Request request) async {
 
     String sourceCallID = shelf_route.getPathParameter(request, "aleg");
     String destinationCallID = shelf_route.getPathParameter(request, 'bleg');
     ORModel.Call sourceCall = null;
     ORModel.Call destinationCall = null;
+    ORModel.User user;
 
     if (sourceCallID == null || sourceCallID == "") {
       return new Future.value
@@ -734,34 +735,36 @@ abstract class Call {
 
     log.finest('Transferring $sourceCall -> $destinationCall');
 
-    return AuthService.userOf(_tokenFrom(request)).then((ORModel.User user) {
+    /// User object fetching.
+    try {
+      user = await AuthService.userOf(_tokenFrom(request));
+    }
+    catch (error, stackTrace) {
+      final String msg = 'Failed to contact authserver';
+      log.severe(msg, error, stackTrace);
+
+      return _serverError(msg);
+    }
+
+    /// Update user state.
+    Model.UserStatusList.instance.update(
+        user.ID,
+        ORModel.UserState.Transferring);
+
+    return Controller.PBX.bridge(sourceCall, destinationCall).then((_) {
       /// Update user state.
       Model.UserStatusList.instance.update(
           user.ID,
-          ORModel.UserState.Transferring);
+          ORModel.UserState.WrappingUp);
+      return new shelf.Response.ok('{"status" : "ok"}');
 
-      return Controller.PBX.bridge(sourceCall, destinationCall).then((_) {
-        /// Update user state.
-        Model.UserStatusList.instance.update(
-            user.ID,
-            ORModel.UserState.WrappingUp);
-        return new shelf.Response.ok('{"status" : "ok"}');
-
-      }).catchError((error, stackTrace) {
-        /// Update user state.
-        Model.UserStatusList.instance.update(
-            user.ID,
-            ORModel.UserState.Unknown);
-        log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError();
-      });
-
-    })
-    .catchError((error, stackTrace) {
+    }).catchError((error, stackTrace) {
+      /// Update user state.
+      Model.UserStatusList.instance.update(
+          user.ID,
+          ORModel.UserState.Unknown);
       log.severe(error, stackTrace);
       return new shelf.Response.internalServerError();
     });
-
   }
-
 }
