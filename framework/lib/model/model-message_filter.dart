@@ -222,11 +222,11 @@ class MessageFilter {
         break;
 
       case MessageState.Saved :
-        retval.add('NOT enqueued AND NOT sent');
+        retval.add('(NOT enqueued AND NOT sent)');
         break;
 
       case MessageState.NotSaved :
-        retval.add('enqueued OR sent');
+        retval.add('(enqueued OR sent)');
         break;
 
     }
