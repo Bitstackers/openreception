@@ -43,13 +43,15 @@ abstract class Call {
     try {
       ORModel.Call call = Model.CallList.instance.get(callID);
       return new shelf.Response.ok(JSON.encode(call));
-    } catch (error, stackTrace) {
-      if (error is ORStorage.NotFound) {
-        return new shelf.Response.notFound('{}');
-      } else {
-        log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError();
-      }
+    }
+    on ORStorage.NotFound {
+      return new shelf.Response.notFound('{}');
+    }
+    catch (error, stackTrace) {
+      final String msg = 'Could not retrive call list';
+      log.severe(msg, error, stackTrace);
+
+      return _serverError(msg);
     }
   }
 
