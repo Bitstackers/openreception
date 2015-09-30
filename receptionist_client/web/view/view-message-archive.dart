@@ -20,6 +20,7 @@ class MessageArchive extends ViewWidget {
   final Model.UIContactSelector _contactSelector;
   bool _getMessagesOnScroll = true;
   final Controller.Message _message;
+  final Model.UIMessageCompose _messageCompose;
   final Controller.Destination _myDestination;
   final ORModel.MessageFilter _notSavedFilter =
       new ORModel.MessageFilter.empty()
@@ -41,7 +42,8 @@ class MessageArchive extends ViewWidget {
       Controller.Message this._message,
       Controller.User this._user,
       Model.UIContactSelector this._contactSelector,
-      Model.UIReceptionSelector this._receptionSelector) {
+      Model.UIReceptionSelector this._receptionSelector,
+      Model.UIMessageCompose this._messageCompose) {
     _observers();
   }
 
@@ -124,6 +126,9 @@ class MessageArchive extends ViewWidget {
    */
   void _observers() {
     _navigate.onGo.listen(_setWidgetState);
+
+    _messageCompose.onSave.listen((_) => _ui.headerExtra = '');
+    _messageCompose.onSend.listen((_) => _ui.headerExtra = '');
 
     _ui.onClick.listen(_activateMe);
 

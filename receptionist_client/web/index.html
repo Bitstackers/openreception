@@ -583,9 +583,14 @@
               flex-grow: 1;
             }
 
-            #message-archive .generic-widget-body {
+            #message-archive .generic-widget-body,
+            #message-archive .generic-widget-body > div {
               overflow: auto;
               outline: 0;
+            }
+
+            #message-archive .generic-widget-body > div {
+              height: 100%;
             }
 
             #message-archive table {
@@ -647,8 +652,8 @@
             <span class="extra-header"></span>
           </h4>
           <div class="generic-widget-body" tabindex="-1">
-            <div style="height: 100%; overflow: auto;">
-              <table class="saved-messages-table">
+            <div tabindex="-1">
+              <table class="saved-messages-table" hidden>
                 <thead>
                   <tr>
                     <td data-lang-text="date">::date::</td>
@@ -665,7 +670,7 @@
                 </thead>
                 <tbody class="saved-messages-tbody zebra"></tbody>
               </table>
-              <table class="not-saved-messages-table">
+              <table class="not-saved-messages-table" hidden>
                 <thead>
                   <tr>
                     <td data-lang-text="date">::date::</td>

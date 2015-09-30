@@ -18,6 +18,7 @@ part of model;
  */
 class UIMessageArchive extends UIModel {
   final Bus<int> _scrollBus = new Bus<int>();
+  final Map<String, String> _langMap;
   final DivElement _myRoot;
   Map<int, String> _users = new Map<int, String>();
   final ORUtil.WeekDays _weekDays;
@@ -25,13 +26,13 @@ class UIMessageArchive extends UIModel {
   /**
    * Constructor.
    */
-  UIMessageArchive(DivElement this._myRoot, ORUtil.WeekDays this._weekDays) {
+  UIMessageArchive(DivElement this._myRoot, ORUtil.WeekDays this._weekDays, this._langMap) {
     _setupLocalKeys();
     _observers();
   }
 
   @override HtmlElement get _firstTabElement => _body;
-  @override HtmlElement get _focusElement => _body;
+  @override HtmlElement get _focusElement => _tableContainer;
   @override HtmlElement get _lastTabElement => _body;
   @override HtmlElement get _root => _myRoot;
 
@@ -44,12 +45,12 @@ class UIMessageArchive extends UIModel {
   DivElement get _tableContainer => _body.querySelector('div');
 
   /**
-   *
+   * Construct the button (send, delete, copy) <td> cell.
    */
   TableCellElement _buildButtonCell(ORModel.Message msg) {
-    final ButtonElement buttonSend = new ButtonElement()..text = 'Send';
-    final ButtonElement buttonDelete = new ButtonElement()..text = 'Slet';
-    final ButtonElement buttonCopy = new ButtonElement()..text = 'Kopier';
+    final ButtonElement buttonSend = new ButtonElement()..text = _langMap['send'];
+    final ButtonElement buttonDelete = new ButtonElement()..text = _langMap['delete'];
+    final ButtonElement buttonCopy = new ButtonElement()..text = _langMap['copy'];
 
     return new TableCellElement()
       ..classes.addAll(['td-center', 'button-cell'])
@@ -57,7 +58,7 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
-   *
+   * Construct the message <td> cell.
    */
   TableCellElement _buildMessageCell(ORModel.Message msg) {
     final DivElement div = new DivElement()
@@ -71,7 +72,7 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
-   *
+   * Construct a <tr> element from [msg]
    */
   TableRowElement _buildRow(ORModel.Message msg) {
     final TableRowElement row = new TableRowElement()
@@ -111,10 +112,11 @@ class UIMessageArchive extends UIModel {
    */
   void clearNotSavedList() {
     _notSavedTbody.children.clear();
+    _notSavedTbody.parent.hidden = true;
   }
 
   /**
-   *
+   * Return the String status of [msg].
    */
   String _getStatus(ORModel.Message msg) {
     if (msg.sent) {
@@ -133,25 +135,17 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
-   * Return the [ORModel.MessageContext.contactString] if there are messages in
-   * the not saved list.
-   * Return empty String if there are no messages in the not saved list.
-   */
-  String get notSavedLastContactString {
-    if (_notSavedTbody.children.isNotEmpty) {
-      return _notSavedTbody.children.last.dataset['contact-string'];
-    } else {
-      return '';
-    }
-  }
-
-  /**
-   *
+   * Add the [list] of [ORModel.Message] to the widgets "not saved messages"
+   * table.
    */
   set notSavedMessages(Iterable<ORModel.Message> list) {
+    final List<TableRowElement> rows = new List<TableRowElement>();
     list.forEach((ORModel.Message msg) {
-      _notSavedTbody.children.add(_buildRow(msg));
+      rows.add(_buildRow(msg));
     });
+
+    _notSavedTbody.children.addAll(rows);
+    _notSavedTbody.parent.hidden = _notSavedTbody.children.isEmpty;
   }
 
   /**
@@ -159,7 +153,7 @@ class UIMessageArchive extends UIModel {
    */
   void _observers() {
     _root.onKeyDown.listen(_keyboard.press);
-    _root.onClick.listen((_) => _body.focus());
+    _root.onClick.listen((_) => _tableContainer.focus());
 
     _tableContainer.onScroll.listen((Event event) {
       if (_tableContainer.getBoundingClientRect().height +
@@ -174,14 +168,18 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
-   *
+   * Add the [list] of [ORModel.Message] to the widgets "saved messages" table.
    */
   set savedMessages(Iterable<ORModel.Message> list) {
+    final List<TableRowElement> rows = new List<TableRowElement>();
     _savedTbody.children.clear();
 
     list.forEach((ORModel.Message msg) {
-      _savedTbody.children.add(_buildRow(msg));
+      rows.add(_buildRow(msg));
     });
+
+    _savedTbody.children.addAll(rows);
+    _savedTbody.parent.hidden = _savedTbody.children.isEmpty;
   }
 
   /**
@@ -198,7 +196,8 @@ class UIMessageArchive extends UIModel {
   Stream<int> get scrolledToBottom => _scrollBus.stream;
 
   /**
-   *
+   * Set the list of users. This is used to map the users id of a message to
+   * the users name.
    */
   set users(Iterable<ORModel.User> list) {
     list.forEach((ORModel.User user) {

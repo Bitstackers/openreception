@@ -62,6 +62,8 @@ abstract class Key {
   static const String contactDataWorkHours            = 'contact-data-work-hours';
   static const String contactSelectorHeader           = 'contact-selector-header';
 
+  static const String copy                            = 'copy';
+
   static const String date                            = 'date';
   static const String dayMonday                       = 'day-monday';
   static const String dayTuesday                      = 'day-tuesday';
@@ -186,6 +188,8 @@ Map<String, String> da =
    Key.contactDataWorkHours           : 'Arbejdstider',
    Key.contactSelectorHeader          : 'Kontakter',
 
+   Key.copy                           : 'Kopier',
+
    Key.date                           : 'Dato',
    Key.dayMonday                      : 'Mandag',
    Key.dayTuesday                     : 'Tirsdag',
@@ -308,6 +312,8 @@ Map<String, String> en =
    Key.contactDataTitle               : 'Title',
    Key.contactDataWorkHours           : 'Work hours',
    Key.contactSelectorHeader          : 'Contacts',
+
+   Key.copy                           : 'Copy',
 
    Key.date                           : 'Date',
    Key.dayMonday                      : 'Monday',

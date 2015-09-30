@@ -136,6 +136,7 @@ class ReceptionistclientReady {
                             _langMap[Key.daySunday]);
     Model.UIContactCalendar   uiContactCalendar   = new Model.UIContactCalendar(querySelector('#contact-calendar'), _weekDays);
     Model.UIContactSelector   uiContactSelector   = new Model.UIContactSelector(querySelector('#contact-selector'));
+    Model.UIMessageCompose    uiMessageCompose    = new Model.UIMessageCompose(querySelector('#message-compose'));
     Model.UIReceptionCalendar uiReceptionCalendar = new Model.UIReceptionCalendar(querySelector('#reception-calendar'), _weekDays);
     Model.UIReceptionSelector uiReceptionSelector = new Model.UIReceptionSelector(querySelector('#reception-selector'));
 
@@ -189,15 +190,16 @@ class ReceptionistclientReady {
         _callController);
 
     _messageArchive = new MessageArchive
-        (new Model.UIMessageArchive(querySelector('#message-archive'), _weekDays),
+        (new Model.UIMessageArchive(querySelector('#message-archive'), _weekDays, _langMap),
          new Controller.Destination(Controller.Context.Messages, Controller.Widget.MessageArchive),
          _messageController,
          _userController,
          uiContactSelector,
-         uiReceptionSelector);
+         uiReceptionSelector,
+         uiMessageCompose);
 
     _messageCompose = new MessageCompose
-        (new Model.UIMessageCompose(querySelector('#message-compose')),
+        (uiMessageCompose,
          _appState,
          new Controller.Destination(Controller.Context.Home, Controller.Widget.MessageCompose),
          uiContactSelector,
