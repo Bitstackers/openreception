@@ -18,6 +18,7 @@ void testModelMessageFilter() {
     test('buildObject', ModelMessageFilter.buildObject);
     test('deserialization', ModelMessageFilter.deserialization);
     test('serialization', ModelMessageFilter.serialization);
+    test('sqlFilter', ModelMessageFilter.sqlFilter);
   });
 }
 
@@ -71,5 +72,68 @@ abstract class ModelMessageFilter {
     expect(obj.userID, equals(userID));
 
     return obj;
+  }
+
+  /**
+   * Test SQL filter
+   */
+  static sqlFilter() {
+    final int contactId = 1;
+    final int receptionId = 2;
+    final int upperMessageID = 4;
+    final int userID = 99;
+
+    Model.MessageFilter obj = new Model.MessageFilter.empty()
+      ..contactID = Model.Contact.noID
+      ..messageState = ''
+      ..upperMessageID = Model.Message.noID
+      ..receptionID = Model.Reception.noID
+      ..userID = Model.User.noID;
+
+    expect(obj.asSQL, isEmpty);
+
+    expect(obj.asSQL, isEmpty);
+
+    obj.contactID = contactId;
+    expect(obj.asSQL, equals('WHERE context_contact_id = $contactId'));
+    obj.receptionID = receptionId;
+    expect(obj.asSQL, equals('WHERE context_reception_id = $receptionId '
+                             'AND context_contact_id = $contactId'));
+    obj.upperMessageID = upperMessageID;
+    expect(obj.asSQL, equals('WHERE message.id <= $upperMessageID '
+                             'AND context_reception_id = $receptionId '
+                             'AND context_contact_id = $contactId'));
+    obj.userID = userID;
+    expect(obj.asSQL, equals('WHERE message.id <= $upperMessageID '
+                             'AND taken_by_agent = $userID '
+                             'AND context_reception_id = $receptionId '
+                             'AND context_contact_id = $contactId'));
+
+    obj.messageState = Model.MessageState.Sent;
+    expect(obj.asSQL, equals('WHERE message.id <= $upperMessageID '
+                             'AND taken_by_agent = $userID '
+                             'AND context_reception_id = $receptionId '
+                             'AND context_contact_id = $contactId '
+                             'AND sent'));
+
+    obj.messageState = Model.MessageState.Pending;
+    expect(obj.asSQL, equals('WHERE message.id <= $upperMessageID '
+                             'AND taken_by_agent = $userID '
+                             'AND context_reception_id = $receptionId '
+                             'AND context_contact_id = $contactId '
+                             'AND enqueued'));
+
+    obj.messageState = Model.MessageState.Saved;
+    expect(obj.asSQL, equals('WHERE message.id <= $upperMessageID '
+                             'AND taken_by_agent = $userID '
+                             'AND context_reception_id = $receptionId '
+                             'AND context_contact_id = $contactId '
+                             'AND (NOT enqueued AND NOT sent)'));
+    obj.messageState = Model.MessageState.NotSaved;
+    expect(obj.asSQL, equals('WHERE message.id <= $upperMessageID '
+                             'AND taken_by_agent = $userID '
+                             'AND context_reception_id = $receptionId '
+                             'AND context_contact_id = $contactId '
+                             'AND (enqueued OR sent)'));
   }
 }
