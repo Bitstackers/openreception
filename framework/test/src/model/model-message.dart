@@ -18,6 +18,7 @@ void testModelMessage() {
     test('deserialization', ModelMessage.deserialization);
     test('serialization', ModelMessage.serialization);
     test('buildObject', ModelMessage.buildObject);
+    test('messageFlag', ModelMessage.messageFlag);
   });
 }
 
@@ -118,4 +119,25 @@ abstract class ModelMessage {
     return obj;
   }
 
+  static void messageFlag() {
+
+    Model.Message builtObject = buildObject();
+
+    builtObject.flag = new Model.MessageFlag.empty();
+
+    expect (builtObject.manuallyClosed, equals(false));
+
+    builtObject.flag.manuallyClosed = true;
+    expect (builtObject.manuallyClosed, equals(true));
+    builtObject.flag.manuallyClosed = false;
+    expect (builtObject.manuallyClosed, equals(false));
+
+    builtObject.flag = new Model.MessageFlag.empty();
+
+    builtObject.manuallyClosed = true;
+    expect (builtObject.manuallyClosed, equals(true));
+    builtObject.manuallyClosed = false;
+    expect (builtObject.manuallyClosed, equals(false));
+
+  }
 }
