@@ -13,6 +13,21 @@
 
 part of openreception.message_server.router;
 
+/**
+ * Response templates.
+ */
+shelf.Response _authServerDown() => new shelf.Response
+      (502, body : 'Authentication server is not reachable');
+
+shelf.Response _clientError(String reason) =>
+    new shelf.Response(400, body : reason);
+
+shelf.Response _ok(String reason) =>
+    new shelf.Response(200, body : reason);
+
+shelf.Response _notFound(String reason) =>
+    new shelf.Response(404, body : reason);
+
 abstract class Message {
 
   static final Logger log = new Logger ('$libraryName.Message');
