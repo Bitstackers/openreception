@@ -41,7 +41,6 @@ abstract class Message {
   static Future<shelf.Response> get(shelf.Request request) async {
     final String midStr = shelf_route.getPathParameter(request, 'mid');
     int mid;
-    Model.User user;
 
     try {
       mid = int.parse(midStr);
@@ -50,16 +49,6 @@ abstract class Message {
       log.warning(msg);
 
       _clientError(msg);
-    }
-
-    /// User object fetching.
-    try {
-      user = await _authService.userOf(_tokenFrom(request));
-    } catch (error, stackTrace) {
-      final String msg = 'Failed to contact authserver';
-      log.severe(msg, error, stackTrace);
-
-      return _authServerDown();
     }
 
     try {
@@ -179,21 +168,9 @@ abstract class Message {
     }
 
     String content;
-    Model.Message parameterMessage;
+    Model.Message message;
     try {
       content = await request.readAsString();
-      parameterMessage = new Model.Message.fromMap(JSON.decode(content))
-        ..senderId = user.ID;
-    } catch (error, stackTrace) {
-      final msg = 'Failed to parse message in POST body. body:$content';
-      log.severe(msg, error, stackTrace);
-
-      return _clientError(msg);
-    }
-
-    Model.Message message;
-
-    try {
       message = new Model.Message.fromMap(JSON.decode(content))
         ..senderId = user.ID;
 
@@ -201,8 +178,10 @@ abstract class Message {
         return _clientError('Invalid message ID');
       }
     } catch (error, stackTrace) {
-      log.severe(error, stackTrace);
-      return _clientError('$error : $stackTrace');
+      final msg = 'Failed to parse message in POST body. body:$content';
+      log.severe(msg, error, stackTrace);
+
+      return _clientError(msg);
     }
 
     return _messageStore
