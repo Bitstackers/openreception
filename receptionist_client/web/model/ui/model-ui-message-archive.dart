@@ -19,6 +19,10 @@ part of model;
 class UIMessageArchive extends UIModel {
   final Bus<int> _scrollBus = new Bus<int>();
   final Map<String, String> _langMap;
+  final Bus<ORModel.Message> _messageCloseBus = new Bus<ORModel.Message>();
+  final Bus<ORModel.Message> _messageCopyBus = new Bus<ORModel.Message>();
+  final Bus<ORModel.Message> _messageDeleteBus = new Bus<ORModel.Message>();
+  final Bus<ORModel.Message> _messageSendBus = new Bus<ORModel.Message>();
   final DivElement _myRoot;
   Map<int, String> _users = new Map<int, String>();
   final ORUtil.WeekDays _weekDays;
@@ -26,7 +30,8 @@ class UIMessageArchive extends UIModel {
   /**
    * Constructor.
    */
-  UIMessageArchive(DivElement this._myRoot, ORUtil.WeekDays this._weekDays, this._langMap) {
+  UIMessageArchive(
+      DivElement this._myRoot, ORUtil.WeekDays this._weekDays, this._langMap) {
     _setupLocalKeys();
     _observers();
   }
@@ -48,13 +53,21 @@ class UIMessageArchive extends UIModel {
    * Construct the button (send, delete, copy) <td> cell.
    */
   TableCellElement _buildButtonCell(ORModel.Message msg) {
-    final ButtonElement buttonSend = new ButtonElement()..text = _langMap['send'];
-    final ButtonElement buttonDelete = new ButtonElement()..text = _langMap['delete'];
-    final ButtonElement buttonCopy = new ButtonElement()..text = _langMap['copy'];
+    final List<ButtonElement> buttons = new List<ButtonElement>();
+
+    buttons.add(new ButtonElement()..text = _langMap['copy']);
+
+    if (!msg.closed) {
+      buttons.addAll([
+        new ButtonElement()..text = _langMap['send'],
+        new ButtonElement()..text = _langMap['delete'],
+        new ButtonElement()..text = _langMap['close']
+      ]);
+    }
 
     return new TableCellElement()
       ..classes.addAll(['td-center', 'button-cell'])
-      ..children.addAll([buttonSend, buttonDelete, buttonCopy]);
+      ..children.addAll(buttons);
   }
 
   /**
@@ -76,6 +89,7 @@ class UIMessageArchive extends UIModel {
    */
   TableRowElement _buildRow(ORModel.Message msg) {
     final TableRowElement row = new TableRowElement()
+      ..dataset['message'] = JSON.encode(msg)
       ..dataset['message-id'] = msg.ID.toString()
       ..dataset['contact-string'] = msg.context.contactString;
 

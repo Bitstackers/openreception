@@ -43,6 +43,7 @@ abstract class Key {
 
   static const String cancel                          = 'cancel';
   static const String cellPhone                       = 'cell-phone';
+  static const String close                           = 'close';
   static const String company                         = 'company';
 
   static const String contactCalendarHeader           = 'contact-calendar-header';
@@ -169,6 +170,7 @@ Map<String, String> da =
 
    Key.cancel                         : 'Annuller',
    Key.cellPhone                      : 'Mobilnummer',
+   Key.close                          : 'Luk',
    Key.company                        : 'Virksomhed',
 
    Key.contactCalendarHeader          : 'Kontakt kalender',
@@ -294,6 +296,7 @@ Map<String, String> en =
 
    Key.cancel                         : 'Cancel',
    Key.cellPhone                      : 'Cell phone',
+   Key.close                          : 'Close',
    Key.company                        : 'Company',
 
    Key.contactCalendarHeader          : 'Contact calendar',
