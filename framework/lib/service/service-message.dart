@@ -47,6 +47,13 @@ class RESTMessageStore implements Storage.Message {
       .then((String response)
         => new Model.Message.fromMap (JSON.decode(response)));
 
+  Future remove(int messageId) {
+    Uri uri = Resource.Message.single(_host, messageId);
+    uri = appendToken(uri, _token);
+
+    return _backend.delete(uri);
+  }
+
   Future<Model.Message> update(Model.Message message) =>
       this._backend.put
         (appendToken
