@@ -64,6 +64,9 @@ void runCallFlowTests() {
          customer.teardown()]);
     });
 
+    test ('callDataOK',
+        () => CallList.callDataOK(receptionist, customer));
+
     test ('interfaceCallFound',
         () => CallList.callPresence(receptionist, customer));
 

@@ -56,6 +56,40 @@ abstract class CallList {
        .then((_) =>  log.info ('Test complete, cleaning up.'));
    }
 
+  static Future callDataOK(Receptionist receptionist, Customer customer) {
+     String       reception = "12340004";
+
+     return
+       Future.wait([])
+       .then((_) => log.info ('Customer ${customer.name} dials ${reception}.'))
+       .then((_) => customer.dial (reception))
+       .then((_) => log.info ('Receptionist ${receptionist.user.name} waits for call.'))
+       .then((_) => receptionist.waitForCall()
+         .then((Model.Call call) {
+            expect (call.receptionID, equals(4));
+            //expect (call.destination, equals(reception));
+            expect (call.assignedTo, equals(Model.User.noID));
+            expect (call.b_Leg, isNull);
+            expect (call.channel, isNotNull);
+            expect (call.channel, isNotEmpty);
+            expect (call.contactID, equals(Model.Contact.noID));
+            expect (call.greetingPlayed, equals(false));
+            expect (call.ID, isNotNull);
+            expect (call.ID, isNotEmpty);
+            expect (call.inbound, equals(true));
+            expect (call.locked, equals(false));
+            expect (call.arrived.difference(new DateTime.now())
+                .inMilliseconds.abs(), lessThan(1000));
+          }))
+         .then((_) => log.info ('Call is present in call list, asserting call list.'))
+         .then((_) => _validateListLength(receptionist.callFlowControl, 1))
+       .then((_) => log.info ('Customer ${customer.name} hangs up all current calls.'))
+       .then((_) => customer.hangupAll())
+       .then((_) => log.info ('Receptionist ${receptionist.user.name} awaits call hangup.'))
+       .then((_) => receptionist.waitFor(eventType:"call_hangup"))
+       .then((_) =>  log.info ('Test complete, cleaning up.'));
+   }
+
   static Future queueLeaveEventFromPickup(Receptionist receptionist,
                                           Customer caller) {
     String receptionNumber = '12340003';
