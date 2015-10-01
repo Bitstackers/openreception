@@ -111,6 +111,23 @@ abstract class Message {
   }
 
   /**
+   * HTTP Request handler for removing a single message resource.
+   */
+  static Future<shelf.Response> remove(shelf.Request request) async {
+    final int messageID  =
+        int.parse(shelf_route.getPathParameter(request, 'mid'));
+
+    try {
+      await _messageStore.remove(messageID);
+    }
+    on Storage.NotFound {
+      return _notFound('$messageID');
+    }
+
+    return _ok('');
+  }
+
+  /**
    * Builds a list of previously stored messages, filtering by the
    * parameters passed in the [queryParameters] of the request.
    */

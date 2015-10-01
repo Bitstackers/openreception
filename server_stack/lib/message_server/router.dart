@@ -99,6 +99,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
     ..get('/message/list', Message.list)
     ..get('/message/{mid}', Message.get)
     ..put('/message/{mid}', Message.update)
+    ..delete('/message/{mid}', Message.remove)
     ..post('/message/{mid}/send', Message.send)
     ..post('/message', Message.create);
 
