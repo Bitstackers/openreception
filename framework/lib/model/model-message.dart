@@ -43,6 +43,11 @@ class Message {
 
   bool get closed => enqueued || sent || flag.manuallyClosed;
 
+  bool get manuallyClosed => flag.manuallyClosed;
+  set manuallyClosed(bool closed) {
+    flag.manuallyClosed = closed;
+  }
+
   Message.empty();
 
   Iterable<MessageRecipient> get to =>
