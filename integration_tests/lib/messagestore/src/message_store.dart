@@ -28,49 +28,78 @@ abstract class MessageStore {
   static Future<Model.Message> _createMessage(Storage.Message messageStore,
                                 Storage.Contact contactStore,
                                 Storage.Reception receptionStore,
-                                Receptionist sender) {
+                                Receptionist sender) async {
 
     int receptionID = 1;
-    int contactID = 1;
+    int contactID = 4;
+    Model.Contact contact = await contactStore.getByReception(contactID, receptionID);
+    Model.Reception reception = await receptionStore.get(receptionID);
     Set<Model.MessageRecipient> recipients = new Set();
 
-    return contactStore.getByReception(contactID, receptionID)
-      .then((Model.Contact contact) =>
-        Future.forEach(contact.distributionList, (Model.DistributionListEntry de) =>
-          contactStore.getByReception(de.contactID, de.receptionID)
-            .then((Model.Contact c) {
-              c.endpoints.forEach((Model.MessageEndpoint mep) {
-                recipients.add (new Model.MessageRecipient(mep, de));
-              });
-      }))
-      .then((_) =>
-        receptionStore.get(receptionID)
-          .then((Model.Reception reception) {
-            Model.Message newMessage = Randomizer.randomMessage()
-              ..context = new Model.MessageContext.fromContact
-                            (contact, reception)
-              ..recipients = recipients
-              ..senderId = sender.user.ID;
+    await Future.forEach(contact.distributionList, (Model.DistributionListEntry de) =>
+      contactStore.getByReception(de.contactID, de.receptionID)
+        .then((Model.Contact c) {
+      recipients.addAll(c.endpoints.map((Model.MessageEndpoint mep) =>
+            new Model.MessageRecipient(mep, de)));
+    }));
 
-            return messageStore.create(newMessage)
-              .then((Model.Message createdMessage) {
+    Model.Message newMessage = Randomizer.randomMessage()
+      ..context = new Model.MessageContext.fromContact
+                    (contact, reception)
+      ..recipients = recipients
+      ..senderId = sender.user.ID;
 
-              return createdMessage;
-            });
-    })));
+    return messageStore.create(newMessage);
   }
 
   /**
    *
    */
   static Future create(Storage.Message messageStore,
-                                Storage.Contact contactStore,
-                                Storage.Reception receptionStore,
-                                Receptionist sender) =>
+                         Storage.Contact contactStore,
+                         Storage.Reception receptionStore,
+                         Receptionist sender) async {
+    Model.Message createdMessage = await
+        _createMessage (messageStore, contactStore, receptionStore, sender);
 
-    _createMessage (messageStore, contactStore, receptionStore, sender);
+    Model.Message fetchedMessage = await messageStore.get(createdMessage.ID);
 
-  Future enqueue (Model.Message message);
+    expect(createdMessage.asMap, equals(fetchedMessage.asMap));
+
+    expect(createdMessage.body, isNotEmpty);
+    expect(createdMessage.enqueued, isFalse);
+    expect(createdMessage.sent, isFalse);
+    expect(createdMessage.senderId, sender.user.ID);
+
+    return  messageStore.remove(createdMessage.ID);
+  }
+
+  /**
+   *
+   */
+  static Future remove(Storage.Message messageStore,
+                         Storage.Contact contactStore,
+                         Storage.Reception receptionStore,
+                         Receptionist sender) async {
+    Model.Message createdMessage = await
+        _createMessage (messageStore, contactStore, receptionStore, sender);
+
+    await messageStore.remove(createdMessage.ID);
+
+    expect(messageStore.get(createdMessage.ID),
+        throwsA(new isInstanceOf<Storage.NotFound>()));
+  }
+
+  static Future enqueue (Storage.Message messageStore,
+                             Storage.Contact contactStore,
+                             Storage.Reception receptionStore,
+                             Receptionist sender) async {
+      Model.Message createdMessage = await
+          _createMessage(messageStore, contactStore, receptionStore, sender);
+
+      return messageStore.enqueue(createdMessage);
+
+  }
 
   /**
    * Test server behaviour when trying to aquire a message object that

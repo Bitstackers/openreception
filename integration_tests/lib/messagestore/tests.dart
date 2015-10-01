@@ -3,6 +3,29 @@ part of or_test_fw;
 
 void runMessageTests() {
 
+  group ('Database.MessageQueue', () {
+
+    Database.MessageQueue messageDB;
+    Database.Connection connection;
+
+    setUp(() {
+
+      return Database.Connection
+          .connect(Config.dbDSN)
+          .then((Database.Connection conn) {
+        connection = conn;
+        messageDB = new Database.MessageQueue(connection);
+      });
+    });
+
+    tearDown (() {
+      return connection.close();
+    });
+
+    test ('list',
+        () => MessageQueueStore.list(messageDB));
+  });
+
   group ('Database.Message', () {
     Storage.Reception receptionStore;
     Storage.Contact contactStore;
@@ -66,6 +89,13 @@ void runMessageTests() {
 
     test ('update',
         () => MessageStore.update(messageDB, contactStore, receptionStore, r));
+
+    test ('enqueue',
+        () => MessageStore.enqueue(messageDB, contactStore, receptionStore, r));
+
+    test ('remove',
+        () => MessageStore.remove(messageDB, contactStore, receptionStore, r));
+
   });
 
   group('RESTMessageStore', () {
@@ -124,14 +154,15 @@ void runMessageTests() {
 
    setUp (() {
      transport = new Transport.Client();
-     messageStore = new Service.RESTMessageStore(Config.messageStoreUri,
-           Config.serverToken, transport);
-     receptionStore = new Service.RESTReceptionStore(Config.receptionStoreUri,
-           Config.serverToken, transport);
-     contactStore = new Service.RESTContactStore(Config.contactStoreUri,
-           Config.serverToken, transport);
-
      r = ReceptionistPool.instance.aquire();
+
+     messageStore = new Service.RESTMessageStore(Config.messageStoreUri,
+         r.authToken, transport);
+     receptionStore = new Service.RESTReceptionStore(Config.receptionStoreUri,
+         r.authToken, transport);
+     contactStore = new Service.RESTContactStore(Config.contactStoreUri,
+         r.authToken, transport);
+
 
      return r.initialize();
    });
@@ -142,9 +173,15 @@ void runMessageTests() {
     test ('update',
         () => MessageStore.update(messageStore, contactStore, receptionStore, r));
 
-//   test('message enqueue (event presence)',
-//     () => RESTMessageStore.messageEnqueueEvent
-//             (messageStore, contactStore, receptionStore, r));
+    test ('enqueue',
+        () => MessageStore.enqueue(messageStore, contactStore, receptionStore, r));
+
+    test ('remove',
+        () => MessageStore.remove(messageStore, contactStore, receptionStore, r));
+
+    test('message enqueue (event presence)',
+        () => RESTMessageStore.messageEnqueueEvent
+             (messageStore, contactStore, receptionStore, r));
 
    test('message update (event presence)',
      () => RESTMessageStore.messageUpdateEvent  (messageStore, contactStore, receptionStore, r));

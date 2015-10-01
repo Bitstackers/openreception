@@ -146,14 +146,16 @@ abstract class RESTMessageStore {
    */
   static Future messageUpdateEvent(Storage.Message messageStore,
       Storage.Contact contactStore, Storage.Reception receptionStore,
-      Receptionist sender) {
+      Receptionist sender) async {
     log.info('Started messageUpdateEvent test');
 
-    return MessageStore
-        ._createMessage(messageStore, contactStore, receptionStore, sender)
-        .then((Model.Message createdMessage) {
-      bool idAndStateMatches(Event.Event event) {
+    Model.Message createdMessage = await MessageStore.
+        _createMessage(messageStore, contactStore, receptionStore, sender);
+
+    bool idAndStateMatches(Event.Event event) {
         if (event is Event.MessageChange) {
+          log.info(event.asMap);
+
           return event.messageID == createdMessage.ID &&
               event.state == Event.MessageChangeState.UPDATED;
         }
@@ -161,8 +163,11 @@ abstract class RESTMessageStore {
         return false;
       }
 
-      return sender.notificationSocket.eventStream
-          .firstWhere(idAndStateMatches).timeout(new Duration(milliseconds : 100));
-    }).whenComplete(() => log.info('Finished messageUpdateEvent test'));
+    Future sub = sender.notificationSocket.eventStream
+        .firstWhere(idAndStateMatches).timeout(new Duration(milliseconds : 1000));
+
+    return messageStore.update(createdMessage)
+      .then((_) => sub)
+      .then((_) => log.info('Finished messageUpdateEvent test'));
   }
 }
