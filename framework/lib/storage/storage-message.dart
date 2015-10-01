@@ -27,4 +27,5 @@ abstract class Message {
 
   Future<Model.Message> save (Model.Message message);
 
+  Future remove (int messageId);
 }
