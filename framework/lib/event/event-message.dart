@@ -31,8 +31,21 @@ class MessageChange implements Event {
   final int messageID;
   final String state;
 
+  @deprecated
   MessageChange (this.messageID, this.state) :
-    this.timestamp = new DateTime.now();
+    timestamp = new DateTime.now();
+
+  MessageChange.created (this.messageID) :
+    timestamp = new DateTime.now(),
+    state = MessageChangeState.CREATED;
+
+  MessageChange.updated (this.messageID) :
+    timestamp = new DateTime.now(),
+    state = MessageChangeState.UPDATED;
+
+  MessageChange.deleted (this.messageID) :
+    timestamp = new DateTime.now(),
+    state = MessageChangeState.DELETED;
 
   Map toJson() => this.asMap;
   String toString() => this.asMap.toString();
