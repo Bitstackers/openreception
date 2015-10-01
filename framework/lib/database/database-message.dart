@@ -324,4 +324,39 @@ class Message implements Storage.Message {
 
   Future<Model.Message> save(Model.Message message) =>
       message.ID == Model.Message.noID ? create(message) : update(message);
+
+
+  /**
+   * Removes a single message from the database.
+   */
+  Future<Model.Message> remove(int messageID) {
+    final sqlMacro = 'WITH $sqlQueueStatus,$sqlSentStatus';
+
+    String sql = '''
+    $sqlMacro,
+    unused_message AS (
+    SELECT id
+    FROM messages message
+    JOIN queue_status ON queue_status.message_id = message.id
+    JOIN sent_status  ON sent_status.message_id = message.id
+    WHERE    message.id = @messageID AND NOT enqueued AND NOT sent)
+
+    DELETE FROM messages
+    WHERE messages.id IN (SELECT id from unused_message)''';
+
+    Map parameters = {'messageID': messageID};
+
+    return _connection
+        .execute(sql, parameters)
+        .then((int rowsAffected) => rowsAffected != 1
+            ? new Future.error(
+                new Storage.NotFound
+                  ('Cannot remove message with ID $messageID'))
+            : true)
+        .catchError((error, stackTrace) {
+
+      log.severe('sql:$sql :: parameters:$parameters');
+      return new Future.error(error, stackTrace);
+    });
+  }
 }
