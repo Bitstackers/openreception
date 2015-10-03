@@ -479,6 +479,7 @@ abstract class Call {
     Model.Peer peer;
     ORModel.Call assignedCall;
     String agentChannel;
+    int originallyAssignedTo = ORModel.User.noID;
 
     /// Parameter check.
     if (callID == null || callID == "") {
@@ -544,6 +545,7 @@ abstract class Call {
 
     /// Update the user state
     Model.UserStatusList.instance.update (user.ID, ORModel.UserState.Receiving);
+    originallyAssignedTo = assignedCall.assignedTo;
     assignedCall.assignedTo = user.ID;
 
     log.finest('Assigned call ${assignedCall.ID} to user with ID ${user.ID}');
@@ -556,6 +558,9 @@ abstract class Call {
       log.severe(msg, error, stackTrace);
 
       Model.UserStatusList.instance.update (user.ID, ORModel.UserState.Unknown);
+
+      /// Revert the call to the user it was originally assigned to.
+      assignedCall.assignedTo = originallyAssignedTo;
 
       return _serverError(msg);
     }
