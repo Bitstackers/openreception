@@ -148,7 +148,7 @@ class CallList extends IterableBase<ORModel.Call> {
     ORModel.Call call = this.get(callID);
 
     if (![user.ID, ORModel.User.noID].contains(call.assignedTo)) {
-      log.warning('Call ${callID} already assigned to uid: ${call.assignedTo}');
+      log.fine('Call ${callID} already assigned to uid: ${call.assignedTo}');
       throw new ORStorage.Forbidden(callID);
     } else if (call.locked) {
       log.fine('Uid ${user.ID} requested locked call $callID');
