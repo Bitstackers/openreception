@@ -114,9 +114,8 @@ abstract class PBX {
    */
   static Future<String> createAgentChannel (ORModel.User user) =>
     api('create_uuid').then((ESL.Response response) {
-      if (response.status != ESL.Response.OK) {
-        throw new PBXException('Creation of uuid for uid:${user.ID} failed. '
-            'PBX responded: ${response.rawBody}');
+      if (response.rawBody.isEmpty) {
+        throw new PBXException('Creation of uuid for uid:${user.ID} failed. ');
       }
 
       final String new_call_uuid = response.rawBody;
