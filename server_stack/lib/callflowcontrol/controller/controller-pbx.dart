@@ -148,7 +148,7 @@ abstract class PBX {
 
          else {
            error = new PBXException('Creation of agent channel failed '
-               '($destination). PBX responded: ${response.status}');
+               '($destination). PBX responded: ${response.rawBody}');
          }
 
          _log.warning('Bad reply from PBX', error);
