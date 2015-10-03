@@ -563,12 +563,14 @@ abstract class Call {
       assignedCall.assignedTo = originallyAssignedTo;
 
       /// Make sure the agent channel is closed before returning a response.
-      return Controller.PBX.killChannel(agentChannel)
+      return
+          new Future.delayed (new Duration (seconds : 3)).then((_) =>
+          Controller.PBX.killChannel(agentChannel)
         .then((_) =>  _serverError(msg))
         .catchError((error, stackTrace) {
             log.severe('Failed to close agent channel', error, stackTrace);
         return _serverError(msg);
-      });
+      }));
     }
 
     /// Channel bridging
