@@ -120,16 +120,19 @@ abstract class PBX {
       _log.finest ('New uuid: $new_call_uuid');
       _log.finest ('Dialing receptionist at user/${user.peer}');
 
-      return api('originate '
-                                  '{ignore_early_media=true,'
-                                  '${agentChan}=true,'
-                                  'park_timeout=$_agentChantimeOut,'
-                                  'origination_uuid=$new_call_uuid,'
-                                  'originate_timeout=$_agentChantimeOut,'
-                                  'origination_caller_id_name=$_callerID,'
-                                  'origination_caller_id_number=$_callerID}'
-                                  '${destination}'
-                                  ' &park()')
+      Map variables = {
+        'ignore_early_media' : true,
+        agentChan : true,
+        'park_timeout' : _agentChantimeOut,
+        'origination_uuid' : new_call_uuid,
+        'originate_timeout' : _agentChantimeOut,
+        'origination_caller_id_name' : _callerID,
+        'origination_caller_id_number' : _callerID};
+
+      String variableString = variables.keys.map((String key) =>
+          '$key=${variables[key]}').join(',');
+
+      return api('originate {$variableString}${destination} &park()')
        .then((ESL.Response response) {
          var error;
 
