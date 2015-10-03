@@ -516,7 +516,6 @@ abstract class Call {
     try {
       /// Request the specified call.
       assignedCall = Model.CallList.instance.requestSpecificCall(callID, user);
-      assignedCall.assignedTo = user.ID;
     }
 
     on ORStorage.Conflict {
@@ -545,6 +544,7 @@ abstract class Call {
 
     /// Update the user state
     Model.UserStatusList.instance.update (user.ID, ORModel.UserState.Receiving);
+    assignedCall.assignedTo = user.ID;
 
     log.finest('Assigned call ${assignedCall.ID} to user with ID ${user.ID}');
 
