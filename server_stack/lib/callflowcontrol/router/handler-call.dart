@@ -287,7 +287,7 @@ abstract class Call {
     /// Create an agent channel;
     String uuid;
     try {
-      uuid = await pbxController.createAgentChannel(user);
+      uuid = await Controller.PBX.createAgentChannel(user);
     }
     on Controller.CallRejected {
       _userStateUnknown(user);
