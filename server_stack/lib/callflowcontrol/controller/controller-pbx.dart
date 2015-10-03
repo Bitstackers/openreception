@@ -125,7 +125,7 @@ abstract class PBX {
       _log.finest ('Dialing receptionist at user/${user.peer}');
 
       Map variables = {
-        //'ignore_early_media' : true,
+        'ignore_early_media' : true,
         agentChan : true,
         'park_timeout' : _agentChantimeOut,
         'origination_uuid' : new_call_uuid,
