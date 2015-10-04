@@ -251,34 +251,59 @@ abstract class PBX {
         });
   }
 
+  static void _logAndFail(String msg) {
+    log.severe(msg);
+    throw new PBXException (msg);
+  }
+
+  static Future<ESL.Response> _runAndCheck(String command) =>
+    api (command).then((response) =>
+      response.status != ESL.Response.OK
+        ? _logAndFail('"$command" failed with response ${response.rawBody}')
+        : response);
+
+
   /**
    * Bridges two active calls.
    */
-  static Future bridgeChannel (String uuid, ORModel.Call destination) {
+  static Future bridgeChannel (String uuid, ORModel.Call destination) async {
 
-    ESL.Response bridgeResponse;
+    await _runAndCheck ('uuid_answer ${destination.channel}');
 
-    return
-        api ('uuid_answer ${destination.channel}')
-        .then ((_) => api ('uuid_setvar ${destination.channel} hangup_after_bridge true')
-          .then((response) => bridgeResponse = response))
-        .then ((_) => api ('uuid_setvar ${uuid} hangup_after_bridge true')
-          .then((response) => bridgeResponse = response))
-        .then ((_) => api ('uuid_bridge ${destination.channel} ${uuid}')
-          .then((response) => bridgeResponse = response))
-        .then ((_) => api ('uuid_break ${destination.channel}').then((_) => bridgeResponse));
+    try {
+      await setVariable(uuid, 'hangup_after_bridge', 'true');
+    } catch (e, s) {
+      final String msg = 'Failed to set variable on channel';
+      log.severe(msg);
+
+      throw new PBXException(msg);
+    }
+
+    final bridgeUuid = 'uuid_bridge ${destination.channel} ${uuid}';
+    ESL.Response response = await _runAndCheck (bridgeUuid);
+
+    await api ('uuid_break ${destination.channel}');
+
+    return response;
  }
 
   /**
    * Transfers an active call to a user.
    */
-  static Future transfer (ORModel.Call source, String extension) {
+  static Future transfer (ORModel.Call source, String extension) async {
+    final command = 'uuid_transfer ${source.channel} ${extension}';
 
-    ESL.Response transferResponse;
+    ESL.Response xfrResponse = await api (command);
 
-    return api ('uuid_transfer ${source.channel} ${extension}')
-                                .then((response) => transferResponse = response)
-        .then ((_) => api ('uuid_break ${source.channel}').then((_) => transferResponse));
+    await api ('uuid_break ${source.channel}');
+
+    if(xfrResponse.status != ESL.Response.OK) {
+      final String msg = '"$command" failed with reponse ${xfrResponse.rawBody}';
+      log.severe(msg);
+      throw new PBXException (msg);
+    }
+
+    return xfrResponse;
   }
 
   /**
