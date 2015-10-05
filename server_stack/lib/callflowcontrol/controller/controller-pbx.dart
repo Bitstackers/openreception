@@ -105,6 +105,11 @@ abstract class PBX {
         });
   }
 
+  static Future _cleanupChannel (String uuid) =>
+    killChannel(uuid)
+      .catchError((error, stackTrace) =>
+        log.severe('Failed to close agent channel', error, stackTrace));
+
   /**
    * Spawns a channel to an agent.
    *
