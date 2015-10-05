@@ -75,6 +75,7 @@ abstract class ChannelEventName {
  */
 abstract class PBXEvent {
   static const String CUSTOM = 'CUSTOM';
+  static const String CHANNEL_ANSWER = 'CHANNEL_ANSWER';
   static const String CHANNEL_BRIDGE = 'CHANNEL_BRIDGE';
   static const String CHANNEL_STATE = 'CHANNEL_STATE';
   static const String CHANNEL_CREATE = 'CHANNEL_CREATE';
@@ -93,8 +94,8 @@ abstract class PBXEvent {
 
   static const List<String> requiredSubscriptions = const
       [CHANNEL_BRIDGE, CHANNEL_CREATE, CHANNEL_DESTROY, CHANNEL_STATE,
-        CHANNEL_ORIGINATE, CUSTOM, SOFIA_REGISTER, SOFIA_UNREGISTER,
-        _OR_PARKING_LOT_ENTER, _OR_PARKING_LOT_LEAVE,
+        CHANNEL_ORIGINATE, CHANNEL_ANSWER, CUSTOM, SOFIA_REGISTER,
+        SOFIA_UNREGISTER, _OR_PARKING_LOT_ENTER, _OR_PARKING_LOT_LEAVE,
         _OR_PRE_QUEUE_ENTER, _OR_PRE_QUEUE_LEAVE, _OR_WAIT_QUEUE_ENTER];
 }
 

@@ -42,8 +42,8 @@ abstract class PBX {
 
   static final Logger _log             = new Logger('${libraryName}.PBX');
   static const String _callerID        = '39990141';
-  static const int    _timeOutSeconds  = 10;
-  static const int    _agentChantimeOut= 3;
+  static const int    _timeOutSeconds  = 20;
+  static const int    _agentChantimeOut= 20;
   static const String _dialplan        = 'xml receptions';
 
   static const String _namespace = 'openreception::';
@@ -58,7 +58,7 @@ abstract class PBX {
   static ESL.Connection eventClient;
 
   static Future<ESL.Response> api (String command) {
-    return apiClient.api(command, timeoutSeconds: 20)
+    return apiClient.api(command, timeoutSeconds: 30)
         .then((ESL.Response response) {
 
       final int maxLen = 200;
@@ -117,65 +117,74 @@ abstract class PBX {
    *
    * Returns the UUID of the new channel.
    */
-  static Future<String> createAgentChannel (ORModel.User user) =>
-    api('create_uuid').then((ESL.Response response) {
-      if (response.rawBody.isEmpty || response.status == ESL.Response.ERROR) {
-        throw new PBXException(
-            'Creation of uuid for uid:${user.ID} failed. '
-            'PBX responded: ${response.rawBody}');
-      }
-      else if (response.rawBody.length != 36) {
+  static Future<String> createAgentChannel (ORModel.User user) async {
 
-      }
+    final int msecs = new DateTime.now().millisecondsSinceEpoch;
+    final String new_call_uuid = 'agent-${user.ID}-${msecs}';
+    final String destination = 'user/${user.peer}';
 
-      final String new_call_uuid = response.rawBody;
-      final String destination = 'user/${user.peer}';
+    _log.finest ('New uuid: $new_call_uuid');
+    _log.finest ('Dialing receptionist at user/${user.peer}');
 
-      _log.finest ('New uuid: $new_call_uuid');
-      _log.finest ('Dialing receptionist at user/${user.peer}');
+    Map variables = {
+      'ignore_early_media' : true,
+      agentChan : true,
+      'park_timeout' : _agentChantimeOut,
+      'origination_uuid' : new_call_uuid,
+      'originate_timeout' : _agentChantimeOut,
+      'origination_caller_id_name' : _callerID,
+      'origination_caller_id_number' : _callerID};
 
-      Map variables = {
-        'ignore_early_media' : true,
-        agentChan : true,
-        'park_timeout' : _agentChantimeOut,
-        'origination_uuid' : new_call_uuid,
-        'originate_timeout' : _agentChantimeOut,
-        'origination_caller_id_name' : _callerID,
-        'origination_caller_id_number' : _callerID};
+    String variableString = variables.keys.map((String key) =>
+        '$key=${variables[key]}').join(',');
 
-      String variableString = variables.keys.map((String key) =>
-          '$key=${variables[key]}').join(',');
+    ESL.Reply reply =
+        await bgapi('originate {$variableString}${destination} &park()');
 
-      return api('originate {$variableString}${destination} &park()')
-       .then((ESL.Response response) {
-         var error;
+     if (reply.status != ESL.Response.OK) {
+       throw new PBXException('Creation of agent channel for '
+                    'uid:${user.ID} failed. Destination:$destination. '
+                    'PBX responded: ${reply.content}');
+     }
 
-         if (response.status == ESL.Response.OK) {
-           return new_call_uuid;
-         }
+     /// Create a subscription that looks for the outbound channel.
+     bool outboundCallWithUuid (ESL.Event event) =>
+         event.eventName == 'CHANNEL_ORIGINATE' &&
+         event.channel.fields['Unique-ID'] == new_call_uuid;
 
+     await eventClient.eventStream.firstWhere
+         (outboundCallWithUuid, defaultValue : () => null);
 
-         else if (response.rawBody.contains('CALL_REJECTED')) {
-           error = new CallRejected('destination: $destination');
-         }
+     bool inviteClosed (ESL.Event event) =>
+         event.channel.fields['Unique-ID'] == new_call_uuid
+         && (event.eventName == 'CHANNEL_ANSWER' ||
+         event.eventName == 'CHANNEL_HANGUP');
 
-         else if (response.rawBody.contains('NO_ANSWER')) {
-           error = new NoAnswer('destination: $destination');
-         }
+     ESL.Event event;
+     try {
+      event = await eventClient.eventStream.firstWhere
+        (inviteClosed, defaultValue : () => null)
+        .timeout(new Duration (seconds : _agentChantimeOut));
+     }
+     on TimeoutException {
+       _cleanupChannel(agentChan);
 
-         else {
-           error = new PBXException('Creation of agent channel for '
-               'uid:${user.ID} failed. Destination:$destination. '
-               'PBX responded: ${response.rawBody}');
-         }
+       throw new NoAnswer('destination: $destination');
+     }
 
-         _log.warning('Bad reply from PBX', error);
+     if (event.eventName == 'CHANNEL_HANGUP') {
+       throw new CallRejected('destination: $destination');
+     }
+     else if (event.eventName == 'CHANNEL_ANSWER') {
+       return new_call_uuid;
+     }
+     else {
+       throw new PBXException('Creation of agent channel for '
+           'uid:${user.ID} failed. Destination:$destination. '
+           'Got event type: ${event.eventType}');
 
-         return new Future.error(error);
-
-       });
-     });
-
+     }
+  }
 
   static Future transferUUIDToExtension
     (String uuid, String extension, ORModel.User user) {
