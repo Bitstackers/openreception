@@ -383,9 +383,21 @@ abstract class PBX {
   }
 
   /**
+   * Check if the agent channel is still active and if it is, kill it.
+   */
+  Future _checkAgentChannel(String uuid) =>
+    new Future.delayed(new Duration (milliseconds : 100))
+      .then((_) =>
+        Model.ChannelList.instance.containsChannel(uuid)
+        ? _cleanupChannel(uuid)
+        : null);
+
+
+  /**
    * Kills the active channel for a call.
    */
-  static Future hangup (ORModel.Call call) => killChannel(call.channel);
+  static Future hangup (ORModel.Call call) => killChannel(call.channel)
+    .then((_) => _checkAgentChannel(call.b_Leg));
 
   /**
    * Kills the active channel for a call.
