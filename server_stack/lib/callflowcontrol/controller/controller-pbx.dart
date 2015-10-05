@@ -212,8 +212,11 @@ abstract class PBX {
    * Starts an origination in the PBX.
    *
    * By first dialing the outbound extension and then the agent.
-   * This method is cleaner than the [originate] method, because this will return the future A-leg as call-id, but
-   * will break the protocol as per 2014-06-24.
+   * This method is cleaner than the [originate] method, because this will
+   * return the future A-leg as call-id, but will break the protocol as
+   * per 2014-06-24.
+   *
+   * Currently unused.
    */
   static Future<String> originateOutboundFirst (String extension, int contactID, int receptionID, ORModel.User user) {
     List<String> variables = ['reception_id=${receptionID}',
