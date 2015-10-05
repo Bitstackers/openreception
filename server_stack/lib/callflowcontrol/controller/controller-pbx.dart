@@ -385,8 +385,7 @@ abstract class PBX {
   /**
    * Kills the active channel for a call.
    */
-  static Future hangup (ORModel.Call call) => killChannel(call.channel)
-      .then((_) => call.b_Leg != null ? _cleanupChannel(call.b_Leg) : null);
+  static Future hangup (ORModel.Call call) => killChannel(call.channel);
 
   /**
    * Kills the active channel for a call.
