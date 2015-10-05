@@ -18,11 +18,30 @@ enum CallCommand {
   TRANSFERFAILURE
 }
 
+class BusyException implements Exception {
+
+  final String message;
+  const BusyException([this.message = ""]);
+
+  String toString() => "BusyException: $message";
+}
+
 class Call {
   final Model.AppClientState      _appState;
   final Bus<CallCommand>          _command = new Bus<CallCommand>();
   static final Logger             _log = new Logger ('${libraryName}.Call');
   final ORService.CallFlowControl _service;
+  bool _busyFlag = false;
+
+  set _busy (bool makeBusy) {
+    if (_busyFlag && makeBusy) {
+      throw new BusyException('CallController busy');
+    }
+
+    _busyFlag = makeBusy;
+  }
+
+  get busy => _busyFlag;
 
   /**
    * Constructor.
@@ -37,8 +56,11 @@ class Call {
   /**
    *
    */
-  Future dial(ORModel.PhoneNumber phoneNumber, ORModel.Reception reception, ORModel.Contact contact) {
+  Future dial(ORModel.PhoneNumber phoneNumber,
+                  ORModel.Reception reception, ORModel.Contact contact)  async{
      _log.info('Dialing ${phoneNumber.value}.');
+
+     _busy = true;
 
      _command.fire(CallCommand.DIAL);
 
@@ -54,7 +76,7 @@ class Call {
         _command.fire(CallCommand.DIALFAILURE);
 
         return new Future.error(new ControllerError(error.toString()));
-      });
+      }).whenComplete(() => _busy = false);
   }
 
   /**
@@ -78,6 +100,8 @@ class Call {
    *
    */
   Future hangup(ORModel.Call call) {
+    _busy = true;
+
     _command.fire(CallCommand.HANGUP);
 
     _log.info('Hanging up $call.');
@@ -89,7 +113,7 @@ class Call {
         _command.fire(CallCommand.HANGUPFAILURE);
 
         return new Future.error(new ControllerError(error.toString()));
-      });
+      }).whenComplete(() => _busy = false);
   }
 
   /**
@@ -101,6 +125,7 @@ class Call {
    *
    */
   Future park(ORModel.Call call) {
+    _busy = true;
     if (call == ORModel.Call.noCall) {
       return new Future.value(ORModel.Call.noCall);
     }
@@ -119,7 +144,7 @@ class Call {
         _command.fire(CallCommand.PARKFAILURE);
 
         return new Future.error(new ControllerError(error.toString()));
-      });
+      }).whenComplete(() => _busy = false);
   }
 
   /**
@@ -135,7 +160,8 @@ class Call {
    * Make the service layer perform a pickup request to the
    * call-flow-control server.
    */
-  Future<ORModel.Call> pickup(ORModel.Call call) {
+  Future<ORModel.Call> pickup(ORModel.Call call) async {
+    _busy = true;
     _command.fire(CallCommand.PICKUP);
 
     _log.info('Picking up $call.');
@@ -152,31 +178,35 @@ class Call {
         _command.fire(CallCommand.PICKUPFAILURE);
 
         return new Future.error(new ControllerError(error.toString()));
-      });
+      }).whenComplete(() => _busy = false);
   }
 
   /**
    *
    */
   Future<ORModel.Call> pickupFirstParkedCall() {
+    _busy = true;
     return _firstParkedCall().then((ORModel.Call parkedCall) {
 
       if (parkedCall != null) {
         this.pickup(parkedCall);
       }
-    });
+    }).whenComplete(() => _busy = false);
   }
 
   /**
    *
    */
-  Future<ORModel.Call> pickupNext() {
+  Future<ORModel.Call> pickupNext() async {
+    _busy = true;
     bool availableForPickup (ORModel.Call call) =>
       call.assignedTo == ORModel.User.noID && !call.locked;
 
-    return _service.callList().then((Iterable<ORModel.Call> calls) {
+    Iterable<ORModel.Call> calls = await _service.callList();
       ORModel.Call foundCall = calls.firstWhere
         (availableForPickup, orElse: () => null);
+
+      _busy = false;
 
       if (foundCall != null) {
         return pickup(foundCall);
@@ -184,7 +214,6 @@ class Call {
       else {
         return ORModel.Call.noCall;
       }
-    });
   }
 
   /**
@@ -196,6 +225,7 @@ class Call {
    *
    */
   Future _transfer(ORModel.Call source, ORModel.Call destination) {
+    _busy = true;
     _command.fire(CallCommand.TRANSFER);
 
     return _service.transfer(source.ID, destination.ID)
@@ -205,13 +235,14 @@ class Call {
         _command.fire(CallCommand.TRANSFERFAILURE);
 
         return new Future.error(new ControllerError(error.toString()));
-      });
+      }).whenComplete(() => _busy = false);
   }
 
   /**
    *
    */
   Future transferToFirstParkedCall(ORModel.Call source) {
+    _busy = true;
     return _firstParkedCall().then((ORModel.Call parkedCall) {
 
       if (parkedCall != null) {
@@ -222,6 +253,6 @@ class Call {
       }
 
       return null;
-    });
+    }).whenComplete(() => _busy = false);
   }
 }

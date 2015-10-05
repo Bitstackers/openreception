@@ -166,8 +166,8 @@ class _Simulation {
       log.info('Recieved a call, hanging it up immidiately.');
       state = ReceptionistState.ACTIVE_CALL;
 
-      _callController.dial(_randomChoice(calleeNumbers),
-          ORModel.Reception.selectedReception, ORModel.Contact.selectedContact);
+      //_callController.dial(_randomChoice(calleeNumbers),
+      //    ORModel.Reception.selectedReception, ORModel.Contact.selectedContact);
 
       new Future.delayed(new Duration(milliseconds: 1000), hangupCall);
     }
