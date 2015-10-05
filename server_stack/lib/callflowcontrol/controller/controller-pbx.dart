@@ -385,7 +385,7 @@ abstract class PBX {
   /**
    * Check if the agent channel is still active and if it is, kill it.
    */
-  Future _checkAgentChannel(String uuid) =>
+  static Future _checkAgentChannel(String uuid) =>
     new Future.delayed(new Duration (milliseconds : 100))
       .then((_) =>
         Model.ChannelList.instance.containsChannel(uuid)
