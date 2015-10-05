@@ -133,5 +133,21 @@ class MessageArchive extends ViewWidget {
     _ui.onClick.listen(_activateMe);
 
     _ui.scrolledToBottom.listen(_handleScrolling);
+
+    _ui.onMessageClose.listen((ORModel.Message msg) {
+      print('CLOSE: ${msg.ID}');
+    });
+
+    _ui.onMessageCopy.listen((ORModel.Message msg) {
+      print('COPY: ${msg.ID}');
+    });
+
+    _ui.onMessageDelete.listen((ORModel.Message msg) {
+      print('DELETE: ${msg.ID}');
+    });
+
+    _ui.onMessageSend.listen((ORModel.Message msg) {
+      print('SEND: ${msg.ID}');
+    });
   }
 }

@@ -22,23 +22,31 @@ class Message {
   Message(this._store);
 
   /**
-   * Saves a [ORModel.Message] object.
-   */
-  Future<ORModel.Message> save(ORModel.Message message) => _store.save(message);
-
-  /**
    * Enqueues a [ORModel.Message] object.
    */
   Future<ORModel.MessageQueueItem> enqueue(ORModel.Message message) =>
       _store.enqueue(message);
 
   /**
-   *
-   */
-  Future<Iterable<ORModel.Message>> list(ORModel.MessageFilter filter) => _store.list(filter: filter);
-
-  /**
-   *
+   * Fetch the [messageID] [ORModel.Message].
    */
   Future<ORModel.Message> get(int messageID) => _store.get(messageID);
+
+  /**
+   * Return an iterable containing [ORModel.Message] according to the supplied
+   * [filter].
+   */
+  Future<Iterable<ORModel.Message>> list(ORModel.MessageFilter filter) =>
+      _store.list(filter: filter);
+
+  /**
+   * Delete [messageId] from the database. Throws Storage.NotFound if the
+   * message does not exist or if the action did not succeed.
+   */
+  Future remove(int messageId) => _store.remove(messageId);
+
+  /**
+   * Saves a [ORModel.Message] object.
+   */
+  Future<ORModel.Message> save(ORModel.Message message) => _store.save(message);
 }

@@ -55,13 +55,21 @@ class UIMessageArchive extends UIModel {
   TableCellElement _buildButtonCell(ORModel.Message msg) {
     final List<ButtonElement> buttons = new List<ButtonElement>();
 
-    buttons.add(new ButtonElement()..text = _langMap['copy']);
+    buttons.add(new ButtonElement()
+      ..text = _langMap['copy']
+      ..onClick.listen((_) => _messageCopyBus.fire(msg)));
 
     if (!msg.closed) {
       buttons.addAll([
-        new ButtonElement()..text = _langMap['send'],
-        new ButtonElement()..text = _langMap['delete'],
-        new ButtonElement()..text = _langMap['close']
+        new ButtonElement()
+          ..text = _langMap['send']
+          ..onClick.listen((_) => _messageSendBus.fire(msg)),
+        new ButtonElement()
+          ..text = _langMap['delete']
+          ..onClick.listen((_) => _messageDeleteBus.fire(msg)),
+        new ButtonElement()
+          ..text = _langMap['close']
+          ..onClick.listen((_) => _messageCloseBus.fire(msg))
       ]);
     }
 
@@ -89,7 +97,6 @@ class UIMessageArchive extends UIModel {
    */
   TableRowElement _buildRow(ORModel.Message msg) {
     final TableRowElement row = new TableRowElement()
-      ..dataset['message'] = JSON.encode(msg)
       ..dataset['message-id'] = msg.ID.toString()
       ..dataset['contact-string'] = msg.context.contactString;
 
@@ -180,6 +187,26 @@ class UIMessageArchive extends UIModel {
       }
     });
   }
+
+  /**
+   * Fire a [ORModel.Message] when closing it.
+   */
+  Stream<ORModel.Message> get onMessageClose => _messageCloseBus.stream;
+
+  /**
+   * Fire a [ORModel.Message] when copying it.
+   */
+  Stream<ORModel.Message> get onMessageCopy => _messageCopyBus.stream;
+
+  /**
+   * Fire a [ORModel.Message] when deleting it.
+   */
+  Stream<ORModel.Message> get onMessageDelete => _messageDeleteBus.stream;
+
+  /**
+   * Fire a [ORModel.Message] when sending it.
+   */
+  Stream<ORModel.Message> get onMessageSend => _messageSendBus.stream;
 
   /**
    * Add the [list] of [ORModel.Message] to the widgets "saved messages" table.
