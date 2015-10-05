@@ -275,7 +275,7 @@ abstract class PBX {
 
     try {
       await setVariable(uuid, 'hangup_after_bridge', 'true');
-    } catch (e, s) {
+    } catch (e) {
       final String msg = 'Failed to set variable on channel';
       log.severe(msg);
 
