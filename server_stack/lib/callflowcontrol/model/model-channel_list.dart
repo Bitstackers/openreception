@@ -146,6 +146,12 @@ class ChannelList extends ESL.ChannelList {
   static Stream<ChannelEvent> event = _eventController.stream;
 
   /**
+   *
+   */
+  bool containsChannel (String uuid) => get(uuid) != null;
+
+
+  /**
    * Determine if a peer has any active channels.
    */
   bool hasActiveChannels (String peerID) =>
