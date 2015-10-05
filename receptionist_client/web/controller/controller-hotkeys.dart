@@ -74,7 +74,6 @@ class HotKeys {
   Stream<KeyboardEvent> get onNumMult      => _numMult.stream;
   Stream<KeyboardEvent> get onNumPlus      => _numPlus.stream;
 
-
   /**
    * Internal constructor.
    */
