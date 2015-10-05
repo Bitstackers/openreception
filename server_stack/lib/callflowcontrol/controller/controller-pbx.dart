@@ -110,6 +110,7 @@ abstract class PBX {
       .catchError((error, stackTrace) =>
         log.severe('Failed to close agent channel', error, stackTrace));
 
+
   /**
    * Spawns a channel to an agent.
    *
@@ -117,7 +118,64 @@ abstract class PBX {
    *
    * Returns the UUID of the new channel.
    */
-  static Future<String> createAgentChannel (ORModel.User user) async {
+  static Future<String> createAgentChannel (ORModel.User user) {
+    final int msecs = new DateTime.now().millisecondsSinceEpoch;
+    final String new_call_uuid = 'agent-${user.ID}-${msecs}';
+    final String destination = 'user/${user.peer}';
+
+    _log.finest ('New uuid: $new_call_uuid');
+    _log.finest ('Dialing receptionist at user/${user.peer}');
+
+    Map variables = {
+      'ignore_early_media' : true,
+      agentChan : true,
+      'park_timeout' : _agentChantimeOut,
+      'hangup_after_bridge' : true,
+      'origination_uuid' : new_call_uuid,
+      'originate_timeout' : _agentChantimeOut,
+      'origination_caller_id_name' : 'Connecting...',
+      'origination_caller_id_number' : _callerID};
+
+    String variableString = variables.keys.map((String key) =>
+        '$key=${variables[key]}').join(',');
+
+    return api('originate {$variableString}${destination} &park()')
+     .then((ESL.Response response) {
+       var error;
+
+       if (response.status == ESL.Response.OK) {
+         return new_call_uuid;
+       }
+
+       else if (response.rawBody.contains('CALL_REJECTED')) {
+         error = new CallRejected('destination: $destination');
+       }
+
+       else if (response.rawBody.contains('NO_ANSWER')) {
+         error = new NoAnswer('destination: $destination');
+       }
+
+       else {
+         error = new PBXException('Creation of agent channel for '
+             'uid:${user.ID} failed. Destination:$destination. '
+             'PBX responded: ${response.rawBody}');
+       }
+
+       _log.warning('Bad reply from PBX', error);
+
+       return new Future.error(error);
+
+     });
+   }
+
+  /**
+   * Spawns a channel to an agent.
+   *
+   * By first dialing the agent, and parking him/her.
+   *
+   * Returns the UUID of the new channel.
+   */
+  static Future<String> createAgentChannelBg (ORModel.User user) async {
 
     final int msecs = new DateTime.now().millisecondsSinceEpoch;
     final String new_call_uuid = 'agent-${user.ID}-${msecs}';
@@ -130,9 +188,10 @@ abstract class PBX {
       'ignore_early_media' : true,
       agentChan : true,
       'park_timeout' : _agentChantimeOut,
+      'hangup_after_bridge' : true,
       'origination_uuid' : new_call_uuid,
       'originate_timeout' : _agentChantimeOut,
-      'origination_caller_id_name' : _callerID,
+      'origination_caller_id_name' : 'Connecting...',
       'origination_caller_id_number' : _callerID};
 
     String variableString = variables.keys.map((String key) =>
