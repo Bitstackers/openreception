@@ -140,3 +140,42 @@ class HotKeys {
     });
   }
 }
+
+/**
+ * Convenience methods to push events unto the various hotkeys busses without
+ * having an actual keyboard event.
+ */
+class SimulationHotKeys {
+  final HotKeys _hotKeys;
+
+  /**
+   * Constructor
+   */
+  SimulationHotKeys(HotKeys this._hotKeys);
+
+  void altA() => _hotKeys._altA.fire(null);
+  void altB() => _hotKeys._altB.fire(null);
+  void altC() => _hotKeys._altC.fire(null);
+  void altE() => _hotKeys._altE.fire(null);
+  void altF() => _hotKeys._altF.fire(null);
+  void altH() => _hotKeys._altH.fire(null);
+  void altI() => _hotKeys._altI.fire(null);
+  void altK() => _hotKeys._altK.fire(null);
+  void altM() => _hotKeys._altM.fire(null);
+  void altQ() => _hotKeys._altQ.fire(null);
+  void altS() => _hotKeys._altS.fire(null);
+  void altT() => _hotKeys._altT.fire(null);
+  void altV() => _hotKeys._altV.fire(null);
+  void altW() => _hotKeys._altW.fire(null);
+  void altX() => _hotKeys._altX.fire(null);
+  void ctrlAltEnter() => _hotKeys._ctrlAltEnter.fire(null);
+  void ctrlAltP() => _hotKeys._ctrlAltP.fire(null);
+  void ctrlNumMinus() => _hotKeys._ctrlNumMinus.fire(null);
+  void f1() => _hotKeys._f1.fire(null);
+  void f7() => _hotKeys._f7.fire(null);
+  void f8() => _hotKeys._f8.fire(null);
+  void f9() => _hotKeys._f9.fire(null);
+  void numDiv() => _hotKeys._numDiv.fire(null);
+  void numMult() => _hotKeys._numMult.fire(null);
+  void numPlus() => _hotKeys._numPlus.fire(null);
+}

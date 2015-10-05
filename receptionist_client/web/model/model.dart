@@ -67,7 +67,7 @@ const libraryName = 'model';
 typedef String HumanReadableTimestamp(DateTime timestamp, Map<int, String> dayMap);
 typedef void selectCallback(LIElement li);
 
-final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
+final Controller.HotKeys _hotKeys = new Controller.HotKeys();
 
 /**
  * Base class for all UI model classes.

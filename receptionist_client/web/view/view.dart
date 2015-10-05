@@ -59,7 +59,7 @@ part 'view-welcome-message.dart';
 
 const String libraryName = "view";
 
-final Controller.HotKeys  _hotKeys  = new Controller.HotKeys();
+final Controller.HotKeys _hotKeys = new Controller.HotKeys();
 final Controller.Navigate _navigate = new Controller.Navigate();
 
 /**
