@@ -1,7 +1,7 @@
 #export TARGET_NAME := x86_64-unknown-linux-gnu
 export LIB_DIR := "$(PWD)/build"
 
-PJVERSION=2.1
+PJVERSION=2.4
 
 PJBASE=$(PWD)/pjproject-${PJVERSION}
 PJOPTS=--enable-static  --enable-sound
@@ -26,11 +26,12 @@ clean:
 	-rm objects/*.o
 
 distclean: clean
-	rm -f  basic_agent
-	rm -f  deps_install pjlibs
-	rm -fr lib/ include/ pjproject-2.0/ pjproject-2.1 pjproject-2.1.0/
-	rm -f  pjproject-2.1.tar.bz2
-	rm -f  pjproject-2.0.tar.bz2
+	-rm -f  basic_agent
+	-rm -f  deps_install pjlibs
+	-rm -fr lib/ include/ pjproject-2.0/ pjproject-2.1 pjproject-2.1.0/
+	-rm -f  pjproject-2.1.tar.bz2
+	-rm -f  pjproject-2.0.tar.bz2
+	-rm -f pjproject-2.4.5.tar.bz2
 
 pjproject-2.0: pjproject-2.0.tar.bz2
 	tar xjf pjproject-2.0.tar.bz2
@@ -41,17 +42,26 @@ pjproject-2.1: pjproject-2.1.tar.bz2
 	-ln -s pjproject-2.1.0 pjproject-2.1
 	touch $@
 
+pjproject-2.4: pjproject-2.4.5.tar.bz2
+	tar xf pjproject-2.4.5.tar.bz2
+	-ln -s pjproject-2.4.5 pjproject-2.4
+	touch $@
+
 pjlibs: pjproject-${PJVERSION}
 	-mkdir $(LIB_DIR)
-	(cd pjproject-${PJVERSION}; ./aconfigure --prefix=$(LIB_DIR) ${PJOPTS}  && make lib && make && make install)	
+	(cd pjproject-${PJVERSION}; ./configure --prefix=$(LIB_DIR) ${PJOPTS}  && make lib && make && make install)	
 	touch $@
 
 pjproject-2.1.tar.bz2:
 	wget http://www.pjsip.org/release/2.1/$@
 	touch $@
 
+pjproject-2.4.5.tar.bz2:
+	wget http://www.pjsip.org/release/2.4.5/pjproject-2.4.5.tar.bz2
+	touch $@
+
 deps_install: pjlibs
-	(cd pjproject-2.1; make install);
+	(cd pjproject-2.4; make install);
 	touch $@
 
 .PHONY:  basic_agent
