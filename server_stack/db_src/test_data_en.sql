@@ -1089,7 +1089,10 @@ VALUES (1,  'Thomas Pedersen',           1001, 'tp@bitstack.dk'),
        (16, 'Testagent 1106',            1106, 'noreply@bitstack.dk'),
        (17, 'Testagent 1107',            1107, 'noreply@bitstack.dk'),
        (18, 'Testagent 1108',            1108, 'noreply@bitstack.dk'),
-       (19, 'Testagent 1109',            1109, 'noreply@bitstack.dk');
+       (19, 'Testagent 1109',            1109, 'noreply@bitstack.dk'),
+       (20, 'Testagent 1110',            1110, 'noreply@bitstack.dk'),
+       (21, 'Testagent 1111',            1111, 'noreply@bitstack.dk');
+
 
 INSERT INTO groups (id, name)
 VALUES (1, 'Receptionist'),
