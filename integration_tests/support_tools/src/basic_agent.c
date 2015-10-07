@@ -42,6 +42,9 @@ bool            autoanswer[16];
 pjsua_call_id   current_call              = PJSUA_INVALID_ID;
 pjsip_inv_state previous_invitation_state = PJSIP_INV_STATE_NULL;
 
+pjsua_conf_port_id rec_conf_port_id = -1;
+pjsua_conf_port_id player_conf_port_id = -1;
+
 static char *or_event_table[] = {
   [OR_READY]            = "!READY",
   [OR_CALL_INCOMING]    = "CALL_INCOMING",
@@ -244,9 +247,10 @@ static void on_call_media_state(pjsua_call_id call_id) {
   or_event_call_media_state (call_id, ci.media_status);
 
   if (ci.media_status == PJSUA_CALL_MEDIA_ACTIVE) {
-    // When media is active, connect call to sound device.
-    pjsua_conf_connect(ci.conf_slot, 0);
-    pjsua_conf_connect(0, ci.conf_slot);
+    if (rec_conf_port_id != -1) {
+      pjsua_conf_connect(ci.conf_slot, rec_conf_port_id);
+    }
+    pjsua_conf_connect(player_conf_port_id, ci.conf_slot);
   }
 
 }
@@ -339,6 +343,37 @@ void unregister_account(pjsua_acc_id acc_id) {
    or_status (OR_OK, "Unregistered account ");
 }
 
+/**
+ * Setup playback.
+ */
+void setup_playback() {
+  pj_status_t status;
+  pjsua_player_id pl_id;
+  pj_str_t file = pj_str("pjsua-input.wav");
+
+  status =  pjsua_player_create (&file, 0, &pl_id);
+  if (status != PJ_SUCCESS) error_exit("Error starting player", status);
+
+  player_conf_port_id = pjsua_player_get_conf_port (pl_id);
+  fprintf(stdout, "Created player. File: %.*s\n", (int)file.slen, file.ptr);
+}
+
+/**
+ * Setup recording.
+ */
+void setup_recording() {
+  pj_status_t status;
+  pjsua_recorder_id rec_id;
+  pj_str_t file = pj_str("pjsua-output.wav");
+
+  status = pjsua_recorder_create (&file, 0, NULL, 0, 0, &rec_id);
+  if (status != PJ_SUCCESS) error_exit("Error starting recorder", status);
+
+  rec_conf_port_id = pjsua_recorder_get_conf_port (rec_id);
+  fprintf(stdout, "Created recorder. File: %.*s\n", (int)file.slen, file.ptr);
+}
+
+
 /*
  * main()
  *
@@ -403,6 +438,10 @@ int main(int argc, char *argv[]) {
   status = pjsua_start();
   if (status != PJ_SUCCESS) error_exit("Error starting pjsua", status);
 
+  //setup_recording();
+  setup_playback();
+
+
   /* Register to SIP server by creating SIP account. */
   {
     char reg_uri_buf[80] = "sip:";
@@ -443,6 +482,7 @@ int main(int argc, char *argv[]) {
 
   /* Start by muting the audio device. This a passive agent, and sound
      is just wasted CPU time and uwanted side effects. */
+  pjsua_set_no_snd_dev();
   pjsua_set_null_snd_dev();
   fflush(stdout);
   
