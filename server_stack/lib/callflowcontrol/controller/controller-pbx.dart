@@ -353,6 +353,12 @@ abstract class PBX {
 
 
   /**
+   *
+   */
+  static Future pickupCall (String agentChannel, String uuid) =>
+      api('uuid_transfer $agentChannel pickup-call-$uuid $_dialplan');
+
+  /**
    * Bridges two active calls.
    */
   static Future bridgeChannel (String uuid, ORModel.Call destination) async {
