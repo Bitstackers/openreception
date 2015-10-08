@@ -25,6 +25,7 @@ import 'package:openreception_framework/storage.dart' as ORStorage;
 import '../controller.dart' as Controller;
 import '../router.dart';
 
+part 'model-active_recording.dart';
 part 'model-call_list.dart';
 part 'model-channel_list.dart';
 part 'model-peer.dart';
