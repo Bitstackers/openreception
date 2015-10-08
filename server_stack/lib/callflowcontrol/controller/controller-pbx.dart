@@ -374,10 +374,10 @@ abstract class PBX {
       throw new PBXException(msg);
     }
 
-    final bridgeUuid = 'uuid_bridge ${destination.channel} ${uuid}';
+    final bridgeUuid = 'uuid_transfer $uuid pickup-call-${destination.channel} $_dialplan';
     ESL.Response response = await _runAndCheck (bridgeUuid);
 
-    await api ('uuid_break ${destination.channel}');
+    //await api ('uuid_break ${destination.channel}');
 
     return response;
  }
