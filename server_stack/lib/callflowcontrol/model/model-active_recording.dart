@@ -9,6 +9,9 @@ class ActiveRecordings extends IterableBase {
 
   Map _recordings = {};
 
+  Iterator<Map> get iterator => _recordings.keys.map
+      ((String key) => {key : _recordings[key]}).iterator;
+
   /**
    * Handle an incoming [ESL.Event] packet
    */
