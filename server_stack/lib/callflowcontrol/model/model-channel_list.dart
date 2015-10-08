@@ -81,6 +81,8 @@ abstract class PBXEvent {
   static const String CHANNEL_CREATE = 'CHANNEL_CREATE';
   static const String CHANNEL_DESTROY = 'CHANNEL_DESTROY';
   static const String CHANNEL_ORIGINATE = 'CHANNEL_ORIGINATE';
+  static const String RECORD_START = 'RECORD_START';
+  static const String RECORD_STOP = 'RECORD_STOP';
 
   static const String SOFIA_REGISTER = 'sofia::register';
   static const String SOFIA_UNREGISTER = 'sofia::unregister';
@@ -95,7 +97,8 @@ abstract class PBXEvent {
   static const List<String> requiredSubscriptions = const
       [CHANNEL_BRIDGE, CHANNEL_CREATE, CHANNEL_DESTROY, CHANNEL_STATE,
         CHANNEL_ORIGINATE, CHANNEL_ANSWER, CUSTOM, SOFIA_REGISTER,
-        SOFIA_UNREGISTER, _OR_PARKING_LOT_ENTER, _OR_PARKING_LOT_LEAVE,
+        SOFIA_UNREGISTER, RECORD_START, RECORD_STOP,
+        _OR_PARKING_LOT_ENTER, _OR_PARKING_LOT_LEAVE,
         _OR_PRE_QUEUE_ENTER, _OR_PRE_QUEUE_LEAVE, _OR_WAIT_QUEUE_ENTER];
 }
 

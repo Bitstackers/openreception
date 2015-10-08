@@ -72,6 +72,10 @@ void connectESLClient() {
     .listen(Model.ChannelList.instance.handleEvent)
     .onDone(connectESLClient); // Reconnect
 
+  Controller.PBX.eventClient.eventStream
+    .listen(Model.ActiveRecordings.instance.handleEvent);
+
+
   Model.PeerList.subscribe(Controller.PBX.eventClient.eventStream);
 
   /// Connect API client.
