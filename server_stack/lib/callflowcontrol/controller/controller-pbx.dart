@@ -265,6 +265,19 @@ abstract class PBX {
    *
    * By first dialing the agent and then the recordingsmenu.
    */
+  static Future recordChannel (String uuid, String filename) {
+
+    final String command = 'uuid_record $uuid start $filename';
+    return _runAndCheck(command)
+        .then((ESL.Response response) => filename);
+  }
+
+
+  /**
+   * Starts an origination in the PBX.
+   *
+   * By first dialing the agent and then the recordingsmenu.
+   */
   static Future originateRecording (int receptionID, String recordExtension, String soundFilePath, ORModel.User user) {
     List<String> variables = ['reception_id=${receptionID}',
                               'owner=${user.ID}',
