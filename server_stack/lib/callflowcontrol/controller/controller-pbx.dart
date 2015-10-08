@@ -72,9 +72,9 @@ abstract class PBX {
   }
 
   static Future<ESL.Reply> bgapi (String command) {
-    return apiClient.bgapi(command).then((ESL.Reply response) {
-      log.finest('bgapi $command => ${response.content}');
-      return response;
+    return apiClient.bgapi(command).then((ESL.Reply reply) {
+      log.finest('bgapi $command => ${reply.content}');
+      return reply;
     });
   }
   /**
