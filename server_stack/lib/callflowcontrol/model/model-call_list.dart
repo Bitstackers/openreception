@@ -187,19 +187,32 @@ class CallList extends IterableBase<ORModel.Call> {
     }
 
     else if (isCall(uuid)) {
+      ORModel.Call call = CallList.instance.get(uuid.UUID);
       log.finest('Channel ${uuid.UUID} is a call');
-      CallList.instance.get(uuid.UUID)
-        ..callerID = packet.field('Caller-Caller-ID-Number')
-        ..b_Leg = otherLeg.UUID;
-      CallList.instance.get(uuid.UUID).changeState (ORModel.CallState.Speaking);
+
+      call..callerID = packet.field('Caller-Caller-ID-Number')
+          ..b_Leg = otherLeg.UUID
+          ..changeState (ORModel.CallState.Speaking);
+
+//      final filename = '${call.ID}-uid-${call.assignedTo}-rid'
+//      '-${call.receptionID}-${call.inbound ? 'ib-${call.callerID}'
+//                                           : 'ob-${call.destination}'}';
+//
+//      Controller.PBX.recordChannel(call.channel, filename);
     }
 
     else if (isCall(otherLeg)) {
+      ORModel.Call call = CallList.instance.get(otherLeg.UUID);
       log.finest('Channel ${otherLeg.UUID} is a call');
-      CallList.instance.get(otherLeg.UUID)
-        ..callerID = packet.field('Caller-Caller-ID-Number')
-        ..b_Leg = uuid.UUID;
-      CallList.instance.get(otherLeg.UUID).changeState (ORModel.CallState.Speaking);
+       call..callerID = packet.field('Caller-Caller-ID-Number')
+           ..b_Leg = uuid.UUID
+           ..changeState (ORModel.CallState.Speaking);
+
+//       final filename = '${call.ID}-uid-${call.assignedTo}-rid'
+//       '-${call.receptionID}-ob-${call.inbound ? call.callerID
+//                                               : call.destination}';
+//
+//       Controller.PBX.recordChannel(call.channel, filename);
     }
 
     // Local calls??
