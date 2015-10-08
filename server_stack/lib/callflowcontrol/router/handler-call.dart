@@ -285,9 +285,9 @@ abstract class Call {
     }
 
     /// Create an agent channel;
-    String uuid;
+    String agentChannel;
     try {
-      uuid = await Controller.PBX.createAgentChannel(user);
+      agentChannel = await Controller.PBX.createAgentChannel(user);
     }
     on Controller.CallRejected {
       _userStateUnknown(user);
@@ -312,7 +312,7 @@ abstract class Call {
     /// Create a subscription that listens for the next outbound call.
     bool outboundCallWithUuid (ESL.Event event) =>
         event.eventName == 'CHANNEL_ORIGINATE' &&
-        event.channel.fields['Other-Leg-Unique-ID'] == uuid;
+        event.channel.fields['Other-Leg-Unique-ID'] == agentChannel;
 
     Future<ORModel.Call> outboundCall =
         Controller.PBX.eventClient.eventStream.firstWhere
@@ -325,7 +325,7 @@ abstract class Call {
     /// channel to the outbound extension.
     ORModel.Call call;
     try {
-      await Controller.PBX.transferUUIDToExtension(uuid, extension, user);
+      await Controller.PBX.transferUUIDToExtension(agentChannel, extension, user);
       call = await outboundCall.timeout(new Duration (seconds : 1));
     }
     catch (error, stackTrace) {
@@ -341,7 +341,7 @@ abstract class Call {
     call..assignedTo = user.ID
         ..receptionID = receptionID
         ..contactID = contactID
-        ..b_Leg = uuid;
+        ..b_Leg = agentChannel;
 
     /// Update call and user state information.
     call.changeState(ORModel.CallState.Ringing);
