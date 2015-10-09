@@ -22,6 +22,7 @@ class MessageCompose extends ViewWidget {
   final Controller.Endpoint _endpointController;
   final Map<String, String> _langMap;
   final Logger _log = new Logger('$libraryName.MessageCompose');
+  final Model.UIMessageArchive _uiMessageArchive;
   final Controller.Message _messageController;
   final Controller.Destination _myDestination;
   final Popup _popup;
@@ -33,6 +34,7 @@ class MessageCompose extends ViewWidget {
    */
   MessageCompose(
       Model.UIMessageCompose this._uiModel,
+      Model.UIMessageArchive this._uiMessageArchive,
       Model.AppClientState this._appState,
       Controller.Destination this._myDestination,
       Model.UIContactSelector this._contactSelector,
@@ -90,6 +92,19 @@ class MessageCompose extends ViewWidget {
 
     _ui.onSave.listen(_save);
     _ui.onSend.listen(_send);
+
+    _uiMessageArchive.onMessageCopy.listen((ORModel.Message msg) {
+      /**
+       * Hack alert!
+       * For some odd reason we're forced to wrap the _activateMe() call in a Future, else the
+       * HTML textarea will not focus. I've no idea why.
+       */
+      new Future(() {
+        _activateMe(null);
+
+        _ui.message = msg;
+      });
+    });
   }
 
   /**
@@ -159,7 +174,7 @@ class MessageCompose extends ViewWidget {
         _popup.success(
             _langMap[Key.messageSendSuccessTitle], 'ID ${savedMessage.ID}');
       }).catchError((error) {
-        _log.shout('$error Could not enqueue ${savedMessage.asMap} $error');
+        _log.shout('Could not enqueue ${savedMessage.asMap} $error');
         _popup.error(
             _langMap[Key.messageSendErrorTitle], 'ID ${savedMessage.ID}');
       });

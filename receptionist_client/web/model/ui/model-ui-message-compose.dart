@@ -116,14 +116,34 @@ class UIMessageCompose extends UIModel {
   }
 
   /**
-   * Return the click event stream for the save button.
+   * Populate widget fields with [message].
    */
-  Stream<MouseEvent> get onSave => _saveButton.onClick;
+  void set message(ORModel.Message message) {
+    _callerNameInput.value = message.callerInfo.name;
+    _companyNameInput.value = message.callerInfo.company;
+    _landlineInput.value = message.callerInfo.phone;
+    _cellphoneInput.value = message.callerInfo.cellPhone;
+    _extensionInput.value = message.callerInfo.localExtension;
+    _messageTextarea.value = message.body;
+    _haveCalledInput.checked = message.flag.called;
+    _pleaseCallInput.checked = message.flag.pleaseCall;
+    _callsBackInput.checked = message.flag.willCallBack;
+    _urgentInput.checked = message.flag.urgent;
+
+    _toggleButtons();
+  }
 
   /**
-   * Return the click event stream for the send button.
+   * Set the message prerequisites for the current contact.
    */
-  Stream<MouseEvent> get onSend => _sendButton.onClick;
+  void set messagePrerequisites(List<String> prerequisites) {
+    if (prerequisites != null && prerequisites.isNotEmpty) {
+      _prerequisites.style.display = '';
+      _prerequisites.text = prerequisites.join(", ");
+    } else {
+      _prerequisites.style.display = 'none';
+    }
+  }
 
   /**
    * Observers.
@@ -146,16 +166,14 @@ class UIMessageCompose extends UIModel {
   }
 
   /**
-   * Set the message prerequisites for the current contact.
+   * Return the click event stream for the save button.
    */
-  void set messagePrerequisites(List<String> prerequisites) {
-    if (prerequisites != null && prerequisites.isNotEmpty) {
-      _prerequisites.style.display = '';
-      _prerequisites.text = prerequisites.join(", ");
-    } else {
-      _prerequisites.style.display = 'none';
-    }
-  }
+  Stream<MouseEvent> get onSave => _saveButton.onClick;
+
+  /**
+   * Return the click event stream for the send button.
+   */
+  Stream<MouseEvent> get onSend => _sendButton.onClick;
 
   /**
    * Return the Set of [ORModel.MessageRecipient]. May return the empty set.
@@ -210,7 +228,7 @@ class UIMessageCompose extends UIModel {
 
     _recipientsList.children = list;
 
-    _toggleButtons(null);
+    _toggleButtons();
   }
 
   /**
@@ -237,7 +255,7 @@ class UIMessageCompose extends UIModel {
     _myFirstTabElement = _callerNameInput;
     _myLastTabElement = _urgentInput;
 
-    _toggleButtons(null);
+    _toggleButtons();
 
     if (pristine) {
       _recipientsList.dataset['recipients-list'] = '';
@@ -265,7 +283,7 @@ class UIMessageCompose extends UIModel {
    * Enable/disable the widget buttons and as a sideeffect set the value of
    * [_myLastTabElement] as this depends on the state of the buttons.
    */
-  void _toggleButtons(_) {
+  void _toggleButtons([_]) {
     final bool toggle = !(_callerNameInput.value.trim().isNotEmpty &&
         _messageTextarea.value.trim().isNotEmpty);
 

@@ -631,12 +631,22 @@
               cursor: pointer;
             }
 
-            #message-archive table tbody td button {
-              margin-left: 0.5em;
+            #message-archive table tbody td span {
+              margin: 0.25em;
             }
 
-            #message-archive table tbody td.button-cell {
-              width: 250px;
+            #message-archive table tbody td.actions {
+              padding: 0;
+            }
+
+            #message-archive table tbody td.actions span {
+              color: #2020ff;
+              text-decoration: underline;
+              cursor: pointer;
+            }
+
+            #message-archive table tbody td.actions span:hover {
+              color: #a5b9db;
             }
 
             #message-archive .td-center {
@@ -657,6 +667,8 @@
                 <thead>
                   <tr>
                     <td data-lang-text="date">::date::</td>
+                    <td data-lang-text="message-archive-contact">::message archive contact::</td>
+                    <td data-lang-text="reception">::reception::</td>
                     <td data-lang-text="agent">::agent::</td>
                     <td data-lang-text="name">::name::</td>
                     <td data-lang-text="company">::company::</td>
@@ -674,6 +686,8 @@
                 <thead>
                   <tr>
                     <td data-lang-text="date">::date::</td>
+                    <td data-lang-text="message-archive-contact">::message archive contact::</td>
+                    <td data-lang-text="reception">::reception::</td>
                     <td data-lang-text="agent">::agent::</td>
                     <td data-lang-text="name">::name::</td>
                     <td data-lang-text="company">::company::</td>

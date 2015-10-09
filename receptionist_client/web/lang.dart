@@ -86,7 +86,10 @@ abstract class Key {
   static const String globalCallQueueHeader           = 'global-call-queue-header';
 
   static const String message                         = 'message';
+  static const String messageArchiveContact           = 'message-archive-contact';
   static const String messageArchiveHeader            = 'message-archive-header';
+  static const String messageCloseErrorTitle          = 'message-close-error';
+  static const String messageCloseSuccessTitle        = 'message-close-success';
   static const String messageComposeCallerName        = 'message-compose-caller-name';
   static const String messageComposeCallsBack         = 'message-compose-calls-back';
   static const String messageComposeCellPhone         = 'message-compose-cell-phone';
@@ -100,6 +103,8 @@ abstract class Key {
   static const String messageComposePhone             = 'message-compose-phone';
   static const String messageComposeShowRecipients    = 'message-compose-show-recipients';
   static const String messageComposeUrgent            = 'message-compose-urgent';
+  static const String messageDeleteErrorTitle         = 'message-delete-error';
+  static const String messageDeleteSuccessTitle       = 'message-delete-success';
   static const String messageSaveErrorTitle           = 'message-save-error';
   static const String messageSendErrorTitle           = 'message-send-error';
   static const String messageSaveSuccessTitle         = 'message-save-success';
@@ -111,6 +116,7 @@ abstract class Key {
   static const String paused                          = 'paused';
   static const String phone                           = 'phone';
 
+  static const String reception                       = 'reception';
   static const String receptionAddressesHeader        = 'reception-addresses-header';
   static const String receptionAltNamesHeader         = 'reception-alt-names-header';
   static const String receptionBankInfoHeader         = 'reception-bank-info-header';
@@ -213,7 +219,10 @@ Map<String, String> da =
    Key.globalCallQueueHeader          : 'Kø',
 
    Key.message                        : 'Besked',
+   Key.messageArchiveContact          : 'Modtager',
    Key.messageArchiveHeader           : 'Besked arkiv',
+   Key.messageCloseErrorTitle         : 'Beskeden blev ikke lukket',
+   Key.messageCloseSuccessTitle       : 'Beskeden blev lukket',
    Key.messageComposeCallerName       : 'Fuldt navn',
    Key.messageComposeCallsBack        : 'Ringer selv tilbage',
    Key.messageComposeCellPhone        : 'Mobilnummer',
@@ -227,6 +236,8 @@ Map<String, String> da =
    Key.messageComposePhone            : 'Telefon',
    Key.messageComposeShowRecipients   : 'Vis modtagere',
    Key.messageComposeUrgent           : 'Haster',
+   Key.messageDeleteErrorTitle        : 'Beskeden blev ikke slettet',
+   Key.messageDeleteSuccessTitle      : 'Beskeden blev slettet',
    Key.messageSaveErrorTitle          : 'Beskeden blev ikke gemt',
    Key.messageSendErrorTitle          : 'Beskeden blev ikke sendt',
    Key.messageSaveSuccessTitle        : 'Beskeden blev gemt',
@@ -238,6 +249,7 @@ Map<String, String> da =
    Key.paused                         : 'Pause',
    Key.phone                          : 'Telefon',
 
+   Key.reception                      : 'Reception',
    Key.receptionAddressesHeader       : 'Adresser',
    Key.receptionAltNamesHeader        : 'Alternative navne',
    Key.receptionBankInfoHeader        : 'Bank',
@@ -339,7 +351,10 @@ Map<String, String> en =
    Key.globalCallQueueHeader          : 'Queue',
 
    Key.message                        : 'Message',
+   Key.messageArchiveContact          : 'Recipient',
    Key.messageArchiveHeader           : 'Message archive',
+   Key.messageCloseErrorTitle         : 'Message not closed',
+   Key.messageCloseSuccessTitle       : 'Message closed',
    Key.messageComposeCallerName       : 'Full name',
    Key.messageComposeCallsBack        : 'Will call back later',
    Key.messageComposeCellPhone        : 'Cell phone',
@@ -353,6 +368,8 @@ Map<String, String> en =
    Key.messageComposePhone            : 'Phone',
    Key.messageComposeShowRecipients   : 'Show recipients',
    Key.messageComposeUrgent           : 'Urgent',
+   Key.messageDeleteErrorTitle        : 'Message not deleted',
+   Key.messageDeleteSuccessTitle      : 'Message deleted',
    Key.messageSaveErrorTitle          : 'Message not saved',
    Key.messageSendErrorTitle          : 'Message not sent',
    Key.messageSaveSuccessTitle        : 'Message saved',
@@ -364,6 +381,7 @@ Map<String, String> en =
    Key.paused                         : 'Paused',
    Key.phone                          : 'Phone',
 
+   Key.reception                      : 'Reception',
    Key.receptionAddressesHeader       : 'Addresses',
    Key.receptionAltNamesHeader        : 'Alternative names',
    Key.receptionBankInfoHeader        : 'Bank',

@@ -30,8 +30,7 @@ class UIMessageArchive extends UIModel {
   /**
    * Constructor.
    */
-  UIMessageArchive(
-      DivElement this._myRoot, ORUtil.WeekDays this._weekDays, this._langMap) {
+  UIMessageArchive(DivElement this._myRoot, ORUtil.WeekDays this._weekDays, this._langMap) {
     _setupLocalKeys();
     _observers();
   }
@@ -43,8 +42,7 @@ class UIMessageArchive extends UIModel {
 
   DivElement get _body => _root.querySelector('.generic-widget-body');
   String get header => _root.querySelector('h4 span.extra-header').text;
-  TableSectionElement get _savedTbody =>
-      _root.querySelector('table tbody.saved-messages-tbody');
+  TableSectionElement get _savedTbody => _root.querySelector('table tbody.saved-messages-tbody');
   TableSectionElement get _notSavedTbody =>
       _root.querySelector('table tbody.not-saved-messages-tbody');
   DivElement get _tableContainer => _body.querySelector('div');
@@ -53,28 +51,48 @@ class UIMessageArchive extends UIModel {
    * Construct the button (send, delete, copy) <td> cell.
    */
   TableCellElement _buildButtonCell(ORModel.Message msg) {
-    final List<ButtonElement> buttons = new List<ButtonElement>();
+    final List<SpanElement> buttons = new List<SpanElement>();
 
-    buttons.add(new ButtonElement()
-      ..text = _langMap['copy']
+    buttons.add(new SpanElement()
+      ..text = _langMap['copy'].toLowerCase()
       ..onClick.listen((_) => _messageCopyBus.fire(msg)));
 
     if (!msg.closed) {
       buttons.addAll([
-        new ButtonElement()
-          ..text = _langMap['send']
+        new SpanElement()
+          ..text = _langMap['send'].toLowerCase()
           ..onClick.listen((_) => _messageSendBus.fire(msg)),
-        new ButtonElement()
-          ..text = _langMap['delete']
+        new SpanElement()
+          ..text = _langMap['delete'].toLowerCase()
           ..onClick.listen((_) => _messageDeleteBus.fire(msg)),
-        new ButtonElement()
-          ..text = _langMap['close']
+        new SpanElement()
+          ..text = _langMap['close'].toLowerCase()
           ..onClick.listen((_) => _messageCloseBus.fire(msg))
       ]);
     }
 
+//    final List<ButtonElement> buttons = new List<ButtonElement>();
+//
+//    buttons.add(new ButtonElement()
+//      ..text = _langMap['copy']
+//      ..onClick.listen((_) => _messageCopyBus.fire(msg)));
+//
+//    if (!msg.closed) {
+//      buttons.addAll([
+//        new ButtonElement()
+//          ..text = _langMap['send']
+//          ..onClick.listen((_) => _messageSendBus.fire(msg)),
+//        new ButtonElement()
+//          ..text = _langMap['delete']
+//          ..onClick.listen((_) => _messageDeleteBus.fire(msg)),
+//        new ButtonElement()
+//          ..text = _langMap['close']
+//          ..onClick.listen((_) => _messageCloseBus.fire(msg))
+//      ]);
+//    }
+
     return new TableCellElement()
-      ..classes.addAll(['td-center', 'button-cell'])
+      ..classes.addAll(['td-center', 'actions'])
       ..children.addAll(buttons);
   }
 
@@ -87,9 +105,7 @@ class UIMessageArchive extends UIModel {
       ..appendHtml(msg.body.replaceAll("\n", '<br>'));
     div.onClick.listen((_) => div.classes.toggle('slim'));
 
-    return new TableCellElement()
-      ..classes.add('message-cell')
-      ..children.add(div);
+    return new TableCellElement()..classes.add('message-cell')..children.add(div);
   }
 
   /**
@@ -101,10 +117,10 @@ class UIMessageArchive extends UIModel {
       ..dataset['contact-string'] = msg.context.contactString;
 
     row.children.addAll([
-      new TableCellElement()
-        ..text = ORUtil.humanReadableTimestamp(msg.createdAt, _weekDays),
-      new TableCellElement()
-        ..text = _users[msg.senderId] ?? msg.senderId.toString(),
+      new TableCellElement()..text = ORUtil.humanReadableTimestamp(msg.createdAt, _weekDays),
+      new TableCellElement()..text = msg.context.contactName,
+      new TableCellElement()..text = msg.context.receptionName,
+      new TableCellElement()..text = _users[msg.senderId] ?? msg.senderId.toString(),
       new TableCellElement()..text = msg.callerInfo.name,
       new TableCellElement()..text = msg.callerInfo.company,
       new TableCellElement()..text = msg.callerInfo.phone,
@@ -140,6 +156,10 @@ class UIMessageArchive extends UIModel {
    * Return the String status of [msg].
    */
   String _getStatus(ORModel.Message msg) {
+    if (msg.flag.manuallyClosed) {
+      return 'CLOSED';
+    }
+
     if (msg.sent) {
       return 'SENT';
     }
@@ -177,12 +197,10 @@ class UIMessageArchive extends UIModel {
     _root.onClick.listen((_) => _tableContainer.focus());
 
     _tableContainer.onScroll.listen((Event event) {
-      if (_tableContainer.getBoundingClientRect().height +
-              _tableContainer.scrollTop >=
+      if (_tableContainer.getBoundingClientRect().height + _tableContainer.scrollTop >=
           _tableContainer.scrollHeight) {
         if (_notSavedTbody.children.isNotEmpty) {
-          _scrollBus.fire(
-              int.parse(_notSavedTbody.children.last.dataset['message-id']));
+          _scrollBus.fire(int.parse(_notSavedTbody.children.last.dataset['message-id']));
         }
       }
     });

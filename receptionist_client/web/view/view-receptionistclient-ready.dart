@@ -134,11 +134,12 @@ class ReceptionistclientReady {
                             _langMap[Key.dayFriday],
                             _langMap[Key.daySaturday],
                             _langMap[Key.daySunday]);
-    Model.UIContactCalendar   uiContactCalendar   = new Model.UIContactCalendar(querySelector('#contact-calendar'), _weekDays);
-    Model.UIContactSelector   uiContactSelector   = new Model.UIContactSelector(querySelector('#contact-selector'));
-    Model.UIMessageCompose    uiMessageCompose    = new Model.UIMessageCompose(querySelector('#message-compose'));
-    Model.UIReceptionCalendar uiReceptionCalendar = new Model.UIReceptionCalendar(querySelector('#reception-calendar'), _weekDays);
-    Model.UIReceptionSelector uiReceptionSelector = new Model.UIReceptionSelector(querySelector('#reception-selector'));
+    Model.UIContactCalendar   _uiContactCalendar   = new Model.UIContactCalendar(querySelector('#contact-calendar'), _weekDays);
+    Model.UIContactSelector   _uiContactSelector   = new Model.UIContactSelector(querySelector('#contact-selector'));
+    Model.UIMessageArchive    _uiMessageArchive    = new Model.UIMessageArchive(querySelector('#message-archive'), _weekDays, _langMap);
+    Model.UIMessageCompose    _uiMessageCompose    = new Model.UIMessageCompose(querySelector('#message-compose'));
+    Model.UIReceptionCalendar _uiReceptionCalendar = new Model.UIReceptionCalendar(querySelector('#reception-calendar'), _weekDays);
+    Model.UIReceptionSelector _uiReceptionSelector = new Model.UIReceptionSelector(querySelector('#reception-selector'));
 
     _contexts = new Contexts(new Model.UIContexts());
     _help     = new Hint(new Model.UIHint());
@@ -150,10 +151,10 @@ class ReceptionistclientReady {
          _notification);
 
     _contactCalendar = new ContactCalendar
-        (uiContactCalendar,
+        (_uiContactCalendar,
          new Controller.Destination(Controller.Context.Home, Controller.Widget.ContactCalendar),
-         uiContactSelector,
-         uiReceptionSelector,
+         _uiContactSelector,
+         _uiReceptionSelector,
          _contactController,
          _calendarController,
          _notification);
@@ -161,25 +162,25 @@ class ReceptionistclientReady {
     _contactData = new ContactData
         (new Model.UIContactData(querySelector('#contact-data')),
          new Controller.Destination(Controller.Context.Home, Controller.Widget.ContactData),
-         uiContactSelector,
-         uiReceptionSelector,
+         _uiContactSelector,
+         _uiReceptionSelector,
          _callController);
 
     _calendarEditor = new CalendarEditor
         (new Model.UICalendarEditor(querySelector('#calendar-editor'), _weekDays),
          new Controller.Destination(Controller.Context.CalendarEdit, Controller.Widget.CalendarEditor),
-         uiContactCalendar,
-         uiContactSelector,
-         uiReceptionCalendar,
-         uiReceptionSelector,
+         _uiContactCalendar,
+         _uiContactSelector,
+         _uiReceptionCalendar,
+         _uiReceptionSelector,
          _calendarController,
          _popup,
          _langMap);
 
     _contactSelector = new ContactSelector
-        (uiContactSelector,
+        (_uiContactSelector,
          new Controller.Destination(Controller.Context.Home, Controller.Widget.ContactSelector),
-         uiReceptionSelector,
+         _uiReceptionSelector,
          _contactController);
 
     _globalCallQueue = new GlobalCallQueue
@@ -190,20 +191,23 @@ class ReceptionistclientReady {
         _callController);
 
     _messageArchive = new MessageArchive
-        (new Model.UIMessageArchive(querySelector('#message-archive'), _weekDays, _langMap),
+        (_uiMessageArchive,
          new Controller.Destination(Controller.Context.Messages, Controller.Widget.MessageArchive),
          _messageController,
          _userController,
-         uiContactSelector,
-         uiReceptionSelector,
-         uiMessageCompose);
+         _uiContactSelector,
+         _uiReceptionSelector,
+         _uiMessageCompose,
+         _popup,
+         _langMap);
 
     _messageCompose = new MessageCompose
-        (uiMessageCompose,
+        (_uiMessageCompose,
+         _uiMessageArchive,
          _appState,
          new Controller.Destination(Controller.Context.Home, Controller.Widget.MessageCompose),
-         uiContactSelector,
-         uiReceptionSelector,
+         _uiContactSelector,
+         _uiReceptionSelector,
          _messageController,
          _endpointController,
          _popup,
@@ -219,57 +223,57 @@ class ReceptionistclientReady {
     _receptionAddresses = new ReceptionAddresses
         (new Model.UIReceptionAddresses(querySelector('#reception-addresses')),
          new Controller.Destination(Controller.Context.Homeplus, Controller.Widget.ReceptionAddresses),
-         uiReceptionSelector);
+         _uiReceptionSelector);
 
     _receptionAltNames = new ReceptionAltNames
         (new Model.UIReceptionAltNames(querySelector('#reception-alt-names')),
          new Controller.Destination(Controller.Context.Homeplus, Controller.Widget.ReceptionAltNames),
-         uiReceptionSelector);
+         _uiReceptionSelector);
 
     _receptionBankInfo = new ReceptionBankInfo
         (new Model.UIReceptionBankInfo(querySelector('#reception-bank-info')),
          new Controller.Destination(Controller.Context.Homeplus, Controller.Widget.ReceptionBankInfo),
-         uiReceptionSelector);
+         _uiReceptionSelector);
 
     _receptionCalendar = new ReceptionCalendar
-        (uiReceptionCalendar,
+        (_uiReceptionCalendar,
          new Controller.Destination(Controller.Context.Home, Controller.Widget.ReceptionCalendar),
-         uiReceptionSelector,
+         _uiReceptionSelector,
          _calendarController,
          _notification);
 
     _receptionCommands = new ReceptionCommands
         (new Model.UIReceptionCommands(querySelector('#reception-commands')),
          new Controller.Destination(Controller.Context.Home, Controller.Widget.ReceptionCommands),
-         uiReceptionSelector);
+         _uiReceptionSelector);
 
     _receptionEmail = new ReceptionEmail
         (new Model.UIReceptionEmail(querySelector('#reception-email')),
          new Controller.Destination(Controller.Context.Homeplus, Controller.Widget.ReceptionEmail),
-         uiReceptionSelector);
+         _uiReceptionSelector);
 
     _receptionMiniWiki = new ReceptionMiniWiki
         (new Model.UIReceptionMiniWiki(querySelector('#reception-mini-wiki')),
          new Controller.Destination(Controller.Context.Homeplus, Controller.Widget.ReceptionMiniWiki),
-         uiReceptionSelector);
+         _uiReceptionSelector);
 
     _receptionOpeningHours = new ReceptionOpeningHours
         (new Model.UIReceptionOpeningHours(querySelector('#reception-opening-hours')),
          new Controller.Destination(Controller.Context.Home, Controller.Widget.ReceptionOpeningHours),
-         uiReceptionSelector);
+         _uiReceptionSelector);
 
     _receptionProduct = new ReceptionProduct
         (new Model.UIReceptionProduct(querySelector('#reception-product')),
          new Controller.Destination(Controller.Context.Home, Controller.Widget.ReceptionProduct),
-         uiReceptionSelector);
+         _uiReceptionSelector);
 
     _receptionSalesmen = new ReceptionSalesmen
         (new Model.UIReceptionSalesmen(querySelector('#reception-salesmen')),
          new Controller.Destination(Controller.Context.Home, Controller.Widget.ReceptionSalesmen),
-         uiReceptionSelector);
+         _uiReceptionSelector);
 
     _receptionSelector = new ReceptionSelector
-        (uiReceptionSelector,
+        (_uiReceptionSelector,
          _appState,
          new Controller.Destination(Controller.Context.Home, Controller.Widget.ReceptionSelector),
          _sortedReceptions,
@@ -279,27 +283,27 @@ class ReceptionistclientReady {
     _receptionTelephoneNumbers = new ReceptionTelephoneNumbers
         (new Model.UIReceptionTelephoneNumbers(querySelector('#reception-telephone-numbers')),
          new Controller.Destination(Controller.Context.Homeplus, Controller.Widget.ReceptionTelephoneNumbers),
-         uiReceptionSelector);
+         _uiReceptionSelector);
 
     _receptionType = new ReceptionType
         (new Model.UIReceptionType(querySelector('#reception-type')),
          new Controller.Destination(Controller.Context.Homeplus, Controller.Widget.ReceptionType),
-         uiReceptionSelector);
+         _uiReceptionSelector);
 
     _receptionVATNumbers = new ReceptionVATNumbers
         (new Model.UIReceptionVATNumbers(querySelector('#reception-vat-numbers')),
          new Controller.Destination(Controller.Context.Homeplus, Controller.Widget.ReceptionVATNumbers),
-         uiReceptionSelector);
+         _uiReceptionSelector);
 
     _receptionWebsites = new ReceptionWebsites
         (new Model.UIReceptionWebsites(querySelector('#reception-websites')),
          new Controller.Destination(Controller.Context.Homeplus, Controller.Widget.ReceptionWebsites),
-         uiReceptionSelector);
+         _uiReceptionSelector);
 
     _welcomeMessage = new WelcomeMessage
         (new Model.UIWelcomeMessage(querySelector('#welcome-message')),
          _appState,
-         uiReceptionSelector,
+         _uiReceptionSelector,
          _langMap);
 
     _ui.visible = true;

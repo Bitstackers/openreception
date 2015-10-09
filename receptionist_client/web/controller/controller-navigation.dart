@@ -135,7 +135,6 @@ class Navigate {
     if(pushState) {
       window.history.pushState(null, '${destination}', '#${destination}');
     }
-
     _bus.fire(destination);
   }
 
