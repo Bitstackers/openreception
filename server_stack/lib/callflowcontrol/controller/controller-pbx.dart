@@ -41,7 +41,7 @@ class CallRejected extends PBXException {
 abstract class PBX {
 
   static final Logger _log             = new Logger('${libraryName}.PBX');
-  static const String _callerID        = '39990141';
+  static const String callerID        = '39990141';
   static const int    _timeOutSeconds  = 20;
   static const int    _agentChantimeOut= 20;
   static const String _dialplan        = 'xml receptions';
@@ -95,7 +95,7 @@ abstract class PBX {
     return api
         ('originate {${a_legvariables.join(',')}}user/${user.peer} '
          '&bridge([${b_legvariables.join(',')}]sofia/external/${extension}) '
-         '${_dialplan} $_callerID $_callerID $_timeOutSeconds')
+         '${_dialplan} $callerID $callerID $_timeOutSeconds')
         .then((ESL.Response response) {
           if (response.status != ESL.Response.OK) {
             throw new StateError('ESL returned ${response.rawBody}');
@@ -134,7 +134,7 @@ abstract class PBX {
       'origination_uuid' : new_call_uuid,
       'originate_timeout' : _agentChantimeOut,
       'origination_caller_id_name' : 'Connecting...',
-      'origination_caller_id_number' : _callerID};
+      'origination_caller_id_number' : callerID};
 
     String variableString = variables.keys.map((String key) =>
         '$key=${variables[key]}').join(',');
@@ -192,7 +192,7 @@ abstract class PBX {
       'origination_uuid' : new_call_uuid,
       'originate_timeout' : _agentChantimeOut,
       'origination_caller_id_name' : 'Connecting...',
-      'origination_caller_id_number' : _callerID};
+      'origination_caller_id_number' : callerID};
 
     String variableString = variables.keys.map((String key) =>
         '$key=${variables[key]}').join(',');
@@ -283,7 +283,7 @@ abstract class PBX {
                               'owner=${user.ID}',
                               'recordpath=${soundFilePath}'];
 
-    String command = 'originate {${variables.join(',')}}user/${user.peer} ${recordExtension} ${_dialplan} $_callerID $_callerID $_timeOutSeconds';
+    String command = 'originate {${variables.join(',')}}user/${user.peer} ${recordExtension} ${_dialplan} $callerID $callerID $_timeOutSeconds';
     return api(command)
         .then((ESL.Response response) {
           if (response.status != ESL.Response.OK) {
@@ -308,13 +308,13 @@ abstract class PBX {
     List<String> variables = ['reception_id=${receptionID}',
                               'owner=${user.ID}',
                               'contact_id=${contactID}',
-                              'origination_caller_id_name=$_callerID',
-                              'origination_caller_id_number=$_callerID',
+                              'origination_caller_id_name=$callerID',
+                              'origination_caller_id_number=$callerID',
                               'originate_timeout=$_timeOutSeconds',
                               'return_ring_ready=true'];
 
     return api
-        ('originate {${variables.join(',')}}sofia/external/${extension}@${config.callFlowControl.dialoutGateway} &bridge(user/${user.peer}) ${_dialplan} $_callerID $_callerID $_timeOutSeconds')
+        ('originate {${variables.join(',')}}sofia/external/${extension}@${config.callFlowControl.dialoutGateway} &bridge(user/${user.peer}) ${_dialplan} $callerID $callerID $_timeOutSeconds')
         .then((ESL.Response response) {
           if (response.status != ESL.Response.OK) {
             throw new StateError('ESL returned ${response.rawBody}');
