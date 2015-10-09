@@ -125,11 +125,11 @@ class Call {
    *
    */
   Future park(ORModel.Call call) {
-    _busy = true;
     if (call == ORModel.Call.noCall) {
       return new Future.value(ORModel.Call.noCall);
     }
 
+    _busy = true;
     _command.fire(CallCommand.PARK);
 
     return _service.park(call.ID)
