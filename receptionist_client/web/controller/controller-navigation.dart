@@ -83,6 +83,9 @@ class Destination {
   Destination from    = null;
   Widget      widget  = null;
 
+  /**
+   * Constructor.
+   */
   Destination(Context this.context, Widget this.widget, {Destination this.from, Cmd this.cmd});
 
   operator == (Destination other) => (context == other.context) && (widget == other.widget);
@@ -102,8 +105,11 @@ class Navigate {
   static final Navigate _singleton = new Navigate._internal();
   factory Navigate() => _singleton;
 
+  /**
+   * Constructor.
+   */
   Navigate._internal() {
-    _registerEventListeners();
+    _observers();
   }
 
   final Bus<Destination> _bus = new Bus<Destination>();
@@ -179,11 +185,14 @@ class Navigate {
   void goMessages() {go(new Destination(Context.Messages, null));}
 
   /**
+   *
+   */
+  void _observers() {
+    window.onPopState.listen((_) => goWindowLocation(pushState: false));
+  }
+
+  /**
    * Fires a [Destination] whenever navigation is happening.
    */
   Stream<Destination> get onGo => _bus.stream;
-
-  void _registerEventListeners() {
-    window.onPopState.listen((_) => goWindowLocation(pushState: false));
-  }
 }

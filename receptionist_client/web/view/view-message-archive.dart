@@ -188,7 +188,7 @@ class MessageArchive extends ViewWidget {
 
     _ui.scrolledToBottom.listen(_handleScrolling);
 
-    /* We don't need to listen on the onMessageCopy stream here */
+    /* We don't need to listen on the onMessageCopy stream here. It is handled in MessageCompose. */
     _ui.onMessageClose.listen(_closeMessage);
     _ui.onMessageDelete.listen(_deleteMessage);
     _ui.onMessageSend.listen(_sendMessage);

@@ -71,26 +71,6 @@ class UIMessageArchive extends UIModel {
       ]);
     }
 
-//    final List<ButtonElement> buttons = new List<ButtonElement>();
-//
-//    buttons.add(new ButtonElement()
-//      ..text = _langMap['copy']
-//      ..onClick.listen((_) => _messageCopyBus.fire(msg)));
-//
-//    if (!msg.closed) {
-//      buttons.addAll([
-//        new ButtonElement()
-//          ..text = _langMap['send']
-//          ..onClick.listen((_) => _messageSendBus.fire(msg)),
-//        new ButtonElement()
-//          ..text = _langMap['delete']
-//          ..onClick.listen((_) => _messageDeleteBus.fire(msg)),
-//        new ButtonElement()
-//          ..text = _langMap['close']
-//          ..onClick.listen((_) => _messageCloseBus.fire(msg))
-//      ]);
-//    }
-
     return new TableCellElement()
       ..classes.addAll(['td-center', 'actions'])
       ..children.addAll(buttons);
