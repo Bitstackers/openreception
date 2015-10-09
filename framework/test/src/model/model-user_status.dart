@@ -48,7 +48,7 @@ abstract class ModelUserStatus {
     expect(built.callsHandled, equals(decoded.callsHandled));
     expect(built.lastActivity.difference(decoded.lastActivity).abs(),
            lessThan(new Duration(seconds : 1)));
-    expect(built.lastState, equals(Model.UserState.Unknown));
+    expect(built.lastState, equals(decoded.lastState));
     expect(built.state, equals(decoded.state));
     expect(built.userID, equals(decoded.userID));
 
