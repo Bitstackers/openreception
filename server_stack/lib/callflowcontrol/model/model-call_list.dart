@@ -65,8 +65,11 @@ class CallList extends IterableBase<ORModel.Call> {
             ? channel.variables[Controller.PBX.locked] == 'true'
             : false
         ..inbound = (channel.fields['Call-Direction'] == 'inbound' ? true : false)
-        ..callerID = channel.fields['Caller-Caller-ID-Number']
-        ..destination = channel.fields['Caller-Destination-Number']
+        ..callerID =
+          channel.fields.containsKey('Caller-Orig-Caller-ID-Number')
+          ? channel.fields['Caller-Orig-Caller-ID-Number']
+          : channel.fields['Caller-Caller-ID-Number']
+        ..destination = channel.variables['openreception::destination']
         ..receptionID = channel.variables.containsKey('reception_id')
             ? int.parse(channel.variables['reception_id'])
             : ORModel.Reception.noID
