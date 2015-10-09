@@ -144,6 +144,7 @@ abstract class StateReload {
         .then((_) => receptionist.park(assignedCall, waitForEvent: true))
         .then((_) => log.info('Receptionist picks up call again'))
         .then((_) => receptionist.pickup(assignedCall, waitForEvent: true))
+        .then((_) => receptionist.waitFor(eventType: Event.Key.callUnpark))
         .then((_) => log.info('Fetching original call list'))
         .then((_) => receptionist.callFlowControl.callList()
           .then((Iterable<Model.Call> calls) {
