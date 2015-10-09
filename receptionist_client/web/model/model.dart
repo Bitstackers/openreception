@@ -118,12 +118,9 @@ abstract class UIModel {
    */
   void focus() {
     if(!isFocused) {
-      print('Model.focus() called');
       _setTabIndex(1);
       _root.classes.toggle('focus', true);
-      print('Model.focus() focus class is ${_root.classes.contains('focus')}');
       _focusElement.focus();
-      print('${_focusElement.toString()} ${_focusElement.id}');
     }
   }
 
