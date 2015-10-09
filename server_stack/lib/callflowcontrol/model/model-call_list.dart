@@ -103,12 +103,17 @@ class CallList extends IterableBase<ORModel.Call> {
 
       } else {
         log.info('$call is not bridged.');
+        final String orState = ChannelList.instance.get(call.channel)
+            .variables['openreception::state'];
 
-        if (call.destination == 'waitqueue') {
+        if (orState == 'queued') {
           call.state = ORModel.CallState.Queued;
         }
-        else if (call.destination == 'park') {
+        else if (orState == 'parked') {
           call.state = ORModel.CallState.Parked;
+        }
+        else if (orState == 'ringing') {
+          call.state = ORModel.CallState.Ringing;
         }
 
         else {
@@ -174,15 +179,12 @@ class CallList extends IterableBase<ORModel.Call> {
 
     log.finest('Bridging channel ${uuid.UUID} and channel ${otherLeg.UUID}');
 
-    /// For, an uninvestigated reason, the caller-id needs to updated to match
-    /// the state of the PBX (to enable reload at a later time).
+
     if (isCall(uuid) && isCall(otherLeg)) {
       log.finest('Channel ${uuid.UUID} and channel ${otherLeg.UUID} are both calls');
       CallList.instance.get(uuid.UUID)
-        ..callerID = packet.field('Caller-Caller-ID-Number')
         ..b_Leg = otherLeg.UUID;
       CallList.instance.get(otherLeg.UUID)
-        ..callerID = packet.field('Caller-Caller-ID-Number')
         ..b_Leg = uuid.UUID;
 
       CallList.instance.get(uuid.UUID).changeState (ORModel.CallState.Transferred);
@@ -193,8 +195,7 @@ class CallList extends IterableBase<ORModel.Call> {
       ORModel.Call call = CallList.instance.get(uuid.UUID);
       log.finest('Channel ${uuid.UUID} is a call');
 
-      call..callerID = packet.field('Caller-Caller-ID-Number')
-          ..b_Leg = otherLeg.UUID
+      call..b_Leg = otherLeg.UUID
           ..changeState (ORModel.CallState.Speaking);
 
 //      final filename = '${call.ID}-uid-${call.assignedTo}-rid'
@@ -207,8 +208,7 @@ class CallList extends IterableBase<ORModel.Call> {
     else if (isCall(otherLeg)) {
       ORModel.Call call = CallList.instance.get(otherLeg.UUID);
       log.finest('Channel ${otherLeg.UUID} is a call');
-       call..callerID = packet.field('Caller-Caller-ID-Number')
-           ..b_Leg = uuid.UUID
+       call..b_Leg = uuid.UUID
            ..changeState (ORModel.CallState.Speaking);
 
 //       final filename = '${call.ID}-uid-${call.assignedTo}-rid'
@@ -266,7 +266,6 @@ class CallList extends IterableBase<ORModel.Call> {
 
         log.finest('Unlocking ${event.uniqueID}');
         CallList.instance.get (event.uniqueID)
-          ..destination = event.field('Caller-Destination-Number')
           ..locked = channel.variables.containsKey(Controller.PBX.locked)
               ? channel.variables[Controller.PBX.locked] == 'true'
               : false
@@ -278,7 +277,6 @@ class CallList extends IterableBase<ORModel.Call> {
       /// Call is parked
       case (PBXEvent._OR_PARKING_LOT_ENTER):
         CallList.instance.get (event.uniqueID)
-          ..destination = event.field('Caller-Destination-Number')
           ..b_Leg = null
           ..changeState (ORModel.CallState.Parked);
         break;
@@ -365,8 +363,6 @@ class CallList extends IterableBase<ORModel.Call> {
       return;
     }
 
-
-
     log.finest('Creating new call ${event.uniqueID}');
 
     int contactID = event.contentAsMap.containsKey('variable_contact_id')
@@ -381,11 +377,13 @@ class CallList extends IterableBase<ORModel.Call> {
                    ? int.parse(event.field('variable_owner'))
                    : ORModel.User.noID;
 
+    final ESL.Channel channel = new ESL.Channel.fromPacket(event);
+
     ORModel.Call createdCall = new ORModel.Call.empty(event.uniqueID)
         ..arrived = new DateTime.fromMillisecondsSinceEpoch(int.parse(event.field('Caller-Channel-Created-Time'))~/1000)
         ..inbound = (event.field('Call-Direction') == 'inbound' ? true : false)
         ..callerID = event.field('Caller-Caller-ID-Number')
-        ..destination = event.field('Caller-Destination-Number')
+        ..destination = channel.variables['openreception::destination']
         ..receptionID = receptionID
         ..contactID   = contactID
         ..assignedTo  = userID

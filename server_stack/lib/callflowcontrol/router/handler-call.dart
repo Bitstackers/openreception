@@ -339,6 +339,8 @@ abstract class Call {
 
     /// Update the call with the info from the originate request.
     call..assignedTo = user.ID
+        ..callerID = Controller.PBX.callerID
+        ..destination = extension
         ..receptionID = receptionID
         ..contactID = contactID
         ..b_Leg = agentChannel;
@@ -354,6 +356,9 @@ abstract class Call {
         (call.channel, 'reception_id', receptionID.toString());
       await Controller.PBX.setVariable
          (call.channel, 'contact_id', contactID.toString());
+      await Controller.PBX.setVariable
+         (call.channel, 'openreception::destination', extension);
+
     }
     catch (error, stackTrace) {
       final String msg = 'Failed to create agent channel';
