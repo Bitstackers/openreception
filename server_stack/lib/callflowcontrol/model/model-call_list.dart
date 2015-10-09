@@ -241,17 +241,22 @@ class CallList extends IterableBase<ORModel.Call> {
         this._createCall(event);
 
         this.get(event.uniqueID)
-            ..destination = event.field('Caller-Destination-Number')
             ..receptionID =
               event.contentAsMap.containsKey('variable_reception_id')
                         ? int.parse(event.field('variable_reception_id'))
                         : 0
-            ..changeState(ORModel.CallState.Created);
+            ..changeState(ORModel.CallState.Created)
+            ..changeState(ORModel.CallState.Ringing);
 
         break;
 
       /// Leaving the prequeue (Playing greeting and locking the call)
       case (PBXEvent._OR_PRE_QUEUE_LEAVE):
+        /// If the call was placed directly into the waitQueue
+        if(!this._map.containsKey(event.uniqueID)) {
+          this._createCall(event);
+        }
+
         log.finest('Locking ${event.uniqueID}');
         CallList.instance.get (event.uniqueID)
           ..changeState (ORModel.CallState.Transferring)
