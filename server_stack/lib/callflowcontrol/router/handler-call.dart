@@ -89,15 +89,16 @@ abstract class Call {
     Model.UserStatusList.instance.update(user.ID, ORModel.UserState.HangingUp);
 
 
+    ///Perfrom the hangup
     try {
-      await Controller.PBX.hangup(call);
+      await Controller.PBX.killChannel(call.channel);
       Model.UserStatusList.instance.update
       (user.ID, ORModel.UserState.HandlingOffHook);
 
       return new shelf.Response.ok('{}');
     }
     catch (error, stackTrace) {
-      final String msg = 'Failed retrieve call from call list';
+      final String msg = 'Failed kill the channel: (${call.channel})';
       log.severe(msg, error, stackTrace);
 
       /// We can no longer assume anything about the users' state.
