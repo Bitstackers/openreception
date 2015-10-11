@@ -2,10 +2,30 @@ import 'dart:async';
 
 import 'package:logging/logging.dart';
 import 'package:phonio/phonio.dart' as Phonio;
+import 'dart:math' show Random;
 
 import '../lib/or_test_fw.dart' as test_fw;
 
 Logger log = new Logger('Call-Spawner');
+
+const List<String> _receptionNumbers = const
+  ['12340001',
+   '12340002',
+   '12340003',
+   '12340004',
+   '12340005',
+   '12340006'];
+final Random rand = new Random(new DateTime.now().millisecondsSinceEpoch);
+
+dynamic _randomChoice(List pool) {
+  if (pool.isEmpty) {
+    throw new ArgumentError('Cannot find a random value in an empty list');
+  }
+
+  int index = rand.nextInt(pool.length);
+
+  return pool[index];
+}
 
 void main() {
 
@@ -13,6 +33,7 @@ void main() {
   Logger.root.onRecord.listen(print);
 
   test_fw.SupportTools st;
+
 
   test_fw.SupportTools.instance
       .then((test_fw.SupportTools init) => st = init)
@@ -37,14 +58,14 @@ Future customerAutoDialing(test_fw.Customer customer)  {
 
     // Spawn a new call as soon as the old call is disconnected.
     if(event is Phonio.CallDisconnected) {
-      customer.dial('12340003');
+      customer.dial(_randomChoice(_receptionNumbers));
     }
   });
 
   int numCalls = 4;
   return Future.doWhile(() {
     numCalls = numCalls - 1;
-    return customer.dial('12340003').then((_) {
+    return customer.dial(_randomChoice(_receptionNumbers)).then((_) {
       return numCalls != 0;
     });
   });
