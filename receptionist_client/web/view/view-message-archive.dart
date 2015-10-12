@@ -54,8 +54,15 @@ class MessageArchive extends ViewWidget {
   @override Controller.Destination get _destination => _myDestination;
   @override Model.UIMessageArchive get _ui => _uiModel;
 
-  @override void _onBlur(_) {}
+  @override void _onBlur(_) {
+    _ui.destroyConfirmationBoxes();
+  }
+
   @override void _onFocus(_) {
+    _ui.context = new ORModel.MessageContext.empty()
+      ..contactID = _contactSelector.selectedContact.ID
+      ..receptionID = _receptionSelector.selectedReception.ID;
+
     String header =
         '(${_contactSelector.selectedContact.fullName} @ ${_receptionSelector.selectedReception.name})';
 
@@ -93,7 +100,7 @@ class MessageArchive extends ViewWidget {
    * focused.
    */
   void _activateMe(MouseEvent event) {
-    if(event.target is! ButtonElement) {
+    if (event.target is! ButtonElement) {
       _navigateToMyDestination();
     }
   }
@@ -101,48 +108,38 @@ class MessageArchive extends ViewWidget {
   /**
    *
    */
-  dynamic _closeMessage(ORModel.Message msg) async {
+  dynamic _closeMessage(ORModel.Message message) async {
     try {
-      msg.recipients = new Set();
-      msg.flag.manuallyClosed = true;
+      message.recipients = new Set();
+      message.flag.manuallyClosed = true;
 
-      ORModel.Message savedMessage = await _messageController.save(msg);
+      ORModel.Message savedMessage = await _messageController.save(message);
       ORModel.MessageQueueItem response = await _messageController.enqueue(savedMessage);
 
-      /*
-       *
-       * Update/refresh the message archive
-       *
-       *
-       */
+      _ui.closeMessage(message);
 
       _log.info('Message id ${response.messageID} successfully enqueued');
       _popup.success(_langMap[Key.messageCloseSuccessTitle], 'ID ${response.ID}');
     } catch (error) {
-      _log.shout('Could not close ${msg.asMap} $error');
-      _popup.error(_langMap[Key.messageCloseErrorTitle], 'ID ${msg.ID}');
+      _log.shout('Could not close ${message.asMap} $error');
+      _popup.error(_langMap[Key.messageCloseErrorTitle], 'ID ${message.ID}');
     }
   }
 
   /**
    *
    */
-  dynamic _deleteMessage(ORModel.Message msg) async {
+  dynamic _deleteMessage(ORModel.Message message) async {
     try {
-      await _messageController.remove(msg.ID);
+      await _messageController.remove(message.ID);
 
-      /*
-       *
-       * Update/refresh the message archive
-       *
-       *
-       */
+      _ui.removeMessage(message);
 
-      _log.info('Message id ${msg.ID} successfully deleted');
-      _popup.success(_langMap[Key.messageDeleteSuccessTitle], 'ID ${msg.ID}');
-    } catch(error) {
-      _log.shout('Could not delete ${msg.asMap} $error');
-      _popup.error(_langMap[Key.messageDeleteErrorTitle], 'ID ${msg.ID}');
+      _log.info('Message id ${message.ID} successfully deleted');
+      _popup.success(_langMap[Key.messageDeleteSuccessTitle], 'ID ${message.ID}');
+    } catch (error) {
+      _log.shout('Could not delete ${message.asMap} $error');
+      _popup.error(_langMap[Key.messageDeleteErrorTitle], 'ID ${message.ID}');
     }
   }
 
@@ -197,9 +194,9 @@ class MessageArchive extends ViewWidget {
   /**
    *
    */
-  dynamic _sendMessage(ORModel.Message msg) async {
+  dynamic _sendMessage(ORModel.Message message) async {
     try {
-      ORModel.Message savedMessage = await _messageController.save(msg);
+      ORModel.Message savedMessage = await _messageController.save(message);
       ORModel.MessageQueueItem response = await _messageController.enqueue(savedMessage);
 
       /*
@@ -209,11 +206,11 @@ class MessageArchive extends ViewWidget {
        *
        */
 
-      _log.info('Message id ${msg.ID} successfully engqueued');
-      _popup.success(_langMap[Key.messageSendSuccessTitle], 'ID ${msg.ID}');
-    } catch(error) {
-      _log.shout('Could not enqueue ${msg.asMap} $error');
-      _popup.error(_langMap[Key.messageSendErrorTitle], 'ID ${msg.ID}');
+      _log.info('Message id ${message.ID} successfully engqueued');
+      _popup.success(_langMap[Key.messageSendSuccessTitle], 'ID ${message.ID}');
+    } catch (error) {
+      _log.shout('Could not enqueue ${message.asMap} $error');
+      _popup.error(_langMap[Key.messageSendErrorTitle], 'ID ${message.ID}');
     }
   }
 }

@@ -17,13 +17,14 @@ part of model;
  * Provides access to the MessageArchive UX components.
  */
 class UIMessageArchive extends UIModel {
-  final Bus<int> _scrollBus = new Bus<int>();
+  ORModel.MessageContext _currentContext;
   final Map<String, String> _langMap;
   final Bus<ORModel.Message> _messageCloseBus = new Bus<ORModel.Message>();
   final Bus<ORModel.Message> _messageCopyBus = new Bus<ORModel.Message>();
   final Bus<ORModel.Message> _messageDeleteBus = new Bus<ORModel.Message>();
   final Bus<ORModel.Message> _messageSendBus = new Bus<ORModel.Message>();
   final DivElement _myRoot;
+  final Bus<int> _scrollBus = new Bus<int>();
   Map<int, String> _users = new Map<int, String>();
   final ORUtil.WeekDays _weekDays;
 
@@ -50,30 +51,33 @@ class UIMessageArchive extends UIModel {
   /**
    * Construct the "button" (send, delete, copy) <td> cell.
    */
-  TableCellElement _buildButtonCell(ORModel.Message msg) {
+  TableCellElement _buildButtonCell(ORModel.Message message) {
     final List<SpanElement> buttons = new List<SpanElement>();
+    final TableCellElement cell = new TableCellElement();
 
     buttons.add(new SpanElement()
       ..text = _langMap['copy'].toLowerCase()
-      ..onClick.listen((_) => _messageCopyBus.fire(msg)));
+      ..onClick.listen((_) => confirmation(cell, message, _messageCopyBus)));
 
-    if (!msg.closed) {
+    if (!message.closed) {
       buttons.addAll([
         new SpanElement()
           ..text = _langMap['send'].toLowerCase()
-          ..onClick.listen((_) => _messageSendBus.fire(msg)),
+          ..onClick.listen((_) => confirmation(cell, message, _messageSendBus)),
         new SpanElement()
           ..text = _langMap['delete'].toLowerCase()
-          ..onClick.listen((_) => _messageDeleteBus.fire(msg)),
+          ..onClick.listen((_) => confirmation(cell, message, _messageDeleteBus)),
         new SpanElement()
           ..text = _langMap['close'].toLowerCase()
-          ..onClick.listen((_) => _messageCloseBus.fire(msg))
+          ..onClick.listen((_) => confirmation(cell, message, _messageCloseBus)),
       ]);
     }
 
-    return new TableCellElement()
+    return cell
       ..classes.addAll(['td-center', 'actions'])
-      ..children.addAll(buttons);
+      ..children.add(new DivElement()
+        ..children.addAll(buttons)
+        ..style.display = 'block');
   }
 
   /**
@@ -89,28 +93,28 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
-   * Construct a <tr> element from [msg]
+   * Construct a <tr> element from [message]
    */
-  TableRowElement _buildRow(ORModel.Message msg) {
+  TableRowElement _buildRow(ORModel.Message message) {
     final TableRowElement row = new TableRowElement()
-      ..dataset['message-id'] = msg.ID.toString()
-      ..dataset['contact-string'] = msg.context.contactString;
+      ..dataset['message-id'] = message.ID.toString()
+      ..dataset['contact-string'] = message.context.contactString;
 
     row.children.addAll([
-      new TableCellElement()..text = ORUtil.humanReadableTimestamp(msg.createdAt, _weekDays),
-      new TableCellElement()..text = msg.context.contactName,
-      new TableCellElement()..text = msg.context.receptionName,
-      new TableCellElement()..text = _users[msg.senderId] ?? msg.senderId.toString(),
-      new TableCellElement()..text = msg.callerInfo.name,
-      new TableCellElement()..text = msg.callerInfo.company,
-      new TableCellElement()..text = msg.callerInfo.phone,
-      new TableCellElement()..text = msg.callerInfo.cellPhone,
-      new TableCellElement()..text = msg.callerInfo.localExtension,
-      _buildMessageCell(msg),
+      new TableCellElement()..text = ORUtil.humanReadableTimestamp(message.createdAt, _weekDays),
+      new TableCellElement()..text = message.context.contactName,
+      new TableCellElement()..text = message.context.receptionName,
+      new TableCellElement()..text = _users[message.senderId] ?? message.senderId.toString(),
+      new TableCellElement()..text = message.callerInfo.name,
+      new TableCellElement()..text = message.callerInfo.company,
+      new TableCellElement()..text = message.callerInfo.phone,
+      new TableCellElement()..text = message.callerInfo.cellPhone,
+      new TableCellElement()..text = message.callerInfo.localExtension,
+      _buildMessageCell(message),
       new TableCellElement()
         ..classes.add('td-center')
-        ..text = _getStatus(msg),
-      _buildButtonCell(msg)
+        ..text = _getStatus(message),
+      _buildButtonCell(message)
     ]);
 
     return row;
@@ -133,26 +137,106 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
+   * Close the [message]. Moves it from the saved list to the not saved list and updates the
+   * "buttons" cell accordingly. [message] is ALWAYS moved to the top of the not saved list to make
+   * it clear that the move has happened.
+   *
+   * NOTE: This is a visual only action. It does not perform any actions on the server.
+   */
+  void closeMessage(ORModel.Message message) {
+    final TableRowElement tr = _savedTbody.querySelector('[data-message-id="${message.ID}"]');
+
+    if (tr != null) {
+      tr.classes.add('fade-out');
+      tr.onTransitionEnd.listen((_) {
+        tr.remove();
+        _savedTbody.parent.hidden = _savedTbody.children.isEmpty;
+        if (_currentContext == message.context) {
+          _notSavedTbody.insertBefore(_buildRow(message), _notSavedTbody.children.first);
+        }
+      });
+    }
+  }
+
+  /**
+   *
+   */
+  void confirmation(TableCellElement parent, ORModel.Message message, Bus bus) {
+    final List<SpanElement> confirmationButtons = new List<SpanElement>();
+    final DivElement confirmationDiv = new DivElement();
+    final DivElement firstDiv = parent.querySelector(':first-child');
+    final int height = firstDiv.borderEdge.height;
+    final double left = firstDiv.borderEdge.left;
+    final double top = firstDiv.borderEdge.top;
+    final int width = firstDiv.borderEdge.width;
+
+    confirmationButtons.addAll([
+      new SpanElement()
+        ..text = _langMap[Key.yes]
+        ..onClick.listen((_) {
+          bus.fire(message);
+          confirmationDiv?.remove();
+        })
+        ..style.marginRight = '0.5em',
+      new SpanElement()
+        ..text = _langMap[Key.no]
+        ..onClick.listen((_) => confirmationDiv?.remove())
+        ..style.marginLeft = '0.5em'
+        ..style.textAlign = 'center'
+    ]);
+
+    document.body.children.add(confirmationDiv
+      ..classes.add('confirmation-dirty-hack')
+      ..style.top = '${top.toString()}px'
+      ..style.left = '${left.toString()}px'
+      ..style.height = '${height.toString()}px'
+      ..style.width = '${width.toString()}px'
+      ..children.addAll(confirmationButtons));
+  }
+
+  /**
+   * Get rid of all confirmation boxes.
+   *
+   * This is part of the rather disgusting .confirmation-dirty-hack where we abuse the global
+   * document scope to render the small overlay confirmation boxes. We only need this function
+   * because the overlays are global and not local to the message-archive widget.
+   *
+   * TODO(TL): Fix this. We should no polute global document scope simply because it is easier.
+   */
+  void destroyConfirmationBoxes() {
+    document.body.querySelectorAll('.confirmation-dirty-hack').forEach((DivElement div) {
+      div.remove();
+    });
+  }
+
+  /**
+   * Set the current message context. This MUST be defined by the currently selected reception and
+   * contact. It is used to decide whether delete/close actions move the message in question from
+   * the saved list to the not saved list.
+   */
+  set context(ORModel.MessageContext context) => _currentContext = context;
+
+  /**
    * Return the String status of [msg].
    */
   String _getStatus(ORModel.Message msg) {
     if (msg.flag.manuallyClosed) {
-      return 'CLOSED';
+      return _langMap[Key.closed].toUpperCase();
     }
 
     if (msg.sent) {
-      return 'SENT';
+      return _langMap[Key.sent].toUpperCase();
     }
 
     if (msg.enqueued) {
-      return 'QUEUED';
+      return _langMap[Key.queued].toUpperCase();
     }
 
     if (!msg.sent && !msg.enqueued) {
-      return 'SAVED';
+      return _langMap[Key.saved].toUpperCase();
     }
 
-    return 'UNKNOWN';
+    return _langMap[Key.unknown].toUpperCase();
   }
 
   /**
@@ -205,6 +289,16 @@ class UIMessageArchive extends UIModel {
    * Fire a [ORModel.Message] when sending it.
    */
   Stream<ORModel.Message> get onMessageSend => _messageSendBus.stream;
+
+  /**
+   * Removes a saved [message] from the archive list.
+   *
+   * NOTE: This is a visual only action. It does not perform any actions on the server.
+   */
+  void removeMessage(ORModel.Message message) {
+    _savedTbody.querySelector('[data-message-id="${message.ID}"]')?.remove();
+    _savedTbody.parent.hidden = _savedTbody.children.isEmpty;
+  }
 
   /**
    * Add the [list] of [ORModel.Message] to the widgets "saved messages" table.

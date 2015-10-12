@@ -32,6 +32,30 @@ button::-moz-focus-inner {
   border: 0;
 }
 
+/*
+  This is here because we abuse the global document scope to construct
+  confirmation boxes for the message-archive widget.
+
+  TODO(TL): Redo this pile of crap as soon as possible.
+*/
+.confirmation-dirty-hack {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  background: #f7f7f7;
+  z-index: 1000;
+}
+
+.confirmation-dirty-hack span {
+  color: #2020ff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.confirmation-dirty-hack span:hover {
+  color: #a5b9db;
+}
+
 .context {
   position: absolute;
   width: 100%;
@@ -51,6 +75,12 @@ button::-moz-focus-inner {
   flex-direction: row;
 }
 
+.fade-out {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 0.5s, opacity 0.5s linear;
+}
+
 .focus .spinning-focus-box {
   top: -2px;
   left: -2px;
@@ -63,31 +93,15 @@ button::-moz-focus-inner {
 }
 
 @keyframes focus {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  50% {
-    transform: rotate(360deg);
-  }
-
-  100% {
-    transform: rotate(0deg);
-  }
+  0% {transform: rotate(0deg);}
+  50% {transform: rotate(360deg);}
+  100% {transform: rotate(0deg);}
 }
 
 @-webkit-keyframes focus {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  50% {
-    transform: rotate(360deg);
-  }
-
-  100% {
-    transform: rotate(0deg);
-  }
+  0% {transform: rotate(0deg);}
+  50% {transform: rotate(360deg);}
+  100% {transform: rotate(0deg);}
 }
 
 .generic-widget {
@@ -164,6 +178,27 @@ input:focus  ~label {
 .modal {
   background-color: rgba(255, 255, 255, 0.9);
   padding: 3em;
+}
+
+.pulse {
+  animation-name: pulse;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  -webkit-animation-name: pulse;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-iteration-count: infinite;
+}
+
+@keyframes pulse {
+  0% {background-color: inherit;}
+  50% {background-color: #f00;}
+  100% {background-color: inherit;}
+}
+
+@-webkit-keyframes pulse {
+  0% {background-color: inherit;}
+  50% {background-color: #f00;}
+  100% {background-color: inherit;}
 }
 
 .spinning-focus-box {
