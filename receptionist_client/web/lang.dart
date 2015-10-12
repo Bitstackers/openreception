@@ -44,6 +44,7 @@ abstract class Key {
   static const String cancel                          = 'cancel';
   static const String cellPhone                       = 'cell-phone';
   static const String close                           = 'close';
+  static const String closed                          = 'closed';
   static const String company                         = 'company';
 
   static const String contactCalendarHeader           = 'contact-calendar-header';
@@ -112,9 +113,12 @@ abstract class Key {
   static const String myQueuedCallsHeader             = 'my-queued-calls-header';
 
   static const String name                            = 'name';
+  static const String no                              = 'no';
 
   static const String paused                          = 'paused';
   static const String phone                           = 'phone';
+
+  static const String queued                          = 'queued';
 
   static const String reception                       = 'reception';
   static const String receptionAddressesHeader        = 'reception-addresses-header';
@@ -134,15 +138,21 @@ abstract class Key {
   static const String receptionWebsitesHeader         = 'reception-websites-header';
 
   static const String save                            = 'save';
+  static const String saved                           = 'saved';
   static const String selectedReceptionRemoved        = 'selected-reception-removed';
   static const String selectedReceptionUpdated        = 'selected-reception-updated';
   static const String send                            = 'send';
+  static const String sent                            = 'sent';
   static const String standardGreeting                = 'standard-greeting';
   static const String start                           = 'start';
   static const String stateDisasterHeader             = 'state-disaster-header';
   static const String stateLoadingHeader              = 'state-loading-header';
   static const String status                          = 'status';
   static const String stop                            = 'stop';
+
+  static const String unknown                         = 'unknown';
+
+  static const String yes                             = 'yes';
 }
 
 /**
@@ -177,6 +187,7 @@ Map<String, String> da =
    Key.cancel                         : 'Annuller',
    Key.cellPhone                      : 'Mobilnummer',
    Key.close                          : 'Luk',
+   Key.closed                         : 'Lukket',
    Key.company                        : 'Virksomhed',
 
    Key.contactCalendarHeader          : 'Kontakt kalender',
@@ -245,9 +256,12 @@ Map<String, String> da =
    Key.myQueuedCallsHeader            : 'Mine kald',
 
    Key.name                           : 'Navn',
+   Key.no                             : 'Nej',
 
    Key.paused                         : 'Pause',
    Key.phone                          : 'Telefon',
+
+   Key.queued                         : 'I kø',
 
    Key.reception                      : 'Reception',
    Key.receptionAddressesHeader       : 'Adresser',
@@ -267,15 +281,21 @@ Map<String, String> da =
    Key.receptionWebsitesHeader        : 'WWW',
 
    Key.save                           : 'Gem',
+   Key.saved                          : 'Gemt',
    Key.selectedReceptionRemoved       : 'Den valgte reception er fjernet',
    Key.selectedReceptionUpdated       : 'Den valgte reception er opdateret',
    Key.send                           : 'Send',
+   Key.sent                           : 'Sendt',
    Key.standardGreeting               : 'Velkommen til....',
    Key.start                          : 'Start',
    Key.stateDisasterHeader            : 'Vi har problemer - prøver at genstarte hvert 10 sekund',
    Key.stateLoadingHeader             : 'Hold på bits og bytes mens vi starter programmet',
    Key.status                         : 'Status',
-   Key.stop                           : 'Stop'};
+   Key.stop                           : 'Stop',
+
+   Key.unknown                        : 'Ukendt',
+
+   Key.yes                            : 'Ja'};
 
 /**
  * English translation map.
@@ -309,6 +329,7 @@ Map<String, String> en =
    Key.cancel                         : 'Cancel',
    Key.cellPhone                      : 'Cell phone',
    Key.close                          : 'Close',
+   Key.closed                         : 'Closed',
    Key.company                        : 'Company',
 
    Key.contactCalendarHeader          : 'Contact calendar',
@@ -377,9 +398,12 @@ Map<String, String> en =
    Key.myQueuedCallsHeader            : 'My calls',
 
    Key.name                           : 'Name',
+   Key.no                             : 'Nej',
 
    Key.paused                         : 'Paused',
    Key.phone                          : 'Phone',
+
+   Key.queued                         : 'Queued',
 
    Key.reception                      : 'Reception',
    Key.receptionAddressesHeader       : 'Addresses',
@@ -399,12 +423,18 @@ Map<String, String> en =
    Key.receptionWebsitesHeader        : 'WWW',
 
    Key.save                           : 'Save',
+   Key.saved                          : 'Saved',
    Key.selectedReceptionRemoved       : 'The selected reception has been removed',
    Key.selectedReceptionUpdated       : 'The selected reception has been updated',
    Key.send                           : 'Send',
+   Key.sent                           : 'Sent',
    Key.standardGreeting               : 'You\'ve called....',
    Key.start                          : 'Start',
    Key.stateDisasterHeader            : 'Problems discovered. Trying to recover every 10 seconds',
    Key.stateLoadingHeader             : 'Hold on to your bits while we\'re loading the application',
    Key.status                         : 'Status',
-   Key.stop                           : 'Stop'};
+   Key.stop                           : 'Stop',
+
+   Key.unknown                        : 'Unknown',
+
+   Key.yes                            : 'Yes'};
