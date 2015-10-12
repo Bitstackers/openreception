@@ -79,7 +79,8 @@ Future customerAutoDialing(test_fw.Customer customer)  {
         return;
       }
 
-      customer.dial(_randomChoice(_receptionNumbers));
+      new Future.delayed (new Duration (milliseconds : 100))
+        .then((_) => customer.dial(_randomChoice(_receptionNumbers)));
     }
   });
 
