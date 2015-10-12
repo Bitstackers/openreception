@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:logging/logging.dart';
 import 'package:phonio/phonio.dart' as Phonio;
@@ -22,10 +23,12 @@ dynamic _randomChoice(List pool) {
     throw new ArgumentError('Cannot find a random value in an empty list');
   }
 
-  int index = rand.nextInt(pool.length);
+  final int index = rand.nextInt(pool.length);
 
   return pool[index];
 }
+
+bool _stopping = false;
 
 void main() {
 
@@ -34,6 +37,17 @@ void main() {
 
   test_fw.SupportTools st;
 
+  ProcessSignal.SIGINT.watch().listen((_) {
+    _stopping = true;
+    st.tearDown();
+    exit(0);
+  });
+
+  ProcessSignal.SIGTERM.watch().listen((_) {
+    _stopping = true;
+    st.tearDown();
+    exit(0);
+  });
 
   test_fw.SupportTools.instance
       .then((test_fw.SupportTools init) => st = init)
@@ -54,10 +68,17 @@ Future start_spawning() async {
 
 Future customerAutoDialing(test_fw.Customer customer)  {
 
-  customer.phoneEvents.listen((Phonio.Event event)  {
+  StreamSubscription subscription;
+  subscription = customer.phoneEvents.listen((Phonio.Event event)  {
 
     // Spawn a new call as soon as the old call is disconnected.
     if(event is Phonio.CallDisconnected) {
+
+      if(_stopping) {
+        subscription.cancel();
+        return;
+      }
+
       customer.dial(_randomChoice(_receptionNumbers));
     }
   });
@@ -66,7 +87,7 @@ Future customerAutoDialing(test_fw.Customer customer)  {
   return Future.doWhile(() {
     numCalls = numCalls - 1;
     return customer.dial(_randomChoice(_receptionNumbers)).then((_) {
-      return numCalls != 0;
+      return numCalls != 0 && !_stopping;
     });
   });
 
