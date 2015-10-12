@@ -18,10 +18,10 @@ import 'dart:convert';
 import 'dart:html';
 
 import '../controller/controller.dart' as Controller;
-import '../lang.dart' as Lang;
+import '../lang.dart';
 
 import 'package:markdown/markdown.dart' as Markdown;
-import 'package:okeyee/okeyee.dart';
+import 'package:okeyee/okeyee.dart' as Okeyee;
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/bus.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
@@ -73,7 +73,7 @@ final Controller.HotKeys _hotKeys = new Controller.HotKeys();
  * Base class for all UI model classes.
  */
 abstract class UIModel {
-  final Keyboard _keyboard = new Keyboard();
+  final Okeyee.Keyboard _keyboard = new Okeyee.Keyboard();
 
   HtmlElement get _firstTabElement;
   HtmlElement get _focusElement;
