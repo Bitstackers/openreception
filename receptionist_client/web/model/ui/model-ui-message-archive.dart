@@ -48,7 +48,7 @@ class UIMessageArchive extends UIModel {
   DivElement get _tableContainer => _body.querySelector('div');
 
   /**
-   * Construct the button (send, delete, copy) <td> cell.
+   * Construct the "button" (send, delete, copy) <td> cell.
    */
   TableCellElement _buildButtonCell(ORModel.Message msg) {
     final List<SpanElement> buttons = new List<SpanElement>();
