@@ -69,6 +69,7 @@ class UserStatus {
   UserStatus.fromMap (Map map) {
     this.userID       = map[Key.UserID];
     this.state        = map[Key.state];
+    this.lastState    = map[Key.lastState];
     this.lastActivity = map[Key.lastActivity] != null
                          ? Util.unixTimestampToDateTime(map[Key.lastActivity])
                          : null;
