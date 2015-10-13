@@ -25,6 +25,9 @@ basic_agent: deps_install
 clean:
 	-rm objects/*.o
 
+pjproject-${PJVERSION}/pjlib/include/pj/config_site.h: pjproject-${PJVERSION}
+	cp ./config_site.h pjproject-${PJVERSION}/pjlib/include/pj/config_site.h
+
 distclean: clean
 	-rm -f  basic_agent
 	-rm -f  deps_install pjlibs
@@ -47,7 +50,7 @@ pjproject-2.4: pjproject-2.4.5.tar.bz2
 	-ln -s pjproject-2.4.5 pjproject-2.4
 	touch $@
 
-pjlibs: pjproject-${PJVERSION}
+pjlibs: pjproject-${PJVERSION} pjproject-${PJVERSION}/pjlib/include/pj/config_site.h
 	-mkdir $(LIB_DIR)
 	(cd pjproject-${PJVERSION}; ./configure --prefix=$(LIB_DIR) ${PJOPTS}  && make lib && make && make install)	
 	touch $@
