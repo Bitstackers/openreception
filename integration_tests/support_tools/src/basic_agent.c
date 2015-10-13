@@ -415,6 +415,7 @@ int main(int argc, char *argv[]) {
     cfg.cb.on_call_media_state = &on_call_media_state;
     cfg.cb.on_call_state       = &on_call_state;
     cfg.cb.on_call_tsx_state   = &on_call_tsx_state;
+    cfg.max_calls = PJSUA_MAX_CALLS;
 
     pjsua_logging_config_default(&log_cfg);
     log_cfg.console_level = loglevel; // 0 = Mute console, 3 = somewhat useful, 4 = overly verbose.
