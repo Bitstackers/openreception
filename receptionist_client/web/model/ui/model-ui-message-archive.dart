@@ -49,35 +49,40 @@ class UIMessageArchive extends UIModel {
   DivElement get _tableContainer => _body.querySelector('div');
 
   /**
-   * Construct the "button" (send, delete, copy) <td> cell.
+   * Construct the send | delete | copy | close <td> cell.
    */
-  TableCellElement _buildButtonCell(ORModel.Message message) {
-    final List<SpanElement> buttons = new List<SpanElement>();
-    final TableCellElement cell = new TableCellElement();
+  TableCellElement _buildActionsCell(ORModel.Message message) {
+    final DivElement actionsContainer = new DivElement()..classes.add('actions-container');
+    final DivElement buttonBox = new DivElement()..classes.add('button-box');
+    final TableCellElement cell = new TableCellElement()..classes.add('actions');
+    final DivElement yesNoBox = new DivElement()..classes.add('yes-no-box');
 
-    buttons.add(new SpanElement()
-      ..text = _langMap['copy'].toLowerCase()
-      ..onClick.listen((_) => confirmation(cell, message, _messageCopyBus)));
+    buttonBox.children.addAll([
+      new ImageElement()
+        ..src = 'images/copy.svg'
+        ..title = _langMap['copy'].toLowerCase()
+        ..onClick.listen((_) => _yesNo(buttonBox, yesNoBox, message, _messageCopyBus)),
+      new ImageElement()
+        ..src = 'images/send.svg'
+        ..title = _langMap['send'].toLowerCase()
+        ..style.visibility = message.closed ? 'hidden' : 'visible'
+        ..onClick.listen((_) => _yesNo(buttonBox, yesNoBox, message, _messageSendBus)),
+      new ImageElement()
+        ..src = 'images/bin.svg'
+        ..title = _langMap['delete'].toLowerCase()
+        ..style.visibility = message.closed ? 'hidden' : 'visible'
+        ..onClick.listen((_) => _yesNo(buttonBox, yesNoBox, message, _messageDeleteBus)),
+      new ImageElement()
+        ..src = 'images/close.svg'
+        ..title = _langMap['close'].toLowerCase()
+        ..style.visibility = message.closed ? 'hidden' : 'visible'
+        ..onClick.listen((_) => _yesNo(buttonBox, yesNoBox, message, _messageCloseBus))
+    ]);
 
-    if (!message.closed) {
-      buttons.addAll([
-        new SpanElement()
-          ..text = _langMap['send'].toLowerCase()
-          ..onClick.listen((_) => confirmation(cell, message, _messageSendBus)),
-        new SpanElement()
-          ..text = _langMap['delete'].toLowerCase()
-          ..onClick.listen((_) => confirmation(cell, message, _messageDeleteBus)),
-        new SpanElement()
-          ..text = _langMap['close'].toLowerCase()
-          ..onClick.listen((_) => confirmation(cell, message, _messageCloseBus)),
-      ]);
-    }
+    actionsContainer.children.addAll([buttonBox, yesNoBox]);
 
-    return cell
-      ..classes.addAll(['td-center', 'actions'])
-      ..children.add(new DivElement()
-        ..children.addAll(buttons)
-        ..style.display = 'block');
+    cell.children.add(actionsContainer);
+    return cell;
   }
 
   /**
@@ -95,15 +100,22 @@ class UIMessageArchive extends UIModel {
   /**
    * Construct a <tr> element from [message]
    */
-  TableRowElement _buildRow(ORModel.Message message) {
+  TableRowElement _buildRow(ORModel.Message message, bool saved) {
     final TableRowElement row = new TableRowElement()
       ..dataset['message-id'] = message.ID.toString()
       ..dataset['contact-string'] = message.context.contactString;
 
+    row.children.add(
+        new TableCellElement()..text = ORUtil.humanReadableTimestamp(message.createdAt, _weekDays));
+
+    if (saved) {
+      row.children.addAll([
+        new TableCellElement()..text = message.context.contactName,
+        new TableCellElement()..text = message.context.receptionName,
+      ]);
+    }
+
     row.children.addAll([
-      new TableCellElement()..text = ORUtil.humanReadableTimestamp(message.createdAt, _weekDays),
-      new TableCellElement()..text = message.context.contactName,
-      new TableCellElement()..text = message.context.receptionName,
       new TableCellElement()..text = _users[message.senderId] ?? message.senderId.toString(),
       new TableCellElement()..text = message.callerInfo.name,
       new TableCellElement()..text = message.callerInfo.company,
@@ -111,13 +123,26 @@ class UIMessageArchive extends UIModel {
       new TableCellElement()..text = message.callerInfo.cellPhone,
       new TableCellElement()..text = message.callerInfo.localExtension,
       _buildMessageCell(message),
-      new TableCellElement()
-        ..classes.add('td-center')
-        ..text = _getStatus(message),
-      _buildButtonCell(message)
+      _buildStatusCell(message, saved),
+      _buildActionsCell(message)
     ]);
 
     return row;
+  }
+
+  /**
+   * Build the status column for those
+   */
+  TableCellElement _buildStatusCell(ORModel.Message message, bool saved) {
+    final TableCellElement td = new TableCellElement()
+      ..classes.add('td-center')
+      ..text = _getStatus(message);
+
+    if (saved) {
+      td.classes.add('saved-alert');
+    }
+
+    return td;
   }
 
   /**
@@ -137,75 +162,13 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
-   * Close the [message]. Moves it from the saved list to the not saved list and updates the
-   * "buttons" cell accordingly. [message] is ALWAYS moved to the top of the not saved list to make
-   * it clear that the move has happened.
-   *
-   * NOTE: This is a visual only action. It does not perform any actions on the server.
+   * Get rid of all the Yes/No confirmation boxes.
    */
-  void closeMessage(ORModel.Message message) {
-    final TableRowElement tr = _savedTbody.querySelector('[data-message-id="${message.ID}"]');
-
-    if (tr != null) {
-      tr.classes.add('fade-out');
-      tr.onTransitionEnd.listen((_) {
-        tr.remove();
-        _savedTbody.parent.hidden = _savedTbody.children.isEmpty;
-        if (_currentContext == message.context) {
-          _notSavedTbody.insertBefore(_buildRow(message), _notSavedTbody.children.first);
-        }
-      });
-    }
-  }
-
-  /**
-   *
-   */
-  void confirmation(TableCellElement parent, ORModel.Message message, Bus bus) {
-    final List<SpanElement> confirmationButtons = new List<SpanElement>();
-    final DivElement confirmationDiv = new DivElement();
-    final DivElement firstDiv = parent.querySelector(':first-child');
-    final int height = firstDiv.borderEdge.height;
-    final double left = firstDiv.borderEdge.left;
-    final double top = firstDiv.borderEdge.top;
-    final int width = firstDiv.borderEdge.width;
-
-    confirmationButtons.addAll([
-      new SpanElement()
-        ..text = _langMap[Key.yes]
-        ..onClick.listen((_) {
-          bus.fire(message);
-          confirmationDiv?.remove();
-        })
-        ..style.marginRight = '0.5em',
-      new SpanElement()
-        ..text = _langMap[Key.no]
-        ..onClick.listen((_) => confirmationDiv?.remove())
-        ..style.marginLeft = '0.5em'
-        ..style.textAlign = 'center'
-    ]);
-
-    document.body.children.add(confirmationDiv
-      ..classes.add('confirmation-dirty-hack')
-      ..style.top = '${top.toString()}px'
-      ..style.left = '${left.toString()}px'
-      ..style.height = '${height.toString()}px'
-      ..style.width = '${width.toString()}px'
-      ..children.addAll(confirmationButtons));
-  }
-
-  /**
-   * Get rid of all confirmation boxes.
-   *
-   * This is part of the rather disgusting .confirmation-dirty-hack where we abuse the global
-   * document scope to render the small overlay confirmation boxes. We only need this function
-   * because the overlays are global and not local to the message-archive widget.
-   *
-   * TODO(TL): Fix this. We should no polute global document scope simply because it is easier.
-   */
-  void destroyConfirmationBoxes() {
-    document.body.querySelectorAll('.confirmation-dirty-hack').forEach((DivElement div) {
-      div.remove();
+  void hideYesNoBoxes() {
+    _body.querySelectorAll('.yes-no-box').forEach((DivElement yesNoBox) {
+      yesNoBox.style.display = 'none';
+      yesNoBox.children.clear();
+      yesNoBox.previousElementSibling.style.display = 'flex';
     });
   }
 
@@ -240,13 +203,35 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
+   * Move the [message] from the saved list to the not saved list and update the actions cell
+   * according to the state of the [message]. [message] is ALWAYS moved to the top of the not saved
+   * list to make it clear that the move has happened.
+   *
+   * NOTE: This is a visual only action. It does not perform any actions on the server.
+   */
+  void moveMessage(ORModel.Message message) {
+    final TableRowElement tr = _savedTbody.querySelector('[data-message-id="${message.ID}"]');
+
+    tr?.classes.add('fade-out');
+    tr?.onTransitionEnd.listen((TransitionEvent event) {
+      if (event.propertyName == 'opacity') {
+        tr.remove();
+        _savedTbody.parent.hidden = _savedTbody.children.isEmpty;
+        if (_currentContext == message.context) {
+          _notSavedTbody.insertBefore(_buildRow(message, false), _notSavedTbody.firstChild);
+        }
+      }
+    });
+  }
+
+  /**
    * Add the [list] of [ORModel.Message] to the widgets "not saved messages"
    * table.
    */
   set notSavedMessages(Iterable<ORModel.Message> list) {
     final List<TableRowElement> rows = new List<TableRowElement>();
     list.forEach((ORModel.Message msg) {
-      rows.add(_buildRow(msg));
+      rows.add(_buildRow(msg, false));
     });
 
     _notSavedTbody.children.addAll(rows);
@@ -296,8 +281,15 @@ class UIMessageArchive extends UIModel {
    * NOTE: This is a visual only action. It does not perform any actions on the server.
    */
   void removeMessage(ORModel.Message message) {
-    _savedTbody.querySelector('[data-message-id="${message.ID}"]')?.remove();
-    _savedTbody.parent.hidden = _savedTbody.children.isEmpty;
+    final TableRowElement tr = _savedTbody.querySelector('[data-message-id="${message.ID}"]');
+
+    tr?.classes.add('fade-out');
+    tr?.onTransitionEnd.listen((TransitionEvent event) {
+      if (event.propertyName == 'opacity') {
+        tr.remove();
+        _savedTbody.parent.hidden = _savedTbody.children.isEmpty;
+      }
+    });
   }
 
   /**
@@ -308,7 +300,7 @@ class UIMessageArchive extends UIModel {
     _savedTbody.children.clear();
 
     list.forEach((ORModel.Message msg) {
-      rows.add(_buildRow(msg));
+      rows.add(_buildRow(msg, true));
     });
 
     _savedTbody.children.addAll(rows);
@@ -336,5 +328,29 @@ class UIMessageArchive extends UIModel {
     list.forEach((ORModel.User user) {
       _users[user.ID] = user.name;
     });
+  }
+
+  /**
+   * Setup the yes|no action confirmation box.
+   */
+  void _yesNo(DivElement actionBox, DivElement yesNoBox, ORModel.Message message, Bus bus) {
+    yesNoBox.children.addAll([
+      new SpanElement()
+        ..text = _langMap[Key.yes]
+        ..onClick.listen((_) {
+          bus.fire(message);
+        }),
+      new SpanElement()
+        ..text = _langMap[Key.no]
+        ..onClick.listen((_) {
+          yesNoBox.style.display = 'none';
+          yesNoBox.children.clear();
+          actionBox.style.display = 'flex';
+        })
+    ]);
+
+    yesNoBox.style.width = '${actionBox.borderEdge.width.toString()}px';
+    actionBox.style.display = 'none';
+    yesNoBox.style.display = 'flex';
   }
 }

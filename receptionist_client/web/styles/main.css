@@ -32,30 +32,6 @@ button::-moz-focus-inner {
   border: 0;
 }
 
-/*
-  This is here because we abuse the global document scope to construct
-  confirmation boxes for the message-archive widget.
-
-  TODO(TL): Redo this pile of crap as soon as possible.
-*/
-.confirmation-dirty-hack {
-  display: flex;
-  justify-content: center;
-  position: absolute;
-  background: #f7f7f7;
-  z-index: 1000;
-}
-
-.confirmation-dirty-hack span {
-  color: #2020ff;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.confirmation-dirty-hack span:hover {
-  color: #a5b9db;
-}
-
 .context {
   position: absolute;
   width: 100%;

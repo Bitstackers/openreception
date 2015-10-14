@@ -55,7 +55,7 @@ class MessageArchive extends ViewWidget {
   @override Model.UIMessageArchive get _ui => _uiModel;
 
   @override void _onBlur(_) {
-    _ui.destroyConfirmationBoxes();
+    _ui.hideYesNoBoxes();
   }
 
   @override void _onFocus(_) {
@@ -106,7 +106,7 @@ class MessageArchive extends ViewWidget {
   }
 
   /**
-   *
+   * Close [message] and update the UI.
    */
   dynamic _closeMessage(ORModel.Message message) async {
     try {
@@ -116,7 +116,7 @@ class MessageArchive extends ViewWidget {
       ORModel.Message savedMessage = await _messageController.save(message);
       ORModel.MessageQueueItem response = await _messageController.enqueue(savedMessage);
 
-      _ui.closeMessage(message);
+      _ui.moveMessage(savedMessage);
 
       _log.info('Message id ${response.messageID} successfully enqueued');
       _popup.success(_langMap[Key.messageCloseSuccessTitle], 'ID ${response.ID}');
@@ -127,7 +127,7 @@ class MessageArchive extends ViewWidget {
   }
 
   /**
-   *
+   * Delete [message] and update the UI.
    */
   dynamic _deleteMessage(ORModel.Message message) async {
     try {
@@ -148,7 +148,7 @@ class MessageArchive extends ViewWidget {
    * list.
    *
    * NOTE: No matter how frantically the user spams his/her scroll wheel, this
-   * method caps the load on the server to one hit per 2 seconds.
+   * method caps the load on the server to one hit per 1 second.
    */
   void _handleScrolling(int messageId) {
     if (messageId > 1 && _getMessagesOnScroll) {
@@ -165,7 +165,7 @@ class MessageArchive extends ViewWidget {
           .list(filter)
           .then((Iterable<ORModel.Message> messages) => _ui.notSavedMessages = messages)
           .whenComplete(() {
-        new Timer(new Duration(seconds: 2), () {
+        new Timer(new Duration(seconds: 1), () {
           _getMessagesOnScroll = true;
         });
       });
@@ -192,22 +192,17 @@ class MessageArchive extends ViewWidget {
   }
 
   /**
-   *
+   * Queue/send [message] and update the UI.
    */
   dynamic _sendMessage(ORModel.Message message) async {
     try {
       ORModel.Message savedMessage = await _messageController.save(message);
       ORModel.MessageQueueItem response = await _messageController.enqueue(savedMessage);
 
-      /*
-       *
-       * Update/refresh the message archive
-       *
-       *
-       */
+      _ui.moveMessage(savedMessage);
 
-      _log.info('Message id ${message.ID} successfully engqueued');
-      _popup.success(_langMap[Key.messageSendSuccessTitle], 'ID ${message.ID}');
+      _log.info('Message id ${response.ID} successfully engqueued');
+      _popup.success(_langMap[Key.messageSendSuccessTitle], 'ID ${response.ID}');
     } catch (error) {
       _log.shout('Could not enqueue ${message.asMap} $error');
       _popup.error(_langMap[Key.messageSendErrorTitle], 'ID ${message.ID}');

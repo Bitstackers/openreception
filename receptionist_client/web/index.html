@@ -583,6 +583,11 @@
               flex-grow: 1;
             }
 
+            #message-archive .saved-alert {
+              color: red;
+              font-weight: bold;
+            }
+
             #message-archive .generic-widget-body,
             #message-archive .generic-widget-body > div {
               overflow: auto;
@@ -631,22 +636,48 @@
               cursor: pointer;
             }
 
-            #message-archive table tbody td span {
-              margin: 0.25em;
-            }
-
             #message-archive table tbody td.actions {
               padding: 0;
+              width: 120px;
+            }
+
+            #message-archive table tbody td.actions .actions-container .button-box {
+              display: flex;
+              justify-content: center;
+            }
+
+            #message-archive table tbody td.actions .actions-container {
+              display: flex;
+              justify-content: center;
+              margin: 0 0.5em;
             }
 
             #message-archive table tbody td.actions span {
+              margin: 0 0.25em 0 0.25em;
               color: #2020ff;
               text-decoration: underline;
               cursor: pointer;
             }
 
+            #message-archive table tbody td.actions img {
+              padding: 0;
+              margin: 0;
+              display: inline;
+              width: 20px;
+              height: 20px;
+              cursor: pointer;
+              margin: 0.1em 0.25em 0 0.25em;
+            }
+
+            #message-archive table tbody td.actions img:hover,
             #message-archive table tbody td.actions span:hover {
-              color: #a5b9db;
+              opacity: 0.5;
+            }
+
+            #message-archive table tbody td.actions .actions-container .yes-no-box {
+              display: none;
+              justify-content: center;
+              text-align: center;
             }
 
             #message-archive .td-center {
@@ -686,8 +717,6 @@
                 <thead>
                   <tr>
                     <td data-lang-text="date">::date::</td>
-                    <td data-lang-text="message-archive-contact">::message archive contact::</td>
-                    <td data-lang-text="reception">::reception::</td>
                     <td data-lang-text="agent">::agent::</td>
                     <td data-lang-text="name">::name::</td>
                     <td data-lang-text="company">::company::</td>
