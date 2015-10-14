@@ -11,6 +11,7 @@ class Customer {
   String get extension => '${this._phone.contact}';
 
   Phonio.Call currentCall = null;
+  Iterable<Phonio.Call> get call => _phone.activeCalls;
 
   /// The amout of time the actor will wait before answering an incoming call.
   Duration    answerLatency = new Duration(seconds: 0);

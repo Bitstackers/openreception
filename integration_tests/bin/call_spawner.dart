@@ -66,6 +66,9 @@ Future start_spawning() async {
   });
 }
 
+Duration _randomWait () => new Duration(milliseconds :
+  rand.nextInt(3000)+500);
+
 Future customerAutoDialing(test_fw.Customer customer)  {
 
   StreamSubscription subscription;
@@ -81,6 +84,28 @@ Future customerAutoDialing(test_fw.Customer customer)  {
 
       new Future.delayed (new Duration (milliseconds : 100))
         .then((_) => customer.dial(_randomChoice(_receptionNumbers)));
+    }
+    else if (event is Phonio.CallIncoming) {
+      final List<int> actions = new List.generate(10, (int i) => i);
+      final chosenAction = _randomChoice(actions);
+
+      if (chosenAction <= 1) {
+        Phonio.Call call = customer.call.firstWhere
+            ((Phonio.Call call) => call.ID == event.callID, orElse: () => null);
+
+        if (call != null) {
+          customer.hangup(call);
+        }
+        else {
+          log.warning('Failed to hangup call with ID ${call.ID}');
+        }
+      }
+      else if (chosenAction <= 3) {
+        //Just ignore the call.
+      }
+      else {
+        new Future.delayed(_randomWait());
+      }
     }
   });
 
