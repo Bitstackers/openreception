@@ -19,30 +19,35 @@ part of view;
  * This reloads the call queue list at a fixed refresh rate of [_refreshRate].
  */
 class GlobalCallQueue extends ViewWidget {
-  final Model.AppClientState    _appState;
-  final Controller.Call         _callController;
-  final Controller.Destination  _myDestination;
+  final Model.AppClientState _appState;
+  final Controller.Call _callController;
+  final Map<String, String> _langMap;
+  final Controller.Destination _myDestination;
   final Controller.Notification _notifications;
+  final Popup _popup;
   final Model.UIGlobalCallQueue _uiModel;
 
   /**
    * Constructor.
    */
-  GlobalCallQueue(Model.UIGlobalCallQueue this._uiModel,
-                  Model.AppClientState this._appState,
-                  Controller.Destination this._myDestination,
-                  Controller.Notification this._notifications,
-                  Controller.Call this._callController) {
+  GlobalCallQueue(
+      Model.UIGlobalCallQueue this._uiModel,
+      Model.AppClientState this._appState,
+      Controller.Destination this._myDestination,
+      Controller.Notification this._notifications,
+      Controller.Call this._callController,
+      Popup this._popup,
+      Map<String, String> this._langMap) {
     _loadCallList();
 
     _observers();
   }
 
-  @override Controller.Destination  get _destination => _myDestination;
-  @override Model.UIGlobalCallQueue get _ui          => _uiModel;
+  @override Controller.Destination get _destination => _myDestination;
+  @override Model.UIGlobalCallQueue get _ui => _uiModel;
 
-  @override void _onBlur(_){}
-  @override void _onFocus(_){}
+  @override void _onBlur(_) {}
+  @override void _onFocus(_) {}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
@@ -56,7 +61,7 @@ class GlobalCallQueue extends ViewWidget {
    * Add, remove, update the queue list, depending on the [call] state.
    */
   void _handleCallStateChanges(ORModel.Call call) {
-    switch(call.state) {
+    switch (call.state) {
       case ORModel.CallState.Created:
         _ui.appendCall(call);
         break;
@@ -90,18 +95,69 @@ class GlobalCallQueue extends ViewWidget {
    * Observers.
    */
   void _observers() {
+    bool callControllerBusy = false;
+
     _navigate.onGo.listen(_setWidgetState);
 
     _ui.onClick.listen(_activateMe);
 
     _notifications.onAnyCallStateChange.listen(_handleCallStateChanges);
 
-    _hotKeys.onNumPlus.listen((_) => _callController.pickupNext());
+    void _complete() {
+      new Future.delayed(new Duration(milliseconds: 500), () => callControllerBusy = false);
+    }
 
-    _hotKeys.onNumDiv.listen((_) => _callController.hangup(_appState.activeCall));
+    void _error(Exception error, String title, String message) {
+      if (error is Controller.BusyException) {
+        _popup.error(_langMap[Key.errorSystem], _langMap[Key.errorCallControllerBusy]);
+      } else {
+        _popup.error(title, message);
+      }
 
-    _hotKeys.onF7.listen((_) => _callController.park(_appState.activeCall));
+      _complete();
+    }
 
-    _hotKeys.onF8.listen((_) => _callController.pickupFirstParkedCall());
+    _hotKeys.onNumPlus.listen((_) {
+      if (!callControllerBusy) {
+        callControllerBusy = true;
+        _callController
+            .pickupNext()
+            .catchError((error) => _error(
+                error, _langMap[Key.errorCallNotFound], _langMap[Key.errorCallNotFoundExtended]))
+            .whenComplete(() => _complete());
+      }
+    });
+
+    _hotKeys.onNumDiv.listen((_) {
+      if (!callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
+        callControllerBusy = true;
+        _callController
+            .hangup(_appState.activeCall)
+            .catchError((error) =>
+                _error(error, _langMap[Key.errorCallHangup], 'ID ${_appState.activeCall.ID}'))
+            .whenComplete(() => _complete());
+      }
+    });
+
+    _hotKeys.onF7.listen((_) {
+      if (!callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
+        callControllerBusy = true;
+        _callController
+            .park(_appState.activeCall)
+            .catchError((error) =>
+                _error(error, _langMap[Key.errorCallPark], 'ID ${_appState.activeCall.ID}'))
+            .whenComplete(() => _complete());
+      }
+    });
+
+    _hotKeys.onF8.listen((_) {
+      if (!callControllerBusy) {
+        callControllerBusy = true;
+        _callController
+            .pickupFirstParkedCall()
+            .catchError((error) => _error(error, _langMap[Key.errorCallUnpark], ''))
+            .whenComplete(() => _complete());
+      }
+    });
   }
 }

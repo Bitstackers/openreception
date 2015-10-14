@@ -19,30 +19,35 @@ part of view;
  * This reloads the call queue list at a fixed refresh rate of [_refreshRate].
  */
 class MyCallQueue extends ViewWidget {
-  final Model.AppClientState    _appState;
-  final Controller.Call         _callController;
-  final Controller.Destination  _myDestination;
+  final Model.AppClientState _appState;
+  final Controller.Call _callController;
+  final Map<String, String> _langMap;
+  final Controller.Destination _myDestination;
   final Controller.Notification _notifications;
-  final Model.UIMyCallQueue     _uiModel;
+  final Popup _popup;
+  final Model.UIMyCallQueue _uiModel;
 
   /**
    * Constructor.
    */
-  MyCallQueue(Model.UIMyCallQueue this._uiModel,
-              Model.AppClientState this._appState,
-              Controller.Destination this._myDestination,
-              Controller.Notification this._notifications,
-              Controller.Call this._callController) {
+  MyCallQueue(
+      Model.UIMyCallQueue this._uiModel,
+      Model.AppClientState this._appState,
+      Controller.Destination this._myDestination,
+      Controller.Notification this._notifications,
+      Controller.Call this._callController,
+      Popup this._popup,
+      Map<String, String> this._langMap) {
     _loadCallList();
 
     _observers();
   }
 
   @override Controller.Destination get _destination => _myDestination;
-  @override Model.UIMyCallQueue    get _ui          => _uiModel;
+  @override Model.UIMyCallQueue get _ui => _uiModel;
 
-  @override void _onBlur(_){}
-  @override void _onFocus(_){}
+  @override void _onBlur(_) {}
+  @override void _onFocus(_) {}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
@@ -60,9 +65,9 @@ class MyCallQueue extends ViewWidget {
       return;
     }
 
-    switch(call.state) {
+    switch (call.state) {
       case ORModel.CallState.Created:
-        if(!call.inbound) {
+        if (!call.inbound) {
           /// My outbound call.
           _ui.appendCall(call);
         }
@@ -84,8 +89,7 @@ class MyCallQueue extends ViewWidget {
    */
   void _loadCallList() {
     bool isMine(ORModel.Call call) =>
-        call.assignedTo == _appState.currentUser.ID &&
-        call.state != ORModel.CallState.Transferred;
+        call.assignedTo == _appState.currentUser.ID && call.state != ORModel.CallState.Transferred;
 
     _callController.listCalls().then((Iterable<ORModel.Call> calls) {
       _ui.calls = calls.where(isMine).toList(growable: false);
@@ -96,12 +100,36 @@ class MyCallQueue extends ViewWidget {
    * Observers.
    */
   void _observers() {
+    bool callControllerBusy = false;
+
     _navigate.onGo.listen(_setWidgetState);
 
     _ui.onClick.listen(_activateMe);
 
-    _hotKeys.onCtrlNumMinus.listen((_) =>
-        _callController.transferToFirstParkedCall(_appState.activeCall));
+    void _complete() {
+      new Future.delayed(new Duration(milliseconds: 500), () => callControllerBusy = false);
+    }
+
+    void _error(Exception error, String title, String message) {
+      if (error is Controller.BusyException) {
+        _popup.error(_langMap[Key.errorSystem], _langMap[Key.errorCallControllerBusy]);
+      } else {
+        _popup.error(title, message);
+      }
+
+      _complete();
+    }
+
+    _hotKeys.onCtrlNumMinus.listen((_) {
+      if (!callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
+        callControllerBusy = true;
+        _callController
+            .transferToFirstParkedCall(_appState.activeCall)
+            .catchError((error) =>
+                _error(error, _langMap[Key.errorCallTransfer], 'ID ${_appState.activeCall.ID}'))
+            .whenComplete(() => _complete());
+      }
+    });
 
     _notifications.onAnyCallStateChange.listen(_handleCallStateChanges);
   }

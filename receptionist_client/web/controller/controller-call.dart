@@ -160,8 +160,11 @@ class Call {
    * Make the service layer perform a pickup request to the
    * call-flow-control server.
    */
-  Future<ORModel.Call> pickup(ORModel.Call call) async {
-    _busy = true;
+  Future<ORModel.Call> pickup(ORModel.Call call, {bool inTransaction: false}) async {
+    if(!inTransaction) {
+      _busy = true;
+    }
+
     _command.fire(CallCommand.PICKUP);
 
     _log.info('Picking up $call.');
@@ -189,7 +192,7 @@ class Call {
     return _firstParkedCall().then((ORModel.Call parkedCall) {
 
       if (parkedCall != null) {
-        this.pickup(parkedCall);
+        return pickup(parkedCall, inTransaction: true);
       }
     }).whenComplete(() => _busy = false);
   }

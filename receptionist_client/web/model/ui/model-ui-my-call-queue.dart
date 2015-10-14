@@ -159,7 +159,7 @@ class UIMyCallQueue extends UIModel {
       li.replaceWith(_buildCallElement(call));
     }
     else {
-      this.appendCall(call);
+      appendCall(call);
     }
   }
 }

@@ -80,6 +80,14 @@ abstract class Key {
   static const String editDelete                      = 'edit-delete';
   static const String editorNew                       = 'editor-new';
   static const String error                           = 'error';
+  static const String errorCallControllerBusy         = 'error-call-controller-busy';
+  static const String errorCallHangup                 = 'error-call-hangup';
+  static const String errorCallNotFound               = 'error-call-not-found';
+  static const String errorCallNotFoundExtended       = 'error-call-not-found-extended';
+  static const String errorCallPark                   = 'error-call-park';
+  static const String errorCallTransfer               = 'error-call-transfer';
+  static const String errorCallUnpark                 = 'error-call-unpark';
+  static const String errorSystem                     = 'error-system';
   static const String extension                       = 'extension';
 
   static const String filter                          = 'filter';
@@ -223,6 +231,14 @@ Map<String, String> da =
    Key.editDelete                     : 'ret/slet',
    Key.editorNew                      : 'ny',
    Key.error                          : 'fejl',
+   Key.errorCallControllerBusy        : 'Kaldhåndtering midlertidigt optaget',
+   Key.errorCallHangup                : 'Kaldet kunne ikke afbrydes',
+   Key.errorCallNotFound              : 'Kald ikke fundet',
+   Key.errorCallNotFoundExtended      : 'Det anmodede kald kunne ikke besvares. Prøv igen.',
+   Key.errorCallPark                  : 'Kaldparkering fejlede',
+   Key.errorCallTransfer              : 'Viderestilling fejlede',
+   Key.errorCallUnpark                : 'Parkeret kald kunne ikke aktiveres',
+   Key.errorSystem                    : 'Systemfejl',
    Key.extension                      : 'Lokalnummer',
 
    Key.filter                         : 'filter...',
@@ -365,6 +381,14 @@ Map<String, String> en =
    Key.editDelete                     : 'edit/delete',
    Key.editorNew                      : 'new',
    Key.error                          : 'error',
+   Key.errorCallControllerBusy        : 'Call handling temporarily busy',
+   Key.errorCallHangup                : 'Hangup failed',
+   Key.errorCallNotFound              : 'Call not found',
+   Key.errorCallNotFoundExtended      : 'The requested call could not be answered. Try again.',
+   Key.errorCallPark                  : 'Call park failed',
+   Key.errorCallTransfer              : 'Call transfer failed',
+   Key.errorCallUnpark                : 'Pickup call from park failed',
+   Key.errorSystem                    : 'System error',
    Key.extension                      : 'Extension',
 
    Key.filter                         : 'filter...',
