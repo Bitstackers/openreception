@@ -36,7 +36,6 @@ part 'view-message-compose.dart';
 part 'view-hint.dart';
 part 'view-message-archive.dart';
 part 'view-my-call-queue.dart';
-part 'view-popup.dart';
 part 'view-reception-addresses.dart';
 part 'view-reception-alt-names.dart';
 part 'view-reception-bank-info.dart';

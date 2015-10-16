@@ -75,6 +75,6 @@ class User {
   /**
    * Fetches a userStates of all users
    */
-  Future<Iterable<ORModel.UserStatus>> userStateList() =>
+  Future<Iterable<ORModel.UserStatus>> stateList() =>
     _service.userStatusList();
 }

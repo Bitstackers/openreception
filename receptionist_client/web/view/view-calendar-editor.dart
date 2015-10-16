@@ -24,7 +24,7 @@ class CalendarEditor extends ViewWidget {
   final Map<String, String>       _langMap;
   final Logger                    _log = new Logger('$libraryName.CalendarEditor');
   final Controller.Destination    _myDestination;
-  final Popup                     _popup;
+  final Controller.Popup                     _popup;
   final Model.UIReceptionCalendar _receptionCalendar;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UICalendarEditor    _uiModel;
@@ -39,7 +39,7 @@ class CalendarEditor extends ViewWidget {
                  Model.UIReceptionCalendar this._receptionCalendar,
                  Model.UIReceptionSelector this._receptionSelector,
                  Controller.Calendar  this._calendarController,
-                 Popup this._popup,
+                 Controller.Popup this._popup,
                  Map<String, String> this._langMap) {
     _ui.setHint('Esc | ctrl+backspace | ctrl+s ');
 

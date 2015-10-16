@@ -27,7 +27,7 @@ class MessageArchive extends ViewWidget {
   final ORModel.MessageFilter _notSavedFilter = new ORModel.MessageFilter.empty()
     ..limitCount = 100
     ..messageState = ORModel.MessageState.NotSaved;
-  final Popup _popup;
+  final Controller.Popup _popup;
   final Model.UIReceptionSelector _receptionSelector;
   final ORModel.MessageFilter _savedFilter = new ORModel.MessageFilter.empty()
     ..limitCount = 1000
@@ -46,7 +46,7 @@ class MessageArchive extends ViewWidget {
       Model.UIContactSelector this._contactSelector,
       Model.UIReceptionSelector this._receptionSelector,
       Model.UIMessageCompose this._messageCompose,
-      Popup this._popup,
+      Controller.Popup this._popup,
       Map<String, String> this._langMap) {
     _observers();
   }

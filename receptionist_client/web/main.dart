@@ -43,7 +43,7 @@ main() async {
   Uri                          appUri;
   ORModel.ClientConfiguration  clientConfig;
   Map<String, String>          language;
-  Controller.Notification      notification;
+  Controller.Notification      notificationController;
   String                       token;
   ORTransport.WebSocketClient  webSocketClient;
 
@@ -90,7 +90,7 @@ main() async {
       appState.currentUser = await getUser(clientConfig.authServerUri, token);
 
       webSocketClient = new ORTransport.WebSocketClient();
-      notification = new Controller.Notification(new ORService.NotificationSocket(webSocketClient), appState);
+      notificationController = new Controller.Notification(new ORService.NotificationSocket(webSocketClient), appState);
 
       webSocketClient.onClose = () {
         log.shout('Websocket connection died. Trying reload in 10 seconds');
@@ -103,28 +103,28 @@ main() async {
       webSocketClient.connect(uri).then((_) {
         log.info('WebSocketClient connect succeeded - NotificationSocket up');
 
-        ORService.CallFlowControl callFlowControl = new ORService.CallFlowControl
+        final ORService.CallFlowControl callFlowControl = new ORService.CallFlowControl
             (clientConfig.callFlowServerUri, token, new ORTransport.Client());
-        ORService.NotificationService notificationService = new ORService.NotificationService
+        final ORService.NotificationService notificationService = new ORService.NotificationService
             (clientConfig.notificationServerUri, token, new ORTransport.Client());
-        ORService.RESTUserStore userService = new ORService.RESTUserStore
+        final ORService.RESTUserStore userService = new ORService.RESTUserStore
             (clientConfig.userServerUri, token, new ORTransport.Client());
 
-        Controller.User controllerUser = new Controller.User(callFlowControl, notificationService, userService);
+        final Controller.User userController = new Controller.User(callFlowControl, notificationService, userService);
 
-        observers(controllerUser, appState);
+        observers(userController, appState);
 
         Future rRV = registerReadyView(appState,
                                        clientConfig,
-                                       controllerUser,
+                                       userController,
                                        callFlowControl,
-                                       notification,
+                                       notificationController,
                                        language,
                                        token);
-        Future lCS = loadCallState(callFlowControl, appState);
-        Future sP = controllerUser.setPaused(appState.currentUser);
 
-        Future.wait([rRV, lCS, sP]).then((_) {
+        Future lCS = loadCallState(callFlowControl, appState);
+
+        Future.wait([rRV, lCS]).then((_) {
           appState.changeState(Model.AppState.READY);
         })
         .catchError((error) {
@@ -218,13 +218,13 @@ Future loadCallState(ORService.CallFlowControl callFlowControl, Model.AppClientS
  * responsible for popping a warning on refresh/page close and logging out the
  * user when she exits the application.
  */
-void observers(Controller.User controllerUser, Model.AppClientState appState) {
+void observers(Controller.User userController, Model.AppClientState appState) {
   windowOnBeforeUnload = window.onBeforeUnload.listen((BeforeUnloadEvent event) {
     event.returnValue = '';
   });
 
   windowOnUnload = window.onUnload.listen((_) {
-    controllerUser.setLoggedOut(appState.currentUser);
+    userController.setLoggedOut(appState.currentUser);
   });
 }
 
@@ -278,9 +278,11 @@ Future registerReadyView(Model.AppClientState appState,
   Controller.Calendar calendarController = new Controller.Calendar(calendarStore);
   Controller.Call callController = new Controller.Call(callFlowControl, appState);
 
-  View.Popup popup  = new View.Popup(new Uri.file('/images/popup_error.png'),
-                                     new Uri.file('/images/popup_info.png'),
-                                     new Uri.file('/images/popup_success.png'));
+  Controller.Popup popup  = new Controller.Popup(new Uri.file('/images/popup_error.png'),
+                                                 new Uri.file('/images/popup_info.png'),
+                                                 new Uri.file('/images/popup_success.png'));
+
+  Controller.Sound sound = new Controller.Sound(querySelector('audio.sound-pling'));
 
   return receptionController.list()
       .then((Iterable<ORModel.Reception> receptions) {
@@ -300,6 +302,7 @@ Future registerReadyView(Model.AppClientState appState,
              messageController,
              endpointController,
              popup,
+             sound,
              langMap);
 
         //simulation.start(callController, appState);

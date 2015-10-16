@@ -20,7 +20,7 @@ class ReceptionSelector extends ViewWidget {
   final Model.AppClientState      _appState;
   final Map<String, String>       _langMap;
   final Controller.Destination    _myDestination;
-  final Popup                     _popup;
+  final Controller.Popup          _popup;
   final List<ORModel.Reception>   _receptions;
   final Model.UIReceptionSelector _uiModel;
 
@@ -31,7 +31,7 @@ class ReceptionSelector extends ViewWidget {
                     Model.AppClientState this._appState,
                     Controller.Destination this._myDestination,
                     List<ORModel.Reception> this._receptions,
-                    Popup this._popup,
+                    Controller.Popup this._popup,
                     Map<String, String> this._langMap) {
     _ui.setHint('alt+v');
 
