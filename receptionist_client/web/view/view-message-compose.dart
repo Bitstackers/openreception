@@ -25,7 +25,7 @@ class MessageCompose extends ViewWidget {
   final Model.UIMessageArchive _uiMessageArchive;
   final Controller.Message _messageController;
   final Controller.Destination _myDestination;
-  final Popup _popup;
+  final Controller.Popup _popup;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIMessageCompose _uiModel;
 
@@ -41,7 +41,7 @@ class MessageCompose extends ViewWidget {
       Model.UIReceptionSelector this._receptionSelector,
       Controller.Message this._messageController,
       Controller.Endpoint this._endpointController,
-      Popup this._popup,
+      Controller.Popup this._popup,
       Map<String, String> this._langMap) {
     _ui.setHint('alt+b | ctrl+space | ctrl+s | ctrl+enter');
 

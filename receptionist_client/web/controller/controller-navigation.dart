@@ -139,7 +139,7 @@ class Navigate {
     _widgetHistory[destination.context] = destination.widget;
 
     if(pushState) {
-      window.history.pushState(null, '${destination}', '#${destination}');
+      Html.window.history.pushState(null, '${destination}', '#${destination}');
     }
     _bus.fire(destination);
   }
@@ -153,8 +153,8 @@ class Navigate {
   void goWindowLocation({bool pushState: true}) {
     String hash = '';
 
-    if(window.location.hash.isNotEmpty) {
-      hash = window.location.hash.substring(1);
+    if(Html.window.location.hash.isNotEmpty) {
+      hash = Html.window.location.hash.substring(1);
     }
 
     if(hash.isEmpty || !_destinations.containsKey(hash)) {
@@ -188,7 +188,7 @@ class Navigate {
    *
    */
   void _observers() {
-    window.onPopState.listen((_) => goWindowLocation(pushState: false));
+    Html.window.onPopState.listen((_) => goWindowLocation(pushState: false));
   }
 
   /**

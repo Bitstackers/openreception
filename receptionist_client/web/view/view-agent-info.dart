@@ -22,15 +22,16 @@ class AgentInfo extends ViewWidget {
   final Logger               _log = new Logger('$libraryName.AgentInfo');
   Controller.Notification    _notification;
   final Model.UIAgentInfo    _uiModel;
-  final Controller.User      _userController;
+  final Controller.User      _user;
 
   /**
    * Constructor.
    */
   AgentInfo(Model.UIAgentInfo this._uiModel,
             Model.AppClientState this._appState,
-            Controller.User this._userController,
-            Controller.Notification this._notification) {
+            Controller.User this._user,
+            Controller.Notification this._notification,
+            ORModel.UserStatus initialUserState) {
     _ui.activeCount = 0;
     _ui.pausedCount = 0;
     _ui.agentState = Model.AgentState.UNKNOWN;
@@ -41,7 +42,7 @@ class AgentInfo extends ViewWidget {
       _ui.portrait = _appState.currentUser.portrait;
     }
 
-    _userController.getState(_appState.currentUser).then(_updateUserState);
+    _updateUserState(initialUserState);
 
     _updateCounters();
 
@@ -58,14 +59,14 @@ class AgentInfo extends ViewWidget {
    * Set the users state to [AgentState.IDLE].
    */
   void _setIdle(_) {
-    _userController.setIdle(_appState.currentUser).then(_updateUserState);
+    _user.setIdle(_appState.currentUser).then(_updateUserState);
   }
 
   /**
    * Set the users state to [AgentState.PAUSED].
    */
   void _setPaused(_) {
-    _userController.setPaused(_appState.currentUser).then(_updateUserState);
+    _user.setPaused(_appState.currentUser).then(_updateUserState);
   }
 
   /**
@@ -115,7 +116,7 @@ class AgentInfo extends ViewWidget {
    * state.
    */
   void _updateCounters({Model.ClientConnectionState connectionState}) {
-    _userController.userStateList()
+    _user.stateList()
         .then((Iterable<ORModel.UserStatus> userStates) {
           if(connectionState != null && connectionState.connectionCount == 0) {
             _ui.activeCount = userStates.where((ORModel.UserStatus user) =>

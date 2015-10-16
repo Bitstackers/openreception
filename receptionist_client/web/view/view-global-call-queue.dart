@@ -20,12 +20,15 @@ part of view;
  */
 class GlobalCallQueue extends ViewWidget {
   final Model.AppClientState _appState;
-  final Controller.Call _callController;
+  final Controller.Call _call;
+  bool _callControllerBusy = false;
   final Map<String, String> _langMap;
   final Controller.Destination _myDestination;
-  final Controller.Notification _notifications;
-  final Popup _popup;
+  final Controller.Notification _notification;
+  final Controller.Popup _popup;
+  final Controller.Sound _sound;
   final Model.UIGlobalCallQueue _uiModel;
+  ORModel.UserStatus _userState;
 
   /**
    * Constructor.
@@ -34,9 +37,11 @@ class GlobalCallQueue extends ViewWidget {
       Model.UIGlobalCallQueue this._uiModel,
       Model.AppClientState this._appState,
       Controller.Destination this._myDestination,
-      Controller.Notification this._notifications,
-      Controller.Call this._callController,
-      Popup this._popup,
+      Controller.Notification this._notification,
+      Controller.Call this._call,
+      Controller.Popup this._popup,
+      Controller.Sound this._sound,
+      ORModel.UserStatus this._userState,
       Map<String, String> this._langMap) {
     _loadCallList();
 
@@ -86,7 +91,7 @@ class GlobalCallQueue extends ViewWidget {
   void _loadCallList() {
     bool unassigned(ORModel.Call call) => call.assignedTo == ORModel.User.noID;
 
-    _callController.listCalls().then((Iterable<ORModel.Call> calls) {
+    _call.listCalls().then((Iterable<ORModel.Call> calls) {
       _ui.calls = calls.where(unassigned).toList(growable: false);
     });
   }
@@ -95,16 +100,14 @@ class GlobalCallQueue extends ViewWidget {
    * Observers.
    */
   void _observers() {
-    bool callControllerBusy = false;
-
     _navigate.onGo.listen(_setWidgetState);
 
     _ui.onClick.listen(_activateMe);
 
-    _notifications.onAnyCallStateChange.listen(_handleCallStateChanges);
+    _notification.onAnyCallStateChange.listen(_handleCallStateChanges);
 
     void _complete() {
-      new Future.delayed(new Duration(milliseconds: 500), () => callControllerBusy = false);
+      new Future.delayed(new Duration(milliseconds: 500), () => _callControllerBusy = false);
     }
 
     void _error(Exception error, String title, String message) {
@@ -117,10 +120,32 @@ class GlobalCallQueue extends ViewWidget {
       _complete();
     }
 
+    _notification.onAgentStateChange.listen((ORModel.UserStatus userStatus) {
+      if (userStatus.userID == _appState.currentUser.ID) {
+        _userState = userStatus;
+      }
+    });
+
+    /**
+     * Play the pling sound every 2 seconds if
+     *
+     *  there are calls in the queueu AND
+     *  appState.activeCall is NOT noCall AND
+     *  the agent state is idle or unknown.
+     */
+    new Timer.periodic(new Duration(seconds: 2), (_) {
+      if (_ui.hasCalls &&
+          _appState.activeCall != ORModel.Call.noCall &&
+          (_userState.state == ORModel.UserState.Idle ||
+              _userState.state == ORModel.UserState.Unknown)) {
+        _sound.pling();
+      }
+    });
+
     _hotKeys.onNumPlus.listen((_) {
-      if (!callControllerBusy) {
-        callControllerBusy = true;
-        _callController
+      if (!_callControllerBusy) {
+        _callControllerBusy = true;
+        _call
             .pickupNext()
             .catchError((error) => _error(
                 error, _langMap[Key.errorCallNotFound], _langMap[Key.errorCallNotFoundExtended]))
@@ -129,9 +154,9 @@ class GlobalCallQueue extends ViewWidget {
     });
 
     _hotKeys.onNumDiv.listen((_) {
-      if (!callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
-        callControllerBusy = true;
-        _callController
+      if (!_callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
+        _callControllerBusy = true;
+        _call
             .hangup(_appState.activeCall)
             .catchError((error) =>
                 _error(error, _langMap[Key.errorCallHangup], 'ID ${_appState.activeCall.ID}'))
@@ -140,9 +165,9 @@ class GlobalCallQueue extends ViewWidget {
     });
 
     _hotKeys.onF7.listen((_) {
-      if (!callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
-        callControllerBusy = true;
-        _callController
+      if (!_callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
+        _callControllerBusy = true;
+        _call
             .park(_appState.activeCall)
             .catchError((error) =>
                 _error(error, _langMap[Key.errorCallPark], 'ID ${_appState.activeCall.ID}'))
@@ -151,9 +176,9 @@ class GlobalCallQueue extends ViewWidget {
     });
 
     _hotKeys.onF8.listen((_) {
-      if (!callControllerBusy) {
-        callControllerBusy = true;
-        _callController
+      if (!_callControllerBusy) {
+        _callControllerBusy = true;
+        _call
             .pickupFirstParkedCall()
             .catchError((error) => _error(error, _langMap[Key.errorCallUnpark], ''))
             .whenComplete(() => _complete());

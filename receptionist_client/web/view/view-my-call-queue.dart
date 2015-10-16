@@ -20,11 +20,11 @@ part of view;
  */
 class MyCallQueue extends ViewWidget {
   final Model.AppClientState _appState;
-  final Controller.Call _callController;
+  final Controller.Call _call;
   final Map<String, String> _langMap;
   final Controller.Destination _myDestination;
-  final Controller.Notification _notifications;
-  final Popup _popup;
+  final Controller.Notification _notification;
+  final Controller.Popup _popup;
   final Model.UIMyCallQueue _uiModel;
 
   /**
@@ -34,9 +34,9 @@ class MyCallQueue extends ViewWidget {
       Model.UIMyCallQueue this._uiModel,
       Model.AppClientState this._appState,
       Controller.Destination this._myDestination,
-      Controller.Notification this._notifications,
-      Controller.Call this._callController,
-      Popup this._popup,
+      Controller.Notification this._notification,
+      Controller.Call this._call,
+      Controller.Popup this._popup,
       Map<String, String> this._langMap) {
     _loadCallList();
 
@@ -91,7 +91,7 @@ class MyCallQueue extends ViewWidget {
     bool isMine(ORModel.Call call) =>
         call.assignedTo == _appState.currentUser.ID && call.state != ORModel.CallState.Transferred;
 
-    _callController.listCalls().then((Iterable<ORModel.Call> calls) {
+    _call.listCalls().then((Iterable<ORModel.Call> calls) {
       _ui.calls = calls.where(isMine).toList(growable: false);
     });
   }
@@ -123,7 +123,7 @@ class MyCallQueue extends ViewWidget {
     _hotKeys.onCtrlNumMinus.listen((_) {
       if (!callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
         callControllerBusy = true;
-        _callController
+        _call
             .transferToFirstParkedCall(_appState.activeCall)
             .catchError((error) =>
                 _error(error, _langMap[Key.errorCallTransfer], 'ID ${_appState.activeCall.ID}'))
@@ -131,6 +131,6 @@ class MyCallQueue extends ViewWidget {
       }
     });
 
-    _notifications.onAnyCallStateChange.listen(_handleCallStateChanges);
+    _notification.onAnyCallStateChange.listen(_handleCallStateChanges);
   }
 }

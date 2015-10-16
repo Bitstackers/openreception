@@ -14,7 +14,7 @@
 library controller;
 
 import 'dart:async';
-import 'dart:html';
+import 'dart:html' as Html;
 
 import '../model/model.dart' as Model;
 
@@ -33,7 +33,9 @@ part 'controller-hotkeys.dart';
 part 'controller-message.dart';
 part 'controller-navigation.dart';
 part 'controller-notification.dart';
+part 'controller-popup.dart';
 part 'controller-reception.dart';
+part 'controller-sound.dart';
 part 'controller-user.dart';
 
 const String libraryName = 'controller';

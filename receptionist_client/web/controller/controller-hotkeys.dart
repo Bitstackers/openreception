@@ -22,65 +22,65 @@ class HotKeys {
 
   final Keyboard _keyDown = new Keyboard();
 
-  final Bus<KeyboardEvent> _altA         = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _altB         = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _altC         = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _altE         = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _altF         = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _altH         = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _altI         = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _altK         = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _altM         = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _altQ         = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _altS         = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _altT         = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _altV         = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _altW         = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _altX         = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _ctrlAltEnter = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _ctrlAltP     = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _ctrlNumMinus = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _f1           = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _f7           = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _f8           = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _f9           = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _numDiv       = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _numMult      = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _numPlus      = new Bus<KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _altA         = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _altB         = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _altC         = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _altE         = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _altF         = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _altH         = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _altI         = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _altK         = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _altM         = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _altQ         = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _altS         = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _altT         = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _altV         = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _altW         = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _altX         = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _ctrlAltEnter = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _ctrlAltP     = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _ctrlNumMinus = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _f1           = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _f7           = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _f8           = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _f9           = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _numDiv       = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _numMult      = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _numPlus      = new Bus<Html.KeyboardEvent>();
 
-  Stream<KeyboardEvent> get onAltA         => _altA.stream;
-  Stream<KeyboardEvent> get onAltB         => _altB.stream;
-  Stream<KeyboardEvent> get onAltC         => _altC.stream;
-  Stream<KeyboardEvent> get onAltE         => _altE.stream;
-  Stream<KeyboardEvent> get onAltF         => _altF.stream;
-  Stream<KeyboardEvent> get onAltH         => _altH.stream;
-  Stream<KeyboardEvent> get onAltI         => _altI.stream;
-  Stream<KeyboardEvent> get onAltK         => _altK.stream;
-  Stream<KeyboardEvent> get onAltM         => _altM.stream;
-  Stream<KeyboardEvent> get onAltQ         => _altQ.stream;
-  Stream<KeyboardEvent> get onAltS         => _altS.stream;
-  Stream<KeyboardEvent> get onAltT         => _altT.stream;
-  Stream<KeyboardEvent> get onAltV         => _altV.stream;
-  Stream<KeyboardEvent> get onAltW         => _altW.stream;
-  Stream<KeyboardEvent> get onAltX         => _altX.stream;
-  Stream<KeyboardEvent> get onCtrlAltEnter => _ctrlAltEnter.stream;
-  Stream<KeyboardEvent> get onCtrlAltP     => _ctrlAltP.stream;
-  Stream<KeyboardEvent> get onCtrlNumMinus => _ctrlNumMinus.stream;
-  Stream<KeyboardEvent> get onF1           => _f1.stream;
-  Stream<KeyboardEvent> get onF7           => _f7.stream;
-  Stream<KeyboardEvent> get onF8           => _f8.stream;
-  Stream<KeyboardEvent> get onF9           => _f9.stream;
-  Stream<KeyboardEvent> get onNumDiv       => _numDiv.stream;
-  Stream<KeyboardEvent> get onNumMult      => _numMult.stream;
-  Stream<KeyboardEvent> get onNumPlus      => _numPlus.stream;
+  Stream<Html.KeyboardEvent> get onAltA         => _altA.stream;
+  Stream<Html.KeyboardEvent> get onAltB         => _altB.stream;
+  Stream<Html.KeyboardEvent> get onAltC         => _altC.stream;
+  Stream<Html.KeyboardEvent> get onAltE         => _altE.stream;
+  Stream<Html.KeyboardEvent> get onAltF         => _altF.stream;
+  Stream<Html.KeyboardEvent> get onAltH         => _altH.stream;
+  Stream<Html.KeyboardEvent> get onAltI         => _altI.stream;
+  Stream<Html.KeyboardEvent> get onAltK         => _altK.stream;
+  Stream<Html.KeyboardEvent> get onAltM         => _altM.stream;
+  Stream<Html.KeyboardEvent> get onAltQ         => _altQ.stream;
+  Stream<Html.KeyboardEvent> get onAltS         => _altS.stream;
+  Stream<Html.KeyboardEvent> get onAltT         => _altT.stream;
+  Stream<Html.KeyboardEvent> get onAltV         => _altV.stream;
+  Stream<Html.KeyboardEvent> get onAltW         => _altW.stream;
+  Stream<Html.KeyboardEvent> get onAltX         => _altX.stream;
+  Stream<Html.KeyboardEvent> get onCtrlAltEnter => _ctrlAltEnter.stream;
+  Stream<Html.KeyboardEvent> get onCtrlAltP     => _ctrlAltP.stream;
+  Stream<Html.KeyboardEvent> get onCtrlNumMinus => _ctrlNumMinus.stream;
+  Stream<Html.KeyboardEvent> get onF1           => _f1.stream;
+  Stream<Html.KeyboardEvent> get onF7           => _f7.stream;
+  Stream<Html.KeyboardEvent> get onF8           => _f8.stream;
+  Stream<Html.KeyboardEvent> get onF9           => _f9.stream;
+  Stream<Html.KeyboardEvent> get onNumDiv       => _numDiv.stream;
+  Stream<Html.KeyboardEvent> get onNumMult      => _numMult.stream;
+  Stream<Html.KeyboardEvent> get onNumPlus      => _numPlus.stream;
 
   /**
    * Internal constructor.
    */
   HotKeys._internal() {
-    window.document.onKeyDown.listen(_keyDown.press);
+    Html.window.document.onKeyDown.listen(_keyDown.press);
 
-    final Map<dynamic, EventListener> preventDefaultBindings =
+    final Map<dynamic, Html.EventListener> preventDefaultBindings =
       {'Alt+a'                 : _altA.fire,
        'Alt+b'                 : _altB.fire,
        'Alt+c'                 : _altC.fire,
@@ -120,7 +120,7 @@ class HotKeys {
   /**
    * Register the [keyMap] keybindings to [keyboard].
    */
-  void registerKeys(Keyboard keyboard, Map<dynamic, EventListener> keyMap) {
+  void registerKeys(Keyboard keyboard, Map<dynamic, Html.EventListener> keyMap) {
     keyMap.forEach((key, callback) {
       keyboard.register(key, callback);
     });
@@ -130,9 +130,9 @@ class HotKeys {
    * Register the [keyMap] key bindings to [keyboard]. Prevent default on all
    * key events.
    */
-  void registerKeysPreventDefault(Keyboard keyboard, Map<dynamic, EventListener> keyMap) {
+  void registerKeysPreventDefault(Keyboard keyboard, Map<dynamic, Html.EventListener> keyMap) {
     keyMap.forEach((key, callback) {
-      keyboard.register(key, (Event event) {
+      keyboard.register(key, (Html.Event event) {
         event.preventDefault();
         callback(event);
       });

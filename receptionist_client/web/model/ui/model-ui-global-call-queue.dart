@@ -112,6 +112,11 @@ class UIGlobalCallQueue extends UIModel {
   }
 
   /**
+   * Return true if there are calls in the queue.
+   */
+  bool get hasCalls => _list.children.isNotEmpty;
+
+  /**
    * Observers.
    */
   void _observers() {

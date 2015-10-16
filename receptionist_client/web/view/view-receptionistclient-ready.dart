@@ -31,13 +31,14 @@ class ReceptionistclientReady {
   Contexts _contexts;
   GlobalCallQueue _globalCallQueue;
   Hint _help;
+  ORModel.UserStatus _initialUserStatus;
   Map<String, String> _langMap;
   MessageArchive _messageArchive;
   MessageCompose _messageCompose;
   Controller.Message _messageController;
   MyCallQueue _myCallQueue;
   Controller.Notification _notification;
-  Popup _popup;
+  Controller.Popup _popup;
   ReceptionAddresses _receptionAddresses;
   ReceptionAltNames _receptionAltNames;
   ReceptionBankInfo _receptionBankInfo;
@@ -56,6 +57,7 @@ class ReceptionistclientReady {
   ReceptionWebsites _receptionWebsites;
   static ReceptionistclientReady _singleton;
   List<ORModel.Reception> _sortedReceptions;
+  final Controller.Sound _sound;
   final Controller.User _userController;
   final Model.UIReceptionistclientReady _ui;
   WelcomeMessage _welcomeMessage;
@@ -75,7 +77,8 @@ class ReceptionistclientReady {
       Controller.Notification notification,
       Controller.Message message,
       Controller.Endpoint endpointController,
-      Popup popup,
+      Controller.Popup popup,
+      Controller.Sound sound,
       Map<String, String> langMap) {
     if (_singleton == null) {
       _singleton = new ReceptionistclientReady._internal(
@@ -91,6 +94,7 @@ class ReceptionistclientReady {
           message,
           endpointController,
           popup,
+          sound,
           langMap);
     } else {
       return _singleton;
@@ -113,6 +117,7 @@ class ReceptionistclientReady {
       this._messageController,
       this._endpointController,
       this._popup,
+      this._sound,
       this._langMap) {
     _observers();
   }
@@ -153,8 +158,21 @@ class ReceptionistclientReady {
     _contexts = new Contexts(new Model.UIContexts());
     _help = new Hint(new Model.UIHint());
 
-    _agentInfo = new AgentInfo(new Model.UIAgentInfo(querySelector('#agent-info')), _appState,
-        _userController, _notification);
+    _userController.getState(_appState.currentUser).then((ORModel.UserStatus userStatus) {
+      _agentInfo = new AgentInfo(new Model.UIAgentInfo(querySelector('#agent-info')), _appState,
+          _userController, _notification, userStatus);
+
+      _globalCallQueue = new GlobalCallQueue(
+          new Model.UIGlobalCallQueue(querySelector('#global-call-queue'), _langMap),
+          _appState,
+          new Controller.Destination(Controller.Context.Home, Controller.Widget.GlobalCallQueue),
+          _notification,
+          _callController,
+          _popup,
+          _sound,
+          userStatus,
+          _langMap);
+    });
 
     _contactCalendar = new ContactCalendar(
         _uiContactCalendar,
@@ -189,15 +207,6 @@ class ReceptionistclientReady {
         new Controller.Destination(Controller.Context.Home, Controller.Widget.ContactSelector),
         _uiReceptionSelector,
         _contactController);
-
-    _globalCallQueue = new GlobalCallQueue(
-        new Model.UIGlobalCallQueue(querySelector('#global-call-queue'), _langMap),
-        _appState,
-        new Controller.Destination(Controller.Context.Home, Controller.Widget.GlobalCallQueue),
-        _notification,
-        _callController,
-        _popup,
-        _langMap);
 
     _messageArchive = new MessageArchive(
         _uiMessageArchive,
