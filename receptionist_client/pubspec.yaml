@@ -10,4 +10,7 @@ dependencies:
   markdown: any
   okeyee: any
   openreception_framework:
-    git: https://github.com/Bitstackers/OpenReceptionFramework.git
+    version: '>=0.0.25+14'
+    git:
+      ref: master
+      url: https://github.com/Bitstackers/OpenreceptionFramework.git
