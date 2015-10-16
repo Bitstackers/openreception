@@ -30,13 +30,13 @@ class User {
    * Fetches the last known connection state of users.
    */
   Future<Iterable<ORModel.ClientConnection>> connections() =>
-    _connectionService.clientConnections();
+      _connectionService.clientConnections();
 
   /**
    * Fetches the connection state of a single user.
    */
   Future<ORModel.ClientConnection> connection(ORModel.User user) =>
-    _connectionService.clientConnection(user.ID);
+      _connectionService.clientConnection(user.ID);
 
   /**
    *
@@ -46,8 +46,8 @@ class User {
   /**
    * Get the [Model.UserStatus] for the current user.
    */
-  Future<ORModel.UserStatus> getState(ORModel.User user) =>
-    _service.userStatus(user.ID);
+  Future<ORModel.UserStatus> getState(ORModel.User user) => _service.userStatus(user.ID).catchError(
+      (Exception error) => error is ORStorage.NotFound ? new ORModel.UserStatus() : error);
 
   /**
    * Return the users list.
@@ -57,24 +57,21 @@ class User {
   /**
    * Set the user idle.
    */
-  Future<ORModel.UserStatus> setIdle(ORModel.User user) =>
-    _service.userStateIdle(user.ID);
+  Future<ORModel.UserStatus> setIdle(ORModel.User user) => _service.userStateIdle(user.ID);
 
   /**
    * Set the user logged out.
    */
   Future<ORModel.UserStatus> setLoggedOut(ORModel.User user) =>
-    _service.userStateLoggedOut(user.ID);
+      _service.userStateLoggedOut(user.ID);
 
   /**
    * Set the user paused.
    */
-  Future<ORModel.UserStatus> setPaused(ORModel.User user) =>
-    _service.userStatePaused(user.ID);
+  Future<ORModel.UserStatus> setPaused(ORModel.User user) => _service.userStatePaused(user.ID);
 
   /**
    * Fetches a userStates of all users
    */
-  Future<Iterable<ORModel.UserStatus>> stateList() =>
-    _service.userStatusList();
+  Future<Iterable<ORModel.UserStatus>> stateList() => _service.userStatusList();
 }
