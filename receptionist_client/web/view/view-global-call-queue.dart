@@ -120,6 +120,9 @@ class GlobalCallQueue extends ViewWidget {
       _complete();
     }
 
+    /**
+     *
+     */
     _notification.onAgentStateChange.listen((ORModel.UserStatus userStatus) {
       if (userStatus.userID == _appState.currentUser.ID) {
         _userState = userStatus;
@@ -135,7 +138,7 @@ class GlobalCallQueue extends ViewWidget {
      */
     new Timer.periodic(new Duration(seconds: 2), (_) {
       if (_ui.hasCalls &&
-          _appState.activeCall != ORModel.Call.noCall &&
+          _appState.activeCall == ORModel.Call.noCall &&
           (_userState.state == ORModel.UserState.Idle ||
               _userState.state == ORModel.UserState.Unknown)) {
         _sound.pling();
