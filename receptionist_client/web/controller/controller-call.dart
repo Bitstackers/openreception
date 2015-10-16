@@ -83,18 +83,11 @@ class Call {
    *
    */
   Future<ORModel.Call> _firstParkedCall() =>
-    _service.callList().then((Iterable<ORModel.Call> calls) {
-      ORModel.Call parkedCall = calls.firstWhere((ORModel.Call call) =>
+    _service.callList().then((Iterable<ORModel.Call> calls) =>
+      calls.firstWhere((ORModel.Call call) =>
         call.assignedTo == _appState.currentUser.ID &&
-        call.state == ORModel.CallState.Parked, orElse: () => null);
-
-      if (parkedCall != null) {
-        return parkedCall;
-      }
-      else {
-        return ORModel.Call.noCall;
-      }
-   });
+        call.state == ORModel.CallState.Parked,
+        orElse: () => ORModel.Call.noCall));
 
   /**
    *
@@ -160,10 +153,8 @@ class Call {
    * Make the service layer perform a pickup request to the
    * call-flow-control server.
    */
-  Future<ORModel.Call> pickup(ORModel.Call call, {bool inTransaction: false}) async {
-    if(!inTransaction) {
-      _busy = true;
-    }
+  Future<ORModel.Call> pickup(ORModel.Call call) async {
+     _busy = true;
 
     _command.fire(CallCommand.PICKUP);
 
@@ -187,15 +178,11 @@ class Call {
   /**
    *
    */
-  Future<ORModel.Call> pickupFirstParkedCall() {
-    _busy = true;
-    return _firstParkedCall().then((ORModel.Call parkedCall) {
-
-      if (parkedCall != null) {
-        return pickup(parkedCall, inTransaction: true);
-      }
-    }).whenComplete(() => _busy = false);
-  }
+  Future<ORModel.Call> pickupFirstParkedCall() =>
+    _firstParkedCall().then((ORModel.Call parkedCall) =>
+        parkedCall != null
+        ? pickup(parkedCall)
+        : ORModel.Call.noCall);
 
   /**
    *
