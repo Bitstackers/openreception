@@ -534,7 +534,7 @@ int main(int argc, char *argv[]) {
       or_status(OR_OK, "Autoanswer disabled.");
     }
 
-    /* Pickup incoming call, unsupported for now. */
+    /* Pickup default incoming call. */
     else if (option[0] == 'p') {
       if (current_call != PJSUA_INVALID_ID) {
         pjsua_call_answer(current_call, 200, NULL, NULL);
@@ -544,10 +544,52 @@ int main(int argc, char *argv[]) {
       }
     }
 
+    /* Pickup specific incoming call. */
+    else if (option[0] == 'P') {
+      char *call_id_s = &option[1];
+      int call_id = -1;
+      sscanf(call_id_s, "%d", &call_id);
+
+      if (call_id != PJSUA_INVALID_ID) {
+        status = pjsua_call_answer(call_id, 200, NULL, NULL);
+
+	if (status != PJ_SUCCESS) {
+	  or_status (OR_ERROR, "Could not make call");
+	}
+	else {
+	  or_status(OR_OK, "Call picked up.");
+	}
+      }
+      else {
+        or_status(OR_ERROR, "Invalid call id supplied!");
+      }
+    }
+
+    /* Hangup specific call. */
+    else if (option[0] == 'K') {
+      char *call_id_s = &option[1];
+      int call_id = -1;
+      sscanf(call_id_s, "%d", &call_id);
+
+      if (call_id != PJSUA_INVALID_ID) {
+        status = pjsua_call_hangup (call_id, 0, NULL, NULL);
+
+	if (status != PJ_SUCCESS) {
+	  or_status (OR_ERROR, "Could not hang up call");
+	}
+	else {
+	  or_status(OR_OK, "Call hung up.");
+	}
+      }
+      else {
+        or_status(OR_ERROR, "Invalid call id supplied!");
+      }
+    }
+
     /* Hang up current call */
     else if (option[0] == 'H') {
       if (current_call != PJSUA_INVALID_ID) {
-        pjsua_call_hangup (current_call, 0,NULL, NULL);
+        pjsua_call_hangup (current_call, 0, NULL, NULL);
         or_status (OR_OK, "Hanging up current call...");
       } else {
         or_status(OR_ERROR, "No call to hang up.");
