@@ -91,6 +91,8 @@ class Customer {
 
   pickupCall () => this._phone.answer();
 
+  pickup (Phonio.Call call) => this._phone.answerSpecific(call);
+
   Future hangup(Phonio.Call call) =>
     new Future.error(new UnimplementedError());
 
@@ -153,7 +155,8 @@ class Customer {
   void _onPhoneEvent(Phonio.Event event) {
     if (event is Phonio.CallOutgoing) {
       log.finest('$this received call outgoing event');
-      Phonio.Call call = new Phonio.Call(event.callID, event.callee, false);
+      Phonio.Call call = new Phonio.Call(event.callID, event.callee, false,
+          _phone.defaultAccount.username);
       log.finest('$this sets call to $call');
 
       this.currentCall = call;
@@ -161,7 +164,8 @@ class Customer {
 
     else if (event is Phonio.CallIncoming) {
       log.finest('$this received incoming call event');
-      Phonio.Call call = new Phonio.Call(event.callID, event.callee, false);
+      Phonio.Call call = new Phonio.Call(event.callID, event.callee, false,
+          _phone.defaultAccount.username);
       log.finest('$this sets call to $call');
       this.currentCall = call;
 
