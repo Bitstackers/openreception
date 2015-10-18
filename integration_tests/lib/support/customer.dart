@@ -8,20 +8,20 @@ class Customer {
 
   static final Logger log = new Logger('Customer');
 
-  String get extension => '${this._phone.contact}';
+  String get extension => '${this.phone.contact}';
 
   Phonio.Call currentCall = null;
-  Iterable<Phonio.Call> get call => _phone.activeCalls;
+  Iterable<Phonio.Call> get call => phone.activeCalls;
 
   /// The amout of time the actor will wait before answering an incoming call.
   Duration    answerLatency = new Duration(seconds: 0);
 
-  Phonio.SIPPhone _phone = null;
-  Stream<Phonio.Event> get phoneEvents => _phone.eventStream;
-  String get name => this._phone.defaultAccount.username;
+  Phonio.SIPPhone phone = null;
+  Stream<Phonio.Event> get phoneEvents => phone.eventStream;
+  String get name => this.phone.defaultAccount.username;
   StreamSubscription eventSubscription = null;
 
-  Customer (this._phone);
+  Customer (this.phone);
 
   Map toJson() => {
     'id' : this.hashCode,
@@ -30,18 +30,18 @@ class Customer {
   };
 
   @override
-  int get hashCode => this._phone.contact.hashCode;
+  int get hashCode => this.phone.contact.hashCode;
 
   /**
    *
    */
-  Future initialize() => this._phone.initialize()
-      .then((_) => eventSubscription = this._phone.eventStream.listen(this._onPhoneEvent, onDone : () => log.info('$this closing event listener.')));
+  Future initialize() => this.phone.initialize()
+      .then((_) => eventSubscription = this.phone.eventStream.listen(this._onPhoneEvent, onDone : () => log.info('$this closing event listener.')));
 
   teardown() {
     log.info('$this Waiting for teardown');
 
-    return this._phone.teardown()
+    return this.phone.teardown()
       .then ((_) => log.info('$this Got phone teardown'))
       .then((_) => this.currentCall = null)
       .then ((_) => log.info('$this is done teardown'))
@@ -56,7 +56,7 @@ class Customer {
   Future Wait_For_Dialtone() => this.waitForInboundCall();
 
   Future autoAnswer(bool enabled) =>
-    this._phone.autoAnswer(enabled);
+    this.phone.autoAnswer(enabled);
 
   /**
    * Dials an extension and returns a future with a call object.
@@ -64,7 +64,7 @@ class Customer {
   Future<Phonio.Call> dial(String extension) {
     log.finest('$this dials $extension');
 
-    return this._phone.originate('$extension@${this._phone.defaultAccount.server}');
+    return this.phone.originate('$extension@${this.phone.defaultAccount.server}');
   }
 
   /**
@@ -80,7 +80,7 @@ class Customer {
 
 
     log.finest('$this waits for call disconnect from event stream.');
-    return this._phone.eventStream.firstWhere(
+    return this.phone.eventStream.firstWhere(
         (Phonio.Event event)
           => event is Phonio.CallDisconnected)
           .then((_) {
@@ -89,19 +89,19 @@ class Customer {
           }).timeout(new Duration(seconds: 10));
   }
 
-  pickupCall () => this._phone.answer();
+  pickupCall () => this.phone.answer();
 
-  pickup (Phonio.Call call) => this._phone.answerSpecific(call);
+  pickup (Phonio.Call call) => this.phone.answerSpecific(call);
 
   Future hangup(Phonio.Call call) =>
     new Future.error(new UnimplementedError());
 
-  Future hangupAll() => this._phone.hangupAll();
+  Future hangupAll() => this.phone.hangupAll();
 
   Future finalize() =>
-      _phone.ready
-      ? teardown().then((_) => _phone.finalize())
-      : _phone.finalize();
+      phone.ready
+      ? teardown().then((_) => phone.finalize())
+      : phone.finalize();
 
   /**
    * Returns a Future that completes when an outbound call is confirmed placed.
@@ -116,7 +116,7 @@ class Customer {
 
 
     log.finest('$this waits for outgoing call from event stream.');
-    return this._phone.eventStream.firstWhere(
+    return this.phone.eventStream.firstWhere(
         (Phonio.Event event)
           => event is Phonio.CallOutgoing)
           .then((_) {
@@ -138,7 +138,7 @@ class Customer {
     }
 
      log.finest('$this waits for incoming call from event stream.');
-    return this._phone.eventStream.firstWhere(
+    return this.phone.eventStream.firstWhere(
         (Phonio.Event event)
           => event is Phonio.CallIncoming)
           .then((_) {
@@ -149,14 +149,14 @@ class Customer {
   }
 
   @override
-  String toString() => 'Customer peerID:${this._phone.ID} '
-                       'PhoneType:${this._phone.runtimeType}';
+  String toString() => 'Customer peerID:${this.phone.ID} '
+                       'PhoneType:${this.phone.runtimeType}';
 
   void _onPhoneEvent(Phonio.Event event) {
     if (event is Phonio.CallOutgoing) {
       log.finest('$this received call outgoing event');
       Phonio.Call call = new Phonio.Call(event.callID, event.callee, false,
-          _phone.defaultAccount.username);
+          phone.defaultAccount.username);
       log.finest('$this sets call to $call');
 
       this.currentCall = call;
@@ -165,7 +165,7 @@ class Customer {
     else if (event is Phonio.CallIncoming) {
       log.finest('$this received incoming call event');
       Phonio.Call call = new Phonio.Call(event.callID, event.callee, false,
-          _phone.defaultAccount.username);
+          phone.defaultAccount.username);
       log.finest('$this sets call to $call');
       this.currentCall = call;
 
@@ -190,7 +190,7 @@ class Customer {
     } else {
       // Schedule a pickup later on.
       new Future.delayed(this.answerLatency,
-          () => this._phone.answer())
+          () => this.phone.answer())
       .catchError((error, stackTrace) => log.severe(error, stackTrace));
     }
   }
