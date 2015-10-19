@@ -18,30 +18,31 @@ part of view;
  * navigation and rendering via the UIContactData class.
  */
 class ContactData extends ViewWidget {
-  final Controller.Call           _callController;
-  final Model.UIContactSelector   _contactSelector;
-  final Controller.Destination    _myDestination;
+  final Controller.Call _callController;
+  final Model.UIContactSelector _contactSelector;
+  final Controller.Destination _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIContactData       _uiModel;
+  final Model.UIContactData _uiModel;
 
   /**
    * Constructor.
    */
-  ContactData(Model.UIContactData this._uiModel,
-              Controller.Destination this._myDestination,
-              Model.UIContactSelector this._contactSelector,
-              Model.UIReceptionSelector this._receptionSelector,
-              Controller.Call this._callController) {
+  ContactData(
+      Model.UIContactData this._uiModel,
+      Controller.Destination this._myDestination,
+      Model.UIContactSelector this._contactSelector,
+      Model.UIReceptionSelector this._receptionSelector,
+      Controller.Call this._callController) {
     _ui.setHint('alt+t | ctrl+space');
 
     _observers();
   }
 
   @override Controller.Destination get _destination => _myDestination;
-  @override Model.UIContactData    get _ui          => _uiModel;
+  @override Model.UIContactData get _ui => _uiModel;
 
-  @override void _onBlur(_){}
-  @override void _onFocus(_){}
+  @override void _onBlur(_) {}
+  @override void _onFocus(_) {}
 
   /**
    * Simply navigate to my [_myDestination]. Matters not if this widget is
@@ -58,10 +59,8 @@ class ContactData extends ViewWidget {
    * marked ringing.
    */
   void _call(ORModel.PhoneNumber phoneNumber) {
-    _callController.dial(
-        phoneNumber,
-        _receptionSelector.selectedReception,
-        _contactSelector.selectedContact)
+    _callController
+        .dial(phoneNumber, _receptionSelector.selectedReception, _contactSelector.selectedContact)
         .whenComplete(_ui.removeRinging);
   }
 
@@ -69,8 +68,8 @@ class ContactData extends ViewWidget {
    * Clear the widget on null [Reception].
    */
   void _clear(ORModel.Reception reception) {
-    if(reception.isEmpty) {
-      _ui.clear();
+    if (reception.isEmpty) {
+      _ui.clear(removePopup: true);
     }
   }
 
@@ -97,8 +96,8 @@ class ContactData extends ViewWidget {
    * Render the widget with [Contact].
    */
   void _render(ORModel.Contact contact) {
-    if(contact.isEmpty) {
-      _ui.clear();
+    if (contact.isEmpty) {
+      _ui.clear(removePopup: true);
     } else {
       _ui.contact = contact;
       _ui.selectFirstPhoneNumber();
