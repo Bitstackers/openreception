@@ -41,9 +41,14 @@ class EslConfig {
  * SMTP configuration values
  */
 class SmtpConfig {
-  final int port = 25;
-  final hostname = 'mail.example.com';
-  
+  String hostName = 'some.smtp.host';
+  bool ignoreBadCertificate = true;
+  String name = 'my.host';
+  String password = 'secret;
+  int port = 465;
+  bool secure = true;
+  String username = 'some user';
+
   const SmtpConfig();
 }
 
