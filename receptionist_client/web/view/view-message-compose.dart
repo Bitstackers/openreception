@@ -111,6 +111,8 @@ class MessageCompose extends ViewWidget {
    * Render the widget with [Contact].
    */
   void _render(ORModel.Contact contact) {
+    _ui.headerExtra = ': ${contact.fullName}';
+
     if (contact.isEmpty) {
       _log.info('Got an empty contact - undecided on what to do');
     } else {
@@ -137,6 +139,7 @@ class MessageCompose extends ViewWidget {
   void _resetOnEmpty(ORModel.Reception reception) {
     if (reception.isEmpty) {
       _ui.reset(pristine: true);
+      _ui.headerExtra = '';
     }
   }
 
