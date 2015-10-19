@@ -134,15 +134,15 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
   log.fine(template.toString());
 
   List to = currentRecipients.where((mr) => mr.role == Model.Role.TO)
-      .map((mrto) => new Address(mrto.address, mrto.name))
+      .map((mrto) => new Address(mrto.address, mrto.contactName))
       .toList(growable: false);
 
   List cc = currentRecipients.where((mr) => mr.role == Model.Role.CC)
-      .map((mrto) => new Address(mrto.address, mrto.name))
+      .map((mrto) => new Address(mrto.address, mrto.contactName))
       .toList(growable: false);
 
   List bcc = currentRecipients.where((mr) => mr.role == Model.Role.BCC)
-      .map((mrto) => new Address(mrto.address, mrto.name))
+      .map((mrto) => new Address(mrto.address, mrto.contactName))
       .toList(growable: false);
 
   Email email =
