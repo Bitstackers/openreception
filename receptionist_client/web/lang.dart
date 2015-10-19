@@ -111,6 +111,7 @@ abstract class Key {
   static const String messageComposePleaseCall        = 'message-compose-please-call';
   static const String messageComposePhone             = 'message-compose-phone';
   static const String messageComposeShowRecipients    = 'message-compose-show-recipients';
+  static const String messageComposeShowNoRecipients  = 'message-compose-show-no-recipients';
   static const String messageComposeUrgent            = 'message-compose-urgent';
   static const String messageDeleteErrorTitle         = 'message-delete-error';
   static const String messageDeleteSuccessTitle       = 'message-delete-success';
@@ -262,6 +263,7 @@ Map<String, String> da =
    Key.messageComposePleaseCall       : 'Ring venligst',
    Key.messageComposePhone            : 'Telefon',
    Key.messageComposeShowRecipients   : 'Vis modtagere',
+   Key.messageComposeShowNoRecipients : 'Ingen modtagere',
    Key.messageComposeUrgent           : 'Haster',
    Key.messageDeleteErrorTitle        : 'Beskeden blev ikke slettet',
    Key.messageDeleteSuccessTitle      : 'Beskeden blev slettet',
@@ -412,6 +414,7 @@ Map<String, String> en =
    Key.messageComposePleaseCall       : 'Please call',
    Key.messageComposePhone            : 'Phone',
    Key.messageComposeShowRecipients   : 'Show recipients',
+   Key.messageComposeShowNoRecipients : 'No recipients',
    Key.messageComposeUrgent           : 'Urgent',
    Key.messageDeleteErrorTitle        : 'Message not deleted',
    Key.messageDeleteSuccessTitle      : 'Message deleted',

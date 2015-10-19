@@ -1050,8 +1050,8 @@
                   #message-compose .recipients {
                     position: absolute;
                     top: 1.5%;
-                    left: 49%;
-                    width: 50%;
+                    left: 24%;
+                    width: 75%;
                     min-height: 10%;
                     max-height: 98%;
                     background-color: #f7f7f7;
@@ -1112,6 +1112,7 @@
                   }
 
                   #message-compose .prerequisites {
+                    display: none;
                     margin: 0.7em 0.3em 0 0.3em;
                     color: #ff5621;;
                     font-weight: bold;
@@ -1180,7 +1181,10 @@
                 <h4 class="generic-widget-headline">
                   <span data-lang-text="message-compose-header">::message compose::</span>
                   <span class="extra-header"></span>
-                  <span class="show-recipients" data-lang-text="message-compose-show-recipients">::show-recipients::</span>
+                  <span class="show-recipients">
+                    <span data-lang-text="message-compose-show-recipients" hidden>::show-recipients::</span>
+                    <span data-lang-text="message-compose-show-no-recipients">::show-no-recipients::</span>
+                  </span>
                 </h4>
                 <div class="generic-widget-body display-flex-column padding03">
                   <div class="recipients padding03 recipients-hidden">
