@@ -33,7 +33,11 @@ final Logger log = new Logger('MessageDispatcher');
 
 SmtpOptions options = new SmtpOptions()
   ..hostName = config.messageDispatcher.smtp.hostname
-  ..port = config.messageDispatcher.smtp.port;
+  ..port = config.messageDispatcher.smtp.port
+  ..secure = config.messageDispatcher.smtp.secure
+  ..password = config.messageDispatcher.smtp.password
+  ..username = config.messageDispatcher.smtp.username
+  ..name = config.messageDispatcher.smtp.name;
 
 void main(List<String> args) {
 
@@ -146,7 +150,7 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
       .toList(growable: false);
 
   Email email =
-    new Email(new Address(user.googleUsername, user.name), 'home.gir.dk')
+    new Email(new Address(user.address, user.name), 'smtp.gmail.com')
      ..to = to
      ..cc = cc
      ..bcc = bcc
