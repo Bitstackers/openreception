@@ -33,7 +33,7 @@ class TemplateEmail extends Template {
    *
    */
   String _renderEmailAddress(MessageRecipient recipient) =>
-      '"${recipient.name}" <${recipient.address}>';
+      '"${recipient.contactName}" <${recipient.address}>';
 
   Iterable<MessageRecipient> _filterRole (List<MessageRecipient> recipients, String role)
      => recipients.where((MessageRecipient recipient) => recipient.role == role);

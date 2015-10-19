@@ -14,25 +14,25 @@
 part of openreception.model;
 
 class MessageRecipient {
-
-  String role = '';
-  String name;
-  String type;
   String address;
+  String contactName;
+  String receptionName;
+  String role = '';
+  String type;
 
   /**
-   * Default constructor.
+   * Constructor.
    */
   MessageRecipient(MessageEndpoint ep, DistributionListEntry de) {
-    role = de.role;
-    name = '${de.contactName} (${de.receptionName})';
-    type = ep.type;
     address = ep.address;
+    contactName = de.contactName;
+    receptionName = de.receptionName;
+    role = de.role;
+    type = ep.type;
   }
 
-
   /**
-   * Default empty constructor.
+   * Empty constructor.
    */
   MessageRecipient.empty();
 
@@ -40,17 +40,23 @@ class MessageRecipient {
    * Parsing constructor.
    */
   MessageRecipient.fromMap(Map map) {
-    role = map[Key.role];
-    name = map[Key.name];
-    type = map[Key.type];
     address = map[Key.address];
+    contactName = map[Key.contactName];
+    receptionName = map[Key.receptionName];
+    role = map[Key.role];
+    type = map[Key.type];
   }
 
   /**
    * Returns a map representation of the object. Suitable for serialization.
    */
-  Map get asMap =>
-      {Key.role: role, Key.name: name, Key.type: type, Key.address: address};
+  Map get asMap => {
+        Key.address: address,
+        Key.contactName: contactName,
+        Key.receptionName: receptionName,
+        Key.role: role,
+        Key.type: type
+      };
 
   /**
    * Deserializing factory constructor.
@@ -60,7 +66,7 @@ class MessageRecipient {
   /**
    * String representation of object.
    */
-  String toString() => '${role}: <${name}>$type:$address';
+  String toString() => '${role}: <${contactName}>${type}:${address}';
 
   /**
    * JSON serialization function
@@ -75,6 +81,5 @@ class MessageRecipient {
       this.type == other.type && this.address == other.address;
 
   @override
-  int get hashCode => '$type:$address'.toLowerCase().hashCode;
-
+  int get hashCode => '${type}:${address}'.toLowerCase().hashCode;
 }

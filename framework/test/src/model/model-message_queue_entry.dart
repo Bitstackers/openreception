@@ -78,12 +78,14 @@ abstract class ModelMessageQueueEntry {
     final recipients = [
       new Model.MessageRecipient.empty()
         ..address = 'neverland'
-        ..name = 'Unholy one'
+        ..contactName = 'Unholy one'
+        ..receptionName = 'A hot place'
         ..role = Model.Role.TO
         ..type = 'email',
         new Model.MessageRecipient.empty()
           ..address = 'neverland 2'
-          ..name = 'Unholy one jr.'
+          ..contactName = 'Unholy one jr.'
+          ..receptionName = 'A less hot place'
           ..role = Model.Role.CC
           ..type = 'email',
       ];
