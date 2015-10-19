@@ -116,9 +116,9 @@ abstract class Key {
   static const String messageDeleteErrorTitle         = 'message-delete-error';
   static const String messageDeleteSuccessTitle       = 'message-delete-success';
   static const String messageSaveErrorTitle           = 'message-save-error';
-  static const String messageSendErrorTitle           = 'message-send-error';
   static const String messageSaveSuccessTitle         = 'message-save-success';
-  static const String messageSendSuccessTitle         = 'message-send-success';
+  static const String messageSaveSendErrorTitle       = 'message-save-send-error';
+  static const String messageSaveSendSuccessTitle     = 'message-save-send-success';
   static const String myQueuedCallsHeader             = 'my-queued-calls-header';
 
   static const String name                            = 'name';
@@ -268,9 +268,9 @@ Map<String, String> da =
    Key.messageDeleteErrorTitle        : 'Beskeden blev ikke slettet',
    Key.messageDeleteSuccessTitle      : 'Beskeden blev slettet',
    Key.messageSaveErrorTitle          : 'Beskeden blev ikke gemt',
-   Key.messageSendErrorTitle          : 'Beskeden blev ikke sendt',
    Key.messageSaveSuccessTitle        : 'Beskeden blev gemt',
-   Key.messageSendSuccessTitle        : 'Beskeden blev sendt',
+   Key.messageSaveSendErrorTitle      : 'Beskeden blev ikke sendt',
+   Key.messageSaveSendSuccessTitle    : 'Beskeden blev sendt',
    Key.myQueuedCallsHeader            : 'Mine kald',
 
    Key.name                           : 'Navn',
@@ -419,9 +419,9 @@ Map<String, String> en =
    Key.messageDeleteErrorTitle        : 'Message not deleted',
    Key.messageDeleteSuccessTitle      : 'Message deleted',
    Key.messageSaveErrorTitle          : 'Message not saved',
-   Key.messageSendErrorTitle          : 'Message not sent',
    Key.messageSaveSuccessTitle        : 'Message saved',
-   Key.messageSendSuccessTitle        : 'Message sent',
+   Key.messageSaveSendErrorTitle      : 'Message not sent',
+   Key.messageSaveSendSuccessTitle    : 'Message sent',
    Key.myQueuedCallsHeader            : 'My calls',
 
    Key.name                           : 'Name',

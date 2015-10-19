@@ -1035,6 +1035,13 @@
 
                   #message-compose .generic-widget-headline .show-recipients {
                     float: right;
+                  }
+
+                  #message-compose .generic-widget-headline .show-recipients .no-recipients {
+                    color: red;
+                  }
+
+                  #message-compose .generic-widget-headline .show-recipients span {
                     text-decoration: underline;
                   }
 
@@ -1114,7 +1121,7 @@
                   #message-compose .prerequisites {
                     display: none;
                     margin: 0.7em 0.3em 0 0.3em;
-                    color: #ff5621;;
+                    color: #ff5621;
                     font-weight: bold;
                   }
 
@@ -1183,7 +1190,7 @@
                   <span class="extra-header"></span>
                   <span class="show-recipients">
                     <span data-lang-text="message-compose-show-recipients" hidden>::show-recipients::</span>
-                    <span data-lang-text="message-compose-show-no-recipients">::show-no-recipients::</span>
+                    <span class="no-recipients" data-lang-text="message-compose-show-no-recipients">::show-no-recipients::</span>
                   </span>
                 </h4>
                 <div class="generic-widget-body display-flex-column padding03">

@@ -111,15 +111,16 @@ class MessageArchive extends ViewWidget {
   dynamic _closeMessage(ORModel.Message message) async {
     try {
       message.recipients = new Set();
-      message.flag.manuallyClosed = true;
 
       ORModel.Message savedMessage = await _messageController.save(message);
       ORModel.MessageQueueItem response = await _messageController.enqueue(savedMessage);
 
+      message.flag.manuallyClosed = true;
+
       _ui.moveMessage(savedMessage);
 
       _log.info('Message id ${response.messageID} successfully enqueued');
-      _popup.success(_langMap[Key.messageCloseSuccessTitle], 'ID ${response.ID}');
+      _popup.success(_langMap[Key.messageCloseSuccessTitle], 'ID ${response.messageID}');
     } catch (error) {
       _log.shout('Could not close ${message.asMap} $error');
       _popup.error(_langMap[Key.messageCloseErrorTitle], 'ID ${message.ID}');
@@ -199,13 +200,15 @@ class MessageArchive extends ViewWidget {
       ORModel.Message savedMessage = await _messageController.save(message);
       ORModel.MessageQueueItem response = await _messageController.enqueue(savedMessage);
 
+      savedMessage.enqueued = true;
+
       _ui.moveMessage(savedMessage);
 
-      _log.info('Message id ${response.ID} successfully engqueued');
-      _popup.success(_langMap[Key.messageSendSuccessTitle], 'ID ${response.ID}');
+      _log.info('Message id ${response.messageID} successfully enqueued');
+      _popup.success(_langMap[Key.messageSaveSendSuccessTitle], 'ID ${response.messageID}');
     } catch (error) {
-      _log.shout('Could not enqueue ${message.asMap} $error');
-      _popup.error(_langMap[Key.messageSendErrorTitle], 'ID ${message.ID}');
+      _log.shout('Could not save/enqueue ${message.asMap} $error');
+      _popup.error(_langMap[Key.messageSaveSendErrorTitle], 'ID ${message.ID}');
     }
   }
 }

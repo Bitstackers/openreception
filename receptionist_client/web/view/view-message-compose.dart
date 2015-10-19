@@ -68,9 +68,8 @@ class MessageCompose extends ViewWidget {
    */
   ORModel.Message get _message {
     final ORModel.Message message = _ui.message;
-    final ORModel.MessageContext messageContext =
-        new ORModel.MessageContext.fromContact(_contactSelector.selectedContact,
-            _receptionSelector.selectedReception);
+    final ORModel.MessageContext messageContext = new ORModel.MessageContext.fromContact(
+        _contactSelector.selectedContact, _receptionSelector.selectedReception);
 
     message.context = messageContext;
 
@@ -117,13 +116,12 @@ class MessageCompose extends ViewWidget {
       _log.info('Got an empty contact - undecided on what to do');
     } else {
       Set<ORModel.MessageRecipient> recipients = new Set();
-      Future.forEach(contact.distributionList,
-          (ORModel.DistributionListEntry dle) {
+      Future.forEach(contact.distributionList, (ORModel.DistributionListEntry dle) {
         return _endpointController
             .list(dle.receptionID, dle.contactID)
             .then((Iterable<ORModel.MessageEndpoint> meps) {
-          recipients.addAll(meps.map((ORModel.MessageEndpoint mep) =>
-              new ORModel.MessageRecipient(mep, dle)));
+          recipients.addAll(
+              meps.map((ORModel.MessageEndpoint mep) => new ORModel.MessageRecipient(mep, dle)));
         });
       }).whenComplete(() {
         _ui.recipients = recipients;
@@ -146,44 +144,41 @@ class MessageCompose extends ViewWidget {
   /**
    * Save message in the message archive.
    */
-  void _save(_) {
+  dynamic _save(_) async {
     final ORModel.Message message = _message;
 
-    _messageController.save(message).then((ORModel.Message savedMessage) {
+    try {
+      ORModel.Message savedMessage = await _messageController.save(message);
+
       _ui.reset();
       _ui.focusOnCurrentFocusElement();
+
       _log.info('Message id ${savedMessage.ID} successfully saved');
-      _popup.success(
-          _langMap[Key.messageSaveSuccessTitle], 'ID ${savedMessage.ID}');
-    }).catchError((error) {
+      _popup.success(_langMap[Key.messageSaveSuccessTitle], 'ID ${savedMessage.ID}');
+    } catch (error) {
       _log.shout('Could not save ${message.asMap} $error');
       _popup.error(_langMap[Key.messageSaveErrorTitle], 'ID ${message.ID}');
-    });
+    }
   }
 
   /**
-   * Send message. This entails first saving and the enqueueing the message.
+   * Send message. This entails first saving and then enqueueing the message.
    */
-  void _send(_) {
+  dynamic _send(_) async {
     final ORModel.Message message = _message;
 
-    _messageController.save(message).then((ORModel.Message savedMessage) {
-      _messageController
-          .enqueue(savedMessage)
-          .then((ORModel.MessageQueueItem response) {
-        _ui.reset();
-        _ui.focusOnCurrentFocusElement();
-        _log.info('Message id ${response.messageID} successfully enqueued');
-        _popup.success(
-            _langMap[Key.messageSendSuccessTitle], 'ID ${savedMessage.ID}');
-      }).catchError((error) {
-        _log.shout('Could not enqueue ${savedMessage.asMap} $error');
-        _popup.error(
-            _langMap[Key.messageSendErrorTitle], 'ID ${savedMessage.ID}');
-      });
-    }).catchError((error) {
-      _log.shout('Could not save ${message.asMap} $error');
-      _popup.error(_langMap[Key.messageSaveErrorTitle], 'ID ${message.ID}');
-    });
+    try {
+      ORModel.Message savedMessage = await _messageController.save(message);
+      ORModel.MessageQueueItem response = await _messageController.enqueue(savedMessage);
+
+      _ui.reset();
+      _ui.focusOnCurrentFocusElement();
+
+      _log.info('Message id ${response.messageID} successfully enqueued');
+      _popup.success(_langMap[Key.messageSaveSendSuccessTitle], 'ID ${response.messageID}');
+    } catch (error) {
+      _log.shout('Could not save/enqueue ${message.asMap} $error');
+      _popup.error(_langMap[Key.messageSaveSendErrorTitle], 'ID ${message.ID}');
+    }
   }
 }
