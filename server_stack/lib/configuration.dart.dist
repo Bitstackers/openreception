@@ -44,7 +44,7 @@ class SmtpConfig {
   String hostName = 'some.smtp.host';
   bool ignoreBadCertificate = true;
   String name = 'my.host';
-  String password = 'secret;
+  String password = 'secret';
   int port = 465;
   bool secure = true;
   String username = 'some user';
