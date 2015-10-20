@@ -62,6 +62,12 @@ class UserGroup {
   @override
   operator == (UserGroup other) =>
      this.id == other.id && this.name == other.name;
+
+  /**
+   *
+   */
+  @override
+  int get hashCode => name.hashCode;
 }
 
 int compareUserGroup (UserGroup g1, UserGroup g2) => g1.name.compareTo(g2.name);
