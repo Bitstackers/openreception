@@ -13,91 +13,85 @@
 
 part of openreception.model;
 
-abstract class Label {
-  static const String URGENT = 'Haster';
-}
-
 class TemplateEmail extends Template {
-  final DateFormat      _dateFormat = new DateFormat("dd-MM-yyyy' kl. 'HH:mm:ss");
-  Iterable<MessageRecipient> _recipients;
-  final Message         _message;
   final User _sender;
 
   /**
    * Constructor.
    */
-  TemplateEmail(Message this._message, Iterable<MessageRecipient>
-    this._recipients, final User this._sender);
+  TemplateEmail(Message message, User this._sender) : super(message);
 
   /**
-   *
+   * Return the activated boolean message fields as HTML.
    */
-  String _renderEmailAddress(MessageRecipient recipient) =>
-      '"${recipient.contactName}" <${recipient.address}>';
-
-  Iterable<MessageRecipient> _filterRole (List<MessageRecipient> recipients, String role)
-     => recipients.where((MessageRecipient recipient) => recipient.role == role);
-
-  Iterable<String> get toRecipients => _filterRole(_recipients, Role.TO).map(_renderEmailAddress);
-
-  Iterable<String> get ccRecipients => _filterRole(_recipients, Role.CC).map(_renderEmailAddress);
-
-  Iterable<String> get bccRecipients => _filterRole(_recipients, Role.BCC).map(_renderEmailAddress);
-
+  String get _booleanFieldsHtml =>
+      '${_message.flag.called ? '<strong>(X)</strong> Har ringet<br>' : ''}'
+      '${_message.flag.pleaseCall ? '<strong>(X)</strong> Ring venligst<br>' : ''}'
+      '${_message.flag.willCallBack ? '<strong>(X)</strong> Kunden ringer selv igen<br>' : ''}'
+      '${_message.flag.urgent ? '<strong>(X)</strong> Haster<br>' : ''}';
 
   /**
-   * TODO: Add caller number and company.
+   * Return the [Message] body as HTML.
    */
-  String renderSubject() =>
-      '${this._message.flag.urgent ? '[${Label.URGENT.toUpperCase()}]' : ''} '
-      'Besked fra ${this._message.callerInfo.name}, '
-      '${this._message.callerInfo.company} ${this._message.callerInfo.phone}';
+  String get bodyHtml {
+    final StringBuffer sb = new StringBuffer();
+    final String booleanFields = _booleanFieldsHtml;
+    final String company = _message.callerInfo.company;
+    final String extension = _message.callerInfo.localExtension;
 
+    sb.write('Til ${_message.context.contactName}.<br><br>');
+    sb.write(
+        'Der er besked fra ${_message.callerInfo.name}${company.isEmpty ? '' : ', ${company}'}<br><br>');
+    sb.write('Tlf. ${_message.callerInfo.phone} ${extension.isEmpty ? '' : 'ext: ${extension}'}<br>');
+    sb.write('Mob. ${_message.callerInfo.cellPhone}<br><br>');
+    if (booleanFields.isNotEmpty) {
+      sb.write('${_booleanFieldsHtml}<br>');
+    }
+    sb.write('Vedr.:<br>');
+    sb.write('${_message.body.trim().replaceAll('\n', '<br>')}<br><br>');
+    sb.write('Modtaget den ${_dateFormat.format(_message.createdAt)}<br><br>');
+    sb.write('Med venlig hilsen<br>');
+    sb.write('${_sender.name}<br>');
+    sb.write('Responsum K/S<br><br>');
+    sb.write(
+        'Besøg os på <a href="https://plus.google.com/+responsum/posts">Google+</a> | <a href="https://www.facebook.com/responsumks">Facebook</a> | <a href="https://twitter.com/responsumks">Twitter</a> | <a href="http://responsum.dk">responsum.dk</a><br><br>');
 
-  String _renderBooleanFields() =>
-      '${this._message.flag.urgent ? '(X) ${Label.URGENT}' : ''}';
-
-
-  String _renderTime(DateTime time) => _dateFormat.format(time);
-
-/**
- * This is the actual "template". It uses a lot of iternal formatting
- * functions, but should be relatively easy to customize.
- */
-  String get renderedBody =>
-'''Til ${_message.context.contactName}.
-
-Der er besked fra ${_message.callerInfo.name}, ${this._message.callerInfo.company}.
-
-Tlf. ${this._message.callerInfo.phone}
-Mob. ${this._message.callerInfo.cellPhone}
-
-${this._renderBooleanFields()}
-
-Vedr.:
-${_message.body}
-
-Modtaget den ${this._renderTime(this._message.createdAt)}
-
-Med venlig hilsen
-${_sender.name}
-Responsum K/S
-''';
-
-  Map toJson() => {Role.TO        :toRecipients,
-                   Role.CC        : ccRecipients,
-                   Role.BCC       : bccRecipients,
-                   'message_body' : renderedBody,
-                   'from'         : _sender.address,
-                   'subject'      : renderSubject()};
+    return sb.toString();
+  }
 
   /**
-   * Renders the email for Dart:mailer. TODO!
+   * Return the [Message] body as text.
    */
-  /*Envelope render() =>
-      new Envelope()
-        ..fromName = this._message.sender.name
-        ..from     = this._message.sender.address
-        ..subject  = this._renderSubject()
-        ..text     = this._renderedBody;*/
+  String get bodyText {
+    final StringBuffer sb = new StringBuffer();
+    final String booleanFields = _booleanFieldsText;
+    final String company = _message.callerInfo.company;
+    final String extension = _message.callerInfo.localExtension;
+
+    sb.write('Til ${_message.context.contactName}.\n\n');
+    sb.write(
+        'Der er besked fra ${_message.callerInfo.name}${company.isEmpty ? '' : ', ${company}'}\n\n');
+    sb.write('Tlf. ${_message.callerInfo.phone} ${extension.isEmpty ? '' : 'ext: ${extension}'}\n');
+    sb.write('Mob. ${_message.callerInfo.cellPhone}\n\n');
+    if (booleanFields.isNotEmpty) {
+      sb.write('${booleanFields}\n');
+    }
+    sb.write('Vedr.:\n');
+    sb.write('${_message.body}\n\n');
+    sb.write('Modtaget den ${_dateFormat.format(_message.createdAt)}\n\n');
+    sb.write('Med venlig hilsen\n');
+    sb.write('${_sender.name}\n');
+    sb.write('Responsum K/S\n\n');
+
+    return sb.toString();
+  }
+
+  /**
+   * Return the [Message] subject line.
+   */
+  String get subject => '${_message.flag.urgent ? '[${URGENT.toUpperCase()}]' : ''} '
+      'Besked fra ${_message.callerInfo.name}'
+      '${_message.callerInfo.company.isEmpty ? '' : ', ${_message.callerInfo.company}'}'
+      '${_message.callerInfo.phone.isEmpty ? '' : ', ${_message.callerInfo.phone}'}'
+      ' (besked-id ${_message.ID.toString()})';
 }

@@ -57,6 +57,7 @@ part 'model/model-reception.dart';
 part 'model/model-reception_filter.dart';
 part 'model/model-template.dart';
 part 'model/model-template_email.dart';
+part 'model/model-template_sms.dart';
 part 'model/model-user.dart';
 part 'model/model-user_group.dart';
 part 'model/model-user_identity.dart';
