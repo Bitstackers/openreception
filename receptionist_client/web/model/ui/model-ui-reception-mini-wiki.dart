@@ -60,6 +60,11 @@ class UIReceptionMiniWiki extends UIModel {
   set miniWiki(String miniWiki) {
     if(miniWiki != null && miniWiki.isNotEmpty) {
       _body.setInnerHtml(Markdown.markdownToHtml(miniWiki), validator: _validator);
+
+      // Lets make sure all links open up in a new tab/window.
+      _body.querySelectorAll('a').forEach((AnchorElement a) {
+        a.target = '_blank';
+      });
     } else {
       _body.text = '';
     }
