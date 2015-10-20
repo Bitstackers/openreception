@@ -1,6 +1,8 @@
 library openreception.keys;
 
 const String contactID = 'contact_id';
+const String contactName = 'contact_name';
+const String receptionName = 'reception_name';
 const String fullName = 'full_name';
 const String contactType = 'contact_type';
 const String enabled = 'enabled';

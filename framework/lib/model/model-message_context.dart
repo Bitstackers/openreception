@@ -13,9 +13,7 @@
 
 part of openreception.model;
 
-
 class MessageContext {
-
   final String className = libraryName + "MessageContext";
 
   int contactID = 0;
@@ -38,14 +36,11 @@ class MessageContext {
    * Constructor. Deserializes the object from Map representation.
    */
   MessageContext.fromMap(Map map) {
-    this..contactID =
-          map[Key.contact][Key.ID]
-        ..contactName =
-          map[Key.contact][Key.name]
-        ..receptionID =
-          map[Key.reception][Key.ID]
-        ..receptionName =
-          map[Key.reception][Key.name];
+    this
+      ..contactID = map[Key.contact][Key.ID]
+      ..contactName = map[Key.contact][Key.name]
+      ..receptionID = map[Key.reception][Key.ID]
+      ..receptionName = map[Key.reception][Key.name];
   }
 
   /**
@@ -62,17 +57,11 @@ class MessageContext {
    * Returns a map representation of the object. Suitable for serialization.
    */
   Map get asMap => {
-    'contact'   : {
-      'id'  : contactID,
-      'name': contactName
-    },
-    'reception' : {
-      'id'  : receptionID,
-      'name': receptionName
-    }
-  };
+        'contact': {'id': contactID, 'name': contactName},
+        'reception': {'id': receptionID, 'name': receptionName}
+      };
 
-  Map toJson () => this.asMap;
+  Map toJson() => this.asMap;
 
   @override
   int get hashCode {
@@ -80,12 +69,11 @@ class MessageContext {
   }
 
   @override
-  bool operator ==(DistributionListEntry other) => this.contactID   == other.contactID &&
-                                              this.receptionID == other.receptionID;
+  bool operator ==(MessageContext other) =>
+      this.contactID == other.contactID && this.receptionID == other.receptionID;
 
   String get contactString => contactID.toString() + "@" + receptionID.toString();
 
   @override
   String toString() => '${this.contactString} - ${this.contactName}@${this.receptionName}';
-
 }

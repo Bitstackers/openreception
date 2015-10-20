@@ -22,17 +22,16 @@ void testModelMessageRecipient() {
 }
 
 abstract class ModelMessageRecipient {
-
   static void deserialization() {
     Model.MessageRecipient obj = buildObject();
     Model.MessageRecipient deserializedObj =
         new Model.MessageRecipient.fromMap(JSON.decode(JSON.encode(obj)));
 
-    expect(obj.role, equals(deserializedObj.role));
     expect(obj.address, equals(deserializedObj.address));
-    expect(obj.name, equals(deserializedObj.name));
+    expect(obj.contactName, equals(deserializedObj.contactName));
+    expect(obj.receptionName, equals(deserializedObj.receptionName));
+    expect(obj.role, equals(deserializedObj.role));
     expect(obj.type, equals(deserializedObj.type));
-
   }
 
   static void serialization() {
@@ -50,17 +49,19 @@ abstract class ModelMessageRecipient {
     final String role = Model.Role.RECIPIENT_ROLES.first;
     final String name = 'John Arbuckle';
     final String address = 'Test address';
+    final String receptionName = 'Some Reception';
     final String type = Model.MessageEndpointType.types.first;
 
     Model.MessageRecipient obj = new Model.MessageRecipient.empty()
-      ..role = role
       ..address = address
-      ..name = name
+      ..contactName = name
+      ..receptionName = receptionName
+      ..role = role
       ..type = type;
 
     expect(obj.role, equals(role));
     expect(obj.address, equals(address));
-    expect(obj.name, equals(name));
+    expect(obj.contactName, equals(name));
     expect(obj.type, equals(type));
 
     return obj;

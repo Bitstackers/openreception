@@ -74,7 +74,8 @@ abstract class ModelMessage {
       ..addAll([
         new Model.MessageRecipient.empty()
           ..address = 'somewhere'
-          ..name = 'someone'
+          ..contactName = 'someone'
+          ..receptionName = 'The Office'
           ..role = Model.Role.TO
           ..type = Model.MessageEndpointType.types.first
         ]);
