@@ -245,8 +245,7 @@ class CallList extends IterableBase<ORModel.Call> {
               event.contentAsMap.containsKey('variable_reception_id')
                         ? int.parse(event.field('variable_reception_id'))
                         : 0
-            ..changeState(ORModel.CallState.Created)
-            ..changeState(ORModel.CallState.Ringing);
+            ..changeState(ORModel.CallState.Created);
 
         break;
 
