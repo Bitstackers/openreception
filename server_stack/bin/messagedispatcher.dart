@@ -33,10 +33,13 @@ final Logger log = new Logger('MessageDispatcher');
 
 SmtpOptions options = new SmtpOptions()
   ..hostName = config.messageDispatcher.smtp.hostname
-  ..port = config.messageDispatcher.smtp.port;
+  ..port = config.messageDispatcher.smtp.port
+  ..secure = config.messageDispatcher.smtp.secure
+  ..password = config.messageDispatcher.smtp.password
+  ..username = config.messageDispatcher.smtp.username
+  ..name = config.messageDispatcher.smtp.name;
 
 void main(List<String> args) {
-
   ///Init logging. Inherit standard values.
   Logger.root.level = config.messageDispatcher.log.level;
   Logger.root.onRecord.listen(config.messageDispatcher.log.onRecord);
@@ -63,18 +66,14 @@ void main(List<String> args) {
 /**
  *
  */
-Iterable<Model.MessageRecipient> emailRecipients(
-        Iterable<Model.MessageRecipient> rcps) =>
-    rcps.where((Model.MessageRecipient rcp) =>
-        rcp.type == Model.MessageEndpointType.EMAIL);
+Iterable<Model.MessageRecipient> emailRecipients(Iterable<Model.MessageRecipient> rcps) =>
+    rcps.where((Model.MessageRecipient rcp) => rcp.type == Model.MessageEndpointType.EMAIL);
 
 /**
  *
  */
-Iterable<Model.MessageRecipient> smsRecipients(
-        Iterable<Model.MessageRecipient> rcps) =>
-    rcps.where((Model.MessageRecipient rcp) =>
-        rcp.type == Model.MessageEndpointType.SMS);
+Iterable<Model.MessageRecipient> smsRecipients(Iterable<Model.MessageRecipient> rcps) =>
+    rcps.where((Model.MessageRecipient rcp) => rcp.type == Model.MessageEndpointType.SMS);
 
 /**
  * The Periodic task that passes emails on to the SMTP server.
@@ -108,8 +107,7 @@ void periodicEmailSend() {
 /**
  *
  */
-Timer reSchedule() =>
-    new Timer(config.messageDispatcher.mailerPeriod, periodicEmailSend);
+Timer reSchedule() => new Timer(config.messageDispatcher.mailerPeriod, periodicEmailSend);
 
 /**
  *
@@ -129,43 +127,67 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
   ///Dispatch email recipients.
   Iterable<Model.MessageRecipient> currentRecipients =
       emailRecipients(queueItem.unhandledRecipients);
-  Model.TemplateEmail template =
-      new Model.TemplateEmail(message, currentRecipients, user);
-  log.fine(template.toString());
+  Model.TemplateEmail templateEmail = new Model.TemplateEmail(message, user);
+  log.fine(templateEmail.toString());
 
-  List to = currentRecipients.where((mr) => mr.role == Model.Role.TO)
+  List to = currentRecipients
+      .where((mr) => mr.role == Model.Role.TO)
       .map((mrto) => new Address(mrto.address, mrto.contactName))
       .toList(growable: false);
 
-  List cc = currentRecipients.where((mr) => mr.role == Model.Role.CC)
+  List cc = currentRecipients
+      .where((mr) => mr.role == Model.Role.CC)
       .map((mrto) => new Address(mrto.address, mrto.contactName))
       .toList(growable: false);
 
-  List bcc = currentRecipients.where((mr) => mr.role == Model.Role.BCC)
+  List bcc = currentRecipients
+      .where((mr) => mr.role == Model.Role.BCC)
       .map((mrto) => new Address(mrto.address, mrto.contactName))
       .toList(growable: false);
 
-  Email email =
-    new Email(new Address(user.googleUsername, user.name), 'home.gir.dk')
-     ..to = to
-     ..cc = cc
-     ..bcc = bcc
-     ..subject = template.renderSubject()
-     ..partText = template.renderedBody;
+  Email email = new Email(new Address(user.address, user.name), 'smtp.gmail.com')
+    ..to = to
+    ..cc = cc
+    ..bcc = bcc
+    ..subject = templateEmail.subject
+    ..partText = templateEmail.bodyText
+    ..partHtml = templateEmail.bodyHtml;
 
-  new SmtpClient(options).send(email);
-
-  /// Update the handled recipient set.
-  queueItem.handledRecipients = currentRecipients;
+  new SmtpClient(options).send(email).then((_) {
+    /// Update the handled recipient set.
+    queueItem.handledRecipients = currentRecipients;
+  }).catchError((error) {
+    /*
+     *
+     *
+     * TODO: Do stuff here....???
+     *
+     *
+     */
+  });
 
   ///Dispatch sms recipients.
   currentRecipients = smsRecipients(queueItem.unhandledRecipients);
 
-  ///FIXME(TL): Do aweome-sms-emailer-related-rainbow-magic-stuff here.
-//  Model.Template sms =
-//      new Model.TemplateSms (message, currentRecipients, user);
-//  log.fine(sms.toString());
-  queueItem.handledRecipients = currentRecipients;
+  Model.Template templateSMS = new Model.TemplateSMS(message);
+  log.fine(templateSMS.toString());
+
+  Email sms = new Email(new Address(user.address, user.name), 'smtp.gmail.com')
+    ..to = currentRecipients.map((mrto) => new Address(mrto.address, ''))
+    ..partText = templateSMS.bodyText;
+
+  new SmtpClient(options).send(sms).then((_) {
+    queueItem.handledRecipients = currentRecipients;
+  }).catchError((error) {
+    /*
+     *
+     *
+     * TODO: Do stuff here....???
+     *
+     *
+     *
+     */
+  });
 
   return router.messageQueueStore.save(queueItem);
 }
