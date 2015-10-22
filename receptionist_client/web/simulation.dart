@@ -62,9 +62,23 @@ class _Simulation {
 
   OListElement get localCalls => querySelector('#my-call-queue ol');
 
+  ORModel.Call get _activeCall {
+    LIElement li = localCalls.querySelector('li.outbound');
+
+    if(li == null) {
+      return ORModel.Call.noCall;
+    }
+    else {
+      return new ORModel.Call.fromMap(JSON.decode(li.dataset['object']));
+    }
+  }
+
   UListElement get _infoBox => querySelector('ul#simulation-info');
 
   ParagraphElement get _stateBox => querySelector('p#simulation-state');
+
+  SpanElement get _showPstnBox => querySelector('#contact-data span.show-pstn');
+  InputElement get _pstnInputField => querySelector('#contact-data input.pstn');
 
   bool get isInCall => querySelector('.greeting').classes.contains('incall');
   bool get hasParkedCalls =>
