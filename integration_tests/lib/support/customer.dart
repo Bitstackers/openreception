@@ -93,8 +93,7 @@ class Customer {
 
   pickup (Phonio.Call call) => this.phone.answerSpecific(call);
 
-  Future hangup(Phonio.Call call) =>
-    new Future.error(new UnimplementedError());
+  Future hangup(Phonio.Call call) => phone.hangupSpecific(call);
 
   Future hangupAll() => this.phone.hangupAll();
 
