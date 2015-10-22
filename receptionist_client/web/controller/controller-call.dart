@@ -232,7 +232,6 @@ class Call {
    *
    */
   Future transferToFirstParkedCall(ORModel.Call source) {
-    _busy = true;
     return _firstParkedCall().then((ORModel.Call parkedCall) {
 
       if (parkedCall != null) {
@@ -243,6 +242,6 @@ class Call {
       }
 
       return null;
-    }).whenComplete(() => _busy = false);
+    });
   }
 }
