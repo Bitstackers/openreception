@@ -226,7 +226,14 @@ class CallList extends IterableBase<ORModel.Call> {
 
   void _handleChannelDestroy (ESL.Event event) {
     if (this.containsID(event.uniqueID)) {
-      this.get(event.uniqueID).changeState(ORModel.CallState.Hungup);
+      final ORModel.Call call = this.get(event.uniqueID);
+
+      if (call.inbound && call.assignedTo != ORModel.User.noID) {
+        log.warning('!!!adding a call by agent');
+        AgentHistory.instance.callHandledByAgent(call.assignedTo);
+      }
+
+      call.changeState(ORModel.CallState.Hungup);
       log.finest('Hanging up ${event.uniqueID}');
       this.remove(event.uniqueID);
     }

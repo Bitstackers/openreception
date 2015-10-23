@@ -17,6 +17,10 @@ abstract class UserState {
 
   final String className = '${libraryName}.UserState';
 
+  static shelf.Response stats(shelf.Request request) {
+    return new shelf.Response.ok(JSON.encode(Model.AgentHistory.instance));
+  }
+
   static shelf.Response list(shelf.Request request) {
     return new shelf.Response.ok(JSON.encode(Model.UserStatusList.instance));
   }
