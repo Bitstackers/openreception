@@ -214,7 +214,7 @@ abstract class Call {
     final String host = shelf_route.getPathParameter(request, 'host');
     final String port = shelf_route.getPathParameter(request, 'port');
     ORModel.User user;
-    Model.Peer peer;
+    ESL.Peer peer;
 
     if (host != null) {
       extension = '$extension@$host:$port';
@@ -483,7 +483,7 @@ abstract class Call {
 
     final String callID = shelf_route.getPathParameter(request, 'callid');
     ORModel.User user;
-    Model.Peer peer;
+    ESL.Peer peer;
     ORModel.Call assignedCall;
     String agentChannel;
     int originallyAssignedTo = ORModel.User.noID;
