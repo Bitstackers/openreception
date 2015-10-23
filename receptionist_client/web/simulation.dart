@@ -189,7 +189,9 @@ class _Simulation {
     on TimeoutException {
       log.warning('Controller ignored our key press (+), trying again');
     }
-}
+
+    throw new TimeoutException('Failed to pickup call within the given time.');
+  }
 
   /**
    *
@@ -197,7 +199,22 @@ class _Simulation {
   Future tryPickup() async {
     log.info('Trying to pickup');
 
-    await continouslyPickup();
+    // Pickup call.
+    try {
+      await continouslyPickup();
+    }
+    on TimeoutException {
+      if (isInCall) {
+        log.shout('Park failed while still in call, hangin it up in 1s');
+        new Future.delayed(new Duration(milliseconds: 1000), hangupCall);
+      }
+      else {
+        log.shout('Call was hung up before we could park it, returning to idle');
+        state = ReceptionistState.IDLE;
+      }
+      return;
+    }
+
 
     final Controller.CallCommand response =
         await _callController.commandStream.first;
@@ -206,7 +223,7 @@ class _Simulation {
       log.info('Got a call, expecting the UI to update.');
       state = ReceptionistState.RECEIVING_CALL;
 
-      return new Future.delayed(new Duration(milliseconds: 10), expectCall);
+      new Future.delayed(new Duration(milliseconds: 10), expectCall);
     }
 
     else if (response == Controller.CallCommand.PICKUPFAILURE) {
