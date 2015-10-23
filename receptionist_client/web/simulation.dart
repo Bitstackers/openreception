@@ -113,7 +113,13 @@ class _Simulation {
       return new Future(() => null);
     }
 
-    if (callsInCallQueue) {
+    if(isInCall) {
+      final Duration delay = new Duration(milliseconds: randomResponseTime);
+      log.info('Active call detected, hanging up after ${delay.inMilliseconds}ms');
+      new Future.delayed(delay, hangupCall);
+
+    }
+    else if (callsInCallQueue) {
       state = ReceptionistState.HUNTING;
       final Duration delay = new Duration(milliseconds: randomResponseTime);
       log.info('Calls detected in call list, hunting one after ${delay.inMilliseconds}ms');
@@ -127,14 +133,14 @@ class _Simulation {
    */
   void observers() {
     log.onRecord.listen((LogRecord rec) {
-      if (_infoBox.children.length > 9) {
+      if (_infoBox.children.length > 29) {
         _infoBox.children.first.remove();
       }
 
       _infoBox.append(new LIElement()..text = '$rec');
     });
 
-    new Timer.periodic(new Duration(milliseconds: 500), checkState);
+    new Timer.periodic(new Duration(milliseconds: 1000), checkState);
   }
 
 
@@ -151,8 +157,7 @@ class _Simulation {
       }
 
       return command;
-    }).timeout
-        (new Duration(milliseconds : 500));
+    }).timeout(new Duration(milliseconds : 1000));
 
 
     key.numPlus();
@@ -162,7 +167,7 @@ class _Simulation {
       return;
     }
     on TimeoutException {
-      log.warning('Controller ignored our key press, trying again');
+      log.warning('Controller ignored our key press (+), trying again');
     }
 
     key.numPlus();
@@ -172,7 +177,7 @@ class _Simulation {
       return;
     }
     on TimeoutException {
-      log.warning('Controller ignored our key press, trying again');
+      log.warning('Controller ignored our key press (+), trying again');
     }
 
     key.numPlus();
@@ -182,7 +187,7 @@ class _Simulation {
       return;
     }
     on TimeoutException {
-      log.warning('Controller ignored our key press, trying again');
+      log.warning('Controller ignored our key press (+), trying again');
     }
 }
 
@@ -264,7 +269,22 @@ class _Simulation {
 
     key.numDiv();
 
-    final Controller.CallCommand command = await sub.timeout(new Duration (seconds : 1));
+    Controller.CallCommand command;
+
+    try {
+      command = await sub.timeout(new Duration (seconds : 1));
+    }
+    on TimeoutException {
+      if (isInCall) {
+        log.shout('Hangup failed while still in call, trying again in 1s');
+        new Future.delayed(new Duration(milliseconds: 1000), hangupCall);
+      }
+      else {
+        log.shout('Call was hung up before we could, returning to idle');
+        state = ReceptionistState.IDLE;
+      }
+      return;
+    }
 
     if (command != Controller.CallCommand.HANGUP) {
       throw new StateError('Expected hangup command, but recieved $command');
@@ -280,6 +300,7 @@ class _Simulation {
 
     else if (response == Controller.CallCommand.HANGUPFAILURE) {
       log.warning('Hangup failed! Expecting call to be hung up already.');
+      _state = ReceptionistState.IDLE;
     }
 
     else {
@@ -309,7 +330,7 @@ class _Simulation {
       throw new StateError('Expected dial response, but recieved $response');
     }
 
-    return _outboundCallOK();
+    return _outboundCallOK().whenComplete(_showPstnBox.click);
   }
 
   /**
@@ -369,7 +390,7 @@ class _Simulation {
 
       return command;
     }).timeout
-        (new Duration(milliseconds : 500));
+        (new Duration(milliseconds : 1000));
 
 
     key.numMult();
@@ -379,7 +400,7 @@ class _Simulation {
       return;
     }
     on TimeoutException {
-      log.warning('Controller ignored our key press, trying again');
+      log.warning('Controller ignored our key press (*), trying again');
     }
 
     key.numMult();
@@ -389,7 +410,7 @@ class _Simulation {
       return;
     }
     on TimeoutException {
-      log.warning('Controller ignored our key press, trying again');
+      log.warning('Controller ignored our key press (*), trying again');
     }
 
     key.numMult();
@@ -399,7 +420,7 @@ class _Simulation {
       return;
     }
     on TimeoutException {
-      log.warning('Controller ignored our key press, trying again');
+      log.warning('Controller ignored our key press (*), trying again');
     }
   }
 
@@ -418,7 +439,7 @@ class _Simulation {
 
       return command;
     }).timeout
-        (new Duration(milliseconds : 500));
+        (new Duration(milliseconds : 1000));
 
 
     key.f7();
@@ -428,7 +449,7 @@ class _Simulation {
       return;
     }
     on TimeoutException {
-      log.warning('Controller ignored our key press, trying again');
+      log.warning('Controller ignored our key press (F7), trying again');
     }
 
     key.f7();
@@ -438,7 +459,7 @@ class _Simulation {
       return;
     }
     on TimeoutException {
-      log.warning('Controller ignored our key press, trying again');
+      log.warning('Controller ignored our key press (F7), trying again');
     }
 
     key.f7();
@@ -448,8 +469,10 @@ class _Simulation {
       return;
     }
     on TimeoutException {
-      log.warning('Controller ignored our key press, trying again');
+      log.warning('Controller ignored our key press (F7), trying again');
     }
+
+    throw new TimeoutException('Failed to park call within the given time.');
   }
 
   /**
@@ -466,7 +489,7 @@ class _Simulation {
 
       return command;
     }).timeout
-        (new Duration(milliseconds : 500));
+        (new Duration(milliseconds : 1000));
 
 
     key.f8();
@@ -476,7 +499,7 @@ class _Simulation {
       return;
     }
     on TimeoutException {
-      log.warning('Controller ignored our key press, trying again');
+      log.warning('Controller ignored our key press (F8), trying again');
     }
 
     key.f8();
@@ -486,7 +509,7 @@ class _Simulation {
       return;
     }
     on TimeoutException {
-      log.warning('Controller ignored our key press, trying again');
+      log.warning('Controller ignored our key press (F8), trying again');
     }
 
     key.f8();
@@ -496,7 +519,7 @@ class _Simulation {
       return;
     }
     on TimeoutException {
-      log.warning('Controller ignored our key press, trying again');
+      log.warning('Controller ignored our key press (F8), trying again');
     }
   }
 
@@ -524,7 +547,7 @@ class _Simulation {
       return;
     }
     on TimeoutException {
-      log.warning('Controller ignored our key press, trying again');
+      log.warning('Controller ignored our key press (Ctrl-), trying again');
     }
 
     key.ctrlNumMinus();
@@ -534,7 +557,7 @@ class _Simulation {
       return;
     }
     on TimeoutException {
-      log.warning('Controller ignored our key press, trying again');
+      log.warning('Controller ignored our key press (Ctrl-), trying again');
     }
 
     key.ctrlNumMinus();
@@ -544,7 +567,7 @@ class _Simulation {
       return;
     }
     on TimeoutException {
-      log.warning('Controller ignored our key press, trying again');
+      log.warning('Controller ignored our key press (Ctrl-), trying again');
     }
   }
 
@@ -578,7 +601,21 @@ class _Simulation {
 
     log.info('Parking call.');
     // Park call.
-    await continouslyPark();
+    try {
+      await continouslyPark();
+    }
+    on TimeoutException {
+      if (isInCall) {
+        log.shout('Park failed while still in call, hangin it up in 1s');
+        new Future.delayed(new Duration(milliseconds: 1000), hangupCall);
+      }
+      else {
+        log.shout('Call was hung up before we could park it, returning to idle');
+        state = ReceptionistState.IDLE;
+      }
+      return;
+    }
+
     log.info('Waiting response.');
     final Controller.CallCommand response =
         await _callController.commandStream.first;
