@@ -119,6 +119,14 @@ class _Simulation {
       new Future.delayed(delay, hangupCall);
 
     }
+    else if (hasLocalCalls) {
+      state = ReceptionistState.PARKED_CALL;
+      final Duration delay = new Duration(milliseconds: randomResponseTime);
+      log.info('Calls detected in local call list, hanging up after ${delay.inMilliseconds}ms');
+
+      new Future.delayed(delay, unParkAndHangup);
+
+    }
     else if (callsInCallQueue) {
       state = ReceptionistState.HUNTING;
       final Duration delay = new Duration(milliseconds: randomResponseTime);
@@ -191,6 +199,45 @@ class _Simulation {
     }
 
     throw new TimeoutException('Failed to pickup call within the given time.');
+  }
+
+  Future unParkAndHangup() async {
+    log.info('Trying to pickup parked call');
+
+    // Pickup call.
+    try {
+      await continouslyUnPark();
+    }
+    on TimeoutException {
+      if (isInCall) {
+        log.shout('Pickup failed while still in call, hangin it up in 1s');
+        new Future.delayed(new Duration(milliseconds: 1000), hangupCall);
+      }
+      else {
+        log.shout('Call was hung up before we could park it, returning to idle');
+        state = ReceptionistState.IDLE;
+      }
+      return;
+    }
+
+    final Controller.CallCommand response =
+        await _callController.commandStream.first;
+
+    if (response == Controller.CallCommand.PICKUPSUCCESS) {
+      log.info('Got a call, expecting the UI to update.');
+      state = ReceptionistState.RECEIVING_CALL;
+
+      new Future.delayed(new Duration(milliseconds: 10), hangupCall);
+    }
+
+    else if (response == Controller.CallCommand.PICKUPFAILURE) {
+      log.warning('Pickup failed, expecting checkState to clear up the mess.');
+      state = ReceptionistState.IDLE;
+    }
+
+    else {
+      throw new StateError('Expected pickup response, but recieved $response');
+    }
   }
 
   /**
