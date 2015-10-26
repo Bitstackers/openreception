@@ -136,7 +136,7 @@ abstract class RESTMessageStore {
         }
 
         return sender.notificationSocket.eventStream
-            .firstWhere(idAndStateMatches).timeout(new Duration(milliseconds : 100));
+            .firstWhere(idAndStateMatches).timeout(new Duration(milliseconds : 1000));
       });
     });
   }
