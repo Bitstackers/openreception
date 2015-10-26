@@ -45,6 +45,7 @@ class Call {
   final Bus<Event.CallEvent> _eventBus   = new Bus<Event.CallEvent>();
 
   DateTime               arrived         = new DateTime.now();
+  DateTime               answeredAt      = Util.never;
   int                    assignedTo      = User.noID;
   String                 b_Leg           = null;
   String                 callerID        = '';
@@ -68,6 +69,7 @@ class Call {
   Call.fromMap(map) {
     _ID                 = map[Key.ID];
     _state              = map[Key.state];
+    this.answeredAt     = Util.unixTimestampToDateTime (map[Key.answeredAt]);
     this.b_Leg          = map[Key.bLeg];
     this._locked        = map[Key.locked];
     this.inbound        = map[Key.inbound];
@@ -260,7 +262,8 @@ class Call {
                    Key.contactID      : contactID,
                    Key.assignedTo     : assignedTo,
                    Key.channel        : channel,
-                   Key.arrivalTime    : Util.dateTimeToUnixTimestamp(arrived)};
+                   Key.arrivalTime    : Util.dateTimeToUnixTimestamp(arrived),
+                   Key.answeredAt     : Util.dateTimeToUnixTimestamp(answeredAt)};
 
   /**
    *

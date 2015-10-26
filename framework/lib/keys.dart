@@ -22,6 +22,7 @@ const String receptionID = 'reception_id';
 const String assignedTo = 'assigned_to';
 const String channel = 'channel';
 const String arrivalTime = 'arrival_time';
+const String answeredAt = 'answered_at';
 const String callFlowServerURI = 'callFlowServerURI';
 const String receptionServerURI = 'receptionServerURI';
 const String contactServerURI = 'contactServerURI';
