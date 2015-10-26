@@ -192,6 +192,8 @@ abstract class ModelCall {
     expect(builtCall.ID, equals(decodedCall.ID));
     expect(builtCall.arrived.difference(decodedCall.arrived).abs(),
            lessThan(new Duration(seconds : 1)));
+    expect(builtCall.answeredAt.difference(decodedCall.answeredAt).abs(),
+           lessThan(new Duration(seconds : 1)));
     expect(builtCall.assignedTo, equals(decodedCall.assignedTo));
     expect(builtCall.b_Leg, equals(decodedCall.b_Leg));
     expect(builtCall.callerID, equals(decodedCall.callerID));
@@ -211,6 +213,7 @@ abstract class ModelCall {
     final String testId = 'test-id';
     final String blegTestId = 'b-leg-test-id';
     final DateTime arrived = new DateTime.now();
+    final DateTime answeredAt = new DateTime.now()..add(new Duration(seconds :30));
     final int assignedTo = 1;
     final String callerId = 'That guy';
     final int contactId = 2;
@@ -223,6 +226,7 @@ abstract class ModelCall {
 
     Model.Call builtCall = new Model.Call.empty(testId)
       ..arrived = arrived
+      ..answeredAt = answeredAt
       ..assignedTo = assignedTo
       ..b_Leg = blegTestId
       ..callerID = callerId
@@ -236,6 +240,7 @@ abstract class ModelCall {
 
     expect(builtCall.ID, equals(testId));
     expect(builtCall.arrived, equals(arrived));
+    expect(builtCall.answeredAt, equals(answeredAt));
     expect(builtCall.assignedTo, equals(assignedTo));
     expect(builtCall.b_Leg, equals(blegTestId));
     expect(builtCall.callerID, equals(callerId));
