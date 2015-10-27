@@ -142,6 +142,17 @@ class RESTReceptionStore implements Storage.Reception {
   }
 
   /**
+   *
+   */
+  Future<Model.Reception> getByExtension(String extension) {
+    Uri url = Resource.Reception.byExtension(this._host, extension);
+    url = appendToken(url, this._token);
+
+    return this._backend.get(url).then((String response) =>
+        new Model.Reception.fromMap(JSON.decode(response)));
+  }
+
+  /**
    * Returns a reception list.
    */
   Future<Iterable<Model.Reception>> list() {

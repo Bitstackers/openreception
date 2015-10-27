@@ -61,6 +61,37 @@ class Reception implements Storage.Reception {
   }
 
   /**
+   * Retrieve a specific reception from the database identified
+   * by its extension.
+   */
+  Future<Model.Reception> getByExtension (String extension) {
+    String sql = '''
+      SELECT 
+        id, full_name, attributes, enabled, organization_id,
+        extradatauri, reception_telephonenumber, last_check
+      FROM receptions
+      WHERE reception_telephonenumber = @exten 
+    ''';
+
+    Map parameters = {'exten': extension};
+
+    return _connection
+        .query(sql, parameters)
+        .then((Iterable rows) => rows.isEmpty
+            ? new Future.error(
+                new Storage.NotFound('No reception with extension $extension'))
+            : _rowToReception(rows.first))
+        .catchError((error, stackTrace) {
+      if (error is! Storage.NotFound) {
+        log.severe('sql:$sql :: parameters:$parameters');
+      }
+
+      return new Future.error(error, stackTrace);
+    });
+  }
+
+
+  /**
    * Retrieve a specific reception from the database.
    */
   Future<Model.Reception> get(int id) {
