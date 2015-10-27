@@ -27,6 +27,27 @@ abstract class Reception {
     });
   }
 
+
+  static Future<shelf.Response> getByExtension(shelf.Request request) {
+    String extension = shelf_route.getPathParameter(request, 'exten');
+
+    return _receptionDB.getByExtension(extension)
+      .then((Model.Reception reception) {
+        return new shelf.Response.ok (JSON.encode(reception));
+      })
+      .catchError((error, stackTrace) {
+      if(error is Storage.NotFound) {
+        return new shelf.Response.notFound
+        (JSON.encode({'description' : 'No reception '
+          'found on extension extension'}));
+        }
+
+      log.severe (error, stackTrace);
+        return new shelf.Response.internalServerError
+          (body : 'receptionserver.router.getReception: $error');
+      });
+  }
+
   static Future<shelf.Response> get(shelf.Request request) {
     int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
 

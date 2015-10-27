@@ -110,6 +110,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
     ..get('/reception', Reception.list)
     ..post('/reception', Reception.create)
     ..get('/reception/{rid}', Reception.get)
+    ..get('/reception/extension/{exten}', Reception.getByExtension)
     ..put('/reception/{oid}', Reception.update)
     ..delete('/reception/{oid}', Reception.remove)
     ..get('/reception/{rid}/calendar', ReceptionCalendar.list)
