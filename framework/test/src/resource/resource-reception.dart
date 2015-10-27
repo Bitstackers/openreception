@@ -15,7 +15,8 @@ part of openreception.test;
 
 void testResourceReception() {
   group('Resource.Reception', () {
-    test('singleMessage', ResourceReception.single);
+    test('single', ResourceReception.single);
+    test('byExtension', ResourceReception.byExtension);
     test('list', ResourceReception.list);
     test('subset', ResourceReception.subset);
     test('calendar', ResourceReception.calendar);
@@ -31,6 +32,9 @@ abstract class ResourceReception {
 
   static void single() => expect(Resource.Reception.single(receptionServer, 1),
       equals(Uri.parse('${receptionServer}/reception/1')));
+
+  static void byExtension() => expect(Resource.Reception.byExtension(receptionServer, '12340001'),
+      equals(Uri.parse('${receptionServer}/reception/extension/12340001')));
 
   static void list() => expect(Resource.Reception.list(receptionServer),
       equals(Uri.parse('${receptionServer}/reception')));
