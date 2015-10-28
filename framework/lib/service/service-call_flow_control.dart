@@ -279,26 +279,21 @@ class CallFlowControl {
   /**
    * Retrives the current Peer list.
    */
-  Future<Iterable<Model.Peer>> peerList() => this
-      .peerListMaps()
-      .then((Iterable<Map> maps) =>
-          maps.map((Map map) => new Model.Peer.fromMap(map)));
-
-  /**
-   * Retrives the current Peer without doing automatic casting.
-   */
-  Future<Iterable<Map>> peerListMaps() {
+   Future<Iterable<Model.Peer>> peerList() {
     Uri uri = Resource.CallFlowControl.peerList(this._host);
     uri = appendToken(uri, this._token);
 
     return this._backend
         .get(uri)
-        .then((String response) => (JSON.decode(response) as List));
+        .then((String response) => (JSON.decode(response) as List))
+        .then((Iterable<Map> maps) =>
+          maps.map((Map map) => new Model.Peer.fromMap(map)));
   }
 
   /**
    * Retrives the current Channel list as a Map.
    */
+   @deprecated
   Future<Iterable<Map>> channelListMap() {
     Uri uri = Resource.CallFlowControl.channelList(this._host);
     uri = appendToken(uri, this._token);
