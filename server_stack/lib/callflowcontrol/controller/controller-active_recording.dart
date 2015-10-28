@@ -11,23 +11,15 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.call_flow_control_server.controller;
+part of openreception.call_flow_control_server.controller;
 
-import 'dart:async';
-import 'dart:convert';
-import 'package:shelf/shelf.dart' as shelf;
-import 'package:logging/logging.dart';
+class ActiveRecording {
 
-import 'package:esl/esl.dart' as ESL;
-import 'package:openreception_framework/model.dart' as ORModel;
-import 'package:openreception_framework/service.dart' as ORService;
+  final Logger log = new Logger('${libraryName}.ActiveRecording');
 
-import 'model/model.dart' as Model;
-import '../configuration.dart';
-
-part 'controller/controller-active_recording.dart';
-part 'controller/controller-client_notifier.dart';
-part 'controller/controller-pbx.dart';
-part 'controller/controller-state.dart';
-
-const String libraryName = 'callflowcontrol.controller';
+  /**
+   *
+   */
+  Future<shelf.Response> list (shelf.Request request) async =>
+    new shelf.Response.ok(JSON.encode(Model.ActiveRecordings.instance));
+}

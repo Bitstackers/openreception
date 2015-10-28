@@ -94,6 +94,9 @@ void _accessLogger(String msg, bool isError) {
 
 Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4242}) {
   _stateController = new Controller.State();
+  Controller.ActiveRecording _activeRecordingController =
+      new Controller.ActiveRecording();
+
   log.info('Starting client notifier');
 
   Notification = new Service.NotificationService
@@ -120,6 +123,8 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4242}) {
     ..get('/call', Call.list)
     ..post('/state/reload', _stateController.reloadAll)
     ..get('/channel/list', Channel.list)
+    ..get('/activerecording', _activeRecordingController.list)
+    ..get('/activerecording/{filename}', _activeRecordingController.list)
     ..get('/channel', Channel.list)
     ..post('/call/{callid}/hangup', Call.hangupSpecific)
     ..post('/call/{callid}/pickup', Call.pickup)
