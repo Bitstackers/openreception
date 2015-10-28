@@ -48,6 +48,26 @@ abstract class Reception {
       });
   }
 
+  static Future<shelf.Response> extensionOf(shelf.Request request) {
+    int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
+
+    return _receptionDB.get(receptionID)
+      .then((Model.Reception reception) {
+        return new shelf.Response.ok (reception.extension);
+      })
+      .catchError((error, stackTrace) {
+      if(error is Storage.NotFound) {
+        return new shelf.Response.notFound
+        (JSON.encode({'description' : 'No reception '
+          'found with ID $receptionID'}));
+        }
+
+      log.severe (error, stackTrace);
+        return new shelf.Response.internalServerError
+          (body : 'receptionserver.router.getReception: $error');
+      });
+  }
+
   static Future<shelf.Response> get(shelf.Request request) {
     int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
