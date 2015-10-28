@@ -24,6 +24,9 @@ abstract class Reception {
   static Uri single(Uri host, int receptionID) =>
     Uri.parse('${root(host)}/${receptionID}');
 
+  static Uri extensionOf(Uri host, int receptionID) =>
+    Uri.parse('${root(host)}/${receptionID}/extension');
+
   static Uri byExtension(Uri host, String extension) =>
     Uri.parse('${root(host)}/extension/${extension}');
 
