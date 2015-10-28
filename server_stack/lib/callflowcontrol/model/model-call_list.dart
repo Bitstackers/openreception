@@ -198,11 +198,7 @@ class CallList extends IterableBase<ORModel.Call> {
       call..b_Leg = otherLeg.UUID
           ..changeState (ORModel.CallState.Speaking);
 
-//      final filename = '${call.ID}-uid-${call.assignedTo}-rid'
-//      '-${call.receptionID}-${call.inbound ? 'ib-${call.callerID}'
-//                                           : 'ob-${call.destination}'}';
-//
-//      Controller.PBX.recordChannel(call.channel, filename);
+     _startRecording(call);
     }
 
     else if (isCall(otherLeg)) {
@@ -211,11 +207,7 @@ class CallList extends IterableBase<ORModel.Call> {
        call..b_Leg = uuid.UUID
            ..changeState (ORModel.CallState.Speaking);
 
-//       final filename = '${call.ID}-uid-${call.assignedTo}-rid'
-//       '-${call.receptionID}-ob-${call.inbound ? call.callerID
-//                                               : call.destination}';
-//
-//       Controller.PBX.recordChannel(call.channel, filename);
+      _startRecording(call);
     }
 
     // Local calls??
@@ -402,4 +394,29 @@ class CallList extends IterableBase<ORModel.Call> {
 
       this._map[event.uniqueID] = createdCall;
     }
+}
+
+Future _startRecording(ORModel.Call call) async {
+  if(!config.callFlowControl.enableRecordings) {
+    return 0;
+  }
+
+  final Iterable parts = [
+    call.b_Leg,
+    call.ID,
+    call.receptionID,
+    call.inbound
+      ? 'in_${call.callerID}'
+      : 'out_${call.destination}'];
+
+
+  final filename = '${parts.join('_')}.wav';
+
+  return Controller.PBX.recordChannel(call.b_Leg, filename)
+    .then((_) =>
+      log.fine('Started recording call ${call.ID} '
+               '(agent channel: ${call.b_Leg})  to file $filename'))
+    .catchError((error, stackTrace) =>
+      log.severe('Could not start recording of '
+                 'call ${call.ID} to file $filename', error, stackTrace));
 }
