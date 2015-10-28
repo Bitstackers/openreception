@@ -13,36 +13,39 @@
 
 part of openreception.call_flow_control_server.model;
 
-class ActiveRecordings extends IterableBase {
+class ActiveRecordings extends IterableBase<ORModel.ActiveRecording> {
 
   static final instance = new ActiveRecordings();
 
   Logger _log = new Logger ('$libraryName.ActiveRecordings');
 
-  Map _recordings = {};
+  Map<String,ORModel.ActiveRecording> _recordings = {};
 
-  Iterator<Map> get iterator => _recordings.keys.map
-      ((String key) => {key : _recordings[key]}).iterator;
+  Iterator<ORModel.ActiveRecording> get iterator => _recordings.values.iterator;
+
+  ORModel.ActiveRecording get(String uuid) =>
+      _recordings.containsKey(uuid)
+      ? _recordings[uuid]
+      : throw new ORStorage.NotFound('No active recordings on uuid');
 
   /**
    * Handle an incoming [ESL.Event] packet
    */
   void handleEvent(ESL.Event packet) {
-
     void dispatch() {
       switch (packet.eventName) {
         case (PBXEvent.RECORD_START):
           final String uuid = packet.field('Unique-ID');
-          final String path = 'Record-File-Path';
+          final String path = packet.field('Record-File-Path');
 
           log.finest('Starting recording of channel $uuid at path $path');
-          _recordings[uuid] = path;
+          _recordings[uuid] = new ORModel.ActiveRecording(uuid, path);
 
           break;
 
         case (PBXEvent.RECORD_STOP):
           final String uuid = packet.field('Unique-ID');
-          final String path = 'Record-File-Path';
+          final String path = packet.field('Record-File-Path');
 
           log.finest('Stopping recording of channel $uuid at path $path');
           _recordings.remove(uuid);
@@ -58,5 +61,7 @@ class ActiveRecordings extends IterableBase {
       _log.severe(error, stackTrace);
     }
   }
+
+  List toJson() => this.toList(growable : false);
 
 }

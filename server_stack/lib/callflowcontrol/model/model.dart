@@ -24,6 +24,7 @@ import 'package:openreception_framework/event.dart' as OREvent;
 import 'package:openreception_framework/storage.dart' as ORStorage;
 import '../controller.dart' as Controller;
 import '../router.dart';
+import '../../configuration.dart';
 
 part 'model-active_recording.dart';
 part 'model-agent_history.dart';
