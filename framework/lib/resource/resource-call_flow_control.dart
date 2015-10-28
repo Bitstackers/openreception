@@ -22,6 +22,19 @@ abstract class CallFlowControl {
   static String nameSpace = 'call';
 
   /**
+   *
+   */
+  static Uri activeRecordings(Uri host)
+    => Uri.parse('${host}/activerecording');
+
+  /**
+   *
+   */
+  static Uri activeRecording(Uri host, String uuid)
+    => Uri.parse('${host}/activerecording/$uuid');
+
+
+  /**
    * Builds a Uri to to request a state update.
    * The output format is:
    *    http://hostname//state/reload

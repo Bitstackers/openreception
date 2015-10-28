@@ -27,6 +27,33 @@ class CallFlowControl {
   CallFlowControl(Uri this._host, String this._token, this._backend);
 
   /**
+   * Retrives the currently active recordings
+   */
+  Future<Iterable<Model.ActiveRecording>> activeRecordings() {
+    Uri uri = Resource.CallFlowControl.activeRecordings(this._host);
+    uri = appendToken(uri, this._token);
+
+    Iterable<Model.ActiveRecording> decodeMaps (Iterable<Map> maps) =>
+        maps.map(Model.ActiveRecording.decode);
+
+    return this._backend.get(uri)
+        .then(JSON.decode)
+        .then(decodeMaps);
+  }
+
+  /**
+   * Retrives the currently active recordings
+   */
+  Future<Model.ActiveRecording> activeRecording(String channel) {
+    Uri uri = Resource.CallFlowControl.activeRecording(this._host, channel);
+    uri = appendToken(uri, this._token);
+
+    return this._backend.get(uri)
+        .then(JSON.decode)
+        .then(Model.ActiveRecording.decode);
+  }
+
+  /**
    * Asks the server to perform a reload.
    */
   Future stateReload() {
