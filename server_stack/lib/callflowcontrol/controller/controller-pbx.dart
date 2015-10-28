@@ -119,7 +119,8 @@ abstract class PBX {
    *
    * Returns the UUID of the new channel.
    */
-  static Future<String> createAgentChannel (ORModel.User user) {
+  static Future<String> createAgentChannel
+    (ORModel.User user, {Map<String, String> extravars : const {}}) {
     final int msecs = new DateTime.now().millisecondsSinceEpoch;
     final String new_call_uuid = 'agent-${user.ID}-${msecs}';
     final String destination = 'user/${user.peer}';
@@ -135,7 +136,8 @@ abstract class PBX {
       'origination_uuid' : new_call_uuid,
       'originate_timeout' : _agentChantimeOut,
       'origination_caller_id_name' : 'Connecting...',
-      'origination_caller_id_number' : callerID};
+      'origination_caller_id_number' : callerID}
+    ..addAll(extravars);
 
     String variableString = variables.keys.map((String key) =>
         '$key=${variables[key]}').join(',');
