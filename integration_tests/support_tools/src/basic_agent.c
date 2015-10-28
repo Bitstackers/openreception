@@ -164,8 +164,10 @@ static void on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id,
 
   pjsua_call_get_info(call_id, &ci);
 
-  char buf[ci.remote_info.slen];
+  char buf[ci.remote_info.slen+1];
   memcpy(&buf, ci.remote_info.ptr, ci.remote_info.slen);
+
+  buf[ci.remote_info.slen] = '\0';
 
   or_event_incoming_call (buf, call_id, ci.state);
 
