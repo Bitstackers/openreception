@@ -23,6 +23,7 @@ import 'event.dart'   as Event;
 import 'keys.dart'    as Key;
 import 'util.dart'    as Util;
 
+part 'model/model-active_recording.dart';
 part 'model/model-audiofile.dart';
 part 'model/model-base_contact.dart';
 part 'model/model-calendar_entry.dart';

@@ -1,5 +1,8 @@
 library openreception.keys;
 
+const String uuid = 'uuid';
+const String path = 'path';
+const String started = 'started';
 const String contactID = 'contact_id';
 const String contactName = 'contact_name';
 const String receptionName = 'reception_name';
