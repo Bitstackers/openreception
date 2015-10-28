@@ -65,24 +65,28 @@ abstract class CallPark {
       .then((_) => log.info ('Receptionist tries to hunt down the next call'))
       .then((_) => receptionist.huntNextCall()
         .then((Model.Call call) => targetedCall = call))
+      .then((_) => receptionist.eventStack.clear())
       .then((_) => log.info ('Receptionist parks call $targetedCall'))
       .then((_) => receptionist.park(targetedCall, waitForEvent : true)
         .then((Model.Call parkedCall) {
           expect (parkedCall.assignedTo, equals(receptionist.user.ID));
           expect (parkedCall.state, equals(Model.CallState.Parked));
         }))
+      .then((_) => receptionist.eventStack.clear())
       .then((_) => log.info ('Receptionist pickup call $targetedCall again'))
       .then((_) => receptionist.pickup(targetedCall, waitForEvent : true)
         .then((Model.Call parkedCall) {
           expect (parkedCall.assignedTo, equals(receptionist.user.ID));
           expect (parkedCall.state, equals(Model.CallState.Speaking));
         }))
+      .then((_) => receptionist.eventStack.clear())
       .then((_) => log.info ('Receptionist parks call $targetedCall once again'))
       .then((_) => receptionist.park(targetedCall, waitForEvent : true)
         .then((Model.Call parkedCall) {
           expect (parkedCall.assignedTo, equals(receptionist.user.ID));
           expect (parkedCall.state, equals(Model.CallState.Parked));
         }))
+      .then((_) => receptionist.eventStack.clear())
       .then((_) => log.info ('Receptionist pickup call $targetedCall last time'))
       .then((_) => receptionist.pickup(targetedCall, waitForEvent : true)
         .then((Model.Call parkedCall) {
