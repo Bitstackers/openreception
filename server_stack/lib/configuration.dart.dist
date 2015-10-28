@@ -86,6 +86,7 @@ class DatabaseConfig {
 class CallFlowControl extends StandardConfig {
   final String dialoutPrefix = '';
   final String dialoutGateway = 'friendly-gw.sip';
+  final bool enableRecordings = false;
 
   final EslConfig eslConfig = const EslConfig();
 
