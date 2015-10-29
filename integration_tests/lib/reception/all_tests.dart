@@ -1,9 +1,11 @@
 part of or_test_fw;
 
+/**
+ * TODO: Add test for get-reception-by-extension.
+ */
 runReceptionTests () {
 
   group ('Database.Reception', () {
-    Transport.Client transport = null;
     Database.Reception receptionStore = null;
 
     Database.Connection connection;
