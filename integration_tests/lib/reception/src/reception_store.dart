@@ -725,4 +725,43 @@ createdReception.bankingInformation, updatedReception.bankingInformation);
       }));
     });
   }
+
+  /**
+   * Test server behaviour when trying to aquire a reception event object that
+   * exists using its extension as key.
+   *
+   * The expected behaviour is that the server should return the
+   * Reception object.
+   */
+  static Future byExtension(Storage.Reception receptionStore) async {
+    log.info('byExtension test starting.');
+    const String extension = '12340001';
+    log.info('byExtension: Looking up reception with extension $extension');
+
+    final  Model.Reception reception =
+        await receptionStore.getByExtension(extension);
+
+    expect(reception, isNotNull);
+    log.info('byExtension test done.');
+  }
+
+  /**
+   * Test server behaviour when trying to aquire the reception extenion of a
+   * reception that exists.
+   *
+   * The expected behaviour is that the server should return the the extension.
+   */
+  static Future extensionOf(Service.RESTReceptionStore receptionStore) async {
+    log.info('extensionOf test starting.');
+    const int receptionId = 1;
+    final String expectedExtension = '1234000$receptionId';
+    log.info('extensionOf: Looking up extension of reception with id $receptionId');
+
+    final String extension = await receptionStore.extensionOf(receptionId);
+
+    expect(extension, expectedExtension);
+    log.info('extensionOf test done.');
+  }
+
+
 }

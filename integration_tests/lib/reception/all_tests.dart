@@ -130,6 +130,12 @@ runReceptionTests () {
     test ('Reception removal',
         () => Reception.remove(receptionStore));
 
+    test ('Lookup by extension',
+        () => Reception.byExtension(receptionStore));
+
+    test ('Lookup extension',
+        () => Reception.extensionOf(receptionStore));
+
     setUp (() {
       transport = new Transport.Client();
       receptionStore = new Service.RESTReceptionStore
