@@ -34,7 +34,8 @@ typedef enum {OR_READY,
               OR_CALL_OUTGOING,
               OR_CALL_STATE,
               OR_CALL_MEDIA_STATE,
-              OR_CALL_TSX_STATE} or_event_t;
+              OR_CALL_TSX_STATE,
+	      OR_ACCOUNT_STATE} or_event_t;
 
 bool            is_registered             = false;
 bool            processing                = false;
@@ -51,7 +52,8 @@ static char *or_event_table[] = {
   [OR_CALL_OUTGOING]    = "CALL_OUTGOING",
   [OR_CALL_STATE]       = "CALL_STATE",
   [OR_CALL_MEDIA_STATE] = "CALL_MEDIA",
-  [OR_CALL_TSX_STATE]   = "CALL_TSX_STATE"
+  [OR_CALL_TSX_STATE]   = "CALL_TSX_STATE",
+  [OR_ACCOUNT_STATE]    = "ACCOUNT_STATE"
 };
 
 char *or_reply_table[] = {
@@ -659,6 +661,23 @@ void or_event_outgoing_call(char* extension, int call_id, int call_state) {
 
   // Add call object.
   json_object_object_add(jobj,"call", jcall); 
+
+  fprintf (stdout,"%s\n",json_object_to_json_string(jobj));
+  fflush(stdout);
+}
+
+void or_event_account_state(int account_id, bool registered ) {
+  json_object *jobj     = json_object_new_object();
+  json_object *jaccount = json_object_new_object();
+
+  json_object_object_add(jobj,"event", 
+                         json_object_new_string(or_event_to_string(OR_ACCOUNT_STATE)));
+  // Build call object.
+  json_object_object_add(jaccount,"id", json_object_new_int(account_id));
+  json_object_object_add(jaccount,"registered", json_object_new_boolean(registered));
+
+  // Add call object.
+  json_object_object_add(jobj,"account", jaccount); 
 
   fprintf (stdout,"%s\n",json_object_to_json_string(jobj));
   fflush(stdout);
