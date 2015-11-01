@@ -90,6 +90,33 @@ class Reception implements Storage.Reception {
     });
   }
 
+  /**
+   * Retrieve the extension of a specific reception from the database
+   * identified its ID.
+   */
+  Future<String> extensionOf (int receptionId) {
+    String sql = '''
+      SELECT reception_telephonenumber
+      FROM receptions
+      WHERE id = @id
+    ''';
+
+    Map parameters = {'id': receptionId};
+
+    return _connection
+        .query(sql, parameters)
+        .then((Iterable rows) => rows.isEmpty
+            ? new Future.error(
+                new Storage.NotFound('No reception with id $receptionId'))
+            : rows.first.reception_telephonenumber)
+        .catchError((error, stackTrace) {
+      if (error is! Storage.NotFound) {
+        log.severe('sql:$sql :: parameters:$parameters');
+      }
+
+      return new Future.error(error, stackTrace);
+    });
+  }
 
   /**
    * Retrieve a specific reception from the database.
