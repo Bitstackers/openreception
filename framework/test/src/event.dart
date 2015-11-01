@@ -98,14 +98,13 @@ abstract class EventTests {
   }
   static void messageChangeState() {
     final int mid = 1;
-    final state = Event.MessageChangeState.CREATED;
 
-    Event.MessageChange testEvent = new Event.MessageChange(mid, state);
+    Event.MessageChange testEvent = new Event.MessageChange.created(mid);
 
     Event.MessageChange builtEvent = new Event.Event.parse(testEvent.asMap);
 
     expect(builtEvent.messageID, equals(mid));
-    expect(builtEvent.state, equals(state));
+    expect(builtEvent.state, equals(Event.MessageChangeState.CREATED));
   }
 
   static void calendarEntryState () {

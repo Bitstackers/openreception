@@ -54,7 +54,7 @@ abstract class ModelMessageContext {
     final int receptionId = 2;
     final String receptionName = 'Lasagna-makers inc.';
 
-    Model.MessageContext obj = new Model.MessageContext()
+    Model.MessageContext obj = new Model.MessageContext.empty()
       ..contactID = contactId
       ..contactName = contactName
       ..receptionID = receptionId

@@ -26,19 +26,29 @@ abstract class EventMessageChange {
 
   static void buildObject() {
     final int mid = 1;
-    final state = Event.MessageChangeState.CREATED;
 
-    Event.MessageChange testEvent = new Event.MessageChange(mid, state);
+    Event.MessageChange testEvent = new Event.MessageChange.created(mid);
 
     expect(testEvent.messageID, equals(mid));
-    expect(testEvent.state, equals(state));
+    expect(testEvent.state, equals(Event.MessageChangeState.CREATED));
+
+
+    testEvent = new Event.MessageChange.updated(mid);
+
+    expect(testEvent.messageID, equals(mid));
+    expect(testEvent.state, equals(Event.MessageChangeState.UPDATED));
+
+    testEvent = new Event.MessageChange.deleted(mid);
+
+    expect(testEvent.messageID, equals(mid));
+    expect(testEvent.state, equals(Event.MessageChangeState.DELETED));
+
   }
 
   static void serialization() {
     final int mid = 1;
-    final state = Event.MessageChangeState.CREATED;
 
-    Event.MessageChange testEvent = new Event.MessageChange(mid, state);
+    Event.MessageChange testEvent = new Event.MessageChange.created(mid);
 
     expect(testEvent.toJson, returnsNormally);
   }
@@ -47,7 +57,7 @@ abstract class EventMessageChange {
     final int mid = 1;
     final state = Event.MessageChangeState.CREATED;
 
-    Event.MessageChange testEvent = new Event.MessageChange(mid, state);
+    Event.MessageChange testEvent = new Event.MessageChange.created(mid);
 
     expect(testEvent.messageID, equals(mid));
     expect(testEvent.state, equals(state));
