@@ -11,6 +11,8 @@ abstract class Reception {
 
   Future<Model.Reception> getByExtension (String extension);
 
+  Future<String> extensionOf (int receptionId);
+
   Future<Iterable<Model.Reception>> list ();
 
   Future<Model.Reception> remove(int receptionID);
