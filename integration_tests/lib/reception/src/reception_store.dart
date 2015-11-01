@@ -751,7 +751,7 @@ createdReception.bankingInformation, updatedReception.bankingInformation);
    *
    * The expected behaviour is that the server should return the the extension.
    */
-  static Future extensionOf(Service.RESTReceptionStore receptionStore) async {
+  static Future extensionOf(Storage.Reception receptionStore) async {
     log.info('extensionOf test starting.');
     const int receptionId = 1;
     final String expectedExtension = '1234000$receptionId';
