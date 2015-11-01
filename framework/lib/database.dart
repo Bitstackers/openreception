@@ -37,27 +37,6 @@ part 'database/database-user.dart';
 
 const String libraryName = 'openreception.database';
 
-@deprecated
-Future query(PGPool.Pool pool, String sql, [Map parameters = null]) => pool.connect()
-  .then((PG.Connection conn) => conn.query(sql, parameters).toList()
-  .whenComplete(() => conn.close()));
-
-@deprecated
-Future execute(PGPool.Pool pool, String sql, [Map parameters = null]) => pool.connect()
-  .then((PG.Connection conn) => conn.execute(sql, parameters)
-  .whenComplete(() => conn.close()));
-
-@deprecated
-Future<PGPool.Pool> start(String user, String password, String host, int port, String database, {int minimumConnections: 1, int maximumConnections: 2}) {
-  String connectString = 'postgres://${user}:${password}@${host}:${port}/${database}';
-
-  PGPool.Pool pool = new PGPool.Pool(connectString, minConnections: minimumConnections, maxConnections: maximumConnections);
-  return pool.start().then((_) => _testConnection(pool)).then((_) => pool);
-}
-
-@deprecated
-Future _testConnection(PGPool.Pool pool) => pool.connect().then((PG.Connection conn) => conn.close());
-
 /**
  * Database connection class. Abstracts away connection pooling.
  */
