@@ -1,3 +1,5 @@
+INSERT INTO users (id, name, extension, send_from)
+VALUES (1,  'System user', 0, '');
 
 INSERT INTO groups (id, name)
 VALUES (1, 'Receptionist'),
