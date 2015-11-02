@@ -4,6 +4,7 @@ PWD=$(shell pwd)
 DB_SRC=${PWD}/db_src
 DB_SCHEMA=schema.sql
 DB_DATA=test_data_$(TESTDATA_LANG).sql
+DB_BASE_DATA=base.sql
 TIMESTAMP=$(shell date +%s)
 
 PREFIX?=/opt/openreception/bin
@@ -119,3 +120,6 @@ remove_test_db:
 	-psql -c "DROP DATABASE ${PGDB}" --host=${PGHOST} --username=${PG_SUPER_USER} -w
 
 replace_test_db: remove_test_db install_db install_db_test_data
+
+install_db_base_data:
+	LANG=C.UTF-8 PGOPTIONS='--client-min-messages=warning' psql ${PGARGS} --dbname=${PGDB} --file=${DB_SRC}/${DB_BASE_DATA} --host=${PGHOST} --username=${PGUSER} -w
