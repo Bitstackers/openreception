@@ -214,6 +214,30 @@ WHERE
   }
 
   /**
+   * Create a new group.
+   */
+  Future createGroup(String name) {
+    String sql = '''
+    INSERT INTO groups (name)
+    VALUES (@name)
+    RETURNING id
+  ''';
+
+    Map parameters = {'name': name};
+
+    return _connection
+        .query(sql, parameters)
+        .then((row) => new Model.UserGroup.empty()
+          ..id = row.id
+          ..name = name)
+        .catchError((error, stackTrace) {
+      log.severe('sql:$sql :: parameters:$parameters', error, stackTrace);
+
+      return new Future.error(error, stackTrace);
+    });
+  }
+
+  /**
    * Adds user with id [userId] to group with id [groupId].
    */
   Future joinGroup(int userId, int groupId) {
