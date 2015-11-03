@@ -45,6 +45,9 @@ class Contact {
   bool wantsMessage = true;
   bool enabled      = true;
 
+  //TODO: Figure out what this flag is for.
+  bool statusEmail  = true;
+
   String fullName = '';
   String contactType = '';
 
@@ -75,7 +78,8 @@ class Contact {
     Key.titles           : titles,
     Key.relations        : relations,
     Key.responsibilities : responsibilities,
-    Key.messagePrerequisites : messagePrerequisites
+    Key.messagePrerequisites : messagePrerequisites,
+    Key.statusEmail      : statusEmail
   };
 
 
@@ -108,7 +112,8 @@ class Contact {
         Key.titles           : this.titles,
         Key.relations        : this.relations,
         Key.responsibilities : this.responsibilities,
-        Key.messagePrerequisites : messagePrerequisites
+        Key.messagePrerequisites : messagePrerequisites,
+        Key.statusEmail      : statusEmail
       };
 
   Contact.fromMap(Map map) {
@@ -141,6 +146,7 @@ class Contact {
     this.titles            = mapValue(Key.titles, map);
     this.relations         = mapValue(Key.relations, map);
     this.responsibilities  = mapValue(Key.responsibilities, map);
+    this.statusEmail       = mapValue(Key.statusEmail, map);
 
     Iterable ep = mapValue(Key.endpoints, map);
     this.endpoints = ep.map((Map map) =>

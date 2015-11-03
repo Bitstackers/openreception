@@ -44,6 +44,7 @@ const String company = 'company';
 const String phone = 'phone';
 const String cellPhone = 'cellPhone';
 const String localExtension = 'localExtension';
+const String statusEmail = 'statusEmail';
 
 const String distributionList = 'distribution_list';
 const String phones = 'phones';
