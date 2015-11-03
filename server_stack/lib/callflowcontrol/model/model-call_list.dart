@@ -248,32 +248,41 @@ class CallList extends IterableBase<ORModel.Call> {
 
         break;
 
-      /// Leaving the prequeue (Playing greeting and locking the call)
+      case (PBXEvent._OR_CALL_LOCK):
+        if(this._map.containsKey(event.uniqueID)) {
+          log.finest('Locking ${event.uniqueID}');
+          CallList.instance.get (event.uniqueID).locked = true;
+        }
+        else {
+          log.severe('Locked non-announced call ${event.uniqueID}');
+        }
+        break;
+
+      case (PBXEvent._OR_CALL_UNLOCK):
+        if(this._map.containsKey(event.uniqueID)) {
+          log.finest('Unlocking ${event.uniqueID}');
+          CallList.instance.get (event.uniqueID).locked = false;
+        }
+        else {
+          log.severe('Locked non-announced call ${event.uniqueID}');
+        }
+        break;
+
+      /// Leaving the prequeue
       case (PBXEvent._OR_PRE_QUEUE_LEAVE):
         /// If the call was placed directly into the waitQueue
         if(!this._map.containsKey(event.uniqueID)) {
           this._createCall(event);
         }
 
-        log.finest('Locking ${event.uniqueID}');
-        CallList.instance.get (event.uniqueID)
-          ..changeState (ORModel.CallState.Transferring)
-          ..locked = event.contentAsMap.containsKey(Controller.PBX.locked)
-              ? event.field(Controller.PBX.locked) == 'true'
-              : false;
-        break;
+      break;
 
       /// Entering the wait queue (Playing queue music)
       case (PBXEvent._OR_WAIT_QUEUE_ENTER):
         ESL.Channel channel = new ESL.Channel.fromPacket(event);
 
-        log.finest('Unlocking ${event.uniqueID}');
         CallList.instance.get (event.uniqueID)
-          ..locked = channel.variables.containsKey(Controller.PBX.locked)
-              ? channel.variables[Controller.PBX.locked] == 'true'
-              : false
-
-        ..greetingPlayed = true //TODO: Change this into a packet.variable.get ('greetingPlayed')
+          ..greetingPlayed = true //TODO: Change this into a packet.variable.get ('greetingPlayed')
           ..changeState (ORModel.CallState.Queued);
         break;
 
