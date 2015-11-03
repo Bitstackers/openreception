@@ -18,7 +18,7 @@ part of model;
  */
 class UIReceptionSelector extends UIModel {
   final Bus<ORModel.Reception> _bus = new Bus<ORModel.Reception>();
-  final DivElement             _myRoot;
+  final DivElement _myRoot;
   final Bus<ORModel.Reception> _selectedRemovedBus = new Bus<ORModel.Reception>();
   final Bus<ORModel.Reception> _selectedUpdatedBus = new Bus<ORModel.Reception>();
 
@@ -31,19 +31,19 @@ class UIReceptionSelector extends UIModel {
   }
 
   @override HtmlElement get _firstTabElement => _filter;
-  @override HtmlElement get _focusElement    => _filter;
-  @override HtmlElement get _lastTabElement  => _filter;
-  @override HtmlElement get _listTarget      => _list;
+  @override HtmlElement get _focusElement => _filter;
+  @override HtmlElement get _lastTabElement => _filter;
+  @override HtmlElement get _listTarget => _list;
   /**
    * Return the mousedown click event stream for this widget. We capture
    * mousedown instead of regular click to avoid the ugly focus/blur flicker
    * on the filter input whenever a reception li element is clicked.
    */
-  @override Stream<MouseEvent> get onClick         => _myRoot.onMouseDown;
-  @override selectCallback     get _selectCallback => _receptionSelectCallback;
-  @override HtmlElement        get _root           => _myRoot;
+  @override Stream<MouseEvent> get onClick => _myRoot.onMouseDown;
+  @override selectCallback get _selectCallback => _receptionSelectCallback;
+  @override HtmlElement get _root => _myRoot;
 
-  OListElement get _list   => _root.querySelector('.generic-widget-list');
+  OListElement get _list => _root.querySelector('.generic-widget-list');
   InputElement get _filter => _root.querySelector('.filter');
 
   /**
@@ -55,26 +55,26 @@ class UIReceptionSelector extends UIModel {
    */
   void addReception(ORModel.Reception reception, {bool selected: false}) {
     LIElement newLi = new LIElement()
-                        ..dataset['id'] = reception.ID.toString()
-                        ..dataset['name'] = reception.name.toLowerCase()
-                        ..dataset['object'] = JSON.encode(reception)
-                        ..text = reception.name;
+      ..dataset['id'] = reception.ID.toString()
+      ..dataset['name'] = reception.name.toLowerCase()
+      ..dataset['object'] = JSON.encode(reception)
+      ..text = reception.name;
 
-    LIElement firstBiggerName =
-        _list.querySelectorAll('li').firstWhere((Element element) =>
-            newLi.dataset['name'].compareTo(element.dataset['name']) < 0, orElse: () => null);
+    LIElement firstBiggerName = _list.querySelectorAll('li').firstWhere(
+        (Element element) => newLi.dataset['name'].compareTo(element.dataset['name']) < 0,
+        orElse: () => null);
 
-    if(firstBiggerName == null) {
+    if (firstBiggerName == null) {
       _list.append(newLi);
     } else {
       _list.insertBefore(newLi, firstBiggerName);
     }
 
-    if(selected) {
+    if (selected) {
       _markSelected(newLi, callSelectCallback: false);
     } else {
       LIElement selectedLi = _list.querySelector('.selected');
-      if(selectedLi != null) {
+      if (selectedLi != null) {
         selectedLi.scrollIntoView();
       }
     }
@@ -95,15 +95,15 @@ class UIReceptionSelector extends UIModel {
     final String filter = _filter.value.toLowerCase();
     final String trimmedFilter = filter.trim();
 
-    if(filter.length == 0 || trimmedFilter.isEmpty) {
+    if (filter.length == 0 || trimmedFilter.isEmpty) {
       /// Empty filter. Remove .hide from all list elements.
       _list.children.forEach((LIElement li) => li.classes.toggle('hide', false));
       _list.classes.toggle('zebra', true);
-    } else if(trimmedFilter.length == 1) {
+    } else if (trimmedFilter.length == 1) {
       _list.classes.toggle('zebra', false);
 
       _list.children.forEach((LIElement li) {
-        if(li.dataset['name'].startsWith(trimmedFilter)) {
+        if (li.dataset['name'].startsWith(trimmedFilter)) {
           li.classes.toggle('hide', false);
         } else {
           li.classes.toggle('hide', true);
@@ -113,7 +113,7 @@ class UIReceptionSelector extends UIModel {
       _list.classes.toggle('zebra', false);
 
       _list.children.forEach((LIElement li) {
-        if(li.dataset['name'].contains(trimmedFilter)) {
+        if (li.dataset['name'].contains(trimmedFilter)) {
           li.classes.toggle('hide', false);
         } else {
           li.classes.toggle('hide', true);
@@ -126,7 +126,9 @@ class UIReceptionSelector extends UIModel {
    * Deal with enter.
    */
   void _handleEnter(KeyboardEvent event) {
-    _markSelected(_scanForwardForVisibleElement(_list.children.first));
+    if (_filter.value.trim().isNotEmpty) {
+      _markSelected(_scanForwardForVisibleElement(_list.children.first));
+    }
   }
 
   /**
@@ -166,10 +168,10 @@ class UIReceptionSelector extends UIModel {
 
     items.forEach((ORModel.Reception item) {
       list.add(new LIElement()
-                ..dataset['id'] = item.ID.toString()
-                ..dataset['name'] = item.name.toLowerCase()
-                ..dataset['object'] = JSON.encode(item)
-                ..text = item.name);
+        ..dataset['id'] = item.ID.toString()
+        ..dataset['name'] = item.name.toLowerCase()
+        ..dataset['object'] = JSON.encode(item)
+        ..text = item.name);
     });
 
     _list.children = list;
@@ -189,10 +191,10 @@ class UIReceptionSelector extends UIModel {
   void removeReception(ORModel.Reception reception, {bool fire: true}) {
     LIElement newLi = _list.querySelector('[data-id="${reception.ID.toString()}"]');
 
-    if(newLi != null) {
+    if (newLi != null) {
       ORModel.Reception selected = selectedReception;
       newLi.remove();
-      if(fire && reception.ID == selected.ID) {
+      if (fire && reception.ID == selected.ID) {
         _selectedRemovedBus.fire(selected);
       }
     }
@@ -214,12 +216,12 @@ class UIReceptionSelector extends UIModel {
    * of the [event].
    */
   void _selectFromClick(MouseEvent event) {
-    if(event.target != _filter) {
+    if (event.target != _filter) {
       /// NOTE (TL): This keeps focus on the _filter field, despite clicks on
       /// other elements.
       event.preventDefault();
 
-      if(event.target is LIElement) {
+      if (event.target is LIElement) {
         _markSelected(event.target);
       }
     }
@@ -229,9 +231,7 @@ class UIReceptionSelector extends UIModel {
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
-    final Map<String, EventListener> bindings =
-        {'Enter': _handleEnter,
-         'Esc'  : _reset};
+    final Map<String, EventListener> bindings = {'Enter': _handleEnter, 'Esc': _reset};
 
     _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
   }
@@ -244,7 +244,7 @@ class UIReceptionSelector extends UIModel {
   ORModel.Reception get selectedReception {
     LIElement li = _list.querySelector('.selected');
 
-    if(li != null) {
+    if (li != null) {
       return new ORModel.Reception.fromMap(JSON.decode(li.dataset['object']));
     } else {
       return new ORModel.Reception.empty();
@@ -259,7 +259,7 @@ class UIReceptionSelector extends UIModel {
     removeReception(reception, fire: false);
     addReception(reception, selected: selected);
 
-    if(selected) {
+    if (selected) {
       _selectedUpdatedBus.fire(reception);
     }
   }
