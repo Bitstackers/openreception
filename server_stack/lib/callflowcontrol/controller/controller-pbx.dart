@@ -437,7 +437,7 @@ abstract class PBX {
    * TODO: Log NO_ANSWER events and figure out why they are coming.
    */
   static Future park (ORModel.Call call, ORModel.User user) {
-    return transfer(call, 'park');
+    return transfer(call, 'park XML receptions');
   }
 
   /**
