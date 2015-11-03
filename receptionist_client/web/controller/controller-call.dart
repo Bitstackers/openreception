@@ -143,11 +143,7 @@ class Call {
   /**
    * Fetches a list of peers.
    */
-  Future<Iterable<ORModel.Peer>> peerList() =>
-    _service.peerListMaps()
-      .then((Iterable<Map> maps) =>
-        maps.map((Map map) =>
-          new ORModel.Peer.fromMap(map)));
+  Future<Iterable<ORModel.Peer>> peerList() => _service.peerList();
 
   /**
    * Make the service layer perform a pickup request to the
