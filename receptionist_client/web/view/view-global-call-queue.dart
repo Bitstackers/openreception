@@ -65,23 +65,15 @@ class GlobalCallQueue extends ViewWidget {
   /**
    * Add, remove, update the queue list, depending on the [call] state.
    */
-  void _handleCallStateChanges(ORModel.Call call) {
-    switch (call.state) {
-      case ORModel.CallState.Created:
-        _ui.appendCall(call);
-        break;
+  void _handleCallStateChanges(OREvent.CallEvent event) {
+    final ORModel.Call call = event.call;
 
-      case ORModel.CallState.Hungup:
-        _ui.removeCall(call);
-        break;
-
-      case ORModel.CallState.Speaking:
-        _ui.removeCall(call);
-        break;
-
-      default:
-        _ui.updateCall(call);
-        break;
+    if(event is OREvent.CallOffer) {
+      _ui.appendCall(call);
+    } else if (event is OREvent.CallHangup) {
+      _ui.removeCall(call);
+    } else if (call.inbound) {
+      _ui.updateCall(call);
     }
   }
 

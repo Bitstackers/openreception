@@ -60,26 +60,26 @@ class MyCallQueue extends ViewWidget {
   /**
    * Add, remove, update the queue list, depending on the [call] state.
    */
-  void _handleCallStateChanges(ORModel.Call call) {
-    if (call.assignedTo != _appState.currentUser.ID) {
+  void _handleCallStateChanges(OREvent.CallEvent event) {
+    if (event.call.assignedTo != _appState.currentUser.ID) {
       return;
     }
 
-    switch (call.state) {
+    switch (event.call.state) {
       case ORModel.CallState.Created:
-        if (!call.inbound) {
+        if (!event.call.inbound) {
           /// My outbound call.
-          _ui.appendCall(call);
+          _ui.appendCall(event.call);
         }
         break;
 
       case ORModel.CallState.Hungup:
       case ORModel.CallState.Transferred:
-        _ui.removeCall(call);
+        _ui.removeCall(event.call);
         break;
 
       default:
-        _ui.updateCall(call);
+        _ui.updateCall(event.call);
         break;
     }
   }

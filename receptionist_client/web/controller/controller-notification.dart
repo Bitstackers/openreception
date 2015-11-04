@@ -20,7 +20,7 @@ class Notification {
   Bus<ORModel.UserStatus>          _agentStateChangeBus      = new Bus<ORModel.UserStatus>();
   final Model.AppClientState       _appState;
   Bus<OREvent.CalendarChange>      _calendarChangeBus        = new Bus<OREvent.CalendarChange>();
-  Bus<ORModel.Call>                _callStateChangeBus       = new Bus<ORModel.Call>();
+  Bus<OREvent.CallEvent>            _callStateChangeBus       = new Bus<OREvent.CallEvent>();
   Bus<Model.ClientConnectionState> _clientConnectionStateBus = new Bus<Model.ClientConnectionState>();
   final Logger                     _log                      = new Logger('$libraryName.Notification');
   ORService.NotificationSocket     _socket                   = null;
@@ -43,7 +43,7 @@ class Notification {
    * Handle the [OREvent.CallEvent] [event].
    */
   void _callEvent(OREvent.CallEvent event) {
-    _callStateChangeBus.fire(event.call);
+    _callStateChangeBus.fire(event);
 
     /// If my call was hung up, update the model.
     if (event is OREvent.CallHangup && _appState.activeCall == event.call) {
@@ -92,7 +92,8 @@ class Notification {
   /**
    * Call state change stream.
    */
-  Stream<ORModel.Call> get onAnyCallStateChange => _callStateChangeBus.stream;
+  Stream<OREvent.CallEvent> get onAnyCallStateChange =>
+      _callStateChangeBus.stream;
 
   /**
    * Calendar Event changes stream.
