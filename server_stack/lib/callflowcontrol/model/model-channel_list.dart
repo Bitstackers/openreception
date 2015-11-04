@@ -87,14 +87,13 @@ abstract class PBXEvent {
   static const String SOFIA_REGISTER = 'sofia::register';
   static const String SOFIA_UNREGISTER = 'sofia::unregister';
 
-  //static const String _OR_CALL_NOTIFY = 'openreception::call-notify';
+  static const String _OR_CALL_NOTIFY = 'openreception::call-notify';
   static const String _OR_CALL_LOCK = 'openreception::call-lock';
   static const String _OR_CALL_UNLOCK = 'openreception::call-unlock';
-  //static const String _OR_CALL_RINGING = 'openreception::call-ringing';
+  static const String _OR_CALL_RINGING_START = 'openreception::ringing-start';
+  static const String _OR_CALL_RINGING_STOP = 'openreception::ringing-stop';
   //static const String _OR_CALL_PLAYBACK_START = 'openreception::call-playback-start';
   //static const String _OR_CALL_PLAYBACK_STOP = 'openreception::call-playback-stop';
-  static const String _OR_PRE_QUEUE_ENTER = 'openreception::pre-queue-enter';
-  static const String _OR_PRE_QUEUE_LEAVE = 'openreception::pre-queue-leave';
 
   static const String _OR_WAIT_QUEUE_ENTER = 'openreception::wait-queue-enter';
   static const String _OR_PARKING_LOT_ENTER = 'openreception::parking-lot-enter';
@@ -106,9 +105,10 @@ abstract class PBXEvent {
         RECORD_START, RECORD_STOP,
         CUSTOM, SOFIA_REGISTER,
         SOFIA_UNREGISTER,
+        _OR_CALL_RINGING_START, _OR_CALL_RINGING_STOP,
         _OR_PARKING_LOT_ENTER, _OR_PARKING_LOT_LEAVE,
-        _OR_CALL_LOCK, _OR_CALL_UNLOCK,
-        _OR_PRE_QUEUE_ENTER, _OR_PRE_QUEUE_LEAVE, _OR_WAIT_QUEUE_ENTER];
+        _OR_CALL_NOTIFY, _OR_WAIT_QUEUE_ENTER,
+        _OR_CALL_LOCK, _OR_CALL_UNLOCK, ];
 }
 
 /**

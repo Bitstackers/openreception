@@ -235,8 +235,8 @@ class CallList extends IterableBase<ORModel.Call> {
   void _handleCustom (ESL.Event event) {
     switch (event.eventSubclass) {
 
-      /// Entering the prequeue (not yet answered).
-      case (PBXEvent._OR_PRE_QUEUE_ENTER):
+      /// Call is created
+      case (PBXEvent._OR_CALL_NOTIFY):
         this._createCall(event);
 
         this.get(event.uniqueID)
@@ -246,6 +246,14 @@ class CallList extends IterableBase<ORModel.Call> {
                         : 0
             ..changeState(ORModel.CallState.Created);
 
+        break;
+
+      case (PBXEvent._OR_CALL_RINGING_START):
+        this.get(event.uniqueID).changeState(ORModel.CallState.Ringing);
+        break;
+
+      case (PBXEvent._OR_CALL_RINGING_STOP):
+        this.get(event.uniqueID).changeState(ORModel.CallState.Transferring);
         break;
 
       case (PBXEvent._OR_CALL_LOCK):
@@ -268,14 +276,6 @@ class CallList extends IterableBase<ORModel.Call> {
         }
         break;
 
-      /// Leaving the prequeue
-      case (PBXEvent._OR_PRE_QUEUE_LEAVE):
-        /// If the call was placed directly into the waitQueue
-        if(!this._map.containsKey(event.uniqueID)) {
-          this._createCall(event);
-        }
-
-      break;
 
       /// Entering the wait queue (Playing queue music)
       case (PBXEvent._OR_WAIT_QUEUE_ENTER):
