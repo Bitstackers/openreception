@@ -279,7 +279,6 @@ class CallList extends IterableBase<ORModel.Call> {
 
       /// Entering the wait queue (Playing queue music)
       case (PBXEvent._OR_WAIT_QUEUE_ENTER):
-        ESL.Channel channel = new ESL.Channel.fromPacket(event);
 
         CallList.instance.get (event.uniqueID)
           ..greetingPlayed = true //TODO: Change this into a packet.variable.get ('greetingPlayed')
