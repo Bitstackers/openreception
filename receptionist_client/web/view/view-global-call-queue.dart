@@ -70,7 +70,8 @@ class GlobalCallQueue extends ViewWidget {
 
     if(event is OREvent.CallOffer) {
       _ui.appendCall(call);
-    } else if (event is OREvent.CallHangup) {
+    } else if (event is OREvent.CallHangup ||
+        call.assignedTo != ORModel.User.noID) {
       _ui.removeCall(call);
     } else if (call.inbound) {
       _ui.updateCall(call);
