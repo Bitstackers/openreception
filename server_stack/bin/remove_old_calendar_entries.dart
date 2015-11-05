@@ -17,12 +17,13 @@ import 'dart:async';
 
 import 'package:openreception_framework/database.dart' as Database;
 
-const String dbDSN ='postgres://user:pass@localhost:5432/openreception';
+import '../lib/configuration.dart';
 
 final Duration maxAge = new Duration(days : 30);
 
 Future main() async {
-  Database.Connection connection = await Database.Connection.connect(dbDSN);
+  Database.Connection connection =
+      await Database.Connection.connect(config.database.dsn);
 
   DateTime cutOffDate = new DateTime.now().subtract(maxAge);
 
