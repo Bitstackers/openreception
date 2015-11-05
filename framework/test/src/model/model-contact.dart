@@ -72,6 +72,7 @@ abstract class ModelContact {
         builtObject.emailaddresses, equals(deserializedObject.emailaddresses));
     expect(builtObject.handling, equals(deserializedObject.handling));
     expect(builtObject.infos, equals(deserializedObject.infos));
+    expect(builtObject.statusEmail, equals(deserializedObject.statusEmail));
     expect(builtObject.titles, equals(deserializedObject.titles));
     expect(builtObject.relations, equals(deserializedObject.relations));
     expect(builtObject.responsibilities,
@@ -87,6 +88,7 @@ abstract class ModelContact {
     final int contactID = 2;
     final bool wantsMessages = false;
     final bool enabled = true;
+    final bool statusEmail = false;
     final String fullName = 'Biff, the goldfish';
     final String contactType = 'Goldfish';
     final List<Model.PhoneNumber> pn = [
@@ -131,6 +133,7 @@ abstract class ModelContact {
       ..receptionID = receptionID
       ..ID = contactID
       ..wantsMessage = wantsMessages
+      ..statusEmail = statusEmail
       ..enabled = enabled
       ..fullName = fullName
       ..contactType = contactType
@@ -153,6 +156,7 @@ abstract class ModelContact {
     expect(builtObject.ID, equals(contactID));
     expect(builtObject.wantsMessage, equals(wantsMessages));
     expect(builtObject.enabled, equals(enabled));
+    expect(builtObject.statusEmail, equals(statusEmail));
     expect(builtObject.fullName, equals(fullName));
     expect(builtObject.contactType, equals(contactType));
     expect(builtObject.phones, equals(pn));
