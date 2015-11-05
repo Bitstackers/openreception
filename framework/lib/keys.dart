@@ -1,5 +1,7 @@
 library openreception.keys;
 
+const String recent = 'recent';
+const String total = 'total';
 const String uuid = 'uuid';
 const String path = 'path';
 const String started = 'started';
