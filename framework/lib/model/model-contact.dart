@@ -45,7 +45,11 @@ class Contact {
   bool wantsMessage = true;
   bool enabled      = true;
 
-  //TODO: Figure out what this flag is for.
+  /**
+   * Imported flag from old system. Signifies that a user wishes to recieve
+   * status emails from us.
+   */
+
   bool statusEmail  = true;
 
   String fullName = '';
