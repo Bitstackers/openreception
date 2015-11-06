@@ -417,8 +417,8 @@ Future _startRecording(ORModel.Call call) async {
       ? 'in_${call.callerID}'
       : 'out_${call.destination}'];
 
-
-  final filename = '${parts.join('_')}.wav';
+  final filename = '${config.callFlowControl.recordingsDir}/'
+    '${parts.join('_')}.wav';
 
   return Controller.PBX.recordChannel(call.b_Leg, filename)
     .then((_) =>
