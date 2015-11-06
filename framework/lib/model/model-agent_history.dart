@@ -25,9 +25,7 @@ class AgentStatistics {
         recent = map[Key.recent],
         total = map[Key.total];
 
-  Map toJson () => {
-    Key.userID : uid,
-    Key.recent : recent,
-      Key.total : total
-  };
+  static AgentStatistics decode(Map map) => new AgentStatistics.fromMap(map);
+
+  Map toJson() => {Key.userID: uid, Key.recent: recent, Key.total: total};
 }
