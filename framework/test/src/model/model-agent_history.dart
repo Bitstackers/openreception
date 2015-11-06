@@ -27,7 +27,7 @@ testModelAgentHistory() {
 abstract class ModelAgentHistory {
 
   static void serialization() {
-    Model.AgentHistory builtObject = buildObject();
+    Model.AgentStatistics builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -35,9 +35,9 @@ abstract class ModelAgentHistory {
   }
 
   static void serializationDeserialization() {
-    Model.AgentHistory builtObject = buildObject();
-    Model.AgentHistory deserializedObject =
-        new Model.AgentHistory.fromMap(JSON.decode(JSON.encode(builtObject)));
+    Model.AgentStatistics builtObject = buildObject();
+    Model.AgentStatistics deserializedObject =
+        new Model.AgentStatistics.fromMap(JSON.decode(JSON.encode(builtObject)));
 
     expect(builtObject.uid, equals(deserializedObject.uid));
     expect(builtObject.recent, equals(deserializedObject.recent));
@@ -46,12 +46,12 @@ abstract class ModelAgentHistory {
 
   }
 
-  static Model.AgentHistory buildObject() {
+  static Model.AgentStatistics buildObject() {
     final int uid = 2;
     final int recent = 5;
     final int total = 8;
 
-    Model.AgentHistory builtObject = new Model.AgentHistory(uid, recent, total);
+    Model.AgentStatistics builtObject = new Model.AgentStatistics(uid, recent, total);
 
     expect(builtObject.uid, equals(uid));
     expect(builtObject.recent, equals(recent));

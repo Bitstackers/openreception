@@ -13,17 +13,17 @@
 
 part of openreception.model;
 
-class AgentHistory {
+class AgentStatistics {
   final int uid;
   final int recent;
   final int total;
 
-  AgentHistory(this.uid, this.recent, this.total);
+  AgentStatistics(this.uid, this.recent, this.total);
 
-  AgentHistory.fromMap(Map map) :
-    uid = map[Key.userID],
-    recent = map[Key.recent],
-    total = map[Key.total];
+  AgentStatistics.fromMap(Map map)
+      : uid = map[Key.userID],
+        recent = map[Key.recent],
+        total = map[Key.total];
 
   Map toJson () => {
     Key.userID : uid,
