@@ -33,6 +33,17 @@ abstract class CallFlowControl {
   static Uri activeRecording(Uri host, String uuid)
     => Uri.parse('${host}/activerecording/$uuid');
 
+  /**
+   *
+   */
+  static Uri agentStatistics(Uri host)
+    => Uri.parse('${host}/agentstatistics');
+
+  /**
+   *
+   */
+  static Uri agentStatistic(Uri host, int userId)
+    => Uri.parse('${host}/agentstatistics/$userId');
 
   /**
    * Builds a Uri to to request a state update.

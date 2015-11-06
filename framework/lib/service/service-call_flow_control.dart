@@ -54,6 +54,33 @@ class CallFlowControl {
   }
 
   /**
+   * Retrives the stats of all agents.
+   */
+  Future<Model.AgentStatistics> agentStats() {
+    Uri uri = Resource.CallFlowControl.agentStatistics(_host);
+    uri = appendToken(uri, this._token);
+
+    Iterable<Model.AgentStatistics> decodeMaps (Iterable<Map> maps) =>
+        maps.map(Model.AgentStatistics.decode);
+
+    return this._backend.get(uri)
+        .then(JSON.decode)
+        .then(decodeMaps);
+  }
+
+  /**
+   * Retrives the stats of a single agent.
+   */
+  Future<Model.AgentStatistics> agentStat(int userId) {
+    Uri uri = Resource.CallFlowControl.agentStatistic(_host, userId);
+    uri = appendToken(uri, this._token);
+
+    return this._backend.get(uri)
+        .then(JSON.decode)
+        .then(Model.AgentStatistics.decode);
+  }
+
+  /**
    * Asks the server to perform a reload.
    */
   Future stateReload() {
