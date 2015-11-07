@@ -29,10 +29,47 @@ void testResourceCallFlowControl() {
     test('hangup', ResourceCallFlowControl.hangup);
     test('transfer', ResourceCallFlowControl.transfer);
     test('list', ResourceCallFlowControl.list);
+
+    test('activeRecordings', ResourceCallFlowControl.activeRecordings);
+    test('activeRecording', ResourceCallFlowControl.activeRecording);
+    test('agentStatistics', ResourceCallFlowControl.agentStatistics);
+    test('agentStatistic', ResourceCallFlowControl.agentStatistic);
   });
 }
 abstract class ResourceCallFlowControl {
   static Uri callFlowControlUri = Uri.parse('http://localhost:4242');
+
+  /**
+   *
+   */
+  static void activeRecordings()
+    => expect(
+        Resource.CallFlowControl.activeRecordings(callFlowControlUri),
+        equals(Uri.parse('${callFlowControlUri}/activerecording')));
+
+  /**
+   *
+   */
+  static void activeRecording()
+    => expect(
+        Resource.CallFlowControl.activeRecording(callFlowControlUri, 'abc'),
+        equals(Uri.parse('${callFlowControlUri}/activerecording/abc')));
+  /**
+   *
+   */
+  static void agentStatistics()
+    => expect(
+        Resource.CallFlowControl.agentStatistics(callFlowControlUri),
+        equals(Uri.parse('${callFlowControlUri}/agentstatistics')));
+
+  /**
+   *
+   */
+  static void agentStatistic()
+    => expect(
+        Resource.CallFlowControl.agentStatistic(callFlowControlUri, 99),
+        equals(Uri.parse('${callFlowControlUri}/agentstatistics/99')));
+
 
   static void stateReload() => expect(
       Resource.CallFlowControl.stateReload(callFlowControlUri),
