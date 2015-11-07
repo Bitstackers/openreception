@@ -2,6 +2,7 @@ library openreception.keys;
 
 const String recent = 'recent';
 const String total = 'total';
+const String agentChannel = 'agentChannel';
 const String uuid = 'uuid';
 const String path = 'path';
 const String started = 'started';

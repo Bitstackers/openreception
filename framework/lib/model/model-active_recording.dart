@@ -17,14 +17,16 @@ part of openreception.model;
  *
  */
 class ActiveRecording {
-  final String uuid;
+  final String agentChannel;
+  @deprecated
+  String get uuid => agentChannel;
   final String path;
   final DateTime started;
 
   /**
    *
    */
-  ActiveRecording(this.uuid, this.path)
+  ActiveRecording(this.agentChannel, this.path)
       : started = new DateTime.now();
 
   /**
@@ -36,7 +38,7 @@ class ActiveRecording {
    *
    */
   ActiveRecording.fromMap(Map map) :
-    uuid = map[Key.uuid],
+    agentChannel = map[Key.agentChannel],
     path = map[Key.path],
     started = Util.unixTimestampToDateTime(map[Key.started]);
 
@@ -44,7 +46,7 @@ class ActiveRecording {
    *
    */
   Map toJson() => {
-    Key.uuid : uuid,
+    Key.agentChannel : agentChannel,
     Key.path : path,
     Key.started : Util.dateTimeToUnixTimestamp(started)
   };
