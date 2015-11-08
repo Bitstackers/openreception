@@ -87,7 +87,7 @@ void main() {
   testEventMessageChange();
   testEventCalendarChange();
 
-  testModelAgentHistory();
+  testModelAgentStatistics();
   testModelBaseContact();
   testModelCalendarEntry();
   testModelCalendarEntryChange();

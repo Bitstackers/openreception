@@ -16,15 +16,15 @@ part of openreception.test;
 testModelAgentHistory() {
   group('Model.AgentHistory', () {
     test('serializationDeserialization',
-        ModelAgentHistory.serializationDeserialization);
+        ModelAgentStatistics.serializationDeserialization);
 
-    test('serialization', ModelAgentHistory.serialization);
+    test('serialization', ModelAgentStatistics.serialization);
 
-    test('buildObject', ModelAgentHistory.buildObject);
+    test('buildObject', ModelAgentStatistics.buildObject);
   });
 }
 
-abstract class ModelAgentHistory {
+abstract class ModelAgentStatistics {
 
   static void serialization() {
     Model.AgentStatistics builtObject = buildObject();
