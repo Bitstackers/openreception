@@ -245,10 +245,10 @@ class UIContactData extends UIModel {
    */
   void _setupLocalKeys() {
     final Map<String, EventListener> bindings = {
-      'Alt+1': (_) => selectFirstPhoneNumber(),
-      'Alt+2': (_) => selectFromIndex(1),
-      'Alt+3': (_) => selectFromIndex(2),
-      'Alt+4': (_) => selectFromIndex(3),
+      '1': (_) => selectFirstPhoneNumber(),
+      '2': (_) => selectFromIndex(1),
+      '3': (_) => selectFromIndex(2),
+      '4': (_) => selectFromIndex(3),
       'Ctrl+Space': (_) => _togglePopup(_showTagsSpan)
     };
 
