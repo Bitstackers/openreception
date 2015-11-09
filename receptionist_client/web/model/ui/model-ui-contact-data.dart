@@ -155,7 +155,7 @@ class UIContactData extends UIModel {
   Stream<ORModel.PhoneNumber> get onMarkedRinging => _busRinging.stream;
 
   /**
-   * TODO (TL): Comment
+   * Appends each of the [list] elements to [parent]
    */
   void _populateList(OListElement parent, List<String> list) {
     list.forEach((String item) {
