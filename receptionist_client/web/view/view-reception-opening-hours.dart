@@ -17,26 +17,27 @@ part of view;
  * The reception opening hours.
  */
 class ReceptionOpeningHours extends ViewWidget {
-  final Controller.Destination        _myDestination;
-  final Model.UIReceptionSelector     _receptionSelector;
+  final Controller.Destination _myDestination;
+  final Model.UIReceptionSelector _receptionSelector;
   final Model.UIReceptionOpeningHours _uiModel;
 
   /**
    * Constructor.
    */
-  ReceptionOpeningHours(Model.UIReceptionOpeningHours this._uiModel,
-                        Controller.Destination this._myDestination,
-                        Model.UIReceptionSelector this._receptionSelector) {
+  ReceptionOpeningHours(
+      Model.UIReceptionOpeningHours this._uiModel,
+      Controller.Destination this._myDestination,
+      Model.UIReceptionSelector this._receptionSelector) {
     _ui.setHint('alt+x');
 
     _observers();
   }
 
-  @override Controller.Destination        get _destination => _myDestination;
-  @override Model.UIReceptionOpeningHours get _ui          => _uiModel;
+  @override Controller.Destination get _destination => _myDestination;
+  @override Model.UIReceptionOpeningHours get _ui => _uiModel;
 
-  @override void _onBlur(_){}
-  @override void _onFocus(_){}
+  @override void _onBlur(_) {}
+  @override void _onFocus(_) {}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
@@ -63,7 +64,7 @@ class ReceptionOpeningHours extends ViewWidget {
    * Render the widget with [reception].
    */
   void _render(ORModel.Reception reception) {
-    if(reception.isEmpty) {
+    if (reception.isEmpty) {
       _ui.clear();
     } else {
       _ui.headerExtra = ': ${reception.name}';
