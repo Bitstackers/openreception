@@ -13,8 +13,8 @@
 
 part of openreception.test;
 
-testModelAgentHistory() {
-  group('Model.AgentHistory', () {
+testModelAgentStatistics() {
+  group('Model.AgentStatistics', () {
     test('serializationDeserialization',
         ModelAgentStatistics.serializationDeserialization);
 
