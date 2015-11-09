@@ -117,6 +117,8 @@ class Destination {
 
   operator ==(Destination other) => (context == other.context) && (widget == other.widget);
 
+  int get hashCode => this.toString().hashCode;
+
   String toString() => '${context}-${widget}';
 }
 
