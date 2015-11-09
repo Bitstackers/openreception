@@ -14,7 +14,7 @@
 part of model;
 
 /**
- * TODO (TL): Comment
+ * Provides methods for manipulating the visibility of the disaster view.
  */
 class UIReceptionistclientDisaster {
   DivElement _myRoot;

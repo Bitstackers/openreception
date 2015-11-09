@@ -14,7 +14,7 @@
 part of model;
 
 /**
- * TODO (TL): Comment
+ * Provides methods for manipulating the reception product UI widget.
  */
 class UIReceptionProduct extends UIModel {
   final DivElement _myRoot;
@@ -28,9 +28,9 @@ class UIReceptionProduct extends UIModel {
   }
 
   @override HtmlElement get _firstTabElement => _body;
-  @override HtmlElement get _focusElement    => _body;
-  @override HtmlElement get _lastTabElement  => _body;
-  @override HtmlElement get _root            => _myRoot;
+  @override HtmlElement get _focusElement => _body;
+  @override HtmlElement get _lastTabElement => _body;
+  @override HtmlElement get _root => _myRoot;
 
   DivElement get _body => _root.querySelector('.generic-widget-body');
 

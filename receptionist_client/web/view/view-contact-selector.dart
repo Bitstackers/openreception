@@ -14,31 +14,32 @@
 part of view;
 
 /**
- * TODO (TL): Comment
+ * Provides methods for manipulating the contact selector UI widget.
  */
 class ContactSelector extends ViewWidget {
-  final Controller.Destination    _myDestination;
+  final Controller.Destination _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIContactSelector   _uiModel;
-  final Controller.Contact        _contactController;
+  final Model.UIContactSelector _uiModel;
+  final Controller.Contact _contactController;
 
   /**
    * Constructor.
    */
-  ContactSelector(Model.UIContactSelector this._uiModel,
-                  Controller.Destination this._myDestination,
-                  Model.UIReceptionSelector this._receptionSelector,
-                  Controller.Contact this._contactController) {
+  ContactSelector(
+      Model.UIContactSelector this._uiModel,
+      Controller.Destination this._myDestination,
+      Model.UIReceptionSelector this._receptionSelector,
+      Controller.Contact this._contactController) {
     _ui.setHint('alt+s');
 
     _observers();
   }
 
-  @override Controller.Destination  get _destination => _myDestination;
-  @override Model.UIContactSelector get _ui          => _uiModel;
+  @override Controller.Destination get _destination => _myDestination;
+  @override Model.UIContactSelector get _ui => _uiModel;
 
-  @override void _onBlur(_){}
-  @override void _onFocus(_){}
+  @override void _onBlur(_) {}
+  @override void _onFocus(_) {}
 
   /**
    * Activate this widget if it's not already activated.
@@ -64,17 +65,16 @@ class ContactSelector extends ViewWidget {
    * Render the widget with [reception].
    */
   void _render(ORModel.Reception reception) {
-    if(reception.isEmpty) {
+    if (reception.isEmpty) {
       _ui.clear();
     } else {
-      _contactController.list(reception)
-          .then((Iterable<ORModel.Contact> contacts) {
-            List<ORModel.Contact> sortedContacts = contacts.toList()
-                ..sort((ORModel.Contact x , ORModel.Contact y) => x.fullName.compareTo(y.fullName));
+      _contactController.list(reception).then((Iterable<ORModel.Contact> contacts) {
+        List<ORModel.Contact> sortedContacts = contacts.toList()
+          ..sort((ORModel.Contact x, ORModel.Contact y) => x.fullName.compareTo(y.fullName));
 
-            _ui.contacts = sortedContacts;
-            _ui.selectFirstContact();
-          });
+        _ui.contacts = sortedContacts;
+        _ui.selectFirstContact();
+      });
     }
   }
 }

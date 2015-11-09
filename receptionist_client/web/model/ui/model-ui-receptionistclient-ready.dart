@@ -14,7 +14,7 @@
 part of model;
 
 /**
- * TODO (TL): Comment
+ * Provides methods for manipulating the visibility of the ready view.
  */
 class UIReceptionistclientReady {
   DivElement _myRoot;
@@ -33,4 +33,3 @@ class UIReceptionistclientReady {
     _myRoot.style.display = value ? 'flex' : 'none';
   }
 }
-

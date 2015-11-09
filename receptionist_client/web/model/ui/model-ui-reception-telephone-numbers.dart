@@ -14,7 +14,7 @@
 part of model;
 
 /**
- * TODO (TL): Comment
+ * Provides methods for manipulating the reception telephone numbers UI widget.
  */
 class UIReceptionTelephoneNumbers extends UIModel {
   final DivElement _myRoot;
@@ -28,9 +28,9 @@ class UIReceptionTelephoneNumbers extends UIModel {
   }
 
   @override HtmlElement get _firstTabElement => _list;
-  @override HtmlElement get _focusElement    => _list;
-  @override HtmlElement get _lastTabElement  => _list;
-  @override HtmlElement get _root            => _myRoot;
+  @override HtmlElement get _focusElement => _list;
+  @override HtmlElement get _lastTabElement => _list;
+  @override HtmlElement get _root => _myRoot;
 
   OListElement get _list => _root.querySelector('.generic-widget-list');
 
@@ -54,9 +54,7 @@ class UIReceptionTelephoneNumbers extends UIModel {
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
-    final Map<String, EventListener> bindings =
-        {'Shift+Tab': _handleShiftTab,
-         'Tab'      : _handleTab};
+    final Map<String, EventListener> bindings = {'Shift+Tab': _handleShiftTab, 'Tab': _handleTab};
 
     _hotKeys.registerKeysPreventDefault(_keyboard, bindings);
   }
@@ -68,7 +66,7 @@ class UIReceptionTelephoneNumbers extends UIModel {
     final List<LIElement> list = new List<LIElement>();
 
     items.forEach((ORModel.PhoneNumber item) {
-      final SpanElement spanLabel  = new SpanElement();
+      final SpanElement spanLabel = new SpanElement();
       final SpanElement spanNumber = new SpanElement();
 
       spanNumber.classes.toggle('secret', item.confidential);
@@ -78,10 +76,9 @@ class UIReceptionTelephoneNumbers extends UIModel {
       spanLabel.classes.add('label');
       spanLabel.text = item.description;
 
-
       list.add(new LIElement()
-                ..children.addAll([spanNumber, spanLabel])
-                ..dataset['object'] = JSON.encode(item));
+        ..children.addAll([spanNumber, spanLabel])
+        ..dataset['object'] = JSON.encode(item));
     });
 
     _list.children = list;

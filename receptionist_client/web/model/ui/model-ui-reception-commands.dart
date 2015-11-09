@@ -14,7 +14,7 @@
 part of model;
 
 /**
- * TODO (TL): Comment
+ * Provides methods for manipulating the reception commands names UI widget.
  */
 class UIReceptionCommands extends UIModel {
   final DivElement _myRoot;
@@ -28,9 +28,9 @@ class UIReceptionCommands extends UIModel {
   }
 
   @override HtmlElement get _firstTabElement => _list;
-  @override HtmlElement get _focusElement    => _list;
-  @override HtmlElement get _lastTabElement  => _list;
-  @override HtmlElement get _root            => _myRoot;
+  @override HtmlElement get _focusElement => _list;
+  @override HtmlElement get _lastTabElement => _list;
+  @override HtmlElement get _root => _myRoot;
 
   OListElement get _list => _root.querySelector('.generic-widget-list');
 

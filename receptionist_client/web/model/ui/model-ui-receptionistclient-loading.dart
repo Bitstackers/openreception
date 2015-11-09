@@ -14,7 +14,7 @@
 part of model;
 
 /**
- * TODO (TL): Comment
+ * Provides methods for manipulating the visibility of the loading view.
  */
 class UIReceptionistclientLoading {
   DivElement _myRoot;
