@@ -13,59 +13,79 @@
 
 part of controller;
 
-enum Context {Home,
-              Homeplus,
-              CalendarEdit,
-              Messages}
+enum Context { Home, Homeplus, CalendarEdit, Messages }
 
-enum Widget {AgentInfo,
-             CalendarEditor,
-             ContactCalendar,
-             ContactData,
-             ContactSelector,
-             GlobalCallQueue,
-             MessageArchive,
-             MessageCompose,
-             MyCallQueue,
-             ReceptionAddresses,
-             ReceptionAltNames,
-             ReceptionBankInfo,
-             ReceptionCalendar,
-             ReceptionCommands,
-             ReceptionEmail,
-             ReceptionMiniWiki,
-             ReceptionOpeningHours,
-             ReceptionProduct,
-             ReceptionSalesmen,
-             ReceptionSelector,
-             ReceptionTelephoneNumbers,
-             ReceptionType,
-             ReceptionVATNumbers,
-             ReceptionWebsites}
+enum Widget {
+  AgentInfo,
+  CalendarEditor,
+  ContactCalendar,
+  ContactData,
+  ContactSelector,
+  GlobalCallQueue,
+  MessageArchive,
+  MessageCompose,
+  MyCallQueue,
+  ReceptionAddresses,
+  ReceptionAltNames,
+  ReceptionBankInfo,
+  ReceptionCalendar,
+  ReceptionCommands,
+  ReceptionEmail,
+  ReceptionMiniWiki,
+  ReceptionOpeningHours,
+  ReceptionProduct,
+  ReceptionSalesmen,
+  ReceptionSelector,
+  ReceptionTelephoneNumbers,
+  ReceptionType,
+  ReceptionVATNumbers,
+  ReceptionWebsites
+}
 
-final Map<String, Destination> _destinations =
-  {'${Context.CalendarEdit}-${Widget.CalendarEditor}'       : new Destination(Context.CalendarEdit, Widget.CalendarEditor),
-   '${Context.Home}-${Widget.ContactCalendar}'              : new Destination(Context.Home, Widget.ContactCalendar),
-   '${Context.Home}-${Widget.ContactData}'                  : new Destination(Context.Home, Widget.ContactData),
-   '${Context.Home}-${Widget.ContactSelector}'              : new Destination(Context.Home, Widget.ContactSelector),
-   '${Context.Home}-${Widget.GlobalCallQueue}'              : new Destination(Context.Home, Widget.GlobalCallQueue),
-   '${Context.Home}-${Widget.MessageCompose}'               : new Destination(Context.Home, Widget.MessageCompose),
-   '${Context.Home}-${Widget.ReceptionCalendar}'            : new Destination(Context.Home, Widget.ReceptionCalendar),
-   '${Context.Home}-${Widget.ReceptionCommands}'            : new Destination(Context.Home, Widget.ReceptionCommands),
-   '${Context.Home}-${Widget.ReceptionOpeningHours}'        : new Destination(Context.Home, Widget.ReceptionOpeningHours),
-   '${Context.Home}-${Widget.ReceptionProduct}'             : new Destination(Context.Home, Widget.ReceptionProduct),
-   '${Context.Home}-${Widget.ReceptionSalesmen}'            : new Destination(Context.Home, Widget.ReceptionSalesmen),
-   '${Context.Home}-${Widget.ReceptionSelector}'            : new Destination(Context.Home, Widget.ReceptionSelector),
-   '${Context.Homeplus}-${Widget.ReceptionAddresses}'       : new Destination(Context.Homeplus, Widget.ReceptionAddresses),
-   '${Context.Homeplus}-${Widget.ReceptionAltNames}'        : new Destination(Context.Homeplus, Widget.ReceptionAltNames),
-   '${Context.Homeplus}-${Widget.ReceptionBankInfo}'        : new Destination(Context.Homeplus, Widget.ReceptionBankInfo),
-   '${Context.Homeplus}-${Widget.ReceptionEmail}'           : new Destination(Context.Homeplus, Widget.ReceptionEmail),
-   '${Context.Homeplus}-${Widget.ReceptionMiniWiki}'        : new Destination(Context.Homeplus, Widget.ReceptionMiniWiki),
-   '${Context.Homeplus}-${Widget.ReceptionTelephoneNumbers}': new Destination(Context.Homeplus, Widget.ReceptionTelephoneNumbers),
-   '${Context.Homeplus}-${Widget.ReceptionType}'            : new Destination(Context.Homeplus, Widget.ReceptionType),
-   '${Context.Homeplus}-${Widget.ReceptionVATNumbers}'      : new Destination(Context.Homeplus, Widget.ReceptionVATNumbers),
-   '${Context.Homeplus}-${Widget.ReceptionWebsites}'        : new Destination(Context.Homeplus, Widget.ReceptionWebsites),
-   '${Context.Messages}-${Widget.MessageArchive}'           : new Destination(Context.Messages, Widget.MessageArchive)};
+final Map<String, Destination> _destinations = {
+  '${Context.CalendarEdit}-${Widget.CalendarEditor}':
+      new Destination(Context.CalendarEdit, Widget.CalendarEditor),
+  '${Context.Home}-${Widget.ContactCalendar}':
+      new Destination(Context.Home, Widget.ContactCalendar),
+  '${Context.Home}-${Widget.ContactData}': new Destination(Context.Home, Widget.ContactData),
+  '${Context.Home}-${Widget.ContactSelector}':
+      new Destination(Context.Home, Widget.ContactSelector),
+  '${Context.Home}-${Widget.GlobalCallQueue}':
+      new Destination(Context.Home, Widget.GlobalCallQueue),
+  '${Context.Home}-${Widget.MessageCompose}': new Destination(Context.Home, Widget.MessageCompose),
+  '${Context.Home}-${Widget.ReceptionCalendar}':
+      new Destination(Context.Home, Widget.ReceptionCalendar),
+  '${Context.Home}-${Widget.ReceptionCommands}':
+      new Destination(Context.Home, Widget.ReceptionCommands),
+  '${Context.Home}-${Widget.ReceptionOpeningHours}':
+      new Destination(Context.Home, Widget.ReceptionOpeningHours),
+  '${Context.Home}-${Widget.ReceptionProduct}':
+      new Destination(Context.Home, Widget.ReceptionProduct),
+  '${Context.Home}-${Widget.ReceptionSalesmen}':
+      new Destination(Context.Home, Widget.ReceptionSalesmen),
+  '${Context.Home}-${Widget.ReceptionSelector}':
+      new Destination(Context.Home, Widget.ReceptionSelector),
+  '${Context.Homeplus}-${Widget.ReceptionAddresses}':
+      new Destination(Context.Homeplus, Widget.ReceptionAddresses),
+  '${Context.Homeplus}-${Widget.ReceptionAltNames}':
+      new Destination(Context.Homeplus, Widget.ReceptionAltNames),
+  '${Context.Homeplus}-${Widget.ReceptionBankInfo}':
+      new Destination(Context.Homeplus, Widget.ReceptionBankInfo),
+  '${Context.Homeplus}-${Widget.ReceptionEmail}':
+      new Destination(Context.Homeplus, Widget.ReceptionEmail),
+  '${Context.Homeplus}-${Widget.ReceptionMiniWiki}':
+      new Destination(Context.Homeplus, Widget.ReceptionMiniWiki),
+  '${Context.Homeplus}-${Widget.ReceptionTelephoneNumbers}':
+      new Destination(Context.Homeplus, Widget.ReceptionTelephoneNumbers),
+  '${Context.Homeplus}-${Widget.ReceptionType}':
+      new Destination(Context.Homeplus, Widget.ReceptionType),
+  '${Context.Homeplus}-${Widget.ReceptionVATNumbers}':
+      new Destination(Context.Homeplus, Widget.ReceptionVATNumbers),
+  '${Context.Homeplus}-${Widget.ReceptionWebsites}':
+      new Destination(Context.Homeplus, Widget.ReceptionWebsites),
+  '${Context.Messages}-${Widget.MessageArchive}':
+      new Destination(Context.Messages, Widget.MessageArchive)
+};
 
 /**
  * A [Destination] points to a location in the application. It does this by
@@ -78,22 +98,17 @@ final Map<String, Destination> _destinations =
  * to the destination.
  */
 class Destination {
-  Context     context = null;
-  Cmd         cmd     = null;
-  Destination from    = null;
-  Widget      widget  = null;
+  Context context = null;
+  Cmd cmd = null;
+  Destination from = null;
+  Widget widget = null;
 
   /**
    * Constructor.
    */
   Destination(Context this.context, Widget this.widget, {Destination this.from, Cmd this.cmd});
 
-  operator == (Destination other) => (context == other.context) && (widget == other.widget);
-
-  /**
-   * TODO: TL: Verify that this is sound. Implemented to avoid warning.
-   */
-  int get hashCode => this.toString().hashCode;
+  operator ==(Destination other) => (context == other.context) && (widget == other.widget);
 
   String toString() => '${context}-${widget}';
 }
@@ -116,11 +131,12 @@ class Navigate {
 
   /// TODO (TL): Feels ugly having this map here. Maybe allow widgets to
   /// register themselves? Seems more explicit that way. Hmmm..
-  final Map<Context, Widget> _defaultWidget =
-    {Context.CalendarEdit: Widget.CalendarEditor,
-     Context.Home        : Widget.ReceptionSelector,
-     Context.Homeplus    : Widget.ReceptionMiniWiki,
-     Context.Messages    : Widget.MessageArchive};
+  final Map<Context, Widget> _defaultWidget = {
+    Context.CalendarEdit: Widget.CalendarEditor,
+    Context.Home: Widget.ReceptionSelector,
+    Context.Homeplus: Widget.ReceptionMiniWiki,
+    Context.Messages: Widget.MessageArchive
+  };
   final Map<Context, Widget> _widgetHistory = {};
 
   /**
@@ -128,8 +144,8 @@ class Navigate {
    * add [destination] to the browser history.
    */
   void go(Destination destination, {bool pushState: true}) {
-    if(destination.widget == null) {
-      if(_widgetHistory.containsKey(destination.context)) {
+    if (destination.widget == null) {
+      if (_widgetHistory.containsKey(destination.context)) {
         destination.widget = _widgetHistory[destination.context];
       } else {
         destination.widget = _defaultWidget[destination.context];
@@ -138,7 +154,7 @@ class Navigate {
 
     _widgetHistory[destination.context] = destination.widget;
 
-    if(pushState) {
+    if (pushState) {
       Html.window.history.pushState(null, '${destination}', '#${destination}');
     }
     _bus.fire(destination);
@@ -153,11 +169,11 @@ class Navigate {
   void goWindowLocation({bool pushState: true}) {
     String hash = '';
 
-    if(Html.window.location.hash.isNotEmpty) {
+    if (Html.window.location.hash.isNotEmpty) {
       hash = Html.window.location.hash.substring(1);
     }
 
-    if(hash.isEmpty || !_destinations.containsKey(hash)) {
+    if (hash.isEmpty || !_destinations.containsKey(hash)) {
       goHome();
     } else {
       go(_destinations[hash], pushState: pushState);
@@ -167,22 +183,30 @@ class Navigate {
   /**
    * Convenience method to navigate to [Context.CalendarEdit].
    */
-  void goCalendarEdit({Destination from}) {go(new Destination(Context.CalendarEdit, null, from: from, cmd: from.cmd));}
+  void goCalendarEdit({Destination from}) {
+    go(new Destination(Context.CalendarEdit, null, from: from, cmd: from.cmd));
+  }
 
   /**
    * Convenience method to navigate to [Context.Home].
    */
-  void goHome() {go(new Destination(Context.Home, null));}
+  void goHome() {
+    go(new Destination(Context.Home, null));
+  }
 
   /**
      * Convenience method to navigate to [Context.Homeplus].
      */
-  void goHomeplus() {go(new Destination(Context.Homeplus, null));}
+  void goHomeplus() {
+    go(new Destination(Context.Homeplus, null));
+  }
 
   /**
    * Convenience method to navigate to [Context.Messages].
    */
-  void goMessages() {go(new Destination(Context.Messages, null));}
+  void goMessages() {
+    go(new Destination(Context.Messages, null));
+  }
 
   /**
    *
