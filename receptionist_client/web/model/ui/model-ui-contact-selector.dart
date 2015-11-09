@@ -14,11 +14,11 @@
 part of model;
 
 /**
- * TODO (TL): Comment
+ * Provides methods for manipulating the contact selector UI widget.
  */
 class UIContactSelector extends UIModel {
   final Bus<ORModel.Contact> _bus = new Bus<ORModel.Contact>();
-  final DivElement   _myRoot;
+  final DivElement _myRoot;
 
   /**
    * Constructor.
@@ -29,19 +29,19 @@ class UIContactSelector extends UIModel {
   }
 
   @override HtmlElement get _firstTabElement => _filter;
-  @override HtmlElement get _focusElement    => _filter;
-  @override HtmlElement get _lastTabElement  => _filter;
-  @override HtmlElement get _listTarget      => _list;
+  @override HtmlElement get _focusElement => _filter;
+  @override HtmlElement get _lastTabElement => _filter;
+  @override HtmlElement get _listTarget => _list;
   /**
    * Return the mousedown click event stream for this widget. We capture
    * mousedown instead of regular click to avoid the ugly focus/blur flicker
    * on the filter input whenever a contact li element is clicked.
    */
-  @override Stream<MouseEvent> get onClick         => _myRoot.onMouseDown;
-  @override selectCallback     get _selectCallback => _contactSelectCallback;
-  @override HtmlElement        get _root           => _myRoot;
+  @override Stream<MouseEvent> get onClick => _myRoot.onMouseDown;
+  @override selectCallback get _selectCallback => _contactSelectCallback;
+  @override HtmlElement get _root => _myRoot;
 
-  OListElement get _list   => _root.querySelector('.generic-widget-list');
+  OListElement get _list => _root.querySelector('.generic-widget-list');
   InputElement get _filter => _root.querySelector('.filter');
 
   /**
@@ -62,25 +62,25 @@ class UIContactSelector extends UIModel {
 
     contacts.forEach((ORModel.Contact item) {
       String initials = item.fullName
-                              .split(' ')
-                              .where((value) => value.trim().isNotEmpty)
-                              .map((value) => value.substring(0,1))
-                              .join()
-                              .toLowerCase();
+          .split(' ')
+          .where((value) => value.trim().isNotEmpty)
+          .map((value) => value.substring(0, 1))
+          .join()
+          .toLowerCase();
 
       /// Add contact name to tags. We simply treat the name as just another tag
       /// when searching for contacts.
       final List<String> tags = new List<String>()
-          ..addAll(item.tags)
-          ..addAll(item.fullName.split(' '));
+        ..addAll(item.tags)
+        ..addAll(item.fullName.split(' '));
 
       list.add(new LIElement()
-                 ..dataset['initials']      = initials
-                 ..dataset['firstinitial']  = initials.substring(0,1)
-                 ..dataset['otherinitials'] = initials.substring(1)
-                 ..dataset['tags']          = tags.join(',').toLowerCase()
-                 ..dataset['object']        = JSON.encode(item)
-                 ..text = item.fullName);
+        ..dataset['initials'] = initials
+        ..dataset['firstinitial'] = initials.substring(0, 1)
+        ..dataset['otherinitials'] = initials.substring(1)
+        ..dataset['tags'] = tags.join(',').toLowerCase()
+        ..dataset['object'] = JSON.encode(item)
+        ..text = item.fullName);
     });
 
     _list.children = list;
@@ -102,38 +102,39 @@ class UIContactSelector extends UIModel {
     final String filter = _filter.value.toLowerCase();
     final String trimmedFilter = filter.trim();
 
-    if(filter.length == 0 || trimmedFilter.isEmpty) {
+    if (filter.length == 0 || trimmedFilter.isEmpty) {
       /// Empty filter. Remove .hide from all list elements.
       _list.children.forEach((LIElement li) => li.classes.toggle('hide', false));
       _list.classes.toggle('zebra', true);
-    } else if(trimmedFilter.length == 1 && !filter.startsWith(' ')) {
+    } else if (trimmedFilter.length == 1 && !filter.startsWith(' ')) {
       /// Pattern: one non-space character followed by zero or more spaces
       _list.classes.toggle('zebra', false);
 
       _list.children.forEach((LIElement li) {
-        if(li.dataset['firstinitial'] == trimmedFilter) {
+        if (li.dataset['firstinitial'] == trimmedFilter) {
           li.classes.toggle('hide', false);
         } else {
           li.classes.toggle('hide', true);
         }
       });
-    } else if(trimmedFilter.length == 1 && filter.startsWith(new RegExp(r'\s+[^ ]'))) {
+    } else if (trimmedFilter.length == 1 && filter.startsWith(new RegExp(r'\s+[^ ]'))) {
       /// Pattern: one or more spaces followed by one non-space character
       _list.classes.toggle('zebra', false);
 
       _list.children.forEach((LIElement li) {
-        if(li.dataset['otherinitials'].contains(trimmedFilter)) {
+        if (li.dataset['otherinitials'].contains(trimmedFilter)) {
           li.classes.toggle('hide', false);
         } else {
           li.classes.toggle('hide', true);
         }
       });
-    } else if(trimmedFilter.length == 3 && trimmedFilter.startsWith(new RegExp(r'[^ ]\s[^ ]'))) {
+    } else if (trimmedFilter.length == 3 && trimmedFilter.startsWith(new RegExp(r'[^ ]\s[^ ]'))) {
       /// Pattern: one character, one space, one character
       _list.classes.toggle('zebra', false);
 
       _list.children.forEach((LIElement li) {
-        if(li.dataset['firstinitial'] == trimmedFilter.substring(0,1) && li.dataset['otherinitials'].contains(trimmedFilter.substring(2))) {
+        if (li.dataset['firstinitial'] == trimmedFilter.substring(0, 1) &&
+            li.dataset['otherinitials'].contains(trimmedFilter.substring(2))) {
           li.classes.toggle('hide', false);
         } else {
           li.classes.toggle('hide', true);
@@ -147,7 +148,7 @@ class UIContactSelector extends UIModel {
       _list.classes.toggle('zebra', false);
 
       _list.children.forEach((LIElement li) {
-        if(parts.every((String part) => li.dataset['tags'].contains(part))) {
+        if (parts.every((String part) => li.dataset['tags'].contains(part))) {
           li.classes.toggle('hide', false);
         } else {
           li.classes.toggle('hide', true);
@@ -155,7 +156,7 @@ class UIContactSelector extends UIModel {
       });
     }
 
-    if(_list.children.isNotEmpty) {
+    if (_list.children.isNotEmpty) {
       /// Select the first visible item on the list
       _markSelected(_scanForwardForVisibleElement(_list.children.first));
     }
@@ -198,7 +199,7 @@ class UIContactSelector extends UIModel {
   ORModel.Contact get selectedContact {
     LIElement li = _list.querySelector('.selected');
 
-    if(li != null) {
+    if (li != null) {
       return new ORModel.Contact.fromMap(JSON.decode(li.dataset['object']));
     } else {
       return new ORModel.Contact.empty();
@@ -209,7 +210,7 @@ class UIContactSelector extends UIModel {
    * Select the first [Contact] in the list.
    */
   void selectFirstContact() {
-    if(_list.children.isNotEmpty) {
+    if (_list.children.isNotEmpty) {
       _markSelected(_scanForwardForVisibleElement(_list.children.first));
     } else {
       _bus.fire(new ORModel.Contact.empty());
@@ -221,12 +222,12 @@ class UIContactSelector extends UIModel {
    * of the [event].
    */
   void _selectFromClick(MouseEvent event) {
-    if(event.target != _filter) {
+    if (event.target != _filter) {
       /// NOTE (TL): This keeps focus on the _filter field, despite clicks on
       /// other elements.
       event.preventDefault();
 
-      if(event.target is LIElement) {
+      if (event.target is LIElement) {
         _markSelected(event.target);
       }
     }
@@ -236,8 +237,7 @@ class UIContactSelector extends UIModel {
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
-    final Map<String, EventListener> bindings =
-        {'Esc': _reset};
+    final Map<String, EventListener> bindings = {'Esc': _reset};
 
     _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
   }
