@@ -26,6 +26,7 @@ import 'keys.dart'    as Key;
 
 part 'database/conversion_functions.dart';
 part 'database/database-calendar.dart';
+part 'database/database-cdr.dart';
 part 'database/database-contact.dart';
 part 'database/database-distribution_list.dart';
 part 'database/database-endpoint.dart';
