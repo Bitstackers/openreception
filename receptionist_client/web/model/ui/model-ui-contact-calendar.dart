@@ -14,13 +14,13 @@
 part of model;
 
 /**
- * TODO (TL): Comment
+ * Provides methods for manipulating the contact calendar UI widget.
  */
 class UIContactCalendar extends UIModel {
   final Bus<KeyboardEvent> _busEdit = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _busNew  = new Bus<KeyboardEvent>();
-  final DivElement         _myRoot;
-  final ORUtil.WeekDays    _weekDays;
+  final Bus<KeyboardEvent> _busNew = new Bus<KeyboardEvent>();
+  final DivElement _myRoot;
+  final ORUtil.WeekDays _weekDays;
 
   /**
    * Constructor.
@@ -31,10 +31,10 @@ class UIContactCalendar extends UIModel {
   }
 
   @override HtmlElement get _firstTabElement => _root;
-  @override HtmlElement get _focusElement    => _root;
-  @override HtmlElement get _lastTabElement  => _root;
-  @override HtmlElement get _listTarget      => _list;
-  @override HtmlElement get _root            => _myRoot;
+  @override HtmlElement get _focusElement => _root;
+  @override HtmlElement get _lastTabElement => _root;
+  @override HtmlElement get _listTarget => _list;
+  @override HtmlElement get _root => _myRoot;
 
   OListElement get _list => _root.querySelector('.generic-widget-list');
 
@@ -42,7 +42,7 @@ class UIContactCalendar extends UIModel {
    * Add [items] to the [CalendarEntry] list.
    */
   set calendarEntries(Iterable<ORModel.CalendarEntry> items) {
-    final List<LIElement> list =  new List<LIElement>();
+    final List<LIElement> list = new List<LIElement>();
 
     items.forEach((ORModel.CalendarEntry item) {
       final DivElement content = new DivElement()..text = item.content;
@@ -50,14 +50,14 @@ class UIContactCalendar extends UIModel {
       final String start = ORUtil.humanReadableTimestamp(item.start, _weekDays);
       final String stop = ORUtil.humanReadableTimestamp(item.stop, _weekDays);
       final DivElement timeStamps = new DivElement()
-                                      ..classes.add('timestamps')
-                                      ..text = '${start} - ${stop}';
+        ..classes.add('timestamps')
+        ..text = '${start} - ${stop}';
 
       list.add(new LIElement()
-                ..children.addAll([content, timeStamps])
-                ..title = 'Id: ${item.ID.toString()}'
-                ..dataset['object'] = JSON.encode(item)
-                ..classes.toggle('active', item.active));
+        ..children.addAll([content, timeStamps])
+        ..title = 'Id: ${item.ID.toString()}'
+        ..dataset['object'] = JSON.encode(item)
+        ..classes.toggle('active', item.active));
     });
 
     _list.children = list;
@@ -75,7 +75,7 @@ class UIContactCalendar extends UIModel {
    * Fire the [onEdit] stream if an event is selected, else don't do anything.
    */
   void _maybeEdit(KeyboardEvent event) {
-    if(_list.querySelector('.selected') != null) {
+    if (_list.querySelector('.selected') != null) {
       _busEdit.fire(event);
     }
   }
@@ -87,7 +87,7 @@ class UIContactCalendar extends UIModel {
   ORModel.CalendarEntry get selectedCalendarEntry {
     final LIElement selected = _list.querySelector('.selected');
 
-    if(selected != null) {
+    if (selected != null) {
       return new ORModel.CalendarEntry.fromMap(JSON.decode(selected.dataset['object']));
     } else {
       return new ORModel.CalendarEntry.empty();
@@ -117,7 +117,7 @@ class UIContactCalendar extends UIModel {
    * target of the [event].
    */
   void _selectFromClick(MouseEvent event) {
-    if(event.target is LIElement) {
+    if (event.target is LIElement) {
       _markSelected(event.target);
     }
   }
@@ -126,9 +126,7 @@ class UIContactCalendar extends UIModel {
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
-    final Map<String, EventListener> bindings =
-        {'Ctrl+e': _maybeEdit,
-         'Ctrl+k': _busNew.fire};
+    final Map<String, EventListener> bindings = {'Ctrl+e': _maybeEdit, 'Ctrl+k': _busNew.fire};
 
     _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
   }
