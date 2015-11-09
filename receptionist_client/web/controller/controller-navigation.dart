@@ -42,6 +42,13 @@ enum Widget {
   ReceptionWebsites
 }
 
+final Map<Context, Widget> _defaultWidgets = {
+  Context.CalendarEdit: Widget.CalendarEditor,
+  Context.Home: Widget.ReceptionSelector,
+  Context.Homeplus: Widget.ReceptionMiniWiki,
+  Context.Messages: Widget.MessageArchive
+};
+
 final Map<String, Destination> _destinations = {
   '${Context.CalendarEdit}-${Widget.CalendarEditor}':
       new Destination(Context.CalendarEdit, Widget.CalendarEditor),
@@ -117,8 +124,10 @@ class Destination {
  * Handles navigation for the application. This is a singleton.
  */
 class Navigate {
+  final Bus<Destination> _bus = new Bus<Destination>();
   static final Navigate _singleton = new Navigate._internal();
   factory Navigate() => _singleton;
+  final Map<Context, Widget> _widgetHistory = {};
 
   /**
    * Constructor.
@@ -126,18 +135,6 @@ class Navigate {
   Navigate._internal() {
     _observers();
   }
-
-  final Bus<Destination> _bus = new Bus<Destination>();
-
-  /// TODO (TL): Feels ugly having this map here. Maybe allow widgets to
-  /// register themselves? Seems more explicit that way. Hmmm..
-  final Map<Context, Widget> _defaultWidget = {
-    Context.CalendarEdit: Widget.CalendarEditor,
-    Context.Home: Widget.ReceptionSelector,
-    Context.Homeplus: Widget.ReceptionMiniWiki,
-    Context.Messages: Widget.MessageArchive
-  };
-  final Map<Context, Widget> _widgetHistory = {};
 
   /**
    * Push [destination] to the [onGo] stream. If [pushState] is true, then also
@@ -148,7 +145,7 @@ class Navigate {
       if (_widgetHistory.containsKey(destination.context)) {
         destination.widget = _widgetHistory[destination.context];
       } else {
-        destination.widget = _defaultWidget[destination.context];
+        destination.widget = _defaultWidgets[destination.context];
       }
     }
 
