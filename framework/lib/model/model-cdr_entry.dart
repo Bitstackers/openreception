@@ -51,4 +51,19 @@ class CDREntry {
     //TODO Extract Data when the interface is updated.
     smsCount = -1;
   }
+
+  /**
+   * JSON serialization representation.
+   */
+  Map toJson() => {
+    'org_id':  orgId,
+    'call_count' : callCount,
+    'org_name': orgName,
+    'total_wait' : totalWait,
+    'billing_type' : billingType,
+    'duration' : duration,
+    'flag' : flag,
+    'avg_duration' : avgDuration,
+    'sms_count' : smsCount
+  };
 }
