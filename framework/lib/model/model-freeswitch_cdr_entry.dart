@@ -14,18 +14,23 @@
 part of openreception.model;
 
 class FreeSWITCHCDREntry {
-  String uuid;
-  bool inbound;
-  int receptionId;
-  String extension;
-  int duration;
-  int waitTime;
-  DateTime startedAt;
+  String uuid = '';
+  bool inbound = false;
+  int receptionId = Reception.noID;
+  String extension = '';
+  int duration = -1;
+  int waitTime = -1;
+  DateTime startedAt = Util.never;
 
-  int owner;
-  int contact_id;
+  int owner = User.noID;
+  int contact_id = Contact.noID;
 
-  Map json;
+  Map json = {};
+
+  /**
+   * Default empty constructor
+   */
+  FreeSWITCHCDREntry.empty();
 
   FreeSWITCHCDREntry.fromJson(Map this.json) {
     Map variables = json['variables'];
