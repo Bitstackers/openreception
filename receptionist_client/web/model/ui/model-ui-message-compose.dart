@@ -26,7 +26,7 @@ class UIMessageCompose extends UIModel {
    * Constructor.
    */
   UIMessageCompose(DivElement this._myRoot) {
-    _myFocusElement = _messageTextarea;
+    _myFocusElement = _callerNameInput;
     _myFirstTabElement = _callerNameInput;
     _myLastTabElement = _urgentInput;
 
