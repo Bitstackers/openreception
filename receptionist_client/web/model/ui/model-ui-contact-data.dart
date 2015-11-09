@@ -134,18 +134,6 @@ class UIContactData extends UIModel {
   set emailAddresses(List<String> items) => _populateList(_emailAddressesList, items);
 
   /**
-   * Mark [li] ringing, scroll it into view.
-   * Does nothing if [li] is null or [li] is already ringing.
-   */
-  void _markRinging(LIElement li) {
-    if (li != null && !li.classes.contains('ringing')) {
-      _phoneNumberList.children.forEach((Element element) => element.classes.remove('ringing'));
-      li.classes.add('ringing');
-      li.scrollIntoView();
-    }
-  }
-
-  /**
    * Return true if no phonenumbers are marked "ringing".
    */
   bool get noRinging => !_phoneNumberList.children.any((e) => e.classes.contains('ringing'));
@@ -216,11 +204,9 @@ class UIContactData extends UIModel {
     } else {
       LIElement li = _phoneNumberList.querySelector('.selected');
 
-      if (li != null) {
-        if (noRinging) {
-          li.classes.toggle('ringing');
-          _busRinging.fire(new ORModel.PhoneNumber.fromMap(JSON.decode(li.dataset['object'])));
-        }
+      if (li != null && noRinging) {
+        li.classes.toggle('ringing');
+        _busRinging.fire(new ORModel.PhoneNumber.fromMap(JSON.decode(li.dataset['object'])));
       }
     }
   }
