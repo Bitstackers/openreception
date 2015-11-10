@@ -1,4 +1,0 @@
-class Config:
-    smtp_server   = 'example.com'
-    smtp_username = 'username'
-    smtp_password = 'password'
