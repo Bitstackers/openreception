@@ -243,7 +243,7 @@ class UIMessageCompose extends UIModel {
     _pleaseCallInput.checked = false;
     _urgentInput.checked = false;
 
-    _myFocusElement = _messageTextarea;
+    _myFocusElement = _callerNameInput;
     _myFirstTabElement = _callerNameInput;
     _myLastTabElement = _urgentInput;
 
