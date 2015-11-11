@@ -41,7 +41,7 @@ void main(List<String> args) {
     } else {
       router.connectAuthService();
       router.start(
-          hostname: '0.0.0.0',
+          hostname: config.notificationServer.externalHostName,
           port: config.notificationServer.httpPort);
     }
   } catch (error, stackTrace) {
