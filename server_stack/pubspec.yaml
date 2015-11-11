@@ -32,3 +32,4 @@ dependencies:
   shelf: any
   shelf_cors: any
   shelf_route: any
+  shelf_web_socket: any
