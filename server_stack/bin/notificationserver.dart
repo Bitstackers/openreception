@@ -20,12 +20,11 @@ import 'package:path/path.dart';
 import 'package:logging/logging.dart';
 
 import '../lib/configuration.dart';
-import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/notification_server/router.dart' as router;
 
-Logger log = new Logger ('NotificationServer');
+Logger log = new Logger('NotificationServer');
 ArgResults parsedArgs;
-ArgParser  parser = new ArgParser();
+ArgParser parser = new ArgParser();
 
 void main(List<String> args) {
   ///Init logging. Inherit standard values.
@@ -37,21 +36,25 @@ void main(List<String> args) {
 
     registerAndParseCommandlineArguments(args);
 
-    if(showHelp()) {
+    if (showHelp()) {
       print(parser.usage);
     } else {
-        router.connectAuthService();
-        http.start(config.notificationServer.httpPort, router.registerHandlers);
+      router.connectAuthService();
+      router.start(
+          hostname: '0.0.0.0',
+          port: config.notificationServer.httpPort);
     }
-  } catch(error, stackTrace) {
+  } catch (error, stackTrace) {
     log.shout(error, stackTrace);
   }
 }
 
 void registerAndParseCommandlineArguments(List<String> arguments) {
-  parser.addFlag  ('help', abbr: 'h', help: 'Output this help');
-  parser.addOption('configfile',      help: 'The JSON configuration file. Defaults to config.json');
-  parser.addOption('httpport',        help: 'The port the HTTP server listens on.  Defaults to 4200');
+  parser.addFlag('help', abbr: 'h', help: 'Output this help');
+  parser.addOption('configfile',
+      help: 'The JSON configuration file. Defaults to config.json');
+  parser.addOption('httpport',
+      help: 'The port the HTTP server listens on.  Defaults to 4200');
 
   parsedArgs = parser.parse(arguments);
 }

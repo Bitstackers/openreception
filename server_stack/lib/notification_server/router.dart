@@ -14,76 +14,101 @@
 library openreception.notification_server.router;
 
 import 'dart:async';
-import 'dart:io';
+import 'dart:io' as io;
 import 'dart:convert';
 
-import 'package:route/pattern.dart';
-import 'package:route/server.dart';
+import 'package:http_parser/http_parser.dart';
 
 import '../configuration.dart';
 import 'package:logging/logging.dart';
-import 'package:openreception_framework/httpserver.dart' as ORhttp;
 import 'package:openreception_framework/model.dart' as Model;
 import 'package:openreception_framework/event.dart' as Event;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
+import 'package:openreception_framework/storage.dart' as Storage;
+
+//import 'package:http_parser/http_parser.dart';
+
+import 'package:shelf/shelf.dart' as shelf;
+import 'package:shelf/shelf_io.dart' as shelf_io;
+import 'package:shelf_route/shelf_route.dart' as shelf_route;
+import 'package:shelf_web_socket/shelf_web_socket.dart' as sWs;
+import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 
 part 'router/notification.dart';
 
 const String libraryName = "notificationserver.router";
+final Logger _log = new Logger(libraryName);
 
-final Pattern anything = new UrlPattern(r'/(.*)');
-final Pattern notificationSocketResource = new UrlPattern(r'/notifications');
-final Pattern broadcastResource = new UrlPattern(r'/broadcast');
-final Pattern sendResource = new UrlPattern(r'/send');
-final Pattern connectionsResource = new UrlPattern(r'/connection');
-final Pattern connectionResource = new UrlPattern(r'/connection/(\d+)');
-final Pattern statisticsResource = new UrlPattern(r'/stats');
-
-final List<Pattern> allUniqueUrls = [
-  notificationSocketResource,
-  broadcastResource,
-  sendResource,
-  connectionResource,
-  connectionsResource,
-  statisticsResource
-];
-
-Map<int, List<WebSocket>> clientRegistry = new Map<int, List<WebSocket>>();
-Service.Authentication _authService = null;
+const Map corsHeaders = const {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE'
+};
 
 void connectAuthService() {
-  _authService = new Service.Authentication
-      (config.authServer.externalUri, config.userServer.serverToken, new Service_IO.Client());
+  _authService = new Service.Authentication(config.authServer.externalUri,
+      config.userServer.serverToken, new Service_IO.Client());
 }
 
+Future<shelf.Response> _lookupToken(shelf.Request request) {
+  var token = request.requestedUri.queryParameters['token'];
 
-void registerHandlers(HttpServer server) {
-  Notification.initStats();
-  var router = new Router(server);
-
-  router
-    ..filter(matchAny(allUniqueUrls), auth(config.authServer.externalUri))
-    ..serve(notificationSocketResource, method: "GET").listen(
-        Notification.connect) // The upgrade-request is found in the header of a GET request.
-    ..serve(broadcastResource, method: "POST").listen(Notification.broadcast)
-    ..serve(sendResource, method: "POST").listen(Notification.send)
-    ..serve(connectionsResource, method: "GET")
-        .listen(Notification.connectionList)
-    ..serve(statisticsResource, method: "GET").listen(Notification.statistics)
-    ..serve(connectionResource, method: "GET").listen(Notification.connection)
-    ..serve(anything, method: 'OPTIONS').listen(ORhttp.preFlight)
-    ..defaultStream.listen(ORhttp.page404);
+  return _authService.validate(token).then((_) => null).catchError((error) {
+    if (error is Storage.NotFound) {
+      return new shelf.Response.forbidden('Invalid token');
+    } else if (error is io.SocketException) {
+      return new shelf.Response.internalServerError(
+          body: 'Cannot reach authserver');
+    } else {
+      return new shelf.Response.internalServerError(body: error.toString());
+    }
+  });
 }
 
-Filter auth(Uri authUrl) {
-  return (HttpRequest request) {
-    if (request.uri.queryParameters.containsKey('token')) return _authService
-        .validate(request.uri.queryParameters['token'])
-        .then((_) => true)
-        .catchError((_) => false);
-    request.response.statusCode = HttpStatus.FORBIDDEN;
-    ORhttp.writeAndClose(
-        request, JSON.encode({'description': 'Authorization failure.'}));
-  };
+shelf.Middleware checkAuthentication =
+    shelf.createMiddleware(requestHandler: _lookupToken, responseHandler: null);
+
+shelf.Response _handleHttpRequest(shelf.Request request) =>
+    new shelf.Response.ok('asds');
+
+/// Simple access logging.
+void _accessLogger(String msg, bool isError) {
+  if (isError) {
+    _log.severe(msg);
+  } else {
+    _log.finest(msg);
+  }
 }
+
+/**
+ *
+ */
+Future<io.HttpServer> start({String hostname: '0.0.0.0', int port: 4200}) {
+  var router = (shelf_route.router()
+    ..get('/notifications', Notification._handleWsConnect)
+    ..post('/broadcast', Notification.broadcast)
+    ..post('/send', Notification.send)
+    ..get('/connection', Notification.connectionList)
+    ..get('/stats', Notification.statistics)
+    ..get('/connection/{uid}', Notification.connection)
+    ..get('/rest', _handleHttpRequest));
+
+  var handler = const shelf.Pipeline()
+      .addMiddleware(
+          shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
+      .addMiddleware(checkAuthentication)
+      .addMiddleware(shelf.logRequests(logger: _accessLogger))
+      .addHandler(router.handler);
+
+  _log.fine('Serving interfaces:');
+  shelf_route.printRoutes(router, printer: _log.fine);
+
+  return shelf_io.serve(handler, hostname, port);
+}
+
+String _tokenFrom(shelf.Request request) =>
+    request.requestedUri.queryParameters['token'];
+
+Map<int, List<CompatibleWebSocket>> clientRegistry =
+    new Map<int, List<CompatibleWebSocket>>();
+Service.Authentication _authService = null;
