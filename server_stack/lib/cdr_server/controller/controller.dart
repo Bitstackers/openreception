@@ -11,20 +11,28 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.cdr_server.database;
+library openreception.cdr_server.controller;
 
-Future createCheckpoint(Model.CDRCheckpoint checkpoint) {
+import 'dart:async';
+import 'dart:convert';
 
-  String sql = '''
-    INSERT INTO cdr_checkpoints (startDate, endDate, name)
-    VALUES (@startdate, @enddate, @name);
-  ''';
+import 'package:logging/logging.dart';
+import 'package:shelf/shelf.dart' as shelf;
+import 'package:shelf_route/shelf_route.dart' as shelf_route;
+import 'package:openreception_framework/database.dart' as database;
+import 'package:openreception_framework/model.dart' as model;
+import 'package:openreception_framework/util.dart' as util;
 
-  Map parameters = {
-    'startdate': checkpoint.start,
-    'enddate': checkpoint.end,
-    'name': checkpoint.name
-  };
+part 'controller-cdr.dart';
 
-  return connection.execute(sql, parameters);
-}
+/**
+ *
+ */
+shelf.Response _okJson(Map body) =>
+    new shelf.Response.ok(body);
+
+/**
+ *
+ */
+shelf.Response _clientError(String reason) =>
+    new shelf.Response(400, body: reason);

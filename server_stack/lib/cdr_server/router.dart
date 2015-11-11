@@ -14,40 +14,65 @@
 library openreception.cdr_server.router;
 
 import 'dart:async';
-import 'dart:io';
-import 'dart:convert';
+import 'dart:io' as io;
 
-import 'package:route/pattern.dart';
 import 'package:route/server.dart';
 
 import '../configuration.dart';
-import 'database.dart' as db;
-import 'package:openreception_framework/model.dart' as Model;
-import 'package:openreception_framework/util.dart' as util;
-import 'package:openreception_framework/httpserver.dart';
 import 'package:logging/logging.dart';
+import 'package:shelf/shelf.dart' as shelf;
+import 'package:shelf/shelf_io.dart' as shelf_io;
+import 'package:shelf_route/shelf_route.dart' as shelf_route;
+import 'package:openreception_framework/database.dart' as database;
 
-part 'router/cdr.dart';
-part 'router/create_checkpoint.dart';
-part 'router/get_checkpoint.dart';
-part 'router/newcdr.dart';
-
-final Pattern anything = new UrlPattern(r'/(.*)');
-final Pattern cdrResource = new UrlPattern(r'/cdr');
-final Pattern newcdrResource = new UrlPattern(r'/newcdr');
-final Pattern checkpointResource = new UrlPattern(r'/checkpoint');
-
-final List<Pattern> allUniqueUrls = [cdrResource, checkpointResource];
+import 'controller/controller.dart' as controller;
 
 final Logger log = new Logger('cdrserver.router');
 
-Router setup(HttpServer server) =>
-  new Router(server)
-    ..filter(matchAny(allUniqueUrls), auth(config.authServer.externalUri))
-    ..serve(cdrResource,    method: 'GET').listen(cdrHandler)
-    ..serve(newcdrResource, method: 'POST').listen(insertCdrData)
-    ..serve(checkpointResource, method: 'GET').listen(getCheckpoints)
-    ..serve(checkpointResource, method: 'POST').listen(createCheckpoint)
-    ..serve(anything,       method: 'OPTIONS').listen(preFlight)
-    ..defaultStream.listen(page404);
+shelf.Middleware addCORSHeaders =
+    shelf.createMiddleware(requestHandler: _options, responseHandler: _cors);
 
+const Map<String, String> textHtmlHeader = const {
+  io.HttpHeaders.CONTENT_TYPE: 'text/html'
+};
+const Map<String, String> CORSHeader = const {
+  'Access-Control-Allow-Origin': '*'
+};
+
+shelf.Response _options(shelf.Request request) => (request.method == 'OPTIONS')
+    ? new shelf.Response.ok(null, headers: CORSHeader)
+    : null;
+
+shelf.Response _cors(shelf.Response response) =>
+    response.change(headers: CORSHeader);
+
+/// Simple access logging.
+void _accessLogger(String msg, bool isError) {
+  if (isError) {
+    log.severe(msg);
+  } else {
+    log.finest(msg);
+  }
+}
+
+Future<io.HttpServer> start(
+    {String hostname: '0.0.0.0', int port: 4090}) async {
+  final controller.Cdr cdrController = new controller.Cdr(
+      new database.Cdr(await database.Connection.connect(config.database.dsn)));
+
+  var router = shelf_route.router(fallbackHandler: send404)
+    ..get('/cdr', cdrController.list)
+    ..post('/cdr', cdrController.addCdrEntry)
+    ..get('/checkpoint', cdrController.checkpoints)
+    ..post('/checkpoint', cdrController.createCheckpoint);
+
+  var handler = const shelf.Pipeline()
+      .addMiddleware(shelf.logRequests(logger: _accessLogger))
+      .addMiddleware(addCORSHeaders)
+      .addHandler(router.handler);
+
+  log.fine('Serving interfaces:');
+  shelf_route.printRoutes(router, printer: log.fine);
+
+  return shelf_io.serve(handler, hostname, port);
+}

@@ -13,6 +13,8 @@
 
 library openreception.cdr_server;
 
+
+import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
@@ -20,8 +22,6 @@ import 'package:path/path.dart';
 import 'package:logging/logging.dart';
 
 import '../lib/configuration.dart';
-import '../lib/cdr_server/database.dart';
-import 'package:openreception_framework/httpserver.dart' as http;
 import '../lib/cdr_server/router.dart' as router;
 
 
@@ -29,7 +29,7 @@ Logger log = new Logger ('CDRServer');
 ArgResults parsedArgs;
 ArgParser  parser = new ArgParser();
 
-void main(List<String> args) {
+Future main(List<String> args) async {
   ///Init logging.
   Logger.root.level = config.cdrServer.log.level;
   Logger.root.onRecord.listen(config.cdrServer.log.onRecord);
@@ -42,9 +42,7 @@ void main(List<String> args) {
     if(showHelp()) {
       print(parser.usage);
     } else {
-        startDatabase()
-        .then((_) => http.start(config.cdrServer.httpPort, router.setup))
-        .catchError(log.shout);
+      await router.start();
     }
   } catch(error, stackTrace) {
     log.shout (error, stackTrace);
