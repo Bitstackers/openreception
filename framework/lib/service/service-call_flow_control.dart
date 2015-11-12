@@ -56,7 +56,7 @@ class CallFlowControl {
   /**
    * Retrives the stats of all agents.
    */
-  Future<Model.AgentStatistics> agentStats() {
+  Future<Iterable<Model.AgentStatistics>> agentStats() {
     Uri uri = Resource.CallFlowControl.agentStatistics(_host);
     uri = appendToken(uri, this._token);
 
