@@ -22,6 +22,7 @@ abstract class Peer {
             log.info ('Flushing event stack');
             receptionist.eventStack.clear();
           }))
+      .then((_) => new Future.delayed(new Duration(milliseconds : 50)))
       .then((_) => log.info ('Registering peer $peerName'))
       .then((_) => receptionist._phone.register())
       .then((_) => log.info ('Waiting for peer state event'))
@@ -32,6 +33,7 @@ abstract class Peer {
             expect (peerStateEvent.peer.registered, isTrue);
             expect (peerStateEvent.peer.ID, equals(peerName));
           }))
+      .then((_) => new Future.delayed(new Duration(milliseconds : 50)))
       .then((_) => log.info ('Flushing event stack'))
       .then((_) => receptionist.eventStack.clear())
       .then((_) => log.info ('Unregistering peer $peerName to complete cycle'))
