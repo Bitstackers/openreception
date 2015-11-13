@@ -17,17 +17,18 @@ import 'dart:async';
 import 'dart:io' as io;
 
 import 'package:route/server.dart';
-
-import '../configuration.dart';
 import 'package:logging/logging.dart';
+
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
+
 import 'package:openreception_framework/database.dart' as database;
 
+import '../configuration.dart';
 import 'controller/controller.dart' as controller;
 
-final Logger log = new Logger('cdrserver.router');
+final Logger _accessLog = new Logger('cdrserver.router');
 
 shelf.Middleware addCORSHeaders =
     shelf.createMiddleware(requestHandler: _options, responseHandler: _cors);
@@ -49,9 +50,9 @@ shelf.Response _cors(shelf.Response response) =>
 /// Simple access logging.
 void _accessLogger(String msg, bool isError) {
   if (isError) {
-    log.severe(msg);
+    _accessLog.severe(msg);
   } else {
-    log.finest(msg);
+    _accessLog.finest(msg);
   }
 }
 
@@ -71,8 +72,10 @@ Future<io.HttpServer> start(
       .addMiddleware(addCORSHeaders)
       .addHandler(router.handler);
 
-  log.fine('Serving interfaces:');
-  shelf_route.printRoutes(router, printer: log.fine);
+  ///Temporary logger for outputting routes.
+  Logger routeLog = new Logger('cdrserver.router');
+  routeLog.fine('Serving interfaces:');
+  shelf_route.printRoutes(router, printer: routeLog.fine);
 
   return shelf_io.serve(handler, hostname, port);
 }
