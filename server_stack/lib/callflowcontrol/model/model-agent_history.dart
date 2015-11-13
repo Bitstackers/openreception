@@ -13,7 +13,7 @@
 
 part of openreception.call_flow_control_server.model;
 
-class AgentHistory extends IterableBase {
+class AgentHistory extends IterableBase<ORModel.AgentStatistics> {
   static final instance = new AgentHistory();
 
   Logger _log = new Logger('$libraryName.AgentHistory');
@@ -51,14 +51,20 @@ class AgentHistory extends IterableBase {
     _lastRun = now;
   }
 
-  Iterator<Map> get iterator => _recentActivity.keys.map(_sumUp).iterator;
+  Iterator<ORModel.AgentStatistics> get
+    iterator => _recentActivity.keys.map(sumUp).iterator;
 
-  Map _sumUp(int uid) => {
-        'uid': uid,
-        'recentlyHandled': _recentActivity[uid].length,
-        'total': _recentActivity[uid].length +
-            (_callsHandledToday.containsKey(uid) ? _callsHandledToday[uid] : 0)
-      };
+  ORModel.AgentStatistics sumUp(int uid) =>
+      !_recentActivity.containsKey(uid)
+      ? throw new ORStorage.NotFound()
+      :
+
+
+      new ORModel.AgentStatistics(
+      uid,
+      _recentActivity[uid].length,
+      _recentActivity[uid].length +
+          (_callsHandledToday.containsKey(uid) ? _callsHandledToday[uid] : 0));
 
   callHandledByAgent(int userId) => _recentActivity.containsKey(userId)
       ? _recentActivity[userId].add(new DateTime.now())

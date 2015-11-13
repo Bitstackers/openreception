@@ -97,6 +97,9 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4242}) {
   Controller.ActiveRecording _activeRecordingController =
       new Controller.ActiveRecording();
 
+  Controller.AgentStatistics _statsController =
+      new Controller.AgentStatistics(Model.AgentHistory.instance);
+
   log.info('Starting client notifier');
 
   Notification = new Service.NotificationService
@@ -111,6 +114,8 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4242}) {
     ..get('/peer/list', Peer.list)
     ..get('/peer', Peer.list)
     ..get('/peer/{peerid}', Peer.get)
+    ..get('/agentstatistics', _statsController.list)
+    ..get('/agentstatistics/{uid}', _statsController.get)
     ..get('/userstats', UserState.stats)
     ..get('/userstate/{uid}', UserState.get)
     //TODO: Dispatch to general UserState handler.
