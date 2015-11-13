@@ -101,7 +101,7 @@ abstract class Message {
     Model.Message createdMessage = await _messageStore.update(message);
 
     _notification
-        .broadcastEvent(new Event.MessageChange.updated(createdMessage.ID));
+        .broadcastEvent(new Event.MessageChange.updated(createdMessage.ID, user.ID));
 
     return _ok(JSON.encode(createdMessage));
   }
@@ -187,7 +187,7 @@ abstract class Message {
     return _messageStore
         .enqueue(message)
         .then((Model.MessageQueueItem queueItem) {
-      _notification.broadcastEvent(new Event.MessageChange.updated(message.ID));
+      _notification.broadcastEvent(new Event.MessageChange.updated(message.ID, user.ID));
 
       return _ok(JSON.encode(queueItem));
     });
@@ -229,7 +229,7 @@ abstract class Message {
     }
 
     return _messageStore.create(message).then((Model.Message createdMessage) {
-      _notification.broadcastEvent(new Event.MessageChange.created(message.ID));
+      _notification.broadcastEvent(new Event.MessageChange.created(message.ID, user.ID));
 
       return _ok(JSON.encode(createdMessage));
     });
