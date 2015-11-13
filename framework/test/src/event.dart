@@ -98,12 +98,14 @@ abstract class EventTests {
   }
   static void messageChangeState() {
     final int mid = 1;
+    final int uid = 2;
 
-    Event.MessageChange testEvent = new Event.MessageChange.created(mid);
+    Event.MessageChange testEvent = new Event.MessageChange.created(mid,uid);
 
     Event.MessageChange builtEvent = new Event.Event.parse(testEvent.asMap);
 
     expect(builtEvent.messageID, equals(mid));
+    expect(builtEvent.userID, equals(uid));
     expect(builtEvent.state, equals(Event.MessageChangeState.CREATED));
   }
 
