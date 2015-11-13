@@ -29,21 +29,18 @@ class MessageChange implements Event {
   String get eventName => Key.messageChange;
 
   final int messageID;
+  final int userID;
   final String state;
 
-  @deprecated
-  MessageChange (this.messageID, this.state) :
-    timestamp = new DateTime.now();
-
-  MessageChange.created (this.messageID) :
+  MessageChange.created (this.messageID, this.userID) :
     timestamp = new DateTime.now(),
     state = MessageChangeState.CREATED;
 
-  MessageChange.updated (this.messageID) :
+  MessageChange.updated (this.messageID, this.userID) :
     timestamp = new DateTime.now(),
     state = MessageChangeState.UPDATED;
 
-  MessageChange.deleted (this.messageID) :
+  MessageChange.deleted (this.messageID, this.userID) :
     timestamp = new DateTime.now(),
     state = MessageChangeState.DELETED;
 
@@ -53,8 +50,10 @@ class MessageChange implements Event {
   Map get asMap {
     Map template = EventTemplate._rootElement(this);
 
-    Map body = {Key.messageID   : this.messageID,
-                Key.state       : this.state};
+    Map body = {
+      Key.userID    : this.userID,
+      Key.messageID : this.messageID,
+      Key.state     : this.state};
 
     template[this.eventName] = body;
 
@@ -62,7 +61,8 @@ class MessageChange implements Event {
   }
 
   MessageChange.fromMap (Map map) :
-    this.messageID = map[Key.messageChange][Key.messageID],
-    this.state = map[Key.messageChange][Key.state],
-    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
+    userID = map[Key.messageChange][Key.userID],
+    messageID = map[Key.messageChange][Key.messageID],
+    state = map[Key.messageChange][Key.state],
+    timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
 }
