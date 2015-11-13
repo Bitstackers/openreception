@@ -297,38 +297,7 @@ abstract class PBX {
         });
   }
 
-  /**
-   * Starts an origination in the PBX.
-   *
-   * By first dialing the outbound extension and then the agent.
-   * This method is cleaner than the [originate] method, because this will
-   * return the future A-leg as call-id, but will break the protocol as
-   * per 2014-06-24.
-   *
-   * Currently unused.
-   */
-  static Future<String> originateOutboundFirst (String extension, int contactID, int receptionID, ORModel.User user) {
-    List<String> variables = ['reception_id=${receptionID}',
-                              'owner=${user.ID}',
-                              'contact_id=${contactID}',
-                              'origination_caller_id_name=$callerID',
-                              'origination_caller_id_number=$callerID',
-                              'originate_timeout=$_timeOutSeconds',
-                              'return_ring_ready=true'];
-
-    return api
-        ('originate {${variables.join(',')}}sofia/external/${extension}@${config.callFlowControl.dialoutGateway} &bridge(user/${user.peer}) ${_dialplan} $callerID $callerID $_timeOutSeconds')
-        .then((ESL.Response response) {
-          if (response.status != ESL.Response.OK) {
-            throw new StateError('ESL returned ${response.rawBody}');
-          }
-
-          return response.channelUUID;
-        });
-    //Alternate origination:: originate sofia/gateway/fonet-77344600-outbound/40966024 &bridge(user/1002)
-  }
-
-  /**
+    /**
    * Bridges two active calls.
    */
   static Future bridge (ORModel.Call source, ORModel.Call destination) {
