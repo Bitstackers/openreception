@@ -13,6 +13,10 @@
 
 part of openreception.call_flow_control_server.model;
 
+/**
+ * The [AgentHistory] model maintains [AgentStatistics] associated with the
+ * agents currently signed in to the system.
+ */
 class AgentHistory extends IterableBase<ORModel.AgentStatistics> {
   static final instance = new AgentHistory();
 
