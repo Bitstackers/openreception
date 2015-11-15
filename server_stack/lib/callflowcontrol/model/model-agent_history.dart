@@ -16,32 +16,64 @@ part of openreception.call_flow_control_server.model;
 /**
  * The [AgentHistory] model maintains [AgentStatistics] associated with the
  * agents currently signed in to the system.
+ * The class logs recent activities, which represent handled calls. Whenever an
+ * inbound call is hung up -- while assigned to an agent -- this agent will get
+ * a call (represented by a timestamp) added to its uid in the map internally.
+ *
+ * This class maintains an internal housekeeping task to clear out old
+ * statistics from the day before and bump activities that are no longer
+ * considered recent to a total.
  */
 class AgentHistory extends IterableBase<ORModel.AgentStatistics> {
+  /// Singleton reference. Remove eventually.
   static final instance = new AgentHistory();
 
+  /// Internal logger.
   Logger _log = new Logger('$libraryName.AgentHistory');
 
-  Map<int, List<DateTime>> _recentActivity = {};
+  /**
+   * Recent activity for agents. Stores timestamps of when the call activity
+   * occured so it is possible later on to move it to the total counter for
+   * that user.
+   * The total counters for each user is stored in [_callsHandledToday].
+   */
+  Map<int, List<DateTime>> _recentCalls = {};
+
+  /// The number of calls
   Map<int, int> _callsHandledToday = {};
 
+  /// The frequency of the housekeeping.
   final Duration _period = new Duration(minutes: 1);
+
+  /// Call activities are considered recent, when they are younger than this.
   final Duration _recent = new Duration(hours: 1);
+
+  /// Stores the absolute time of when the housekeeping was last run.
   DateTime _lastRun = new DateTime.now();
 
+  /**
+   * Default constructor. Sets up the internal maps and starts the housekeeping
+   * task internally.
+   */
   AgentHistory() {
     new Timer.periodic(_period, _housekeeping);
   }
 
+  /**
+   * Housekeeping task. Runs every [_period].
+   */
   void _housekeeping(_) {
+    // Snapshot the time, as we need it multiple times later on.
     final DateTime now = new DateTime.now();
 
+    // Every day the totals are emptied.
     if (_lastRun.day != now.day) {
       log.info('Day changed - emptying totals');
       _callsHandledToday = {};
     }
 
-    _recentActivity.forEach((int key, List<DateTime> times) {
+    // Check for timestamps older than [_recent].
+    _recentCalls.forEach((int key, List<DateTime> times) {
       Iterable<DateTime> expired =
           times.where((DateTime time) => now.isAfter(time.add(_recent)));
 
@@ -52,27 +84,39 @@ class AgentHistory extends IterableBase<ORModel.AgentStatistics> {
       times.removeWhere((DateTime time) => now.isAfter(time.add(_recent)));
     });
 
+    // Update the class-wide last-run timestamp.
     _lastRun = now;
   }
 
-  Iterator<ORModel.AgentStatistics> get
-    iterator => _recentActivity.keys.map(sumUp).iterator;
+  /**
+   * Sums up agent statistics and returns an iterable of [AgentStatistics].
+   */
+  Iterator<ORModel.AgentStatistics> get iterator =>
+      _recentCalls.keys.map(sumUp).iterator;
 
-  ORModel.AgentStatistics sumUp(int uid) =>
-      !_recentActivity.containsKey(uid)
+  /**
+   * Sum up the statistics of a single user and return an [AgentStatistics]
+   * object. Throws [NotFound] if the agent has no statistics associated.
+   */
+  ORModel.AgentStatistics sumUp(int uid) => !_recentCalls.containsKey(uid)
       ? throw new ORStorage.NotFound()
-      :
+      : new ORModel.AgentStatistics(
+          uid,
+          _recentCalls[uid].length,
+          _recentCalls[uid].length +
+              (_callsHandledToday.containsKey(uid)
+                  ? _callsHandledToday[uid]
+                  : 0));
 
+  /**
+   * Signal that a call has been handled by an agent.
+   */
+  void callHandledByAgent(int userId) => _recentCalls.containsKey(userId)
+      ? _recentCalls[userId].add(new DateTime.now())
+      : _recentCalls[userId] = (new List()..add(new DateTime.now()));
 
-      new ORModel.AgentStatistics(
-      uid,
-      _recentActivity[uid].length,
-      _recentActivity[uid].length +
-          (_callsHandledToday.containsKey(uid) ? _callsHandledToday[uid] : 0));
-
-  callHandledByAgent(int userId) => _recentActivity.containsKey(userId)
-      ? _recentActivity[userId].add(new DateTime.now())
-      : _recentActivity[userId] = (new List()..add(new DateTime.now()));
-
+  /**
+   * JSON serialization function.
+   */
   List toJson() => this.toList(growable: false);
 }
