@@ -38,4 +38,6 @@ const String libraryName = 'callflowcontrol.controller';
 
 shelf.Response _okJson(body) => new shelf.Response.ok(JSON.encode(body));
 
+shelf.Response _clientError(body) => new shelf.Response(400, body: body);
+
 shelf.Response _notFound(body) => new shelf.Response.notFound(body);
