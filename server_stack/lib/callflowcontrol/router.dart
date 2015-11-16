@@ -129,7 +129,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4242}) {
     ..post('/state/reload', _stateController.reloadAll)
     ..get('/channel/list', Channel.list)
     ..get('/activerecording', _activeRecordingController.list)
-    ..get('/activerecording/{filename}', _activeRecordingController.list)
+    ..get('/activerecording/{cid}', _activeRecordingController.get)
     ..get('/channel', Channel.list)
     ..post('/call/{callid}/hangup', Call.hangupSpecific)
     ..post('/call/{callid}/pickup', Call.pickup)
