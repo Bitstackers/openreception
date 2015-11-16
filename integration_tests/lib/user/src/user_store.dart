@@ -201,19 +201,16 @@ abstract class User {
   /**
    *
    */
-  static Future removeUser(Storage.User userStore) {
+  static Future removeUser(Storage.User userStore) async {
     log.info('Checking server behaviour on an user removal.');
 
-    return userStore
-        .create(Randomizer.randomUser())
-        .then((Model.User createdUser) {
-      expect(createdUser.ID, greaterThan(Model.User.noID));
+    Model.User createdUser= await userStore.create(Randomizer.randomUser());
+    expect(createdUser.ID, greaterThan(Model.User.noID));
 
-      return userStore.remove(createdUser.ID).then((_) {
-        expect(userStore.get(createdUser.ID),
+    await userStore.remove(createdUser.ID);
+
+    return expect(userStore.get(createdUser.ID),
             throwsA(new isInstanceOf<Storage.NotFound>()));
-      });
-    });
   }
 
   /**
