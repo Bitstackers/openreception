@@ -35,6 +35,7 @@ part 'benchmark/all_tests.dart';
 
 /// Callflow server tests
 part 'callflowcontrol/all_tests.dart';
+part 'callflowcontrol/src/active_recording.dart';
 part 'callflowcontrol/src/call_hangup.dart';
 part 'callflowcontrol/src/call_list.dart';
 part 'callflowcontrol/src/call_originate.dart';
