@@ -4,6 +4,33 @@ part of or_test_fw;
 void runCallFlowTests() {
 
   /**
+   * CallFlowControl active recordings tests.
+   */
+  group('CallFlowControl.ActiveRecording', () {
+    Service.CallFlowControl callFlow;
+    Transport.Client transport;
+
+    setUp (() {
+      transport = new Transport.Client();
+
+      callFlow = new Service.CallFlowControl
+          (Config.CallFlowControlUri, Config.serverToken, transport);
+
+    });
+
+    tearDown (() {
+      transport.client.close(force : true);
+    });
+
+    test ('empty list',
+        () => ActiveRecording.listEmpty(callFlow));
+
+    test ('non-existing recording',
+        () => ActiveRecording.getNonExisting(callFlow));
+
+  });
+
+  /**
    * CallFlowControl Call hangup - using Receptionist objects.
    */
   group('CallFlowControl.Hangup', () {
