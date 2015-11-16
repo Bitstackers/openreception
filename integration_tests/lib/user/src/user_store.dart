@@ -220,26 +220,20 @@ abstract class User {
    *
    */
   static Future removeUserEvent(
-      Storage.User userStore, Receptionist receptionist) {
+      Storage.User userStore, Receptionist receptionist) async {
     log.info('Checking server behaviour on an user removal.');
 
-    return userStore
-        .create(Randomizer.randomUser())
-        .then((Model.User createdUser) {
-      expect(createdUser.ID, greaterThan(Model.User.noID));
+    Model.User createdUser = await userStore.create(Randomizer.randomUser());
 
-      return receptionist
-          .waitFor(eventType: Event.Key.userChange)
-          .then((Event.UserChange userChange) {
-        expect(userChange.state, equals(Event.UserObjectState.CREATED));
-        receptionist.eventStack.clear();
-      }).then((_) => userStore.remove(createdUser.ID)).then((_) => receptionist
-          .waitFor(eventType: Event.Key.userChange)
-          .then((Event.UserChange userChange) {
-        expect(userChange.state, equals(Event.UserObjectState.DELETED));
-        expect(userChange.userID, equals(createdUser.ID));
-      }));
-    });
+    expect(createdUser.ID, greaterThan(Model.User.noID));
+
+    Future expectedEvent = receptionist.notificationSocket.eventStream.firstWhere(
+        (event) => event is Event.UserChange &&
+        event.userID == createdUser.ID &&
+        event.state == Event.UserObjectState.DELETED);
+    await userStore.remove(createdUser.ID);
+
+    return expectedEvent;
   }
 
   /**
