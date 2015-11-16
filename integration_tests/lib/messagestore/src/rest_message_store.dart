@@ -168,7 +168,7 @@ abstract class RESTMessageStore {
       }
 
     Future sub = sender.notificationSocket.eventStream
-        .firstWhere(idAndStateMatches).timeout(new Duration(milliseconds : 1000));
+        .firstWhere(idAndStateMatches).timeout(new Duration(milliseconds : 3000));
 
     return messageStore.update(createdMessage)
       .then((_) => sub)
