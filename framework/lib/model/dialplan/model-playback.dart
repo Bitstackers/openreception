@@ -29,7 +29,7 @@ class Playback extends Action {
 
     bool lock = false;
     String filename;
-    String note;
+    String note ='';
 
     if (!buffer
         .substring(0, Key.playback.length)
