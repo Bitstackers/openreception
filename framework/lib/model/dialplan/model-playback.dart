@@ -61,7 +61,7 @@ class Playback extends Action {
       int closeBracket = buffer.indexOf(')') > 0
           ? buffer.indexOf(')')
           : buffer.length;
-      note = buffer.substring(openBracket+1, closeBracket).trimRight();
+      note = buffer.substring(openBracket+1, closeBracket);
     }
 
     return new Playback(filename, wrapInLock: lock, note : note);
