@@ -29,7 +29,7 @@ class Playback extends Action {
 
     bool lock = false;
     String filename;
-    String note ='';
+    String note = '';
 
     if (!buffer
         .substring(0, Key.playback.length)
@@ -43,10 +43,10 @@ class Playback extends Action {
 
     buffer = buffer.substring(Key.playback.length).trimLeft();
 
-    if(buffer.substring(0, Key.lock.length)
+    if (buffer
+        .substring(0, Key.lock.length)
         .toLowerCase()
         .startsWith(Key.lock.toLowerCase())) {
-
       lock = true;
       buffer = buffer.substring(Key.lock.length).trimLeft();
     }
@@ -58,13 +58,12 @@ class Playback extends Action {
     } else {
       filename = buffer.substring(0, openBracket).trimRight();
 
-      int closeBracket = buffer.indexOf(')') > 0
-          ? buffer.indexOf(')')
-          : buffer.length;
-      note = buffer.substring(openBracket+1, closeBracket);
+      int closeBracket =
+          buffer.indexOf(')') > 0 ? buffer.indexOf(')') : buffer.length;
+      note = buffer.substring(openBracket + 1, closeBracket);
     }
 
-    return new Playback(filename, wrapInLock: lock, note : note);
+    return new Playback(filename, wrapInLock: lock, note: note);
   }
 
   /**
