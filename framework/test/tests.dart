@@ -59,6 +59,7 @@ part 'src/model/model-user.dart';
 part 'src/model/model-user_status.dart';
 
 part 'src/model/dialplan/model-ivr_entry.dart';
+part 'src/model/dialplan/model-playback.dart';
 
 part 'src/resource/resource-authentication.dart';
 part 'src/resource/resource-calendar.dart';
@@ -86,6 +87,7 @@ void main() {
 
 
   testModelIvrMenu();
+  testModelPlayback();
   testBus();
 
   testEvent();
