@@ -23,6 +23,8 @@ import 'event.dart'   as Event;
 import 'keys.dart'    as Key;
 import 'util.dart'    as Util;
 
+export 'model/dialplan/model-dialplan.dart';
+
 part 'model/model-active_recording.dart';
 part 'model/model-agent_statistics.dart';
 part 'model/model-audiofile.dart';
