@@ -16,28 +16,78 @@ part of openreception.model.dialplan;
 class Playback extends Action {
   final String filename;
   final bool wrapInLock;
-  String note = '';
-  static final Playback none = new Playback._none();
+  final String note;
 
-  Playback.file(String filenameNoExtension, {bool this.wrapInLock : true})
-      : this.filename = '$filenameNoExtension.wav';
+  static const Playback none = const Playback('');
 
-  Playback.nightGreeting()
-   : filename = '\${reception-greeting-closed}',
-   wrapInLock = false;
+  /**
+   * Parsing factory.
+   */
+  static Playback parse(String buffer) {
+    /// Remove leading spaces.
+    buffer = buffer.trimLeft();
 
-  factory Playback._none() => new Playback.file('');
+    bool lock = false;
+    String filename;
+    String note;
 
-  Playback.dayGreeting()
-    : this.filename = '\${reception-greeting}',
-    wrapInLock = true;
+    if (!buffer
+        .substring(0, Key.playback.length)
+        .toLowerCase()
+        .startsWith(Key.playback.toLowerCase())) {
+      throw new FormatException(
+          'Tried to parse a non-playback '
+          'action as a playback',
+          buffer);
+    }
 
-  operator == (Playback other) => this.filename == other.filename;
+    buffer = buffer.substring(Key.playback.length).trimLeft();
 
-  String toString()  => 'Playback${wrapInLock? ' locked' :''} file ${filename}';
+    if(buffer.substring(0, Key.lock.length)
+        .toLowerCase()
+        .startsWith(Key.lock.toLowerCase())) {
 
+      lock = true;
+    }
 
-  String toJson() => '${Key.playback} $filename'
-      '${note.isNotEmpty ? ' ($note)': ''}';
+    int openBracket = buffer.indexOf('(');
 
+    if (openBracket == -1) {
+      filename = buffer.trim();
+    } else {
+      filename = buffer.substring(0, openBracket).trimRight();
+
+      int closeBracket = buffer.indexOf(')') > 0
+          ? buffer.indexOf(')')
+          : buffer.length;
+      note = buffer.substring(openBracket+1, closeBracket).trimRight();
+    }
+
+    return new Playback(filename, wrapInLock: lock, note : note);
+  }
+
+  /**
+   *
+   */
+  const Playback(String this.filename,
+      {bool this.wrapInLock: true, String this.note: ''});
+
+  /**
+   *
+   */
+  @override
+  operator ==(Playback other) => this.filename == other.filename;
+
+  /**
+   *
+   */
+  @override
+  String toString() => 'Playback${wrapInLock? ' locked' :''} file ${filename}';
+
+  /**
+   *
+   */
+  @override
+  String toJson() => '${Key.playback}${wrapInLock? ' locked' :''}'
+      ' $filename ${note.isNotEmpty ? ' ($note)': ''}';
 }

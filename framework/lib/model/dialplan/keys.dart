@@ -19,8 +19,12 @@ const String fromMinute = 'fromMinute';
 const String toDay = 'toDay';
 const String toHour = 'toHour';
 const String toMinute = 'toMinute';
+const String name = 'name';
+const String greeting = 'greeting';
+const String greetingShort = 'greetingShort';
 
-
+//Keywords
+const String lock = 'lock';
 const String ringtone = 'ringtone';
 const String transfer = 'transfer';
 const String voicemail = 'voicemail';
@@ -29,3 +33,4 @@ const String notify = 'notify';
 const String ivr = 'notify';
 const String playback = 'playback';
 const String ivrMenu = 'ivr';
+const String ivrEntries = 'entries';

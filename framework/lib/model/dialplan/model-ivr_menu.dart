@@ -26,14 +26,20 @@ class IvrMenu {
 
   IvrMenu(this.name, this.greetingLong);
 
+  static IvrMenu decode(Map map) => (new
+      IvrMenu(map[Key.ivrMenu][Key.name],
+          Playback.parse(map[Key.ivrMenu][Key.greeting]))
+          .._greetingShort = Playback.parse(map[Key.ivrMenu][Key.greetingShort]))
+          ..entries = map[Key.ivrMenu][Key.ivrEntries].map(IvrEntry.decode).toList();
+
   operator ==(IvrMenu other) => this.name == other.name;
 
   Map toJson() => {
         Key.ivrMenu: {
-          'name': name,
-          'greetingLong': greetingLong.toJson(),
-          'greetingShort': greetingShort.toJson(),
-          'entries':
+          Key.name: name,
+          Key.greeting: greetingLong.toJson(),
+          Key.greetingShort: greetingShort.toJson(),
+          Key.ivrEntries:
               entries.map((entry) => entry.toJson()).toList(growable: false)
         }
       };

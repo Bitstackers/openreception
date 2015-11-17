@@ -14,5 +14,7 @@
 part of openreception.model.dialplan;
 
 abstract class Action {
+
+  const Action();
   dynamic toJson();
 }

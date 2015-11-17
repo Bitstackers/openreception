@@ -16,6 +16,10 @@ part of openreception.model.dialplan;
 abstract class IvrEntry {
   String get digits;
 
+  static IvrEntry decode(Map map) {
+    return null;
+  }
+
   Map toJson();
 }
 
