@@ -83,12 +83,13 @@ class Playback extends Action {
    *
    */
   @override
-  String toString() => 'Playback${wrapInLock? ' locked' :''} file ${filename}';
+  String toString() =>
+      'Playback${wrapInLock? ' ${Key.lock}' :''} file ${filename}';
 
   /**
    *
    */
   @override
-  String toJson() => '${Key.playback}${wrapInLock? ' locked' :''}'
+  String toJson() => '${Key.playback}${wrapInLock? ' ${Key.lock}' :''}'
       ' $filename ${note.isNotEmpty ? ' ($note)': ''}';
 }

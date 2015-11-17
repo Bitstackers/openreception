@@ -24,7 +24,7 @@ const String greeting = 'greeting';
 const String greetingShort = 'greetingShort';
 
 //Keywords
-const String lock = 'lock';
+const String lock = 'locked';
 const String ringtone = 'ringtone';
 const String transfer = 'transfer';
 const String voicemail = 'voicemail';
