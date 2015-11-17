@@ -24,6 +24,7 @@ void testModelPlayback() {
     test('serialization', ModelPlayback.serialization);
 
     test('buildObject', ModelPlayback.buildObject);
+    test('parse', ModelPlayback.parse);
   });
 }
 
@@ -31,7 +32,6 @@ void testModelPlayback() {
  *
  */
 abstract class ModelPlayback {
-
   /**
    *
    */
@@ -54,14 +54,10 @@ abstract class ModelPlayback {
 
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
 
-    expect(builtObject.filename,
-        equals(deserializedObject.filename));
-    expect(builtObject.note,
-        equals(deserializedObject.note));
-    expect(builtObject.wrapInLock,
-        equals(deserializedObject.wrapInLock));
-    expect(builtObject.toJson(),
-        equals(deserializedObject.toJson()));
+    expect(builtObject.filename, equals(deserializedObject.filename));
+    expect(builtObject.note, equals(deserializedObject.note));
+    expect(builtObject.wrapInLock, equals(deserializedObject.wrapInLock));
+    expect(builtObject.toJson(), equals(deserializedObject.toJson()));
 
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
   }
@@ -76,13 +72,53 @@ abstract class ModelPlayback {
     final Model.Playback builtObject =
         new Model.Playback(filename, wrapInLock: lock, note: note);
 
-    expect(builtObject.filename,
-        equals(filename));
-    expect(builtObject.note,
-        equals(note));
-    expect(builtObject.wrapInLock,
-        equals(lock));
+    expect(builtObject.filename, equals(filename));
+    expect(builtObject.note, equals(note));
+    expect(builtObject.wrapInLock, equals(lock));
 
     return builtObject;
+  }
+
+  /**
+   *
+   */
+  static void parse() {
+    final String filename = 'somefile.wav';
+    final String note = 'Just a test';
+
+    Model.Playback builtObject = Model.Playback.parse('playback $filename');
+
+    expect(builtObject.filename, equals(filename));
+    expect(builtObject.wrapInLock, isFalse);
+
+    builtObject = Model.Playback.parse('playback locked $filename');
+
+    expect(builtObject.filename, equals(filename));
+    expect(builtObject.wrapInLock, isTrue);
+    expect(builtObject.note, isEmpty);
+
+    /// Adding lots of spaces.
+    builtObject = Model.Playback.parse('   playback      locked     $filename');
+
+    expect(builtObject.filename, equals(filename));
+    expect(builtObject.wrapInLock, isTrue);
+    expect(builtObject.note, isEmpty);
+
+    builtObject = Model.Playback.parse('playback locked $filename ($note)');
+
+    expect(builtObject.filename, equals(filename));
+    expect(builtObject.wrapInLock, isTrue);
+    expect(builtObject.note, equals(note));
+
+    builtObject =
+        Model.Playback.parse('  playback   locked   $filename   ($note)   ');
+
+    expect(builtObject.filename, equals(filename));
+    expect(builtObject.wrapInLock, isTrue);
+    expect(builtObject.note, equals(note));
+
+    ///TODO check exceptions.
+    expect(() => Model.Playback.parse('layback locked $filename ($note) '),
+        throwsA(new isInstanceOf<FormatException>()));
   }
 }
