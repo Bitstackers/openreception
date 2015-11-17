@@ -48,6 +48,7 @@ class Playback extends Action {
         .startsWith(Key.lock.toLowerCase())) {
 
       lock = true;
+      buffer = buffer.substring(Key.lock.length).trimLeft();
     }
 
     int openBracket = buffer.indexOf('(');
