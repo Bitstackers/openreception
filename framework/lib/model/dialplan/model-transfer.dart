@@ -26,17 +26,7 @@ class Transfer extends Action {
     String extension;
     String note = '';
 
-    if (!buffer
-        .substring(0, Key.transfer.length)
-        .toLowerCase()
-        .startsWith(Key.transfer.toLowerCase())) {
-      throw new FormatException(
-          'Tried to parse a non-transfer'
-          'action as a transfer',
-          buffer);
-    }
-
-    buffer = buffer.substring(Key.transfer.length).trimLeft();
+    buffer = consumeKey(buffer, Key.transfer).trimLeft();
 
     int openBracket = buffer.indexOf('(');
 

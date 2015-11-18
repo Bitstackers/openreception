@@ -44,18 +44,7 @@ class Enqueue implements Action {
       }
     }
 
-    if (!buffer
-        .substring(0, Key.enqueue.length)
-        .toLowerCase()
-        .startsWith(Key.enqueue.toLowerCase())) {
-      throw new FormatException(
-          'Tried to parse a non-enqueue '
-          'action as a enqueue',
-          buffer);
-    }
-
-    /// Look for the queue name.
-    buffer = buffer.substring(Key.enqueue.length).trimLeft();
+    buffer = consumeKey(buffer, Key.enqueue).trimLeft();
 
     if(buffer.startsWith('(')) {
       consumeNote();

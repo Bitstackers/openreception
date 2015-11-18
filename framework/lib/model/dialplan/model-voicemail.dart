@@ -24,7 +24,7 @@ class Voicemail extends Action {
     String vmBox = '';
     String recipient = '';
     String note = '';
-    buffer = consumeKey(buffer, Key.voicemail);
+    buffer = consumeKey(buffer, Key.voicemail).trimLeft();
 
     var consumed = consumeIdentifier(buffer);
     vmBox = consumed.iden;

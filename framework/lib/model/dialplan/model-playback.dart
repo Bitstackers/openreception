@@ -31,17 +31,7 @@ class Playback extends Action {
     String filename;
     String note = '';
 
-    if (!buffer
-        .substring(0, Key.playback.length)
-        .toLowerCase()
-        .startsWith(Key.playback.toLowerCase())) {
-      throw new FormatException(
-          'Tried to parse a non-playback '
-          'action as a playback',
-          buffer);
-    }
-
-    buffer = buffer.substring(Key.playback.length).trimLeft();
+    buffer = consumeKey(buffer, Key.playback).trimLeft();
 
     if (buffer
         .substring(0, Key.lock.length)
