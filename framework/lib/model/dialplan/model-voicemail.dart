@@ -18,19 +18,40 @@ class Voicemail extends Action {
   String note = '';
   String recipient = '';
 
-  Voicemail(String extension) : this.vmBox = 'vm-$extension';
+  Voicemail(this.vmBox, {this.recipient: '', this.note: ''});
 
-  Voicemail._standard() : this.vmBox = 'vm-\${destination_number}';
+  static Voicemail parse(String buffer) {
+    String vmBox = '';
+    String recipient = '';
+    String note = '';
+    buffer = consumeKey(buffer, Key.voicemail);
 
-  static Voicemail parse (String buffer) {
-    throw new UnimplementedError();
+    var consumed = consumeIdentifier(buffer);
+    vmBox = consumed.iden;
+    buffer = consumed.buffer.trimLeft();
+
+    if (buffer.startsWith('(')) {
+      consumed = consumeComment(buffer);
+      note = consumed.comment;
+    } else {
+      consumed = consumeIdentifier(buffer);
+      recipient = consumed.iden;
+    }
+
+    buffer = consumed.buffer.trimLeft();
+
+    if (buffer.startsWith('(')) {
+      consumed = consumeComment(buffer);
+      note = consumed.comment;
+    }
+
+    return new Voicemail(vmBox, recipient: recipient, note: note);
   }
 
-  operator == (Voicemail other) => this.vmBox == other.vmBox;
+  operator ==(Voicemail other) => this.vmBox == other.vmBox;
 
   String toString() => 'Voicemail $vmBox';
 
   String toJson() => '${Key.voicemail} $vmBox'
-      '${recipient.isNotEmpty ? 'sendto:${recipient}' : ''}';
-
+      '${recipient.isNotEmpty ? '${recipient}' : ''}';
 }
