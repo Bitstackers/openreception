@@ -13,6 +13,9 @@
 
 part of openreception.model.dialplan;
 
+/**
+ * Abstract super-class for [Action]s available for the dialplan.
+ */
 abstract class Action {
 
   const Action();
