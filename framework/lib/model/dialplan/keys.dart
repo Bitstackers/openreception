@@ -34,3 +34,6 @@ const String ivr = 'notify';
 const String playback = 'playback';
 const String ivrMenu = 'ivr';
 const String ivrEntries = 'entries';
+const String music = 'music';
+const String ivrSubmenu = 'submenu';
+const String ivrTopmenu = 'topmenu';

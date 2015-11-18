@@ -30,7 +30,7 @@ class IvrMenu {
       IvrMenu(map[Key.ivrMenu][Key.name],
           Playback.parse(map[Key.ivrMenu][Key.greeting]))
           .._greetingShort = Playback.parse(map[Key.ivrMenu][Key.greetingShort]))
-          ..entries = map[Key.ivrMenu][Key.ivrEntries].map(IvrEntry.decode).toList();
+          ..entries = map[Key.ivrMenu][Key.ivrEntries].map(IvrEntry.parse).toList();
 
   operator ==(IvrMenu other) => this.name == other.name;
 

@@ -11,28 +11,26 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.model.dialplan;
+part of openreception.model.dialplan;
 
-import 'package:logging/logging.dart';
-import 'keys.dart' as Key;
+class Voicemail extends Action {
+  final String vmBox;
+  String note = '';
+  String recipient = '';
 
-part 'model-action.dart';
-part 'model-enqueue.dart';
-part 'model-ivr.dart';
-part 'model-ivr_entry.dart';
-part 'model-ivr_menu.dart';
-part 'model-ivr_submenu.dart';
-part 'model-ivr_topmenu.dart';
-part 'model-ivr_transfer.dart';
-part 'model-ivr_voicemail.dart';
-part 'model-notify.dart';
-part 'model-opening_hour.dart';
-part 'model-playback.dart';
-part 'model-ringtone.dart';
-part 'model-transfer.dart';
-part 'model-voicemail.dart';
+  Voicemail(String extension) : this.vmBox = 'vm-$extension';
 
-const String libaryName = 'model.dialplan';
+  Voicemail._standard() : this.vmBox = 'vm-\${destination_number}';
 
+  static Voicemail parse (String buffer) {
+    throw new UnimplementedError();
+  }
 
+  operator == (Voicemail other) => this.vmBox == other.vmBox;
 
+  String toString() => 'Voicemail $vmBox';
+
+  String toJson() => '${Key.voicemail} $vmBox'
+      '${recipient.isNotEmpty ? 'sendto:${recipient}' : ''}';
+
+}

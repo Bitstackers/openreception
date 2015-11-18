@@ -11,28 +11,15 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.model.dialplan;
+part of openreception.model.dialplan;
 
-import 'package:logging/logging.dart';
-import 'keys.dart' as Key;
+class IvrTransfer implements IvrEntry {
+  final String digits;
+  final Transfer transfer;
 
-part 'model-action.dart';
-part 'model-enqueue.dart';
-part 'model-ivr.dart';
-part 'model-ivr_entry.dart';
-part 'model-ivr_menu.dart';
-part 'model-ivr_submenu.dart';
-part 'model-ivr_topmenu.dart';
-part 'model-ivr_transfer.dart';
-part 'model-ivr_voicemail.dart';
-part 'model-notify.dart';
-part 'model-opening_hour.dart';
-part 'model-playback.dart';
-part 'model-ringtone.dart';
-part 'model-transfer.dart';
-part 'model-voicemail.dart';
+  IvrTransfer(this.digits, this.transfer);
 
-const String libaryName = 'model.dialplan';
+  @override
+  String toJson() => '$digits: ${transfer.toJson()}';
 
-
-
+}

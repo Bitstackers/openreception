@@ -16,11 +16,41 @@ part of openreception.model.dialplan;
 abstract class IvrEntry {
   String get digits;
 
-  static IvrEntry decode(Map map) {
-    return null;
+  static IvrEntry parse(String buffer) {
+    final int separator = buffer.indexOf(':');
+
+    String digit =
+        buffer.substring(0, separator > 0 ? separator : buffer.length).trim();
+
+    if (digit.length != 1) {
+      throw new FormatException('Bad digit length: ${digit.length}', buffer);
+    }
+
+    buffer = buffer.substring(separator + 1).trimLeft();
+
+    final int nextTerminator = buffer.indexOf(' ');
+
+    String action = buffer.substring(
+        0, nextTerminator > 0 ? nextTerminator : buffer.length);
+
+    switch (action) {
+      case Key.ivrTopmenu:
+        return new IvrTopmenu(digit);
+
+      case Key.ivrSubmenu:
+        buffer = buffer.substring(nextTerminator + 1).trimLeft();
+        return new IvrSubmenu(digit, buffer.split(' ').first);
+
+      case Key.transfer:
+        return new IvrTransfer(digit, Transfer.parse(buffer));
+
+      case Key.voicemail:
+        return new IvrVoicemail(digit, Voicemail.parse(buffer));
+
+      default:
+        throw new FormatException('Undefined action', action);
+    }
   }
 
-  Map toJson();
+  dynamic toJson();
 }
-
-
