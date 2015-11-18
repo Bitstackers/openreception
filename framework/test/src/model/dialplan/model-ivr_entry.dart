@@ -24,8 +24,13 @@ void testModelIvrEntry() {
 //    test('serialization', ModelIvrEntry.serialization);
 //
 //    test('buildObject', ModelIvrEntry.buildObject);
+
     test('parseUndefined', ModelIvrEntry.parseUndefined);
     test('parseSubmenu', ModelIvrEntry.parseSubmenu);
+    test('parseTopmenu', ModelIvrEntry.parseTopmenu);
+    test('parseIvrTransfer', ModelIvrEntry.parseIvrTransfer);
+    test('parseIvrVoicemail', ModelIvrEntry.parseIvrVoicemail);
+
   });
 
 }
@@ -124,8 +129,69 @@ abstract class ModelIvrEntry {
 
     Model.IvrSubmenu builtObject = Model.IvrEntry.parse('1: submenu $submenu');
 
+    expect (builtObject.digits, equals('1'));
+    expect (builtObject, new isInstanceOf<Model.IvrSubmenu>());
     expect (builtObject.name, equals(submenu));
+  }
 
+  /**
+   *
+   */
+  static void parseIvrTransfer() {
+    final String extension = '33444222';
+
+    Model.IvrTransfer builtObject = Model.IvrEntry.parse('2: transfer $extension');
+
+    expect (builtObject.digits, equals('2'));
+    expect (builtObject, new isInstanceOf<Model.IvrTransfer>());
+    expect (builtObject.transfer.extension, equals(extension));
+  }
+
+  /**
+   *
+   */
+  static void parseIvrVoicemail() {
+    final String vmBox = 'vm-33444222';
+    final String recipient = 'krc@awesome.me';
+    final String note = 'Standard email';
+
+    Model.IvrVoicemail builtObject =
+        Model.IvrEntry.parse('3: voicemail $vmBox $recipient ($note)');
+
+    expect (builtObject.digits, equals('3'));
+    expect (builtObject, new isInstanceOf<Model.IvrVoicemail>());
+    expect (builtObject.voicemail.vmBox, equals(vmBox));
+    expect (builtObject.voicemail.recipient, equals(recipient));
+    expect (builtObject.voicemail.note, equals(note));
+
+    builtObject =
+        Model.IvrEntry.parse('3:   voicemail   $vmBox   $recipient   ($note)');
+
+    expect (builtObject.digits, equals('3'));
+    expect (builtObject, new isInstanceOf<Model.IvrVoicemail>());
+    expect (builtObject.voicemail.vmBox, equals(vmBox));
+    expect (builtObject.voicemail.recipient, equals(recipient));
+    expect (builtObject.voicemail.note, equals(note));
+
+    builtObject =
+        Model.IvrEntry.parse('3: voicemail $vmBox ($note)');
+
+    expect (builtObject.digits, equals('3'));
+    expect (builtObject, new isInstanceOf<Model.IvrVoicemail>());
+    expect (builtObject.voicemail.vmBox, equals(vmBox));
+    expect (builtObject.voicemail.recipient, isEmpty);
+    expect (builtObject.voicemail.note, equals(note));
+  }
+
+  /**
+   *
+   */
+  static void parseTopmenu() {
+
+    Model.IvrTopmenu builtObject = Model.IvrEntry.parse('*: topmenu');
+
+    expect (builtObject.digits, equals('*'));
+    expect (builtObject, new isInstanceOf<Model.IvrEntry>());
   }
 
   /**
