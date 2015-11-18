@@ -18,7 +18,7 @@ class AgentStatistics {
   final int recent;
   final int total;
 
-  AgentStatistics(this.uid, this.recent, this.total);
+  const AgentStatistics(this.uid, this.recent, this.total);
 
   AgentStatistics.fromMap(Map map)
       : uid = map[Key.userID],
