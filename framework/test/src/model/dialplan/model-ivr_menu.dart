@@ -16,16 +16,14 @@ part of openreception.test;
 /**
  *
  */
-void testModelIvrEntry() {
-  group('Model.IvrEntry', () {
-//    test('serializationDeserialization',
-//        ModelIvrEntry.serializationDeserialization);
-//
-//    test('serialization', ModelIvrEntry.serialization);
-//
-//    test('buildObject', ModelIvrEntry.buildObject);
-    test('parseUndefined', ModelIvrEntry.parseUndefined);
-    test('parseSubmenu', ModelIvrEntry.parseSubmenu);
+void testModelIvrMenu() {
+  group('Model.IvrMenu', () {
+    test('serializationDeserialization',
+        ModelIvrMenu.serializationDeserialization);
+
+    test('serialization', ModelIvrMenu.serialization);
+
+    test('buildObject', ModelIvrMenu.buildObject);
   });
 
 }
@@ -33,7 +31,7 @@ void testModelIvrEntry() {
 /**
  *
  */
-abstract class ModelIvrEntry {
+abstract class ModelIvrMenu {
 
   /**
    *
@@ -115,31 +113,46 @@ abstract class ModelIvrEntry {
 
     return builtObject;
   }
-
   /**
    *
    */
-  static void parseSubmenu() {
-    final String submenu = 'sub_1';
-
-    Model.IvrSubmenu builtObject = Model.IvrEntry.parse('1: submenu $submenu');
-
-    expect (builtObject.name, equals(submenu));
-
-  }
-
-  /**
-   *
-   */
-  static void parseUndefined() {
+  static void parse() {
     final String filename = 'somefile.wav';
-    //final String note = 'Just a test';
+    final String note = 'Just a test';
 
-    expect(() => Model.IvrEntry.parse('1: wrong-wrong-wrong '),
-        throwsA(new isInstanceOf<FormatException>()));
+    Model.Playback builtObject = Model.Playback.parse('playback $filename');
 
-    ///Wrong digit length.
-    expect(() => Model.IvrEntry.parse('12: $filename'),
+    expect(builtObject.filename, equals(filename));
+    expect(builtObject.wrapInLock, isFalse);
+
+    builtObject = Model.Playback.parse('playback locked $filename');
+
+    expect(builtObject.filename, equals(filename));
+    expect(builtObject.wrapInLock, isTrue);
+    expect(builtObject.note, isEmpty);
+
+    /// Adding lots of spaces.
+    builtObject = Model.Playback.parse('   playback      locked     $filename');
+
+    expect(builtObject.filename, equals(filename));
+    expect(builtObject.wrapInLock, isTrue);
+    expect(builtObject.note, isEmpty);
+
+    builtObject = Model.Playback.parse('playback locked $filename ($note)');
+
+    expect(builtObject.filename, equals(filename));
+    expect(builtObject.wrapInLock, isTrue);
+    expect(builtObject.note, equals(note));
+
+    builtObject =
+        Model.Playback.parse('  playback   locked   $filename   ($note)   ');
+
+    expect(builtObject.filename, equals(filename));
+    expect(builtObject.wrapInLock, isTrue);
+    expect(builtObject.note, equals(note));
+
+    ///TODO check exceptions.
+    expect(() => Model.Playback.parse('layback locked $filename ($note) '),
         throwsA(new isInstanceOf<FormatException>()));
   }
 }
