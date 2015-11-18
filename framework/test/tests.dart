@@ -58,7 +58,9 @@ part 'src/model/model-reception.dart';
 part 'src/model/model-user.dart';
 part 'src/model/model-user_status.dart';
 
+part 'src/model/dialplan/model-enqueue.dart';
 part 'src/model/dialplan/model-ivr_entry.dart';
+part 'src/model/dialplan/model-ivr_menu.dart';
 part 'src/model/dialplan/model-playback.dart';
 
 part 'src/resource/resource-authentication.dart';
@@ -84,8 +86,8 @@ void main() {
       logMessage(record.toString()));
   JUnitConfiguration.install();
 
-
-
+  testModelEnqueue();
+  testModelIvrEntry();
   testModelIvrMenu();
   testModelPlayback();
   testBus();
