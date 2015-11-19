@@ -35,23 +35,28 @@ class Ivr implements Storage.Ivr {
   FROM
      ivr_menus''';
 
-    return _connection.query(sql).then(
-        (Iterable rows) => rows.map((row) => Model.IvrMenu.decode(row.menu)));
+    return _connection.query(sql).then((Iterable rows) =>
+        rows.map((row) => Model.IvrMenu.decode(row.menu)..id = row.id));
   }
 
   /**
    *
    */
-  Future<Model.IvrMenu> get() {
+  Future<Model.IvrMenu> get(int menuId) {
     String sql = '''
   SELECT 
      id, menu
   FROM
-     ivr_menus''';
+     ivr_menus
+  WHERE
+     id=@id''';
 
-    return _connection
-        .query(sql)
-        .then((Iterable rows) => Model.IvrMenu.decode(rows.first.menu));
+    Map parameters = {'id': menuId};
+
+    return _connection.query(sql, parameters).then((Iterable rows) =>
+        rows.length == 1
+            ? (Model.IvrMenu.decode(rows.first.menu)..id = rows.first.id)
+            : throw new Storage.NotFound('No IVR menu with id $menuId'));
   }
 
   /**
@@ -66,10 +71,8 @@ class Ivr implements Storage.Ivr {
 
     Map parameters = {'id': menu.id, 'menu': menu.toJson()};
 
-    return _connection
-        .query(sql, parameters)
-        .then((Iterable rows) =>
-            rows.length == 1
+    return _connection.query(sql, parameters).then((Iterable rows) =>
+        rows.length == 1
             ? (menu..id = rows.first.id)
             : throw new Storage.SaveFailed(''));
   }
@@ -85,10 +88,8 @@ class Ivr implements Storage.Ivr {
 
     Map parameters = {'menu': menu.toJson()};
 
-    return _connection
-        .query(sql, parameters)
-        .then((Iterable rows) =>
-            rows.length == 1
+    return _connection.query(sql, parameters).then((Iterable rows) =>
+        rows.length == 1
             ? (menu..id = rows.first.id)
             : throw new Storage.SaveFailed(''));
   }
@@ -103,9 +104,9 @@ class Ivr implements Storage.Ivr {
 
     Map parameters = {'id': menuId};
 
-    return _connection.execute(sql, parameters)
-        .then((int rowAffected) => rowAffected == 1
-          ? 0
-          : throw new Storage.NotFound('No menu with id $menuId'));
+    return _connection.execute(sql, parameters).then((int rowAffected) =>
+        rowAffected == 1
+            ? 0
+            : throw new Storage.NotFound('No menu with id $menuId'));
   }
 }
