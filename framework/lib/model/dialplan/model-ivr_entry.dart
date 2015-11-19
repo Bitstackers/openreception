@@ -53,4 +53,11 @@ abstract class IvrEntry {
   }
 
   dynamic toJson();
+
+  @override
+  int get hashCode => toString().hashCode;
+
+  @override
+  operator == (IvrEntry other) => this.toString() == other.toString();
+
 }
