@@ -76,7 +76,7 @@ abstract class ModelIvrMenu {
 
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
 
-    expect(builtObject.entries, equals(deserializedObject.entries));
+    expect(builtObject.entries, equals(builtObject.entries));
   }
 
   /**
@@ -90,7 +90,12 @@ abstract class ModelIvrMenu {
     final Model.Playback greeting =
         new Model.Playback(filename, wrapInLock: lock, note: note);
 
-    Model.IvrMenu builtObject = new Model.IvrMenu(name, greeting);
+    final entries = [
+      new Model.IvrVoicemail('1', new Model.Voicemail('vm-corp_1', recipient : 'guy@corp1.org', note : 'Just some guy')),
+      new Model.IvrTopmenu('*')];
+
+    Model.IvrMenu builtObject = new Model.IvrMenu(name, greeting)..entries = entries;
+
 
     expect(builtObject.name, equals(name));
     expect(builtObject.greetingShort.filename,
