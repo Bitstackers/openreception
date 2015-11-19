@@ -8,6 +8,7 @@ part 'storage/storage-cdr.dart';
 part 'storage/storage-contact.dart';
 part 'storage/storage-distribution_list.dart';
 part 'storage/storage-endpoint.dart';
+part 'storage/storage-ivr.dart';
 part 'storage/storage-message.dart';
 part 'storage/storage-message_queue.dart';
 part 'storage/storage-organization.dart';
