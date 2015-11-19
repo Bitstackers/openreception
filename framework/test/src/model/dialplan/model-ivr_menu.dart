@@ -113,46 +113,4 @@ abstract class ModelIvrMenu {
 
     return builtObject;
   }
-  /**
-   *
-   */
-  static void parse() {
-    final String filename = 'somefile.wav';
-    final String note = 'Just a test';
-
-    Model.Playback builtObject = Model.Playback.parse('playback $filename');
-
-    expect(builtObject.filename, equals(filename));
-    expect(builtObject.wrapInLock, isFalse);
-
-    builtObject = Model.Playback.parse('playback locked $filename');
-
-    expect(builtObject.filename, equals(filename));
-    expect(builtObject.wrapInLock, isTrue);
-    expect(builtObject.note, isEmpty);
-
-    /// Adding lots of spaces.
-    builtObject = Model.Playback.parse('   playback      locked     $filename');
-
-    expect(builtObject.filename, equals(filename));
-    expect(builtObject.wrapInLock, isTrue);
-    expect(builtObject.note, isEmpty);
-
-    builtObject = Model.Playback.parse('playback locked $filename ($note)');
-
-    expect(builtObject.filename, equals(filename));
-    expect(builtObject.wrapInLock, isTrue);
-    expect(builtObject.note, equals(note));
-
-    builtObject =
-        Model.Playback.parse('  playback   locked   $filename   ($note)   ');
-
-    expect(builtObject.filename, equals(filename));
-    expect(builtObject.wrapInLock, isTrue);
-    expect(builtObject.note, equals(note));
-
-    ///TODO check exceptions.
-    expect(() => Model.Playback.parse('layback locked $filename ($note) '),
-        throwsA(new isInstanceOf<FormatException>()));
-  }
 }
