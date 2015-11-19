@@ -59,6 +59,10 @@ part 'calendar/src/rest_calendar_store.dart';
 part 'contact/src/contact_store.dart';
 part 'contact/all_tests.dart';
 
+/// Database tests
+part 'database/src/ivr_store.dart';
+part 'database/tests.dart';
+
 /// Message store service tests
 part 'messagestore/tests.dart';
 part 'messagestore/src/rest_message_store.dart';
