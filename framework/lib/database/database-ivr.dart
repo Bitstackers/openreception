@@ -103,8 +103,8 @@ class Ivr implements Storage.Ivr {
 
     Map parameters = {'id': menuId};
 
-    return _connection.query(sql, parameters)
-        .then((Iterable rows) => rows == 1
+    return _connection.execute(sql, parameters)
+        .then((int rowAffected) => rowAffected == 1
           ? 0
           : throw new Storage.NotFound('No menu with id $menuId'));
   }
