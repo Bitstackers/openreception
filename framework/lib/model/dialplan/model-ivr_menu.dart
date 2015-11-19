@@ -14,6 +14,9 @@
 part of openreception.model.dialplan;
 
 class IvrMenu {
+  static const int noId = 0;
+
+  int id = noId;
   final String name;
   List<IvrEntry> entries = [];
   final Playback greetingLong;
