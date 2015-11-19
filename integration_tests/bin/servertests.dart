@@ -43,6 +43,7 @@ void main() {
   runMessageTests();
   runNotificationTests();
   runOrganizationTests();
+  runDatabaseTests();
 
   runAllTests();
   runReceptionTests();
