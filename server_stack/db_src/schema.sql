@@ -294,6 +294,17 @@ CREATE TABLE playlists (
    content      json    NOT NULL
 );
 
+-------------------------------------------------------------------------------
+--  Ivr menus
+
+CREATE TABLE ivr_menus (
+   id   SERIAL NOT NULL PRIMARY KEY,
+   menu JSON   NOT NULL
+);
+
+-------------------------------------------------------------------------------
+--  Seqences
+
 CREATE SEQUENCE users_id_sequence
   START WITH 1
   INCREMENT BY 1
