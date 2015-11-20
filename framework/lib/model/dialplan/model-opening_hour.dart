@@ -94,7 +94,7 @@ class OpeningHour {
     WeekDay weekDayParse(String wDayBuffer) => WeekDay.values.firstWhere(
             (WeekDay wday) => wday.toString() == 'WeekDay.$wDayBuffer',
             orElse: () {
-          print('No value for WeekDay.$wDayBuffer');
+          throw new FormatException('No value for WeekDay.$wDayBuffer');
         });
 
     OpeningHour openingHour = new OpeningHour.empty();
@@ -103,12 +103,9 @@ class OpeningHour {
     List<String> parts = buffer.split(' ');
 
     parts.forEach((part) {
-      print(part);
       if (!part.isEmpty) {
         if (!gotDay) {
           List<String> days = part.split('-');
-
-          print(days);
 
           if (days.length > 2) {
             throw new FormatException('Days too long (${days.length}');
