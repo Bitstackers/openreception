@@ -17,7 +17,7 @@ abstract class Ivr {
 
   Future<Model.IvrMenu> create(Model.IvrMenu menu);
 
-  Future<Model.IvrMenu> get();
+  Future<Model.IvrMenu> get(int menuId);
 
   Future<Iterable<Model.IvrMenu>> list();
 
