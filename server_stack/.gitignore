@@ -6,6 +6,7 @@ packages
 pubspec.lock
 
 # Don't track config files.
+tools/usermon/web/config.dart
 bin/bob_configuration.json
 bin/mailer_conf.py
 bin/mailer_conf.pyc
