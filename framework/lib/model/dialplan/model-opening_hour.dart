@@ -90,7 +90,7 @@ class OpeningHour {
    * [validate()], so errors from this function will also result in a
    * [FormatException] for this factory.
    */
-  factory OpeningHour.parse(String buffer) {
+  static OpeningHour parse(String buffer) {
     WeekDay weekDayParse(String wDayBuffer) => WeekDay.values.firstWhere(
             (WeekDay wday) => wday.toString() == 'WeekDay.$wDayBuffer',
             orElse: () {
