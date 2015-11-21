@@ -21,7 +21,7 @@ enum WeekDay { sun, mon, tue, wed, thur, fri, sat, all }
 Iterable<OpeningHour> parseMultipleHours(String buffer) => buffer
     .split(',')
     .where((string) => string.isNotEmpty)
-    .map((ohBuffer) => new OpeningHour.parse(ohBuffer));
+    .map((ohBuffer) => OpeningHour.parse(ohBuffer));
 
 /**
  * Class representing an opening hour.
