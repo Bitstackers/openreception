@@ -18,7 +18,7 @@ part of openreception.test;
  */
 void testModelReceptionDialplan() {
   group('Model.ReceptionDialplan', () {
-//    test('serialization', ModelReceptionDialplan.serialization);
+   test('serialization', ModelReceptionDialplan.serialization);
 
     test('buildObject', ModelReceptionDialplan.buildObject);
   });
