@@ -13,30 +13,56 @@
 
 part of openreception.model.dialplan;
 
+/**
+ * Class representing an IVR menu.
+ */
 class IvrMenu {
+
+  /// ID indicating that this menu is not stored permanently.
   static const int noId = 0;
 
+  /// Database ID.
   int id = noId;
-  final String name;
-  List<IvrEntry> entries = [];
-  final Playback greetingLong;
-  Playback _greetingShort = Playback.none;
 
+  /// Name of IVR menu.
+  final String name;
+
+  /// The entries (different possible actions) of the IVR menu
+  List<IvrEntry> entries = [];
+
+  /// The initial greeting of the menu.
+  final Playback greetingLong;
+
+  /// Submenus of this menu.
   List<IvrMenu> submenus = [];
 
+  /// The, shorter, greeting for repeating choices.
   Playback get greetingShort =>
       _greetingShort != Playback.none ? _greetingShort : greetingLong;
+  Playback _greetingShort = Playback.none;
 
+  /**
+   * Default constructor.
+   */
   IvrMenu(this.name, this.greetingLong);
 
+  /**
+   * Decoding factory method.
+   */
   static IvrMenu decode(Map map) => (new
       IvrMenu(map[Key.ivrMenu][Key.name],
           Playback.parse(map[Key.ivrMenu][Key.greeting]))
           .._greetingShort = Playback.parse(map[Key.ivrMenu][Key.greetingShort]))
           ..entries = map[Key.ivrMenu][Key.ivrEntries].map(IvrEntry.parse).toList();
 
+  /**
+   * An IVR menu equals another IVR menu if their names match.
+   */
   operator ==(IvrMenu other) => this.name == other.name;
 
+  /**
+   * Serialization function.
+   */
   Map toJson() => {
         Key.ivrMenu: {
           Key.name: name,
