@@ -26,7 +26,7 @@ class Voicemail extends Action {
     String note = '';
     buffer = consumeKey(buffer, Key.voicemail).trimLeft();
 
-    var consumed = consumeIdentifier(buffer);
+    var consumed = consumeWord(buffer);
     vmBox = consumed.iden;
     buffer = consumed.buffer.trimLeft();
 
@@ -34,7 +34,7 @@ class Voicemail extends Action {
       consumed = consumeComment(buffer);
       note = consumed.comment;
     } else {
-      consumed = consumeIdentifier(buffer);
+      consumed = consumeWord(buffer);
       recipient = consumed.iden;
     }
 

@@ -14,12 +14,29 @@
 part of openreception.model.dialplan;
 
 class Ringtone extends Action {
-
   final int count;
+
+  static Ringtone parse(String buffer) {
+    var buf = consumeKey(buffer.trimLeft(), Key.ringtone).trimLeft();
+
+    var consumed = consumeWord(buf);
+
+    int count;
+    try {
+      count = int.parse(consumed.iden);
+    } on FormatException {
+      throw new FormatException('${consumed.iden} is not an integer', buffer);
+    }
+
+    buf = consumed.buffer;
+
+    return new Ringtone(count);
+  }
 
   Ringtone(this.count) {
     if (count < 0) {
-      throw new ArgumentError.value(count, 'count', 'Count must be greater than 0');
+      throw new ArgumentError.value(
+          count, 'count', 'Count must be greater than 0');
     }
   }
 

@@ -17,7 +17,21 @@ class Notify extends Action {
 
   final String eventName;
 
-  Notify (this.eventName);
+  const Notify (this.eventName);
+
+  static Notify parse(String buffer) {
+    var buf = consumeKey(buffer.trimLeft(), Key.notify).trimLeft();
+
+    var consumed = consumeWord(buf);
+
+    String eventName = consumed.iden;
+    if(eventName.isEmpty) {
+      throw new FormatException('${consumed.iden} is not an integer', buffer);
+    }
+
+    return new Notify(eventName);
+
+  }
 
   String toJson() => '${Key.notify} $eventName';
 }

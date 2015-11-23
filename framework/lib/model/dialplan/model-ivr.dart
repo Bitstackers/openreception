@@ -14,14 +14,32 @@
 part of openreception.model.dialplan;
 
 class Ivr extends Action {
-  final IvrMenu menu;
+  final String menuName;
+  final String note;
 
-  Ivr(this.menu);
+  Ivr(this.menuName, {this.note : ''});
 
-  operator == (Ivr other) => this.menu == other.menu;
+  static Ivr parse(String buffer) {
+    var buf = consumeKey(buffer.trimLeft(), Key.ivr).trimLeft();
 
-  String toString() => 'Ivr ${menu.name}';
+    var consumed = consumeWord(buf);
 
-  String toJson() => 'Ivr ${menu.name}';
+    final String menuName = consumed.iden;
+
+    if(menuName.isEmpty) {
+      throw new FormatException('Menu name is missing', buffer);
+    }
+    buf = consumed.buffer;
+
+    final String note = consumeComment(buf).comment;
+
+    return new Ivr(menuName, note : note);
+  }
+
+  operator == (Ivr other) => this.menuName == other.menuName;
+
+  String toString() => '${Key.ivr} ${menuName}';
+
+  String toJson() => '${Key.ivr} ${menuName}';
 
 }

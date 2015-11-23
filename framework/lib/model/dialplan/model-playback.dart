@@ -41,13 +41,16 @@ class Playback extends Action {
       buffer = buffer.substring(Key.lock.length).trimLeft();
     }
 
+    if(!buffer.startsWith('(')) {
+      var consumed = consumeWord(buffer);
+
+      buffer = consumed.buffer;
+      filename = consumed.iden;
+    }
+
     int openBracket = buffer.indexOf('(');
 
-    if (openBracket == -1) {
-      filename = buffer.trim();
-    } else {
-      filename = buffer.substring(0, openBracket).trimRight();
-
+    if (openBracket != -1) {
       int closeBracket =
           buffer.indexOf(')') > 0 ? buffer.indexOf(')') : buffer.length;
       note = buffer.substring(openBracket + 1, closeBracket);

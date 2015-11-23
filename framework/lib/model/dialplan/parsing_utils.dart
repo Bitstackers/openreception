@@ -36,9 +36,9 @@ class _ConsumedCommentBuf {
 }
 
 /**
- * Consume the next identifier up until next space from [buffer].
+ * Consume the next word up until next space from [buffer].
  */
-_ConsumedIdenBuf consumeIdentifier(String buffer) {
+_ConsumedIdenBuf consumeWord(String buffer) {
   buffer = buffer.trimLeft();
   final nextTerm =
       buffer.indexOf(' ') > 0 ? buffer.indexOf(' ') : buffer.length;
