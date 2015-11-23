@@ -19,11 +19,21 @@ part of openreception.model.dialplan;
 abstract class Extension {
   String get name;
   List<Action> actions;
+
+  Map toJson();
 }
 
-class NamedExtension {
+class NamedExtension extends Extension{
   final String name;
-  List<Action> actions;
 
   NamedExtension(this.name);
+
+  static NamedExtension decode (Map map) =>
+      new NamedExtension(map[Key.name])
+        ..actions = map[Key.actions].map(Action.parse).toList();
+
+  Map toJson() => {
+    Key.name : name,
+    Key.actions : actions
+  };
 }
