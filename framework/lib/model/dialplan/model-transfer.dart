@@ -13,10 +13,16 @@
 
 part of openreception.model.dialplan;
 
+/**
+ * Transfer action.
+ */
 class Transfer extends Action {
   final String extension;
   final String note;
 
+  /**
+   * Default constructor.
+   */
   const Transfer(this.extension, {this.note : ''});
 
   static Transfer parse (String buffer) {
