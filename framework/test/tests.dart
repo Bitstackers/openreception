@@ -58,11 +58,19 @@ part 'src/model/model-reception.dart';
 part 'src/model/model-user.dart';
 part 'src/model/model-user_status.dart';
 
+part 'src/model/dialplan/model-action.dart';
 part 'src/model/dialplan/model-enqueue.dart';
+part 'src/model/dialplan/model-hour_action.dart';
 part 'src/model/dialplan/model-ivr_entry.dart';
 part 'src/model/dialplan/model-ivr_menu.dart';
+part 'src/model/dialplan/model-named_extension.dart';
+part 'src/model/dialplan/model-notify.dart';
+part 'src/model/dialplan/model-opening_hour.dart';
 part 'src/model/dialplan/model-playback.dart';
 part 'src/model/dialplan/model-reception_dialplan.dart';
+part 'src/model/dialplan/model-ring_tone.dart';
+part 'src/model/dialplan/model-transfer.dart';
+part 'src/model/dialplan/model-voicemail.dart';
 
 part 'src/resource/resource-authentication.dart';
 part 'src/resource/resource-calendar.dart';
@@ -87,6 +95,7 @@ void main() {
       logMessage(record.toString()));
   JUnitConfiguration.install();
 
+  testModelAction();
   testModelEnqueue();
   testModelIvrEntry();
   testModelIvrMenu();

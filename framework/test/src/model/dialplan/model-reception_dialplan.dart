@@ -18,9 +18,16 @@ part of openreception.test;
  */
 void testModelReceptionDialplan() {
   group('Model.ReceptionDialplan', () {
+
+
+   test('buildObject', ModelReceptionDialplan.buildObject);
+   test('deserialization', ModelReceptionDialplan.deserialization);
    test('serialization', ModelReceptionDialplan.serialization);
 
-    test('buildObject', ModelReceptionDialplan.buildObject);
+//   test('buildObject (menu)', ModelReceptionDialplan.buildObjectMenu);
+//   test('serialization (menu)', ModelReceptionDialplan.serializationMenu);
+//   test('deserialization (menu)', ModelReceptionDialplan.deserializationMenu);
+
   });
 }
 
@@ -28,6 +35,20 @@ void testModelReceptionDialplan() {
  *
  */
 abstract class ModelReceptionDialplan {
+
+  static void deserialization() {
+    Model.ReceptionDialplan builtObject = buildObject();
+    Model.ReceptionDialplan deserializedObject =
+        Model.ReceptionDialplan.decode(JSON.decode(JSON.encode(builtObject)));
+
+    expect(builtObject.id, equals(deserializedObject.id));
+    expect(builtObject.note, equals(deserializedObject.note));
+    expect(builtObject.active, equals(deserializedObject.active));
+    expect(builtObject.open, equals(deserializedObject.open));
+    expect(builtObject.defaultActions, equals(deserializedObject.defaultActions));
+
+  }
+
   /**
    *
    */
