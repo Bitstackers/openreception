@@ -22,6 +22,7 @@ const String toMinute = 'toMinute';
 const String name = 'name';
 const String greeting = 'greeting';
 const String greetingShort = 'greetingShort';
+const String actions = 'actions';
 
 //Keywords
 const String lock = 'locked';

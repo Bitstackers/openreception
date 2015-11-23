@@ -17,6 +17,37 @@ part of openreception.model.dialplan;
  * Abstract super-class for [Action]s available for the dialplan.
  */
 abstract class Action {
+  static Action parse(dynamic buffer) {
+    final consumed = consumeWord(buffer);
+
+    switch (consumed.iden) {
+      case Key.transfer:
+        return Transfer.parse(buffer);
+
+      case Key.voicemail:
+        return Voicemail.parse(buffer);
+
+      case Key.enqueue:
+        return Enqueue.parse(buffer);
+
+      case Key.notify:
+        return Notify.parse(buffer);
+
+      case Key.playback:
+        return Playback.parse(buffer);
+
+      case Key.ringtone:
+        return Ringtone.parse(buffer);
+
+      case Key.ivr:
+        return Ivr.parse(buffer);
+
+      default:
+        throw new FormatException('Unknown keyword', consumed.iden);
+    }
+
+    throw new FormatException('Invalid buffer', buffer);
+  }
 
   const Action();
   dynamic toJson();
