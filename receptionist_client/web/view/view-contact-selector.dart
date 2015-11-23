@@ -69,10 +69,23 @@ class ContactSelector extends ViewWidget {
       _ui.clear();
     } else {
       _contactController.list(reception).then((Iterable<ORModel.Contact> contacts) {
-        List<ORModel.Contact> sortedContacts = contacts.toList()
-          ..sort((ORModel.Contact x, ORModel.Contact y) => x.fullName.compareTo(y.fullName));
+        int nameSort(ORModel.Contact x, ORModel.Contact y) => x.fullName.compareTo(y.fullName);
 
-        _ui.contacts = sortedContacts;
+        final List<ORModel.Contact> functionContacts = contacts
+            .where(
+                (ORModel.Contact contact) => contact.enabled && contact.contactType == 'function')
+            .toList()..sort(nameSort);
+        final List<ORModel.Contact> humanContacts = contacts
+            .where((ORModel.Contact contact) => contact.enabled && contact.contactType == 'human')
+            .toList()..sort(nameSort);
+        final List<ORModel.Contact> disabledContacts =
+            contacts.where((ORModel.Contact contact) => !contact.enabled).toList()..sort(nameSort);
+
+        _ui.contacts = new List<ORModel.Contact>()
+          ..addAll(functionContacts)
+          ..addAll(humanContacts)
+          ..addAll(disabledContacts);
+
         _ui.selectFirstContact();
       });
     }
