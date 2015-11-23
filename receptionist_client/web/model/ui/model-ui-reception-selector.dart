@@ -81,10 +81,10 @@ class UIReceptionSelector extends UIModel {
   }
 
   /**
-   *
+   * Mark the [receptionId] list item as selected.
    */
-  void changeActiveReception(int receptionID) {
-    _markSelected(_list.querySelector('[data-id="$receptionID"]'));
+  void changeActiveReception(int receptionId) {
+    _markSelected(_list.querySelector('[data-id="$receptionId"]'));
   }
 
   /**
@@ -186,7 +186,7 @@ class UIReceptionSelector extends UIModel {
   }
 
   /**
-   * Remove [receptionID] from the reception selector.
+   * Remove [reception] from the reception selector.
    */
   void removeReception(ORModel.Reception reception, {bool fire: true}) {
     LIElement newLi = _list.querySelector('[data-id="${reception.ID.toString()}"]');
@@ -204,6 +204,7 @@ class UIReceptionSelector extends UIModel {
    * Remove selections, scroll to top, empty filter input and fire a null
    * [Reception].
    */
+  void reset() => _reset(null);
   void _reset(_) {
     _filter.value = '';
     _filterList('');
