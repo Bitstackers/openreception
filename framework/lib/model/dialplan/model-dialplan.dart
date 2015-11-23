@@ -20,6 +20,7 @@ import 'parsing_utils.dart';
 part 'model-action.dart';
 part 'model-enqueue.dart';
 part 'model-extension.dart';
+part 'model-hour_action.dart';
 part 'model-ivr.dart';
 part 'model-ivr_entry.dart';
 part 'model-ivr_menu.dart';
@@ -36,16 +37,3 @@ part 'model-transfer.dart';
 part 'model-voicemail.dart';
 
 const String libaryName = 'model.dialplan';
-
-
-class HourAction {
-  List<OpeningHour> hours = [];
-  List<Action> actions = [];
-
-  String toString () => '${hours.join(', ')} - ${actions.join(',')}';
-
-  Map toJson() => {
-    'hours' : hours,
-    'actions' : actions
-  };
-}
