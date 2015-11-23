@@ -80,6 +80,7 @@ class UIContactSelector extends UIModel {
         ..dataset['otherinitials'] = initials.substring(1)
         ..dataset['tags'] = tags.join(',').toLowerCase()
         ..dataset['object'] = JSON.encode(item)
+        ..classes.addAll(item.enabled ? [] : ['disabled'])
         ..text = item.fullName);
     });
 
