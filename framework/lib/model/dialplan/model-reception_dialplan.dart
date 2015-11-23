@@ -38,7 +38,10 @@ class ReceptionDialplan {
   static ReceptionDialplan decode (Map map) =>
       new ReceptionDialplan()
   ..id = map['id']
-  ..open = (map['open'] as Iterable).map(OpeningHour.parse);
+  ..open = map['open'].map(HourAction.parse).toList()
+  ..defaultActions = map['closed'].map(Action.parse).toList()
+  ..note = map['note']
+  ..active = map['active'];
 
   Map toJson() => {
         'id': id,

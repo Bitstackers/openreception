@@ -22,13 +22,15 @@ class HourAction {
 
   String toString () => '${hours.join(', ')} - ${actions.join(',')}';
 
-  static HourAction decode (Map map) =>
+  static HourAction parse (Map map) =>
       new HourAction()
-        ..hours = parseMultipleHours(map['hours'])
+        ..hours = parseMultipleHours(map['hours']).toList()
         ..actions = map['actions'].map(Action.parse).toList();
 
   Map toJson() => {
     'hours' : hours.map((hour) => hour.toJson()).join(', '),
     'actions' : actions
   };
+
+  operator == (HourAction other) => this.toString() == other.toString();
 }
