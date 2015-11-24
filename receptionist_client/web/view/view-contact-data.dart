@@ -20,7 +20,9 @@ part of view;
 class ContactData extends ViewWidget {
   final Controller.Call _callController;
   final Model.UIContactSelector _contactSelector;
+  final Map<String, String> _langMap;
   final Controller.Destination _myDestination;
+  final Controller.Popup _popup;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIContactData _uiModel;
 
@@ -32,7 +34,9 @@ class ContactData extends ViewWidget {
       Controller.Destination this._myDestination,
       Model.UIContactSelector this._contactSelector,
       Model.UIReceptionSelector this._receptionSelector,
-      Controller.Call this._callController) {
+      Controller.Call this._callController,
+      Controller.Popup this._popup,
+      Map<String, String> this._langMap) {
     _ui.setHint('alt+t | ctrl+space');
 
     _observers();
@@ -61,7 +65,10 @@ class ContactData extends ViewWidget {
   void _call(ORModel.PhoneNumber phoneNumber) {
     _callController
         .dial(phoneNumber, _receptionSelector.selectedReception, _contactSelector.selectedContact)
-        .whenComplete(_ui.removeRinging);
+        .catchError((error) {
+      _popup.error(_langMap[Key.callFailed], phoneNumber.value);
+      throw error;
+    }).whenComplete(_ui.removeRinging);
   }
 
   /**
