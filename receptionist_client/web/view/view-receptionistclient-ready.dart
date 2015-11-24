@@ -162,7 +162,9 @@ class ReceptionistclientReady {
         new Controller.Destination(Controller.Context.Home, Controller.Widget.ContactData),
         _uiContactSelector,
         _uiReceptionSelector,
-        _callController);
+        _callController,
+        _popup,
+        _langMap);
 
     new CalendarEditor(
         new Model.UICalendarEditor(querySelector('#calendar-editor'), _weekDays),

@@ -26,6 +26,8 @@ abstract class Key {
   static const String calendarEditorSaveErrorTitle = 'calendar-editor-save-error';
   static const String calendarEditorSaveSuccessTitle = 'calendar-editor-save-success';
 
+  static const String callFailed = 'call-failed';
+
   /// NOTE: The callState... strings are special in that their usage cannot be
   /// grep'ed in the source. They are used in the call queue widgets.
   static const String callStateCreated = 'callstate-created';
@@ -178,6 +180,8 @@ Map<String, String> da = {
   Key.calendarEditorSaveErrorTitle: 'Kalenderaftalen blev ikke gemt',
   Key.calendarEditorSaveSuccessTitle: 'Kalenderaftalen blev gemt',
 
+  Key.callFailed: 'Opkald fejlede',
+
   /// NOTE: The callState... strings are special in that their usage cannot be
   /// grep'ed in the source. They are used in the call queue widgets.
   Key.callStateCreated: 'Oprettet',
@@ -329,6 +333,8 @@ Map<String, String> en = {
   Key.calendarEditorHeader: 'Calendar event',
   Key.calendarEditorSaveErrorTitle: 'Calendar entry not saved',
   Key.calendarEditorSaveSuccessTitle: 'Calendar entry saved',
+
+  Key.callFailed: 'Call failed',
 
   /// NOTE: The callState... strings are special in that their usage cannot be
   /// grep'ed in the source. They are used in the call queue widgets.
