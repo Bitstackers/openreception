@@ -1071,12 +1071,13 @@ VALUES --  BitStackers
 
 
 INSERT INTO users (id, name, extension, send_from)
-VALUES (1,  'Thomas Pedersen',           1001, 'tp@bitstack.dk'),
-       (2,  'Kim Rostgaard Christensen', 1002, 'krc@bitstack.dk'),
-       (3,  'Agent 3',                   1003, ''),
-       (4,  'Thomas Løcke',              1004, 'thomas@responsum.dk'),
-       (5,  'Morten Jensen',             1005, 'tomren3000@gmail.com'),
-       (6,  'Agent 6',                   1006, ''),
+VALUES
+       (1,  'System',                       0, 'noreply@example.org'),
+       (2,  'Thomas Pedersen',           1001, 'tp@bitstack.dk'),
+       (3,  'Kim Rostgaard Christensen', 1002, 'krc@bitstack.dk'),
+       (4,  'Agent 3',                   1003, ''),
+       (5,  'Thomas Løcke',              1004, 'thomas@responsum.dk'),
+       (6,  'Morten Jensen',             1005, 'tomren3000@gmail.com'),
        (7,  'Agent 7',                   1007, ''),
        (8,  'Stanislav Sinyagin',        1008, 'ssinyagin@gmail.com'),
        (9,  'Casper Bergsø',             1009, ''),
@@ -1093,17 +1094,13 @@ VALUES (1,  'Thomas Pedersen',           1001, 'tp@bitstack.dk'),
        (20, 'Testagent 1110',            1110, 'noreply@bitstack.dk'),
        (21, 'Testagent 1111',            1111, 'noreply@bitstack.dk');
 
-
 INSERT INTO groups (id, name)
 VALUES (1, 'Receptionist'),
        (2, 'Administrator'),
        (3, 'Service agent');
 
 INSERT INTO user_groups (user_id, group_id)
-VALUES (1, 1),
-       (1, 2),
-       (1, 3),
-       (2, 1),
+VALUES (2, 1),
        (2, 2),
        (2, 3),
        (3, 1),
@@ -1150,18 +1147,24 @@ VALUES (1, 1),
        (18, 3),
        (19, 1),
        (19, 2),
-       (19, 3);
+       (19, 3),
+       (20, 1),
+       (20, 2),
+       (20, 3),
+       (21, 1),
+       (21, 2),
+       (21, 3);
 
 INSERT INTO auth_identities (identity, user_id)
-VALUES ('kim.rostgaard@gmail.com', 2),
-       ('devicesnull@gmail.com', 2),
-       ('thomas@responsum.dk', 4),
-       ('tomren3000@gmail.com', 5),
-       ('ssinyagin@gmail.com', 8),
-       ('cbergs8@gmail.com', 9),
-       ('krc@bitstack.dk', 2),
-       ('tp@bitstack.dk', 1),
-       ('cooltomme@gmail.com', 1),
+VALUES ('kim.rostgaard@gmail.com', 3),
+       ('devicesnull@gmail.com', 3),
+       ('thomas@responsum.dk', 5),
+       ('tomren3000@gmail.com', 6),
+       ('ssinyagin@gmail.com', 9),
+       ('cbergs8@gmail.com', 10),
+       ('krc@bitstack.dk', 3),
+       ('tp@bitstack.dk', 2),
+       ('cooltomme@gmail.com', 2),
        ('testagent1100bitstack.dk', 10),
        ('testagent1101bitstack.dk', 11),
        ('testagent1102bitstack.dk', 12),
@@ -1171,7 +1174,9 @@ VALUES ('kim.rostgaard@gmail.com', 2),
        ('testagent1106bitstack.dk', 16),
        ('testagent1107bitstack.dk', 17),
        ('testagent1108bitstack.dk', 18),
-       ('testagent1109bitstack.dk', 19);
+       ('testagent1109bitstack.dk', 19),
+       ('testagent1110bitstack.dk', 20),
+       ('testagent1111bitstack.dk', 21);
 
 -------------------------
 --  Message Test data  --
