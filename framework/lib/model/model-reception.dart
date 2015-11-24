@@ -41,6 +41,7 @@ class Reception extends ReceptionStub {
   static const int noID = 0;
 
   int organizationId = noID;
+  int dialplanId = noID;
   Uri extraData = null;
   DateTime lastChecked =
       new DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
@@ -152,6 +153,7 @@ class Reception extends ReceptionStub {
       this
         ..ID = receptionMap[Key.ID]
         ..organizationId = receptionMap[Key.organizationId]
+        ..dialplanId = receptionMap[Key.dialplanId]
         ..fullName = receptionMap[Key.fullName]
         ..enabled = receptionMap[Key.enabled]
         ..extension = receptionMap[Key.receptionTelephonenumber]
@@ -180,6 +182,7 @@ class Reception extends ReceptionStub {
   Map get asMap => {
       Key.ID: this.ID,
       Key.organizationId: this.organizationId,
+      Key.dialplanId: this.dialplanId,
       Key.fullName: this.fullName,
       Key.enabled : this.enabled,
       Key.extradataUri:

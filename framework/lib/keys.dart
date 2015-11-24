@@ -73,6 +73,7 @@ const String confidential = 'confidential';
 const String type = 'type';
 const String tag = 'tag';
 const String organizationId = 'organization_id';
+const String dialplanId = 'dialplanId';
 const String extradataUri = 'extradatauri';
 const String receptionTelephonenumber = 'reception_telephonenumber';
 const String lastCheck = 'last_check';
