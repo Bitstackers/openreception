@@ -33,4 +33,36 @@ runDatabaseTests() {
     test ('update',
         () => IvrStore.update(ivrStore));
   });
+
+  group ('Database.ReceptionDialplan', () {
+    Database.ReceptionDialplan receptionDialplanStore;
+    Database.Connection connection;
+    setUp(() {
+      return Database.Connection
+          .connect(Config.dbDSN)
+          .then((Database.Connection conn) {
+        connection = conn;
+        receptionDialplanStore = new Database.ReceptionDialplan(connection);
+      });
+    });
+
+    tearDown (() {
+      return connection.close();
+    });
+
+    test ('create',
+        () => ReceptionDialplanStore.create(receptionDialplanStore));
+
+    test ('get',
+        () => ReceptionDialplanStore.get(receptionDialplanStore));
+
+    test ('list',
+        () => ReceptionDialplanStore.list(receptionDialplanStore));
+
+    test ('remove',
+        () => ReceptionDialplanStore.remove(receptionDialplanStore));
+
+    test ('update',
+        () => ReceptionDialplanStore.update(receptionDialplanStore));
+  });
 }

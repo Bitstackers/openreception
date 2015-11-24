@@ -12,6 +12,14 @@ abstract class Randomizer {
        'Roller coaster inspection',
        'Prepare world domination'];
 
+  static final List<String> dialplanNote = [
+    '',
+    'Vacation dialplan',
+    'Reserved for hang-overs',
+    'Not longer needed',
+    'Should really just be removed'
+    ];
+
   static final List<String> contacts =
       ['Alexandra Kongstad Pedersen',
        'Anne And',
@@ -266,9 +274,123 @@ abstract class Randomizer {
   static String randomEndpointType() => randomChoice(Model.MessageEndpointType.types);
   static String randomRecipientRole() => randomChoice(Model.Role.RECIPIENT_ROLES);
   static String randomContactType() => randomChoice(Model.ContactType.types);
+  static String randomDialplanNote() => randomChoice(dialplanNote);
+
+  /**
+   * Generates a random [Model.ReceptionDialplan].
+   */
+  static Model.ReceptionDialplan randomDialplan() =>
+      new Model.ReceptionDialplan()
+        ..open = randomDialplanHourActions()
+        ..defaultActions = randomDialplanActions()
+        ..note = randomDialplanNote()
+        ..active = rand.nextBool();
+
+  /**
+   *
+   */
+  static List<Model.HourAction> randomDialplanHourActions() =>
+      new List.generate(rand.nextInt(4)+1, (_) => randomHourAction());
+
+  static Model.HourAction randomHourAction() =>
+      new Model.HourAction()
+        ..actions = randomDialplanActions()
+        ..hours = randomOpeningHours();
+
+  /**
+   *
+   */
+  static List<Model.OpeningHour> randomOpeningHours() =>
+      new List.generate(rand.nextInt(4)+1, (_) => randomOpeningHour());
+
+  /**
+   *
+   */
+  static Model.OpeningHour randomOpeningHour() =>
+      new Model.OpeningHour.empty()
+        ..fromDay = randomWeekDay()
+        ..toDay = randomWeekDay()
+        ..fromHour = rand.nextInt(24)
+        ..toHour = rand.nextInt(24)
+        ..fromMinute = rand.nextInt(60)
+        ..toMinute = rand.nextInt(60);
+
+  /**
+   *
+   */
+  static randomWeekDay() =>
+      randomChoice(Model.WeekDay.values);
 
 
+  /**
+   * Generates a random-sized list of random [Model.Action] objects.
+   */
+  static List<Model.Action> randomDialplanActions() {
+    //Number of actions to generate.
+    final int numActions = rand.nextInt(5)+2;
 
+    return new List.generate(numActions, (_) => randomAction());
+  }
+
+  /**
+   * Generates a random [Model.Playback] action.
+   */
+  static Model.Playback randomPlayback() =>
+      new Model.Playback('somefile',
+          wrapInLock : rand.nextBool(),
+          note : randomDialplanNote());
+
+  /**
+   * Generates a random [Model.Transfer] action.
+   */
+  static Model.Transfer randomTransfer() =>
+      new Model.Transfer(randomPhoneNumber(),
+          note : randomCallerName());
+
+  /**
+   * Generates a random [Model.Voicemail] action.
+   */
+  static Model.Voicemail randomVoicemail()=>
+      new Model.Voicemail('vm-${randomPhoneNumber()}',
+          recipient : randomGmail(),
+          note : randomDialplanNote());
+
+  /**
+   * Generates a random [Model.Enqueue] action.
+   */
+  static Model.Enqueue randomEnqueue()=>
+      new Model.Enqueue('queue-${rand.nextInt(100)}',
+          holdMusic : 'playlist-${rand.nextInt(100)}',
+          note : randomDialplanNote());
+
+  /**
+   * Generates a random [Model.Notify] action.
+   */
+  static Model.Notify randomNotify()=>
+      new Model.Notify('event-${rand.nextInt(100)}');
+
+  /**
+   * Generates a random [Model.Ringtone] action.
+   */
+  static Model.Ringtone randomRingtone()=>
+      new Model.Ringtone(rand.nextInt(4)+1);
+
+  /**
+   * Generates a random [Model.Ivr] action.
+   */
+  static Model.Ivr randomIvr()=>
+      new Model.Ivr('menu-${rand.nextInt(100)}',
+          note : randomDialplanNote());
+  /**
+   * Generates a random [Model.Action] action.
+   */
+  static Model.Action randomAction() =>
+    randomChoice([randomVoicemail, randomEnqueue, randomNotify, randomRingtone,
+      randomIvr, randomTransfer, randomPlayback])();
+
+  /**
+   * Generates a random 8-digit phone number.
+   */
   static String randomPhoneNumber() {
     int firstDigit = rand.nextInt(8)+2;
     List<int> lastDigits = new List<int>.generate(8, (_) => rand.nextInt(10));
@@ -365,6 +487,7 @@ abstract class Randomizer {
    */
   static Model.Reception randomReception() =>
     new Model.Reception.empty()
+      ..dialplanId = 1
       ..addresses = []
       ..alternateNames = []
       ..attributes = {}

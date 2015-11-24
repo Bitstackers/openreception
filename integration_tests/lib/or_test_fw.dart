@@ -61,6 +61,7 @@ part 'contact/all_tests.dart';
 
 /// Database tests
 part 'database/src/ivr_store.dart';
+part 'database/src/reception_dialplan_store.dart';
 part 'database/tests.dart';
 
 /// Message store service tests
