@@ -1,4 +1,4 @@
-BEGIN TRANSACTION;
+INSERT INTO reception_dialplans (dialplan) VALUES('{}');
 
 INSERT INTO contacts (id, full_name, contact_type)
 VALUES (1,  'Thomas Løcke', 'human'),
@@ -1278,10 +1278,3 @@ SELECT setval('messages_id_sequence', (SELECT max(id)+1 FROM messages), FALSE);
 SELECT setval('calendar_events_id_sequence', (SELECT max(id)+1 FROM calendar_events), FALSE);
 SELECT setval('dialplan_templates_id_sequence', (SELECT max(id)+1 FROM dialplan_templates), FALSE);
 SELECT setval('calendar_entry_changes_id_sequence', (SELECT max(id)+1 FROM calendar_entry_changes), FALSE);
-
-COMMIT;
---  Set ownership:
-
-
-
--------------------------------------------------------------------------------

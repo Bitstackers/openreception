@@ -29,7 +29,23 @@ CREATE TABLE auth_identities (
 );
 
 -------------------------------------------------------------------------------
---  Dial-plans:
+--  Ivr menus
+
+CREATE TABLE ivr_menus (
+   id   SERIAL NOT NULL PRIMARY KEY,
+   menu JSON   NOT NULL
+);
+
+-------------------------------------------------------------------------------
+--  Reception dialplans
+
+CREATE TABLE reception_dialplans (
+   id       SERIAL  NOT NULL PRIMARY KEY,
+   dialplan JSON    NOT NULL DEFAULT '{}'
+);
+
+-------------------------------------------------------------------------------
+--  Dial-plans. DEPRECATED
 
 CREATE TABLE dialplan_templates (
    id       INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
@@ -62,9 +78,10 @@ CREATE TABLE receptions (
    attributes        JSON         NOT NULL,
    extradatauri      TEXT         NOT NULL DEFAULT '',
    reception_telephonenumber TEXT NOT NULL UNIQUE,
-   dialplan          JSON         NOT NULL DEFAULT '{}',
-   dialplan_compiled BOOLEAN      NOT NULL DEFAULT FALSE,
-   ivr               JSON         NOT NULL DEFAULT '{}',
+   dialplan_id       INTEGER      NOT NULL REFERENCES reception_dialplans(id) DEFAULT 1,
+--   dialplan          JSON         NOT NULL DEFAULT '{}', -- DEPRECATED
+--   dialplan_compiled BOOLEAN      NOT NULL DEFAULT FALSE, -- DEPRECATED
+--   ivr               JSON         NOT NULL DEFAULT '{}',
 -- last_check        TIMESTAMPTZ  NOT NULL DEFAULT '-infinity',
    last_check        TIMESTAMPTZ  NOT NULL DEFAULT 'epoch',
    enabled           BOOLEAN      NOT NULL DEFAULT TRUE
@@ -292,14 +309,6 @@ CREATE TABLE cdr_checkpoints (
 CREATE TABLE playlists (
    id           INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
    content      json    NOT NULL
-);
-
--------------------------------------------------------------------------------
---  Ivr menus
-
-CREATE TABLE ivr_menus (
-   id   SERIAL NOT NULL PRIMARY KEY,
-   menu JSON   NOT NULL
 );
 
 -------------------------------------------------------------------------------

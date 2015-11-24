@@ -6,8 +6,7 @@ VALUES (1, 'Receptionist'),
        (2, 'Administrator'),
        (3, 'Service agent');
 
-INSERT INTO dialplan_templates (template) VALUES
-('{"name":"ResponsumClassic","extensionlist":[{"name":"mandag-torsdag","conditionlist":[{"condition":"time","time-of-day":"08:00-17:00","wday":"mon-thu"}],"actionlist":[{"action":"receptionists","sleeptime":0}]},{"name":"fredag","conditionlist":[{"condition":"time","time-of-day":"08:00-16:30","wday":"fri"}],"actionlist":[{"action":"receptionists","sleeptime":0}]},{"name":"lukket","conditionlist":[],"actionlist":[{"action":"voicemail"}]}]}');
+INSERT INTO reception_dialplans (dialplan) VALUES({'}');
 
 
 -- POSTGRES ONLY
