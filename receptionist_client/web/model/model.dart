@@ -25,7 +25,6 @@ import 'package:okeyee/okeyee.dart' as Okeyee;
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/bus.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
-import 'package:openreception_framework/keys.dart' as ORKey;
 import 'package:openreception_framework/util.dart' as ORUtil;
 
 part 'model-app-state.dart';
@@ -84,7 +83,7 @@ abstract class UIModel {
    * Blur the widget and set tabindex to -1.
    */
   void blur() {
-    if(isFocused) {
+    if (isFocused) {
       _root.classes.toggle('focus', false);
       _focusElement.blur();
       _setTabIndex(-1);
@@ -99,14 +98,12 @@ abstract class UIModel {
    * are mapped to [_handleUpDown].
    */
   Map<String, EventListener> _defaultKeyMap({Map<String, EventListener> myKeys}) {
-    Map<String, EventListener> map = {'Shift+Tab': _handleShiftTab,
-                                      'Tab'      : _handleTab};
-    if(_listTarget != null) {
-      map.addAll({'down': _handleUpDown,
-                  'up'  : _handleUpDown});
+    Map<String, EventListener> map = {'Shift+Tab': _handleShiftTab, 'Tab': _handleTab};
+    if (_listTarget != null) {
+      map.addAll({'down': _handleUpDown, 'up': _handleUpDown});
     }
 
-    if(myKeys != null) {
+    if (myKeys != null) {
       map.addAll(myKeys);
     }
 
@@ -117,7 +114,7 @@ abstract class UIModel {
    * Focus the widget and set tabindex to 1.
    */
   void focus() {
-    if(!isFocused) {
+    if (!isFocused) {
       _setTabIndex(1);
       _root.classes.toggle('focus', true);
       _focusElement.focus();
@@ -134,14 +131,14 @@ abstract class UIModel {
    * Return true if the currently focused element is the last element with
    * tabindex set for this widget.
    */
-  bool get focusIsOnLast  => _focusElement == _lastTabElement;
+  bool get focusIsOnLast => _focusElement == _lastTabElement;
 
   /**
    * Tab from first to last tab element when first is in focus an a Shift+Tab
    * event is caught.
    */
   void _handleShiftTab(KeyboardEvent event) {
-    if(isFocused && focusIsOnFirst) {
+    if (isFocused && focusIsOnFirst) {
       event.preventDefault();
       tabToLast();
     }
@@ -152,7 +149,7 @@ abstract class UIModel {
    * is caught.
    */
   void _handleTab(KeyboardEvent event) {
-    if(isFocused && focusIsOnLast) {
+    if (isFocused && focusIsOnLast) {
       event.preventDefault();
       tabToFirst();
     }
@@ -165,15 +162,15 @@ abstract class UIModel {
    * first element found that is visible and not selected.
    */
   void _handleUpDown(KeyboardEvent event) {
-    if(_listTarget.children.isNotEmpty) {
+    if (_listTarget.children.isNotEmpty) {
       final LIElement selected = _listTarget.querySelector('.selected');
 
-      if(selected == null) {
+      if (selected == null) {
         _markSelected(_scanForwardForVisibleElement(_listTarget.children.first));
         return;
       }
 
-      switch(event.keyCode) {
+      switch (event.keyCode) {
         case KeyCode.DOWN:
           _markSelected(_scanForwardForVisibleElement(selected.nextElementSibling));
           break;
@@ -228,11 +225,11 @@ abstract class UIModel {
    * Does nothing if [li] is null or [li] is already selected.
    */
   void _markSelected(LIElement li, {bool callSelectCallback: true}) {
-    if(li != null && !li.classes.contains('selected')) {
+    if (li != null && !li.classes.contains('selected')) {
       _listTarget.children.forEach((Element element) => element.classes.remove('selected'));
       li.classes.add('selected');
       li.scrollIntoView();
-      if(callSelectCallback) {
+      if (callSelectCallback) {
         _selectCallback(li);
       }
     }
@@ -248,7 +245,7 @@ abstract class UIModel {
    * starting with and including [li].
    */
   LIElement _scanForwardForVisibleElement(LIElement li) {
-    if(li != null && li.classes.contains('hide')) {
+    if (li != null && li.classes.contains('hide')) {
       return _scanForwardForVisibleElement(li.nextElementSibling);
     } else {
       return li;
@@ -260,7 +257,7 @@ abstract class UIModel {
    * starting with and including [li].
    */
   LIElement _scanBackwardsForVisibleElement(LIElement li) {
-    if(li != null && li.classes.contains('hide')) {
+    if (li != null && li.classes.contains('hide')) {
       return _scanBackwardsForVisibleElement(li.previousElementSibling);
     } else {
       return li;
