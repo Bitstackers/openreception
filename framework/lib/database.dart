@@ -35,6 +35,7 @@ part 'database/database-message.dart';
 part 'database/database-message_queue.dart';
 part 'database/database-organization.dart';
 part 'database/database-reception.dart';
+part 'database/database-reception_dialplan.dart';
 part 'database/database-user.dart';
 
 const String libraryName = 'openreception.database';

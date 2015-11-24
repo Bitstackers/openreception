@@ -13,6 +13,7 @@ part 'storage/storage-message.dart';
 part 'storage/storage-message_queue.dart';
 part 'storage/storage-organization.dart';
 part 'storage/storage-reception.dart';
+part 'storage/storage-reception_dialplan.dart';
 part 'storage/storage-user.dart';
 
 class StorageException implements Exception {}
