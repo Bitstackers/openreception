@@ -24,6 +24,7 @@ part of openreception.database;
 Model.Reception _rowToReception(var row) => new Model.Reception.empty()
   ..ID = row.id
   ..fullName = row.full_name
+  ..dialplanId = row.dialplanId
   ..organizationId = row.organization_id
   ..enabled = row.enabled
   ..extraData = row.extradatauri.isNotEmpty

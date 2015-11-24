@@ -30,10 +30,10 @@ class Reception implements Storage.Reception {
     INSERT INTO 
       receptions 
         (organization_id, full_name, attributes, extradatauri, 
-         enabled, reception_telephonenumber)
+         enabled, reception_telephonenumber, dialplanId)
     VALUES 
         (@organization_id, @full_name, @attributes, @extradatauri, 
-         @enabled, @reception_telephonenumber)
+         @enabled, @reception_telephonenumber, dialplanId)
     RETURNING 
       id, last_check;
   ''';
@@ -44,7 +44,8 @@ class Reception implements Storage.Reception {
       'attributes': JSON.encode(reception.attributes),
       'extradatauri': reception.extraData.toString(),
       'enabled': reception.enabled,
-      'reception_telephonenumber': reception.extension
+      'reception_telephonenumber': reception.extension,
+      'dialplanId' : reception.dialplanId
     };
 
     return _connection.query(sql, parameters).then(
@@ -68,7 +69,7 @@ class Reception implements Storage.Reception {
     String sql = '''
       SELECT 
         id, full_name, attributes, enabled, organization_id,
-        extradatauri, reception_telephonenumber, last_check
+        extradatauri, reception_telephonenumber, last_check, dialplanId
       FROM receptions
       WHERE reception_telephonenumber = @exten 
     ''';
@@ -125,7 +126,7 @@ class Reception implements Storage.Reception {
     String sql = '''
       SELECT 
         id, full_name, attributes, enabled, organization_id,
-        extradatauri, reception_telephonenumber, last_check
+        extradatauri, reception_telephonenumber, last_check, dialplanId
       FROM receptions
       WHERE id = @id 
     ''';
@@ -153,7 +154,7 @@ class Reception implements Storage.Reception {
     String sql = '''
       SELECT 
         id, full_name, attributes, enabled, organization_id,
-        extradatauri, reception_telephonenumber, last_check
+        extradatauri, reception_telephonenumber, last_check, dialplanId
       FROM receptions
     ''';
 
@@ -200,7 +201,8 @@ class Reception implements Storage.Reception {
         extradatauri=@extradatauri, 
         enabled=@enabled, 
         reception_telephonenumber=@reception_telephonenumber,
-        organization_id=@organization_id
+        organization_id=@organization_id,
+        dialplanId=@dialplanId
     WHERE id=@id;
   ''';
 
@@ -211,7 +213,8 @@ class Reception implements Storage.Reception {
       'enabled': reception.enabled,
       'id': reception.ID,
       'organization_id': reception.organizationId,
-      'reception_telephonenumber': reception.extension
+      'reception_telephonenumber': reception.extension,
+      'dialplanId' : reception.dialplanId
     };
 
     return _connection
