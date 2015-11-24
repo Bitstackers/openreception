@@ -31,6 +31,7 @@ part 'service/service-configuration.dart';
 part 'service/service-contact.dart';
 part 'service/service-distribution_list.dart';
 part 'service/service-endpoint.dart';
+part 'service/service-ivr.dart';
 part 'service/service-message.dart';
 part 'service/service-notification.dart';
 part 'service/service-organization.dart';
