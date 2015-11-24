@@ -71,9 +71,9 @@ class Ivr implements Storage.Ivr {
 
     Map parameters = {'id': menu.id, 'menu': menu.toJson()};
 
-    return _connection.query(sql, parameters).then((Iterable rows) =>
-        rows.length == 1
-            ? (menu..id = rows.first.id)
+    return _connection.execute(sql, parameters).then((affectedRows) =>
+        affectedRows == 1
+            ? menu
             : throw new Storage.SaveFailed(''));
   }
 

@@ -1,5 +1,5 @@
 /*                  This file is part of OpenReception
-                   Copyright (C) 2014-, BitStackers K/S
+                   Copyright (C) 2015-, BitStackers K/S
 
   This is free software;  you can redistribute it and/or modify it
   under terms of the  GNU General Public License  as published by the
@@ -35,8 +35,8 @@ class ReceptionDialplan implements Storage.ReceptionDialplan {
   FROM
      reception_dialplans''';
 
-    return _connection.query(sql).then((Iterable rows) =>
-        rows.map((row) => Model.ReceptionDialplan.decode(row.dialplan)..id = row.id));
+    return _connection.query(sql).then((Iterable rows) => rows.map(
+        (row) => Model.ReceptionDialplan.decode(row.dialplan)..id = row.id));
   }
 
   /**
@@ -55,7 +55,8 @@ class ReceptionDialplan implements Storage.ReceptionDialplan {
 
     return _connection.query(sql, parameters).then((Iterable rows) =>
         rows.length == 1
-            ? (Model.ReceptionDialplan.decode(rows.first.dialplan)..id = rows.first.id)
+            ? (Model.ReceptionDialplan.decode(rows.first.dialplan)
+              ..id = rows.first.id)
             : throw new Storage.NotFound('No dialplan with id $rdpId'));
   }
 
@@ -71,10 +72,8 @@ class ReceptionDialplan implements Storage.ReceptionDialplan {
 
     Map parameters = {'id': rdp.id, 'dialplan': rdp.toJson()};
 
-    return _connection.query(sql, parameters).then((Iterable rows) =>
-        rows.length == 1
-            ? (rdp..id = rows.first.id)
-            : throw new Storage.SaveFailed(''));
+    return _connection.execute(sql, parameters).then((int rowsAffected) =>
+        rowsAffected == 1 ? rdp : throw new Storage.SaveFailed(''));
   }
 
   /**
