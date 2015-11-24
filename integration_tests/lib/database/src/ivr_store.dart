@@ -53,5 +53,16 @@ abstract class IvrStore {
   /**
    *
    */
-  static Future update(Storage.Ivr ivrStore) async {}
+  static Future update(Storage.Ivr ivrStore) async {
+    Model.IvrMenu menu = new Model.IvrMenu('test', new Model.Playback('test'));
+
+    Model.IvrMenu createdMenu = await ivrStore.create(menu);
+
+    expect(createdMenu, isNotNull);
+    expect(createdMenu.id, greaterThan(Model.IvrMenu.noId));
+
+     await ivrStore.update(menu);
+
+    await ivrStore.remove(createdMenu.id);
+  }
 }
