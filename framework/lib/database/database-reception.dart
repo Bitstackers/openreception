@@ -30,10 +30,10 @@ class Reception implements Storage.Reception {
     INSERT INTO 
       receptions 
         (organization_id, full_name, attributes, extradatauri, 
-         enabled, reception_telephonenumber, dialplanId)
+         enabled, reception_telephonenumber, dialplan_id)
     VALUES 
         (@organization_id, @full_name, @attributes, @extradatauri, 
-         @enabled, @reception_telephonenumber, dialplanId)
+         @enabled, @reception_telephonenumber, @dialplanId)
     RETURNING 
       id, last_check;
   ''';
@@ -69,7 +69,7 @@ class Reception implements Storage.Reception {
     String sql = '''
       SELECT 
         id, full_name, attributes, enabled, organization_id,
-        extradatauri, reception_telephonenumber, last_check, dialplanId
+        extradatauri, reception_telephonenumber, last_check, dialplan_id
       FROM receptions
       WHERE reception_telephonenumber = @exten 
     ''';
@@ -126,7 +126,7 @@ class Reception implements Storage.Reception {
     String sql = '''
       SELECT 
         id, full_name, attributes, enabled, organization_id,
-        extradatauri, reception_telephonenumber, last_check, dialplanId
+        extradatauri, reception_telephonenumber, last_check, dialplan_id
       FROM receptions
       WHERE id = @id 
     ''';
@@ -154,7 +154,7 @@ class Reception implements Storage.Reception {
     String sql = '''
       SELECT 
         id, full_name, attributes, enabled, organization_id,
-        extradatauri, reception_telephonenumber, last_check, dialplanId
+        extradatauri, reception_telephonenumber, last_check, dialplan_id
       FROM receptions
     ''';
 
@@ -202,7 +202,7 @@ class Reception implements Storage.Reception {
         enabled=@enabled, 
         reception_telephonenumber=@reception_telephonenumber,
         organization_id=@organization_id,
-        dialplanId=@dialplanId
+        dialplan_id=@dialplanId
     WHERE id=@id;
   ''';
 
