@@ -49,7 +49,7 @@ void _accessLogger(String msg, bool isError) {
     log.finest(msg);
   }
 }
-Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 8000}) {
+Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4080}) {
   var router = shelf_route.router(fallbackHandler : send404)
       ..get('/configuration', getClientConfig);
 
