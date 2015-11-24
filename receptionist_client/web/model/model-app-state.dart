@@ -13,18 +13,14 @@
 
 part of model;
 
-enum AppState {
-  LOADING,
-  ERROR,
-  READY
-}
+enum AppState { LOADING, ERROR, READY }
 
 class AppClientState {
-  ORModel.Call            _activeCall          = ORModel.Call.noCall;
+  ORModel.Call _activeCall = ORModel.Call.noCall;
   final Bus<ORModel.Call> _activeCallChangeBus = new Bus<ORModel.Call>();
-  ORModel.User            _currentUser         = new ORModel.User.empty();
-  final Logger            _log                 = new Logger('${libraryName}.AppClientState');
-  final Bus<AppState>     _stateChange         = new Bus<AppState>();
+  ORModel.User _currentUser = new ORModel.User.empty();
+  final Logger _log = new Logger('${libraryName}.AppClientState');
+  final Bus<AppState> _stateChange = new Bus<AppState>();
 
   /**
    * Constructor.

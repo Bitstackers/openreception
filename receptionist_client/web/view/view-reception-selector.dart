@@ -77,7 +77,7 @@ class ReceptionSelector extends ViewWidget {
     });
 
     _appState.activeCallChanged.listen((ORModel.Call newCall) {
-      if (newCall != ORModel.Call.noCall) {
+      if (newCall != ORModel.Call.noCall && newCall.inbound) {
         _ui.reset();
         _ui.changeActiveReception(newCall.receptionID);
       }

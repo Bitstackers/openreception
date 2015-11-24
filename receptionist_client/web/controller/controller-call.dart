@@ -73,7 +73,7 @@ class Call {
   /**
    * Tries to dial [phoneNumber] in the context of [reception] and [contact].
    */
-  Future dial(
+  Future<ORModel.Call> dial(
       ORModel.PhoneNumber phoneNumber, ORModel.Reception reception, ORModel.Contact contact) async {
     _log.info('Dialing ${phoneNumber.value}.');
 
@@ -92,7 +92,7 @@ class Call {
       _log.severe(error, stackTrace);
       _command.fire(CallCommand.DIALFAILURE);
 
-      return new Future.error(new ControllerError(error.toString()));
+      throw new ControllerError(error.toString());
     }).whenComplete(() => _busy = false);
   }
 
