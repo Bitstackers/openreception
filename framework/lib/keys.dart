@@ -30,6 +30,7 @@ const String channel = 'channel';
 const String arrivalTime = 'arrival_time';
 const String answeredAt = 'answered_at';
 const String callFlowServerURI = 'callFlowServerURI';
+const String dialplanServerURI = 'dialplanServerURI';
 const String receptionServerURI = 'receptionServerURI';
 const String contactServerURI = 'contactServerURI';
 const String messageServerURI = 'messageServerURI';

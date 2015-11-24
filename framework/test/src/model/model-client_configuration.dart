@@ -40,6 +40,7 @@ abstract class ModelClientConfiguration {
     expect(builtObject.userServerUri, equals(deserializedObject.userServerUri));
     expect(builtObject.callFlowServerUri, equals(deserializedObject.callFlowServerUri));
     expect(builtObject.contactServerUri, equals(deserializedObject.contactServerUri));
+    expect(builtObject.dialplanServerUri, equals(deserializedObject.dialplanServerUri));
     expect(builtObject.messageServerUri, equals(deserializedObject.messageServerUri));
     expect(builtObject.notificationServerUri, equals(deserializedObject.notificationServerUri));
     expect(builtObject.notificationSocketUri, equals(deserializedObject.notificationSocketUri));
@@ -57,6 +58,7 @@ abstract class ModelClientConfiguration {
     final Uri callFlowServerUri = Uri.parse('http://callFlow.example.com');
     final Uri contactServerUri = Uri.parse('http://contact.example.com');
     final Uri messageServerUri = Uri.parse('http://message.example.com');
+    final Uri dialplanServerUri = Uri.parse('http://dialplan.example.com');
     final Uri notificationServerUri = Uri.parse('http://notification.example.com');
     final Uri notificationSocketUri = Uri.parse('ws://notification.example.com');
     final Uri receptionServerUri = Uri.parse('http://reception.example.com');
@@ -66,6 +68,7 @@ abstract class ModelClientConfiguration {
       ..authServerUri = authServerUri
       ..callFlowServerUri = callFlowServerUri
       ..contactServerUri = contactServerUri
+      ..dialplanServerUri = dialplanServerUri
       ..messageServerUri = messageServerUri
       ..notificationServerUri = notificationServerUri
       ..notificationSocketUri = notificationSocketUri
@@ -77,6 +80,7 @@ abstract class ModelClientConfiguration {
     expect(config.userServerUri, equals(userServerUri));
     expect(config.callFlowServerUri, equals(callFlowServerUri));
     expect(config.contactServerUri, equals(contactServerUri));
+    expect(config.dialplanServerUri, equals(dialplanServerUri));
     expect(config.messageServerUri, equals(messageServerUri));
     expect(config.notificationServerUri, equals(notificationServerUri));
     expect(config.notificationSocketUri, equals(notificationSocketUri));

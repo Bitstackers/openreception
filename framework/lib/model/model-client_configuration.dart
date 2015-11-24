@@ -25,6 +25,7 @@ class ClientConfiguration {
   Uri callFlowServerUri;
   Uri receptionServerUri;
   Uri contactServerUri;
+  Uri dialplanServerUri;
   Uri messageServerUri;
   Uri authServerUri;
   Uri notificationSocketUri;
@@ -38,6 +39,7 @@ class ClientConfiguration {
     {Key.callFlowServerURI : this.callFlowServerUri.toString(),
      Key.receptionServerURI : this.receptionServerUri.toString(),
      Key.contactServerURI : this.contactServerUri.toString(),
+     Key.dialplanServerURI : this.dialplanServerUri.toString(),
      Key.messageServerURI  : this.messageServerUri.toString(),
      Key.authServerURI  : this.authServerUri.toString(),
      Key.userServerURI  : this.userServerUri.toString(),
@@ -68,6 +70,8 @@ class ClientConfiguration {
         map [Key.systemLanguage];
     this.callFlowServerUri =
         Uri.parse(map [Key.callFlowServerURI]);
+    this.dialplanServerUri =
+        Uri.parse(map [Key.dialplanServerURI]);
     this.receptionServerUri =
         Uri.parse(map [Key.receptionServerURI]);
     this.contactServerUri =
