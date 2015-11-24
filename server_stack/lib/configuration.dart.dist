@@ -26,10 +26,10 @@ class Log {
   const Log();
 }
 
-/** 
+/**
  * Simple access logging.
  */
-class AccessLog extends StandardConfig{
+class AccessLog {
 
   final String name;
 
@@ -131,6 +131,7 @@ class ConfigServer extends StandardConfig {
   Uri get authServerUri => config.authServer.externalUri;
   Uri get callFlowControlUri => config.callFlowControl.externalUri;
   Uri get contactServerUri => config.contactServer.externalUri;
+  Uri get dialplanServerUri => config.dialplanserver.externalUri;
   Uri get messageServerUri => config.messageServer.externalUri;
   Uri get notificationServerUri => config.notificationServer.externalUri;
   Uri get notificationSocketUri => config.notificationServer.notificationUri;
@@ -174,6 +175,16 @@ class CDRServer extends StandardConfig {
   final int httpPort = 4090;
 
   const CDRServer();
+}
+
+/**
+ * Dialplan server configuration values.
+ */
+class DialplanServer extends StandardConfig {
+  @override
+  final int httpPort = 4060;
+
+  const DialplanServer();
 }
 
 /**
@@ -289,6 +300,7 @@ class Configuration {
   final NotificationServer notificationServer = const NotificationServer();
   final ReceptionServer receptionServer = const ReceptionServer();
   final UserServer userServer = const UserServer();
+  final DialplanServer dialplanserver = const DialplanServer();
 
   const Configuration();
 }

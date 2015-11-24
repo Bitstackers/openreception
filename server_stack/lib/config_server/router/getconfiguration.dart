@@ -18,6 +18,7 @@ final ORModel.ClientConfiguration client_config =
     ..authServerUri = config.configserver.authServerUri
     ..callFlowServerUri = config.configserver.callFlowControlUri
     ..contactServerUri = config.configserver.contactServerUri
+    ..dialplanServerUri = config.configserver.dialplanServerUri
     ..messageServerUri = config.configserver.messageServerUri
     ..notificationServerUri = config.configserver.notificationServerUri
     ..notificationSocketUri = config.configserver.notificationSocketUri

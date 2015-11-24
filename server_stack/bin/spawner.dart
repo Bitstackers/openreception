@@ -43,6 +43,10 @@ void main(List<String> arguments) {
       'path': 'bin/callflowcontrol.dart',
       'args': []
     },
+    'DialplanServer': {
+      'path': 'bin/dialplanserver.dart',
+      'args': []
+    },
     'CDRServer': {
       'path': 'bin/cdrserver.dart',
       'args': []
