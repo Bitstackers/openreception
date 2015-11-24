@@ -70,25 +70,24 @@ class Reception extends ReceptionStub {
   String product;
   bool enabled = false;
 
-  ///FIXME: Implement these fields.
   Map get attributes => {
-    'addresses': addresses,
-    'alternatenames': alternateNames,
-    'bankinginformation': bankingInformation,
-    'customertypes': customerTypes,
-    'emailaddresses': emailAddresses,
-    'greeting': greeting,
-    'handlings': handlingInstructions,
-    'openinghours': openingHours,
-    'other': otherData,
-    'product': product,
-    'salescalls': salesMarketingHandling,
-    'short_greeting': _shortGreeting,
-    'registrationnumbers': vatNumbers,
-    'telephonenumbers':
+    Key.addresses : addresses,
+    Key.alternateNames : alternateNames,
+    Key.bankingInfo : bankingInformation,
+    Key.customerTypes : customerTypes,
+    Key.emailAdresses : emailAddresses,
+    Key.greeting : greeting,
+    Key.handlingInstructions : handlingInstructions,
+    Key.openingHours: openingHours,
+    Key.other : otherData,
+    Key.product : product,
+    Key.salesMarketingHandling : salesMarketingHandling,
+    Key.shortGreeting : _shortGreeting,
+    Key.vatNumbers : vatNumbers,
+    Key.phoneNumbers :
         telephoneNumbers.map((PhoneNumber number) => number.asMap).toList(),
-    'websites': websites,
-    'miniwiki': miniWiki
+    Key.websites : websites,
+    Key.miniWiki: miniWiki
   };
 
   void set attributes(Map attributes) {
