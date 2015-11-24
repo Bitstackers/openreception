@@ -8,8 +8,6 @@ abstract class ReceptionDialplanStore {
   static Future create(Storage.ReceptionDialplan rdpStore) async {
     Model.ReceptionDialplan rdp = Randomizer.randomDialplan();
 
-    print(rdp.toJson());
-
     Model.ReceptionDialplan createdDialplan = await rdpStore.create(rdp);
 
     expect(createdDialplan, isNotNull);
