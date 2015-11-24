@@ -26,6 +26,24 @@ class Log {
   const Log();
 }
 
+/** 
+ * Simple access logging.
+ */
+class AccessLog extends StandardConfig{
+
+  final String name;
+
+  const AccessLog(this.name);
+
+  void onAccess(String msg, bool isError) {
+    if (isError) {
+      logEntryDispatch(new LogRecord(Level.SEVERE, msg, name));
+    } else {
+      logEntryDispatch(new LogRecord(Level.FINEST, msg, name));
+    }
+  }
+}
+
 /**
  * ESL configuration values.
  */
@@ -259,7 +277,8 @@ class Configuration {
   final DatabaseConfig database = const DatabaseConfig();
 
   /// May be 'en' or 'da'
-  final systemLanguage = 'en';
+  final String systemLanguage = 'en';
+  final AccessLog accessLog = const AccessLog('ACCESS');
   final AuthServer authServer = const AuthServer();
   final CallFlowControl callFlowControl = const CallFlowControl();
   final ConfigServer configserver = const ConfigServer();
