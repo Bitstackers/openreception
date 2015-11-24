@@ -38,9 +38,13 @@ abstract class ModelReception {
   static void serialization () =>
       expect(() => new Model.Reception.fromMap(Test_Data.testReception), returnsNormally);
 
+  /**
+   * TODO: Add additional expects.
+   */
   static void buildObject () {
     Model.Reception testReception = new Model.Reception.empty()
       ..addresses = []
+      ..dialplanId = 2
       ..alternateNames = []
       ..attributes = {}
       ..bankingInformation = []

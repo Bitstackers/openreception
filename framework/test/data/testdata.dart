@@ -49,6 +49,7 @@ Map testReception2 = {
   "id": 1,
   "organization_id": null,
   "full_name": "BitStackers",
+  'dialplanId' : 3,
   "enabled": true,
   "extradatauri":
       "https://docs.google.com/document/d/1JLPouzhT5hsWhnnGRDr8UhUQEZ6WvRbRkthR4NRrp9w/pub?embedded=true",
@@ -160,6 +161,7 @@ Map testReception = {
   "full_name": "Friends of the fisher Ltd.",
   "enabled": true,
   'organization_id': 2,
+  'dialplanId' : 3,
   "extradatauri": null,
   "reception_telephonenumber": "12340002",
   "last_check": 0,
