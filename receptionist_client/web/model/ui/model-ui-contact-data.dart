@@ -172,13 +172,13 @@ class UIContactData extends UIModel {
    * Removes the ringing effect from whatever element that might currently be
    * marked ringing.
    *
-   * Removing the effect is delayed by 200ms for usability reasons.
+   * Removing the effect is delayed by 500ms for usability reasons.
    */
   void removeRinging() {
     HtmlElement element = _root.querySelector('.ringing');
 
     if (element != null) {
-      new Future.delayed(new Duration(milliseconds: 200), () {
+      new Future.delayed(new Duration(milliseconds: 500), () {
         element.classes.toggle('ringing', false);
       });
     }
