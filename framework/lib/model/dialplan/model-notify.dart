@@ -26,7 +26,7 @@ class Notify extends Action {
 
     String eventName = consumed.iden;
     if(eventName.isEmpty) {
-      throw new FormatException('${consumed.iden} is not an integer', buffer);
+      throw new FormatException('${consumed.iden} is empty', buffer);
     }
 
     return new Notify(eventName);

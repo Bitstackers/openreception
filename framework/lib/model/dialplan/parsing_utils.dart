@@ -53,8 +53,10 @@ _ConsumedIdenBuf consumeWord(String buffer) {
 _ConsumedCommentBuf consumeComment(String buffer) {
   buffer = buffer.trimLeft();
 
+  if(buffer.isEmpty) return new _ConsumedCommentBuf('','');
+
   if (!buffer.startsWith('(')) {
-    throw new FormatException('Buffer expected to start with a (', buffer);
+    throw new FormatException('Buffer expected to start with a (', '"${buffer}"');
   } else if (buffer.length < 2) {
     return new _ConsumedCommentBuf('', '');
   }

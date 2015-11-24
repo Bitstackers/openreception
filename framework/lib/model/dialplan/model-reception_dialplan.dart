@@ -16,6 +16,9 @@ part of openreception.model.dialplan;
 Iterable<Playback> playbackActions(ReceptionDialplan rdp) =>
     rdp.allActions.where((a) => a is Playback);
 
+/**
+ * TODO: Extra extensions.
+ */
 class ReceptionDialplan {
   Logger _log = new Logger('$libaryName.ReceptionDialplan');
 
