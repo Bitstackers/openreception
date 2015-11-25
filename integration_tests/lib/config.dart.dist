@@ -70,7 +70,12 @@ abstract class Config {
    * The URI of the contact store server.
    */
   static Uri contactStoreUri = Uri.parse('http://contact.example.com');
-
+  
+  /**
+   * The URI of the dialplan server.
+   */
+  static Uri dialplanStoreUri = Uri.parse('http://dialplan.example.com');
+  
   /**
    * The URI of the data management server.
    */
