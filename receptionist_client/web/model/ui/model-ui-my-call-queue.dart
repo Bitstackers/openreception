@@ -90,6 +90,14 @@ class UIMyCallQueue extends UIModel {
   }
 
   /**
+   * Return the list of calls found in my call queue.
+   */
+  List<ORModel.Call> get calls => _list
+      .querySelectorAll('li')
+      .map((LIElement li) => new ORModel.Call.fromMap(JSON.decode(li.dataset['object'])))
+      .toList();
+
+  /**
    * Add [calls] to the calls list.
    */
   set calls(List<ORModel.Call> calls) {

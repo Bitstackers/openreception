@@ -142,7 +142,9 @@ class MyCallQueue extends ViewWidget {
     });
 
     _hotKeys.onF8.listen((_) {
-      if (!_callControllerBusy) {
+      if (!_callControllerBusy &&
+          _appState.activeCall == ORModel.Call.noCall &&
+          _ui.calls.length > 0) {
         _callControllerBusy = true;
         _call
             .pickupFirstParkedCall()
