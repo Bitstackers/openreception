@@ -6,7 +6,7 @@ VALUES (1, 'Receptionist'),
        (2, 'Administrator'),
        (3, 'Service agent');
 
-INSERT INTO reception_dialplans (dialplan) VALUES({'}');
+INSERT INTO reception_dialplans (dialplan) VALUES('{}');
 
 
 -- POSTGRES ONLY
