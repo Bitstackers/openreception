@@ -35,14 +35,21 @@ class Ivr implements Storage.Ivr {
   FROM
      ivr_menus''';
 
-    return _connection.query(sql).then((Iterable rows) =>
-        rows.map((row) => Model.IvrMenu.decode(row.menu)..id = row.id));
+    return _connection
+        .query(sql)
+        .then((Iterable rows) =>
+            rows.map((row) => Model.IvrMenu.decode(row.menu)..id = row.id))
+        .catchError((error, stackTrace) {
+      _log.severe('sql:$sql', error, stackTrace);
+
+      return new Future.error(error, stackTrace);
+    });
   }
 
   /**
    *
    */
-  Future<Model.IvrMenu> get(int menuId) {
+  Future<Model.IvrMenu> get(int menuId) async {
     String sql = '''
   SELECT 
      id, menu
@@ -53,16 +60,27 @@ class Ivr implements Storage.Ivr {
 
     Map parameters = {'id': menuId};
 
-    return _connection.query(sql, parameters).then((Iterable rows) =>
-        rows.length == 1
-            ? (Model.IvrMenu.decode(rows.first.menu)..id = rows.first.id)
-            : throw new Storage.NotFound('No IVR menu with id $menuId'));
+    try {
+      final Iterable rows = await _connection.query(sql, parameters);
+      if (rows.length != 1) {
+        throw new Storage.NotFound();
+      }
+
+      return Model.IvrMenu.decode(rows.first.menu)..id = rows.first.id;
+    } on Storage.NotFound {
+      throw new Storage.NotFound('No IVR menu with id $menuId');
+    } catch (error, stackTrace) {
+      final msg = 'Failed to retrieve menu sql:$sql parameters:$parameters';
+      _log.severe(msg, error, stackTrace);
+
+      throw new Storage.ServerError(msg);
+    }
   }
 
   /**
    *
    */
-  Future<Model.IvrMenu> update(Model.IvrMenu menu) {
+  Future<Model.IvrMenu> update(Model.IvrMenu menu) async {
     String sql = '''
     UPDATE ivr_menus
     SET menu=@menu
@@ -71,10 +89,20 @@ class Ivr implements Storage.Ivr {
 
     Map parameters = {'id': menu.id, 'menu': menu.toJson()};
 
-    return _connection.execute(sql, parameters).then((affectedRows) =>
-        affectedRows == 1
-            ? menu
-            : throw new Storage.SaveFailed(''));
+    try {
+      final int affectedRows = await _connection.execute(sql, parameters);
+
+      if (affectedRows != 1) {
+        throw new Storage.SaveFailed();
+      }
+
+      return menu;
+    } catch (error, stackTrace) {
+      final msg = 'Failed to update menu sql:$sql parameters:$parameters';
+      _log.severe(msg, error, stackTrace);
+
+      throw new Storage.ServerError(msg);
+    }
   }
 
   /**
