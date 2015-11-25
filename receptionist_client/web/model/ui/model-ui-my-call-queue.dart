@@ -17,13 +17,18 @@ part of model;
  * Provides access to the my call queue widget.
  */
 class UIMyCallQueue extends UIModel {
+  final Controller.Contact _contactController;
+  final Map<int, String> _contactMap = new Map<int, String>();
   final Map<String, String> _langMap;
   final DivElement _myRoot;
+  final Controller.Reception _receptionController;
+  final Map<int, String> _receptionMap = new Map<int, String>();
 
   /**
    * Constructor.
    */
-  UIMyCallQueue(DivElement this._myRoot, Map<String, String> this._langMap) {
+  UIMyCallQueue(DivElement this._myRoot, Map<String, String> this._langMap,
+      Controller.Contact this._contactController, Controller.Reception this._receptionController) {
     _setupLocalKeys();
     _observers();
   }
@@ -48,25 +53,30 @@ class UIMyCallQueue extends UIModel {
    * Construct a call [LIElement] from [call]
    */
   LIElement _buildCallElement(ORModel.Call call) {
-    final String callInbound = '${call.callerID} - ${call.receptionID}';
-    final String CallOutbound = '${call.destination} - ${call.contactID}';
+    final DivElement numbersAndStateDiv = new DivElement();
+    final DivElement nameDiv = new DivElement();
+
+    setName(call, nameDiv);
+
     final SpanElement callState = new SpanElement()
       ..classes.add('call-state')
       ..text = _langMap['callstate-${call.state.toLowerCase()}'];
 
     final SpanElement callDesc = new SpanElement()
       ..classes.add('call-description')
-      ..text = '${call.inbound ? callInbound : CallOutbound}'
+      ..text = call.inbound ? '${call.callerID}' : '${call.destination}'
       ..children.add(callState);
 
     final SpanElement callWaitTimer = new SpanElement()
       ..classes.add('call-wait-time')
       ..text = new DateTime.now().difference(call.arrived).inSeconds.toString();
 
+    numbersAndStateDiv.children.addAll([callDesc, callWaitTimer]);
+
     return (new LIElement()
       ..dataset['id'] = call.ID
       ..dataset['object'] = JSON.encode(call)
-      ..children.addAll([callDesc, callWaitTimer])
+      ..children.addAll([numbersAndStateDiv, nameDiv])
       ..classes.add(call.inbound ? 'inbound' : 'outbound')
       ..classes.toggle('locked', call.locked)
       ..classes.toggle('speaking', call.state == ORModel.CallState.Speaking)
@@ -121,6 +131,15 @@ class UIMyCallQueue extends UIModel {
   }
 
   /**
+   * Add [contact] to the local cache of contact names.
+   *
+   * This is used to quickly associate outbound calls with a contact.
+   */
+  set contact(ORModel.Contact contact) {
+    _contactMap[contact.ID] = contact.fullName;
+  }
+
+  /**
    * Observers.
    */
   void _observers() {
@@ -138,6 +157,15 @@ class UIMyCallQueue extends UIModel {
   }
 
   /**
+   * Add [reception] to the local cache of reception names.
+   *
+   * This is used to quickly associate inbound calls with a reception.
+   */
+  set reception(ORModel.Reception reception) {
+    _receptionMap[reception.ID] = reception.name;
+  }
+
+  /**
    * Remove [call] from the call list. Does nothing if [call] does not exist
    * in the call list.
    */
@@ -147,6 +175,34 @@ class UIMyCallQueue extends UIModel {
     if (li != null) {
       li.remove();
       _queueLengthUpdate();
+    }
+  }
+
+  /**
+   * Adds a contact or reception name to [nameDiv].
+   *
+   * If a name cannot be found in either [_contactMap] or [_receptionMap], then we will fetch a name
+   * from the server asynchronously and cache it locally.
+   */
+  void setName(ORModel.Call call, DivElement nameDiv) {
+    if (call.inbound) {
+      if (_receptionMap.containsKey(call.receptionID)) {
+        nameDiv.text = _receptionMap[call.receptionID];
+      } else {
+        _receptionController.get(call.receptionID).then((ORModel.Reception reception) {
+          nameDiv.text = reception.fullName;
+          _receptionMap[call.receptionID] = reception.fullName;
+        });
+      }
+    } else {
+      if (_contactMap.containsKey(call.contactID)) {
+        nameDiv.text = _contactMap[call.contactID];
+      } else {
+        _contactController.get(call.contactID).then((ORModel.BaseContact contact) {
+          nameDiv.text = contact.fullName;
+          _contactMap[call.contactID] = contact.fullName;
+        });
+      }
     }
   }
 
