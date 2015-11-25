@@ -64,16 +64,10 @@ part 'database/src/reception_dialplan_store.dart';
 part 'database/all_tests.dart';
 
 /// Message store service tests
-part 'messagestore/tests.dart';
-part 'messagestore/src/rest_message_store.dart';
-part 'messagestore/src/message_queue_store.dart';
-part 'messagestore/src/message_store.dart';
-
-/// Data management service tests
-part 'managementserver/all_tests.dart';
-part 'managementserver/src/contact.dart';
-part 'managementserver/src/organization.dart';
-part 'managementserver/src/reception.dart';
+part 'service/messageserver.dart';
+part 'service/src/service-message.dart';
+part 'service/src/service-message_queue.dart';
+part 'service/src/storage-message.dart';
 
 /// Reception server tests
 part 'reception/all_tests.dart';
