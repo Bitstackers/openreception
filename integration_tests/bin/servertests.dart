@@ -40,6 +40,7 @@ void main() {
   runContactTests();
   runCallFlowTests();
   runUserTests();
+  runIvrTests();
   runMessageTests();
   runNotificationTests();
   runOrganizationTests();

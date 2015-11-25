@@ -61,7 +61,7 @@ abstract class IvrStore {
     expect(createdMenu, isNotNull);
     expect(createdMenu.id, greaterThan(Model.IvrMenu.noId));
 
-     await ivrStore.update(menu);
+    await ivrStore.update(createdMenu);
 
     await ivrStore.remove(createdMenu.id);
   }

@@ -2,61 +2,6 @@ part of or_test_fw;
 
 runUserTests () {
 
-  group ('Database.User', () {
-    Database.User userDB;
-    Database.Connection connection;
-    setUp(() {
-
-      return Database.Connection
-          .connect(Config.dbDSN)
-          .then((Database.Connection conn) {
-        connection = conn;
-        userDB = new Database.User(connection);
-      });
-    });
-
-    tearDown (() => connection.close());
-
-    test ('Non-existing user',
-        () => User.nonExistingUser(userDB));
-
-    test ('Existing user',
-        () => User.existingUser(userDB));
-
-    test ('Create',
-        () => User.createUser(userDB));
-
-    test ('Update',
-        () => User.updateUser(userDB));
-
-    test ('Remove',
-        () => User.updateUser(userDB));
-
-    test ('List users',
-        () => User.listUsers(userDB));
-
-    test ('Available group listing',
-        () => User.listAllGroups(userDB));
-
-    test ('groups (known user)',
-        () => User.listGroupsOfUser(userDB));
-
-    test ('groups (non-existing user)',
-        () => User.listGroupsOfNonExistingUser(userDB));
-
-    test ('group join',
-        () => User.joinGroup(userDB));
-
-    test ('group leave',
-        () => User.leaveGroup(userDB));
-
-    test ('identity add',
-        () => User.addUserIdentity(userDB));
-
-    test ('identity remove',
-        () => User.removeUserIdentity(userDB));
-  });
-
   group ('service.User', () {
     Transport.Client transport = null;
     Service.RESTUserStore userStore = null;
