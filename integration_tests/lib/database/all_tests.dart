@@ -2,6 +2,144 @@ part of or_test_fw;
 
 runDatabaseTests() {
 
+  group ('Database.Reception', () {
+    Database.Reception receptionStore = null;
+
+    Database.Connection connection;
+    setUp(() {
+
+      return Database.Connection
+          .connect(Config.dbDSN)
+          .then((Database.Connection conn) {
+        connection = conn;
+        receptionStore = new Database.Reception(connection);
+      });
+    });
+
+    tearDown (() {
+      return connection.close();
+    });
+
+    test ('Non-existing reception',
+        () => Reception.nonExistingReception(receptionStore));
+
+    test ('Existing reception',
+        () => Reception.existingReception(receptionStore));
+
+    test ('List receptions',
+        () => Reception.listReceptions(receptionStore));
+
+    test ('Reception creation',
+        () => Reception.create(receptionStore));
+
+    test ('Non-existing Reception update',
+        () => Reception.updateNonExisting(receptionStore));
+
+    test ('Reception invalid update',
+        () => Reception.updateInvalid(receptionStore));
+
+    test ('Reception update',
+        () => Reception.update(receptionStore));
+
+    test ('Reception removal',
+        () => Reception.remove(receptionStore));
+  });
+
+  group ('Database.MessageQueue', () {
+
+    Database.MessageQueue messageDB;
+    Database.Connection connection;
+
+    setUp(() {
+
+      return Database.Connection
+          .connect(Config.dbDSN)
+          .then((Database.Connection conn) {
+        connection = conn;
+        messageDB = new Database.MessageQueue(connection);
+      });
+    });
+
+    tearDown (() {
+      return connection.close();
+    });
+
+    test ('list',
+        () => MessageQueueStore.list(messageDB));
+  });
+
+  group ('Database.Message', () {
+    Storage.Reception receptionStore;
+    Storage.Contact contactStore;
+    Transport.Client transport;
+    Receptionist r;
+
+
+    Database.Message messageDB;
+    Database.Connection connection;
+
+    setUp(() {
+
+      return Database.Connection
+          .connect(Config.dbDSN)
+          .then((Database.Connection conn) {
+        connection = conn;
+        messageDB = new Database.Message(connection);
+      });
+    });
+
+    tearDown (() {
+      return connection.close();
+    });
+
+    test ('list',
+        () => MessageStore.list(messageDB));
+
+    test ('get',
+        () => MessageStore.get(messageDB));
+
+    setUp(() {
+
+      return Database.Connection
+          .connect(Config.dbDSN)
+          .then((Database.Connection conn) {
+        connection = conn;
+        messageDB = new Database.Message(connection);
+
+        transport = new Transport.Client();
+        receptionStore = new Service.RESTReceptionStore(Config.receptionStoreUri,
+              Config.serverToken, transport);
+        contactStore = new Service.RESTContactStore(Config.contactStoreUri,
+              Config.serverToken, transport);
+        r = ReceptionistPool.instance.aquire();
+
+        return r.initialize();
+      });
+    });
+
+
+   tearDown (() {
+     receptionStore = null;
+     contactStore = null;
+     transport.client.close(force : true);
+     return connection.close().then((_) => r.teardown());
+
+   });
+
+    test ('create',
+        () => MessageStore.create(messageDB, contactStore, receptionStore, r));
+
+    test ('update',
+        () => MessageStore.update(messageDB, contactStore, receptionStore, r));
+
+    test ('enqueue',
+        () => MessageStore.enqueue(messageDB, contactStore, receptionStore, r));
+
+    test ('remove',
+        () => MessageStore.remove(messageDB, contactStore, receptionStore, r));
+
+  });
+
   group ('Database.Endpoint', () {
     Database.Endpoint endpointDB;
     Database.Connection connection;

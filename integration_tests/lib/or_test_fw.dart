@@ -34,19 +34,18 @@ part 'benchmark/src/tests.dart';
 part 'benchmark/all_tests.dart';
 
 /// Callflow server tests
-part 'callflowcontrol/all_tests.dart';
-part 'callflowcontrol/src/active_recording.dart';
-part 'callflowcontrol/src/call_hangup.dart';
-part 'callflowcontrol/src/call_list.dart';
-part 'callflowcontrol/src/call_originate.dart';
-part 'callflowcontrol/src/call_park.dart';
-part 'callflowcontrol/src/call_pickup.dart';
-part 'callflowcontrol/src/call_transfer.dart';
-part 'callflowcontrol/src/peer.dart';
-part 'callflowcontrol/src/state_reload.dart';
-part 'callflowcontrol/src/user_state.dart';
+part 'service/callflowcontrol.dart';
+part 'service/src/service-active_recording.dart';
+part 'service/src/service-call_hangup.dart';
+part 'service/src/service-call_list.dart';
+part 'service/src/service-call_originate.dart';
+part 'service/src/service-call_park.dart';
+part 'service/src/service-call_pickup.dart';
+part 'service/src/service-call_transfer.dart';
+part 'service/src/service-peer.dart';
+part 'service/src/service-state_reload.dart';
+part 'service/src/service-user_state.dart';
 
-/// Config service tests
 part 'service/src/service-config.dart';
 part 'service/configserver.dart';
 
@@ -70,12 +69,12 @@ part 'service/src/service-message_queue.dart';
 part 'service/src/storage-message.dart';
 
 /// Reception server tests
-part 'reception/all_tests.dart';
-part 'reception/src/reception_store.dart';
+part 'service/receptionserver.dart';
+part 'service/src/service-reception.dart';
 
 /// User store tests
-part 'user/all_tests.dart';
-part 'user/src/user_store.dart';
+part 'service/userserver.dart';
+part 'service/src/service-user.dart';
 
 /// Use case tests
 part 'use_case/all_tests.dart';
@@ -85,12 +84,12 @@ part 'use_case/src/uc-incoming_call.dart';
 part 'use_case/src/uc-send_message.dart';
 
 /// Notification server tests
-part 'notificationserver/src/notificationserver.dart';
-part 'notificationserver/tests.dart';
+part 'service/src/service-notification.dart';
+part 'service/notificationserver.dart';
 
 /// Organization service tests
-part 'organization/src/tests.dart';
-part 'organization/all_tests.dart';
+part 'service/src/service-organization.dart';
+part 'service/organizationserver.dart';
 
 const String libraryName = 'Test';
 
