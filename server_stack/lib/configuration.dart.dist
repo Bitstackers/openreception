@@ -127,7 +127,7 @@ class ConfigServer extends StandardConfig {
   int get httpPort => 4080;
 
   const ConfigServer();
-  
+
   Uri get authServerUri => config.authServer.externalUri;
   Uri get callFlowControlUri => config.callFlowControl.externalUri;
   Uri get contactServerUri => config.contactServer.externalUri;
@@ -275,7 +275,6 @@ void logEntryDispatch(LogRecord record) {
     IO.stdout.writeln('${record.time} - ${record}$error');
   }
 }
-
 
 Configuration config = const Configuration();
 
