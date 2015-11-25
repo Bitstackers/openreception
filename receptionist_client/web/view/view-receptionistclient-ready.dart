@@ -31,6 +31,7 @@ class ReceptionistclientReady {
   Controller.Notification _notification;
   Controller.Popup _popup;
   ReceptionCalendar _receptionCalendar;
+  final Controller.Reception _receptionController;
   ReceptionSelector _receptionSelector;
   static ReceptionistclientReady _singleton;
   List<ORModel.Reception> _sortedReceptions;
@@ -62,6 +63,7 @@ class ReceptionistclientReady {
           uiReady,
           calendarController,
           contactController,
+          receptionController,
           sortedReceptions,
           userController,
           callController,
@@ -84,6 +86,7 @@ class ReceptionistclientReady {
       Model.UIReceptionistclientReady this._ui,
       this._calendarController,
       this._contactController,
+      this._receptionController,
       this._sortedReceptions,
       this._userController,
       this._callController,
@@ -208,7 +211,8 @@ class ReceptionistclientReady {
         _langMap);
 
     new MyCallQueue(
-        new Model.UIMyCallQueue(querySelector('#my-call-queue'), _langMap),
+        new Model.UIMyCallQueue(
+            querySelector('#my-call-queue'), _langMap, _contactController, _receptionController),
         _appState,
         new Controller.Destination(Controller.Context.Home, Controller.Widget.MyCallQueue),
         _notification,
