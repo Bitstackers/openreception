@@ -31,6 +31,8 @@ class ReceptionDialplan {
   String note = '';
   bool active = true;
 
+  List<NamedExtension> extraExtensions = [];
+
   Iterable<Action> get allActions => []
     ..addAll(defaultActions)
     ..addAll(
@@ -42,6 +44,7 @@ class ReceptionDialplan {
       new ReceptionDialplan()
   ..id = map['id']
   ..open = map['open'].map(HourAction.parse).toList()
+  ..extraExtensions = map['extraExtensions'].map(NamedExtension.decode).toList()
   ..defaultActions = map['closed'].map(Action.parse).toList()
   ..note = map['note']
   ..active = map['active'];
@@ -51,6 +54,7 @@ class ReceptionDialplan {
         'open': open,
         'note': note,
         'active': active,
-        'closed': defaultActions
+        'closed': defaultActions,
+        'extraExtensions' : extraExtensions
       };
 }
