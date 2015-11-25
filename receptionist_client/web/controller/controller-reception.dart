@@ -22,11 +22,15 @@ class Reception {
   /**
    * Constructor.
    */
-  Reception (this._store);
+  Reception(this._store);
+
+  /**
+   * Return the [receptionId] [ORModel.Reception].
+   */
+  Future<ORModel.Reception> get(int receptionId) => _store.get(receptionId);
 
   /**
    * List [ORModel.Reception]'s
    */
   Future<Iterable<ORModel.Reception>> list() => _store.list();
-
 }

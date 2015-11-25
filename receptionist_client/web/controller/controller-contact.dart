@@ -22,21 +22,25 @@ class Contact {
   Contact(this._store);
 
   /**
-   * Return all the [Model.Contact]'s that belong to [reception].
-   */
-  Future<Iterable<ORModel.Contact>> list(ORModel.Reception reception) =>
-      _store.listByReception(reception.ID);
-
-  /**
    * Return all the [contact] [ORModel.MessageEndpoint]'s.
    */
   Future<Iterable<ORModel.MessageEndpoint>> endpoints(ORModel.Contact contact) =>
       _store.endpoints(contact.ID, contact.receptionID);
 
   /**
+   * Fetch the [contactId] [ORModel.Contact].
+   */
+  Future<ORModel.BaseContact> get(int contactId) => _store.get(contactId);
+
+  /**
+   * Return all the [Model.Contact]'s that belong to [reception].
+   */
+  Future<Iterable<ORModel.Contact>> list(ORModel.Reception reception) =>
+      _store.listByReception(reception.ID);
+
+  /**
    * Return all the [contact] [ORModel.PhoneNumber]'s.
    */
   Future<Iterable<ORModel.PhoneNumber>> phones(ORModel.Contact contact) =>
       _store.phones(contact.ID, contact.receptionID);
-
 }
