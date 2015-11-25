@@ -21,6 +21,7 @@ part of view;
 class MyCallQueue extends ViewWidget {
   final Model.AppClientState _appState;
   final Controller.Call _call;
+  bool _callControllerBusy = false;
   final Map<String, String> _langMap;
   final Controller.Destination _myDestination;
   final Controller.Notification _notification;
@@ -100,14 +101,12 @@ class MyCallQueue extends ViewWidget {
    * Observers.
    */
   void _observers() {
-    bool callControllerBusy = false;
-
     _navigate.onGo.listen(_setWidgetState);
 
     _ui.onClick.listen(_activateMe);
 
     void _complete() {
-      new Future.delayed(new Duration(milliseconds: 500), () => callControllerBusy = false);
+      new Future.delayed(new Duration(milliseconds: 500), () => _callControllerBusy = false);
     }
 
     void _error(Exception error, String title, String message) {
@@ -121,12 +120,33 @@ class MyCallQueue extends ViewWidget {
     }
 
     _hotKeys.onCtrlNumMinus.listen((_) {
-      if (!callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
-        callControllerBusy = true;
+      if (!_callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
+        _callControllerBusy = true;
         _call
             .transferToFirstParkedCall(_appState.activeCall)
             .catchError((error) =>
                 _error(error, _langMap[Key.errorCallTransfer], 'ID ${_appState.activeCall.ID}'))
+            .whenComplete(() => _complete());
+      }
+    });
+
+    _hotKeys.onF7.listen((_) {
+      if (!_callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
+        _callControllerBusy = true;
+        _call
+            .park(_appState.activeCall)
+            .catchError((error) =>
+                _error(error, _langMap[Key.errorCallPark], 'ID ${_appState.activeCall.ID}'))
+            .whenComplete(() => _complete());
+      }
+    });
+
+    _hotKeys.onF8.listen((_) {
+      if (!_callControllerBusy) {
+        _callControllerBusy = true;
+        _call
+            .pickupFirstParkedCall()
+            .catchError((error) => _error(error, _langMap[Key.errorCallUnpark], ''))
             .whenComplete(() => _complete());
       }
     });

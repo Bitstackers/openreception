@@ -68,10 +68,9 @@ class GlobalCallQueue extends ViewWidget {
   void _handleCallStateChanges(OREvent.CallEvent event) {
     final ORModel.Call call = event.call;
 
-    if(event is OREvent.CallOffer) {
+    if (event is OREvent.CallOffer) {
       _ui.appendCall(call);
-    } else if (event is OREvent.CallHangup ||
-        call.assignedTo != ORModel.User.noID) {
+    } else if (event is OREvent.CallHangup || call.assignedTo != ORModel.User.noID) {
       _ui.removeCall(call);
     } else if (call.inbound) {
       _ui.updateCall(call);
@@ -114,7 +113,7 @@ class GlobalCallQueue extends ViewWidget {
     }
 
     /**
-     *
+     * Change the user/agent state for the currently logged in user.
      */
     _notification.onAgentStateChange.listen((ORModel.UserStatus userStatus) {
       if (userStatus.userID == _appState.currentUser.ID) {
@@ -156,27 +155,6 @@ class GlobalCallQueue extends ViewWidget {
             .hangup(_appState.activeCall)
             .catchError((error) =>
                 _error(error, _langMap[Key.errorCallHangup], 'ID ${_appState.activeCall.ID}'))
-            .whenComplete(() => _complete());
-      }
-    });
-
-    _hotKeys.onF7.listen((_) {
-      if (!_callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
-        _callControllerBusy = true;
-        _call
-            .park(_appState.activeCall)
-            .catchError((error) =>
-                _error(error, _langMap[Key.errorCallPark], 'ID ${_appState.activeCall.ID}'))
-            .whenComplete(() => _complete());
-      }
-    });
-
-    _hotKeys.onF8.listen((_) {
-      if (!_callControllerBusy) {
-        _callControllerBusy = true;
-        _call
-            .pickupFirstParkedCall()
-            .catchError((error) => _error(error, _langMap[Key.errorCallUnpark], ''))
             .whenComplete(() => _complete());
       }
     });
