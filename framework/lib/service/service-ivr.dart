@@ -17,8 +17,6 @@ part of openreception.service;
  * Client for contact service.
  */
 class RESTIvrStore implements Storage.Ivr {
-  static final String className = '${libraryName}.RESTIvrStore';
-  static final Logger log = new Logger(className);
 
   WebService _backend = null;
   Uri _host;
