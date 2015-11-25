@@ -50,15 +50,6 @@ const Map corsHeaders = const {
 
 _transport.Client httpClient = new _transport.Client();
 
-/// Simple access logging.
-void _accessLogger(String msg, bool isError) {
-  if (isError) {
-    log.severe(msg);
-  } else {
-    log.finest(msg);
-  }
-}
-
 Future<IO.HttpServer> start({String hostname: '0.0.0.0', int port: 4050}) {
   var router = shelf_route.router()
     ..get('/token/create', login)
@@ -71,7 +62,7 @@ Future<IO.HttpServer> start({String hostname: '0.0.0.0', int port: 4050}) {
   var handler = const shelf.Pipeline()
       .addMiddleware(
           shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
-      .addMiddleware(shelf.logRequests(logger: _accessLogger))
+      .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
       .addHandler(router.handler);
 
   log.fine('Serving interfaces:');

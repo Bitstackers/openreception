@@ -47,15 +47,6 @@ shelf.Response _options(shelf.Request request) => (request.method == 'OPTIONS')
 shelf.Response _cors(shelf.Response response) =>
     response.change(headers: CORSHeader);
 
-/// Simple access logging.
-void _accessLogger(String msg, bool isError) {
-  if (isError) {
-    _accessLog.severe(msg);
-  } else {
-    _accessLog.finest(msg);
-  }
-}
-
 Future<io.HttpServer> start(
     {String hostname: '0.0.0.0', int port: 4090}) async {
   final controller.Cdr cdrController = new controller.Cdr(
@@ -68,7 +59,7 @@ Future<io.HttpServer> start(
     ..post('/checkpoint', cdrController.createCheckpoint);
 
   var handler = const shelf.Pipeline()
-      .addMiddleware(shelf.logRequests(logger: _accessLogger))
+      .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
       .addMiddleware(addCORSHeaders)
       .addHandler(router.handler);
 

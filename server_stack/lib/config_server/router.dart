@@ -41,20 +41,12 @@ shelf.Response _options(shelf.Request request) =>
 
 shelf.Response _cors(shelf.Response response) => response.change(headers: CORSHeader);
 
-/// Simple access logging.
-void _accessLogger(String msg, bool isError) {
-  if (isError) {
-    log.severe(msg);
-  } else {
-    log.finest(msg);
-  }
-}
 Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4080}) {
   var router = shelf_route.router(fallbackHandler : send404)
       ..get('/configuration', getClientConfig);
 
   var handler = const shelf.Pipeline()
-      .addMiddleware(shelf.logRequests(logger : _accessLogger))
+      .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
       .addMiddleware(addCORSHeaders)
       .addHandler(router.handler);
 

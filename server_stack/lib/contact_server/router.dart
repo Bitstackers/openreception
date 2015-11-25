@@ -84,16 +84,6 @@ Future<shelf.Response> _lookupToken(shelf.Request request) {
   });
 }
 
-
-/// Simple access logging.
-void _accessLogger(String msg, bool isError) {
-  if (isError) {
-    log.severe(msg);
-  } else {
-    log.finest(msg);
-  }
-}
-
 /**
  * TODO: Add Contact (not just BaseContact) updates.
  */
@@ -142,7 +132,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
   var handler = const shelf.Pipeline()
       .addMiddleware(shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
       .addMiddleware(checkAuthentication)
-      .addMiddleware(shelf.logRequests(logger : _accessLogger))
+      .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
       .addHandler(router.handler);
 
   log.fine('Serving interfaces:');

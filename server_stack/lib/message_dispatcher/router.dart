@@ -45,15 +45,6 @@ database.MessageQueue messageQueueStore;
 database.Message messageStore;
 database.User userStore;
 
-/// Simple access logging.
-void _accessLogger(String msg, bool isError) {
-  if (isError) {
-    log.severe(msg);
-  } else {
-    log.finest(msg);
-  }
-}
-
 Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4060}) {
 
   Future setup () =>
@@ -69,7 +60,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4060}) {
         ..get('/messagequeue', mq.list);
 
     var handler = const shelf.Pipeline()
-        .addMiddleware(shelf.logRequests(logger : _accessLogger))
+        .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
         .addMiddleware(addCORSHeaders)
         .addHandler(router.handler);
 

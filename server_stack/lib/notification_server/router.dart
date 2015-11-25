@@ -71,15 +71,6 @@ shelf.Middleware checkAuthentication =
 shelf.Response _handleHttpRequest(shelf.Request request) =>
     new shelf.Response.ok('asds');
 
-/// Simple access logging.
-void _accessLogger(String msg, bool isError) {
-  if (isError) {
-    _log.severe(msg);
-  } else {
-    _log.finest(msg);
-  }
-}
-
 /**
  *
  */
@@ -97,7 +88,7 @@ Future<io.HttpServer> start({String hostname: '0.0.0.0', int port: 4200}) {
       .addMiddleware(
           shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
       .addMiddleware(checkAuthentication)
-      .addMiddleware(shelf.logRequests(logger: _accessLogger))
+      .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
       .addHandler(router.handler);
 
   _log.fine('Serving interfaces:');

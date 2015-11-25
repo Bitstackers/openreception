@@ -88,16 +88,6 @@ final Map corsHeaders =
   {'Access-Control-Allow-Origin': '*' ,
    'Access-Control-Allow-Methods' : 'GET, PUT, POST, DELETE'};
 
-
-/// Simple access logging.
-void _accessLogger(String msg, bool isError) {
-  if (isError) {
-    log.severe(msg);
-  } else {
-    log.finest(msg);
-  }
-}
-
 Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
   var router = shelf_route.router()
     ..get('/organization', Organization.list)
@@ -124,7 +114,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
   var handler = const shelf.Pipeline()
       .addMiddleware(shelf_cors.createCorsHeadersMiddleware(corsHeaders : corsHeaders))
       .addMiddleware(checkAuthentication)
-      .addMiddleware(shelf.logRequests(logger : _accessLogger))
+      .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
       .addHandler(router.handler);
 
   log.fine('Serving interfaces:');
