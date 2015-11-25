@@ -18,7 +18,7 @@ part of model;
  */
 class UIMyCallQueue extends UIModel {
   final Map<String, String> _langMap;
-  final DivElement          _myRoot;
+  final DivElement _myRoot;
 
   /**
    * Constructor.
@@ -29,12 +29,12 @@ class UIMyCallQueue extends UIModel {
   }
 
   @override HtmlElement get _firstTabElement => _list;
-  @override HtmlElement get _focusElement    => _list;
-  @override HtmlElement get _lastTabElement  => _list;
-  @override HtmlElement get _root            => _myRoot;
+  @override HtmlElement get _focusElement => _list;
+  @override HtmlElement get _lastTabElement => _list;
+  @override HtmlElement get _root => _myRoot;
 
-  SpanElement  get _queueLength => _root.querySelector('.generic-widget-headline span.queue-length');
-  OListElement get _list        => _root.querySelector('.generic-widget-list');
+  SpanElement get _queueLength => _root.querySelector('.generic-widget-headline span.queue-length');
+  OListElement get _list => _root.querySelector('.generic-widget-list');
 
   /**
    * Append [call] to the calls list.
@@ -48,28 +48,30 @@ class UIMyCallQueue extends UIModel {
    * Construct a call [LIElement] from [call]
    */
   LIElement _buildCallElement(ORModel.Call call) {
+    final String callInbound = '${call.callerID} - ${call.receptionID}';
+    final String CallOutbound = '${call.destination} - ${call.contactID}';
     final SpanElement callState = new SpanElement()
-                                    ..classes.add('call-state')
-                                    ..text = _langMap['callstate-${call.state.toLowerCase()}'];
+      ..classes.add('call-state')
+      ..text = _langMap['callstate-${call.state.toLowerCase()}'];
 
     final SpanElement callDesc = new SpanElement()
-                                  ..classes.add('call-description')
-                                  ..text = '${call.callerID}'
-                                  ..children.add(callState);
+      ..classes.add('call-description')
+      ..text = '${call.inbound ? callInbound : CallOutbound}'
+      ..children.add(callState);
 
-    final SpanElement callWaitTimer =
-        new SpanElement()
-          ..classes.add('call-wait-time')
-          ..text = new DateTime.now().difference(call.arrived).inSeconds.toString();
+    final SpanElement callWaitTimer = new SpanElement()
+      ..classes.add('call-wait-time')
+      ..text = new DateTime.now().difference(call.arrived).inSeconds.toString();
 
-    return(new LIElement()
-            ..dataset['id'] = call.ID
-            ..dataset['object'] = JSON.encode(call)
-            ..children.addAll([callDesc, callWaitTimer])
-            ..classes.add(call.inbound ? 'inbound' : 'outbound')
-            ..classes.toggle('locked', call.locked)
-            ..classes.toggle('speaking', call.state == ORModel.CallState.Speaking)
-            ..title = '${call.inbound ? _langMap[Key.callStateInbound] : _langMap[Key.callStateOutbound]}');
+    return (new LIElement()
+      ..dataset['id'] = call.ID
+      ..dataset['object'] = JSON.encode(call)
+      ..children.addAll([callDesc, callWaitTimer])
+      ..classes.add(call.inbound ? 'inbound' : 'outbound')
+      ..classes.toggle('locked', call.locked)
+      ..classes.toggle('speaking', call.state == ORModel.CallState.Speaking)
+      ..title =
+          '${call.inbound ? _langMap[Key.callStateInbound] : _langMap[Key.callStateOutbound]}');
   }
 
   /**
@@ -78,8 +80,7 @@ class UIMyCallQueue extends UIModel {
   void _callAgeUpdate() {
     new Timer.periodic(new Duration(seconds: 1), (_) {
       _list.querySelectorAll('li span.call-wait-time').forEach((SpanElement span) {
-
-        if(span.text.isEmpty) {
+        if (span.text.isEmpty) {
           span.text = '0';
         } else {
           span.text = (int.parse(span.text) + 1).toString();
@@ -132,10 +133,10 @@ class UIMyCallQueue extends UIModel {
    * Remove [call] from the call list. Does nothing if [call] does not exist
    * in the call list.
    */
-  void removeCall(ORModel.Call call ) {
+  void removeCall(ORModel.Call call) {
     final LIElement li = _list.querySelector('[data-id="${call.ID}"]');
 
-    if(li != null) {
+    if (li != null) {
       li.remove();
       _queueLengthUpdate();
     }
@@ -149,16 +150,15 @@ class UIMyCallQueue extends UIModel {
   }
 
   /**
-   * Update [call] in the call list. Does nothing if [call] does not exist in
-   * the call list.
+   * Update [call] in the call list. If [call] does not exist in the call list, it is appended to
+   * the list.
    */
   void updateCall(ORModel.Call call) {
     final LIElement li = _list.querySelector('[data-id="${call.ID}"]');
 
-    if(li != null) {
+    if (li != null) {
       li.replaceWith(_buildCallElement(call));
-    }
-    else {
+    } else {
       appendCall(call);
     }
   }
