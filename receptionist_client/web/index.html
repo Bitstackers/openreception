@@ -1952,25 +1952,31 @@
                 font-weight: bold;
               }
 
-              #my-call-queue .generic-widget-list li.inbound:before {
+              #my-call-queue .generic-widget-list li.inbound div:first-child:before {
                 content: '→';
               }
 
-              #my-call-queue .generic-widget-list li.outbound:before {
+              #my-call-queue .generic-widget-list li.outbound div:first-child:before {
                 content: '←';
               }
 
-              #my-call-queue .generic-widget-list li span.call-description {
+              #my-call-queue .generic-widget-list li div span.call-description {
                 padding-right: 10px;
               }
 
-              #my-call-queue .generic-widget-list li span.call-description span.call-state {
+              #my-call-queue .generic-widget-list li div span.call-description span.call-state {
                 padding-left: 1em;
                 font-size: 0.7em;
                 color: #aaa;
               }
 
-              #my-call-queue .generic-widget-list li span.call-wait-time {
+              #my-call-queue .generic-widget-list li div:last-child {
+                color: #555;
+                font-weight: normal;
+                padding-left: 1em;
+              }
+
+              #my-call-queue .generic-widget-list li div span.call-wait-time {
                 float: right;
               }
             </style>
