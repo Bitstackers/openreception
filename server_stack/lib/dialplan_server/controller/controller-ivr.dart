@@ -51,7 +51,7 @@ class Ivr {
     }
 
     try {
-      return _okJson(await _ivrStore.get(menuId));
+      return _okJson(await _ivrStore.get(menuId)..id = menuId);
     } on storage.NotFound {
       return _notFound('No menu with id $menuId');
     }
@@ -67,11 +67,14 @@ class Ivr {
    *
    */
   Future<shelf.Response> remove(shelf.Request request) async {
-    final int menuId = shelf_route.getPathParameter(request, 'id');
+    final int menuId = int.parse(shelf_route.getPathParameter(request, 'id'));
 
     return _okJson(await _ivrStore.remove(menuId));
   }
 
+  /**
+   *
+   */
   Future<shelf.Response> update(shelf.Request request) async {
     final model.IvrMenu ivrMenu =
         model.IvrMenu.decode(JSON.decode(await request.readAsString()));
