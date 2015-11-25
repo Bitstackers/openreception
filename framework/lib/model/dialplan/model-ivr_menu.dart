@@ -52,6 +52,7 @@ class IvrMenu {
   static IvrMenu decode(Map map) => (new
       IvrMenu(map[Key.ivrMenu][Key.name],
           Playback.parse(map[Key.ivrMenu][Key.greeting]))
+          ..id = map[Key.id]
           .._greetingShort = Playback.parse(map[Key.ivrMenu][Key.greetingShort]))
           ..entries = map[Key.ivrMenu][Key.ivrEntries].map(IvrEntry.parse).toList();
 
@@ -65,6 +66,7 @@ class IvrMenu {
    */
   Map toJson() => {
         Key.ivrMenu: {
+          Key.id: id,
           Key.name: name,
           Key.greeting: greetingLong.toJson(),
           Key.greetingShort: greetingShort.toJson(),

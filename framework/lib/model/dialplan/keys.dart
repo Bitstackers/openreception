@@ -19,6 +19,7 @@ const String fromMinute = 'fromMinute';
 const String toDay = 'toDay';
 const String toHour = 'toHour';
 const String toMinute = 'toMinute';
+const String id = 'id';
 const String name = 'name';
 const String greeting = 'greeting';
 const String greetingShort = 'greetingShort';
