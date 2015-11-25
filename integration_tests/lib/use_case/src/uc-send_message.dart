@@ -42,6 +42,7 @@ abstract class SendMessage {
 
   static Future Receptionist_Send_Message () {
     step ("Receptionist sends a message...");
+
     Model.Message message = new Model.Message.stub(Model.Message.noID);
     return contactStore.getByReception(4, 1).then((Model.Contact contact) {
       message.recipients = contact.distributionList;

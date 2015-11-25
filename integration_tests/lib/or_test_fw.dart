@@ -26,8 +26,8 @@ part 'support/receptionist_pool.dart';
 part 'support/support_tools.dart';
 
 /// Authserver tests
-part 'authserver/src/auth_service.dart';
-part 'authserver/tests.dart';
+part 'service/src/service-auth.dart';
+part 'service/authserver.dart';
 
 /// Benchmark tests
 part 'benchmark/src/tests.dart';
@@ -47,22 +47,21 @@ part 'callflowcontrol/src/state_reload.dart';
 part 'callflowcontrol/src/user_state.dart';
 
 /// Config service tests
-part 'configserver/src/config_service.dart';
-part 'configserver/tests.dart';
+part 'service/src/service-config.dart';
+part 'service/configserver.dart';
 
 /// Calendar tests
-part 'calendar/tests.dart';
-part 'calendar/src/database_calendar.dart';
-part 'calendar/src/rest_calendar_store.dart';
+part 'service/calendar.dart';
+part 'service/src/service-calendar.dart';
 
 /// Contact store tests
-part 'contact/src/contact_store.dart';
-part 'contact/all_tests.dart';
+part 'service/src/storage-contact.dart';
+part 'service/contactserver.dart';
 
 /// Database tests
 part 'database/src/ivr_store.dart';
 part 'database/src/reception_dialplan_store.dart';
-part 'database/tests.dart';
+part 'database/all_tests.dart';
 
 /// Message store service tests
 part 'messagestore/tests.dart';
