@@ -45,7 +45,6 @@ void main() {
   runOrganizationTests();
   runDatabaseTests();
 
-  runAllTests();
   runReceptionTests();
   //runUseCaseTests();
 
