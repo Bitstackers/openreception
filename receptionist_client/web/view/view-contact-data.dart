@@ -14,8 +14,8 @@
 part of view;
 
 /**
- * Provides methods for handling the contact data widget in terms of focus,
- * navigation and rendering via the UIContactData class.
+ * Provides methods for handling the contact data widget in terms of focus, navigation and rendering
+ * via the UIContactData class.
  */
 class ContactData extends ViewWidget {
   final Controller.Call _callController;
@@ -49,8 +49,7 @@ class ContactData extends ViewWidget {
   @override void _onFocus(_) {}
 
   /**
-   * Simply navigate to my [_myDestination]. Matters not if this widget is
-   * already focused.
+   * Simply navigate to my [_myDestination]. Matters not if this widget is already focused.
    */
   void _activateMe(_) {
     _navigateToMyDestination();
@@ -59,8 +58,7 @@ class ContactData extends ViewWidget {
   /**
    * Tries to dial the [phoneNumber].
    *
-   * This should be called when the [_ui] fires a [ORModel.PhoneNumber] as
-   * marked ringing.
+   * This should be called when the [_ui] fires a [ORModel.PhoneNumber] as marked ringing.
    */
   void _call(ORModel.PhoneNumber phoneNumber) {
     _callController
@@ -112,8 +110,7 @@ class ContactData extends ViewWidget {
   }
 
   /**
-   * If no phonenumber is marked ringing, mark the currently selected phone-
-   * number ringing.
+   * If no phonenumber is marked ringing, mark the currently selected phone number ringing.
    */
   void _setRinging(_) {
     _ui.ring();
