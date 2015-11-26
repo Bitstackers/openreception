@@ -145,6 +145,11 @@ class UIContactData extends UIModel {
     _root.onKeyDown.listen(_keyboard.press);
     _root.onClick.listen(_selectFromClick);
 
+    _hotKeys.onAltArrowDown.listen((_) => _markSelected(_scanForwardForVisibleElement(
+        _phoneNumberList.querySelector('.selected')?.nextElementSibling)));
+    _hotKeys.onAltArrowUp.listen((_) => _markSelected(_scanBackwardForVisibleElement(
+        _phoneNumberList.querySelector('.selected')?.previousElementSibling)));
+
     _showPSTNSpan.onClick.listen((MouseEvent event) => _togglePopup(event.target));
     _showTagsSpan.onClick.listen((MouseEvent event) => _togglePopup(event.target));
   }

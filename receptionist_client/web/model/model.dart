@@ -175,7 +175,7 @@ abstract class UIModel {
           _markSelected(_scanForwardForVisibleElement(selected.nextElementSibling));
           break;
         case KeyCode.UP:
-          _markSelected(_scanBackwardsForVisibleElement(selected.previousElementSibling));
+          _markSelected(_scanBackwardForVisibleElement(selected.previousElementSibling));
           break;
       }
     }
@@ -241,8 +241,8 @@ abstract class UIModel {
   Stream<MouseEvent> get onClick => _root.onClick;
 
   /**
-   * Return the first [LIElement] that is not hidden. Search is forward,
-   * starting with and including [li].
+   * Return the first [LIElement] that is not hidden. Search is forward starting with and including
+   * [li].
    */
   LIElement _scanForwardForVisibleElement(LIElement li) {
     if (li != null && li.classes.contains('hide')) {
@@ -253,20 +253,19 @@ abstract class UIModel {
   }
 
   /**
-   * Return the first [LIElement] that is not hidden. Search is backwards,
-   * starting with and including [li].
+   * Return the first [LIElement] that is not hidden. Search is backwards, starting with and
+   * including [li].
    */
-  LIElement _scanBackwardsForVisibleElement(LIElement li) {
+  LIElement _scanBackwardForVisibleElement(LIElement li) {
     if (li != null && li.classes.contains('hide')) {
-      return _scanBackwardsForVisibleElement(li.previousElementSibling);
+      return _scanBackwardForVisibleElement(li.previousElementSibling);
     } else {
       return li;
     }
   }
 
   /**
-   * Is called by [_markSelected] whenever a [LIElement] is selected in the
-   * [_listTarget] element.
+   * Is called by [_markSelected] whenever a [LIElement] is selected in the [_listTarget] element.
    */
   selectCallback get _selectCallback => (LIElement li) => null;
 
