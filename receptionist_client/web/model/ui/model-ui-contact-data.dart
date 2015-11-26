@@ -88,11 +88,6 @@ class UIContactData extends UIModel {
   }
 
   /**
-   * Returns the mousedown click stream for the telephone numbers list.
-   */
-  Stream<MouseEvent> get clickSelectPhoneNumber => _phoneNumberList.onMouseDown;
-
-  /**
    * Add [items] ot the commands list.
    */
   set commands(List<String> items) => _populateList(_commandsList, items);
