@@ -43,10 +43,6 @@ Future<IO.HttpServer> start(
       config.authServer.externalUri,
       config.userServer.serverToken,
       new Service_IO.Client());
-  final Database.Connection _connection =
-      await Database.Connection.connect(config.database.dsn);
-
-  final Database.Ivr _ivrStore = new Database.Ivr(_connection);
 
   /**
    * Validate a token by looking it up on the authentication server.
@@ -72,14 +68,32 @@ Future<IO.HttpServer> start(
   shelf.Middleware checkAuthentication = shelf.createMiddleware(
       requestHandler: _lookupToken, responseHandler: null);
 
+  /**
+   * Controllers.
+   */
+  final Database.Connection _connection =
+      await Database.Connection.connect(config.database.dsn);
+
+  final Database.Ivr _ivrStore = new Database.Ivr(_connection);
+  final Database.ReceptionDialplan _dpStore =
+      new Database.ReceptionDialplan(_connection);
+
   final controller.Ivr ivrHandler = new controller.Ivr(_ivrStore);
+  final controller.ReceptionDialplan receptionDialplanHandler =
+      new controller.ReceptionDialplan(_dpStore);
 
   var router = shelf_route.router()
     ..get('/ivr', ivrHandler.list)
     ..get('/ivr/{id}', ivrHandler.get)
     ..put('/ivr/{id}', ivrHandler.update)
     ..delete('/ivr/{id}', ivrHandler.remove)
-    ..post('/ivr', ivrHandler.create);
+    ..post('/ivr', ivrHandler.create)
+
+    ..get('/receptiondialplan', receptionDialplanHandler.list)
+    ..get('/receptiondialplan/{id}', receptionDialplanHandler.get)
+    ..put('/receptiondialplan/{id}', receptionDialplanHandler.update)
+    ..delete('/receptiondialplan/{id}', receptionDialplanHandler.remove)
+    ..post('/receptiondialplan', receptionDialplanHandler.create);
 
   var handler = const shelf.Pipeline()
       .addMiddleware(
