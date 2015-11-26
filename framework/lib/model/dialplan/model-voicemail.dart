@@ -53,5 +53,5 @@ class Voicemail extends Action {
   String toString() => 'Voicemail $vmBox';
 
   String toJson() => '${Key.voicemail} $vmBox'
-      '${recipient.isNotEmpty ? '${recipient}' : ''}';
+      '${recipient.isNotEmpty ? ' ${recipient}' : ''}';
 }
