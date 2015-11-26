@@ -221,16 +221,6 @@ class UIContactData extends UIModel {
   }
 
   /**
-   * Select the [index] [ORModel.PhoneNumber] from [_phoneNumberList]. If
-   * [index] is out of range, select nothing.
-   */
-  void selectFromIndex(int index) {
-    if (_phoneNumberList.children.length > index) {
-      _markSelected(_scanForwardForVisibleElement(_phoneNumberList.children[index]));
-    }
-  }
-
-  /**
    * Mark a [LIElement] in the telephone number list selected, if one such is
    * the target of the [event].
    */
@@ -244,13 +234,7 @@ class UIContactData extends UIModel {
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
-    final Map<String, EventListener> bindings = {
-      '1': (_) => selectFirstPhoneNumber(),
-      '2': (_) => selectFromIndex(1),
-      '3': (_) => selectFromIndex(2),
-      '4': (_) => selectFromIndex(3),
-      'Ctrl+Space': (_) => _togglePopup(_showTagsSpan)
-    };
+    final Map<String, EventListener> bindings = {'Ctrl+Space': (_) => _togglePopup(_showTagsSpan)};
 
     _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
   }

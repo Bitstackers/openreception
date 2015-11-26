@@ -37,7 +37,7 @@ class ContactData extends ViewWidget {
       Controller.Call this._callController,
       Controller.Popup this._popup,
       Map<String, String> this._langMap) {
-    _ui.setHint('alt+t | ctrl+space');
+    _ui.setHint('alt+t | ctrl+space |  alt+↑↓');
 
     _observers();
   }
