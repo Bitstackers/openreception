@@ -23,6 +23,8 @@ class HotKeys {
   final Keyboard _keyDown = new Keyboard();
 
   final Bus<Html.KeyboardEvent> _altA = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _altArrowDown = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _altArrowUp = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _altB = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _altC = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _altE = new Bus<Html.KeyboardEvent>();
@@ -49,6 +51,8 @@ class HotKeys {
   final Bus<Html.KeyboardEvent> _numPlus = new Bus<Html.KeyboardEvent>();
 
   Stream<Html.KeyboardEvent> get onAltA => _altA.stream;
+  Stream<Html.KeyboardEvent> get onAltArrowDown => _altArrowDown.stream;
+  Stream<Html.KeyboardEvent> get onAltArrowUp => _altArrowUp.stream;
   Stream<Html.KeyboardEvent> get onAltB => _altB.stream;
   Stream<Html.KeyboardEvent> get onAltC => _altC.stream;
   Stream<Html.KeyboardEvent> get onAltE => _altE.stream;
@@ -82,6 +86,8 @@ class HotKeys {
 
     final Map<dynamic, Html.EventListener> preventDefaultBindings = {
       'Alt+a': _altA.fire,
+      'Alt+Down': _altArrowDown.fire,
+      'Alt+Up': _altArrowUp.fire,
       'Alt+b': _altB.fire,
       'Alt+c': _altC.fire,
       'Alt+e': _altE.fire,
@@ -154,6 +160,8 @@ class SimulationHotKeys {
   SimulationHotKeys(HotKeys this._hotKeys);
 
   void altA() => _hotKeys._altA.fire(null);
+  void altArrowDown() => _hotKeys._altArrowDown.fire(null);
+  void altArrowUp() => _hotKeys._altArrowUp.fire(null);
   void altB() => _hotKeys._altB.fire(null);
   void altC() => _hotKeys._altC.fire(null);
   void altE() => _hotKeys._altE.fire(null);
