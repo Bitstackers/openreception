@@ -94,33 +94,6 @@ class MyCallQueue extends ViewWidget {
 
     _call.listCalls().then((Iterable<ORModel.Call> calls) {
       _ui.calls = calls.where(isMine).toList(growable: false);
-
-      ORModel.Call call1 = new ORModel.Call.fromMap({
-        'id': '2',
-        'state': 'SPEAKING',
-        'reception_id': '1',
-        'locked': false,
-        'inbound': true,
-        'caller_id': '60431992',
-        'is_call': true,
-        'greeting_played': false,
-        'assigned_to': 4,
-        'arrival_time': new DateTime.now().millisecondsSinceEpoch
-      });
-      ORModel.Call call2 = new ORModel.Call.fromMap({
-        'id': '3',
-        'reception_id': '2',
-        'state': 'SPEAKING',
-        'locked': false,
-        'inbound': true,
-        'caller_id': '60431993',
-        'is_call': true,
-        'greeting_played': false,
-        'assigned_to': 4,
-        'arrival_time': new DateTime.now().millisecondsSinceEpoch
-      });
-
-      _ui.calls = [call1, call2];
     });
   }
 
