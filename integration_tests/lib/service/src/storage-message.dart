@@ -16,7 +16,7 @@ abstract class MessageStore {
     log.info('Listing messages non-filtered.');
 
     return messageStore.list()
-      .then((List<Model.Message> messages) {
+      .then((Iterable<Model.Message> messages) {
         expect(messages.length, greaterThan(0));
         expect(messages.every((msg) => msg is Model.Message), isTrue);
     });
