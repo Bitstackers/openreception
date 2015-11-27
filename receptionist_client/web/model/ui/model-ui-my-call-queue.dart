@@ -143,7 +143,7 @@ class UIMyCallQueue extends UIModel {
   }
 
   /**
-   * Mark [call] ready for transfer.
+   * Mark [call] ready for transfer. Does nothing if [call] is not found in the list.
    */
   void markForTransfer(ORModel.Call call) {
     _list.querySelector('[data-id="${call.ID}"]')?.setAttribute('transfer', '');

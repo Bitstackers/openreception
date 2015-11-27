@@ -96,15 +96,71 @@ class MyCallQueue extends ViewWidget {
    *
    * This should be called when the [_ui] fires a [ORModel.PhoneNumber] as marked ringing.
    */
-  void _call(ORModel.PhoneNumber phoneNumber) {
-    _callController
-        .dial(phoneNumber, _receptionSelector.selectedReception, _contactSelector.selectedContact)
-        .then((ORModel.Call call) {
-      _ui.markForTransfer(call);
-    }).catchError((error) {
+  /// TODO (TL): Comment about parking and marking for transfer.
+  Future _call(ORModel.PhoneNumber phoneNumber) async {
+    bool transfer = _appState.activeCall != ORModel.Call.noCall;
+
+    if (transfer) {
+      ORModel.Call parkedCall = await park(_appState.activeCall);
+      _ui.markForTransfer(parkedCall);
+    }
+
+    _busyCallController();
+    try {
+      ORModel.Call newCall = await _callController.dial(
+          phoneNumber, _receptionSelector.selectedReception, _contactSelector.selectedContact);
+      _ui.markForTransfer(newCall);
+      _contactData.removeRinging;
+    } catch (error) {
       _popup.error(_langMap[Key.callFailed], phoneNumber.value);
-      throw error;
-    }).whenComplete(_contactData.removeRinging);
+    }
+
+    await _readyCallController();
+  }
+
+  /**
+   *
+   */
+  void _busyCallController() {
+    _callControllerBusy = true;
+  }
+
+  /**
+   *
+   */
+  Future _readyCallController() {
+    return new Future.delayed(new Duration(milliseconds: 100), () => _callControllerBusy = false);
+  }
+
+  /**
+   *
+   */
+  void _error(Exception error, String title, String message) {
+    if (error is Controller.BusyException) {
+      _popup.error(_langMap[Key.errorSystem], _langMap[Key.errorCallControllerBusy]);
+    } else {
+      _popup.error(title, message);
+    }
+  }
+
+  /**
+   *
+   */
+  Future<ORModel.Call> park(ORModel.Call call) async {
+    ORModel.Call parkedCall = ORModel.Call.noCall;
+
+    if (!_callControllerBusy && call != ORModel.Call.noCall) {
+      try {
+        _busyCallController();
+        parkedCall = await _callController.park(call);
+      } catch (error) {
+        _error(error, _langMap[Key.errorCallPark], 'ID ${_appState.activeCall.ID}');
+      }
+    }
+
+    await _readyCallController();
+
+    return parkedCall;
   }
 
   /**
@@ -116,6 +172,33 @@ class MyCallQueue extends ViewWidget {
 
     _callController.listCalls().then((Iterable<ORModel.Call> calls) {
       _ui.calls = calls.where(isMine).toList(growable: false);
+
+      ORModel.Call call1 = new ORModel.Call.fromMap({
+        'id': '2',
+        'state': 'SPEAKING',
+        'reception_id': '1',
+        'locked': false,
+        'inbound': true,
+        'caller_id': '60431992',
+        'is_call': true,
+        'greeting_played': false,
+        'assigned_to': 4,
+        'arrival_time': new DateTime.now().millisecondsSinceEpoch
+      });
+      ORModel.Call call2 = new ORModel.Call.fromMap({
+        'id': '3',
+        'reception_id': '2',
+        'state': 'SPEAKING',
+        'locked': false,
+        'inbound': true,
+        'caller_id': '60431993',
+        'is_call': true,
+        'greeting_played': false,
+        'assigned_to': 4,
+        'arrival_time': new DateTime.now().millisecondsSinceEpoch
+      });
+
+      _ui.calls = [call1, call2];
     });
   }
 
@@ -127,20 +210,6 @@ class MyCallQueue extends ViewWidget {
 
     _ui.onClick.listen(_activateMe);
 
-    void _complete() {
-      new Future.delayed(new Duration(milliseconds: 500), () => _callControllerBusy = false);
-    }
-
-    void _error(Exception error, String title, String message) {
-      if (error is Controller.BusyException) {
-        _popup.error(_langMap[Key.errorSystem], _langMap[Key.errorCallControllerBusy]);
-      } else {
-        _popup.error(title, message);
-      }
-
-      _complete();
-    }
-
     _hotKeys.onCtrlNumMinus.listen((_) {
       if (!_callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
         _callControllerBusy = true;
@@ -148,20 +217,11 @@ class MyCallQueue extends ViewWidget {
             .transferToFirstParkedCall(_appState.activeCall)
             .catchError((error) =>
                 _error(error, _langMap[Key.errorCallTransfer], 'ID ${_appState.activeCall.ID}'))
-            .whenComplete(() => _complete());
+            .whenComplete(() => _readyCallController());
       }
     });
 
-    _hotKeys.onF7.listen((_) {
-      if (!_callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
-        _callControllerBusy = true;
-        _callController
-            .park(_appState.activeCall)
-            .catchError((error) =>
-                _error(error, _langMap[Key.errorCallPark], 'ID ${_appState.activeCall.ID}'))
-            .whenComplete(() => _complete());
-      }
-    });
+    _hotKeys.onF7.listen((_) => park(_appState.activeCall));
 
     _hotKeys.onF8.listen((_) {
       if (!_callControllerBusy &&
@@ -171,7 +231,7 @@ class MyCallQueue extends ViewWidget {
         _callController
             .pickupFirstParkedCall()
             .catchError((error) => _error(error, _langMap[Key.errorCallUnpark], ''))
-            .whenComplete(() => _complete());
+            .whenComplete(() => _readyCallController());
       }
     });
 
@@ -182,7 +242,7 @@ class MyCallQueue extends ViewWidget {
             .hangup(_appState.activeCall)
             .catchError((error) =>
                 _error(error, _langMap[Key.errorCallHangup], 'ID ${_appState.activeCall.ID}'))
-            .whenComplete(() => _complete());
+            .whenComplete(() => _readyCallController());
       }
     });
 
@@ -193,7 +253,7 @@ class MyCallQueue extends ViewWidget {
             .pickupNext()
             .catchError((error) => _error(
                 error, _langMap[Key.errorCallNotFound], _langMap[Key.errorCallNotFoundExtended]))
-            .whenComplete(() => _complete());
+            .whenComplete(() => _readyCallController());
       }
     });
 

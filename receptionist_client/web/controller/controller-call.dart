@@ -134,7 +134,7 @@ class Call {
   /**
    * Tries to park [call].
    */
-  Future park(ORModel.Call call) {
+  Future<ORModel.Call> park(ORModel.Call call) {
     if (call == ORModel.Call.noCall) {
       return new Future.value(ORModel.Call.noCall);
     }
