@@ -1,4 +1,4 @@
-INSERT INTO reception_dialplans (dialplan) VALUES('{}');
+INSERT INTO reception_dialplans (dialplan) VALUES('{"open":[],"note":"","active":true,"closed":[],"extraExtensions":[]}');
 
 INSERT INTO contacts (id, full_name, contact_type)
 VALUES (1,  'Thomas Løcke', 'human'),
