@@ -20,12 +20,9 @@ part of view;
  */
 class GlobalCallQueue extends ViewWidget {
   final Model.AppClientState _appState;
-  final Controller.Call _call;
-  bool _callControllerBusy = false;
-  final Map<String, String> _langMap;
+  final Controller.Call _callController;
   final Controller.Destination _myDestination;
   final Controller.Notification _notification;
-  final Controller.Popup _popup;
   final Controller.Sound _sound;
   final Model.UIGlobalCallQueue _uiModel;
   ORModel.UserStatus _userState;
@@ -38,11 +35,9 @@ class GlobalCallQueue extends ViewWidget {
       Model.AppClientState this._appState,
       Controller.Destination this._myDestination,
       Controller.Notification this._notification,
-      Controller.Call this._call,
-      Controller.Popup this._popup,
+      Controller.Call this._callController,
       Controller.Sound this._sound,
-      ORModel.UserStatus this._userState,
-      Map<String, String> this._langMap) {
+      ORModel.UserStatus this._userState) {
     _loadCallList();
 
     _observers();
@@ -83,7 +78,7 @@ class GlobalCallQueue extends ViewWidget {
   void _loadCallList() {
     bool unassigned(ORModel.Call call) => call.assignedTo == ORModel.User.noID;
 
-    _call.listCalls().then((Iterable<ORModel.Call> calls) {
+    _callController.listCalls().then((Iterable<ORModel.Call> calls) {
       _ui.calls = calls.where(unassigned).toList(growable: false);
     });
   }
@@ -97,20 +92,6 @@ class GlobalCallQueue extends ViewWidget {
     _ui.onClick.listen(_activateMe);
 
     _notification.onAnyCallStateChange.listen(_handleCallStateChanges);
-
-    void _complete() {
-      new Future.delayed(new Duration(milliseconds: 500), () => _callControllerBusy = false);
-    }
-
-    void _error(Exception error, String title, String message) {
-      if (error is Controller.BusyException) {
-        _popup.error(_langMap[Key.errorSystem], _langMap[Key.errorCallControllerBusy]);
-      } else {
-        _popup.error(title, message);
-      }
-
-      _complete();
-    }
 
     /**
      * Change the user/agent state for the currently logged in user.
@@ -134,28 +115,6 @@ class GlobalCallQueue extends ViewWidget {
           (_userState.state == ORModel.UserState.Idle ||
               _userState.state == ORModel.UserState.Unknown)) {
         _sound.pling();
-      }
-    });
-
-    _hotKeys.onNumPlus.listen((_) {
-      if (!_callControllerBusy) {
-        _callControllerBusy = true;
-        _call
-            .pickupNext()
-            .catchError((error) => _error(
-                error, _langMap[Key.errorCallNotFound], _langMap[Key.errorCallNotFoundExtended]))
-            .whenComplete(() => _complete());
-      }
-    });
-
-    _hotKeys.onNumDiv.listen((_) {
-      if (!_callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
-        _callControllerBusy = true;
-        _call
-            .hangup(_appState.activeCall)
-            .catchError((error) =>
-                _error(error, _langMap[Key.errorCallHangup], 'ID ${_appState.activeCall.ID}'))
-            .whenComplete(() => _complete());
       }
     });
   }

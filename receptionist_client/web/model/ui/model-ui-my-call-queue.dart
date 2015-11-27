@@ -140,6 +140,13 @@ class UIMyCallQueue extends UIModel {
   }
 
   /**
+   * Mark [call] ready for transfer.
+   */
+  void markForTransfer(ORModel.Call call) {
+    print('markForTransfer: ${call.inbound ? 'in' : 'out'} - ${call.ID}');
+  }
+
+  /**
    * Observers.
    */
   void _observers() {

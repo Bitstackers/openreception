@@ -121,6 +121,7 @@ class ReceptionistclientReady {
         _langMap[Key.daySunday]);
     Model.UIContactCalendar _uiContactCalendar =
         new Model.UIContactCalendar(querySelector('#contact-calendar'), _weekDays);
+    Model.UIContactData _uiContactData = new Model.UIContactData(querySelector('#contact-data'));
     Model.UIContactSelector _uiContactSelector =
         new Model.UIContactSelector(querySelector('#contact-selector'));
     Model.UIMessageArchive _uiMessageArchive =
@@ -145,10 +146,8 @@ class ReceptionistclientReady {
           new Controller.Destination(Controller.Context.Home, Controller.Widget.GlobalCallQueue),
           _notification,
           _callController,
-          _popup,
           _sound,
-          userStatus,
-          _langMap);
+          userStatus);
     });
 
     _contactCalendar = new ContactCalendar(
@@ -161,11 +160,10 @@ class ReceptionistclientReady {
         _notification);
 
     new ContactData(
-        new Model.UIContactData(querySelector('#contact-data')),
+        _uiContactData,
         new Controller.Destination(Controller.Context.Home, Controller.Widget.ContactData),
         _uiContactSelector,
         _uiReceptionSelector,
-        _callController,
         _popup,
         _langMap);
 
@@ -218,7 +216,10 @@ class ReceptionistclientReady {
         _notification,
         _callController,
         _popup,
-        _langMap);
+        _langMap,
+        _uiContactData,
+        _uiContactSelector,
+        _uiReceptionSelector);
 
     new ReceptionAddresses(
         new Model.UIReceptionAddresses(querySelector('#reception-addresses')),

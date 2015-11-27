@@ -20,12 +20,15 @@ part of view;
  */
 class MyCallQueue extends ViewWidget {
   final Model.AppClientState _appState;
-  final Controller.Call _call;
+  final Controller.Call _callController;
+  final Model.UIContactData _contactData;
+  final Model.UIContactSelector _contactSelector;
   bool _callControllerBusy = false;
   final Map<String, String> _langMap;
   final Controller.Destination _myDestination;
   final Controller.Notification _notification;
   final Controller.Popup _popup;
+  final Model.UIReceptionSelector _receptionSelector;
   final Model.UIMyCallQueue _uiModel;
 
   /**
@@ -36,9 +39,12 @@ class MyCallQueue extends ViewWidget {
       Model.AppClientState this._appState,
       Controller.Destination this._myDestination,
       Controller.Notification this._notification,
-      Controller.Call this._call,
+      Controller.Call this._callController,
       Controller.Popup this._popup,
-      Map<String, String> this._langMap) {
+      Map<String, String> this._langMap,
+      Model.UIContactData this._contactData,
+      Model.UIContactSelector this._contactSelector,
+      Model.UIReceptionSelector this._receptionSelector) {
     _loadCallList();
 
     _observers();
@@ -122,7 +128,7 @@ class MyCallQueue extends ViewWidget {
     _hotKeys.onCtrlNumMinus.listen((_) {
       if (!_callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
         _callControllerBusy = true;
-        _call
+        _callController
             .transferToFirstParkedCall(_appState.activeCall)
             .catchError((error) =>
                 _error(error, _langMap[Key.errorCallTransfer], 'ID ${_appState.activeCall.ID}'))
@@ -133,7 +139,7 @@ class MyCallQueue extends ViewWidget {
     _hotKeys.onF7.listen((_) {
       if (!_callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
         _callControllerBusy = true;
-        _call
+        _callController
             .park(_appState.activeCall)
             .catchError((error) =>
                 _error(error, _langMap[Key.errorCallPark], 'ID ${_appState.activeCall.ID}'))
@@ -146,13 +152,46 @@ class MyCallQueue extends ViewWidget {
           _appState.activeCall == ORModel.Call.noCall &&
           _ui.calls.any((ORModel.Call call) => call.state == ORModel.CallState.Parked)) {
         _callControllerBusy = true;
-        _call
+        _callController
             .pickupFirstParkedCall()
             .catchError((error) => _error(error, _langMap[Key.errorCallUnpark], ''))
             .whenComplete(() => _complete());
       }
     });
 
+    _hotKeys.onNumDiv.listen((_) {
+      if (!_callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
+        _callControllerBusy = true;
+        _callController
+            .hangup(_appState.activeCall)
+            .catchError((error) =>
+                _error(error, _langMap[Key.errorCallHangup], 'ID ${_appState.activeCall.ID}'))
+            .whenComplete(() => _complete());
+      }
+    });
+
+    _hotKeys.onNumPlus.listen((_) {
+      if (!_callControllerBusy) {
+        _callControllerBusy = true;
+        _callController
+            .pickupNext()
+            .catchError((error) => _error(
+                error, _langMap[Key.errorCallNotFound], _langMap[Key.errorCallNotFoundExtended]))
+            .whenComplete(() => _complete());
+      }
+    });
+
+    _contactData.onMarkedRinging.listen(_call);
+
+    _hotKeys.onNumMult.listen(_setRinging);
+
     _notification.onAnyCallStateChange.listen(_handleCallStateChanges);
+  }
+
+  /**
+   * If no phonenumber is marked ringing, mark the currently selected phone number ringing.
+   */
+  void _setRinging(_) {
+    _contactData.ring();
   }
 }

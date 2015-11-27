@@ -18,7 +18,6 @@ part of view;
  * via the UIContactData class.
  */
 class ContactData extends ViewWidget {
-  final Controller.Call _callController;
   final Model.UIContactSelector _contactSelector;
   final Map<String, String> _langMap;
   final Controller.Destination _myDestination;
@@ -34,7 +33,6 @@ class ContactData extends ViewWidget {
       Controller.Destination this._myDestination,
       Model.UIContactSelector this._contactSelector,
       Model.UIReceptionSelector this._receptionSelector,
-      Controller.Call this._callController,
       Controller.Popup this._popup,
       Map<String, String> this._langMap) {
     _ui.setHint('alt+t | ctrl+space |  alt+↑↓');
@@ -53,22 +51,6 @@ class ContactData extends ViewWidget {
    */
   void _activateMe(_) {
     _navigateToMyDestination();
-  }
-
-  /**
-   * Tries to dial the [phoneNumber].
-   *
-   * This should be called when the [_ui] fires a [ORModel.PhoneNumber] as marked ringing.
-   */
-  void _call(ORModel.PhoneNumber phoneNumber) {
-    _callController
-        .dial(phoneNumber, _receptionSelector.selectedReception, _contactSelector.selectedContact)
-        .then((ORModel.Call call) {
-      print('CALL: ${call.toJson()}');
-    }).catchError((error) {
-      _popup.error(_langMap[Key.callFailed], phoneNumber.value);
-      throw error;
-    }).whenComplete(_ui.removeRinging);
   }
 
   /**
@@ -93,10 +75,6 @@ class ContactData extends ViewWidget {
     _contactSelector.onSelect.listen(_render);
 
     _receptionSelector.onSelect.listen(_clear);
-
-    _hotKeys.onNumMult.listen(_setRinging);
-
-    _ui.onMarkedRinging.listen(_call);
   }
 
   /**
@@ -109,12 +87,5 @@ class ContactData extends ViewWidget {
       _ui.contact = contact;
       _ui.selectFirstPhoneNumber();
     }
-  }
-
-  /**
-   * If no phonenumber is marked ringing, mark the currently selected phone number ringing.
-   */
-  void _setRinging(_) {
-    _ui.ring();
   }
 }
