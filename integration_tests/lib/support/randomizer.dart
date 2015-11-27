@@ -277,6 +277,56 @@ abstract class Randomizer {
   static String randomDialplanNote() => randomChoice(dialplanNote);
 
   /**
+   * Generates a random [Model.IvrMenu].
+   */
+  static Model.IvrMenu randomIvrMenu() =>
+      new Model.IvrMenu('menu-${randomPhoneNumber()}', randomPlayback())
+        ..entries = randomIvrEntries();
+
+  /**
+   *
+   */
+  static List<Model.IvrEntry> randomIvrEntries() =>
+      ['1','2','3','4','5','6','7','8','9','*','#']
+        .take(rand.nextInt(4)+1).map(randomIvrEntry).toList();
+
+  /**
+    * Generates a random [Model.IvrEntry] action.
+    */
+   static Model.IvrEntry randomIvrEntry(String digit) =>
+     randomChoice([
+       randomIvrTopmenu,
+       randomIvrSubmenu,
+       randomIvrTransfer,
+       randomIvrVoicemail,
+       ])(digit);
+
+  /**
+   *
+   */
+  static Model.IvrTopmenu randomIvrTopmenu(String digit) =>
+      new Model.IvrTopmenu(digit);
+
+  /**
+   *
+   */
+  static Model.IvrSubmenu randomIvrSubmenu(String digit) =>
+      new Model.IvrSubmenu(digit, 'submenu_${rand.nextInt(100)}');
+
+  /**
+   *
+   */
+  static Model.IvrTransfer randomIvrTransfer(String digit) =>
+      new Model.IvrTransfer(digit, randomTransfer());
+
+  /**
+   *
+   */
+  static Model.IvrVoicemail randomIvrVoicemail(String digit) =>
+      new Model.IvrVoicemail(digit, randomVoicemail());
+
+
+  /**
    * Generates a random [Model.ReceptionDialplan].
    */
   static Model.ReceptionDialplan randomDialplan() =>
@@ -292,6 +342,9 @@ abstract class Randomizer {
   static List<Model.HourAction> randomDialplanHourActions() =>
       new List.generate(rand.nextInt(4)+1, (_) => randomHourAction());
 
+  /**
+   *
+   */
   static Model.HourAction randomHourAction() =>
       new Model.HourAction()
         ..actions = randomDialplanActions()
