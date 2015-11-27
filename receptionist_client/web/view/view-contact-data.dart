@@ -63,7 +63,9 @@ class ContactData extends ViewWidget {
   void _call(ORModel.PhoneNumber phoneNumber) {
     _callController
         .dial(phoneNumber, _receptionSelector.selectedReception, _contactSelector.selectedContact)
-        .catchError((error) {
+        .then((ORModel.Call call) {
+      print('CALL: ${call.toJson()}');
+    }).catchError((error) {
       _popup.error(_langMap[Key.callFailed], phoneNumber.value);
       throw error;
     }).whenComplete(_ui.removeRinging);
