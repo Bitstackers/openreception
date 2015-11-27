@@ -53,7 +53,6 @@ class UIMyCallQueue extends UIModel {
    * Construct a call [LIElement] from [call]
    */
   LIElement _buildCallElement(ORModel.Call call) {
-    print('BUILDING ${call.ID}');
     final DivElement numbersAndStateDiv = new DivElement()..style.pointerEvents = 'none';
     final DivElement nameDiv = new DivElement()..style.pointerEvents = 'none';
 
@@ -240,6 +239,10 @@ class UIMyCallQueue extends UIModel {
     final LIElement li = _list.querySelector('[data-id="${call.ID}"]');
 
     if (li != null) {
+      final LIElement newLI = _buildCallElement(call);
+      if (li.attributes.containsKey('transfer')) {
+        newLI.setAttribute('transfer', '');
+      }
       li.replaceWith(_buildCallElement(call));
     } else {
       appendCall(call);
