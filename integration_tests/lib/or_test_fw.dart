@@ -63,6 +63,7 @@ part 'database/src/reception_dialplan_store.dart';
 part 'database/all_tests.dart';
 
 part 'service/ivrserver.dart';
+part 'service/dialplanserver.dart';
 
 /// Message store service tests
 part 'service/messageserver.dart';
