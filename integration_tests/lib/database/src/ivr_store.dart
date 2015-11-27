@@ -6,7 +6,7 @@ abstract class IvrStore {
    *
    */
   static Future create(Storage.Ivr ivrStore) async {
-    Model.IvrMenu menu = new Model.IvrMenu('test', new Model.Playback('test'));
+    Model.IvrMenu menu = Randomizer.randomIvrMenu();
 
     Model.IvrMenu createdMenu = await ivrStore.create(menu);
 
@@ -20,7 +20,7 @@ abstract class IvrStore {
    *
    */
   static Future get(Storage.Ivr ivrStore) async {
-    Model.IvrMenu menu = new Model.IvrMenu('test', new Model.Playback('test'));
+    Model.IvrMenu menu = Randomizer.randomIvrMenu();
 
     Model.IvrMenu createdMenu = await ivrStore.create(menu);
 
@@ -41,7 +41,7 @@ abstract class IvrStore {
    *
    */
   static Future remove(Storage.Ivr ivrStore) async {
-    Model.IvrMenu menu = new Model.IvrMenu('test', new Model.Playback('test'));
+    Model.IvrMenu menu = Randomizer.randomIvrMenu();
 
     Model.IvrMenu createdMenu = await ivrStore.create(menu);
 
@@ -54,12 +54,18 @@ abstract class IvrStore {
    *
    */
   static Future update(Storage.Ivr ivrStore) async {
-    Model.IvrMenu menu = new Model.IvrMenu('test', new Model.Playback('test'));
+    Model.IvrMenu menu = Randomizer.randomIvrMenu();
 
     Model.IvrMenu createdMenu = await ivrStore.create(menu);
 
     expect(createdMenu, isNotNull);
     expect(createdMenu.id, greaterThan(Model.IvrMenu.noId));
+
+    {
+      Model.IvrMenu changes = Randomizer.randomIvrMenu();
+      changes.id = createdMenu.id;
+      createdMenu = changes;
+    }
 
     await ivrStore.update(createdMenu);
 
