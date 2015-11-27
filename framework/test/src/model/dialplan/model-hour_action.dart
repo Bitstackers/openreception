@@ -61,8 +61,6 @@ abstract class HourAction {
    */
   static Model.HourAction buildObject() {
 
-    print(JSON.encode(new Model.ReceptionDialplan()));
-
     final List<Model.OpeningHour> openHours = [
       new Model.OpeningHour.empty()
         ..fromDay = Model.WeekDay.mon
