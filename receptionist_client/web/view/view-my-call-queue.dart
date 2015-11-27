@@ -109,7 +109,10 @@ class MyCallQueue extends ViewWidget {
     try {
       ORModel.Call newCall = await _callController.dial(
           phoneNumber, _receptionSelector.selectedReception, _contactSelector.selectedContact);
-      _ui.markForTransfer(newCall);
+      if (transfer) {
+        _ui.markForTransfer(newCall);
+      }
+      print('REMOVERINGING!!!');
       _contactData.removeRinging;
     } catch (error) {
       _popup.error(_langMap[Key.callFailed], phoneNumber.value);
