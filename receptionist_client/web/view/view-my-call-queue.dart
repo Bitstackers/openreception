@@ -92,13 +92,29 @@ class MyCallQueue extends ViewWidget {
   }
 
   /**
+   * Tries to dial the [phoneNumber].
+   *
+   * This should be called when the [_ui] fires a [ORModel.PhoneNumber] as marked ringing.
+   */
+  void _call(ORModel.PhoneNumber phoneNumber) {
+    _callController
+        .dial(phoneNumber, _receptionSelector.selectedReception, _contactSelector.selectedContact)
+        .then((ORModel.Call call) {
+      _ui.markForTransfer(call);
+    }).catchError((error) {
+      _popup.error(_langMap[Key.callFailed], phoneNumber.value);
+      throw error;
+    }).whenComplete(_contactData.removeRinging);
+  }
+
+  /**
    * Load the list of calls assigned to current user and not being transferred.
    */
   void _loadCallList() {
     bool isMine(ORModel.Call call) =>
         call.assignedTo == _appState.currentUser.ID && call.state != ORModel.CallState.Transferred;
 
-    _call.listCalls().then((Iterable<ORModel.Call> calls) {
+    _callController.listCalls().then((Iterable<ORModel.Call> calls) {
       _ui.calls = calls.where(isMine).toList(growable: false);
     });
   }
