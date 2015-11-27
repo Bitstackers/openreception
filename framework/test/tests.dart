@@ -97,6 +97,7 @@ void main() {
 
   testModelAction();
   testModelEnqueue();
+  testModelHourAction();
   testModelIvrEntry();
   testModelIvrMenu();
   testModelPlayback();
