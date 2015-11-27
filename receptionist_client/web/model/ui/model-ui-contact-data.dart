@@ -174,14 +174,9 @@ class UIContactData extends UIModel {
    * Removing the effect is delayed by 500ms for usability reasons.
    */
   void removeRinging() {
-    HtmlElement element = _root.querySelector('.ringing');
-
-    if (element != null) {
-      new Future.delayed(new Duration(milliseconds: 500), () {
-        print('ACTUALLY REMOVING RINGING! ${element.classes}');
-        element.classes.toggle('ringing', false);
-      });
-    }
+    new Future.delayed(new Duration(milliseconds: 500), () {
+      _root.querySelector('.ringing')?.classes.toggle('ringing', false);
+    });
   }
 
   /**

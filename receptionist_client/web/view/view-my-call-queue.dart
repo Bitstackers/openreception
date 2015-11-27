@@ -112,7 +112,7 @@ class MyCallQueue extends ViewWidget {
       if (transfer) {
         _ui.markForTransfer(newCall);
       }
-      print('REMOVERINGING!!!');
+      print('REMOVERINGING!!! ${querySelector('.ringing')?.classes}');
       _contactData.removeRinging;
     } catch (error) {
       _popup.error(_langMap[Key.callFailed], phoneNumber.value);
