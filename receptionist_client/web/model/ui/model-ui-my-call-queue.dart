@@ -53,21 +53,24 @@ class UIMyCallQueue extends UIModel {
    * Construct a call [LIElement] from [call]
    */
   LIElement _buildCallElement(ORModel.Call call) {
-    final DivElement numbersAndStateDiv = new DivElement();
-    final DivElement nameDiv = new DivElement();
+    final DivElement numbersAndStateDiv = new DivElement()..style.pointerEvents = 'none';
+    final DivElement nameDiv = new DivElement()..style.pointerEvents = 'none';
 
     setName(call, nameDiv);
 
     final SpanElement callState = new SpanElement()
+      ..style.pointerEvents = 'none'
       ..classes.add('call-state')
       ..text = _langMap['callstate-${call.state.toLowerCase()}'];
 
     final SpanElement callDesc = new SpanElement()
+      ..style.pointerEvents = 'none'
       ..classes.add('call-description')
       ..text = call.inbound ? '${call.callerID}' : '${call.destination}'
       ..children.add(callState);
 
     final SpanElement callWaitTimer = new SpanElement()
+      ..style.pointerEvents = 'none'
       ..classes.add('call-wait-time')
       ..text = new DateTime.now().difference(call.arrived).inSeconds.toString();
 
@@ -143,7 +146,7 @@ class UIMyCallQueue extends UIModel {
    * Mark [call] ready for transfer.
    */
   void markForTransfer(ORModel.Call call) {
-    print('markForTransfer: ${call.inbound ? 'in' : 'out'} - ${call.ID}');
+    _list.querySelector('[data-id="${call.ID}"]')?.setAttribute('transfer', '');
   }
 
   /**
@@ -152,6 +155,14 @@ class UIMyCallQueue extends UIModel {
   void _observers() {
     _root.onKeyDown.listen(_keyboard.press);
     _root.onClick.listen((_) => _list.focus());
+
+    _list.onDoubleClick.listen((MouseEvent event) {
+      if (event.target is LIElement) {
+        /// DO STUFF HERE
+        print((event.target as LIElement).dataset['id']);
+        (event.target as LIElement).setAttribute('transfer', '');
+      }
+    });
 
     _callAgeUpdate();
   }
