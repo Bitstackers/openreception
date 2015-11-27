@@ -53,6 +53,7 @@ class UIMyCallQueue extends UIModel {
    * Construct a call [LIElement] from [call]
    */
   LIElement _buildCallElement(ORModel.Call call) {
+    print('BUILDING ${call.ID}');
     final DivElement numbersAndStateDiv = new DivElement()..style.pointerEvents = 'none';
     final DivElement nameDiv = new DivElement()..style.pointerEvents = 'none';
 
