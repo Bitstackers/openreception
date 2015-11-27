@@ -178,6 +178,7 @@ class UIContactData extends UIModel {
 
     if (element != null) {
       new Future.delayed(new Duration(milliseconds: 500), () {
+        print('ACTUALLY REMOVING RINGING! ${element.classes}');
         element.classes.toggle('ringing', false);
       });
     }
