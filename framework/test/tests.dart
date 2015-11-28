@@ -100,6 +100,7 @@ void main() {
   testModelHourAction();
   testModelIvrEntry();
   testModelIvrMenu();
+  testModelNotify();
   testModelPlayback();
   testModelReceptionDialplan();
   testBus();

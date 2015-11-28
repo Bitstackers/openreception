@@ -13,3 +13,84 @@
 
 part of openreception.test;
 
+
+/**
+ *
+ */
+void testModelNotify() {
+  group('Model.Notify', () {
+    test('serializationDeserialization',
+        ModelNotify.serializationDeserialization);
+
+    test('serialization', ModelNotify.serialization);
+
+    test('buildObject', ModelNotify.buildObject);
+    test('parse', ModelNotify.parse);
+  });
+}
+
+/**
+ *
+ */
+abstract class ModelNotify {
+  /**
+   *
+   */
+  static void serialization() {
+    Model.Notify builtObject = buildObject();
+    String serializedObject = JSON.encode(builtObject);
+
+    expect(serializedObject, isNotNull);
+    expect(serializedObject, isNotEmpty);
+  }
+
+  /**
+   *
+   */
+  static void serializationDeserialization() {
+    Model.Notify builtObject = buildObject();
+
+    Model.Notify deserializedObject =
+        Model.Notify.parse(JSON.decode(JSON.encode(builtObject)));
+
+    expect(builtObject.toJson(), equals(deserializedObject.toJson()));
+
+    expect(builtObject.eventName, equals(deserializedObject.eventName));
+    expect(builtObject.toJson(), equals(deserializedObject.toJson()));
+
+  }
+
+  /**
+   *
+   */
+  static Model.Notify buildObject() {
+    final String eventName = 'call-offer';
+    final Model.Notify builtObject =
+        new Model.Notify(eventName);
+
+    expect(builtObject.eventName, equals(eventName));
+
+    return builtObject;
+  }
+
+  /**
+   *
+   */
+  static void parse() {
+    final String eventName = 'call-offer';
+
+    Model.Notify builtObject = Model.Notify.parse('notify $eventName');
+
+    expect(builtObject.eventName, equals(eventName));
+
+    /// Adding lots of spaces.
+    builtObject = Model.Notify.parse('   notify     $eventName');
+
+    expect(builtObject.eventName, equals(eventName));
+
+
+    ///TODO check exceptions.
+    expect(() => Model.Notify.parse('notif $eventName'),
+        throwsA(new isInstanceOf<FormatException>()));
+  }
+}
