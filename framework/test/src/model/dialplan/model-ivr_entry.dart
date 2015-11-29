@@ -18,12 +18,6 @@ part of openreception.test;
  */
 void testModelIvrEntry() {
   group('Model.IvrEntry', () {
-//    test('serializationDeserialization',
-//        ModelIvrEntry.serializationDeserialization);
-//
-//    test('serialization', ModelIvrEntry.serialization);
-//
-//    test('buildObject', ModelIvrEntry.buildObject);
 
     test('parseUndefined', ModelIvrEntry.parseUndefined);
     test('parseSubmenu', ModelIvrEntry.parseSubmenu);
