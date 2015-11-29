@@ -103,6 +103,7 @@ void main() {
   testModelNotify();
   testModelPlayback();
   testModelReceptionDialplan();
+  testModelOpeningHour();
   testBus();
 
   testEvent();
