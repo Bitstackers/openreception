@@ -155,6 +155,7 @@ class OpeningHour {
     if (!gotDay || !gotHour && openingHour.isValid()) {
       throw new FormatException('Failed to parse buffer "$buffer"');
     }
+    if(openingHour.toDay == null) openingHour.toDay = openingHour.fromDay;
     openingHour.isValid();
 
     return openingHour;
