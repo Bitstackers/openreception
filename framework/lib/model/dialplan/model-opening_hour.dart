@@ -166,7 +166,7 @@ class OpeningHour {
       '-$toHour:${toMinute < 10 ? '0$toMinute' : toMinute}';
 
   String toString() => '${_trimWday(fromDay)}'
-      '${toDay != null ? '-${_trimWday(toDay)}' : ''} $_stringifiedTime';
+      '${toDay != fromDay ? '-${_trimWday(toDay)}' : ''} $_stringifiedTime';
 
   bool isBefore(OpeningHour other) {
     if (this.toDay.index == other.fromDay.index) {
@@ -183,7 +183,7 @@ class OpeningHour {
   String _trimWday(WeekDay wday) => wday.toString().split('.')[1];
 
   String toJson() => '${_trimWday(fromDay)}'
-      '${toDay != null ? '-${_trimWday(toDay)}' : ''} $_stringifiedTime';
+      '${toDay != fromDay ? '-${_trimWday(toDay)}' : ''} $_stringifiedTime';
 
   operator ==(OpeningHour other) => this.toString() == other.toString();
 }
