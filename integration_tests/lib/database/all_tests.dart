@@ -338,12 +338,6 @@ runDatabaseTests() {
 
     test ('list',
         () => ContactStore.existingContactCalendar(calendarDB));
-
-//    test ('create',
-//        () => ContactStore.distributionRecipientAdd(distributionListDB));
-//
-//    test ('remove',
-//        () => ContactStore.distributionRecipientRemove(distributionListDB));
   });
 
   group ('Database.Ivr', () {
