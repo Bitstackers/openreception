@@ -233,6 +233,15 @@ class Call {
   }
 
   /**
+   * Tries to transfer [source] to [destination].
+   */
+  Future transfer(ORModel.Call source, ORModel.Call destination) {
+    return _transfer(source, destination).then((_) {
+      _appState.activeCall = ORModel.Call.noCall;
+    });
+  }
+
+  /**
    * Tries to transfer [source] to the first parked call.
    */
   Future transferToFirstParkedCall(ORModel.Call source) {

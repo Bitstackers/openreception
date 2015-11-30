@@ -23,6 +23,7 @@ class UIMyCallQueue extends UIModel {
   final DivElement _myRoot;
   final Controller.Reception _receptionController;
   final Map<int, String> _receptionMap = new Map<int, String>();
+  final List<String> _transferUUIDs = new List<String>();
 
   /**
    * Constructor.
@@ -46,6 +47,7 @@ class UIMyCallQueue extends UIModel {
    */
   appendCall(ORModel.Call call) {
     _list.children.add(_buildCallElement(call));
+    setTransferMark(call);
     _queueLengthUpdate();
   }
 
@@ -76,7 +78,7 @@ class UIMyCallQueue extends UIModel {
 
     numbersAndStateDiv.children.addAll([callDesc, callWaitTimer]);
 
-    return (new LIElement()
+    return new LIElement()
       ..dataset['id'] = call.ID
       ..dataset['object'] = JSON.encode(call)
       ..children.addAll([numbersAndStateDiv, nameDiv])
@@ -84,7 +86,7 @@ class UIMyCallQueue extends UIModel {
       ..classes.toggle('locked', call.locked)
       ..classes.toggle('speaking', call.state == ORModel.CallState.Speaking)
       ..title =
-          '${call.inbound ? _langMap[Key.callStateInbound] : _langMap[Key.callStateOutbound]}');
+          '${call.inbound ? _langMap[Key.callStateInbound] : _langMap[Key.callStateOutbound]}';
   }
 
   /**
@@ -126,27 +128,26 @@ class UIMyCallQueue extends UIModel {
   }
 
   /**
-   * Remove all entries from the list and clear the header.
-   */
-  void clear() {
-    _headerExtra.text = '';
-    _list.children.clear();
-  }
-
-  /**
-   * Add [contact] to the local cache of contact names.
    *
-   * This is used to quickly associate outbound calls with a contact.
    */
-  set contact(ORModel.Contact contact) {
-    _contactMap[contact.ID] = contact.fullName;
+  Iterable<ORModel.Call> get markedForTransfer {
+    return _list
+        .querySelectorAll('[transfer]')
+        .map((LIElement li) => new ORModel.Call.fromMap(JSON.decode(li.dataset['object'])));
   }
 
   /**
    * Mark [call] ready for transfer. Does nothing if [call] is not found in the list.
    */
   void markForTransfer(ORModel.Call call) {
-    _list.querySelector('[data-id="${call.ID}"]')?.setAttribute('transfer', '');
+    final LIElement li = _list.querySelector('[data-id="${call.ID}"]');
+
+    _transferUUIDs.add(call.ID);
+
+    if (li != null) {
+      li.setAttribute('transfer', '');
+      _transferUUIDs.removeWhere((String uuid) => uuid == call.ID);
+    }
   }
 
   /**
@@ -175,15 +176,6 @@ class UIMyCallQueue extends UIModel {
   }
 
   /**
-   * Add [reception] to the local cache of reception names.
-   *
-   * This is used to quickly associate inbound calls with a reception.
-   */
-  set reception(ORModel.Reception reception) {
-    _receptionMap[reception.ID] = reception.name;
-  }
-
-  /**
    * Remove [call] from the call list. Does nothing if [call] does not exist
    * in the call list.
    */
@@ -192,8 +184,27 @@ class UIMyCallQueue extends UIModel {
 
     if (li != null) {
       li.remove();
+      _transferUUIDs.removeWhere((String uuid) => uuid == call.ID);
       _queueLengthUpdate();
     }
+  }
+
+  /**
+   * Removes the transfer attribute from the [call] li element.
+   */
+  void removeTransferMark(ORModel.Call call) {
+    _transferUUIDs.removeWhere((String uuid) => uuid == call.ID);
+    _list.querySelector('[data-id="${call.ID}"]')?.attributes.remove('transfer');
+  }
+
+  /**
+   * Removes all transfer attributes.
+   */
+  void removeTransferMarks() {
+    _transferUUIDs.clear();
+    _list
+        .querySelectorAll('[transfer]')
+        .forEach((LIElement li) => li.attributes.remove('transfer'));
   }
 
   /**
@@ -221,6 +232,16 @@ class UIMyCallQueue extends UIModel {
           _contactMap[call.contactID] = contact.fullName;
         });
       }
+    }
+  }
+
+  /**
+   * Find [call] in queue list and set the transfer attribute.
+   */
+  void setTransferMark(ORModel.Call call) {
+    if (_transferUUIDs.contains(call.ID)) {
+      _list.querySelector('[data-id="${call.ID}"]')?.setAttribute('transfer', '');
+      _transferUUIDs.removeWhere((String uuid) => uuid == call.ID);
     }
   }
 

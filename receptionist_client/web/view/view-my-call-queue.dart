@@ -94,15 +94,17 @@ class MyCallQueue extends ViewWidget {
   /**
    * Tries to dial the [phoneNumber].
    *
-   * This should be called when the [_ui] fires a [ORModel.PhoneNumber] as marked ringing.
+   * If this is called while [_appState.activeCall] is not [ORModel.Call.noCall], then mark both
+   * calls ready for transfer.
    */
-  /// TODO (TL): Comment about parking and marking for transfer.
   Future _call(ORModel.PhoneNumber phoneNumber) async {
     bool transfer = _appState.activeCall != ORModel.Call.noCall;
 
     if (transfer) {
       ORModel.Call parkedCall = await park(_appState.activeCall);
-      _ui.markForTransfer(parkedCall);
+      if (parkedCall != ORModel.Call.noCall) {
+        _ui.markForTransfer(parkedCall);
+      }
     }
 
     _busyCallController();
@@ -122,21 +124,23 @@ class MyCallQueue extends ViewWidget {
   }
 
   /**
-   *
+   * Mark the call controller busy. This is just a simply protection against hammering the call
+   * controller with too many commands.
    */
   void _busyCallController() {
     _callControllerBusy = true;
   }
 
   /**
-   *
+   *  Mark the call controller ready. This operation is delayed 100ms, to prevent against agents
+   *  spamming commands at the call controller.
    */
   Future _readyCallController() {
     return new Future.delayed(new Duration(milliseconds: 100), () => _callControllerBusy = false);
   }
 
   /**
-   *
+   * Popup with errors.
    */
   void _error(Exception error, String title, String message) {
     if (error is Controller.BusyException) {
@@ -147,7 +151,7 @@ class MyCallQueue extends ViewWidget {
   }
 
   /**
-   *
+   * Park [call].
    */
   Future<ORModel.Call> park(ORModel.Call call) async {
     ORModel.Call parkedCall = ORModel.Call.noCall;
@@ -186,31 +190,45 @@ class MyCallQueue extends ViewWidget {
 
     _ui.onClick.listen(_activateMe);
 
+    /// Transfer
     _hotKeys.onCtrlNumMinus.listen((_) {
-      if (!_callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
+      final Iterable<ORModel.Call> calls = _ui.markedForTransfer;
+      if (!_callControllerBusy &&
+          _appState.activeCall != ORModel.Call.noCall &&
+          calls.length == 2) {
+        final ORModel.Call source =
+            calls.firstWhere((ORModel.Call call) => call.ID == _appState.activeCall.ID);
+        final ORModel.Call destination =
+            calls.firstWhere((ORModel.Call call) => call.ID != _appState.activeCall.ID);
         _callControllerBusy = true;
         _callController
-            .transferToFirstParkedCall(_appState.activeCall)
+            .transfer(source, destination)
+            // _callController
+            //     .transferToFirstParkedCall(_appState.activeCall)
             .catchError((error) =>
                 _error(error, _langMap[Key.errorCallTransfer], 'ID ${_appState.activeCall.ID}'))
             .whenComplete(() => _readyCallController());
       }
     });
 
+    /// Park
     _hotKeys.onF7.listen((_) => park(_appState.activeCall));
 
+    /// Unpark
     _hotKeys.onF8.listen((_) {
       if (!_callControllerBusy &&
           _appState.activeCall == ORModel.Call.noCall &&
           _ui.calls.any((ORModel.Call call) => call.state == ORModel.CallState.Parked)) {
         _callControllerBusy = true;
-        _callController
-            .pickupFirstParkedCall()
+        _callController.pickupFirstParkedCall().then((ORModel.Call call) {
+          _ui.removeTransferMark(call);
+        })
             .catchError((error) => _error(error, _langMap[Key.errorCallUnpark], ''))
             .whenComplete(() => _readyCallController());
       }
     });
 
+    /// Hangup
     _hotKeys.onNumDiv.listen((_) {
       if (!_callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
         _callControllerBusy = true;
@@ -222,20 +240,22 @@ class MyCallQueue extends ViewWidget {
       }
     });
 
+    /// Pickup new call
     _hotKeys.onNumPlus.listen((_) {
       if (!_callControllerBusy) {
         _callControllerBusy = true;
-        _callController
-            .pickupNext()
+        _callController.pickupNext().then((ORModel.Call call) {
+          _ui.removeTransferMarks();
+        })
             .catchError((error) => _error(
                 error, _langMap[Key.errorCallNotFound], _langMap[Key.errorCallNotFoundExtended]))
             .whenComplete(() => _readyCallController());
       }
     });
 
-    _contactData.onMarkedRinging.listen(_call);
-
+    /// Make call
     _hotKeys.onNumMult.listen(_setRinging);
+    _contactData.onMarkedRinging.listen(_call);
 
     _notification.onAnyCallStateChange.listen(_handleCallStateChanges);
   }
