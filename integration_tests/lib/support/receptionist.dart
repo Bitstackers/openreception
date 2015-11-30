@@ -175,12 +175,34 @@ class Receptionist {
   Future park(Model.Call call, {bool waitForEvent : false}) {
     Future parkAction = this.callFlowControl.park(call.ID);
 
+    Model.Call validateCall(Model.Call parkedCall) {
+      expect(call.ID, parkedCall.ID);
+      expect(call.answeredAt
+          .difference(parkedCall.answeredAt).inMilliseconds.abs(),
+          lessThan(500));
+      expect(call.arrived
+          .difference(parkedCall.arrived).inMilliseconds.abs(),
+          lessThan(500));
+      expect(call.assignedTo, parkedCall.assignedTo);
+      expect(call.callerID, parkedCall.callerID);
+      expect(call.channel, parkedCall.channel);
+      expect(call.contactID, parkedCall.contactID);
+      expect(call.destination, parkedCall.destination);
+      expect(call.greetingPlayed, parkedCall.greetingPlayed);
+      expect(call.inbound, parkedCall.inbound);
+      expect(call.locked, parkedCall.locked);
+      expect(call.receptionID, parkedCall.receptionID);
+      expect(parkedCall.state, equals(Model.CallState.Parked));
+
+      return parkedCall;
+    }
+
     if (waitForEvent) {
       return parkAction.then((_)
           => this.waitFor(eventType : Event.Key.callPark,
                           callID    : call.ID,
                           timeoutSeconds: 2))
-            .then((Event.CallPark parkEvent) => parkEvent.call);
+            .then((Event.CallPark parkEvent) => validateCall(parkEvent.call));
     } else {
       return parkAction;
     }
