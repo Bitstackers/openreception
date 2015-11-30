@@ -145,6 +145,8 @@ class Call {
     return _service.park(call.ID).then((ORModel.Call parkedCall) {
       _command.fire(CallCommand.PARKSUCCESS);
 
+      _log.info('Parking call ${parkedCall}');
+
       _appState.activeCall = ORModel.Call.noCall;
       return parkedCall;
     }).catchError((error, stackTrace) {
