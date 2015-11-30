@@ -13,3 +13,56 @@
 
 part of openreception.test;
 
+testModelRingtone() {
+  group('Model.Ringtone', () {
+    test('serializationDeserialization', ModelRingtone.deserialization);
+
+    test('serialization', ModelRingtone.serialization);
+
+    test('buildObject', ModelRingtone.buildObject);
+  });
+}
+
+/**
+*
+ */
+abstract class ModelRingtone {
+/**
+ *
+ */
+  static void serialization() {
+    Model.Ringtone builtObject = buildObject();
+    String serializedObject = JSON.encode(builtObject);
+
+    expect(serializedObject, isNotNull);
+    expect(serializedObject, isNotEmpty);
+  }
+
+/**
+ *
+ */
+  static void deserialization() {
+    Model.Ringtone builtObject = buildObject();
+
+    Model.Ringtone deserializedObject =
+        Model.Ringtone.parse(JSON.decode(JSON.encode(builtObject)));
+
+    expect(builtObject.toJson(), equals(deserializedObject.toJson()));
+
+    expect(builtObject.count, equals(deserializedObject.count));
+  }
+
+/**
+ *
+ */
+  static Model.Ringtone buildObject() {
+    final int count = 2;
+
+    final Model.Ringtone builtObject = new Model.Ringtone(count);
+
+
+    expect(builtObject.count, equals(count));
+
+    return builtObject;
+  }
+}

@@ -13,3 +13,62 @@
 
 part of openreception.test;
 
+testModelNamedExtension() {
+  group('Model.NamedExtension', () {
+    test('deserialization', ModelNamedExtension.deserialization);
+
+    test('serialization', ModelNamedExtension.serialization);
+
+    test('buildObject', ModelNamedExtension.buildObject);
+  });
+}
+
+/**
+*
+ */
+abstract class ModelNamedExtension {
+/**
+ *
+ */
+  static void serialization() {
+    Model.NamedExtension builtObject = buildObject();
+    String serializedObject = JSON.encode(builtObject);
+
+    expect(serializedObject, isNotNull);
+    expect(serializedObject, isNotEmpty);
+  }
+
+/**
+ *
+ */
+  static void deserialization() {
+    Model.NamedExtension builtObject = buildObject();
+
+    Model.NamedExtension deserializedObject =
+        Model.NamedExtension.decode(JSON.decode(JSON.encode(builtObject)));
+
+    expect(builtObject.toJson(), equals(deserializedObject.toJson()));
+
+    expect(builtObject.name, equals(deserializedObject.name));
+
+    expect(builtObject.actions, equals(builtObject.actions));
+  }
+
+/**
+ *
+ */
+  static Model.NamedExtension buildObject() {
+    final name = 'extension-1';
+    final List<Model.Action> actions = [
+      new Model.Playback ('filename.wav'),
+      new Model.Enqueue('queue-1')];
+
+
+
+    Model.NamedExtension builtObject = new Model.NamedExtension(name, actions);
+
+    expect(builtObject.name, equals(name));
+    expect(builtObject.actions, equals(actions));
+    return builtObject;
+  }
+}

@@ -13,3 +13,60 @@
 
 part of openreception.test;
 
+testModelVoicemail() {
+  group('Model.Voicemail', () {
+    test('deserialization', ModelVoicemail.deserialization);
+    test('serialization', ModelVoicemail.serialization);
+    test('buildObject', ModelVoicemail.buildObject);
+  });
+}
+
+/**
+*
+ */
+abstract class ModelVoicemail {
+/**
+ *
+ */
+  static void serialization() {
+    Model.Voicemail builtObject = buildObject();
+    String serializedObject = JSON.encode(builtObject);
+
+    expect(serializedObject, isNotNull);
+    expect(serializedObject, isNotEmpty);
+  }
+
+/**
+ *
+ */
+  static void deserialization() {
+    Model.Voicemail builtObject = buildObject();
+
+    Model.Voicemail deserializedObject =
+        Model.Voicemail.parse(JSON.decode(JSON.encode(builtObject)));
+
+    expect(builtObject.toJson(), equals(deserializedObject.toJson()));
+
+    expect(builtObject.vmBox, equals(deserializedObject.vmBox));
+    expect(builtObject.recipient, equals(deserializedObject.recipient));
+    expect(builtObject.note, equals(deserializedObject.note));
+  }
+
+/**
+ *
+ */
+  static Model.Voicemail buildObject() {
+    final String vmBox = 'vm-33114422';
+    final String recipient = 'someone@email.dot';
+    final String note = 'Someones email';
+
+    Model.Voicemail builtObject =
+        new Model.Voicemail(vmBox, recipient: recipient, note: note);
+
+    expect(builtObject.vmBox, equals(vmBox));
+    expect(builtObject.recipient, equals(recipient));
+    expect(builtObject.note, equals(note));
+
+    return builtObject;
+  }
+}

@@ -13,3 +13,58 @@
 
 part of openreception.test;
 
+testModelTransfer() {
+  group('Model.Voicemail', () {
+    test('deserialization', ModelTransfer.deserialization);
+
+    test('serialization', ModelTransfer.serialization);
+
+    test('buildObject', ModelTransfer.buildObject);
+  });
+}
+
+/**
+*
+ */
+abstract class ModelTransfer {
+/**
+ *
+ */
+  static void serialization() {
+    Model.Transfer builtObject = buildObject();
+    String serializedObject = JSON.encode(builtObject);
+
+    expect(serializedObject, isNotNull);
+    expect(serializedObject, isNotEmpty);
+  }
+
+/**
+ *
+ */
+  static void deserialization() {
+    Model.Transfer builtObject = buildObject();
+
+    Model.Transfer deserializedObject =
+        Model.Transfer.parse(JSON.decode(JSON.encode(builtObject)));
+
+    expect(builtObject.toJson(), equals(deserializedObject.toJson()));
+
+    expect(builtObject.extension, equals(deserializedObject.extension));
+    expect(builtObject.note, equals(deserializedObject.note));
+  }
+
+/**
+ *
+ */
+  static Model.Transfer buildObject() {
+    final String extension = '322114455';
+    final String note = 'Just an extension';
+
+    Model.Transfer builtObject = new Model.Transfer(extension, note : note);
+
+    expect(builtObject.extension, equals(extension));
+    expect(builtObject.note, equals(note));
+
+    return builtObject;
+  }
+}

@@ -100,10 +100,15 @@ void main() {
   testModelHourAction();
   testModelIvrEntry();
   testModelIvrMenu();
+  testModelNamedExtension();
   testModelNotify();
+  testModelOpeningHour();
   testModelPlayback();
   testModelReceptionDialplan();
-  testModelOpeningHour();
+  testModelRingtone();
+  testModelTransfer();
+  testModelVoicemail();
+
   testBus();
 
   testEvent();
