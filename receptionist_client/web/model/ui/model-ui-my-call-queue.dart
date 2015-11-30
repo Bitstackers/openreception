@@ -146,7 +146,6 @@ class UIMyCallQueue extends UIModel {
 
     if (li != null) {
       li.setAttribute('transfer', '');
-      _transferUUIDs.removeWhere((String uuid) => uuid == call.ID);
     }
   }
 
@@ -264,7 +263,7 @@ class UIMyCallQueue extends UIModel {
       if (li.attributes.containsKey('transfer')) {
         newLI.setAttribute('transfer', '');
       }
-      li.replaceWith(_buildCallElement(call));
+      li.replaceWith(newLI);
     } else {
       appendCall(call);
     }
