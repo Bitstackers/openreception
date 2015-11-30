@@ -23,7 +23,7 @@ class UIMyCallQueue extends UIModel {
   final DivElement _myRoot;
   final Controller.Reception _receptionController;
   final Map<int, String> _receptionMap = new Map<int, String>();
-  final Map<String, String> _transferUUIDs = new Map<String, String>();
+  final Set<String> _transferUUIDs = new Set<String>();
 
   /**
    * Constructor.
@@ -128,23 +128,7 @@ class UIMyCallQueue extends UIModel {
   }
 
   /**
-   * Return the call linked to [call]. Returns [ORModel.Call.noCall] if no call is linked.
-   */
-  ORModel.Call linkedCall(ORModel.Call call) {
-    ORModel.Call linked = ORModel.Call.noCall;
-
-    if (_transferUUIDs.containsKey(call.ID)) {
-      final LIElement li = _list.querySelector('[data-id="${_transferUUIDs[call.ID]}"]');
-      if (li != null) {
-        linked = new ORModel.Call.fromMap(JSON.decode(li.dataset['object']));
-      }
-    }
-
-    return linked;
-  }
-
-  /**
-   *
+   * Return all calls that are marked for transfer.
    */
   Iterable<ORModel.Call> get markedForTransfer {
     return _list
@@ -155,10 +139,10 @@ class UIMyCallQueue extends UIModel {
   /**
    * Mark [call] ready for transfer. Does nothing if [call] is not found in the list.
    */
-  void markForTransfer(ORModel.Call call, {ORModel.Call linkedTo}) {
+  void markForTransfer(ORModel.Call call) {
     final LIElement li = _list.querySelector('[data-id="${call.ID}"]');
 
-    _transferUUIDs[call.ID] = linkedTo?.ID;
+    _transferUUIDs.add(call.ID);
 
     if (li != null) {
       li.setAttribute('transfer', '');
@@ -208,7 +192,7 @@ class UIMyCallQueue extends UIModel {
 
     if (li != null) {
       li.remove();
-      if (_transferUUIDs.containsKey(call.ID)) {
+      if (_transferUUIDs.contains(call.ID)) {
         removeTransferMarks();
       }
       _queueLengthUpdate();
@@ -265,7 +249,7 @@ class UIMyCallQueue extends UIModel {
    * Find [call] in queue list and set the transfer attribute.
    */
   void setTransferMark(ORModel.Call call) {
-    if (_transferUUIDs.containsKey(call.ID)) {
+    if (_transferUUIDs.contains(call.ID)) {
       _list.querySelector('[data-id="${call.ID}"]')?.setAttribute('transfer', '');
       _transferUUIDs.remove(call.ID);
     }
