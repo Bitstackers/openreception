@@ -13,22 +13,6 @@
 
 part of openreception.call_flow_control_server.router;
 
-/// Reply templates.
-Map _orignateOK(channelUUID) => {
-  'status': 'ok',
-  'call': {
-    'id': channelUUID
-  },
-  'description': 'Connecting...'
-};
-
-Map _parkOK(ORModel.Call call) => {
-  'status': 'ok',
-  'message': 'call parked',
-  'call': call
-};
-
-
 Map pickupOK(ORModel.Call call) => call.toJson();
 
 Map<int, ORModel.UserState> userMap = {};
@@ -409,11 +393,10 @@ abstract class Call {
             ORModel.UserState.HandlingOffHook);
 
 
-        String reply = JSON.encode(_parkOK(call));
 
-        log.finest('Parked call ${reply}');
+        log.finest('Parked call ${call.ID}');
 
-        return new shelf.Response.ok(reply);
+        return _okJson(call);
 
       }).catchError((error, stackTrace) {
         _userStateUnknown(user);
@@ -437,6 +420,12 @@ abstract class Call {
       return new shelf.Response.internalServerError();
     });
   }
+
+  /**
+   *
+   */
+  static shelf.Response _okJson(body) =>
+      new shelf.Response.ok(JSON.encode(body));
 
   /**
    *
@@ -691,7 +680,7 @@ abstract class Call {
               user.ID,
               ORModel.UserState.Speaking);
 
-          return new shelf.Response.ok(JSON.encode(_orignateOK(channelUUID)));
+          return new shelf.Response.ok(channelUUID);
 
         }).catchError((error, stackTrace) {
           Model.UserStatusList.instance.update(
