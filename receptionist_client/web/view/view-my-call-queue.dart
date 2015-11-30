@@ -25,6 +25,7 @@ class MyCallQueue extends ViewWidget {
   final Model.UIContactSelector _contactSelector;
   bool _callControllerBusy = false;
   final Map<String, String> _langMap;
+  final Logger _log = new Logger('$libraryName.MyCallQueue');
   final Controller.Destination _myDestination;
   final Controller.Notification _notification;
   final Controller.Popup _popup;
@@ -102,9 +103,8 @@ class MyCallQueue extends ViewWidget {
 
     if (transfer) {
       ORModel.Call parkedCall = await park(_appState.activeCall);
-      if (parkedCall != ORModel.Call.noCall) {
-        _ui.markForTransfer(parkedCall);
-      }
+      _ui.markForTransfer(parkedCall);
+      _log.info('marked ${parkedCall.ID} for transfer');
     }
 
     _busyCallController();
@@ -113,12 +113,14 @@ class MyCallQueue extends ViewWidget {
           phoneNumber, _receptionSelector.selectedReception, _contactSelector.selectedContact);
       if (transfer) {
         _ui.markForTransfer(newCall);
+        _log.info('marked ${newCall.ID} for transfer');
       }
-
-      _contactData.removeRinging();
     } catch (error) {
-      _popup.error(_langMap[Key.callFailed], phoneNumber.value);
+      _error(error, _langMap[Key.callFailed], phoneNumber.value);
+      _log.warning('dialing failed with ${error} - transfer state is ${transfer}');
     }
+
+    _contactData.removeRinging();
 
     await _readyCallController();
   }
@@ -162,6 +164,7 @@ class MyCallQueue extends ViewWidget {
         parkedCall = await _callController.park(call);
       } catch (error) {
         _error(error, _langMap[Key.errorCallPark], 'ID ${_appState.activeCall.ID}');
+        _log.warning('parking failed with ${error}');
       }
     }
 
@@ -201,13 +204,10 @@ class MyCallQueue extends ViewWidget {
         final ORModel.Call destination =
             calls.firstWhere((ORModel.Call call) => call.ID != _appState.activeCall.ID);
         _callControllerBusy = true;
-        _callController
-            .transfer(source, destination)
-            // _callController
-            //     .transferToFirstParkedCall(_appState.activeCall)
-            .catchError((error) =>
-                _error(error, _langMap[Key.errorCallTransfer], 'ID ${_appState.activeCall.ID}'))
-            .whenComplete(() => _readyCallController());
+        _callController.transfer(source, destination).catchError((error) {
+          _error(error, _langMap[Key.errorCallTransfer], 'ID ${_appState.activeCall.ID}');
+          _log.warning('transfer failed with ${error}');
+        }).whenComplete(() => _readyCallController());
       }
     });
 
@@ -222,9 +222,10 @@ class MyCallQueue extends ViewWidget {
         _callControllerBusy = true;
         _callController.pickupFirstParkedCall().then((ORModel.Call call) {
           _ui.removeTransferMark(call);
-        })
-            .catchError((error) => _error(error, _langMap[Key.errorCallUnpark], ''))
-            .whenComplete(() => _readyCallController());
+        }).catchError((error) {
+          _error(error, _langMap[Key.errorCallUnpark], '');
+          _log.warning('unpark failed with ${error}');
+        }).whenComplete(() => _readyCallController());
       }
     });
 
@@ -232,11 +233,10 @@ class MyCallQueue extends ViewWidget {
     _hotKeys.onNumDiv.listen((_) {
       if (!_callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
         _callControllerBusy = true;
-        _callController
-            .hangup(_appState.activeCall)
-            .catchError((error) =>
-                _error(error, _langMap[Key.errorCallHangup], 'ID ${_appState.activeCall.ID}'))
-            .whenComplete(() => _readyCallController());
+        _callController.hangup(_appState.activeCall).catchError((error) {
+          _error(error, _langMap[Key.errorCallHangup], 'ID ${_appState.activeCall.ID}');
+          _log.warning('hangup failed with ${error}');
+        }).whenComplete(() => _readyCallController());
       }
     });
 
@@ -246,10 +246,10 @@ class MyCallQueue extends ViewWidget {
         _callControllerBusy = true;
         _callController.pickupNext().then((ORModel.Call call) {
           _ui.removeTransferMarks();
-        })
-            .catchError((error) => _error(
-                error, _langMap[Key.errorCallNotFound], _langMap[Key.errorCallNotFoundExtended]))
-            .whenComplete(() => _readyCallController());
+        }).catchError((error) {
+          _error(error, _langMap[Key.errorCallNotFound], _langMap[Key.errorCallNotFoundExtended]);
+          _log.warning('pickup failed with ${error}');
+        }).whenComplete(() => _readyCallController());
       }
     });
 
