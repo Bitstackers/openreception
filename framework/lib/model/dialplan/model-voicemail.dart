@@ -13,23 +13,38 @@
 
 part of openreception.model.dialplan;
 
+/**
+ * Class representing a voicemail action. Used in the itermediate representation
+ * for signifying the voicemail action. Serializes to a single-line
+ * human-readable string format that may be used in a diaplan language.
+ */
 class Voicemail extends Action {
   final String vmBox;
   String note = '';
   String recipient = '';
 
+  /**
+   * Default constructor.
+   */
   Voicemail(this.vmBox, {this.recipient: '', this.note: ''});
 
+  /**
+   *
+   */
   static Voicemail parse(String buffer) {
     String vmBox = '';
     String recipient = '';
     String note = '';
+
+    /// Keyword.
     buffer = consumeKey(buffer, Key.voicemail).trimLeft();
 
+    /// Voicemail box.
     var consumed = consumeWord(buffer);
     vmBox = consumed.iden;
     buffer = consumed.buffer.trimLeft();
 
+    /// Check for comments, or consume recipient.
     if (buffer.startsWith('(')) {
       consumed = consumeComment(buffer);
       note = consumed.comment;
@@ -38,8 +53,10 @@ class Voicemail extends Action {
       recipient = consumed.iden;
     }
 
+    /// Remove consumed parts from the buffer.
     buffer = consumed.buffer.trimLeft();
 
+    /// Check for comments.
     if (buffer.startsWith('(')) {
       consumed = consumeComment(buffer);
       note = consumed.comment;
@@ -48,10 +65,19 @@ class Voicemail extends Action {
     return new Voicemail(vmBox, recipient: recipient, note: note);
   }
 
+  /**
+   *
+   */
   operator ==(Voicemail other) => this.vmBox == other.vmBox;
 
+  /**
+   *
+   */
   String toString() => 'Voicemail $vmBox';
 
+  /**
+   *
+   */
   String toJson() => '${Key.voicemail} $vmBox'
       '${recipient.isNotEmpty ? ' ${recipient}' : ''}'
       '${note.isNotEmpty ? ' (${note})' : ''}';
