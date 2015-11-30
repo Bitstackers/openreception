@@ -23,7 +23,7 @@ class UIMyCallQueue extends UIModel {
   final DivElement _myRoot;
   final Controller.Reception _receptionController;
   final Map<int, String> _receptionMap = new Map<int, String>();
-  final List<String> _transferUUIDs = new List<String>();
+  final Map<String, String> _transferUUIDs = new Map<String, String>();
 
   /**
    * Constructor.
@@ -142,10 +142,9 @@ class UIMyCallQueue extends UIModel {
   void markForTransfer(ORModel.Call call) {
     final LIElement li = _list.querySelector('[data-id="${call.ID}"]');
 
-    _transferUUIDs.add(call.ID);
+    _transferUUIDs[call.ID] = '';
 
     if (li != null) {
-      print('MARKED ${call.ID} for TRANSFER');
       li.setAttribute('transfer', '');
     }
   }
@@ -159,7 +158,13 @@ class UIMyCallQueue extends UIModel {
 
     _list.onDoubleClick.listen((MouseEvent event) {
       if (event.target is LIElement) {
+        ///
+        ///
+        ///
         /// DO STUFF HERE
+        ///
+        ///
+        ///
         print((event.target as LIElement).dataset['id']);
         (event.target as LIElement).setAttribute('transfer', '');
       }
@@ -178,13 +183,18 @@ class UIMyCallQueue extends UIModel {
   /**
    * Remove [call] from the call list. Does nothing if [call] does not exist
    * in the call list.
+   *
+   * If [call] was marked with the "transfer" attribute, then remove all transfer marks from the
+   * call list.
    */
   void removeCall(ORModel.Call call) {
     final LIElement li = _list.querySelector('[data-id="${call.ID}"]');
 
     if (li != null) {
       li.remove();
-      _transferUUIDs.removeWhere((String uuid) => uuid == call.ID);
+      if (_transferUUIDs.containsKey(call.ID)) {
+        removeTransferMarks();
+      }
       _queueLengthUpdate();
     }
   }
@@ -193,7 +203,7 @@ class UIMyCallQueue extends UIModel {
    * Removes the transfer attribute from the [call] li element.
    */
   void removeTransferMark(ORModel.Call call) {
-    _transferUUIDs.removeWhere((String uuid) => uuid == call.ID);
+    _transferUUIDs.remove(call.ID);
     _list.querySelector('[data-id="${call.ID}"]')?.attributes.remove('transfer');
   }
 
@@ -239,9 +249,9 @@ class UIMyCallQueue extends UIModel {
    * Find [call] in queue list and set the transfer attribute.
    */
   void setTransferMark(ORModel.Call call) {
-    if (_transferUUIDs.contains(call.ID)) {
+    if (_transferUUIDs.containsKey(call.ID)) {
       _list.querySelector('[data-id="${call.ID}"]')?.setAttribute('transfer', '');
-      _transferUUIDs.removeWhere((String uuid) => uuid == call.ID);
+      _transferUUIDs.remove(call.ID);
     }
   }
 

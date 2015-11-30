@@ -98,12 +98,11 @@ class MyCallQueue extends ViewWidget {
    * calls ready for transfer.
    */
   Future _call(ORModel.PhoneNumber phoneNumber) async {
-    bool transfer = _appState.activeCall != ORModel.Call.noCall;
+    bool transfer = _appState.activeCall != ORModel.Call.noCall && _ui.markedForTransfer.length < 2;
 
     if (transfer) {
       ORModel.Call parkedCall = await park(_appState.activeCall);
       if (parkedCall != ORModel.Call.noCall) {
-        print('PARKED ${parkedCall.ID}');
         _ui.markForTransfer(parkedCall);
       }
     }
