@@ -82,6 +82,17 @@ class MyCallQueue extends ViewWidget {
         break;
 
       case ORModel.CallState.Hungup:
+        final ORModel.Call linked = _ui.linkedCall(event.call);
+        if (linked != ORModel.Call.noCall && _appState.activeCall == ORModel.Call.noCall) {
+          _callControllerBusy = true;
+          _callController.pickupParked(linked).then((ORModel.Call call) {
+            _ui.removeCall(event.call);
+          }).catchError((error) {
+            _error(error, _langMap[Key.errorCallUnpark], '');
+            _log.warning('unpark failed with ${error}');
+          }).whenComplete(() => _readyCallController());
+        }
+        break;
       case ORModel.CallState.Transferred:
         _ui.removeCall(event.call);
         break;
@@ -99,12 +110,11 @@ class MyCallQueue extends ViewWidget {
    * calls ready for transfer.
    */
   Future _call(ORModel.PhoneNumber phoneNumber) async {
+    ORModel.Call parkedCall;
     bool transfer = _appState.activeCall != ORModel.Call.noCall && _ui.markedForTransfer.length < 2;
 
     if (transfer) {
-      ORModel.Call parkedCall = await park(_appState.activeCall);
-      _ui.markForTransfer(parkedCall);
-      _log.info('marked ${parkedCall.ID} for transfer');
+      parkedCall = await park(_appState.activeCall);
     }
 
     _busyCallController();
@@ -112,8 +122,9 @@ class MyCallQueue extends ViewWidget {
       ORModel.Call newCall = await _callController.dial(
           phoneNumber, _receptionSelector.selectedReception, _contactSelector.selectedContact);
       if (transfer) {
-        _ui.markForTransfer(newCall);
-        _log.info('marked ${newCall.ID} for transfer');
+        _ui.markForTransfer(newCall, linkedTo: parkedCall);
+        _ui.markForTransfer(parkedCall, linkedTo: newCall);
+        _log.info('marked ${newCall.ID} and ${parkedCall.ID} for transfer');
       }
     } catch (error) {
       _error(error, _langMap[Key.callFailed], phoneNumber.value);
@@ -215,19 +226,7 @@ class MyCallQueue extends ViewWidget {
     _hotKeys.onF7.listen((_) => park(_appState.activeCall));
 
     /// Unpark
-    _hotKeys.onF8.listen((_) {
-      if (!_callControllerBusy &&
-          _appState.activeCall == ORModel.Call.noCall &&
-          _ui.calls.any((ORModel.Call call) => call.state == ORModel.CallState.Parked)) {
-        _callControllerBusy = true;
-        _callController.pickupFirstParkedCall().then((ORModel.Call call) {
-          _ui.removeTransferMark(call);
-        }).catchError((error) {
-          _error(error, _langMap[Key.errorCallUnpark], '');
-          _log.warning('unpark failed with ${error}');
-        }).whenComplete(() => _readyCallController());
-      }
-    });
+    _hotKeys.onF8.listen((_) => unpark());
 
     /// Hangup
     _hotKeys.onNumDiv.listen((_) {
@@ -265,5 +264,22 @@ class MyCallQueue extends ViewWidget {
    */
   void _setRinging(_) {
     _contactData.ring();
+  }
+
+  /**
+   * Unpark the first parked call.
+   */
+  void unpark() {
+    if (!_callControllerBusy &&
+        _appState.activeCall == ORModel.Call.noCall &&
+        _ui.calls.any((ORModel.Call call) => call.state == ORModel.CallState.Parked)) {
+      _callControllerBusy = true;
+      _callController.pickupFirstParkedCall().then((ORModel.Call call) {
+        _ui.removeTransferMark(call);
+      }).catchError((error) {
+        _error(error, _langMap[Key.errorCallUnpark], '');
+        _log.warning('unpark failed with ${error}');
+      }).whenComplete(() => _readyCallController());
+    }
   }
 }

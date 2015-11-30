@@ -128,6 +128,22 @@ class UIMyCallQueue extends UIModel {
   }
 
   /**
+   * Return the call linked to [call]. Returns [ORModel.Call.noCall] if no call is linked.
+   */
+  ORModel.Call linkedCall(ORModel.Call call) {
+    ORModel.Call linked = ORModel.Call.noCall;
+
+    if (_transferUUIDs.containsKey(call.ID)) {
+      final LIElement li = _list.querySelector('[data-id="${_transferUUIDs[call.ID]}"]');
+      if (li != null) {
+        linked = new ORModel.Call.fromMap(JSON.decode(li.dataset['object']));
+      }
+    }
+
+    return linked;
+  }
+
+  /**
    *
    */
   Iterable<ORModel.Call> get markedForTransfer {
@@ -139,10 +155,10 @@ class UIMyCallQueue extends UIModel {
   /**
    * Mark [call] ready for transfer. Does nothing if [call] is not found in the list.
    */
-  void markForTransfer(ORModel.Call call) {
+  void markForTransfer(ORModel.Call call, {ORModel.Call linkedTo}) {
     final LIElement li = _list.querySelector('[data-id="${call.ID}"]');
 
-    _transferUUIDs[call.ID] = '';
+    _transferUUIDs[call.ID] = linkedTo?.ID;
 
     if (li != null) {
       li.setAttribute('transfer', '');
