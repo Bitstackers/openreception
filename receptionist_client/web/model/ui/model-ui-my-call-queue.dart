@@ -145,6 +145,7 @@ class UIMyCallQueue extends UIModel {
     _transferUUIDs.add(call.ID);
 
     if (li != null) {
+      print('MARKED ${call.ID} for TRANSFER');
       li.setAttribute('transfer', '');
     }
   }

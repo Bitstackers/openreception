@@ -103,6 +103,7 @@ class MyCallQueue extends ViewWidget {
     if (transfer) {
       ORModel.Call parkedCall = await park(_appState.activeCall);
       if (parkedCall != ORModel.Call.noCall) {
+        print('PARKED ${parkedCall.ID}');
         _ui.markForTransfer(parkedCall);
       }
     }
