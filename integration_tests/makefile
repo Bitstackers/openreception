@@ -4,7 +4,7 @@ dependencies:
 	pub get
 
 tests:
-	@dart bin/servertests.dart
+	@dart bin/servertests.dart > results.xml
 
 bin/basic_agent: support_tools/src/basic_agent.c
 	make -C support_tools deps_install
