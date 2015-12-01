@@ -198,7 +198,7 @@ class MyCallQueue extends ViewWidget {
 
     _ui.onClick.listen(_activateMe);
 
-    _ui.onDblClick.listen((ORModel.Call call) => unpark());
+    _ui.onDblClick.listen((ORModel.Call call) => unpark(call: call));
 
     /// Transfer
     _hotKeys.onCtrlNumMinus.listen((_) {
