@@ -33,12 +33,10 @@ class CallFlowControl {
     Uri uri = Resource.CallFlowControl.activeRecordings(this._host);
     uri = appendToken(uri, this._token);
 
-    Iterable<Model.ActiveRecording> decodeMaps (Iterable<Map> maps) =>
+    Iterable<Model.ActiveRecording> decodeMaps(Iterable<Map> maps) =>
         maps.map(Model.ActiveRecording.decode);
 
-    return this._backend.get(uri)
-        .then(JSON.decode)
-        .then(decodeMaps);
+    return this._backend.get(uri).then(JSON.decode).then(decodeMaps);
   }
 
   /**
@@ -48,7 +46,9 @@ class CallFlowControl {
     Uri uri = Resource.CallFlowControl.activeRecording(this._host, channel);
     uri = appendToken(uri, this._token);
 
-    return this._backend.get(uri)
+    return this
+        ._backend
+        .get(uri)
         .then(JSON.decode)
         .then(Model.ActiveRecording.decode);
   }
@@ -60,12 +60,10 @@ class CallFlowControl {
     Uri uri = Resource.CallFlowControl.agentStatistics(_host);
     uri = appendToken(uri, this._token);
 
-    Iterable<Model.AgentStatistics> decodeMaps (Iterable<Map> maps) =>
+    Iterable<Model.AgentStatistics> decodeMaps(Iterable<Map> maps) =>
         maps.map(Model.AgentStatistics.decode);
 
-    return this._backend.get(uri)
-        .then(JSON.decode)
-        .then(decodeMaps);
+    return this._backend.get(uri).then(JSON.decode).then(decodeMaps);
   }
 
   /**
@@ -75,7 +73,9 @@ class CallFlowControl {
     Uri uri = Resource.CallFlowControl.agentStatistic(_host, userId);
     uri = appendToken(uri, this._token);
 
-    return this._backend.get(uri)
+    return this
+        ._backend
+        .get(uri)
         .then(JSON.decode)
         .then(Model.AgentStatistics.decode);
   }
@@ -91,20 +91,17 @@ class CallFlowControl {
   }
 
   /**
-   * Returns a Map representation of the [Model.UserStatus] object associated
-   * with [userID].
-   */
-  Future<Map> userStatusMap(int userID) => this._backend
-      .get(appendToken(
-          Resource.CallFlowControl.userStatus(this._host, userID), this._token))
-      .then((String response) => JSON.decode(response));
-
-  /**
    * Returns the [Model.UserStatus] object associated with [userID].
    */
-  Future<Model.UserStatus> userStatus(int userID) => this
-      .userStatusMap(userID)
-      .then((Map map) => new Model.UserStatus.fromMap(map));
+  Future<Model.UserStatus> userStatus(int userID) {
+    Uri uri = Resource.CallFlowControl.userStatus(this._host, userID);
+    uri = appendToken(uri, this._token);
+
+    return _backend
+        .get(uri)
+        .then(JSON.decode)
+        .then(Model.UserStatus.decode);
+  }
 
   /**
    * Returns an Iterable representation of the all the [Model.UserStatus]
@@ -121,9 +118,8 @@ class CallFlowControl {
    * Returns an Iterable representation of the all the [Model.UserStatus]
    * objects currently known to the CallFlowControl server.
    */
-  Future<Iterable<Model.UserStatus>> userStatusList() => this
-      .userStatusListMaps()
-      .then((Iterable<Map> maps) =>
+  Future<Iterable<Model.UserStatus>> userStatusList() =>
+      this.userStatusListMaps().then((Iterable<Map> maps) =>
           maps.map((Map map) => new Model.UserStatus.fromMap(map)));
 
   /**
@@ -132,9 +128,14 @@ class CallFlowControl {
    * The update is conditioned by the server and phone state and may throw
    * [ClientError] exeptions.
    */
-  Future<Map> userStateIdleMap(int userID) => this._backend
-      .post(appendToken(Resource.CallFlowControl.userState(
-          this._host, userID, Model.UserState.Idle), this._token), '')
+  Future<Map> userStateIdleMap(int userID) => this
+      ._backend
+      .post(
+          appendToken(
+              Resource.CallFlowControl
+                  .userState(this._host, userID, Model.UserState.Idle),
+              this._token),
+          '')
       .then((String response) => JSON.decode(response));
 
   /**
@@ -144,8 +145,8 @@ class CallFlowControl {
    * [ClientError] exeptions.
    */
   Future<Map> userStatePausedMap(int userID) {
-    Uri uri = Resource.CallFlowControl.userState(
-        this._host, userID, Model.UserState.Paused);
+    Uri uri = Resource.CallFlowControl
+        .userState(this._host, userID, Model.UserState.Paused);
     uri = appendToken(uri, this._token);
 
     return this._backend.post(uri, '').then(JSON.decode);
@@ -161,7 +162,8 @@ class CallFlowControl {
     Uri uri = Resource.CallFlowControl.userStateLoggedOut(this._host, userID);
     uri = appendToken(uri, this._token);
 
-    return this._backend
+    return this
+        ._backend
         .post(uri, '')
         .then((String response) => JSON.decode(response));
   }
@@ -171,10 +173,13 @@ class CallFlowControl {
    * associated with [userID].
    * The call fails if the user is logged out, or has no state on the server.
    */
-  Future userStateKeepAlive(int userID) => this._backend
-      .post(appendToken(
-          Resource.CallFlowControl.userStateKeepAlive(this._host, userID),
-          this._token), '')
+  Future userStateKeepAlive(int userID) => this
+      ._backend
+      .post(
+          appendToken(
+              Resource.CallFlowControl.userStateKeepAlive(this._host, userID),
+              this._token),
+          '')
       .then((String response) => JSON.decode(response));
 
   /**
@@ -249,12 +254,14 @@ class CallFlowControl {
    */
   Future<Model.Call> originate(
       String extension, int contactID, int receptionID) {
-    Uri uri = Resource.CallFlowControl.originate(
-        _host, extension, contactID, receptionID);
+    Uri uri = Resource.CallFlowControl
+        .originate(_host, extension, contactID, receptionID);
     uri = appendToken(uri, _token);
 
-    return _backend.post(uri, '').then(JSON.decode).then(
-        (Map callMap) => new Model.Call.fromMap(callMap));
+    return _backend
+        .post(uri, '')
+        .then(JSON.decode)
+        .then((Map callMap) => new Model.Call.fromMap(callMap));
   }
 
   /**
@@ -273,8 +280,10 @@ class CallFlowControl {
   /**
    * Hangs up the call identified by [callID].
    */
-  Future hangup(String callID) => this._backend.post(appendToken(
-      Resource.CallFlowControl.hangup(this._host, callID), this._token), '');
+  Future hangup(String callID) => this._backend.post(
+      appendToken(
+          Resource.CallFlowControl.hangup(this._host, callID), this._token),
+      '');
 
   /**
    * Transfers the call identified by [callID] to active call [destination].
@@ -282,14 +291,14 @@ class CallFlowControl {
   Future transfer(String callID, String destination) => this._backend.post(
       appendToken(
           Resource.CallFlowControl.transfer(this._host, callID, destination),
-          this._token), '');
+          this._token),
+      '');
 
   /**
    * Retrives the current Call list.
    */
-  Future<Iterable<Model.Call>> callList() => this
-      .callListMaps()
-      .then((Iterable<Map> callMaps) =>
+  Future<Iterable<Model.Call>> callList() =>
+      this.callListMaps().then((Iterable<Map> callMaps) =>
           callMaps.map((Map map) => new Model.Call.fromMap(map)));
 
   /**
@@ -299,33 +308,37 @@ class CallFlowControl {
     Uri uri = Resource.CallFlowControl.list(this._host);
     uri = appendToken(uri, this._token);
 
-    return this._backend
+    return this
+        ._backend
         .get(uri)
         .then((String response) => (JSON.decode(response)));
   }
+
   /**
    * Retrives the current Peer list.
    */
-   Future<Iterable<Model.Peer>> peerList() {
+  Future<Iterable<Model.Peer>> peerList() {
     Uri uri = Resource.CallFlowControl.peerList(this._host);
     uri = appendToken(uri, this._token);
 
-    return this._backend
+    return this
+        ._backend
         .get(uri)
         .then((String response) => (JSON.decode(response) as List))
         .then((Iterable<Map> maps) =>
-          maps.map((Map map) => new Model.Peer.fromMap(map)));
+            maps.map((Map map) => new Model.Peer.fromMap(map)));
   }
 
   /**
    * Retrives the current Channel list as a Map.
    */
-   @deprecated
+  @deprecated
   Future<Iterable<Map>> channelListMap() {
     Uri uri = Resource.CallFlowControl.channelList(this._host);
     uri = appendToken(uri, this._token);
 
-    return this._backend
+    return this
+        ._backend
         .get(uri)
         .then((String response) => (JSON.decode(response)));
   }
