@@ -66,7 +66,7 @@ class MyCallQueue extends ViewWidget {
   }
 
   /**
-   * Add, remove, update the queue list, depending on the [call] state.
+   * Add, remove, update the queue list, depending on the [event.call] state.
    */
   void _handleCallStateChanges(OREvent.CallEvent event) {
     if (event.call.assignedTo != _appState.currentUser.ID) {
