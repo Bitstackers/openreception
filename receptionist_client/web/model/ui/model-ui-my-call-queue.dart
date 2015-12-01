@@ -17,6 +17,7 @@ part of model;
  * Provides access to the my call queue widget.
  */
 class UIMyCallQueue extends UIModel {
+  final Bus<ORModel.Call> _dblClickBus = new Bus<ORModel.Call>();
   final Controller.Contact _contactController;
   final Map<int, String> _contactMap = new Map<int, String>();
   final Map<String, String> _langMap;
@@ -158,20 +159,18 @@ class UIMyCallQueue extends UIModel {
 
     _list.onDoubleClick.listen((MouseEvent event) {
       if (event.target is LIElement) {
-        ///
-        ///
-        ///
-        /// DO STUFF HERE
-        ///
-        ///
-        ///
-        print((event.target as LIElement).dataset['id']);
-        (event.target as LIElement).setAttribute('transfer', '');
+        _dblClickBus.fire(
+            new ORModel.Call.fromMap(JSON.decode((event.target as LIElement).dataset['object'])));
       }
     });
 
     _callAgeUpdate();
   }
+
+  /**
+   * Returns a call when double clicking a call in the call list.
+   */
+  Stream<ORModel.Call> get onDblClick => _dblClickBus.stream;
 
   /**
    * Update the queue length counter in the widget.

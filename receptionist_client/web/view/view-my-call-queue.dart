@@ -106,6 +106,7 @@ class MyCallQueue extends ViewWidget {
         _appState.activeCall != ORModel.Call.noCall && _ui.markedForTransfer.length < 2;
 
     if (parkAndMarkTransfer) {
+      _ui.removeTransferMarks();
       parkedCall = await park(_appState.activeCall);
       _ui.markForTransfer(parkedCall);
       _log.info('marked ${parkedCall.ID} for transfer');
@@ -197,6 +198,8 @@ class MyCallQueue extends ViewWidget {
 
     _ui.onClick.listen(_activateMe);
 
+    _ui.onDblClick.listen((ORModel.Call call) => unpark());
+
     /// Transfer
     _hotKeys.onCtrlNumMinus.listen((_) {
       final Iterable<ORModel.Call> calls = _ui.markedForTransfer;
@@ -260,14 +263,17 @@ class MyCallQueue extends ViewWidget {
   }
 
   /**
-   * Unpark the first parked call.
+   * Unpark the first parked call or the given [call].
    */
-  void unpark() {
+  void unpark({ORModel.Call call}) {
     if (!_callControllerBusy &&
         _appState.activeCall == ORModel.Call.noCall &&
         _ui.calls.any((ORModel.Call call) => call.state == ORModel.CallState.Parked)) {
       _callControllerBusy = true;
-      _callController.pickupFirstParkedCall().then((ORModel.Call call) {
+      final Future<ORModel.Call> unparkCall =
+          call != null ? _callController.pickup(call) : _callController.pickupFirstParkedCall();
+
+      unparkCall.then((ORModel.Call call) {
         _ui.removeTransferMark(call);
       }).catchError((error) {
         _error(error, _langMap[Key.errorCallUnpark], '');
