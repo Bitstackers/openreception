@@ -9,7 +9,7 @@ PJOPTS=--enable-static  --enable-sound
 
 CC      = $(APP_CC)
 LDFLAGS = $(APP_LDFLAGS)
-LDLIBS  = $(APP_LDLIBS) -ljson
+LDLIBS  = $(APP_LDLIBS) -ljson-c
 CFLAGS  = $(APP_CFLAGS)
 CPPFLAGS= ${CFLAGS}
 OBJ_DIR = objects/

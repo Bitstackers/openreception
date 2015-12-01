@@ -20,7 +20,7 @@
 #include <strings.h>
 #include <stdbool.h>
 #include <pjsua-lib/pjsua.h>
-#include <json/json.h>
+#include <json-c/json.h>
 
 #define THIS_FILE	 "BASIC_AGENT"
 #define JSON_NULL_STRING "null";
