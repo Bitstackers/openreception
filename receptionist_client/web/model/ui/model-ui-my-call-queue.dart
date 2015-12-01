@@ -203,8 +203,11 @@ class UIMyCallQueue extends UIModel {
    * Removes the transfer attribute from the [call] li element.
    */
   void removeTransferMark(ORModel.Call call) {
+    print('!!!!! BEFORE !!!!!');
     _transferUUIDs.remove(call.ID);
+    print('!!!!! BETWEEN !!!!!');
     _list.querySelector('[data-id="${call.ID}"]')?.attributes.remove('transfer');
+    print('!!!!! AFTER !!!!!');
   }
 
   /**
