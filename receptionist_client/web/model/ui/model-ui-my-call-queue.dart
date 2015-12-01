@@ -193,7 +193,7 @@ class UIMyCallQueue extends UIModel {
     if (li != null) {
       li.remove();
       if (_transferUUIDs.contains(call.ID)) {
-        removeTransferMarks();
+        removeTransferMark(call);
       }
       _queueLengthUpdate();
     }

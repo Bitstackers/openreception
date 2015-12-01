@@ -100,9 +100,12 @@ class MyCallQueue extends ViewWidget {
    */
   Future _call(ORModel.PhoneNumber phoneNumber) async {
     ORModel.Call parkedCall;
-    bool transfer = _appState.activeCall != ORModel.Call.noCall && _ui.markedForTransfer.length < 2;
+    bool markTransfer =
+        _appState.activeCall == ORModel.Call.noCall && _ui.markedForTransfer.length == 1;
+    bool parkAndMarkTransfer =
+        _appState.activeCall != ORModel.Call.noCall && _ui.markedForTransfer.length < 2;
 
-    if (transfer) {
+    if (parkAndMarkTransfer) {
       parkedCall = await park(_appState.activeCall);
       _ui.markForTransfer(parkedCall);
       _log.info('marked ${parkedCall.ID} for transfer');
@@ -112,13 +115,13 @@ class MyCallQueue extends ViewWidget {
     try {
       ORModel.Call newCall = await _callController.dial(
           phoneNumber, _receptionSelector.selectedReception, _contactSelector.selectedContact);
-      if (transfer) {
+      if (markTransfer || parkAndMarkTransfer) {
         _ui.markForTransfer(newCall);
         _log.info('marked ${newCall.ID} for transfer');
       }
     } catch (error) {
       _error(error, _langMap[Key.callFailed], phoneNumber.value);
-      _log.warning('dialing failed with ${error} - transfer state is ${transfer}');
+      _log.warning('dialing failed with ${error}');
     }
 
     _contactData.removeRinging();
