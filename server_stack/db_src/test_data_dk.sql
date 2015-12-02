@@ -1,4 +1,10 @@
 INSERT INTO reception_dialplans (extension, dialplan) VALUES('empty','{"open":[],"note":"","active":true,"closed":[],"extraExtensions":[]}');
+INSERT INTO reception_dialplans (extension, dialplan) VALUES('12340001','{"open":[],"note":"","active":true,"closed":[],"extraExtensions":[]}');
+INSERT INTO reception_dialplans (extension, dialplan) VALUES('12340002','{"open":[],"note":"","active":true,"closed":[],"extraExtensions":[]}');
+INSERT INTO reception_dialplans (extension, dialplan) VALUES('12340003','{"open":[],"note":"","active":true,"closed":[],"extraExtensions":[]}');
+INSERT INTO reception_dialplans (extension, dialplan) VALUES('12340004','{"open":[],"note":"","active":true,"closed":[],"extraExtensions":[]}');
+INSERT INTO reception_dialplans (extension, dialplan) VALUES('12340005','{"open":[],"note":"","active":true,"closed":[],"extraExtensions":[]}');
+INSERT INTO reception_dialplans (extension, dialplan) VALUES('12340006','{"open":[],"note":"","active":true,"closed":[],"extraExtensions":[]}');
 
 
 INSERT INTO contacts (id, full_name, contact_type)
@@ -83,7 +89,7 @@ VALUES 	    (1, 'BitStackers K/S', 'Bank', 'VIP'),
 	    (5, 'Kødbollen A/S', 'Kødpenge', 'Non-VIP'),
 	    (6, 'Landmandens venner A/S', 'PBS', 'Non-VIP');
 
-INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, extradatauri, attributes)
+INSERT INTO receptions (id, organization_id, full_name, dialplan, extradatauri, attributes)
 VALUES (1, 1, 'BitStackers', '12340001',
            'https://docs.google.com/document/d/1JLPouzhT5hsWhnnGRDr8UhUQEZ6WvRbRkthR4NRrp9w/pub?embedded=true',
            '{
@@ -183,7 +189,7 @@ VALUES (1, 1, 'BitStackers', '12340001',
     ]
 }');
 
-INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
+INSERT INTO receptions (id, organization_id, full_name, dialplan, attributes)
 VALUES (2, 2, 'Fiskemandens venner A/S', '12340002',
 	   '{
     "short_greeting": "",
@@ -244,7 +250,7 @@ VALUES (2, 2, 'Fiskemandens venner A/S', '12340002',
     ]
 }');
 
-INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
+INSERT INTO receptions (id, organization_id, full_name, dialplan, attributes)
 VALUES (3, 3, 'Responsum K/S', '12340003',
        	   '{
     "short_greeting": "",
@@ -304,7 +310,7 @@ VALUES (3, 3, 'Responsum K/S', '12340003',
     ]
 }');
 
-INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
+INSERT INTO receptions (id, organization_id, full_name, dialplan, attributes)
 VALUES  (4, 4, 'Hansen VVS A/S', '12340004',
 	    '{
     "short_greeting": "",
@@ -360,7 +366,7 @@ VALUES  (4, 4, 'Hansen VVS A/S', '12340004',
     ]
 }');
 
-INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
+INSERT INTO receptions (id, organization_id, full_name, dialplan, attributes)
 VALUES (5, 5, 'Kødbollen A/S', '12340005',
            '{
     "short_greeting": "",
@@ -419,7 +425,7 @@ VALUES (5, 5, 'Kødbollen A/S', '12340005',
     "short_greeting": "Du taler med..."
 }');
 
-INSERT INTO receptions (id, organization_id, full_name, reception_telephonenumber, attributes)
+INSERT INTO receptions (id, organization_id, full_name, dialplan, attributes)
 VALUES (6, 2, 'Landmandens venner A/S', '12340006',
 	   '{
     "short_greeting": "Hej, du taler med...",
@@ -1266,11 +1272,6 @@ INSERT INTO cdr_entries (uuid, inbound, reception_id, extension, duration, wait_
 ('12', true,  1, '12344413', 21, 3, '2014-01-01 12:00:10', '{}'),
 ('13', false, 1, '12344417', 61, 3, '2014-01-01 12:01:00', '{}');
 
-
-INSERT INTO dialplan_templates (template) VALUES
-('{"name":"ResponsumClassic","extensionlist":[{"name":"mandag-torsdag","conditionlist":[{"condition":"time","time-of-day":"08:00-17:00","wday":"mon-thu"}],"actionlist":[{"action":"receptionists","sleeptime":0}]},{"name":"fredag","conditionlist":[{"condition":"time","time-of-day":"08:00-16:30","wday":"fri"}],"actionlist":[{"action":"receptionists","sleeptime":0}]},{"name":"lukket","conditionlist":[],"actionlist":[{"action":"voicemail"}]}]}');
-
-
 -- POSTGRES ONLY
 SELECT setval('users_id_sequence', (SELECT max(id)+1 FROM users), FALSE);
 SELECT setval('groups_id_sequence', (SELECT max(id)+1 FROM groups), FALSE);
@@ -1282,5 +1283,4 @@ SELECT setval('receptions_id_sequence', (SELECT max(id)+1 FROM receptions), FALS
 --  SELECT setval('distribution_lists_id_sequence', (SELECT max(id)+1 FROM distribution_lists), FALSE);
 SELECT setval('messages_id_sequence', (SELECT max(id)+1 FROM messages), FALSE);
 SELECT setval('calendar_events_id_sequence', (SELECT max(id)+1 FROM calendar_events), FALSE);
-SELECT setval('dialplan_templates_id_sequence', (SELECT max(id)+1 FROM dialplan_templates), FALSE);
 SELECT setval('calendar_entry_changes_id_sequence', (SELECT max(id)+1 FROM calendar_entry_changes), FALSE);

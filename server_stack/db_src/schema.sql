@@ -45,14 +45,6 @@ CREATE TABLE reception_dialplans (
 );
 
 -------------------------------------------------------------------------------
---  Dial-plans. DEPRECATED
-
-CREATE TABLE dialplan_templates (
-   id       INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-   template JSON    NOT NULL
-);
-
--------------------------------------------------------------------------------
 --  Contacts and receptions:
 
 CREATE TABLE contact_types (value TEXT NOT NULL PRIMARY KEY);
@@ -78,7 +70,6 @@ CREATE TABLE receptions (
    full_name         TEXT         NOT NULL,
    attributes        JSON         NOT NULL,
    extradatauri      TEXT         NOT NULL DEFAULT '',
-   reception_telephonenumber TEXT NOT NULL UNIQUE,
    dialplan          TEXT         NOT NULL REFERENCES 
                          reception_dialplans(extension) DEFAULT 'empty',
 -- last_check        TIMESTAMPTZ  NOT NULL DEFAULT '-infinity',
@@ -331,15 +322,6 @@ CREATE SEQUENCE groups_id_sequence
 ALTER SEQUENCE groups_id_sequence OWNED BY groups.id;
 ALTER TABLE ONLY groups ALTER COLUMN id SET DEFAULT nextval ('groups_id_sequence'::regclass);
 
-CREATE SEQUENCE dialplan_templates_id_sequence
-  START WITH 1
-  INCREMENT BY 1
-  NO MINVALUE
-  NO MAXVALUE
-  CACHE 1;
-ALTER SEQUENCE dialplan_templates_id_sequence OWNED BY dialplan_templates.id;
-ALTER TABLE ONLY dialplan_templates ALTER COLUMN id SET DEFAULT nextval ('dialplan_templates_id_sequence'::regclass);
-
 CREATE SEQUENCE contacts_id_sequence
   START WITH 1
   INCREMENT BY 1
@@ -456,7 +438,7 @@ ALTER TABLE users OWNER TO openreception;
 ALTER TABLE groups OWNER TO openreception;
 ALTER TABLE user_groups OWNER TO openreception;
 ALTER TABLE auth_identities OWNER TO openreception;
-ALTER TABLE dialplan_templates OWNER TO openreception;
+
 ALTER TABLE contact_types OWNER TO openreception;
 ALTER TABLE contacts OWNER TO openreception;
 ALTER TABLE organizations OWNER TO openreception;
@@ -481,7 +463,7 @@ ALTER TABLE calendar_entry_changes OWNER TO openreception;
 
 ALTER SEQUENCE users_id_sequence OWNER TO openreception;
 ALTER SEQUENCE groups_id_sequence OWNER TO openreception;
-ALTER SEQUENCE dialplan_templates_id_sequence OWNER TO openreception;
+
 ALTER SEQUENCE contacts_id_sequence OWNER TO openreception;
 ALTER SEQUENCE organizations_id_sequence OWNER TO openreception;
 ALTER SEQUENCE receptions_id_sequence OWNER TO openreception;
