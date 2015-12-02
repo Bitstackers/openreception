@@ -166,8 +166,10 @@ class CallList extends IterableBase<ORModel.Call> {
     return call;
   }
 
-  bool isCall (ESL.Channel channel) =>
-      this.containsID (channel.UUID);
+  /**
+   * Determine if a channel ID is a call-channel and not an agent channel.
+   */
+  bool isCall (ESL.Channel channel) => this.containsID (channel.UUID);
 
   /**
    * Handle CHANNEL_BRIDGE event packets.
