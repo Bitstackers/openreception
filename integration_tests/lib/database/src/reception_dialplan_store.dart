@@ -11,9 +11,9 @@ abstract class ReceptionDialplanStore {
     Model.ReceptionDialplan createdDialplan = await rdpStore.create(rdp);
 
     expect(createdDialplan, isNotNull);
-    expect(createdDialplan.id, greaterThan(Model.ReceptionDialplan.noId));
+    expect(createdDialplan.extension, isNotEmpty);
 
-    await rdpStore.remove(createdDialplan.id);
+    await rdpStore.remove(createdDialplan.extension);
   }
 
   /**
@@ -24,10 +24,10 @@ abstract class ReceptionDialplanStore {
 
     Model.ReceptionDialplan createdDialplan = await rdpStore.create(rdp);
 
-    expect((await rdpStore.get(createdDialplan.id)).id,
-        greaterThan(Model.ReceptionDialplan.noId));
+    expect((await rdpStore.get(createdDialplan.extension)).extension,
+           isNotEmpty);
 
-    await rdpStore.remove(createdDialplan.id);
+    await rdpStore.remove(createdDialplan.extension);
   }
 
   /**
@@ -45,8 +45,8 @@ abstract class ReceptionDialplanStore {
 
     Model.ReceptionDialplan createdDialplan = await rdpStore.create(rdp);
 
-    await rdpStore.remove(createdDialplan.id);
-    await expect(rdpStore.get(createdDialplan.id),
+    await rdpStore.remove(createdDialplan.extension);
+    await expect(rdpStore.get(createdDialplan.extension),
         throwsA(new isInstanceOf<Storage.NotFound>()));
   }
 
@@ -60,16 +60,16 @@ abstract class ReceptionDialplanStore {
     Model.ReceptionDialplan createdDialplan = await rdpStore.create(rdp);
 
     expect(createdDialplan, isNotNull);
-    expect(createdDialplan.id, greaterThan(Model.ReceptionDialplan.noId));
+    expect(createdDialplan.extension, isNotEmpty);
 
     {
       Model.ReceptionDialplan changed = Randomizer.randomDialplan();
-      changed.id = createdDialplan.id;
+      changed.extension = createdDialplan.extension;
 
       createdDialplan = changed;
     }
 
     await rdpStore.update(createdDialplan);
-    await rdpStore.remove(createdDialplan.id);
+    await rdpStore.remove(createdDialplan.extension);
   }
 }
