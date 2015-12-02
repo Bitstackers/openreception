@@ -25,12 +25,21 @@ import 'package:esl/esl.dart' as ESL;
 import 'package:logging/logging.dart';
 import '../lib/configuration.dart';
 
-Logger log = new Logger ('CallFlowControl');
+Logger log = new Logger('CallFlowControl');
 ArgResults parsedArgs;
 ArgParser parser = new ArgParser();
 
-void main(List<String> args) {
+class AuthenticationException implements Exception {
+  final String message;
+  const AuthenticationException([this.message = ""]);
 
+  String toString() => "NotFound: $message";
+}
+
+/**
+ * TODO: Recover from text/disconnect.
+ */
+void main(List<String> args) {
   ///Init logging. Inherit standard values.
   Logger.root.level = config.callFlowControl.log.level;
   Logger.root.onRecord.listen(config.callFlowControl.log.onRecord);
@@ -41,19 +50,17 @@ void main(List<String> args) {
     if (showHelp()) {
       print(parser.usage);
     } else {
-        router.connectAuthService();
-        connectESLClient();
-        router.start(port : config.callFlowControl.httpPort)
-        .catchError(log.shout);
+      router.connectAuthService();
+      connectESLClient();
+      router.start(port: config.callFlowControl.httpPort).catchError(log.shout);
     }
-  } catch(error, stackTrace) {
+  } catch (error, stackTrace) {
     log.shout(error, stackTrace);
   }
 }
 
 void connectESLClient() {
-
-  Duration period = new Duration(seconds : 3);
+  Duration period = new Duration(seconds: 3);
   final String hostname = config.callFlowControl.eslConfig.hostname;
   final String password = config.callFlowControl.eslConfig.password;
   final int port = config.callFlowControl.eslConfig.port;
@@ -69,25 +76,32 @@ void connectESLClient() {
   //Model.CallList.instance.subscribeChannelEvents(Model.ChannelList.event);
 
   Controller.PBX.eventClient.eventStream
-    .listen(Model.ChannelList.instance.handleEvent)
-    .onDone(connectESLClient); // Reconnect
+      .listen(Model.ChannelList.instance.handleEvent)
+      .onDone(connectESLClient); // Reconnect
 
   Controller.PBX.eventClient.eventStream
-    .listen(Model.ActiveRecordings.instance.handleEvent);
-
+      .listen(Model.ActiveRecordings.instance.handleEvent);
 
   Model.PeerList.subscribe(Controller.PBX.eventClient.eventStream);
 
+  Future authenticate(ESL.Connection client) =>
+      client.authenticate(password).then((ESL.Reply reply) {
+        if (reply.status != ESL.Reply.OK) {
+          log.shout('ESL Authentication failed - exiting');
+          exit(1);
+        }
+      });
+
   /// Connect API client.
-  Controller.PBX.apiClient.requestStream.listen((ESL.Packet packet) {
+  Controller.PBX.apiClient.requestStream.listen((ESL.Packet packet) async {
     switch (packet.contentType) {
       case (ESL.ContentType.Auth_Request):
         log.info('Connected to ${hostname}:${port}');
-      Controller.PBX.apiClient.authenticate(password)
-          .then((_) => Controller.PBX.loadPeers())
-          .then((_) => Controller.PBX.loadChannels()
-          .then((_) => Model.CallList.instance.reloadFromChannels
-            (Model.ChannelList.instance)));
+        authenticate(Controller.PBX.apiClient)
+            .then((_) => Controller.PBX.loadPeers())
+            .then((_) => Controller.PBX.loadChannels().then((_) => Model
+                .CallList
+                .instance.reloadFromChannels(Model.ChannelList.instance)));
 
         break;
 
@@ -101,11 +115,9 @@ void connectESLClient() {
     switch (packet.contentType) {
       case (ESL.ContentType.Auth_Request):
         log.info('Connected to ${hostname}:${port}');
-      Controller.PBX.eventClient.authenticate(password)
-          .then((_) => Controller.PBX.eventClient.event
-             (Model.PBXEvent.requiredSubscriptions,
-                format : ESL.EventFormat.Json)
-            ..catchError(log.shout));
+        authenticate(Controller.PBX.eventClient).then((_) => Controller
+            .PBX.eventClient.event(Model.PBXEvent.requiredSubscriptions,
+                format: ESL.EventFormat.Json)..catchError(log.shout));
 
         break;
 
@@ -114,30 +126,31 @@ void connectESLClient() {
     }
   });
 
-  void tryConnect (ESL.Connection client) {
-    client.connect(hostname, port).catchError((error, stackTrace) {
+  Future tryConnect(ESL.Connection client) async {
+    await client.connect(hostname, port).catchError((error, stackTrace) {
       if (error is SocketException) {
-        log.severe('ESL Connection failed - reconnecting in ${period.inSeconds} seconds');
-        new Timer(period, () => tryConnect (client));
-
+        log.severe(
+            'ESL Connection failed - reconnecting in ${period.inSeconds} seconds');
+        new Timer(period, () => tryConnect(client));
       } else {
         log.severe('Failed to connect to FreeSWITCH.', error, stackTrace);
       }
     });
   }
 
-  tryConnect (Controller.PBX.apiClient);
-  tryConnect (Controller.PBX.eventClient);
+  tryConnect(Controller.PBX.apiClient);
+  tryConnect(Controller.PBX.eventClient);
 }
 
 void registerAndParseCommandlineArguments(List<String> arguments) {
-  parser..addFlag('help', abbr: 'h', help: 'Output this help')
-        ..addOption('configfile', help: 'The JSON configuration file. Defaults to config.json')
-        ..addOption('httpport', help: 'The port the HTTP server listens on.')
-        ..addOption('servertoken', help: 'servertoken');
+  parser
+    ..addFlag('help', abbr: 'h', help: 'Output this help')
+    ..addOption('configfile',
+        help: 'The JSON configuration file. Defaults to config.json')
+    ..addOption('httpport', help: 'The port the HTTP server listens on.')
+    ..addOption('servertoken', help: 'servertoken');
 
   parsedArgs = parser.parse(arguments);
 }
 
 bool showHelp() => parsedArgs['help'];
-
