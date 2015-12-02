@@ -41,7 +41,6 @@ class Reception extends ReceptionStub {
   static const int noID = 0;
 
   int organizationId = noID;
-  int dialplanId = noID;
   Uri extraData = null;
   DateTime lastChecked =
       new DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
@@ -64,7 +63,7 @@ class Reception extends ReceptionStub {
     this._shortGreeting = newGreeting;
   }
 
-  String extension;
+  String dialplan;
   String greeting;
   String otherData;
   String _shortGreeting = '';
@@ -153,10 +152,9 @@ class Reception extends ReceptionStub {
       this
         ..ID = receptionMap[Key.ID]
         ..organizationId = receptionMap[Key.organizationId]
-        ..dialplanId = receptionMap[Key.dialplanId]
         ..fullName = receptionMap[Key.fullName]
         ..enabled = receptionMap[Key.enabled]
-        ..extension = receptionMap[Key.receptionTelephonenumber]
+        ..dialplan = receptionMap[Key.dialplan]
         ..extraData = receptionMap[Key.extradataUri] != null
             ? Uri.parse(receptionMap[Key.extradataUri])
             : null
@@ -182,12 +180,11 @@ class Reception extends ReceptionStub {
   Map get asMap => {
       Key.ID: this.ID,
       Key.organizationId: this.organizationId,
-      Key.dialplanId: this.dialplanId,
+      Key.dialplan: this.dialplan,
       Key.fullName: this.fullName,
       Key.enabled : this.enabled,
       Key.extradataUri:
           this.extraData == null ? null : this.extraData.toString(),
-      Key.receptionTelephonenumber: this.extension,
       Key.lastCheck: Util.dateTimeToUnixTimestamp (lastChecked),
       Key.attributes: attributes
     };

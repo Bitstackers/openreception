@@ -49,11 +49,10 @@ Map testReception2 = {
   "id": 1,
   "organization_id": null,
   "full_name": "BitStackers",
-  'dialplanId' : 3,
+  'dialplanId' : '12340001',
   "enabled": true,
   "extradatauri":
       "https://docs.google.com/document/d/1JLPouzhT5hsWhnnGRDr8UhUQEZ6WvRbRkthR4NRrp9w/pub?embedded=true",
-  "reception_telephonenumber": "12340001",
   "last_check": 0,
   "attributes": {
     "miniwiki": "http://nomansland",
@@ -161,9 +160,8 @@ Map testReception = {
   "full_name": "Friends of the fisher Ltd.",
   "enabled": true,
   'organization_id': 2,
-  'dialplanId' : 3,
+  'dialplan' : '12340001',
   "extradatauri": null,
-  "reception_telephonenumber": "12340002",
   "last_check": 0,
   "attributes": {
     "miniwiki": "http://nomansland",

@@ -24,13 +24,12 @@ part of openreception.database;
 Model.Reception _rowToReception(var row) => new Model.Reception.empty()
   ..ID = row.id
   ..fullName = row.full_name
-  ..dialplanId = row.dialplan_id
+  ..dialplan = row.dialplan
   ..organizationId = row.organization_id
   ..enabled = row.enabled
   ..extraData = row.extradatauri.isNotEmpty
       ? Uri.parse(row.extradatauri)
       : Uri.parse('.')
-  ..extension = row.reception_telephonenumber
   ..lastChecked = row.last_check
   ..attributes = row.attributes;
 

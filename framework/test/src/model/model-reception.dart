@@ -15,20 +15,46 @@ part of openreception.test;
 
 void testModelReception() {
   group('Model.Reception', () {
-    test('serializationDeserialization',
-        ModelReception.serializationDeserialization);
+    test('deserialization',
+        ModelReception.deserialization);
     test('serialization', ModelReception.serialization);
     test('buildObject', ModelReception.buildObject);
   });
 }
 abstract class ModelReception {
-  static void serializationDeserialization () {
-      expect(new Model.Reception.fromMap(Test_Data.testReception).asMap,
-        equals(Test_Data.testReception));
+  static void deserialization () {
+    Model.Reception builtObject = buildObject();
+    Model.Reception deserializedObject =
+        new Model.Reception.fromMap(JSON.decode(JSON.encode(builtObject)));
 
-      expect(new Model.Reception.fromMap(Test_Data.testReception2).asMap,
-        equals(Test_Data.testReception2));
+    expect(builtObject.ID, equals(deserializedObject.ID));
 
+
+    expect(builtObject.addresses, equals(deserializedObject.addresses));
+    expect(builtObject.alternateNames, equals(deserializedObject.alternateNames));
+    expect(builtObject.attributes, equals(deserializedObject.attributes));
+    expect(builtObject.bankingInformation, equals(deserializedObject.bankingInformation));
+    expect(builtObject.customerTypes, equals(deserializedObject.customerTypes));
+    expect(builtObject.dialplan, equals(deserializedObject.dialplan));
+    expect(builtObject.emailAddresses, equals(deserializedObject.emailAddresses));
+    expect(builtObject.enabled, equals(deserializedObject.enabled));
+    expect(builtObject.extraData, equals(deserializedObject.extraData));
+    expect(builtObject.fullName, equals(deserializedObject.fullName));
+    expect(builtObject.greeting, equals(deserializedObject.greeting));
+    expect(builtObject.handlingInstructions, equals(deserializedObject.handlingInstructions));
+    expect(builtObject.ID, equals(deserializedObject.ID));
+    expect(builtObject.lastChecked, equals(deserializedObject.lastChecked));
+    expect(builtObject.miniWiki, equals(deserializedObject.miniWiki));
+    expect(builtObject.name, equals(deserializedObject.name));
+    expect(builtObject.openingHours, equals(deserializedObject.openingHours));
+    expect(builtObject.organizationId, equals(deserializedObject.organizationId));
+    expect(builtObject.otherData, equals(deserializedObject.otherData));
+    expect(builtObject.product, equals(deserializedObject.product));
+    expect(builtObject.salesMarketingHandling, equals(deserializedObject.salesMarketingHandling));
+    expect(builtObject.shortGreeting, equals(deserializedObject.shortGreeting));
+    expect(builtObject.telephoneNumbers, equals(deserializedObject.telephoneNumbers));
+    expect(builtObject.vatNumbers, equals(deserializedObject.vatNumbers));
+    expect(builtObject.websites, equals(deserializedObject.websites));
    }
 
 
@@ -36,22 +62,24 @@ abstract class ModelReception {
    * Merely asserts that no exceptions arise.
    */
   static void serialization () =>
-      expect(() => new Model.Reception.fromMap(Test_Data.testReception), returnsNormally);
+      expect(() => JSON.encode(buildObject ()), returnsNormally);
 
-  /**
+  /**expect(builtObject.otherData, equals(deserializedObject.otherData));
    * TODO: Add additional expects.
    */
-  static void buildObject () {
-    Model.Reception testReception = new Model.Reception.empty()
-      ..addresses = []
-      ..dialplanId = 2
-      ..alternateNames = []
-      ..attributes = {}
+  static Model.Reception buildObject () {
+    final List<String> addresses = ['Somewhere else'];
+    final String dialplan = '12340001';
+    final List<String> alternateNames = ['nice place'];
+
+    Model.Reception buildObject = new Model.Reception.empty()
+      ..addresses = addresses
+      ..dialplan = dialplan
+      ..alternateNames = alternateNames
       ..bankingInformation = []
       ..customerTypes = ['Not defined']
       ..emailAddresses = []
       ..enabled = true
-      ..extension = '12340001'
       ..extraData = Uri.parse ('http://localhost/test')
       ..fullName = 'Test test'
       ..greeting = 'Go away'
@@ -68,7 +96,14 @@ abstract class ModelReception {
                               ..value = '56 33 21 44']
       ..vatNumbers = []
       ..websites = [];
-    expect(testReception.toJson, returnsNormally);
+
+
+    expect(buildObject.addresses, equals(addresses));
+    expect(buildObject.dialplan, equals(dialplan));
+    expect(buildObject.alternateNames, equals(alternateNames));
+
+    return buildObject;
   }
 }
+
 
