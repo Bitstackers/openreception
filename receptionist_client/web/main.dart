@@ -29,11 +29,11 @@ import 'package:openreception_framework/service-html.dart' as ORTransport;
 
 part 'configuration_url.dart';
 
-const String libraryName = 'openreceptionclient';
+const String libraryName = 'orc';
 
-View.ReceptionistclientDisaster appDisaster;
+View.ORCDisaster appDisaster;
 View.ORCLoading appLoading;
-View.ReceptionistclientReady appReady;
+View.ORCReady appReady;
 final Logger log = new Logger(libraryName);
 StreamSubscription<Event> windowOnBeforeUnload;
 StreamSubscription<Event> windowOnUnload;
@@ -231,11 +231,10 @@ void observers(Controller.User userController, Model.AppClientState appState) {
  * NOTE: This depends on [clientConfig] being set.
  */
 void registerDisasterAndLoadingViews(Model.AppClientState appState) {
-  Model.UIReceptionistclientDisaster uiDisaster =
-      new Model.UIReceptionistclientDisaster('receptionistclient-disaster');
+  Model.UIORCDisaster uiDisaster = new Model.UIORCDisaster('orc-disaster');
   Model.UIORCLoading uiLoading = new Model.UIORCLoading('orc-loading');
 
-  appDisaster = new View.ReceptionistclientDisaster(appState, uiDisaster);
+  appDisaster = new View.ORCDisaster(appState, uiDisaster);
   appLoading = new View.ORCLoading(appState, uiLoading);
 }
 
@@ -282,7 +281,7 @@ Future registerReadyView(
     Iterable<ORModel.Reception> sortedReceptions = receptions.toList()
       ..sort((x, y) => x.name.compareTo(y.name));
 
-    appReady = new View.ReceptionistclientReady(
+    appReady = new View.ORCReady(
         appState,
         uiReady,
         calendarController,

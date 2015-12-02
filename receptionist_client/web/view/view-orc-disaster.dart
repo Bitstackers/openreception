@@ -14,20 +14,19 @@
 part of view;
 
 /**
- * The receptionist client disaster "widget". Activates on AppState.ERROR
+ * The ORC disaster "widget". Activates on AppState.ERROR
  */
-class ReceptionistclientDisaster {
-  final Model.AppClientState         _appState;
-  static ReceptionistclientDisaster  _singleton;
-  Model.UIReceptionistclientDisaster _ui;
+class ORCDisaster {
+  final Model.AppClientState _appState;
+  static ORCDisaster _singleton;
+  Model.UIORCDisaster _ui;
 
   /**
    * Constructor.
    */
-  factory ReceptionistclientDisaster(Model.AppClientState appClientState,
-                                     Model.UIReceptionistclientDisaster uiDisaster) {
-    if(_singleton == null) {
-      _singleton = new ReceptionistclientDisaster._internal(appClientState, uiDisaster);
+  factory ORCDisaster(Model.AppClientState appClientState, Model.UIORCDisaster uiDisaster) {
+    if (_singleton == null) {
+      _singleton = new ORCDisaster._internal(appClientState, uiDisaster);
     } else {
       return _singleton;
     }
@@ -36,9 +35,8 @@ class ReceptionistclientDisaster {
   /**
    * Internal constructor.
    */
-  ReceptionistclientDisaster._internal(Model.AppClientState this._appState,
-                                       Model.UIReceptionistclientDisaster this._ui) {
-   _observers();
+  ORCDisaster._internal(Model.AppClientState this._appState, Model.UIORCDisaster this._ui) {
+    _observers();
   }
 
   /**

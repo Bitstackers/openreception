@@ -17,7 +17,7 @@ part of view;
  * This class is responsible for instantiating all the widgets when then
  * [Model.AppClientState] is [Model.AppState.READY].
  */
-class ReceptionistclientReady {
+class ORCReady {
   final Model.AppClientState _appState;
   final Controller.Calendar _calendarController;
   final Controller.Call _callController;
@@ -33,7 +33,7 @@ class ReceptionistclientReady {
   ReceptionCalendar _receptionCalendar;
   final Controller.Reception _receptionController;
   ReceptionSelector _receptionSelector;
-  static ReceptionistclientReady _singleton;
+  static ORCReady _singleton;
   List<ORModel.Reception> _sortedReceptions;
   final Controller.Sound _sound;
   final Controller.User _userController;
@@ -42,7 +42,7 @@ class ReceptionistclientReady {
   /**
    * Constructor.
    */
-  factory ReceptionistclientReady(
+  factory ORCReady(
       Model.AppClientState appState,
       Model.UIORCReady uiReady,
       Controller.Calendar calendarController,
@@ -58,7 +58,7 @@ class ReceptionistclientReady {
       Controller.Sound sound,
       Map<String, String> langMap) {
     if (_singleton == null) {
-      _singleton = new ReceptionistclientReady._internal(
+      _singleton = new ORCReady._internal(
           appState,
           uiReady,
           calendarController,
@@ -81,7 +81,7 @@ class ReceptionistclientReady {
   /**
    * Internal constructor.
    */
-  ReceptionistclientReady._internal(
+  ORCReady._internal(
       Model.AppClientState this._appState,
       Model.UIORCReady this._ui,
       this._calendarController,

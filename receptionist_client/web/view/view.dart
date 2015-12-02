@@ -36,6 +36,7 @@ part 'view-message-compose.dart';
 part 'view-hint.dart';
 part 'view-message-archive.dart';
 part 'view-my-call-queue.dart';
+part 'view-orc-disaster.dart';
 part 'view-orc-loading.dart';
 part 'view-orc-ready.dart';
 part 'view-reception-addresses.dart';
@@ -53,7 +54,6 @@ part 'view-reception-telephone-numbers.dart';
 part 'view-reception-type.dart';
 part 'view-reception-vat-numbers.dart';
 part 'view-reception-websites.dart';
-part 'view-receptionistclient-disaster.dart';
 part 'view-welcome-message.dart';
 
 const String libraryName = "view";

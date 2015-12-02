@@ -16,13 +16,13 @@ part of model;
 /**
  * Provides methods for manipulating the visibility of the disaster view.
  */
-class UIReceptionistclientDisaster {
+class UIORCDisaster {
   DivElement _myRoot;
 
   /**
    * Constructor.
    */
-  UIReceptionistclientDisaster(String id) {
+  UIORCDisaster(String id) {
     _myRoot = querySelector('#${id}');
   }
 
