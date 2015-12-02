@@ -53,7 +53,7 @@ abstract class Reception {
 
     return _receptionDB.get(receptionID)
       .then((Model.Reception reception) {
-        return new shelf.Response.ok (reception.extension);
+        return new shelf.Response.ok (reception.dialplan);
       })
       .catchError((error, stackTrace) {
       if(error is Storage.NotFound) {
