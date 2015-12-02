@@ -40,8 +40,7 @@ CREATE TABLE ivr_menus (
 --  Reception dialplans
 
 CREATE TABLE reception_dialplans (
-   id        SERIAL  NOT NULL PRIMARY KEY,
-   extension TEXT    NOT NULL UNIQUE,
+   extension TEXT    NOT NULL PRIMARY KEY,
    dialplan  JSON    NOT NULL DEFAULT '{}'
 );
 
@@ -74,15 +73,14 @@ CREATE TABLE organizations (
 
 CREATE TABLE receptions (
    id                INTEGER      NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-   organization_id   INTEGER      NOT NULL REFERENCES organizations(id) ON UPDATE CASCADE ON DELETE CASCADE,
+   organization_id   INTEGER      NOT NULL REFERENCES 
+                        organizations(id) ON UPDATE CASCADE ON DELETE CASCADE,
    full_name         TEXT         NOT NULL,
    attributes        JSON         NOT NULL,
    extradatauri      TEXT         NOT NULL DEFAULT '',
    reception_telephonenumber TEXT NOT NULL UNIQUE,
-   dialplan_id       INTEGER      NOT NULL REFERENCES reception_dialplans(id) DEFAULT 1,
---   dialplan          JSON         NOT NULL DEFAULT '{}', -- DEPRECATED
---   dialplan_compiled BOOLEAN      NOT NULL DEFAULT FALSE, -- DEPRECATED
---   ivr               JSON         NOT NULL DEFAULT '{}',
+   dialplan          TEXT         NOT NULL REFERENCES 
+                         reception_dialplans(extension) DEFAULT 'empty',
 -- last_check        TIMESTAMPTZ  NOT NULL DEFAULT '-infinity',
    last_check        TIMESTAMPTZ  NOT NULL DEFAULT 'epoch',
    enabled           BOOLEAN      NOT NULL DEFAULT TRUE
