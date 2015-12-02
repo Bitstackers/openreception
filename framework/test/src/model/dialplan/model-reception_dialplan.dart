@@ -41,7 +41,7 @@ abstract class ModelReceptionDialplan {
     Model.ReceptionDialplan deserializedObject =
         Model.ReceptionDialplan.decode(JSON.decode(JSON.encode(builtObject)));
 
-    expect(builtObject.id, equals(deserializedObject.id));
+    expect(builtObject.extension, equals(deserializedObject.extension));
     expect(builtObject.note, equals(deserializedObject.note));
     expect(builtObject.extension, equals(deserializedObject.extension));
     expect(builtObject.active, equals(deserializedObject.active));
@@ -72,7 +72,6 @@ abstract class ModelReceptionDialplan {
 
     final List<Model.HourAction> open = [
       new Model.HourAction()
-      ..extension = extension
       ..hours = Model.parseMultipleHours('mon-fri 16-17').toList()
       ..actions = [
         new Model.Playback ('somefile')
@@ -86,13 +85,13 @@ abstract class ModelReceptionDialplan {
 
     final Model.ReceptionDialplan builtObject =
         new Model.ReceptionDialplan()
-    ..id = id
+    ..extension = extension
     ..active = active
     ..note = note
     ..open = open
     ..defaultActions = closed;
 
-    expect(builtObject.id, equals(id));
+    expect(builtObject.extension, equals(extension));
     expect(builtObject.extension, equals(extension));
     expect(builtObject.note, equals(note));
     expect(builtObject.active, equals(active));
