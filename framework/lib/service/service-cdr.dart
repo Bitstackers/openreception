@@ -30,8 +30,8 @@ class RESTCDRService implements Storage.CDR {
    */
   Future<Iterable<Model.CDREntry>> listEntries(DateTime from, DateTime to) {
     String fromParameter =
-        'date_from=${(from.millisecondsSinceEpoch/1000).floor()}';
-    String toParameter = 'date_to=${(to.millisecondsSinceEpoch/1000).floor()}';
+        'date_from=${(from.millisecondsSinceEpoch)}';
+    String toParameter = 'date_to=${(to.millisecondsSinceEpoch)}';
 
     Uri url = Resource.CDR.list(this._host, fromParameter, toParameter);
     url = appendToken(url, this._token);
