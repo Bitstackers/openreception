@@ -12,5 +12,4 @@ INSERT INTO reception_dialplans (extension, dialplan) VALUES('empty','{"open":[]
 -- POSTGRES ONLY
 SELECT setval('users_id_sequence', (SELECT max(id)+1 FROM users), FALSE);
 SELECT setval('groups_id_sequence', (SELECT max(id)+1 FROM groups), FALSE);
-SELECT setval('dialplan_templates_id_sequence', (SELECT max(id)+1 FROM dialplan_templates), FALSE);
 
