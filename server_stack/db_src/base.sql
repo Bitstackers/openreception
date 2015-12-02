@@ -6,7 +6,7 @@ VALUES (1, 'Receptionist'),
        (2, 'Administrator'),
        (3, 'Service agent');
 
-INSERT INTO reception_dialplans (dialplan) VALUES('{"open":[],"note":"","active":true,"closed":[],"extraExtensions":[]}');
+INSERT INTO reception_dialplans (extension, dialplan) VALUES('empty','{"open":[],"note":"","active":true,"closed":[],"extraExtensions":[]}');
 
 
 -- POSTGRES ONLY

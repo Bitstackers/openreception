@@ -40,8 +40,9 @@ CREATE TABLE ivr_menus (
 --  Reception dialplans
 
 CREATE TABLE reception_dialplans (
-   id       SERIAL  NOT NULL PRIMARY KEY,
-   dialplan JSON    NOT NULL DEFAULT '{}'
+   id        SERIAL  NOT NULL PRIMARY KEY,
+   extension TEXT    NOT NULL UNIQUE,
+   dialplan  JSON    NOT NULL DEFAULT '{}'
 );
 
 -------------------------------------------------------------------------------
