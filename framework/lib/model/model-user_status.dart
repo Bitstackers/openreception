@@ -66,6 +66,8 @@ class UserStatus {
 
   UserStatus();
 
+  static UserStatus decode(Map map) => new UserStatus.fromMap(map);
+
   UserStatus.fromMap (Map map) {
     this.userID       = map[Key.UserID];
     this.state        = map[Key.state];
