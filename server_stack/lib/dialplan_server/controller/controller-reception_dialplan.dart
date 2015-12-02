@@ -39,21 +39,12 @@ class ReceptionDialplan {
    *
    */
   Future<shelf.Response> get(shelf.Request request) async {
-    int rdpId;
-    String idParam;
-    try {
-      idParam = shelf_route.getPathParameter(request, 'id');
-
-      rdpId = int.parse(idParam);
-    } on FormatException {
-      _log.warning('Non-numeric parameter $idParam');
-      return _clientError('Non-numeric parameter $idParam');
-    }
+    final String extension = shelf_route.getPathParameter(request, 'id');
 
     try {
-      return _okJson(await _receptionDialplanStore.get(rdpId));
+      return _okJson(await _receptionDialplanStore.get(extension));
     } on storage.NotFound {
-      return _notFound('No dialplan with id $rdpId');
+      return _notFound('No dialplan with extension $extension');
     }
   }
 
@@ -67,11 +58,18 @@ class ReceptionDialplan {
    *
    */
   Future<shelf.Response> remove(shelf.Request request) async {
-    final int rdpId = shelf_route.getPathParameter(request, 'id');
+    final String extension = shelf_route.getPathParameter(request, 'id');
 
-    return _okJson(await _receptionDialplanStore.remove(rdpId));
+    try {
+      return _okJson(await _receptionDialplanStore.remove(extension));
+    } on storage.NotFound {
+      return _notFound('No dialplan with extension $extension');
+    }
   }
 
+  /**
+   *
+   */
   Future<shelf.Response> update(shelf.Request request) async {
     final model.ReceptionDialplan rdp = model.ReceptionDialplan
         .decode(JSON.decode(await request.readAsString()));
