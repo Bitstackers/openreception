@@ -14,20 +14,19 @@
 part of view;
 
 /**
- * The receptionist client loading "widget". Activates on AppState.LOADING
+ * The ORC loading "widget". Activates on AppState.LOADING
  */
-class ReceptionistclientLoading {
-  final  Model.AppClientState              _appState;
-  static ReceptionistclientLoading         _singleton;
-  final  Model.UIReceptionistclientLoading _ui;
+class ORCLoading {
+  final Model.AppClientState _appState;
+  static ORCLoading _singleton;
+  final Model.UIORCLoading _ui;
 
   /**
    * Constructor.
    */
-  factory ReceptionistclientLoading(Model.AppClientState appState,
-                                    Model.UIReceptionistclientLoading uiLoading) {
-    if(_singleton == null) {
-      _singleton = new ReceptionistclientLoading._internal(appState, uiLoading);
+  factory ORCLoading(Model.AppClientState appState, Model.UIORCLoading uiLoading) {
+    if (_singleton == null) {
+      _singleton = new ORCLoading._internal(appState, uiLoading);
     } else {
       return _singleton;
     }
@@ -36,8 +35,7 @@ class ReceptionistclientLoading {
   /**
    * Internal constructor.
    */
-  ReceptionistclientLoading._internal(Model.AppClientState this._appState,
-                                      Model.UIReceptionistclientLoading this._ui) {
+  ORCLoading._internal(Model.AppClientState this._appState, Model.UIORCLoading this._ui) {
     _observers();
   }
 

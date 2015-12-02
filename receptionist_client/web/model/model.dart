@@ -41,6 +41,7 @@ part 'ui/model-ui-hint.dart';
 part 'ui/model-ui-message-archive.dart';
 part 'ui/model-ui-message-compose.dart';
 part 'ui/model-ui-my-call-queue.dart';
+part 'ui/model-ui-orc-loading.dart';
 part 'ui/model-ui-orc-ready.dart';
 part 'ui/model-ui-reception-addresses.dart';
 part 'ui/model-ui-reception-alt-names.dart';
@@ -58,7 +59,6 @@ part 'ui/model-ui-reception-type.dart';
 part 'ui/model-ui-reception-vat-numbers.dart';
 part 'ui/model-ui-reception-websites.dart';
 part 'ui/model-ui-receptionistclient-disaster.dart';
-part 'ui/model-ui-receptionistclient-loading.dart';
 part 'ui/model-ui-welcome-message.dart';
 
 const libraryName = 'model';

@@ -32,7 +32,7 @@ part 'configuration_url.dart';
 const String libraryName = 'openreceptionclient';
 
 View.ReceptionistclientDisaster appDisaster;
-View.ReceptionistclientLoading appLoading;
+View.ORCLoading appLoading;
 View.ReceptionistclientReady appReady;
 final Logger log = new Logger(libraryName);
 StreamSubscription<Event> windowOnBeforeUnload;
@@ -233,11 +233,10 @@ void observers(Controller.User userController, Model.AppClientState appState) {
 void registerDisasterAndLoadingViews(Model.AppClientState appState) {
   Model.UIReceptionistclientDisaster uiDisaster =
       new Model.UIReceptionistclientDisaster('receptionistclient-disaster');
-  Model.UIReceptionistclientLoading uiLoading =
-      new Model.UIReceptionistclientLoading('receptionistclient-loading');
+  Model.UIORCLoading uiLoading = new Model.UIORCLoading('orc-loading');
 
   appDisaster = new View.ReceptionistclientDisaster(appState, uiDisaster);
-  appLoading = new View.ReceptionistclientLoading(appState, uiLoading);
+  appLoading = new View.ORCLoading(appState, uiLoading);
 }
 
 /**

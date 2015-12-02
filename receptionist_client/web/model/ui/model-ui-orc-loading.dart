@@ -16,13 +16,13 @@ part of model;
 /**
  * Provides methods for manipulating the visibility of the loading view.
  */
-class UIReceptionistclientLoading {
+class UIORCLoading {
   DivElement _myRoot;
 
   /**
    * Constructor.
    */
-  UIReceptionistclientLoading(String id) {
+  UIORCLoading(String id) {
     _myRoot = querySelector('#${id}');
   }
 
