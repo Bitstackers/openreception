@@ -17,11 +17,11 @@ abstract class ReceptionDialplan {
 
   Future<Model.ReceptionDialplan> create(Model.ReceptionDialplan rdp);
 
-  Future<Model.ReceptionDialplan> get(int rdpId);
+  Future<Model.ReceptionDialplan> get(String extension);
 
   Future<Iterable<Model.ReceptionDialplan>> list();
 
   Future<Model.ReceptionDialplan> update(Model.ReceptionDialplan rdp);
 
-  Future remove(int rdpId);
+  Future remove(String extension);
 }

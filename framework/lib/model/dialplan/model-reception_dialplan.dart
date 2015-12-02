@@ -17,15 +17,12 @@ Iterable<Playback> playbackActions(ReceptionDialplan rdp) =>
     rdp.allActions.where((a) => a is Playback);
 
 /**
- * TODO: Extra extensions.
+ *
  */
 class ReceptionDialplan {
   Logger _log = new Logger('$libaryName.ReceptionDialplan');
 
-  static final int noId = 0;
-
-  int id = noId;
-  String extension = '';
+  String extension = 'empty';
 
   List<HourAction> open = [];
 
@@ -43,7 +40,6 @@ class ReceptionDialplan {
 
   static ReceptionDialplan decode (Map map) =>
       new ReceptionDialplan()
-  ..id = map['id']
   ..extension = map['extension']
   ..open = map['open'].map(HourAction.parse).toList()
   ..extraExtensions = map['extraExtensions'].map(NamedExtension.decode).toList()
@@ -52,7 +48,6 @@ class ReceptionDialplan {
   ..active = map['active'];
 
   Map toJson() => {
-        'id': id,
         'extension' : extension,
         'open': open,
         'note': note,

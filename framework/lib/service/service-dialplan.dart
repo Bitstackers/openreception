@@ -44,8 +44,8 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
   /**
    *
    */
-  Future<Model.ReceptionDialplan> get(int rdpId) {
-    Uri url = Resource.ReceptionDialplan.single(this._host, rdpId);
+  Future<Model.ReceptionDialplan> get(String extension) {
+    Uri url = Resource.ReceptionDialplan.single(this._host, extension);
     url = appendToken(url, this._token);
 
     return this._backend.get(url).then(JSON.decode).then(Model.ReceptionDialplan.decode);
@@ -68,7 +68,7 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
    *
    */
   Future<Model.ReceptionDialplan> update(Model.ReceptionDialplan rdp) {
-    Uri url = Resource.ReceptionDialplan.single(this._host, rdp.id);
+    Uri url = Resource.ReceptionDialplan.single(this._host, rdp.extension);
     url = appendToken(url, this._token);
 
     return this
@@ -81,8 +81,8 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
   /**
    *
    */
-  Future remove(int rdpId) {
-    Uri url = Resource.ReceptionDialplan.single(this._host, rdpId);
+  Future remove(String extension) {
+    Uri url = Resource.ReceptionDialplan.single(this._host, extension);
     url = appendToken(url, this._token);
 
     return this._backend.delete(url);
@@ -91,8 +91,8 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
   /**
    *
    */
-  Future<Iterable<String>> analyze(int rdpId) {
-    Uri url = Resource.ReceptionDialplan.analyze(_host, rdpId);
+  Future<Iterable<String>> analyze(String extension) {
+    Uri url = Resource.ReceptionDialplan.analyze(_host, extension);
     url = appendToken(url, this._token);
 
     return this

@@ -31,36 +31,35 @@ class ReceptionDialplan implements Storage.ReceptionDialplan {
   Future<Iterable<Model.ReceptionDialplan>> list() {
     String sql = '''
   SELECT 
-     id, extension, dialplan
+     extension, dialplan
   FROM
      reception_dialplans''';
 
-    return _connection.query(sql).then((Iterable rows) =>
-        rows.map((row) => Model.ReceptionDialplan.decode(row.dialplan)
-          ..id = row.id
+    return _connection.query(sql).then((Iterable rows) => rows.map((row) =>
+        Model.ReceptionDialplan.decode(row.dialplan)
           ..extension = row.extension));
   }
 
   /**
    *
    */
-  Future<Model.ReceptionDialplan> get(int rdpId) {
+  Future<Model.ReceptionDialplan> get(String extension) {
     String sql = '''
   SELECT 
-     id, extension, dialplan
+     extension, dialplan
   FROM
      reception_dialplans
   WHERE
-     id=@id''';
+     extension=@extension''';
 
-    Map parameters = {'id': rdpId};
+    Map parameters = {'extension': extension};
 
     return _connection.query(sql, parameters).then((Iterable rows) =>
         rows.length == 1
             ? (Model.ReceptionDialplan.decode(rows.first.dialplan)
-              ..id = rows.first.id
               ..extension = rows.first.extension)
-            : throw new Storage.NotFound('No dialplan with id $rdpId'));
+            : throw new Storage.NotFound(
+                'No dialplan with extension $extension'));
   }
 
   /**
@@ -71,10 +70,10 @@ class ReceptionDialplan implements Storage.ReceptionDialplan {
     UPDATE reception_dialplans
     SET dialplan=@dialplan,
         extension=@extension
-    WHERE id=@id;
+    WHERE extension=@extension;
   ''';
 
-    Map parameters = {'id': rdp.id, 'extension': rdp.extension, 'dialplan': rdp.toJson()};
+    Map parameters = {'extension': rdp.extension, 'dialplan': rdp.toJson()};
 
     return _connection.execute(sql, parameters).then((int rowsAffected) =>
         rowsAffected == 1 ? rdp : throw new Storage.SaveFailed(''));
@@ -87,29 +86,30 @@ class ReceptionDialplan implements Storage.ReceptionDialplan {
     String sql = '''
     INSERT INTO reception_dialplans (extension, dialplan)
     VALUES (@extension, @dialplan)
-    RETURNING id''';
+    RETURNING extension''';
 
     Map parameters = {'extension': rdp.extension, 'dialplan': rdp.toJson()};
 
     return _connection.query(sql, parameters).then((Iterable rows) =>
         rows.length == 1
-            ? (rdp..id = rows.first.id)
+            ? (rdp..extension = rows.first.extension)
             : throw new Storage.SaveFailed(''));
   }
 
   /**
    *
    */
-  Future remove(int rdpId) {
+  Future remove(String extension) {
     String sql = '''
     DELETE FROM reception_dialplans
-    WHERE id = @id''';
+    WHERE extension = @extension''';
 
-    Map parameters = {'id': rdpId};
+    Map parameters = {'extension': extension};
 
     return _connection.execute(sql, parameters).then((int rowAffected) =>
         rowAffected == 1
             ? 0
-            : throw new Storage.NotFound('No dialplan with id $rdpId'));
+            : throw new Storage.NotFound(
+                'No dialplan with extension $extension'));
   }
 }

@@ -24,8 +24,8 @@ abstract class ReceptionDialplan {
   /**
    *
    */
-  static Uri analyze(Uri host, int rdpId) =>
-    Uri.parse('$host/$nameSpace/$rdpId/analyze');
+  static Uri analyze(Uri host, String extension) =>
+    Uri.parse('$host/$nameSpace/$extension/analyze');
 
   /**
    *
@@ -42,7 +42,7 @@ abstract class ReceptionDialplan {
   /**
    *
    */
-  static Uri single(Uri host, int rdpId) =>
-    Uri.parse('$host/$nameSpace/$rdpId');
+  static Uri single(Uri host, String extension) =>
+    Uri.parse('$host/$nameSpace/$extension');
 
 }

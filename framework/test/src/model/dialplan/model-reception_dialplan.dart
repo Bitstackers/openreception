@@ -43,6 +43,7 @@ abstract class ModelReceptionDialplan {
 
     expect(builtObject.id, equals(deserializedObject.id));
     expect(builtObject.note, equals(deserializedObject.note));
+    expect(builtObject.extension, equals(deserializedObject.extension));
     expect(builtObject.active, equals(deserializedObject.active));
     expect(builtObject.open, equals(deserializedObject.open));
     expect(builtObject.defaultActions, equals(deserializedObject.defaultActions));
@@ -66,10 +67,12 @@ abstract class ModelReceptionDialplan {
   static Model.ReceptionDialplan buildObject() {
     final int id = 2;
     final bool active = false;
+    final String extension = '12345678';
     final String note = 'Just a test reception dialplan';
 
     final List<Model.HourAction> open = [
       new Model.HourAction()
+      ..extension = extension
       ..hours = Model.parseMultipleHours('mon-fri 16-17').toList()
       ..actions = [
         new Model.Playback ('somefile')
@@ -90,6 +93,7 @@ abstract class ModelReceptionDialplan {
     ..defaultActions = closed;
 
     expect(builtObject.id, equals(id));
+    expect(builtObject.extension, equals(extension));
     expect(builtObject.note, equals(note));
     expect(builtObject.active, equals(active));
     expect(builtObject.open, equals(open));
