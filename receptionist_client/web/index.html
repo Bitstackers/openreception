@@ -16,7 +16,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>ReceptionistClientFlex</title>
+    <title>ORC</title>
     <link rel="stylesheet" href="styles/main.css">
 </head>
 <body IgnoreClickFocus>
@@ -28,24 +28,24 @@
   </audio>
 
   <!--
-    #receptionistclient-ready state
+    #orc-ready state
 
     Role:
       The user interface when the application is fully operational and the user
       is logged in. This state act as a container for all the contexts.
 
     Visibility:
-      Hidden   #receptionistclient-ready display:none
-      Visible: #receptionistclient-ready display:flex
+      Hidden   #orc-ready display:none
+      Visible: #orc-ready display:flex
 
       Initial state is display:none.
 
-      Note that visibility on #receptionistclient-ready and its siblings MUST
-      be mutually exclusive.
+      Note that visibility on #orc-ready and its siblings MUST be mutually
+      exclusive.
   -->
-  <div IgnoreClickFocus id="receptionistclient-ready" class="display-flex-row">
+  <div IgnoreClickFocus id="orc-ready" class="display-flex-row">
     <style scoped>
-      #receptionistclient-ready {
+      #orc-ready {
         display: none;
         height: 100vh;
         width: 100vw;

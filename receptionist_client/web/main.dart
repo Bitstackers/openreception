@@ -252,8 +252,7 @@ Future registerReadyView(
     Controller.Notification notification,
     Map<String, String> langMap,
     String token) {
-  Model.UIReceptionistclientReady uiReady =
-      new Model.UIReceptionistclientReady('receptionistclient-ready');
+  Model.UIORCReady uiReady = new Model.UIORCReady('orc-ready');
 
   ORService.RESTCalendarStore calendarStore = new ORService.RESTCalendarStore(
       clientConfig.contactServerUri,

@@ -16,13 +16,13 @@ part of model;
 /**
  * Provides methods for manipulating the visibility of the ready view.
  */
-class UIReceptionistclientReady {
+class UIORCReady {
   DivElement _myRoot;
 
   /**
    * Constructor.
    */
-  UIReceptionistclientReady(String id) {
+  UIORCReady(String id) {
     _myRoot = querySelector('#${id}');
   }
 

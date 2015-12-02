@@ -36,6 +36,7 @@ part 'view-message-compose.dart';
 part 'view-hint.dart';
 part 'view-message-archive.dart';
 part 'view-my-call-queue.dart';
+part 'view-orc-ready.dart';
 part 'view-reception-addresses.dart';
 part 'view-reception-alt-names.dart';
 part 'view-reception-bank-info.dart';
@@ -51,7 +52,6 @@ part 'view-reception-telephone-numbers.dart';
 part 'view-reception-type.dart';
 part 'view-reception-vat-numbers.dart';
 part 'view-reception-websites.dart';
-part 'view-receptionistclient-ready.dart';
 part 'view-receptionistclient-disaster.dart';
 part 'view-receptionistclient-loading.dart';
 part 'view-welcome-message.dart';
@@ -90,7 +90,7 @@ abstract class ViewWidget {
    * Navigate to [_destination] if widget is not already in focus.
    */
   void _navigateToMyDestination() {
-    if(!_ui.isFocused) {
+    if (!_ui.isFocused) {
       _navigate.go(_destination);
     }
   }
@@ -105,7 +105,7 @@ abstract class ViewWidget {
    *  call onBlur();
    */
   void _setWidgetState(Controller.Destination destination) {
-    if(_destination == destination) {
+    if (_destination == destination) {
       _ui.focus();
       _onFocus(destination);
     } else {

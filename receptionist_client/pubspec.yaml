@@ -1,4 +1,4 @@
-name: ReceptionistClient
+name: ORC
 version: 0.5.0
 description: A receptionist web-app.
 environment:

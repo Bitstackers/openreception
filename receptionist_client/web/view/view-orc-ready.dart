@@ -37,14 +37,14 @@ class ReceptionistclientReady {
   List<ORModel.Reception> _sortedReceptions;
   final Controller.Sound _sound;
   final Controller.User _userController;
-  final Model.UIReceptionistclientReady _ui;
+  final Model.UIORCReady _ui;
 
   /**
    * Constructor.
    */
   factory ReceptionistclientReady(
       Model.AppClientState appState,
-      Model.UIReceptionistclientReady uiReady,
+      Model.UIORCReady uiReady,
       Controller.Calendar calendarController,
       Controller.Contact contactController,
       Controller.Reception receptionController,
@@ -83,7 +83,7 @@ class ReceptionistclientReady {
    */
   ReceptionistclientReady._internal(
       Model.AppClientState this._appState,
-      Model.UIReceptionistclientReady this._ui,
+      Model.UIORCReady this._ui,
       this._calendarController,
       this._contactController,
       this._receptionController,

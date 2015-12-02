@@ -655,6 +655,6 @@ class _Simulation {
         new UListElement()..id = 'simulation-info'
       ];
 
-    querySelector('body').insertBefore(root, querySelector('#receptionistclient-ready'));
+    querySelector('body').insertBefore(root, querySelector('#orc-ready'));
   }
 }
