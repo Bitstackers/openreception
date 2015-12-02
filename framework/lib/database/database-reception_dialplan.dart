@@ -31,12 +31,14 @@ class ReceptionDialplan implements Storage.ReceptionDialplan {
   Future<Iterable<Model.ReceptionDialplan>> list() {
     String sql = '''
   SELECT 
-     id, dialplan
+     id, extension, dialplan
   FROM
      reception_dialplans''';
 
-    return _connection.query(sql).then((Iterable rows) => rows.map(
-        (row) => Model.ReceptionDialplan.decode(row.dialplan)..id = row.id));
+    return _connection.query(sql).then((Iterable rows) =>
+        rows.map((row) => Model.ReceptionDialplan.decode(row.dialplan)
+          ..id = row.id
+          ..extension = row.extension));
   }
 
   /**
@@ -45,7 +47,7 @@ class ReceptionDialplan implements Storage.ReceptionDialplan {
   Future<Model.ReceptionDialplan> get(int rdpId) {
     String sql = '''
   SELECT 
-     id, dialplan
+     id, extension, dialplan
   FROM
      reception_dialplans
   WHERE
@@ -56,7 +58,8 @@ class ReceptionDialplan implements Storage.ReceptionDialplan {
     return _connection.query(sql, parameters).then((Iterable rows) =>
         rows.length == 1
             ? (Model.ReceptionDialplan.decode(rows.first.dialplan)
-              ..id = rows.first.id)
+              ..id = rows.first.id
+              ..extension = rows.first.extension)
             : throw new Storage.NotFound('No dialplan with id $rdpId'));
   }
 
@@ -66,11 +69,12 @@ class ReceptionDialplan implements Storage.ReceptionDialplan {
   Future<Model.ReceptionDialplan> update(Model.ReceptionDialplan rdp) {
     String sql = '''
     UPDATE reception_dialplans
-    SET dialplan=@dialplan
+    SET dialplan=@dialplan,
+        extension=@extension
     WHERE id=@id;
   ''';
 
-    Map parameters = {'id': rdp.id, 'dialplan': rdp.toJson()};
+    Map parameters = {'id': rdp.id, 'extension': rdp.extension, 'dialplan': rdp.toJson()};
 
     return _connection.execute(sql, parameters).then((int rowsAffected) =>
         rowsAffected == 1 ? rdp : throw new Storage.SaveFailed(''));
@@ -79,17 +83,17 @@ class ReceptionDialplan implements Storage.ReceptionDialplan {
   /**
    *
    */
-  Future<Model.ReceptionDialplan> create(Model.ReceptionDialplan dialplan) {
+  Future<Model.ReceptionDialplan> create(Model.ReceptionDialplan rdp) {
     String sql = '''
-    INSERT INTO reception_dialplans (dialplan)
-    VALUES (@dialplan)
+    INSERT INTO reception_dialplans (extension, dialplan)
+    VALUES (@extension, @dialplan)
     RETURNING id''';
 
-    Map parameters = {'dialplan': dialplan.toJson()};
+    Map parameters = {'extension': rdp.extension, 'dialplan': rdp.toJson()};
 
     return _connection.query(sql, parameters).then((Iterable rows) =>
         rows.length == 1
-            ? (dialplan..id = rows.first.id)
+            ? (rdp..id = rows.first.id)
             : throw new Storage.SaveFailed(''));
   }
 

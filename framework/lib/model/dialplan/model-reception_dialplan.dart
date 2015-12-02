@@ -25,6 +25,7 @@ class ReceptionDialplan {
   static final int noId = 0;
 
   int id = noId;
+  String extension = '';
 
   List<HourAction> open = [];
 
@@ -43,6 +44,7 @@ class ReceptionDialplan {
   static ReceptionDialplan decode (Map map) =>
       new ReceptionDialplan()
   ..id = map['id']
+  ..extension = map['extension']
   ..open = map['open'].map(HourAction.parse).toList()
   ..extraExtensions = map['extraExtensions'].map(NamedExtension.decode).toList()
   ..defaultActions = map['closed'].map(Action.parse).toList()
@@ -51,6 +53,7 @@ class ReceptionDialplan {
 
   Map toJson() => {
         'id': id,
+        'extension' : extension,
         'open': open,
         'note': note,
         'active': active,
