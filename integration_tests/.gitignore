@@ -3,6 +3,7 @@ bin/local_*
 
 # Local config.
 lib/config.dart
+lib/config.*.dart
 
 # Dart-specific files.
 .pub/
