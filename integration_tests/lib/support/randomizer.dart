@@ -332,6 +332,7 @@ abstract class Randomizer {
   static Model.ReceptionDialplan randomDialplan() =>
       new Model.ReceptionDialplan()
         ..open = randomDialplanHourActions()
+        ..extension = '${randomPhoneNumber()}-${new DateTime.now().millisecondsSinceEpoch}'
         ..defaultActions = randomDialplanActions()
         ..note = randomDialplanNote()
         ..active = rand.nextBool();
@@ -540,7 +541,7 @@ abstract class Randomizer {
    */
   static Model.Reception randomReception() =>
     new Model.Reception.empty()
-      ..dialplanId = 1
+      ..dialplan = '12340001'
       ..addresses = []
       ..alternateNames = []
       ..attributes = {}
@@ -548,7 +549,6 @@ abstract class Randomizer {
       ..customerTypes = ['Not defined']
       ..emailAddresses = []
       ..enabled = true
-      ..extension = randomPhoneNumber()
       ..extraData = Uri.parse ('http://localhost/test')
       ..fullName = 'Test test'
       ..greeting = 'Go away'

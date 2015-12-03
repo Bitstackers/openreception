@@ -512,7 +512,7 @@ abstract class Reception {
       expect(reception.bankingInformation, createdReception.bankingInformation);
       expect(reception.customerTypes, createdReception.customerTypes);
       expect(reception.emailAddresses, createdReception.emailAddresses);
-      expect(reception.extension, createdReception.extension);
+      expect(reception.dialplan, createdReception.dialplan);
       expect(reception.extraData, createdReception.extraData);
       expect(reception.fullName, createdReception.fullName);
       expect(reception.greeting, createdReception.greeting);
@@ -604,7 +604,7 @@ abstract class Reception {
 createdReception.bankingInformation, updatedReception.bankingInformation);
         expect(createdReception.customerTypes, updatedReception.customerTypes);
         expect(createdReception.emailAddresses, updatedReception.emailAddresses);
-        expect(createdReception.extension, updatedReception.extension);
+        expect(createdReception.dialplan, updatedReception.dialplan);
         expect(createdReception.extraData, updatedReception.extraData);
         expect(createdReception.fullName, updatedReception.fullName);
         expect(createdReception.greeting, updatedReception.greeting);
