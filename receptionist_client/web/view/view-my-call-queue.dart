@@ -139,6 +139,20 @@ class MyCallQueue extends ViewWidget {
   }
 
   /**
+   * Clear stale calls from the call list
+   */
+  void clearStaleCalls() {
+    _ui.calls.forEach((ORModel.Call call) {
+      _callController.get(call.ID).then((ORModel.Call c) {
+        if (c == ORModel.Call.noCall || c.callState == ORModel.CallState.Transferred) {
+          _ui.removeCall(c);
+          _log.info('removing stale call ${c.ID} from queue');
+        }
+      });
+    });
+  }
+
+  /**
    *  Mark the call controller ready. This operation is delayed 100ms, to prevent against agents
    *  spamming commands at the call controller.
    */
@@ -211,7 +225,9 @@ class MyCallQueue extends ViewWidget {
         final ORModel.Call destination =
             calls.firstWhere((ORModel.Call call) => call.ID != _appState.activeCall.ID);
         _callControllerBusy = true;
-        _callController.transfer(source, destination).catchError((error) {
+        _callController.transfer(source, destination).then((_) {
+          clearStaleCalls();
+        }).catchError((error) {
           _error(error, _langMap[Key.errorCallTransfer], 'ID ${_appState.activeCall.ID}');
           _log.warning('transfer failed with ${error}');
         }).whenComplete(() => _readyCallController());
@@ -228,7 +244,9 @@ class MyCallQueue extends ViewWidget {
     _hotKeys.onNumDiv.listen((_) {
       if (!_callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
         _callControllerBusy = true;
-        _callController.hangup(_appState.activeCall).catchError((error) {
+        _callController.hangup(_appState.activeCall).then((_) {
+          clearStaleCalls();
+        }).catchError((error) {
           _error(error, _langMap[Key.errorCallHangup], 'ID ${_appState.activeCall.ID}');
           _log.warning('hangup failed with ${error}');
         }).whenComplete(() => _readyCallController());
@@ -241,6 +259,7 @@ class MyCallQueue extends ViewWidget {
         _callControllerBusy = true;
         _callController.pickupNext().then((ORModel.Call call) {
           _ui.removeTransferMarks();
+          clearStaleCalls();
         }).catchError((error) {
           _error(error, _langMap[Key.errorCallNotFound], _langMap[Key.errorCallNotFoundExtended]);
           _log.warning('pickup failed with ${error}');

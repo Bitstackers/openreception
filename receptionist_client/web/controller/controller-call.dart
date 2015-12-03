@@ -106,6 +106,19 @@ class Call {
           orElse: () => ORModel.Call.noCall));
 
   /**
+   * Returns the [callId] [ORModel.Call].
+   *
+   * Returns [ORModel.Call.noCall] if [callId] does not exist.
+   */
+  Future<ORModel.Call> get(String callId) async {
+    try {
+      return await _service.get(callId);
+    } catch (error) {
+      return ORModel.Call.noCall;
+    }
+  }
+
+  /**
    * Tries to hangup [call].
    */
   Future hangup(ORModel.Call call) {
