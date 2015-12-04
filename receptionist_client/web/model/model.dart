@@ -163,7 +163,7 @@ abstract class UIModel {
    */
   void _handleUpDown(KeyboardEvent event) {
     if (_listTarget.children.isNotEmpty) {
-      final LIElement selected = _listTarget.querySelector('.selected');
+      final LIElement selected = _listTarget.querySelector('.selected:not(.hide)');
 
       if (selected == null) {
         _markSelected(_scanForwardForVisibleElement(_listTarget.children.first));
