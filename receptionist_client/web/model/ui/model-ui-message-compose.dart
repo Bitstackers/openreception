@@ -182,6 +182,9 @@ class UIMessageCompose extends UIModel {
    * Add [recipients] to the recipients list.
    */
   void set recipients(Set<ORModel.MessageRecipient> recipients) {
+    _showRecipientsText.hidden = true;
+    _showNoRecipientsText.hidden = true;
+
     String contactString(ORModel.MessageRecipient recipient) =>
         '${recipient.contactName} @ ${recipient.receptionName} (${recipient.address})';
 
