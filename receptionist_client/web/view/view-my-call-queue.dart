@@ -294,6 +294,7 @@ class MyCallQueue extends ViewWidget {
 
       unparkCall.then((ORModel.Call call) {
         _ui.removeTransferMark(call);
+        clearStaleCalls();
       }).catchError((error) {
         _error(error, _langMap[Key.errorCallUnpark], '');
         _log.warning('unpark failed with ${error}');
