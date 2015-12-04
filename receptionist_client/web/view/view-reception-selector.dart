@@ -80,6 +80,7 @@ class ReceptionSelector extends ViewWidget {
       if (newCall != ORModel.Call.noCall &&
           newCall.inbound &&
           _ui.selectedReception.ID != newCall.ID) {
+        print('SELECTED ID: ${_ui.selectedReception.ID} - NEW ID: ${newCall.ID}');
         _ui.reset();
         _ui.changeActiveReception(newCall.receptionID);
       }
