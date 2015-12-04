@@ -17,6 +17,13 @@ part of openreception.model.dialplan;
  * Abstract super-class for [Action]s available for the dialplan.
  */
 abstract class Action {
+
+  /**
+   * Parsing constructor. Will return a specific [Action] (such as [Transfer]
+   * or [Voicemail]. Will throw or propagate [FormatException] on parse errors.
+   * Note: Every specialization of an [Action] _must_ override the [parse]
+   * method. Otherwise a stack overflow will occur.
+   */
   static Action parse(dynamic buffer) {
     final consumed = consumeWord(buffer);
 
@@ -49,6 +56,13 @@ abstract class Action {
     throw new FormatException('Invalid buffer', buffer);
   }
 
+  /**
+   * Default constructor (interface).
+   */
   const Action();
+
+  /**
+   * Every action _must_ have a serialization function.
+   */
   dynamic toJson();
 }
