@@ -49,6 +49,7 @@ class UIContactSelector extends UIModel {
    */
   void clear() {
     _list.children.clear();
+    _filter.value = '';
   }
 
   /**
