@@ -20,6 +20,7 @@ import 'dart:io' as IO;
 import 'package:logging/logging.dart';
 
 import 'package:openreception_framework/service-io.dart' as _transport;
+import 'package:openreception_framework/storage.dart' as storage;
 
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;

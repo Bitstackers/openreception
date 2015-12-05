@@ -31,9 +31,13 @@ shelf.Response userinfo(shelf.Request request) {
     }
 
     return new shelf.Response.ok(JSON.encode(content['identity']));
+  } on storage.NotFound {
+    return new shelf.Response.notFound(
+      JSON.encode({'Status': 'Token $token not found'}));
   } catch (error, stacktrace) {
     log.severe(error, stacktrace);
 
-    return new shelf.Response.notFound(JSON.encode({'Status': 'Not found'}));
+    return new shelf.Response
+      .internalServerError(body : JSON.encode({'Status': 'Not found'}));
   }
 }

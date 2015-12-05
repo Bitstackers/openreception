@@ -11,6 +11,9 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
+/**
+ * The OR-Stack authentication server. Provides a REST authentication interface.
+ */
 library openreception.authentication_server;
 
 import 'dart:async';
@@ -28,37 +31,22 @@ import '../lib/auth_server/token_watcher.dart' as watcher;
 ArgResults parsedArgs;
 ArgParser parser = new ArgParser();
 
-final Logger log = new Logger('AuthServer');
-
 Future main(List<String> args) {
   ///Init logging.
-  final Logger log = new Logger('configserver');
   Logger.root.level = config.authServer.log.level;
   Logger.root.onRecord.listen(config.authServer.log.onRecord);
 
   ///Handle argument parsing.
-  ArgParser parser = new ArgParser()
+  final ArgParser parser = new ArgParser()
     ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
-    ..addOption('httpport',
+    ..addOption('httpport', abbr: 'p',
         help: 'The port the HTTP server listens on.',
         defaultsTo: config.authServer.httpPort.toString())
-    ..addOption('clientid',
-        help: 'The client id from google',
-        defaultsTo: config.authServer.clientId)
-    ..addOption('clientsecret',
-        help: 'The client secret from google',
-        defaultsTo: config.authServer.clientSecret)
-    ..addOption('redirecturi', help: 'The URI google redirects to after '
-        'an authentication attempt.',
-        defaultsTo: config.authServer.redirectUri.toString())
-    ..addOption('tokenlifetime',
-        help: 'The time in seconds a token is valid. Refreshed on use.',
-        defaultsTo: config.authServer.tokenLifetime.toString())
-    ..addOption('servertokendir',
+    ..addOption('servertokendir', abbr: 'd',
         help: 'A location where some predefined tokens will be loaded from.',
         defaultsTo: config.authServer.serverTokendir);
 
-  ArgResults parsedArgs = parser.parse(args);
+  final ArgResults parsedArgs = parser.parse(args);
 
   if (parsedArgs['help']) {
     print(parser.usage);
@@ -69,5 +57,7 @@ Future main(List<String> args) {
       .then((_) => watcher.setup())
       .then((_) => vault.loadFromDirectory(parsedArgs['servertokendir']))
       .then((_) => router.start(port: int.parse(parsedArgs['httpport'])))
-      .catchError(log.shout);
+      .catchError((error, stackTrace) {
+        stderr.write('Setup failed! $error $stackTrace');
+    });
 }
