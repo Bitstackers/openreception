@@ -28,11 +28,25 @@ class ReceptionDialplan {
   /**
    *
    */
+  Future<shelf.Response> analyze(shelf.Request request) async {
+    return new shelf.Response.internalServerError(body : 'unimplemented');
+  }
+
+  /**
+   *
+   */
   Future<shelf.Response> create(shelf.Request request) async {
     final model.ReceptionDialplan rdp = model.ReceptionDialplan
         .decode(JSON.decode(await request.readAsString()));
 
     return _okJson(await _receptionDialplanStore.create(rdp));
+  }
+
+  /**
+   *
+   */
+  Future<shelf.Response> deploy(shelf.Request request) async {
+    return new shelf.Response.internalServerError(body : 'unimplemented');
   }
 
   /**

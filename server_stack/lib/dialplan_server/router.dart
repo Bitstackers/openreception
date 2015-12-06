@@ -93,7 +93,9 @@ Future<IO.HttpServer> start(
     ..get('/receptiondialplan/{id}', receptionDialplanHandler.get)
     ..put('/receptiondialplan/{id}', receptionDialplanHandler.update)
     ..delete('/receptiondialplan/{id}', receptionDialplanHandler.remove)
-    ..post('/receptiondialplan', receptionDialplanHandler.create);
+    ..post('/receptiondialplan', receptionDialplanHandler.create)
+    ..post('/receptiondialplan/{id}/analyze', receptionDialplanHandler.analyze)
+    ..post('/receptiondialplan/{id}/deploy', receptionDialplanHandler.deploy);
 
   var handler = const shelf.Pipeline()
       .addMiddleware(
