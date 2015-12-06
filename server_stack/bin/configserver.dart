@@ -22,9 +22,11 @@ import 'package:logging/logging.dart';
 import '../lib/configuration.dart';
 import '../lib/config_server/router.dart' as router;
 
-Future main(List<String> args) {
+/**
+ * The OR-Stack configuration server. Provides a REST configuration interface.
+ */
+Future main(List<String> args) async {
   ///Init logging.
-  final Logger log = new Logger('configserver');
   Logger.root.level = config.configserver.log.level;
   Logger.root.onRecord.listen(config.configserver.log.onRecord);
 
@@ -32,6 +34,7 @@ Future main(List<String> args) {
   ArgParser parser = new ArgParser()
     ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
     ..addOption('httpport',
+        abbr: 'p',
         defaultsTo: config.configserver.httpPort.toString(),
         help: 'The port the HTTP server listens on.');
 
@@ -42,7 +45,9 @@ Future main(List<String> args) {
     exit(1);
   }
 
-  return router
+  await router
       .start(port: int.parse(parsedArgs['httpport']))
-      .catchError(log.shout);
+      .catchError((error, stackTrace) {
+    stderr.write('Setup failed! $error $stackTrace');
+  });
 }
