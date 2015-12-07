@@ -87,7 +87,8 @@ Future<shelf.Response> _lookupToken(shelf.Request request) {
 /**
  * TODO: Add Contact (not just BaseContact) updates.
  */
-Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
+Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) async {
+  await db.startDatabase();
   var router = shelf_route.router()
     ..get('/contact/{cid}/reception/{rid}/endpoints', Endpoint.ofContact)
 
