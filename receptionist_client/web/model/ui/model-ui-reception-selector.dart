@@ -124,9 +124,12 @@ class UIReceptionSelector extends UIModel {
 
   /**
    * Deal with enter.
+   *
+   * If the filter is not empty and one or more receptions are hidden, then hitting enter will
+   * result in the first visible element being selected.
    */
   void _handleEnter(KeyboardEvent event) {
-    if (_filter.value.trim().isNotEmpty) {
+    if (_filter.value.trim().isNotEmpty && _list.querySelectorAll('.hide').isNotEmpty) {
       _markSelected(_scanForwardForVisibleElement(_list.children.first));
     }
   }
