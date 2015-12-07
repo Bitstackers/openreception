@@ -22,9 +22,9 @@ import 'database.dart' as db;
 
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/database.dart' as Database;
-import 'package:openreception_framework/model.dart'   as Model;
-import 'package:openreception_framework/event.dart'   as Event;
-import 'package:openreception_framework/storage.dart'  as Storage;
+import 'package:openreception_framework/model.dart' as Model;
+import 'package:openreception_framework/event.dart' as Event;
+import 'package:openreception_framework/storage.dart' as Storage;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
 
@@ -40,46 +40,47 @@ part 'router/endpoint.dart';
 part 'router/phone.dart';
 
 const String libraryName = 'contactserver.router';
-final Logger log = new Logger (libraryName);
+final Logger log = new Logger(libraryName);
 
-Service.Authentication      _authService  = null;
+Service.Authentication _authService = null;
 Service.NotificationService _notification = null;
-Database.Contact _contactDB = new Database.Contact (db.connection);
-Database.Endpoint _endpointDB = new Database.Endpoint (db.connection);
-Database.DistributionList _dlistDB = new Database.DistributionList (db.connection);
+Database.Contact _contactDB = new Database.Contact(db.connection);
+Database.Endpoint _endpointDB = new Database.Endpoint(db.connection);
+Database.DistributionList _dlistDB =
+    new Database.DistributionList(db.connection);
 //Database.Phone _phoneDB = new Database.Phone (db.connection);
 
-const Map corsHeaders = const
-  {'Access-Control-Allow-Origin': '*',
-   'Access-Control-Allow-Methods' : 'GET, PUT, POST, DELETE'};
+const Map corsHeaders = const {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE'
+};
 
-   void connectAuthService() {
-     _authService = new Service.Authentication
-         (config.authServer.externalUri, config.userServer.serverToken, new Service_IO.Client());
-   }
+void connectAuthService() {
+  _authService = new Service.Authentication(config.authServer.externalUri,
+      config.userServer.serverToken, new Service_IO.Client());
+}
 
-   void connectNotificationService() {
-     _notification = new Service.NotificationService
-         (config.notificationServer.externalUri, config.userServer.serverToken, new Service_IO.Client());
-   }
+void connectNotificationService() {
+  _notification = new Service.NotificationService(
+      config.notificationServer.externalUri,
+      config.userServer.serverToken,
+      new Service_IO.Client());
+}
 
 shelf.Middleware checkAuthentication =
-  shelf.createMiddleware(requestHandler: _lookupToken, responseHandler: null);
-
+    shelf.createMiddleware(requestHandler: _lookupToken, responseHandler: null);
 
 Future<shelf.Response> _lookupToken(shelf.Request request) {
   var token = request.requestedUri.queryParameters['token'];
 
-  return _authService.validate(token).then((_) => null)
-  .catchError((error) {
+  return _authService.validate(token).then((_) => null).catchError((error) {
     if (error is Storage.NotFound) {
       return new shelf.Response.forbidden('Invalid token');
-    }
-    else if (error is IO.SocketException) {
-      return new shelf.Response.internalServerError(body : 'Cannot reach authserver');
-    }
-    else {
-      return new shelf.Response.internalServerError(body : error.toString());
+    } else if (error is IO.SocketException) {
+      return new shelf.Response.internalServerError(
+          body: 'Cannot reach authserver');
+    } else {
+      return new shelf.Response.internalServerError(body: error.toString());
     }
   });
 }
@@ -87,23 +88,22 @@ Future<shelf.Response> _lookupToken(shelf.Request request) {
 /**
  * TODO: Add Contact (not just BaseContact) updates.
  */
-Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) async {
+Future<IO.HttpServer> start(
+    {String hostname: '0.0.0.0', int port: 4010}) async {
   await db.startDatabase();
   var router = shelf_route.router()
     ..get('/contact/{cid}/reception/{rid}/endpoints', Endpoint.ofContact)
-
     ..get('/contact/{cid}/reception/{rid}/endpoint', Endpoint.ofContact)
     ..post('/contact/{cid}/reception/{rid}/endpoint', Endpoint.create)
     ..put('/endpoint/{eid}', Endpoint.update)
     ..delete('/endpoint/{eid}', Endpoint.remove)
-
     ..get('/contact/{cid}/reception/{rid}/phones', Phone.ofContact)
     ..post('/contact/{cid}/reception/{rid}/phones', Phone.add)
     ..put('/contact/{cid}/reception/{rid}/phones/{eid}', Phone.update)
     ..delete('/contact/{cid}/reception/{rid}/phones/{eid}', Phone.remove)
-
     ..get('/contact/{cid}/reception/{rid}/dlist', DistributionList.ofContact)
-    ..post('/contact/{cid}/reception/{rid}/dlist', DistributionList.addRecipient)
+    ..post(
+        '/contact/{cid}/reception/{rid}/dlist', DistributionList.addRecipient)
     ..delete('/dlist/{did}', DistributionList.removeRecipient)
     ..get('/contact/list/reception/{rid}', Contact.listByReception)
 
@@ -122,22 +122,25 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) asyn
     ..get('/contact/organization/{oid}', Contact.listByOrganization)
     ..get('/contact/reception/{rid}', Contact.listByReception)
     ..get('/contact/{cid}/reception/{rid}/calendar', ContactCalendar.list)
-    ..get('/contact/{cid}/reception/{rid}/calendar/event/{eid}', ContactCalendar.get)
-    ..put('/contact/{cid}/reception/{rid}/calendar/event/{eid}', ContactCalendar.update)
+    ..get('/contact/{cid}/reception/{rid}/calendar/event/{eid}',
+        ContactCalendar.get)
+    ..put('/contact/{cid}/reception/{rid}/calendar/event/{eid}',
+        ContactCalendar.update)
     ..post('/contact/{cid}/reception/{rid}/calendar', ContactCalendar.create)
-    ..delete('/contact/{cid}/reception/{rid}/calendar/event/{eid}', ContactCalendar.remove)
+    ..delete('/contact/{cid}/reception/{rid}/calendar/event/{eid}',
+        ContactCalendar.remove)
     ..get('/calendarentry/{eid}/change', ContactCalendar.listChanges)
     ..get('/calendarentry/{eid}/change/latest', ContactCalendar.latestChange);
 
-
   var handler = const shelf.Pipeline()
-      .addMiddleware(shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
+      .addMiddleware(
+          shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
       .addMiddleware(checkAuthentication)
       .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
       .addHandler(router.handler);
 
   log.fine('Serving interfaces:');
-  shelf_route.printRoutes(router, printer : log.fine);
+  shelf_route.printRoutes(router, printer: log.fine);
 
   return shelf_io.serve(handler, hostname, port);
 }
