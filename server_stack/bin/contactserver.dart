@@ -51,6 +51,9 @@ Future main(List<String> args) async {
     exit(1);
   }
 
+  router.connectAuthService();
+  router.connectNotificationService();
+
   await router
       .start(port: int.parse(parsedArgs['httpport']))
       .catchError((error, stackTrace) {
