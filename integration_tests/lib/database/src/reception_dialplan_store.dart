@@ -1,7 +1,6 @@
 part of or_test_fw;
 
 abstract class ReceptionDialplanStore {
-
   /**
    *
    */
@@ -19,13 +18,30 @@ abstract class ReceptionDialplanStore {
   /**
    *
    */
+  static Future deploy(Service.RESTDialplanStore rdpStore,
+      Service.RESTReceptionStore receptionStore) async {
+    Model.ReceptionDialplan rdp = Randomizer.randomDialplan();
+
+    Model.ReceptionDialplan createdDialplan = await rdpStore.create(rdp);
+    Model.Reception createdReception = await receptionStore
+        .create(Randomizer.randomReception()..dialplan = rdp.extension);
+
+    rdpStore.deployDialplan(rdp.extension, createdReception.ID);
+
+    await receptionStore.remove(createdReception.ID);
+    await rdpStore.remove(createdDialplan.extension);
+  }
+
+  /**
+   *
+   */
   static Future get(Storage.ReceptionDialplan rdpStore) async {
     Model.ReceptionDialplan rdp = Randomizer.randomDialplan();
 
     Model.ReceptionDialplan createdDialplan = await rdpStore.create(rdp);
 
-    expect((await rdpStore.get(createdDialplan.extension)).extension,
-           isNotEmpty);
+    expect(
+        (await rdpStore.get(createdDialplan.extension)).extension, isNotEmpty);
 
     await rdpStore.remove(createdDialplan.extension);
   }
@@ -54,7 +70,6 @@ abstract class ReceptionDialplanStore {
    *
    */
   static Future update(Storage.ReceptionDialplan rdpStore) async {
-
     Model.ReceptionDialplan rdp = Randomizer.randomDialplan();
 
     Model.ReceptionDialplan createdDialplan = await rdpStore.create(rdp);
