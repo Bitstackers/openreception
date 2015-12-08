@@ -7,7 +7,7 @@ abstract class NotificationService {
       receptionist.eventStack.clear();
     });
 
-    return receptionists.first.paused().then((_) =>
+    return receptionists.first.pause().then((_) =>
       Future.forEach(receptionists, (Receptionist receptionist) =>
         receptionist.waitFor(eventType : Event.Key.userState)));
   }

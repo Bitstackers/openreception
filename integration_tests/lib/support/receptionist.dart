@@ -480,8 +480,7 @@ class Receptionist {
   }
 
   /**
-   * Sets the userstate to 'paused'.
+   * Pause the receptionist.
    */
-
-  Future paused () => this.callFlowControl.userStatePausedMap(this.user.ID);
+  Future pause () => this.callFlowControl.userStatePaused(this.user.ID);
 }
