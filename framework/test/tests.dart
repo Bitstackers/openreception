@@ -20,12 +20,14 @@ import '../lib/bus.dart';
 import '../lib/event.dart'    as Event;
 import '../lib/model.dart'    as Model;
 import '../lib/resource.dart' as Resource;
+import '../lib/dialplan_tools.dart' as dpTools;
 //import '../lib/service.dart'  as Service;
 import 'data/testdata.dart'  as Test_Data;
 
 import 'package:logging/logging.dart';
 import 'package:junitconfiguration/junitconfiguration.dart';
 import 'package:unittest/unittest.dart';
+import 'package:xml/xml.dart' as xml;
 
 part 'src/bus.dart';
 part 'src/model/model-agent_history.dart';
@@ -85,15 +87,19 @@ part 'src/resource/resource-notification.dart';
 part 'src/resource/resource-organization.dart';
 part 'src/resource/resource-reception.dart';
 
+part 'src/dialplan_tools.dart';
 part 'src/event.dart';
 part 'src/event-calendar_change.dart';
 part 'src/event-message_change.dart';
 
-void main() {
+void main(List<String> arguments) {
   Logger.root.level = Level.FINEST;
   Logger.root.onRecord.listen((LogRecord record) =>
       logMessage(record.toString()));
-  JUnitConfiguration.install();
+
+  if(!arguments.contains('text-output')) {
+    JUnitConfiguration.install();
+  }
 
   testModelAction();
   testModelEnqueue();
@@ -110,6 +116,7 @@ void main() {
   testModelVoicemail();
 
   testBus();
+  testDialplanTools();
 
   testEvent();
   testEventMessageChange();

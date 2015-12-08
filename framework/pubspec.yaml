@@ -13,3 +13,4 @@ dev_dependencies:
   postgresql: '>= 0.3.0 <4.0.0'
   route: any
   unittest: '>= 0.11.5 < 0.12.0'
+  xml: any
