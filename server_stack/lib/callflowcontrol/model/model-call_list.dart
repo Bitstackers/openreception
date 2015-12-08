@@ -223,7 +223,6 @@ class CallList extends IterableBase<ORModel.Call> {
       final ORModel.Call call = this.get(event.uniqueID);
 
       if (call.inbound && call.assignedTo != ORModel.User.noID) {
-        log.warning('!!!adding a call by agent');
         AgentHistory.instance.callHandledByAgent(call.assignedTo);
       }
 
