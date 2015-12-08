@@ -27,6 +27,7 @@ const String name = 'name';
 const String greeting = 'greeting';
 const String greetingShort = 'greetingShort';
 const String actions = 'actions';
+const String submenus = 'submenus';
 
 //Keywords
 const String lock = 'locked';
