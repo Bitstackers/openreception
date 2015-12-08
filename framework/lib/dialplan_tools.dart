@@ -99,22 +99,29 @@ String convertTextual(model.ReceptionDialplan dialplan, int rid) =>
     '''<!-- Dialplan for extension ${dialplan.extension}. Generated ${new DateTime.now()} -->
 <include>
   <context name="reception-${dialplan.extension}">
-    <context name="reception-33170101">
 
     <!-- Initialize channel variables -->
-    <extension name="${dialplan.extension}" continue=true>
+    <extension name="${dialplan.extension}" continue="true">
       <condition field="destination_number" expression="^${dialplan.extension}\$" break="on-false">
         <action application="log" data="INFO Setting variables of call to ${dialplan.extension}, currently allocated to ID:${rid}."/>
         ${_setVar('reception_id', rid)}
         ${_setVar('openreception::greeting-played', false)}
         ${_setVar('openreception::locked', false)}
       </condition>
-     ${_hourActionsToXmlDialplan(dialplan.extension, dialplan.open).fold([], (combined, current) => combined..addAll(current)).join('\n      ')}
+    </extension>
 
-    ${_fallbackToDialplan(dialplan.extension, dialplan.defaultActions).join('\n      ')}
+    <!-- Perform outbound calls -->
+    <extension name="${dialplan.extension}-outbound" continue="true">
+      <condition field="destination_number" expression="^${dialplan.extension}-outbound_(\d+)">
+       <action application="bridge" data="{originate_timeout=120}[leg_timeout=50]sofia/gateway/\${default_trunk}/\$1"/>
+        <action application="hangup"/>
+      </condition>
+    </extension>
+    ${_hourActionsToXmlDialplan(dialplan.extension, dialplan.open).fold([], (combined, current) => combined..addAll(current)).join('\n    ')}
+    ${_fallbackToDialplan(dialplan.extension, dialplan.defaultActions).join('\n    ')}
 
-    </context>
-  </include>''';
+  </context>
+</include>''';
 
 /**
  * Detemine whether or not an extension is local or not.
