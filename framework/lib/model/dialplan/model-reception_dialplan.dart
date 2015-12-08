@@ -40,21 +40,21 @@ class ReceptionDialplan {
 
   List<Action> defaultActions = [];
 
-  static ReceptionDialplan decode (Map map) =>
-      new ReceptionDialplan()
-  ..extension = map['extension']
-  ..open = map['open'].map(HourAction.parse).toList()
-  ..extraExtensions = map['extraExtensions'].map(NamedExtension.decode).toList()
-  ..defaultActions = map['closed'].map(Action.parse).toList()
-  ..note = map['note']
-  ..active = map['active'];
+  static ReceptionDialplan decode(Map map) => new ReceptionDialplan()
+    ..extension = map['extension']
+    ..open = map['open'].map(HourAction.parse).toList()
+    ..extraExtensions =
+        map['extraExtensions'].map(NamedExtension.decode).toList()
+    ..defaultActions = map['closed'].map(Action.parse).toList()
+    ..note = map['note']
+    ..active = map['active'];
 
   Map toJson() => {
-        'extension' : extension,
+        'extension': extension,
         'open': open,
         'note': note,
         'active': active,
         'closed': defaultActions,
-        'extraExtensions' : extraExtensions
+        'extraExtensions': extraExtensions
       };
 }
