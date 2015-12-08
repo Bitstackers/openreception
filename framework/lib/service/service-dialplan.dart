@@ -104,8 +104,8 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
   /**
    * (Re-)deploys a dialplan for a the reception identified by [receptionId]
    */
-  Future deployDialplan(int receptionId) {
-    Uri url = Resource.ReceptionDialplan.deploy(_host, receptionId);
+  Future deployDialplan(String extension, int receptionId) {
+    Uri url = Resource.ReceptionDialplan.deploy(_host, extension, receptionId);
     url = appendToken(url, this._token);
 
     return this
