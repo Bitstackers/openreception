@@ -183,6 +183,7 @@ class CDRServer extends StandardConfig {
 class DialplanServer extends StandardConfig {
   @override
   final int httpPort = 4060;
+  final String freeswitchConfPath = '/usr/local/freeswitch/conf';
 
   const DialplanServer();
 }
