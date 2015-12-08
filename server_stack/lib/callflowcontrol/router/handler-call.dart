@@ -191,9 +191,13 @@ abstract class Call {
    * agent and then perform the orgination in the background.
    */
   static Future<shelf.Response> originate(shelf.Request request) async {
+    final String callId = shelf_route.getPathParameters(request).containsKey(
+        'callId') ? shelf_route.getPathParameter(request, 'callId') : '';
 
-    final int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
-    final int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
+    final int receptionID =
+        int.parse(shelf_route.getPathParameter(request, 'rid'));
+    final int contactID =
+        int.parse(shelf_route.getPathParameter(request, 'cid'));
     String extension = shelf_route.getPathParameter(request, 'extension');
     final String host = shelf_route.getPathParameter(request, 'host');
     final String port = shelf_route.getPathParameter(request, 'port');
@@ -323,29 +327,34 @@ abstract class Call {
     }
 
     /// Update the call with the info from the originate request.
-    call..assignedTo = user.ID
-        ..callerID = Controller.PBX.callerID
-        ..destination = extension
-        ..receptionID = receptionID
-        ..contactID = contactID
-        ..b_Leg = agentChannel;
+    call
+      ..assignedTo = user.ID
+      ..callerID = Controller.PBX.callerID
+      ..destination = extension
+      ..receptionID = receptionID
+      ..contactID = contactID
+      ..b_Leg = agentChannel;
 
     /// Update call and user state information.
     call.changeState(ORModel.CallState.Ringing);
     Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Speaking);
 
     try {
-      await Controller.PBX.setVariable
-          (call.channel, Controller.PBX.ownerUid, user.ID.toString());
-      await Controller.PBX.setVariable
-        (call.channel, 'reception_id', receptionID.toString());
-      await Controller.PBX.setVariable
-         (call.channel, 'contact_id', contactID.toString());
-      await Controller.PBX.setVariable
-         (call.channel, 'openreception::destination', extension);
+      await Controller.PBX.setVariable(
+          call.channel, Controller.PBX.ownerUid, user.ID.toString());
+      await Controller.PBX
+          .setVariable(call.channel, 'reception_id', receptionID.toString());
+      await Controller.PBX
+          .setVariable(call.channel, 'contact_id', contactID.toString());
+      await Controller.PBX
+          .setVariable(call.channel, 'openreception::destination', extension);
 
-    }
-    catch (error, stackTrace) {
+      if(callId.isNotEmpty) {
+        await Controller.PBX
+            .setVariable(call.channel, Controller.PBX.contextCallId, callId);
+      }
+
+    } catch (error, stackTrace) {
       final String msg = 'Failed to create agent channel';
       log.severe(msg, error, stackTrace);
       _userStateUnknown(user);

@@ -125,7 +125,9 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4242}) {
     ..post('/call/{callid}/pickup', Call.pickup)
     ..post('/call/{callid}/park', Call.park)
     ..post('/call/originate/{extension}/reception/{rid}/contact/{cid}', Call.originate)
+    ..post('/call/originate/{extension}/reception/{rid}/contact/{cid}/call/{callId}', Call.originate)
     ..post('/call/originate/{extension}@{host}:{port}/reception/{rid}/contact/{cid}', Call.originate)
+    ..post('/call/originate/{extension}@{host}:{port}/reception/{rid}/contact/{cid}/call/{callId}', Call.originate)
     ..post('/call/{aleg}/transfer/{bleg}', Call.transfer)
     ..post('/call/reception/{rid}/record', Call.recordSound);
 

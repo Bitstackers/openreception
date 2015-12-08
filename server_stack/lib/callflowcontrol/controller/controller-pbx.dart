@@ -52,6 +52,8 @@ abstract class PBX {
   static const String ownerUid = '${_namespace}owner_uid';
   static const String locked = '${_namespace}locked';
   static const String greetingPlayed = '${_namespace}greeting-played';
+  static const String contextCallId = '${_namespace}context_callId';
+  static const String destination = '${_namespace}destination';
 
   static final Logger log = new Logger ('${libraryName}.PBX');
 
