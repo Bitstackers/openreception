@@ -88,14 +88,15 @@ Future<IO.HttpServer> start(
     ..put('/ivr/{id}', ivrHandler.update)
     ..delete('/ivr/{id}', ivrHandler.remove)
     ..post('/ivr', ivrHandler.create)
-
     ..get('/receptiondialplan', receptionDialplanHandler.list)
-    ..get('/receptiondialplan/{id}', receptionDialplanHandler.get)
-    ..put('/receptiondialplan/{id}', receptionDialplanHandler.update)
-    ..delete('/receptiondialplan/{id}', receptionDialplanHandler.remove)
+    ..get('/receptiondialplan/{extension}', receptionDialplanHandler.get)
+    ..put('/receptiondialplan/{extension}', receptionDialplanHandler.update)
+    ..delete('/receptiondialplan/{extension}', receptionDialplanHandler.remove)
     ..post('/receptiondialplan', receptionDialplanHandler.create)
-    ..post('/receptiondialplan/{id}/analyze', receptionDialplanHandler.analyze)
-    ..post('/receptiondialplan/{id}/deploy', receptionDialplanHandler.deploy);
+    ..post('/receptiondialplan/{extension}/analyze',
+        receptionDialplanHandler.analyze)
+    ..post('/receptiondialplan/{extension}/deploy/{rid}',
+        receptionDialplanHandler.deploy);
 
   var handler = const shelf.Pipeline()
       .addMiddleware(

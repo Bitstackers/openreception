@@ -29,7 +29,21 @@ class ReceptionDialplan {
    *
    */
   Future<shelf.Response> analyze(shelf.Request request) async {
-    return new shelf.Response.internalServerError(body : 'unimplemented');
+    final String extension = shelf_route.getPathParameter(request, 'extension');
+
+    List<String> collectErrors(model.ReceptionDialplan rdp) =>
+        throw new UnimplementedError();
+
+    List<String> errors = [];
+    try {
+      errors = collectErrors(await _receptionDialplanStore.get(extension));
+    } on FormatException {
+      /// Could not parse dialplan
+    } on storage.NotFound {
+      return _notFound({});
+    }
+
+    return errors.isEmpty ? _okJson({}) : _clientError(errors);
   }
 
   /**
@@ -46,14 +60,27 @@ class ReceptionDialplan {
    *
    */
   Future<shelf.Response> deploy(shelf.Request request) async {
-    return new shelf.Response.internalServerError(body : 'unimplemented');
+    final String extension = shelf_route.getPathParameter(request, 'extension');
+    final int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
+
+    final model.ReceptionDialplan rdp =
+        await _receptionDialplanStore.get(extension);
+
+    final String xmlFilePath =
+        '${config.dialplanserver.freeswitchConfPath}'
+        '/dialplan/receptions/$extension.xml';
+
+    _log.fine('Deploying new dialplan to file $xmlFilePath');
+    new File(xmlFilePath).writeAsString(dialplanTools.convertTextual(rdp, rid));
+
+    return _okJson(rdp);
   }
 
   /**
    *
    */
   Future<shelf.Response> get(shelf.Request request) async {
-    final String extension = shelf_route.getPathParameter(request, 'id');
+    final String extension = shelf_route.getPathParameter(request, 'extension');
 
     try {
       return _okJson(await _receptionDialplanStore.get(extension));
@@ -72,7 +99,7 @@ class ReceptionDialplan {
    *
    */
   Future<shelf.Response> remove(shelf.Request request) async {
-    final String extension = shelf_route.getPathParameter(request, 'id');
+    final String extension = shelf_route.getPathParameter(request, 'extension');
 
     try {
       return _okJson(await _receptionDialplanStore.remove(extension));
