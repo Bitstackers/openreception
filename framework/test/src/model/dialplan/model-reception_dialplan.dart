@@ -65,7 +65,6 @@ abstract class ModelReceptionDialplan {
    *
    */
   static Model.ReceptionDialplan buildObject() {
-    final int id = 2;
     final bool active = false;
     final String extension = '12345678';
     final String note = 'Just a test reception dialplan';
