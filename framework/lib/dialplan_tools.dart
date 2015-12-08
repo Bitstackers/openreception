@@ -31,7 +31,7 @@ String _normalizeOpeningHour(String string) =>
 /**
  * Indent a string by two spaces.
  */
-String _indent(item, {int count : 2}) => '  $item';
+String _indent(item, {int count: 2}) => '  $item';
 
 /**
  * Determine if an Iterable of actions involves receptions.
@@ -303,3 +303,57 @@ String _openingHourToFreeSwitch(model.OpeningHour oh) {
 
   return '$wDayString time-of-day="$ohString"';
 }
+
+/**
+ *
+ */
+
+List<String> _ivrMenuToXml(model.IvrMenu menu) => menu.entries
+    .map(_ivrEntryToXml)
+    .fold([], (combined, current) => combined..addAll(current));
+
+String _generateXmlFromIvrMenu(model.IvrMenu menu) =>
+    '''<menu name="${menu.name}"
+      greet-long="\$\${sounds_dir}/greetings/${menu.greetingLong.filename}"
+      greet-short="\$\${sounds_dir}/greetings/${menu.greetingShort.filename}"
+      timeout="\$\${IVR_timeout}"
+      max-failures="\$\${IVR_max-failures}"
+      max-timeouts="\$\${IVR_max-timeout}">
+
+    ${(_ivrMenuToXml(menu)).join('\n    ')}
+  </menu>  
+  
+  ${menu.submenus.map(_generateXmlFromIvrMenu).join('\n  ')}
+''';
+
+String generateXmlFromIvr(model.IvrMenu menu) => '''
+<include>
+  ${_generateXmlFromIvrMenu(menu)}
+</include>''';
+
+List<String> _ivrEntryToXml(model.IvrEntry entry) {
+  List returnValue = [];
+  if (entry is model.IvrTransfer) {
+    if (entry.transfer.note.isNotEmpty) returnValue
+        .add(_noteTemplate(entry.transfer.note));
+    returnValue.add('<entry action="menu-exec-app" digits="${entry.digits}" '
+        'param="transfer ${_dialoutTemplate(entry.transfer.extension)}"/>');
+  } else if (entry is model.IvrVoicemail) {
+    returnValue.add(
+        '<entry action="menu-exec-app" digits="${entry.digits}" param="voicemail default \$\${domain} ${entry.voicemail.vmBox}"/>');
+  } else if (entry is model.IvrSubmenu) {
+    returnValue.add(
+        '<entry action="menu-sub" digits="${entry.digits}" param="${entry.name}"/>');
+  } else if (entry is model.IvrTopmenu) {
+    returnValue.add('<entry action="menu-top" digits="${entry.digits}"/>');
+  } else throw new ArgumentError.value(
+      entry.runtimeType,
+      'entry'
+      'type ${entry.runtimeType} is not supported by translation tool');
+
+  return returnValue;
+}
+
+Iterable<String> ivrOf(model.ReceptionDialplan rdp) => rdp.allActions
+    .where((action) => action is model.Ivr)
+    .map((ivr) => ivr.menuName);
