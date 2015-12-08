@@ -31,7 +31,7 @@ String _normalizeOpeningHour(String string) =>
 /**
  * Indent a string by two spaces.
  */
-String _indent(item) => '  $item';
+String _indent(item, {int count : 2}) => '  $item';
 
 /**
  * Determine if an Iterable of actions involves receptions.
@@ -41,7 +41,7 @@ bool _involvesReceptionists(Iterable<model.Action> actions) => actions
     .any((notify) => notify.eventName == 'call-offer');
 
 /**
- * TODO: Include the reception-open check only of the
+ *
  */
 List<String> _openingHourToXmlDialplan(String extension, model.OpeningHour oh,
         Iterable<model.Action> actions) =>
