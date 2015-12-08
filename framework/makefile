@@ -26,6 +26,9 @@ upgrade-dependencies:
 tests:
 	@dart test/tests.dart
 
+tests-text-output:
+	@dart test/tests.dart text-output
+
 analyze:
 	@dartanalyzer --no-hints --fatal-warnings lib/*.dart
 	@dartanalyzer --no-hints --fatal-warnings test/*.dart
