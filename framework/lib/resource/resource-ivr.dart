@@ -26,4 +26,8 @@ abstract class Ivr {
 
   static Uri single(Uri host, int menuId) =>
     Uri.parse('$host/$nameSpace/${menuId}');
+
+  static Uri deploy(Uri host, int menuId) =>
+    Uri.parse('$host/$nameSpace/${menuId}/deploy');
+
 }

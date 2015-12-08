@@ -17,7 +17,6 @@ part of openreception.service;
  * Client for contact service.
  */
 class RESTIvrStore implements Storage.Ivr {
-
   WebService _backend = null;
   Uri _host;
   String _token = '';
@@ -37,6 +36,18 @@ class RESTIvrStore implements Storage.Ivr {
     return this
         ._backend
         .post(url, JSON.encode(menu))
+        .then(JSON.decode)
+        .then(Model.IvrMenu.decode);
+  }
+
+  /**
+   *
+   */
+  Future<Model.IvrMenu> deploy(int menuId) {
+    Uri url = Resource.Ivr.deploy(_host, menuId);
+    url = appendToken(url, this._token);
+
+    return _backend.post(url, '')
         .then(JSON.decode)
         .then(Model.IvrMenu.decode);
   }
