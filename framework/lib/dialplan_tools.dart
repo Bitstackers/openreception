@@ -74,6 +74,7 @@ List<String> _fallbackToDialplan(
     ]
       ..addAll(actions.map(_actionToXmlDialplan).fold(
           [], (combined, current) => combined..addAll(current.map(_indent))))
+      ..add('  </condition>')
       ..add('</extension>');
 
 /**
