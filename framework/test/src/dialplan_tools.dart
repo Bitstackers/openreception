@@ -14,15 +14,21 @@
 part of openreception.test;
 
 void testDialplanTools() {
-  group('DialplanTools xml validity', () {
-    test('empty', DialplanTools.empty);
-    test('openActions', DialplanTools.openActions);
-    test('closedActions', DialplanTools.closedActions);
-    test('bigDialplan', DialplanTools.bigDialplan);
+  group('DialplanTools ReceptionDialplan xml validity', () {
+    test('empty', DialplanToolsReceptionDialplan.empty);
+    test('openActions', DialplanToolsReceptionDialplan.openActions);
+    test('closedActions', DialplanToolsReceptionDialplan.closedActions);
+    test('bigDialplan', DialplanToolsReceptionDialplan.bigDialplan);
+  });
+
+  group('DialplanTools IvrMenu xml validity', () {
+    test('empty', DialplanToolsIvrMenu.empty);
+    test('openActions', DialplanToolsIvrMenu.oneLevel);
+    test('closedActions', DialplanToolsIvrMenu.twoLevel);
   });
 }
 
-class DialplanTools {
+class DialplanToolsReceptionDialplan {
   /**
    *
    */
@@ -91,5 +97,65 @@ class DialplanTools {
       ];
 
     xml.parse(dpTools.convertTextual(rdp, 4));
+  }
+}
+
+class DialplanToolsIvrMenu {
+  /**
+   *
+   */
+  static void empty() {
+    Model.IvrMenu menu =
+        new Model.IvrMenu('some menu', new Model.Playback('greeting'));
+
+    xml.parse(dpTools.generateXmlFromIvr(menu));
+  }
+
+  /**
+   *
+   */
+  static void oneLevel() {
+    Model.IvrMenu menu =
+        new Model.IvrMenu('some menu', new Model.Playback('greeting'))
+          ..entries = [
+            new Model.IvrVoicemail(
+                '1',
+                new Model.Voicemail('testbox',
+                    recipient: 'someone@somewhere', note: 'A mailbox')),
+            new Model.IvrTransfer(
+                '2', new Model.Transfer('1234444', note: 'A dude'))
+          ];
+
+    xml.parse(dpTools.generateXmlFromIvr(menu));
+  }
+
+  /**
+   *
+   */
+  static void twoLevel() {
+    Model.IvrMenu menu =
+        new Model.IvrMenu('some-menu', new Model.Playback('greeting'))
+          ..entries = [
+            new Model.IvrVoicemail(
+                '1',
+                new Model.Voicemail('testbox',
+                    recipient: 'someone@somewhere', note: 'A mailbox')),
+            new Model.IvrSubmenu('2', 'some-submenu')
+          ]
+          ..submenus = [
+            new Model.IvrMenu('some-submenu', new Model.Playback('greeting'))
+              ..entries = [
+                new Model.IvrVoicemail(
+                    '1',
+                    new Model.Voicemail('testbox2',
+                        recipient: 'someone2@somewhere',
+                        note: 'Another mailbox')),
+                new Model.IvrTransfer(
+                    '2', new Model.Transfer('1234442', note: 'Another dude')),
+                new Model.IvrTopmenu('*')
+              ]
+          ];
+
+    xml.parse(dpTools.generateXmlFromIvr(menu));
   }
 }

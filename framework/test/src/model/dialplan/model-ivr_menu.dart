@@ -25,14 +25,12 @@ void testModelIvrMenu() {
 
     test('buildObject', ModelIvrMenu.buildObject);
   });
-
 }
 
 /**
  *
  */
 abstract class ModelIvrMenu {
-
   /**
    *
    */
@@ -84,37 +82,66 @@ abstract class ModelIvrMenu {
    */
   static Model.IvrMenu buildObject() {
     final String name = 'ivr_1';
+    final String sub1name = 'sub1';
+    final String sub2name = 'sub2';
     final String filename = 'somefile.wav';
-    final bool lock = false;
+    final String sub1filename = 'sub1somefile.wav';
+    final String sub2filename = 'sub2somefile.wav';
+
     final String note = 'Just a test';
     final Model.Playback greeting =
-        new Model.Playback(filename, wrapInLock: lock, note: note);
+        new Model.Playback(filename, wrapInLock: false, note: note);
+
+    final Model.Playback sub1greeting =
+        new Model.Playback(sub1filename, wrapInLock: false, note: note);
+
+    final Model.Playback sub2greeting =
+        new Model.Playback(sub2filename, wrapInLock: false, note: note);
 
     final entries = [
-      new Model.IvrVoicemail('1', new Model.Voicemail('vm-corp_1', recipient : 'guy@corp1.org', note : 'Just some guy')),
-      new Model.IvrTopmenu('*')];
+      new Model.IvrVoicemail(
+          '1',
+          new Model.Voicemail('vm-corp_1',
+              recipient: 'guy@corp1.org', note: 'Just some guy')),
+      new Model.IvrSubmenu('2', 'sub-1')
+    ];
 
-    Model.IvrMenu builtObject = new Model.IvrMenu(name, greeting)..entries = entries;
+    final sub1entries = [
+      new Model.IvrVoicemail(
+          '1',
+          new Model.Voicemail('vm-corp_1',
+              recipient: 'guy@corp1.org', note: 'Just some guy')),
+      new Model.IvrSubmenu('2', 'sub-2'),
+      new Model.IvrTopmenu('*')
+    ];
 
+    final sub2entries = [
+      new Model.IvrVoicemail(
+          '1',
+          new Model.Voicemail('vm-corp_1',
+              recipient: 'guy@corp1.org', note: 'Just some guy')),
+      new Model.IvrSubmenu('2', 'sub-1')
+    ];
+
+    final Model.IvrMenu sub1 = new Model.IvrMenu(sub1name, sub1greeting)
+      ..entries = sub1entries;
+    final Model.IvrMenu sub2 = new Model.IvrMenu(sub2name, sub2greeting)
+      ..entries = sub2entries;
+
+    Model.IvrMenu builtObject = new Model.IvrMenu(name, greeting)
+      ..entries = entries
+      ..submenus = [sub1, sub2];
 
     expect(builtObject.name, equals(name));
-    expect(builtObject.greetingShort.filename,
-        equals(filename));
-    expect(builtObject.greetingShort.note,
-        equals(note));
-    expect(builtObject.greetingShort.wrapInLock,
-        equals(lock));
-    expect(builtObject.greetingShort.toJson(),
-        equals(greeting.toJson()));
+    expect(builtObject.greetingShort.filename, equals(filename));
+    expect(builtObject.greetingShort.note, equals(note));
+    expect(builtObject.greetingShort.wrapInLock, isFalse);
+    expect(builtObject.greetingShort.toJson(), equals(greeting.toJson()));
 
-    expect(builtObject.greetingLong.filename,
-        equals(filename));
-    expect(builtObject.greetingLong.note,
-        equals(note));
-    expect(builtObject.greetingLong.wrapInLock,
-        equals(lock));
-    expect(builtObject.greetingLong.toJson(),
-        equals(greeting.toJson()));
+    expect(builtObject.greetingLong.filename, equals(filename));
+    expect(builtObject.greetingLong.note, equals(note));
+    expect(builtObject.greetingLong.wrapInLock, equals(isFalse));
+    expect(builtObject.greetingLong.toJson(), equals(greeting.toJson()));
 
     return builtObject;
   }
