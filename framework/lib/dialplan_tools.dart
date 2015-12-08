@@ -15,7 +15,6 @@ library openreception.dialplan_tools;
 
 import 'model.dart' as model;
 
-
 ///Config values.
 bool goLive = false;
 String greetingDir = 'converted-vox';
@@ -37,8 +36,8 @@ String _indent(item) => '  $item';
 /**
  * Determine if an Iterable of actions involves receptions.
  */
-bool _involvesReceptionists (Iterable<model.Action> actions) =>
-    actions.where((action) => action is model.Notify)
+bool _involvesReceptionists(Iterable<model.Action> actions) => actions
+    .where((action) => action is model.Notify)
     .any((notify) => notify.eventName == 'call-offer');
 
 /**
@@ -77,17 +76,24 @@ List<String> _fallbackToDialplan(
           [], (combined, current) => combined..addAll(current.map(_indent))))
       ..add('</extension>');
 
+/**
+ *
+ */
 Iterable<String> _hourActionToXmlDialplan(
         String extension, model.HourAction hourAction) =>
     hourAction.hours.map(
         (oh) => _openingHourToXmlDialplan(extension, oh, hourAction.actions));
 
-///TODO: Prepend reception_open check.
+/**
+ *
+ */
 Iterable<String> _hourActionsToXmlDialplan(
         String extension, Iterable<model.HourAction> hourActions) =>
     hourActions.map((ha) => _hourActionToXmlDialplan(extension, ha)
         .fold([], (combined, current) => combined..addAll(current)));
-
+/**
+ *
+ */
 String convertTextual(model.ReceptionDialplan dialplan, int rid) =>
     '''<!-- Dialplan for extension ${dialplan.extension}. Generated ${new DateTime.now()} -->
 <include>
@@ -109,40 +115,78 @@ String convertTextual(model.ReceptionDialplan dialplan, int rid) =>
     </context>
   </include>''';
 
+/**
+ * Detemine whether or not an extension is local or not.
+ */
 bool _isInternalExtension(String extension) => extension.contains('-');
 
+/**
+ * Template for dialout action.
+ */
 String _dialoutTemplate(String extension) => _isInternalExtension(extension)
     ? extension
     : goLive
         ? 'external_transfer_${extension} XML receptions'
         : 'external_transfer_60431993 XML receptions';
 
+/**
+* Template for dialplan note.
+*/
 String _noteTemplate(String note) => _comment('Note: $note');
+
+/**
+ * Template for a comment.
+ */
 String _comment(String text) => '<!-- $text -->';
 
+/**
+ * Template transfer action.
+ */
 String _transferTemplate(String extension) =>
     '<action application="transfer" data="${_dialoutTemplate(extension)}"/>';
 
+/**
+* Template for set state action.
+*/
 String _setState(String newState) => _setVar("openreception::state", newState);
 
+/**
+ * Template for a sleep action.
+ */
 String _sleep(int msec) => '<action application="sleep" data="$msec"/>';
 
-/* Events */
+/**
+ * Template for a call lock event.
+ */
 String _lockEvent() => '<action application="event" '
     'data="Event-Subclass=openreception::call-lock,Event-Name=CUSTOM"/>';
-
+/**
+ * Template for a call unlock event.
+ */
 String _unlockEvent() => '<action application="event" '
     'data="Event-Subclass=openreception::call-unlock,Event-Name=CUSTOM"/>';
 
+/**
+ * Template for a set variable action.
+ */
 String _setVar(String key, dynamic value) =>
     '<action application="set" data="$key=$value"/>';
 
+/**
+ * Template for a ring tone event.
+ */
 String _ringToneEvent() => '<action application="event" '
     'data="Event-Subclass=openreception::ringing-start,Event-Name=CUSTOM" />';
 
+/**
+ * Template for a ring stop event.
+ */
 String _ringToneStopEvent() => '<action application="event" '
     'data="Event-Subclass=openreception::ringing-stop,Event-Name=CUSTOM"/>';
 
+/**
+ * Template for a notify event.
+ */
 String _callNotifyEvent() => '<action application="event" '
     'data="Event-Subclass=openreception::call-notify,Event-Name=CUSTOM" />';
 
@@ -227,6 +271,9 @@ String unfoldVariables(String buffer, String extension) => buffer
  */
 int _weekDayToFreeSwitch(model.WeekDay wday) => (wday.index) + 1;
 
+/**
+ * Formats an [model.OpeningHour] into a format that FreeSWITCH understands.
+ */
 String _openingHourToFreeSwitch(model.OpeningHour oh) {
   String wDayString = '';
 
