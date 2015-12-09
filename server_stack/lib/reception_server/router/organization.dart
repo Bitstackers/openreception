@@ -13,6 +13,12 @@
 
 part of openreception.reception_server.router;
 
+void _validate (Model.Organization org) {
+  if (org.fullName.isEmpty)
+    throw new ArgumentError.value
+      (org.fullName, 'organization.fullName', 'Must not be empty');
+}
+
 abstract class Organization {
 
   static final Logger log = new Logger ('$libraryName.Organization');
@@ -78,6 +84,9 @@ abstract class Organization {
 
       try {
         organization = new Model.Organization.fromMap(JSON.decode(content));
+
+        _validate(organization);
+
       } catch (error) {
         Map response = {
           'status': 'bad request',
