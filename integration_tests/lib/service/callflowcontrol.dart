@@ -288,6 +288,9 @@ void _callFlowControlOriginate() {
     test('originationToPeer',
         () => Originate.originationToPeer(receptionist, customer));
 
+    test('originationWithCallContext',
+        () => Originate.originationWithCallContext(receptionist, customer));
+
     test(
         'originationToPeerCheckforduplicate',
         () => Originate.originationToPeerCheckforduplicate(

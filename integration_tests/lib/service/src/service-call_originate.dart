@@ -101,6 +101,27 @@ abstract class Originate {
   }
 
   /**
+   * Test if the system tags the callId to the channel.
+   */
+  static Future originationWithCallContext(Receptionist receptionist, Customer customer) async {
+    int contactID = 4;
+    int receptionID = 1;
+    final String callId = new DateTime.now().millisecondsSinceEpoch.toString();
+
+    await customer.autoAnswer(false);
+    Model.Call call = await receptionist.callFlowControl
+        .originate(customer.extension, contactID, receptionID, callId : callId);
+
+
+    await customer.waitForInboundCall();
+    await customer.pickupCall();
+    await new Future.delayed(new Duration(seconds : 1));
+    Map channel = await receptionist.callFlowControl.channelMap(call.channel);
+
+    expect (channel['variables']['openreception::context_callId'], equals(callId));
+  }
+
+  /**
    * Check that only one call is present in the call list when performing an
    * outbound dial.
    */
