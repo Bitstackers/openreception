@@ -17,7 +17,6 @@ part of openreception.service;
  * Client class for call-flow-control service.
  */
 class CallFlowControl {
-
   final WebService _backend;
   final Uri _host;
   final String _token;
@@ -88,11 +87,20 @@ class CallFlowControl {
   }
 
   /**
-   * Retrives the current Channel list as a Map.
+   * Retrives the current channel list as a Map.
    */
-  @deprecated
   Future<Iterable<Map>> channelListMap() {
     Uri uri = Resource.CallFlowControl.channelList(_host);
+    uri = appendToken(uri, _token);
+
+    return _backend.get(uri).then((String response) => (JSON.decode(response)));
+  }
+
+  /**
+   * Retrives the a specific channel as a Map.
+   */
+  Future<Map> channelMap(String uuid) {
+    Uri uri = Resource.CallFlowControl.channel(_host, uuid);
     uri = appendToken(uri, _token);
 
     return _backend.get(uri).then((String response) => (JSON.decode(response)));
