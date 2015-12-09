@@ -225,6 +225,10 @@ class ChannelList extends ESL.ChannelList {
           this.update(new ESL.Channel.fromPacket(packet));
           break;
 
+        case (PBXEvent.CHANNEL_ANSWER):
+          this.update(new ESL.Channel.fromPacket(packet));
+          break;
+
         case (PBXEvent.CHANNEL_CREATE):
           this.update(new ESL.Channel.fromPacket(packet));
           break;
