@@ -23,9 +23,9 @@ class Organization {
   static const int noID = 0;
 
   int id = noID;
-  String fullName;
-  String billingType;
-  String flag;
+  String fullName = '';
+  String billingType  = '';
+  String flag  = '';
 
   /**
    * Default empty constructor.
