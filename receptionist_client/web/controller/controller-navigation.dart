@@ -44,7 +44,7 @@ enum Widget {
 
 final Map<Context, Widget> _defaultWidgets = {
   Context.CalendarEdit: Widget.CalendarEditor,
-  Context.Home: Widget.ContactSelector,
+  Context.Home: Widget.ReceptionSelector,
   Context.Homeplus: Widget.ReceptionMiniWiki,
   Context.Messages: Widget.MessageArchive
 };
