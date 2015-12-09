@@ -72,9 +72,12 @@ class Call {
 
   /**
    * Tries to dial [phoneNumber] in the context of [reception] and [contact].
+   *
+   * Setting [contextCallId] creates a reference between the newly created call and the given id.
    */
   Future<ORModel.Call> dial(
-      ORModel.PhoneNumber phoneNumber, ORModel.Reception reception, ORModel.Contact contact) async {
+      ORModel.PhoneNumber phoneNumber, ORModel.Reception reception, ORModel.Contact contact,
+      {String contextCallId: ''}) async {
     _log.info('Dialing ${phoneNumber.value}.');
 
     _busy = true;
@@ -82,7 +85,7 @@ class Call {
     _command.fire(CallCommand.DIAL);
 
     return _service
-        .originate(phoneNumber.value, contact.ID, reception.ID)
+        .originate(phoneNumber.value, contact.ID, reception.ID, callId: contextCallId)
         .then((ORModel.Call call) {
       _command.fire(CallCommand.DIALSUCCESS);
       _appState.activeCall = call;

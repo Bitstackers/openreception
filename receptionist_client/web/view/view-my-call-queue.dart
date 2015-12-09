@@ -115,7 +115,8 @@ class MyCallQueue extends ViewWidget {
     _busyCallController();
     try {
       ORModel.Call newCall = await _callController.dial(
-          phoneNumber, _receptionSelector.selectedReception, _contactSelector.selectedContact);
+          phoneNumber, _receptionSelector.selectedReception, _contactSelector.selectedContact,
+          contextCallId: getContextCallId());
       if (markTransfer || parkAndMarkTransfer) {
         _ui.markForTransfer(newCall);
         _log.info('marked ${newCall.ID} for transfer');
@@ -150,6 +151,26 @@ class MyCallQueue extends ViewWidget {
         }
       });
     });
+  }
+
+  /**
+   * Returns a call id or an empty String.
+   *
+   * Case: A currently active call: Return id of active call.
+   * Case: We have exactly one call marked for transfer: Return id of marked call.
+   * Case: None of the above: Return empty string.
+   */
+  String getContextCallId() {
+    if (_appState.activeCall != ORModel.Call.noCall) {
+      return _appState.activeCall.ID;
+    } else {
+      final Iterable<ORModel.Call> markedCalls = _ui.markedForTransfer;
+      if (markedCalls.length == 1) {
+        return markedCalls.first.ID;
+      } else {
+        return '';
+      }
+    }
   }
 
   /**
