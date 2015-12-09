@@ -84,8 +84,8 @@ class MyCallQueue extends ViewWidget {
 
       case ORModel.CallState.Hungup:
       case ORModel.CallState.Transferred:
-        if (event.call.ID == _contextCallId) {
-          _contextCallId = '';
+        if (event.call.ID == contextCallId) {
+          contextCallId = '';
         }
         _ui.removeCall(event.call);
         break;
@@ -120,7 +120,7 @@ class MyCallQueue extends ViewWidget {
     try {
       ORModel.Call newCall = await _callController.dial(
           phoneNumber, _receptionSelector.selectedReception, _contactSelector.selectedContact,
-          contextCallId: _contextCallId);
+          contextCallId: contextCallId);
       if (markTransfer || parkAndMarkTransfer) {
         _ui.markForTransfer(newCall);
         _log.info('marked ${newCall.ID} for transfer');
@@ -150,14 +150,27 @@ class MyCallQueue extends ViewWidget {
     _ui.calls.forEach((ORModel.Call call) {
       _callController.get(call.ID).then((ORModel.Call c) {
         if (c == ORModel.Call.noCall || c.callState == ORModel.CallState.Transferred) {
-          if (c.ID == _contextCallId) {
-            _contextCallId = '';
+          if (c.ID == contextCallId) {
+            contextCallId = '';
           }
           _ui.removeCall(c);
           _log.info('removing stale call ${c.ID} from queue');
         }
       });
     });
+  }
+
+  /**
+   * Return the contextCallId string.
+   */
+  String get contextCallId => _contextCallId;
+
+  /**
+   * Set the contextCallId string.
+   */
+  set contextCallId(String id) {
+    _contextCallId = id == null ? '' : id;
+    _log.info('contextCallId set to "${id}"');
   }
 
   /**
@@ -236,8 +249,8 @@ class MyCallQueue extends ViewWidget {
             calls.firstWhere((ORModel.Call call) => call.ID != _appState.activeCall.ID);
         _callControllerBusy = true;
         _callController.transfer(source, destination).then((_) {
-          if (source.ID == _contextCallId || destination.ID == _contextCallId) {
-            _contextCallId = '';
+          if (source.ID == contextCallId || destination.ID == contextCallId) {
+            contextCallId = '';
           }
           clearStaleCalls();
         }).catchError((error) {
@@ -259,8 +272,8 @@ class MyCallQueue extends ViewWidget {
         _callControllerBusy = true;
         final hangupCallId = _appState.activeCall.ID;
         _callController.hangup(_appState.activeCall).then((_) {
-          if (hangupCallId == _contextCallId) {
-            _contextCallId = '';
+          if (hangupCallId == contextCallId) {
+            contextCallId = '';
           }
           clearStaleCalls();
         }).catchError((error) {
@@ -275,7 +288,7 @@ class MyCallQueue extends ViewWidget {
       if (!_callControllerBusy) {
         _callControllerBusy = true;
         _callController.pickupNext().then((ORModel.Call call) {
-          _contextCallId = call.ID;
+          contextCallId = call.ID;
           _ui.removeTransferMarks();
           clearStaleCalls();
         }).catchError((error) {
