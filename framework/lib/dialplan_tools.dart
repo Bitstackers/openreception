@@ -92,6 +92,26 @@ Iterable<String> _hourActionsToXmlDialplan(
         String extension, Iterable<model.HourAction> hourActions) =>
     hourActions.map((ha) => _hourActionToXmlDialplan(extension, ha)
         .fold([], (combined, current) => combined..addAll(current)));
+
+Iterable<String> _namedExtensionToDialPlan(model.NamedExtension extension) => [
+  '',
+  _noteTemplate('Extra-extension ${extension.name}'),
+  '<extension name="${extension.name}" continue="true">',
+      '  <condition field="destination_number" expression="^${extension.name}\$" break="on-false">',
+    ]
+      ..addAll(extension.actions.map(_actionToXmlDialplan).fold(
+          [],
+          (combined, current) =>
+              combined..addAll(current.map(_indent).map(_indent))))
+      ..add('  </condition>')
+      ..add('</extension>');
+
+Iterable<String> _extraExtensionsToDialplan(
+        Iterable<model.NamedExtension> extensions) =>
+    extensions
+        .map(_namedExtensionToDialPlan)
+        .fold([], (combined, current) => combined..addAll(current));
+
 /**
  *
  */
@@ -110,6 +130,8 @@ String convertTextual(model.ReceptionDialplan dialplan, int rid) =>
       </condition>
     </extension>
 
+    ${_extraExtensionsToDialplan(dialplan.extraExtensions).join('\n    ')}
+    
     <!-- Perform outbound calls -->
     <extension name="${dialplan.extension}-outbound" continue="true">
       <condition field="destination_number" expression="^${dialplan.extension}-outbound_(\d+)">
