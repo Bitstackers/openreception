@@ -134,7 +134,7 @@ String convertTextual(model.ReceptionDialplan dialplan, int rid) =>
     
     <!-- Perform outbound calls -->
     <extension name="${dialplan.extension}-outbound" continue="true">
-      <condition field="destination_number" expression="^${dialplan.extension}-outbound_(\d+)">
+      <condition field="destination_number" expression="^external_transfer_(\d+)">
        <action application="bridge" data="{originate_timeout=120}[leg_timeout=50]sofia/gateway/\${default_trunk}/\$1"/>
         <action application="hangup"/>
       </condition>
