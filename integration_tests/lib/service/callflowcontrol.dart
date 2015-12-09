@@ -1,440 +1,432 @@
 part of or_test_fw;
 
-
 void runCallFlowTests() {
+  _callFlowControlActiveRecording();
+  _callFlowControlHangup();
+  _callFlowControlList();
+  _callFlowControlTransfer();
+  _callFlowControlPeer();
+  _callFlowControlPickup();
+  _callFlowControlOriginate();
+  _CallFlowControlPark();
+  _callFlowControlUserState();
+}
 
-  /**
-   * CallFlowControl active recordings tests.
-   */
+/**
+ * CallFlowControl active recordings tests.
+ */
+void _callFlowControlActiveRecording() {
   group('CallFlowControl.ActiveRecording', () {
     Service.CallFlowControl callFlow;
     Transport.Client transport;
 
-    setUp (() {
+    setUp(() {
       transport = new Transport.Client();
 
-      callFlow = new Service.CallFlowControl
-          (Config.CallFlowControlUri, Config.serverToken, transport);
-
+      callFlow = new Service.CallFlowControl(
+          Config.CallFlowControlUri, Config.serverToken, transport);
     });
 
-    tearDown (() {
-      transport.client.close(force : true);
+    tearDown(() {
+      transport.client.close(force: true);
     });
 
-    test ('empty list',
-        () => ActiveRecording.listEmpty(callFlow));
+    test('empty list', () => ActiveRecording.listEmpty(callFlow));
 
-    test ('non-existing recording',
+    test('non-existing recording',
         () => ActiveRecording.getNonExisting(callFlow));
-
   });
+}
 
-  /**
-   * CallFlowControl Call hangup - using Receptionist objects.
-   */
+/**
+ * CallFlowControl Call hangup - using Receptionist objects.
+ */
+void _callFlowControlHangup() {
   group('CallFlowControl.Hangup', () {
     Receptionist receptionist = null;
     Customer customer = null;
 
-    setUp (() {
-
+    setUp(() {
       receptionist = ReceptionistPool.instance.aquire();
       customer = CustomerPool.instance.aquire();
-      return Future.wait(
-        [receptionist.initialize(),
-         customer.initialize()]);
+      return Future.wait([receptionist.initialize(), customer.initialize()]);
     });
 
-    tearDown (() {
+    tearDown(() {
       ReceptionistPool.instance.release(receptionist);
       CustomerPool.instance.release(customer);
 
-      return Future.wait(
-        [receptionist.teardown(),
-         customer.teardown()]);
+      return Future.wait([receptionist.teardown(), customer.teardown()]);
     });
 
-    test ('interfaceCallNotFound',
-       () => expect(Hangup.interfaceCallNotFound(receptionist.callFlowControl),
-           throwsA(new isInstanceOf<Storage.NotFound>())));
-    /* Perform test. */
-    test ('eventPresence',
-        () => Hangup.eventPresence(receptionist, customer));
+    test(
+        'interfaceCallNotFound',
+        () => expect(Hangup.interfaceCallNotFound(receptionist.callFlowControl),
+            throwsA(new isInstanceOf<Storage.NotFound>())));
 
-    test ('interfaceCallFound',
+    test('eventPresence', () => Hangup.eventPresence(receptionist, customer));
+
+    test('interfaceCallFound',
         () => Hangup.interfaceCallFound(receptionist, customer));
   });
+}
 
-
-  /**
-   * CallFlowControl Call listing.
-   */
+/**
+ * CallFlowControl Call listing.
+ */
+void _callFlowControlList() {
   group('CallFlowControl.List', () {
     Receptionist receptionist;
     Customer customer;
 
-    setUp (() {
+    setUp(() {
       receptionist = ReceptionistPool.instance.aquire();
       customer = CustomerPool.instance.aquire();
-      return Future.wait(
-        [receptionist.initialize(),
-         customer.initialize()]);
+      return Future.wait([receptionist.initialize(), customer.initialize()]);
     });
 
-    tearDown (() {
+    tearDown(() {
       ReceptionistPool.instance.release(receptionist);
       CustomerPool.instance.release(customer);
 
-      return Future.wait(
-        [receptionist.teardown(),
-         customer.teardown()]);
+      return Future.wait([receptionist.teardown(), customer.teardown()]);
     });
 
-    test ('callDataOK',
-        () => CallList.callDataOK(receptionist, customer));
+    test('callDataOK', () => CallList.callDataOK(receptionist, customer));
 
-    test ('interfaceCallFound',
+    test('interfaceCallFound',
         () => CallList.callPresence(receptionist, customer));
 
-    test ('queueLeaveEventFromPickup',
-        () => CallList.queueLeaveEventFromPickup (receptionist, customer));
+    test('queueLeaveEventFromPickup',
+        () => CallList.queueLeaveEventFromPickup(receptionist, customer));
 
-    test ('queueLeaveEventFromHangup',
+    test('queueLeaveEventFromHangup',
         () => CallList.queueLeaveEventFromHangup(receptionist, customer));
   });
+}
 
-
-  /**
-   * CallFlowControl Call transfer.
-   */
+/**
+ * CallFlowControl Call transfer.
+ */
+void _callFlowControlTransfer() {
   group('CallFlowControl.Transfer', () {
     Receptionist receptionist = null;
     Customer caller = null;
     Customer callee = null;
 
-    setUp (() {
+    setUp(() {
       receptionist = ReceptionistPool.instance.aquire();
       caller = CustomerPool.instance.aquire();
       callee = CustomerPool.instance.aquire();
-      return Future.wait(
-        [receptionist.initialize(),
-         caller.initialize(),
-         callee.initialize()]);
+      return Future.wait([
+        receptionist.initialize(),
+        caller.initialize(),
+        callee.initialize()
+      ]);
     });
 
-    tearDown (() {
-
+    tearDown(() {
       ReceptionistPool.instance.release(receptionist);
       CustomerPool.instance.release(caller);
       CustomerPool.instance.release(callee);
 
       return Future.wait(
-        [receptionist.teardown(),
-         caller.teardown(),
-         callee.teardown()]);
+          [receptionist.teardown(), caller.teardown(), callee.teardown()]);
     });
 
-    test ('inboundCall Call list length checks',
+    test('inboundCall Call list length checks',
         () => Transfer.inboundCallListLength(receptionist, caller, callee));
 
-    test ('Inbound Call',
+    test('Inbound Call',
         () => Transfer.transferParkedInboundCall(receptionist, caller, callee));
 
-    test ('Outbound Call',
-        () => Transfer.transferParkedOutboundCall(receptionist, caller, callee));
+    test(
+        'Outbound Call',
+        () =>
+            Transfer.transferParkedOutboundCall(receptionist, caller, callee));
   });
+}
 
-  /**
-   * CallFlowControl Peer tests.
-   */
+/**
+ * CallFlowControl Peer tests.
+ */
+void _callFlowControlPeer() {
   group('CallFlowControl.Peer', () {
     Receptionist receptionist = null;
 
     /* Setup function for interfaceCallNotFound test. */
-    setUp (() {
+    setUp(() {
       receptionist = ReceptionistPool.instance.aquire();
-      return Future.wait(
-        [receptionist.initialize()]);
-      });
-
-    /* Teardown function for interfaceCallNotFound test. */
-    tearDown (() {
-      ReceptionistPool.instance.release(receptionist);
-
-      return Future.wait(
-        [receptionist.teardown()]);
+      return Future.wait([receptionist.initialize()]);
     });
 
-    test ('Event presence', () => Peer.eventPresence (receptionist));
-    test ('Peer listing', () => Peer.list(receptionist.callFlowControl));
-  });
+    /* Teardown function for interfaceCallNotFound test. */
+    tearDown(() {
+      ReceptionistPool.instance.release(receptionist);
 
-  /**
-   * CallFlowControl Call pickup.
-   */
+      return Future.wait([receptionist.teardown()]);
+    });
+
+    test('Event presence', () => Peer.eventPresence(receptionist));
+    test('Peer listing', () => Peer.list(receptionist.callFlowControl));
+  });
+}
+
+/**
+ * CallFlowControl Call pickup.
+ */
+void _callFlowControlPickup() {
   group('CallFlowControl.Pickup', () {
     Receptionist receptionist = null;
     Receptionist receptionist2 = null;
     Customer customer = null;
 
-    setUp (() {
+    setUp(() {
       receptionist = ReceptionistPool.instance.aquire();
       customer = CustomerPool.instance.aquire();
-      return Future.wait(
-        [receptionist.initialize(),
-         customer.initialize()]);
+      return Future.wait([receptionist.initialize(), customer.initialize()]);
     });
 
-    tearDown (() {
+    tearDown(() {
       ReceptionistPool.instance.release(receptionist);
       CustomerPool.instance.release(customer);
 
-      return Future.wait(
-        [receptionist.teardown(),
-         customer.teardown()]);
+      return Future.wait([receptionist.teardown(), customer.teardown()]);
     });
 
-
     /* Perform test. */
-    test ('pickupSpecified',
+    test('pickupSpecified',
         () => Pickup.pickupSpecified(receptionist, customer));
 
-    test ('pickupUnspecified',
+    test('pickupUnspecified',
         () => Pickup.pickupUnspecified(receptionist, customer));
 
-    test ('pickupNonExistingCall',
+    test('pickupNonExistingCall',
         () => Pickup.pickupNonExistingCall(receptionist));
 
-    test ('pickupLockedCall',
+    test('pickupLockedCall',
         () => Pickup.pickupLockedCall(receptionist, customer));
 
-    test ('pickupCallTwice',
+    test('pickupCallTwice',
         () => Pickup.pickupCallTwice(receptionist, customer));
 
-    test ('pickupEventInboundCall',
+    test('pickupEventInboundCall',
         () => Pickup.pickupEventInboundCall(receptionist, customer));
 
-    test ('pickupEventOutboundCall',
+    test('pickupEventOutboundCall',
         () => Pickup.pickupEventOutboundCall(receptionist, customer));
 
-    setUp (() {
+    setUp(() {
       receptionist = ReceptionistPool.instance.aquire();
       receptionist2 = ReceptionistPool.instance.aquire();
       customer = CustomerPool.instance.aquire();
-      return Future.wait(
-        [receptionist.initialize(),
-          receptionist2.initialize(),
-         customer.initialize()]);
+      return Future.wait([
+        receptionist.initialize(),
+        receptionist2.initialize(),
+        customer.initialize()
+      ]);
     });
 
-    tearDown (() {
+    tearDown(() {
       ReceptionistPool.instance.release(receptionist);
       ReceptionistPool.instance.release(receptionist2);
       CustomerPool.instance.release(customer);
 
-      return Future.wait(
-        [receptionist.teardown(),
-         receptionist2.teardown(),
-         customer.teardown()]);
+      return Future.wait([
+        receptionist.teardown(),
+        receptionist2.teardown(),
+        customer.teardown()
+      ]);
     });
 
-    test ('pickupAllocatedCall',
-        () => Pickup.pickupAllocatedCall(receptionist, receptionist2, customer));
+    test(
+        'pickupAllocatedCall',
+        () =>
+            Pickup.pickupAllocatedCall(receptionist, receptionist2, customer));
 
-    test ('pickupRace',
+    test('pickupRace',
         () => Pickup.pickupRace(receptionist, receptionist2, customer));
-
   });
+}
 
-  /**
-   * CallFlowControl Call originate.
-   */
+/**
+ * CallFlowControl Call originate.
+ */
+void _callFlowControlOriginate() {
   group('CallFlowControl.Originate', () {
     Receptionist receptionist = null;
     Customer customer = null;
 
-    setUp (() {
-
+    setUp(() {
       receptionist = ReceptionistPool.instance.aquire();
       customer = CustomerPool.instance.aquire();
-      return Future.wait(
-        [receptionist.initialize(),
-         customer.initialize()]);
+      return Future.wait([receptionist.initialize(), customer.initialize()]);
     });
 
-    tearDown (() {
+    tearDown(() {
       ReceptionistPool.instance.release(receptionist);
       CustomerPool.instance.release(customer);
 
-      return Future.wait(
-        [receptionist.teardown(),
-         customer.teardown()]);
+      return Future.wait([receptionist.teardown(), customer.teardown()]);
     });
-
 
     // TODO: This one requires a dialplan change.
 //    test ('originationToHostedNumber',
 //        () => Originate.originationToHostedNumber(receptionist));
 
-    test ('originationOnAgentCallRejected',
+    test('originationOnAgentCallRejected',
         () => Originate.originationOnAgentCallRejected(receptionist, customer));
 
-    test ('originationOnAgentAutoAnswer',
-        () => Originate.originationOnAgentAutoAnswerDisabled(receptionist, customer));
+    test(
+        'originationOnAgentAutoAnswer',
+        () => Originate.originationOnAgentAutoAnswerDisabled(
+            receptionist, customer));
 
-    test ('originationToForbiddenNumber',
+    test('originationToForbiddenNumber',
         () => Originate.originationToForbiddenNumber(receptionist));
 
-    test ('originationToPeer',
+    test('originationToPeer',
         () => Originate.originationToPeer(receptionist, customer));
 
-    test ('originationToPeerCheckforduplicate',
-        () => Originate.originationToPeerCheckforduplicate(receptionist, customer));
-
+    test(
+        'originationToPeerCheckforduplicate',
+        () => Originate.originationToPeerCheckforduplicate(
+            receptionist, customer));
   });
+}
 
-  /**
-   * CallFlowControl Call Park.
-   */
+/**
+ * CallFlowControl Call Park.
+ */
+void _CallFlowControlPark() {
   group('CallFlowControl.Park', () {
     Receptionist receptionist = null;
     Customer customer = null;
 
-    setUp (() {
+    setUp(() {
       receptionist = ReceptionistPool.instance.aquire();
       customer = CustomerPool.instance.aquire();
-      return Future.wait(
-        [receptionist.initialize(),
-         customer.initialize()]);
+      return Future.wait([receptionist.initialize(), customer.initialize()]);
     });
 
-    tearDown (() {
+    tearDown(() {
       ReceptionistPool.instance.release(receptionist);
       CustomerPool.instance.release(customer);
 
-      return Future.wait(
-        [receptionist.teardown(),
-         customer.teardown()]);
+      return Future.wait([receptionist.teardown(), customer.teardown()]);
     });
 
-    test ('parkCallListLength',
+    test('parkCallListLength',
         () => CallPark.parkCallListLength(receptionist, customer));
 
-    test ('explicitParkPickup',
+    test('explicitParkPickup',
         () => CallPark.explicitParkPickup(receptionist, customer));
 
-    test ('unparkEventFromHangup',
+    test('unparkEventFromHangup',
         () => CallPark.unparkEventFromHangup(receptionist, customer));
 
-    test ('parkNonexistingCall',
+    test('parkNonexistingCall',
         () => CallPark.parkNonexistingCall(receptionist));
   });
+}
 
-  /**
-   * CallFlowControl user state.
-   */
+/**
+ * CallFlowControl user state.
+ */
+void _callFlowControlUserState() {
   group('CallFlowControl.UserState', () {
     Receptionist receptionist = null;
     Customer customer = null;
     Customer customer2 = null;
 
-    setUp (() {
+    setUp(() {
       receptionist = ReceptionistPool.instance.aquire();
       customer = CustomerPool.instance.aquire();
       customer2 = CustomerPool.instance.aquire();
-      return Future.wait(
-        [receptionist.initialize(),
-         customer.initialize(),
-         customer2.initialize()]);
+      return Future.wait([
+        receptionist.initialize(),
+        customer.initialize(),
+        customer2.initialize()
+      ]);
     });
 
-    tearDown (() {
+    tearDown(() {
       ReceptionistPool.instance.release(receptionist);
       CustomerPool.instance.release(customer);
 
       return Future.wait(
-        [receptionist.teardown(),
-         customer.teardown(),
-         customer2.teardown()]);
+          [receptionist.teardown(), customer.teardown(), customer2.teardown()]);
     });
 
-    test ('originateForbidden',
+    test('originateForbidden',
         () => UserState.originateForbidden(receptionist, customer, customer2));
 
-    test ('pickupForbidden',
+    test('pickupForbidden',
         () => UserState.pickupForbidden(receptionist, customer, customer2));
-
   });
+}
 
-  /**
-   * CallFlowControl state reload.
-   */
+/**
+ * CallFlowControl state reload.
+ */
+void _callFlowControlStateReload() {
   group('CallFlowControl.StateReload', () {
     Receptionist receptionist = null;
     Customer customer = null;
     Customer customer2 = null;
 
-    setUp (() {
+    setUp(() {
       receptionist = ReceptionistPool.instance.aquire();
       customer = CustomerPool.instance.aquire();
 
-      return Future.wait(
-        [receptionist.initialize(),
-         customer.initialize()]);
+      return Future.wait([receptionist.initialize(), customer.initialize()]);
     });
 
-    tearDown (() {
+    tearDown(() {
       ReceptionistPool.instance.release(receptionist);
       CustomerPool.instance.release(customer);
 
-      return Future.wait(
-        [receptionist.teardown(),
-         customer.teardown()]);
+      return Future.wait([receptionist.teardown(), customer.teardown()]);
     });
 
-    test ('inboundCallUnanswered',
+    test('inboundCallUnanswered',
         () => StateReload.inboundUnansweredCall(receptionist, customer));
 
-    test ('inboundAnsweredCall',
+    test('inboundAnsweredCall',
         () => StateReload.inboundAnsweredCall(receptionist, customer));
 
-    test ('inboundParkedCall',
+    test('inboundParkedCall',
         () => StateReload.inboundParkedCall(receptionist, customer));
 
-    test ('inboundUnparkedCall',
+    test('inboundUnparkedCall',
         () => StateReload.inboundUnparkedCall(receptionist, customer));
 
-    test ('outboundUnansweredCall',
+    test('outboundUnansweredCall',
         () => StateReload.outboundUnansweredCall(receptionist, customer));
 
-    test ('outboundAnsweredCall',
+    test('outboundAnsweredCall',
         () => StateReload.outboundAnsweredCall(receptionist, customer));
 
-    setUp (() {
+    setUp(() {
       receptionist = ReceptionistPool.instance.aquire();
       customer = CustomerPool.instance.aquire();
       customer2 = CustomerPool.instance.aquire();
-      return Future.wait(
-        [receptionist.initialize(),
-         customer.initialize(),
-         customer2.initialize()]);
+      return Future.wait([
+        receptionist.initialize(),
+        customer.initialize(),
+        customer2.initialize()
+      ]);
     });
 
-    tearDown (() {
+    tearDown(() {
       ReceptionistPool.instance.release(receptionist);
       CustomerPool.instance.release(customer);
 
       return Future.wait(
-        [receptionist.teardown(),
-         customer.teardown(),
-         customer2.teardown()]);
+          [receptionist.teardown(), customer.teardown(), customer2.teardown()]);
     });
 
-    test ('transferredCalls',
+    test('transferredCalls',
         () => StateReload.transferredCalls(receptionist, customer, customer2));
-
-
-
   });
 }
