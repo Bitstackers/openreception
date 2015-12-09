@@ -235,6 +235,12 @@ class MyCallQueue extends ViewWidget {
 
     _ui.onDblClick.listen((ORModel.Call call) => unpark(call: call));
 
+    _receptionSelector.onSelect.listen((ORModel.Reception reception) {
+      if (_appState.activeCall == ORModel.Call.noCall || !_appState.activeCall.inbound) {
+        contextCallId = '';
+      }
+    });
+
     /// Transfer
     _hotKeys.onCtrlNumMinus.listen((_) {
       final Iterable<ORModel.Call> calls = _ui.markedForTransfer;
