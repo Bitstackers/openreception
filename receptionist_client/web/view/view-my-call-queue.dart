@@ -67,36 +67,6 @@ class MyCallQueue extends ViewWidget {
   }
 
   /**
-   * Add, remove, update the queue list, depending on the [event.call] state.
-   */
-  void _handleCallStateChanges(OREvent.CallEvent event) {
-    if (event.call.assignedTo != _appState.currentUser.ID) {
-      return;
-    }
-
-    switch (event.call.state) {
-      case ORModel.CallState.Created:
-        if (!event.call.inbound) {
-          /// My outbound call.
-          _ui.appendCall(event.call);
-        }
-        break;
-
-      case ORModel.CallState.Hungup:
-      case ORModel.CallState.Transferred:
-        if (event.call.ID == contextCallId) {
-          contextCallId = '';
-        }
-        _ui.removeCall(event.call);
-        break;
-
-      default:
-        _ui.updateCall(event.call);
-        break;
-    }
-  }
-
-  /**
    * Tries to dial the [phoneNumber].
    *
    * If this is called while [_appState.activeCall] is not [ORModel.Call.noCall], then mark both
@@ -189,6 +159,36 @@ class MyCallQueue extends ViewWidget {
       _popup.error(_langMap[Key.errorSystem], _langMap[Key.errorCallControllerBusy]);
     } else {
       _popup.error(title, message);
+    }
+  }
+
+  /**
+   * Add, remove, update the queue list, depending on the [event.call] state.
+   */
+  void _handleCallStateChanges(OREvent.CallEvent event) {
+    if (event.call.assignedTo != _appState.currentUser.ID) {
+      return;
+    }
+
+    switch (event.call.state) {
+      case ORModel.CallState.Created:
+        if (!event.call.inbound) {
+          /// My outbound call.
+          _ui.appendCall(event.call);
+        }
+        break;
+
+      case ORModel.CallState.Hungup:
+      case ORModel.CallState.Transferred:
+        if (event.call.ID == contextCallId) {
+          contextCallId = '';
+        }
+        _ui.removeCall(event.call);
+        break;
+
+      default:
+        _ui.updateCall(event.call);
+        break;
     }
   }
 
