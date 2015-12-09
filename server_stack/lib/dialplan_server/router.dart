@@ -86,6 +86,7 @@ Future<IO.HttpServer> start(
     ..get('/ivr', ivrHandler.list)
     ..get('/ivr/{id}', ivrHandler.get)
     ..put('/ivr/{id}', ivrHandler.update)
+    ..post('/ivr/{id}/deploy', ivrHandler.deploy)
     ..delete('/ivr/{id}', ivrHandler.remove)
     ..post('/ivr', ivrHandler.create)
     ..get('/receptiondialplan', receptionDialplanHandler.list)

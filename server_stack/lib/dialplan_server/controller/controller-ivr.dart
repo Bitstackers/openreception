@@ -38,6 +38,24 @@ class Ivr {
   /**
    *
    */
+  Future<shelf.Response> deploy(shelf.Request request) async {
+    final int menuId = int.parse(shelf_route.getPathParameter(request, 'id'));
+
+    final model.IvrMenu menu = await _ivrStore.get(menuId);
+
+    final String xmlFilePath =
+        '${config.dialplanserver.freeswitchConfPath}'
+        '/ivr_menus/${menu.name}.xml';
+
+    _log.fine('Deploying new dialplan to file $xmlFilePath');
+    new File(xmlFilePath).writeAsString(dialplanTools.generateXmlFromIvr(menu));
+
+    return _okJson(menu);
+  }
+
+  /**
+   *
+   */
   Future<shelf.Response> get(shelf.Request request) async {
     int menuId;
     String idParam;
