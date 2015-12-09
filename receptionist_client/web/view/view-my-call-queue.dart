@@ -21,9 +21,10 @@ part of view;
 class MyCallQueue extends ViewWidget {
   final Model.AppClientState _appState;
   final Controller.Call _callController;
+  bool _callControllerBusy = false;
   final Model.UIContactData _contactData;
   final Model.UIContactSelector _contactSelector;
-  bool _callControllerBusy = false;
+  String _contextCallId = '';
   final Map<String, String> _langMap;
   final Logger _log = new Logger('$libraryName.MyCallQueue');
   final Controller.Destination _myDestination;
@@ -116,7 +117,7 @@ class MyCallQueue extends ViewWidget {
     try {
       ORModel.Call newCall = await _callController.dial(
           phoneNumber, _receptionSelector.selectedReception, _contactSelector.selectedContact,
-          contextCallId: getContextCallId());
+          contextCallId: _contextCallId);
       if (markTransfer || parkAndMarkTransfer) {
         _ui.markForTransfer(newCall);
         _log.info('marked ${newCall.ID} for transfer');
@@ -151,26 +152,6 @@ class MyCallQueue extends ViewWidget {
         }
       });
     });
-  }
-
-  /**
-   * Returns a call id or an empty String.
-   *
-   * Case: A currently active call: Return id of active call.
-   * Case: We have exactly one call marked for transfer: Return id of marked call.
-   * Case: None of the above: Return empty string.
-   */
-  String getContextCallId() {
-    if (_appState.activeCall != ORModel.Call.noCall) {
-      return _appState.activeCall.ID;
-    } else {
-      final Iterable<ORModel.Call> markedCalls = _ui.markedForTransfer;
-      if (markedCalls.length == 1) {
-        return markedCalls.first.ID;
-      } else {
-        return '';
-      }
-    }
   }
 
   /**
@@ -249,6 +230,9 @@ class MyCallQueue extends ViewWidget {
             calls.firstWhere((ORModel.Call call) => call.ID != _appState.activeCall.ID);
         _callControllerBusy = true;
         _callController.transfer(source, destination).then((_) {
+          if (source.ID == _contextCallId || destination.ID == _contextCallId) {
+            _contextCallId = '';
+          }
           clearStaleCalls();
         }).catchError((error) {
           _error(error, _langMap[Key.errorCallTransfer], 'ID ${_appState.activeCall.ID}');
@@ -267,7 +251,11 @@ class MyCallQueue extends ViewWidget {
     _hotKeys.onNumDiv.listen((_) {
       if (!_callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
         _callControllerBusy = true;
+        final hangupCallId = _appState.activeCall.ID;
         _callController.hangup(_appState.activeCall).then((_) {
+          if (hangupCallId == _contextCallId) {
+            _contextCallId = '';
+          }
           clearStaleCalls();
         }).catchError((error) {
           _error(error, _langMap[Key.errorCallHangup], 'ID ${_appState.activeCall.ID}');
@@ -281,6 +269,7 @@ class MyCallQueue extends ViewWidget {
       if (!_callControllerBusy) {
         _callControllerBusy = true;
         _callController.pickupNext().then((ORModel.Call call) {
+          _contextCallId = call.ID;
           _ui.removeTransferMarks();
           clearStaleCalls();
         }).catchError((error) {
