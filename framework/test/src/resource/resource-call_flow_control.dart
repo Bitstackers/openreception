@@ -81,7 +81,7 @@ abstract class ResourceCallFlowControl {
 
   static void channelList() => expect(
       Resource.CallFlowControl.channelList(callFlowControlUri),
-      equals(Uri.parse('${callFlowControlUri}/channel/list')));
+      equals(Uri.parse('${callFlowControlUri}/channel')));
 
   static void userStatusIdle() => expect(
       Resource.CallFlowControl.userStatusIdle(callFlowControlUri, 1),
