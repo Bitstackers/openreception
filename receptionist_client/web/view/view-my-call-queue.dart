@@ -84,6 +84,9 @@ class MyCallQueue extends ViewWidget {
 
       case ORModel.CallState.Hungup:
       case ORModel.CallState.Transferred:
+        if (event.call.ID == _contextCallId) {
+          _contextCallId = '';
+        }
         _ui.removeCall(event.call);
         break;
 
@@ -147,6 +150,9 @@ class MyCallQueue extends ViewWidget {
     _ui.calls.forEach((ORModel.Call call) {
       _callController.get(call.ID).then((ORModel.Call c) {
         if (c == ORModel.Call.noCall || c.callState == ORModel.CallState.Transferred) {
+          if (c.ID == _contextCallId) {
+            _contextCallId = '';
+          }
           _ui.removeCall(c);
           _log.info('removing stale call ${c.ID} from queue');
         }
