@@ -207,7 +207,7 @@ abstract class Organization {
     log.info('Creating a new empty/invalid organization ${organization.asMap}');
 
     return expect(organizationStore.create(organization),
-        throwsA(new isInstanceOf<Storage.ClientErro>()));
+        throwsA(new isInstanceOf<Storage.ClientError>()));
   }
 
   /**
