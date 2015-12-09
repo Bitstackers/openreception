@@ -247,7 +247,9 @@ class MyCallQueue extends ViewWidget {
             calls.firstWhere((ORModel.Call call) => call.ID == _appState.activeCall.ID);
         final ORModel.Call destination =
             calls.firstWhere((ORModel.Call call) => call.ID != _appState.activeCall.ID);
-        _callControllerBusy = true;
+
+        _busyCallController();
+
         _callController.transfer(source, destination).then((_) {
           if (source.ID == contextCallId || destination.ID == contextCallId) {
             contextCallId = '';
@@ -286,7 +288,7 @@ class MyCallQueue extends ViewWidget {
     /// Pickup new call
     _hotKeys.onNumPlus.listen((_) {
       if (!_callControllerBusy) {
-        _callControllerBusy = true;
+        _busyCallController();
         _callController.pickupNext().then((ORModel.Call call) {
           contextCallId = call.ID;
           _ui.removeTransferMarks();
@@ -319,11 +321,14 @@ class MyCallQueue extends ViewWidget {
     if (!_callControllerBusy &&
         _appState.activeCall == ORModel.Call.noCall &&
         _ui.calls.any((ORModel.Call call) => call.state == ORModel.CallState.Parked)) {
-      _callControllerBusy = true;
+      _busyCallController();
       final Future<ORModel.Call> unparkCall =
           call != null ? _callController.pickup(call) : _callController.pickupFirstParkedCall();
 
       unparkCall.then((ORModel.Call call) {
+        if (call.inbound) {
+          contextCallId = call.ID;
+        }
         clearStaleCalls();
       }).catchError((error) {
         _error(error, _langMap[Key.errorCallUnpark], '');
