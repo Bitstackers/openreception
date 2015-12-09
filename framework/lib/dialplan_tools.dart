@@ -157,7 +157,7 @@ String _dialoutTemplate(String extension) => _isInternalExtension(extension)
     ? extension
     : goLive
         ? 'external_transfer_${extension} XML receptions'
-        : 'external_transfer_60431993 XML receptions';
+        : 'external_transfer_${testNumber} XML receptions';
 
 /**
 * Template for dialplan note.
