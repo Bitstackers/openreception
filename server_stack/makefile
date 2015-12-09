@@ -55,7 +55,6 @@ clean:
 
 install: build
 	install --directory ${PREFIX}
-	install --target-directory=${PREFIX} $(BUILD_DIR)/authserver-$(GIT_REV).dart
 	install --target-directory=${PREFIX} \
            $(BUILD_DIR)/authserver-$(GIT_REV).dart \
            $(BUILD_DIR)/callflowcontrol-$(GIT_REV).dart \
