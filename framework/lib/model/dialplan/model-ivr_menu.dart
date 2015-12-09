@@ -46,6 +46,21 @@ class IvrMenu {
   IvrMenu(this.name, this.greetingLong);
 
   /**
+   * Extracts the contained [Action] objects from the menu.
+   */
+  Iterable<Action> get allActions => entries.fold([], (list, entry) {
+        if (entry is IvrTransfer) {
+          list.add(entry.transfer);
+        } else if (entry is IvrVoicemail) {
+          list.add(entry.voicemail);
+        } else if (entry is IvrSubmenu || entry is IvrTopmenu) {
+        } else throw new StateError(
+            'Unknown type in entries: ${entry.runtimeType}');
+
+        return list;
+      });
+
+  /**
    * Decoding factory method.
    */
   static IvrMenu decode(Map map) =>
