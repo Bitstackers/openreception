@@ -238,10 +238,11 @@ class MyCallQueue extends ViewWidget {
     /// Transfer
     _hotKeys.onCtrlNumMinus.listen((_) {
       final Iterable<ORModel.Call> calls = _ui.markedForTransfer;
+
       if (!_callControllerBusy &&
           _appState.activeCall != ORModel.Call.noCall &&
-          _ui.markedForTransfer.length == 2 &&
-          _ui.markedForTransfer.any((ORModel.Call call) => _appState.activeCall == call)) {
+          calls.length == 2 &&
+          calls.any((ORModel.Call call) => _appState.activeCall == call)) {
         final ORModel.Call source =
             calls.firstWhere((ORModel.Call call) => call.ID == _appState.activeCall.ID);
         final ORModel.Call destination =
