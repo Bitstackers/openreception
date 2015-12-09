@@ -63,9 +63,7 @@ class IvrMenu {
   /**
    * Decoding factory method.
    */
-  static IvrMenu decode(Map map) =>
-      (new IvrMenu(
-          map[Key.ivrMenu][Key.name],
+  static IvrMenu decode(Map map) => (new IvrMenu(map[Key.ivrMenu][Key.name],
       Playback.parse(map[Key.ivrMenu][Key.greeting]))
     ..id = map[Key.ivrMenu][Key.id]
     .._greetingShort = Playback.parse(map[Key.ivrMenu][Key.greetingShort]))
@@ -89,7 +87,7 @@ class IvrMenu {
           Key.ivrEntries:
               entries.map((entry) => entry.toJson()).toList(growable: false),
           Key.submenus:
-            submenus.map((entry) => entry.toJson()).toList(growable: false)
+              submenus.map((entry) => entry.toJson()).toList(growable: false)
         }
       };
 }
