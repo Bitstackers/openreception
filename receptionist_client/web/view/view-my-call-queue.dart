@@ -240,7 +240,8 @@ class MyCallQueue extends ViewWidget {
       final Iterable<ORModel.Call> calls = _ui.markedForTransfer;
       if (!_callControllerBusy &&
           _appState.activeCall != ORModel.Call.noCall &&
-          calls.length == 2) {
+          _ui.markedForTransfer.length == 2 &&
+          _ui.markedForTransfer.any((ORModel.Call call) => _appState.activeCall == call)) {
         final ORModel.Call source =
             calls.firstWhere((ORModel.Call call) => call.ID == _appState.activeCall.ID);
         final ORModel.Call destination =
@@ -314,7 +315,6 @@ class MyCallQueue extends ViewWidget {
           call != null ? _callController.pickup(call) : _callController.pickupFirstParkedCall();
 
       unparkCall.then((ORModel.Call call) {
-        _ui.removeTransferMark(call);
         clearStaleCalls();
       }).catchError((error) {
         _error(error, _langMap[Key.errorCallUnpark], '');
