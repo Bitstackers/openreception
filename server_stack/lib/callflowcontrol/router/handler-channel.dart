@@ -14,7 +14,6 @@
 part of openreception.call_flow_control_server.router;
 
 abstract class Channel {
-
   static shelf.Response list(shelf.Request request) {
     try {
       List<Map> retval = new List<Map>();
@@ -25,8 +24,15 @@ abstract class Channel {
       return new shelf.Response.ok(JSON.encode(retval));
     } catch (error, stacktrace) {
       log.severe(error, stacktrace);
-      return new shelf.Response.internalServerError
-          (body : 'Failed to retrieve channel list');
+      return new shelf.Response.internalServerError(
+          body: 'Failed to retrieve channel list');
     }
+  }
+
+  static shelf.Response get(shelf.Request request) {
+    final String channelId = shelf_route.getPathParameter(request, 'chanid');
+
+    return new shelf.Response.ok(
+        JSON.encode(Model.ChannelList.instance.get(channelId).toMap()));
   }
 }
