@@ -47,7 +47,7 @@ class AppClientState {
   set activeCall(ORModel.Call newCall) {
     _activeCall = newCall;
     _activeCallChangeBus.fire(_activeCall);
-    _log.finest('Changing active call to ${_activeCall.ID}:');
+    _log.finest('Changing active call to "${_activeCall.ID}"');
   }
 
   /**
