@@ -17,26 +17,24 @@ part of view;
  * The reception greeting widget.
  */
 class WelcomeMessage extends ViewWidget {
-  final Model.AppClientState      _appState;
-  final Map<String, String>       _langMap;
+  final Model.AppClientState _appState;
+  final Map<String, String> _langMap;
   final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIWelcomeMessage    _uiModel;
+  final Model.UIWelcomeMessage _uiModel;
 
   /**
    * Constructor.
    */
-  WelcomeMessage(Model.UIWelcomeMessage this._uiModel,
-                 Model.AppClientState this._appState,
-                 Model.UIReceptionSelector this._receptionSelector,
-                 Map<String, String> this._langMap) {
+  WelcomeMessage(Model.UIWelcomeMessage this._uiModel, Model.AppClientState this._appState,
+      Model.UIReceptionSelector this._receptionSelector, Map<String, String> this._langMap) {
     _observers();
   }
 
   @override Controller.Destination get _destination => null;
-  @override Model.UIWelcomeMessage get _ui          => _uiModel;
+  @override Model.UIWelcomeMessage get _ui => _uiModel;
 
-  @override void _onBlur(_){}
-  @override void _onFocus(_){}
+  @override void _onBlur(_) {}
+  @override void _onFocus(_) {}
 
   /**
    * Observers.
@@ -53,11 +51,11 @@ class WelcomeMessage extends ViewWidget {
    * Render the widget with [reception].
    */
   void _render(ORModel.Reception reception) {
-    if(reception.isEmpty) {
+    if (reception.isEmpty) {
       _ui.clear();
       _ui.greeting = _langMap[Key.standardGreeting];
     } else {
-      if(_appState.activeCall != ORModel.Call.noCall) {
+      if (_appState.activeCall != ORModel.Call.noCall) {
         _ui.greeting =
             _appState.activeCall.greetingPlayed ? reception.greeting : reception.shortGreeting;
       } else {
