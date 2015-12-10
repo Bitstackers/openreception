@@ -66,12 +66,23 @@ class ReceptionDialplan {
     final model.ReceptionDialplan rdp =
         await _receptionDialplanStore.get(extension);
 
-    final String xmlFilePath =
-        '${config.dialplanserver.freeswitchConfPath}'
+    final String xmlFilePath = '${config.dialplanserver.freeswitchConfPath}'
         '/dialplan/receptions/$extension.xml';
 
     _log.fine('Deploying new dialplan to file $xmlFilePath');
     new File(xmlFilePath).writeAsString(dialplanTools.convertTextual(rdp, rid));
+
+    Iterable<model.Voicemail> voicemailAccounts =
+        rdp.allActions.where((a) => a is model.Voicemail);
+
+    voicemailAccounts.forEach((vm) {
+      final String vmFilePath = '${config.dialplanserver.freeswitchConfPath}'
+      '/directory/voicemail/${vm.vmBox}.xml';
+
+      _log.fine('Deploying voicemail account ${vm.vmBox} to file $vmFilePath');
+      new File(vmFilePath).writeAsString(dialplanTools.convertVoicemail(vm));
+
+    });
 
     return _okJson(rdp);
   }
