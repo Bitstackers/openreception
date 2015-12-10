@@ -94,9 +94,9 @@ Iterable<String> _hourActionsToXmlDialplan(
         .fold([], (combined, current) => combined..addAll(current)));
 
 Iterable<String> _namedExtensionToDialPlan(model.NamedExtension extension) => [
-  '',
-  _noteTemplate('Extra-extension ${extension.name}'),
-  '<extension name="${extension.name}" continue="true">',
+      '',
+      _noteTemplate('Extra-extension ${extension.name}'),
+      '<extension name="${extension.name}" continue="true">',
       '  <condition field="destination_number" expression="^${extension.name}\$" break="on-false">',
     ]
       ..addAll(extension.actions.map(_actionToXmlDialplan).fold(
@@ -158,6 +158,13 @@ String _dialoutTemplate(String extension) => _isInternalExtension(extension)
     : goLive
         ? 'external_transfer_${extension} XML receptions'
         : 'external_transfer_${testNumber} XML receptions';
+
+/**
+ *
+ */
+String _liveCheckEmail(String email) => goLive
+        ? email
+        : testEmail;
 
 /**
 * Template for dialplan note.
@@ -247,7 +254,7 @@ List<String> _actionToXmlDialplan(model.Action action) {
     ]);
   } else if (action is model.Playback) {
     if (action.note.isNotEmpty) returnValue.add(_noteTemplate(action.note));
-    returnValue.addAll([_comment('Afspiller lydfil ${action.filename}')]);
+    returnValue.addAll([_comment('Playback file ${action.filename}')]);
 
     returnValue.add(_setVar('openreception::state', 'playback'));
 
@@ -379,3 +386,26 @@ List<String> _ivrEntryToXml(model.IvrEntry entry) {
 Iterable<String> ivrOf(model.ReceptionDialplan rdp) => rdp.allActions
     .where((action) => action is model.Ivr)
     .map((ivr) => ivr.menuName);
+
+/**
+ *
+ */
+String convertVoicemail(model.Voicemail vm) => '''<include>
+  <user id="${vm.vmBox}">
+    <params>
+      <param name="password" value=""/>
+      <param name="vm-password" value=""/>
+      <param name="http-allowed-api" value="voicemail"/>
+      <param name="vm-mailto" value="${_liveCheckEmail(vm.recipient)}"/>
+      <param name="vm-email-all-messages" value="true"/>
+      <param name="vm-notify-mailto" value="${_liveCheckEmail(vm.recipient)}"/>
+      <param name="vm-attach-file" value="true" />
+      <param name="vm-skip-instructions" value="true"/>
+      <param name="vm-skip-greeting" value="true"/>
+    </params>
+    <variables>
+      <variable name="toll_allow" value=""/>
+      <variable name="user_context" value="voicemail"/>
+    </variables>
+  </user>
+</include>''';
