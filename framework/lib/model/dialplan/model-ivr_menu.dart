@@ -65,12 +65,12 @@ class IvrMenu {
   /**
    * Decoding factory method.
    */
-  static IvrMenu decode(Map map) => (new IvrMenu(map[Key.ivrMenu][Key.name],
-      Playback.parse(map[Key.ivrMenu][Key.greeting]))
-    ..id = map[Key.ivrMenu][Key.id]
-    .._greetingShort = Playback.parse(map[Key.ivrMenu][Key.greetingShort]))
-    ..entries = map[Key.ivrMenu][Key.ivrEntries].map(IvrEntry.parse).toList()
-    ..submenus = map[Key.ivrMenu][Key.submenus].map(IvrMenu.decode).toList();
+  static IvrMenu decode(Map map) =>
+      (new IvrMenu(map[Key.name], Playback.parse(map[Key.greeting]))
+        ..id = map[Key.id]
+        .._greetingShort = Playback.parse(map[Key.greetingShort]))
+        ..entries = map[Key.ivrEntries].map(IvrEntry.parse).toList()
+        ..submenus = map[Key.submenus].map(IvrMenu.decode).toList();
 
   /**
    * An IVR menu equals another IVR menu if their names match.
@@ -81,15 +81,13 @@ class IvrMenu {
    * Serialization function.
    */
   Map toJson() => {
-        Key.ivrMenu: {
-          Key.id: id,
-          Key.name: name,
-          Key.greeting: greetingLong.toJson(),
-          Key.greetingShort: greetingShort.toJson(),
-          Key.ivrEntries:
-              entries.map((entry) => entry.toJson()).toList(growable: false),
-          Key.submenus:
-              submenus.map((entry) => entry.toJson()).toList(growable: false)
-        }
+        Key.id: id,
+        Key.name: name,
+        Key.greeting: greetingLong.toJson(),
+        Key.greetingShort: greetingShort.toJson(),
+        Key.ivrEntries:
+            entries.map((entry) => entry.toJson()).toList(growable: false),
+        Key.submenus:
+            submenus.map((entry) => entry.toJson()).toList(growable: false)
       };
 }
