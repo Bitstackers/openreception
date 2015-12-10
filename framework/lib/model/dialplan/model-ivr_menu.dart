@@ -18,13 +18,15 @@ part of openreception.model.dialplan;
  */
 class IvrMenu {
   /// ID indicating that this menu is not stored permanently.
+  @deprecated
   static const int noId = 0;
 
   /// Database ID.
+  @deprecated
   int id = noId;
 
   /// Name of IVR menu.
-  final String name;
+  String name;
 
   /// The entries (different possible actions) of the IVR menu
   List<IvrEntry> entries = [];

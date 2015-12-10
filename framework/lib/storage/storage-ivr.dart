@@ -17,11 +17,11 @@ abstract class Ivr {
 
   Future<Model.IvrMenu> create(Model.IvrMenu menu);
 
-  Future<Model.IvrMenu> get(int menuId);
+  Future<Model.IvrMenu> get(String menuName);
 
   Future<Iterable<Model.IvrMenu>> list();
 
   Future<Model.IvrMenu> update(Model.IvrMenu menu);
 
-  Future remove(int menuId);
+  Future remove(String menuName);
 }

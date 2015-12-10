@@ -24,10 +24,10 @@ abstract class Ivr {
   static Uri list(Uri host) =>
     Uri.parse('$host/$nameSpace');
 
-  static Uri single(Uri host, int menuId) =>
-    Uri.parse('$host/$nameSpace/${menuId}');
+  static Uri single(Uri host, String menuName) =>
+    Uri.parse('$host/$nameSpace/${menuName}');
 
-  static Uri deploy(Uri host, int menuId) =>
-    Uri.parse('$host/$nameSpace/${menuId}/deploy');
+  static Uri deploy(Uri host, String menuName) =>
+    Uri.parse('$host/$nameSpace/${menuName}/deploy');
 
 }

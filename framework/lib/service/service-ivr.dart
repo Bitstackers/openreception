@@ -43,8 +43,8 @@ class RESTIvrStore implements Storage.Ivr {
   /**
    *
    */
-  Future<Model.IvrMenu> deploy(int menuId) {
-    Uri url = Resource.Ivr.deploy(_host, menuId);
+  Future<Model.IvrMenu> deploy(String menuName) {
+    Uri url = Resource.Ivr.deploy(_host, menuName);
     url = appendToken(url, this._token);
 
     return _backend.post(url, '')
@@ -55,8 +55,8 @@ class RESTIvrStore implements Storage.Ivr {
   /**
    *
    */
-  Future remove(int menuId) {
-    Uri url = Resource.Ivr.single(this._host, menuId);
+  Future remove(String menuName) {
+    Uri url = Resource.Ivr.single(this._host, menuName);
     url = appendToken(url, this._token);
 
     return this._backend.delete(url);
@@ -65,8 +65,8 @@ class RESTIvrStore implements Storage.Ivr {
   /**
   *
   */
-  Future get(int menuId) {
-    Uri url = Resource.Ivr.single(this._host, menuId);
+  Future get(String menuName) {
+    Uri url = Resource.Ivr.single(this._host, menuName);
     url = appendToken(url, this._token);
 
     return this._backend.get(url).then(JSON.decode).then(Model.IvrMenu.decode);
@@ -89,7 +89,7 @@ class RESTIvrStore implements Storage.Ivr {
    *
    */
   Future<Model.IvrMenu> update(Model.IvrMenu menu) {
-    Uri url = Resource.Ivr.single(this._host, menu.id);
+    Uri url = Resource.Ivr.single(this._host, menu.name);
     url = appendToken(url, this._token);
 
     return this

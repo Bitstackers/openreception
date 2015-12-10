@@ -31,14 +31,14 @@ class Ivr implements Storage.Ivr {
   Future<Iterable<Model.IvrMenu>> list() {
     String sql = '''
   SELECT 
-     id, menu
+     name, menu
   FROM
      ivr_menus''';
 
     return _connection
         .query(sql)
         .then((Iterable rows) =>
-            rows.map((row) => Model.IvrMenu.decode(row.menu)..id = row.id))
+            rows.map((row) => Model.IvrMenu.decode(row.menu)..name = row.name))
         .catchError((error, stackTrace) {
       _log.severe('sql:$sql', error, stackTrace);
 
@@ -49,26 +49,27 @@ class Ivr implements Storage.Ivr {
   /**
    *
    */
-  Future<Model.IvrMenu> get(int menuId) async {
+  Future<Model.IvrMenu> get(String menuName) async {
     String sql = '''
   SELECT 
-     id, menu
+     name, menu
   FROM
      ivr_menus
   WHERE
-     id=@id''';
+     name=@name''';
 
-    Map parameters = {'id': menuId};
+    Map parameters = {'name': menuName};
 
     try {
       final Iterable rows = await _connection.query(sql, parameters);
+
+
       if (rows.length != 1) {
         throw new Storage.NotFound();
       }
-
-      return Model.IvrMenu.decode(rows.first.menu)..id = rows.first.id;
+      return Model.IvrMenu.decode(rows.first.menu)..name = rows.first.name;
     } on Storage.NotFound {
-      throw new Storage.NotFound('No IVR menu with id $menuId');
+      throw new Storage.NotFound('No IVR menu with name $menuName');
     } catch (error, stackTrace) {
       final msg = 'Failed to retrieve menu sql:$sql parameters:$parameters';
       _log.severe(msg, error, stackTrace);
@@ -84,10 +85,10 @@ class Ivr implements Storage.Ivr {
     String sql = '''
     UPDATE ivr_menus
     SET menu=@menu
-    WHERE id=@id;
+    WHERE name=@name;
   ''';
 
-    Map parameters = {'id': menu.id, 'menu': menu.toJson()};
+    Map parameters = {'name': menu.name, 'menu': menu.toJson()};
 
     try {
       final int affectedRows = await _connection.execute(sql, parameters);
@@ -110,31 +111,31 @@ class Ivr implements Storage.Ivr {
    */
   Future<Model.IvrMenu> create(Model.IvrMenu menu) {
     String sql = '''
-    INSERT INTO ivr_menus (menu)
-    VALUES (@menu)
-    RETURNING id''';
+    INSERT INTO ivr_menus (name, menu)
+    VALUES (@name, @menu)
+    RETURNING name''';
 
-    Map parameters = {'menu': menu.toJson()};
+    Map parameters = {'name': menu.name, 'menu': menu.toJson()};
 
     return _connection.query(sql, parameters).then((Iterable rows) =>
         rows.length == 1
-            ? (menu..id = rows.first.id)
+            ? (menu..name = rows.first.name)
             : throw new Storage.SaveFailed(''));
   }
 
   /**
    *
    */
-  Future remove(int menuId) {
+  Future remove(String menuName) {
     String sql = '''
     DELETE FROM ivr_menus
-    WHERE id = @id''';
+    WHERE name = @name''';
 
-    Map parameters = {'id': menuId};
+    Map parameters = {'name': menuName};
 
     return _connection.execute(sql, parameters).then((int rowAffected) =>
         rowAffected == 1
             ? 0
-            : throw new Storage.NotFound('No menu with id $menuId'));
+            : throw new Storage.NotFound('No menu with name $menuName'));
   }
 }
