@@ -184,6 +184,12 @@ class DialplanServer extends StandardConfig {
   @override
   final int httpPort = 4060;
   final String freeswitchConfPath = '/usr/local/freeswitch/conf';
+  
+  /// Dialplan compiler parameters
+  final bool goLive = false;
+  final String playbackPrefix = 'greetings-dir';
+  final String testNumber = 'xxxxxxxx';
+  final String testEmail = 'someguy@example.com';
 
   const DialplanServer();
 }
