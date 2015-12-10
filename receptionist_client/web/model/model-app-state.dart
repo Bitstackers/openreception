@@ -54,15 +54,17 @@ class AppClientState {
    */
   set activeCall(ORModel.Call newCall) {
     if (_hungupCalls.any((HungUp hungUp) => hungUp.callId == newCall.ID)) {
+      print('FOUND ${newCall.ID} in _hungupCalls list');
       _activeCall = ORModel.Call.noCall;
     } else {
+      print('DIT NOT FIND ${newCall.ID} in _hungupCalls list');
       _activeCall = newCall;
     }
 
     _activeCallChangeBus.fire(_activeCall);
 
     _log.finest(
-        'Changing active call to ${_activeCall == ORModel.Call.noCall ? 'noCall': activeCall}');
+        'Changing active call to ${_activeCall == ORModel.Call.noCall ? 'noCall' : _activeCall}');
 
     /// Clean up the hungup calls list.
     _hungupCalls.removeWhere(
@@ -92,9 +94,11 @@ class AppClientState {
   void _observers() {
     _notification.onAnyCallStateChange.listen((OREvent.CallEvent event) {
       _hungupCalls.add(new HungUp(event.call.ID, new DateTime.now()));
+      print('GOT A CALL EVENT: ${event.call.state} - ${event.call.ID}');
 
       /// If my call was hung up, update activeCall.
       if (event is OREvent.CallHangup && event.call.assignedTo == currentUser.ID) {
+        print('GOT A HANGUP EVENT ON MY CALL: ${event.call.state} - ${event.call.ID}');
         activeCall = event.call;
       }
     });
