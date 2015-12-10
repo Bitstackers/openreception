@@ -1,7 +1,6 @@
 part of or_test_fw;
 
 abstract class IvrStore {
-
   /**
    *
    */
@@ -11,9 +10,9 @@ abstract class IvrStore {
     Model.IvrMenu createdMenu = await ivrStore.create(menu);
 
     expect(createdMenu, isNotNull);
-    expect(createdMenu.id, greaterThan(Model.IvrMenu.noId));
+    expect(createdMenu.name, equals(menu.name));
 
-    await ivrStore.remove(createdMenu.id);
+    await ivrStore.remove(createdMenu.name);
   }
 
   /**
@@ -24,10 +23,9 @@ abstract class IvrStore {
 
     Model.IvrMenu createdMenu = await ivrStore.create(menu);
 
-    expect((await ivrStore.get(createdMenu.id)).id,
-        greaterThan(Model.IvrMenu.noId));
+    expect((await ivrStore.get(createdMenu.name)).name, equals(menu.name));
 
-    await ivrStore.remove(createdMenu.id);
+    await ivrStore.remove(createdMenu.name);
   }
 
   /**
@@ -45,8 +43,8 @@ abstract class IvrStore {
 
     Model.IvrMenu createdMenu = await ivrStore.create(menu);
 
-    await ivrStore.remove(createdMenu.id);
-    await expect(ivrStore.get(createdMenu.id),
+    await ivrStore.remove(createdMenu.name);
+    await expect(ivrStore.get(createdMenu.name),
         throwsA(new isInstanceOf<Storage.NotFound>()));
   }
 
@@ -59,16 +57,16 @@ abstract class IvrStore {
     Model.IvrMenu createdMenu = await ivrStore.create(menu);
 
     expect(createdMenu, isNotNull);
-    expect(createdMenu.id, greaterThan(Model.IvrMenu.noId));
+    expect(createdMenu.name, equals(menu.name));
 
     {
       Model.IvrMenu changes = Randomizer.randomIvrMenu();
-      changes.id = createdMenu.id;
+      changes.name = createdMenu.name;
       createdMenu = changes;
     }
 
     await ivrStore.update(createdMenu);
 
-    await ivrStore.remove(createdMenu.id);
+    await ivrStore.remove(createdMenu.name);
   }
 }
