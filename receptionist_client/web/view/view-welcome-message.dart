@@ -19,14 +19,20 @@ part of view;
 class WelcomeMessage extends ViewWidget {
   final Model.AppClientState _appState;
   final Map<String, String> _langMap;
+  ORModel.Call _latestCall;
+  final Controller.Notification _notification;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIWelcomeMessage _uiModel;
 
   /**
    * Constructor.
    */
-  WelcomeMessage(Model.UIWelcomeMessage this._uiModel, Model.AppClientState this._appState,
-      Model.UIReceptionSelector this._receptionSelector, Map<String, String> this._langMap) {
+  WelcomeMessage(
+      Model.UIWelcomeMessage this._uiModel,
+      Model.AppClientState this._appState,
+      Model.UIReceptionSelector this._receptionSelector,
+      Controller.Notification this._notification,
+      Map<String, String> this._langMap) {
     _observers();
   }
 
@@ -44,6 +50,17 @@ class WelcomeMessage extends ViewWidget {
 
     _appState.activeCallChanged.listen((ORModel.Call newCall) {
       _ui.inActiveCall = newCall != ORModel.Call.noCall;
+      if (newCall != ORModel.Call.noCall) {
+        _latestCall = newCall;
+      }
+    });
+
+    _notification.onAnyCallStateChange.listen((OREvent.CallEvent event) {
+      if (event.call.assignedTo == _appState.currentUser.ID &&
+          event.call.state == ORModel.CallState.Hungup &&
+          _latestCall.ID == event.call.ID) {
+        _ui.inActiveCall = false;
+      }
     });
   }
 

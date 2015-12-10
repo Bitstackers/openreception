@@ -310,7 +310,7 @@ class ORCReady {
         _uiReceptionSelector);
 
     new WelcomeMessage(new Model.UIWelcomeMessage(querySelector('#welcome-message')), _appState,
-        _uiReceptionSelector, _langMap);
+        _uiReceptionSelector, _notification, _langMap);
 
     _ui.visible = true;
 
