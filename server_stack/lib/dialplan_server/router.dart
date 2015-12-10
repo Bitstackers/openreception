@@ -29,6 +29,7 @@ import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
+import 'package:openreception_framework/dialplan_tools.dart' as dialplanTools;
 
 final Logger _log = new Logger('dialplanserver.router');
 
@@ -81,6 +82,16 @@ Future<IO.HttpServer> start(
   final controller.Ivr ivrHandler = new controller.Ivr(_ivrStore);
   final controller.ReceptionDialplan receptionDialplanHandler =
       new controller.ReceptionDialplan(_dpStore);
+
+  /// Setup dialplan tools.
+  dialplanTools.goLive = config.dialplanserver.goLive;
+  dialplanTools.greetingDir = config.dialplanserver.playbackPrefix;
+  dialplanTools.testNumber = config.dialplanserver.testNumber;
+  dialplanTools.testEmail = config.dialplanserver.testEmail;
+
+  _log.info('Dialplan tools are ${dialplanTools.goLive ? 'live ' : 'NOT live '
+    'diverting all voicemails to ${dialplanTools.testEmail} and directing '
+    'all calls to ${dialplanTools.testNumber}'}');
 
   var router = shelf_route.router()
     ..get('/ivr', ivrHandler.list)
