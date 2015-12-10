@@ -27,7 +27,6 @@ Iterable<OpeningHour> parseMultipleHours(String buffer) => buffer
  * Class representing an opening hour.
  */
 class OpeningHour {
-  Logger _log = new Logger('$libaryName.OpeningHour');
 
   WeekDay fromDay;
   int fromHour = 0;
@@ -42,8 +41,11 @@ class OpeningHour {
    */
   OpeningHour.empty();
 
-  bool isValid() {
-    bool result = true;
+  /**
+   *
+   */
+  List<FormatException> get validationErrors {
+    List errors = [];
 
     if (fromMinute > 59 ||
         toMinute > 59 ||
@@ -53,32 +55,29 @@ class OpeningHour {
         toHour < 0 ||
         fromHour > 23 ||
         toHour > 23) {
-      _log.severe('Bad range: ${this}');
-      result = false;
+      errors.add(new FormatException('Bad opening hour range: ${this}'));
     }
 
     if (fromDay == null) {
-      result = false;
+      errors.add(new FormatException('fromDay is null'));
     } else if (fromDay != null && toDay != null) {
       if (fromDay.index > toDay.index) {
-        _log.severe('FromDay (${fromDay}) is before toDay (${toDay})');
-        result = false;
+        errors.add('FromDay (${fromDay}) is before toDay (${toDay})');
       } else if (fromDay.index == toDay.index) {
         if (fromHour > toHour) {
-          _log.severe('FromHour (${fromHour}) is before toDay (${toHour})');
-          result = false;
+          errors.add('FromHour (${fromHour}) is before toDay (${toHour})');
         } else if (fromHour == toHour) {
           if (fromMinute > toMinute) {
-            _log.severe(
+            errors.add(
                 'fromMinute (${fromHour}) is before fromMinute (${toHour})');
-            result = false;
           }
         }
       }
     }
-
-    return result;
+    return errors;
   }
+
+  bool isValid() => validationErrors.isEmpty;
 
   /**
    * Parsing constructor. Manages formats such as:
@@ -155,7 +154,7 @@ class OpeningHour {
     if (!gotDay || !gotHour && openingHour.isValid()) {
       throw new FormatException('Failed to parse buffer "$buffer"');
     }
-    if(openingHour.toDay == null) openingHour.toDay = openingHour.fromDay;
+    if (openingHour.toDay == null) openingHour.toDay = openingHour.fromDay;
     openingHour.isValid();
 
     return openingHour;
