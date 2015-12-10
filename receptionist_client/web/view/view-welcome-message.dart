@@ -56,6 +56,7 @@ class WelcomeMessage extends ViewWidget {
     });
 
     _notification.onAnyCallStateChange.listen((OREvent.CallEvent event) {
+      print('!!!!!!!! ${event.call.state} - ${event.runtimeType}');
       if (event.call.assignedTo == _appState.currentUser.ID &&
           event.call.state == ORModel.CallState.Hungup &&
           _latestCall.ID == event.call.ID) {
