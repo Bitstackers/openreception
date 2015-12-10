@@ -32,8 +32,8 @@ CREATE TABLE auth_identities (
 --  Ivr menus
 
 CREATE TABLE ivr_menus (
-   id   SERIAL NOT NULL PRIMARY KEY,
-   menu JSON   NOT NULL
+   name TEXT NOT NULL PRIMARY KEY,
+   menu JSON NOT NULL
 );
 
 -------------------------------------------------------------------------------
