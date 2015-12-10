@@ -19,21 +19,14 @@ part of view;
 class WelcomeMessage extends ViewWidget {
   final Model.AppClientState _appState;
   final Map<String, String> _langMap;
-  ORModel.Call _latestCall;
-  ORModel.Call _latestHungupCall;
-  final Controller.Notification _notification;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIWelcomeMessage _uiModel;
 
   /**
    * Constructor.
    */
-  WelcomeMessage(
-      Model.UIWelcomeMessage this._uiModel,
-      Model.AppClientState this._appState,
-      Model.UIReceptionSelector this._receptionSelector,
-      Controller.Notification this._notification,
-      Map<String, String> this._langMap) {
+  WelcomeMessage(Model.UIWelcomeMessage this._uiModel, Model.AppClientState this._appState,
+      Model.UIReceptionSelector this._receptionSelector, Map<String, String> this._langMap) {
     _observers();
   }
 
@@ -50,20 +43,7 @@ class WelcomeMessage extends ViewWidget {
     _receptionSelector.onSelect.listen(_render);
 
     _appState.activeCallChanged.listen((ORModel.Call newCall) {
-      _ui.inActiveCall = newCall != ORModel.Call.noCall && newCall != _latestHungupCall;
-      if (newCall != ORModel.Call.noCall && newCall != _latestHungupCall) {
-        _latestCall = newCall;
-      }
-    });
-
-    _notification.onAnyCallStateChange.listen((OREvent.CallEvent event) {
-      if (event.call.assignedTo == _appState.currentUser.ID &&
-          event.call.state == ORModel.CallState.Hungup) {
-        _latestHungupCall = event.call;
-        if (_latestCall == _latestHungupCall) {
-          _ui.inActiveCall = false;
-        }
-      }
+      _ui.inActiveCall = newCall != ORModel.Call.noCall;
     });
   }
 

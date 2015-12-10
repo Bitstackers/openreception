@@ -39,7 +39,7 @@ StreamSubscription<Event> windowOnBeforeUnload;
 StreamSubscription<Event> windowOnUnload;
 
 main() async {
-  final Model.AppClientState appState = new Model.AppClientState();
+  Model.AppClientState appState;
   Uri appUri;
   ORModel.ClientConfiguration clientConfig;
   Map<String, String> language;
@@ -90,7 +90,9 @@ main() async {
 
       webSocketClient = new ORTransport.WebSocketClient();
       notificationController =
-          new Controller.Notification(new ORService.NotificationSocket(webSocketClient), appState);
+          new Controller.Notification(new ORService.NotificationSocket(webSocketClient));
+
+      appState = new Model.AppClientState(notificationController);
 
       webSocketClient.onClose = () {
         log.shout('Websocket connection died. Trying reload in 10 seconds');
