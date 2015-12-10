@@ -18,7 +18,7 @@ part of openreception.dialplan_server.controller;
  */
 class Ivr {
   final database.Ivr _ivrStore;
-  final Logger _log = new Logger ('$_libraryName.Ivr');
+  final Logger _log = new Logger('$_libraryName.Ivr');
 
   /**
    *
@@ -39,12 +39,11 @@ class Ivr {
    *
    */
   Future<shelf.Response> deploy(shelf.Request request) async {
-    final int menuId = int.parse(shelf_route.getPathParameter(request, 'id'));
+    final String menuName = shelf_route.getPathParameter(request, 'name');
 
-    final model.IvrMenu menu = await _ivrStore.get(menuId);
+    final model.IvrMenu menu = await _ivrStore.get(menuName);
 
-    final String xmlFilePath =
-        '${config.dialplanserver.freeswitchConfPath}'
+    final String xmlFilePath = '${config.dialplanserver.freeswitchConfPath}'
         '/ivr_menus/${menu.name}.xml';
 
     _log.fine('Deploying new dialplan to file $xmlFilePath');
@@ -57,21 +56,12 @@ class Ivr {
    *
    */
   Future<shelf.Response> get(shelf.Request request) async {
-    int menuId;
-    String idParam;
-    try {
-      idParam = shelf_route.getPathParameter(request, 'id');
-
-      menuId = int.parse(idParam);
-    } on FormatException {
-      _log.warning('Non-numeric parameter $idParam');
-      return _clientError('Non-numeric parameter $idParam');
-    }
+    final String menuName = shelf_route.getPathParameter(request, 'name');
 
     try {
-      return _okJson(await _ivrStore.get(menuId)..id = menuId);
+      return _okJson(await _ivrStore.get(menuName));
     } on storage.NotFound {
-      return _notFound('No menu with id $menuId');
+      return _notFound('No menu named $menuName');
     }
   }
 
@@ -85,9 +75,9 @@ class Ivr {
    *
    */
   Future<shelf.Response> remove(shelf.Request request) async {
-    final int menuId = int.parse(shelf_route.getPathParameter(request, 'id'));
+    final String menuName = shelf_route.getPathParameter(request, 'name');
 
-    return _okJson(await _ivrStore.remove(menuId));
+    return _okJson(await _ivrStore.remove(menuName));
   }
 
   /**
