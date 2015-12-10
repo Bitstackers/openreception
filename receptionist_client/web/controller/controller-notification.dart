@@ -17,18 +17,18 @@ part of controller;
  * Contains a bunch of notification streams for various events.
  */
 class Notification {
-  Bus<ORModel.UserStatus>          _agentStateChangeBus      = new Bus<ORModel.UserStatus>();
-  final Model.AppClientState       _appState;
-  Bus<OREvent.CalendarChange>      _calendarChangeBus        = new Bus<OREvent.CalendarChange>();
-  Bus<OREvent.CallEvent>            _callStateChangeBus       = new Bus<OREvent.CallEvent>();
-  Bus<Model.ClientConnectionState> _clientConnectionStateBus = new Bus<Model.ClientConnectionState>();
-  final Logger                     _log                      = new Logger('$libraryName.Notification');
-  ORService.NotificationSocket     _socket                   = null;
+  Bus<ORModel.UserStatus> _agentStateChangeBus = new Bus<ORModel.UserStatus>();
+  Bus<OREvent.CalendarChange> _calendarChangeBus = new Bus<OREvent.CalendarChange>();
+  Bus<OREvent.CallEvent> _callStateChangeBus = new Bus<OREvent.CallEvent>();
+  Bus<Model.ClientConnectionState> _clientConnectionStateBus =
+      new Bus<Model.ClientConnectionState>();
+  final Logger _log = new Logger('$libraryName.Notification');
+  ORService.NotificationSocket _socket = null;
 
   /**
    * Constructor.
    */
-  Notification (ORService.NotificationSocket this._socket, Model.AppClientState this._appState) {
+  Notification(ORService.NotificationSocket this._socket) {
     _observers();
   }
 
@@ -44,11 +44,6 @@ class Notification {
    */
   void _callEvent(OREvent.CallEvent event) {
     _callStateChangeBus.fire(event);
-
-    /// If my call was hung up, update the model.
-    if (event is OREvent.CallHangup && _appState.activeCall == event.call) {
-      _appState.activeCall = ORModel.Call.noCall;
-    }
   }
 
   /**
@@ -62,15 +57,15 @@ class Notification {
    * Fire [event] on relevant bus.
    */
   void _dispatch(OREvent.Event event) {
-    if(event is OREvent.CallEvent) {
+    if (event is OREvent.CallEvent) {
       _callEvent(event);
-    } else if(event is OREvent.CalendarChange) {
+    } else if (event is OREvent.CalendarChange) {
       _calendarChange(event);
-    } else if(event is OREvent.ClientConnectionState) {
+    } else if (event is OREvent.ClientConnectionState) {
       _clientConnectionState(event);
-    } else if(event is OREvent.MessageChange) {
+    } else if (event is OREvent.MessageChange) {
       _messageChange(event);
-    } else if(event is OREvent.UserState) {
+    } else if (event is OREvent.UserState) {
       _userState(event);
     } else {
       _log.severe('Failed to dispatch event ${event}');
@@ -92,8 +87,7 @@ class Notification {
   /**
    * Call state change stream.
    */
-  Stream<OREvent.CallEvent> get onAnyCallStateChange =>
-      _callStateChangeBus.stream;
+  Stream<OREvent.CallEvent> get onAnyCallStateChange => _callStateChangeBus.stream;
 
   /**
    * Calendar Event changes stream.
