@@ -25,11 +25,8 @@ import 'package:openreception_framework/model.dart' as Model;
 import '../lib/configuration.dart';
 import '../lib/message_dispatcher/router.dart' as router;
 
-/**
- * TODO: Initialize serverToken
- */
-
-final Logger log = new Logger('MessageDispatcher');
+///Logger
+final Logger _log = new Logger('MessageDispatcher');
 
 SmtpOptions options = new SmtpOptions()
   ..hostName = config.messageDispatcher.smtp.hostname
@@ -60,20 +57,24 @@ void main(List<String> args) {
   router
       .start(port: int.parse(parsedArgs['httpport']))
       .then((_) => periodicEmailSend())
-      .catchError(log.shout);
+      .catchError(_log.shout);
 }
 
 /**
  *
  */
-Iterable<Model.MessageRecipient> emailRecipients(Iterable<Model.MessageRecipient> rcps) =>
-    rcps.where((Model.MessageRecipient rcp) => rcp.type == Model.MessageEndpointType.EMAIL);
+Iterable<Model.MessageRecipient> emailRecipients(
+        Iterable<Model.MessageRecipient> rcps) =>
+    rcps.where((Model.MessageRecipient rcp) =>
+        rcp.type == Model.MessageEndpointType.EMAIL);
 
 /**
  *
  */
-Iterable<Model.MessageRecipient> smsRecipients(Iterable<Model.MessageRecipient> rcps) =>
-    rcps.where((Model.MessageRecipient rcp) => rcp.type == Model.MessageEndpointType.SMS);
+Iterable<Model.MessageRecipient> smsRecipients(
+        Iterable<Model.MessageRecipient> rcps) =>
+    rcps.where((Model.MessageRecipient rcp) =>
+        rcp.type == Model.MessageEndpointType.SMS);
 
 /**
  * The Periodic task that passes emails on to the SMTP server.
@@ -86,20 +87,14 @@ void periodicEmailSend() {
       .list(maxTries: config.messageDispatcher.maxTries)
       .then((Iterable<Model.MessageQueueItem> queuedMessages) {
     Future.forEach(queuedMessages, tryDispatch).whenComplete(() {
-      log.info('Processed ${queuedMessages.length} messages in '
+      _log.info('Processed ${queuedMessages.length} messages in '
           '${(new DateTime.now().difference(start)).inMilliseconds} milliseconds.'
           ' Sleeping for ${config.messageDispatcher.mailerPeriod} seconds');
       reSchedule();
     });
   }).catchError((error, stackTrace) {
-    /// TODO (KRC, TL): We need to figure out what to do here. As it stands we
-    /// stop dispatching if the messageQueueStore call fails for some reason.
-    ///
-    /// A: If the messageQueueStore fails, we are in serious shit. Better to
-    /// let the process die, and let supervisor restart it, rather than trying
-    /// to recover at this point.
-    log.severe('Failed to load database message');
-    log.severe(error, stackTrace);
+    _log.severe('Failed to load database message');
+    _log.severe(error, stackTrace);
     exit(1);
   });
 }
@@ -107,7 +102,8 @@ void periodicEmailSend() {
 /**
  *
  */
-Timer reSchedule() => new Timer(config.messageDispatcher.mailerPeriod, periodicEmailSend);
+Timer reSchedule() =>
+    new Timer(config.messageDispatcher.mailerPeriod, periodicEmailSend);
 
 /**
  *
@@ -117,18 +113,17 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
   Model.User user = await router.userStore.get(message.senderId);
 
   if (queueItem.unhandledRecipients.isEmpty) {
-    log.info("No recipients left detected on message with ID ${message.ID}!");
+    _log.info("No recipients left detected on message with ID ${message.ID}!");
     return router.messageQueueStore.archive(queueItem);
   }
 
-  log.fine('Dispatching messageID ${message.ID} - queueID: ${queueItem.ID}');
+  _log.fine('Dispatching messageID ${message.ID} - queueID: ${queueItem.ID}');
   queueItem.tries++;
 
   ///Dispatch email recipients.
   Iterable<Model.MessageRecipient> currentRecipients =
       emailRecipients(queueItem.unhandledRecipients);
-  Model.TemplateEmail templateEmail = new Model.TemplateEmail(message, user);
-  log.fine(templateEmail.toString());
+
 
   List to = currentRecipients
       .where((mr) => mr.role == Model.Role.TO)
@@ -145,49 +140,51 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
       .map((mrto) => new Address(mrto.address, mrto.contactName))
       .toList(growable: false);
 
-  Email email = new Email(new Address(user.address, user.name), 'smtp.gmail.com')
-    ..to = to
-    ..cc = cc
-    ..bcc = bcc
-    ..subject = templateEmail.subject
-    ..partText = templateEmail.bodyText
-    ..partHtml = templateEmail.bodyHtml;
+  if (currentRecipients.isNotEmpty) {
+    Model.TemplateEmail templateEmail = new Model.TemplateEmail(message, user);
+    Email email =
+        new Email(new Address(user.address, user.name), 'smtp.gmail.com')
+          ..to = to
+          ..cc = cc
+          ..bcc = bcc
+          ..subject = templateEmail.subject
+          ..partText = templateEmail.bodyText
+          ..partHtml = templateEmail.bodyHtml;
 
-  new SmtpClient(options).send(email).then((_) {
-    /// Update the handled recipient set.
-    queueItem.handledRecipients = currentRecipients;
-  }).catchError((error) {
-    /*
-     *
-     *
-     * TODO: Do stuff here....???
-     *
-     *
-     */
-  });
+    await new SmtpClient(options).send(email).then((_) {
+      /// Update the handled recipient set.
+      queueItem.handledRecipients = currentRecipients;
+    }).catchError((error, stackTrace) {
+      _log.shout(
+          'Failed to dispatch to email recipients '
+          '<${currentRecipients.join(';')}> '
+          '(messageID:${queueItem.messageID}, queueID:${queueItem.ID})',
+          error,
+          stackTrace);
+    });
+  }
 
   ///Dispatch sms recipients.
   currentRecipients = smsRecipients(queueItem.unhandledRecipients);
 
-  Model.Template templateSMS = new Model.TemplateSMS(message);
-  log.fine(templateSMS.toString());
+  if (currentRecipients.isNotEmpty) {
+    Model.Template templateSMS = new Model.TemplateSMS(message);
+    Email sms =
+        new Email(new Address(user.address, user.name), 'smtp.gmail.com')
+          ..to = currentRecipients.map((mrto) => new Address(mrto.address, ''))
+          ..partText = templateSMS.bodyText;
 
-  Email sms = new Email(new Address(user.address, user.name), 'smtp.gmail.com')
-    ..to = currentRecipients.map((mrto) => new Address(mrto.address, ''))
-    ..partText = templateSMS.bodyText;
-
-  new SmtpClient(options).send(sms).then((_) {
-    queueItem.handledRecipients = currentRecipients;
-  }).catchError((error) {
-    /*
-     *
-     *
-     * TODO: Do stuff here....???
-     *
-     *
-     *
-     */
-  });
+    await new SmtpClient(options).send(sms).then((_) {
+      queueItem.handledRecipients = currentRecipients;
+    }).catchError((error, stackTrace) {
+      _log.shout(
+          'Failed to dispatch to sms recipients '
+          '<${currentRecipients.join(';')}> '
+          '(messageID:${queueItem.messageID}, queueID:${queueItem.ID})',
+          error,
+          stackTrace);
+    });
+  }
 
   return router.messageQueueStore.save(queueItem);
 }
