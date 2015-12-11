@@ -183,6 +183,11 @@ class MyCallQueue extends ViewWidget {
         if (event.call.ID == contextCallId) {
           contextCallId = '';
         }
+
+        if (event.call == _appState.activeCall) {
+          _popup.info('Hangup', 'Optaget eller?');
+        }
+
         _ui.removeCall(event.call);
         break;
 
