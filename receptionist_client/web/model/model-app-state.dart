@@ -40,17 +40,17 @@ class AppClientState {
   }
 
   /**
-   *
+   * Fires an ORModel.Call on pickup and hangup.
    */
   Stream<ORModel.Call> get activeCallChanged => _activeCallChangeBus.stream;
 
   /**
-   *
+   * Return the currently active call.
    */
   ORModel.Call get activeCall => _activeCall;
 
   /**
-   *
+   * Set the currently active call. A hangup is when [newCall] is [ORModel.Call.noCall].
    */
   set activeCall(ORModel.Call newCall) {
     if (_hungupCalls.any((HungUp hungUp) => hungUp.callId == newCall.ID)) {
@@ -77,17 +77,17 @@ class AppClientState {
   }
 
   /**
-   *
+   * Return the currently logged in user.
    */
   ORModel.User get currentUser => _currentUser;
 
   /**
-   *
+   * Set the currently logged in user.
    */
   set currentUser(ORModel.User newUser) => _currentUser = newUser;
 
   /**
-   *
+   * Setup listeners needed for this object.
    */
   void _observers() {
     _notification.onAnyCallStateChange.listen((OREvent.CallEvent event) {
