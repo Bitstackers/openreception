@@ -61,6 +61,10 @@ class RESTMessageStore implements Storage.Message {
       .then((String response)
         => new Model.Message.fromMap (JSON.decode(response)));
 
+  /**
+   * Please use either [update] or [create] instead.
+   */
+  @deprecated
   Future<Model.Message> save(Model.Message message) =>
       message.ID == Model.Message.noID
       ? create (message)

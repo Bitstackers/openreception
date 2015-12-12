@@ -322,6 +322,10 @@ class Message implements Storage.Message {
     });
   }
 
+  /**
+   * Please use either [update] or [create] instead.
+   */
+  @deprecated
   Future<Model.Message> save(Model.Message message) =>
       message.ID == Model.Message.noID ? create(message) : update(message);
 
