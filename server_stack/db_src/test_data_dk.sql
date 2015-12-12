@@ -1195,28 +1195,6 @@ VALUES (1, 'Det drejer sig om kosten i gangen - du ved hvad der skal gøres.',4,
 INSERT INTO message_queue (id, message_id)
 VALUES (1000000, 1);
 
-INSERT INTO phone_numbers (id, value, kind) VALUES
-(1, '11223344', 'PSTN'),
-(2, '12312312', 'PSTN'),
-(3, '87654321', 'PSTN'),
-(4, '88447732', 'PSTN'),
-(5, '44220011', 'PSTN'),
-(6, '00001234', 'PSTN'),
-(7, '76296626', 'PSTN'),
-(8, '02850203', 'PSTN'),
-(9, '10203040', 'PSTN'),
-(10, '1000', 'PSTN'),
-(11, '1001', 'PSTN'),
-(12, '1002', 'PSTN'),
-(13, '1003', 'PSTN');
-
-INSERT INTO contact_phone_numbers (reception_id, contact_id, phone_number_id) VALUES
-(1, 1, 11),
-(1, 2, 12),
-(1, 2, 13),
-(1, 3, 4),
-(1, 4, 5),
-(1, 5, 6);
 
 INSERT INTO calendar_events (id, start, stop, message) VALUES
 (1, '2013-12-31 18:00:00', '2014-01-01 12:00:00', 'Nytårs aftensfest'),

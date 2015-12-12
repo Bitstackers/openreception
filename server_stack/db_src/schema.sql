@@ -121,16 +121,6 @@ CREATE TABLE recipient_visibilities (value TEXT NOT NULL PRIMARY KEY);
 INSERT INTO recipient_visibilities VALUES ('to'), ('cc'), ('bcc');
 
 -------------------------------------------------------------------------------
---  Late reference from reception_contacts to distribution_lists:
---  Currently folded to a single JSON object.
-
---  ALTER TABLE reception_contacts
---     ADD CONSTRAINT reception_contacts_distribution_list_id_foreign_key
---        FOREIGN KEY (distribution_list_id)
---           REFERENCES distribution_lists (id) MATCH SIMPLE
---           ON UPDATE CASCADE ON DELETE SET DEFAULT;
-
--------------------------------------------------------------------------------
 --  Message dispatching:
 
 CREATE TABLE messages (
@@ -242,32 +232,6 @@ CREATE TABLE distribution_list (
       ON UPDATE CASCADE ON DELETE CASCADE,
 
   FOREIGN KEY (recipient_contact_id, recipient_reception_id)
-      REFERENCES reception_contacts (contact_id, reception_id)
-      ON UPDATE CASCADE ON DELETE CASCADE
-);
-
--------------------------------------------------------------------------------
---  Phones
--- TODO These are now in the contact as JSON and are therefore deprecated
-
-CREATE TABLE phone_number_types (value TEXT NOT NULL PRIMARY KEY);
-INSERT INTO phone_number_types (value) VALUES ('SIP'), ('PSTN');
-
-CREATE TABLE phone_numbers (
-   id    INTEGER NOT NULL PRIMARY KEY, --  AUTOINCREMENT
-   value TEXT    NOT NULL UNIQUE,
-   kind  TEXT    NOT NULL REFERENCES phone_number_types (value)
-);
-
-CREATE TABLE contact_phone_numbers (
-   reception_id    INTEGER NOT NULL,
-   contact_id      INTEGER NOT NULL,
-   phone_number_id INTEGER NOT NULL REFERENCES phone_numbers (id)
-                                    ON UPDATE CASCADE ON DELETE CASCADE,
-
-   PRIMARY KEY (contact_id, reception_id, phone_number_id),
-
-   FOREIGN KEY (contact_id, reception_id)
       REFERENCES reception_contacts (contact_id, reception_id)
       ON UPDATE CASCADE ON DELETE CASCADE
 );
@@ -429,51 +393,3 @@ CREATE SEQUENCE messaging_end_points_id_sequence
   CACHE 1;
 ALTER SEQUENCE messaging_end_points_id_sequence OWNED BY messaging_end_points.id;
 ALTER TABLE ONLY messaging_end_points ALTER COLUMN id SET DEFAULT nextval ('messaging_end_points_id_sequence'::regclass);
-
-
--------------------------------------------------------------------------------
---  Set ownership:
-
-ALTER TABLE users OWNER TO openreception;
-ALTER TABLE groups OWNER TO openreception;
-ALTER TABLE user_groups OWNER TO openreception;
-ALTER TABLE auth_identities OWNER TO openreception;
-
-ALTER TABLE contact_types OWNER TO openreception;
-ALTER TABLE contacts OWNER TO openreception;
-ALTER TABLE organizations OWNER TO openreception;
-ALTER TABLE receptions OWNER TO openreception;
-ALTER TABLE reception_contacts OWNER TO openreception;
-ALTER TABLE messaging_address_types OWNER TO openreception;
-ALTER TABLE messaging_end_points OWNER TO openreception;
-ALTER TABLE recipient_visibilities OWNER TO openreception;
-ALTER TABLE messages OWNER TO openreception;
-ALTER TABLE message_queue OWNER TO openreception;
-ALTER TABLE message_queue_history OWNER TO openreception;
-ALTER TABLE calendar_events OWNER TO openreception;
-ALTER TABLE contact_calendar OWNER TO openreception;
-ALTER TABLE reception_calendar OWNER TO openreception;
-ALTER TABLE distribution_list_roles OWNER TO openreception;
-ALTER TABLE distribution_list OWNER TO openreception;
-ALTER TABLE contact_phone_numbers OWNER TO openreception;
-ALTER TABLE cdr_entries OWNER TO openreception;
-ALTER TABLE cdr_checkpoints OWNER TO openreception;
-ALTER TABLE playlists OWNER TO openreception;
-ALTER TABLE calendar_entry_changes OWNER TO openreception;
-
-ALTER SEQUENCE users_id_sequence OWNER TO openreception;
-ALTER SEQUENCE groups_id_sequence OWNER TO openreception;
-
-ALTER SEQUENCE contacts_id_sequence OWNER TO openreception;
-ALTER SEQUENCE organizations_id_sequence OWNER TO openreception;
-ALTER SEQUENCE receptions_id_sequence OWNER TO openreception;
-ALTER SEQUENCE messages_id_sequence OWNER TO openreception;
-ALTER SEQUENCE message_queue_id_sequence OWNER TO openreception;
-ALTER SEQUENCE message_queue_history_id_sequence OWNER TO openreception;
-ALTER SEQUENCE calendar_events_id_sequence OWNER TO openreception;
-ALTER SEQUENCE distribution_list_id_sequence OWNER TO openreception;
-ALTER SEQUENCE cdr_checkpoints_id_sequence OWNER TO openreception;
-ALTER SEQUENCE playlists_id_sequence OWNER TO openreception;
-ALTER SEQUENCE calendar_entry_changes_id_sequence OWNER TO openreception;
-
--------------------------------------------------------------------------------
