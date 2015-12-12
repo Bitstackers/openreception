@@ -35,6 +35,7 @@ class Message {
   CallerInfo callerInfo;
   DateTime createdAt;
   String body = '';
+  String callId = '';
 
   /// The user ID of the sender.
   int senderId;
@@ -77,6 +78,7 @@ class Message {
     callerInfo = new CallerInfo.fromMap(map['caller']);
     body = map['message'];
     sent = map['sent'];
+    callId = map[Key.callId];
     enqueued = map['enqueued'];
     senderId = map['taken_by_agent'];
     createdAt = Util.unixTimestampToDateTime(map['created_at']);
@@ -88,6 +90,7 @@ class Message {
     'context': context.asMap,
     'taken_by_agent': senderId,
     'caller': callerInfo.asMap,
+    Key.callId : callId,
     'flags': flag.toJson(),
     'sent': sent,
     'enqueued': enqueued,

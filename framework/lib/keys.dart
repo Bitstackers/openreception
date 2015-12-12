@@ -16,6 +16,7 @@ const String userID = 'uid';
 const String updatedAt = 'updated';
 const String username = 'username';
 const String ID = 'id';
+const String callId = 'call_id';
 const String state = 'state';
 const String bLeg = 'b_leg';
 const String locked = 'locked';
