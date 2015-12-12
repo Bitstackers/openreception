@@ -115,7 +115,8 @@ class Message implements Storage.Message {
         $sqlMacro
         SELECT
              message.id,
-             message, 
+             message,
+             call_id,
              recipients,
              context_contact_id,
              context_reception_id,
@@ -160,6 +161,7 @@ class Message implements Storage.Message {
        SET 
          message                 = @message,
          recipients              = @recipients,
+         call_id                 = @callId,
          context_contact_id      = @context_contact_id,
          context_reception_id    = @context_reception_id,
          context_contact_name    = @context_contact_name,
@@ -174,6 +176,7 @@ class Message implements Storage.Message {
 
     Map parameters = {
       'message': message.body,
+      'callId' : message.callId,
       'context_contact_id': message.context.contactID,
       'context_reception_id': message.context.receptionID,
       'context_contact_name': message.context.contactName,
@@ -215,6 +218,7 @@ class Message implements Storage.Message {
       INSERT INTO messages 
            (message, 
             recipients,
+            call_id,
             context_contact_id,
             context_reception_id,
             context_contact_name,
@@ -229,6 +233,7 @@ class Message implements Storage.Message {
       VALUES 
            (@message, 
             @recipients,
+            @callId,
             @context_contact_id,
             @context_reception_id,
             @context_contact_name,
@@ -245,6 +250,7 @@ class Message implements Storage.Message {
     Map parameters = {
       'message': message.body,
       'recipients' : JSON.encode(message.recipients.toList(growable: false)),
+      'callId' : message.callId,
       'context_contact_id': message.context.contactID,
       'context_reception_id': message.context.receptionID,
       'context_contact_name': message.context.contactName,
@@ -283,6 +289,7 @@ class Message implements Storage.Message {
              message.id,
              message, 
              recipients,
+             call_id,
              context_contact_id,
              context_reception_id,
              context_contact_name,

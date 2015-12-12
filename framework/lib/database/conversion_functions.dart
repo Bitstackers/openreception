@@ -76,6 +76,7 @@ Model.Message _rowToMessage(var row) {
   return new Model.Message.empty()
     ..ID = row.id
     ..body = row.message
+    ..callId = row.call_id
     ..recipients.addAll(
         (row.recipients as Iterable).map(Model.MessageRecipient.decode))
     ..context = (new Model.MessageContext.empty()
