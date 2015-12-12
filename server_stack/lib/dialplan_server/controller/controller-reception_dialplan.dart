@@ -63,25 +63,29 @@ class ReceptionDialplan {
     final String extension = shelf_route.getPathParameter(request, 'extension');
     final int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
-    final model.ReceptionDialplan rdp =
-        await _receptionDialplanStore.get(extension);
-
+    model.ReceptionDialplan rdp;
+    try {
+      rdp = await _receptionDialplanStore.get(extension);
+    } on storage.NotFound {
+      return _notFound('No dialplan with extension $extension');
+    }
     final String xmlFilePath = '${config.dialplanserver.freeswitchConfPath}'
         '/dialplan/receptions/$extension.xml';
 
     _log.fine('Deploying new dialplan to file $xmlFilePath');
-    new File(xmlFilePath).writeAsString(dialplanTools.convertTextual(rdp, rid));
+    await new File(xmlFilePath)
+        .writeAsString(dialplanTools.convertTextual(rdp, rid));
 
     Iterable<model.Voicemail> voicemailAccounts =
         rdp.allActions.where((a) => a is model.Voicemail);
 
-    voicemailAccounts.forEach((vm) {
+    voicemailAccounts.forEach((vm) async {
       final String vmFilePath = '${config.dialplanserver.freeswitchConfPath}'
-      '/directory/voicemail/${vm.vmBox}.xml';
+          '/directory/voicemail/${vm.vmBox}.xml';
 
       _log.fine('Deploying voicemail account ${vm.vmBox} to file $vmFilePath');
-      new File(vmFilePath).writeAsString(dialplanTools.convertVoicemail(vm));
-
+      await new File(vmFilePath)
+          .writeAsString(dialplanTools.convertVoicemail(vm));
     });
 
     return _okJson(rdp);
