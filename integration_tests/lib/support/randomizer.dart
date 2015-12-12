@@ -586,6 +586,7 @@ abstract class Randomizer {
   static Model.Message randomMessage() {
     Model.Message message = new Model.Message.empty();
     message..body = randomMessageBody()
+        ..callId = 'call-id-${new DateTime.now().millisecondsSinceEpoch}'
         ..callerInfo = randomCaller()
         ..createdAt = new DateTime.now()
         ..flag = new Model.MessageFlag(randomMessageFlags());
