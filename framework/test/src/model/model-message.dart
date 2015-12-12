@@ -30,6 +30,7 @@ abstract class ModelMessage {
 
     expect(obj.body, equals(deserializedObj.body));
     expect(obj.callerInfo.asMap, equals(deserializedObj.callerInfo.asMap));
+    expect(obj.callId, equals(deserializedObj.callId));
 
     expect(obj.createdAt.difference(deserializedObj.createdAt).abs(),
            lessThan(new Duration(seconds : 1)));
@@ -69,6 +70,7 @@ abstract class ModelMessage {
       ..phone = 'Out of order';
 
     final int senderId = ModelUser.buildObject().ID;
+    final String callId = 'bad-ass-call';
 
     Set rlist = new Set()
       ..addAll([
@@ -92,6 +94,7 @@ abstract class ModelMessage {
 
     final Model.Message obj = new Model.Message.empty()
       ..body = messageBody
+      ..callId = callId
       ..callerInfo = info
       ..createdAt = createdAt
       ..flag.called = true
@@ -106,6 +109,7 @@ abstract class ModelMessage {
 
     expect(obj.body, equals(messageBody));
     expect(obj.callerInfo.asMap, equals(info.asMap));
+    expect(obj.callId, equals(callId));
     expect(obj.createdAt, equals(createdAt));
     expect(obj.flag.called, isTrue);
     expect(obj.flag.manuallyClosed, isTrue);
