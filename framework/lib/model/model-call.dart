@@ -66,21 +66,20 @@ class Call {
   /**
    * Constructor.
    */
-  Call.fromMap(map) {
-    _ID                 = map[Key.ID];
-    _state              = map[Key.state];
-    this.answeredAt     = Util.unixTimestampToDateTime (map[Key.answeredAt]);
-    this.b_Leg          = map[Key.bLeg];
-    this._locked        = map[Key.locked];
-    this.inbound        = map[Key.inbound];
-    this.destination    = map[Key.destination];
-    this.callerID       = map[Key.callerID];
-    this.greetingPlayed = map[Key.greetingPlayed];
-    this.receptionID    = map[Key.receptionID];
-    this.contactID      = map[Key.contactID];
-    this.assignedTo     = map[Key.assignedTo];
-    this.arrived        = Util.unixTimestampToDateTime (map[Key.arrivalTime]);
-  }
+  factory Call.fromMap(Map map) => new Call.empty(map[Key.ID])
+    .._state         = map[Key.state]
+    ..answeredAt     = Util.unixTimestampToDateTime (map[Key.answeredAt])
+    ..b_Leg          = map[Key.bLeg]
+    .._locked        = map[Key.locked]
+    ..inbound        = map[Key.inbound]
+    ..destination    = map[Key.destination]
+    ..callerID       = map[Key.callerID]
+    ..greetingPlayed = map[Key.greetingPlayed]
+    ..receptionID    = map[Key.receptionID]
+    ..contactID      = map[Key.contactID]
+    ..assignedTo     = map[Key.assignedTo]
+    ..arrived        = Util.unixTimestampToDateTime (map[Key.arrivalTime]);
+
 
   /**
    *
