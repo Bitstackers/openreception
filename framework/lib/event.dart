@@ -54,6 +54,7 @@ abstract class Key {
   static const contactID = 'cid';
   static const messageID = 'mid';
   static const organizationID = 'oid';
+  static const hangupCause = 'hangupCause';
 
   static const address = 'address';
   static const addressType = 'addressType';

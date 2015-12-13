@@ -92,9 +92,15 @@ class CallTransfer extends CallEvent {
 class CallHangup extends CallEvent {
 
   final String   eventName = Key.callHangup;
+  final String hangupCause;
 
-  CallHangup (Call call) : super(call);
-  CallHangup.fromMap (Map map) : super.fromMap(map);
+  CallHangup (Call call, {this.hangupCause : ''}) : super(call);
+  CallHangup.fromMap (Map map) : super.fromMap(map),
+      this.hangupCause = map[Key.hangupCause];
+
+  @override
+  Map toJson() => super.toJson()..addAll({Key.hangupCause : this.hangupCause});
+
 }
 
 class CallStateChanged extends CallEvent {
