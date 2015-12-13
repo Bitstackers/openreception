@@ -226,6 +226,9 @@ class CallList extends IterableBase<ORModel.Call> {
         AgentHistory.instance.callHandledByAgent(call.assignedTo);
       }
 
+      call.hangupCause = event.field('Hangup-Cause') != null
+          ? event.field('Hangup-Cause')
+          : '';
       call.changeState(ORModel.CallState.Hungup);
       log.finest('Hanging up ${event.uniqueID}');
       this.remove(event.uniqueID);
