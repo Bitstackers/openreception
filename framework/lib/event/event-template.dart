@@ -20,10 +20,10 @@ abstract class EventTemplate {
   };
 
   static Map call(CallEvent event) =>
-      _rootElement(event)..addAll( {Key.call : event.call});
+      _rootElement(event)..addAll( {Key.call : event.call.toJson()});
 
   static Map peer(PeerState event) =>
-      _rootElement(event)..addAll( {Key.peer : event.peer});
+      _rootElement(event)..addAll( {Key.peer : event.peer.toJson()});
 
   static Map userState(UserState event) =>
       _rootElement(event)..addAll(event.status.asMap);
