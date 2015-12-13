@@ -99,7 +99,7 @@ class CallHangup extends CallEvent {
       this.hangupCause = map[Key.hangupCause];
 
   @override
-  Map toJson() => super.toJson()..addAll({Key.hangupCause : this.hangupCause});
+  Map get asMap => super.asMap..addAll({Key.hangupCause : this.hangupCause});
 
 }
 
