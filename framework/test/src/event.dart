@@ -24,6 +24,7 @@ void testEvent() {
     test('calendarEntryState', EventTests.calendarEntryState);
     test('userChange', EventTests.userChange);
     test('callStateReload', EventTests.callStateReload);
+    test('callHangup', EventTests.callHangup);
   });
 }
 
@@ -160,4 +161,17 @@ abstract class EventTests {
     expect (builtEvent.eventName, testEvent.eventName);
   }
 
+  static void callHangup () {
+    Model.Call testCall = new Model.Call.empty('test-id');
+
+    Event.CallHangup testEvent =
+        new Event.CallHangup(testCall, hangupCause : 'no-reason');
+
+    Event.CallHangup builtEvent = new Event.Event.parse(testEvent.toJson());
+
+    expect (builtEvent.timestamp.isAtSameMomentAs(testEvent.timestamp), isTrue);
+    expect (builtEvent.eventName, equals(Event.Key.callHangup));
+    expect (builtEvent.hangupCause, equals(testEvent.hangupCause));
+    expect (builtEvent.eventName, testEvent.eventName);
+  }
 }
