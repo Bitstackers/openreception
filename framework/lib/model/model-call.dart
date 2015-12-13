@@ -57,6 +57,7 @@ class Call {
   bool                   _locked         = false;
   int                    receptionID     = Reception.noID;
   String                 _state          = CallState.Unknown;
+  String                 hangupCause     = '';
 
   /**
    * Constructor.
@@ -133,7 +134,7 @@ class Call {
         break;
 
       case(CallState.Hungup):
-        notifyEvent (new Event.CallHangup(this));
+        notifyEvent (new Event.CallHangup(this, hangupCause: hangupCause));
         break;
 
       case(CallState.Speaking):
