@@ -30,6 +30,32 @@ abstract class Hangup {
   }
 
   /**
+   * Test for the presence of a hangup cause.
+   */
+  static Future hangupCause(Receptionist receptionist,
+                              Customer     caller) async {
+
+    String       reception = "12340003";
+
+    log.info ('Customer ${caller.name} dials ${reception}');
+    await caller.dial (reception);
+    log.info ('Receptionist ${receptionist.user.name} waits for call.');
+    await receptionist.waitForCall();
+    await new Future.delayed(new Duration(seconds: 1));
+    log.info ('Customer ${caller.name} hangs up all current calls.');
+    await caller.hangupAll();
+    log.info ('Receptionist ${receptionist.user.name} awaits call hangup.');
+    Event.CallHangup event =
+        await receptionist.waitFor(eventType:Event.Key.callHangup);
+
+    log.info(event.toJson());
+    expect(event.hangupCause, isNotEmpty);
+
+    log.info ('Caller ${caller} awaits phone hangup.');
+    await caller.waitForHangup();
+  }
+
+  /**
    * Tests the hangup interface using a valid call id.
    */
   static Future interfaceCallFound(Receptionist receptionist,

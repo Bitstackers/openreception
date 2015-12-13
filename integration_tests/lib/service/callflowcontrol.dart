@@ -66,6 +66,8 @@ void _callFlowControlHangup() {
 
     test('eventPresence', () => Hangup.eventPresence(receptionist, customer));
 
+    test('hangupCause', () => Hangup.hangupCause(receptionist, customer));
+
     test('interfaceCallFound',
         () => Hangup.interfaceCallFound(receptionist, customer));
   });
