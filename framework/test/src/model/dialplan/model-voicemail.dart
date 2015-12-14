@@ -18,6 +18,7 @@ testModelVoicemail() {
     test('deserialization', ModelVoicemail.deserialization);
     test('serialization', ModelVoicemail.serialization);
     test('buildObject', ModelVoicemail.buildObject);
+    test('multipleRecipients', ModelVoicemail.multipleRecipients);
   });
 }
 
@@ -69,4 +70,23 @@ abstract class ModelVoicemail {
 
     return builtObject;
   }
+
+
+  /**
+   *
+   */
+  static void multipleRecipients() {
+    final String vmBox = 'vm-33114422';
+    final String recipient1 = 'someone@email.dot';
+    final String recipient2 = 'someoneelse@otheremail.prik';
+    final String note = 'Someones email';
+    final String recipients = [recipient1,recipient2].join('');
+
+      Model.Voicemail builtObject =
+          new Model.Voicemail(vmBox, recipient: recipients , note: note);
+
+      expect(builtObject.vmBox, equals(vmBox));
+      expect(builtObject.recipient, equals(recipients));
+      expect(builtObject.note, equals(note));
+    }
 }
