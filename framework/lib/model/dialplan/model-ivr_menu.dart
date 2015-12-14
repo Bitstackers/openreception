@@ -17,13 +17,6 @@ part of openreception.model.dialplan;
  * Class representing an IVR menu.
  */
 class IvrMenu {
-  /// ID indicating that this menu is not stored permanently.
-  @deprecated
-  static const int noId = 0;
-
-  /// Database ID.
-  @deprecated
-  int id = noId;
 
   /// Name of IVR menu.
   String name;
@@ -67,7 +60,6 @@ class IvrMenu {
    */
   static IvrMenu decode(Map map) =>
       (new IvrMenu(map[Key.name], Playback.parse(map[Key.greeting]))
-        ..id = map[Key.id]
         .._greetingShort = Playback.parse(map[Key.greetingShort]))
         ..entries = map[Key.ivrEntries].map(IvrEntry.parse).toList()
         ..submenus = map[Key.submenus].map(IvrMenu.decode).toList();
@@ -81,7 +73,6 @@ class IvrMenu {
    * Serialization function.
    */
   Map toJson() => {
-        Key.id: id,
         Key.name: name,
         Key.greeting: greetingLong.toJson(),
         Key.greetingShort: greetingShort.toJson(),
