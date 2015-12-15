@@ -5,6 +5,7 @@ dependencies:
   http: any
   junitconfiguration: any
   logging: any
+  esl: any
   openreception_framework:
     git:
       ref: master
