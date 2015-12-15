@@ -24,6 +24,7 @@ void testModelIvrMenu() {
     test('serialization', ModelIvrMenu.serialization);
 
     test('buildObject', ModelIvrMenu.buildObject);
+    test('validation', ModelIvrMenu.validation);
   });
 }
 
@@ -31,6 +32,7 @@ void testModelIvrMenu() {
  *
  */
 abstract class ModelIvrMenu {
+  static Logger _log = new Logger('test.Model.IvrMenu');
   /**
    *
    */
@@ -145,4 +147,80 @@ abstract class ModelIvrMenu {
 
     return builtObject;
   }
+
+  static void validation() {
+    final String filename = 'somefile.wav';
+    final String sub1filename = 'sub1somefile.wav';
+    final String sub2filename = 'sub2somefile.wav';
+
+    final String note = 'Just a test';
+    final Model.Playback greeting =
+        new Model.Playback(filename, wrapInLock: false, note: note);
+
+    final Model.Playback sub1greeting =
+        new Model.Playback(sub1filename, wrapInLock: false, note: note);
+
+    final Model.Playback sub2greeting =
+        new Model.Playback(sub2filename, wrapInLock: false, note: note);
+
+    final entries = [
+      new Model.IvrVoicemail(
+          '1',
+          new Model.Voicemail('vm-corp_1',
+              recipient: 'guy@corp1.org', note: 'Just some guy')),
+      new Model.IvrSubmenu('2', 'sub-1')
+    ];
+
+    final sub1entries = [
+      new Model.IvrVoicemail(
+          '1',
+          new Model.Voicemail('vm-corp_1',
+              recipient: 'guy@corp1.org', note: 'Just some guy')),
+      new Model.IvrSubmenu('2', 'sub-2'),
+      new Model.IvrTopmenu('*')
+    ];
+
+    final sub2entries = [
+      new Model.IvrVoicemail(
+          '1',
+          new Model.Voicemail('vm-corp_1',
+              recipient: 'guy@corp1.org', note: 'Just some guy')),
+      new Model.IvrSubmenu('2', 'sub-1')
+    ];
+
+    final Model.IvrMenu sub1 = new Model.IvrMenu('sub1', sub1greeting)
+      ..entries = sub1entries;
+    final Model.IvrMenu sub2 = new Model.IvrMenu('sub2', sub2greeting)
+      ..entries = sub2entries;
+
+    _log.info('Building a menu with no name');
+    Model.IvrMenu menu = new Model.IvrMenu('', greeting)..entries = entries;
+
+    expect(Model.validateIvrMenu(menu).length, equals(1));
+
+    _log.info('Building a menu with no enties');
+    menu = new Model.IvrMenu('named', greeting)..entries = [];
+
+    _log.info('Building a menu with no enties');
+    expect(Model.validateIvrMenu(menu).length, equals(1));
+
+    _log.info('Building a menu with an empty greeting');
+    menu = new Model.IvrMenu('named', Model.Playback.none)..entries = entries;
+
+    expect(Model.validateIvrMenu(menu).length, equals(1));
+
+    _log.info('Building a menu with a bad submenu');
+    menu = new Model.IvrMenu('named', greeting)
+      ..entries = entries
+      ..submenus = [new Model.IvrMenu('', greeting)..entries = entries];
+
+    expect(Model.validateIvrMenu(menu).length, equals(1));
+
+    _log.info('Building a bad menu with a bad submenu');
+    menu = new Model.IvrMenu('named', Model.Playback.none)
+      ..entries = entries
+      ..submenus = [new Model.IvrMenu('', greeting)..entries = entries];
+
+    expect(Model.validateIvrMenu(menu).length, equals(2));
+}
 }
