@@ -42,6 +42,12 @@ abstract class ReceptionDialplan {
   /**
    *
    */
+  static Uri reloadConfig(Uri host) =>
+    Uri.parse('$host/$nameSpace/reloadConfig');
+
+  /**
+   *
+   */
   static Uri single(Uri host, String extension) =>
     Uri.parse('$host/$nameSpace/$extension');
 

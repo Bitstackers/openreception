@@ -114,4 +114,18 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
         .then(JSON.decode);
   }
 
+  /**
+   * Performs a PBX-reload of the deployed dialplan configuration.
+   */
+  Future reloadConfig(String extension, int receptionId) {
+    Uri url = Resource.ReceptionDialplan.reloadConfig(_host);
+    url = appendToken(url, this._token);
+
+    return this
+        ._backend
+        .post(url, '')
+        .then(JSON.decode);
+  }
+
+
 }
