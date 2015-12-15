@@ -11,6 +11,13 @@ part 'support/config_pool.dart';
 abstract class Config {
 
   /**
+   * ESl configuration parameters
+   */
+  static String eslPassword = 'clueCon';
+  static String eslHost = 'localhost';
+  static int eslPort = 8021;
+
+  /**
    * Path to the pjsua sip agent binary.
    */
   static String simpleClientBinaryPath = './basic_agent';
