@@ -192,7 +192,7 @@ CREATE TABLE contact_calendar (
    contact_id        INTEGER NOT NULL REFERENCES contacts (id)
                                       ON UPDATE CASCADE ON DELETE CASCADE,
    distribution_list JSON        NULL DEFAULT NULL,
-   --  A not-null distribution list will override the distribution list for the
+   --  A non-empty distribution list will override the distribution list for the
    --  contact for the duration of the calendar event.
    event_id          INTEGER NOT NULL REFERENCES calendar_events (id)
                                       ON UPDATE CASCADE ON DELETE CASCADE,
