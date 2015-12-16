@@ -1220,11 +1220,11 @@ INSERT INTO calendar_entry_changes (id, entry_id, user_id) VALUES
 (9,9,1),
 (10,10,6);
 
-INSERT INTO contact_calendar (reception_id, contact_id, event_id) VALUES
-(1, 1, 1),
-(1, 1, 2),
-(1, 1, 3),
-(1, 1, 5);
+INSERT INTO contact_calendar (contact_id, event_id) VALUES
+(1, 1),
+(1, 2),
+(1, 3),
+(1, 5);
 
 INSERT INTO reception_calendar (reception_id, event_id) VALUES
 (1, 4),

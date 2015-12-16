@@ -189,19 +189,15 @@ CREATE TABLE calendar_entry_changes (
 );
 
 CREATE TABLE contact_calendar (
-   reception_id      INTEGER NOT NULL,
-   contact_id        INTEGER NOT NULL,
+   contact_id        INTEGER NOT NULL REFERENCES contacts (id)
+                                      ON UPDATE CASCADE ON DELETE CASCADE,
    distribution_list JSON        NULL DEFAULT NULL,
    --  A not-null distribution list will override the distribution list for the
    --  contact for the duration of the calendar event.
    event_id          INTEGER NOT NULL REFERENCES calendar_events (id)
-                ON UPDATE CASCADE ON DELETE CASCADE,
-
-   PRIMARY KEY (contact_id, reception_id, event_id),
-
-   FOREIGN KEY (contact_id, reception_id)
-      REFERENCES reception_contacts (contact_id, reception_id)
-      ON UPDATE CASCADE ON DELETE CASCADE
+                                      ON UPDATE CASCADE ON DELETE CASCADE,
+                
+   PRIMARY KEY (contact_id, event_id)
 );
 
 CREATE TABLE reception_calendar (
