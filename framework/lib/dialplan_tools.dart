@@ -344,8 +344,8 @@ List<String> _ivrMenuToXml(model.IvrMenu menu) => menu.entries
 
 String _generateXmlFromIvrMenu(model.IvrMenu menu) =>
     '''<menu name="${menu.name}"
-      greet-long="\$\${sounds_dir}/greetings/${menu.greetingLong.filename}"
-      greet-short="\$\${sounds_dir}/greetings/${menu.greetingShort.filename}"
+      greet-long="\$\${sounds_dir}/${greetingDir}/${menu.greetingLong.filename}"
+      greet-short="\$\${sounds_dir}/${greetingDir}/${menu.greetingShort.filename}"
       timeout="\$\${IVR_timeout}"
       max-failures="\$\${IVR_max-failures}"
       max-timeouts="\$\${IVR_max-timeout}">
