@@ -49,6 +49,18 @@ class Ivr {
     _log.fine('Deploying new dialplan to file $xmlFilePath');
     new File(xmlFilePath).writeAsString(dialplanTools.generateXmlFromIvr(menu));
 
+    Iterable<model.Voicemail> voicemailAccounts =
+        menu.allActions.where((a) => a is model.Voicemail);
+
+    await Future.forEach(voicemailAccounts, (vm) async {
+      final String vmFilePath = '${config.dialplanserver.freeswitchConfPath}'
+          '/directory/voicemail/${vm.vmBox}.xml';
+
+      _log.fine('Deploying voicemail account ${vm.vmBox} to file $vmFilePath');
+      await new File(vmFilePath)
+          .writeAsString(dialplanTools.convertVoicemail(vm));
+    });
+
     return _okJson(menu);
   }
 
