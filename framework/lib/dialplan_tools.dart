@@ -67,7 +67,7 @@ List<String> _openingHourToXmlDialplan(String extension, model.OpeningHour oh,
  */
 List<String> _fallbackToDialplan(
     String extension, Iterable<model.Action> actions) {
-  if (actions.last is model.Playback) {
+  if (actions.length == 1 && actions.last is model.Playback) {
     actions = new List.generate(10, (_) => actions.last);
   }
   return [
