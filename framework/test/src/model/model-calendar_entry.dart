@@ -15,45 +15,58 @@ part of openreception.test;
 
 void testModelCalendarEntry() {
   group('Model.CalendarEntry', () {
-    test('serializationDeserialization',
-        ModelCalendarEntry.serializationDeserialization);
+    test('deserialization',
+        ModelCalendarEntry.deserialization);
     test('serialization', ModelCalendarEntry.serialization);
-    test('contactEntryBuild', ModelCalendarEntry.contactEntryBuild);
+    test('buildObject', ModelCalendarEntry.buildObject);
   });
 }
 
 abstract class ModelCalendarEntry {
-  static void serializationDeserialization() => expect(
-      new Model.CalendarEntry.fromMap(
-          Test_Data.testReceptionCalendarEntry).asMap,
-      equals(Test_Data.testReceptionCalendarEntry));
+
+  static void deserialization() {
+    Model.CalendarEntry builtObject = buildObject();
+    Model.CalendarEntry deserialized =
+        new Model.CalendarEntry.fromMap(JSON.decode(JSON.encode(builtObject)));
+
+    expect(builtObject.ID, equals(deserialized.ID));
+    expect(builtObject.owner, equals(deserialized.owner));
+    expect(builtObject.content, equals(deserialized.content));
+    expect(builtObject.start, equals(deserialized.start));
+    expect(builtObject.stop, equals(deserialized.stop));
+  }
 
   /**
-   * Merely asserts that no exceptions arise.
+   *
    */
-  static void serialization() => expect(() =>
-          new Model.CalendarEntry.fromMap(Test_Data.testReceptionCalendarEntry),
-      returnsNormally);
+  static void serialization() {
+    expect(JSON.encode(buildObject()), isNotNull);
+    expect(JSON.encode(buildObject()), isNotEmpty);
+  }
 
-  static void contactEntryBuild() {
+  /**
+   *
+   */
+  static Model.CalendarEntry buildObject() {
     final int id = 1;
-    final int rid = 2;
-    final int cid = 3;
+    final Model.Owner owner = new Model.OwningReception(2);
     final String body = 'test test test';
     final DateTime begin = new DateTime.now().add(new Duration(hours: 1));
     final DateTime end = new DateTime.now().add(new Duration(hours: 2));
 
-    Model.CalendarEntry testEntry = new Model.CalendarEntry.contact(cid, rid)
+    Model.CalendarEntry builtObject = new Model.CalendarEntry.empty()
+      ..owner = owner
       ..ID = id
       ..content = body
       ..beginsAt = begin
       ..until = end;
 
-    expect(testEntry.ID, equals(id));
-    expect(testEntry.contactID, equals(cid));
-    expect(testEntry.receptionID, equals(rid));
-    expect(testEntry.content, equals(body));
-    expect(testEntry.start, equals(begin));
-    expect(testEntry.stop, equals(end));
+    expect(builtObject.ID, equals(id));
+    expect(builtObject.owner, equals(owner));
+    expect(builtObject.content, equals(body));
+    expect(builtObject.start, equals(begin));
+    expect(builtObject.stop, equals(end));
+
+    return builtObject;
   }
 }

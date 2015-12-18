@@ -43,6 +43,7 @@ part 'service/service-websocket.dart';
 
 const String libraryName = "service";
 
+///TODO: Make private
 Uri appendToken (Uri uri, String token) =>
   token == null ? uri : Uri.parse('${uri}${uri.queryParameters.isEmpty ? '?' : '&'}token=${token}');
 

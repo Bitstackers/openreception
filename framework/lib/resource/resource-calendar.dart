@@ -19,20 +19,17 @@ part of openreception.resource;
  */
 abstract class Calendar {
 
-  static Uri listContact(Uri host, int contactId, int receptionId) =>
-    Uri.parse('${Contact.singleByReception(host, contactId, receptionId)}/calendar');
+  static Uri list(Uri host, Model.Owner owner, {bool deleted : false}) =>
+    Uri.parse('$host/calendar/${owner.toJson()}${deleted ? '/deleted' : '' }');
 
-  static Uri  listReception(Uri host, int receptionId) =>
-      Uri.parse('${Reception.single(host, receptionId)}/calendar');
+  static Uri base(Uri host) =>
+    Uri.parse('$host/calendarentry');
 
-  static Uri single(Uri host, int entryId) =>
-    Uri.parse('$host/calendar/entry/${entryId}');
+  static Uri single(Uri host, int entryId, {bool deleted: false}) =>
+    Uri.parse('$host/calendarentry/${entryId}${deleted ? '/deleted' : '' }');
 
-  static Uri singleContact(Uri host, int entryId, int rid, int cid) =>
-    Uri.parse('$host/contact/${cid}/reception/${rid}/calendar/event/${entryId}');
-
-  static Uri singleReception(Uri host, int entryId, int rid) =>
-    Uri.parse('$host/reception/${rid}/calendar/event/${entryId}');
+  static Uri purge(Uri host, int entryId) =>
+    Uri.parse('$host/calendarentry/${entryId}/purge');
 
   static Uri changeList(Uri host, int eventID) =>
     Uri.parse('${host}/calendarentry/${eventID}/change');

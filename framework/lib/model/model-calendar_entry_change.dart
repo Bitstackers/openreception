@@ -21,6 +21,7 @@ class CalendarEntryChange {
   int userID = User.noID;
   DateTime changedAt;
   String username;
+  CalendarEntry lastEntry;
 
   /**
    * Default constructor.
@@ -31,9 +32,10 @@ class CalendarEntryChange {
    * Deserializing constructor.
    */
   CalendarEntryChange.fromMap(Map map) {
-    this.userID = map[Key.userID];
-    this.changedAt = Util.unixTimestampToDateTime(map[Key.updatedAt]);
-    this.username = map[Key.username];
+    userID = map[Key.userID];
+    changedAt = Util.unixTimestampToDateTime(map[Key.updatedAt]);
+    username = map[Key.username];
+    lastEntry = CalendarEntry.decode(map[Key.lastEntry]);
   }
 
   /**
@@ -47,13 +49,14 @@ class CalendarEntryChange {
    * Suitable for serialization.
    */
   Map get asMap => {
-    Key.userID : this.userID,
+    Key.userID : userID,
     Key.updatedAt : Util.dateTimeToUnixTimestamp(changedAt),
-    Key.username : this.username
+    Key.username : username,
+    Key.lastEntry : lastEntry.asMap
   };
 
   /**
    * Serialization function.
    */
-  Map toJson() => this.asMap;
+  Map toJson() => asMap;
 }

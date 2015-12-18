@@ -21,18 +21,17 @@ part of openreception.model;
  */
 class CalendarEntry {
   static final String className = '${libraryName}.CalendarEntry';
-  static final Logger log       = new Logger(className);
+  static final Logger log = new Logger(className);
   int _id = CalendarEntry.noID;
 
-  String           _content;
-  static const int noID         = 0;
-  DateTime         _start;
-  DateTime         _stop;
+  String _content;
+  static const int noID = 0;
+  DateTime _start;
+  DateTime _stop;
 
+  Owner owner = Owner.none;
 
-  Owner owner = new Owner.none();
-
-  bool get isOwnedByContact => owner.contactId != Contact.noID;
+  bool get isOwnedByContact => owner is OwningContact;
 
   /**
    * Constructor.
@@ -42,49 +41,37 @@ class CalendarEntry {
   /**
    * Constructor for [Contact] calendar entries.
    */
+  @deprecated
   CalendarEntry.contact(int contactId, int receptionId) {
-    owner = new Owner.contact(contactId, receptionId);
+    owner = new OwningContact(contactId);
   }
 
   /**
    * Constructor for [Reception] calendar entries.
    */
+  @deprecated
   CalendarEntry.reception(int receptionId) {
-    owner = new Owner.reception(receptionId);
+    owner = new OwningReception(receptionId);
   }
 
   /**
-   * [CalendarEntry] constructor. Expects a map in the following format:
-   *
-   *  {
-   *    'id'               : int entry id,
-   *    'reception_id'     : int reception id,
-   *    'contact_id'       : int contact id (optional),
-   *    'start'            : DateTime String,
-   *    'stop'             : DateTime String,
-   *    'content'          : String,
-   *    'last_modified'    : DateTime String,
-   *    'last_modified_by' : int user id
-   *  }
-   *
+   * [CalendarEntry] deserializing constructor.
    * 'start' and 'stop' MUST be in a format that can be parsed by the
    * [DateTime.parse] method. Please use the methods in the [Util] library to
    * help getting the right format. 'content' is the actual entry body.
    */
   CalendarEntry.fromMap(Map json) {
-    _id              = json['id'];
-    owner = json['contact_id'] != null ?
-        new Owner.contact(json['contact_id'], json['reception_id']) :
-         new Owner.reception(json['reception_id']);
-    _start           = Util.unixTimestampToDateTime(json['start']);
-    _stop            = Util.unixTimestampToDateTime(json['stop']);
-    _content         = json['content'];
+    _id = json['id'];
+    owner = new Owner.parse(json['owner']);
+    _start = Util.unixTimestampToDateTime(json['start']);
+    _stop = Util.unixTimestampToDateTime(json['stop']);
+    _content = json['content'];
   }
 
   /**
    * Decoding factory.
    */
-  static CalendarEntry decode (Map map) => new CalendarEntry.fromMap(map);
+  static CalendarEntry decode(Map map) => new CalendarEntry.fromMap(map);
 
   /**
    * Return true if now is between after [start] and before [stop].
@@ -98,13 +85,12 @@ class CalendarEntry {
    * Returns a map representation of the calendar entry.
    * Suitable for serialization.
    */
-  Map get asMap =>
-      {'id'               : ID,
-       'contact_id'       : contactID != Contact.noID ? contactID : null,
-       'reception_id'     : receptionID,
-       'start'            : Util.dateTimeToUnixTimestamp(start),
-       'stop'             : Util.dateTimeToUnixTimestamp(stop),
-       'content'          : content
+  Map get asMap => {
+        'id': ID,
+        'owner' : owner.toJson(),
+        'start': Util.dateTimeToUnixTimestamp(start),
+        'stop': Util.dateTimeToUnixTimestamp(stop),
+        'content': content
       };
 
   /**
@@ -118,7 +104,9 @@ class CalendarEntry {
    * Return the contact id for this calendar entry. MAY be [Contact.noID] if
    * this is a reception only entry.
    */
-  int get contactID => owner.contactId;
+  int get contactID => owner is OwningContact
+      ? (owner as OwningContact).contactId
+      : Contact.noID;
 
   /**
    * Get the actual calendar entry text content.
@@ -144,7 +132,7 @@ class CalendarEntry {
   void set ID(int newID) {
     if (_id != noID) {
       throw new ArgumentError.value(newID, 'newID',
-          'Cannot set ID of a ''CalendarEntry that already has an ID');
+          'Cannot set ID of a ' 'CalendarEntry that already has an ID');
     }
 
     _id = newID;
@@ -153,7 +141,9 @@ class CalendarEntry {
   /**
    * ID of owning reception.
    */
-  int get receptionID => owner.receptionId;
+  int get receptionID => owner is OwningReception
+      ? (owner as OwningReception).receptionId
+      : Reception.noID;
 
   /**
    * When this calendar entry begins.
@@ -174,10 +164,10 @@ class CalendarEntry {
    * [CalendarEntry] as String, for debug/log purposes.
    */
   String toString() => 'start: ${start.toIso8601String()}, '
-                       'stop: ${stop.toIso8601String()}, '
-                       'rid: ${receptionID}, '
-                       'cid: ${contactID}, '
-                       'content: ${content}';
+      'stop: ${stop.toIso8601String()}, '
+      'rid: ${receptionID}, '
+      'cid: ${contactID}, '
+      'content: ${content}';
 
   /**
    * The calendar entry ends at [stop].

@@ -20,97 +20,118 @@ class RESTCalendarStore implements Storage.Calendar {
   static final Logger log = new Logger('${libraryName}.RESTCalendarStore');
 
   WebService _backend = null;
-  final Uri _contactHost;
-  final Uri _receptionHost;
+  final Uri _calendarHost;
   String _token = '';
 
-  RESTCalendarStore(Uri this._contactHost, this._receptionHost,
-      String this._token, this._backend);
+  RESTCalendarStore(Uri this._calendarHost, String this._token, this._backend);
 
-  Future<Iterable<Model.CalendarEntry>> list(Model.Owner owner) {
-    Uri url = owner.contactId == Model.Contact.noID
-        ? Resource.Calendar.listReception(_receptionHost, owner.receptionId)
-        : Resource.Calendar.listContact(
-            _contactHost, owner.contactId, owner.receptionId);
+  Future<Iterable<Model.CalendarEntry>> list(Model.Owner owner,
+      {bool deleted: false}) {
+    Uri url = Resource.Calendar.list(_calendarHost, owner, deleted: deleted);
 
     url = appendToken(url, this._token);
 
     Iterable<Model.CalendarEntry> convertMaps(Iterable<Map> maps) =>
         maps.map(Model.CalendarEntry.decode);
 
-    return this._backend.get(url)
-      .then(JSON.decode)
-      .then(convertMaps);
-    }
-
-  Future<Model.CalendarEntry> get(int entryId) {
-    Uri url = Resource.Calendar.single(_contactHost, entryId);
-    url = appendToken(url, this._token);
-
-    return this._backend.get(url)
-      .then(JSON.decode)
-      .then(Model.CalendarEntry.decode);
+    return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }
 
-  Future<Model.CalendarEntry> create(Model.CalendarEntry entry) {
-    Uri url = entry.owner.contactId == Model.Contact.noID
-        ? Resource.Calendar.listReception(_receptionHost, entry.receptionID)
-        : Resource.Calendar.listContact(
-            _contactHost, entry.contactID, entry.receptionID);
-
+  Future<Model.CalendarEntry> get(int entryId, {bool deleted: false}) {
+    Uri url =
+        Resource.Calendar.single(_calendarHost, entryId, deleted: deleted);
     url = appendToken(url, this._token);
 
-    return this._backend.post(url, JSON.encode(entry))
-      .then(JSON.decode)
-      .then(Model.CalendarEntry.decode);
+    return this
+        ._backend
+        .get(url)
+        .then(JSON.decode)
+        .then(Model.CalendarEntry.decode);
   }
 
-  Future<Model.CalendarEntry> update(Model.CalendarEntry entry) {
-    Uri url = entry.owner.contactId == Model.Contact.noID
-        ? Resource.Calendar.singleReception(_receptionHost, entry.ID, entry.receptionID)
-        : Resource.Calendar.singleContact(_contactHost, entry.ID, entry.receptionID, entry.contactID);
+  /**
+   *
+   */
+  Future<Model.CalendarEntry> create(Model.CalendarEntry entry, [int userId]) {
+    Uri url = Resource.Calendar.base(_calendarHost);
     url = appendToken(url, this._token);
 
-    return this._backend.put(url, JSON.encode(entry))
-      .then(JSON.decode)
-      .then(Model.CalendarEntry.decode);
+    return this
+        ._backend
+        .post(url, JSON.encode(entry))
+        .then(JSON.decode)
+        .then(Model.CalendarEntry.decode);
   }
 
+  /**
+   *
+   */
+  Future<Model.CalendarEntry> update(Model.CalendarEntry entry, [int userId]) {
+    Uri url = Resource.Calendar.single(_calendarHost, entry.ID);
+    url = appendToken(url, this._token);
+
+    return this
+        ._backend
+        .put(url, JSON.encode(entry))
+        .then(JSON.decode)
+        .then(Model.CalendarEntry.decode);
+  }
+
+  /**
+   *
+   */
   Future removeEntry(Model.CalendarEntry entry) {
-    Uri url = entry.owner.contactId == Model.Contact.noID
-        ? Resource.Calendar.singleReception(_receptionHost, entry.ID, entry.receptionID)
-        : Resource.Calendar.singleContact(_contactHost, entry.ID, entry.receptionID, entry.contactID);
+    Uri url = Resource.Calendar.single(_calendarHost, entry.ID);
     url = appendToken(url, this._token);
 
     return this._backend.delete(url);
   }
 
-  Future remove(int entryId) {
-    Uri url =  Resource.Calendar.single(_contactHost, entryId);
+  /**
+   *
+   */
+  Future remove(int entryId, [int userId]) {
+    Uri url = Resource.Calendar.single(_calendarHost, entryId);
     url = appendToken(url, this._token);
 
     return this._backend.delete(url);
   }
 
+  /**
+   *
+   */
   Future<Iterable<Model.CalendarEntryChange>> changes(entryId) {
-    Uri url = Resource.Calendar.changeList(_contactHost, entryId);
+    Uri url = Resource.Calendar.changeList(_calendarHost, entryId);
     url = appendToken(url, this._token);
 
     Iterable<Model.CalendarEntryChange> convertMaps(Iterable<Map> maps) =>
         maps.map(Model.CalendarEntryChange.decode);
 
-    return this._backend.get(url)
-      .then(JSON.decode)
-      .then(convertMaps);
+    return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }
 
+  /**
+   *
+   */
   Future<Model.CalendarEntryChange> latestChange(entryId) {
-    Uri url = Resource.Calendar.latestChange(_contactHost, entryId);
+    Uri url = Resource.Calendar.latestChange(_calendarHost, entryId);
 
     url = appendToken(url, this._token);
 
-    return this._backend.get(url)
-      .then(JSON.decode)
-      .then(Model.CalendarEntryChange.decode);
+    return this
+        ._backend
+        .get(url)
+        .then(JSON.decode)
+        .then(Model.CalendarEntryChange.decode);
+  }
+
+  /**
+   *
+   */
+  Future purge(int entryId) {
+    Uri url = Resource.Calendar.purge(_calendarHost, entryId);
+    url = appendToken(url, this._token);
+
+    return this._backend.delete(url);
   }
 }

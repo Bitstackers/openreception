@@ -15,38 +15,69 @@ part of openreception.test;
 
 void testModelCalendarEntryChange() {
   group('Model.CalendarEntryChange', () {
-    test('serializationDeserialization',
-        ModelCalendarEntryChange.serializationDeserialization);
+    test('deserialization',
+         ModelCalendarEntryChange.deserialization);
     test('serialization', ModelCalendarEntryChange.serialization);
     test('buildObject', ModelCalendarEntryChange.buildObject);
   });
 }
 
 abstract class ModelCalendarEntryChange {
-  static void serializationDeserialization() => expect(
-      new Model.CalendarEntryChange.fromMap(
-          Test_Data.calendarEntryChange).asMap,
-      equals(Test_Data.calendarEntryChange));
+
+  /**
+   *
+   */
+  static void deserialization() {
+    Model.CalendarEntryChange built = buildObject();
+    Model.CalendarEntryChange deserialized =
+        new Model.CalendarEntryChange.fromMap(JSON.decode(JSON.encode(built)));
+
+    expect(built.toJson(), equals(deserialized.toJson()));
+
+    expect(built.lastEntry.ID, equals(deserialized.lastEntry.ID));
+    expect(built.lastEntry.owner, equals(deserialized.lastEntry.owner));
+    expect(built.lastEntry.content, equals(deserialized.lastEntry.content));
+    expect(built.lastEntry.start, equals(deserialized.lastEntry.start));
+    expect(built.lastEntry.stop, equals(deserialized.lastEntry.stop));
+
+    expect(built.userID, equals(deserialized.userID));
+    expect(built.changedAt.isAtSameMomentAs(deserialized.changedAt), isTrue);
+    expect(built.username, equals(deserialized.username));
+
+
+  }
 
   /**
    * Merely asserts that no exceptions arise.
    */
-  static void serialization() => expect(() => JSON.encode(
-          new Model.CalendarEntryChange.fromMap(Test_Data.calendarEntryChange)),
-      returnsNormally);
+  static void serialization()  {
+    Model.CalendarEntryChange builtObject = buildObject();
+    String serializedObject = JSON.encode(builtObject);
 
-  static void buildObject() {
+    expect(serializedObject, isNotNull);
+    expect(serializedObject, isNotEmpty);
+  }
+
+  static Model.CalendarEntryChange buildObject() {
     DateTime changedAt = new DateTime.now();
     int changedBy = 2;
     String changedByName = 'That guy';
+    Model.CalendarEntry lastEntry = ModelCalendarEntry.buildObject();
 
-    Model.CalendarEntryChange testChange = new Model.CalendarEntryChange()
+
+    Model.CalendarEntryChange builtObject = new Model.CalendarEntryChange()
       ..changedAt = changedAt
       ..userID = changedBy
-      ..username = changedByName;
+      ..username = changedByName
+      ..lastEntry = lastEntry;
 
-    expect(testChange.userID, equals(changedBy));
-    expect(testChange.changedAt, equals(changedAt));
-    expect(testChange.username, equals(changedByName));
+    builtObject.lastEntry;
+
+    expect(builtObject.lastEntry, equals(lastEntry));
+    expect(builtObject.userID, equals(changedBy));
+    expect(builtObject.changedAt, equals(changedAt));
+    expect(builtObject.username, equals(changedByName));
+
+    return builtObject;
   }
 }

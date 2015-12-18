@@ -16,8 +16,6 @@
  */
 part of openreception.database;
 
-
-
 /**
  * Convert a database row into a [Reception].
  */
@@ -27,9 +25,8 @@ Model.Reception _rowToReception(var row) => new Model.Reception.empty()
   ..dialplan = row.dialplan
   ..organizationId = row.organization_id
   ..enabled = row.enabled
-  ..extraData = row.extradatauri.isNotEmpty
-      ? Uri.parse(row.extradatauri)
-      : Uri.parse('.')
+  ..extraData =
+      row.extradatauri.isNotEmpty ? Uri.parse(row.extradatauri) : Uri.parse('.')
   ..lastChecked = row.last_check
   ..attributes = row.attributes;
 
@@ -45,12 +42,11 @@ Model.BaseContact _rowToBaseContact(var row) => new Model.BaseContact.empty()
 /**
  * Convert a database row into an [Organization].
  */
-Model.Organization _rowToOrganization(var row) =>
-  new Model.Organization.empty()
-    ..billingType = row.billing_type
-    ..flag = row.flag
-    ..id = row.id
-    ..fullName = row.full_name;
+Model.Organization _rowToOrganization(var row) => new Model.Organization.empty()
+  ..billingType = row.billing_type
+  ..flag = row.flag
+  ..id = row.id
+  ..fullName = row.full_name;
 
 /**
  * Convert a database row into an [User].
@@ -62,12 +58,11 @@ Model.User _rowToUser(var row) => new Model.User.empty()
   ..address = row.send_from
   ..peer = row.extension
   ..groups = row.groups.isNotEmpty
-    ? row.groups.map (Model.UserGroup.decode).toList()
-    : []
+      ? row.groups.map(Model.UserGroup.decode).toList()
+      : []
   ..identities = row.identities.isNotEmpty
-    ? row.identities.map (Model.UserIdentity.decode).toList()
-    : [];
-
+      ? row.identities.map(Model.UserIdentity.decode).toList()
+      : [];
 
 /**
  * Convert a database row into an [Message].
@@ -77,8 +72,8 @@ Model.Message _rowToMessage(var row) {
     ..ID = row.id
     ..body = row.message
     ..callId = row.call_id
-    ..recipients.addAll(
-        (row.recipients as Iterable).map(Model.MessageRecipient.decode))
+    ..recipients
+        .addAll((row.recipients as Iterable).map(Model.MessageRecipient.decode))
     ..context = (new Model.MessageContext.empty()
       ..contactID = row.context_contact_id
       ..contactName = row.context_contact_name
@@ -103,35 +98,29 @@ Model.Message _rowToMessage(var row) {
  * FIXME: Fix the format of the distribution list. It is utterly broken, and
  * the SQL query is hell.
  */
-Model.Contact _rowToContact (var row) {
+Model.Contact _rowToContact(var row) {
   var distributionList = new Model.DistributionList.empty();
 
   Model.Role.RECIPIENT_ROLES.forEach((String role) {
-     Iterable nextVal = row.distribution_list[role] == null
-       ? []
-       : row.distribution_list[role];
+    Iterable nextVal =
+        row.distribution_list[role] == null ? [] : row.distribution_list[role];
 
-     nextVal.forEach((Map dlistMap) {
-                      distributionList.add(
-
-                          new Model.DistributionListEntry.empty()
-                      ..contactID = dlistMap['contact_id']
-                      ..contactName = dlistMap['contact_name']
-                      ..receptionID = dlistMap['reception_id']
-                      ..receptionName = dlistMap['reception_name']
-                      ..role = role);
-
-                  });
+    nextVal.forEach((Map dlistMap) {
+      distributionList.add(new Model.DistributionListEntry.empty()
+        ..contactID = dlistMap['contact_id']
+        ..contactName = dlistMap['contact_name']
+        ..receptionID = dlistMap['reception_id']
+        ..receptionName = dlistMap['reception_name']
+        ..role = role);
     });
+  });
 
   Iterable<Model.MessageEndpoint> endpointIterable =
-    row.endpoints.map((Map map) =>
-      new Model.MessageEndpoint.fromMap(map));
+      row.endpoints.map((Map map) => new Model.MessageEndpoint.fromMap(map));
 
   Iterable<Model.PhoneNumber> phoneIterable = row.phone.isEmpty
-     ? []
-     : row.phone.map ((Map map) =>
-         new Model.PhoneNumber.fromMap(map));
+      ? []
+      : row.phone.map((Map map) => new Model.PhoneNumber.fromMap(map));
 
   List backupContacts = [];
   List emailaddresses = [];
@@ -146,69 +135,66 @@ Model.Contact _rowToContact (var row) {
   List responsibilities = [];
   List messagePrerequisites = [];
 
-  if(row.attributes.isNotEmpty) {
-    if (row.attributes.containsKey (Key.backup)) {
+  if (row.attributes.isNotEmpty) {
+    if (row.attributes.containsKey(Key.backup)) {
       backupContacts = row.attributes[Key.backup];
     }
 
-    if (row.attributes.containsKey (Key.emailaddresses)) {
+    if (row.attributes.containsKey(Key.emailaddresses)) {
       emailaddresses = row.attributes[Key.emailaddresses];
     }
 
-    if(row.attributes.containsKey (Key.handling)) {
+    if (row.attributes.containsKey(Key.handling)) {
       handling = row.attributes[Key.handling];
     }
 
     // Tags
-    if (row.attributes.containsKey (Key.tags)) {
+    if (row.attributes.containsKey(Key.tags)) {
       tags = row.attributes[Key.tags];
     }
 
     // Work hours
-    if (row.attributes.containsKey (Key.workhours)) {
+    if (row.attributes.containsKey(Key.workhours)) {
       workhours = row.attributes[Key.workhours];
     }
 
     // Department
-    if (row.attributes.containsKey (Key.departments)) {
+    if (row.attributes.containsKey(Key.departments)) {
       departments = row.attributes[Key.departments];
     }
 
     // Info's
-    if (row.attributes.containsKey (Key.infos)) {
+    if (row.attributes.containsKey(Key.infos)) {
       infos = row.attributes[Key.infos];
     }
 
     // Titles
-    if (row.attributes.containsKey (Key.titles)) {
+    if (row.attributes.containsKey(Key.titles)) {
       titles = row.attributes[Key.titles];
     }
 
     // Relations
-    if (row.attributes.containsKey (Key.relations)) {
+    if (row.attributes.containsKey(Key.relations)) {
       var relationValue = row.attributes[Key.relations];
 
       if (relationValue is String) {
         relations = [row.attributes[Key.relations]];
-      }
-      else if (relationValue is Iterable) {
+      } else if (relationValue is Iterable) {
         relations = row.attributes[Key.relations];
-      }
-      else {
-        throw new StateError ('Bad relations value: $relationValue');
+      } else {
+        throw new StateError('Bad relations value: $relationValue');
       }
     }
 
     // Responsiblities
-    if(row.attributes.containsKey (Key.responsibilities)) {
+    if (row.attributes.containsKey(Key.responsibilities)) {
       responsibilities = row.attributes[Key.responsibilities];
     }
 
     // messagePrerequisites
-    if (row.attributes.containsKey (Key.messagePrerequisites)) {
+    if (row.attributes.containsKey(Key.messagePrerequisites)) {
       messagePrerequisites = row.attributes[Key.messagePrerequisites];
     }
-
   }
 
   Model.Contact contact = new Model.Contact.empty()
@@ -236,15 +222,13 @@ Model.Contact _rowToContact (var row) {
   return contact;
 }
 
-Model.PhoneNumber _mapToPhone (Map map) {
-
-  Model.PhoneNumber p =
-    new Model.PhoneNumber.empty()
-      ..billing_type = map['billing_type']
-      ..description = map['description']
-      ..value = map['value']
-      ..type = map['kind'];
-  if(map['tag'] != null) {
+Model.PhoneNumber _mapToPhone(Map map) {
+  Model.PhoneNumber p = new Model.PhoneNumber.empty()
+    ..billing_type = map['billing_type']
+    ..description = map['description']
+    ..value = map['value']
+    ..type = map['kind'];
+  if (map['tag'] != null) {
     p.tags.add(map['tag']);
   }
 
@@ -256,36 +240,22 @@ Model.PhoneNumber _mapToPhone (Map map) {
  */
 Model.CalendarEntryChange _rowToCalendarEventChange(var row) =>
     new Model.CalendarEntryChange()
-    ..userID = row.user_id
-    ..changedAt = row.updated_at
-    ..username = row.name;
+      ..userID = row.user_id
+      ..lastEntry = Model.CalendarEntry.decode(row.last_entry)
+      ..changedAt = row.updated_at
+      ..username = row.name;
 
 /**
  * Creates an owner-less [CalendarEntry] from a database row.
  */
 Model.CalendarEntry _rowToCalendarEntry(var row) =>
     new Model.CalendarEntry.empty()
-  ..ID = row.id
-  ..beginsAt = row.start
-  ..until = row.stop
-  ..content = row.message;
-
-/**
- * Creates [CalendarEntry] owned by a [Reception] from a database row.
- */
-Model.CalendarEntry _rowToReceptionCalendarEntry(var row) =>
-    new Model.CalendarEntry.reception(row.reception_id)
-  ..ID = row.id
-  ..beginsAt = row.start
-  ..until = row.stop
-  ..content = row.message;
-
-/**
- * Creates [CalendarEntry] owned by a [Contact] from a database row.
- */
-Model.CalendarEntry _rowToContactCalendarEntry(var row) =>
-    new Model.CalendarEntry.contact(row.contact_id, row.reception_id)
-  ..ID = row.id
-  ..beginsAt = row.start
-  ..until = row.stop
-  ..content = row.message;
+      ..ID = row.id
+      ..owner = row.reception_id != null
+          ? new Model.OwningReception(row.reception_id)
+          : row.contact_id != null
+              ? new Model.OwningContact(row.contact_id)
+              : throw new ArgumentError('Undefined owner type row$row')
+      ..beginsAt = row.start
+      ..until = row.stop
+      ..content = row.message;

@@ -12,20 +12,62 @@
 */
 part of openreception.model;
 
+
 class Owner {
+
+  static final Owner none = const Owner();
+
+  /**
+   *
+   */
+  factory Owner.parse(String buffer) {
+    final key = buffer.split(':').first;
+    if(key == OwningReception.type) {
+      return new OwningReception(int.parse(buffer.split(':').last));
+    }
+    else if(key == OwningContact.type) {
+      return new OwningContact(int.parse(buffer.split(':').last));
+    }
+    else if(key == 'none') {
+      return none;
+    }
+  }
+
+  const Owner();
+
+  /**
+   *
+   */
+  @override
+  operator ==(Owner other);
+
+  /**
+   *
+   */
+  String toJson() => 'none:';
+}
+
+class OwningReception extends Owner {
   final int receptionId;
-  final int contactId;
 
-  const Owner.none()
-      : contactId = Contact.noID,
-        receptionId = Reception.noID;
+  static final String type = 'r';
 
-  Owner.contact(this.contactId, this.receptionId);
-
-  Owner.reception(this.receptionId) : contactId = Contact.noID;
+  const OwningReception(this.receptionId);
 
   @override
-  operator ==(Owner other) =>
-    this.contactId == other.contactId &&
-    this.receptionId == other.receptionId;
+  operator ==(OwningReception other) => this.receptionId == other.receptionId;
+
+  String toJson() => '$type:$receptionId';
+}
+
+class OwningContact extends Owner {
+  final int contactId;
+  static final String type = 'c';
+
+  const OwningContact(this.contactId);
+
+  @override
+  operator ==(OwningContact other) => this.contactId == other.contactId;
+
+  String toJson() => '$type:$contactId';
 }

@@ -13,14 +13,51 @@
 
 part of openreception.storage;
 
+/**
+ *
+ */
 abstract class Calendar {
-  Future<Iterable<Model.CalendarEntry>> list(Model.Owner owner);
+  /**
+   *
+   */
+  Future<Iterable<Model.CalendarEntryChange>> changes(entryId);
 
-  Future<Model.CalendarEntry> get(int entryId);
+  /**
+   *
+   */
+  Future<Model.CalendarEntry> create(Model.CalendarEntry entry, int userId);
 
-  Future remove (int entryId);
+  /**
+   *
+   */
+  Future<Model.CalendarEntry> get(int entryId, {bool deleted: false});
 
-  Future<Iterable<Model.CalendarEntryChange>> changes(entryID);
-
+  /**
+   *
+   */
   Future<Model.CalendarEntryChange> latestChange(entryID);
+
+  /**
+   *
+   */
+  Future<Iterable<Model.CalendarEntry>> list(Model.Owner owner,
+      {bool deleted: false});
+
+  /**
+   * Completely wipes the [Model.CalendarEntry] associated with [entryId]
+   * from the database.
+   */
+  Future purge(int entryId);
+
+  /**
+   * Trashes the [Model.CalendarEntry] associated with [entryId] in the
+   * database, but keeps the object (in a hidden state) in the database.
+   * The action is logged to be performed by user with ID [userId].
+   */
+  Future remove(int entryId, int userId);
+
+  /**
+   *
+   */
+  Future<Model.CalendarEntry> update(Model.CalendarEntry entry, int userId);
 }
