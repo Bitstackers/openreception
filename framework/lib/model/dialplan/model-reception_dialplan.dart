@@ -20,7 +20,6 @@ Iterable<Playback> playbackActions(ReceptionDialplan rdp) =>
  *
  */
 class ReceptionDialplan {
-  Logger _log = new Logger('$libaryName.ReceptionDialplan');
 
   String extension = 'empty';
 
