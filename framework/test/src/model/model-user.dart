@@ -20,20 +20,10 @@ testModelUser() {
     test('deserialization', ModelUser.deserialization);
 
     test('buildObject', ModelUser.buildObject);
-
-    test('decodeMap', ModelUser.decodeMap);
   });
 }
 
 abstract class ModelUser {
-
-  static void decodeMap() {
-    Model.User decodedObject = new Model.User.fromMap (Test_Data.userMap);
-
-    expect(decodedObject, isNotNull);
-    expect(decodedObject.identities, isNotEmpty);
-    expect(decodedObject.groups, isNotEmpty);
-  }
 
   static void serialization() {
     Model.User builtObject = buildObject();
