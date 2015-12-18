@@ -13,7 +13,6 @@
 
 library openreception.model.dialplan;
 
-import 'package:logging/logging.dart';
 import 'keys.dart' as Key;
 import 'parsing_utils.dart';
 
