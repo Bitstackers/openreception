@@ -288,10 +288,15 @@ List<String> _actionToXmlDialplan(model.Action action) {
     ]);
   } else if (action is model.Voicemail) {
     if (action.note.isNotEmpty) returnValue.add(_noteTemplate(action.note));
-    returnValue.add(
-        '<action application="voicemail" data="default \$\${domain} ${action.vmBox}"/>');
+    returnValue.addAll([
+      '<action application="set" data="email_date_header=\${strftime(%a, %d %b %Y %H:%M:%S %z)}"/>',
+      '<action application="voicemail" data="default \$\${domain} ${action.vmBox}"/>'
+    ]);
   } else if (action is model.Ivr) {
-    returnValue.add('<action application="ivr" data="${action.menuName}"/>');
+    returnValue.addAll([
+      '<action application="set" data="email_date_header=\${strftime(%a, %d %b %Y %H:%M:%S %z)}"/>',
+      '<action application="ivr" data="${action.menuName}"/>'
+    ]);
   } else {
     throw new StateError('Unsupported action type: ${action.runtimeType}');
   }
