@@ -66,17 +66,22 @@ List<String> _openingHourToXmlDialplan(String extension, model.OpeningHour oh,
  * Generate A fallback extension.
  */
 List<String> _fallbackToDialplan(
-        String extension, Iterable<model.Action> actions) =>
-    [
-      '',
-      _comment('Default fallback actions for $extension'),
-      '<extension name="${extension}-closed">',
-      '  <condition>',
-    ]
-      ..addAll(actions.map(_actionToXmlDialplan).fold(
-          [], (combined, current) => combined..addAll(current.map(_indent))))
-      ..add('  </condition>')
-      ..add('</extension>');
+    String extension, Iterable<model.Action> actions) {
+  if (actions.last is model.Playback) {
+    actions = new List.generate(10, (_) => actions.last);
+  }
+  return [
+    '',
+    _comment('Default fallback actions for $extension'),
+    '<extension name="${extension}-closed">',
+    '  <condition>',
+  ]
+    ..addAll(actions.map(_actionToXmlDialplan).fold(
+        [], (combined, current) => combined..addAll(current.map(_indent))))
+    ..add('    <action application="hangup"/>')
+    ..add('  </condition>')
+    ..add('</extension>');
+}
 
 /**
  *
@@ -163,9 +168,7 @@ String _dialoutTemplate(String extension) => _isInternalExtension(extension)
 /**
  *
  */
-String _liveCheckEmail(String email) => goLive
-        ? email
-        : testEmail;
+String _liveCheckEmail(String email) => goLive ? email : testEmail;
 
 /**
 * Template for dialplan note.
