@@ -76,6 +76,7 @@ List<String> _fallbackToDialplan(
     '<extension name="${extension}-closed">',
     '  <condition>',
   ]
+    ..add('    <action application="answer"/>')
     ..addAll(actions.map(_actionToXmlDialplan).fold(
         [], (combined, current) => combined..addAll(current.map(_indent))))
     ..add('    <action application="hangup"/>')
@@ -105,6 +106,7 @@ Iterable<String> _namedExtensionToDialPlan(model.NamedExtension extension) => [
       '<extension name="${extension.name}" continue="true">',
       '  <condition field="destination_number" expression="^${extension.name}\$" break="on-false">',
     ]
+      ..add('    <action application="answer"/>')
       ..addAll(extension.actions.map(_actionToXmlDialplan).fold(
           [],
           (combined, current) =>
