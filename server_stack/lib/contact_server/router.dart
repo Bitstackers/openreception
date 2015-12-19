@@ -63,7 +63,7 @@ void connectAuthService() {
 void connectNotificationService() {
   _notification = new Service.NotificationService(
       config.notificationServer.externalUri,
-      config.userServer.serverToken,
+      config.contactServer.serverToken,
       new Service_IO.Client());
 }
 
