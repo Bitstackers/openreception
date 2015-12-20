@@ -1208,7 +1208,7 @@ INSERT INTO calendar_events (id, start, stop, message) VALUES
 (9, '2014-3-25 16:00:00', '2014-3-25 20:00:00', 'Fire drill'),
 (10, '2014-3-25 16:00:00', '2014-3-25 20:00:00', 'Animal fair');
 
-INSERT INTO calendar_entry_changes (id, entry_id, user_id) VALUES
+INSERT INTO calendar_entry_changes (id, entry_id, last_entry, user_id) VALUES
 (1,1,'{}',3),
 (2,2,'{}',2),
 (3,3,'{}',1),
