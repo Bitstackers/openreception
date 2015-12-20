@@ -174,10 +174,12 @@ CREATE TABLE message_queue_history (
 
 CREATE TABLE calendar_events (
    id      INTEGER     NOT NULL PRIMARY KEY, --  AUTOINCREMENT
+   deleted BOOLEAN     NOT NULL DEFAULT false,
    start   TIMESTAMPTZ NOT NULL,
    stop    TIMESTAMPTZ NOT NULL,
    message TEXT        NOT NULL
 );
+CREATE INDEX ON calendar_events(deleted);
 
 CREATE TABLE calendar_entry_changes (
    id         INTEGER     NOT NULL PRIMARY KEY, --  AUTOINCREMENT
