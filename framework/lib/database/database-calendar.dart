@@ -95,7 +95,7 @@ WITH new_event AS(
 ),
 entry_change AS (
   INSERT INTO calendar_entry_changes (user_id, last_entry, entry_id)
-    SELECT @userID, '{}', event_id
+    SELECT @userID, @emptyEntry, event_id
     FROM new_event
     RETURNING entry_id as event_id
 )
@@ -114,7 +114,8 @@ RETURNING event_id
       'start': entry.start,
       'end': entry.stop,
       'userID': userId,
-      'content': entry.content
+      'content': entry.content,
+      'emptyEntry' : new Model.CalendarEntry.empty().toJson()
     };
 
     return _connection
