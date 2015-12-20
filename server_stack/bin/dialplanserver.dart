@@ -17,14 +17,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
-
 import 'package:logging/logging.dart';
+
 import '../lib/configuration.dart';
 import '../lib/dialplan_server/router.dart' as router;
-
-Logger log = new Logger ('DialplanServer');
-ArgResults parsedArgs;
-ArgParser  parser = new ArgParser();
 
 Future main(List<String> args) {
   ///Init logging.
@@ -48,5 +44,5 @@ Future main(List<String> args) {
 
   return router
       .start(port: int.parse(parsedArgs['httpport']))
-      .catchError(log.shout);
+      .catchError((e,s) => log.shout('Failed to start router: $e $s'));
 }
