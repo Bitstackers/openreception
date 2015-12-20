@@ -39,6 +39,10 @@ void main(List<String> arguments) {
       'path': 'bin/authserver.dart',
       'args': ['--servertokendir', '$serverTokenDirAbsolutPath']
     },
+    'CalendarServer': {
+      'path': 'bin/calendarserver.dart',
+      'args': []
+    },
     'CallFlow': {
       'path': 'bin/callflowcontrol.dart',
       'args': []
