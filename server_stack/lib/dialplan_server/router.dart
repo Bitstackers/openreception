@@ -103,6 +103,8 @@ Future<IO.HttpServer> start(
     ..get('/receptiondialplan', receptionDialplanHandler.list)
     ..get('/receptiondialplan/{extension}', receptionDialplanHandler.get)
     ..put('/receptiondialplan/{extension}', receptionDialplanHandler.update)
+    ..post('/receptiondialplan/reloadConfig',
+        receptionDialplanHandler.reloadConfig)
     ..delete('/receptiondialplan/{extension}', receptionDialplanHandler.remove)
     ..post('/receptiondialplan', receptionDialplanHandler.create)
     ..post('/receptiondialplan/{extension}/analyze',
@@ -122,3 +124,4 @@ Future<IO.HttpServer> start(
 
   return shelf_io.serve(handler, hostname, port);
 }
+
