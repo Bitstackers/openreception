@@ -30,9 +30,9 @@ ArgParser  parser = new ArgParser();
  * The OR-Stack contact server. Provides a REST interface for retrieving and
  * manipulating contacts.
  */
-Future main(List<String> args) async {
-
-  ///Init logging. Inherit standard values.
+Future main(List<String> args) {
+  ///Init logging.
+  final Logger log = new Logger('contact_server');
   Logger.root.level = config.contactServer.log.level;
   Logger.root.onRecord.listen(config.contactServer.log.onRecord);
 
@@ -40,7 +40,6 @@ Future main(List<String> args) async {
   ArgParser parser = new ArgParser()
     ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
     ..addOption('httpport',
-        abbr: 'p',
         defaultsTo: config.contactServer.httpPort.toString(),
         help: 'The port the HTTP server listens on.');
 
@@ -51,13 +50,7 @@ Future main(List<String> args) async {
     exit(1);
   }
 
-  router.connectAuthService();
-  router.connectNotificationService();
-
-  await router
+  return router
       .start(port: int.parse(parsedArgs['httpport']))
-      .catchError((error, stackTrace) {
-    stderr.write('Setup failed! $error $stackTrace');
-  });
-
+      .catchError((e,s) => log.shout('Failed to start router: $e $s'));
 }
