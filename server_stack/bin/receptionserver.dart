@@ -14,61 +14,35 @@
 library openreception.reception_server;
 
 import 'dart:io';
+import 'dart:async';
 
 import 'package:args/args.dart';
-import 'package:path/path.dart';
 import 'package:logging/logging.dart';
 
 import '../lib/configuration.dart';
-import '../lib/reception_server/database.dart';
 import '../lib/reception_server/router.dart' as router;
 
-Logger log = new Logger ('ReceptionServer');
-ArgResults    parsedArgs;
-ArgParser     parser = new ArgParser();
-
-void main(List<String> args) {
-  ///Init logging. Inherit standard values.
+Future main(List<String> args) {
+  ///Init logging.
+  final Logger log = new Logger('reception_server');
   Logger.root.level = config.receptionServer.log.level;
   Logger.root.onRecord.listen(config.receptionServer.log.onRecord);
 
-  try {
-    Directory.current = dirname(Platform.script.toFilePath());
+  ///Handle argument parsing.
+  ArgParser parser = new ArgParser()
+    ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
+    ..addOption('httpport',
+        defaultsTo: config.receptionServer.httpPort.toString(),
+        help: 'The port the HTTP server listens on.');
 
-    registerAndParseCommandlineArguments(args);
+  ArgResults parsedArgs = parser.parse(args);
 
-    if(showHelp()) {
-      print(parser.usage);
-    } else {
-        router.startDatabase();
-        router.connectAuthService();
-        router.connectNotificationService();
-        startDatabase()
-        .then((_) => router.start(port : config.receptionServer.httpPort))
-        .catchError(log.shout);
-    }
-  } catch(error, stackTrace) {
-    log.shout(error, stackTrace);
+  if (parsedArgs['help']) {
+    print(parser.usage);
+    exit(1);
   }
+
+  return router
+      .start(port: int.parse(parsedArgs['httpport']))
+      .catchError((e,s) => log.shout('Failed to start router: $e $s'));
 }
-
-void registerAndParseCommandlineArguments(List<String> arguments) {
-  parser
-    ..addFlag  ('help', abbr: 'h', help: 'Output this help')
-    ..addOption('authurl',         help: 'The http address for the authentication service. Example http://auth.example.com')
-    ..addOption('configfile',      help: 'The JSON configuration file. Defaults to config.json')
-    ..addOption('httpport',        help: 'The port the HTTP server listens on.  Defaults to 8080')
-    ..addOption('dbuser',          help: 'The database user')
-    ..addOption('dbpassword',      help: 'The database password')
-    ..addOption('dbhost',          help: 'The database host. Defaults to localhost')
-    ..addOption('dbport',          help: 'The database port. Defaults to 5432')
-    ..addOption('dbname',          help: 'The database name')
-    ..addOption('cache',           help: 'The location for cache')
-    ..addFlag('syslog',            help: 'Enable logging by syslog', defaultsTo: false)
-    ..addOption('sysloghost',      help: 'The syslog host. Defaults to localhost')
-    ..addOption('servertoken', help: 'servertoken');
-
-  parsedArgs = parser.parse(arguments);
-}
-
-bool showHelp() => parsedArgs['help'];
