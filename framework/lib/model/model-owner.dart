@@ -44,7 +44,12 @@ class Owner {
   /**
    *
    */
-  String toJson() => 'none:';
+  String toJson() => toString();
+
+  /**
+   *
+   */
+  String toString() => 'none:';
 }
 
 class OwningReception extends Owner {
@@ -57,7 +62,15 @@ class OwningReception extends Owner {
   @override
   operator ==(OwningReception other) => this.receptionId == other.receptionId;
 
-  String toJson() => '$type:$receptionId';
+  /**
+   *
+   */
+  String toJson() => toString();
+
+  /**
+   *
+   */
+  String toString() => '$type:$receptionId';
 }
 
 class OwningContact extends Owner {
@@ -69,5 +82,13 @@ class OwningContact extends Owner {
   @override
   operator ==(OwningContact other) => this.contactId == other.contactId;
 
-  String toJson() => '$type:$contactId';
+  /**
+   *
+   */
+  String toJson() => toString();
+
+  /**
+   *
+   */
+  String toString() => '$type:$contactId';
 }
