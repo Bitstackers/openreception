@@ -1,6 +1,6 @@
 part of or_test_fw;
 
-abstract class IvrStore {
+abstract class StorageIvr {
   /**
    *
    */

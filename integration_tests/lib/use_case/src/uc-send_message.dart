@@ -40,19 +40,19 @@ abstract class SendMessage {
     log.finest("Cleaning up after test...");
   }
 
-  static Future Receptionist_Send_Message () {
+  static void Receptionist_Send_Message () {
     step ("Receptionist sends a message...");
 
-    Model.Message message = new Model.Message.stub(Model.Message.noID);
-    return contactStore.getByReception(4, 1).then((Model.Contact contact) {
-      message.recipients = contact.distributionList;
-      message.body = 'Sent from test framework.';
-      message.sender = receptionist.user;
-   }).then((_) {
-      return messageStore.enqueue(message);
-   }).then((_) {
-      step ("Receptionist has sent message.");
-   });
+//    Model.Message message = new Model.Message.stub(Model.Message.noID);
+//    return contactStore.getByReception(4, 1).then((Model.Contact contact) {
+//      message.recipients = contact.distributionList;
+//      message.body = 'Sent from test framework.';
+//      message.sender = receptionist.user;
+//   }).then((_) {
+//      return messageStore.enqueue(message);
+//   }).then((_) {
+//      step ("Receptionist has sent message.");
+//   });
   }
 
   static Future Callee_Checks_For_Message () {

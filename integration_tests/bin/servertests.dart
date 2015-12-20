@@ -4,13 +4,15 @@ import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
 import 'package:junitconfiguration/junitconfiguration.dart';
 
-void main() {
+void main(List<String> arguments) {
   //TODO: redirect every log entry to a file.
   Logger.root.level = Level.FINEST;
   Logger.root.onRecord.listen((LogRecord record) =>
       logMessage(record.toString()));
-  JUnitConfiguration.install();
 
+  if(!arguments.contains('--no-xml')) {
+    JUnitConfiguration.install();
+  }
   SupportTools st;
 
   /*

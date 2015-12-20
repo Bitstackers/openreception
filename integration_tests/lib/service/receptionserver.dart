@@ -46,33 +46,6 @@ runReceptionTests () {
     test ('List receptions',
         () => Reception.listReceptions(receptionStore));
 
-    test ('Calendar event listing',
-        () => Reception.existingReceptionCalendar(receptionStore));
-
-    test ('Calendar event creation',
-        () => Reception.calendarEventCreate(receptionStore));
-
-    test ('Calendar event update',
-        () => Reception.calendarEventUpdate(receptionStore));
-
-    test ('Calendar event',
-        () => Reception.calendarEventExisting(receptionStore));
-
-    test ('Calendar event (non-existing)',
-        () => Reception.calendarEventNonExisting(receptionStore));
-
-    test ('Calendar event removal',
-        () => Reception.calendarEventDelete(receptionStore));
-
-    test ('Calendar event changes (create)',
-        () => Reception.calendarEntryChangeCreate(receptionStore));
-
-    test ('Calendar event changes (update)',
-        () => Reception.calendarEntryChangeUpdate(receptionStore));
-
-    test ('Calendar event changes (delete)',
-        () => Reception.calendarEntryChangeDelete(receptionStore));
-
     test ('Reception creation',
         () => Reception.create(receptionStore));
 
@@ -111,15 +84,6 @@ runReceptionTests () {
 
       return r.teardown();
     });
-
-    test ('CalendarEntry creation (event presence)',
-        () => Reception.calendarEntryCreateEvent(receptionStore, r));
-
-    test ('CalendarEntry update (event presence)',
-        () => Reception.calendarEntryUpdateEvent(receptionStore, r));
-
-    test ('CalendarEntry creation (event presence)',
-        () => Reception.calendarEntryDeleteEvent(receptionStore, r));
 
     test ('Reception creation (event presence)',
         () => Reception.createEvent(receptionStore, r));

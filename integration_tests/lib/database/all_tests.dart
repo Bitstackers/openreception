@@ -1,12 +1,30 @@
 part of or_test_fw;
 
+/**
+ * Run all database tests.
+ */
 runDatabaseTests() {
+  _databaseUserTests();
+  _databaseReceptionTests();
+  _databaseMessageQueue();
+  _databaseMessageTests();
+  _databaseEndpointTests();
+  _databaseDistributionListTests();
+  _databaseContactTests();
+  _databaseIvrTests();
+  _databaseReceptionDialplanTests();
+  _databaseCalenderTests();
+}
 
-  group ('Database.User', () {
+
+/**
+ * Tests for user database.
+ */
+_databaseUserTests() {
+  group('Database.User', () {
     Database.User userDB;
     Database.Connection connection;
     setUp(() {
-
       return Database.Connection
           .connect(Config.dbDSN)
           .then((Database.Connection conn) {
@@ -15,54 +33,46 @@ runDatabaseTests() {
       });
     });
 
-    tearDown (() => connection.close());
+    tearDown(() => connection.close());
 
-    test ('Non-existing user',
-        () => User.nonExistingUser(userDB));
+    test('Non-existing user', () => User.nonExistingUser(userDB));
 
-    test ('Existing user',
-        () => User.existingUser(userDB));
+    test('Existing user', () => User.existingUser(userDB));
 
-    test ('Create',
-        () => User.createUser(userDB));
+    test('Create', () => User.createUser(userDB));
 
-    test ('Update',
-        () => User.updateUser(userDB));
+    test('Update', () => User.updateUser(userDB));
 
-    test ('Remove',
-        () => User.updateUser(userDB));
+    test('Remove', () => User.updateUser(userDB));
 
-    test ('List users',
-        () => User.listUsers(userDB));
+    test('List users', () => User.listUsers(userDB));
 
-    test ('Available group listing',
-        () => User.listAllGroups(userDB));
+    test('Available group listing', () => User.listAllGroups(userDB));
 
-    test ('groups (known user)',
-        () => User.listGroupsOfUser(userDB));
+    test('groups (known user)', () => User.listGroupsOfUser(userDB));
 
-    test ('groups (non-existing user)',
+    test('groups (non-existing user)',
         () => User.listGroupsOfNonExistingUser(userDB));
 
-    test ('group join',
-        () => User.joinGroup(userDB));
+    test('group join', () => User.joinGroup(userDB));
 
-    test ('group leave',
-        () => User.leaveGroup(userDB));
+    test('group leave', () => User.leaveGroup(userDB));
 
-    test ('identity add',
-        () => User.addUserIdentity(userDB));
+    test('identity add', () => User.addUserIdentity(userDB));
 
-    test ('identity remove',
-        () => User.removeUserIdentity(userDB));
+    test('identity remove', () => User.removeUserIdentity(userDB));
   });
+}
 
-  group ('Database.Reception', () {
+/**
+ * Tests for reception database.
+ */
+_databaseReceptionTests() {
+  group('Database.Reception', () {
     Database.Reception receptionStore = null;
 
     Database.Connection connection;
     setUp(() {
-
       return Database.Connection
           .connect(Config.dbDSN)
           .then((Database.Connection conn) {
@@ -71,42 +81,41 @@ runDatabaseTests() {
       });
     });
 
-    tearDown (() {
+    tearDown(() {
       return connection.close();
     });
 
-    test ('Non-existing reception',
+    test('Non-existing reception',
         () => Reception.nonExistingReception(receptionStore));
 
-    test ('Existing reception',
+    test('Existing reception',
         () => Reception.existingReception(receptionStore));
 
-    test ('List receptions',
-        () => Reception.listReceptions(receptionStore));
+    test('List receptions', () => Reception.listReceptions(receptionStore));
 
-    test ('Reception creation',
-        () => Reception.create(receptionStore));
+    test('Reception creation', () => Reception.create(receptionStore));
 
-    test ('Non-existing Reception update',
+    test('Non-existing Reception update',
         () => Reception.updateNonExisting(receptionStore));
 
-    test ('Reception invalid update',
+    test('Reception invalid update',
         () => Reception.updateInvalid(receptionStore));
 
-    test ('Reception update',
-        () => Reception.update(receptionStore));
+    test('Reception update', () => Reception.update(receptionStore));
 
-    test ('Reception removal',
-        () => Reception.remove(receptionStore));
+    test('Reception removal', () => Reception.remove(receptionStore));
   });
+}
 
-  group ('Database.MessageQueue', () {
-
+/**
+ * Message queue database tests.
+ */
+_databaseMessageQueue() {
+  group('Database.MessageQueue', () {
     Database.MessageQueue messageDB;
     Database.Connection connection;
 
     setUp(() {
-
       return Database.Connection
           .connect(Config.dbDSN)
           .then((Database.Connection conn) {
@@ -115,26 +124,28 @@ runDatabaseTests() {
       });
     });
 
-    tearDown (() {
+    tearDown(() {
       return connection.close();
     });
 
-    test ('list',
-        () => MessageQueueStore.list(messageDB));
+    test('list', () => MessageQueueStore.list(messageDB));
   });
+}
 
-  group ('Database.Message', () {
+/**
+ * Message database tests.
+ */
+_databaseMessageTests() {
+  group('Database.Message', () {
     Storage.Reception receptionStore;
     Storage.Contact contactStore;
     Transport.Client transport;
     Receptionist r;
 
-
     Database.Message messageDB;
     Database.Connection connection;
 
     setUp(() {
-
       return Database.Connection
           .connect(Config.dbDSN)
           .then((Database.Connection conn) {
@@ -143,18 +154,15 @@ runDatabaseTests() {
       });
     });
 
-    tearDown (() {
+    tearDown(() {
       return connection.close();
     });
 
-    test ('list',
-        () => MessageStore.list(messageDB));
+    test('list', () => MessageStore.list(messageDB));
 
-    test ('get',
-        () => MessageStore.get(messageDB));
+    test('get', () => MessageStore.get(messageDB));
 
     setUp(() {
-
       return Database.Connection
           .connect(Config.dbDSN)
           .then((Database.Connection conn) {
@@ -162,44 +170,45 @@ runDatabaseTests() {
         messageDB = new Database.Message(connection);
 
         transport = new Transport.Client();
-        receptionStore = new Service.RESTReceptionStore(Config.receptionStoreUri,
-              Config.serverToken, transport);
-        contactStore = new Service.RESTContactStore(Config.contactStoreUri,
-              Config.serverToken, transport);
+        receptionStore = new Service.RESTReceptionStore(
+            Config.receptionStoreUri, Config.serverToken, transport);
+        contactStore = new Service.RESTContactStore(
+            Config.contactStoreUri, Config.serverToken, transport);
         r = ReceptionistPool.instance.aquire();
 
         return r.initialize();
       });
     });
 
+    tearDown(() {
+      receptionStore = null;
+      contactStore = null;
+      transport.client.close(force: true);
+      return connection.close().then((_) => r.teardown());
+    });
 
-   tearDown (() {
-     receptionStore = null;
-     contactStore = null;
-     transport.client.close(force : true);
-     return connection.close().then((_) => r.teardown());
-
-   });
-
-    test ('create',
+    test('create',
         () => MessageStore.create(messageDB, contactStore, receptionStore, r));
 
-    test ('update',
+    test('update',
         () => MessageStore.update(messageDB, contactStore, receptionStore, r));
 
-    test ('enqueue',
+    test('enqueue',
         () => MessageStore.enqueue(messageDB, contactStore, receptionStore, r));
 
-    test ('remove',
+    test('remove',
         () => MessageStore.remove(messageDB, contactStore, receptionStore, r));
-
   });
+}
 
-  group ('Database.Endpoint', () {
+/**
+ *
+ */
+_databaseEndpointTests() {
+  group('Database.Endpoint', () {
     Database.Endpoint endpointDB;
     Database.Connection connection;
     setUp(() {
-
       return Database.Connection
           .connect(Config.dbDSN)
           .then((Database.Connection conn) {
@@ -208,30 +217,28 @@ runDatabaseTests() {
       });
     });
 
-    tearDown (() {
+    tearDown(() {
       return connection.close();
     });
 
-    test ('list',
-        () => ContactStore.endpoints(endpointDB));
+    test('list', () => ContactStore.endpoints(endpointDB));
 
-    test ('create',
-        () => ContactStore.endpointCreate(endpointDB));
+    test('create', () => ContactStore.endpointCreate(endpointDB));
 
-    test ('remove',
-        () => ContactStore.endpointRemove(endpointDB));
+    test('remove', () => ContactStore.endpointRemove(endpointDB));
 
-    test ('update',
-        () => ContactStore.endpointUpdate(endpointDB));
-
+    test('update', () => ContactStore.endpointUpdate(endpointDB));
   });
+}
 
-
-  group ('Database.DistributionList', () {
+/**
+ *
+ */
+_databaseDistributionListTests() {
+  group('Database.DistributionList', () {
     Database.DistributionList distributionListDB;
     Database.Connection connection;
     setUp(() {
-
       return Database.Connection
           .connect(Config.dbDSN)
           .then((Database.Connection conn) {
@@ -240,25 +247,28 @@ runDatabaseTests() {
       });
     });
 
-    tearDown (() {
+    tearDown(() {
       return connection.close();
     });
 
-    test ('list',
-        () => ContactStore.distributionList(distributionListDB));
+    test('list', () => ContactStore.distributionList(distributionListDB));
 
-    test ('create',
+    test('create',
         () => ContactStore.distributionRecipientAdd(distributionListDB));
 
-    test ('remove',
+    test('remove',
         () => ContactStore.distributionRecipientRemove(distributionListDB));
   });
+}
 
-  group ('Database.Contact', () {
+/**
+ *
+ */
+_databaseContactTests() {
+  group('Database.Contact', () {
     Database.Contact contactDB;
     Database.Connection connection;
     setUp(() {
-
       return Database.Connection
           .connect(Config.dbDSN)
           .then((Database.Connection conn) {
@@ -267,80 +277,153 @@ runDatabaseTests() {
       });
     });
 
-    tearDown (() {
+    tearDown(() {
       return connection.close();
     });
 
-    test ('phones',
-        () => ContactStore.phones(contactDB));
+    test('phones', () => ContactStore.phones(contactDB));
 
-    test ('listByReception',
-        () => ContactStore.listByReception(contactDB));
+    test('listByReception', () => ContactStore.listByReception(contactDB));
 
-    test ('getByReception',
-        () => ContactStore.getByReception(contactDB));
+    test('getByReception', () => ContactStore.getByReception(contactDB));
 
-    test ('organizationContacts',
+    test('organizationContacts',
         () => ContactStore.organizationContacts(contactDB));
 
-    test ('organizations',
-        () => ContactStore.organizations(contactDB));
+    test('organizations', () => ContactStore.organizations(contactDB));
 
-    test ('organizations',
-        () => ContactStore.organizations(contactDB));
+    test('organizations', () => ContactStore.organizations(contactDB));
 
-    test ('receptions',
-        () => ContactStore.receptions(contactDB));
+    test('receptions', () => ContactStore.receptions(contactDB));
 
-    test ('list',
-        () => ContactStore.list(contactDB));
+    test('list', () => ContactStore.list(contactDB));
 
-    test ('get',
-        () => ContactStore.get(contactDB));
+    test('get', () => ContactStore.get(contactDB));
 
-    test ('create',
-        () => ContactStore.create(contactDB));
+    test('create', () => ContactStore.create(contactDB));
 
-    test ('update',
-        () => ContactStore.update(contactDB));
+    test('update', () => ContactStore.update(contactDB));
 
-    test ('remove',
-        () => ContactStore.remove(contactDB));
+    test('remove', () => ContactStore.remove(contactDB));
 
+    test('addToReception', () => ContactStore.addToReception(contactDB));
 
-    test ('addToReception',
-        () => ContactStore.addToReception(contactDB));
+    test('updateInReception', () => ContactStore.updateInReception(contactDB));
 
-    test ('updateInReception',
-        () => ContactStore.updateInReception(contactDB));
-
-    test ('deleteFromReception',
+    test('deleteFromReception',
         () => ContactStore.deleteFromReception(contactDB));
-
   });
+}
 
-  group ('Database.Calendar', () {
+/**
+ *
+ */
+_databaseCalenderTests() {
+  group('Database.Calendar', () {
     Database.Calendar calendarDB;
     Database.Connection connection;
-    setUp(() {
+    Database.Contact contactDB;
+    Database.Reception receptionDB;
+    Database.User userDB;
+    Model.BaseContact contact;
+    Model.Reception reception;
+    Model.Owner owner;
+    Model.User creator;
 
-      return Database.Connection
+    setUp(() async {
+      await Database.Connection
           .connect(Config.dbDSN)
           .then((Database.Connection conn) {
         connection = conn;
         calendarDB = new Database.Calendar(connection);
+        contactDB = new Database.Contact(connection);
+        userDB = new Database.User(connection);
       });
+
+      contact = await contactDB.create(Randomizer.randomBaseContact());
+      creator = await userDB.create(Randomizer.randomUser());
+
+      owner = new Model.OwningContact(contact.id);
     });
 
-    tearDown (() {
+    tearDown(() async {
+      await contactDB.remove(contact.id);
+      await userDB.remove(creator.ID);
+
       return connection.close();
     });
 
-    test ('list',
-        () => ContactStore.existingContactCalendar(calendarDB));
-  });
+    test('get (non-existing)',
+        () => StorageCalendar.getNonExistingEntry(calendarDB));
 
-  group ('Database.Ivr', () {
+    test('create (contact owner)',
+        () => StorageCalendar.create(owner, calendarDB, creator));
+
+    test('update (contact owner)',
+        () => StorageCalendar.update(owner, calendarDB, creator));
+
+    test('get (contact owner)',
+        () => StorageCalendar.get(owner, calendarDB, creator));
+
+    test('list (contact owner)',
+        () => StorageCalendar.list(owner, calendarDB, creator));
+
+    test('remove (contact owner)',
+        () => StorageCalendar.remove(owner, calendarDB, creator));
+
+    test('purge (contact owner)',
+        () => StorageCalendar.purge(owner, calendarDB, creator));
+
+    test('change on create (contact owner)',
+        () => StorageCalendar.changeOnCreate(owner, calendarDB, creator));
+
+    setUp(() async {
+      await Database.Connection
+          .connect(Config.dbDSN)
+          .then((Database.Connection conn) {
+        connection = conn;
+        calendarDB = new Database.Calendar(connection);
+        userDB = new Database.User(connection);
+        receptionDB = new Database.Reception(connection);
+      });
+
+      reception = await receptionDB.create(Randomizer.randomReception());
+      creator = await userDB.create(Randomizer.randomUser());
+      owner = new Model.OwningReception(reception.ID);
+    });
+
+    tearDown(() async {
+      await receptionDB.remove(reception.ID);
+      await userDB.remove(creator.ID);
+
+      return connection.close();
+    });
+
+    test('create (reception owner)',
+        () => StorageCalendar.create(owner, calendarDB, creator));
+
+    test('update (reception owner)',
+        () => StorageCalendar.update(owner, calendarDB, creator));
+
+    test('get (reception owner)',
+        () => StorageCalendar.get(owner, calendarDB, creator));
+
+    test('list (reception owner)',
+        () => StorageCalendar.list(owner, calendarDB, creator));
+
+    test('remove (reception owner)',
+        () => StorageCalendar.remove(owner, calendarDB, creator));
+
+    test('purge (reception owner)',
+        () => StorageCalendar.purge(owner, calendarDB, creator));
+  });
+}
+
+/**
+ *
+ */
+_databaseIvrTests() {
+  group('Database.Ivr', () {
     Database.Ivr ivrStore;
     Database.Connection connection;
     setUp(() {
@@ -352,27 +435,27 @@ runDatabaseTests() {
       });
     });
 
-    tearDown (() {
+    tearDown(() {
       return connection.close();
     });
 
-    test ('create',
-        () => IvrStore.create(ivrStore));
+    test('create', () => StorageIvr.create(ivrStore));
 
-    test ('get',
-        () => IvrStore.get(ivrStore));
+    test('get', () => StorageIvr.get(ivrStore));
 
-    test ('list',
-        () => IvrStore.list(ivrStore));
+    test('list', () => StorageIvr.list(ivrStore));
 
-    test ('remove',
-        () => IvrStore.remove(ivrStore));
+    test('remove', () => StorageIvr.remove(ivrStore));
 
-    test ('update',
-        () => IvrStore.update(ivrStore));
+    test('update', () => StorageIvr.update(ivrStore));
   });
+}
 
-  group ('Database.ReceptionDialplan', () {
+/**
+ *
+ */
+_databaseReceptionDialplanTests() {
+  group('Database.ReceptionDialplan', () {
     Database.ReceptionDialplan receptionDialplanStore;
     Database.Connection connection;
     setUp(() {
@@ -384,23 +467,18 @@ runDatabaseTests() {
       });
     });
 
-    tearDown (() {
+    tearDown(() {
       return connection.close();
     });
 
-    test ('create',
-        () => ReceptionDialplanStore.create(receptionDialplanStore));
+    test('create', () => ReceptionDialplanStore.create(receptionDialplanStore));
 
-    test ('get',
-        () => ReceptionDialplanStore.get(receptionDialplanStore));
+    test('get', () => ReceptionDialplanStore.get(receptionDialplanStore));
 
-    test ('list',
-        () => ReceptionDialplanStore.list(receptionDialplanStore));
+    test('list', () => ReceptionDialplanStore.list(receptionDialplanStore));
 
-    test ('remove',
-        () => ReceptionDialplanStore.remove(receptionDialplanStore));
+    test('remove', () => ReceptionDialplanStore.remove(receptionDialplanStore));
 
-    test ('update',
-        () => ReceptionDialplanStore.update(receptionDialplanStore));
+    test('update', () => ReceptionDialplanStore.update(receptionDialplanStore));
   });
 }

@@ -6,6 +6,7 @@ import 'dart:io';
 import 'dart:math' show Random;
 
 import 'package:phonio/phonio.dart' as Phonio;
+import 'package:esl/esl.dart' as esl;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/database.dart' as Database;
 import 'package:openreception_framework/service-io.dart' as Transport;
@@ -24,6 +25,10 @@ part 'support/randomizer.dart';
 part 'support/receptionist.dart';
 part 'support/receptionist_pool.dart';
 part 'support/support_tools.dart';
+
+/// Dialplan deployment tests
+part 'service/dialplan_deployment.dart';
+part 'service/src/dialplan_deployment.dart';
 
 /// Authserver tests
 part 'service/src/service-auth.dart';
@@ -58,7 +63,8 @@ part 'service/src/storage-contact.dart';
 part 'service/contactserver.dart';
 
 /// Database tests
-part 'database/src/ivr_store.dart';
+part 'service/src/storage-calendar.dart';
+part 'service/src/storage-ivr.dart';
 part 'database/src/reception_dialplan_store.dart';
 part 'database/all_tests.dart';
 

@@ -38,7 +38,6 @@ void serviceContactTests() {
     Service.RESTEndpointStore endpointStore;
 
     Service.RESTContactStore contactStore;
-    Receptionist r;
 
     setUp(() {
       transport = new Transport.Client();
@@ -111,26 +110,6 @@ void serviceContactTests() {
       transport.client.close(force: true);
     });
 
-    test('Calendar event creation',
-        () => ContactStore.calendarEntryCreate(contactStore));
-    test('Calendar event update',
-        () => ContactStore.calendarEntryUpdate(contactStore));
-    test('Calendar event',
-        () => ContactStore.calendarEntryExisting(contactStore));
-    test('Calendar event (non-existing)',
-        () => ContactStore.calendarEntryNonExisting(contactStore));
-    test('Calendar event removal',
-        () => ContactStore.calendarEntryDelete(contactStore));
-
-    test('Calendar event changes (create)',
-        () => ContactStore.calendarEntryChangeCreate(contactStore));
-
-    test('Calendar event changes (update)',
-        () => ContactStore.calendarEntryChangeUpdate(contactStore));
-
-    test('Calendar event changes (delete)',
-        () => ContactStore.calendarEntryChangeDelete(contactStore));
-
     test('Endpoint listing', () => ContactStore.endpoints(endpointStore));
 
     test('Phone listing', () => ContactStore.phones(contactStore));
@@ -142,32 +121,6 @@ void serviceContactTests() {
 
     test('deleteFromReception',
         () => ContactStore.deleteFromReception(contactStore));
-
-    setUp(() {
-      transport = new Transport.Client();
-      contactStore = new Service.RESTContactStore(
-          Config.contactStoreUri, Config.serverToken, transport);
-      r = ReceptionistPool.instance.aquire();
-
-      return r.initialize();
-    });
-
-    tearDown(() {
-      contactStore = null;
-      transport.client.close(force: true);
-
-      ReceptionistPool.instance.release(r);
-      return r.teardown();
-    });
-
-    test('CalendarEntry creation (event presence)',
-        () => ContactStore.calendarEntryCreateEvent(contactStore, r));
-
-    test('CalendarEntry update (event presence)',
-        () => ContactStore.calendarEntryUpdateEvent(contactStore, r));
-
-    test('CalendarEntry creation (event presence)',
-        () => ContactStore.calendarEntryDeleteEvent(contactStore, r));
   });
 }
 

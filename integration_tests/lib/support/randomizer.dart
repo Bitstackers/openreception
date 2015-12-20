@@ -10,7 +10,10 @@ abstract class Randomizer {
        'Meeting with ${randomChoice(contacts)}',
        'All work and no play',
        'Roller coaster inspection',
-       'Prepare world domination'];
+       'Prepare world domination',
+       'PTA meeting',
+       'Out to "lunch" with ${randomChoice(contacts)}',
+       '${randomChoice(contacts)} is quite angry with us'];
 
   static final List<String> dialplanNote = [
     '',
@@ -275,6 +278,15 @@ abstract class Randomizer {
   static String randomRecipientRole() => randomChoice(Model.Role.RECIPIENT_ROLES);
   static String randomContactType() => randomChoice(Model.ContactType.types);
   static String randomDialplanNote() => randomChoice(dialplanNote);
+
+  /**
+   * returns a Model.CalendarEntry with no owner.
+   */
+  static Model.CalendarEntry randomCalendarEntry() =>
+      new Model.CalendarEntry.empty()
+  ..content = randomChoice(events)
+  ..beginsAt = new DateTime.now()
+  ..until = (new DateTime.now()..add(new Duration (hours : 1)));
 
   /**
    * Generates a random [Model.IvrMenu].
