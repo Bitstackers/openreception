@@ -164,77 +164,164 @@ abstract class StorageCalendar {
     expect(changes.length, equals(1));
     expect(changes.first.changedAt.millisecondsSinceEpoch,
         lessThan(new DateTime.now().millisecondsSinceEpoch));
-    expect(changes.first.userID, isNot(Model.User.noID));
+    expect(changes.first.userID, equals(creator.ID));
+
+    await calendarStore.purge(created.ID);
+  }
+
+  /**
+   *
+   */
+  static Future latestChangeOnCreate(Model.Owner owner,
+      Storage.Calendar calendarStore, Model.User creator) async {
+    Model.CalendarEntry created = await calendarStore.create(
+        Randomizer.randomCalendarEntry()..owner = owner, creator.ID);
+
+    _log.info('Creating a calendar event for owner $owner.');
+
+    Model.CalendarEntryChange latestChange =
+        await calendarStore.latestChange(created.ID);
+
+    _log.info('Listing changes and validating.');
+
+    expect(latestChange.lastEntry.asMap,
+        equals(new Model.CalendarEntry.empty().asMap));
+    expect(latestChange.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(latestChange.userID, equals(creator.ID));
+
+    await calendarStore.purge(created.ID);
   }
 
   /**
    * Test server behaviour with regards to calendar changes.
    * This function update an entry and asserts that another change is present.
    */
-  static Future changeOnUpdate(Service.RESTReceptionStore receptionStore) {
-    int receptionID = 1;
+  static Future changeOnUpdate(Model.Owner owner,
+      Storage.Calendar calendarStore, Model.User creator) async {
+    Model.CalendarEntry created = await calendarStore.create(
+        Randomizer.randomCalendarEntry()..owner = owner, creator.ID);
 
-    return receptionStore
-        .calendar(receptionID)
-        .then((Iterable<Model.CalendarEntry> entries) {
-      // Update the last event in list.
-      Model.CalendarEntry entry = entries.last
-        ..beginsAt = new DateTime.now()
-        ..until = new DateTime.now().add(new Duration(hours: 2))
-        ..content = Randomizer.randomEvent();
+    _log.info('Creating a calendar event for owner $owner.');
 
-      int updateCount = -1;
+    Model.CalendarEntry changed = Randomizer.randomCalendarEntry()
+      ..ID = created.ID
+      ..owner = created.owner;
 
-      _log.info('Updating a calendar event for reception $receptionID.');
+    await calendarStore.update(changed, creator.ID);
+    Iterable<Model.CalendarEntryChange> changes =
+        await calendarStore.changes(created.ID);
 
-      return receptionStore
-          .calendarEntryChanges(entry.ID)
-          .then((Iterable<Model.CalendarEntryChange> changes) =>
-              updateCount = changes.length)
-          .then((_) => receptionStore
-                  .calendarEventUpdate(entry)
-                  .then((Model.CalendarEntry updatedEvent) {
-                return receptionStore
-                    .calendarEntryChanges(updatedEvent.ID)
-                    .then((Iterable<Model.CalendarEntryChange> changes) {
-                  expect(changes.length, equals(updateCount + 1));
-                  expect(changes.first.changedAt.millisecondsSinceEpoch,
-                      lessThan(new DateTime.now().millisecondsSinceEpoch));
-                  expect(changes.first.userID, isNot(Model.User.noID));
-                });
-              }));
-    });
+    _log.info('Listing changes and validating.');
+
+    expect(changes.length, equals(2));
+
+    expect(changes.first.lastEntry.asMap, equals(created.asMap));
+
+    expect(changes.first.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(changes.first.userID, equals(creator.ID));
+
+    await calendarStore.purge(created.ID);
+  }
+
+  /**
+   *
+   */
+  static Future latestChangeOnUpdate(Model.Owner owner,
+      Storage.Calendar calendarStore, Model.User creator) async {
+    Model.CalendarEntry created = await calendarStore.create(
+        Randomizer.randomCalendarEntry()..owner = owner, creator.ID);
+
+    _log.info('Creating a calendar event for owner $owner.');
+
+    Model.CalendarEntry changed = Randomizer.randomCalendarEntry()
+      ..ID = created.ID
+      ..owner = created.owner;
+
+    await calendarStore.update(changed, creator.ID);
+    Iterable<Model.CalendarEntryChange> changes =
+        await calendarStore.changes(created.ID);
+
+    _log.info('Listing changes and validating.');
+
+    expect(changes.length, equals(2));
+
+    Model.CalendarEntryChange latestChange =
+        await calendarStore.latestChange(created.ID);
+
+    _log.info('Getting latests change and validating.');
+
+    expect(latestChange.lastEntry.asMap, equals(created.asMap));
+    expect(latestChange.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(latestChange.userID, equals(creator.ID));
+
+    await calendarStore.purge(created.ID);
   }
 
   /**
    * Test server behaviour with regards to calendar changes.
    * This function removes an entry and asserts that no changes are present.
    */
-  static Future changeOnDelete(Service.RESTReceptionStore receptionStore) {
-    int receptionID = 1;
+  static Future changeOnRemove(Model.Owner owner,
+      Storage.Calendar calendarStore, Model.User creator) async {
+    Model.CalendarEntry created = await calendarStore.create(
+        Randomizer.randomCalendarEntry()..owner = owner, creator.ID);
 
-    return receptionStore
-        .calendar(receptionID)
-        .then((Iterable<Model.CalendarEntry> events) {
-      // Update the last event in list.
-      Model.CalendarEntry event = events.last;
+    _log.info('Removing calendar event for owner $owner.');
 
-      _log.info(
-          'Got event ${event.asMap} - ${event.contactID}@${event.receptionID}');
+    await calendarStore.remove(created.ID, creator.ID);
+    Iterable<Model.CalendarEntryChange> changes =
+        await calendarStore.changes(created.ID);
 
-      _log.info(
-          'Deleting last (in list) calendar event for reception $receptionID.');
+    _log.info('Listing changes and validating.');
 
-      return receptionStore.calendarEventRemove(event).then((_) {
-        return receptionStore
-            .calendarEntryChanges(event.ID)
-            .then((Iterable<Model.CalendarEntryChange> changes) {
-          expect(changes.length, equals(0));
+    expect(changes.length, equals(2));
 
-          return expect(receptionStore.calendarEntryLatestChange(event.ID),
-              throwsA(new isInstanceOf<Storage.NotFound>()));
-        });
-      });
-    });
+    expect(changes.first.lastEntry.asMap, equals(created.asMap));
+
+    expect(changes.first.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(changes.first.userID, equals(creator.ID));
+
+    await calendarStore.purge(created.ID);
+
+    expect(await calendarStore.changes(created.ID), isEmpty);
+  }
+
+  /**
+   *
+   */
+  static Future latestChangeOnRemove(Model.Owner owner,
+      Storage.Calendar calendarStore, Model.User creator) async {
+    Model.CalendarEntry created = await calendarStore.create(
+        Randomizer.randomCalendarEntry()..owner = owner, creator.ID);
+
+    _log.info('Removing calendar event for owner $owner.');
+
+    await calendarStore.remove(created.ID, creator.ID);
+    Iterable<Model.CalendarEntryChange> changes =
+        await calendarStore.changes(created.ID);
+
+    _log.info('Listing changes and validating.');
+
+    expect(changes.length, equals(2));
+
+    _log.info('Getting latests change and validating.');
+    Model.CalendarEntryChange latestChange =
+        await calendarStore.latestChange(created.ID);
+
+    _log.info('Latests change: ${latestChange.asMap}');
+
+    expect(latestChange.lastEntry.asMap, equals(created.asMap));
+    expect(latestChange.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(latestChange.userID, equals(creator.ID));
+
+    await calendarStore.purge(created.ID);
+
+    expect(await calendarStore.changes(created.ID), isEmpty);
+
   }
 }

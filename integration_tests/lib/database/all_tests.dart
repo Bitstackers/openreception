@@ -16,7 +16,6 @@ runDatabaseTests() {
   _databaseCalenderTests();
 }
 
-
 /**
  * Tests for user database.
  */
@@ -374,8 +373,23 @@ _databaseCalenderTests() {
     test('purge (contact owner)',
         () => StorageCalendar.purge(owner, calendarDB, creator));
 
-    test('change on create (contact owner)',
+    test('change listing on create (contact owner)',
         () => StorageCalendar.changeOnCreate(owner, calendarDB, creator));
+
+    test('latest change on create (contact owner)',
+        () => StorageCalendar.latestChangeOnCreate(owner, calendarDB, creator));
+
+    test('change listing on update (contact owner)',
+        () => StorageCalendar.changeOnUpdate(owner, calendarDB, creator));
+
+    test('latest change on update (contact owner)',
+        () => StorageCalendar.latestChangeOnUpdate(owner, calendarDB, creator));
+
+    test('change listing on remove (contact owner)',
+        () => StorageCalendar.changeOnRemove(owner, calendarDB, creator));
+
+    test('latest change on remove (contact owner)',
+        () => StorageCalendar.latestChangeOnRemove(owner, calendarDB, creator));
 
     setUp(() async {
       await Database.Connection
@@ -416,6 +430,25 @@ _databaseCalenderTests() {
 
     test('purge (reception owner)',
         () => StorageCalendar.purge(owner, calendarDB, creator));
+
+    test('change listing on create (reception owner)',
+        () => StorageCalendar.changeOnCreate(owner, calendarDB, creator));
+
+    test('latest change on create (reception owner)',
+        () => StorageCalendar.latestChangeOnCreate(owner, calendarDB, creator));
+
+    test('change listing on update (reception owner)',
+        () => StorageCalendar.changeOnUpdate(owner, calendarDB, creator));
+
+    test('latest change on update (reception owner)',
+        () => StorageCalendar.latestChangeOnUpdate(owner, calendarDB, creator));
+
+    test('change listing on remove (reception owner)',
+        () => StorageCalendar.changeOnRemove(owner, calendarDB, creator));
+
+    test('latest change on remove (reception owner)',
+        () => StorageCalendar.latestChangeOnRemove(owner, calendarDB, creator));
+
   });
 }
 

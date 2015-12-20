@@ -115,12 +115,11 @@ void runCalendarTests() {
      */
     setUp(() async {
       transport = new Transport.Client();
-      contactStore = new Service.RESTContactStore(
-          Config.contactStoreUri, Config.serverToken, transport);
-      calendarStore = new Service.RESTCalendarStore(
-          Config.calendarStoreUri, Config.serverToken, transport);
-
       r = ReceptionistPool.instance.aquire();
+      contactStore = new Service.RESTContactStore(
+          Config.contactStoreUri, r.authToken, transport);
+      calendarStore = new Service.RESTCalendarStore(
+          Config.calendarStoreUri, r.authToken, transport);
 
       contact = await contactStore.create(Randomizer.randomBaseContact());
 
@@ -152,17 +151,40 @@ void runCalendarTests() {
         () => RESTCalendarStore.calendarEntryDeleteEvent(
             owner, calendarStore, r));
 
+    test('change listing on create (contact owner)',
+        () => StorageCalendar.changeOnCreate(owner, calendarStore, r.user));
+
+    test(
+        'latest change on create (contact owner)',
+        () =>
+            StorageCalendar.latestChangeOnCreate(owner, calendarStore, r.user));
+
+    test('change listing on update (contact owner)',
+        () => StorageCalendar.changeOnUpdate(owner, calendarStore, r.user));
+
+    test(
+        'latest change on update (contact owner)',
+        () =>
+            StorageCalendar.latestChangeOnUpdate(owner, calendarStore, r.user));
+
+    test('change listing on remove (contact owner)',
+        () => StorageCalendar.changeOnRemove(owner, calendarStore, r.user));
+
+    test(
+        'latest change on remove (contact owner)',
+        () =>
+            StorageCalendar.latestChangeOnRemove(owner, calendarStore, r.user));
+
     /**
    * Tests for event presence upon creating calendar entries for receptions.
    */
     setUp(() async {
       transport = new Transport.Client();
-      receptionStore = new Service.RESTReceptionStore(
-          Config.receptionStoreUri, Config.serverToken, transport);
-      calendarStore = new Service.RESTCalendarStore(
-          Config.calendarStoreUri, Config.serverToken, transport);
-
       r = ReceptionistPool.instance.aquire();
+      receptionStore = new Service.RESTReceptionStore(
+          Config.receptionStoreUri, r.authToken, transport);
+      calendarStore = new Service.RESTCalendarStore(
+          Config.calendarStoreUri, r.authToken, transport);
 
       reception = await receptionStore.create(Randomizer.randomReception());
 
@@ -193,5 +215,29 @@ void runCalendarTests() {
         'delete (reception owner - event presence)',
         () => RESTCalendarStore.calendarEntryDeleteEvent(
             owner, calendarStore, r));
+
+    test('change listing on create (reception owner)',
+        () => StorageCalendar.changeOnCreate(owner, calendarStore, r.user));
+
+    test(
+        'latest change on create (reception owner)',
+        () =>
+            StorageCalendar.latestChangeOnCreate(owner, calendarStore, r.user));
+
+    test('change listing on update (reception owner)',
+        () => StorageCalendar.changeOnUpdate(owner, calendarStore, r.user));
+
+    test(
+        'latest change on update (reception owner)',
+        () =>
+            StorageCalendar.latestChangeOnUpdate(owner, calendarStore, r.user));
+
+    test('change listing on remove (reception owner)',
+        () => StorageCalendar.changeOnRemove(owner, calendarStore, r.user));
+
+    test(
+        'latest change on remove (reception owner)',
+        () =>
+            StorageCalendar.latestChangeOnRemove(owner, calendarStore, r.user));
   });
 }
