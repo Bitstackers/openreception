@@ -184,6 +184,7 @@ CREATE TABLE calendar_entry_changes (
    entry_id   INTEGER     NOT NULL REFERENCES calendar_events (id)
                                    ON UPDATE CASCADE ON DELETE CASCADE,
    user_id    INTEGER     NOT NULL,
+   last_entry JSON        NOT NULL,
    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 
 );
