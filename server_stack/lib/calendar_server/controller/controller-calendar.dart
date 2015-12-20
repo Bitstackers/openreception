@@ -19,12 +19,13 @@ part of openreception.calendar_server.controller;
 class Calendar {
   final database.Calendar _calendarStore;
   final service.Authentication _authService;
+  final service.NotificationService _notification;
   final Logger _log = new Logger('$_libraryName.Calendar');
 
   /**
    *
    */
-  Calendar(this._calendarStore, this._authService);
+  Calendar(this._calendarStore, this._authService, this._notification);
 
   /**
    *
@@ -34,7 +35,17 @@ class Calendar {
     final model.CalendarEntry entry =
         model.CalendarEntry.decode(JSON.decode(await request.readAsString()));
 
-    return _okJson(await _calendarStore.create(entry, user.ID));
+    final model.CalendarEntry created =
+        await _calendarStore.create(entry, user.ID);
+
+    event.CalendarChange changeEvent = new event.CalendarChange(created.ID,
+        entry.contactID, entry.receptionID, event.CalendarEntryState.CREATED);
+
+    _log.finest('User id:${user.ID} created entry for ${entry.owner}');
+
+    _notification.broadcastEvent(changeEvent);
+
+    return _okJson(created);
   }
 
   /**
@@ -96,7 +107,25 @@ class Calendar {
 
     final int eid = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
-    return _okJson(await _calendarStore.remove(eid, user.ID));
+    model.CalendarEntry removed;
+    try {
+      removed = await _calendarStore.get(eid);
+      await _calendarStore.remove(eid, user.ID);
+    } on storage.NotFound {
+      return _notFound('No entry with id $eid');
+    }
+
+    event.CalendarChange changeEvent = new event.CalendarChange(
+        removed.ID,
+        removed.contactID,
+        removed.receptionID,
+        event.CalendarEntryState.DELETED);
+
+    _log.finest('User id:${user.ID} removed entry for ${removed.owner}');
+
+    _notification.broadcastEvent(changeEvent);
+
+    return _okJson('{}');
   }
 
   /**
@@ -117,7 +146,17 @@ class Calendar {
     final model.CalendarEntry entry =
         model.CalendarEntry.decode(JSON.decode(await request.readAsString()));
 
-    return _okJson(await _calendarStore.update(entry, user.ID));
+    final model.CalendarEntry updated =
+        await _calendarStore.update(entry, user.ID);
+
+    event.CalendarChange changeEvent = new event.CalendarChange(updated.ID,
+        entry.contactID, entry.receptionID, event.CalendarEntryState.UPDATED);
+
+    _log.finest('User id:${user.ID} updated entry for ${entry.owner}');
+
+    _notification.broadcastEvent(changeEvent);
+
+    return _okJson(updated);
   }
 
   /**

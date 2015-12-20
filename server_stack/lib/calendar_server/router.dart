@@ -76,8 +76,13 @@ Future<IO.HttpServer> start(
 
   final Database.Calendar _calendarStore = new Database.Calendar(_connection);
 
+  Service.NotificationService _notification = new Service.NotificationService(
+      config.notificationServer.externalUri,
+      config.calendarServer.serverToken,
+      new Service_IO.Client());
+
   final controller.Calendar calendarController =
-      new controller.Calendar(_calendarStore, _authService);
+      new controller.Calendar(_calendarStore, _authService, _notification);
 
   var router = shelf_route.router()
     ..get('/calendar/{type}:{oid}', calendarController.list)

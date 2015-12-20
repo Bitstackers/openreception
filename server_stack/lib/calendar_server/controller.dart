@@ -22,6 +22,7 @@ import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import 'package:logging/logging.dart';
 
 import 'package:openreception_framework/database.dart' as database;
+import 'package:openreception_framework/event.dart' as event;
 import 'package:openreception_framework/model.dart' as model;
 import 'package:openreception_framework/service.dart' as service;
 import 'package:openreception_framework/storage.dart' as storage;
