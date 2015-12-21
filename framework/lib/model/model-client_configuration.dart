@@ -19,38 +19,37 @@ part of openreception.model;
  * server stack.
  */
 class ClientConfiguration {
-
   /// Global system language.
   String systemLanguage;
+
+  /// Server contact URI's
+  Uri authServerUri;
+  Uri calendarServerUri;
   Uri callFlowServerUri;
-  Uri receptionServerUri;
   Uri contactServerUri;
   Uri dialplanServerUri;
   Uri messageServerUri;
-  Uri authServerUri;
-  Uri notificationSocketUri;
   Uri notificationServerUri;
+  Uri notificationSocketUri;
+  Uri receptionServerUri;
   Uri userServerUri;
 
   /**
    * Returns a map reflection of the object suitable for data transfer.
    */
-  Map get asMap =>
-    {Key.callFlowServerURI : this.callFlowServerUri.toString(),
-     Key.receptionServerURI : this.receptionServerUri.toString(),
-     Key.contactServerURI : this.contactServerUri.toString(),
-     Key.dialplanServerURI : this.dialplanServerUri.toString(),
-     Key.messageServerURI  : this.messageServerUri.toString(),
-     Key.authServerURI  : this.authServerUri.toString(),
-     Key.userServerURI  : this.userServerUri.toString(),
-     Key.systemLanguage : this.systemLanguage,
-     Key.notificationServerUri : this.notificationServerUri.toString(),
-
-      "notificationSocket": {
-        Key.interface: this.notificationSocketUri.toString(),
-        "reconnectInterval": 2000
-      },
-  };
+  Map get asMap => {
+        Key.authServerURI: authServerUri.toString(),
+        Key.calendarServerUri: calendarServerUri.toString(),
+        Key.callFlowServerURI: callFlowServerUri.toString(),
+        Key.contactServerURI: contactServerUri.toString(),
+        Key.dialplanServerURI: dialplanServerUri.toString(),
+        Key.messageServerURI: messageServerUri.toString(),
+        Key.notificationServerUri: notificationServerUri.toString(),
+        Key.notificationSocket: notificationSocketUri.toString(),
+        Key.receptionServerURI: receptionServerUri.toString(),
+        Key.systemLanguage: systemLanguage,
+        Key.userServerURI: userServerUri.toString(),
+      };
 
   /**
    *
@@ -65,25 +64,16 @@ class ClientConfiguration {
   /**
    * Build an object from a serialized map.
    */
-  ClientConfiguration.fromMap (Map map) {
-    this.systemLanguage =
-        map [Key.systemLanguage];
-    this.callFlowServerUri =
-        Uri.parse(map [Key.callFlowServerURI]);
-    this.dialplanServerUri =
-        Uri.parse(map [Key.dialplanServerURI]);
-    this.receptionServerUri =
-        Uri.parse(map [Key.receptionServerURI]);
-    this.contactServerUri =
-        Uri.parse(map [Key.contactServerURI]);
-    this.messageServerUri =
-        Uri.parse(map [Key.messageServerURI]);
-    this.authServerUri =
-        Uri.parse(map[Key.authServerURI]);
-    this.userServerUri = Uri.parse(map[Key.userServerURI]);
-    this.notificationServerUri =
-        Uri.parse(map [Key.notificationServerUri]);
-    this.notificationSocketUri =
-        Uri.parse(map ['notificationSocket'][Key.interface]);  }
-
+  ClientConfiguration.fromMap(Map map)
+      : authServerUri = Uri.parse(map[Key.authServerURI]),
+        calendarServerUri = Uri.parse(map[Key.callFlowServerURI]),
+        callFlowServerUri = Uri.parse(map[Key.callFlowServerURI]),
+        contactServerUri = Uri.parse(map[Key.contactServerURI]),
+        dialplanServerUri = Uri.parse(map[Key.dialplanServerURI]),
+        receptionServerUri = Uri.parse(map[Key.receptionServerURI]),
+        messageServerUri = Uri.parse(map[Key.messageServerURI]),
+        systemLanguage = map[Key.systemLanguage],
+        userServerUri = Uri.parse(map[Key.userServerURI]),
+        notificationServerUri = Uri.parse(map[Key.notificationServerUri]),
+        notificationSocketUri = Uri.parse(map[Key.notificationSocket]);
 }
