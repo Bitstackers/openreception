@@ -45,7 +45,7 @@ class Calendar {
    * Return all the [contact] [ORModel.CalendarEntry]s.
    */
   Future<Iterable<ORModel.CalendarEntry>> contactCalendar(ORModel.Contact contact) =>
-      _calendarStore.list(new ORModel.Owner.contact(contact.ID, contact.receptionID));
+      _calendarStore.list(new ORModel.OwningContact(contact.ID));
 
   /**
    * Delete [entry] from the database.
@@ -56,7 +56,7 @@ class Calendar {
    * Return all the [ORModel.CalendarEntry]s of a [reception].
    */
   Future<Iterable<ORModel.CalendarEntry>> receptionCalendar(ORModel.Reception reception) =>
-      _calendarStore.list(new ORModel.Owner.reception(reception.ID));
+      _calendarStore.list(new ORModel.OwningReception(reception.ID));
 
   /**
    * Save [entry] to the database.
