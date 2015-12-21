@@ -99,6 +99,16 @@ class DatabaseConfig {
 }
 
 /**
+ * Calendar server configuration values.
+ */
+class CalendarServer extends StandardConfig {
+  @override
+  final int httpPort = 4110;
+
+  const CalendarServer();
+}
+
+/**
  * Call-flow-control server configuration values.
  */
 class CallFlowControl extends StandardConfig {
@@ -296,6 +306,7 @@ class Configuration {
   final String systemLanguage = 'en';
   final AccessLog accessLog = const AccessLog('ACCESS');
   final AuthServer authServer = const AuthServer();
+  final CalendarServer calendarServer = const CalendarServer();
   final CallFlowControl callFlowControl = const CallFlowControl();
   final ConfigServer configserver = const ConfigServer();
   final ContactServer contactServer = const ContactServer();
