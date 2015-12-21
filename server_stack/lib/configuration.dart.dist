@@ -139,6 +139,7 @@ class ConfigServer extends StandardConfig {
   const ConfigServer();
 
   Uri get authServerUri => config.authServer.externalUri;
+  Uri get calendarServerUri => config.calendarServer.externalUri;
   Uri get callFlowControlUri => config.callFlowControl.externalUri;
   Uri get contactServerUri => config.contactServer.externalUri;
   Uri get dialplanServerUri => config.dialplanserver.externalUri;

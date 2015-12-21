@@ -16,6 +16,7 @@ part of openreception.configuration_server.router;
 final ORModel.ClientConfiguration client_config =
   new ORModel.ClientConfiguration.empty()
     ..authServerUri = config.configserver.authServerUri
+    ..calendarServerUri = config.configserver.calendarServerUri
     ..callFlowServerUri = config.configserver.callFlowControlUri
     ..contactServerUri = config.configserver.contactServerUri
     ..dialplanServerUri = config.configserver.dialplanServerUri
