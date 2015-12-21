@@ -224,7 +224,8 @@ abstract class Call {
     /// The user has not registered its peer to transfer the call to. Abort.
     if (peer == null || !peer.registered) {
       _userStateUnknown(user);
-      return _clientError('User with ${user.ID} has no peer available');
+      return _clientError('User with id ${user.ID} has no peer '
+      '(peer: ${user.peer}) available');
     }
 
     /// The user has no reachable phone to transfer the call to. Abort.
@@ -475,7 +476,8 @@ abstract class Call {
     if (peer == null || !peer.registered) {
       _userStateUnknown(user);
 
-      return _clientError('User with ${user.ID} has no peer available');
+      return _clientError('User with id ${user.ID} has no peer '
+      '(peer: ${user.peer}) available');
     }
 
     /// The user has no reachable phone to transfer the call to. Abort.
