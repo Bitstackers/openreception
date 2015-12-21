@@ -66,7 +66,7 @@ class ClientConfiguration {
    */
   ClientConfiguration.fromMap(Map map)
       : authServerUri = Uri.parse(map[Key.authServerURI]),
-        calendarServerUri = Uri.parse(map[Key.callFlowServerURI]),
+        calendarServerUri = Uri.parse(map[Key.calendarServerUri]),
         callFlowServerUri = Uri.parse(map[Key.callFlowServerURI]),
         contactServerUri = Uri.parse(map[Key.contactServerURI]),
         dialplanServerUri = Uri.parse(map[Key.dialplanServerURI]),

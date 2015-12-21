@@ -13,6 +13,10 @@
 part of openreception.model;
 
 
+/**
+ * Model super-class representing an owner. Direct instances of this class
+ * represents no owner, as it has no link to other object types.
+ */
 class Owner {
 
   static final Owner none = const Owner();
@@ -52,6 +56,10 @@ class Owner {
   String toString() => 'none:';
 }
 
+/**
+ * Specialized [Owner] class that associates a [Reception] with another object.
+ * For example a [CalendarEntry].
+ */
 class OwningReception extends Owner {
   final int receptionId;
 
@@ -73,6 +81,10 @@ class OwningReception extends Owner {
   String toString() => '$type:$receptionId';
 }
 
+/**
+ * Specialized [Owner] class that associates a [Contact] with another object.
+ * For example a [CalendarEntry].
+ */
 class OwningContact extends Owner {
   final int contactId;
   static final String type = 'c';
