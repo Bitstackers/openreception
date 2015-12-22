@@ -14,6 +14,7 @@
 library openreception.dialplan_tools;
 
 import 'model.dart' as model;
+import 'pbx-keys.dart';
 
 ///Config values.
 bool goLive = false;
@@ -37,7 +38,7 @@ String _indent(item, {int count: 2}) => '  $item';
  */
 bool _involvesReceptionists(Iterable<model.Action> actions) => actions
     .where((action) => action is model.Notify)
-    .any((notify) => notify.eventName == 'call-offer');
+    .any((notify) => notify.eventName == PbxKey.callOffer);
 
 /**
  *
@@ -52,11 +53,11 @@ List<String> _openingHourToXmlDialplan(
       ..addAll(_involvesReceptionists(actions)
           ? ['  <condition field="\${reception_open}" expression="^true\$"/>']
           : [])
-      ..add('  <condition ${_openingHourToFreeSwitch(oh)} break="on-true">')
+      ..add('  <condition ${_openingHourToFreeSwitch(oh)} break="${PbxKey.onTrue}>')
       ..addAll(actions
           .map(_actionToXmlDialplan)
           .fold([], (combined, current) => combined..addAll(current.map(_indent).map(_indent))))
-      ..add('    <action application="hangup"/>')
+      ..add('    <action application="${PbxKey.hangup}"/>')
       ..add('  </condition>')
       ..add('</extension>');
 
@@ -70,14 +71,14 @@ List<String> _fallbackToDialplan(String extension, Iterable<model.Action> action
   return [
     '',
     _comment('Default fallback actions for $extension'),
-    '<extension name="${extension}-closed">',
+    '<extension name="${extension}-${PbxKey.closed}">',
     '  <condition>',
   ]
-    ..add('    <action application="answer"/>')
+    ..add('    <action application="${PbxKey.answer}"/>')
     ..addAll(actions
         .map(_actionToXmlDialplan)
         .fold([], (combined, current) => combined..addAll(current.map(_indent))))
-    ..add('    <action application="hangup"/>')
+    ..add('    <action application="${PbxKey.hangup}"/>')
     ..add('  </condition>')
     ..add('</extension>');
 }
@@ -100,9 +101,9 @@ Iterable<String> _namedExtensionToDialPlan(model.NamedExtension extension) => [
       '',
       _noteTemplate('Extra-extension ${extension.name}'),
       '<extension name="${extension.name}" continue="true">',
-      '  <condition field="destination_number" expression="^${extension.name}\$" break="on-false">',
+      '  <condition field="destination_number" expression="^${extension.name}\$" break="${PbxKey.onFalse}">',
     ]
-      ..add('    <action application="answer"/>')
+      ..add('    <action application="${PbxKey.answer}"/>')
       ..addAll(extension.actions
           .map(_actionToXmlDialplan)
           .fold([], (combined, current) => combined..addAll(current.map(_indent).map(_indent))))
@@ -119,25 +120,28 @@ Iterable<String> _extraExtensionsToDialplan(Iterable<model.NamedExtension> exten
 String convertTextual(model.ReceptionDialplan dialplan, int rid) =>
     '''<!-- Dialplan for extension ${dialplan.extension}. Generated ${new DateTime.now()} -->
 <include>
-  <context name="reception-${dialplan.extension}">
+  <context name="${PbxKey.reception}-${dialplan.extension}">
 
     <!-- Initialize channel variables -->
     <extension name="${dialplan.extension}" continue="true">
-      <condition field="destination_number" expression="^${dialplan.extension}\$" break="on-false">
-        <action application="log" data="INFO Setting variables of call to ${dialplan.extension}, currently allocated to ID:${rid}."/>
-        ${_setVar('reception_id', rid)}
-        ${_setVar('openreception::greeting-played', false)}
-        ${_setVar('openreception::locked', false)}
+      <condition field="destination_number" expression="^${dialplan.extension}\$" break="${PbxKey.onFalse}">
+        <action application="${PbxKey.log}" data="INFO Setting variables of call to ${dialplan.extension}, currently allocated to rid ${rid}."/>
+        ${_setVar(PbxKey.receptionId, rid)}
+        ${_setVar(PbxKey.greetingPlayed, false)}
+        ${_setVar(PbxKey.locked, false)}
+        ${_setVar(OrfPbxKey.receptionId, rid)}
+        ${_setVar(OrfPbxKey.greetingPlayed, false)}
+        ${_setVar(OrfPbxKey.locked, false)}
       </condition>
     </extension>
 
     ${_extraExtensionsToDialplan(dialplan.extraExtensions).join('\n    ')}
 
     <!-- Perform outbound calls -->
-    <extension name="${dialplan.extension}-outbound" continue="true">
-      <condition field="destination_number" expression="^external_transfer_(\d+)">
-       <action application="bridge" data="{reception_id=$rid,originate_timeout=120}[leg_timeout=50,reception_id=$rid]sofia/gateway/\${default_trunk}/\$1"/>
-        <action application="hangup"/>
+    <extension name="${dialplan.extension}-${PbxKey.outbound}" continue="true">
+      <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(\d+)">
+       <action application="${PbxKey.bridge}" data="{${OrfPbxKey.receptionId}=${rid},${PbxKey.receptionId}=${rid},originate_timeout=120}[leg_timeout=50,${OrfPbxKey.receptionId}=${rid},${PbxKey.receptionId}=${rid}]sofia/gateway/\${default_trunk}/\$1"/>
+        <action application="${PbxKey.hangup}"/>
       </condition>
     </extension>
     ${_hourActionsToXmlDialplan(dialplan.extension, dialplan.open).fold([], (combined, current) => combined..addAll(current)).join('\n    ')}
@@ -157,8 +161,8 @@ bool _isInternalExtension(String extension) => extension.contains('-');
 String _dialoutTemplate(String extension) => _isInternalExtension(extension)
     ? extension
     : goLive
-        ? 'external_transfer_${extension} XML receptions'
-        : 'external_transfer_${testNumber} XML receptions';
+        ? '${PbxKey.externalTransfer}_${extension} XML receptions'
+        : '${PbxKey.externalTransfer}_${testNumber} XML receptions';
 
 /**
  *
@@ -179,28 +183,29 @@ String _comment(String text) => '<!-- $text -->';
  * Template transfer action.
  */
 String _transferTemplate(String extension) =>
-    '<action application="transfer" data="${_dialoutTemplate(extension)}"/>';
-
-/**
-* Template for set state action.
-*/
-String _setState(String newState) => _setVar("openreception::state", newState);
+    '<action application="${PbxKey.transfer}" data="${_dialoutTemplate(extension)}"/>';
 
 /**
  * Template for a sleep action.
  */
-String _sleep(int msec) => '<action application="sleep" data="$msec"/>';
+String _sleep(int msec) => '<action application="${PbxKey.sleep}" data="$msec"/>';
 
 /**
  * Template for a call lock event.
  */
-String _lockEvent() => '<action application="event" '
-    'data="Event-Subclass=openreception::call-lock,Event-Name=CUSTOM"/>';
+String get _lock => '<action application="${PbxKey.event}" '
+    'data="${PbxKey.eventSubclass}=${OrfPbxKey.callLock},${PbxKey.eventName}=${PbxKey.custom}"/>';
+@deprecated
+String _lockEvent() => '<action application="${PbxKey.event}" '
+    'data="${PbxKey.eventSubclass}=${PbxKey.callLock},${PbxKey.eventName}=${PbxKey.custom}"/>';
 /**
  * Template for a call unlock event.
  */
-String _unlockEvent() => '<action application="event" '
-    'data="Event-Subclass=openreception::call-unlock,Event-Name=CUSTOM"/>';
+String get _unlock => '<action application="${PbxKey.event}" '
+    'data="${PbxKey.eventSubclass}=${OrfPbxKey.callUnlock},${PbxKey.eventName}=${PbxKey.custom}"/>';
+@deprecated
+String _unlockEvent() => '<action application="${PbxKey.event}" '
+    'data="${PbxKey.eventSubclass}=${PbxKey.callUnlock},${PbxKey.eventName}=${PbxKey.custom}"/>';
 
 /**
  * Template for a set variable action.
@@ -210,20 +215,29 @@ String _setVar(String key, dynamic value) => '<action application="set" data="$k
 /**
  * Template for a ring tone event.
  */
-String _ringToneEvent() => '<action application="event" '
-    'data="Event-Subclass=openreception::ringing-start,Event-Name=CUSTOM" />';
+String get _ringTone => '<action application="${PbxKey.event}" '
+    'data="${PbxKey.eventSubclass}=${OrfPbxKey.ringingStart},${PbxKey.eventName}=${PbxKey.custom}" />';
+@deprecated
+String _ringToneEvent() => '<action application="${PbxKey.event}" '
+    'data="${PbxKey.eventSubclass}=${PbxKey.ringingStart},${PbxKey.eventName}=${PbxKey.custom}" />';
 
 /**
  * Template for a ring stop event.
  */
-String _ringToneStopEvent() => '<action application="event" '
-    'data="Event-Subclass=openreception::ringing-stop,Event-Name=CUSTOM"/>';
+String get _ringToneStop => '<action application="${PbxKey.event}" '
+    'data="${PbxKey.eventSubclass}=${OrfPbxKey.ringingStop},${PbxKey.eventName}=${PbxKey.custom}"/>';
+@deprecated
+String _ringToneStopEvent() => '<action application="${PbxKey.event}" '
+    'data="${PbxKey.eventSubclass}=${PbxKey.ringingStop},${PbxKey.eventName}=${PbxKey.custom}"/>';
 
 /**
  * Template for a notify event.
  */
-String _callNotifyEvent() => '<action application="event" '
-    'data="Event-Subclass=openreception::call-notify,Event-Name=CUSTOM" />';
+String get _callNotify => '<action application="${PbxKey.event}" '
+    'data="${PbxKey.eventSubclass}=${OrfPbxKey.callNotify},${PbxKey.eventName}=${PbxKey.custom}" />';
+@deprecated
+String _callNotifyEvent() => '<action application="${PbxKey.event}" '
+    'data="${PbxKey.eventSubclass}=${PbxKey.callNotify},${PbxKey.eventName}=${PbxKey.custom}" />';
 
 /**
  * Convert an action a xml dialplan entry.
@@ -235,43 +249,59 @@ List<String> _actionToXmlDialplan(model.Action action) {
 
     returnValue.add(_transferTemplate(action.extension));
   } else if (action is model.Notify) {
-    returnValue.addAll(
-        [_comment('Announce the call to the receptionists'), _setState('new'), _callNotifyEvent()]);
+    returnValue.addAll([
+      _comment('Announce the call to the receptionists'),
+      _setVar(OrfPbxKey.state, 'new'),
+      _setVar(PbxKey.state, 'new'),
+      _callNotify,
+      _callNotifyEvent()
+    ]);
   } else if (action is model.Ringtone) {
     returnValue.addAll([
       _comment('Sending ringtones'),
-      _setVar('openreception::state', 'ringing'),
+      _setVar(PbxKey.state, PbxKey.ringing),
+      _ringTone,
       _ringToneEvent(),
-      '<action application="answer"/>',
-      '<action application="playback" '
+      '<action application="${PbxKey.answer}"/>',
+      '<action application="${PbxKey.playback}" '
           'data="tone_stream://L=${action.count};\${dk-ring}"/>',
+      _ringToneStop,
       _ringToneStopEvent()
     ]);
   } else if (action is model.Playback) {
     if (action.note.isNotEmpty) returnValue.add(_noteTemplate(action.note));
     returnValue.addAll([_comment('Playback file ${action.filename}')]);
 
-    returnValue.add(_setVar('openreception::state', 'playback'));
+    returnValue.add(_setVar(PbxKey.state, PbxKey.playback));
 
     if (action.wrapInLock) {
-      returnValue.addAll([_setVar('openreception::locked', true), _lockEvent()]);
+      returnValue.addAll(
+          [_setVar(OrfPbxKey.locked, true), _setVar(PbxKey.locked, true), _lock, _lockEvent()]);
     }
 
     returnValue.addAll([
       _sleep(500),
-      '<action application="playback" data="${greetingDir}/${action.filename}"/>',
+      '<action application="${PbxKey.playback}" data="${greetingDir}/${action.filename}"/>',
       _sleep(500),
-      _setVar('openreception::greeting-played', true),
+      _setVar(OrfPbxKey.greetingPlayed, true),
+      _setVar(PbxKey.greetingPlayed, true),
     ]);
 
     if (action.wrapInLock) {
-      returnValue.addAll([_setVar('openreception::locked', false), _unlockEvent()]);
+      returnValue.addAll([
+        _setVar(OrfPbxKey.locked, false),
+        _setVar(PbxKey.locked, false),
+        _unlock,
+        _unlockEvent()
+      ]);
     }
   } else if (action is model.Enqueue) {
     returnValue.addAll([
       _comment('Enqueue call'),
-      '<action application="set" data="openreception::state=queued"/>',
-      '<action application="event" data="Event-Subclass=openreception::wait-queue-enter,Event-Name=CUSTOM" />',
+      '<action application="set" data="${OrfPbxKey.state}=${PbxKey.queued}"/>',
+      '<action application="set" data="${PbxKey.state}=${PbxKey.queued}"/>',
+      '<action application="${PbxKey.event}" data="${PbxKey.eventSubclass}=${OrfPbxKey.waitQueueEnter},${PbxKey.eventName}=${PbxKey.custom}" />',
+      '<action application="${PbxKey.event}" data="${PbxKey.eventSubclass}=${PbxKey.waitQueueEnter},${PbxKey.eventName}=${PbxKey.custom}" />',
       '<action application="set" data="fifo_music=local_stream://${action.holdMusic}"/>',
       '<action application="fifo" data="${action.queueName}@\${domain_name} in"/>'
     ]);
@@ -337,11 +367,11 @@ List<String> _ivrMenuToXml(model.IvrMenu menu) =>
     menu.entries.map(_ivrEntryToXml).fold([], (combined, current) => combined..addAll(current));
 
 String _generateXmlFromIvrMenu(model.IvrMenu menu) => '''<menu name="${menu.name}"
-      greet-long="\$\${sounds_dir}/${greetingDir}/${menu.greetingLong.filename}"
-      greet-short="\$\${sounds_dir}/${greetingDir}/${menu.greetingShort.filename}"
-      timeout="\$\${IVR_timeout}"
-      max-failures="\$\${IVR_max-failures}"
-      max-timeouts="\$\${IVR_max-timeout}">
+      ${PbxKey.greetLong}="\$\${sounds_dir}/${greetingDir}/${menu.greetingLong.filename}"
+      ${PbxKey.greetShort}="\$\${sounds_dir}/${greetingDir}/${menu.greetingShort.filename}"
+      ${PbxKey.timeout}="\$\${IVR_timeout}"
+      ${PbxKey.maxFailures}="\$\${IVR_max-failures}"
+      ${PbxKey.maxTimeouts}="\$\${IVR_max-timeout}">
 
     ${(_ivrMenuToXml(menu)).join('\n    ')}
   </menu>
@@ -358,15 +388,16 @@ List<String> _ivrEntryToXml(model.IvrEntry entry) {
   List returnValue = [];
   if (entry is model.IvrTransfer) {
     if (entry.transfer.note.isNotEmpty) returnValue.add(_noteTemplate(entry.transfer.note));
-    returnValue.add('<entry action="menu-exec-app" digits="${entry.digits}" '
-        'param="transfer ${_dialoutTemplate(entry.transfer.extension)}"/>');
+    returnValue.add('<entry action="${PbxKey.menuExecApp}" digits="${entry.digits}" '
+        'param="${PbxKey.transfer} ${_dialoutTemplate(entry.transfer.extension)}"/>');
   } else if (entry is model.IvrVoicemail) {
     returnValue.add(
-        '<entry action="menu-exec-app" digits="${entry.digits}" param="voicemail default \$\${domain} ${entry.voicemail.vmBox}"/>');
+        '<entry action="${PbxKey.menuExecApp}" digits="${entry.digits}" param="voicemail default \$\${domain} ${entry.voicemail.vmBox}"/>');
   } else if (entry is model.IvrSubmenu) {
-    returnValue.add('<entry action="menu-sub" digits="${entry.digits}" param="${entry.name}"/>');
+    returnValue
+        .add('<entry action="${PbxKey.menuSub}" digits="${entry.digits}" param="${entry.name}"/>');
   } else if (entry is model.IvrTopmenu) {
-    returnValue.add('<entry action="menu-top" digits="${entry.digits}"/>');
+    returnValue.add('<entry action="${PbxKey.menuTop}" digits="${entry.digits}"/>');
   } else throw new ArgumentError.value(
       entry.runtimeType,
       'entry'
