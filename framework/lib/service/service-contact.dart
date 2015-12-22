@@ -44,9 +44,9 @@ class RESTContactStore implements Storage.Contact {
     Uri url = Resource.Contact.managementServerList(this._host, receptionID);
     url = appendToken(url, this._token);
 
-    return this._backend.get(url).then((String response) => (JSON
-            .decode(response)['receptionContacts'] as Iterable)
-        .map((Map map) => new Model.Contact.fromMap(map)));
+    return this._backend.get(url).then((String response) =>
+        (JSON.decode(response)['receptionContacts'] as Iterable)
+            .map((Map map) => new Model.Contact.fromMap(map)));
   }
 
   Future<Model.BaseContact> get(int contactID) {
@@ -86,8 +86,8 @@ class RESTContactStore implements Storage.Contact {
     Uri url = Resource.Contact.list(this._host);
     url = appendToken(url, this._token);
 
-    return this._backend.get(url).then(
-        (String response) => (JSON.decode(response) as Iterable)
+    return this._backend.get(url).then((String response) =>
+        (JSON.decode(response) as Iterable)
             .map((Map map) => new Model.BaseContact.fromMap(map)));
   }
 
@@ -105,8 +105,8 @@ class RESTContactStore implements Storage.Contact {
     Uri url = Resource.Contact.listByReception(this._host, receptionID);
     url = appendToken(url, this._token);
 
-    return this._backend.get(url).then(
-        (String response) => (JSON.decode(response) as Iterable)
+    return this._backend.get(url).then((String response) =>
+        (JSON.decode(response) as Iterable)
             .map((Map map) => new Model.Contact.fromMap(map)));
   }
 
@@ -118,9 +118,8 @@ class RESTContactStore implements Storage.Contact {
   }
 
   Future<Iterable<Model.MessageEndpoint>> endpoints(
-      int contactID, int receptionID) => this
-      .endpointsMap(contactID, receptionID)
-      .then((Iterable<Map> maps) =>
+          int contactID, int receptionID) =>
+      this.endpointsMap(contactID, receptionID).then((Iterable<Map> maps) =>
           maps.map((Map map) => new Model.MessageEndpoint.fromMap(map)));
 
   Future<Iterable<Map>> phonesMap(int contactID, int receptionID) {
@@ -134,50 +133,30 @@ class RESTContactStore implements Storage.Contact {
       this.endpointsMap(contactID, receptionID).then((Iterable<Map> maps) =>
           maps.map((Map map) => new Model.PhoneNumber.fromMap(map)));
 
-  Future<Iterable<Model.CalendarEntryChange>> calendarEntryChanges(entryID) {
-    Uri url = Resource.Contact.calendarEventChanges(this._host, entryID);
-    url = appendToken(url, this._token);
-
-    return this._backend.get(url).then(JSON.decode).then((Iterable<Map> maps) =>
-        maps.map((Map map) => new Model.CalendarEntryChange.fromMap(map)));
-  }
-
-  Future<Model.CalendarEntryChange> calendarEntryLatestChange(entryID) {
-    Uri url = Resource.Contact.calendarEventLatestChange(this._host, entryID);
-    url = appendToken(url, this._token);
-
-    return this._backend
-        .get(url)
-        .then(JSON.decode)
-        .then((Map map) => new Model.CalendarEntryChange.fromMap(map));
-  }
-
   Future<Iterable<Model.BaseContact>> colleagues(int contactId) {
     Uri url = Resource.Contact.colleagues(this._host, contactId);
     url = appendToken(url, this._token);
 
-    return this._backend.get(url).then(
-        (String response) => (JSON.decode(response) as Iterable)
+    return this._backend.get(url).then((String response) =>
+        (JSON.decode(response) as Iterable)
             .map((Map map) => new Model.BaseContact.fromMap(map)));
   }
 
-  Future<Model.Contact> addToReception(Model.Contact contact, int receptionID){
+  Future<Model.Contact> addToReception(Model.Contact contact, int receptionID) {
     Uri url =
         Resource.Contact.singleByReception(this._host, contact.ID, receptionID);
     url = appendToken(url, this._token);
 
     return this._backend.post(url, JSON.encode(contact)).then(
-        (String response) =>
-            new Model.Contact.fromMap(JSON.decode(response)));
+        (String response) => new Model.Contact.fromMap(JSON.decode(response)));
   }
-
 
   Future<Iterable<Model.BaseContact>> organizationContacts(int organizationId) {
     Uri url = Resource.Contact.organizationContacts(this._host, organizationId);
     url = appendToken(url, this._token);
 
-    return this._backend.get(url).then(
-        (String response) => (JSON.decode(response) as Iterable)
+    return this._backend.get(url).then((String response) =>
+        (JSON.decode(response) as Iterable)
             .map((Map map) => new Model.BaseContact.fromMap(map)));
   }
 
@@ -190,14 +169,11 @@ class RESTContactStore implements Storage.Contact {
   }
 
   Future<Model.Contact> updateInReception(Model.Contact contact) {
-    Uri url =
-        Resource.Contact.singleByReception(this._host, contact.ID, contact.receptionID);
+    Uri url = Resource.Contact
+        .singleByReception(this._host, contact.ID, contact.receptionID);
     url = appendToken(url, this._token);
 
     return this._backend.put(url, JSON.encode(contact)).then(
-        (String response) =>
-            new Model.Contact.fromMap(JSON.decode(response)));
+        (String response) => new Model.Contact.fromMap(JSON.decode(response)));
   }
-
-
 }
