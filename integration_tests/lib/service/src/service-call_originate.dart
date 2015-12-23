@@ -1,7 +1,6 @@
 part of or_test_fw;
 
 abstract class Originate {
-
   ///Internal logger.
   static Logger _log = new Logger('$libraryName.CallFlowControl.Originate');
 
@@ -14,12 +13,10 @@ abstract class Originate {
     int receptionID = 1;
 
     return receptionist.originate(receptionNumber, contactID, receptionID).then(
-        (_) => receptionist
-            .waitFor(eventType: Event.Key.callOffer)
-            .then((Event.CallOffer event) {
-      //TODO: Assert that callerID is the correct one
-      expect(event.call.inbound, isTrue);
-    }));
+        (_) => receptionist.waitFor(eventType: Event.Key.callOffer).then((Event.CallOffer event) {
+              //TODO: Assert that callerID is the correct one
+              expect(event.call.inbound, isTrue);
+            }));
   }
 
   /**
@@ -44,8 +41,8 @@ abstract class Originate {
         .then((_) => receptionist.waitForInboundCall())
         .then((_) => _log.info('Receptionist $receptionist rejects the call'))
         .then((_) => receptionist._phone.hangupAll())
-        .then((_) => expect(callRejectExpectation.future,
-            throwsA(new isInstanceOf<Storage.ClientError>())));
+        .then((_) =>
+            expect(callRejectExpectation.future, throwsA(new isInstanceOf<Storage.ClientError>())));
   }
 
   /**
@@ -54,8 +51,7 @@ abstract class Originate {
    * Expected behaviour is that the server should detect the reject and send
    * a [Storage.ClientError].
    */
-  static Future originationOnAgentAutoAnswerDisabled
-   (Receptionist receptionist, Customer customer) {
+  static Future originationOnAgentAutoAnswerDisabled(Receptionist receptionist, Customer customer) {
     int contactID = 4;
     int receptionID = 1;
 
@@ -70,8 +66,8 @@ abstract class Originate {
     })
         .then((_) => receptionist.waitForInboundCall())
         .then((_) => _log.info('Receptionist $receptionist ignores the call'))
-        .then((_) => expect(callRejectExpectation.future,
-            throwsA(new isInstanceOf<Storage.ClientError>())));
+        .then((_) =>
+            expect(callRejectExpectation.future, throwsA(new isInstanceOf<Storage.ClientError>())));
   }
 
   /**
@@ -83,8 +79,7 @@ abstract class Originate {
     int contactID = 4;
     int receptionID = 1;
 
-    return expect(
-        receptionist.originate(receptionNumber, contactID, receptionID),
+    return expect(receptionist.originate(receptionNumber, contactID, receptionID),
         throwsA(new isInstanceOf<Storage.ClientError>()));
   }
 
@@ -110,15 +105,14 @@ abstract class Originate {
 
     await customer.autoAnswer(false);
     Model.Call call = await receptionist.callFlowControl
-        .originate(customer.extension, contactID, receptionID, callId : callId);
-
+        .originate(customer.extension, contactID, receptionID, callId: callId);
 
     await customer.waitForInboundCall();
     await customer.pickupCall();
-    await new Future.delayed(new Duration(seconds : 1));
+    await new Future.delayed(new Duration(seconds: 1));
     Map channel = await receptionist.callFlowControl.channelMap(call.channel);
 
-    expect (channel['variables']['openreception::context_callId'], equals(callId));
+    expect(channel['variables'][PbxKey.contextCallId], equals(callId));
   }
 
   /**
