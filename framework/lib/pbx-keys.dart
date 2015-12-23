@@ -44,12 +44,16 @@ class ORPbxKey {
  * overlap with keys found in [ORPbxKey]. Use the latter if you need the 'or::' namespace.
  */
 class PbxKey {
+  static const String agentBeginEpoch = 'agent-begin-epoch';
+  static const String agentEndEpoch = 'agent-end-epoch';
   static const String answer = 'answer';
   static const String answerEpoch = 'answer_epoch';
   static const String billSec = 'billsec';
   static const String bridge = 'bridge';
   static const String bridgeUuid = 'bridge_uuid';
+  static const String callCharge = 'call-charge';
   static const String callOffer = 'call-offer';
+  static const String callSetupCharge = 'call-setup-charge';
   static const String closed = 'closed';
   static const String currentApplication = 'current_application';
   static const String custom = 'CUSTOM';
@@ -59,6 +63,8 @@ class PbxKey {
   static const String eventName = 'Event-Name';
   static const String eventSubclass = 'Event-Subclass';
   static const String externalTransfer = 'external_transfer';
+  static const String externalTransferEpoch = 'external-transfer-epoch';
+  static const String finalTransferAction = 'final-transfer-action';
   static const String greetLong = 'greet-long';
   static const String greetShort = 'greet-short';
   static const String hangup = 'hangup';
@@ -77,6 +83,7 @@ class PbxKey {
   static const String playback = 'playback';
   static const String queued = 'queued';
   static const String reception = 'reception';
+  static const String receptionOpen = 'reception-open';
   static const String ringing = 'ringing';
   static const String signalBond = 'signal_bond';
   static const String sipFromUserStripped = 'sip_from_user_stripped';
