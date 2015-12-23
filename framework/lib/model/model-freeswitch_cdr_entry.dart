@@ -37,25 +37,27 @@ class FreeSWITCHCDREntry {
 
     uuid = variables['uuid'];
     inbound = variables['direction'] == 'inbound';
-    receptionId = int.parse(variables['reception_id']);
+    receptionId = int.parse(variables[ORPbxKey.receptionId]);
 
-    if(json['callflow'] is List) {
+    if (json['callflow'] is List) {
       List<Map> callFlow = json['callflow'];
-      extension = callFlow.firstWhere((Map map) => map['profile_index'] == '1')['caller_profile']['destination_number'];
+      extension = callFlow.firstWhere((Map map) => map['profile_index'] == '1')['caller_profile']
+          ['destination_number'];
     } else {
       extension = json['callflow']['caller_profile']['destination_number'];
     }
 
     duration = int.parse(variables['billsec']);
     waitTime = int.parse(variables['waitsec']);
-    startedAt = new DateTime.fromMillisecondsSinceEpoch(int.parse(json['variables']['start_epoch'])*1000);
+    startedAt =
+        new DateTime.fromMillisecondsSinceEpoch(int.parse(json['variables']['start_epoch']) * 1000);
 
-    if(variables.containsKey('owner')) {
+    if (variables.containsKey('owner')) {
       owner = int.parse(variables['owner']);
     }
 
-    if(variables.containsKey('contact_id')) {
-      contact_id = int.parse(variables['contact_id']);
+    if (variables.containsKey(ORPbxKey.contactId)) {
+      contact_id = int.parse(variables[ORPbxKey.contactId]);
     }
   }
 }

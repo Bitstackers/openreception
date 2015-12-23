@@ -19,9 +19,10 @@ import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
 import 'bus.dart';
-import 'event.dart'   as Event;
-import 'keys.dart'    as Key;
-import 'util.dart'    as Util;
+import 'event.dart' as Event;
+import 'keys.dart' as Key;
+import 'pbx-keys.dart';
+import 'util.dart' as Util;
 
 export 'model/dialplan/model-dialplan.dart';
 

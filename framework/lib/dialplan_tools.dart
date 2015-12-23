@@ -126,12 +126,12 @@ String convertTextual(model.ReceptionDialplan dialplan, int rid) =>
     <extension name="${dialplan.extension}" continue="true">
       <condition field="destination_number" expression="^${dialplan.extension}\$" break="${PbxKey.onFalse}">
         <action application="${PbxKey.log}" data="INFO Setting variables of call to ${dialplan.extension}, currently allocated to rid ${rid}."/>
-        ${_setVar(PbxKey.receptionId, rid)}
-        ${_setVar(PbxKey.greetingPlayed, false)}
-        ${_setVar(PbxKey.locked, false)}
-        ${_setVar(OrfPbxKey.receptionId, rid)}
-        ${_setVar(OrfPbxKey.greetingPlayed, false)}
-        ${_setVar(OrfPbxKey.locked, false)}
+        ${_setVar(ORPbxKey.receptionId, rid)}
+        ${_setVar(ORPbxKey.greetingPlayed, false)}
+        ${_setVar(ORPbxKey.locked, false)}
+        ${_setVar(ORPbxKey.receptionId, rid)}
+        ${_setVar(ORPbxKey.greetingPlayed, false)}
+        ${_setVar(ORPbxKey.locked, false)}
       </condition>
     </extension>
 
@@ -139,7 +139,7 @@ String convertTextual(model.ReceptionDialplan dialplan, int rid) =>
     <!-- Perform outbound calls -->
     <extension name="${dialplan.extension}-${PbxKey.outbound}" continue="true">
       <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(\d+)">
-       <action application="${PbxKey.bridge}" data="{${OrfPbxKey.receptionId}=${rid},${PbxKey.receptionId}=${rid},originate_timeout=120}[leg_timeout=50,${OrfPbxKey.receptionId}=${rid},${PbxKey.receptionId}=${rid}]sofia/gateway/\${default_trunk}/\$1"/>
+       <action application="${PbxKey.bridge}" data="{${ORPbxKey.receptionId}=${rid},${ORPbxKey.receptionId}=${rid},originate_timeout=120}[leg_timeout=50,${ORPbxKey.receptionId}=${rid},${ORPbxKey.receptionId}=${rid}]sofia/gateway/\${default_trunk}/\$1"/>
         <action application="${PbxKey.hangup}"/>
       </condition>
     </extension>
@@ -193,18 +193,13 @@ String _sleep(int msec) => '<action application="${PbxKey.sleep}" data="$msec"/>
  * Template for a call lock event.
  */
 String get _lock => '<action application="${PbxKey.event}" '
-    'data="${PbxKey.eventSubclass}=${OrfPbxKey.callLock},${PbxKey.eventName}=${PbxKey.custom}"/>';
-@deprecated
-String _lockEvent() => '<action application="${PbxKey.event}" '
-    'data="${PbxKey.eventSubclass}=${PbxKey.callLock},${PbxKey.eventName}=${PbxKey.custom}"/>';
+    'data="${PbxKey.eventSubclass}=${ORPbxKey.callLock},${PbxKey.eventName}=${PbxKey.custom}"/>';
+
 /**
  * Template for a call unlock event.
  */
 String get _unlock => '<action application="${PbxKey.event}" '
-    'data="${PbxKey.eventSubclass}=${OrfPbxKey.callUnlock},${PbxKey.eventName}=${PbxKey.custom}"/>';
-@deprecated
-String _unlockEvent() => '<action application="${PbxKey.event}" '
-    'data="${PbxKey.eventSubclass}=${PbxKey.callUnlock},${PbxKey.eventName}=${PbxKey.custom}"/>';
+    'data="${PbxKey.eventSubclass}=${ORPbxKey.callUnlock},${PbxKey.eventName}=${PbxKey.custom}"/>';
 
 /**
  * Template for a set variable action.
@@ -215,28 +210,18 @@ String _setVar(String key, dynamic value) => '<action application="set" data="$k
  * Template for a ring tone event.
  */
 String get _ringTone => '<action application="${PbxKey.event}" '
-    'data="${PbxKey.eventSubclass}=${OrfPbxKey.ringingStart},${PbxKey.eventName}=${PbxKey.custom}" />';
-@deprecated
-String _ringToneEvent() => '<action application="${PbxKey.event}" '
-    'data="${PbxKey.eventSubclass}=${PbxKey.ringingStart},${PbxKey.eventName}=${PbxKey.custom}" />';
-
+    'data="${PbxKey.eventSubclass}=${ORPbxKey.ringingStart},${PbxKey.eventName}=${PbxKey.custom}" />';
 /**
  * Template for a ring stop event.
  */
 String get _ringToneStop => '<action application="${PbxKey.event}" '
-    'data="${PbxKey.eventSubclass}=${OrfPbxKey.ringingStop},${PbxKey.eventName}=${PbxKey.custom}"/>';
-@deprecated
-String _ringToneStopEvent() => '<action application="${PbxKey.event}" '
-    'data="${PbxKey.eventSubclass}=${PbxKey.ringingStop},${PbxKey.eventName}=${PbxKey.custom}"/>';
+    'data="${PbxKey.eventSubclass}=${ORPbxKey.ringingStop},${PbxKey.eventName}=${PbxKey.custom}"/>';
 
 /**
  * Template for a notify event.
  */
 String get _callNotify => '<action application="${PbxKey.event}" '
-    'data="${PbxKey.eventSubclass}=${OrfPbxKey.callNotify},${PbxKey.eventName}=${PbxKey.custom}" />';
-@deprecated
-String _callNotifyEvent() => '<action application="${PbxKey.event}" '
-    'data="${PbxKey.eventSubclass}=${PbxKey.callNotify},${PbxKey.eventName}=${PbxKey.custom}" />';
+    'data="${PbxKey.eventSubclass}=${ORPbxKey.callNotify},${PbxKey.eventName}=${PbxKey.custom}" />';
 
 /**
  * Convert an action a xml dialplan entry.
@@ -250,56 +235,45 @@ List<String> _actionToXmlDialplan(model.Action action) {
   } else if (action is model.Notify) {
     returnValue.addAll([
       _comment('Announce the call to the receptionists'),
-      _setVar(OrfPbxKey.state, 'new'),
-      _setVar(PbxKey.state, 'new'),
-      _callNotify,
-      _callNotifyEvent()
+      _setVar(ORPbxKey.state, 'new'),
+      _callNotify
     ]);
   } else if (action is model.Ringtone) {
     returnValue.addAll([
       _comment('Sending ringtones'),
-      _setVar(PbxKey.state, PbxKey.ringing),
+      _setVar(ORPbxKey.state, PbxKey.ringing),
       _ringTone,
-      _ringToneEvent(),
       '<action application="${PbxKey.answer}"/>',
       '<action application="${PbxKey.playback}" data="tone_stream://L=${action.count};\${dk-ring}"/>',
       _ringToneStop,
-      _ringToneStopEvent()
     ]);
   } else if (action is model.Playback) {
     if (action.note.isNotEmpty) returnValue.add(_noteTemplate(action.note));
     returnValue.addAll([_comment('Playback file ${action.filename}')]);
 
-    returnValue.add(_setVar(PbxKey.state, PbxKey.playback));
+    returnValue.add(_setVar(ORPbxKey.state, PbxKey.playback));
 
     if (action.wrapInLock) {
-      returnValue.addAll(
-          [_setVar(OrfPbxKey.locked, true), _setVar(PbxKey.locked, true), _lock, _lockEvent()]);
+      returnValue.addAll([_setVar(ORPbxKey.locked, true), _setVar(ORPbxKey.locked, true), _lock]);
     }
 
     returnValue.addAll([
       _sleep(500),
       '<action application="${PbxKey.playback}" data="${greetingDir}/${action.filename}"/>',
       _sleep(500),
-      _setVar(OrfPbxKey.greetingPlayed, true),
-      _setVar(PbxKey.greetingPlayed, true),
+      _setVar(ORPbxKey.greetingPlayed, true),
+      _setVar(ORPbxKey.greetingPlayed, true),
     ]);
 
     if (action.wrapInLock) {
-      returnValue.addAll([
-        _setVar(OrfPbxKey.locked, false),
-        _setVar(PbxKey.locked, false),
-        _unlock,
-        _unlockEvent()
-      ]);
+      returnValue
+          .addAll([_setVar(ORPbxKey.locked, false), _setVar(ORPbxKey.locked, false), _unlock]);
     }
   } else if (action is model.Enqueue) {
     returnValue.addAll([
       _comment('Enqueue call'),
-      '<action application="set" data="${OrfPbxKey.state}=${PbxKey.queued}"/>',
-      '<action application="set" data="${PbxKey.state}=${PbxKey.queued}"/>',
-      '<action application="${PbxKey.event}" data="${PbxKey.eventSubclass}=${OrfPbxKey.waitQueueEnter},${PbxKey.eventName}=${PbxKey.custom}" />',
-      '<action application="${PbxKey.event}" data="${PbxKey.eventSubclass}=${PbxKey.waitQueueEnter},${PbxKey.eventName}=${PbxKey.custom}" />',
+      '<action application="set" data="${ORPbxKey.state}=${PbxKey.queued}"/>',
+      '<action application="${PbxKey.event}" data="${PbxKey.eventSubclass}=${ORPbxKey.waitQueueEnter},${PbxKey.eventName}=${PbxKey.custom}" />',
       '<action application="set" data="fifo_music=local_stream://${action.holdMusic}"/>',
       '<action application="fifo" data="${action.queueName}@\${domain_name} in"/>'
     ]);
