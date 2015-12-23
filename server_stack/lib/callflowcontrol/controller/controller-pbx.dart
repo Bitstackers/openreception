@@ -80,9 +80,9 @@ abstract class PBX {
     List<String> a_legvariables = ['${ORPbxKey.agentChannel}=true'];
 
     List<String> b_legvariables = [
-      'reception_id=${receptionID}',
-      'owner=${user.ID}',
-      'contact_id=${contactID}'
+      '${ORPbxKey.receptionId}=${receptionID}',
+      '${ORPbxKey.userId}=${user.ID}',
+      '${ORPbxKey.contactId}=${contactID}'
     ];
 
     return api('originate {${a_legvariables.join(',')}}user/${user.peer} '
@@ -243,8 +243,8 @@ abstract class PBX {
   static Future originateRecording(
       int receptionID, String recordExtension, String soundFilePath, ORModel.User user) {
     List<String> variables = [
-      'reception_id=${receptionID}',
-      'owner=${user.ID}',
+      '${ORPbxKey.receptionId}=${receptionID}',
+      '${ORPbxKey.userId}=${user.ID}',
       'recordpath=${soundFilePath}'
     ];
 
