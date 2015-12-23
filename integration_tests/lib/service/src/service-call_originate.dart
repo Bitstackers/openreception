@@ -112,7 +112,7 @@ abstract class Originate {
     await new Future.delayed(new Duration(seconds: 1));
     Map channel = await receptionist.callFlowControl.channelMap(call.channel);
 
-    expect(channel['variables'][PbxKey.contextCallId], equals(callId));
+    expect(channel['variables'][ORPbxKey.contextCallId], equals(callId));
   }
 
   /**
