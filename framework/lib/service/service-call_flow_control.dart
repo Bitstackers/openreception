@@ -28,7 +28,7 @@ class CallFlowControl {
    */
   Future<Iterable<Model.ActiveRecording>> activeRecordings() {
     Uri uri = Resource.CallFlowControl.activeRecordings(_host);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     Iterable<Model.ActiveRecording> decodeMaps(Iterable<Map> maps) =>
         maps.map(Model.ActiveRecording.decode);
@@ -41,7 +41,7 @@ class CallFlowControl {
    */
   Future<Model.ActiveRecording> activeRecording(String channel) {
     Uri uri = Resource.CallFlowControl.activeRecording(_host, channel);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     return _backend
         .get(uri)
@@ -54,7 +54,7 @@ class CallFlowControl {
    */
   Future<Iterable<Model.AgentStatistics>> agentStats() {
     Uri uri = Resource.CallFlowControl.agentStatistics(_host);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     Iterable<Model.AgentStatistics> decodeMaps(Iterable<Map> maps) =>
         maps.map(Model.AgentStatistics.decode);
@@ -67,7 +67,7 @@ class CallFlowControl {
    */
   Future<Model.AgentStatistics> agentStat(int userId) {
     Uri uri = Resource.CallFlowControl.agentStatistic(_host, userId);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     return _backend
         .get(uri)
@@ -80,7 +80,7 @@ class CallFlowControl {
    */
   Future<Iterable<Model.Call>> callList() {
     Uri uri = Resource.CallFlowControl.list(_host);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     return _backend.get(uri).then(JSON.decode).then((Iterable<Map> callMaps) =>
         callMaps.map((Map map) => new Model.Call.fromMap(map)));
@@ -91,7 +91,7 @@ class CallFlowControl {
    */
   Future<Iterable<Map>> channelListMap() {
     Uri uri = Resource.CallFlowControl.channelList(_host);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     return _backend.get(uri).then((String response) => (JSON.decode(response)));
   }
@@ -101,7 +101,7 @@ class CallFlowControl {
    */
   Future<Map> channelMap(String uuid) {
     Uri uri = Resource.CallFlowControl.channel(_host, uuid);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     return _backend.get(uri).then((String response) => (JSON.decode(response)));
   }
@@ -111,7 +111,7 @@ class CallFlowControl {
    */
   Future<Model.Call> get(String callID) {
     Uri uri = Resource.CallFlowControl.single(_host, callID);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     return _backend
         .get(uri)
@@ -124,7 +124,7 @@ class CallFlowControl {
    */
   Future hangup(String callID) {
     Uri uri = Resource.CallFlowControl.hangup(_host, callID);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     return _backend.post(uri, '');
   }
@@ -136,7 +136,7 @@ class CallFlowControl {
       {String callId: ''}) {
     Uri uri = Resource.CallFlowControl
         .originate(_host, extension, contactID, receptionID, callId: callId);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     return _backend
         .post(uri, '')
@@ -149,7 +149,7 @@ class CallFlowControl {
    */
   Future<Model.Call> park(String callID) {
     Uri uri = Resource.CallFlowControl.park(_host, callID);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     return _backend
         .post(uri, '')
@@ -162,7 +162,7 @@ class CallFlowControl {
    */
   Future<Iterable<Model.Peer>> peerList() {
     Uri uri = Resource.CallFlowControl.peerList(_host);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     return _backend
         .get(uri)
@@ -176,7 +176,7 @@ class CallFlowControl {
    */
   Future<Model.Call> pickup(String callID) {
     Uri uri = Resource.CallFlowControl.pickup(_host, callID);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     return _backend
         .post(uri, '')
@@ -189,7 +189,7 @@ class CallFlowControl {
    */
   Future stateReload() {
     Uri uri = Resource.CallFlowControl.stateReload(_host);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     return _backend.post(uri, '');
   }
@@ -199,7 +199,7 @@ class CallFlowControl {
    */
   Future transfer(String callID, String destination) {
     Uri uri = Resource.CallFlowControl.transfer(_host, callID, destination);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     return _backend.post(uri, '');
   }
@@ -209,7 +209,7 @@ class CallFlowControl {
    */
   Future<Model.UserStatus> userStatus(int userID) {
     Uri uri = Resource.CallFlowControl.userStatus(_host, userID);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     return _backend.get(uri).then(JSON.decode).then(Model.UserStatus.decode);
   }
@@ -223,7 +223,7 @@ class CallFlowControl {
   Future<Model.UserStatus> userStateIdle(int userID) {
     Uri uri =
         Resource.CallFlowControl.userState(_host, userID, Model.UserState.Idle);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     return _backend
         .post(uri, '')
@@ -237,7 +237,7 @@ class CallFlowControl {
    */
   Future<Iterable<Model.UserStatus>> userStatusList() {
     Uri uri = Resource.CallFlowControl.userStatusList(_host);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     return _backend.get(uri).then(JSON.decode).then((Iterable<Map> maps) =>
         maps.map((Map map) => new Model.UserStatus.fromMap(map)));
@@ -252,7 +252,7 @@ class CallFlowControl {
   Future<Model.UserStatus> userStateLoggedOut(int userID) {
     Uri uri = Resource.CallFlowControl
         .userState(_host, userID, Model.UserState.LoggedOut);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     return _backend
         .post(uri, '')
@@ -269,7 +269,7 @@ class CallFlowControl {
   Future<Model.UserStatus> userStatePaused(int userID) {
     Uri uri = Resource.CallFlowControl
         .userState(_host, userID, Model.UserState.Paused);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     return _backend
         .post(uri, '')

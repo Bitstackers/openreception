@@ -43,8 +43,8 @@ part 'service/service-websocket.dart';
 
 const String libraryName = "service";
 
-Uri _appendToken(Uri uri, String token) => token == null
-    ? uri
-    : Uri.parse(
-        '${uri}${uri.queryParameters.isEmpty ? '?' : '&'}token=${token}');
-n}');
+Uri _appendToken(Uri uri, String token) =>
+    _appendParameter(uri, 'token', token);
+
+Uri _appendParameter(Uri uri, String key, dynamic value) =>
+    Uri.parse('${uri}${uri.queryParameters.isEmpty ? '?' : '&'}$key=$value');

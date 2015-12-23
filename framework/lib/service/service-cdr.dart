@@ -34,7 +34,7 @@ class RESTCDRService implements Storage.CDR {
     String toParameter = 'date_to=${(to.millisecondsSinceEpoch)}';
 
     Uri url = Resource.CDR.list(this._host, fromParameter, toParameter);
-    url = appendToken(url, this._token);
+    url = _appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) {
       Iterable decodedData = JSON.decode(response)['cdr_stats'];
@@ -48,7 +48,7 @@ class RESTCDRService implements Storage.CDR {
    */
   Future<Iterable<Model.CDRCheckpoint>> checkpoints() {
     Uri url = Resource.CDR.checkpoint(this._host);
-    url = appendToken(url, this._token);
+    url = _appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) {
       Iterable decodedData = JSON.decode(response)['checkpoints'];
@@ -63,7 +63,7 @@ class RESTCDRService implements Storage.CDR {
 
   Future<Model.CDRCheckpoint> createCheckpoint(Model.CDRCheckpoint checkpoint) {
     Uri url = Resource.CDR.checkpoint(this._host);
-    url = appendToken(url, this._token);
+    url = _appendToken(url, this._token);
 
     return this._backend.post(url, JSON.encode(checkpoint))
       .then((String response) =>

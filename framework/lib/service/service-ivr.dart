@@ -31,7 +31,7 @@ class RESTIvrStore implements Storage.Ivr {
    */
   Future<Model.IvrMenu> create(Model.IvrMenu menu) {
     Uri url = Resource.Ivr.list(_host);
-    url = appendToken(url, this._token);
+    url = _appendToken(url, this._token);
 
     return this
         ._backend
@@ -45,7 +45,7 @@ class RESTIvrStore implements Storage.Ivr {
    */
   Future<Model.IvrMenu> deploy(String menuName) {
     Uri url = Resource.Ivr.deploy(_host, menuName);
-    url = appendToken(url, this._token);
+    url = _appendToken(url, this._token);
 
     return _backend.post(url, '')
         .then(JSON.decode)
@@ -57,7 +57,7 @@ class RESTIvrStore implements Storage.Ivr {
    */
   Future remove(String menuName) {
     Uri url = Resource.Ivr.single(this._host, menuName);
-    url = appendToken(url, this._token);
+    url = _appendToken(url, this._token);
 
     return this._backend.delete(url);
   }
@@ -67,7 +67,7 @@ class RESTIvrStore implements Storage.Ivr {
   */
   Future get(String menuName) {
     Uri url = Resource.Ivr.single(this._host, menuName);
-    url = appendToken(url, this._token);
+    url = _appendToken(url, this._token);
 
     return this._backend.get(url).then(JSON.decode).then(Model.IvrMenu.decode);
   }
@@ -77,7 +77,7 @@ class RESTIvrStore implements Storage.Ivr {
    */
   Future<Iterable<Model.IvrMenu>> list() {
     Uri url = Resource.Ivr.list(_host);
-    url = appendToken(url, this._token);
+    url = _appendToken(url, this._token);
 
     Iterable<Model.IvrMenu> castMaps(Iterable maps) =>
         maps.map(Model.IvrMenu.decode);
@@ -90,7 +90,7 @@ class RESTIvrStore implements Storage.Ivr {
    */
   Future<Model.IvrMenu> update(Model.IvrMenu menu) {
     Uri url = Resource.Ivr.single(this._host, menu.name);
-    url = appendToken(url, this._token);
+    url = _appendToken(url, this._token);
 
     return this
         ._backend

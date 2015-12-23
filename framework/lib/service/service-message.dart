@@ -25,14 +25,14 @@ class RESTMessageStore implements Storage.Message {
 
   Future<Model.Message> get(int messageID) =>
       this._backend.get
-        (appendToken(Resource.Message.single
+        (_appendToken(Resource.Message.single
            (this._host, messageID), this._token))
       .then((String response)
         => new Model.Message.fromMap (JSON.decode(response)));
 
   Future<Model.MessageQueueItem> enqueue(Model.Message message) {
     Uri uri = Resource.Message.send(this._host, message.ID);
-        uri = appendToken (uri, this._token);
+        uri = _appendToken (uri, this._token);
 
     return this._backend.post(uri, JSON.encode (message.asMap))
       .then(JSON.decode)
@@ -42,21 +42,21 @@ class RESTMessageStore implements Storage.Message {
 
   Future<Model.Message> create(Model.Message message) =>
       this._backend.post
-        (appendToken
+        (_appendToken
            (Resource.Message.root(this._host), this._token), JSON.encode(message.asMap))
       .then((String response)
         => new Model.Message.fromMap (JSON.decode(response)));
 
   Future remove(int messageId) {
     Uri uri = Resource.Message.single(_host, messageId);
-    uri = appendToken(uri, _token);
+    uri = _appendToken(uri, _token);
 
     return _backend.delete(uri);
   }
 
   Future<Model.Message> update(Model.Message message) =>
       this._backend.put
-        (appendToken
+        (_appendToken
            (Resource.Message.single(this._host, message.ID), this._token), JSON.encode (message.asMap))
       .then((String response)
         => new Model.Message.fromMap (JSON.decode(response)));
@@ -72,7 +72,7 @@ class RESTMessageStore implements Storage.Message {
 
   Future<Iterable<Model.Message>> list({Model.MessageFilter filter}) =>
       this._backend.get
-        (appendToken
+        (_appendToken
            (Resource.Message.list(this._host, filter : filter),this._token))
       .then((String response)
         => (JSON.decode(response) as Iterable).map((Map map) => new Model.Message.fromMap(map)));

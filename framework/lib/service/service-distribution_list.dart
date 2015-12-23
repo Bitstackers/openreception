@@ -28,7 +28,7 @@ class RESTDistributionListStore implements Storage.DistributionList {
 
   Future<Model.DistributionList> list(int receptionId, int contactId) {
     Uri url = Resource.DistributionList.ofContact(this._host, receptionId, contactId);
-    url = appendToken(url, this._token);
+    url = _appendToken(url, this._token);
 
     return this._backend.get(url)
         .then(JSON.decode)
@@ -38,7 +38,7 @@ class RESTDistributionListStore implements Storage.DistributionList {
   Future<Model.DistributionListEntry> addRecipient(int receptionId, int contactId,
       Model.DistributionListEntry recipient) {
     Uri url = Resource.DistributionList.ofContact(this._host, receptionId, contactId);
-    url = appendToken(url, this._token);
+    url = _appendToken(url, this._token);
 
     return this._backend.post(url, JSON.encode(recipient))
         .then(JSON.decode)
@@ -47,7 +47,7 @@ class RESTDistributionListStore implements Storage.DistributionList {
 
   Future removeRecipient(int entryId) {
     Uri url = Resource.DistributionList.single(this._host, entryId);
-    url = appendToken(url, this._token);
+    url = _appendToken(url, this._token);
 
     return this._backend.delete(url);
   }

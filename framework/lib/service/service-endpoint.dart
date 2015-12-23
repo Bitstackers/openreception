@@ -28,7 +28,7 @@ class RESTEndpointStore implements Storage.Endpoint {
 
   Future<Model.MessageEndpoint> create(int receptionId, int contactId, Model.MessageEndpoint ep) {
     Uri url = Resource.Endpoint.ofContact(this._host, receptionId, contactId);
-    url = appendToken(url, this._token);
+    url = _appendToken(url, this._token);
 
     return this._backend.post(url, JSON.encode(ep))
         .then(JSON.decode)
@@ -37,14 +37,14 @@ class RESTEndpointStore implements Storage.Endpoint {
 
   Future remove(int endpointId) {
     Uri url = Resource.Endpoint.single(this._host, endpointId);
-    url = appendToken(url, this._token);
+    url = _appendToken(url, this._token);
 
     return this._backend.delete(url);
   }
 
   Future<Iterable<Model.MessageEndpoint>> list(int receptionId, int contactId) {
     Uri url = Resource.Endpoint.ofContact(this._host, receptionId, contactId);
-    url = appendToken(url, this._token);
+    url = _appendToken(url, this._token);
 
     Iterable<Model.MessageEndpoint> castMaps (Iterable maps) =>
         maps.map(Model.MessageEndpoint.decode);
@@ -56,7 +56,7 @@ class RESTEndpointStore implements Storage.Endpoint {
 
   Future<Model.MessageEndpoint> update(Model.MessageEndpoint ep) {
     Uri url = Resource.Endpoint.single(this._host, ep.id);
-    url = appendToken(url, this._token);
+    url = _appendToken(url, this._token);
 
     return this._backend.put(url, JSON.encode(ep))
       .then(JSON.decode)

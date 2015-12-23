@@ -44,7 +44,7 @@ class NotificationService {
    */
   Future broadcastEvent(Event.Event event) {
     Uri uri = Resource.Notification.broadcast(this._host);
-    uri = appendToken(uri, this._token);
+    uri = _appendToken(uri, this._token);
 
     log.finest('Broadcasting ${event.runtimeType}');
 
@@ -59,7 +59,7 @@ class NotificationService {
    */
   Future<Iterable<Map>> clientConnectionsMap() {
     Uri uri = Resource.Notification.clientConnections(this._host);
-    uri = appendToken(uri, this._token);
+    uri = _appendToken(uri, this._token);
 
     log.finest('GET $uri');
 
@@ -78,7 +78,7 @@ class NotificationService {
    */
   Future<Map> clientConnectionMap(int uid) {
     Uri uri = Resource.Notification.clientConnection(this._host, uid);
-    uri = appendToken(uri, this._token);
+    uri = _appendToken(uri, this._token);
 
     log.finest('GET $uri');
 
@@ -97,7 +97,7 @@ class NotificationService {
    */
   Future send(Iterable<int> recipients, Event.Event event) {
     Uri uri = Resource.Notification.send(this._host);
-    uri = appendToken(uri, this._token);
+    uri = _appendToken(uri, this._token);
 
     return new Future.error(new UnimplementedError());
   }
@@ -147,7 +147,7 @@ class NotificationService {
       WebSocket notificationBackend, Uri host, String serverToken) {
     return notificationBackend
         .connect(
-            appendToken(Resource.Notification.notifications(host), serverToken))
+            _appendToken(Resource.Notification.notifications(host), serverToken))
         .then((WebSocket ws) => new NotificationSocket(ws));
   }
 }

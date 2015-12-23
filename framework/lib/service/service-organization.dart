@@ -28,7 +28,7 @@ class RESTOrganizationStore implements Storage.Organization {
 
   Future<Iterable<Model.BaseContact>> contacts(int organizationID) {
     Uri url = Resource.Organization.contacts(this._host, organizationID);
-        url = appendToken(url, this._token);
+        url = _appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
       (JSON.decode(response) as Iterable).map((Map map) =>
@@ -37,7 +37,7 @@ class RESTOrganizationStore implements Storage.Organization {
 
   Future<Iterable<int>> receptions(int organizationID) {
     Uri url = Resource.Organization.receptions(_host, organizationID);
-        url = appendToken(url, this._token);
+        url = _appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
       (JSON.decode(response)));
@@ -45,7 +45,7 @@ class RESTOrganizationStore implements Storage.Organization {
 
   Future<Model.Organization> get(int organizationID) {
     Uri url = Resource.Organization.single(this._host, organizationID);
-        url = appendToken(url, this._token);
+        url = _appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
         new Model.Organization.fromMap (JSON.decode(response)));
@@ -53,7 +53,7 @@ class RESTOrganizationStore implements Storage.Organization {
 
   Future<Model.Organization> create(Model.Organization organization) {
     Uri url = Resource.Organization.root(this._host);
-        url = appendToken(url, this._token);
+        url = _appendToken(url, this._token);
 
     String data = JSON.encode(organization.asMap);
     return this._backend.post(url, data).then((String response) =>
@@ -62,7 +62,7 @@ class RESTOrganizationStore implements Storage.Organization {
 
   Future<Model.Organization> update(Model.Organization organization) {
     Uri url = Resource.Organization.single(this._host, organization.id);
-        url = appendToken(url, this._token);
+        url = _appendToken(url, this._token);
 
     String data = JSON.encode(organization.asMap);
     return this._backend.put(url, data).then((String response) =>
@@ -71,7 +71,7 @@ class RESTOrganizationStore implements Storage.Organization {
 
   Future remove(int organizationID) {
     Uri url = Resource.Organization.single(this._host, organizationID);
-        url = appendToken(url, this._token);
+        url = _appendToken(url, this._token);
 
     return this._backend.delete(url).then((String response) =>
         new Model.Organization.fromMap (JSON.decode(response)));
@@ -79,7 +79,7 @@ class RESTOrganizationStore implements Storage.Organization {
 
   Future<Iterable<Model.Organization>> list() {
     Uri url = Resource.Organization.list(this._host, token: this._token);
-        url = appendToken(url, this._token);
+        url = _appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
         (JSON.decode(response) as Iterable)
