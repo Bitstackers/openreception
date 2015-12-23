@@ -22,7 +22,8 @@ import '../configuration.dart';
 import 'controller.dart' as Controller;
 import 'model/model.dart' as Model;
 
-import 'package:openreception_framework/storage.dart'  as ORStorage;
+import 'package:openreception_framework/pbx-keys.dart';
+import 'package:openreception_framework/storage.dart' as ORStorage;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
 import 'package:openreception_framework/model.dart' as ORModel;
@@ -42,63 +43,55 @@ part 'router/handler-channel.dart';
 part 'router/handler-peer.dart';
 
 const String libraryName = "callflowcontrol.router";
-final Logger log = new Logger (libraryName);
+final Logger log = new Logger(libraryName);
 
 Controller.State _stateController;
 Controller.ClientNotifier _notififer;
 
-
-const Map corsHeaders = const
-  {'Access-Control-Allow-Origin': '*',
-   'Access-Control-Allow-Methods' : 'GET, PUT, POST, DELETE'};
+const Map corsHeaders = const {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE'
+};
 
 Service.Authentication AuthService = null;
 Service.NotificationService Notification = null;
 
 void connectAuthService() {
-  AuthService = new Service.Authentication
-      (config.authServer.externalUri,
-          config.callFlowControl.serverToken, new Service_IO.Client());
+  AuthService = new Service.Authentication(
+      config.authServer.externalUri, config.callFlowControl.serverToken, new Service_IO.Client());
 }
 
 shelf.Middleware checkAuthentication =
-  shelf.createMiddleware(requestHandler: _lookupToken, responseHandler: null);
-
+    shelf.createMiddleware(requestHandler: _lookupToken, responseHandler: null);
 
 Future<shelf.Response> _lookupToken(shelf.Request request) {
   var token = request.requestedUri.queryParameters['token'];
 
-  return AuthService.validate(token).then((_) => null)
-  .catchError((error) {
+  return AuthService.validate(token).then((_) => null).catchError((error) {
     if (error is ORStorage.NotFound) {
       return new shelf.Response.forbidden('Invalid token');
-    }
-    else if (error is IO.SocketException) {
-      return new shelf.Response.internalServerError(body : 'Cannot reach authserver');
-    }
-    else {
-      return new shelf.Response.internalServerError(body : error.toString());
+    } else if (error is IO.SocketException) {
+      return new shelf.Response.internalServerError(body: 'Cannot reach authserver');
+    } else {
+      return new shelf.Response.internalServerError(body: error.toString());
     }
   });
 }
 
-Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4242}) {
+Future<IO.HttpServer> start({String hostname: '0.0.0.0', int port: 4242}) {
   _stateController = new Controller.State();
-  Controller.ActiveRecording _activeRecordingController =
-      new Controller.ActiveRecording();
+  Controller.ActiveRecording _activeRecordingController = new Controller.ActiveRecording();
 
   Controller.AgentStatistics _statsController =
       new Controller.AgentStatistics(Model.AgentHistory.instance);
 
   log.info('Starting client notifier');
 
-  Notification = new Service.NotificationService
-      (config.notificationServer.externalUri,
-          config.callFlowControl.serverToken, new Service_IO.Client());
+  Notification = new Service.NotificationService(config.notificationServer.externalUri,
+      config.callFlowControl.serverToken, new Service_IO.Client());
 
   _notififer = new Controller.ClientNotifier(Notification)
-              ..listenForCallEvents(Model.CallList.instance);
-
+    ..listenForCallEvents(Model.CallList.instance);
 
   var router = shelf_route.router()
     ..get('/peer/list', Peer.list)
@@ -126,9 +119,12 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4242}) {
     ..post('/call/{callid}/pickup', Call.pickup)
     ..post('/call/{callid}/park', Call.park)
     ..post('/call/originate/{extension}/reception/{rid}/contact/{cid}', Call.originate)
-    ..post('/call/originate/{extension}/reception/{rid}/contact/{cid}/call/{callId}', Call.originate)
-    ..post('/call/originate/{extension}@{host}:{port}/reception/{rid}/contact/{cid}', Call.originate)
-    ..post('/call/originate/{extension}@{host}:{port}/reception/{rid}/contact/{cid}/call/{callId}', Call.originate)
+    ..post(
+        '/call/originate/{extension}/reception/{rid}/contact/{cid}/call/{callId}', Call.originate)
+    ..post(
+        '/call/originate/{extension}@{host}:{port}/reception/{rid}/contact/{cid}', Call.originate)
+    ..post('/call/originate/{extension}@{host}:{port}/reception/{rid}/contact/{cid}/call/{callId}',
+        Call.originate)
     ..post('/call/{aleg}/transfer/{bleg}', Call.transfer)
     ..post('/call/reception/{rid}/record', Call.recordSound);
 
@@ -139,10 +135,9 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4242}) {
       .addHandler(router.handler);
 
   log.fine('Serving interfaces:');
-  shelf_route.printRoutes(router, printer : log.fine);
+  shelf_route.printRoutes(router, printer: log.fine);
 
   return shelf_io.serve(handler, hostname, port);
 }
 
-String _tokenFrom(shelf.Request request) =>
-    request.requestedUri.queryParameters['token'];
+String _tokenFrom(shelf.Request request) => request.requestedUri.queryParameters['token'];

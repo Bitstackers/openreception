@@ -3,21 +3,19 @@ import 'dart:convert';
 
 import 'package:openreception_framework/database.dart' as or_db;
 import 'package:openreception_framework/model.dart' as or_model;
+import 'package:openreception_framework/pbx-keys.dart';
 
 import '../lib/configuration.dart';
 
 main(List<String> args) async {
-  final or_db.Connection connection = await
-      or_db.Connection.connect(config.database.dsn);
+  final or_db.Connection connection = await or_db.Connection.connect(config.database.dsn);
   or_db.Cdr cdrStore = new or_db.Cdr(connection);
 
   List<FileSystemEntity> listing = new Directory('cdr-json').listSync();
 
-  bool isJsonFile(FileSystemEntity fse) =>
-      fse is File && fse.path.toLowerCase().endsWith('.json');
+  bool isJsonFile(FileSystemEntity fse) => fse is File && fse.path.toLowerCase().endsWith('.json');
 
-  String readFile(FileSystemEntity fse) =>
-      new File(fse.path).readAsStringSync();
+  String readFile(FileSystemEntity fse) => new File(fse.path).readAsStringSync();
 
   listing
       .where(isJsonFile)
@@ -38,14 +36,14 @@ main(List<String> args) async {
       ..contact_id = cdr.contactId;
 
     try {
-      if(entry.receptionId != 0)
-      await cdrStore.create(entry);
+      if (entry.receptionId != 0) {
+        await cdrStore.create(entry);
+      }
 
       //TODO: Perform long-term storage.
-    }
-    catch(error) {
+    } catch (error) {
       print(error);
-    };
+    }
   });
 }
 
@@ -66,9 +64,8 @@ class FsCdr {
 
   Map get _appLog => data.containsKey('app_log') ? data['app_log'] : {};
 
-  Iterable get appLog => _appLog.containsKey('applications')
-      ? _appLog['applications'].map(AppEntry.decode)
-      : [];
+  Iterable get appLog =>
+      _appLog.containsKey('applications') ? _appLog['applications'].map(AppEntry.decode) : [];
 
   List get callflow => data['callflow'];
 
@@ -92,15 +89,15 @@ class FsCdr {
 
   bool get inbound => variables['direction'] == 'inbound';
   String get extension =>
-      callflow.firstWhere((Map map) => map['profile_index'] == '1')[
-          'caller_profile']['destination_number'];
+      callflow.firstWhere((Map map) => map['profile_index'] == '1')['caller_profile']
+          ['destination_number'];
   int get duration => int.parse(variables['billmsec']);
   int get waitTime => int.parse(variables['waitmsec']);
-  DateTime get startedAt => new DateTime.fromMillisecondsSinceEpoch(
-      int.parse(variables['start_epoch']) * 1000);
+  DateTime get startedAt =>
+      new DateTime.fromMillisecondsSinceEpoch(int.parse(variables['start_epoch']) * 1000);
 
-  int get owner => variables.containsKey('openreception::owner_uid')
-      ? int.parse(variables['openreception::owner_uid'])
+  int get owner => variables.containsKey(PbxKey.ownerId)
+      ? int.parse(variables[PbxKey.ownerId])
       : or_model.User.noID;
 }
 

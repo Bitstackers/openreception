@@ -16,8 +16,7 @@ part of openreception.call_flow_control_server.model;
 /**
  * Utility function. Returns the name of the peer owning the channel.
  */
-String ownedByPeer (ESL.Channel channel) {
-
+String ownedByPeer(ESL.Channel channel) {
   if (!channel.channelName().startsWith('sofia/')) {
     throw new ArgumentError('only sofia channels are supported.');
   }
@@ -29,7 +28,7 @@ String ownedByPeer (ESL.Channel channel) {
  * Utility function. Returns the name of the peer owning the channel
  * (string representation).
  */
-String channelOwnedByPeer (String channelName) {
+String channelOwnedByPeer(String channelName) {
   if (!channelName.startsWith('sofia/')) {
     throw new ArgumentError('only sofia channels are supported.');
   }
@@ -41,15 +40,14 @@ String channelOwnedByPeer (String channelName) {
  * Returns the uuid (either leg) owned by [peerName]. Throws [ArgumentError] if
  * the peer has no relation to the channel.
  */
-String channelUUIDOfPeer (ESL.Channel channel, String peerName) {
+String channelUUIDOfPeer(ESL.Channel channel, String peerName) {
   String channelName = channel.fields['Channel-Name'];
   String otherChannelName = channel.fields['Other-Leg-Channel-Name'];
 
-  if (channelOwnedByPeer (channelName) == peerName) {
+  if (channelOwnedByPeer(channelName) == peerName) {
     return channel.fields['Channel-UUID'];
-  } else if (otherChannelName != null)
-    if (channelOwnedByPeer (otherChannelName) == peerName) {
-      return channel.fields['Other-Leg-Channel-UUID'];
+  } else if (otherChannelName != null) if (channelOwnedByPeer(otherChannelName) == peerName) {
+    return channel.fields['Other-Leg-Channel-UUID'];
   }
 
   throw new ArgumentError('Peer $peerName has no relation to Channel $channel');
@@ -58,15 +56,14 @@ String channelUUIDOfPeer (ESL.Channel channel, String peerName) {
 /**
  * Strips the sip: and domain part from a sip contact string.
  */
-String simplePeerName (String peerName) =>
-  peerName.split('@')[0].replaceAll('sip:', '');
+String simplePeerName(String peerName) => peerName.split('@')[0].replaceAll('sip:', '');
 
 /**
  * Channel event name string constants.
  */
 abstract class ChannelEventName {
-  static const String CREATE  = 'chan_create';
-  static const String UPDATE  = 'chan_update';
+  static const String CREATE = 'chan_create';
+  static const String UPDATE = 'chan_update';
   static const String DESTROY = 'chan_destroy';
 }
 
@@ -87,28 +84,27 @@ abstract class PBXEvent {
   static const String SOFIA_REGISTER = 'sofia::register';
   static const String SOFIA_UNREGISTER = 'sofia::unregister';
 
-  static const String _OR_CALL_NOTIFY = 'openreception::call-notify';
-  static const String _OR_CALL_LOCK = 'openreception::call-lock';
-  static const String _OR_CALL_UNLOCK = 'openreception::call-unlock';
-  static const String _OR_CALL_RINGING_START = 'openreception::ringing-start';
-  static const String _OR_CALL_RINGING_STOP = 'openreception::ringing-stop';
-  //static const String _OR_CALL_PLAYBACK_START = 'openreception::call-playback-start';
-  //static const String _OR_CALL_PLAYBACK_STOP = 'openreception::call-playback-stop';
-
-  static const String _OR_WAIT_QUEUE_ENTER = 'openreception::wait-queue-enter';
-  static const String _OR_PARKING_LOT_ENTER = 'openreception::parking-lot-enter';
-  static const String _OR_PARKING_LOT_LEAVE = 'openreception::parking-lot-leave';
-
-  static const List<String> requiredSubscriptions = const
-      [CHANNEL_BRIDGE, CHANNEL_CREATE, CHANNEL_DESTROY, CHANNEL_STATE,
-        CHANNEL_ORIGINATE, CHANNEL_ANSWER,
-        RECORD_START, RECORD_STOP,
-        CUSTOM, SOFIA_REGISTER,
-        SOFIA_UNREGISTER,
-        _OR_CALL_RINGING_START, _OR_CALL_RINGING_STOP,
-        _OR_PARKING_LOT_ENTER, _OR_PARKING_LOT_LEAVE,
-        _OR_CALL_NOTIFY, _OR_WAIT_QUEUE_ENTER,
-        _OR_CALL_LOCK, _OR_CALL_UNLOCK, ];
+  static const List<String> requiredSubscriptions = const [
+    CHANNEL_BRIDGE,
+    CHANNEL_CREATE,
+    CHANNEL_DESTROY,
+    CHANNEL_STATE,
+    CHANNEL_ORIGINATE,
+    CHANNEL_ANSWER,
+    RECORD_START,
+    RECORD_STOP,
+    CUSTOM,
+    SOFIA_REGISTER,
+    SOFIA_UNREGISTER,
+    PbxKey.ringingStart,
+    PbxKey.ringingStop,
+    PbxKey.parkingLotEnter,
+    PbxKey.parkingLotLeave,
+    PbxKey.callNotify,
+    PbxKey.waitQueueEnter,
+    PbxKey.callLock,
+    PbxKey.callUnlock
+  ];
 }
 
 /**
@@ -116,25 +112,24 @@ abstract class PBXEvent {
  * call-list event listener.
  */
 class ChannelEvent {
-  final String      eventName;
+  final String eventName;
   final ESL.Channel channel;
 
-  ChannelEvent (this.eventName, this.channel);
+  ChannelEvent(this.eventName, this.channel);
 
   @override
-  String toString () => this.asMap.toString();
+  String toString() => this.asMap.toString();
 
-  bool   get isExternalChannel => !this.channel.isInternal();
+  bool get isExternalChannel => !this.channel.isInternal();
 
-  String get ownerPeer         => simplePeerName (ownedByPeer (this.channel));
-
+  String get ownerPeer => simplePeerName(ownedByPeer(this.channel));
 
   Map get asMap => {
-     'eventName' : this.eventName,
-     'channelID' : this.channel.UUID,
-     'ownerPeer' : this.ownerPeer,
-     'external'  : this.isExternalChannel
-  };
+        'eventName': this.eventName,
+        'channelID': this.channel.UUID,
+        'ownerPeer': this.ownerPeer,
+        'external': this.isExternalChannel
+      };
 }
 
 /**
@@ -143,16 +138,15 @@ class ChannelEvent {
  * duplicate channels for clients.
  */
 class ChannelList extends ESL.ChannelList {
-
   /// Internal logger
-  static final Logger _log       = new Logger('${libraryName}.ChanneList');
+  static final Logger _log = new Logger('${libraryName}.ChanneList');
 
   /// Singleton instance.
   static ChannelList instance = new ChannelList();
 
   /// Controller for injecting events into [event] stream.
-  static StreamController<ChannelEvent> _eventController
-    = new StreamController<ChannelEvent>.broadcast();
+  static StreamController<ChannelEvent> _eventController =
+      new StreamController<ChannelEvent>.broadcast();
 
   /// Broadcast stream for channel events.
   static Stream<ChannelEvent> event = _eventController.stream;
@@ -160,28 +154,27 @@ class ChannelList extends ESL.ChannelList {
   /**
    *
    */
-  bool containsChannel (String uuid) => get(uuid) != null;
-
+  bool containsChannel(String uuid) => get(uuid) != null;
 
   /**
    * Determine if a peer has any active channels.
    */
-  bool hasActiveChannels (String peerID) =>
+  bool hasActiveChannels(String peerID) =>
       this.any((ESL.Channel channel) => simplePeerName(ownedByPeer(channel)) == peerID);
 
   /**
    * Determine the number of active channels a peer has.
    */
-  int activeChannelCount (String peerID) =>
+  int activeChannelCount(String peerID) =>
       this.where((ESL.Channel channel) => simplePeerName(ownedByPeer(channel)) == peerID).length;
 
   /**
    * Updates, removes or adds a channel, based on the state of [channel].
    */
-  void update (ESL.Channel channel) {
+  void update(ESL.Channel channel) {
     bool newChannel = false;
 
-    _log.finest ('Updating:'
+    _log.finest('Updating:'
         ' channelName:${channel.channelName ()}'
         ' internal:${channel.isInternal ()}, '
         ' state:${channel.state}, '
@@ -198,12 +191,12 @@ class ChannelList extends ESL.ChannelList {
     /// If the UUID has been removed, send remove notification.
     if (!this.contains(channel)) {
       _eventController.add(new ChannelEvent(ChannelEventName.DESTROY, channel));
-    }
-    else if (newChannel) {
+    } else if (newChannel) {
       _eventController.add(new ChannelEvent(ChannelEventName.CREATE, channel));
     } else {
-      _eventController.add(new ChannelEvent(ChannelEventName.UPDATE,channel));
+      _eventController.add(new ChannelEvent(ChannelEventName.UPDATE, channel));
     }
+
     ///FIXME Disabled channel notifications for now. Should probably go into a
     /// Separate websocket stream or be a config option.
     //Notification.broadcast(ClientNotification.channelUpdate (channel));
@@ -213,10 +206,8 @@ class ChannelList extends ESL.ChannelList {
    * Handle an incoming [ESL.Event] packet
    */
   void handleEvent(ESL.Event packet) {
-
     void dispatch() {
       switch (packet.eventName) {
-
         case (PBXEvent.CHANNEL_BRIDGE):
           this.update(new ESL.Channel.fromPacket(packet));
           break;
