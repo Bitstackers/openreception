@@ -305,13 +305,13 @@ abstract class Call {
     Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Speaking);
 
     try {
-      await Controller.PBX.setVariable(call.channel, PbxKey.ownerId, user.ID.toString());
-      await Controller.PBX.setVariable(call.channel, 'reception_id', receptionID.toString());
-      await Controller.PBX.setVariable(call.channel, 'contact_id', contactID.toString());
-      await Controller.PBX.setVariable(call.channel, PbxKey.destination, extension);
+      await Controller.PBX.setVariable(call.channel, ORPbxKey.userId, user.ID.toString());
+      await Controller.PBX.setVariable(call.channel, ORPbxKey.receptionId, receptionID.toString());
+      await Controller.PBX.setVariable(call.channel, ORPbxKey.contactId, contactID.toString());
+      await Controller.PBX.setVariable(call.channel, ORPbxKey.destination, extension);
 
       if (callId.isNotEmpty) {
-        await Controller.PBX.setVariable(call.channel, PbxKey.contextCallId, callId);
+        await Controller.PBX.setVariable(call.channel, ORPbxKey.contextCallId, callId);
       }
     } catch (error, stackTrace) {
       final String msg = 'Failed to create agent channel';
@@ -526,7 +526,7 @@ abstract class Call {
 
     /// Tag the channel as assigned to the user.
     try {
-      await Controller.PBX.setVariable(assignedCall.channel, PbxKey.ownerId, user.ID.toString());
+      await Controller.PBX.setVariable(assignedCall.channel, ORPbxKey.userId, user.ID.toString());
     } catch (error, stackTrace) {
       final String msg = 'Failed set user id for channel $agentChannel.'
           'Channel reload will be inaccurate.';

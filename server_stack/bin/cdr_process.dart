@@ -75,12 +75,12 @@ class FsCdr {
 
   String get channelId => variables['uuid'];
 
-  int get receptionId => variables.containsKey('reception_id')
-      ? int.parse(variables['reception_id'])
+  int get receptionId => variables.containsKey(ORPbxKey.receptionId)
+      ? int.parse(variables[ORPbxKey.receptionId])
       : or_model.Reception.noID;
 
-  int get contactId => variables.containsKey('contact_id')
-      ? int.parse(variables['contact_id'])
+  int get contactId => variables.containsKey(ORPbxKey.contactId)
+      ? int.parse(variables[ORPbxKey.contactId])
       : or_model.Contact.noID;
 
   Map get variables => data.containsKey('variables') ? data['variables'] : {};
@@ -96,8 +96,8 @@ class FsCdr {
   DateTime get startedAt =>
       new DateTime.fromMillisecondsSinceEpoch(int.parse(variables['start_epoch']) * 1000);
 
-  int get owner => variables.containsKey(PbxKey.ownerId)
-      ? int.parse(variables[PbxKey.ownerId])
+  int get owner => variables.containsKey(ORPbxKey.userId)
+      ? int.parse(variables[ORPbxKey.userId])
       : or_model.User.noID;
 }
 

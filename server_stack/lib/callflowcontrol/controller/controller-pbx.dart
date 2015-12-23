@@ -77,7 +77,7 @@ abstract class PBX {
   static Future<String> originate(
       String extension, int contactID, int receptionID, ORModel.User user) {
     /// Tag the A-leg as a primitive origination channel.
-    List<String> a_legvariables = ['${PbxKey.agentChannel}=true'];
+    List<String> a_legvariables = ['${ORPbxKey.agentChannel}=true'];
 
     List<String> b_legvariables = [
       'reception_id=${receptionID}',
@@ -117,7 +117,7 @@ abstract class PBX {
 
     Map variables = {
       'ignore_early_media': true,
-      PbxKey.agentChannel: true,
+      ORPbxKey.agentChannel: true,
       'park_timeout': _agentChantimeOut,
       'hangup_after_bridge': true,
       'origination_uuid': new_call_uuid,
@@ -166,7 +166,7 @@ abstract class PBX {
 
     Map variables = {
       'ignore_early_media': true,
-      PbxKey.agentChannel: true,
+      ORPbxKey.agentChannel: true,
       'park_timeout': _agentChantimeOut,
       'hangup_after_bridge': true,
       'origination_uuid': new_call_uuid,
@@ -200,7 +200,7 @@ abstract class PBX {
           .firstWhere(inviteClosed, defaultValue: () => null)
           .timeout(new Duration(seconds: _agentChantimeOut));
     } on TimeoutException {
-      _cleanupChannel(PbxKey.agentChannel);
+      _cleanupChannel(ORPbxKey.agentChannel);
 
       throw new NoAnswer('destination: $destination');
     }

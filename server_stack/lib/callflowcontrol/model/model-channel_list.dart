@@ -96,14 +96,14 @@ abstract class PBXEvent {
     CUSTOM,
     SOFIA_REGISTER,
     SOFIA_UNREGISTER,
-    PbxKey.ringingStart,
-    PbxKey.ringingStop,
-    PbxKey.parkingLotEnter,
-    PbxKey.parkingLotLeave,
-    PbxKey.callNotify,
-    PbxKey.waitQueueEnter,
-    PbxKey.callLock,
-    PbxKey.callUnlock
+    ORPbxKey.ringingStart,
+    ORPbxKey.ringingStop,
+    ORPbxKey.parkingLotEnter,
+    ORPbxKey.parkingLotLeave,
+    ORPbxKey.callNotify,
+    ORPbxKey.waitQueueEnter,
+    ORPbxKey.callLock,
+    ORPbxKey.callUnlock
   ];
 }
 
