@@ -63,6 +63,7 @@ class PbxKey {
   static const String greetShort = 'greet-short';
   static const String hangup = 'hangup';
   static const String hangupCause = 'hangup_cause';
+  static const String inbound = 'inbound';
   static const String log = 'log';
   static const String maxFailures = 'max-failures';
   static const String maxTimeouts = 'max-timeouts';
@@ -71,16 +72,20 @@ class PbxKey {
   static const String menuTop = 'menu-top';
   static const String onFalse = 'on-false';
   static const String onTrue = 'on-true';
+  static const String originateSignalBond = 'originate_signal_bond';
   static const String outbound = 'outbound';
   static const String playback = 'playback';
   static const String queued = 'queued';
   static const String reception = 'reception';
   static const String ringing = 'ringing';
+  static const String signalBond = 'signal_bond';
   static const String sipFromUserStripped = 'sip_from_user_stripped';
   static const String sleep = 'sleep';
   static const String startEpoch = 'start_epoch';
   static const String state = 'state';
   static const String timeout = 'timeout';
   static const String transfer = 'transfer';
+  static const String transferHistory = 'transfer_history';
   static const String uuid = 'uuid';
+  static const String voicemail = 'voicemail';
 }
