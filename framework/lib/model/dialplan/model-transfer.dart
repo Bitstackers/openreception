@@ -23,9 +23,9 @@ class Transfer extends Action {
   /**
    * Default constructor.
    */
-  const Transfer(this.extension, {this.note : ''});
+  const Transfer(this.extension, {this.note: ''});
 
-  static Transfer parse (String buffer) {
+  static Transfer parse(String buffer) {
     /// Remove leading spaces.
     buffer = buffer.trimLeft();
 
