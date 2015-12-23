@@ -75,8 +75,8 @@ class Call {
     ..destination = map[Key.destination]
     ..callerID = map[Key.callerID]
     ..greetingPlayed = map[Key.greetingPlayed]
-    ..receptionID = map[Key.receptionID]
-    ..contactID = map[Key.contactID]
+    ..receptionID = map[ORPbxKey.receptionId]
+    ..contactID = map[ORPbxKey.contactId]
     ..assignedTo = map[Key.assignedTo]
     ..arrived = Util.unixTimestampToDateTime(map[Key.arrivalTime]);
 
@@ -255,8 +255,8 @@ class Call {
         Key.destination: destination,
         Key.callerID: callerID,
         Key.greetingPlayed: greetingPlayed,
-        Key.receptionID: receptionID,
-        Key.contactID: contactID,
+        ORPbxKey.receptionId: receptionID,
+        ORPbxKey.contactId: contactID,
         Key.assignedTo: assignedTo,
         Key.channel: channel,
         Key.arrivalTime: Util.dateTimeToUnixTimestamp(arrived),
