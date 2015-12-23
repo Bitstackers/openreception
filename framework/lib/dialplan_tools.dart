@@ -53,7 +53,7 @@ List<String> _openingHourToXmlDialplan(
       ..addAll(_involvesReceptionists(actions)
           ? ['  <condition field="\${reception_open}" expression="^true\$"/>']
           : [])
-      ..add('  <condition ${_openingHourToFreeSwitch(oh)} break="${PbxKey.onTrue}>')
+      ..add('  <condition ${_openingHourToFreeSwitch(oh)} break="${PbxKey.onTrue}">')
       ..addAll(actions
           .map(_actionToXmlDialplan)
           .fold([], (combined, current) => combined..addAll(current.map(_indent).map(_indent))))
@@ -136,7 +136,6 @@ String convertTextual(model.ReceptionDialplan dialplan, int rid) =>
     </extension>
 
     ${_extraExtensionsToDialplan(dialplan.extraExtensions).join('\n    ')}
-
     <!-- Perform outbound calls -->
     <extension name="${dialplan.extension}-${PbxKey.outbound}" continue="true">
       <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(\d+)">
@@ -263,8 +262,7 @@ List<String> _actionToXmlDialplan(model.Action action) {
       _ringTone,
       _ringToneEvent(),
       '<action application="${PbxKey.answer}"/>',
-      '<action application="${PbxKey.playback}" '
-          'data="tone_stream://L=${action.count};\${dk-ring}"/>',
+      '<action application="${PbxKey.playback}" data="tone_stream://L=${action.count};\${dk-ring}"/>',
       _ringToneStop,
       _ringToneStopEvent()
     ]);
@@ -308,13 +306,13 @@ List<String> _actionToXmlDialplan(model.Action action) {
   } else if (action is model.Voicemail) {
     if (action.note.isNotEmpty) returnValue.add(_noteTemplate(action.note));
     returnValue.addAll([
-      '<action application="set" data="email_date_header=\${strftime(%a, %d %b %Y %H:%M:%S %z)}"/>',
-      '<action application="voicemail" data="default \$\${domain} ${action.vmBox}"/>'
+      '  <action application="set" data="email_date_header=\${strftime(%a, %d %b %Y %H:%M:%S %z)}"/>',
+      '  <action application="voicemail" data="default \$\${domain} ${action.vmBox}"/>'
     ]);
   } else if (action is model.Ivr) {
     returnValue.addAll([
-      '<action application="set" data="email_date_header=\${strftime(%a, %d %b %Y %H:%M:%S %z)}"/>',
-      '<action application="ivr" data="${action.menuName}"/>'
+      '  <action application="set" data="email_date_header=\${strftime(%a, %d %b %Y %H:%M:%S %z)}"/>',
+      '  <action application="ivr" data="${action.menuName}"/>'
     ]);
   } else {
     throw new StateError('Unsupported action type: ${action.runtimeType}');
