@@ -16,15 +16,17 @@ library openreception.pbx_keys;
 class OrfPbxKey {
   static const String namespace = 'orf::';
 
+  static const String agentChannel = 'agent-channel';
   static const String callLock = namespace + 'call-lock';
   static const String callNotify = namespace + 'call-notify';
   static const String callPlaybackStart = namespace + 'call-playback-start';
   static const String callPlaybackStop = namespace + 'call-playback-stop';
   static const String callUnlock = namespace + 'call-unlock';
+  static const String contextCallId = namespace + 'context-call-id';
   static const String destination = namespace + 'destination';
   static const String greetingPlayed = namespace + 'greeting-played';
   static const String locked = namespace + 'locked';
-  static const String ownerUid = namespace + 'owner_uid';
+  static const String ownerId = namespace + 'owner-id';
   static const String parkingLotEnter = namespace + 'parking-lot-enter';
   static const String parkingLotLeave = namespace + 'parking-lot-leave';
   static const String receptionId = namespace + 'rid';
@@ -35,18 +37,20 @@ class OrfPbxKey {
 }
 
 class PbxKey {
+  @deprecated static const String agentChannel = 'openreception::agent-channel';
   @deprecated static const String callLock = 'openreception::call-lock';
   @deprecated static const String callNotify = 'openreception::call-notify';
   @deprecated static const String callPlaybackStart = 'openreception::call-playback-start';
   @deprecated static const String callPlaybackStop = 'openreception::call-playback-stop';
   @deprecated static const String callUnlock = 'openreception::call-unlock';
+  @deprecated static const String contextCallId = 'openreception::context-call-id';
   @deprecated static const String destination = 'openreception::destination';
   @deprecated static const String greetingPlayed = 'openreception::greeting-played';
   @deprecated static const String locked = 'openreception::locked';
-  @deprecated static const String ownerUid = 'openreception::owner_uid';
+  @deprecated static const String ownerId = 'openreception::owner-id';
   @deprecated static const String parkingLotEnter = 'openreception::parking-lot-enter';
   @deprecated static const String parkingLotLeave = 'openreception::parking-lot-leave';
-  @deprecated static const String receptionId = 'reception_id';
+  @deprecated static const String receptionId = 'reception-id';
   @deprecated static const String ringingStart = 'openreception::ringing-start';
   @deprecated static const String ringingStop = 'openreception::ringing-stop';
   @deprecated static const String state = 'openreception::state';
