@@ -26,6 +26,7 @@ class ORPbxKey {
   static const String contactId = namespace + 'cid';
   static const String contextCallId = namespace + 'context-call-id';
   static const String destination = namespace + 'destination';
+  static const String emailDateHeader = namespace + 'email-date-header';
   static const String greetingPlayed = namespace + 'greeting-played';
   static const String locked = namespace + 'locked';
   static const String parkingLotEnter = namespace + 'parking-lot-enter';
@@ -43,18 +44,32 @@ class ORPbxKey {
  * overlap with keys found in [ORPbxKey]. Use the latter if you need the 'or::' namespace.
  */
 class PbxKey {
+  static const String agentBeginEpoch = 'agent-begin-epoch';
+  static const String agentEndEpoch = 'agent-end-epoch';
   static const String answer = 'answer';
+  static const String answerEpoch = 'answer_epoch';
+  static const String billSec = 'billsec';
   static const String bridge = 'bridge';
+  static const String bridgeUuid = 'bridge_uuid';
+  static const String callCharge = 'call-charge';
   static const String callOffer = 'call-offer';
+  static const String callSetupCharge = 'call-setup-charge';
   static const String closed = 'closed';
+  static const String currentApplication = 'current_application';
   static const String custom = 'CUSTOM';
+  static const String direction = 'direction';
+  static const String endEpoch = 'end_epoch';
   static const String event = 'event';
   static const String eventName = 'Event-Name';
   static const String eventSubclass = 'Event-Subclass';
   static const String externalTransfer = 'external_transfer';
+  static const String externalTransferEpoch = 'external-transfer-epoch';
+  static const String finalTransferAction = 'final-transfer-action';
   static const String greetLong = 'greet-long';
   static const String greetShort = 'greet-short';
   static const String hangup = 'hangup';
+  static const String hangupCause = 'hangup_cause';
+  static const String inbound = 'inbound';
   static const String log = 'log';
   static const String maxFailures = 'max-failures';
   static const String maxTimeouts = 'max-timeouts';
@@ -63,13 +78,21 @@ class PbxKey {
   static const String menuTop = 'menu-top';
   static const String onFalse = 'on-false';
   static const String onTrue = 'on-true';
+  static const String originateSignalBond = 'originate_signal_bond';
   static const String outbound = 'outbound';
   static const String playback = 'playback';
   static const String queued = 'queued';
   static const String reception = 'reception';
+  static const String receptionOpen = 'reception-open';
   static const String ringing = 'ringing';
+  static const String signalBond = 'signal_bond';
+  static const String sipFromUserStripped = 'sip_from_user_stripped';
   static const String sleep = 'sleep';
+  static const String startEpoch = 'start_epoch';
   static const String state = 'state';
   static const String timeout = 'timeout';
   static const String transfer = 'transfer';
+  static const String transferHistory = 'transfer_history';
+  static const String uuid = 'uuid';
+  static const String voicemail = 'voicemail';
 }
