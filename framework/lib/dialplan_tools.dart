@@ -139,7 +139,7 @@ String convertTextual(model.ReceptionDialplan dialplan, int rid) =>
     <!-- Perform outbound calls -->
     <extension name="${dialplan.extension}-${PbxKey.outbound}" continue="true">
       <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(\d+)">
-       <action application="${PbxKey.bridge}" data="{${ORPbxKey.receptionId}=${rid},${ORPbxKey.receptionId}=${rid},originate_timeout=120}[leg_timeout=50,${ORPbxKey.receptionId}=${rid},${ORPbxKey.receptionId}=${rid}]sofia/gateway/\${default_trunk}/\$1"/>
+       <action application="${PbxKey.bridge}" data="{${ORPbxKey.receptionId}=${rid},originate_timeout=120}[leg_timeout=50,${ORPbxKey.receptionId}=${rid}]sofia/gateway/\${default_trunk}/\$1"/>
         <action application="${PbxKey.hangup}"/>
       </condition>
     </extension>
@@ -280,12 +280,12 @@ List<String> _actionToXmlDialplan(model.Action action) {
   } else if (action is model.Voicemail) {
     if (action.note.isNotEmpty) returnValue.add(_noteTemplate(action.note));
     returnValue.addAll([
-      '  <action application="set" data="email_date_header=\${strftime(%a, %d %b %Y %H:%M:%S %z)}"/>',
+      '  <action application="set" data="${ORPbxKey.emailDateHeader}=\${strftime(%a, %d %b %Y %H:%M:%S %z)}"/>',
       '  <action application="voicemail" data="default \$\${domain} ${action.vmBox}"/>'
     ]);
   } else if (action is model.Ivr) {
     returnValue.addAll([
-      '  <action application="set" data="email_date_header=\${strftime(%a, %d %b %Y %H:%M:%S %z)}"/>',
+      '  <action application="set" data="${ORPbxKey.emailDateHeader}=\${strftime(%a, %d %b %Y %H:%M:%S %z)}"/>',
       '  <action application="ivr" data="${action.menuName}"/>'
     ]);
   } else {
