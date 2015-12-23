@@ -223,8 +223,8 @@ class CallList extends IterableBase<ORModel.Call> {
         this._createCall(event);
 
         this.get(event.uniqueID)
-          ..receptionID = event.contentAsMap.containsKey('variable_reception_id')
-              ? int.parse(event.field('variable_reception_id'))
+          ..receptionID = event.contentAsMap.containsKey('variable_${ORPbxKey.receptionId}')
+              ? int.parse(event.field('variable_${ORPbxKey.receptionId}'))
               : 0
           ..changeState(ORModel.CallState.Created);
 
@@ -348,16 +348,16 @@ class CallList extends IterableBase<ORModel.Call> {
 
     log.finest('Creating new call ${event.uniqueID}');
 
-    int contactID = event.contentAsMap.containsKey('variable_contact_id')
-        ? int.parse(event.field('variable_contact_id'))
+    int contactID = event.contentAsMap.containsKey('variable_${ORPbxKey.contactId}')
+        ? int.parse(event.field('variable_${ORPbxKey.contactId}'))
         : ORModel.Contact.noID;
 
-    int receptionID = event.contentAsMap.containsKey('variable_reception_id')
-        ? int.parse(event.field('variable_reception_id'))
+    int receptionID = event.contentAsMap.containsKey('variable_${ORPbxKey.receptionId}')
+        ? int.parse(event.field('variable_${ORPbxKey.receptionId}'))
         : ORModel.Reception.noID;
 
-    int userID = event.contentAsMap.containsKey('variable_owner')
-        ? int.parse(event.field('variable_owner'))
+    int userID = event.contentAsMap.containsKey('variable_${ORPbxKey.userId}')
+        ? int.parse(event.field('variable_${ORPbxKey.userId}'))
         : ORModel.User.noID;
 
     final ESL.Channel channel = new ESL.Channel.fromPacket(event);
