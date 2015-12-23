@@ -18,9 +18,9 @@ runDialplanTests() {
 
     test(
         'Non-existing path',
-        () => nonExistingPath(Service.appendToken(
-            Uri.parse('${Config.dialplanStoreUri}/nonexistingpath'),
-            Config.serverToken)));
+        () => nonExistingPath(
+            Uri.parse('${Config.dialplanStoreUri}/nonexistingpath'
+                '?token=${Config.serverToken}')));
 
     setUp(() {
       transport = new Transport.Client();
@@ -56,7 +56,6 @@ runDialplanTests() {
       receptionStore = null;
       transport.client.close(force: true);
     });
-
 
     test('deploy',
         () => ReceptionDialplanStore.deploy(rdpStore, receptionStore));

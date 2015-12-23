@@ -60,11 +60,14 @@ runIvrTests() {
 
     test(
         'CORS headers present (non-existingUri)',
-        () =>
-            isCORSHeadersPresent(Uri.parse('${Config.dialplanStoreUri}/nonexistingpath')));
+        () => isCORSHeadersPresent(
+            Uri.parse('${Config.dialplanStoreUri}/nonexistingpath')));
 
-    test('Non-existing path', () => nonExistingPath(Service.appendToken(Uri.parse('${Config.dialplanStoreUri}/nonexistingpath'), Config.serverToken)));
-
+    test(
+        'Non-existing path',
+        () => nonExistingPath(
+            Uri.parse('${Config.dialplanStoreUri}/nonexistingpath'
+                '?token=${Config.serverToken}')));
     setUp(() {
       transport = new Transport.Client();
       ivrStore = new Service.RESTIvrStore(
