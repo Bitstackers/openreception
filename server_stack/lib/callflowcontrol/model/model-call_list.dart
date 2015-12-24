@@ -14,7 +14,6 @@
 part of openreception.call_flow_control_server.model;
 
 class CallList extends IterableBase<ORModel.Call> {
-
   static final Logger log = new Logger('${libraryName}.CallList');
 
   Map<String, ORModel.Call> _map = new Map<String, ORModel.Call>();
@@ -28,7 +27,7 @@ class CallList extends IterableBase<ORModel.Call> {
 
   List toJson() => this.toList(growable: false);
 
-  bool containsID (String callID) => this._map.containsKey(callID);
+  bool containsID(String callID) => this._map.containsKey(callID);
 
   void subscribe(Stream<ESL.Event> eventStream) {
     eventStream.listen(_handleEvent);
@@ -47,76 +46,66 @@ class CallList extends IterableBase<ORModel.Call> {
   /**
    * Reload the call list from an Iterable of channels.
    */
-  void reloadFromChannels (Iterable<ESL.Channel> channels) {
+  void reloadFromChannels(Iterable<ESL.Channel> channels) {
     Map<String, ORModel.Call> calls = {};
 
     channels.forEach((ESL.Channel channel) {
-      if (!channel.variables.containsKey(Controller.PBX.agentChan)) {
+      if (!channel.variables.containsKey(ORPbxKey.agentChannel)) {
         calls[channel.UUID] = new ORModel.Call.empty(channel.UUID)
-        ..arrived = new DateTime.fromMillisecondsSinceEpoch(int.parse(channel.fields['Caller-Channel-Created-Time'])~/1000)
-        ..assignedTo = channel.variables.containsKey(Controller.PBX.ownerUid)
-          ? int.parse(channel.variables[Controller.PBX.ownerUid])
-          : ORModel.User.noID
-        ..b_Leg = channel.fields['Other-Leg-Unique-ID']
-        ..greetingPlayed = channel.variables.containsKey(Controller.PBX.greetingPlayed)
-            ? channel.variables[Controller.PBX.greetingPlayed] == 'true'
-            : false
-        ..locked = channel.variables.containsKey(Controller.PBX.locked)
-            ? channel.variables[Controller.PBX.locked] == 'true'
-            : false
-        ..inbound = (channel.fields['Call-Direction'] == 'inbound' ? true : false)
-        ..callerID =
-          channel.fields.containsKey('Caller-Orig-Caller-ID-Number')
-          ? channel.fields['Caller-Orig-Caller-ID-Number']
-          : channel.fields['Caller-Caller-ID-Number']
-        ..destination = channel.variables['openreception::destination']
-        ..receptionID = channel.variables.containsKey('reception_id')
-            ? int.parse(channel.variables['reception_id'])
-            : ORModel.Reception.noID
-        ..contactID = channel.variables.containsKey('contact_id')
-            ? int.parse(channel.variables['contact_id'])
-            : ORModel.Contact.noID
-        ..event.listen(this._callEvent.fire);
-
-      }
-      else {
+          ..arrived = new DateTime.fromMillisecondsSinceEpoch(
+              int.parse(channel.fields['Caller-Channel-Created-Time']) ~/ 1000)
+          ..assignedTo = channel.variables.containsKey(ORPbxKey.userId)
+              ? int.parse(channel.variables[ORPbxKey.userId])
+              : ORModel.User.noID
+          ..b_Leg = channel.fields['Other-Leg-Unique-ID']
+          ..greetingPlayed = channel.variables.containsKey(ORPbxKey.greetingPlayed)
+              ? channel.variables[ORPbxKey.greetingPlayed] == 'true'
+              : false
+          ..locked = channel.variables.containsKey(ORPbxKey.locked)
+              ? channel.variables[ORPbxKey.locked] == 'true'
+              : false
+          ..inbound = (channel.fields['Call-Direction'] == 'inbound' ? true : false)
+          ..callerID = channel.fields.containsKey('Caller-Orig-Caller-ID-Number')
+              ? channel.fields['Caller-Orig-Caller-ID-Number']
+              : channel.fields['Caller-Caller-ID-Number']
+          ..destination = channel.variables[ORPbxKey.destination]
+          ..receptionID = channel.variables.containsKey(ORPbxKey.receptionId)
+              ? int.parse(channel.variables[ORPbxKey.receptionId])
+              : ORModel.Reception.noID
+          ..contactID = channel.variables.containsKey(ORPbxKey.contactId)
+              ? int.parse(channel.variables[ORPbxKey.contactId])
+              : ORModel.Contact.noID
+          ..event.listen(this._callEvent.fire);
+      } else {
         log.info('Ignoring local channel ${channel.UUID}');
       }
-
     });
 
     ///Extract the call state.
     calls.values.forEach((ORModel.Call call) {
-      if(call.b_Leg != null) {
+      if (call.b_Leg != null) {
         log.info('$call is bridged.');
         final ESL.Channel aLeg = ChannelList.instance.get(call.channel);
         final ESL.Channel bLeg = ChannelList.instance.get(call.b_Leg);
 
         if (isCall(aLeg) && isCall(bLeg)) {
           call.state = ORModel.CallState.Transferred;
-        }
-        else {
+        } else {
           call.state = aLeg.fields['Answer-State'] == 'ringing'
               ? ORModel.CallState.Ringing
               : ORModel.CallState.Speaking;
         }
-
       } else {
         log.info('$call is not bridged.');
-        final String orState = ChannelList.instance.get(call.channel)
-            .variables['openreception::state'];
+        final String orState = ChannelList.instance.get(call.channel).variables[ORPbxKey.state];
 
         if (orState == 'queued') {
           call.state = ORModel.CallState.Queued;
-        }
-        else if (orState == 'parked') {
+        } else if (orState == 'parked') {
           call.state = ORModel.CallState.Parked;
-        }
-        else if (orState == 'ringing') {
+        } else if (orState == 'ringing') {
           call.state = ORModel.CallState.Ringing;
-        }
-
-        else {
+        } else {
           log.severe('state of $call not updated!');
         }
       }
@@ -138,7 +127,7 @@ class CallList extends IterableBase<ORModel.Call> {
     }
   }
 
-  void remove (String callID) {
+  void remove(String callID) {
     if (this._map.containsKey(callID)) {
       this._map.remove(callID);
     } else {
@@ -147,12 +136,11 @@ class CallList extends IterableBase<ORModel.Call> {
   }
 
   ORModel.Call requestCall(user) =>
-    //TODO: Implement a real algorithm for selecting calls.
-    this.firstWhere((ORModel.Call call) => call.assignedTo == ORModel.User.noID &&
-      !call.locked, orElse: () => throw new ORStorage.NotFound ("No calls available"));
+      //TODO: Implement a real algorithm for selecting calls.
+      this.firstWhere((ORModel.Call call) => call.assignedTo == ORModel.User.noID && !call.locked,
+          orElse: () => throw new ORStorage.NotFound("No calls available"));
 
-  ORModel.Call requestSpecificCall(String callID, ORModel.User user )  {
-
+  ORModel.Call requestSpecificCall(String callID, ORModel.User user) {
     ORModel.Call call = this.get(callID);
 
     if (![user.ID, ORModel.User.noID].contains(call.assignedTo)) {
@@ -169,45 +157,39 @@ class CallList extends IterableBase<ORModel.Call> {
   /**
    * Determine if a channel ID is a call-channel and not an agent channel.
    */
-  bool isCall (ESL.Channel channel) => this.containsID (channel.UUID);
+  bool isCall(ESL.Channel channel) => this.containsID(channel.UUID);
 
   /**
    * Handle CHANNEL_BRIDGE event packets.
    */
   void _handleBridge(ESL.Packet packet) {
-
     final ESL.Channel uuid = ChannelList.instance.get(packet.field('Unique-ID'));
     final ESL.Channel otherLeg = ChannelList.instance.get(packet.field('Other-Leg-Unique-ID'));
 
     log.finest('Bridging channel ${uuid.UUID} and channel ${otherLeg.UUID}');
 
-
     if (isCall(uuid) && isCall(otherLeg)) {
       log.finest('Channel ${uuid.UUID} and channel ${otherLeg.UUID} are both calls');
-      CallList.instance.get(uuid.UUID)
-        ..b_Leg = otherLeg.UUID;
-      CallList.instance.get(otherLeg.UUID)
-        ..b_Leg = uuid.UUID;
+      CallList.instance.get(uuid.UUID)..b_Leg = otherLeg.UUID;
+      CallList.instance.get(otherLeg.UUID)..b_Leg = uuid.UUID;
 
-      CallList.instance.get(uuid.UUID).changeState (ORModel.CallState.Transferred);
-      CallList.instance.get(otherLeg.UUID).changeState (ORModel.CallState.Transferred);
-    }
-
-    else if (isCall(uuid)) {
+      CallList.instance.get(uuid.UUID).changeState(ORModel.CallState.Transferred);
+      CallList.instance.get(otherLeg.UUID).changeState(ORModel.CallState.Transferred);
+    } else if (isCall(uuid)) {
       ORModel.Call call = CallList.instance.get(uuid.UUID);
       log.finest('Channel ${uuid.UUID} is a call');
 
-      call..b_Leg = otherLeg.UUID
-          ..changeState (ORModel.CallState.Speaking);
+      call
+        ..b_Leg = otherLeg.UUID
+        ..changeState(ORModel.CallState.Speaking);
 
-     _startRecording(call);
-    }
-
-    else if (isCall(otherLeg)) {
+      _startRecording(call);
+    } else if (isCall(otherLeg)) {
       ORModel.Call call = CallList.instance.get(otherLeg.UUID);
       log.finest('Channel ${otherLeg.UUID} is a call');
-       call..b_Leg = uuid.UUID
-           ..changeState (ORModel.CallState.Speaking);
+      call
+        ..b_Leg = uuid.UUID
+        ..changeState(ORModel.CallState.Speaking);
 
       _startRecording(call);
     }
@@ -218,7 +200,7 @@ class CallList extends IterableBase<ORModel.Call> {
     }
   }
 
-  void _handleChannelDestroy (ESL.Event event) {
+  void _handleChannelDestroy(ESL.Event event) {
     if (this.containsID(event.uniqueID)) {
       final ORModel.Call call = this.get(event.uniqueID);
 
@@ -226,90 +208,78 @@ class CallList extends IterableBase<ORModel.Call> {
         AgentHistory.instance.callHandledByAgent(call.assignedTo);
       }
 
-      call.hangupCause = event.field('Hangup-Cause') != null
-          ? event.field('Hangup-Cause')
-          : '';
+      call.hangupCause = event.field('Hangup-Cause') != null ? event.field('Hangup-Cause') : '';
       call.changeState(ORModel.CallState.Hungup);
       log.finest('Hanging up ${event.uniqueID}');
       this.remove(event.uniqueID);
     }
   }
 
-
-  void _handleCustom (ESL.Event event) {
+  void _handleCustom(ESL.Event event) {
     switch (event.eventSubclass) {
 
       /// Call is created
-      case (PBXEvent._OR_CALL_NOTIFY):
+      case (ORPbxKey.callNotify):
         this._createCall(event);
 
         this.get(event.uniqueID)
-            ..receptionID =
-              event.contentAsMap.containsKey('variable_reception_id')
-                        ? int.parse(event.field('variable_reception_id'))
-                        : 0
-            ..changeState(ORModel.CallState.Created);
+          ..receptionID = event.contentAsMap.containsKey('variable_${ORPbxKey.receptionId}')
+              ? int.parse(event.field('variable_${ORPbxKey.receptionId}'))
+              : 0
+          ..changeState(ORModel.CallState.Created);
 
         break;
 
-      case (PBXEvent._OR_CALL_RINGING_START):
+      case (ORPbxKey.ringingStart):
         this.get(event.uniqueID).changeState(ORModel.CallState.Ringing);
         break;
 
-      case (PBXEvent._OR_CALL_RINGING_STOP):
+      case (ORPbxKey.ringingStop):
         this.get(event.uniqueID).changeState(ORModel.CallState.Transferring);
         break;
 
-      case (PBXEvent._OR_CALL_LOCK):
-        if(this._map.containsKey(event.uniqueID)) {
+      case (ORPbxKey.callLock):
+        if (this._map.containsKey(event.uniqueID)) {
           log.finest('Locking ${event.uniqueID}');
-          CallList.instance.get (event.uniqueID).locked = true;
-        }
-        else {
+          CallList.instance.get(event.uniqueID).locked = true;
+        } else {
           log.severe('Locked non-announced call ${event.uniqueID}');
         }
         break;
 
-      case (PBXEvent._OR_CALL_UNLOCK):
-        if(this._map.containsKey(event.uniqueID)) {
+      case (ORPbxKey.callUnlock):
+        if (this._map.containsKey(event.uniqueID)) {
           log.finest('Unlocking ${event.uniqueID}');
-          CallList.instance.get (event.uniqueID).locked = false;
-        }
-        else {
+          CallList.instance.get(event.uniqueID).locked = false;
+        } else {
           log.severe('Locked non-announced call ${event.uniqueID}');
         }
         break;
-
 
       /// Entering the wait queue (Playing queue music)
-      case (PBXEvent._OR_WAIT_QUEUE_ENTER):
-
-        CallList.instance.get (event.uniqueID)
+      case (ORPbxKey.waitQueueEnter):
+        CallList.instance.get(event.uniqueID)
           ..greetingPlayed = true //TODO: Change this into a packet.variable.get ('greetingPlayed')
-          ..changeState (ORModel.CallState.Queued);
+          ..changeState(ORModel.CallState.Queued);
         break;
 
       /// Call is parked
-      case (PBXEvent._OR_PARKING_LOT_ENTER):
-        CallList.instance.get (event.uniqueID)
+      case (ORPbxKey.parkingLotEnter):
+        CallList.instance.get(event.uniqueID)
           ..b_Leg = null
-          ..changeState (ORModel.CallState.Parked);
+          ..changeState(ORModel.CallState.Parked);
         break;
 
       /// Call is unparked
-      case (PBXEvent._OR_PARKING_LOT_LEAVE):
-        CallList.instance.get (event.uniqueID)
-          ..changeState (ORModel.CallState.Transferring);
+      case (ORPbxKey.parkingLotLeave):
+        CallList.instance.get(event.uniqueID)..changeState(ORModel.CallState.Transferring);
         break;
     }
   }
 
-
   void _handleEvent(ESL.Event event) {
-
-    void dispatch () {
+    void dispatch() {
       switch (event.eventName) {
-
         case (PBXEvent.CHANNEL_BRIDGE):
           this._handleBridge(event);
           break;
@@ -333,11 +303,9 @@ class CallList extends IterableBase<ORModel.Call> {
       }
     }
 
-
     try {
       dispatch();
-    }
-    catch (error, stackTrace) {
+    } catch (error, stackTrace) {
       log.severe('Failed to dispatch event ${event.eventName}');
       log.severe(error, stackTrace);
     }
@@ -368,48 +336,49 @@ class CallList extends IterableBase<ORModel.Call> {
    */
   void _createCall(ESL.Event event) {
     /// Skip local channels
-    if (event.contentAsMap.containsKey ('variable_${Controller.PBX.agentChan}')) {
+    if (event.contentAsMap.containsKey('variable_${ORPbxKey.agentChannel}')) {
       log.finest('Skipping origination channel ${event.uniqueID}');
       return;
     }
 
-    if (event.contentAsMap.containsKey ('Other-Leg-Username')) {
+    if (event.contentAsMap.containsKey('Other-Leg-Username')) {
       log.finest('Skipping transfer channel ${event.uniqueID}');
       return;
     }
 
     log.finest('Creating new call ${event.uniqueID}');
 
-    int contactID = event.contentAsMap.containsKey('variable_contact_id')
-                     ? int.parse(event.field('variable_contact_id'))
-                     : ORModel.Contact.noID;
+    int contactID = event.contentAsMap.containsKey('variable_${ORPbxKey.contactId}')
+        ? int.parse(event.field('variable_${ORPbxKey.contactId}'))
+        : ORModel.Contact.noID;
 
-    int receptionID = event.contentAsMap.containsKey('variable_reception_id')
-                       ? int.parse(event.field('variable_reception_id'))
-                       : ORModel.Reception.noID;
+    int receptionID = event.contentAsMap.containsKey('variable_${ORPbxKey.receptionId}')
+        ? int.parse(event.field('variable_${ORPbxKey.receptionId}'))
+        : ORModel.Reception.noID;
 
-    int userID  = event.contentAsMap.containsKey('variable_owner')
-                   ? int.parse(event.field('variable_owner'))
-                   : ORModel.User.noID;
+    int userID = event.contentAsMap.containsKey('variable_${ORPbxKey.userId}')
+        ? int.parse(event.field('variable_${ORPbxKey.userId}'))
+        : ORModel.User.noID;
 
     final ESL.Channel channel = new ESL.Channel.fromPacket(event);
 
     ORModel.Call createdCall = new ORModel.Call.empty(event.uniqueID)
-        ..arrived = new DateTime.fromMillisecondsSinceEpoch(int.parse(event.field('Caller-Channel-Created-Time'))~/1000)
-        ..inbound = (event.field('Call-Direction') == 'inbound' ? true : false)
-        ..callerID = event.field('Caller-Caller-ID-Number')
-        ..destination = channel.variables['openreception::destination']
-        ..receptionID = receptionID
-        ..contactID   = contactID
-        ..assignedTo  = userID
-        ..event.listen(this._callEvent.fire);
+      ..arrived = new DateTime.fromMillisecondsSinceEpoch(
+          int.parse(event.field('Caller-Channel-Created-Time')) ~/ 1000)
+      ..inbound = (event.field('Call-Direction') == 'inbound' ? true : false)
+      ..callerID = event.field('Caller-Caller-ID-Number')
+      ..destination = channel.variables[ORPbxKey.destination]
+      ..receptionID = receptionID
+      ..contactID = contactID
+      ..assignedTo = userID
+      ..event.listen(this._callEvent.fire);
 
-      this._map[event.uniqueID] = createdCall;
-    }
+    this._map[event.uniqueID] = createdCall;
+  }
 }
 
 Future _startRecording(ORModel.Call call) async {
-  if(!config.callFlowControl.enableRecordings) {
+  if (!config.callFlowControl.enableRecordings) {
     return 0;
   }
 
@@ -417,18 +386,19 @@ Future _startRecording(ORModel.Call call) async {
     call.b_Leg,
     call.ID,
     call.receptionID,
-    call.inbound
-      ? 'in_${call.callerID}'
-      : 'out_${call.destination}'];
+    call.inbound ? 'in_${call.callerID}' : 'out_${call.destination}'
+  ];
 
   final filename = '${config.callFlowControl.recordingsDir}/'
-    '${parts.join('_')}.wav';
+      '${parts.join('_')}.wav';
 
-  return Controller.PBX.recordChannel(call.b_Leg, filename)
-    .then((_) =>
-      log.fine('Started recording call ${call.ID} '
-               '(agent channel: ${call.b_Leg})  to file $filename'))
-    .catchError((error, stackTrace) =>
-      log.severe('Could not start recording of '
-                 'call ${call.ID} to file $filename', error, stackTrace));
+  return Controller.PBX
+      .recordChannel(call.b_Leg, filename)
+      .then((_) => log.fine('Started recording call ${call.ID} '
+          '(agent channel: ${call.b_Leg})  to file $filename'))
+      .catchError((error, stackTrace) => log.severe(
+          'Could not start recording of '
+          'call ${call.ID} to file $filename',
+          error,
+          stackTrace));
 }
