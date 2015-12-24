@@ -11,6 +11,9 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
+/**
+ * The OR-Stack calendar server. Provides a REST calendar interface.
+ */
 library openreception.calendarserver;
 
 import 'dart:async';
