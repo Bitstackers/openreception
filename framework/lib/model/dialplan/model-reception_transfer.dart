@@ -26,7 +26,7 @@ class ReceptionTransfer extends Action {
    */
   const ReceptionTransfer(this.extension, {this.note: ''});
 
-  static Transfer parse(String buffer) {
+  static ReceptionTransfer parse(String buffer) {
     /// Remove leading spaces.
     buffer = buffer.trimLeft();
 
@@ -47,7 +47,7 @@ class ReceptionTransfer extends Action {
       note = buffer.substring(openBracket + 1, closeBracket);
     }
 
-    return new Transfer(extension, note: note);
+    return new ReceptionTransfer(extension, note: note);
   }
 
   String toString() => 'Omstil til $extension ($note)';

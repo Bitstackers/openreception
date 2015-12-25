@@ -30,6 +30,7 @@ part 'model-ivr_voicemail.dart';
 part 'model-notify.dart';
 part 'model-opening_hour.dart';
 part 'model-reception_dialplan.dart';
+part 'model-reception_transfer.dart';
 part 'model-playback.dart';
 part 'model-ringtone.dart';
 part 'model-transfer.dart';
