@@ -69,6 +69,7 @@ part 'src/model/dialplan/model-notify.dart';
 part 'src/model/dialplan/model-opening_hour.dart';
 part 'src/model/dialplan/model-playback.dart';
 part 'src/model/dialplan/model-reception_dialplan.dart';
+part 'src/model/dialplan/model-reception_transfer.dart';
 part 'src/model/dialplan/model-ring_tone.dart';
 part 'src/model/dialplan/model-transfer.dart';
 part 'src/model/dialplan/model-voicemail.dart';
@@ -110,6 +111,7 @@ void main(List<String> arguments) {
   testModelOpeningHour();
   testModelPlayback();
   testModelReceptionDialplan();
+  testModelReceptionTransfer();
   testModelRingtone();
   testModelTransfer();
   testModelVoicemail();
