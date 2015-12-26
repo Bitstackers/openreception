@@ -23,6 +23,7 @@ void testModelAction() {
     test('parseNotify', ModelAction.parseNotify);
     test('parseRingtone', ModelAction.parseRingtone);
     test('parsePlayback', ModelAction.parsePlayback);
+    test('parseReceptionTransfer', ModelAction.parseReceptionTransfer);
     test('parseIvr', ModelAction.parseIvr);
   });
 }
@@ -50,6 +51,16 @@ abstract class ModelAction {
     final String note = 'a note';
 
     Model.Transfer builtObject = Model.Action.parse('transfer $extension ($note)');
+
+    expect(builtObject.extension, equals(extension));
+    expect(builtObject.note, equals(note));
+  }
+
+  static void parseReceptionTransfer() {
+    final String extension = 'sub_1';
+    final String note = 'a note';
+
+    Model.ReceptionTransfer builtObject = Model.Action.parse('reception $extension ($note)');
 
     expect(builtObject.extension, equals(extension));
     expect(builtObject.note, equals(note));
