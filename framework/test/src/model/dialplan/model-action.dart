@@ -46,14 +46,13 @@ abstract class ModelAction {
   }
 
   static void parseTransfer() {
-    final String file = 'sub_1';
+    final String extension = 'sub_1';
     final String note = 'a note';
 
-    Model.Playback builtObject = Model.Action.parse('playback $file ($note)');
+    Model.Transfer builtObject = Model.Action.parse('transfer $extension ($note)');
 
-    expect(builtObject.filename, equals(file));
+    expect(builtObject.extension, equals(extension));
     expect(builtObject.note, equals(note));
-    expect(builtObject.wrapInLock, equals(false));
   }
 
   static void parseVoicemail() {
