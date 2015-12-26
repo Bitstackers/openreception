@@ -49,6 +49,9 @@ abstract class Action {
       case Key.ivr:
         return Ivr.parse(buffer);
 
+      case Key.reception:
+        return ReceptionTransfer.parse(buffer);
+
       default:
         throw new FormatException('Unknown keyword', consumed.iden);
     }
