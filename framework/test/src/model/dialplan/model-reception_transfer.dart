@@ -20,6 +20,7 @@ testModelReceptionTransfer() {
     test('serialization', ModelReceptionTransfer.serialization);
 
     test('buildObject', ModelReceptionTransfer.buildObject);
+    test('parsing', ModelReceptionTransfer.parsing);
   });
 }
 
@@ -51,6 +52,19 @@ abstract class ModelReceptionTransfer {
 
     expect(builtObject.extension, equals(deserializedObject.extension));
     expect(builtObject.note, equals(deserializedObject.note));
+  }
+
+  /**
+   *
+   */
+  static void parsing() {
+    final String buffer1 = 'reception 12340001';
+    final String buffer2 = 'reception 12340001 (Test reception 1)';
+    final String buffer3 = 'transfer 12340001 (Test reception 1)';
+
+    expect(Model.ReceptionTransfer.parse(buffer1), isNotNull);
+    expect(Model.ReceptionTransfer.parse(buffer2), isNotNull);
+    //expect(Model.ReceptionTransfer.parse(buffer3),throwsA(new isInstanceOf<FormatException>()));
   }
 
 /**
