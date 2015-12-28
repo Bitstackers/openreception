@@ -51,5 +51,10 @@ runDialplanDeploymentTests() {
         'No opening hours',
         () => DialplanDeployment.noHours(
             customer, rdpStore, receptionStore, eslClient));
+
+    test(
+        'Opening hours - open',
+        () => DialplanDeployment.openHoursOpen (
+            customer, rdpStore, receptionStore, eslClient));
   });
 }
