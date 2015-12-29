@@ -42,6 +42,7 @@ void main(List<String> arguments) {
   runContactTests();
   runCallFlowTests();
   runDialplanTests();
+  runDialplanDeploymentTests();
   runUserTests();
   runIvrTests();
   runMessageTests();
