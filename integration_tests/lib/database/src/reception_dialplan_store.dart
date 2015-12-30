@@ -26,7 +26,7 @@ abstract class ReceptionDialplanStore {
     Model.Reception createdReception = await receptionStore
         .create(Randomizer.randomReception()..dialplan = rdp.extension);
 
-    rdpStore.deployDialplan(rdp.extension, createdReception.ID);
+    await rdpStore.deployDialplan(rdp.extension, createdReception.ID);
 
     await receptionStore.remove(createdReception.ID);
     await rdpStore.remove(createdDialplan.extension);
