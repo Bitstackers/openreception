@@ -108,9 +108,9 @@ abstract class ResourceCallFlowControl {
       equals(Uri.parse('${callFlowControlUri}/call/abcde/pickup')));
 
   static void originate() => expect(
-      Resource.CallFlowControl.originate(callFlowControlUri, '12345678', 1, 2),
+      Resource.CallFlowControl.originate(callFlowControlUri, '12345678', '12340001' ,1, 2),
       equals(Uri.parse(
-          '${callFlowControlUri}/call/originate/12345678/reception/2/contact/1')));
+          '${callFlowControlUri}/call/originate/12345678/dialplan/12340001/reception/1/contact/2')));
 
   static void park() => expect(
       Resource.CallFlowControl.park(callFlowControlUri, 'abcde'),

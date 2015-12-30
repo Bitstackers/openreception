@@ -140,17 +140,19 @@ abstract class CallFlowControl {
   /**
    * Builds a Uri to originate to a specific extension.
    * The output format is:
-   *    http://hostname/call/originate/<extension>/
-   *    reception/<receptionID>/contact/<contactID>
+   *    http://hostname/call/originate/<extension>/dialplan/<dialplan>
+   *    /reception/<receptionID>/contact/<contactID>
    *
    * with an optional call ID appended.
    *
    */
   static Uri originate(
-          Uri host, String extension, int contactID, int receptionID,
+          Uri host, String extension, String dialplan, int receptionID,
+          int contactID,
           {String callId: ''}) =>
       Uri.parse('${_root(host)}'
           '/originate/${extension}'
+          '/dialplan/${dialplan}'
           '/reception/${receptionID}'
           '/contact/${contactID}'
           '${callId.isNotEmpty ? '/call/$callId' : ''}');
