@@ -46,15 +46,11 @@ class ORPbxKey {
 class PbxKey {
   static const String agentBeginEpoch = 'agent-begin-epoch';
   static const String agentEndEpoch = 'agent-end-epoch';
-  static const String answer = 'answer';
   static const String answerEpoch = 'answer_epoch';
   static const String billSec = 'billsec';
-  static const String bridge = 'bridge';
   static const String bridgeUuid = 'bridge_uuid';
   static const String callCharge = 'call-charge';
-  static const String callOffer = 'call-offer';
   static const String callSetupCharge = 'call-setup-charge';
-  static const String closed = 'closed';
   static const String currentApplication = 'current_application';
   static const String custom = 'CUSTOM';
   static const String direction = 'direction';
@@ -67,10 +63,8 @@ class PbxKey {
   static const String finalTransferAction = 'final-transfer-action';
   static const String greetLong = 'greet-long';
   static const String greetShort = 'greet-short';
-  static const String hangup = 'hangup';
   static const String hangupCause = 'hangup_cause';
   static const String inbound = 'inbound';
-  static const String log = 'log';
   static const String maxFailures = 'max-failures';
   static const String maxTimeouts = 'max-timeouts';
   static const String menuExecApp = 'menu-exec-app';
@@ -82,17 +76,12 @@ class PbxKey {
   static const String outbound = 'outbound';
   static const String playback = 'playback';
   static const String queued = 'queued';
-  static const String reception = 'reception';
-  static const String receptionOpen = 'reception-open';
   static const String ringing = 'ringing';
   static const String signalBond = 'signal_bond';
   static const String sipFromUserStripped = 'sip_from_user_stripped';
-  static const String sleep = 'sleep';
   static const String startEpoch = 'start_epoch';
   static const String state = 'state';
   static const String timeout = 'timeout';
-  static const String transfer = 'transfer';
   static const String transferHistory = 'transfer_history';
   static const String uuid = 'uuid';
-  static const String voicemail = 'voicemail';
 }

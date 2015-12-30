@@ -22,6 +22,12 @@ String greetingDir = 'converted-vox';
 String testNumber = 'xxxxxxxx';
 String testEmail = 'some-guy@somewhere';
 
+const String closedSuffix = 'closed';
+const String outboundSuffix = 'outbound';
+const String reception = 'reception';
+const String receptionOpen = 'reception-open';
+
+
 /**
  * Normalizes an opening hour string for use in extension name by removing the
  * spaces and removing other odd characters.
@@ -39,7 +45,7 @@ String _indent(item, {int count: 2}) => '  $item';
  */
 bool _involvesReceptionists(Iterable<model.Action> actions) => actions
     .where((action) => action is model.Notify)
-    .any((notify) => notify.eventName == PbxKey.callOffer);
+    .any((notify) => notify.eventName == ORPbxKey.callNotify);
 
 /**
  *
@@ -60,7 +66,7 @@ List<String> _openingHourToXmlDialplan(String extension, model.OpeningHour oh,
           [],
           (combined, current) =>
               combined..addAll(current.map(_indent).map(_indent))))
-      ..add('    <action application="${PbxKey.hangup}"/>')
+      ..add('    <action application="hangup"/>')
       ..add('  </condition>')
       ..add('</extension>');
 
@@ -75,15 +81,15 @@ List<String> _fallbackToDialplan(
   return [
     '',
     _comment('Default fallback actions for $extension'),
-    '<extension name="${extension}-${PbxKey.closed}">',
+    '<extension name="${extension}-$closedSuffix">',
     '  <condition>',
   ]
-    ..add('    <action application="${PbxKey.playback}" '
+    ..add('    <action application="playback" '
         'data="tone_stream://L=1;%(100,0,425)"/>')
-    ..add('    <action application="${PbxKey.answer}"/>')
+    ..add('    <action application="answer"/>')
     ..addAll(actions.map(_actionToXmlDialplan).fold(
         [], (combined, current) => combined..addAll(current.map(_indent))))
-    ..add('    <action application="${PbxKey.hangup}"/>')
+    ..add('    <action application="hangup"/>')
     ..add('  </condition>')
     ..add('</extension>');
 }
@@ -112,9 +118,9 @@ Iterable<String> _namedExtensionToDialPlan(model.NamedExtension extension) => [
           'expression="^${extension.name}\$" '
           'break="${PbxKey.onFalse}">',
     ]
-      ..add('    <action application="${PbxKey.playback}" '
+      ..add('    <action application="playback" '
           'data="tone_stream://L=1;%(100,0,425)"/>')
-      ..add('    <action application="${PbxKey.answer}"/>')
+      ..add('    <action application="answer"/>')
       ..addAll(extension.actions.map(_actionToXmlDialplan).fold(
           [],
           (combined, current) =>
@@ -134,12 +140,12 @@ Iterable<String> _extraExtensionsToDialplan(
 String convertTextual(model.ReceptionDialplan dialplan, int rid) =>
     '''<!-- Dialplan for extension ${dialplan.extension}. Generated ${new DateTime.now()} -->
 <include>
-  <context name="${PbxKey.reception}-${dialplan.extension}">
+  <context name="$reception-${dialplan.extension}">
 
     <!-- Initialize channel variables -->
     <extension name="${dialplan.extension}" continue="true">
       <condition field="destination_number" expression="^${dialplan.extension}\$" break="${PbxKey.onFalse}">
-        <action application="${PbxKey.log}" data="INFO Setting variables of call to ${dialplan.extension}, currently allocated to rid ${rid}."/>
+        <action application="log" data="INFO Setting variables of call to ${dialplan.extension}, currently allocated to rid ${rid}."/>
         ${_setVar(ORPbxKey.receptionId, rid)}
         ${_setVar(ORPbxKey.greetingPlayed, false)}
         ${_setVar(ORPbxKey.locked, false)}
@@ -151,10 +157,10 @@ String convertTextual(model.ReceptionDialplan dialplan, int rid) =>
 
     ${_extraExtensionsToDialplan(dialplan.extraExtensions).join('\n    ')}
     <!-- Perform outbound calls -->
-    <extension name="${dialplan.extension}-${PbxKey.outbound}" continue="true">
+    <extension name="${dialplan.extension}-${outboundSuffix}" continue="true">
       <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(\d+)">
-       <action application="${PbxKey.bridge}" data="{${ORPbxKey.receptionId}=${rid},originate_timeout=120}[leg_timeout=50,${ORPbxKey.receptionId}=${rid}]sofia/gateway/\${default_trunk}/\$1"/>
-        <action application="${PbxKey.hangup}"/>
+       <action application="bridge" data="{${ORPbxKey.receptionId}=${rid},originate_timeout=120}[leg_timeout=50,${ORPbxKey.receptionId}=${rid}]sofia/gateway/\${default_trunk}/\$1"/>
+        <action application="hangup"/>
       </condition>
     </extension>
     ${_hourActionsToXmlDialplan(dialplan.extension, dialplan.open).fold([], (combined, current) => combined..addAll(current)).join('\n    ')}
@@ -196,13 +202,13 @@ String _comment(String text) => '<!-- $text -->';
  * Template transfer action.
  */
 String _transferTemplate(String extension) =>
-    '<action application="${PbxKey.transfer}" data="${_dialoutTemplate(extension)}"/>';
+    '<action application="transfer" data="${_dialoutTemplate(extension)}"/>';
 
 /**
  * Template for a sleep action.
  */
 String _sleep(int msec) =>
-    '<action application="${PbxKey.sleep}" data="$msec"/>';
+    '<action application="sleep" data="$msec"/>';
 
 /**
  * Template for a call lock event.
@@ -259,7 +265,7 @@ List<String> _actionToXmlDialplan(model.Action action) {
       _comment('Sending ringtones'),
       _setVar(ORPbxKey.state, PbxKey.ringing),
       _ringTone,
-      '<action application="${PbxKey.playback}" data="tone_stream://L=${action.count};\${dk-ring}"/>',
+      '<action application="playback" data="tone_stream://L=${action.count};\${dk-ring}"/>',
       _ringToneStop,
     ]);
   } else if (action is model.Playback) {
@@ -268,9 +274,9 @@ List<String> _actionToXmlDialplan(model.Action action) {
 
     returnValue
       ..add(_setVar(ORPbxKey.state, PbxKey.playback))
-      ..add('    <action application="${PbxKey.playback}" '
+      ..add('    <action application="playback" '
           'data="tone_stream://L=1;%(100,0,425)"/>')
-      ..add('    <action application="${PbxKey.answer}"/>');
+      ..add('    <action application="answer"/>');
 
     if (action.wrapInLock) {
       returnValue.addAll([
@@ -282,7 +288,7 @@ List<String> _actionToXmlDialplan(model.Action action) {
 
     returnValue.addAll([
       _sleep(500),
-      '<action application="${PbxKey.playback}" data="${greetingDir}/${action.filename}"/>',
+      '<action application="playback" data="${greetingDir}/${action.filename}"/>',
       _sleep(500),
       _setVar(ORPbxKey.greetingPlayed, true),
       _setVar(ORPbxKey.greetingPlayed, true),
@@ -393,7 +399,7 @@ List<String> _ivrEntryToXml(model.IvrEntry entry) {
         .add(_noteTemplate(entry.transfer.note));
     returnValue.add(
         '<entry action="${PbxKey.menuExecApp}" digits="${entry.digits}" '
-        'param="${PbxKey.transfer} ${_dialoutTemplate(entry.transfer.extension)}"/>');
+        'param="transfer ${_dialoutTemplate(entry.transfer.extension)}"/>');
   } else if (entry is model.IvrVoicemail) {
     returnValue.add(
         '<entry action="${PbxKey.menuExecApp}" digits="${entry.digits}" param="voicemail default \$\${domain} ${entry.voicemail.vmBox}"/>');
