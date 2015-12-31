@@ -13,8 +13,12 @@
 
 part of openreception.model.dialplan;
 
+/**
+ * TODO: remove the wrap in lock.
+ */
 class Playback extends Action {
   final String filename;
+  final int repeat;
   final bool wrapInLock;
   final String note;
 
@@ -30,6 +34,7 @@ class Playback extends Action {
     bool lock = false;
     String filename;
     String note = '';
+    int repeat = 1;
 
     buffer = consumeKey(buffer, Key.playback).trimLeft();
 
@@ -41,12 +46,25 @@ class Playback extends Action {
       buffer = buffer.substring(Key.lock.length).trimLeft();
     }
 
-    if(!buffer.startsWith('(')) {
+    if (!buffer.startsWith('(')) {
       var consumed = consumeWord(buffer);
 
-      buffer = consumed.buffer;
+      buffer = consumed.buffer.trimLeft();
       filename = consumed.iden;
     }
+
+    if (!buffer.startsWith('(')) {
+      var consumed = consumeWord(buffer);
+
+      var split = consumed.iden.split(':');
+
+      if(split.length > 1 && split.first == Key.repeat) {
+        repeat = int.parse(split[1]);
+      }
+
+      buffer = consumed.buffer.trimLeft();
+    }
+
 
     int openBracket = buffer.indexOf('(');
 
@@ -56,14 +74,14 @@ class Playback extends Action {
       note = buffer.substring(openBracket + 1, closeBracket);
     }
 
-    return new Playback(filename, wrapInLock: lock, note: note);
+    return new Playback(filename, wrapInLock: lock, note: note, repeat : repeat);
   }
 
   /**
    *
    */
   const Playback(String this.filename,
-      {bool this.wrapInLock: true, String this.note: ''});
+      {bool this.wrapInLock: true, String this.note: '', this.repeat: 1});
 
   /**
    *
@@ -75,13 +93,14 @@ class Playback extends Action {
    *
    */
   @override
-  String toString() =>
-      'Playback${wrapInLock? ' ${Key.lock}' :''} file ${filename}';
+  String toString() => '${Key.playback}${wrapInLock? ' ${Key.lock}' :''}'
+  ' $filename'
+  '${repeat != 1? ' ${Key.repeat}:$repeat' :''}'
+  '${note.isNotEmpty ? ' ($note)': ''}';
 
   /**
    *
    */
   @override
-  String toJson() => '${Key.playback}${wrapInLock? ' ${Key.lock}' :''}'
-      ' $filename ${note.isNotEmpty ? ' ($note)': ''}';
+  String toJson() => toString();
 }

@@ -30,6 +30,7 @@ const String actions = 'actions';
 const String submenus = 'submenus';
 
 //Keywords
+const String repeat = 'repeat';
 const String lock = 'locked';
 const String ringtone = 'ringtone';
 const String transfer = 'transfer';
