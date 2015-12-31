@@ -97,6 +97,13 @@ abstract class ModelPlayback {
     expect(builtObject.wrapInLock, isTrue);
     expect(builtObject.note, isEmpty);
 
+    builtObject = Model.Playback.parse('playback locked $filename repeat:2');
+
+    expect(builtObject.filename, equals(filename));
+    expect(builtObject.wrapInLock, isTrue);
+    expect(builtObject.note, isEmpty);
+    expect(builtObject.repeat, 2);
+
     /// Adding lots of spaces.
     builtObject = Model.Playback.parse('   playback      locked     $filename');
 
