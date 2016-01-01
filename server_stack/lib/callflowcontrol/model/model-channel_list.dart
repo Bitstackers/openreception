@@ -209,21 +209,9 @@ class ChannelList extends ESL.ChannelList {
     void dispatch() {
       switch (packet.eventName) {
         case (PBXEvent.CHANNEL_BRIDGE):
-          this.update(new ESL.Channel.fromPacket(packet));
-          break;
-
         case (PBXEvent.CHANNEL_STATE):
-          this.update(new ESL.Channel.fromPacket(packet));
-          break;
-
         case (PBXEvent.CHANNEL_ANSWER):
-          this.update(new ESL.Channel.fromPacket(packet));
-          break;
-
         case (PBXEvent.CHANNEL_CREATE):
-          this.update(new ESL.Channel.fromPacket(packet));
-          break;
-
         case (PBXEvent.CHANNEL_DESTROY):
           this.update(new ESL.Channel.fromPacket(packet));
           break;
