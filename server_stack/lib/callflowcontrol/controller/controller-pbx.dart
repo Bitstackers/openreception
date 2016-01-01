@@ -220,7 +220,7 @@ abstract class PBX {
                                             ORModel.User user, String context) {
     return api('uuid_setvar $uuid effective_caller_id_number ${user.peer}')
         .then((_) => api('uuid_setvar $uuid effective_caller_id_name ${user.name}'))
-        .then((_) => bgapi('uuid_transfer $uuid $extension ${_dialplan}'))
+        .then((_) => bgapi('uuid_transfer $uuid external_transfer_$extension xml reception-$context'))
         .then((ESL.Reply reply) => reply.status != ESL.Reply.OK
             ? new Future.error(new PBXException(reply.replyRaw))
             : null);
