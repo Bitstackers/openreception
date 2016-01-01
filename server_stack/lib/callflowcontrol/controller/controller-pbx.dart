@@ -216,7 +216,8 @@ abstract class PBX {
     }
   }
 
-  static Future transferUUIDToExtension(String uuid, String extension, ORModel.User user) {
+  static Future transferUUIDToExtension(String uuid, String extension,
+                                            ORModel.User user, String context) {
     return api('uuid_setvar $uuid effective_caller_id_number ${user.peer}')
         .then((_) => api('uuid_setvar $uuid effective_caller_id_name ${user.name}'))
         .then((_) => bgapi('uuid_transfer $uuid $extension ${_dialplan}'))

@@ -172,12 +172,17 @@ abstract class Call {
     final String callId = shelf_route.getPathParameters(request).containsKey('callId')
         ? shelf_route.getPathParameter(request, 'callId')
         : '';
-
     final int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
     final int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
     String extension = shelf_route.getPathParameter(request, 'extension');
+    final String dialplan = shelf_route.getPathParameter(request, 'dialplan');
     final String host = shelf_route.getPathParameter(request, 'host');
     final String port = shelf_route.getPathParameter(request, 'port');
+
+    if(dialplan.isEmpty) {
+      return _clientError('Dialplan must not be empty');
+    }
+
     ORModel.User user;
     ESL.Peer peer;
 
@@ -280,7 +285,7 @@ abstract class Call {
     /// channel to the outbound extension.
     ORModel.Call call;
     try {
-      await Controller.PBX.transferUUIDToExtension(agentChannel, extension, user);
+      await Controller.PBX.transferUUIDToExtension(agentChannel, extension, user, dialplan);
       call = await outboundCall.timeout(new Duration(seconds: 1));
     } catch (error, stackTrace) {
       final String msg = 'Failed to get call channel';
