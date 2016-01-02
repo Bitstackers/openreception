@@ -253,9 +253,9 @@ class Receptionist {
   /**
    * Originates a new call to [extension] via the [CallFlowControl] service.
    */
-  Future<Model.Call> originate(String extension, int contactID,
-      int receptionID, {String callId: ''}) =>
-      this.callFlowControl.originate(extension, contactID, receptionID);
+  Future<Model.Call> originate(String extension,
+      Model.OriginationContext context) =>
+      callFlowControl.originate(extension,context);
 
   /**
    * Hangup [call]  via the [CallFlowControl] service.
