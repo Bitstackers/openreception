@@ -7,16 +7,19 @@ abstract class Originate {
   //TODO
   //static Future  originationToLookedUNumber()
 
-  static Future originationToHostedNumber(Receptionist receptionist) {
-    String receptionNumber = '12340005';
-    int contactID = 4;
-    int receptionID = 1;
+  static Future originationToHostedNumber(Receptionist receptionist) async {
+    final Model.OriginationContext context = new Model.OriginationContext()
+      ..contactId = 4
+      ..dialplan = '12340004'
+      ..receptionId = 4;
 
-    return receptionist.originate(receptionNumber, contactID, receptionID).then(
-        (_) => receptionist.waitFor(eventType: Event.Key.callOffer).then((Event.CallOffer event) {
-              //TODO: Assert that callerID is the correct one
-              expect(event.call.inbound, isTrue);
-            }));
+    await receptionist.originate('12340005', context);
+
+    final Event.CallOffer event =
+        await receptionist.waitFor(eventType: Event.Key.callOffer);
+
+    //TODO: Assert that callerID is the correct one
+    expect(event.call.inbound, isTrue);
   }
 
   /**
@@ -25,24 +28,27 @@ abstract class Originate {
    * Expected behaviour is that the server should detect the reject and send
    * a [Storage.ClientError].
    */
-  static Future originationOnAgentCallRejected(Receptionist receptionist, Customer customer) {
-    int contactID = 4;
-    int receptionID = 1;
+  static Future originationOnAgentCallRejected(
+      Receptionist receptionist, Customer customer) {
+    final Model.OriginationContext context = new Model.OriginationContext()
+      ..contactId = 4
+      ..dialplan = '12340001'
+      ..receptionId = 1;
 
     Completer callRejectExpectation = new Completer();
 
     return receptionist.autoAnswer(false).then((_) {
       /// Asynchronous origination.
       receptionist
-          .originate(customer.extension, contactID, receptionID)
+          .originate(customer.extension, context)
           .then(callRejectExpectation.complete)
           .catchError(callRejectExpectation.completeError);
     })
         .then((_) => receptionist.waitForInboundCall())
         .then((_) => _log.info('Receptionist $receptionist rejects the call'))
         .then((_) => receptionist._phone.hangupAll())
-        .then((_) =>
-            expect(callRejectExpectation.future, throwsA(new isInstanceOf<Storage.ClientError>())));
+        .then((_) => expect(callRejectExpectation.future,
+            throwsA(new isInstanceOf<Storage.ClientError>())));
   }
 
   /**
@@ -51,23 +57,25 @@ abstract class Originate {
    * Expected behaviour is that the server should detect the reject and send
    * a [Storage.ClientError].
    */
-  static Future originationOnAgentAutoAnswerDisabled(Receptionist receptionist, Customer customer) {
-    int contactID = 4;
-    int receptionID = 1;
-
+  static Future originationOnAgentAutoAnswerDisabled(
+      Receptionist receptionist, Customer customer) {
     Completer callRejectExpectation = new Completer();
+    final Model.OriginationContext context = new Model.OriginationContext()
+      ..contactId = 4
+      ..dialplan = '12340001'
+      ..receptionId = 1;
 
     return receptionist.autoAnswer(false).then((_) {
       /// Asynchronous origination.
       receptionist
-          .originate(customer.extension, contactID, receptionID)
+          .originate(customer.extension, context)
           .then((_) => callRejectExpectation.complete())
           .catchError(callRejectExpectation.completeError);
     })
         .then((_) => receptionist.waitForInboundCall())
         .then((_) => _log.info('Receptionist $receptionist ignores the call'))
-        .then((_) =>
-            expect(callRejectExpectation.future, throwsA(new isInstanceOf<Storage.ClientError>())));
+        .then((_) => expect(callRejectExpectation.future,
+            throwsA(new isInstanceOf<Storage.ClientError>())));
   }
 
   /**
@@ -75,37 +83,44 @@ abstract class Originate {
    * be forbidden.
    */
   static void originationToForbiddenNumber(Receptionist receptionist) {
-    String receptionNumber = 'X';
-    int contactID = 4;
-    int receptionID = 1;
+    final Model.OriginationContext context = new Model.OriginationContext()
+      ..contactId = 4
+      ..dialplan = '12340001'
+      ..receptionId = 1;
 
-    return expect(receptionist.originate(receptionNumber, contactID, receptionID),
+    return expect(receptionist.originate('X', context),
         throwsA(new isInstanceOf<Storage.ClientError>()));
   }
 
   /**
    * Test if the system is able to originate to another peer.
    */
-  static Future originationToPeer(Receptionist receptionist, Customer customer) {
-    int contactID = 4;
-    int receptionID = 1;
+  static Future originationToPeer(
+      Receptionist receptionist, Customer customer) {
+    final Model.OriginationContext context = new Model.OriginationContext()
+          ..contactId = 4
+          ..dialplan = '12340001'
+          ..receptionId = 1;
 
     return receptionist
-        .originate(customer.extension, contactID, receptionID)
+        .originate(customer.extension, context)
         .then((_) => customer.waitForInboundCall());
   }
 
   /**
    * Test if the system tags the callId to the channel.
    */
-  static Future originationWithCallContext(Receptionist receptionist, Customer customer) async {
-    int contactID = 4;
-    int receptionID = 1;
+  static Future originationWithCallContext(
+      Receptionist receptionist, Customer customer) async {
     final String callId = new DateTime.now().millisecondsSinceEpoch.toString();
 
     await customer.autoAnswer(false);
     Model.Call call = await receptionist.callFlowControl
-        .originate(customer.extension, contactID, receptionID, callId: callId);
+        .originate(customer.extension, new Model.OriginationContext()
+          ..callId = callId
+          ..contactId = 4
+          ..receptionId = 1
+          ..dialplan = '12340001');
 
     await customer.waitForInboundCall();
     await customer.pickupCall();
@@ -119,13 +134,16 @@ abstract class Originate {
    * Check that only one call is present in the call list when performing an
    * outbound dial.
    */
-  static Future originationToPeerCheckforduplicate(Receptionist receptionist, Customer customer) {
-    int contactID = 4;
-    int receptionID = 1;
-
+  static Future originationToPeerCheckforduplicate(
+      Receptionist receptionist, Customer customer) {
+    final Model.OriginationContext context = new Model.OriginationContext()
+          ..contactId = 4
+          ..dialplan = '12340001'
+          ..receptionId = 1;
     return receptionist
-        .originate(customer.extension, contactID, receptionID)
+        .originate(customer.extension, context)
         .then((_) => customer.waitForInboundCall())
-        .then((_) => CallList._validateListLength(receptionist.callFlowControl, 1));
+        .then((_) =>
+            CallList._validateListLength(receptionist.callFlowControl, 1));
   }
 }
