@@ -63,29 +63,6 @@ abstract class DialplanDeployment {
   }
 
   /**
-   * Converts a Dart DateTime WeekDay into a [Model.Weekday].
-   */
-  static Model.WeekDay toWeekDay(int weekday) {
-    if (weekday == DateTime.MONDAY) {
-      return Model.WeekDay.mon;
-    } else if (weekday == DateTime.TUESDAY) {
-      return Model.WeekDay.tue;
-    } else if (weekday == DateTime.WEDNESDAY) {
-      return Model.WeekDay.wed;
-    } else if (weekday == DateTime.THURSDAY) {
-      return Model.WeekDay.thur;
-    } else if (weekday == DateTime.FRIDAY) {
-      return Model.WeekDay.fri;
-    } else if (weekday == DateTime.SATURDAY) {
-      return Model.WeekDay.sat;
-    } else if (weekday == DateTime.SUNDAY) {
-      return Model.WeekDay.sun;
-    }
-
-    throw new RangeError('$weekday not in range');
-  }
-
-  /**
    *
    */
   static openHoursOpen(Customer customer, Service.RESTDialplanStore rdpStore,
