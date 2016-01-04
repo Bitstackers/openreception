@@ -112,40 +112,64 @@ void _callFlowControlList() {
  */
 void _callFlowControlTransfer() {
   group('CallFlowControl.Transfer', () {
-    Receptionist receptionist = null;
-    Customer caller = null;
-    Customer callee = null;
+    Receptionist receptionist;
+    Customer caller;
+    Customer callee;
+    Transport.Client transport;
+    Service.RESTReceptionStore receptionStore;
+    Service.RESTContactStore contactStore;
+    Model.OriginationContext context;
 
-    setUp(() {
+    setUp(() async {
       receptionist = ReceptionistPool.instance.aquire();
       caller = CustomerPool.instance.aquire();
       callee = CustomerPool.instance.aquire();
-      return Future.wait([
+      transport = new Transport.Client();
+      contactStore = new Service.RESTContactStore(
+          Config.contactStoreUri, Config.serverToken, transport);
+      receptionStore = new Service.RESTReceptionStore(
+          Config.receptionStoreUri, Config.serverToken, transport);
+
+      context = new Model.OriginationContext()
+        ..receptionId =
+            (await receptionStore.create(Randomizer.randomReception())).ID
+        ..contactId =
+            (await contactStore.create(Randomizer.randomBaseContact())).id
+        ..dialplan = '12340003';
+
+      await Future.wait([
         receptionist.initialize(),
         caller.initialize(),
         callee.initialize()
       ]);
     });
 
-    tearDown(() {
+    tearDown(() async {
       ReceptionistPool.instance.release(receptionist);
       CustomerPool.instance.release(caller);
       CustomerPool.instance.release(callee);
 
-      return Future.wait(
-          [receptionist.teardown(), caller.teardown(), callee.teardown()]);
+      await Future.wait([
+        receptionStore.remove(context.receptionId),
+        contactStore.remove(context.contactId),
+        receptionist.teardown(),
+        caller.teardown(),
+        callee.teardown()
+      ]);
+
+      transport.client.close(force: true);
     });
 
     test('inboundCall Call list length checks',
-        () => Transfer.inboundCallListLength(receptionist, caller, callee));
+        () => Transfer.inboundCallListLength(receptionist, caller, callee, context));
 
     test('Inbound Call',
-        () => Transfer.transferParkedInboundCall(receptionist, caller, callee));
+        () => Transfer.transferParkedInboundCall(receptionist, caller, callee, context));
 
     test(
         'Outbound Call',
         () =>
-            Transfer.transferParkedOutboundCall(receptionist, caller, callee));
+            Transfer.transferParkedOutboundCall(receptionist, caller, callee, context));
   });
 }
 

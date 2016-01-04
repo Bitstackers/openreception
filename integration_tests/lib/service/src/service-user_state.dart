@@ -10,6 +10,10 @@ abstract class UserState {
     String receptionNumber = '12340005';
 
     Model.Call firstCall;
+    final Model.OriginationContext context = new Model.OriginationContext()
+      ..contactId = 4
+      ..dialplan = '12340001'
+      ..receptionId = 1;
 
     return Future.wait([])
       .then((_) => log.info ('Caller dials the reception at $receptionNumber'))
@@ -23,7 +27,7 @@ abstract class UserState {
           }))
       .then((_) => log.info ('Receptionist tries to orignate a new call to $callee'))
       .then((_) =>
-        expect (receptionist.originate(callee.extension, 4, 2),
+        expect (receptionist.originate(callee.extension,context),
           throwsA(new isInstanceOf<Storage.ClientError>())));
   }
 

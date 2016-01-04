@@ -165,11 +165,15 @@ abstract class StateReload {
   static Future outboundUnansweredCall (Receptionist receptionist, Customer callee) {
     Iterable<Model.Call> orignalCallQueue;
     Model.Call outboundCall;
+    final Model.OriginationContext context = new Model.OriginationContext()
+      ..contactId = 4
+      ..dialplan = '12340001'
+      ..receptionId = 1;
 
     return Future
         .wait([])
         .then((_) => log.info('Receptionist dials the callee at ${callee.extension}'))
-        .then((_) => receptionist.originate(callee.extension, 1,2)
+        .then((_) => receptionist.originate(callee.extension, context)
           .then((Model.Call call)
             => outboundCall = call))
         .then((_) => log.info('Fetching original call list'))
@@ -193,11 +197,15 @@ abstract class StateReload {
   static Future outboundAnsweredCall (Receptionist receptionist, Customer callee) {
     Iterable<Model.Call> orignalCallQueue;
     Model.Call outboundCall;
+    final Model.OriginationContext context = new Model.OriginationContext()
+      ..contactId = 4
+      ..dialplan = '12340001'
+      ..receptionId = 1;
 
     return Future
         .wait([])
         .then((_) => log.info('Receptionist dials the callee at ${callee.extension}'))
-        .then((_) => receptionist.originate(callee.extension, 2,3)
+        .then((_) => receptionist.originate(callee.extension,context)
           .then((Model.Call call) => outboundCall = call))
         .then((_) => callee.waitForInboundCall())
         .then((_) => callee.pickupCall())
@@ -223,6 +231,10 @@ abstract class StateReload {
   static Future transferredCalls
     (Receptionist receptionist, Customer caller, Customer callee) {
     final String receptionNumber = '12340001';
+    final Model.OriginationContext context = new Model.OriginationContext()
+      ..contactId = 4
+      ..dialplan = '12340001'
+      ..receptionId = 1;
 
     Iterable<Model.Call> orignalCallQueue;
 
@@ -239,7 +251,7 @@ abstract class StateReload {
         .then((_) => log.info('Receptionist parks call'))
         .then((_) => receptionist.park(inboundCall, waitForEvent: true))
         .then((_) => log.info('Receptionist dials the callee at ${callee.extension}'))
-        .then((_) => receptionist.originate(callee.extension, 2,3)
+        .then((_) => receptionist.originate(callee.extension, context)
           .then((Model.Call call) => outboundCall = call))
         .then((_) => callee.waitForInboundCall())
         .then((_) => callee.pickupCall())

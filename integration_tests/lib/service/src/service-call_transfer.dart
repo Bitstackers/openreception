@@ -29,6 +29,7 @@ abstract class Transfer {
     log.info('Outbound call: $outboundCall');
 
     await callee.waitForInboundCall();
+    await callee.pickupCall();
     log.info('$receptionist picked up outbound call: $outboundCall');
     expect(outboundCall.receptionID, equals(context.receptionId));
     expect(outboundCall.assignedTo, equals(receptionist.user.ID));

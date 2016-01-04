@@ -25,6 +25,7 @@ abstract class DialplanDeployment {
       ..active = true;
 
     Model.ReceptionDialplan createdDialplan = await rdpStore.create(rdp);
+    _log.info('Created dialplan: ${createdDialplan.toJson()}');
     Model.Reception r = await rStore.create(Randomizer.randomReception()
       ..enabled = true
       ..dialplan = createdDialplan.extension);
@@ -32,6 +33,7 @@ abstract class DialplanDeployment {
     await rdpStore.reloadConfig();
 
     _log.info('Subscribing for events.');
+
     await eslClient.event(['CHANNEL_EXECUTE'], format: 'json');
 
     await customer.dial(rdp.extension);

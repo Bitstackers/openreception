@@ -165,9 +165,13 @@ abstract class Pickup {
 
   static Future pickupEventOutboundCall(Receptionist receptionist, Customer customer) {
     Model.Call outboundCall;
+    final Model.OriginationContext context = new Model.OriginationContext()
+      ..contactId = 4
+      ..dialplan = '12340001'
+      ..receptionId = 1;
     return Future.wait([])
     .then((_) => log.info ('Receptionist dials contact'))
-    .then((_) => receptionist.originate(customer.extension, 1, 2)
+    .then((_) => receptionist.originate(customer.extension, context)
       .then((Model.Call newCall) {
         outboundCall = newCall;
         log.info('$receptionist got new call $outboundCall');
