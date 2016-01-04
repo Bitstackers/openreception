@@ -18,13 +18,14 @@ part of openreception.dialplan_server.controller;
  */
 class ReceptionDialplan {
   final database.ReceptionDialplan _receptionDialplanStore;
+  final dialplanTools.DialplanCompiler compiler;
   final Logger _log = new Logger('$_libraryName.ReceptionDialplan');
   esl.Connection _eslClient;
 
   /**
    *
    */
-  ReceptionDialplan(this._receptionDialplanStore) {
+  ReceptionDialplan(this._receptionDialplanStore, this.compiler) {
     _connectESLClient();
   }
 
@@ -77,7 +78,7 @@ class ReceptionDialplan {
 
     _log.fine('Deploying new dialplan to file $xmlFilePath');
     await new File(xmlFilePath)
-        .writeAsString(dialplanTools.convertTextual(rdp, rid));
+        .writeAsString(compiler.dialplanToXml(rdp, rid));
 
     Iterable<model.Voicemail> voicemailAccounts =
         rdp.allActions.where((a) => a is model.Voicemail);
@@ -88,7 +89,7 @@ class ReceptionDialplan {
 
       _log.fine('Deploying voicemail account ${vm.vmBox} to file $vmFilePath');
       await new File(vmFilePath)
-          .writeAsString(dialplanTools.convertVoicemail(vm));
+          .writeAsString(compiler.voicemailToXml(vm));
     });
 
     return _okJson(rdp);

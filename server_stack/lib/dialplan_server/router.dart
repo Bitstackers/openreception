@@ -79,19 +79,21 @@ Future<IO.HttpServer> start(
   final Database.ReceptionDialplan _dpStore =
       new Database.ReceptionDialplan(_connection);
 
-  final controller.Ivr ivrHandler = new controller.Ivr(_ivrStore);
-  final controller.ReceptionDialplan receptionDialplanHandler =
-      new controller.ReceptionDialplan(_dpStore);
-
   /// Setup dialplan tools.
-  dialplanTools.goLive = config.dialplanserver.goLive;
-  dialplanTools.greetingDir = config.dialplanserver.playbackPrefix;
-  dialplanTools.testNumber = config.dialplanserver.testNumber;
-  dialplanTools.testEmail = config.dialplanserver.testEmail;
+  final dialplanTools.DialplanCompiler compiler =
+      new dialplanTools.DialplanCompiler(new dialplanTools.DialplanCompilerOpts(
+          goLive: config.dialplanserver.goLive,
+          greetingDir: config.dialplanserver.playbackPrefix,
+          testNumber: config.dialplanserver.testNumber,
+          testEmail: config.dialplanserver.testEmail));
 
-  _log.info('Dialplan tools are ${dialplanTools.goLive ? 'live ' : 'NOT live '
-    'diverting all voicemails to ${dialplanTools.testEmail} and directing '
-    'all calls to ${dialplanTools.testNumber}'}');
+  _log.info('Dialplan tools are ${compiler.option.goLive ? 'live ' : 'NOT live '
+    'diverting all voicemails to ${compiler.option.testEmail} and directing '
+    'all calls to ${compiler.option.testNumber}'}');
+
+  final controller.Ivr ivrHandler = new controller.Ivr(_ivrStore, compiler);
+  final controller.ReceptionDialplan receptionDialplanHandler =
+      new controller.ReceptionDialplan(_dpStore, compiler);
 
   var router = shelf_route.router()
     ..get('/ivr', ivrHandler.list)
@@ -124,4 +126,3 @@ Future<IO.HttpServer> start(
 
   return shelf_io.serve(handler, hostname, port);
 }
-

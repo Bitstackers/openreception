@@ -18,12 +18,13 @@ part of openreception.dialplan_server.controller;
  */
 class Ivr {
   final database.Ivr _ivrStore;
+  final dialplanTools.DialplanCompiler compiler;
   final Logger _log = new Logger('$_libraryName.Ivr');
 
   /**
    *
    */
-  Ivr(this._ivrStore);
+  Ivr(this._ivrStore, this.compiler);
 
   /**
    *
@@ -47,7 +48,7 @@ class Ivr {
         '/ivr_menus/${menu.name}.xml';
 
     _log.fine('Deploying new dialplan to file $xmlFilePath');
-    new File(xmlFilePath).writeAsString(dialplanTools.generateXmlFromIvr(menu));
+    new File(xmlFilePath).writeAsString(compiler.ivrToXml(menu));
 
     Iterable<model.Voicemail> voicemailAccounts =
         menu.allActions.where((a) => a is model.Voicemail);
@@ -58,7 +59,7 @@ class Ivr {
 
       _log.fine('Deploying voicemail account ${vm.vmBox} to file $vmFilePath');
       await new File(vmFilePath)
-          .writeAsString(dialplanTools.convertVoicemail(vm));
+          .writeAsString(compiler.voicemailToXml(vm));
     });
 
     return _okJson(menu);
