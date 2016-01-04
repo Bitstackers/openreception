@@ -6,6 +6,9 @@ dependencies:
 tests:
 	@dart bin/servertests.dart > results.xml
 
+tests-plain-output:
+	@dart bin/servertests.dart --no-xml
+
 bin/basic_agent: support_tools/src/basic_agent.c
 	make -C support_tools deps_install
 	(cd support_tools && make basic_agent)
