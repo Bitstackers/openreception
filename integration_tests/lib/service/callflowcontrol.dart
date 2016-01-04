@@ -118,6 +118,7 @@ void _callFlowControlTransfer() {
     Transport.Client transport;
     Service.RESTReceptionStore receptionStore;
     Service.RESTContactStore contactStore;
+    Service.RESTDialplanStore rdpStore;
     Model.OriginationContext context;
 
     setUp(() async {
@@ -126,16 +127,51 @@ void _callFlowControlTransfer() {
       callee = CustomerPool.instance.aquire();
       transport = new Transport.Client();
       contactStore = new Service.RESTContactStore(
-          Config.contactStoreUri, Config.serverToken, transport);
+          Config.contactStoreUri, receptionist.authToken, transport);
       receptionStore = new Service.RESTReceptionStore(
-          Config.receptionStoreUri, Config.serverToken, transport);
+          Config.receptionStoreUri, receptionist.authToken, transport);
+      rdpStore = new Service.RESTDialplanStore(
+          Config.dialplanStoreUri, receptionist.authToken, transport);
+
+      final DateTime now = new DateTime.now();
+      Model.OpeningHour justNow = new Model.OpeningHour.empty()
+        ..fromDay = toWeekDay(now.weekday)
+        ..toDay = toWeekDay(now.weekday)
+        ..fromHour = now.hour
+        ..toHour = now.hour + 1
+        ..fromMinute = now.minute
+        ..toMinute = now.minute;
+
+      //TODO: event subscriptions.
+      Model.ReceptionDialplan rdp = new Model.ReceptionDialplan()
+        ..open = [
+          new Model.HourAction()
+            ..hours = [justNow]
+            ..actions = [
+              new Model.Notify('call-offer'),
+              new Model.Ringtone(1),
+              new Model.Playback('no-greeting'),
+              new Model.Enqueue('waitqueue')
+            ]
+        ]
+        ..extension = 'test-${Randomizer.randomPhoneNumber()}'
+            '-${new DateTime.now().millisecondsSinceEpoch}'
+        ..defaultActions = [new Model.Playback('sorry-dude-were-closed')]
+        ..active = true;
+
+      Model.ReceptionDialplan createdDialplan = await rdpStore.create(rdp);
+      Model.Reception r =
+          await receptionStore.create(Randomizer.randomReception()
+            ..enabled = true
+            ..dialplan = createdDialplan.extension);
+      await rdpStore.deployDialplan(rdp.extension, r.ID);
+      await rdpStore.reloadConfig();
 
       context = new Model.OriginationContext()
-        ..receptionId =
-            (await receptionStore.create(Randomizer.randomReception())).ID
+        ..receptionId = r.ID
         ..contactId =
             (await contactStore.create(Randomizer.randomBaseContact())).id
-        ..dialplan = '12340003';
+        ..dialplan = createdDialplan.extension;
 
       await Future.wait([
         receptionist.initialize(),
@@ -151,6 +187,7 @@ void _callFlowControlTransfer() {
 
       await Future.wait([
         receptionStore.remove(context.receptionId),
+        rdpStore.remove(context.dialplan),
         contactStore.remove(context.contactId),
         receptionist.teardown(),
         caller.teardown(),
@@ -160,16 +197,20 @@ void _callFlowControlTransfer() {
       transport.client.close(force: true);
     });
 
-    test('inboundCall Call list length checks',
-        () => Transfer.inboundCallListLength(receptionist, caller, callee, context));
+    test(
+        'inboundCall Call list length checks',
+        () => Transfer.inboundCallListLength(
+            receptionist, caller, callee, context));
 
-    test('Inbound Call',
-        () => Transfer.transferParkedInboundCall(receptionist, caller, callee, context));
+    test(
+        'Inbound Call',
+        () => Transfer.transferParkedInboundCall(
+            receptionist, caller, callee, context));
 
     test(
         'Outbound Call',
-        () =>
-            Transfer.transferParkedOutboundCall(receptionist, caller, callee, context));
+        () => Transfer.transferParkedOutboundCall(
+            receptionist, caller, callee, context));
   });
 }
 
