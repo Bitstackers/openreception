@@ -17,9 +17,13 @@ import 'model.dart' as model;
 import 'pbx-keys.dart';
 
 ///Config values.
+@deprecated
 bool goLive = false;
+@deprecated
 String greetingDir = 'converted-vox';
+@deprecated
 String testNumber = 'xxxxxxxx';
+@deprecated
 String testEmail = 'some-guy@somewhere';
 
 const String closedSuffix = 'closed';
@@ -48,14 +52,32 @@ class DialplanCompiler {
   String dialplanToXml(model.ReceptionDialplan dialplan, int rid) =>
       _dialplanToXml(dialplan, rid, option);
 
-  String ivrToXml(model.IvrMenu menu) =>
-      _ivrToXml(menu, option);
+  String ivrToXml(model.IvrMenu menu) => _ivrToXml(menu, option);
 
-  String voicemailToXml(model.Voicemail vm) =>
-      _voicemailToXml(vm, option);
+  String voicemailToXml(model.Voicemail vm) => _voicemailToXml(vm, option);
 
   String userToXml() => throw new UnimplementedError();
 }
+
+List<String> _externalTrunkTransfer(String extension, int rid) => [
+'<extension name="${extension}-${outboundSuffix}-trunk" continue="true">',
+'  <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(\d+)">',
+'    <action application="set" data="ringback=\${dk-ring}"/>',
+'    <action application="ring_ready" />',
+'    <action application="bridge" data="{${ORPbxKey.receptionId}=${rid},originate_timeout=120}[leg_timeout=50,${ORPbxKey.receptionId}=${rid}]sofia/gateway/\${default_trunk}/\$1"/>',
+'    <action application="hangup"/>',
+'  </condition>',
+'</extension>'];
+
+List<String> _externalSipTransfer(String extension, int rid) => [
+'<extension name="${extension}-${outboundSuffix}-sip" continue="true">',
+'  <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(\d+)">',
+'    <action application="set" data="ringback=\${dk-ring}"/>',
+'    <action application="ring_ready" />',
+'    <action application="bridge" data="sofia/external/\$1"/>',
+'    <action application="hangup"/>',
+'  </condition>',
+'</extension>'];
 
 /**
  * Normalizes an opening hour string for use in extension name by removing the
@@ -171,6 +193,7 @@ Iterable<String> _extraExtensionsToDialplan(
         .map((ne) => _namedExtensionToDialPlan(ne, option))
         .fold([], (combined, current) => combined..addAll(current));
 
+@deprecated
 String convertTextual(model.ReceptionDialplan dialplan, int rid) =>
     _dialplanToXml(
         dialplan,
@@ -204,13 +227,12 @@ String _dialplanToXml(model.ReceptionDialplan dialplan, int rid,
     </extension>
 
     ${_extraExtensionsToDialplan(dialplan.extraExtensions, option).join('\n    ')}
-    <!-- Perform outbound calls -->
-    <extension name="${dialplan.extension}-${outboundSuffix}" continue="true">
-      <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(\d+)">
-       <action application="bridge" data="{${ORPbxKey.receptionId}=${rid},originate_timeout=120}[leg_timeout=50,${ORPbxKey.receptionId}=${rid}]sofia/gateway/\${default_trunk}/\$1"/>
-        <action application="hangup"/>
-      </condition>
-    </extension>
+    <!-- Perform outbound PSTN calls -->
+    ${_externalTrunkTransfer(dialplan.extension, rid).join('\n    ')}
+    
+    <!-- Perform outbound SIP calls -->
+    ${_externalSipTransfer(dialplan.extension, rid).join('\n    ')}
+    
     ${_hourActionsToXmlDialplan(dialplan.extension, dialplan.open, option).fold([], (combined, current) => combined..addAll(current)).join('\n    ')}
     ${_fallbackToDialplan(dialplan.extension, dialplan.defaultActions, option).join('\n    ')}
 
@@ -380,7 +402,7 @@ List<String> _actionToXmlDialplan(
 /**
  * Replace dialplan that are statically known.
  */
-String unfoldVariables(String buffer, String extension) => buffer
+String _unfoldVariables(String buffer, String extension) => buffer
     .replaceAll('\${destination_number}', extension)
     .replaceAll('\${reception-greeting}', '$extension-dag.wav')
     .replaceAll('\${reception-greeting-closed}', '$extension-nat.wav');
@@ -439,6 +461,7 @@ String _generateXmlFromIvrMenu(
   ${menu.submenus.map((menu) => _generateXmlFromIvrMenu (menu, option)).join('\n  ')}
 ''';
 
+@deprecated
 String generateXmlFromIvr(model.IvrMenu menu) => _ivrToXml(
     menu,
     new DialplanCompilerOpts(
@@ -481,6 +504,7 @@ Iterable<String> ivrOf(model.ReceptionDialplan rdp) => rdp.allActions
     .where((action) => action is model.Ivr)
     .map((ivr) => ivr.menuName);
 
+@deprecated
 String convertVoicemail(model.Voicemail vm) => _voicemailToXml(
     vm,
     new DialplanCompilerOpts(
