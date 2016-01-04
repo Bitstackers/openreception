@@ -27,6 +27,35 @@ const String outboundSuffix = 'outbound';
 const String reception = 'reception';
 const String receptionOpen = 'reception-open';
 
+class DialplanCompilerOpts {
+  final bool goLive;
+  final String greetingDir;
+  final String testNumber;
+  final String testEmail;
+
+  DialplanCompilerOpts(
+      {this.goLive: false,
+      this.greetingDir: 'converted-vox',
+      this.testNumber: 'xxxxxxxx',
+      this.testEmail: 'some-guy@somewhere'});
+}
+
+class DialplanCompiler {
+  DialplanCompilerOpts option;
+
+  DialplanCompiler(this.option);
+
+  String dialplanToXml(model.ReceptionDialplan dialplan, int rid) =>
+      _dialplanToXml(dialplan, rid, option);
+
+  String ivrToXml(model.ReceptionDialplan dialplan, int rid) =>
+      _dialplanToXml(dialplan, rid, option);
+
+  String voicemailToXml(model.ReceptionDialplan dialplan, int rid) =>
+      _dialplanToXml(dialplan, rid, option);
+
+  String userToXml() => throw new UnimplementedError();
+}
 
 /**
  * Normalizes an opening hour string for use in extension name by removing the
@@ -36,9 +65,10 @@ String _normalizeOpeningHour(String string) =>
     string.replaceAll(' ', '_').replaceAll(':', '');
 
 /**
- * Indent a string by two spaces.
+ * Indent a string by [count] spaces.
  */
-String _indent(item, {int count: 2}) => '  $item';
+String _indent(item, {int count: 2}) =>
+    '${new List.filled(count, ' ').join('')}$item';
 
 /**
  * Determine if an Iterable of actions involves receptions.
@@ -51,7 +81,7 @@ bool _involvesReceptionists(Iterable<model.Action> actions) => actions
  *
  */
 List<String> _openingHourToXmlDialplan(String extension, model.OpeningHour oh,
-        Iterable<model.Action> actions) =>
+        Iterable<model.Action> actions, DialplanCompilerOpts option) =>
     [
       '',
       _comment('Actions for opening hour $oh'),
@@ -62,10 +92,12 @@ List<String> _openingHourToXmlDialplan(String extension, model.OpeningHour oh,
           : [])
       ..add(
           '  <condition ${_openingHourToFreeSwitch(oh)} break="${PbxKey.onTrue}">')
-      ..addAll(actions.map(_actionToXmlDialplan).fold(
-          [],
-          (combined, current) =>
-              combined..addAll(current.map(_indent).map(_indent))))
+      ..addAll(actions
+          .map((action) => _actionToXmlDialplan(action, option))
+          .fold(
+              [],
+              (combined, current) =>
+                  combined..addAll(current.map(_indent).map(_indent))))
       ..add('    <action application="hangup"/>')
       ..add('  </condition>')
       ..add('</extension>');
@@ -73,8 +105,8 @@ List<String> _openingHourToXmlDialplan(String extension, model.OpeningHour oh,
 /**
  * Generate A fallback extension.
  */
-List<String> _fallbackToDialplan(
-    String extension, Iterable<model.Action> actions) {
+List<String> _fallbackToDialplan(String extension,
+    Iterable<model.Action> actions, DialplanCompilerOpts option) {
   if (actions.length == 1 && actions.last is model.Playback) {
     actions = new List.generate(10, (_) => actions.last);
   }
@@ -87,7 +119,7 @@ List<String> _fallbackToDialplan(
     ..add('    <action application="playback" '
         'data="tone_stream://L=1;%(100,0,425)"/>')
     ..add('    <action application="answer"/>')
-    ..addAll(actions.map(_actionToXmlDialplan).fold(
+    ..addAll(actions.map((action) => _actionToXmlDialplan(action, option)).fold(
         [], (combined, current) => combined..addAll(current.map(_indent))))
     ..add('    <action application="hangup"/>')
     ..add('  </condition>')
@@ -97,20 +129,22 @@ List<String> _fallbackToDialplan(
 /**
  *
  */
-Iterable<String> _hourActionToXmlDialplan(
-        String extension, model.HourAction hourAction) =>
-    hourAction.hours.map(
-        (oh) => _openingHourToXmlDialplan(extension, oh, hourAction.actions));
+Iterable<String> _hourActionToXmlDialplan(String extension,
+        model.HourAction hourAction, DialplanCompilerOpts option) =>
+    hourAction.hours.map((oh) =>
+        _openingHourToXmlDialplan(extension, oh, hourAction.actions, option));
 
 /**
  *
  */
-Iterable<String> _hourActionsToXmlDialplan(
-        String extension, Iterable<model.HourAction> hourActions) =>
-    hourActions.map((ha) => _hourActionToXmlDialplan(extension, ha)
+Iterable<String> _hourActionsToXmlDialplan(String extension,
+        Iterable<model.HourAction> hourActions, DialplanCompilerOpts option) =>
+    hourActions.map((ha) => _hourActionToXmlDialplan(extension, ha, option)
         .fold([], (combined, current) => combined..addAll(current)));
 
-Iterable<String> _namedExtensionToDialPlan(model.NamedExtension extension) => [
+Iterable<String> _namedExtensionToDialPlan(
+        model.NamedExtension extension, DialplanCompilerOpts option) =>
+    [
       '',
       _noteTemplate('Extra-extension ${extension.name}'),
       '<extension name="${extension.name}" continue="true">',
@@ -121,23 +155,37 @@ Iterable<String> _namedExtensionToDialPlan(model.NamedExtension extension) => [
       ..add('    <action application="playback" '
           'data="tone_stream://L=1;%(100,0,425)"/>')
       ..add('    <action application="answer"/>')
-      ..addAll(extension.actions.map(_actionToXmlDialplan).fold(
-          [],
-          (combined, current) =>
-              combined..addAll(current.map(_indent).map(_indent))))
+      ..addAll(extension.actions
+          .map((action) => _actionToXmlDialplan(action, option))
+          .fold(
+              [],
+              (combined, current) =>
+                  combined..addAll(current.map(_indent).map(_indent))))
       ..add('  </condition>')
       ..add('</extension>');
 
 Iterable<String> _extraExtensionsToDialplan(
-        Iterable<model.NamedExtension> extensions) =>
+        Iterable<model.NamedExtension> extensions,
+        DialplanCompilerOpts option) =>
     extensions
-        .map(_namedExtensionToDialPlan)
+        .map((ne) => _namedExtensionToDialPlan(ne, option))
         .fold([], (combined, current) => combined..addAll(current));
+
+String convertTextual(model.ReceptionDialplan dialplan, int rid) =>
+    _dialplanToXml(
+        dialplan,
+        rid,
+        new DialplanCompilerOpts(
+            goLive: goLive,
+            greetingDir: greetingDir,
+            testEmail: testEmail,
+            testNumber: testNumber));
 
 /**
  *
  */
-String convertTextual(model.ReceptionDialplan dialplan, int rid) =>
+String _dialplanToXml(model.ReceptionDialplan dialplan, int rid,
+        DialplanCompilerOpts option) =>
     '''<!-- Dialplan for extension ${dialplan.extension}. Generated ${new DateTime.now()} -->
 <include>
   <context name="$reception-${dialplan.extension}">
@@ -155,7 +203,7 @@ String convertTextual(model.ReceptionDialplan dialplan, int rid) =>
       </condition>
     </extension>
 
-    ${_extraExtensionsToDialplan(dialplan.extraExtensions).join('\n    ')}
+    ${_extraExtensionsToDialplan(dialplan.extraExtensions, option).join('\n    ')}
     <!-- Perform outbound calls -->
     <extension name="${dialplan.extension}-${outboundSuffix}" continue="true">
       <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(\d+)">
@@ -163,8 +211,8 @@ String convertTextual(model.ReceptionDialplan dialplan, int rid) =>
         <action application="hangup"/>
       </condition>
     </extension>
-    ${_hourActionsToXmlDialplan(dialplan.extension, dialplan.open).fold([], (combined, current) => combined..addAll(current)).join('\n    ')}
-    ${_fallbackToDialplan(dialplan.extension, dialplan.defaultActions).join('\n    ')}
+    ${_hourActionsToXmlDialplan(dialplan.extension, dialplan.open, option).fold([], (combined, current) => combined..addAll(current)).join('\n    ')}
+    ${_fallbackToDialplan(dialplan.extension, dialplan.defaultActions, option).join('\n    ')}
 
   </context>
 </include>''';
@@ -177,16 +225,18 @@ bool _isInternalExtension(String extension) => extension.contains('-');
 /**
  * Template for dialout action.
  */
-String _dialoutTemplate(String extension) => _isInternalExtension(extension)
-    ? extension
-    : goLive
-        ? '${PbxKey.externalTransfer}_${extension} XML receptions'
-        : '${PbxKey.externalTransfer}_${testNumber} XML receptions';
+String _dialoutTemplate(String extension, DialplanCompilerOpts option) =>
+    _isInternalExtension(extension)
+        ? extension
+        : option.goLive
+            ? '${PbxKey.externalTransfer}_${extension} XML receptions'
+            : '${PbxKey.externalTransfer}_${option.testNumber} XML receptions';
 
 /**
  *
  */
-String _liveCheckEmail(String email) => goLive ? email : testEmail;
+String _liveCheckEmail(String email, DialplanCompilerOpts option) =>
+    option.goLive ? email : option.testEmail;
 
 /**
 * Template for dialplan note.
@@ -201,14 +251,13 @@ String _comment(String text) => '<!-- $text -->';
 /**
  * Template transfer action.
  */
-String _transferTemplate(String extension) =>
-    '<action application="transfer" data="${_dialoutTemplate(extension)}"/>';
+String _transferTemplate(String extension, DialplanCompilerOpts option) =>
+    '<action application="transfer" data="${_dialoutTemplate(extension, option)}"/>';
 
 /**
  * Template for a sleep action.
  */
-String _sleep(int msec) =>
-    '<action application="sleep" data="$msec"/>';
+String _sleep(int msec) => '<action application="sleep" data="$msec"/>';
 
 /**
  * Template for a call lock event.
@@ -248,12 +297,13 @@ String get _callNotify => '<action application="${PbxKey.event}" '
 /**
  * Convert an action a xml dialplan entry.
  */
-List<String> _actionToXmlDialplan(model.Action action) {
+List<String> _actionToXmlDialplan(
+    model.Action action, DialplanCompilerOpts option) {
   List returnValue = [];
   if (action is model.Transfer) {
     if (action.note.isNotEmpty) returnValue.add(_noteTemplate(action.note));
 
-    returnValue.add(_transferTemplate(action.extension));
+    returnValue.add(_transferTemplate(action.extension, option));
   } else if (action is model.Notify) {
     returnValue.addAll([
       _comment('Announce the call to the receptionists'),
@@ -288,7 +338,7 @@ List<String> _actionToXmlDialplan(model.Action action) {
 
     returnValue.addAll([
       _sleep(500),
-      '<action application="playback" data="${greetingDir}/${action.filename}"/>',
+      '<action application="playback" data="${option.greetingDir}/${action.filename}"/>',
       _sleep(500),
       _setVar(ORPbxKey.greetingPlayed, true),
       _setVar(ORPbxKey.greetingPlayed, true),
@@ -369,37 +419,47 @@ String _openingHourToFreeSwitch(model.OpeningHour oh) {
  *
  */
 
-List<String> _ivrMenuToXml(model.IvrMenu menu) => menu.entries
-    .map(_ivrEntryToXml)
-    .fold([], (combined, current) => combined..addAll(current));
+List<String> _ivrMenuToXml(model.IvrMenu menu, DialplanCompilerOpts option) =>
+    menu.entries
+        .map((entry) => _ivrEntryToXml(entry, option))
+        .fold([], (combined, current) => combined..addAll(current));
 
-String _generateXmlFromIvrMenu(model.IvrMenu menu) =>
+String _generateXmlFromIvrMenu(
+        model.IvrMenu menu, DialplanCompilerOpts option) =>
     '''<menu name="${menu.name}"
-      ${PbxKey.greetLong}="\$\${sounds_dir}/${greetingDir}/${menu.greetingLong.filename}"
-      ${PbxKey.greetShort}="\$\${sounds_dir}/${greetingDir}/${menu.greetingShort.filename}"
+      ${PbxKey.greetLong}="\$\${sounds_dir}/${option.greetingDir}/${menu.greetingLong.filename}"
+      ${PbxKey.greetShort}="\$\${sounds_dir}/${option.greetingDir}/${menu.greetingShort.filename}"
       ${PbxKey.timeout}="\$\${IVR_timeout}"
       ${PbxKey.maxFailures}="\$\${IVR_max-failures}"
       ${PbxKey.maxTimeouts}="\$\${IVR_max-timeout}">
 
-    ${(_ivrMenuToXml(menu)).join('\n    ')}
+    ${(_ivrMenuToXml(menu, option)).join('\n    ')}
   </menu>
 
-  ${menu.submenus.map(_generateXmlFromIvrMenu).join('\n  ')}
+  ${menu.submenus.map((menu) => _generateXmlFromIvrMenu (menu, option)).join('\n  ')}
 ''';
 
-String generateXmlFromIvr(model.IvrMenu menu) => '''
+String generateXmlFromIvr(model.IvrMenu menu) => _ivrToXml(
+    menu,
+    new DialplanCompilerOpts(
+        goLive: goLive,
+        greetingDir: greetingDir,
+        testEmail: testEmail,
+        testNumber: testNumber));
+
+String _ivrToXml(model.IvrMenu menu, DialplanCompilerOpts option) => '''
 <include>
-  ${_generateXmlFromIvrMenu(menu)}
+  ${_generateXmlFromIvrMenu(menu, option)}
 </include>''';
 
-List<String> _ivrEntryToXml(model.IvrEntry entry) {
+List<String> _ivrEntryToXml(model.IvrEntry entry, DialplanCompilerOpts option) {
   List returnValue = [];
   if (entry is model.IvrTransfer) {
     if (entry.transfer.note.isNotEmpty) returnValue
         .add(_noteTemplate(entry.transfer.note));
     returnValue.add(
         '<entry action="${PbxKey.menuExecApp}" digits="${entry.digits}" '
-        'param="transfer ${_dialoutTemplate(entry.transfer.extension)}"/>');
+        'param="transfer ${_dialoutTemplate(entry.transfer.extension, option)}"/>');
   } else if (entry is model.IvrVoicemail) {
     returnValue.add(
         '<entry action="${PbxKey.menuExecApp}" digits="${entry.digits}" param="voicemail default \$\${domain} ${entry.voicemail.vmBox}"/>');
@@ -421,18 +481,27 @@ Iterable<String> ivrOf(model.ReceptionDialplan rdp) => rdp.allActions
     .where((action) => action is model.Ivr)
     .map((ivr) => ivr.menuName);
 
+String convertVoicemail(model.Voicemail vm) => _voicemailToXml(
+    vm,
+    new DialplanCompilerOpts(
+        goLive: goLive,
+        greetingDir: greetingDir,
+        testEmail: testEmail,
+        testNumber: testNumber));
+
 /**
  *
  */
-String convertVoicemail(model.Voicemail vm) => '''<include>
+String _voicemailToXml(model.Voicemail vm, DialplanCompilerOpts option) =>
+    '''<include>
   <user id="${vm.vmBox}">
     <params>
       <param name="password" value=""/>
       <param name="vm-password" value=""/>
       <param name="http-allowed-api" value="voicemail"/>
-      <param name="vm-mailto" value="${_liveCheckEmail(vm.recipient)}"/>
+      <param name="vm-mailto" value="${_liveCheckEmail(vm.recipient, option)}"/>
       <param name="vm-email-all-messages" value="true"/>
-      <param name="vm-notify-mailto" value="${_liveCheckEmail(vm.recipient)}"/>
+      <param name="vm-notify-mailto" value="${_liveCheckEmail(vm.recipient, option)}"/>
       <param name="vm-attach-file" value="true" />
       <param name="vm-skip-instructions" value="true"/>
       <param name="vm-skip-greeting" value="true"/>
