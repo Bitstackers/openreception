@@ -71,7 +71,7 @@ List<String> _externalTrunkTransfer(String extension, int rid) => [
 
 List<String> _externalSipTransfer(String extension, int rid) => [
 '<extension name="${extension}-${outboundSuffix}-sip" continue="true">',
-'  <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(\d+)">',
+'  <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(.*)">',
 '    <action application="set" data="ringback=\${dk-ring}"/>',
 '    <action application="ring_ready" />',
 '    <action application="bridge" data="sofia/external/\$1"/>',
