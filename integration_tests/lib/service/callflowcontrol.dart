@@ -185,8 +185,8 @@ void _callFlowControlTransfer() {
       CustomerPool.instance.release(caller);
       CustomerPool.instance.release(callee);
 
+      await receptionStore.remove(context.receptionId);
       await Future.wait([
-        receptionStore.remove(context.receptionId),
         rdpStore.remove(context.dialplan),
         contactStore.remove(context.contactId),
         receptionist.teardown(),
