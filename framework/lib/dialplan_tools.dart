@@ -48,11 +48,11 @@ class DialplanCompiler {
   String dialplanToXml(model.ReceptionDialplan dialplan, int rid) =>
       _dialplanToXml(dialplan, rid, option);
 
-  String ivrToXml(model.ReceptionDialplan dialplan, int rid) =>
-      _dialplanToXml(dialplan, rid, option);
+  String ivrToXml(model.IvrMenu menu) =>
+      _ivrToXml(menu, option);
 
-  String voicemailToXml(model.ReceptionDialplan dialplan, int rid) =>
-      _dialplanToXml(dialplan, rid, option);
+  String voicemailToXml(model.Voicemail vm) =>
+      _voicemailToXml(vm, option);
 
   String userToXml() => throw new UnimplementedError();
 }
