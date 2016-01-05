@@ -51,6 +51,7 @@ part 'src/model/model-message_queue_entry.dart';
 part 'src/model/model-message_recipient.dart';
 part 'src/model/model-organization.dart';
 //part 'src/model-peer.dart';
+part 'src/model/model-peer_account.dart';
 part 'src/model/model-phone_number.dart';
 part 'src/model/model-reception.dart';
 //part 'src/model-reception_filter.dart';
@@ -143,6 +144,7 @@ void main(List<String> arguments) {
   testModelMessageQueueEntry();
   testModelMessageRecipient();
 
+  testModelPeerAccount();
   testModelPhoneNumber();
   testModelUserStatus();
   testModelUser();
