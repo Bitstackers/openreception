@@ -154,7 +154,7 @@ class MyCallQueue extends ViewWidget {
   /**
    * Popup with errors.
    */
-  void _error(Exception error, String title, String message) {
+  void _error(error, String title, String message) {
     if (error is Controller.BusyException) {
       _popup.error(_langMap[Key.errorSystem], _langMap[Key.errorCallControllerBusy]);
     } else {
