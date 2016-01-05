@@ -31,6 +31,7 @@ part 'resource/resource-management.dart';
 part 'resource/resource-message.dart';
 part 'resource/resource-notification.dart';
 part 'resource/resource-organization.dart';
+part 'resource/resource-peer_account.dart';
 part 'resource/resource-reception.dart';
 part 'resource/resource-reception_dialplan.dart';
 part 'resource/resource-user.dart';
