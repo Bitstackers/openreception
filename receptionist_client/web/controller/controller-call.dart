@@ -79,13 +79,19 @@ class Call {
       ORModel.PhoneNumber phoneNumber, ORModel.Reception reception, ORModel.Contact contact,
       {String contextCallId: ''}) async {
     _log.info('Dialing ${phoneNumber.value}.');
+    final ORModel.OriginationContext context =
+        new ORModel.OriginationContext()
+          ..contactId = contact.ID
+          ..receptionId = reception.ID
+          ..callId = contextCallId
+          ..dialplan = reception.dialplan;
 
     _busy = true;
 
     _command.fire(CallCommand.DIAL);
 
     return _service
-        .originate(phoneNumber.value, contact.ID, reception.ID, callId: contextCallId)
+        .originate(phoneNumber.value, context)
         .then((ORModel.Call call) {
       _command.fire(CallCommand.DIALSUCCESS);
       _appState.activeCall = call;
