@@ -65,6 +65,8 @@ const String cellPhone = 'cellPhone';
 const String localExtension = 'localExtension';
 const String statusEmail = 'statusEmail';
 const String lastEntry = 'lastEntry';
+const String password = 'password';
+const String context = 'context';
 
 const String distributionList = 'distribution_list';
 const String phones = 'phones';

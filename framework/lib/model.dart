@@ -57,6 +57,7 @@ part 'model/model-organization.dart';
 part 'model/model-origination_context.dart';
 part 'model/model-owner.dart';
 part 'model/model-peer.dart';
+part 'model/model-peer_account.dart';
 part 'model/model-phone_number.dart';
 part 'model/model-playlist.dart';
 part 'model/model-reception.dart';
