@@ -56,7 +56,23 @@ class DialplanCompiler {
 
   String voicemailToXml(model.Voicemail vm) => _voicemailToXml(vm, option);
 
-  String userToXml() => throw new UnimplementedError();
+  String userToXml(model.User user, model.PeerAccount account) => '''<include>
+  <user id="${account.username}">
+    <params>
+      <param name="password" value="${account.password}"/>
+    </params>
+    <variables>
+      <variable name="toll_allow" value="domestic,international,local"/>
+      <variable name="accountcode" value="${account.username}"/>
+      <variable name="user_context" value="${account.context}"/>
+      <variable name="effective_caller_id_name" value="${user.name}"/>
+      <variable name="effective_caller_id_number" value="${account.username}"/>
+      <variable name="outbound_caller_id_name" value="\$\${outbound_caller_name}"/>
+      <variable name="outbound_caller_id_number" value="\$\${outbound_caller_id}"/>
+      <variable name="callgroup" value="${account.context}"/>
+    </variables>
+  </user>
+</include>''';
 }
 
 List<String> _externalTrunkTransfer(String extension, int rid) => [
