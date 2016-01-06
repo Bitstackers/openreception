@@ -30,6 +30,10 @@ part 'support/support_tools.dart';
 /// Dialplan deployment tests
 part 'service/dialplan_deployment.dart';
 part 'service/src/dialplan_deployment.dart';
+part 'service/ivrserver.dart';
+part 'service/dialplanserver.dart';
+part 'service/peeraccount_service.dart';
+part 'service/src/service-peeraccount.dart';
 
 /// Authserver tests
 part 'service/src/service-auth.dart';
@@ -68,9 +72,6 @@ part 'service/src/storage-calendar.dart';
 part 'service/src/storage-ivr.dart';
 part 'database/src/reception_dialplan_store.dart';
 part 'database/all_tests.dart';
-
-part 'service/ivrserver.dart';
-part 'service/dialplanserver.dart';
 
 /// Message store service tests
 part 'service/messageserver.dart';
