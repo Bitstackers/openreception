@@ -629,6 +629,20 @@ abstract class Randomizer {
       ..phone = randomPhoneNumber();
 
   /**
+   *
+   */
+  static String randomReceptionistNumber() =>
+      '11${new List<int>.generate(2, (_) => rand.nextInt(5)+5).join('')}';
+  /**
+   *
+   */
+  static Model.PeerAccount randomPeerAccount() =>
+    new Model.PeerAccount(
+        randomReceptionistNumber(),
+        randomString(16),
+        'receptionists');
+
+  /**
    * Returns a random element from [pool].
    */
   static dynamic randomChoice (List pool) {
