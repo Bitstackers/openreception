@@ -76,24 +76,26 @@ class DialplanCompiler {
 }
 
 List<String> _externalTrunkTransfer(String extension, int rid) => [
-'<extension name="${extension}-${outboundSuffix}-trunk" continue="true">',
-'  <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(\d+)">',
-'    <action application="set" data="ringback=\${dk-ring}"/>',
-'    <action application="ring_ready" />',
-'    <action application="bridge" data="{${ORPbxKey.receptionId}=${rid},originate_timeout=120}[leg_timeout=50,${ORPbxKey.receptionId}=${rid}]sofia/gateway/\${default_trunk}/\$1"/>',
-'    <action application="hangup"/>',
-'  </condition>',
-'</extension>'];
+      '<extension name="${extension}-${outboundSuffix}-trunk" continue="true">',
+      '  <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(\d+)">',
+      '    <action application="set" data="ringback=\${dk-ring}"/>',
+      '    <action application="ring_ready" />',
+      '    <action application="bridge" data="{${ORPbxKey.receptionId}=${rid},originate_timeout=120}[leg_timeout=50,${ORPbxKey.receptionId}=${rid}]sofia/gateway/\${default_trunk}/\$1"/>',
+      '    <action application="hangup"/>',
+      '  </condition>',
+      '</extension>'
+    ];
 
 List<String> _externalSipTransfer(String extension, int rid) => [
-'<extension name="${extension}-${outboundSuffix}-sip" continue="true">',
-'  <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(.*)">',
-'    <action application="set" data="ringback=\${dk-ring}"/>',
-'    <action application="ring_ready" />',
-'    <action application="bridge" data="sofia/external/\$1"/>',
-'    <action application="hangup"/>',
-'  </condition>',
-'</extension>'];
+      '<extension name="${extension}-${outboundSuffix}-sip" continue="true">',
+      '  <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(.*)">',
+      '    <action application="set" data="ringback=\${dk-ring}"/>',
+      '    <action application="ring_ready" />',
+      '    <action application="bridge" data="sofia/external/\$1"/>',
+      '    <action application="hangup"/>',
+      '  </condition>',
+      '</extension>'
+    ];
 
 /**
  * Normalizes an opening hour string for use in extension name by removing the
