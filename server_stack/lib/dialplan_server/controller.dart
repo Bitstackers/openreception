@@ -30,6 +30,7 @@ import 'package:openreception_framework/dialplan_tools.dart' as dialplanTools;
 import '../configuration.dart';
 
 part 'controller/controller-ivr.dart';
+part 'controller/controller-peer_account.dart';
 part 'controller/controller-reception_dialplan.dart';
 
 const String _libraryName = 'dialplan_server.controller';

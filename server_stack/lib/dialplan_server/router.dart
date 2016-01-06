@@ -95,7 +95,15 @@ Future<IO.HttpServer> start(
   final controller.ReceptionDialplan receptionDialplanHandler =
       new controller.ReceptionDialplan(_dpStore, compiler);
 
+  final Database.User _userStore = new Database.User(_connection);
+  final controller.PeerAccount peerAccountHandler =
+      new controller.PeerAccount(_userStore, compiler);
+
   var router = shelf_route.router()
+    ..post('/peeraccount/user/{uid}/deploy', peerAccountHandler.deploy)
+    ..get('/peeraccount', peerAccountHandler.list)
+    ..get('/peeraccount/{aid}', peerAccountHandler.get)
+    ..delete('/peeraccount/{aid}', peerAccountHandler.remove)
     ..get('/ivr', ivrHandler.list)
     ..get('/ivr/{name}', ivrHandler.get)
     ..put('/ivr/{name}', ivrHandler.update)
