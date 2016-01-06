@@ -36,6 +36,7 @@ part 'service/service-ivr.dart';
 part 'service/service-message.dart';
 part 'service/service-notification.dart';
 part 'service/service-organization.dart';
+part 'service/service-peer_account.dart';
 part 'service/service-reception.dart';
 part 'service/service-user.dart';
 part 'service/service-webservice.dart';
