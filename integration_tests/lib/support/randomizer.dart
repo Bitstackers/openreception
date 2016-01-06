@@ -628,6 +628,9 @@ abstract class Randomizer {
       ..name = '${randomTitle()} ${randomCallerName()}'
       ..phone = randomPhoneNumber();
 
+  /**
+   * Returns a random element from [pool].
+   */
   static dynamic randomChoice (List pool) {
     if(pool.isEmpty) {
       throw new ArgumentError('Cannot find a random value in an empty list');
