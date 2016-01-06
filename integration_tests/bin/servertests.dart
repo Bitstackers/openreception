@@ -35,6 +35,7 @@ void main(List<String> arguments) {
     });
   });
 
+  runPeerAccountTests();
   runAuthServerTests();
   runBenchmarkTests();
   runCalendarTests ();
