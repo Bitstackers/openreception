@@ -76,7 +76,7 @@ runPeerAccountTests() {
     });
 
     test(
-        'deploy',
+        'deployAndRegister',
         () => PeerAccountService.deployAndRegister(
             user, paService, callFlow, dpStore));
   });
