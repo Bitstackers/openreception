@@ -42,7 +42,7 @@ class PeerAccount {
         '/directory/receptionists/${account.username}.xml';
 
     _log.fine('Deploying new peer account to file $xmlFilePath');
-    new File(xmlFilePath).writeAsString(_compiler.userToXml(user, account));
+    await new File(xmlFilePath).writeAsString(_compiler.userToXml(user, account));
 
     return _okJson({});
   }
