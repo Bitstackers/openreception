@@ -5,6 +5,8 @@ runPeerAccountTests() {
     Transport.Client transport;
     Service.PeerAccount paService;
     Service.RESTUserStore userStore;
+    Service.CallFlowControl callFlow;
+    Service.RESTDialplanStore dpStore;
     Model.User user;
 
     test(
@@ -54,5 +56,28 @@ runPeerAccountTests() {
     test('remove', () => PeerAccountService.remove(user, paService));
 
     test('deploy', () => PeerAccountService.deploy(user, paService));
+
+    setUp(() async {
+      transport = new Transport.Client();
+      userStore = new Service.RESTUserStore(
+          Config.userStoreUri, Config.serverToken, transport);
+      paService = new Service.PeerAccount(
+          Config.dialplanStoreUri, Config.serverToken, transport);
+      callFlow = new Service.CallFlowControl(
+          Config.CallFlowControlUri, Config.serverToken, transport);
+      dpStore = new Service.RESTDialplanStore(
+          Config.dialplanStoreUri, Config.serverToken, transport);
+      user = await userStore.create(Randomizer.randomUser());
+    });
+
+    tearDown(() async {
+      transport.client.close(force: true);
+      await userStore.remove(user.ID);
+    });
+
+    test(
+        'deploy',
+        () => PeerAccountService.deployAndRegister(
+            user, paService, callFlow, dpStore));
   });
 }
