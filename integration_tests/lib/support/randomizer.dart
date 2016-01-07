@@ -636,11 +636,8 @@ abstract class Randomizer {
   /**
    *
    */
-  static Model.PeerAccount randomPeerAccount() =>
-    new Model.PeerAccount(
-        randomReceptionistNumber(),
-        randomString(16),
-        'receptionists');
+  static Model.PeerAccount randomPeerAccount() => new Model.PeerAccount(
+      randomReceptionistNumber(), randomString(16), 'receptions');
 
   /**
    * Returns a random element from [pool].
