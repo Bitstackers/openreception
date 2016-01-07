@@ -82,8 +82,14 @@ class PeerAccount {
     final String xmlFilePath = '${config.dialplanserver.freeswitchConfPath}'
         '/directory/receptionists/${aid}.xml';
 
-    await new File(xmlFilePath).delete();
+    final File peerAccount = new File(xmlFilePath);
 
+    if(!await peerAccount.exists()) {
+      return _notFound('No peer account for $aid');
+    }
+
+    await new File(xmlFilePath).delete();
     return _okJson({});
+
   }
 }
