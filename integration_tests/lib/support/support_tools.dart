@@ -129,7 +129,7 @@ class SupportTools {
 
     Iterable peerAccounts = Config.localSipAccounts.map(
         (Phonio.SIPAccount acc) =>
-            new Model.PeerAccount(acc.username, acc.password, 'receptionists'));
+            new Model.PeerAccount(acc.username, acc.password, 'receptions'));
 
     log.info(tokenMap[peerMap[peerAccounts.first.username]].ID);
 
