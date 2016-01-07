@@ -124,6 +124,9 @@ class SupportTools {
     Service.RESTDialplanStore rdpStore = new Service.RESTDialplanStore(
         Config.dialplanStoreUri, Config.serverToken, transport);
 
+    Service.CallFlowControl callFlow = new Service.CallFlowControl(
+        Config.CallFlowControlUri, Config.serverToken, transport);
+
     Service.PeerAccount paService = new Service.PeerAccount(
         Config.dialplanStoreUri, Config.serverToken, transport);
 
@@ -133,9 +136,11 @@ class SupportTools {
 
     log.info(tokenMap[peerMap[peerAccounts.first.username]].ID);
 
-    return Future.wait(peerAccounts.map((pa) =>
-        paService.deployAccount(pa, tokenMap[peerMap[pa.username]].ID)))
+    return Future
+        .wait(peerAccounts.map((pa) =>
+            paService.deployAccount(pa, tokenMap[peerMap[pa.username]].ID)))
         .then((_) => rdpStore.reloadConfig())
+        .then((_) => callFlow.stateReload())
         .whenComplete(() => transport.client.close(force: true));
   }
 
@@ -148,17 +153,24 @@ class SupportTools {
     Service.PeerAccount paService = new Service.PeerAccount(
         Config.dialplanStoreUri, Config.serverToken, transport);
 
+    Service.RESTDialplanStore rdpStore = new Service.RESTDialplanStore(
+        Config.dialplanStoreUri, Config.serverToken, transport);
+
+    Service.CallFlowControl callFlow = new Service.CallFlowControl(
+        Config.CallFlowControlUri, Config.serverToken, transport);
+
     Iterable peerAccounts = Config.localSipAccounts.map(
         (Phonio.SIPAccount acc) =>
             new Model.PeerAccount(acc.username, acc.password, 'receptionists'));
 
     log.info(tokenMap[peerMap[peerAccounts.first.username]].ID);
 
-    return Future.wait(peerAccounts.map((pa) =>
-        paService.remove(pa.username)))
+    return Future
+        .wait(peerAccounts.map((pa) => paService.remove(pa.username)))
+        .then((_) => rdpStore.reloadConfig())
+        .then((_) => callFlow.stateReload())
         .whenComplete(() => transport.client.close(force: true));
   }
-
 
   @override
   String toString() {
