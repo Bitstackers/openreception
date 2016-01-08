@@ -80,7 +80,7 @@ List<String> _externalTrunkTransfer(String extension, int rid) => [
       '  <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(\d+)">',
       '    <action application="set" data="ringback=\${dk-ring}"/>',
       '    <action application="ring_ready" />',
-      '    <action application="bridge" data="{${ORPbxKey.receptionId}=${rid},originate_timeout=120}[leg_timeout=50,${ORPbxKey.receptionId}=${rid}]sofia/gateway/\${default_trunk}/\$1"/>',
+      '    <action application="bridge" data="{${ORPbxKey.receptionId}=${rid},originate_timeout=120}[leg_timeout=50,${ORPbxKey.receptionId}=${rid},fifo_music=default]sofia/gateway/\${default_trunk}/\$1"/>',
       '    <action application="hangup"/>',
       '  </condition>',
       '</extension>'
@@ -247,10 +247,10 @@ String _dialplanToXml(model.ReceptionDialplan dialplan, int rid,
     ${_extraExtensionsToDialplan(dialplan.extraExtensions, option).join('\n    ')}
     <!-- Perform outbound PSTN calls -->
     ${_externalTrunkTransfer(dialplan.extension, rid).join('\n    ')}
-    
+
     <!-- Perform outbound SIP calls -->
     ${_externalSipTransfer(dialplan.extension, rid).join('\n    ')}
-    
+
     ${_hourActionsToXmlDialplan(dialplan.extension, dialplan.open, option).fold([], (combined, current) => combined..addAll(current)).join('\n    ')}
     ${_fallbackToDialplan(dialplan.extension, dialplan.defaultActions, option).join('\n    ')}
 
