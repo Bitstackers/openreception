@@ -24,24 +24,23 @@ void testResourceCDR() {
 abstract class ResourceCDR {
   static final Uri _host = Uri.parse('http://localhost:4090');
 
-  static void checkpoint () =>
-      expect(Resource.CDR.checkpoint(_host),
-        equals(Uri.parse('${_host}/checkpoint')));
+  static void checkpoint() => expect(
+      Resource.CDR.checkpoint(_host), equals(Uri.parse('${_host}/checkpoint')));
 
-
-  static void root () =>
-      expect(Resource.CDR.root(_host),
-        equals(Uri.parse('${_host}/cdr')));
+  static void root() =>
+      expect(Resource.CDR.root(_host), equals(Uri.parse('${_host}/cdr')));
 
   /**
-   * TODO: Review this test at a later point.
+   *
    */
-  static void list () {
-    final String from = 'test';
-    final String to = 'stuff';
+  static void list() {
+    final String from = new DateTime.now().millisecondsSinceEpoch.toString();
+    final String to = new DateTime.now()
+        .add(new Duration(hours: 1))
+        .millisecondsSinceEpoch
+        .toString();
 
     expect(Resource.CDR.list(_host, from, to),
-      equals(Uri.parse('${_host}/cdr?$from&$to')));
-
+        equals(Uri.parse('${_host}/cdr?$from&$to')));
   }
 }
