@@ -56,8 +56,5 @@ Future main(List<String> args) {
   return startDatabase()
       .then((_) => watcher.setup())
       .then((_) => vault.loadFromDirectory(parsedArgs['servertokendir']))
-      .then((_) => router.start(port: int.parse(parsedArgs['httpport'])))
-      .catchError((error, stackTrace) {
-        stderr.write('Setup failed! $error $stackTrace');
-    });
+      .then((_) => router.start(port: int.parse(parsedArgs['httpport'])));
 }

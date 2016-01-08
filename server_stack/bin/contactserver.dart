@@ -50,7 +50,5 @@ Future main(List<String> args) {
     exit(1);
   }
 
-  return router
-      .start(port: int.parse(parsedArgs['httpport']))
-      .catchError((e,s) => log.shout('Failed to start router: $e $s'));
+  return router.start(port: int.parse(parsedArgs['httpport']));
 }

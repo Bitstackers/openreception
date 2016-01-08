@@ -7,6 +7,9 @@ import 'package:openreception_framework/pbx-keys.dart';
 
 import '../lib/configuration.dart';
 
+/**
+ * Simple CDR processing script.
+ */
 main(List<String> args) async {
   final or_db.Connection connection = await or_db.Connection.connect(config.database.dsn);
   or_db.Cdr cdrStore = new or_db.Cdr(connection);

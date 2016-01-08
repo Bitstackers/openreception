@@ -24,25 +24,22 @@ import '../lib/dialplan_server/router.dart' as router;
 
 Future main(List<String> args) {
   ///Init logging.
-  final Logger log = new Logger('dialplan_server');
   Logger.root.level = config.dialplanserver.log.level;
   Logger.root.onRecord.listen(config.dialplanserver.log.onRecord);
 
   ///Handle argument parsing.
-  ArgParser parser = new ArgParser()
+  final ArgParser parser = new ArgParser()
     ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
     ..addOption('httpport',
         defaultsTo: config.dialplanserver.httpPort.toString(),
         help: 'The port the HTTP server listens on.');
 
-  ArgResults parsedArgs = parser.parse(args);
+  final ArgResults parsedArgs = parser.parse(args);
 
   if (parsedArgs['help']) {
     print(parser.usage);
     exit(1);
   }
 
-  return router
-      .start(port: int.parse(parsedArgs['httpport']))
-      .catchError((e,s) => log.shout('Failed to start router: $e $s'));
+  return router.start(port: int.parse(parsedArgs['httpport']));
 }
