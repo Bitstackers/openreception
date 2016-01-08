@@ -35,7 +35,8 @@ class DialplanToolsReceptionDialplan {
   static void empty() {
     Model.ReceptionDialplan rdp = new Model.ReceptionDialplan();
 
-    xml.parse(dpTools.convertTextual(rdp, 4));
+    xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
+        .dialplanToXml(rdp, 4));
   }
 
   /**
@@ -56,7 +57,8 @@ class DialplanToolsReceptionDialplan {
           ]
       ];
 
-    xml.parse(dpTools.convertTextual(rdp, 4));
+    xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
+        .dialplanToXml(rdp, 4));
   }
 
   /**
@@ -67,7 +69,8 @@ class DialplanToolsReceptionDialplan {
       ..active = true
       ..defaultActions = [new Model.Playback('closed', wrapInLock: false)];
 
-    xml.parse(dpTools.convertTextual(rdp, 4));
+    xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
+        .dialplanToXml(rdp, 4));
   }
 
   /**
@@ -96,7 +99,8 @@ class DialplanToolsReceptionDialplan {
           ]
       ];
 
-    xml.parse(dpTools.convertTextual(rdp, 4));
+    xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
+        .dialplanToXml(rdp, 4));
   }
 }
 
@@ -108,7 +112,8 @@ class DialplanToolsIvrMenu {
     Model.IvrMenu menu =
         new Model.IvrMenu('some menu', new Model.Playback('greeting'));
 
-    xml.parse(dpTools.generateXmlFromIvr(menu));
+    xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
+        .ivrToXml(menu));
   }
 
   /**
@@ -126,7 +131,8 @@ class DialplanToolsIvrMenu {
                 '2', new Model.Transfer('1234444', note: 'A dude'))
           ];
 
-    xml.parse(dpTools.generateXmlFromIvr(menu));
+    xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
+        .ivrToXml(menu));
   }
 
   /**
@@ -156,6 +162,7 @@ class DialplanToolsIvrMenu {
               ]
           ];
 
-    xml.parse(dpTools.generateXmlFromIvr(menu));
+    xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
+        .ivrToXml(menu));
   }
 }
