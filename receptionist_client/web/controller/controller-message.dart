@@ -48,5 +48,6 @@ class Message {
   /**
    * Saves a [ORModel.Message] object.
    */
-  Future<ORModel.Message> save(ORModel.Message message) => _store.save(message);
+  Future<ORModel.Message> save(ORModel.Message message) => message.ID ==
+      ORModel.Message.noID ? _store.create(message) : _store.update(message);
 }
