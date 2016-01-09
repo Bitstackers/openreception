@@ -10,6 +10,7 @@ void runCallFlowTests() {
   _callFlowControlOriginate();
   _CallFlowControlPark();
   _callFlowControlUserState();
+  _callFlowControlStateReload();
 }
 
 /**
