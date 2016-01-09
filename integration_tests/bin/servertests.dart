@@ -5,12 +5,11 @@ import 'package:unittest/unittest.dart';
 import 'package:junitconfiguration/junitconfiguration.dart';
 
 void main(List<String> arguments) {
-  //TODO: redirect every log entry to a file.
   Logger.root.level = Level.FINEST;
-  Logger.root.onRecord.listen((LogRecord record) =>
-      logMessage(record.toString()));
+  Logger.root.onRecord
+      .listen((LogRecord record) => logMessage(record.toString()));
 
-  if(!arguments.contains('--no-xml')) {
+  if (!arguments.contains('--no-xml')) {
     JUnitConfiguration.install();
   }
   SupportTools st;
@@ -19,13 +18,12 @@ void main(List<String> arguments) {
    * We treat the test framework as a test itself. This gives us the
    * possibility to output the test state, and to wait for setup and teardown.
    */
-  group ('TestFramework', () {
-
-    setUp (() {
+  group('TestFramework', () {
+    setUp(() {
       return SupportTools.instance.then((SupportTools init) => st = init);
     });
 
-    test ('Setup', () {
+    test('Setup', () {
       expect(st, isNotNull);
       expect(st.customers, isNotEmpty);
       expect(st.peerMap, isNotEmpty);
@@ -38,7 +36,7 @@ void main(List<String> arguments) {
   runPeerAccountTests();
   runAuthServerTests();
   runBenchmarkTests();
-  runCalendarTests ();
+  runCalendarTests();
   runConfigServerTests();
   runContactTests();
   runCallFlowTests();
@@ -54,12 +52,11 @@ void main(List<String> arguments) {
   runReceptionTests();
   //runUseCaseTests();
 
-  group ('TestFramework', () {
-    tearDown (() {
+  group('TestFramework', () {
+    tearDown(() {
       return SupportTools.instance.then((SupportTools st) => st.tearDown());
     });
 
-    test ('Teardown', () => true);
-
+    test('Teardown', () => true);
   });
 }
