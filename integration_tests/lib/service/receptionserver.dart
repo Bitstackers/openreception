@@ -1,97 +1,88 @@
 part of or_test_fw;
 
 /**
- * TODO: Add test for get-reception-by-extension.
+ * 
  */
-runReceptionTests () {
-
-
-  group ('service.Reception', () {
+runReceptionTests() {
+  group('service.Reception', () {
     Transport.Client transport = null;
     Service.RESTReceptionStore receptionStore = null;
     Receptionist r;
 
-    setUp (() {
+    setUp(() {
       transport = new Transport.Client();
     });
 
-    tearDown (() {
-      transport.client.close(force : true);
+    tearDown(() {
+      transport.client.close(force: true);
     });
 
-    test ('CORS headers present',
+    test('CORS headers present',
         () => Reception.isCORSHeadersPresent(transport.client));
 
-    test ('Non-existing path',
-        () => Reception.nonExistingPath(transport.client));
+    test(
+        'Non-existing path', () => Reception.nonExistingPath(transport.client));
 
-    setUp (() {
+    setUp(() {
       transport = new Transport.Client();
-      receptionStore = new Service.RESTReceptionStore
-         (Config.receptionStoreUri, Config.serverToken, transport);
-
+      receptionStore = new Service.RESTReceptionStore(
+          Config.receptionStoreUri, Config.serverToken, transport);
     });
 
-    tearDown (() {
+    tearDown(() {
       receptionStore = null;
-      transport.client.close(force : true);
+      transport.client.close(force: true);
     });
 
-    test ('Non-existing reception',
+    test('Non-existing reception',
         () => Reception.nonExistingReception(receptionStore));
 
-    test ('Existing reception',
+    test('Existing reception',
         () => Reception.existingReception(receptionStore));
 
-    test ('List receptions',
-        () => Reception.listReceptions(receptionStore));
+    test('List receptions', () => Reception.listReceptions(receptionStore));
 
-    test ('Reception creation',
-        () => Reception.create(receptionStore));
+    test('Reception creation', () => Reception.create(receptionStore));
 
-    test ('Non-existing Reception update',
+    test('Non-existing Reception update',
         () => Reception.updateNonExisting(receptionStore));
 
-    test ('Reception invalid update',
+    test('Reception invalid update',
         () => Reception.updateInvalid(receptionStore));
 
-    test ('Reception update',
-        () => Reception.update(receptionStore));
+    test('Reception update', () => Reception.update(receptionStore));
 
-    test ('Reception removal',
-        () => Reception.remove(receptionStore));
+    test('Reception removal', () => Reception.remove(receptionStore));
 
-    test ('Lookup by extension',
-        () => Reception.byExtension(receptionStore));
+    test('Lookup by extension', () => Reception.byExtension(receptionStore));
 
-    test ('Lookup extension',
-        () => Reception.extensionOf(receptionStore));
+    test('Lookup extension', () => Reception.extensionOf(receptionStore));
 
-    setUp (() {
+    setUp(() {
       transport = new Transport.Client();
-      receptionStore = new Service.RESTReceptionStore
-         (Config.receptionStoreUri, Config.serverToken, transport);
+      receptionStore = new Service.RESTReceptionStore(
+          Config.receptionStoreUri, Config.serverToken, transport);
       r = ReceptionistPool.instance.aquire();
 
       return r.initialize();
     });
 
-    tearDown (() {
+    tearDown(() {
       receptionStore = null;
-      transport.client.close(force : true);
+      transport.client.close(force: true);
 
       ReceptionistPool.instance.release(r);
 
       return r.teardown();
     });
 
-    test ('Reception creation (event presence)',
+    test('Reception creation (event presence)',
         () => Reception.createEvent(receptionStore, r));
 
-    test ('Reception update (event presence)',
+    test('Reception update (event presence)',
         () => Reception.updateEvent(receptionStore, r));
 
-    test ('Reception removal (event presence)',
+    test('Reception removal (event presence)',
         () => Reception.deleteEvent(receptionStore, r));
   });
 }

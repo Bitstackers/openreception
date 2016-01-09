@@ -19,8 +19,6 @@ Future isCORSHeadersPresent(Uri uri) async {
       .getUrl(uri)
       .then((HttpClientRequest request) => request.close().then(checkHeaders))
       .whenComplete(() => client.close(force: true));
-
-  ;
 }
 
 /**
