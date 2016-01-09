@@ -143,7 +143,6 @@ void _callFlowControlTransfer() {
         ..fromMinute = now.minute
         ..toMinute = now.minute;
 
-      //TODO: event subscriptions.
       Model.ReceptionDialplan rdp = new Model.ReceptionDialplan()
         ..open = [
           new Model.HourAction()
