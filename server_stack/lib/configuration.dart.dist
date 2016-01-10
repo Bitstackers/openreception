@@ -195,7 +195,7 @@ class DialplanServer extends StandardConfig {
   @override
   final int httpPort = 4060;
   final String freeswitchConfPath = '/usr/local/freeswitch/conf';
-  
+
   /// Dialplan compiler parameters
   final bool goLive = false;
   final String playbackPrefix = 'greetings-dir';
@@ -228,18 +228,6 @@ class UserServer extends StandardConfig {
   final int httpPort = 4030;
 
   const UserServer();
-}
-
-/**
- * Mangement server configuration values
- */
-class ManagementServer extends StandardConfig {
-  @override
-  final int httpPort = 4100;
-  Uri get dialplanCompilerServer => Uri.parse('http://localhost:4210');
-  final String recordingsDirectory = '/usr/local/freeswitch/sounds/incoming';
-
-  const ManagementServer();
 }
 
 /**
@@ -313,7 +301,6 @@ class Configuration {
   final ContactServer contactServer = const ContactServer();
   final MessageDispatcher messageDispatcher = const MessageDispatcher();
   final CDRServer cdrServer = const CDRServer();
-  final ManagementServer managementServer = const ManagementServer();
   final MessageServer messageServer = const MessageServer();
   final NotificationServer notificationServer = const NotificationServer();
   final ReceptionServer receptionServer = const ReceptionServer();
