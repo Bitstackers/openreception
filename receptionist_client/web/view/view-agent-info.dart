@@ -163,10 +163,11 @@ class AgentInfo extends ViewWidget {
 
     /// Update counters.
     _userPeer.forEach((userId, peerId) {
-      bool peerRegistered = _userPeer.containsKey(userId) ?
-          _peerState.containsKey(_userPeer[userId]) ?
-              _peerState[_userPeer[userId]]
-            : false : false;
+      bool peerRegistered = _userPeer.containsKey(userId)
+          ? _peerState.containsKey(_userPeer[userId])
+              ? _peerState[_userPeer[userId]]
+              : false
+          : false;
 
       if (peerRegistered && _userConnectionCount[userId] > 0) {
         switch (_userState[userId]) {
