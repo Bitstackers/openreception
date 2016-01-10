@@ -138,7 +138,7 @@ class ORCReady {
 
     _userController.getState(_appState.currentUser).then((ORModel.UserStatus userStatus) {
       new AgentInfo(new Model.UIAgentInfo(querySelector('#agent-info')), _appState, _userController,
-          _notification, userStatus);
+          _notification, _callController);
 
       new GlobalCallQueue(
           new Model.UIGlobalCallQueue(querySelector('#global-call-queue'), _langMap),
