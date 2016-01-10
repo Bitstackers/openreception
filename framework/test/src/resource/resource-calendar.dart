@@ -13,48 +13,49 @@
 
 part of openreception.test;
 
-///TODO: Reenable tests.
 void testResourceCalendar() {
   group('Resource.Calendar', () {
-//    test('singleContact', ResourceCalendar.singleContact);
-//    test('singleReception', ResourceCalendar.singleReception);
-//
-//    test('listContact', ResourceCalendar.listContact);
-//    test('listReception', ResourceCalendar.listReception);
-//    test('single', ResourceCalendar.single);
-//    test('changeList', ResourceCalendar.changeList);
-//    test('latestChange', ResourceCalendar.latestChange);
+    test('changeList', ResourceCalendar.changeList);
+    test('single', ResourceCalendar.single);
+    test('listReception', ResourceCalendar.listReception);
+    test('listReceptionDeleted', ResourceCalendar.listReceptionDeleted);
+    test('listContact', ResourceCalendar.listContact);
+    test('listContactDeleted', ResourceCalendar.listContactDeleted);
+    test('purge', ResourceCalendar.purge);
+    test('latestChange', ResourceCalendar.latestChange);
   });
 }
 
 abstract class ResourceCalendar {
   static final Uri _host = Uri.parse('http://localhost:4010');
 
-//  static void singleContact () =>
-//      expect(Resource.Calendar.singleContact(_host, 2, 3, 4),
-//        equals(Uri.parse('${_host}/contact/4/reception/3/calendar/event/2')));
-//
-//  static void singleReception () =>
-//      expect(Resource.Calendar.singleReception(_host, 2, 3),
-//        equals(Uri.parse('${_host}/reception/3/calendar/event/2')));
-//
-//  static void listContact () =>
-//      expect(Resource.Calendar.listContact(_host, 4, 2),
-//        equals(Uri.parse('${_host}/contact/4/reception/2/calendar')));
-//
-//  static void listReception () =>
-//      expect(Resource.Calendar.listReception(_host, 2),
-//        equals(Uri.parse('${_host}/reception/2/calendar')));
+  static void changeList() => expect(Resource.Calendar.changeList(_host, 2),
+      equals(Uri.parse('$_host/calendarentry/2/change')));
 
-  static void single () =>
-      expect(Resource.Calendar.single(_host, 3),
-        equals(Uri.parse('${_host}/calendar/entry/3')));
+  static void single() => expect(Resource.Calendar.single(_host, 3),
+      equals(Uri.parse('${_host}/calendarentry/3')));
 
-  static void changeList () =>
-      expect(Resource.Calendar.changeList(_host, 3),
-        equals(Uri.parse('${_host}/calendarentry/3/change')));
+  static void listReception() => expect(
+      Resource.Calendar
+          .list(_host, new Model.OwningReception(2), deleted: false),
+      equals(Uri.parse('${_host}/calendar/r:2')));
 
-  static void latestChange () =>
-      expect(Resource.Calendar.latestChange(_host, 3),
-          equals(Uri.parse('${_host}/calendarentry/3/change/latest')));
+  static void listReceptionDeleted() => expect(
+      Resource.Calendar
+          .list(_host, new Model.OwningReception(2), deleted: true),
+      equals(Uri.parse('${_host}/calendar/r:2/deleted')));
+
+  static void listContact() => expect(
+      Resource.Calendar.list(_host, new Model.OwningContact(4), deleted: false),
+      equals(Uri.parse('${_host}/calendar/c:4')));
+
+  static void listContactDeleted() => expect(
+      Resource.Calendar.list(_host, new Model.OwningContact(4), deleted: true),
+      equals(Uri.parse('${_host}/calendar/c:4/deleted')));
+
+  static void purge() => expect(Resource.Calendar.purge(_host, 3),
+      equals(Uri.parse('${_host}/calendarentry/3/purge')));
+
+  static void latestChange() => expect(Resource.Calendar.latestChange(_host, 3),
+      equals(Uri.parse('${_host}/calendarentry/3/change/latest')));
 }
