@@ -64,7 +64,8 @@ abstract class ModelReceptionTransfer {
 
     expect(Model.ReceptionTransfer.parse(buffer1), isNotNull);
     expect(Model.ReceptionTransfer.parse(buffer2), isNotNull);
-    //expect(Model.ReceptionTransfer.parse(buffer3),throwsA(new isInstanceOf<FormatException>()));
+    expect(() => Model.ReceptionTransfer.parse(buffer3),
+        throwsA(new isInstanceOf<FormatException>()));
   }
 
 /**
