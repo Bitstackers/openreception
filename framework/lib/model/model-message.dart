@@ -52,50 +52,51 @@ class Message {
   Message.empty();
 
   Iterable<MessageRecipient> get to =>
-    recipients.where((MessageRecipient r) => r.role == Role.TO);
+      recipients.where((MessageRecipient r) => r.role == Role.TO);
 
   Iterable<MessageRecipient> get cc =>
-    recipients.where((MessageRecipient r) => r.role == Role.CC);
+      recipients.where((MessageRecipient r) => r.role == Role.CC);
 
   Iterable<MessageRecipient> get bcc =>
-    recipients.where((MessageRecipient r) => r.role == Role.BCC);
+      recipients.where((MessageRecipient r) => r.role == Role.BCC);
 
   bool get hasRecpients => recipients.isNotEmpty;
 
   Map toJson() => this.asMap;
 
   /**
-   * TODO: Document.
+   *
    */
   Message.fromMap(Map map) {
     Iterable iterRcp =
-        (map['recipients'] as Iterable).map(MessageRecipient.decode);
+        (map[Key.recipients] as Iterable).map(MessageRecipient.decode);
 
     ID = (map.containsKey(Key.ID) ? map[Key.ID] : noID);
     recipients.addAll(iterRcp);
-    context = new MessageContext.fromMap(map['context']);
+    context = new MessageContext.fromMap(map[Key.context]);
     flag = new MessageFlag(map['flags']);
-    callerInfo = new CallerInfo.fromMap(map['caller']);
-    body = map['message'];
-    sent = map['sent'];
+    callerInfo = new CallerInfo.fromMap(map[Key.caller]);
+    body = map[Key.body];
+    sent = map[Key.sent];
     callId = map[Key.callId];
-    enqueued = map['enqueued'];
-    senderId = map['taken_by_agent'];
-    createdAt = Util.unixTimestampToDateTime(map['created_at']);
+    enqueued = map[Key.enqueued];
+    senderId = map[Key.takenByAgent];
+    createdAt = Util.unixTimestampToDateTime(map[Key.createdAt]);
   }
 
   Map get asMap => {
-    'id': ID,
-    'message': body,
-    'context': context.asMap,
-    'taken_by_agent': senderId,
-    'caller': callerInfo.asMap,
-    Key.callId : callId,
-    'flags': flag.toJson(),
-    'sent': sent,
-    'enqueued': enqueued,
-    'created_at': Util.dateTimeToUnixTimestamp(createdAt),
-    'recipients':
-        recipients.map((MessageRecipient r) => r.asMap).toList(growable: false)
-  };
+        Key.id: ID,
+        Key.body: body,
+        Key.context: context.asMap,
+        Key.takenByAgent: senderId,
+        Key.caller: callerInfo.asMap,
+        Key.callId: callId,
+        Key.flags: flag.toJson(),
+        Key.sent: sent,
+        Key.enqueued: enqueued,
+        Key.createdAt: Util.dateTimeToUnixTimestamp(createdAt),
+        Key.recipients: recipients
+            .map((MessageRecipient r) => r.asMap)
+            .toList(growable: false)
+      };
 }

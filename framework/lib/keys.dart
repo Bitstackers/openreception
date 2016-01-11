@@ -134,6 +134,14 @@ const String assignedCalls = 'assignedCalls';
 const String start = 'start';
 const String end = 'end';
 
+const String takenByAgent = 'taken_by_agent';
+const String enqueued = 'enqueued';
+const String sent = 'sent';
+const String caller = 'caller';
+const String flags = 'flags';
+const String body = 'message';
+const String createdAt = 'created_at';
+const String recipients = 'recipients';
 const String tries = 'tries';
 const String messageId = 'messageId';
 const String lastTry = 'lastTry';
