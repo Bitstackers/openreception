@@ -25,8 +25,7 @@ Model.Reception _rowToReception(var row) => new Model.Reception.empty()
   ..dialplan = row.dialplan
   ..organizationId = row.organization_id
   ..enabled = row.enabled
-  ..extraData =
-      row.extradatauri.isNotEmpty ? Uri.parse(row.extradatauri) : Uri.parse('.')
+  ..extraData = row.extradatauri.isNotEmpty ? Uri.parse(row.extradatauri) : null
   ..lastChecked = row.last_check
   ..attributes = row.attributes;
 

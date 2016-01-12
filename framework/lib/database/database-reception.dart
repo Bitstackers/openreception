@@ -27,14 +27,14 @@ class Reception implements Storage.Reception {
 
   Future<Model.Reception> create(Model.Reception reception) {
     String sql = '''
-    INSERT INTO 
-      receptions 
-        (organization_id, full_name, attributes, 
+    INSERT INTO
+      receptions
+        (organization_id, full_name, attributes,
          extradatauri, enabled, dialplan)
-    VALUES 
-        (@organization_id, @full_name, @attributes, 
+    VALUES
+        (@organization_id, @full_name, @attributes,
          @extradatauri, @enabled, @dialplan)
-    RETURNING 
+    RETURNING
       id, last_check;
   ''';
 
@@ -42,35 +42,36 @@ class Reception implements Storage.Reception {
       'organization_id': reception.organizationId,
       'full_name': reception.fullName,
       'attributes': JSON.encode(reception.attributes),
-      'extradatauri': reception.extraData.toString(),
+      'extradatauri':
+          reception.extraData != null ? reception.extraData.toString() : '',
       'enabled': reception.enabled,
       'dialplan': reception.dialplan
     };
 
-    return _connection.query(sql, parameters).then(
-        (Iterable rows) => rows.length == 1
+    return _connection.query(sql, parameters).then((Iterable rows) =>
+        rows.length == 1
             ? (reception
-      ..ID = rows.first.id
-      ..lastChecked = rows.first.last_check)
-        : new Future.error(new Storage.ServerError())
-            .catchError((error, stackTrace) {
-      log.severe('sql:$sql :: parameters:$parameters');
+              ..ID = rows.first.id
+              ..lastChecked = rows.first.last_check)
+            : new Future.error(new Storage.ServerError())
+                .catchError((error, stackTrace) {
+                log.severe('sql:$sql :: parameters:$parameters');
 
-      return new Future.error(error, stackTrace);
-    }));
+                return new Future.error(error, stackTrace);
+              }));
   }
 
   /**
    * Retrieve a specific reception from the database identified
    * by its extension.
    */
-  Future<Model.Reception> getByExtension (String extension) {
+  Future<Model.Reception> getByExtension(String extension) {
     String sql = '''
-      SELECT 
+      SELECT
         id, full_name, attributes, enabled, organization_id,
         extradatauri, last_check, dialplan
       FROM receptions
-      WHERE dialplan = @exten 
+      WHERE dialplan = @exten
     ''';
 
     Map parameters = {'exten': extension};
@@ -94,7 +95,7 @@ class Reception implements Storage.Reception {
    * Retrieve the extension of a specific reception from the database
    * identified its ID.
    */
-  Future<String> extensionOf (int receptionId) {
+  Future<String> extensionOf(int receptionId) {
     String sql = '''
       SELECT dialplan
       FROM receptions
@@ -123,11 +124,11 @@ class Reception implements Storage.Reception {
    */
   Future<Model.Reception> get(int id) {
     String sql = '''
-      SELECT 
+      SELECT
         id, full_name, attributes, enabled, organization_id,
         extradatauri, last_check, dialplan
       FROM receptions
-      WHERE id = @id 
+      WHERE id = @id
     ''';
 
     Map parameters = {'id': id};
@@ -151,7 +152,7 @@ class Reception implements Storage.Reception {
    */
   Future<Iterable<Model.Reception>> list() {
     String sql = '''
-      SELECT 
+      SELECT
         id, full_name, attributes, enabled, organization_id,
         extradatauri, last_check, dialplan
       FROM receptions
@@ -175,7 +176,8 @@ class Reception implements Storage.Reception {
     ''';
 
     Map parameters = {'id': receptionID};
-    return _connection     .execute(sql, parameters)
+    return _connection
+        .execute(sql, parameters)
         .then((int rowsAffected) => rowsAffected != 1
             ? new Future.error(new Storage.NotFound('rid:$receptionID'))
             : null)
@@ -195,10 +197,10 @@ class Reception implements Storage.Reception {
   Future<Model.Reception> update(Model.Reception reception) {
     String sql = '''
     UPDATE receptions
-    SET full_name=@full_name, 
-        attributes=@attributes, 
-        extradatauri=@extradatauri, 
-        enabled=@enabled, 
+    SET full_name=@full_name,
+        attributes=@attributes,
+        extradatauri=@extradatauri,
+        enabled=@enabled,
         organization_id=@organization_id,
         dialplan=@dialplan
     WHERE id=@id;
@@ -207,11 +209,12 @@ class Reception implements Storage.Reception {
     Map parameters = {
       'full_name': reception.fullName,
       'attributes': JSON.encode(reception.attributes),
-      'extradatauri': reception.extraData.toString(),
+      'extradatauri':
+          reception.extraData != null ? reception.extraData.toString() : '',
       'enabled': reception.enabled,
       'id': reception.ID,
       'organization_id': reception.organizationId,
-      'dialplan' : reception.dialplan
+      'dialplan': reception.dialplan
     };
 
     return _connection
