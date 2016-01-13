@@ -215,6 +215,7 @@ Model.Contact _rowToContact(var row) {
     ..relations.addAll(relations)
     ..responsibilities = responsibilities
     ..tags = tags
+    ..statusEmail = row.status_email
     ..workhours = workhours
     ..messagePrerequisites = messagePrerequisites;
 

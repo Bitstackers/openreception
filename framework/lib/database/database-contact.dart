@@ -22,13 +22,13 @@ class Contact implements Storage.Contact {
 
   Future<Model.Contact> addToReception(Model.Contact contact, int receptionID) {
     String sql = '''
-    INSERT INTO 
-      reception_contacts 
-        (reception_id, contact_id, wants_messages, 
-         phonenumbers, attributes, enabled)
-    VALUES 
-        (@reception_id, @contact_id, @wants_messages, 
-         @phonenumbers, @attributes, @enabled);
+    INSERT INTO
+      reception_contacts
+        (reception_id, contact_id, wants_messages,
+         phonenumbers, attributes, enabled, status_email)
+    VALUES
+        (@reception_id, @contact_id, @wants_messages,
+         @phonenumbers, @attributes, @enabled, @statusEmail);
   ''';
 
     Map parameters = {
@@ -37,23 +37,23 @@ class Contact implements Storage.Contact {
       'wants_messages': contact.wantsMessage,
       'phonenumbers': JSON.encode(contact.phones),
       'attributes': JSON.encode(contact.attributes),
-      'enabled': contact.enabled
+      'enabled': contact.enabled,
+      'statusEmail': contact.statusEmail
     };
 
-    return _connection.execute(sql, parameters)
-      .then((int affectedRows) =>
-          affectedRows == 1
-          ? (contact..receptionID = receptionID)
-          : new Future.error(new StateError('No association was created!')))
-          .catchError((error, stackTrace) {
-        log.severe('SQL: $sql :: Parameters : $parameters', error, stackTrace);
+    return _connection
+        .execute(sql, parameters)
+        .then((int affectedRows) => affectedRows == 1
+            ? (contact..receptionID = receptionID)
+            : new Future.error(new StateError('No association was created!')))
+        .catchError((error, stackTrace) {
+      log.severe('SQL: $sql :: Parameters : $parameters', error, stackTrace);
 
-        return new Future.error(error, stackTrace);
-      });
+      return new Future.error(error, stackTrace);
+    });
   }
 
-  Future<Model.Contact> removeFromReception(
-      int contactId, int receptionId) {
+  Future<Model.Contact> removeFromReception(int contactId, int receptionId) {
     String sql = '''
     DELETE FROM reception_contacts
     WHERE reception_id=@reception_id AND contact_id=@contact_id;
@@ -69,7 +69,8 @@ class Contact implements Storage.Contact {
     SET wants_messages=@wants_messages,
         attributes=@attributes,
         enabled=@enabled,
-        phonenumbers=@phonenumbers
+        phonenumbers=@phonenumbers,
+        status_email=@statusEmail
     WHERE reception_id=@reception_id AND contact_id=@contact_id;
   ''';
 
@@ -79,19 +80,20 @@ class Contact implements Storage.Contact {
       'wants_messages': contact.wantsMessage,
       'phonenumbers': JSON.encode(contact.phones),
       'attributes': JSON.encode(contact.attributes),
-      'enabled': contact.enabled
+      'enabled': contact.enabled,
+      'statusEmail': contact.statusEmail
     };
 
-    return _connection.execute(sql, parameters)
-        .then((int affectedRows) =>
-            affectedRows == 1
+    return _connection
+        .execute(sql, parameters)
+        .then((int affectedRows) => affectedRows == 1
             ? contact
             : new Future.error(new StateError('No association was updated!')))
-            .catchError((error, stackTrace) {
-          log.severe('SQL: $sql :: Parameters : $parameters', error, stackTrace);
+        .catchError((error, stackTrace) {
+      log.severe('SQL: $sql :: Parameters : $parameters', error, stackTrace);
 
-          return new Future.error(error, stackTrace);
-        });
+      return new Future.error(error, stackTrace);
+    });
   }
 
   Future<Model.BaseContact> get(int contactID) {
@@ -173,83 +175,84 @@ class Contact implements Storage.Contact {
   Future<Iterable<Model.MessageEndpoint>> endpoints(
       int contactID, int receptionID) {
     String sql = '''
-        SELECT address, address_type, confidential, enabled, priority, 
+        SELECT address, address_type, confidential, enabled, priority,
               description
-        FROM messaging_end_points 
+        FROM messaging_end_points
         WHERE contact_id = @contactID AND reception_id = @receptionID''';
 
     Map parameters = {'contactID': contactID, 'receptionID': receptionID};
 
-    return _connection.query(sql, parameters).then((rows) => (rows as Iterable)
-        .map((row) => new Model.MessageEndpoint.empty()
-      ..address = row.address
-      ..type = row.address_type
-      ..confidential = row.confidential
-      ..enabled = row.enabled
-      //..priority = row.priority,
-      ..description = row.description));
+    return _connection.query(sql, parameters).then((rows) =>
+        (rows as Iterable).map((row) => new Model.MessageEndpoint.empty()
+          ..address = row.address
+          ..type = row.address_type
+          ..confidential = row.confidential
+          ..enabled = row.enabled
+          //..priority = row.priority,
+          ..description = row.description));
   }
 
   Future<Iterable<Model.Contact>> listByReception(int receptionId) {
     String sql = '''
-    SELECT rcpcon.reception_id, 
-           rcpcon.contact_id, 
-           rcpcon.wants_messages, 
-           rcpcon.attributes, 
+    SELECT rcpcon.reception_id,
+           rcpcon.contact_id,
+           rcpcon.wants_messages,
+           rcpcon.attributes,
            rcpcon.enabled as rcpenabled,
            (SELECT row_to_json(distribution_column_seperated_roles)
               FROM (SELECT (SELECT array_to_json(array_agg(row_to_json(tmp_to)))
-                            FROM (SELECT 
+                            FROM (SELECT
                                     recipient_reception_id as reception_id,
                                     reception.full_name    as reception_name,
                                     contact.full_name      as contact_name,
                                     recipient_contact_id   as contact_id
                                   FROM distribution_list dl JOIN receptions reception ON (recipient_reception_id = reception.id)
-                                                            JOIN contacts contact ON (recipient_contact_id = contact.id) 
-                                  WHERE dl.owner_reception_id = rcpcon.reception_id AND 
+                                                            JOIN contacts contact ON (recipient_contact_id = contact.id)
+                                  WHERE dl.owner_reception_id = rcpcon.reception_id AND
                                         dl.owner_contact_id = rcpcon.contact_id AND
                                         dl.role = 'to'
                                  ) tmp_to
                            ) AS to,
-               
+
                            (SELECT array_to_json(array_agg(row_to_json(tmp_cc)))
-                            FROM (SELECT 
+                            FROM (SELECT
                                     recipient_reception_id as reception_id,
                                     reception.full_name    as reception_name,
                                     contact.full_name      as contact_name,
                                     recipient_contact_id   as contact_id
                                   FROM distribution_list dl JOIN receptions reception ON (recipient_reception_id = reception.id)
-                                                            JOIN contacts contact ON (recipient_contact_id = contact.id) 
-                                  WHERE dl.owner_reception_id = rcpcon.reception_id AND 
-                                        dl.owner_contact_id = rcpcon.contact_id AND 
+                                                            JOIN contacts contact ON (recipient_contact_id = contact.id)
+                                  WHERE dl.owner_reception_id = rcpcon.reception_id AND
+                                        dl.owner_contact_id = rcpcon.contact_id AND
                                         dl.role = 'cc'
                                  ) tmp_cc
                            ) AS cc,
-               
+
                            (SELECT array_to_json(array_agg(row_to_json(tmp_bcc)))
-                            FROM (SELECT 
+                            FROM (SELECT
                                     recipient_reception_id as reception_id,
                                     reception.full_name    as reception_name,
                                     contact.full_name      as contact_name,
                                     recipient_contact_id   as contact_id
                                   FROM distribution_list dl JOIN receptions reception ON (recipient_reception_id = reception.id)
-                                                            JOIN contacts contact ON (recipient_contact_id = contact.id) 
-                                  WHERE dl.owner_reception_id = rcpcon.reception_id AND 
+                                                            JOIN contacts contact ON (recipient_contact_id = contact.id)
+                                  WHERE dl.owner_reception_id = rcpcon.reception_id AND
                                         dl.owner_contact_id = rcpcon.contact_id AND
                                         dl.role = 'bcc'
                                  ) tmp_bcc
                            ) AS bcc
                    ) distribution_column_seperated_roles
              ) as distribution_list,
-           con.full_name, 
-           con.contact_type, 
+           con.full_name,
+           con.contact_type,
            con.enabled as conenabled,
            rcpcon.phonenumbers as phone,
+           rcpcon.status_email as status_email,
 
              (SELECT coalesce(array_to_json(array_agg(row_to_json(contact_end_point))), '[]')
-              FROM (SELECT address, 
-                           address_type AS type, 
-                           confidential, 
+              FROM (SELECT address,
+                           address_type AS type,
+                           confidential,
                            enabled,
                            priority,
                            description
@@ -258,7 +261,7 @@ class Contact implements Storage.Contact {
                           contact_id = rcpcon.contact_id
                     ORDER BY priority ASC) contact_end_point) AS endpoints
 
-    FROM contacts con 
+    FROM contacts con
       JOIN reception_contacts rcpcon on con.id = rcpcon.contact_id
     WHERE rcpcon.reception_id = @receptionid''';
 
@@ -271,64 +274,65 @@ class Contact implements Storage.Contact {
 
   Future<Model.Contact> getByReception(int receptionId, int contactId) {
     String sql = '''
-      SELECT rcpcon.reception_id, 
-             rcpcon.contact_id, 
-             rcpcon.wants_messages, 
-             rcpcon.attributes, 
+      SELECT rcpcon.reception_id,
+             rcpcon.contact_id,
+             rcpcon.wants_messages,
+             rcpcon.attributes,
              rcpcon.enabled as rcpenabled,
              (SELECT row_to_json(distribution_column_seperated_roles)
               FROM (SELECT (SELECT array_to_json(array_agg(row_to_json(tmp_to)))
-                            FROM (SELECT 
+                            FROM (SELECT
                                     recipient_reception_id as reception_id,
                                     reception.full_name    as reception_name,
                                     contact.full_name      as contact_name,
                                     recipient_contact_id   as contact_id
                                   FROM distribution_list dl JOIN receptions reception ON (recipient_reception_id = reception.id)
-                                                            JOIN contacts contact ON (recipient_contact_id = contact.id) 
-                                  WHERE dl.owner_reception_id = rcpcon.reception_id AND 
+                                                            JOIN contacts contact ON (recipient_contact_id = contact.id)
+                                  WHERE dl.owner_reception_id = rcpcon.reception_id AND
                                         dl.owner_contact_id = rcpcon.contact_id AND
                                         dl.role = 'to'
                                  ) tmp_to
                            ) AS to,
-               
+
                            (SELECT array_to_json(array_agg(row_to_json(tmp_cc)))
-                            FROM (SELECT 
+                            FROM (SELECT
                                     recipient_reception_id as reception_id,
                                     reception.full_name    as reception_name,
                                     contact.full_name      as contact_name,
                                     recipient_contact_id   as contact_id
                                   FROM distribution_list dl JOIN receptions reception ON (recipient_reception_id = reception.id)
-                                                            JOIN contacts contact ON (recipient_contact_id = contact.id) 
-                                  WHERE dl.owner_reception_id = rcpcon.reception_id AND 
-                                        dl.owner_contact_id = rcpcon.contact_id AND 
+                                                            JOIN contacts contact ON (recipient_contact_id = contact.id)
+                                  WHERE dl.owner_reception_id = rcpcon.reception_id AND
+                                        dl.owner_contact_id = rcpcon.contact_id AND
                                         dl.role = 'cc'
                                  ) tmp_cc
                            ) AS cc,
-               
+
                            (SELECT array_to_json(array_agg(row_to_json(tmp_bcc)))
-                            FROM (SELECT 
+                            FROM (SELECT
                                     recipient_reception_id as reception_id,
                                     reception.full_name    as reception_name,
                                     contact.full_name      as contact_name,
                                     recipient_contact_id   as contact_id
                                   FROM distribution_list dl JOIN receptions reception ON (recipient_reception_id = reception.id)
-                                                            JOIN contacts contact ON (recipient_contact_id = contact.id) 
-                                  WHERE dl.owner_reception_id = rcpcon.reception_id AND 
+                                                            JOIN contacts contact ON (recipient_contact_id = contact.id)
+                                  WHERE dl.owner_reception_id = rcpcon.reception_id AND
                                         dl.owner_contact_id = rcpcon.contact_id AND
                                         dl.role = 'bcc'
                                  ) tmp_bcc
                            ) AS bcc
                    ) distribution_column_seperated_roles
              ) as distribution_list,
-             con.full_name, 
-             con.contact_type, 
+             con.full_name,
+             con.contact_type,
              con.enabled as conenabled,
              rcpcon.phonenumbers as phone,
+             rcpcon.status_email as status_email,
 
              (SELECT coalesce(array_to_json(array_agg(row_to_json(contact_end_point))), '[]')
-              FROM (SELECT address, 
-                           address_type AS type, 
-                           confidential, 
+              FROM (SELECT address,
+                           address_type AS type,
+                           confidential,
                            enabled,
                            priority,
                            description
@@ -336,8 +340,8 @@ class Contact implements Storage.Contact {
                     WHERE reception_id = rcpcon.reception_id AND
                           contact_id = rcpcon.contact_id
                     ORDER BY priority ASC) contact_end_point) AS endpoints
-        
-          FROM   contacts con 
+
+          FROM   contacts con
             JOIN reception_contacts rcpcon on con.id = rcpcon.contact_id
           WHERE  rcpcon.reception_id = @receptionid
              AND rcpcon.contact_id = @contactid ;''';
@@ -384,13 +388,13 @@ class Contact implements Storage.Contact {
     String sql = '''
 SELECT DISTINCT
   organization_id
-FROM 
-  reception_contacts 
+FROM
+  reception_contacts
 JOIN
   receptions
 ON
   receptions.id = reception_contacts.reception_id
-WHERE 
+WHERE
   reception_contacts.contact_id =@contactID''';
 
     Map parameters = {'contactID': contactID};
@@ -406,8 +410,8 @@ WHERE
     String sql = '''
 
     SELECT reception_id
-        FROM reception_contacts 
-      WHERE 
+        FROM reception_contacts
+      WHERE
       contact_id  =@contactID''';
 
     Map parameters = {'contactID': contactID};
@@ -427,8 +431,8 @@ WHERE
     ''';
 
     Map parameters = {'id': contactID};
-    return _connection.execute(sql, parameters).then(
-        (int rowsAffected) => rowsAffected > 0
+    return _connection.execute(sql, parameters).then((int rowsAffected) =>
+        rowsAffected > 0
             ? null
             : new Future.error(new Storage.NotFound('$contactID')));
   }
@@ -447,8 +451,8 @@ WHERE
       'id': contact.id
     };
 
-    return _connection.execute(sql, parameters).then(
-        (int rowsAffected) => rowsAffected > 0
+    return _connection.execute(sql, parameters).then((int rowsAffected) =>
+        rowsAffected > 0
             ? contact
             : new Future.error(new Storage.NotFound('en')));
   }
