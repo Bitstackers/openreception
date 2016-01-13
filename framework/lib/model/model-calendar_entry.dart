@@ -22,7 +22,7 @@ part of openreception.model;
 class CalendarEntry {
   static final String className = '${libraryName}.CalendarEntry';
   static final Logger log = new Logger(className);
-  int _id = CalendarEntry.noID;
+  int ID = CalendarEntry.noID;
 
   String _content;
   static const int noID = 0;
@@ -61,7 +61,7 @@ class CalendarEntry {
    * help getting the right format. 'content' is the actual entry body.
    */
   CalendarEntry.fromMap(Map json) {
-    _id = json['id'];
+    ID = json['id'];
     owner = new Owner.parse(json['owner']);
     _start = Util.unixTimestampToDateTime(json['start']);
     _stop = Util.unixTimestampToDateTime(json['stop']);
@@ -87,7 +87,7 @@ class CalendarEntry {
    */
   Map get asMap => {
         'id': ID,
-        'owner' : owner.toJson(),
+        'owner': owner.toJson(),
         'start': Util.dateTimeToUnixTimestamp(start),
         'stop': Util.dateTimeToUnixTimestamp(stop),
         'content': content
@@ -118,24 +118,6 @@ class CalendarEntry {
    */
   void set content(String entryBody) {
     _content = entryBody;
-  }
-
-  /**
-   * The current id of the entry. Note that entries with [noID] will be created
-   * in the store and given an id upon return.
-   */
-  int get ID => _id;
-
-  /**
-   * Update the entry id.
-   */
-  void set ID(int newID) {
-    if (_id != noID) {
-      throw new ArgumentError.value(newID, 'newID',
-          'Cannot set ID of a ' 'CalendarEntry that already has an ID');
-    }
-
-    _id = newID;
   }
 
   /**
