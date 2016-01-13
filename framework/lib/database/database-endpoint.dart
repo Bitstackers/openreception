@@ -25,12 +25,12 @@ class Endpoint implements Storage.Endpoint {
   Future<Model.MessageEndpoint> create(
       int receptionid, int contactid, Model.MessageEndpoint ep) {
     String sql = '''
-INSERT INTO 
-  messaging_end_points 
-    (contact_id, reception_id, address, address_type, 
+INSERT INTO
+  messaging_end_points
+    (contact_id, reception_id, address, address_type,
      confidential, enabled, priority, description)
-VALUES 
-  (@contactid, @receptionid,  @address, @addresstype, 
+VALUES
+  (@contactid, @receptionid,  @address, @addresstype,
    @confidential, @enabled, @priority, @description)
 RETURNING id;''';
 
@@ -45,20 +45,20 @@ RETURNING id;''';
       'description': ep.description
     };
 
-    return _connection.query(sql, parameters).then(
-        (Iterable rows) => rows.length == 1
+    return _connection.query(sql, parameters).then((Iterable rows) =>
+        rows.length == 1
             ? (ep..id = rows.first.id)
-        : new Future.error(new Storage.ServerError())
-            .catchError((error, stackTrace) {
-      log.severe('sql:$sql :: parameters:$parameters');
+            : new Future.error(new Storage.ServerError())
+                .catchError((error, stackTrace) {
+                log.severe('sql:$sql :: parameters:$parameters');
 
-      return new Future.error(error, stackTrace);
-    }));
+                return new Future.error(error, stackTrace);
+              }));
   }
 
   Future<int> remove(int endpointId) {
     String sql = '''
-DELETE FROM 
+DELETE FROM
   messaging_end_points
 WHERE id = @endpointId''';
 
@@ -69,7 +69,7 @@ WHERE id = @endpointId''';
 
   Future<Iterable<Model.MessageEndpoint>> list(int receptionid, int contactid) {
     String sql = '''
-    SELECT contact_id, reception_id, address, address_type, confidential, enabled, priority, description
+    SELECT id, contact_id, reception_id, address, address_type, confidential, enabled, priority, description
     FROM messaging_end_points
     WHERE reception_id=@receptionid AND contact_id=@contactid;
   ''';
@@ -80,6 +80,7 @@ WHERE id = @endpointId''';
       List<Model.MessageEndpoint> endpoints = [];
       for (var row in rows) {
         endpoints.add(new Model.MessageEndpoint.empty()
+          ..id = row.id
           ..address = row.address
           ..type = row.address_type
           ..confidential = row.confidential
@@ -93,10 +94,10 @@ WHERE id = @endpointId''';
   Future<Model.MessageEndpoint> update(Model.MessageEndpoint ep) {
     String sql = '''
     UPDATE messaging_end_points
-    SET address=@address, 
-        address_type=@addresstype, 
-        confidential=@confidential, 
-        enabled=@enabled, 
+    SET address=@address,
+        address_type=@addresstype,
+        confidential=@confidential,
+        enabled=@enabled,
         priority=@priority,
         description=@description
     WHERE id = @ep_id;
