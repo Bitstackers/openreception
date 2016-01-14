@@ -24,7 +24,6 @@ testModelContact() {
 }
 
 abstract class ModelContact {
-
   static void serialization() {
     Model.Contact builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
@@ -54,17 +53,6 @@ abstract class ModelContact {
       expect(lhsPn, equals(rhsPn));
     }
 
-    {
-      Iterable<Map> lhsEp =
-          builtObject.endpoints.map((Model.MessageEndpoint ep) => ep.asMap);
-      Iterable<Map> rhsEp = deserializedObject.endpoints
-          .map((Model.MessageEndpoint ep) => ep.asMap);
-
-      expect(lhsEp, equals(rhsEp));
-    }
-
-    expect(builtObject.distributionList,
-        equals(deserializedObject.distributionList));
     expect(
         builtObject.backupContacts, equals(deserializedObject.backupContacts));
     expect(builtObject.departments, equals(deserializedObject.departments));
@@ -101,22 +89,6 @@ abstract class ModelContact {
         ..value = '-0045 32112345'
     ];
 
-    final List<Model.MessageEndpoint> ep = [
-      new Model.MessageEndpoint.empty()
-        ..address = 'biff@underwater.fishnet'
-        ..confidential = true
-        ..description = 'Travels by sea current'
-        ..enabled = true
-        ..type = 'fishmail'
-    ];
-    final Model.DistributionList dl = new Model.DistributionList.empty()
-      ..add(new Model.DistributionListEntry()
-        ..role = Model.Role.TO
-        ..contactID = contactID
-        ..contactName = fullName
-        ..receptionID = receptionID
-        ..receptionName = 'Fishy business');
-
     final List backupContacts = ['Buford'];
     final List departments = ['Fish school', 'Clowning'];
     final List emailaddresses = ['scaly@nibble.bits'];
@@ -138,8 +110,6 @@ abstract class ModelContact {
       ..fullName = fullName
       ..contactType = contactType
       ..phones.addAll(pn)
-      ..endpoints.addAll(ep)
-      ..distributionList = dl
       ..backupContacts = backupContacts
       ..departments = departments
       ..emailaddresses = emailaddresses
@@ -160,8 +130,6 @@ abstract class ModelContact {
     expect(builtObject.fullName, equals(fullName));
     expect(builtObject.contactType, equals(contactType));
     expect(builtObject.phones, equals(pn));
-    expect(builtObject.endpoints, equals(ep));
-    expect(builtObject.distributionList, equals(dl));
     expect(builtObject.backupContacts, equals(backupContacts));
     expect(builtObject.departments, equals(departments));
     expect(builtObject.emailaddresses, equals(emailaddresses));
