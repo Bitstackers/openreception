@@ -73,9 +73,6 @@ class Contact {
 
   Map get attributes => {
         Key.departments: departments,
-        Key.endpoints: endpoints
-            .map((MessageEndpoint ep) => ep.asMap)
-            .toList(growable: false),
         Key.backup: backupContacts,
         Key.emailaddresses: emailaddresses,
         Key.handling: handling,
@@ -90,13 +87,7 @@ class Contact {
       };
 
   @deprecated
-  DistributionList _distributionList = new DistributionList.empty();
-  @deprecated
-  DistributionList get distributionList => this._distributionList;
-  @deprecated
-  void set distributionList(DistributionList newList) {
-    this._distributionList = newList;
-  }
+  DistributionList distributionList = new DistributionList.empty();
 
   Map toJson() => this.asMap;
 
@@ -107,14 +98,9 @@ class Contact {
         Key.wantsMessages: this.wantsMessage,
         Key.enabled: this.enabled,
         Key.fullName: this.fullName,
-        Key.distributionList: this.distributionList.toJson(),
         Key.contactType: this.contactType,
         Key.phones:
             this.phones.map((PhoneNumber p) => p.asMap).toList(growable: false),
-        Key.endpoints: this
-            .endpoints
-            .map((MessageEndpoint ep) => ep.asMap)
-            .toList(growable: false),
         Key.backup: this.backupContacts,
         Key.emailaddresses: this.emailaddresses,
         Key.handling: this.handling,
@@ -143,8 +129,6 @@ class Contact {
     this.wantsMessage = mapValue(Key.wantsMessages, map);
     this.enabled = mapValue(Key.enabled, map);
     this.fullName = mapValue(Key.fullName, map);
-    this._distributionList =
-        DistributionList.decode(mapValue(Key.distributionList, map));
     this.contactType = mapValue(Key.contactType, map);
 
     this.messagePrerequisites =
@@ -161,10 +145,6 @@ class Contact {
     this.relations = mapValue(Key.relations, map);
     this.responsibilities = mapValue(Key.responsibilities, map);
     this.statusEmail = mapValue(Key.statusEmail, map);
-
-    Iterable ep = mapValue(Key.endpoints, map);
-    this.endpoints =
-        ep.map((Map map) => new MessageEndpoint.fromMap(map)).toList();
   }
 
   static dynamic mapValue(String key, Map map, {dynamic defaultValue: null}) {
