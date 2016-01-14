@@ -18,13 +18,13 @@ abstract class ContactDefault {
 }
 
 class Contact {
-
-  static const int     noID        = 0;
+  static const int noID = 0;
   static final Contact noContact = new Contact.empty();
-  static const String  className   = '${libraryName}.Contact';
-  static final Logger  log         = new Logger(Contact.className);
+  static const String className = '${libraryName}.Contact';
+  static final Logger log = new Logger(Contact.className);
 
-  final StreamController<Event.Event> _streamController = new StreamController.broadcast();
+  final StreamController<Event.Event> _streamController =
+      new StreamController.broadcast();
 
   Stream get event => this._streamController.stream;
 
@@ -39,18 +39,18 @@ class Contact {
     _contactChange.fire(_selectedContact);
   }
 
-  int ID            = noID;
-  int receptionID   = Reception.noID;
+  int ID = noID;
+  int receptionID = Reception.noID;
 
   bool wantsMessage = true;
-  bool enabled      = true;
+  bool enabled = true;
 
   /**
    * Imported flag from old system. Signifies that a user wishes to recieve
    * status emails from us.
    */
 
-  bool statusEmail  = true;
+  bool statusEmail = true;
 
   String fullName = '';
   String contactType = '';
@@ -59,6 +59,7 @@ class Contact {
   List<String> backupContacts = [];
   List<String> messagePrerequisites = [];
 
+  @deprecated
   List<MessageEndpoint> endpoints = [];
   List<String> tags = new List<String>();
   List<String> emailaddresses = new List<String>();
@@ -71,93 +72,102 @@ class Contact {
   List<String> infos = [];
 
   Map get attributes => {
-    Key.departments      : departments,
-    Key.endpoints        : endpoints.map((MessageEndpoint ep) => ep.asMap).toList(growable: false),
-    Key.backup           : backupContacts,
-    Key.emailaddresses   : emailaddresses,
-    Key.handling         : handling,
-    Key.workhours        : workhours,
-    Key.tags             : tags,
-    Key.infos            : infos,
-    Key.titles           : titles,
-    Key.relations        : relations,
-    Key.responsibilities : responsibilities,
-    Key.messagePrerequisites : messagePrerequisites,
-    Key.statusEmail      : statusEmail
-  };
+        Key.departments: departments,
+        Key.endpoints: endpoints
+            .map((MessageEndpoint ep) => ep.asMap)
+            .toList(growable: false),
+        Key.backup: backupContacts,
+        Key.emailaddresses: emailaddresses,
+        Key.handling: handling,
+        Key.workhours: workhours,
+        Key.tags: tags,
+        Key.infos: infos,
+        Key.titles: titles,
+        Key.relations: relations,
+        Key.responsibilities: responsibilities,
+        Key.messagePrerequisites: messagePrerequisites,
+        Key.statusEmail: statusEmail
+      };
 
-
-  DistributionList _distributionList    = new DistributionList.empty();
+  @deprecated
+  DistributionList _distributionList = new DistributionList.empty();
+  @deprecated
   DistributionList get distributionList => this._distributionList;
-  void set distributionList (DistributionList newList) {
+  @deprecated
+  void set distributionList(DistributionList newList) {
     this._distributionList = newList;
   }
 
   Map toJson() => this.asMap;
 
-  Map get asMap =>
-      {
-        Key.contactID        : this.ID,
-        Key.receptionID      : this.receptionID,
-        Key.departments      : this.departments,
-        Key.wantsMessages    : this.wantsMessage,
-        Key.enabled          : this.enabled,
-        Key.fullName         : this.fullName,
-        Key.distributionList : this.distributionList.toJson(),
-        Key.contactType      : this.contactType,
-        Key.phones           : this.phones.map((PhoneNumber p) => p.asMap).toList(growable: false),
-        Key.endpoints        : this.endpoints.map((MessageEndpoint ep) => ep.asMap).toList(growable: false),
-        Key.backup           : this.backupContacts,
-        Key.emailaddresses   : this.emailaddresses,
-        Key.handling         : this.handling,
-        Key.workhours        : this.workhours,
-        Key.tags             : this.tags,
-        Key.infos            : this.infos,
-        Key.titles           : this.titles,
-        Key.relations        : this.relations,
-        Key.responsibilities : this.responsibilities,
-        Key.messagePrerequisites : messagePrerequisites,
-        Key.statusEmail      : statusEmail
+  Map get asMap => {
+        Key.contactID: this.ID,
+        Key.receptionID: this.receptionID,
+        Key.departments: this.departments,
+        Key.wantsMessages: this.wantsMessage,
+        Key.enabled: this.enabled,
+        Key.fullName: this.fullName,
+        Key.distributionList: this.distributionList.toJson(),
+        Key.contactType: this.contactType,
+        Key.phones:
+            this.phones.map((PhoneNumber p) => p.asMap).toList(growable: false),
+        Key.endpoints: this
+            .endpoints
+            .map((MessageEndpoint ep) => ep.asMap)
+            .toList(growable: false),
+        Key.backup: this.backupContacts,
+        Key.emailaddresses: this.emailaddresses,
+        Key.handling: this.handling,
+        Key.workhours: this.workhours,
+        Key.tags: this.tags,
+        Key.infos: this.infos,
+        Key.titles: this.titles,
+        Key.relations: this.relations,
+        Key.responsibilities: this.responsibilities,
+        Key.messagePrerequisites: messagePrerequisites,
+        Key.statusEmail: statusEmail
       };
 
   Contact.fromMap(Map map) {
     /// PhoneNumber deserializing.
     Iterable<Map> phoneMaps = map[Key.phones];
     Iterable<PhoneNumber> phones = phoneMaps.map((Map phoneMap) {
-      return new PhoneNumber.fromMap(phoneMap);});
+      return new PhoneNumber.fromMap(phoneMap);
+    });
 
     this.phones.addAll(phones.toList());
 
-    this.ID                = mapValue(Key.contactID, map);
-    this.receptionID       = mapValue(Key.receptionID, map);
-    this.departments       = mapValue(Key.departments, map);
-    this.wantsMessage      = mapValue(Key.wantsMessages, map);
-    this.enabled           = mapValue(Key.enabled, map);
-    this.fullName          = mapValue(Key.fullName, map);
-    this._distributionList = DistributionList.decode(mapValue(Key.distributionList, map));
-    this.contactType       = mapValue(Key.contactType, map);
+    this.ID = mapValue(Key.contactID, map);
+    this.receptionID = mapValue(Key.receptionID, map);
+    this.departments = mapValue(Key.departments, map);
+    this.wantsMessage = mapValue(Key.wantsMessages, map);
+    this.enabled = mapValue(Key.enabled, map);
+    this.fullName = mapValue(Key.fullName, map);
+    this._distributionList =
+        DistributionList.decode(mapValue(Key.distributionList, map));
+    this.contactType = mapValue(Key.contactType, map);
 
     this.messagePrerequisites =
-      mapValue(Key.messagePrerequisites, map, defaultValue : []);
+        mapValue(Key.messagePrerequisites, map, defaultValue: []);
 
-    this.backupContacts    = mapValue(Key.backup, map);
-    this.emailaddresses    = mapValue(Key.emailaddresses, map);
-    this.handling          = mapValue(Key.handling, map);
-    this.workhours         = mapValue(Key.workhours, map);
-    this.handling          = mapValue(Key.handling, map);
-    this.tags              = mapValue(Key.tags, map);
-    this.infos             = mapValue(Key.infos, map);
-    this.titles            = mapValue(Key.titles, map);
-    this.relations         = mapValue(Key.relations, map);
-    this.responsibilities  = mapValue(Key.responsibilities, map);
-    this.statusEmail       = mapValue(Key.statusEmail, map);
+    this.backupContacts = mapValue(Key.backup, map);
+    this.emailaddresses = mapValue(Key.emailaddresses, map);
+    this.handling = mapValue(Key.handling, map);
+    this.workhours = mapValue(Key.workhours, map);
+    this.handling = mapValue(Key.handling, map);
+    this.tags = mapValue(Key.tags, map);
+    this.infos = mapValue(Key.infos, map);
+    this.titles = mapValue(Key.titles, map);
+    this.relations = mapValue(Key.relations, map);
+    this.responsibilities = mapValue(Key.responsibilities, map);
+    this.statusEmail = mapValue(Key.statusEmail, map);
 
     Iterable ep = mapValue(Key.endpoints, map);
-    this.endpoints = ep.map((Map map) =>
-      new MessageEndpoint.fromMap(map)).toList();
+    this.endpoints =
+        ep.map((Map map) => new MessageEndpoint.fromMap(map)).toList();
   }
 
-  static dynamic mapValue (String key, Map map, {dynamic defaultValue : null}) {
+  static dynamic mapValue(String key, Map map, {dynamic defaultValue: null}) {
     if (!map.containsKey(key) && defaultValue == null) {
       throw new StateError('No value for required key "$key"');
     }
@@ -175,6 +185,6 @@ class Contact {
    */
   Contact.empty();
 
-  bool get isEmpty    => this.ID == noContact.ID;
+  bool get isEmpty => this.ID == noContact.ID;
   bool get isNotEmpty => this.ID != noContact.ID;
 }
