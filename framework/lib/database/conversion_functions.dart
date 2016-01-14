@@ -98,25 +98,6 @@ Model.Message _rowToMessage(var row) {
  * the SQL query is hell.
  */
 Model.Contact _rowToContact(var row) {
-  var distributionList = new Model.DistributionList.empty();
-
-  Model.Role.RECIPIENT_ROLES.forEach((String role) {
-    Iterable nextVal =
-        row.distribution_list[role] == null ? [] : row.distribution_list[role];
-
-    nextVal.forEach((Map dlistMap) {
-      distributionList.add(new Model.DistributionListEntry.empty()
-        ..contactID = dlistMap['contact_id']
-        ..contactName = dlistMap['contact_name']
-        ..receptionID = dlistMap['reception_id']
-        ..receptionName = dlistMap['reception_name']
-        ..role = role);
-    });
-  });
-
-  Iterable<Model.MessageEndpoint> endpointIterable =
-      row.endpoints.map((Map map) => new Model.MessageEndpoint.fromMap(map));
-
   Iterable<Model.PhoneNumber> phoneIterable = row.phone.isEmpty
       ? []
       : row.phone.map((Map map) => new Model.PhoneNumber.fromMap(map));
@@ -204,8 +185,6 @@ Model.Contact _rowToContact(var row) {
     ..fullName = row.full_name
     ..contactType = row.contact_type
     ..phones.addAll(phoneIterable)
-    ..endpoints.addAll(endpointIterable)
-    ..distributionList = distributionList
     ..backupContacts = backupContacts
     ..departments = departments
     ..emailaddresses = emailaddresses
