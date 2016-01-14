@@ -172,6 +172,7 @@ class Contact implements Storage.Contact {
     });
   }
 
+  @deprecated
   Future<Iterable<Model.MessageEndpoint>> endpoints(
       int contactID, int receptionID) {
     String sql = '''
