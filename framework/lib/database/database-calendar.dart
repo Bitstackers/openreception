@@ -20,7 +20,6 @@ class Calendar implements Storage.Calendar {
 
   Calendar(this._connection);
 
-
   String _ownerTable(Model.Owner owner) => owner is Model.OwningContact
       ? 'contact_calendar'
       : owner is Model.OwningReception
@@ -42,31 +41,28 @@ class Calendar implements Storage.Calendar {
           : throw new ArgumentError(
               'Undefined owner type ${owner.runtimeType}');
 
-
   /**
    * Retrieve a single [Model.CalendarEntry] from the database based
    * on [entryID].
    */
   Future<Model.CalendarEntry> get(int entryID, {bool deleted: false}) {
-    String sql = '''
-SELECT 
-  entry.id, 
-  entry.start, 
-  entry.stop, 
-  entry.message,
-  r.reception_id,
-  c.contact_id
-FROM 
-  calendar_events entry
-LEFT JOIN reception_calendar r ON r.event_id = entry.id
-LEFT JOIN contact_calendar c ON c.event_id = entry.id
-WHERE
+    String sql = '''SELECT
+    entry.id,
+    entry.start,
+    entry.stop,
+    entry.message,
+    r.reception_id,
+    c.contact_id
+  FROM
+    calendar_events entry
+  LEFT JOIN reception_calendar r ON r.event_id = entry.id
+  LEFT JOIN contact_calendar c ON c.event_id = entry.id
+  WHERE
   ${deleted ? '' : 'NOT'} deleted
-AND 
-  entry.id = @entryID;
-''';
+  AND
+    entry.id = @entryId''';
 
-    Map parameters = {'entryID': entryID};
+    Map parameters = {'entryId': entryID};
 
     return _connection
         .query(sql, parameters)
@@ -100,10 +96,10 @@ entry_change AS (
     RETURNING entry_id as event_id
 )
 
-INSERT INTO ${_ownerTable(entry.owner)} 
+INSERT INTO ${_ownerTable(entry.owner)}
   (${_ownerField(entry.owner)},
    event_id)
-SELECT 
+SELECT
   ${_ownerId(entry.owner)},
   event_id
 FROM entry_change
@@ -115,7 +111,7 @@ RETURNING event_id
       'end': entry.stop,
       'userID': userId,
       'content': entry.content,
-      'emptyEntry' : new Model.CalendarEntry.empty().toJson()
+      'emptyEntry': new Model.CalendarEntry.empty().toJson()
     };
 
     return _connection
@@ -137,7 +133,8 @@ RETURNING event_id
    *
    * TODO: Take the distribution list into accout.
    */
-  Future<Model.CalendarEntry> update(Model.CalendarEntry entry, int userId) async {
+  Future<Model.CalendarEntry> update(
+      Model.CalendarEntry entry, int userId) async {
     String sql = '''
 WITH updated_event AS (
    UPDATE calendar_events ce
@@ -163,7 +160,7 @@ SELECT entry_id FROM changed_entry;
       'start': entry.start,
       'stop': entry.stop,
       'content': entry.content,
-      'lastEntry' : (await get(entry.ID)).toJson(),
+      'lastEntry': (await get(entry.ID)).toJson(),
       'userID': userId
     };
 
@@ -237,26 +234,26 @@ SELECT entry_id FROM changed_entry;
    * contact specified in the parameters.
    */
   Future<Iterable<Model.CalendarEntry>> list(Model.Owner owner,
-          {bool deleted: false}) {
+      {bool deleted: false}) {
     final String sql = '''
-SELECT 
-  entry.id, 
-  entry.start, 
-  entry.stop, 
+SELECT
+  entry.id,
+  entry.start,
+  entry.stop,
   entry.message,
   r.reception_id,
   c.contact_id
-FROM 
+FROM
   calendar_events entry
 LEFT JOIN reception_calendar r ON r.event_id = entry.id
 LEFT JOIN contact_calendar c ON c.event_id = entry.id
 WHERE
   ${deleted ? '' : 'NOT'} deleted
-AND 
+AND
   ${_ownerField(owner)} = @ownerID;
 ''';
 
-    Map parameters = {'ownerID' : _ownerId(owner)};
+    Map parameters = {'ownerID': _ownerId(owner)};
 
     return _connection
         .query(sql, parameters)
@@ -267,25 +264,25 @@ AND
       log.severe(error, stackTrace);
       return new Future.error(error, stackTrace);
     });
-          }
+  }
 
   Future<Iterable<Model.CalendarEntryChange>> changes(int entryID) {
     String sql = '''
-    SELECT 
-      user_id, 
+    SELECT
+      user_id,
       updated_at,
       last_entry,
       name
-    FROM 
-      calendar_entry_changes 
+    FROM
+      calendar_entry_changes
     JOIN
       users
-    ON 
+    ON
       users.id = user_id
     WHERE
       entry_id = @entryID
-    ORDER BY 
-      updated_at 
+    ORDER BY
+      updated_at
     DESC''';
 
     Map parameters = {'entryID': entryID};
@@ -301,21 +298,21 @@ AND
    */
   Future<Model.CalendarEntryChange> latestChange(int entryID) {
     String sql = '''
-    SELECT 
-      user_id, 
+    SELECT
+      user_id,
       updated_at,
       last_entry,
       name
-    FROM 
-      calendar_entry_changes 
+    FROM
+      calendar_entry_changes
     JOIN
       users
-    ON 
+    ON
       users.id = user_id
     WHERE
       entry_id = @entryID
-    ORDER BY 
-      updated_at 
+    ORDER BY
+      updated_at
     DESC
     LIMIT 1''';
 
@@ -335,9 +332,9 @@ AND
    */
   Future purge(entryId) {
     String sql = '''
-  DELETE FROM 
-     calendar_events 
-  WHERE 
+  DELETE FROM
+     calendar_events
+  WHERE
     id     = @eventID''';
 
     Map parameters = {'eventID': entryId};
