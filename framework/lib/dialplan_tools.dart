@@ -418,14 +418,6 @@ List<String> _actionToXmlDialplan(
 }
 
 /**
- * Replace dialplan that are statically known.
- */
-String _unfoldVariables(String buffer, String extension) => buffer
-    .replaceAll('\${destination_number}', extension)
-    .replaceAll('\${reception-greeting}', '$extension-dag.wav')
-    .replaceAll('\${reception-greeting-closed}', '$extension-nat.wav');
-
-/**
  * Turns a [model.WeekDay] into a FreeSWITCH weekday index.
  */
 int _weekDayToFreeSwitch(model.WeekDay wday) => (wday.index) + 1;
