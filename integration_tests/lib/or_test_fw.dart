@@ -88,11 +88,11 @@ part 'service/userserver.dart';
 part 'service/src/service-user.dart';
 
 /// Use case tests
-part 'use_case/all_tests.dart';
-part 'use_case/src/uc-find_contact.dart';
-part 'use_case/src/uc-forward_call.dart';
-part 'use_case/src/uc-incoming_call.dart';
-part 'use_case/src/uc-send_message.dart';
+// part 'use_case/all_tests.dart';
+// part 'use_case/src/uc-find_contact.dart';
+// part 'use_case/src/uc-forward_call.dart';
+// part 'use_case/src/uc-incoming_call.dart';
+// part 'use_case/src/uc-send_message.dart';
 
 /// Notification server tests
 part 'service/src/service-notification.dart';
