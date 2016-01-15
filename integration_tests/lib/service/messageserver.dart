@@ -68,9 +68,9 @@ void runMessageTests() {
           Config.contactStoreUri, r.authToken, transport);
 
       dlStore = new Service.RESTDistributionListStore(
-          Config.configServerUri, r.authToken, transport);
+          Config.contactStoreUri, r.authToken, transport);
       epStore = new Service.RESTEndpointStore(
-          Config.configServerUri, r.authToken, transport);
+          Config.contactStoreUri, r.authToken, transport);
 
       return r.initialize();
     });
