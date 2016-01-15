@@ -244,7 +244,9 @@ class Contact implements Storage.Contact {
             'ContactID: $contactId, ReceptionID: $receptionId');
       }
     }).catchError((error, stackTrace) {
-      log.severe(error, stackTrace);
+      if (error is! Storage.NotFound) {
+        log.severe(error, stackTrace);
+      }
       return new Future.error(error, stackTrace);
     });
   }
