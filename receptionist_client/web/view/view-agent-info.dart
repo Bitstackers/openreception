@@ -187,6 +187,8 @@ class AgentInfo extends ViewWidget {
             active++;
             break;
         }
+      } else {
+        _ui.agentState = Model.AgentState.UNKNOWN;
       }
     });
     _ui.activeCount = active;
