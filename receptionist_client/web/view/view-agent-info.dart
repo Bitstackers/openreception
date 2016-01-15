@@ -169,7 +169,11 @@ class AgentInfo extends ViewWidget {
               : false
           : false;
 
-      if (peerRegistered && _userConnectionCount[userId] > 0) {
+      int connectionCount = _userConnectionCount.containsKey(userId)
+          ? _userConnectionCount[userId]
+          : 0;
+
+      if (peerRegistered && connectionCount > 0) {
         switch (_userState[userId]) {
           case ORModel.UserState.LoggedOut:
             _log.warning('User with id $userId is logged out while still '
