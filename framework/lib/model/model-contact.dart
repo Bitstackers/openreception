@@ -42,6 +42,7 @@ class Contact {
   int ID = noID;
   int receptionID = Reception.noID;
 
+  @deprecated
   bool wantsMessage = true;
   bool enabled = true;
 
