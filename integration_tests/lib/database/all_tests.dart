@@ -135,6 +135,9 @@ _databaseMessageQueue() {
  * Message database tests.
  */
 _databaseMessageTests() {
+  Storage.DistributionList dlStore;
+  Storage.Endpoint epStore;
+
   group('Database.Message', () {
     Storage.Reception receptionStore;
     Storage.Contact contactStore;
@@ -174,7 +177,10 @@ _databaseMessageTests() {
         contactStore = new Service.RESTContactStore(
             Config.contactStoreUri, Config.serverToken, transport);
         r = ReceptionistPool.instance.aquire();
-
+        dlStore = new Service.RESTDistributionListStore(
+            Config.configServerUri, r.authToken, transport);
+        epStore = new Service.RESTEndpointStore(
+            Config.configServerUri, r.authToken, transport);
         return r.initialize();
       });
     });
@@ -186,17 +192,25 @@ _databaseMessageTests() {
       return connection.close().then((_) => r.teardown());
     });
 
-    test('create',
-        () => MessageStore.create(messageDB, contactStore, receptionStore, r));
+    test(
+        'create',
+        () => MessageStore.create(
+            messageDB, contactStore, receptionStore, dlStore, epStore, r));
 
-    test('update',
-        () => MessageStore.update(messageDB, contactStore, receptionStore, r));
+    test(
+        'update',
+        () => MessageStore.update(
+            messageDB, contactStore, receptionStore, dlStore, epStore, r));
 
-    test('enqueue',
-        () => MessageStore.enqueue(messageDB, contactStore, receptionStore, r));
+    test(
+        'enqueue',
+        () => MessageStore.enqueue(
+            messageDB, contactStore, receptionStore, dlStore, epStore, r));
 
-    test('remove',
-        () => MessageStore.remove(messageDB, contactStore, receptionStore, r));
+    test(
+        'remove',
+        () => MessageStore.remove(
+            messageDB, contactStore, receptionStore, dlStore, epStore, r));
   });
 }
 
@@ -448,7 +462,6 @@ _databaseCalenderTests() {
 
     test('latest change on remove (reception owner)',
         () => StorageCalendar.latestChangeOnRemove(owner, calendarDB, creator));
-
   });
 }
 

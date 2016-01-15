@@ -14,24 +14,23 @@ abstract class RESTMessageStore {
     log.info('Checking CORS headers on a non-existing URL.');
     return client
         .getUrl(uri)
-        .then((HttpClientRequest request) => request
-            .close()
-            .then((HttpClientResponse response) {
-      if (response.headers['access-control-allow-origin'] == null &&
-          response.headers['Access-Control-Allow-Origin'] == null) {
-        fail('No CORS headers on path $uri');
-      }
-    })).then((_) {
+        .then((HttpClientRequest request) =>
+            request.close().then((HttpClientResponse response) {
+              if (response.headers['access-control-allow-origin'] == null &&
+                  response.headers['Access-Control-Allow-Origin'] == null) {
+                fail('No CORS headers on path $uri');
+              }
+            }))
+        .then((_) {
       log.info('Checking CORS headers on an existing URL.');
       uri = Resource.Reception.single(Config.messageStoreUri, 1);
-      return client.getUrl(uri).then((HttpClientRequest request) => request
-          .close()
-          .then((HttpClientResponse response) {
-        if (response.headers['access-control-allow-origin'] == null &&
-            response.headers['Access-Control-Allow-Origin'] == null) {
-          fail('No CORS headers on path $uri');
-        }
-      }));
+      return client.getUrl(uri).then((HttpClientRequest request) =>
+          request.close().then((HttpClientResponse response) {
+            if (response.headers['access-control-allow-origin'] == null &&
+                response.headers['Access-Control-Allow-Origin'] == null) {
+              fail('No CORS headers on path $uri');
+            }
+          }));
     });
   }
 
@@ -49,13 +48,12 @@ abstract class RESTMessageStore {
 
     return client
         .getUrl(uri)
-        .then((HttpClientRequest request) => request
-            .close()
-            .then((HttpClientResponse response) {
-      if (response.statusCode != 404) {
-        fail('Expected to received a 404 on path $uri');
-      }
-    }))
+        .then((HttpClientRequest request) =>
+            request.close().then((HttpClientResponse response) {
+              if (response.statusCode != 404) {
+                fail('Expected to received a 404 on path $uri');
+              }
+            }))
         .then((_) => log.info('Got expected status code 404.'))
         .whenComplete(() => client.close(force: true));
   }
@@ -87,37 +85,48 @@ abstract class RESTMessageStore {
       /// Update the filter
       filter.receptionID = messages.first.context.receptionID;
     }).then((_) => messageStore
-        .list(filter: filter)
-        .then((Iterable<Model.Message> messages) {
-      bool matchesFilter(Model.Message message) =>
-          message.context.receptionID == filter.receptionID;
+                .list(filter: filter)
+                .then((Iterable<Model.Message> messages) {
+              bool matchesFilter(Model.Message message) =>
+                  message.context.receptionID == filter.receptionID;
 
-      expect(messages.every(matchesFilter), isTrue);
-    }));
+              expect(messages.every(matchesFilter), isTrue);
+            }));
   }
 
-  static Future messageCreateEvent(Service.RESTMessageStore messageStore,
-      Storage.Contact contactStore, Storage.Reception receptionStore,
+  static Future messageCreateEvent(
+      Service.RESTMessageStore messageStore,
+      Storage.Contact contactStore,
+      Storage.Reception receptionStore,
+      Storage.DistributionList dlStore,
+      Storage.Endpoint epStore,
       Receptionist sender) {
     log.info('Started messageCreateEvent test');
 
     return MessageStore
-        ._createMessage(messageStore, contactStore, receptionStore, sender)
+        ._createMessage(messageStore, contactStore, receptionStore, dlStore,
+            epStore, sender)
         .then((Model.Message message) => sender
-            .waitFor(eventType: Event.Key.messageChange)
-            .then((Event.MessageChange changeEvent) {
-      expect(changeEvent.messageID, isNotNull);
-      expect(changeEvent.messageID, equals(message.ID));
-      expect(changeEvent.userID, isNotNull);
-      expect(changeEvent.userID, equals(sender.user.ID));
-    })).whenComplete(() => log.info('Finished messageCreateEvent test'));
+                .waitFor(eventType: Event.Key.messageChange)
+                .then((Event.MessageChange changeEvent) {
+              expect(changeEvent.messageID, isNotNull);
+              expect(changeEvent.messageID, equals(message.ID));
+              expect(changeEvent.userID, isNotNull);
+              expect(changeEvent.userID, equals(sender.user.ID));
+            }))
+        .whenComplete(() => log.info('Finished messageCreateEvent test'));
   }
 
-  static Future messageEnqueueEvent(Storage.Message messageStore,
-      Storage.Contact contactStore, Storage.Reception receptionStore,
+  static Future messageEnqueueEvent(
+      Storage.Message messageStore,
+      Storage.Contact contactStore,
+      Storage.Reception receptionStore,
+      Storage.DistributionList dlStore,
+      Storage.Endpoint epStore,
       Receptionist sender) {
     return MessageStore
-        ._createMessage(messageStore, contactStore, receptionStore, sender)
+        ._createMessage(messageStore, contactStore, receptionStore, dlStore,
+            epStore, sender)
         .then((Model.Message createdMessage) {
       {
         Model.Message randMsg = Randomizer.randomMessage();
@@ -139,7 +148,8 @@ abstract class RESTMessageStore {
         }
 
         return sender.notificationSocket.eventStream
-            .firstWhere(idAndStateMatches).timeout(new Duration(milliseconds : 1000));
+            .firstWhere(idAndStateMatches)
+            .timeout(new Duration(milliseconds: 1000));
       });
     });
   }
@@ -147,31 +157,37 @@ abstract class RESTMessageStore {
   /**
    *
    */
-  static Future messageUpdateEvent(Storage.Message messageStore,
-      Storage.Contact contactStore, Storage.Reception receptionStore,
+  static Future messageUpdateEvent(
+      Storage.Message messageStore,
+      Storage.Contact contactStore,
+      Storage.Reception receptionStore,
+      Storage.DistributionList dlStore,
+      Storage.Endpoint epStore,
       Receptionist sender) async {
     log.info('Started messageUpdateEvent test');
 
-    Model.Message createdMessage = await MessageStore.
-        _createMessage(messageStore, contactStore, receptionStore, sender);
+    Model.Message createdMessage = await MessageStore._createMessage(
+        messageStore, contactStore, receptionStore, dlStore, epStore, sender);
 
     bool idAndStateMatches(Event.Event event) {
-        if (event is Event.MessageChange) {
-          log.info(event.asMap);
+      if (event is Event.MessageChange) {
+        log.info(event.asMap);
 
-          return event.messageID == createdMessage.ID &&
-              event.userID == sender.user.ID &&
-              event.state == Event.MessageChangeState.UPDATED;
-        }
-
-        return false;
+        return event.messageID == createdMessage.ID &&
+            event.userID == sender.user.ID &&
+            event.state == Event.MessageChangeState.UPDATED;
       }
 
-    Future sub = sender.notificationSocket.eventStream
-        .firstWhere(idAndStateMatches).timeout(new Duration(milliseconds : 3000));
+      return false;
+    }
 
-    return messageStore.update(createdMessage)
-      .then((_) => sub)
-      .then((_) => log.info('Finished messageUpdateEvent test'));
+    Future sub = sender.notificationSocket.eventStream
+        .firstWhere(idAndStateMatches)
+        .timeout(new Duration(milliseconds: 3000));
+
+    return messageStore
+        .update(createdMessage)
+        .then((_) => sub)
+        .then((_) => log.info('Finished messageUpdateEvent test'));
   }
 }

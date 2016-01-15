@@ -26,6 +26,8 @@ abstract class MessageStore {
       Storage.Message messageStore,
       Storage.Contact contactStore,
       Storage.Reception receptionStore,
+      Storage.DistributionList dlStore,
+      Storage.Endpoint epStore,
       Receptionist sender) async {
     int receptionID = 1;
     int contactID = 4;
@@ -34,14 +36,13 @@ abstract class MessageStore {
     Model.Reception reception = await receptionStore.get(receptionID);
     Set<Model.MessageRecipient> recipients = new Set();
 
-    await Future.forEach(
-        contact.distributionList,
-        (Model.DistributionListEntry de) => contactStore
-                .getByReception(de.contactID, de.receptionID)
-                .then((Model.Contact c) {
-              recipients.addAll(c.endpoints.map((Model.MessageEndpoint mep) =>
-                  new Model.MessageRecipient(mep, de)));
-            }));
+    await Future.wait(
+        (await dlStore.list(contact.receptionID, contact.ID)).map((dle) async {
+      Iterable<Model.MessageEndpoint> eps =
+          await epStore.list(contact.receptionID, contact.ID);
+      recipients.addAll(eps.map(
+          (Model.MessageEndpoint mep) => new Model.MessageRecipient(mep, dle)));
+    }));
 
     Model.Message newMessage = Randomizer.randomMessage()
       ..context = new Model.MessageContext.fromContact(contact, reception)
@@ -58,9 +59,11 @@ abstract class MessageStore {
       Storage.Message messageStore,
       Storage.Contact contactStore,
       Storage.Reception receptionStore,
+      Storage.DistributionList dlStore,
+      Storage.Endpoint epStore,
       Receptionist sender) async {
     Model.Message createdMessage = await _createMessage(
-        messageStore, contactStore, receptionStore, sender);
+        messageStore, contactStore, receptionStore, dlStore, epStore, sender);
 
     Model.Message fetchedMessage = await messageStore.get(createdMessage.ID);
 
@@ -81,9 +84,11 @@ abstract class MessageStore {
       Storage.Message messageStore,
       Storage.Contact contactStore,
       Storage.Reception receptionStore,
+      Storage.DistributionList dlStore,
+      Storage.Endpoint epStore,
       Receptionist sender) async {
     Model.Message createdMessage = await _createMessage(
-        messageStore, contactStore, receptionStore, sender);
+        messageStore, contactStore, receptionStore, dlStore, epStore, sender);
 
     await messageStore.remove(createdMessage.ID);
 
@@ -95,9 +100,11 @@ abstract class MessageStore {
       Storage.Message messageStore,
       Storage.Contact contactStore,
       Storage.Reception receptionStore,
+      Storage.DistributionList dlStore,
+      Storage.Endpoint epStore,
       Receptionist sender) async {
     Model.Message createdMessage = await _createMessage(
-        messageStore, contactStore, receptionStore, sender);
+        messageStore, contactStore, receptionStore, dlStore, epStore, sender);
 
     return messageStore.enqueue(createdMessage);
   }
@@ -126,9 +133,11 @@ abstract class MessageStore {
       Storage.Message messageStore,
       Storage.Contact contactStore,
       Storage.Reception receptionStore,
+      Storage.DistributionList dlStore,
+      Storage.Endpoint epStore,
       Receptionist sender) {
-    return _createMessage(messageStore, contactStore, receptionStore, sender)
-        .then((Model.Message createdMessage) {
+    return _createMessage(messageStore, contactStore, receptionStore, dlStore,
+        epStore, sender).then((Model.Message createdMessage) {
       {
         Model.Message randMsg = Randomizer.randomMessage();
         randMsg.ID = createdMessage.ID;
