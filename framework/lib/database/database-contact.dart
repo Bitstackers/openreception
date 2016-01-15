@@ -24,17 +24,16 @@ class Contact implements Storage.Contact {
     String sql = '''
     INSERT INTO
       reception_contacts
-        (reception_id, contact_id, wants_messages,
+        (reception_id, contact_id,
          phonenumbers, attributes, enabled, status_email)
     VALUES
-        (@reception_id, @contact_id, @wants_messages,
+        (@reception_id, @contact_id,
          @phonenumbers, @attributes, @enabled, @statusEmail);
   ''';
 
     Map parameters = {
       'reception_id': receptionID,
       'contact_id': contact.ID,
-      'wants_messages': contact.wantsMessage,
       'phonenumbers': JSON.encode(contact.phones),
       'attributes': JSON.encode(contact.attributes),
       'enabled': contact.enabled,
@@ -66,8 +65,7 @@ class Contact implements Storage.Contact {
   Future<Model.Contact> updateInReception(Model.Contact contact) {
     String sql = '''
     UPDATE reception_contacts
-    SET wants_messages=@wants_messages,
-        attributes=@attributes,
+    SET attributes=@attributes,
         enabled=@enabled,
         phonenumbers=@phonenumbers,
         status_email=@statusEmail
@@ -77,7 +75,6 @@ class Contact implements Storage.Contact {
     Map parameters = {
       'reception_id': contact.receptionID,
       'contact_id': contact.ID,
-      'wants_messages': contact.wantsMessage,
       'phonenumbers': JSON.encode(contact.phones),
       'attributes': JSON.encode(contact.attributes),
       'enabled': contact.enabled,
@@ -197,7 +194,6 @@ class Contact implements Storage.Contact {
     String sql = '''
     SELECT rcpcon.reception_id,
            rcpcon.contact_id,
-           rcpcon.wants_messages,
            rcpcon.attributes,
            rcpcon.enabled as rcpenabled,
            con.full_name,
@@ -220,7 +216,6 @@ class Contact implements Storage.Contact {
     String sql = '''
       SELECT rcpcon.reception_id,
              rcpcon.contact_id,
-             rcpcon.wants_messages,
              rcpcon.attributes,
              rcpcon.enabled as rcpenabled,
              con.full_name,

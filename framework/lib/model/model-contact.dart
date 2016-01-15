@@ -91,7 +91,6 @@ class Contact {
         Key.contactID: this.ID,
         Key.receptionID: this.receptionID,
         Key.departments: this.departments,
-        Key.wantsMessages: this.wantsMessage,
         Key.enabled: this.enabled,
         Key.fullName: this.fullName,
         Key.contactType: this.contactType,
@@ -122,7 +121,6 @@ class Contact {
     this.ID = mapValue(Key.contactID, map);
     this.receptionID = mapValue(Key.receptionID, map);
     this.departments = mapValue(Key.departments, map);
-    this.wantsMessage = mapValue(Key.wantsMessages, map);
     this.enabled = mapValue(Key.enabled, map);
     this.fullName = mapValue(Key.fullName, map);
     this.contactType = mapValue(Key.contactType, map);
