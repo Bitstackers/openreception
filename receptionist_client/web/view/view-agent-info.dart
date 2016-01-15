@@ -136,30 +136,7 @@ class AgentInfo extends ViewWidget {
   void _update() {
     int active = 0;
     int passive = 0;
-
-    /// Update ui for agent's user.
-    switch (_userState[_appState.currentUser.ID]) {
-      case ORModel.UserState.Idle:
-        _ui.agentState = Model.AgentState.IDLE;
-        break;
-      case ORModel.UserState.Paused:
-        _ui.agentState = Model.AgentState.PAUSED;
-        break;
-      case ORModel.UserState.Dialing:
-      case ORModel.UserState.HandlingOffHook:
-      case ORModel.UserState.HangingUp:
-      case ORModel.UserState.Parking:
-      case ORModel.UserState.Receiving:
-      case ORModel.UserState.Speaking:
-      case ORModel.UserState.Transferring:
-      case ORModel.UserState.Unparking:
-      case ORModel.UserState.WrappingUp:
-        _ui.agentState = Model.AgentState.BUSY;
-        break;
-      default:
-        _ui.agentState = Model.AgentState.UNKNOWN;
-        break;
-    }
+    bool available = false;
 
     /// Update counters.
     _userPeer.forEach((userId, peerId) {
@@ -173,7 +150,8 @@ class AgentInfo extends ViewWidget {
           ? _userConnectionCount[userId]
           : 0;
 
-      if (peerRegistered && connectionCount > 0) {
+      available = peerRegistered && connectionCount > 0;
+      if (available) {
         switch (_userState[userId]) {
           case ORModel.UserState.LoggedOut:
             _log.warning('User with id $userId is logged out while still '
@@ -187,10 +165,35 @@ class AgentInfo extends ViewWidget {
             active++;
             break;
         }
-      } else {
-        _ui.agentState = Model.AgentState.UNKNOWN;
       }
     });
+
+    /// Update ui for agent's user.
+    switch (_userState[_appState.currentUser.ID]) {
+      case ORModel.UserState.Idle:
+        _ui.agentState =
+            available ? Model.AgentState.IDLE : Model.AgentState.UNKNOWN;
+        break;
+      case ORModel.UserState.Paused:
+        _ui.agentState =
+            available ? Model.AgentState.PAUSED : Model.AgentState.UNKNOWN;
+        break;
+      case ORModel.UserState.Dialing:
+      case ORModel.UserState.HandlingOffHook:
+      case ORModel.UserState.HangingUp:
+      case ORModel.UserState.Parking:
+      case ORModel.UserState.Receiving:
+      case ORModel.UserState.Speaking:
+      case ORModel.UserState.Transferring:
+      case ORModel.UserState.Unparking:
+      case ORModel.UserState.WrappingUp:
+        _ui.agentState =
+            available ? Model.AgentState.BUSY : Model.AgentState.UNKNOWN;
+        break;
+      default:
+        _ui.agentState = Model.AgentState.UNKNOWN;
+        break;
+    }
     _ui.activeCount = active;
     _ui.pausedCount = passive;
   }
