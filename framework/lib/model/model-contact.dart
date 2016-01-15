@@ -59,8 +59,6 @@ class Contact {
   List<String> backupContacts = [];
   List<String> messagePrerequisites = [];
 
-  @deprecated
-  List<MessageEndpoint> endpoints = [];
   List<String> tags = new List<String>();
   List<String> emailaddresses = new List<String>();
   List<String> handling = new List<String>();
@@ -85,9 +83,6 @@ class Contact {
         Key.messagePrerequisites: messagePrerequisites,
         Key.statusEmail: statusEmail
       };
-
-  @deprecated
-  DistributionList distributionList = new DistributionList.empty();
 
   Map toJson() => this.asMap;
 
