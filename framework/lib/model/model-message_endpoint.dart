@@ -29,7 +29,6 @@ abstract class MessageEndpointType {
  * endpoints are identified by [MessageEndpointType].
  */
 class MessageEndpoint {
-
   static const int noId = 0;
 
   /// Type of endpoint. Must be one of [MessageEndpointType].
@@ -70,7 +69,7 @@ class MessageEndpoint {
   /**
    * Deserializing factory
    */
-  static MessageEndpoint decode (Map map) => new MessageEndpoint.fromMap(map);
+  static MessageEndpoint decode(Map map) => new MessageEndpoint.fromMap(map);
 
   /**
    * JSON encoding function.
@@ -81,14 +80,14 @@ class MessageEndpoint {
    * Map representation of the object.
    */
   Map get asMap => {
-    Key.ID : id,
-    Key.type: type,
-    Key.address: address,
-    Key.confidential: confidential,
-    Key.enabled: enabled,
-    Key.description: description,
-    Key.priority : priority
-  };
+        Key.ID: id,
+        Key.type: type,
+        Key.address: address,
+        Key.confidential: confidential,
+        Key.enabled: enabled,
+        Key.description: description,
+        Key.priority: priority
+      };
 
   /**
    * Stringify the object.
@@ -100,7 +99,6 @@ class MessageEndpoint {
    *
    */
   @override
-  operator == (MessageEndpoint other) =>
-    this.type == other.type &&
-    this.address == other.address;
+  operator ==(MessageEndpoint other) =>
+      this.type == other.type && this.address == other.address;
 }
