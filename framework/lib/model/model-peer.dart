@@ -13,28 +13,53 @@
 
 part of openreception.model;
 
+/**
+ *
+ */
 class Peer {
-  final String ID;
-  final int    channelCount;
+  @deprecated
+  String get ID => name;
+  final String name;
+  int channelCount = 0;
+  bool inTransition = false;
+  bool paused = true;
+  bool registered = false;
 
-  bool registered;
+  /**
+   *
+   */
+  Peer(this.name);
 
-  Peer (this.ID, this.channelCount);
+  /**
+   *
+   */
+  Peer.fromMap(Map map)
+      : name = map[Key.name],
+        registered = map[Key.registered],
+        inTransition = map[Key.inTransition],
+        paused = map[Key.paused],
+        channelCount = map[Key.activeChannels];
 
-  Map get asMap => {
-    Key.ID         : this.ID,
-    Key.registered : this.registered,
-    Key.activeChannels : this.channelCount
-  };
+  /**
+   *
+   */
+  Map toJson() => {
+        Key.ID: name,
+        Key.name: name,
+        Key.inTransition: inTransition,
+        Key.paused: paused,
+        Key.registered: registered,
+        Key.activeChannels: channelCount
+      };
 
-  Peer.fromMap (Map map) :
-    this.ID           = map[Key.ID],
-    this.registered   = map[Key.registered],
-    this.channelCount = map[Key.activeChannels];
+  /**
+   *
+   */
+  static Peer decode(Map map) => new Peer.fromMap(map);
 
-  Map toJson() => this.asMap;
-
+  /**
+   *
+   */
   @override
   String toString() => '${this.ID}, registered:${this.registered}';
-
 }
