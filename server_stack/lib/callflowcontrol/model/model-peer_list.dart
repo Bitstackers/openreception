@@ -17,13 +17,13 @@ abstract class PeerList implements IterableBase<Peer> {
   /// Singleton reference.
   static ESL.PeerList instance = new ESL.PeerList.empty();
 
-  static ESL.Peer get (String peerID) => instance.get(peerID);
+  static ESL.Peer get(String peerID) => instance.get(peerID);
 
   static void subscribe(Stream<ESL.Packet> eventStream) {
     eventStream.listen(_handlePacket);
   }
 
-  static registerPeer (String peerID, String contact) {
+  static registerPeer(String peerID, String contact) {
     ESL.Peer peer = instance.get(ESL.Peer.makeKey(peerID));
 
     if (peer == null) {
@@ -31,14 +31,13 @@ abstract class PeerList implements IterableBase<Peer> {
       return;
     }
 
-    peer.register (contact);
+    peer.register(contact);
 
-    Notification.broadcastEvent
-      (new OREvent.PeerState
-        (new ORModel.Peer(peer.ID, -1)..registered = peer.registered));
+    Notification.broadcastEvent(new OREvent.PeerState(
+        new ORModel.Peer(peer.ID)..registered = peer.registered));
   }
 
-  static unRegisterPeer (String peerID) {
+  static unRegisterPeer(String peerID) {
     ESL.Peer peer = instance.get(ESL.Peer.makeKey(peerID));
 
     if (peer == null) {
@@ -47,21 +46,20 @@ abstract class PeerList implements IterableBase<Peer> {
     }
 
     peer.unregister();
-    Notification.broadcastEvent
-      (new OREvent.PeerState
-        (new ORModel.Peer(peer.ID, -1)..registered = peer.registered));
+    Notification.broadcastEvent(new OREvent.PeerState(
+        new ORModel.Peer(peer.ID)..registered = peer.registered));
   }
 
-  static void _handlePacket (ESL.Event event) {
+  static void _handlePacket(ESL.Event event) {
     switch (event.eventName) {
       case (PBXEvent.CUSTOM):
         switch (event.eventSubclass) {
           case (PBXEvent.SOFIA_REGISTER):
-            registerPeer (event.field('username'), event.field('contact'));
+            registerPeer(event.field('username'), event.field('contact'));
             break;
 
           case (PBXEvent.SOFIA_UNREGISTER):
-            unRegisterPeer (event.field('username'));
+            unRegisterPeer(event.field('username'));
             break;
         }
         break;
@@ -69,7 +67,5 @@ abstract class PeerList implements IterableBase<Peer> {
   }
 
   static Iterable<Peer> simplify() =>
-    instance.map((ESL.Peer peer) => new Peer.fromESLPeer(peer));
-
-
+      instance.map((ESL.Peer peer) => new Peer.fromESLPeer(peer));
 }
