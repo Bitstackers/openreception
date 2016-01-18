@@ -50,6 +50,10 @@ class CallList extends IterableBase<ORModel.Call> {
     Map<String, ORModel.Call> calls = {};
 
     channels.forEach((ESL.Channel channel) {
+      final int assignedTo = channel.variables.containsKey(ORPbxKey.userId)
+          ? int.parse(channel.variables[ORPbxKey.userId])
+          : ORModel.User.noID;
+
       if (!channel.variables.containsKey(ORPbxKey.agentChannel)) {
         calls[channel.UUID] = new ORModel.Call.empty(channel.UUID)
           ..arrived = new DateTime.fromMillisecondsSinceEpoch(
@@ -58,14 +62,18 @@ class CallList extends IterableBase<ORModel.Call> {
               ? int.parse(channel.variables[ORPbxKey.userId])
               : ORModel.User.noID
           ..b_Leg = channel.fields['Other-Leg-Unique-ID']
-          ..greetingPlayed = channel.variables.containsKey(ORPbxKey.greetingPlayed)
+          ..greetingPlayed = channel.variables
+                  .containsKey(ORPbxKey.greetingPlayed)
               ? channel.variables[ORPbxKey.greetingPlayed] == 'true'
               : false
           ..locked = channel.variables.containsKey(ORPbxKey.locked)
-              ? channel.variables[ORPbxKey.locked] == 'true'
+              ? channel.variables[ORPbxKey.locked] == 'true' &&
+                  assignedTo == ORModel.User.noID
               : false
-          ..inbound = (channel.fields['Call-Direction'] == 'inbound' ? true : false)
-          ..callerID = channel.fields.containsKey('Caller-Orig-Caller-ID-Number')
+          ..inbound =
+              (channel.fields['Call-Direction'] == 'inbound' ? true : false)
+          ..callerID = channel.fields
+                  .containsKey('Caller-Orig-Caller-ID-Number')
               ? channel.fields['Caller-Orig-Caller-ID-Number']
               : channel.fields['Caller-Caller-ID-Number']
           ..destination = channel.variables[ORPbxKey.destination]
@@ -97,7 +105,8 @@ class CallList extends IterableBase<ORModel.Call> {
         }
       } else {
         log.info('$call is not bridged.');
-        final String orState = ChannelList.instance.get(call.channel).variables[ORPbxKey.state];
+        final String orState =
+            ChannelList.instance.get(call.channel).variables[ORPbxKey.state];
 
         if (orState == 'queued') {
           call.state = ORModel.CallState.Queued;
@@ -137,7 +146,9 @@ class CallList extends IterableBase<ORModel.Call> {
 
   ORModel.Call requestCall(user) =>
       //TODO: Implement a real algorithm for selecting calls.
-      this.firstWhere((ORModel.Call call) => call.assignedTo == ORModel.User.noID && !call.locked,
+      this.firstWhere(
+          (ORModel.Call call) =>
+              call.assignedTo == ORModel.User.noID && !call.locked,
           orElse: () => throw new ORStorage.NotFound("No calls available"));
 
   ORModel.Call requestSpecificCall(String callID, ORModel.User user) {
@@ -147,8 +158,13 @@ class CallList extends IterableBase<ORModel.Call> {
       log.fine('Call ${callID} already assigned to uid: ${call.assignedTo}');
       throw new ORStorage.Forbidden(callID);
     } else if (call.locked) {
-      log.fine('Uid ${user.ID} requested locked call $callID');
-      throw new ORStorage.Conflict(callID);
+      if (call.assignedTo == user.ID) {
+        log.fine('Call $callID locked, but assigned. Unlocking.');
+        call.locked = false;
+      } else {
+        log.fine('Uid ${user.ID} requested locked call $callID');
+        throw new ORStorage.Conflict(callID);
+      }
     }
 
     return call;
@@ -163,18 +179,25 @@ class CallList extends IterableBase<ORModel.Call> {
    * Handle CHANNEL_BRIDGE event packets.
    */
   void _handleBridge(ESL.Packet packet) {
-    final ESL.Channel uuid = ChannelList.instance.get(packet.field('Unique-ID'));
-    final ESL.Channel otherLeg = ChannelList.instance.get(packet.field('Other-Leg-Unique-ID'));
+    final ESL.Channel uuid =
+        ChannelList.instance.get(packet.field('Unique-ID'));
+    final ESL.Channel otherLeg =
+        ChannelList.instance.get(packet.field('Other-Leg-Unique-ID'));
 
     log.finest('Bridging channel ${uuid.UUID} and channel ${otherLeg.UUID}');
 
     if (isCall(uuid) && isCall(otherLeg)) {
-      log.finest('Channel ${uuid.UUID} and channel ${otherLeg.UUID} are both calls');
+      log.finest(
+          'Channel ${uuid.UUID} and channel ${otherLeg.UUID} are both calls');
       CallList.instance.get(uuid.UUID)..b_Leg = otherLeg.UUID;
       CallList.instance.get(otherLeg.UUID)..b_Leg = uuid.UUID;
 
-      CallList.instance.get(uuid.UUID).changeState(ORModel.CallState.Transferred);
-      CallList.instance.get(otherLeg.UUID).changeState(ORModel.CallState.Transferred);
+      CallList.instance
+          .get(uuid.UUID)
+          .changeState(ORModel.CallState.Transferred);
+      CallList.instance
+          .get(otherLeg.UUID)
+          .changeState(ORModel.CallState.Transferred);
     } else if (isCall(uuid)) {
       ORModel.Call call = CallList.instance.get(uuid.UUID);
       log.finest('Channel ${uuid.UUID} is a call');
@@ -208,7 +231,9 @@ class CallList extends IterableBase<ORModel.Call> {
         AgentHistory.instance.callHandledByAgent(call.assignedTo);
       }
 
-      call.hangupCause = event.field('Hangup-Cause') != null ? event.field('Hangup-Cause') : '';
+      call.hangupCause = event.field('Hangup-Cause') != null
+          ? event.field('Hangup-Cause')
+          : '';
       call.changeState(ORModel.CallState.Hungup);
       log.finest('Hanging up ${event.uniqueID}');
       this.remove(event.uniqueID);
@@ -223,7 +248,8 @@ class CallList extends IterableBase<ORModel.Call> {
         this._createCall(event);
 
         this.get(event.uniqueID)
-          ..receptionID = event.contentAsMap.containsKey('variable_${ORPbxKey.receptionId}')
+          ..receptionID = event.contentAsMap
+                  .containsKey('variable_${ORPbxKey.receptionId}')
               ? int.parse(event.field('variable_${ORPbxKey.receptionId}'))
               : 0
           ..changeState(ORModel.CallState.Created);
@@ -259,7 +285,8 @@ class CallList extends IterableBase<ORModel.Call> {
       /// Entering the wait queue (Playing queue music)
       case (ORPbxKey.waitQueueEnter):
         CallList.instance.get(event.uniqueID)
-          ..greetingPlayed = true //TODO: Change this into a packet.variable.get ('greetingPlayed')
+          ..greetingPlayed =
+              true //TODO: Change this into a packet.variable.get ('greetingPlayed')
           ..changeState(ORModel.CallState.Queued);
         break;
 
@@ -272,7 +299,8 @@ class CallList extends IterableBase<ORModel.Call> {
 
       /// Call is unparked
       case (ORPbxKey.parkingLotLeave):
-        CallList.instance.get(event.uniqueID)..changeState(ORModel.CallState.Transferring);
+        CallList.instance.get(event.uniqueID)
+          ..changeState(ORModel.CallState.Transferring);
         break;
     }
   }
@@ -348,11 +376,13 @@ class CallList extends IterableBase<ORModel.Call> {
 
     log.finest('Creating new call ${event.uniqueID}');
 
-    int contactID = event.contentAsMap.containsKey('variable_${ORPbxKey.contactId}')
+    int contactID = event.contentAsMap
+            .containsKey('variable_${ORPbxKey.contactId}')
         ? int.parse(event.field('variable_${ORPbxKey.contactId}'))
         : ORModel.Contact.noID;
 
-    int receptionID = event.contentAsMap.containsKey('variable_${ORPbxKey.receptionId}')
+    int receptionID = event.contentAsMap
+            .containsKey('variable_${ORPbxKey.receptionId}')
         ? int.parse(event.field('variable_${ORPbxKey.receptionId}'))
         : ORModel.Reception.noID;
 

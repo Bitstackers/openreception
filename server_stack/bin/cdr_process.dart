@@ -11,14 +11,17 @@ import '../lib/configuration.dart';
  * Simple CDR processing script.
  */
 main(List<String> args) async {
-  final or_db.Connection connection = await or_db.Connection.connect(config.database.dsn);
+  final or_db.Connection connection =
+      await or_db.Connection.connect(config.database.dsn);
   or_db.Cdr cdrStore = new or_db.Cdr(connection);
 
   List<FileSystemEntity> listing = new Directory('cdr-json').listSync();
 
-  bool isJsonFile(FileSystemEntity fse) => fse is File && fse.path.toLowerCase().endsWith('.json');
+  bool isJsonFile(FileSystemEntity fse) =>
+      fse is File && fse.path.toLowerCase().endsWith('.json');
 
-  String readFile(FileSystemEntity fse) => new File(fse.path).readAsStringSync();
+  String readFile(FileSystemEntity fse) =>
+      new File(fse.path).readAsStringSync();
 
   listing
       .where(isJsonFile)
@@ -43,7 +46,7 @@ main(List<String> args) async {
         await cdrStore.create(entry);
       }
 
-      //TODO: Perform long-term storage.
+      // Long-term storage may be performed here.
     } catch (error) {
       print(error);
     }
@@ -67,8 +70,9 @@ class FsCdr {
 
   Map get _appLog => data.containsKey('app_log') ? data['app_log'] : {};
 
-  Iterable get appLog =>
-      _appLog.containsKey('applications') ? _appLog['applications'].map(AppEntry.decode) : [];
+  Iterable get appLog => _appLog.containsKey('applications')
+      ? _appLog['applications'].map(AppEntry.decode)
+      : [];
 
   List get callflow => data['callflow'];
 
@@ -92,12 +96,12 @@ class FsCdr {
 
   bool get inbound => variables['direction'] == 'inbound';
   String get extension =>
-      callflow.firstWhere((Map map) => map['profile_index'] == '1')['caller_profile']
-          ['destination_number'];
+      callflow.firstWhere((Map map) => map['profile_index'] == '1')[
+          'caller_profile']['destination_number'];
   int get duration => int.parse(variables['billmsec']);
   int get waitTime => int.parse(variables['waitmsec']);
-  DateTime get startedAt =>
-      new DateTime.fromMillisecondsSinceEpoch(int.parse(variables['start_epoch']) * 1000);
+  DateTime get startedAt => new DateTime.fromMillisecondsSinceEpoch(
+      int.parse(variables['start_epoch']) * 1000);
 
   int get owner => variables.containsKey(ORPbxKey.userId)
       ? int.parse(variables[ORPbxKey.userId])

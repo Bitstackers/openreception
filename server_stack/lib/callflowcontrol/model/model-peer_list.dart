@@ -13,59 +13,83 @@
 
 part of openreception.call_flow_control_server.model;
 
-abstract class PeerList implements IterableBase<Peer> {
-  /// Singleton reference.
-  static ESL.PeerList instance = new ESL.PeerList.empty();
+PeerList peerlist = new PeerList();
 
-  static ESL.Peer get(String peerID) => instance.get(peerID);
+bool peerIsInAcceptedContext(ESL.Peer peer) =>
+    config.callFlowControl.peerContexts.contains(peer.context);
 
-  static void subscribe(Stream<ESL.Packet> eventStream) {
-    eventStream.listen(_handlePacket);
+class PeerList {
+  Map<String, ORModel.Peer> _peers = {};
+
+  /**
+   * Retrive a single [Peer], identified by [peerName] from the list.
+   */
+  ORModel.Peer get(String peerName) => this.contains(peerName)
+      ? (_peers[peerName]
+        ..channelCount = ChannelList.instance.activeChannelCount(peerName))
+      : throw new ORStorage.NotFound();
+
+  int get length => _peers.keys.length;
+
+  /**
+   *
+   */
+  void add(ORModel.Peer peer) {
+    _peers[peer.name] = peer;
   }
 
-  static registerPeer(String peerID, String contact) {
-    ESL.Peer peer = instance.get(ESL.Peer.makeKey(peerID));
+  /**
+   *
+   */
+  bool contains(String peerName) => _peers.containsKey(peerName);
 
-    if (peer == null) {
-      log.fine('Skipping registration of peer ($peerID) from ignored context;');
-      return;
-    }
+  registerPeer(String peerName) {
+    ORModel.Peer peer = get(peerName);
 
-    peer.register(contact);
-
-    Notification.broadcastEvent(new OREvent.PeerState(
-        new ORModel.Peer(peer.ID)..registered = peer.registered));
+    peer.registered = true;
+    Notification.broadcastEvent(new OREvent.PeerState(peer));
   }
 
-  static unRegisterPeer(String peerID) {
-    ESL.Peer peer = instance.get(ESL.Peer.makeKey(peerID));
+  unregisterPeer(String peerName) {
+    ORModel.Peer peer = get(peerName);
 
-    if (peer == null) {
-      log.fine('Skipping registration of peer ($peerID) from ignored context;');
-      return;
-    }
-
-    peer.unregister();
-    Notification.broadcastEvent(new OREvent.PeerState(
-        new ORModel.Peer(peer.ID)..registered = peer.registered));
+    peer.registered = false;
+    Notification.broadcastEvent(new OREvent.PeerState(peer));
   }
 
-  static void _handlePacket(ESL.Event event) {
+  void handlePacket(ESL.Event event) {
     switch (event.eventName) {
       case (PBXEvent.CUSTOM):
         switch (event.eventSubclass) {
           case (PBXEvent.SOFIA_REGISTER):
-            registerPeer(event.field('username'), event.field('contact'));
+            final String peerName = event.field('username');
+
+            if (this.contains(peerName)) {
+              registerPeer(peerName);
+            } else {
+              log.fine('Skipping registration of '
+                  'peer ($peerName) from ignored context;');
+            }
+
             break;
 
           case (PBXEvent.SOFIA_UNREGISTER):
-            unRegisterPeer(event.field('username'));
+            final String peerName = event.field('username');
+
+            if (this.contains(peerName)) {
+              unregisterPeer(peerName);
+            } else {
+              log.fine('Skipping unregistration of '
+                  'peer ($peerName) from ignored context;');
+            }
             break;
         }
         break;
     }
   }
 
-  static Iterable<Peer> simplify() =>
-      instance.map((ESL.Peer peer) => new Peer.fromESLPeer(peer));
+  List toJson() => _peers.values
+      .map((peer) => peer
+        ..channelCount = ChannelList.instance.activeChannelCount(peer.name))
+      .toList(growable: false);
 }

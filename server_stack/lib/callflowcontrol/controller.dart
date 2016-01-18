@@ -32,6 +32,7 @@ part 'controller/controller-active_recording.dart';
 part 'controller/controller-agent_statistics.dart';
 part 'controller/controller-client_notifier.dart';
 part 'controller/controller-pbx.dart';
+part 'controller/controller-peer.dart';
 part 'controller/controller-state.dart';
 
 const String libraryName = 'callflowcontrol.controller';

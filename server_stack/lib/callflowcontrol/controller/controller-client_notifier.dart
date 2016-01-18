@@ -19,25 +19,20 @@ part of openreception.call_flow_control_server.controller;
  * Listens to model changes, and sends these to the appropriate clients.
  */
 class ClientNotifier {
-
   Logger _log = new Logger('controller.ClientNotifier');
 
   final ORService.NotificationService _notificationServer;
   StreamSubscription _callListSubscription;
 
-  ClientNotifier(this._notificationServer) {
-  }
+  ClientNotifier(this._notificationServer);
 
   void listenForCallEvents(Model.CallList callList) {
     void logError(error, stackTrace) =>
         _log.shout('Failed to dispatch event', error, stackTrace);
 
-
-    _callListSubscription = callList.onEvent.
-        listen(_notificationServer.broadcastEvent, onError: logError);
+    _callListSubscription = callList.onEvent
+        .listen(_notificationServer.broadcastEvent, onError: logError);
   }
 
-  Future cancelCallEventSubscription() =>
-    _callListSubscription.cancel();
-
+  Future cancelCallEventSubscription() => _callListSubscription.cancel();
 }

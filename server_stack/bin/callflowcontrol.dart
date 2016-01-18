@@ -68,9 +68,6 @@ void connectESLClient() {
 
   Model.CallList.instance.subscribe(Controller.PBX.eventClient.eventStream);
 
-  //TODO: Channel-List subscriptions.
-  //Model.CallList.instance.subscribeChannelEvents(Model.ChannelList.event);
-
   Controller.PBX.eventClient.eventStream
       .listen(Model.ChannelList.instance.handleEvent)
       .onDone(connectESLClient); // Reconnect
@@ -78,7 +75,7 @@ void connectESLClient() {
   Controller.PBX.eventClient.eventStream
       .listen(Model.ActiveRecordings.instance.handleEvent);
 
-  Model.PeerList.subscribe(Controller.PBX.eventClient.eventStream);
+  Controller.PBX.eventClient.eventStream.listen(Model.peerlist.handlePacket);
 
   Future authenticate(ESL.Connection client) =>
       client.authenticate(password).then((ESL.Reply reply) {
