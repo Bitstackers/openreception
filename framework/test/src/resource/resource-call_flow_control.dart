@@ -97,7 +97,7 @@ abstract class ResourceCallFlowControl {
 
   static void peerList() => expect(
       Resource.CallFlowControl.peerList(callFlowControlUri),
-      equals(Uri.parse('${callFlowControlUri}/peer/list')));
+      equals(Uri.parse('${callFlowControlUri}/peer')));
 
   static void single() => expect(
       Resource.CallFlowControl.single(callFlowControlUri, 'abcde'),
