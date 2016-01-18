@@ -59,10 +59,6 @@ void main(List<String> arguments) {
       'path': 'bin/contactserver.dart',
       'args': []
     },
-    'ManagementServer': {
-      'path': 'bin/managementserver.dart',
-      'args': []
-    },
     'MessageServer': {
       'path': 'bin/messageserver.dart',
       'args': []

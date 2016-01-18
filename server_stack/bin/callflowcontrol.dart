@@ -44,18 +44,14 @@ void main(List<String> args) {
   Logger.root.level = config.callFlowControl.log.level;
   Logger.root.onRecord.listen(config.callFlowControl.log.onRecord);
 
-  try {
-    registerAndParseCommandlineArguments(args);
+  registerAndParseCommandlineArguments(args);
 
-    if (showHelp()) {
-      print(parser.usage);
-    } else {
-      router.connectAuthService();
-      connectESLClient();
-      router.start(port: config.callFlowControl.httpPort).catchError(log.shout);
-    }
-  } catch (error, stackTrace) {
-    log.shout(error, stackTrace);
+  if (showHelp()) {
+    print(parser.usage);
+  } else {
+    router.connectAuthService();
+    connectESLClient();
+    router.start(port: config.callFlowControl.httpPort);
   }
 }
 

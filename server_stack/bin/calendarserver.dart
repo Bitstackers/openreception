@@ -26,11 +26,10 @@ import '../lib/configuration.dart';
 import '../lib/calendar_server/router.dart' as router;
 
 ArgResults parsedArgs;
-ArgParser  parser = new ArgParser();
+ArgParser parser = new ArgParser();
 
 Future main(List<String> args) {
   ///Init logging.
-  final Logger log = new Logger('CalendarServer');
   Logger.root.level = config.calendarServer.log.level;
   Logger.root.onRecord.listen(config.calendarServer.log.onRecord);
 
@@ -48,7 +47,5 @@ Future main(List<String> args) {
     exit(1);
   }
 
-  return router
-      .start(port: int.parse(parsedArgs['httpport']))
-      .catchError(log.shout);
+  return router.start(port: int.parse(parsedArgs['httpport']));
 }

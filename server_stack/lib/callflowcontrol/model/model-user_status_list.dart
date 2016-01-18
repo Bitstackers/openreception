@@ -14,26 +14,25 @@
 part of openreception.call_flow_control_server.model;
 
 class UserStatusList extends IterableBase<ORModel.UserStatus> {
-
   static UserStatusList instance = new UserStatusList();
 
   Iterator get iterator => this._userStatus.values.iterator;
-  List         toJson() => this.toList(growable: false);
-  Future   timeoutDetector;
-  final Duration keepAliveTimeout = new Duration(hours : 1);
+  List toJson() => this.toList(growable: false);
+  Future timeoutDetector;
+  final Duration keepAliveTimeout = new Duration(hours: 1);
 
   /// Singleton reference.
   Map<int, ORModel.UserStatus> _userStatus = {};
 
   UserStatusList();
 
-  bool has (int userID) => this._userStatus.containsKey(userID);
+  bool has(int userID) => this._userStatus.containsKey(userID);
 
-  Iterable<ORModel.Call> activeCallsAt (int userID) =>
-      CallList.instance.callsOf (userID).where
-         ((ORModel.Call call) => call.state == ORModel.CallState.Speaking);
+  Iterable<ORModel.Call> activeCallsAt(int userID) => CallList.instance
+      .callsOf(userID)
+      .where((ORModel.Call call) => call.state == ORModel.CallState.Speaking);
 
-  void update (int userID, String newState) {
+  void update(int userID, String newState) {
     ORModel.UserStatus status = this.getOrCreate(userID);
     status.state = newState;
     status.lastActivity = new DateTime.now();
@@ -41,31 +40,29 @@ class UserStatusList extends IterableBase<ORModel.UserStatus> {
     Notification.broadcastEvent(new OREvent.UserState(status));
   }
 
-  void logout (int userID) {
-    ORModel.UserStatus status = this.getOrCreate (userID);
+  void logout(int userID) {
+    ORModel.UserStatus status = this.getOrCreate(userID);
     status.state = ORModel.UserState.LoggedOut;
 
     Notification.broadcastEvent(new OREvent.UserState(status));
   }
 
-  void remove (int userID) {
+  void remove(int userID) {
     log.finest('removing uid:$userID from map');
     this._userStatus.remove(userID);
   }
 
-
-  void updatetimeStamp (int userID) {
-    if (this.getOrCreate (userID) == null) {
+  void updatetimeStamp(int userID) {
+    if (this.getOrCreate(userID) == null) {
       throw new ORStorage.NotFound('');
     }
 
-    this.getOrCreate (userID).lastActivity = new DateTime.now();
+    this.getOrCreate(userID).lastActivity = new DateTime.now();
   }
 
-  ORModel.UserStatus getOrCreate (int userID) {
+  ORModel.UserStatus getOrCreate(int userID) {
     if (!this._userStatus.containsKey(userID)) {
-      this._userStatus[userID] =
-         new ORModel.UserStatus()..userID = userID;
+      this._userStatus[userID] = new ORModel.UserStatus()..userID = userID;
     }
 
     return this._userStatus[userID];

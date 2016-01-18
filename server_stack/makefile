@@ -27,7 +27,6 @@ snapshots: $(BUILD_DIR) \
            $(BUILD_DIR)/configserver-$(GIT_REV).dart \
            $(BUILD_DIR)/contactserver-$(GIT_REV).dart \
            $(BUILD_DIR)/dialplanserver-$(GIT_REV).dart \
-           $(BUILD_DIR)/managementserver-$(GIT_REV).dart \
            $(BUILD_DIR)/messagedispatcher-$(GIT_REV).dart \
            $(BUILD_DIR)/messageserver-$(GIT_REV).dart \
            $(BUILD_DIR)/notificationserver-$(GIT_REV).dart \
@@ -64,7 +63,6 @@ install: build
            $(BUILD_DIR)/configserver-$(GIT_REV).dart \
            $(BUILD_DIR)/contactserver-$(GIT_REV).dart \
            $(BUILD_DIR)/dialplanserver-$(GIT_REV).dart \
-           $(BUILD_DIR)/managementserver-$(GIT_REV).dart \
            $(BUILD_DIR)/messagedispatcher-$(GIT_REV).dart \
            $(BUILD_DIR)/messageserver-$(GIT_REV).dart \
            $(BUILD_DIR)/notificationserver-$(GIT_REV).dart \
@@ -79,7 +77,6 @@ install-symlinks: install
 	ln -s ${PREFIX}/configserver-$(GIT_REV).dart ${PREFIX}/configserver.dart
 	ln -s ${PREFIX}/contactserver-$(GIT_REV).dart ${PREFIX}/contactserver.dart
 	ln -s ${PREFIX}/dialplanserver-$(GIT_REV).dart ${PREFIX}/dialplanserver.dart
-	ln -s ${PREFIX}/managementserver-$(GIT_REV).dart ${PREFIX}/managementserver.dart
 	ln -s ${PREFIX}/messagedispatcher-$(GIT_REV).dart ${PREFIX}/messagedispatcher.dart
 	ln -s ${PREFIX}/messageserver-$(GIT_REV).dart ${PREFIX}/messageserver.dart
 	ln -s ${PREFIX}/notificationserver-$(GIT_REV).dart ${PREFIX}/notificationserver.dart
@@ -94,7 +91,6 @@ remove-symlinks:
 	-rm ${PREFIX}/configserver.dart
 	-rm ${PREFIX}/contactserver.dart
 	-rm ${PREFIX}/dialplanserver.dart
-	-rm ${PREFIX}/managementserver.dart
 	-rm ${PREFIX}/messagedispatcher.dart
 	-rm ${PREFIX}/messageserver.dart
 	-rm ${PREFIX}/notificationserver.dart

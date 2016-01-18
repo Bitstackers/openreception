@@ -45,9 +45,5 @@ Future main(List<String> args) async {
     exit(1);
   }
 
-  await router
-      .start(port: int.parse(parsedArgs['httpport']))
-      .catchError((error, stackTrace) {
-    stderr.write('Setup failed! $error $stackTrace');
-  });
+  await router.start(port: int.parse(parsedArgs['httpport']));
 }

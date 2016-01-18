@@ -22,9 +22,9 @@ import 'package:logging/logging.dart';
 import '../lib/contact_server/router.dart' as router;
 import '../lib/configuration.dart';
 
-Logger log = new Logger ('ContactServer');
+Logger log = new Logger('ContactServer');
 ArgResults parsedArgs;
-ArgParser  parser = new ArgParser();
+ArgParser parser = new ArgParser();
 
 /**
  * The OR-Stack contact server. Provides a REST interface for retrieving and
@@ -32,7 +32,6 @@ ArgParser  parser = new ArgParser();
  */
 Future main(List<String> args) {
   ///Init logging.
-  final Logger log = new Logger('contact_server');
   Logger.root.level = config.contactServer.log.level;
   Logger.root.onRecord.listen(config.contactServer.log.onRecord);
 
@@ -50,7 +49,5 @@ Future main(List<String> args) {
     exit(1);
   }
 
-  return router
-      .start(port: int.parse(parsedArgs['httpport']))
-      .catchError((e,s) => log.shout('Failed to start router: $e $s'));
+  return router.start(port: int.parse(parsedArgs['httpport']));
 }
