@@ -21,6 +21,7 @@ $(BUILD_DIR):
 
 snapshots: $(BUILD_DIR) \
            $(BUILD_DIR)/authserver-$(GIT_REV).dart \
+           $(BUILD_DIR)/calendarserver-$(GIT_REV).dart \
            $(BUILD_DIR)/callflowcontrol-$(GIT_REV).dart \
            $(BUILD_DIR)/cdrserver-$(GIT_REV).dart \
            $(BUILD_DIR)/configserver-$(GIT_REV).dart \
@@ -57,6 +58,7 @@ install: build
 	install --directory ${PREFIX}
 	install --target-directory=${PREFIX} \
            $(BUILD_DIR)/authserver-$(GIT_REV).dart \
+           $(BUILD_DIR)/calendarserver-$(GIT_REV).dart \
            $(BUILD_DIR)/callflowcontrol-$(GIT_REV).dart \
            $(BUILD_DIR)/cdrserver-$(GIT_REV).dart \
            $(BUILD_DIR)/configserver-$(GIT_REV).dart \
@@ -71,6 +73,7 @@ install: build
 
 install-symlinks: install
 	ln -s ${PREFIX}/authserver-$(GIT_REV).dart ${PREFIX}/authserver.dart
+	ln -s ${PREFIX}/calendarserver-$(GIT_REV).dart ${PREFIX}/calendarserver.dart
 	ln -s ${PREFIX}/callflowcontrol-$(GIT_REV).dart ${PREFIX}/callflowcontrol.dart
 	ln -s ${PREFIX}/cdrserver-$(GIT_REV).dart ${PREFIX}/cdrserver.dart
 	ln -s ${PREFIX}/configserver-$(GIT_REV).dart ${PREFIX}/configserver.dart
@@ -85,6 +88,7 @@ install-symlinks: install
 
 remove-symlinks: 
 	-rm ${PREFIX}/authserver.dart
+	-rm ${PREFIX}/calendarserver.dart
 	-rm ${PREFIX}/callflowcontrol.dart
 	-rm ${PREFIX}/cdrserver.dart
 	-rm ${PREFIX}/configserver.dart
