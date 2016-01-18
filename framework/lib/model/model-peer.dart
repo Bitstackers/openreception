@@ -17,12 +17,9 @@ part of openreception.model;
  *
  */
 class Peer {
-  @deprecated
-  String get ID => name;
   final String name;
   int channelCount = 0;
   bool inTransition = false;
-  bool paused = true;
   bool registered = false;
 
   /**
@@ -37,17 +34,14 @@ class Peer {
       : name = map[Key.name],
         registered = map[Key.registered],
         inTransition = map[Key.inTransition],
-        paused = map[Key.paused],
         channelCount = map[Key.activeChannels];
 
   /**
    *
    */
   Map toJson() => {
-        Key.ID: name,
         Key.name: name,
         Key.inTransition: inTransition,
-        Key.paused: paused,
         Key.registered: registered,
         Key.activeChannels: channelCount
       };
@@ -61,5 +55,5 @@ class Peer {
    *
    */
   @override
-  String toString() => '${this.ID}, registered:${this.registered}';
+  String toString() => '$name, registered:$registered';
 }
