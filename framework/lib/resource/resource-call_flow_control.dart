@@ -146,9 +146,8 @@ abstract class CallFlowControl {
    * with an optional call ID appended.
    *
    */
-  static Uri originate(
-          Uri host, String extension, String dialplan, int receptionID,
-          int contactID,
+  static Uri originate(Uri host, String extension, String dialplan,
+          int receptionID, int contactID,
           {String callId: ''}) =>
       Uri.parse('${_root(host)}'
           '/originate/${extension}'

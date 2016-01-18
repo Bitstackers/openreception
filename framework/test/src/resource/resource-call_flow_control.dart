@@ -36,40 +36,36 @@ void testResourceCallFlowControl() {
     test('agentStatistic', ResourceCallFlowControl.agentStatistic);
   });
 }
+
 abstract class ResourceCallFlowControl {
   static Uri callFlowControlUri = Uri.parse('http://localhost:4242');
 
   /**
    *
    */
-  static void activeRecordings()
-    => expect(
-        Resource.CallFlowControl.activeRecordings(callFlowControlUri),
-        equals(Uri.parse('${callFlowControlUri}/activerecording')));
+  static void activeRecordings() => expect(
+      Resource.CallFlowControl.activeRecordings(callFlowControlUri),
+      equals(Uri.parse('${callFlowControlUri}/activerecording')));
 
   /**
    *
    */
-  static void activeRecording()
-    => expect(
-        Resource.CallFlowControl.activeRecording(callFlowControlUri, 'abc'),
-        equals(Uri.parse('${callFlowControlUri}/activerecording/abc')));
+  static void activeRecording() => expect(
+      Resource.CallFlowControl.activeRecording(callFlowControlUri, 'abc'),
+      equals(Uri.parse('${callFlowControlUri}/activerecording/abc')));
   /**
    *
    */
-  static void agentStatistics()
-    => expect(
-        Resource.CallFlowControl.agentStatistics(callFlowControlUri),
-        equals(Uri.parse('${callFlowControlUri}/agentstatistics')));
+  static void agentStatistics() => expect(
+      Resource.CallFlowControl.agentStatistics(callFlowControlUri),
+      equals(Uri.parse('${callFlowControlUri}/agentstatistics')));
 
   /**
    *
    */
-  static void agentStatistic()
-    => expect(
-        Resource.CallFlowControl.agentStatistic(callFlowControlUri, 99),
-        equals(Uri.parse('${callFlowControlUri}/agentstatistics/99')));
-
+  static void agentStatistic() => expect(
+      Resource.CallFlowControl.agentStatistic(callFlowControlUri, 99),
+      equals(Uri.parse('${callFlowControlUri}/agentstatistics/99')));
 
   static void stateReload() => expect(
       Resource.CallFlowControl.stateReload(callFlowControlUri),
@@ -108,7 +104,8 @@ abstract class ResourceCallFlowControl {
       equals(Uri.parse('${callFlowControlUri}/call/abcde/pickup')));
 
   static void originate() => expect(
-      Resource.CallFlowControl.originate(callFlowControlUri, '12345678', '12340001' ,1, 2),
+      Resource.CallFlowControl
+          .originate(callFlowControlUri, '12345678', '12340001', 1, 2),
       equals(Uri.parse(
           '${callFlowControlUri}/call/originate/12345678/dialplan/12340001/reception/1/contact/2')));
 
