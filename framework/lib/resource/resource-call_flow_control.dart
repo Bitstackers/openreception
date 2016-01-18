@@ -119,7 +119,7 @@ abstract class CallFlowControl {
    * The output format is:
    *    http://hostname/peer/list
    */
-  static Uri peerList(Uri host) => Uri.parse('${host}/peer/list');
+  static Uri peerList(Uri host) => Uri.parse('${host}/peer');
 
   /**
    * Builds a Uri to retrieve a single call resource.
