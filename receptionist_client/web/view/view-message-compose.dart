@@ -19,6 +19,7 @@ part of view;
 class MessageCompose extends ViewWidget {
   final Model.AppClientState _appState;
   final Model.UIContactSelector _contactSelector;
+  final Controller.DistributionList _distributionListController;
   final Controller.Endpoint _endpointController;
   final Map<String, String> _langMap;
   final Logger _log = new Logger('$libraryName.MessageCompose');
@@ -40,6 +41,7 @@ class MessageCompose extends ViewWidget {
       Model.UIContactSelector this._contactSelector,
       Model.UIReceptionSelector this._receptionSelector,
       Controller.Message this._messageController,
+      Controller.DistributionList this._distributionListController,
       Controller.Endpoint this._endpointController,
       Controller.Popup this._popup,
       Map<String, String> this._langMap) {
@@ -115,16 +117,21 @@ class MessageCompose extends ViewWidget {
     if (contact.isEmpty) {
       _log.info('Got an empty contact - undecided on what to do');
     } else {
-      Set<ORModel.MessageRecipient> recipients = new Set();
-      Future.forEach(contact.distributionList, (ORModel.DistributionListEntry dle) {
-        return _endpointController
-            .list(dle.receptionID, dle.contactID)
-            .then((Iterable<ORModel.MessageEndpoint> meps) {
-          recipients.addAll(
-              meps.map((ORModel.MessageEndpoint mep) => new ORModel.MessageRecipient(mep, dle)));
+      final Set<ORModel.MessageRecipient> recipients = new Set<ORModel.MessageRecipient>();
+
+      _distributionListController
+          .list(contact.receptionID, contact.ID)
+          .then((ORModel.DistributionList dList) {
+        Future.forEach(dList, (ORModel.DistributionListEntry dle) {
+          return _endpointController
+              .list(dle.receptionID, dle.contactID)
+              .then((Iterable<ORModel.MessageEndpoint> meps) {
+            recipients.addAll(
+                meps.map((ORModel.MessageEndpoint mep) => new ORModel.MessageRecipient(mep, dle)));
+          });
+        }).whenComplete(() {
+          _ui.recipients = recipients;
         });
-      }).whenComplete(() {
-        _ui.recipients = recipients;
       });
 
       _ui.messagePrerequisites = contact.messagePrerequisites;

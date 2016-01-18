@@ -29,6 +29,7 @@ import 'package:openreception_framework/storage.dart' as ORStorage;
 part 'controller-calendar.dart';
 part 'controller-call.dart';
 part 'controller-contact.dart';
+part 'controller-distributionlist.dart';
 part 'controller-endpoint.dart';
 part 'controller-hotkeys.dart';
 part 'controller-message.dart';

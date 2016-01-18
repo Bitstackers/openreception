@@ -24,6 +24,7 @@ class ORCReady {
   ContactCalendar _contactCalendar;
   final Controller.Contact _contactController;
   ContactSelector _contactSelector;
+  final Controller.DistributionList _distributionListController;
   final Controller.Endpoint _endpointController;
   Map<String, String> _langMap;
   MessageCompose _messageCompose;
@@ -53,6 +54,7 @@ class ORCReady {
       Controller.Call callController,
       Controller.Notification notification,
       Controller.Message message,
+      Controller.DistributionList distributionListController,
       Controller.Endpoint endpointController,
       Controller.Popup popup,
       Controller.Sound sound,
@@ -69,6 +71,7 @@ class ORCReady {
           callController,
           notification,
           message,
+          distributionListController,
           endpointController,
           popup,
           sound,
@@ -92,6 +95,7 @@ class ORCReady {
       this._callController,
       this._notification,
       this._messageController,
+      this._distributionListController,
       this._endpointController,
       this._popup,
       this._sound,
@@ -204,6 +208,7 @@ class ORCReady {
         _uiContactSelector,
         _uiReceptionSelector,
         _messageController,
+        _distributionListController,
         _endpointController,
         _popup,
         _langMap);

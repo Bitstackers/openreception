@@ -273,34 +273,29 @@ Future registerReadyView(
       clientConfig.calendarServerUri, token, new ORTransport.Client());
   ORService.RESTContactStore contactStore = new ORService.RESTContactStore(
       clientConfig.contactServerUri, token, new ORTransport.Client());
+  ORService.RESTDistributionListStore distributionListStore =
+      new ORService.RESTDistributionListStore(
+          clientConfig.contactServerUri, token, new ORTransport.Client());
   ORService.RESTEndpointStore endpointStore = new ORService.RESTEndpointStore(
       clientConfig.contactServerUri, token, new ORTransport.Client());
   ORService.RESTMessageStore messageStore = new ORService.RESTMessageStore(
       clientConfig.messageServerUri, token, new ORTransport.Client());
   Controller.Message messageController = new Controller.Message(messageStore);
-  ORService.RESTReceptionStore receptionStore =
-      new ORService.RESTReceptionStore(
-          clientConfig.receptionServerUri, token, new ORTransport.Client());
-  Controller.Reception receptionController =
-      new Controller.Reception(receptionStore);
-  Controller.Endpoint endpointController =
-      new Controller.Endpoint(endpointStore);
-  Controller.Calendar calendarController =
-      new Controller.Calendar(calendarStore);
-  Controller.Call callController =
-      new Controller.Call(callFlowControl, appState);
+  ORService.RESTReceptionStore receptionStore = new ORService.RESTReceptionStore(
+      clientConfig.receptionServerUri, token, new ORTransport.Client());
+  Controller.Reception receptionController = new Controller.Reception(receptionStore);
+  Controller.DistributionList distributionListController =
+      new Controller.DistributionList(distributionListStore);
+  Controller.Endpoint endpointController = new Controller.Endpoint(endpointStore);
+  Controller.Calendar calendarController = new Controller.Calendar(calendarStore);
+  Controller.Call callController = new Controller.Call(callFlowControl, appState);
 
-  Controller.Popup popup = new Controller.Popup(
-      new Uri.file('/images/popup_error.png'),
-      new Uri.file('/images/popup_info.png'),
-      new Uri.file('/images/popup_success.png'));
+  Controller.Popup popup = new Controller.Popup(new Uri.file('/images/popup_error.png'),
+      new Uri.file('/images/popup_info.png'), new Uri.file('/images/popup_success.png'));
 
-  Controller.Sound sound =
-      new Controller.Sound(querySelector('audio.sound-pling'));
+  Controller.Sound sound = new Controller.Sound(querySelector('audio.sound-pling'));
 
-  return receptionController
-      .list()
-      .then((Iterable<ORModel.Reception> receptions) {
+  return receptionController.list().then((Iterable<ORModel.Reception> receptions) {
     Iterable<ORModel.Reception> sortedReceptions = receptions.toList()
       ..sort((x, y) => x.name.compareTo(y.name));
 
@@ -315,6 +310,7 @@ Future registerReadyView(
         callController,
         notification,
         messageController,
+        distributionListController,
         endpointController,
         popup,
         sound,
