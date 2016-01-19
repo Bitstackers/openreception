@@ -158,7 +158,7 @@ class AuthServer extends StandardConfig {
   final String clientId = 'google-client-id';
   final String clientSecret = 'google-client-secret';
   final String serverTokendir = '';
-  Uri get clientUri => Uri.parse('http://localhost:3030/Bob/web/bob.html');
+  Uri get clientUri => Uri.parse('http://localhost:8080');
 
   Uri get redirectUri => Uri.parse('${externalUri}/token/oauth2callback');
 

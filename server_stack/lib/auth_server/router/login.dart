@@ -14,16 +14,18 @@
 part of openreception.authentication_server.router;
 
 shelf.Response login(shelf.Request request) {
-  final String returnUrlString = request.url.queryParameters
-      .containsKey('returnurl') ? request.url.queryParameters['returnurl'] : '';
+  final String returnUrlString = request.url.queryParameters.containsKey('returnurl')
+      ? request.url.queryParameters['returnurl']
+      : '';
 
   log.finest('returnUrlString:$returnUrlString');
 
   try {
     //Because the library does not allow to set custom query parameters
     Map googleParameters = {
-      'access_type': 'offline',
-      'state': config.authServer.clientUri.toString()
+      'access_type': 'online',
+      'approval_prompt': 'auto',
+      'state': config.authServer.redirectUri.toString()
     };
 
     if (returnUrlString.isNotEmpty) {
@@ -32,9 +34,8 @@ shelf.Response login(shelf.Request request) {
       googleParameters['state'] = returnUrl.toString();
     }
 
-    Uri authUrl = googleAuthUrl(config.authServer.clientId,
-        config.authServer.clientSecret,
-        config.authServer.redirectUri);
+    Uri authUrl = googleAuthUrl(
+        config.authServer.clientId, config.authServer.clientSecret, config.authServer.redirectUri);
 
     googleParameters.addAll(authUrl.queryParameters);
     Uri googleOauthRequestUrl = new Uri(
@@ -50,7 +51,6 @@ shelf.Response login(shelf.Request request) {
     return new shelf.Response.found(googleOauthRequestUrl);
   } catch (error, stacktrace) {
     log.severe(error, stacktrace);
-    return new shelf.Response.internalServerError(
-        body: 'Failed log in error:$error');
+    return new shelf.Response.internalServerError(body: 'Failed log in error:$error');
   }
 }
