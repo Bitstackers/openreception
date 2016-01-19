@@ -52,48 +52,6 @@ abstract class CallFlowControl {
   /**
    * Builds a Uri to retrieve a userstatus resource.
    * The output format is:
-   *    http://hostname/userstate/${userID}
-   */
-  static Uri userStatus(Uri host, int userID) =>
-      Uri.parse('${host}/userstate/${userID}');
-
-  /**
-   * Builds a Uri to retrieve a list of userstatus resources.
-   * The output format is:
-   *    http://hostname/userstate
-   */
-  static Uri userStatusList(Uri host) => Uri.parse('${host}/userstate');
-
-  /**
-   * Builds a Uri to update a userstatus resource associated with a user.
-   * The [newState] parameter must be a valid [UserState].
-   * The output format is:
-   *    http://hostname/userstate/${userID}/${newState}
-   */
-  static Uri userState(Uri host, int userID, String newState) =>
-      Uri.parse('${host}/userstate/${userID}/${newState}');
-
-  /**
-   * Builds a Uri to keep alive a userstatus resource associated with a user.
-   * The [newState] parameter must be a valid [UserState].
-   * The output format is:
-   *    http://hostname/userstate/${userID}/keep-alive
-   */
-  static Uri userStateKeepAlive(Uri host, int userID) =>
-      Uri.parse('${host}/userstate/${userID}/keep-alive');
-
-  /**
-   * Builds a Uri to logout userstatus resource associated with a user.
-   * The [newState] parameter must be a valid [UserState].
-   * The output format is:
-   *    http://hostname/userstate/${userID}/loggedOut
-   */
-  static Uri userStateLoggedOut(Uri host, int userID) =>
-      userState(host, userID, Model.UserState.LoggedOut);
-
-  /**
-   * Builds a Uri to retrieve a userstatus resource.
-   * The output format is:
    *    http://hostname/channel/list
    */
   static Uri channel(Uri host, String uuid) =>
@@ -105,14 +63,6 @@ abstract class CallFlowControl {
    *    http://hostname/channel/list
    */
   static Uri channelList(Uri host) => Uri.parse('${host}/channel');
-
-  /**
-   * Builds a Uri to mark a userstatus resource as idle.
-   * The output format is:
-   *    http://hostname/userstate/${userID}/idle
-   */
-  static Uri userStatusIdle(Uri host, int userID) =>
-      Uri.parse('${userStatus(host, userID)}/idle');
 
   /**
    * Builds a Uri to retrieve a every current peer resource.

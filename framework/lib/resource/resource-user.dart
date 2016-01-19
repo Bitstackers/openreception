@@ -18,33 +18,38 @@ part of openreception.resource;
  * resources across servers and clients.
  */
 abstract class User {
-
   static const String _user = 'user';
   static const String _group = 'group';
   static const String _identity = 'identity';
 
-  static Uri single(Uri host, int userID)
-    => Uri.parse('${root(host)}/${userID}');
+  static Uri single(Uri host, int userID) =>
+      Uri.parse('${root(host)}/${userID}');
 
-  static Uri root(Uri host)
-    => Uri.parse('${Util.removeTailingSlashes(host)}/$_user');
+  static Uri root(Uri host) =>
+      Uri.parse('${Util.removeTailingSlashes(host)}/$_user');
 
-  static Uri list(Uri host)
-    => Uri.parse('${root(host)}');
+  static Uri list(Uri host) => Uri.parse('${root(host)}');
 
-  static Uri userGroup(Uri host, int userID)
-    => Uri.parse('${single(host, userID)}/$_group');
+  static Uri userGroup(Uri host, int userID) =>
+      Uri.parse('${single(host, userID)}/$_group');
 
-  static Uri group(Uri host)
-    => Uri.parse('${Util.removeTailingSlashes(host)}/$_group');
+  static Uri group(Uri host) =>
+      Uri.parse('${Util.removeTailingSlashes(host)}/$_group');
 
-  static Uri userGroupByID(Uri host, int userID, int groupID)
-      => Uri.parse('${Util.removeTailingSlashes(host)}/user/$userID/$_group/$groupID');
+  static Uri userGroupByID(Uri host, int userID, int groupID) => Uri.parse(
+      '${Util.removeTailingSlashes(host)}/user/$userID/$_group/$groupID');
 
-  static Uri userIndentities(Uri host, int userID)
-  => Uri.parse('$host/$_user/$userID/$_identity');
+  static Uri userIndentities(Uri host, int userID) =>
+      Uri.parse('$host/$_user/$userID/$_identity');
 
-  static Uri userIndentity(Uri host, int userID, String identity)
-  => Uri.parse('$host/$_user/$userID/$_identity/${identity}');
+  static Uri userIndentity(Uri host, int userID, String identity) =>
+      Uri.parse('$host/$_user/$userID/$_identity/${identity}');
 
+  static Uri userState(Uri host, int uid) =>
+      Uri.parse('$host/$_user/$uid/state');
+
+  static Uri userStateAll(Uri host) => Uri.parse('$host/$_user/all/state');
+
+  static Uri setUserState(Uri host, int uid, String newState) =>
+      Uri.parse('$host/$_user/$uid/state/$newState');
 }

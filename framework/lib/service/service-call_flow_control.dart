@@ -134,9 +134,9 @@ class CallFlowControl {
    */
   Future<Model.Call> originate(
       String extension, Model.OriginationContext context) {
-    Uri uri = Resource.CallFlowControl
-        .originate(_host, extension, context.dialplan, context.receptionId,
-            context.contactId,  callId: context.callId);
+    Uri uri = Resource.CallFlowControl.originate(_host, extension,
+        context.dialplan, context.receptionId, context.contactId,
+        callId: context.callId);
     uri = _appendToken(uri, _token);
 
     return _backend
@@ -203,78 +203,5 @@ class CallFlowControl {
     uri = _appendToken(uri, _token);
 
     return _backend.post(uri, '');
-  }
-
-  /**
-   * Returns the [Model.UserStatus] object associated with [userID].
-   */
-  Future<Model.UserStatus> userStatus(int userID) {
-    Uri uri = Resource.CallFlowControl.userStatus(_host, userID);
-    uri = _appendToken(uri, _token);
-
-    return _backend.get(uri).then(JSON.decode).then(Model.UserStatus.decode);
-  }
-
-  /**
-   * Updates the [Model.UserStatus] object associated
-   * with [userID] to state idle.
-   * The update is conditioned by the server and phone state and may throw
-   * [ClientError] exeptions.
-   */
-  Future<Model.UserStatus> userStateIdle(int userID) {
-    Uri uri =
-        Resource.CallFlowControl.userState(_host, userID, Model.UserState.Idle);
-    uri = _appendToken(uri, _token);
-
-    return _backend
-        .post(uri, '')
-        .then(JSON.decode)
-        .then((Map map) => new Model.UserStatus.fromMap(map));
-  }
-
-  /**
-   * Returns an Iterable representation of the all the [Model.UserStatus]
-   * objects currently known to the CallFlowControl server.
-   */
-  Future<Iterable<Model.UserStatus>> userStatusList() {
-    Uri uri = Resource.CallFlowControl.userStatusList(_host);
-    uri = _appendToken(uri, _token);
-
-    return _backend.get(uri).then(JSON.decode).then((Iterable<Map> maps) =>
-        maps.map((Map map) => new Model.UserStatus.fromMap(map)));
-  }
-
-  /**
-   * Updates the [Model.UserStatus] object associated
-   * with [userID] to state logged-out.
-   * The update is conditioned by the server and phone state and may throw
-   * [ClientError] exeptions.
-   */
-  Future<Model.UserStatus> userStateLoggedOut(int userID) {
-    Uri uri = Resource.CallFlowControl
-        .userState(_host, userID, Model.UserState.LoggedOut);
-    uri = _appendToken(uri, _token);
-
-    return _backend
-        .post(uri, '')
-        .then(JSON.decode)
-        .then((Map map) => new Model.UserStatus.fromMap(map));
-  }
-
-  /**
-   * Updates the [Model.UserStatus] object associated
-   * with [userID] to state paused.
-   * The update is conditioned by the server and phone state and may throw
-   * [ClientError] exeptions.
-   */
-  Future<Model.UserStatus> userStatePaused(int userID) {
-    Uri uri = Resource.CallFlowControl
-        .userState(_host, userID, Model.UserState.Paused);
-    uri = _appendToken(uri, _token);
-
-    return _backend
-        .post(uri, '')
-        .then(JSON.decode)
-        .then((Map map) => new Model.UserStatus.fromMap(map));
   }
 }

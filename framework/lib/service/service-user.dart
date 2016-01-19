@@ -36,10 +36,12 @@ class RESTUserStore implements Storage.User {
     Uri url = Resource.User.list(_host);
     url = _appendToken(url, this._token);
 
-    return this._backend.get(url)
-      .then((String reponse) => JSON.decode (reponse))
-      .then((Iterable userMaps) =>
-          userMaps.map ((Map userMap) => new Model.User.fromMap(userMap)));
+    return this
+        ._backend
+        .get(url)
+        .then((String reponse) => JSON.decode(reponse))
+        .then((Iterable userMaps) =>
+            userMaps.map((Map userMap) => new Model.User.fromMap(userMap)));
   }
 
   /**
@@ -49,33 +51,39 @@ class RESTUserStore implements Storage.User {
     Uri url = Resource.User.single(_host, userID);
     url = _appendToken(url, this._token);
 
-    return this._backend.get(url)
-      .then((String reponse) => JSON.decode (reponse))
-      .then(((Map userMap) => new Model.User.fromMap(userMap)));
+    return this
+        ._backend
+        .get(url)
+        .then((String reponse) => JSON.decode(reponse))
+        .then(((Map userMap) => new Model.User.fromMap(userMap)));
   }
 
   /**
    *
    */
-  Future<Model.User> create(Model.User user){
+  Future<Model.User> create(Model.User user) {
     Uri url = Resource.User.root(_host);
     url = _appendToken(url, this._token);
 
-    return this._backend.post(url, JSON.encode(user))
-      .then((String reponse) => JSON.decode (reponse))
-      .then(((Map userMap) => new Model.User.fromMap(userMap)));
+    return this
+        ._backend
+        .post(url, JSON.encode(user))
+        .then((String reponse) => JSON.decode(reponse))
+        .then(((Map userMap) => new Model.User.fromMap(userMap)));
   }
 
   /**
    *
    */
-  Future<Model.User> update(Model.User user){
+  Future<Model.User> update(Model.User user) {
     Uri url = Resource.User.single(_host, user.ID);
     url = _appendToken(url, this._token);
 
-    return this._backend.put(url, JSON.encode(user))
-      .then((String reponse) => JSON.decode (reponse))
-      .then(((Map userMap) => new Model.User.fromMap(userMap)));
+    return this
+        ._backend
+        .put(url, JSON.encode(user))
+        .then((String reponse) => JSON.decode(reponse))
+        .then(((Map userMap) => new Model.User.fromMap(userMap)));
   }
 
   /**
@@ -95,11 +103,12 @@ class RESTUserStore implements Storage.User {
     Uri url = Resource.User.userGroup(_host, userID);
     url = _appendToken(url, this._token);
 
-    return this._backend.get(url)
-      .then((String reponse) => JSON.decode (reponse))
-      .then((Iterable groupMaps) =>
-          groupMaps.map ((Map groupMap) =>
-              new Model.UserGroup.fromMap(groupMap)));
+    return this
+        ._backend
+        .get(url)
+        .then((String reponse) => JSON.decode(reponse))
+        .then((Iterable groupMaps) => groupMaps
+            .map((Map groupMap) => new Model.UserGroup.fromMap(groupMap)));
   }
 
   /**
@@ -109,11 +118,12 @@ class RESTUserStore implements Storage.User {
     Uri url = Resource.User.group(_host);
     url = _appendToken(url, this._token);
 
-    return this._backend.get(url)
-      .then((String reponse) => JSON.decode (reponse))
-      .then((Iterable groupMaps) =>
-          groupMaps.map ((Map groupMap) =>
-              new Model.UserGroup.fromMap(groupMap)));
+    return this
+        ._backend
+        .get(url)
+        .then((String reponse) => JSON.decode(reponse))
+        .then((Iterable groupMaps) => groupMaps
+            .map((Map groupMap) => new Model.UserGroup.fromMap(groupMap)));
   }
 
   /**
@@ -123,7 +133,7 @@ class RESTUserStore implements Storage.User {
     Uri url = Resource.User.userGroupByID(_host, userID, groupID);
     url = _appendToken(url, this._token);
 
-    return this._backend.post(url,'');
+    return this._backend.post(url, '');
   }
 
   /**
@@ -143,12 +153,12 @@ class RESTUserStore implements Storage.User {
     Uri url = Resource.User.userIndentities(_host, userID);
     url = _appendToken(url, this._token);
 
-    return this._backend.get(url)
-      .then((String reponse) => JSON.decode (reponse))
-      .then((Iterable identityMaps) =>
-          identityMaps.map ((Map identityMap) =>
-              new Model.UserIdentity.fromMap(identityMap)));
-
+    return this
+        ._backend
+        .get(url)
+        .then((String reponse) => JSON.decode(reponse))
+        .then((Iterable identityMaps) => identityMaps.map(
+            (Map identityMap) => new Model.UserIdentity.fromMap(identityMap)));
   }
 
   /**
@@ -158,19 +168,75 @@ class RESTUserStore implements Storage.User {
     Uri url = Resource.User.userIndentities(_host, identity.userId);
     url = _appendToken(url, this._token);
 
-    return this._backend.post(url, JSON.encode (identity))
-      .then((String reponse) => JSON.decode (reponse))
-      .then((Map identityMap) =>
-         new Model.UserIdentity.fromMap(identityMap));
+    return this
+        ._backend
+        .post(url, JSON.encode(identity))
+        .then((String reponse) => JSON.decode(reponse))
+        .then((Map identityMap) => new Model.UserIdentity.fromMap(identityMap));
   }
 
   /**
    *
    */
   Future removeIdentity(Model.UserIdentity identity) {
-    Uri url = Resource.User.userIndentity(_host, identity.userId, identity.identity);
+    Uri url =
+        Resource.User.userIndentity(_host, identity.userId, identity.identity);
     url = _appendToken(url, this._token);
 
     return this._backend.delete(url);
+  }
+
+  /**
+     * Returns the [Model.UserStatus] object associated with [userID].
+     */
+  Future<Model.UserStatus> userStatus(int userID) {
+    Uri uri = Resource.User.userState(_host, userID);
+    uri = _appendToken(uri, _token);
+
+    return _backend.get(uri).then(JSON.decode).then(Model.UserStatus.decode);
+  }
+
+  /**
+     * Updates the [Model.UserStatus] object associated
+     * with [userID] to state ready.
+     * The update is conditioned by the server and phone state and may throw
+     * [ClientError] exeptions.
+     */
+  Future<Model.UserStatus> userStateReady(int userID) {
+    Uri uri = Resource.User.setUserState(_host, userID, Model.UserState.Ready);
+    uri = _appendToken(uri, _token);
+
+    return _backend
+        .post(uri, '')
+        .then(JSON.decode)
+        .then((Map map) => new Model.UserStatus.fromMap(map));
+  }
+
+  /**
+     * Returns an Iterable representation of the all the [Model.UserStatus]
+     * objects currently known to the CallFlowControl server.
+     */
+  Future<Iterable<Model.UserStatus>> userStatusList() {
+    Uri uri = Resource.User.userStateAll(_host);
+    uri = _appendToken(uri, _token);
+
+    return _backend.get(uri).then(JSON.decode).then((Iterable<Map> maps) =>
+        maps.map((Map map) => new Model.UserStatus.fromMap(map)));
+  }
+
+  /**
+     * Updates the [Model.UserStatus] object associated
+     * with [userID] to state paused.
+     * The update is conditioned by the server and phone state and may throw
+     * [ClientError] exeptions.
+     */
+  Future<Model.UserStatus> userStatePaused(int userID) {
+    Uri uri = Resource.User.setUserState(_host, userID, Model.UserState.Paused);
+    uri = _appendToken(uri, _token);
+
+    return _backend
+        .post(uri, '')
+        .then(JSON.decode)
+        .then((Map map) => new Model.UserStatus.fromMap(map));
   }
 }
