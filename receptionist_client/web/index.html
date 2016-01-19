@@ -825,7 +825,7 @@
               <div id="reception-selector" class="generic-widget">
                 <style scoped>
                   #reception-selector {
-                    flex-grow: 1;
+                    flex-grow: 0.7;
                   }
 
                   #reception-selector .generic-widget-body div {
@@ -902,7 +902,7 @@
               <div id="reception-calendar" class="generic-widget layout-margin-top" tabindex="-1">
                 <style scoped>
                   #reception-calendar {
-                    flex-grow: 1;
+                    flex-grow: 0.7;
                   }
 
                   #reception-calendar,
@@ -1014,7 +1014,7 @@
               <div id="message-compose" class="generic-widget layout-margin-top" tabindex="-1">
                 <style scoped>
                   #message-compose {
-                    flex-grow: 3;
+                    flex-grow: 2;
                     outline: 0;
                   }
 
@@ -1085,12 +1085,12 @@
                     content: '(bcc) '
                   }
 
-                  #message-compose .name-hint {
+                  /*#message-compose .name-hint {
                     margin-top: 0.3em;
-                  }
+                  }*/
 
                   #message-compose .names {
-                    margin-top: 0.7em;
+                    margin-top: 0.3em;
                   }
 
                   #message-compose .names input.caller {
@@ -1197,9 +1197,9 @@
                   <div class="recipients padding03 recipients-hidden">
                     <ol class="generic-widget-list"></ol>
                   </div>
-                  <div class="name-hint display-flex-row">
+                  <!--<div class="name-hint display-flex-row">
                     <input type="text" placeholder="::name hint::" value="" disabled data-lang-placeholder="message-compose-name-hint">
-                  </div>
+                  </div>-->
 
                   <div class="names display-flex-row">
                     <input type="text" class="caller" placeholder="::caller name::" tabindex="-1" data-lang-placeholder="message-compose-caller-name">
