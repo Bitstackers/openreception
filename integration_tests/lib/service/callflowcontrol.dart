@@ -8,7 +8,7 @@ void runCallFlowTests() {
   _callFlowControlPeer();
   _callFlowControlPickup();
   _callFlowControlOriginate();
-  _CallFlowControlPark();
+  _callFlowControlPark();
   _callFlowControlUserState();
   _callFlowControlStateReload();
 }
@@ -368,7 +368,7 @@ void _callFlowControlOriginate() {
 /**
  * CallFlowControl Call Park.
  */
-void _CallFlowControlPark() {
+void _callFlowControlPark() {
   group('CallFlowControl.Park', () {
     Receptionist receptionist = null;
     Customer customer = null;
