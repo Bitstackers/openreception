@@ -22,77 +22,23 @@ part of openreception.model;
  * a user is connectable or not.
  */
 abstract class UserState {
-  static const Unknown = 'unknown';
-  static const Idle = 'idle';
+  static const Ready = 'ready';
   static const Paused = 'paused';
-  static const Speaking = 'speaking';
-  static const Receiving = 'receivingCall';
-  static const HangingUp = 'hangingUp';
-  static const Transferring = 'transferring';
-  static const Dialing = 'dialing';
-  static const Parking = 'parking';
-  static const Unparking = 'unParking';
-  static const LoggedOut = 'loggedOut';
-  static const WrappingUp = 'wrappingUp';
-  static const HandlingOffHook = 'handlingOffHook';
-
-  /// Valid states for a user to accept a new call.
-  static final List<String> PhoneReadyStates = [
-    Idle,
-    WrappingUp,
-    HandlingOffHook
-  ];
-
-  /// Invalid states for a user to accept a new call.
-  static final Iterable<String> TransitionStates = [
-    Receiving,
-    HangingUp,
-    Transferring,
-    Dialing,
-    Parking,
-    Unparking
-  ];
-
-  /// Convenience method for checking if a phone is ready.
-  static phoneIsReady(String state) => PhoneReadyStates.contains(state);
 }
 
 class UserStatus {
+  bool paused = true;
   int userID = User.noID;
-  String _state = UserState.Unknown;
-  String lastState = UserState.Unknown;
-  DateTime lastActivity = null;
-  int callsHandled = 0;
 
   Map toJson() => this.asMap;
-
-  String get state => this._state;
-  set state(String newState) {
-    this.lastState = this._state;
-    this._state = newState;
-  }
 
   UserStatus();
 
   static UserStatus decode(Map map) => new UserStatus.fromMap(map);
 
-  UserStatus.fromMap(Map map) {
-    this.userID = map[Key.UserID];
-    this.state = map[Key.state];
-    this.lastState = map[Key.lastState];
-    this.lastActivity = map[Key.lastActivity] != null
-        ? Util.unixTimestampToDateTime(map[Key.lastActivity])
-        : null;
-    this.callsHandled = map[Key.callsHandled];
-  }
+  UserStatus.fromMap(Map map)
+      : userID = map[Key.id],
+        paused = map[Key.paused];
 
-  Map get asMap => {
-        Key.UserID: this.userID,
-        Key.state: this._state,
-        Key.lastState: this.lastState,
-        Key.lastActivity: this.lastActivity != null
-            ? Util.dateTimeToUnixTimestamp(this.lastActivity)
-            : null,
-        Key.callsHandled: this.callsHandled
-      };
+  Map get asMap => {Key.id: userID, Key.paused: paused};
 }
