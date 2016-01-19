@@ -17,34 +17,35 @@ part of view;
  * Handles the contact calendar entries.
  */
 class ContactCalendar extends ViewWidget {
-  final Model.UIContactSelector   _contactSelector;
-  final Controller.Destination    _myDestination;
-  final Controller.Notification   _notification;
+  final Model.UIContactSelector _contactSelector;
+  final Controller.Destination _myDestination;
+  final Controller.Notification _notification;
   final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIContactCalendar   _uiModel;
-  final Controller.Contact        _contactController;
-  final Controller.Calendar       _calendarController;
+  final Model.UIContactCalendar _uiModel;
+  final Controller.Contact _contactController;
+  final Controller.Calendar _calendarController;
 
   /**
    * Constructor.
    */
-  ContactCalendar(Model.UIContactCalendar this._uiModel,
-                  Controller.Destination this._myDestination,
-                  Model.UIContactSelector this._contactSelector,
-                  Model.UIReceptionSelector this._receptionSelector,
-                  Controller.Contact this._contactController,
-                  Controller.Calendar this._calendarController,
-                  Controller.Notification this._notification) {
-    _ui.setHint('alt+k');
+  ContactCalendar(
+      Model.UIContactCalendar this._uiModel,
+      Controller.Destination this._myDestination,
+      Model.UIContactSelector this._contactSelector,
+      Model.UIReceptionSelector this._receptionSelector,
+      Controller.Contact this._contactController,
+      Controller.Calendar this._calendarController,
+      Controller.Notification this._notification) {
+    _ui.setHint('alt+k | ctrl+k | ctrl+e');
 
     _observers();
   }
 
-  @override Controller.Destination  get _destination => _myDestination;
-  @override Model.UIContactCalendar get _ui          => _uiModel;
+  @override Controller.Destination get _destination => _myDestination;
+  @override Model.UIContactCalendar get _ui => _uiModel;
 
-  @override void _onBlur(_){}
-  @override void _onFocus(_){}
+  @override void _onBlur(_) {}
+  @override void _onFocus(_) {}
 
   /**
    * Activate this widget if it's not already activated.
@@ -57,7 +58,7 @@ class ContactCalendar extends ViewWidget {
    * Empty the [CalendarEvent] list on null [Reception].
    */
   void _clear(ORModel.Reception reception) {
-    if(reception.isEmpty) {
+    if (reception.isEmpty) {
       _ui.clear();
     }
   }
@@ -66,11 +67,9 @@ class ContactCalendar extends ViewWidget {
    * Fetch all calendar entries for [contact].
    */
   void _fetchCalendar(ORModel.Contact contact) {
-    _calendarController.contactCalendar(contact)
-        .then((Iterable<ORModel.CalendarEntry> entries) {
-          _ui.calendarEntries = entries.toList()
-              ..sort((a,b) => a.start.compareTo(b.start));
-        });
+    _calendarController.contactCalendar(contact).then((Iterable<ORModel.CalendarEntry> entries) {
+      _ui.calendarEntries = entries.toList()..sort((a, b) => a.start.compareTo(b.start));
+    });
   }
 
   /**
@@ -78,7 +77,7 @@ class ContactCalendar extends ViewWidget {
    * calendar editor with [cmd] set.
    */
   void _maybeNavigateToEditor(Controller.Cmd cmd) {
-    if(_contactSelector.selectedContact.isNotEmpty) {
+    if (_contactSelector.selectedContact.isNotEmpty) {
       _navigate.goCalendarEdit(from: _myDestination..cmd = cmd);
     }
   }
@@ -91,9 +90,9 @@ class ContactCalendar extends ViewWidget {
 
     _hotKeys.onAltK.listen(_activateMe);
 
-    _ui.onClick .listen(_activateMe);
-    _ui.onEdit  .listen((_) => _maybeNavigateToEditor(Controller.Cmd.EDIT));
-    _ui.onNew   .listen((_) => _maybeNavigateToEditor(Controller.Cmd.NEW));
+    _ui.onClick.listen(_activateMe);
+    _ui.onEdit.listen((_) => _maybeNavigateToEditor(Controller.Cmd.EDIT));
+    _ui.onNew.listen((_) => _maybeNavigateToEditor(Controller.Cmd.NEW));
 
     _notification.onCalendarChange.listen(_updateOnChange);
 
@@ -106,7 +105,7 @@ class ContactCalendar extends ViewWidget {
    * Render the widget with [contact].
    */
   void _render(ORModel.Contact contact) {
-    if(contact.isEmpty) {
+    if (contact.isEmpty) {
       _ui.clear();
     } else {
       _ui.headerExtra = ': ${contact.fullName}';
@@ -121,7 +120,7 @@ class ContactCalendar extends ViewWidget {
   void _updateOnChange(OREvent.CalendarChange calendarChange) {
     final ORModel.Contact currentContact = _contactSelector.selectedContact;
 
-    if(calendarChange.contactID == currentContact.ID) {
+    if (calendarChange.contactID == currentContact.ID) {
       _fetchCalendar(currentContact);
     }
   }
