@@ -92,7 +92,7 @@ class AgentInfo extends ViewWidget {
 
     await _call.peerList().then((peers) {
       peers.forEach((peer) {
-        _peerState[peer.ID] = peer.registered;
+        _peerState[peer.name] = peer.registered;
       });
     });
 
@@ -125,7 +125,7 @@ class AgentInfo extends ViewWidget {
 
     _notification.onPeerStateChange.listen((OREvent.PeerState state) {
       _log.info('View.AgentInfo got OREvent.PeerState: ${state.asMap}');
-      _peerState[state.peer.ID] = state.peer.registered;
+      _peerState[state.peer.name] = state.peer.registered;
       _update();
     });
   }
