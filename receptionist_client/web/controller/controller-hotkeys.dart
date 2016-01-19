@@ -103,8 +103,13 @@ class HotKeys {
       'Alt+w': _altW.fire,
       'Alt+x': _altX.fire,
       'Ctrl+Alt+Enter': _ctrlAltEnter.fire,
+      'Ctrl+a': _null, // Blackhole this
       'Ctrl+d': _null, // Blackhole this
+      'Ctrl+e': _null, // Blackhole this
+      'Ctrl+k': _null, // Blackhole this
       'Ctrl+l': _null, // Blackhole this
+      'Ctrl+s': _null, // Blackhole this
+      [Key.Ctrl, Key.NumPlus]: _null, // Blackhole this
       'Ctrl+Alt+P': _ctrlAltP.fire,
       [Key.Ctrl, Key.NumMinus]: _ctrlNumMinus.fire,
       'F1': _f1.fire,
