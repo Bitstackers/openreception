@@ -80,7 +80,6 @@ CREATE TABLE receptions (
 CREATE TABLE reception_contacts (
    reception_id         INTEGER NOT NULL REFERENCES receptions (id) ON UPDATE CASCADE ON DELETE CASCADE,
    contact_id           INTEGER NOT NULL REFERENCES contacts (id) ON UPDATE CASCADE ON DELETE CASCADE,
-   wants_messages       BOOLEAN NOT NULL DEFAULT TRUE,
    attributes           JSON NOT NULL DEFAULT '{}',
    phonenumbers		JSON NOT NULL DEFAULT '[]',
    enabled              BOOLEAN NOT NULL DEFAULT TRUE,
