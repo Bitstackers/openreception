@@ -12,24 +12,23 @@ abstract class User {
     log.info('Checking CORS headers on a non-existing URL.');
     return client
         .getUrl(uri)
-        .then((HttpClientRequest request) => request
-            .close()
-            .then((HttpClientResponse response) {
-      if (response.headers['access-control-allow-origin'] == null &&
-          response.headers['Access-Control-Allow-Origin'] == null) {
-        fail('No CORS headers on path $uri');
-      }
-    })).then((_) {
+        .then((HttpClientRequest request) =>
+            request.close().then((HttpClientResponse response) {
+              if (response.headers['access-control-allow-origin'] == null &&
+                  response.headers['Access-Control-Allow-Origin'] == null) {
+                fail('No CORS headers on path $uri');
+              }
+            }))
+        .then((_) {
       log.info('Checking CORS headers on an existing URL.');
       uri = Resource.User.single(Config.userStoreUri, 1);
-      return client.getUrl(uri).then((HttpClientRequest request) => request
-          .close()
-          .then((HttpClientResponse response) {
-        if (response.headers['access-control-allow-origin'] == null &&
-            response.headers['Access-Control-Allow-Origin'] == null) {
-          fail('No CORS headers on path $uri');
-        }
-      }));
+      return client.getUrl(uri).then((HttpClientRequest request) =>
+          request.close().then((HttpClientResponse response) {
+            if (response.headers['access-control-allow-origin'] == null &&
+                response.headers['Access-Control-Allow-Origin'] == null) {
+              fail('No CORS headers on path $uri');
+            }
+          }));
     });
   }
 
@@ -47,13 +46,12 @@ abstract class User {
 
     return client
         .getUrl(uri)
-        .then((HttpClientRequest request) => request
-            .close()
-            .then((HttpClientResponse response) {
-      if (response.statusCode != 404) {
-        fail('Expected to received a 404 on path $uri');
-      }
-    }))
+        .then((HttpClientRequest request) =>
+            request.close().then((HttpClientResponse response) {
+              if (response.statusCode != 404) {
+                fail('Expected to received a 404 on path $uri');
+              }
+            }))
         .then((_) => log.info('Got expected status code 404.'))
         .whenComplete(() => client.close(force: true));
   }
@@ -171,30 +169,30 @@ abstract class User {
         .then((Model.User createdUser) {
       Model.User changedUser = Randomizer.randomUser()..ID = createdUser.ID;
 
-      return receptionist
-          .waitFor(eventType: Event.Key.userChange)
-          .then((Event.UserChange userChange) {
+      return receptionist.waitFor(eventType: Event.Key.userChange).then(
+          (Event.UserChange userChange) {
         expect(userChange.state, equals(Event.UserObjectState.CREATED));
         receptionist.eventStack.clear();
-      }).then((_) => userStore
-          .update(changedUser)
-          .then((Model.User updatedUser) {
-        expect(changedUser.address, equals(updatedUser.address));
-        expect(changedUser.googleAppcode, equals(updatedUser.googleAppcode));
-        expect(changedUser.googleUsername, equals(updatedUser.googleUsername));
-        expect(changedUser.ID, equals(updatedUser.ID));
-        expect(changedUser.name, equals(updatedUser.name));
-        expect(changedUser.peer, equals(updatedUser.peer));
-        expect(changedUser.portrait, equals(updatedUser.portrait));
+      }).then((_) =>
+          userStore.update(changedUser).then((Model.User updatedUser) {
+            expect(changedUser.address, equals(updatedUser.address));
+            expect(
+                changedUser.googleAppcode, equals(updatedUser.googleAppcode));
+            expect(
+                changedUser.googleUsername, equals(updatedUser.googleUsername));
+            expect(changedUser.ID, equals(updatedUser.ID));
+            expect(changedUser.name, equals(updatedUser.name));
+            expect(changedUser.peer, equals(updatedUser.peer));
+            expect(changedUser.portrait, equals(updatedUser.portrait));
 
-        return receptionist
-            .waitFor(eventType: Event.Key.userChange)
-            .then((Event.UserChange userChange) {
-          expect(userChange.state, equals(Event.UserObjectState.UPDATED));
-          expect(userChange.userID, equals(createdUser.ID));
-          return userStore.remove(createdUser.ID);
-        }).then((_) => userStore.remove(createdUser.ID));
-      }));
+            return receptionist
+                .waitFor(eventType: Event.Key.userChange)
+                .then((Event.UserChange userChange) {
+              expect(userChange.state, equals(Event.UserObjectState.UPDATED));
+              expect(userChange.userID, equals(createdUser.ID));
+              return userStore.remove(createdUser.ID);
+            }).then((_) => userStore.remove(createdUser.ID));
+          }));
     });
   }
 
@@ -204,13 +202,13 @@ abstract class User {
   static Future removeUser(Storage.User userStore) async {
     log.info('Checking server behaviour on an user removal.');
 
-    Model.User createdUser= await userStore.create(Randomizer.randomUser());
+    Model.User createdUser = await userStore.create(Randomizer.randomUser());
     expect(createdUser.ID, greaterThan(Model.User.noID));
 
     await userStore.remove(createdUser.ID);
 
     return expect(userStore.get(createdUser.ID),
-            throwsA(new isInstanceOf<Storage.NotFound>()));
+        throwsA(new isInstanceOf<Storage.NotFound>()));
   }
 
   /**
@@ -224,10 +222,10 @@ abstract class User {
 
     expect(createdUser.ID, greaterThan(Model.User.noID));
 
-    Future expectedEvent = receptionist.notificationSocket.eventStream.firstWhere(
-        (event) => event is Event.UserChange &&
-        event.userID == createdUser.ID &&
-        event.state == Event.UserObjectState.DELETED);
+    Future expectedEvent = receptionist.notificationSocket.eventStream
+        .firstWhere((event) => event is Event.UserChange &&
+            event.userID == createdUser.ID &&
+            event.state == Event.UserObjectState.DELETED);
     await userStore.remove(createdUser.ID);
 
     return expectedEvent;
@@ -315,6 +313,7 @@ abstract class User {
           });
         });
       })
+
           /// Finalization - cleanup.
           .then((_) => userStore.remove(createdUser.ID));
     });
@@ -335,21 +334,16 @@ abstract class User {
       return userStore.groups().then((Iterable<Model.UserGroup> groups) {
         Model.UserGroup addedGroup = groups.first;
 
-        return userStore
-            .joinGroup(
-                createdUser.ID,
-                addedGroup.id)
-            .then(
-                (_) => userStore
-                    .get(createdUser.ID)
-                    .then((Model.User fetchedUser) => userStore
-                        .leaveGroup(createdUser.ID, addedGroup.id)
-                        .then((_) => userStore
-                            .get(createdUser.ID)
-                            .then((Model.User fetchedUser) {
-          expect(fetchedUser.groups, isEmpty);
-        }))));
+        return userStore.joinGroup(createdUser.ID, addedGroup.id).then((_) =>
+            userStore.get(createdUser.ID).then((Model.User fetchedUser) =>
+                userStore.leaveGroup(createdUser.ID, addedGroup.id).then((_) =>
+                    userStore
+                        .get(createdUser.ID)
+                        .then((Model.User fetchedUser) {
+                      expect(fetchedUser.groups, isEmpty);
+                    }))));
       })
+
           /// Finalization - cleanup.
           .then((_) => userStore.remove(createdUser.ID));
     });
@@ -372,12 +366,12 @@ abstract class User {
 
       return userStore
           .addIdentity(identity)
-          .then((_) => userStore
-              .get(createdUser.ID)
-              .then((Model.User fetchedUser) {
-        expect(fetchedUser.identities, isNotEmpty);
-        expect(fetchedUser.identities, contains(identity));
-      }))
+          .then((_) =>
+              userStore.get(createdUser.ID).then((Model.User fetchedUser) {
+                expect(fetchedUser.identities, isNotEmpty);
+                expect(fetchedUser.identities, contains(identity));
+              }))
+
           /// Finalization - cleanup.
           .then((_) => userStore.remove(createdUser.ID));
     });
@@ -401,13 +395,48 @@ abstract class User {
       return userStore
           .addIdentity(identity)
           .then((_) => userStore.removeIdentity(identity))
-          .then((_) => userStore
-              .get(createdUser.ID)
-              .then((Model.User fetchedUser) {
-        expect(fetchedUser.identities, isEmpty);
-      }))
+          .then((_) =>
+              userStore.get(createdUser.ID).then((Model.User fetchedUser) {
+                expect(fetchedUser.identities, isEmpty);
+              }))
+
           /// Finalization - cleanup.
           .then((_) => userStore.remove(createdUser.ID));
     });
+  }
+
+  /**
+   *
+   */
+  static Future stateChange(Service.RESTUserStore userService) async {
+    log.info('Checking server behaviour on an user state change.');
+    Model.User createdUser = await userService.create(Randomizer.randomUser());
+
+    await userService.userStateReady(createdUser.ID);
+    expect((await userService.userStatus(createdUser.ID)).paused, isFalse);
+    await userService.userStatePaused(createdUser.ID);
+    expect((await userService.userStatus(createdUser.ID)).paused, isTrue);
+    await userService.userStateReady(createdUser.ID);
+    expect((await userService.userStatus(createdUser.ID)).paused, isFalse);
+  }
+
+  /**
+   *
+   */
+  static Future stateChangeEvent(
+      Storage.User userStore, Receptionist receptionist) async {
+    log.info('Checking server behaviour on an user removal.');
+
+    Model.User createdUser = await userStore.create(Randomizer.randomUser());
+
+    expect(createdUser.ID, greaterThan(Model.User.noID));
+
+    Future expectedEvent = receptionist.notificationSocket.eventStream
+        .firstWhere((event) => event is Event.UserChange &&
+            event.userID == createdUser.ID &&
+            event.state == Event.UserObjectState.DELETED);
+    await userStore.remove(createdUser.ID);
+
+    return expectedEvent;
   }
 }
