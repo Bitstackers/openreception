@@ -132,17 +132,19 @@ abstract class StateReload {
     log.info('Receptionist parks call');
     await receptionist.park(assignedCall, waitForEvent: true);
     log.info('Receptionist picks up call again');
+    receptionist.eventStack.clear();
     try {
       await receptionist.pickup(assignedCall, waitForEvent: true);
     } catch (_) {
       fail('${assignedCall.toJson()}');
     }
-    await receptionist.waitFor(eventType: Event.Key.callUnpark);
+
     log.info('Fetching original call list');
     final Iterable<Model.Call> orignalCallQueue =
         await receptionist.callFlowControl.callList();
     expect(orignalCallQueue.length, equals(1));
     expect(orignalCallQueue.first.assignedTo, equals(receptionist.user.ID));
+    expect(orignalCallQueue.first.state, equals(Model.CallState.Speaking));
 
     log.info('Performing state reload');
     await receptionist.callFlowControl.stateReload();
