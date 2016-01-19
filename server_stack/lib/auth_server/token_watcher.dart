@@ -24,15 +24,14 @@ const String libraryName = 'AuthServer.tokenWatch';
 final Logger log = new Logger('$libraryName');
 
 void setup() {
-  int minutes = 10;
-  new Timer.periodic(new Duration(seconds: minutes), _timerTick);
+  final Duration tickDuration = new Duration(seconds: 10);
+  new Timer.periodic(tickDuration, _timerTick);
   log.info('Periodic timer started');
 }
 
 void seen(String token) {
   Map data = vault.getToken(token);
-  data['expiresAt'] =
-      dateTimeToJson(new DateTime.now().add(config.authServer.tokenLifetime));
+  data['expiresAt'] = dateTimeToJson(new DateTime.now().add(config.authServer.tokenLifetime));
   vault.updateToken(token, data);
 }
 
