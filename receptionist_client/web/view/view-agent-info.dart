@@ -115,8 +115,7 @@ class AgentInfo extends ViewWidget {
       _update();
     });
 
-    _notification.onClientConnectionStateChange
-        .listen((Model.ClientConnectionState state) {
+    _notification.onClientConnectionStateChange.listen((Model.ClientConnectionState state) {
       _userConnectionCount[state.userID] = state.connectionCount;
       _log.info('View.AgentInfo got '
           'Model.ClientConnectionState: ${state.asMap}');
@@ -141,14 +140,11 @@ class AgentInfo extends ViewWidget {
     /// Update counters.
     _userPeer.forEach((userId, peerId) {
       bool peerRegistered = _userPeer.containsKey(userId)
-          ? _peerState.containsKey(_userPeer[userId])
-              ? _peerState[_userPeer[userId]]
-              : false
+          ? _peerState.containsKey(_userPeer[userId]) ? _peerState[_userPeer[userId]] : false
           : false;
 
-      int connectionCount = _userConnectionCount.containsKey(userId)
-          ? _userConnectionCount[userId]
-          : 0;
+      int connectionCount =
+          _userConnectionCount.containsKey(userId) ? _userConnectionCount[userId] : 0;
 
       available = peerRegistered && connectionCount > 0;
       if (available) {
@@ -171,12 +167,10 @@ class AgentInfo extends ViewWidget {
     /// Update ui for agent's user.
     switch (_userState[_appState.currentUser.ID]) {
       case ORModel.UserState.Idle:
-        _ui.agentState =
-            available ? Model.AgentState.IDLE : Model.AgentState.UNKNOWN;
+        _ui.agentState = available ? Model.AgentState.IDLE : Model.AgentState.UNKNOWN;
         break;
       case ORModel.UserState.Paused:
-        _ui.agentState =
-            available ? Model.AgentState.PAUSED : Model.AgentState.UNKNOWN;
+        _ui.agentState = available ? Model.AgentState.PAUSED : Model.AgentState.UNKNOWN;
         break;
       case ORModel.UserState.Dialing:
       case ORModel.UserState.HandlingOffHook:
@@ -187,8 +181,7 @@ class AgentInfo extends ViewWidget {
       case ORModel.UserState.Transferring:
       case ORModel.UserState.Unparking:
       case ORModel.UserState.WrappingUp:
-        _ui.agentState =
-            available ? Model.AgentState.BUSY : Model.AgentState.UNKNOWN;
+        _ui.agentState = available ? Model.AgentState.BUSY : Model.AgentState.UNKNOWN;
         break;
       default:
         _ui.agentState = Model.AgentState.UNKNOWN;
