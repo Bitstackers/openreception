@@ -27,7 +27,7 @@ class AgentInfo extends ViewWidget {
   final Map<int, int> _userConnectionCount = {};
   final Map<int, String> _userPeer = {};
   final Map<String, bool> _peerState = {};
-  final Map<int, String> _userState = {};
+  final Map<int, bool> _userPaused = {};
 
   /**
    * Constructor.
@@ -86,7 +86,7 @@ class AgentInfo extends ViewWidget {
 
     await _user.stateList().then((status) {
       status.forEach((s) {
-        _userState[s.userID] = s.state;
+        _userPaused[s.userID] = s.state;
       });
     });
 
@@ -111,11 +111,12 @@ class AgentInfo extends ViewWidget {
     _hotKeys.onCtrlAltP.listen(_setPaused);
 
     _notification.onAgentStateChange.listen((ORModel.UserStatus userStatus) {
-      _userState[userStatus.userID] = userStatus.state;
+      _userPaused[userStatus.userID] = userStatus.paused;
       _update();
     });
 
-    _notification.onClientConnectionStateChange.listen((Model.ClientConnectionState state) {
+    _notification.onClientConnectionStateChange
+        .listen((Model.ClientConnectionState state) {
       _userConnectionCount[state.userID] = state.connectionCount;
       _log.info('View.AgentInfo got '
           'Model.ClientConnectionState: ${state.asMap}');
@@ -140,53 +141,34 @@ class AgentInfo extends ViewWidget {
     /// Update counters.
     _userPeer.forEach((userId, peerId) {
       bool peerRegistered = _userPeer.containsKey(userId)
-          ? _peerState.containsKey(_userPeer[userId]) ? _peerState[_userPeer[userId]] : false
+          ? _peerState.containsKey(_userPeer[userId])
+              ? _peerState[_userPeer[userId]]
+              : false
           : false;
 
-      int connectionCount =
-          _userConnectionCount.containsKey(userId) ? _userConnectionCount[userId] : 0;
+      int connectionCount = _userConnectionCount.containsKey(userId)
+          ? _userConnectionCount[userId]
+          : 0;
 
       available = peerRegistered && connectionCount > 0;
       if (available) {
-        switch (_userState[userId]) {
-          case ORModel.UserState.LoggedOut:
-            _log.warning('User with id $userId is logged out while still '
-                'having an active connection and peer');
-            break;
-          case ORModel.UserState.Paused:
-          case ORModel.UserState.Unknown:
-            passive++;
-            break;
-          default:
-            active++;
-            break;
+        if (_userPaused[userId]) {
+          passive++;
+        } else {
+          active++;
         }
       }
     });
 
     /// Update ui for agent's user.
-    switch (_userState[_appState.currentUser.ID]) {
-      case ORModel.UserState.Idle:
-        _ui.agentState = available ? Model.AgentState.IDLE : Model.AgentState.UNKNOWN;
-        break;
-      case ORModel.UserState.Paused:
-        _ui.agentState = available ? Model.AgentState.PAUSED : Model.AgentState.UNKNOWN;
-        break;
-      case ORModel.UserState.Dialing:
-      case ORModel.UserState.HandlingOffHook:
-      case ORModel.UserState.HangingUp:
-      case ORModel.UserState.Parking:
-      case ORModel.UserState.Receiving:
-      case ORModel.UserState.Speaking:
-      case ORModel.UserState.Transferring:
-      case ORModel.UserState.Unparking:
-      case ORModel.UserState.WrappingUp:
-        _ui.agentState = available ? Model.AgentState.BUSY : Model.AgentState.UNKNOWN;
-        break;
-      default:
-        _ui.agentState = Model.AgentState.UNKNOWN;
-        break;
+    if (_userPaused[_appState.currentUser.ID]) {
+      _ui.agentState = Model.AgentState.PAUSED;
+    } else if (_appState.activeCall.ID != ORModel.Call.noID) {
+      _ui.agentState = Model.AgentState.BUSY;
+    } else {
+      _ui.agentState = Model.AgentState.IDLE;
     }
+
     _ui.activeCount = active;
     _ui.pausedCount = passive;
   }

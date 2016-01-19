@@ -65,7 +65,8 @@ class GlobalCallQueue extends ViewWidget {
 
     if (event is OREvent.CallOffer) {
       _ui.appendCall(call);
-    } else if (event is OREvent.CallHangup || call.assignedTo != ORModel.User.noID) {
+    } else if (event is OREvent.CallHangup ||
+        call.assignedTo != ORModel.User.noID) {
       _ui.removeCall(call);
     } else if (call.inbound) {
       _ui.updateCall(call);
@@ -105,15 +106,14 @@ class GlobalCallQueue extends ViewWidget {
     /**
      * Play the pling sound every 2 seconds if
      *
-     *  there are calls in the queueu AND
+     *  there are calls in the queue AND
      *  appState.activeCall is NOT noCall AND
      *  the agent state is idle or unknown.
      */
     new Timer.periodic(new Duration(seconds: 2), (_) {
       if (_ui.hasCalls &&
           _appState.activeCall == ORModel.Call.noCall &&
-          (_userState.state == ORModel.UserState.Idle ||
-              _userState.state == ORModel.UserState.Unknown)) {
+          (!_userState.paused)) {
         _sound.pling();
       }
     });
