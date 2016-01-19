@@ -126,13 +126,16 @@ class UIMessageCompose extends UIModel {
 
   /**
    * Set the message prerequisites for the current contact.
+   *
+   * Ignores whitespace only elements.
    */
   void set messagePrerequisites(List<String> prerequisites) {
-    if (prerequisites != null && prerequisites.isNotEmpty) {
-      _prerequisites.style.display = 'block';
-      _prerequisites.text = prerequisites.join(", ");
-    } else {
+    prerequisites.removeWhere((String prereg) => prereg.trim().isEmpty);
+    if (prerequisites.isEmpty) {
       _prerequisites.style.display = 'none';
+    } else {
+      _prerequisites.style.display = 'block';
+      _prerequisites.text = prerequisites.join(', ');
     }
   }
 
