@@ -103,8 +103,8 @@ abstract class StateReload {
     final Model.Call assignedCall = await receptionist.huntNextCall();
     log.info('Receptionist got call');
     log.info('Receptionist parks call');
-    receptionist.park(assignedCall, waitForEvent: true);
-    receptionist.waitForPhoneHangup();
+    await receptionist.park(assignedCall, waitForEvent: true);
+    await receptionist.waitForPhoneHangup();
     log.info('Fetching original call list');
     final Iterable<Model.Call> orignalCallQueue =
         await receptionist.callFlowControl.callList();
@@ -112,7 +112,7 @@ abstract class StateReload {
     expect(orignalCallQueue.first.assignedTo, equals(receptionist.user.ID));
 
     log.info('Performing state reload');
-    receptionist.callFlowControl.stateReload();
+    await receptionist.callFlowControl.stateReload();
     log.info('Comparing reloaded list with original list');
     _validateCallLists(
         orignalCallQueue, await receptionist.callFlowControl.callList());
