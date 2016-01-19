@@ -65,7 +65,7 @@ abstract class PeerAccountService {
 
     await Future.doWhile(() async {
       bool registered = (await callFlow.peerList())
-          .firstWhere((peer) => peer.ID == pa.username)
+          .firstWhere((peer) => peer.name == pa.username)
           .registered;
 
       if (!registered) {
