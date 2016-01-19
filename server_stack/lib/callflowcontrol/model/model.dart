@@ -28,11 +28,9 @@ import '../router.dart';
 import '../../configuration.dart';
 
 part 'model-active_recording.dart';
-part 'model-agent_history.dart';
 part 'model-call_list.dart';
 part 'model-channel_list.dart';
 part 'model-peer.dart';
 part 'model-peer_list.dart';
-part 'model-user_status_list.dart';
 
 const String libraryName = 'callflowcontrol.model';

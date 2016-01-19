@@ -58,18 +58,13 @@ class CallList extends IterableBase<ORModel.Call> {
         calls[channel.UUID] = new ORModel.Call.empty(channel.UUID)
           ..arrived = new DateTime.fromMillisecondsSinceEpoch(
               int.parse(channel.fields['Caller-Channel-Created-Time']) ~/ 1000)
-          ..assignedTo = channel.variables.containsKey(ORPbxKey.userId)
-              ? int.parse(channel.variables[ORPbxKey.userId])
-              : ORModel.User.noID
+          ..assignedTo = assignedTo
           ..b_Leg = channel.fields['Other-Leg-Unique-ID']
           ..greetingPlayed = channel.variables
                   .containsKey(ORPbxKey.greetingPlayed)
               ? channel.variables[ORPbxKey.greetingPlayed] == 'true'
               : false
-          ..locked = channel.variables.containsKey(ORPbxKey.locked)
-              ? channel.variables[ORPbxKey.locked] == 'true' &&
-                  assignedTo == ORModel.User.noID
-              : false
+          ..locked = false
           ..inbound =
               (channel.fields['Call-Direction'] == 'inbound' ? true : false)
           ..callerID = channel.fields
@@ -226,11 +221,6 @@ class CallList extends IterableBase<ORModel.Call> {
   void _handleChannelDestroy(ESL.Event event) {
     if (this.containsID(event.uniqueID)) {
       final ORModel.Call call = this.get(event.uniqueID);
-
-      if (call.inbound && call.assignedTo != ORModel.User.noID) {
-        AgentHistory.instance.callHandledByAgent(call.assignedTo);
-      }
-
       call.hangupCause = event.field('Hangup-Cause') != null
           ? event.field('Hangup-Cause')
           : '';
@@ -265,9 +255,18 @@ class CallList extends IterableBase<ORModel.Call> {
         break;
 
       case (ORPbxKey.callLock):
-        if (this._map.containsKey(event.uniqueID)) {
-          log.finest('Locking ${event.uniqueID}');
-          CallList.instance.get(event.uniqueID).locked = true;
+        if (_map.containsKey(event.uniqueID)) {
+          ESL.Channel channel = new ESL.Channel.fromPacket(event);
+          final int assignedTo = channel.variables.containsKey(ORPbxKey.userId)
+              ? int.parse(channel.variables[ORPbxKey.userId])
+              : ORModel.User.noID;
+
+          if (assignedTo == ORModel.User.noID) {
+            log.finest('Locking ${event.uniqueID}');
+            CallList.instance.get(event.uniqueID).locked = true;
+          } else {
+            log.finest('Skipping locking of assigned call ${event.uniqueID}');
+          }
         } else {
           log.severe('Locked non-announced call ${event.uniqueID}');
         }

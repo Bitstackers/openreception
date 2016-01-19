@@ -15,9 +15,13 @@ part of openreception.call_flow_control_server.router;
 
 Map pickupOK(ORModel.Call call) => call.toJson();
 
-Map<int, ORModel.UserState> userMap = {};
+Map<int, ORModel.UserState> _userMap = {};
 
 abstract class Call {
+  static String _peerInfo(ORModel.Peer peer) => '${peer.name}: '
+      'channels: ${Model.ChannelList.instance.activeChannelCount(peer.name)},'
+      'inTransition: ${peer.inTransition}';
+
   /**
    * Retrieves a single call from the call list.
    */
@@ -64,15 +68,13 @@ abstract class Call {
       return new shelf.Response.notFound('{}');
     }
 
-    ///There is an active call, update the user state.
-    Model.UserStatusList.instance.update(user.ID, ORModel.UserState.HangingUp);
+    ///There is an active call, update the peer state.
     Model.peerlist.get(user.peer).inTransition = true;
 
     ///Perfrom the hangup
     try {
       await Controller.PBX.killChannel(call.channel);
-      Model.UserStatusList.instance
-          .update(user.ID, ORModel.UserState.HandlingOffHook);
+      Model.peerlist.get(user.peer).inTransition = false;
 
       return new shelf.Response.ok('{}');
     } catch (error, stackTrace) {
@@ -80,7 +82,7 @@ abstract class Call {
       log.severe(msg, error, stackTrace);
 
       /// We can no longer assume anything about the users' state.
-      Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Unknown);
+      Model.peerlist.get(user.peer).inTransition = false;
 
       return _serverError(msg);
     }
@@ -129,8 +131,10 @@ abstract class Call {
       return new shelf.Response.notFound(JSON.encode({'call_id': callID}));
     }
 
-    /// Update user state.
-    Model.UserStatusList.instance.update(user.ID, ORModel.UserState.HangingUp);
+    ORModel.Peer peer = Model.peerlist.get(user.peer);
+
+    /// Update peer state.
+    peer.inTransition = true;
 
     ///Completer
     Completer<ORModel.Call> completer = new Completer<ORModel.Call>();
@@ -143,15 +147,13 @@ abstract class Call {
 
     return Controller.PBX.hangup(targetCall).then((_) {
       return completer.future.then((ORModel.Call hungupCall) {
-        /// Update user state.
-        Model.UserStatusList.instance
-            .update(user.ID, ORModel.UserState.WrappingUp);
-
+        /// Update peer state.
+        peer.inTransition = false;
         return new shelf.Response.ok(JSON.encode(hungupCall));
       }).timeout(new Duration(seconds: 3));
     }).catchError((error, stackTrace) {
-      /// Update user state.
-      Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Unknown);
+      /// Update peer state.
+      peer.inTransition = false;
 
       log.severe(error, stackTrace);
       return new shelf.Response.internalServerError();
@@ -163,12 +165,6 @@ abstract class Call {
    */
   static shelf.Response list(shelf.Request request) =>
       new shelf.Response.ok(JSON.encode(Model.CallList.instance));
-
-  static void _userStateUnknown(ORModel.User user) =>
-      Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Unknown);
-
-  static void _userStateDialing(ORModel.User user) =>
-      Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Dialing);
 
   /**
    * Originate a new call by first creating a parked phone channel to the
@@ -229,19 +225,17 @@ abstract class Call {
 
     /// The user has not registered its peer to transfer the call to. Abort.
     if (peer == null || !peer.registered) {
-      _userStateUnknown(user);
       return _clientError('User with id ${user.ID} has no peer '
           '(peer: ${user.peer}) available');
     }
 
     /// The user has no reachable phone to transfer the call to. Abort.
-    if (_phoneUnreachable(user)) {
-      _userStateUnknown(user);
-      return _clientError('Phone is not ready. ${_stateString(user)}');
+    if (_phoneUnreachable(peer)) {
+      return _clientError('Phone is not ready. ${_peerInfo(peer)}');
     }
 
-    /// Update the user state
-    _userStateDialing(user);
+    /// Update the peer state
+    peer.inTransition = true;
 
     bool isSpeaking(ORModel.Call call) =>
         call.state == ORModel.CallState.Speaking;
@@ -255,7 +249,7 @@ abstract class Call {
     } catch (error, stackTrace) {
       final String msg = 'Failed to park user\'s active calls';
       log.severe(msg, error, stackTrace);
-      _userStateUnknown(user);
+      peer.inTransition = false;
 
       return _serverError(msg);
     }
@@ -265,19 +259,19 @@ abstract class Call {
     try {
       agentChannel = await Controller.PBX.createAgentChannel(user);
     } on Controller.CallRejected {
-      _userStateUnknown(user);
+      peer.inTransition = false;
 
       return _clientError('Phone is not reachable'
           ' (call rejected). Check configuration.');
     } on Controller.NoAnswer {
-      _userStateUnknown(user);
+      peer.inTransition = false;
 
       return _clientError('Phone is not reachable'
           ' (no answer). Check autoanswer.');
     } catch (error, stackTrace) {
       final String msg = 'Failed to create agent channel';
       log.severe(msg, error, stackTrace);
-      _userStateUnknown(user);
+      peer.inTransition = false;
 
       return _serverError(msg);
     }
@@ -303,7 +297,7 @@ abstract class Call {
       final String msg = 'Failed to get call channel';
       log.severe(msg, error, stackTrace);
 
-      _userStateUnknown(user);
+      peer.inTransition = false;
 
       return _serverError(msg);
     }
@@ -317,9 +311,8 @@ abstract class Call {
       ..contactID = contactID
       ..b_Leg = agentChannel;
 
-    /// Update call and user state information.
+    /// Update call and peer state information.
     call.changeState(ORModel.CallState.Ringing);
-    Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Speaking);
 
     try {
       await Controller.PBX
@@ -338,11 +331,11 @@ abstract class Call {
     } catch (error, stackTrace) {
       final String msg = 'Failed to create agent channel';
       log.severe(msg, error, stackTrace);
-      _userStateUnknown(user);
-
+      peer.inTransition = false;
       return _serverError(msg);
     }
 
+    peer.inTransition = false;
     return new shelf.Response.ok(JSON.encode(call));
   }
 
@@ -375,18 +368,11 @@ abstract class Call {
             new shelf.Response.forbidden('Insufficient privileges.'));
       }
 
-      Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Parking);
-
       return Controller.PBX.park(call, user).then((_) {
-        Model.UserStatusList.instance
-            .update(user.ID, ORModel.UserState.HandlingOffHook);
-
         log.finest('Parked call ${call.ID}');
 
         return _okJson(call);
       }).catchError((error, stackTrace) {
-        _userStateUnknown(user);
-
         log.severe(error, stackTrace);
         return new shelf.Response.internalServerError();
       });
@@ -425,27 +411,8 @@ abstract class Call {
   /**
    *
    */
-  static bool _phoneUnreachable(ORModel.User user) {
-    /// Check user state. If the user is currently performing an action - or
-    /// has an active channel - deny the request.
-    String userState = Model.UserStatusList.instance.getOrCreate(user.ID).state;
-
-    bool inTransition = ORModel.UserState.TransitionStates.contains(userState);
-    bool hasChannels = Model.ChannelList.instance.hasActiveChannels(user.peer);
-
-    if (inTransition || hasChannels) {
-      return true;
-    }
-
-    return false;
-  }
-
-  static String _stateString(ORModel.User user) {
-    String userState = Model.UserStatusList.instance.getOrCreate(user.ID).state;
-    bool hasChannels = Model.ChannelList.instance.hasActiveChannels(user.peer);
-
-    return 'state:{$userState}, hasChannels:{$hasChannels}';
-  }
+  static bool _phoneUnreachable(ORModel.Peer peer) => peer.inTransition ||
+      Model.ChannelList.instance.hasActiveChannels(peer.name);
 
   /**
    * Pickup a specific call.
@@ -478,18 +445,14 @@ abstract class Call {
     peer = Model.peerlist.get(user.peer);
 
     /// The user has not registered its peer to transfer the call to. Abort.
-    if (peer == null || !peer.registered) {
-      _userStateUnknown(user);
-
+    if (peer == null) {
       return _clientError('User with id ${user.ID} has no peer '
-          '(peer: ${user.peer}) available');
+          '(${_peerInfo(peer)} available');
     }
 
     /// The user has no reachable phone to transfer the call to. Abort.
-    if (_phoneUnreachable(user)) {
-      _userStateUnknown(user);
-
-      return _clientError('Phone is not ready. ${_stateString(user)}');
+    if (_phoneUnreachable(peer)) {
+      return _clientError('Phone is not ready. ${_peerInfo(peer)}');
     }
 
     try {
@@ -512,7 +475,7 @@ abstract class Call {
     }
 
     /// Update the user state
-    Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Receiving);
+    peer.inTransition = true;
     originallyAssignedTo = assignedCall.assignedTo;
     assignedCall.assignedTo = user.ID;
 
@@ -525,7 +488,7 @@ abstract class Call {
       final String msg = 'Failed to create agent channel';
       log.severe(msg, error, stackTrace);
 
-      Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Unknown);
+      peer.inTransition = false;
 
       /// Revert the call to the user it was originally assigned to.
       assignedCall.assignedTo = originallyAssignedTo;
@@ -550,7 +513,7 @@ abstract class Call {
           'Killing agent channel $agentChannel';
       log.severe(msg, error, stackTrace);
 
-      Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Unknown);
+      peer.inTransition = false;
 
       /// Make sure the agent channel is closed before returning a response.
       return Controller.PBX
@@ -573,99 +536,9 @@ abstract class Call {
     }
 
     /// Update the user state. At this point, all is well.
-    Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Speaking);
-
+    peer.inTransition = false;
+    assignedCall.locked = false;
     return new shelf.Response.ok(JSON.encode(assignedCall));
-  }
-
-  /**
-   * Originate a call to record-sound extension in the PBX.
-   */
-  static Future<shelf.Response> recordSound(shelf.Request request) {
-    const String recordExtension = 'slowrecordmenu';
-
-    int receptionID;
-    String recordPath;
-    String token;
-
-    try {
-      receptionID = shelf_route.getPathParameter(request, 'rid');
-      recordPath = request.requestedUri.queryParameters['recordpath'];
-      token = request.requestedUri.queryParameters['token'];
-    } catch (error, stack) {
-      return new Future.value(
-          new shelf.Response(400, body: 'Parameter error. ${error} ${stack}'));
-    }
-
-    if (recordPath == null) {
-      return new Future.value(
-          new shelf.Response(400, body: 'Missing parameter "recordpath".'));
-    }
-
-    log.finest('Originating to ${recordExtension} with path '
-        '${recordPath} for reception ${receptionID}');
-
-    /// Any authenticated user is allowed to originate new calls.
-    bool aclCheck(ORModel.User user) => true;
-
-    return AuthService.userOf(token).then((ORModel.User user) {
-      if (!aclCheck(user)) {
-        return new shelf.Response.forbidden('Insufficient privileges.');
-      }
-
-      /// Park all the users calls.
-      return Future
-          .forEach(
-              Model.CallList.instance.callsOf(user.ID).where(
-                  (ORModel.Call call) =>
-                      call.state == ORModel.CallState.Speaking),
-              (ORModel.Call call) => Controller.PBX.park(call, user))
-          .then((_) {
-        /// Check user state. If the user is currently performing an action - or
-        /// has an active channel - deny the request.
-        String userState =
-            Model.UserStatusList.instance.getOrCreate(user.ID).state;
-
-        bool inTransition =
-            ORModel.UserState.TransitionStates.contains(userState);
-        bool hasChannels =
-            Model.ChannelList.instance.hasActiveChannels(user.peer);
-
-        if (inTransition || hasChannels) {
-          return new shelf.Response(400,
-              body: 'Phone is not ready. '
-                  'state:{$userState}, hasChannels:{$hasChannels}');
-        }
-
-        /// Update the user state
-        Model.UserStatusList.instance
-            .update(user.ID, ORModel.UserState.Receiving);
-
-        return Controller.PBX
-            .originateRecording(receptionID, recordExtension, recordPath, user)
-            .then((String channelUUID) {
-          Model.UserStatusList.instance
-              .update(user.ID, ORModel.UserState.Speaking);
-
-          return new shelf.Response.ok(channelUUID);
-        }).catchError((error, stackTrace) {
-          Model.UserStatusList.instance
-              .update(user.ID, ORModel.UserState.Unknown);
-
-          log.severe(error, stackTrace);
-          return new shelf.Response.internalServerError();
-        });
-      }).catchError((error, stackTrace) {
-        Model.UserStatusList.instance
-            .update(user.ID, ORModel.UserState.Unknown);
-
-        log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError();
-      });
-    }).catchError((error, stackTrace) {
-      log.severe(error, stackTrace);
-      return new shelf.Response.internalServerError();
-    });
   }
 
   /**
@@ -722,20 +595,16 @@ abstract class Call {
       return _serverError(msg);
     }
 
-    /// Update user state.
-    Model.UserStatusList.instance
-        .update(user.ID, ORModel.UserState.Transferring);
+    ORModel.Peer peer = Model.peerlist.get(user.peer);
+
+    /// Update peer state.
+    peer.inTransition = true;
 
     return Controller.PBX.bridge(sourceCall, destinationCall).then((_) {
-      /// Update user state.
-      Model.UserStatusList.instance
-          .update(user.ID, ORModel.UserState.WrappingUp);
       return new shelf.Response.ok('{"status" : "ok"}');
     }).catchError((error, stackTrace) {
-      /// Update user state.
-      Model.UserStatusList.instance.update(user.ID, ORModel.UserState.Unknown);
       log.severe(error, stackTrace);
       return new shelf.Response.internalServerError();
-    });
+    }).whenComplete(() => peer.inTransition = false);
   }
 }

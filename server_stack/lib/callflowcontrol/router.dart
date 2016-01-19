@@ -37,7 +37,7 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 
-part 'router/handler-user_state.dart';
+//part 'router/handler-user_state.dart';
 part 'router/handler-call.dart';
 part 'router/handler-channel.dart';
 
@@ -83,9 +83,6 @@ Future<IO.HttpServer> start({String hostname: '0.0.0.0', int port: 4242}) {
   Controller.ActiveRecording _activeRecordingController =
       new Controller.ActiveRecording();
 
-  Controller.AgentStatistics _statsController =
-      new Controller.AgentStatistics(Model.AgentHistory.instance);
-
   log.info('Starting client notifier');
 
   Notification = new Service.NotificationService(
@@ -99,47 +96,38 @@ Future<IO.HttpServer> start({String hostname: '0.0.0.0', int port: 4242}) {
   Controller.Peer _peerController = new Controller.Peer(Model.peerlist);
 
   var router = shelf_route.router()
-    ..get('/peer', _peerController.list)
-    ..get('/peer/{peerid}', _peerController.get)
-    ..get('/agentstatistics', _statsController.list)
-    ..get('/agentstatistics/{uid}', _statsController.get)
-    ..get('/userstats', UserState.stats)
-    ..get('/userstate/{uid}', UserState.get)
-    //TODO: Dispatch to general UserState handler.
-    ..post('/userstate/{uid}/idle', UserState.markIdle)
-    ..post('/userstate/{uid}/loggedOut', UserState.logOut)
-    ..post('/userstate/{uid}/paused', UserState.markPaused)
-    ..post('/userstate/{uid}/keep-alive', UserState.keepAlive)
-    ..get('/userstate', UserState.list)
-    ..get('/call/{callid}', Call.get)
-    ..get('/call', Call.list)
-    ..post('/state/reload', _stateController.reloadAll)
-    ..get('/channel', Channel.list)
-    ..get('/channel/{chanid}', Channel.get)
-    ..get('/activerecording', _activeRecordingController.list)
-    ..get('/activerecording/{cid}', _activeRecordingController.get)
-    ..get('/channel', Channel.list)
-    ..post('/call/{callid}/hangup', Call.hangupSpecific)
-    ..post('/call/{callid}/pickup', Call.pickup)
-    ..post('/call/{callid}/park', Call.park)
-    ..post(
-        '/call/originate/{extension}/dialplan/{dialplan}'
-        '/reception/{rid}/contact/{cid}',
-        Call.originate)
-    ..post(
-        '/call/originate/{extension}/dialplan/{dialplan}'
-        '/reception/{rid}/contact/{cid}/call/{callId}',
-        Call.originate)
-    ..post(
-        '/call/originate/{extension}@{host}:{port}/dialplan/{dialplan}'
-        '/reception/{rid}/contact/{cid}',
-        Call.originate)
-    ..post(
-        '/call/originate/{extension}@{host}:{port}/dialplan/{dialplan}'
-        '/reception/{rid}/contact/{cid}/call/{callId}',
-        Call.originate)
-    ..post('/call/{aleg}/transfer/{bleg}', Call.transfer)
-    ..post('/call/reception/{rid}/record', Call.recordSound);
+        ..get('/peer', _peerController.list)
+        ..get('/peer/{peerid}', _peerController.get)
+        ..get('/call/{callid}', Call.get)
+        ..get('/call', Call.list)
+        ..post('/state/reload', _stateController.reloadAll)
+        ..get('/channel', Channel.list)
+        ..get('/channel/{chanid}', Channel.get)
+        ..get('/activerecording', _activeRecordingController.list)
+        ..get('/activerecording/{cid}', _activeRecordingController.get)
+        ..get('/channel', Channel.list)
+        ..post('/call/{callid}/hangup', Call.hangupSpecific)
+        ..post('/call/{callid}/pickup', Call.pickup)
+        ..post('/call/{callid}/park', Call.park)
+        ..post(
+            '/call/originate/{extension}/dialplan/{dialplan}'
+            '/reception/{rid}/contact/{cid}',
+            Call.originate)
+        ..post(
+            '/call/originate/{extension}/dialplan/{dialplan}'
+            '/reception/{rid}/contact/{cid}/call/{callId}',
+            Call.originate)
+        ..post(
+            '/call/originate/{extension}@{host}:{port}/dialplan/{dialplan}'
+            '/reception/{rid}/contact/{cid}',
+            Call.originate)
+        ..post(
+            '/call/originate/{extension}@{host}:{port}/dialplan/{dialplan}'
+            '/reception/{rid}/contact/{cid}/call/{callId}',
+            Call.originate)
+        ..post('/call/{aleg}/transfer/{bleg}', Call.transfer)
+      //..post('/call/reception/{rid}/record', Call.recordSound)
+      ;
 
   var handler = const shelf.Pipeline()
       .addMiddleware(
