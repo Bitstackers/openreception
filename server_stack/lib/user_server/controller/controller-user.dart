@@ -11,16 +11,15 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.user_server.router;
+part of openreception.user_server.controller;
 
 class User {
-  static final Logger log = new Logger('$libraryName.User');
+  static final Logger log = new Logger('$_libraryName.User');
 
-  static const String className = '${libraryName}.User';
+  final database.User _userStore;
+  final service.NotificationService _notification;
 
-  final Database.User _userStore;
-
-  User(Database.User this._userStore);
+  User(this._userStore, this._notification);
 
   /**
    * HTTP Request handler for returning a single user resource.
@@ -28,10 +27,10 @@ class User {
   Future<shelf.Response> get(shelf.Request request) {
     int userID = int.parse(shelf_route.getPathParameter(request, 'uid'));
 
-    return _userStore.get(userID).then((Model.User user) {
+    return _userStore.get(userID).then((model.User user) {
       return new shelf.Response.ok(JSON.encode(user));
     }).catchError((error, stackTrace) {
-      if (error is Storage.NotFound) {
+      if (error is storage.NotFound) {
         return new shelf.Response.notFound(
             JSON.encode({'description': 'No user found with id:$userID'}));
       } else {
@@ -50,7 +49,7 @@ class User {
    * HTTP Request handler for returning a all user resources.
    */
   Future<shelf.Response> list(shelf.Request request) =>
-      _userStore.list().then((Iterable<Model.User> users) =>
+      _userStore.list().then((Iterable<model.User> users) =>
           new shelf.Response.ok(JSON.encode(users.toList(growable: false))));
 
   /**
@@ -60,13 +59,13 @@ class User {
     int userID = int.parse(shelf_route.getPathParameter(request, 'uid'));
 
     return _userStore.remove(userID).then((_) {
-      Event.UserChange event = new Event.UserChange.deleted(userID);
+      event.UserChange change = new event.UserChange.deleted(userID);
 
-      _notification.broadcastEvent(event);
+      _notification.broadcastEvent(change);
 
       return new shelf.Response.ok('{}');
     }).catchError((error, stackTrace) {
-      if (error is Storage.NotFound) {
+      if (error is storage.NotFound) {
         return new shelf.Response.notFound(
             JSON.encode({'description': 'No user found with id:$userID'}));
       } else {
@@ -86,12 +85,12 @@ class User {
    */
   Future<shelf.Response> create(shelf.Request request) {
     return request.readAsString().then((String content) {
-      Model.User user = new Model.User.fromMap(JSON.decode(content));
+      model.User user = new model.User.fromMap(JSON.decode(content));
 
-      return _userStore.create(user).then((Model.User user) {
-        Event.UserChange event = new Event.UserChange.created(user.ID);
+      return _userStore.create(user).then((model.User user) {
+        event.UserChange change = new event.UserChange.created(user.ID);
 
-        _notification.broadcastEvent(event);
+        _notification.broadcastEvent(change);
 
         return new shelf.Response.ok(JSON.encode(user));
       });
@@ -113,12 +112,12 @@ class User {
    */
   Future<shelf.Response> update(shelf.Request request) {
     return request.readAsString().then((String content) {
-      Model.User user = new Model.User.fromMap(JSON.decode(content));
+      model.User user = new model.User.fromMap(JSON.decode(content));
 
-      return _userStore.update(user).then((Model.User user) {
-        Event.UserChange event = new Event.UserChange.updated(user.ID);
+      return _userStore.update(user).then((model.User user) {
+        event.UserChange change = new event.UserChange.updated(user.ID);
 
-        _notification.broadcastEvent(event);
+        _notification.broadcastEvent(change);
 
         return new shelf.Response.ok(JSON.encode(user));
       });
@@ -143,7 +142,7 @@ class User {
 
     return _userStore
         .userGroups(userID)
-        .then((Iterable<Model.UserGroup> groups) {
+        .then((Iterable<model.UserGroup> groups) {
       return new shelf.Response.ok(JSON.encode(groups.toList(growable: false)));
     });
   }
@@ -179,7 +178,7 @@ class User {
     int userID = int.parse(shelf_route.getPathParameter(request, 'uid'));
 
     return _userStore.userGroups(userID).then(
-        (Iterable<Model.UserGroup> groups) =>
+        (Iterable<model.UserGroup> groups) =>
             new shelf.Response.ok(JSON.encode(groups.toList(growable: false))));
   }
 
@@ -190,7 +189,7 @@ class User {
     int userID = int.parse(shelf_route.getPathParameter(request, 'uid'));
 
     return _userStore.identities(userID).then(
-        (Iterable<Model.UserIdentity> identities) => new shelf.Response.ok(
+        (Iterable<model.UserIdentity> identities) => new shelf.Response.ok(
             JSON.encode(identities.toList(growable: false))));
   }
 
@@ -203,8 +202,8 @@ class User {
     return request
         .readAsString()
         .then(JSON.decode)
-        .then(Model.UserIdentity.decode)
-        .then((Model.UserIdentity identity) {
+        .then(model.UserIdentity.decode)
+        .then((model.UserIdentity identity) {
       identity.userId = userID;
 
       return _userStore
@@ -225,7 +224,7 @@ class User {
       value = domain.isEmpty ? value : '$value@$domain';
     }
 
-    Model.UserIdentity identity = new Model.UserIdentity.empty()
+    model.UserIdentity identity = new model.UserIdentity.empty()
       ..userId = userID
       ..identity = value;
 
@@ -238,6 +237,6 @@ class User {
    * List every available group in the store.
    */
   Future<shelf.Response> groups(shelf.Request request) =>
-      _userStore.groups().then((Iterable<Model.UserGroup> groups) =>
+      _userStore.groups().then((Iterable<model.UserGroup> groups) =>
           new shelf.Response.ok(JSON.encode(groups.toList(growable: false))));
 }

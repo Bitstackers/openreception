@@ -22,9 +22,9 @@ import 'package:logging/logging.dart';
 import '../lib/configuration.dart';
 import '../lib/user_server/router.dart' as router;
 
-Logger log = new Logger ('UserServer');
+Logger log = new Logger('UserServer');
 ArgResults parsedArgs;
-ArgParser  parser = new ArgParser();
+ArgParser parser = new ArgParser();
 
 void main(List<String> args) {
   ///Init logging. Inherit standard values.
@@ -36,30 +36,32 @@ void main(List<String> args) {
 
     registerAndParseCommandlineArguments(args);
 
-    if(showHelp()) {
+    if (showHelp()) {
       print(parser.usage);
     } else {
       router.connectAuthService();
-      router.connectNotificationService();
-        router.startDatabase()
-        .then((_) => router.start(port : config.userServer.httpPort))
-        .catchError(log.shout);
+      router
+          .startDatabase()
+          .then((_) => router.start(port: config.userServer.httpPort))
+          .catchError(log.shout);
     }
-  } catch(error, stackTrace) {
+  } catch (error, stackTrace) {
     log.shout(error, stackTrace);
   }
 }
 
 void registerAndParseCommandlineArguments(List<String> arguments) {
-  parser.addFlag  ('help', abbr: 'h', help: 'Output this help');
-  parser.addOption('configfile',      help: 'The JSON configuration file. Defaults to config.json');
-  parser.addOption('httpport',        help: 'The port the HTTP server listens on.  Defaults to 8080');
-  parser.addOption('dbuser',          help: 'The database user');
-  parser.addOption('dbpassword',      help: 'The database password');
-  parser.addOption('dbhost',          help: 'The database host. Defaults to localhost');
-  parser.addOption('dbport',          help: 'The database port. Defaults to 5432');
-  parser.addOption('dbname',          help: 'The database name');
-  parser.addOption('servertoken',     help: 'Server-Token');
+  parser.addFlag('help', abbr: 'h', help: 'Output this help');
+  parser.addOption('configfile',
+      help: 'The JSON configuration file. Defaults to config.json');
+  parser.addOption('httpport',
+      help: 'The port the HTTP server listens on.  Defaults to 8080');
+  parser.addOption('dbuser', help: 'The database user');
+  parser.addOption('dbpassword', help: 'The database password');
+  parser.addOption('dbhost', help: 'The database host. Defaults to localhost');
+  parser.addOption('dbport', help: 'The database port. Defaults to 5432');
+  parser.addOption('dbname', help: 'The database name');
+  parser.addOption('servertoken', help: 'Server-Token');
 
   parsedArgs = parser.parse(arguments);
 }
