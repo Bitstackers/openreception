@@ -18,24 +18,11 @@ testModelUserStatus() {
     test('deserialization', ModelUserStatus.deserialization);
     test('serialization', ModelUserStatus.serialization);
     test('buildObject', ModelUserStatus.buildObject);
-    test('stateChange', ModelUserStatus.stateChange);
+//    test('stateChange', ModelUserStatus.stateChange);
   });
 }
 
 abstract class ModelUserStatus {
-
-  static void stateChange() {
-    Model.UserStatus built = buildObject();
-    String lastState = built.state;
-    String newState = Model.UserState.Idle;
-
-    built.state = newState;
-
-    expect (built.state, equals(newState));
-    expect (built.lastState, equals(lastState));
-
-  }
-
   /**
    * Merely asserts that no exceptions arise.
    */
@@ -45,18 +32,13 @@ abstract class ModelUserStatus {
     Model.UserStatus decoded =
         new Model.UserStatus.fromMap(JSON.decode(serializedObject));
 
-    expect(built.callsHandled, equals(decoded.callsHandled));
-    expect(built.lastActivity.difference(decoded.lastActivity).abs(),
-           lessThan(new Duration(seconds : 1)));
-    expect(built.lastState, equals(decoded.lastState));
-    expect(built.state, equals(decoded.state));
+    expect(built.paused, equals(decoded.paused));
     expect(built.userID, equals(decoded.userID));
 
     expect(built.toJson(), equals(decoded.toJson()));
-
   }
 
-  static void serialization () {
+  static void serialization() {
     Model.UserStatus builtObject = buildObject();
     String serializedString = JSON.encode(builtObject);
 
@@ -64,25 +46,17 @@ abstract class ModelUserStatus {
     expect(serializedString, isNotNull);
   }
 
-  static Model.UserStatus buildObject () {
-    final int callsHandled = 1;
-    final DateTime lastActivity = new DateTime.now();
-    final String state = Model.UserState.Parking;
+  static Model.UserStatus buildObject() {
+    final bool paused = true;
     final int userID = 2;
 
     Model.UserStatus builtObject = new Model.UserStatus()
-      ..callsHandled = callsHandled
-      ..lastActivity = lastActivity
-      ..state = state
+      ..paused = paused
       ..userID = userID;
 
-    expect(builtObject.callsHandled, equals(callsHandled));
-    expect(builtObject.lastActivity, equals(lastActivity));
-    expect(builtObject.lastState, equals(Model.UserState.Unknown));
-    expect(builtObject.state, equals(state));
+    expect(builtObject.paused, equals(paused));
     expect(builtObject.userID, equals(userID));
 
     return builtObject;
   }
-
 }

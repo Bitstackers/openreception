@@ -16,11 +16,7 @@ part of openreception.test;
 void testResourceCallFlowControl() {
   group('Resource.CallFlowControl', () {
     test('stateReload', ResourceCallFlowControl.stateReload);
-    test('userStatusMap', ResourceCallFlowControl.userStatusMap);
     test('channelList', ResourceCallFlowControl.channelList);
-    test('userStatusIdle', ResourceCallFlowControl.userStatusIdle);
-    test('userStatusKeepAlive', ResourceCallFlowControl.userStatusKeepAlive);
-    test('userStatusLoggedOut', ResourceCallFlowControl.userStatusLogout);
     test('peerList', ResourceCallFlowControl.peerList);
     test('single', ResourceCallFlowControl.single);
     test('pickup', ResourceCallFlowControl.pickup);
@@ -71,25 +67,9 @@ abstract class ResourceCallFlowControl {
       Resource.CallFlowControl.stateReload(callFlowControlUri),
       equals(Uri.parse('${callFlowControlUri}/state/reload')));
 
-  static void userStatusMap() => expect(
-      Resource.CallFlowControl.userStatus(callFlowControlUri, 1),
-      equals(Uri.parse('${callFlowControlUri}/userstate/1')));
-
   static void channelList() => expect(
       Resource.CallFlowControl.channelList(callFlowControlUri),
       equals(Uri.parse('${callFlowControlUri}/channel')));
-
-  static void userStatusIdle() => expect(
-      Resource.CallFlowControl.userStatusIdle(callFlowControlUri, 1),
-      equals(Uri.parse('${callFlowControlUri}/userstate/1/idle')));
-
-  static void userStatusKeepAlive() => expect(
-      Resource.CallFlowControl.userStateKeepAlive(callFlowControlUri, 1),
-      equals(Uri.parse('${callFlowControlUri}/userstate/1/keep-alive')));
-
-  static void userStatusLogout() => expect(
-      Resource.CallFlowControl.userStateLoggedOut(callFlowControlUri, 1),
-      equals(Uri.parse('${callFlowControlUri}/userstate/1/loggedOut')));
 
   static void peerList() => expect(
       Resource.CallFlowControl.peerList(callFlowControlUri),
