@@ -13,8 +13,9 @@ abstract class Peer {
     log.info('Unregistering peer $peerName to assert state');
 
     Future unregisterEvent = receptionist.notificationSocket.eventStream
-        .firstWhere((Event.Event e) =>
-            e is Event.PeerState && e.peer.ID == peerName && !e.peer.registered)
+        .firstWhere((Event.Event e) => e is Event.PeerState &&
+            e.peer.name == peerName &&
+            !e.peer.registered)
         .timeout(new Duration(seconds: 10));
 
     await receptionist._phone.unregister();
@@ -31,7 +32,7 @@ abstract class Peer {
         await receptionist.waitFor(eventType: Event.Key.peerState);
     log.info('Got event ${peerStateEvent.asMap}');
     expect(peerStateEvent.peer.registered, isTrue);
-    expect(peerStateEvent.peer.ID, equals(peerName));
+    expect(peerStateEvent.peer.name, equals(peerName));
 
     log.info('Flushing event stack');
     receptionist.eventStack.clear();
@@ -44,7 +45,7 @@ abstract class Peer {
 
     log.info('Got event ${peerStateEvent.asMap}');
     expect(peerStateEvent.peer.registered, isFalse);
-    expect(peerStateEvent.peer.ID, equals(peerName));
+    expect(peerStateEvent.peer.name, equals(peerName));
 
     log.info('Test done.');
   }
