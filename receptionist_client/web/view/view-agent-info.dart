@@ -86,7 +86,7 @@ class AgentInfo extends ViewWidget {
 
     await _user.stateList().then((status) {
       status.forEach((s) {
-        _userPaused[s.userID] = s.state;
+        _userPaused[s.userID] = s.paused;
       });
     });
 
@@ -152,7 +152,7 @@ class AgentInfo extends ViewWidget {
 
       available = peerRegistered && connectionCount > 0;
       if (available) {
-        if (_userPaused[userId]) {
+        if (_userPaused.containsKey(userId) ? _userPaused[userId] : false) {
           passive++;
         } else {
           active++;
@@ -161,7 +161,8 @@ class AgentInfo extends ViewWidget {
     });
 
     /// Update ui for agent's user.
-    if (_userPaused[_appState.currentUser.ID]) {
+    if (_userPaused.containsKey(_appState.currentUser.ID) &&
+        _userPaused[_appState.currentUser.ID]) {
       _ui.agentState = Model.AgentState.PAUSED;
     } else if (_appState.activeCall.ID != ORModel.Call.noID) {
       _ui.agentState = Model.AgentState.BUSY;
