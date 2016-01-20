@@ -357,7 +357,8 @@ List<String> _actionToXmlDialplan(
 
     returnValue.addAll([
       _sleep(500),
-      '<action application="playback" data="${option.greetingDir}/${action.filename}"/>',
+      '<action application="playback" '
+          'data="{loops=${action.repeat}}${option.greetingDir}/${action.filename}"/>',
       _sleep(500),
       _setVar(ORPbxKey.greetingPlayed, true),
       _setVar(ORPbxKey.greetingPlayed, true),
