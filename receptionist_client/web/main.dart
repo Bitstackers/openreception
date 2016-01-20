@@ -119,6 +119,7 @@ main() async {
 
         Future.wait([rRV, lCS]).then((_) {
           appState.changeState(Model.AppState.READY);
+          userController.setPaused(appState.currentUser);
         }).catchError((error) {
           log.shout('Loading of app failed with ${error}');
           appState.changeState(Model.AppState.ERROR);
