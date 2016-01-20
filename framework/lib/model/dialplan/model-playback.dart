@@ -58,13 +58,12 @@ class Playback extends Action {
 
       var split = consumed.iden.split(':');
 
-      if(split.length > 1 && split.first == Key.repeat) {
+      if (split.length > 1 && split.first == Key.repeat) {
         repeat = int.parse(split[1]);
       }
 
       buffer = consumed.buffer.trimLeft();
     }
-
 
     int openBracket = buffer.indexOf('(');
 
@@ -74,7 +73,7 @@ class Playback extends Action {
       note = buffer.substring(openBracket + 1, closeBracket);
     }
 
-    return new Playback(filename, wrapInLock: lock, note: note, repeat : repeat);
+    return new Playback(filename, wrapInLock: lock, note: note, repeat: repeat);
   }
 
   /**
@@ -94,9 +93,9 @@ class Playback extends Action {
    */
   @override
   String toString() => '${Key.playback}${wrapInLock? ' ${Key.lock}' :''}'
-  ' $filename'
-  '${repeat != 1? ' ${Key.repeat}:$repeat' :''}'
-  '${note.isNotEmpty ? ' ($note)': ''}';
+      ' $filename'
+      '${repeat != 1? ' ${Key.repeat}:$repeat' :''}'
+      '${note.isNotEmpty ? ' ($note)': ''}';
 
   /**
    *
