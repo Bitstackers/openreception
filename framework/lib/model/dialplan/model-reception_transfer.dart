@@ -50,7 +50,7 @@ class ReceptionTransfer extends Action {
     return new ReceptionTransfer(extension, note: note);
   }
 
-  String toString() => 'Omstil til $extension ($note)';
+  String toString() => 'Transfer to reception $extension ($note)';
 
   String toJson() => '${Key.reception} $extension'
       '${note.isNotEmpty ? ' ($note)': ''}';
