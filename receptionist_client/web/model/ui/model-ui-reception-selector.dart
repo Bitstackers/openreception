@@ -19,8 +19,7 @@ part of model;
 class UIReceptionSelector extends UIModel {
   final Bus<ORModel.Reception> _bus = new Bus<ORModel.Reception>();
   final DivElement _myRoot;
-  final Bus<ORModel.Reception> _selectedRemovedBus = new Bus<ORModel.Reception>();
-  final Bus<ORModel.Reception> _selectedUpdatedBus = new Bus<ORModel.Reception>();
+  List<LIElement> _receptionsCache = new List<LIElement>();
 
   /**
    * Constructor.
@@ -47,38 +46,13 @@ class UIReceptionSelector extends UIModel {
   InputElement get _filter => _root.querySelector('.filter');
 
   /**
-   * Add [reception] to the reception list, sorted alphabetically by reception
-   * name.
-   * If [selected] is true, then mark the [reception] selected, but do not fire
-   * the reception anew. If [selected] is false, then search for the currently
-   * selected reception, and make sure it is scrolled into view.
+   * Construct a [reception] <li> element.
    */
-  void addReception(ORModel.Reception reception, {bool selected: false}) {
-    LIElement newLi = new LIElement()
-      ..dataset['id'] = reception.ID.toString()
-      ..dataset['name'] = reception.name.toLowerCase()
-      ..dataset['object'] = JSON.encode(reception)
-      ..text = reception.name;
-
-    LIElement firstBiggerName = _list.querySelectorAll('li').firstWhere(
-        (Element element) => newLi.dataset['name'].compareTo(element.dataset['name']) < 0,
-        orElse: () => null);
-
-    if (firstBiggerName == null) {
-      _list.append(newLi);
-    } else {
-      _list.insertBefore(newLi, firstBiggerName);
-    }
-
-    if (selected) {
-      _markSelected(newLi, callSelectCallback: false);
-    } else {
-      LIElement selectedLi = _list.querySelector('.selected');
-      if (selectedLi != null) {
-        selectedLi.scrollIntoView();
-      }
-    }
-  }
+  LIElement _buildReceptionElement(ORModel.Reception reception) => new LIElement()
+    ..dataset['id'] = reception.ID.toString()
+    ..dataset['name'] = reception.name.toLowerCase()
+    ..dataset['object'] = JSON.encode(reception)
+    ..text = reception.name;
 
   /**
    * Mark the [receptionId] list item as selected.
@@ -154,30 +128,26 @@ class UIReceptionSelector extends UIModel {
   Stream<ORModel.Reception> get onSelect => _bus.stream;
 
   /**
-   * Fires when the selected reception is removed.
-   */
-  Stream<ORModel.Reception> get onSelectedRemoved => _selectedRemovedBus.stream;
-
-  /**
-   * Fires when the selected reception is updated.
-   */
-  Stream<ORModel.Reception> get onSelectedUpdated => _selectedUpdatedBus.stream;
-
-  /**
    * Add [items] to the receptions list.
    */
   set receptions(List<ORModel.Reception> items) {
     final List<LIElement> list = new List<LIElement>();
 
     items.forEach((ORModel.Reception item) {
-      list.add(new LIElement()
-        ..dataset['id'] = item.ID.toString()
-        ..dataset['name'] = item.name.toLowerCase()
-        ..dataset['object'] = JSON.encode(item)
-        ..text = item.name);
+      list.add(_buildReceptionElement(item));
     });
 
     _list.children = list;
+  }
+
+  /**
+   * Add [items] to the receptions list cache. This does NOT update the actual receptions list. Call
+   * [refreshReceptions()] to update the list using the cached values.
+   */
+  set receptionsCache(List<ORModel.Reception> items) {
+    items.forEach((ORModel.Reception item) {
+      _receptionsCache.add(_buildReceptionElement(item));
+    });
   }
 
   /**
@@ -189,17 +159,13 @@ class UIReceptionSelector extends UIModel {
   }
 
   /**
-   * Remove [reception] from the reception selector.
+   * Reloads the receptions list. Does not take selected receptions into account, so should only be
+   * called when no receptions are selected.
    */
-  void removeReception(ORModel.Reception reception, {bool fire: true}) {
-    LIElement newLi = _list.querySelector('[data-id="${reception.ID.toString()}"]');
-
-    if (newLi != null) {
-      ORModel.Reception selected = selectedReception;
-      newLi.remove();
-      if (fire && reception.ID == selected.ID) {
-        _selectedRemovedBus.fire(selected);
-      }
+  void refreshReceptions() {
+    if (_receptionsCache.isNotEmpty) {
+      _list.children = _receptionsCache;
+      _receptionsCache.clear();
     }
   }
 
@@ -252,19 +218,6 @@ class UIReceptionSelector extends UIModel {
       return new ORModel.Reception.fromMap(JSON.decode(li.dataset['object']));
     } else {
       return new ORModel.Reception.empty();
-    }
-  }
-
-  /**
-   * If [reception] exists in the reception selector list, then update it.
-   */
-  void updateReception(ORModel.Reception reception) {
-    bool selected = selectedReception.ID == reception.ID;
-    removeReception(reception, fire: false);
-    addReception(reception, selected: selected);
-
-    if (selected) {
-      _selectedUpdatedBus.fire(reception);
     }
   }
 }

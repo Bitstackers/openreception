@@ -20,8 +20,12 @@ class ReceptionSelector extends ViewWidget {
   final Model.AppClientState _appState;
   final Map<String, String> _langMap;
   final Controller.Destination _myDestination;
+  final Controller.Notification _notification;
   final Controller.Popup _popup;
+  final Controller.Reception _receptionController;
   final List<ORModel.Reception> _receptions;
+  bool _refreshReceptionsCache = false;
+  Timer refreshReceptionsCacheTimer;
   final Model.UIReceptionSelector _uiModel;
 
   /**
@@ -31,7 +35,9 @@ class ReceptionSelector extends ViewWidget {
       Model.UIReceptionSelector this._uiModel,
       Model.AppClientState this._appState,
       Controller.Destination this._myDestination,
+      Controller.Notification this._notification,
       List<ORModel.Reception> this._receptions,
+      Controller.Reception this._receptionController,
       Controller.Popup this._popup,
       Map<String, String> this._langMap) {
     _ui.setHint('alt+v');
@@ -64,16 +70,16 @@ class ReceptionSelector extends ViewWidget {
 
     _ui.onClick.listen(_activateMe);
 
-    _ui.onSelectedRemoved.listen((ORModel.Reception reception) {
-      _popup.info(
-          _langMap[Key.selectedReceptionRemoved], '${reception.name} (${reception.ID.toString()})',
-          closeAfter: new Duration(seconds: 5));
-    });
+    _notification.onReceptionChange.listen((_) => _refreshReceptionsCache = true);
 
-    _ui.onSelectedUpdated.listen((ORModel.Reception reception) {
-      _popup.info(
-          _langMap[Key.selectedReceptionUpdated], '${reception.name} (${reception.ID.toString()})',
-          closeAfter: new Duration(seconds: 5));
+    refreshReceptionsCacheTimer = new Timer.periodic(new Duration(seconds: 5), (_) {
+      if (_refreshReceptionsCache) {
+        _refreshReceptionsCache = false;
+        _popup.info(_langMap[Key.receptionChanged], '', closeAfter: new Duration(seconds: 3));
+        _receptionController.list().then((Iterable<ORModel.Reception> receptions) {
+          _ui.receptionsCache = receptions.toList()..sort((x, y) => x.name.compareTo(y.name));
+        });
+      }
     });
 
     _appState.activeCallChanged.listen((ORModel.Call newCall) {

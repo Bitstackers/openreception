@@ -80,6 +80,8 @@ class Notification {
       _userState(event);
     } else if (event is OREvent.PeerState) {
       _peerStateChangeBus.fire(event);
+    } else if (event is OREvent.ReceptionChange) {
+      _receptionChangeBus.fire(event);
     } else {
       _log.severe('Failed to dispatch event ${event}');
     }
@@ -117,9 +119,14 @@ class Notification {
       _clientConnectionStateBus.stream;
 
   /**
-       * Agent state change stream.
-       */
+   * Agent state change stream.
+   */
   Stream<OREvent.PeerState> get onPeerStateChange => _peerStateChangeBus.stream;
+
+  /**
+   * Reception change stream.
+   */
+  Stream<OREvent.ReceptionChange> get onReceptionChange => _receptionChangeBus.stream;
 
   /**
    * Observers.

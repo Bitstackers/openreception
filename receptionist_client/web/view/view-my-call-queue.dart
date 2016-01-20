@@ -296,6 +296,8 @@ class MyCallQueue extends ViewWidget {
     _hotKeys.onNumPlus.listen((_) {
       if (!_callControllerBusy) {
         _busyCallController();
+        _receptionSelector.refreshReceptions();
+
         _callController.pickupNext().then((ORModel.Call call) {
           contextCallId = call.ID;
           _ui.removeTransferMarks();

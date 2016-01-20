@@ -137,6 +137,7 @@ abstract class Key {
   static const String receptionBankInfoHeader = 'reception-bank-info-header';
   static const String receptionCalendarHeader = 'reception-calendar-header';
   static const String receptionCommandsHeader = 'reception-commands-header';
+  static const String receptionChanged = 'reception-changed';
   static const String receptionEmailHeader = 'reception-email-header';
   static const String receptionMiniWikiHeader = 'reception-mini-wiki-header';
   static const String receptionOpeningHoursHeader = 'reception-opening-hours-header';
@@ -150,8 +151,6 @@ abstract class Key {
 
   static const String save = 'save';
   static const String saved = 'saved';
-  static const String selectedReceptionRemoved = 'selected-reception-removed';
-  static const String selectedReceptionUpdated = 'selected-reception-updated';
   static const String send = 'send';
   static const String sent = 'sent';
   static const String standardGreeting = 'standard-greeting';
@@ -291,6 +290,7 @@ Map<String, String> da = {
   Key.receptionBankInfoHeader: 'Bank',
   Key.receptionCalendarHeader: 'Receptions Kalender',
   Key.receptionCommandsHeader: 'Kommandoer',
+  Key.receptionChanged: 'Henter ny receptionsliste ved næste kaldbesvarelse',
   Key.receptionEmailHeader: 'Emailadresser',
   Key.receptionMiniWikiHeader: 'Mini wiki',
   Key.receptionOpeningHoursHeader: 'Åbningstider',
@@ -304,8 +304,6 @@ Map<String, String> da = {
 
   Key.save: 'Gem',
   Key.saved: 'Gemt',
-  Key.selectedReceptionRemoved: 'Den valgte reception er fjernet',
-  Key.selectedReceptionUpdated: 'Den valgte reception er opdateret',
   Key.send: 'Send',
   Key.sent: 'Sendt',
   Key.standardGreeting: 'Velkommen til....',
@@ -445,6 +443,7 @@ Map<String, String> en = {
   Key.receptionBankInfoHeader: 'Bank',
   Key.receptionCalendarHeader: 'Reception Calendar',
   Key.receptionCommandsHeader: 'Commands',
+  Key.receptionChanged: 'Reception list will be refreshed on next call answer',
   Key.receptionEmailHeader: 'Email addresses',
   Key.receptionMiniWikiHeader: 'Mini wiki',
   Key.receptionOpeningHoursHeader: 'Opening hours',
@@ -458,8 +457,6 @@ Map<String, String> en = {
 
   Key.save: 'Save',
   Key.saved: 'Saved',
-  Key.selectedReceptionRemoved: 'The selected reception has been removed',
-  Key.selectedReceptionUpdated: 'The selected reception has been updated',
   Key.send: 'Send',
   Key.sent: 'Sent',
   Key.standardGreeting: 'You\'ve called....',
