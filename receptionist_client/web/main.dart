@@ -110,7 +110,7 @@ main() async {
         final Controller.User userController =
             new Controller.User(callFlowControl, notificationService, userService);
 
-        observers(userController, appState);
+        observers(userController, appState, webSocketClient);
 
         Future rRV = registerReadyView(appState, clientConfig, userController, callFlowControl,
             notificationController, language, token);
@@ -211,13 +211,14 @@ Future loadCallState(ORService.CallFlowControl callFlowControl, Model.AppClientS
  * responsible for popping a warning on refresh/page close and logging out the
  * user when she exits the application.
  */
-void observers(Controller.User userController, Model.AppClientState appState) {
+void observers(Controller.User userController, Model.AppClientState appState,
+    ORTransport.WebSocketClient webSocketClient) {
   windowOnBeforeUnload = window.onBeforeUnload.listen((BeforeUnloadEvent event) {
     event.returnValue = '';
   });
 
   windowOnUnload = window.onUnload.listen((_) {
-    userController.setLoggedOut(appState.currentUser);
+    webSocketClient.close();
   });
 }
 
