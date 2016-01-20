@@ -16,16 +16,6 @@ library openreception.dialplan_tools;
 import 'model.dart' as model;
 import 'pbx-keys.dart';
 
-///Config values.
-@deprecated
-bool goLive = false;
-@deprecated
-String greetingDir = 'converted-vox';
-@deprecated
-String testNumber = 'xxxxxxxx';
-@deprecated
-String testEmail = 'some-guy@somewhere';
-
 const String closedSuffix = 'closed';
 const String outboundSuffix = 'outbound';
 const String reception = 'reception';
@@ -210,17 +200,6 @@ Iterable<String> _extraExtensionsToDialplan(
     extensions
         .map((ne) => _namedExtensionToDialPlan(ne, option))
         .fold([], (combined, current) => combined..addAll(current));
-
-@deprecated
-String convertTextual(model.ReceptionDialplan dialplan, int rid) =>
-    _dialplanToXml(
-        dialplan,
-        rid,
-        new DialplanCompilerOpts(
-            goLive: goLive,
-            greetingDir: greetingDir,
-            testEmail: testEmail,
-            testNumber: testNumber));
 
 /**
  *
@@ -471,15 +450,6 @@ String _generateXmlFromIvrMenu(
   ${menu.submenus.map((menu) => _generateXmlFromIvrMenu (menu, option)).join('\n  ')}
 ''';
 
-@deprecated
-String generateXmlFromIvr(model.IvrMenu menu) => _ivrToXml(
-    menu,
-    new DialplanCompilerOpts(
-        goLive: goLive,
-        greetingDir: greetingDir,
-        testEmail: testEmail,
-        testNumber: testNumber));
-
 String _ivrToXml(model.IvrMenu menu, DialplanCompilerOpts option) => '''
 <include>
   ${_generateXmlFromIvrMenu(menu, option)}
@@ -513,15 +483,6 @@ List<String> _ivrEntryToXml(model.IvrEntry entry, DialplanCompilerOpts option) {
 Iterable<String> ivrOf(model.ReceptionDialplan rdp) => rdp.allActions
     .where((action) => action is model.Ivr)
     .map((ivr) => ivr.menuName);
-
-@deprecated
-String convertVoicemail(model.Voicemail vm) => _voicemailToXml(
-    vm,
-    new DialplanCompilerOpts(
-        goLive: goLive,
-        greetingDir: greetingDir,
-        testEmail: testEmail,
-        testNumber: testNumber));
 
 /**
  *
