@@ -88,8 +88,9 @@ class DialplanToolsReceptionDialplan {
             new Model.Notify('call-offer'),
             new Model.Ringtone(2),
             new Model.Playback('greeting'),
+            new Model.Playback('2nd-greeting'),
             new Model.Enqueue('pending',
-                holdMusic: 'standard', note: 'wait queue')
+                holdMusic: 'default', note: 'wait queue')
           ],
         new Model.HourAction()
           ..hours = Model.parseMultipleHours('sun 8-17').toList()
@@ -97,6 +98,10 @@ class DialplanToolsReceptionDialplan {
             new Model.Playback('none', wrapInLock: false, note: 'IVR transfer'),
             new Model.Ivr('magic-ivr', note: 'Magic IVR menu')
           ]
+      ]
+      ..defaultActions = [
+        new Model.Playback('closed', wrapInLock: true, note: 'Just closed'),
+        new Model.Voicemail('some-voicemail')
       ];
 
     xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
