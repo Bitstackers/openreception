@@ -288,11 +288,19 @@ abstract class PBX {
     });
   }
 
+  /**
+   * Writes [msg] to log and throws a [PBXException]. 
+   */
   static void _logAndFail(String msg) {
     log.severe(msg);
     throw new PBXException(msg);
   }
 
+  /**
+   * Run a [command] checked. This implies that the return values is checked
+   * for errors and throw a [PBXException] if that is the case. The command
+   * failure will be logged prior.
+   */
   static Future<ESL.Response> _runAndCheck(String command) =>
       api(command).then((response) => response.status != ESL.Response.OK
           ? _logAndFail('"$command" failed with response ${response.rawBody}')
