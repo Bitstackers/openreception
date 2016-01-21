@@ -34,6 +34,12 @@ class DialplanCompilerOpts {
       this.testEmail: 'some-guy@somewhere'});
 }
 
+class Environment {
+  String channelState = '';
+  bool channelAnswered = false;
+  bool callAnnounced = false;
+}
+
 class DialplanCompiler {
   DialplanCompilerOpts option;
 
@@ -110,8 +116,12 @@ bool _involvesReceptionists(Iterable<model.Action> actions) => actions
 /**
  *
  */
-List<String> _openingHourToXmlDialplan(String extension, model.OpeningHour oh,
-        Iterable<model.Action> actions, DialplanCompilerOpts option) =>
+List<String> _openingHourToXmlDialplan(
+        String extension,
+        model.OpeningHour oh,
+        Iterable<model.Action> actions,
+        DialplanCompilerOpts option,
+        Environment env) =>
     [
       '',
       _comment('Actions for opening hour $oh'),
@@ -123,7 +133,7 @@ List<String> _openingHourToXmlDialplan(String extension, model.OpeningHour oh,
       ..add(
           '  <condition ${_openingHourToFreeSwitch(oh)} break="${PbxKey.onTrue}">')
       ..addAll(actions
-          .map((action) => _actionToXmlDialplan(action, option))
+          .map((action) => _actionToXmlDialplan(action, option, env))
           .fold(
               [],
               (combined, current) =>
@@ -135,8 +145,11 @@ List<String> _openingHourToXmlDialplan(String extension, model.OpeningHour oh,
 /**
  * Generate A fallback extension.
  */
-List<String> _fallbackToDialplan(String extension,
-    Iterable<model.Action> actions, DialplanCompilerOpts option) {
+List<String> _fallbackToDialplan(
+    String extension,
+    Iterable<model.Action> actions,
+    DialplanCompilerOpts option,
+    Environment env) {
   if (actions.length == 1 && actions.last is model.Playback) {
     actions = new List.generate(10, (_) => actions.last);
   }
@@ -146,11 +159,10 @@ List<String> _fallbackToDialplan(String extension,
     '<extension name="${extension}-$closedSuffix">',
     '  <condition>',
   ]
-    ..add('    <action application="playback" '
-        'data="tone_stream://L=1;%(100,0,425)"/>')
-    ..add('    <action application="answer"/>')
-    ..addAll(actions.map((action) => _actionToXmlDialplan(action, option)).fold(
-        [], (combined, current) => combined..addAll(current.map(_indent))))
+    ..addAll(actions
+        .map((action) => _actionToXmlDialplan(action, option, env))
+        .fold(
+            [], (combined, current) => combined..addAll(current.map(_indent))))
     ..add('    <action application="hangup"/>')
     ..add('  </condition>')
     ..add('</extension>');
@@ -161,8 +173,8 @@ List<String> _fallbackToDialplan(String extension,
  */
 Iterable<String> _hourActionToXmlDialplan(String extension,
         model.HourAction hourAction, DialplanCompilerOpts option) =>
-    hourAction.hours.map((oh) =>
-        _openingHourToXmlDialplan(extension, oh, hourAction.actions, option));
+    hourAction.hours.map((oh) => _openingHourToXmlDialplan(
+        extension, oh, hourAction.actions, option, new Environment()));
 
 /**
  *
@@ -172,8 +184,11 @@ Iterable<String> _hourActionsToXmlDialplan(String extension,
     hourActions.map((ha) => _hourActionToXmlDialplan(extension, ha, option)
         .fold([], (combined, current) => combined..addAll(current)));
 
-Iterable<String> _namedExtensionToDialPlan(
-        model.NamedExtension extension, DialplanCompilerOpts option) =>
+/**
+ * Turns a [NamedExtension] into a dialplan document fragment.
+ */
+Iterable<String> _namedExtensionToDialPlan(model.NamedExtension extension,
+        DialplanCompilerOpts option, Environment env) =>
     [
       '',
       _noteTemplate('Extra-extension ${extension.name}'),
@@ -182,11 +197,8 @@ Iterable<String> _namedExtensionToDialPlan(
           'expression="^${extension.name}\$" '
           'break="${PbxKey.onFalse}">',
     ]
-      ..add('    <action application="playback" '
-          'data="tone_stream://L=1;%(100,0,425)"/>')
-      ..add('    <action application="answer"/>')
       ..addAll(extension.actions
-          .map((action) => _actionToXmlDialplan(action, option))
+          .map((action) => _actionToXmlDialplan(action, option, env))
           .fold(
               [],
               (combined, current) =>
@@ -198,15 +210,15 @@ Iterable<String> _extraExtensionsToDialplan(
         Iterable<model.NamedExtension> extensions,
         DialplanCompilerOpts option) =>
     extensions
-        .map((ne) => _namedExtensionToDialPlan(ne, option))
+        .map((ne) => _namedExtensionToDialPlan(ne, option, new Environment()))
         .fold([], (combined, current) => combined..addAll(current));
 
 /**
  *
  */
-String _dialplanToXml(model.ReceptionDialplan dialplan, int rid,
-        DialplanCompilerOpts option) =>
-    '''<!-- Dialplan for extension ${dialplan.extension}. Generated ${new DateTime.now()} -->
+String _dialplanToXml(
+    model.ReceptionDialplan dialplan, int rid, DialplanCompilerOpts option) {
+  return '''<!-- Dialplan for extension ${dialplan.extension}. Generated ${new DateTime.now()} -->
 <include>
   <context name="$reception-${dialplan.extension}">
 
@@ -231,10 +243,11 @@ String _dialplanToXml(model.ReceptionDialplan dialplan, int rid,
     ${_externalSipTransfer(dialplan.extension, rid).join('\n    ')}
 
     ${_hourActionsToXmlDialplan(dialplan.extension, dialplan.open, option).fold([], (combined, current) => combined..addAll(current)).join('\n    ')}
-    ${_fallbackToDialplan(dialplan.extension, dialplan.defaultActions, option).join('\n    ')}
+    ${_fallbackToDialplan(dialplan.extension, dialplan.defaultActions, option, new Environment()).join('\n    ')}
 
   </context>
 </include>''';
+}
 
 /**
  * Detemine whether or not an extension is local or not.
@@ -272,6 +285,13 @@ String _comment(String text) => '<!-- $text -->';
  */
 String _transferTemplate(String extension, DialplanCompilerOpts option) =>
     '<action application="transfer" data="${_dialoutTemplate(extension, option)}"/>';
+
+/**
+  * Template fo [ReceptionTransfer] action.
+  */
+String _receptionTransferTemplate(
+        String extension, DialplanCompilerOpts option) =>
+    '<action application="transfer" data="${extension} XML context-${extension}"/>';
 
 /**
  * Template for a sleep action.
@@ -317,42 +337,63 @@ String get _callNotify => '<action application="${PbxKey.event}" '
  * Convert an action a xml dialplan entry.
  */
 List<String> _actionToXmlDialplan(
-    model.Action action, DialplanCompilerOpts option) {
+    model.Action action, DialplanCompilerOpts option, Environment env) {
   List returnValue = [];
+
+  /// Transfer action.
   if (action is model.Transfer) {
     if (action.note.isNotEmpty) returnValue.add(_noteTemplate(action.note));
 
     returnValue.add(_transferTemplate(action.extension, option));
-  } else if (action is model.Notify) {
+  }
+
+  /// Notify action.
+  else if (action is model.Notify) {
     returnValue.addAll([
       _comment('Announce the call to the receptionists'),
       _setVar(ORPbxKey.state, 'new'),
       _callNotify
     ]);
-  } else if (action is model.Ringtone) {
+    env.callAnnounced = true;
+  }
+
+  /// ReceptionTransfer action.
+  else if (action is model.ReceptionTransfer) {
+    returnValue.addAll([
+      _comment('Transfer call to other reception'),
+      _receptionTransferTemplate(action.extension, option)
+    ]);
+  }
+
+  /// Ringtone action.
+  else if (action is model.Ringtone) {
     returnValue.addAll([
       _comment('Sending ringtones'),
       _setVar(ORPbxKey.state, PbxKey.ringing),
       _ringTone,
-      '<action application="playback" data="tone_stream://L=${action.count};\${dk-ring}"/>',
+      '<action application="ring_ready"/>',
+      _sleep(5000 * action.count),
       _ringToneStop,
     ]);
-  } else if (action is model.Playback) {
+  }
+
+  /// Playback action.
+  else if (action is model.Playback) {
     if (action.note.isNotEmpty) returnValue.add(_noteTemplate(action.note));
     returnValue.addAll([_comment('Playback file ${action.filename}')]);
 
-    returnValue
-      ..add(_setVar(ORPbxKey.state, PbxKey.playback))
-      ..add('    <action application="playback" '
-          'data="tone_stream://L=1;%(100,0,425)"/>')
-      ..add('    <action application="answer"/>');
+    returnValue..add(_setVar(ORPbxKey.state, PbxKey.playback));
 
-    if (action.wrapInLock) {
-      returnValue.addAll([
-        _setVar(ORPbxKey.locked, true),
-        _setVar(ORPbxKey.locked, true),
-        _lock
-      ]);
+    if (!env.channelAnswered) {
+      returnValue
+        ..add('<action application="answer"/>')
+        ..add('<action application="playback" '
+            'data="tone_stream://L=1;%(500,0,425)"/>');
+      env.channelAnswered = true;
+    }
+
+    if (env.callAnnounced) {
+      returnValue.addAll([_setVar(ORPbxKey.locked, true), _lock]);
     }
 
     returnValue.addAll([
@@ -361,34 +402,48 @@ List<String> _actionToXmlDialplan(
           'data="{loops=${action.repeat}}${option.greetingDir}/${action.filename}"/>',
       _sleep(500),
       _setVar(ORPbxKey.greetingPlayed, true),
-      _setVar(ORPbxKey.greetingPlayed, true),
     ]);
 
-    if (action.wrapInLock) {
-      returnValue.addAll([
-        _setVar(ORPbxKey.locked, false),
-        _setVar(ORPbxKey.locked, false),
-        _unlock
-      ]);
+    if (env.callAnnounced) {
+      returnValue.addAll([_setVar(ORPbxKey.locked, false), _unlock]);
     }
-  } else if (action is model.Enqueue) {
+  }
+
+  /// Enqueue action.
+  else if (action is model.Enqueue) {
+    if (!env.channelAnswered) {
+      returnValue
+        ..add('    <action application="answer"/>')
+        ..add('    <action application="playback" '
+            'data="tone_stream://L=1;%(500,0,425)"/>');
+      env.channelAnswered = true;
+    }
+
     returnValue.addAll([
       _comment('Enqueue call'),
-      '<action application="set" data="${ORPbxKey.state}=${PbxKey.queued}"/>',
+      _setVar(ORPbxKey.state, PbxKey.queued),
       '<action application="${PbxKey.event}" data="${PbxKey.eventSubclass}=${ORPbxKey.waitQueueEnter},${PbxKey.eventName}=${PbxKey.custom}" />',
-      '<action application="set" data="fifo_music=local_stream://${action.holdMusic}"/>',
+      _setVar('fifo_music', 'local_stream://${action.holdMusic}'),
       '<action application="fifo" data="${action.queueName}@\${domain_name} in"/>'
     ]);
-  } else if (action is model.Voicemail) {
+  }
+
+  /// Voicemail  action.
+  else if (action is model.Voicemail) {
     if (action.note.isNotEmpty) returnValue.add(_noteTemplate(action.note));
     returnValue.addAll([
-      '  <action application="set" data="${ORPbxKey.emailDateHeader}=\${strftime(%a, %d %b %Y %H:%M:%S %z)}"/>',
-      '  <action application="voicemail" data="default \$\${domain} ${action.vmBox}"/>'
+      _setVar(
+          ORPbxKey.emailDateHeader, '\${strftime(%a, %d %b %Y %H:%M:%S %z)}'),
+      '<action application="voicemail" data="default \$\${domain} ${action.vmBox}"/>'
     ]);
-  } else if (action is model.Ivr) {
+  }
+
+  /// Ivr action.
+  else if (action is model.Ivr) {
     returnValue.addAll([
-      '  <action application="set" data="${ORPbxKey.emailDateHeader}=\${strftime(%a, %d %b %Y %H:%M:%S %z)}"/>',
-      '  <action application="ivr" data="${action.menuName}"/>'
+      _setVar(
+          ORPbxKey.emailDateHeader, '\${strftime(%a, %d %b %Y %H:%M:%S %z)}'),
+      '<action application="ivr" data="${action.menuName}"/>'
     ]);
   } else {
     throw new StateError('Unsupported action type: ${action.runtimeType}');
