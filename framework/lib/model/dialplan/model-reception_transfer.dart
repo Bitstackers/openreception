@@ -15,7 +15,6 @@ part of openreception.model.dialplan;
 
 /**
  * ReceptionTransfer action.
- * TODO: Finish this!
  */
 class ReceptionTransfer extends Action {
   final String extension;
