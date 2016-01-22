@@ -1,37 +1,35 @@
 part of or_test_fw;
 
 abstract class AuthService {
-
-  static final Logger log = new Logger ('$libraryName.AuthService');
-  static const badToken = 'nocandosir';
+  static final Logger log = new Logger('$libraryName.AuthService');
 
   /**
    * Test for the presence of CORS headers.
+   * TODO: Refactor this to use the library-level function.
    */
   static Future isCORSHeadersPresent(HttpClient client) {
-
-    Uri uri = Uri.parse ('${Config.authenticationServerUri}/nonexistingpath');
+    Uri uri = Uri.parse('${Config.authenticationServerUri}/nonexistingpath');
 
     log.info('Checking CORS headers on a non-existing URL.');
-    return client.getUrl(uri)
-      .then((HttpClientRequest request) => request.close()
-      .then((HttpClientResponse response) {
-        if (response.headers['access-control-allow-origin'] == null &&
-            response.headers['Access-Control-Allow-Origin'] == null) {
-          fail ('No CORS headers on path $uri');
-        }
-      }))
-      .then ((_) {
-        log.info('Checking CORS headers on an existing URL.');
-        uri = Resource.Reception.single (Config.authenticationServerUri, 1);
-        return client.getUrl(uri)
-          .then((HttpClientRequest request) => request.close()
-          .then((HttpClientResponse response) {
-          if (response.headers['access-control-allow-origin'] == null &&
-              response.headers['Access-Control-Allow-Origin'] == null) {
-            fail ('No CORS headers on path $uri');
-          }
-      }));
+    return client
+        .getUrl(uri)
+        .then((HttpClientRequest request) =>
+            request.close().then((HttpClientResponse response) {
+              if (response.headers['access-control-allow-origin'] == null &&
+                  response.headers['Access-Control-Allow-Origin'] == null) {
+                fail('No CORS headers on path $uri');
+              }
+            }))
+        .then((_) {
+      log.info('Checking CORS headers on an existing URL.');
+      uri = Resource.Reception.single(Config.authenticationServerUri, 1);
+      return client.getUrl(uri).then((HttpClientRequest request) =>
+          request.close().then((HttpClientResponse response) {
+            if (response.headers['access-control-allow-origin'] == null &&
+                response.headers['Access-Control-Allow-Origin'] == null) {
+              fail('No CORS headers on path $uri');
+            }
+          }));
     });
   }
 
@@ -41,21 +39,21 @@ abstract class AuthService {
    *
    * The expected behaviour is that the server should return a Not Found error.
    */
-  static Future nonExistingPath (HttpClient client) {
-
-    Uri uri = Uri.parse ('${Config.authenticationServerUri}/nonexistingpath');
+  static Future nonExistingPath(HttpClient client) {
+    Uri uri = Uri.parse('${Config.authenticationServerUri}/nonexistingpath');
 
     log.info('Checking server behaviour on a non-existing path.');
 
-    return client.getUrl(uri)
-      .then((HttpClientRequest request) => request.close()
-      .then((HttpClientResponse response) {
-        if (response.statusCode != 404) {
-          fail ('Expected to received a 404 on path $uri');
-        }
-      }))
-      .then((_) => log.info('Got expected status code 404.'))
-      .whenComplete(() => client.close(force : true));
+    return client
+        .getUrl(uri)
+        .then((HttpClientRequest request) =>
+            request.close().then((HttpClientResponse response) {
+              if (response.statusCode != 404) {
+                fail('Expected to received a 404 on path $uri');
+              }
+            }))
+        .then((_) => log.info('Got expected status code 404.'))
+        .whenComplete(() => client.close(force: true));
   }
 
   /**
@@ -64,12 +62,13 @@ abstract class AuthService {
    *
    * The expected behaviour is that the server should return a Not Found error.
    */
-  static void nonExistingToken (Service.Authentication authService) {
+  static Future nonExistingToken(Service.Authentication authService) async {
+    const badToken = 'nocandosir';
 
     log.info('Checking server behaviour on a non-existing token.');
 
-    return expect(authService.userOf(badToken),
-            throwsA(new isInstanceOf<Storage.NotFound>()));
+    await expect(authService.userOf(badToken),
+        throwsA(new isInstanceOf<Storage.NotFound>()));
   }
 
   /**
@@ -78,18 +77,17 @@ abstract class AuthService {
    *
    * The expected behaviour is that the server should return a User object.
    */
-  static Future existingToken (Service.Authentication authService,
-                             Receptionist receptionist) {
-
+  static Future existingToken(
+      Service.Authentication authService, Receptionist receptionist) async {
     log.info('Checking server behaviour on a non-existing token.');
 
-    return authService.userOf(receptionist.authToken).then((Model.User user) {
-      expect (user.ID, equals(receptionist.user.ID));
-      expect (user.name, isNotEmpty);
-      expect (user.address, isNotNull);
-      expect (user.groups, isNotEmpty);
-      expect (user.peer, isNotEmpty);
-    });
+    final Model.User user = await authService.userOf(receptionist.authToken);
+    expect(user.ID, equals(receptionist.user.ID));
+    expect(user.name, isNotEmpty);
+    expect(user.address, isNotNull);
+    expect(user.groups, isNotEmpty);
+    expect(user.peer, isNotEmpty);
+    log.info('Test complete');
   }
 
   /**
@@ -97,12 +95,14 @@ abstract class AuthService {
    *
    * The expected behaviour is that the server should return a Not Found error.
    */
-  static void validateNonExistingToken (Service.Authentication authService) {
+  static Future validateNonExistingToken(
+      Service.Authentication authService) async {
+    const badToken = 'nocandosir';
 
     log.info('Checking server behaviour on a non-existing token.');
 
-    return expect(authService.userOf(badToken),
-            throwsA(new isInstanceOf<Storage.NotFound>()));
+    await expect(authService.userOf(badToken),
+        throwsA(new isInstanceOf<Storage.NotFound>()));
   }
 
   /**
@@ -110,11 +110,10 @@ abstract class AuthService {
    *
    * The expected behaviour is that the server should normally.
    */
-  static Future validateExistingToken (Service.Authentication authService,
-                                       Receptionist receptionist) {
-
+  static Future validateExistingToken(
+      Service.Authentication authService, Receptionist receptionist) async {
     log.info('Checking server behaviour on a non-existing token.');
 
-    return authService.userOf(receptionist.authToken);
+    await authService.userOf(receptionist.authToken);
   }
 }
