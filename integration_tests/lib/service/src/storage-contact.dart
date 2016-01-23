@@ -77,17 +77,15 @@ abstract class ContactStore {
    * The expected behaviour is that the server should return a list of
    * contact objects.
    */
-  static Future listByReception(Storage.Contact contactStore) {
+  static Future listByReception(Storage.Contact contactStore) async {
     const int receptionID = 1;
-    log.info(
-        'Checking server behaviour on list of contacts in reception $receptionID.');
+    log.info('Checking server behaviour on list '
+        'of contacts in reception $receptionID.');
 
-    return contactStore
-        .listByReception(receptionID)
-        .then((Iterable<Model.Contact> contacts) {
-      expect(contacts, isNotNull);
-      expect(contacts, isNotEmpty);
-    });
+    final Iterable<Model.Contact> contacts =
+        await contactStore.listByReception(receptionID);
+    expect(contacts, isNotNull);
+    expect(contacts, isNotEmpty);
   }
 
   /**
@@ -96,52 +94,46 @@ abstract class ContactStore {
    * The expected behaviour is that the server should return a list of
    * base contact objects.
    */
-  static Future list(Storage.Contact contactStore) {
+  static Future list(Storage.Contact contactStore) async {
     log.info('Checking server behaviour on list of base contacts.');
 
-    return contactStore.list().then((Iterable<Model.BaseContact> contacts) {
-      expect(contacts, isNotNull);
-      expect(contacts, isNotEmpty);
-    });
+    final Iterable<Model.BaseContact> contacts = await contactStore.list();
+    expect(contacts, isNotNull);
+    expect(contacts, isNotEmpty);
   }
 
   /**
    *
    */
-  static Future receptions(Storage.Contact contactStore) {
-    return contactStore.receptions(1).then((Iterable<int> receptions) {
-      expect(receptions, isNotNull);
-    });
+  static Future receptions(Storage.Contact contactStore) async {
+    final Iterable<int> receptions = await contactStore.receptions(1);
+    expect(receptions, isNotNull);
   }
 
   /**
    *
    */
-  static Future organizations(Storage.Contact contactStore) {
-    return contactStore.organizations(1).then((Iterable<int> organizations) {
-      expect(organizations, isNotNull);
-    });
+  static Future organizations(Storage.Contact contactStore) async {
+    final Iterable<int> organizations = await contactStore.organizations(1);
+    expect(organizations, isNotNull);
   }
 
   /**
    *
    */
-  static Future organizationContacts(Storage.Contact contactStore) {
-    return contactStore
-        .organizationContacts(1)
-        .then((Iterable<Model.BaseContact> contacts) {
-      expect(contacts, isNotNull);
-      expect(contacts, isNotEmpty);
-    });
+  static Future organizationContacts(Storage.Contact contactStore) async {
+    final Iterable<Model.BaseContact> contacts =
+        await contactStore.organizationContacts(1);
+    expect(contacts, isNotNull);
+    expect(contacts, isNotEmpty);
   }
 
   /**
    *
    */
-  static Future getByReception(Storage.Contact contactStore) {
-    return contactStore.getByReception(1, 1).then((Model.Contact contact) {
-      expect(contact, isNotNull);
-    });
+  static Future getByReception(Storage.Contact contactStore) async {
+    final Model.Contact contact = await contactStore.getByReception(1, 1);
+    expect(contact, isNotNull);
   }
 
   /**
@@ -150,19 +142,16 @@ abstract class ContactStore {
    * The expected behaviour is that the server should return a list of
    * base contact objects.
    */
-  static Future get(Storage.Contact contactStore) {
+  static Future get(Storage.Contact contactStore) async {
     log.info('Checking server behaviour on list of base contacts.');
-
-    Model.BaseContact contact = Randomizer.randomBaseContact();
 
     log.info('Creating a new base contact.');
 
-    return contactStore.create(contact).then(
-        (Model.BaseContact createdContact) => contactStore
-                .get(createdContact.id)
-                .then((Model.BaseContact contact) {
-              expect(contact, isNotNull);
-            }).then((_) => contactStore.remove(createdContact.id)));
+    final Model.BaseContact createdContact =
+        await contactStore.create(Randomizer.randomBaseContact());
+    final Model.BaseContact contact = await contactStore.get(createdContact.id);
+    expect(createdContact.toJson(), equals(contact.toJson()));
+    await contactStore.remove(createdContact.id);
   }
 
   /**
