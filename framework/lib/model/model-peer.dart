@@ -23,12 +23,12 @@ class Peer {
   bool registered = false;
 
   /**
-   *
+   * Default constructor.
    */
   Peer(this.name);
 
   /**
-   *
+   * Deserizaling constructor.
    */
   Peer.fromMap(Map map)
       : name = map[Key.name],
@@ -37,7 +37,7 @@ class Peer {
         channelCount = map[Key.activeChannels];
 
   /**
-   *
+   * Serialization function.
    */
   Map toJson() => {
         Key.name: name,
@@ -47,12 +47,12 @@ class Peer {
       };
 
   /**
-   *
+   * Deserializing factory.
    */
   static Peer decode(Map map) => new Peer.fromMap(map);
 
   /**
-   *
+   * Returns a string representation of the object.
    */
   @override
   String toString() => '$name, registered:$registered';
