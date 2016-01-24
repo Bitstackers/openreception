@@ -2,6 +2,7 @@ AUTH_CACHE_STORAGE=/tmp/tokens
 
 dependencies:
 	pub get
+	pub --no-package-symlinks upgrade
 
 tests:
 	@dart bin/servertests.dart > results.xml
