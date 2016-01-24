@@ -132,8 +132,9 @@ class HotKeys {
   /**
    * Register the [keyMap] keybindings to [keyboard].
    */
-  void registerKeys(Keyboard keyboard, Map<dynamic, Html.EventListener> keyMap) {
-    keyMap.forEach((key, callback) {
+  void registerKeys(
+      Keyboard keyboard, Map<dynamic, Html.EventListener> keyMap) {
+    keyMap.forEach((dynamic key, Html.EventListener callback) {
       keyboard.register(key, callback);
     });
   }
@@ -142,8 +143,9 @@ class HotKeys {
    * Register the [keyMap] key bindings to [keyboard]. Prevent default on all
    * key events.
    */
-  void registerKeysPreventDefault(Keyboard keyboard, Map<dynamic, Html.EventListener> keyMap) {
-    keyMap.forEach((key, callback) {
+  void registerKeysPreventDefault(
+      Keyboard keyboard, Map<dynamic, Html.EventListener> keyMap) {
+    keyMap.forEach((dynamic key, Html.EventListener callback) {
       keyboard.register(key, (Html.Event event) {
         event.preventDefault();
         callback(event);

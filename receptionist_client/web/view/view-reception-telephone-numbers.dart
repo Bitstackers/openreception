@@ -17,24 +17,25 @@ part of view;
  * The receptoin telephone numbers list.
  */
 class ReceptionTelephoneNumbers extends ViewWidget {
-  final Controller.Destination            _myDestination;
-  final Model.UIReceptionSelector         _receptionSelector;
+  final Controller.Destination _myDestination;
+  final Model.UIReceptionSelector _receptionSelector;
   final Model.UIReceptionTelephoneNumbers _uiModel;
 
   /**
    * Constructor.
    */
-  ReceptionTelephoneNumbers(Model.UIModel this._uiModel,
-                            Controller.Destination this._myDestination,
-                            Model.UIReceptionSelector this._receptionSelector) {
+  ReceptionTelephoneNumbers(
+      Model.UIReceptionTelephoneNumbers this._uiModel,
+      Controller.Destination this._myDestination,
+      Model.UIReceptionSelector this._receptionSelector) {
     _observers();
   }
 
-  @override Controller.Destination            get _destination => _myDestination;
-  @override Model.UIReceptionTelephoneNumbers get _ui          => _uiModel;
+  @override Controller.Destination get _destination => _myDestination;
+  @override Model.UIReceptionTelephoneNumbers get _ui => _uiModel;
 
-  @override void _onBlur(_){}
-  @override void _onFocus(_){}
+  @override void _onBlur(_) {}
+  @override void _onFocus(_) {}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
