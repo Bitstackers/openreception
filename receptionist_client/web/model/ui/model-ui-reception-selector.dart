@@ -144,8 +144,9 @@ class UIReceptionSelector extends UIModel {
   }
 
   /**
-   * Add [items] to the receptions list cache. This does NOT update the actual receptions list. Call
-   * [refreshReceptions()] to update the list using the cached values.
+   * Add [items] to the receptions list cache. This does NOT update the actual
+   * receptions list. Call [refreshReceptions()] to update the list using the
+   * cached values.
    */
   set receptionsCache(List<ORModel.Reception> items) {
     items.forEach((ORModel.Reception item) {
@@ -154,16 +155,16 @@ class UIReceptionSelector extends UIModel {
   }
 
   /**
-   * Fire a [Reception] on [_bus]. The [Reception] is constructed from JSON found
-   * in the data-object attribute of [li].
+   * Fire a [Reception] on [_bus]. The [Reception] is constructed from JSON
+   * fonud in the data-object attribute of [li].
    */
   void _receptionSelectCallback(LIElement li) {
     _bus.fire(new ORModel.Reception.fromMap(JSON.decode(li.dataset['object'])));
   }
 
   /**
-   * Reloads the receptions list. Does not take selected receptions into account, so should only be
-   * called when no receptions are selected.
+   * Reloads the receptions list. Does not take selected receptions into
+   * account, so should only be called when no receptions are selected.
    */
   void refreshReceptions() {
     if (_receptionsCache.isNotEmpty) {
@@ -185,8 +186,8 @@ class UIReceptionSelector extends UIModel {
   }
 
   /**
-   * Mark a [LIElement] in the reception list selected, if one such is the target
-   * of the [event].
+   * Mark a [LIElement] in the reception list selected, if one such is the
+   * target of the [event].
    */
   void _selectFromClick(MouseEvent event) {
     if (event.target != _filter) {
