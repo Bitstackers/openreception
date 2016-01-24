@@ -17,7 +17,7 @@ upgrade-dependencies:
 	@echo ==============================
 	@echo == Upgrading dependencies.. ==
 	@echo ==============================
-	@pub upgrade
+	@pub --no-package-symlinks upgrade
 	@echo =================================
 	@echo == Upgrading dependencies done ==
 	@echo =================================
