@@ -131,6 +131,7 @@ class UIMessageCompose extends UIModel {
    */
   void set messagePrerequisites(List<String> prerequisites) {
     prerequisites.removeWhere((String prereg) => prereg.trim().isEmpty);
+
     if (prerequisites.isEmpty) {
       _prerequisites.style.display = 'none';
     } else {
@@ -245,7 +246,7 @@ class UIMessageCompose extends UIModel {
     _haveCalledInput.checked = true;
     _landlineInput.value = '';
     _messageTextarea.value = '';
-    messagePrerequisites = null;
+    messagePrerequisites = [];
     _pleaseCallInput.checked = false;
     _urgentInput.checked = false;
 
