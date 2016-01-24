@@ -48,7 +48,7 @@ dependency:
 	pub get
 
 upgrade-dependency:
-	pub upgrade
+	pub --no-package-symlinks upgrade
 
 clean: 
 	-rm -rf $(BUILD_DIR)
