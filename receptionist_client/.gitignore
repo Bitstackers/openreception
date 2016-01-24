@@ -1,5 +1,6 @@
 # Don't track .packages
 .packages
+.pub-cache
 
 # Don't track pubspec.lock
 pubspec.lock
