@@ -1,6 +1,8 @@
-# Don't track .packages
+# Don't track .packages and .pub-cache/
+packages/**
 .packages
-.pub-cache
+.pub-cache/**
+.pub/**
 
 # Don't track pubspec.lock
 pubspec.lock
@@ -15,9 +17,6 @@ build/
 
 # Don't track out/
 out/
-
-# Don't track packages
-packages
 
 # Don't track docs, generate them.
 web/classes/docs
@@ -35,4 +34,3 @@ lib/dist
 .#*#
 .DS_Store
 .idea
-.pub/
