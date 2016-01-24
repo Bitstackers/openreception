@@ -161,16 +161,14 @@ abstract class ContactStore {
    * The expected behaviour is that the server should return an empty list.
    */
   static Future listContactsByNonExistingReception(
-      Storage.Contact contactStore) {
+      Storage.Contact contactStore) async {
     const int receptionID = -1;
     log.info(
         'Checking server behaviour on list of contacts in reception $receptionID.');
 
-    return contactStore
-        .listByReception(receptionID)
-        .then((Iterable<Model.Contact> contacts) {
-      expect(contacts, isEmpty);
-    });
+    final Iterable<Model.Contact> contacts =
+        await contactStore.listByReception(receptionID);
+    expect(contacts, isEmpty);
   }
 
   /**
@@ -179,23 +177,21 @@ abstract class ContactStore {
    * The expected behaviour is that the server should return the created
    * BaseContact object.
    */
-  static Future create(Storage.Contact contactStore) {
+  static Future create(Storage.Contact contactStore) async {
     Model.BaseContact contact = Randomizer.randomBaseContact();
 
     log.info('Creating a new base contact.');
 
-    return contactStore
-        .create(contact)
-        .then((Model.BaseContact createdContact) {
-      expect(createdContact.id, isNot(Model.Contact.noID));
-      expect(createdContact.id, isNotNull);
+    Model.BaseContact createdContact = await contactStore.create(contact);
+    expect(createdContact.id, isNot(Model.Contact.noID));
+    expect(createdContact.id, isNotNull);
 
-      expect(contact.contactType, equals(createdContact.contactType));
-      expect(contact.fullName, equals(createdContact.fullName));
-      expect(contact.enabled, equals(createdContact.enabled));
+    expect(contact.contactType, equals(createdContact.contactType));
+    expect(contact.fullName, equals(createdContact.fullName));
+    expect(contact.enabled, equals(createdContact.enabled));
+    expect(contact.asMap, equals(createdContact.asMap));
 
-      return contactStore.remove(createdContact.id);
-    });
+    return contactStore.remove(createdContact.id);
   }
 
   /**
