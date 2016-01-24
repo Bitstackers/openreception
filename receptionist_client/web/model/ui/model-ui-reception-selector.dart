@@ -48,11 +48,12 @@ class UIReceptionSelector extends UIModel {
   /**
    * Construct a [reception] <li> element.
    */
-  LIElement _buildReceptionElement(ORModel.Reception reception) => new LIElement()
-    ..dataset['id'] = reception.ID.toString()
-    ..dataset['name'] = reception.name.toLowerCase()
-    ..dataset['object'] = JSON.encode(reception)
-    ..text = reception.name;
+  LIElement _buildReceptionElement(ORModel.Reception reception) =>
+      new LIElement()
+        ..dataset['id'] = reception.ID.toString()
+        ..dataset['name'] = reception.name.toLowerCase()
+        ..dataset['object'] = JSON.encode(reception)
+        ..text = reception.name;
 
   /**
    * Mark the [receptionId] list item as selected.
@@ -71,7 +72,8 @@ class UIReceptionSelector extends UIModel {
 
     if (filter.length == 0 || trimmedFilter.isEmpty) {
       /// Empty filter. Remove .hide from all list elements.
-      _list.children.forEach((LIElement li) => li.classes.toggle('hide', false));
+      _list.children
+          .forEach((LIElement li) => li.classes.toggle('hide', false));
       _list.classes.toggle('zebra', true);
     } else if (trimmedFilter.length == 1) {
       _list.classes.toggle('zebra', false);
@@ -103,7 +105,8 @@ class UIReceptionSelector extends UIModel {
    * result in the first visible element being selected.
    */
   void _handleEnter(KeyboardEvent event) {
-    if (_filter.value.trim().isNotEmpty && _list.querySelectorAll('.hide').isNotEmpty) {
+    if (_filter.value.trim().isNotEmpty &&
+        _list.querySelectorAll('.selected:not(.hide)').length == 1) {
       _markSelected(_scanForwardForVisibleElement(_list.children.first));
     }
   }
@@ -201,9 +204,13 @@ class UIReceptionSelector extends UIModel {
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
-    final Map<String, EventListener> bindings = {'Enter': _handleEnter, 'Esc': _reset};
+    final Map<String, EventListener> bindings = {
+      'Enter': _handleEnter,
+      'Esc': _reset
+    };
 
-    _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
+    _hotKeys.registerKeysPreventDefault(
+        _keyboard, _defaultKeyMap(myKeys: bindings));
   }
 
   /**

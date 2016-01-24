@@ -41,23 +41,36 @@ class UIMessageCompose extends UIModel {
   @override HtmlElement get _lastTabElement => _myLastTabElement;
   @override HtmlElement get _root => _myRoot;
 
-  InputElement get _callerNameInput => _root.querySelector('.names input.caller');
-  InputElement get _callsBackInput => _root.querySelector('.checks .calls-back');
-  InputElement get _cellphoneInput => _root.querySelector('.phone-numbers input.cell');
-  InputElement get _companyNameInput => _root.querySelector('.names input.company');
-  InputElement get _extensionInput => _root.querySelector('.phone-numbers input.extension');
-  InputElement get _haveCalledInput => _root.querySelector('.checks .have-called');
-  InputElement get _landlineInput => _root.querySelector('.phone-numbers input.landline');
-  TextAreaElement get _messageTextarea => _root.querySelector('.message textarea');
-  InputElement get _pleaseCallInput => _root.querySelector('.checks .please-call');
+  InputElement get _callerNameInput =>
+      _root.querySelector('.names input.caller');
+  InputElement get _callsBackInput =>
+      _root.querySelector('.checks .calls-back');
+  InputElement get _cellphoneInput =>
+      _root.querySelector('.phone-numbers input.cell');
+  InputElement get _companyNameInput =>
+      _root.querySelector('.names input.company');
+  InputElement get _extensionInput =>
+      _root.querySelector('.phone-numbers input.extension');
+  InputElement get _haveCalledInput =>
+      _root.querySelector('.checks .have-called');
+  InputElement get _landlineInput =>
+      _root.querySelector('.phone-numbers input.landline');
+  TextAreaElement get _messageTextarea =>
+      _root.querySelector('.message textarea');
+  InputElement get _pleaseCallInput =>
+      _root.querySelector('.checks .please-call');
   DivElement get _prerequisites => _root.querySelector('.prerequisites');
   DivElement get _recipientsDiv => _root.querySelector('.recipients');
-  OListElement get _recipientsList => _root.querySelector('.recipients .generic-widget-list');
+  OListElement get _recipientsList =>
+      _root.querySelector('.recipients .generic-widget-list');
   ButtonElement get _saveButton => _root.querySelector('.buttons .save');
   ButtonElement get _sendButton => _root.querySelector('.buttons .send');
-  SpanElement get _showRecipientsSpan => _root.querySelector('.show-recipients');
-  SpanElement get _showRecipientsText => _showRecipientsSpan.querySelector(':first-child');
-  SpanElement get _showNoRecipientsText => _showRecipientsSpan.querySelector(':last-child');
+  SpanElement get _showRecipientsSpan =>
+      _root.querySelector('.show-recipients');
+  SpanElement get _showRecipientsText =>
+      _showRecipientsSpan.querySelector(':first-child');
+  SpanElement get _showNoRecipientsText =>
+      _showRecipientsSpan.querySelector(':last-child');
   ElementList<Element> get _tabElements => _root.querySelectorAll('[tabindex]');
   InputElement get _urgentInput => _root.querySelector('.checks .urgent');
 
@@ -150,7 +163,8 @@ class UIMessageCompose extends UIModel {
 
     /// Enables focused element memory for this widget.
     _tabElements.forEach((HtmlElement element) {
-      element.onFocus.listen((Event event) => _myFocusElement = (event.target as HtmlElement));
+      element.onFocus.listen(
+          (Event event) => _myFocusElement = (event.target as HtmlElement));
     });
 
     _showRecipientsSpan.onClick.listen(_toggleRecipients);
@@ -176,7 +190,10 @@ class UIMessageCompose extends UIModel {
     final String recipientsList = _recipientsList.dataset['recipients-list'];
 
     if (recipientsList != null && recipientsList.isNotEmpty) {
-      return JSON.decode(recipientsList).map(ORModel.MessageRecipient.decode).toSet();
+      return JSON
+          .decode(recipientsList)
+          .map(ORModel.MessageRecipient.decode)
+          .toSet();
     } else {
       return new Set<ORModel.MessageRecipient>();
     }
@@ -192,14 +209,14 @@ class UIMessageCompose extends UIModel {
     String contactString(ORModel.MessageRecipient recipient) =>
         '${recipient.contactName} @ ${recipient.receptionName} (${recipient.address})';
 
-    Iterable<ORModel.MessageRecipient> toRecipients() =>
-        recipients.where((ORModel.MessageRecipient r) => r.role == ORModel.Role.TO);
+    Iterable<ORModel.MessageRecipient> toRecipients() => recipients
+        .where((ORModel.MessageRecipient r) => r.role == ORModel.Role.TO);
 
-    Iterable<ORModel.MessageRecipient> ccRecipients() =>
-        recipients.where((ORModel.MessageRecipient r) => r.role == ORModel.Role.CC);
+    Iterable<ORModel.MessageRecipient> ccRecipients() => recipients
+        .where((ORModel.MessageRecipient r) => r.role == ORModel.Role.CC);
 
-    Iterable<ORModel.MessageRecipient> bccRecipients() =>
-        recipients.where((ORModel.MessageRecipient r) => r.role == ORModel.Role.BCC);
+    Iterable<ORModel.MessageRecipient> bccRecipients() => recipients
+        .where((ORModel.MessageRecipient r) => r.role == ORModel.Role.BCC);
 
     List<LIElement> list = new List<LIElement>();
 
@@ -285,8 +302,8 @@ class UIMessageCompose extends UIModel {
    * [_myLastTabElement] as this depends on the state of the buttons.
    */
   void _toggleButtons([_]) {
-    final bool toggle =
-        !(_callerNameInput.value.trim().isNotEmpty && _messageTextarea.value.trim().isNotEmpty);
+    final bool toggle = !(_callerNameInput.value.trim().isNotEmpty &&
+        _messageTextarea.value.trim().isNotEmpty);
 
     _saveButton.disabled = toggle || _recipientsList.children.isEmpty;
     _sendButton.disabled = toggle || _recipientsList.children.isEmpty;
