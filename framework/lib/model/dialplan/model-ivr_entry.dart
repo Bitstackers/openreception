@@ -47,6 +47,9 @@ abstract class IvrEntry {
       case Key.voicemail:
         return new IvrVoicemail(digit, Voicemail.parse(buffer));
 
+      case Key.reception:
+        return new IvrReceptionTransfer(digit, ReceptionTransfer.parse(buffer));
+
       default:
         throw new FormatException('Undefined action', action);
     }
@@ -58,6 +61,5 @@ abstract class IvrEntry {
   int get hashCode => toString().hashCode;
 
   @override
-  operator == (IvrEntry other) => this.toString() == other.toString();
-
+  operator ==(IvrEntry other) => this.toString() == other.toString();
 }
