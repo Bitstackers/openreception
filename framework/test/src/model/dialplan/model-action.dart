@@ -17,6 +17,7 @@ void testModelAction() {
   group('Model.Action', () {
     test('parseUndefined', ModelAction.parseUndefined);
     test('parseTransfer', ModelAction.parseTransfer);
+
     test('parseVoicemail', ModelAction.parseVoicemail);
     test('parseEnqueue', ModelAction.parseEnqueue);
 
@@ -50,7 +51,8 @@ abstract class ModelAction {
     final String extension = 'sub_1';
     final String note = 'a note';
 
-    Model.Transfer builtObject = Model.Action.parse('transfer $extension ($note)');
+    Model.Transfer builtObject =
+        Model.Action.parse('transfer $extension ($note)');
 
     expect(builtObject.extension, equals(extension));
     expect(builtObject.note, equals(note));
@@ -60,7 +62,8 @@ abstract class ModelAction {
     final String extension = 'sub_1';
     final String note = 'a note';
 
-    Model.ReceptionTransfer builtObject = Model.Action.parse('reception $extension ($note)');
+    Model.ReceptionTransfer builtObject =
+        Model.Action.parse('reception $extension ($note)');
 
     expect(builtObject.extension, equals(extension));
     expect(builtObject.note, equals(note));
@@ -95,8 +98,7 @@ abstract class ModelAction {
   static void parseRingtone() {
     final int count = 3;
 
-    Model.Ringtone builtObject =
-        Model.Action.parse('ringtone $count');
+    Model.Ringtone builtObject = Model.Action.parse('ringtone $count');
 
     expect(builtObject.count, equals(count));
   }
@@ -104,8 +106,7 @@ abstract class ModelAction {
   static void parseNotify() {
     final String target = 'receptionists';
 
-    Model.Notify builtObject =
-        Model.Action.parse('notify $target');
+    Model.Notify builtObject = Model.Action.parse('notify $target');
 
     expect(builtObject.eventName, equals(target));
   }
@@ -114,8 +115,7 @@ abstract class ModelAction {
     final String menu = 'ivr_1';
     final String note = 'a note';
 
-    Model.Ivr builtObject =
-        Model.Action.parse('ivr $menu ($note)');
+    Model.Ivr builtObject = Model.Action.parse('ivr $menu ($note)');
 
     expect(builtObject.menuName, equals(menu));
     expect(builtObject.note, equals(note));
@@ -128,5 +128,4 @@ abstract class ModelAction {
     expect(() => Model.Action.parse('wrong wrong (just wrong)'),
         throwsA(new isInstanceOf<FormatException>()));
   }
-
 }
