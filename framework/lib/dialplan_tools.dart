@@ -264,8 +264,8 @@ String _transferTemplate(String extension, DialplanCompilerOpts option) =>
     '<action application="transfer" data="${_dialoutTemplate(extension, option)}"/>';
 
 /**
-  * Template fo [ReceptionTransfer] action.
-  */
+ * Template fo [ReceptionTransfer] action.
+ */
 String _receptionTransferTemplate(String extension, DialplanCompilerOpts option) =>
     '<action application="transfer" data="${extension} XML context-${extension}"/>';
 
