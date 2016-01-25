@@ -17,7 +17,7 @@ library openreception.pbx_keys;
  * This class contains '__or__' namespaced call related String constants.
  */
 class ORPbxKey {
-  static const String namespace = '_or_';
+  static const String namespace = '__or__';
 
   static const String agentChannel = 'agent-channel';
   static const String callLock = namespace + 'call-lock';
