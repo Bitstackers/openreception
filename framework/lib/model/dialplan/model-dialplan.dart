@@ -23,6 +23,7 @@ part 'model-hour_action.dart';
 part 'model-ivr.dart';
 part 'model-ivr_entry.dart';
 part 'model-ivr_menu.dart';
+part 'model-ivr_reception_transfer.dart';
 part 'model-ivr_submenu.dart';
 part 'model-ivr_topmenu.dart';
 part 'model-ivr_transfer.dart';
