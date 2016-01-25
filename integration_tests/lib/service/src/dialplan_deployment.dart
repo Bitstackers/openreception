@@ -86,7 +86,10 @@ abstract class DialplanDeployment {
       ..open = [
         new Model.HourAction()
           ..hours = [justNow]
-          ..actions = [new Model.Playback('sorry-dude-were-open'), new Model.Playback('sorry-dude-were-really-open')]
+          ..actions = [
+            new Model.Playback('sorry-dude-were-open'),
+            new Model.Playback('sorry-dude-were-really-open')
+          ]
       ]
       ..extension = 'test-${Randomizer.randomPhoneNumber()}'
           '-${new DateTime.now().millisecondsSinceEpoch}'
@@ -110,9 +113,7 @@ abstract class DialplanDeployment {
     /// Check event queue.
     final int playback1 = events.indexOf(events.firstWhere((event) =>
         event.field('Application-Data') != null &&
-            event
-                .field('Application-Data')
-                .contains('sorry-dude-were-open')));
+            event.field('Application-Data').contains('sorry-dude-were-open')));
 
     final int playback2 = events.indexOf(events.firstWhere((event) =>
         event.field('Application-Data') != null &&
