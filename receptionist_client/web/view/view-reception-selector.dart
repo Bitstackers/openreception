@@ -77,7 +77,8 @@ class ReceptionSelector extends ViewWidget {
         _refreshReceptionsCache = false;
         _popup.info(_langMap[Key.receptionChanged], '', closeAfter: new Duration(seconds: 3));
         _receptionController.list().then((Iterable<ORModel.Reception> receptions) {
-          _ui.receptionsCache = receptions.toList()..sort((x, y) => x.name.compareTo(y.name));
+          _ui.receptionsCache = receptions.toList()
+            ..sort((x, y) => x.name.toLowerCase().compareTo(y.name.toLowerCase()));
         });
       }
     });

@@ -69,7 +69,8 @@ class ContactSelector extends ViewWidget {
       _ui.clear();
     } else {
       _contactController.list(reception).then((Iterable<ORModel.Contact> contacts) {
-        int nameSort(ORModel.Contact x, ORModel.Contact y) => x.fullName.compareTo(y.fullName);
+        int nameSort(ORModel.Contact x, ORModel.Contact y) =>
+            x.fullName.toLowerCase().compareTo(y.fullName.toLowerCase());
 
         final List<ORModel.Contact> functionContacts = contacts
             .where(

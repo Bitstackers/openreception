@@ -279,7 +279,7 @@ Future registerReadyView(
 
   return receptionController.list().then((Iterable<ORModel.Reception> receptions) {
     Iterable<ORModel.Reception> sortedReceptions = receptions.toList()
-      ..sort((x, y) => x.name.compareTo(y.name));
+      ..sort((x, y) => x.name.toLowerCase().compareTo(y.name.toLowerCase()));
 
     appReady = new View.ORCReady(
         appState,
