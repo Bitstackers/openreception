@@ -14,10 +14,10 @@
 library openreception.pbx_keys;
 
 /**
- * This class contains 'or::' namespaced call related String constants.
+ * This class contains '__or__' namespaced call related String constants.
  */
 class ORPbxKey {
-  static const String namespace = 'or::';
+  static const String namespace = '_or_';
 
   static const String agentChannel = 'agent-channel';
   static const String callLock = namespace + 'call-lock';
@@ -32,6 +32,7 @@ class ORPbxKey {
   static const String parkingLotEnter = namespace + 'parking-lot-enter';
   static const String parkingLotLeave = namespace + 'parking-lot-leave';
   static const String receptionId = namespace + 'rid';
+  static const String receptionOpen = namespace + 'reception-open';
   static const String ringingStart = namespace + 'ringing-start';
   static const String ringingStop = namespace + 'ringing-stop';
   static const String state = namespace + 'state';
@@ -41,7 +42,7 @@ class ORPbxKey {
 
 /**
  * This class contains non-namespaced call related String constants. Note that there might be some
- * overlap with keys found in [ORPbxKey]. Use the latter if you need the 'or::' namespace.
+ * overlap with keys found in [ORPbxKey]. Use the latter if you need the '__OR__' namespace.
  */
 class PbxKey {
   static const String agentBeginEpoch = 'agent-begin-epoch';

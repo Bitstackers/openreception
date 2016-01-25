@@ -19,7 +19,6 @@ import 'pbx-keys.dart';
 const String closedSuffix = 'closed';
 const String outboundSuffix = 'outbound';
 const String reception = 'reception';
-const String receptionOpen = 'reception-open';
 
 class DialplanCompilerOpts {
   final bool goLive;
@@ -116,28 +115,20 @@ bool _involvesReceptionists(Iterable<model.Action> actions) => actions
 /**
  *
  */
-List<String> _openingHourToXmlDialplan(
-        String extension,
-        model.OpeningHour oh,
-        Iterable<model.Action> actions,
-        DialplanCompilerOpts option,
-        Environment env) =>
+List<String> _openingHourToXmlDialplan(String extension, model.OpeningHour oh,
+        Iterable<model.Action> actions, DialplanCompilerOpts option, Environment env) =>
     [
       '',
       _comment('Actions for opening hour $oh'),
       '<extension name="${extension}-${_normalizeOpeningHour(oh.toString())}" continue="true">'
     ]
       ..addAll(_involvesReceptionists(actions)
-          ? ['  <condition field="\${reception_open}" expression="^true\$"/>']
+          ? ['  <condition field="\${ORPbxKey.receptionOpen}" expression="^true\$"/>']
           : [])
-      ..add(
-          '  <condition ${_openingHourToFreeSwitch(oh)} break="${PbxKey.onTrue}">')
+      ..add('  <condition ${_openingHourToFreeSwitch(oh)} break="${PbxKey.onTrue}">')
       ..addAll(actions
           .map((action) => _actionToXmlDialplan(action, option, env))
-          .fold(
-              [],
-              (combined, current) =>
-                  combined..addAll(current.map(_indent).map(_indent))))
+          .fold([], (combined, current) => combined..addAll(current.map(_indent).map(_indent))))
       ..add('    <action application="hangup"/>')
       ..add('  </condition>')
       ..add('</extension>');
@@ -226,9 +217,6 @@ String _dialplanToXml(
     <extension name="${dialplan.extension}" continue="true">
       <condition field="destination_number" expression="^${dialplan.extension}\$" break="${PbxKey.onFalse}">
         <action application="log" data="INFO Setting variables of call to ${dialplan.extension}, currently allocated to rid ${rid}."/>
-        ${_setVar(ORPbxKey.receptionId, rid)}
-        ${_setVar(ORPbxKey.greetingPlayed, false)}
-        ${_setVar(ORPbxKey.locked, false)}
         ${_setVar(ORPbxKey.receptionId, rid)}
         ${_setVar(ORPbxKey.greetingPlayed, false)}
         ${_setVar(ORPbxKey.locked, false)}
