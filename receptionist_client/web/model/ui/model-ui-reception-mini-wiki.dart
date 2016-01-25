@@ -25,11 +25,12 @@ class _AllUriPolicy implements UriPolicy {
  * Provides access to methods and fields in the mini wiki UX component.
  */
 class UIReceptionMiniWiki extends UIModel {
-  final DivElement           _myRoot;
+  final DivElement _myRoot;
   final NodeValidatorBuilder _validator = new NodeValidatorBuilder()
-                                                ..allowHtml5()
-                                                ..allowTextElements()
-                                                ..allowNavigation(new _AllUriPolicy());
+    ..allowTextElements()
+    ..allowHtml5()
+    ..allowInlineStyles()
+    ..allowNavigation(new _AllUriPolicy());
 
   /**
    * Constructor.
@@ -40,9 +41,9 @@ class UIReceptionMiniWiki extends UIModel {
   }
 
   @override HtmlElement get _firstTabElement => _body;
-  @override HtmlElement get _focusElement    => _body;
-  @override HtmlElement get _lastTabElement  => _body;
-  @override HtmlElement get _root            => _myRoot;
+  @override HtmlElement get _focusElement => _body;
+  @override HtmlElement get _lastTabElement => _body;
+  @override HtmlElement get _root => _myRoot;
 
   DivElement get _body => _root.querySelector('.generic-widget-body');
 
@@ -58,7 +59,7 @@ class UIReceptionMiniWiki extends UIModel {
    * Add [miniWiki] markdown to the widget.
    */
   set miniWiki(String miniWiki) {
-    if(miniWiki != null && miniWiki.isNotEmpty) {
+    if (miniWiki != null && miniWiki.isNotEmpty) {
       _body.setInnerHtml(Markdown.markdownToHtml(miniWiki), validator: _validator);
 
       // Lets make sure all links open up in a new tab/window.
