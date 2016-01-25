@@ -482,9 +482,19 @@ String _ivrToXml(model.IvrMenu menu, DialplanCompilerOpts option) => '''
 
 List<String> _ivrEntryToXml(model.IvrEntry entry, DialplanCompilerOpts option) {
   List returnValue = [];
+
+  /// IvrTransfer action
   if (entry is model.IvrTransfer) {
     if (entry.transfer.note.isNotEmpty) returnValue.add(_noteTemplate(entry.transfer.note));
     returnValue.add('<entry action="${PbxKey.menuExecApp}" digits="${entry.digits}" '
+        'param="transfer ${_dialoutTemplate(entry.transfer.extension, option)}"/>');
+
+    /// IvrReceptionTransfer action
+  } else if (entry is model.IvrReceptionTransfer) {
+    if (entry.transfer.note.isNotEmpty) returnValue
+        .add(_noteTemplate(entry.transfer.note));
+    returnValue.add(
+        '<entry action="${PbxKey.menuExecApp}" digits="${entry.digits}" '
         'param="transfer ${_dialoutTemplate(entry.transfer.extension, option)}"/>');
   } else if (entry is model.IvrVoicemail) {
     returnValue.add(
