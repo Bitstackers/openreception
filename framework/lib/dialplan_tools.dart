@@ -291,7 +291,7 @@ String _transferTemplate(String extension, DialplanCompilerOpts option) =>
   */
 String _receptionTransferTemplate(
         String extension, DialplanCompilerOpts option) =>
-    '<action application="transfer" data="${extension} XML context-${extension}"/>';
+    '<action application="transfer" data="${extension} XML reception-${extension}"/>';
 
 /**
  * Template for a sleep action.
