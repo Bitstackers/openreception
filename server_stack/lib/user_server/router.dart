@@ -39,7 +39,7 @@ final Logger log = new Logger(libraryName);
 database.Connection _connection = null;
 service.Authentication _authService = null;
 
-const Map corsHeaders = const {
+const Map<String, String> corsHeaders = const {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE'
 };
