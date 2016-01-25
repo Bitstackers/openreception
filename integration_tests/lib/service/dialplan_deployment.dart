@@ -54,7 +54,12 @@ runDialplanDeploymentTests() {
 
     test(
         'Opening hours - open',
-        () => DialplanDeployment.openHoursOpen (
+        () => DialplanDeployment.openHoursOpen(
+            customer, rdpStore, receptionStore, eslClient));
+
+    test(
+        'Reception Transfer',
+        () => DialplanDeployment.receptionTransfer(
             customer, rdpStore, receptionStore, eslClient));
   });
 }
