@@ -1,9 +1,6 @@
 part of or_test_fw;
 
 abstract class DialplanDeployment {
-  static Future _sleep(int milliseconds) =>
-      new Future.delayed(new Duration(milliseconds: milliseconds));
-
   /**
    * TODO: Verify reception-id.
    */
