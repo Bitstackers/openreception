@@ -189,8 +189,10 @@ abstract class ContactStore {
     expect(contact.contactType, equals(createdContact.contactType));
     expect(contact.fullName, equals(createdContact.fullName));
     expect(contact.enabled, equals(createdContact.enabled));
-    expect(contact.asMap, equals(createdContact.asMap));
 
+    /// Inherit contact id to make toJson() not fail on different ID's.
+    contact.id = createdContact.id;
+    expect(contact.toJson(), equals(createdContact.toJson()));
     return contactStore.remove(createdContact.id);
   }
 
