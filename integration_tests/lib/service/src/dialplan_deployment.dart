@@ -37,8 +37,9 @@ abstract class DialplanDeployment {
     await eslClient.event(['CHANNEL_EXECUTE'], format: 'json');
 
     await customer.dial(rdp.extension);
-    await _sleep(2000);
-    await customer.hangupAll();
+
+    _log.info('Awaiting $customer\'s phone to hang up');
+    await customer.waitForHangup().timeout(new Duration(seconds: 10));
 
     /// Check event queue.
     final int playback1 = events.indexOf(events.firstWhere((event) =>
@@ -107,8 +108,9 @@ abstract class DialplanDeployment {
     await eslClient.event(['CHANNEL_EXECUTE'], format: 'json');
 
     await customer.dial(rdp.extension);
-    await _sleep(2000);
-    await customer.hangupAll();
+
+    _log.info('Awaiting $customer\'s phone to hang up');
+    await customer.waitForHangup().timeout(new Duration(seconds: 10));
 
     /// Check event queue.
     final int playback1 = events.indexOf(events.firstWhere((event) =>
