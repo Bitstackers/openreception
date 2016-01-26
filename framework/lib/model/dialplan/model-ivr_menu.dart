@@ -94,7 +94,7 @@ class IvrMenu {
   /**
    * An IVR menu equals another IVR menu if their names match.
    */
-  operator ==(IvrMenu other) => this.name == other.name;
+  bool operator ==(IvrMenu other) => this.name == other.name;
 
   /**
    * Serialization function.

@@ -60,8 +60,8 @@ class UserGroup {
    *
    */
   @override
-  operator == (UserGroup other) =>
-     this.id == other.id && this.name == other.name;
+  bool operator ==(UserGroup other) =>
+      this.id == other.id && this.name == other.name;
 
   /**
    *

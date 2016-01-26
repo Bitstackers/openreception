@@ -196,7 +196,7 @@ class Reception extends ReceptionStub {
   }
 
   @override
-  operator ==(Reception other) => this.ID == other.ID;
+  bool operator ==(Reception other) => this.ID == other.ID;
 
   bool get isNotEmpty => !this.isEmpty;
   bool get isEmpty => this.ID == noReception.ID;

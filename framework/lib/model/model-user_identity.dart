@@ -47,7 +47,6 @@ class UserIdentity {
    *
    */
   @override
-  operator == (UserIdentity other) =>
-     this.identity == other.identity && this.userId == other.userId;
-
+  bool operator ==(UserIdentity other) =>
+      this.identity == other.identity && this.userId == other.userId;
 }

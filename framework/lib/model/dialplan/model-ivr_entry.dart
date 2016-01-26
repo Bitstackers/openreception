@@ -61,5 +61,5 @@ abstract class IvrEntry {
   int get hashCode => toString().hashCode;
 
   @override
-  operator ==(IvrEntry other) => this.toString() == other.toString();
+  bool operator ==(IvrEntry other) => this.toString() == other.toString();
 }

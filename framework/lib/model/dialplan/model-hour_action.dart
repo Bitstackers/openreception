@@ -32,5 +32,5 @@ class HourAction {
     'actions' : actions
   };
 
-  operator == (HourAction other) => this.toString() == other.toString();
+  bool operator ==(HourAction other) => this.toString() == other.toString();
 }

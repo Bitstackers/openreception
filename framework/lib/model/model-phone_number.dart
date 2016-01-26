@@ -51,10 +51,8 @@ class PhoneNumber {
    * both their value and type is the same.
    */
   @override
-  operator == (PhoneNumber other) =>
-    this.value == other.value &&
-    this.type== other.type
-    ;
+  bool operator ==(PhoneNumber other) =>
+      this.value == other.value && this.type == other.type;
 
   /**
    * Default empty constructor.

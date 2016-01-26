@@ -42,12 +42,6 @@ class Owner {
   /**
    *
    */
-  @override
-  operator ==(Owner other);
-
-  /**
-   *
-   */
   String toJson() => toString();
 
   /**
@@ -68,7 +62,8 @@ class OwningReception extends Owner {
   const OwningReception(this.receptionId);
 
   @override
-  operator ==(OwningReception other) => this.receptionId == other.receptionId;
+  bool operator ==(OwningReception other) =>
+      this.receptionId == other.receptionId;
 
   /**
    *
@@ -92,7 +87,7 @@ class OwningContact extends Owner {
   const OwningContact(this.contactId);
 
   @override
-  operator ==(OwningContact other) => this.contactId == other.contactId;
+  bool operator ==(OwningContact other) => this.contactId == other.contactId;
 
   /**
    *

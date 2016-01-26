@@ -68,7 +68,7 @@ class Voicemail extends Action {
   /**
    *
    */
-  operator ==(Voicemail other) => this.vmBox == other.vmBox;
+  bool operator ==(Voicemail other) => this.vmBox == other.vmBox;
 
   /**
    *

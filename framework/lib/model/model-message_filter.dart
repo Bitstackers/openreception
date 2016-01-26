@@ -144,7 +144,7 @@ class MessageFilter {
    * two filter instances to be equal.
    */
   @override
-  operator == (MessageFilter other) =>
+  bool operator ==(MessageFilter other) =>
       this.upperMessageID == other.upperMessageID &&
       this.limitCount     == other.limitCount &&
       this.messageState   == other.messageState &&
