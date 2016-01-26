@@ -21,7 +21,7 @@ class DistributionList extends IterableBase<DistributionListEntry> {
   static const String className = '${libraryName}.RecipientList';
   static final Logger log = new Logger(className);
 
-  Iterator get iterator => _recipients.iterator;
+  Iterator<DistributionListEntry> get iterator => _recipients.iterator;
 
   Set<DistributionListEntry> _recipients = new Set();
 
