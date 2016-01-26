@@ -14,7 +14,6 @@
 part of openreception.storage;
 
 abstract class Organization {
-
   Future<Iterable<Model.BaseContact>> contacts(int organizationID);
 
   Future<Model.Organization> create(Model.Organization organization);
@@ -23,7 +22,7 @@ abstract class Organization {
 
   Future<Iterable<Model.Organization>> list();
 
-  Future<Model.Organization> remove(int organizationID);
+  Future remove(int organizationID);
 
   Future<Model.Organization> update(Model.Organization organization);
 
