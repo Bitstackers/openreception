@@ -68,5 +68,5 @@ Future<io.HttpServer> start(
   routeLog.fine('Serving interfaces:');
   shelf_route.printRoutes(router, printer: routeLog.fine);
 
-  return shelf_io.serve(handler, hostname, port);
+  return await shelf_io.serve(handler, hostname, port);
 }

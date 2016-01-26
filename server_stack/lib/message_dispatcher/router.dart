@@ -26,49 +26,53 @@ import 'package:openreception_framework/database.dart' as database;
 import '../configuration.dart';
 import 'controller.dart' as Controller;
 
-final Logger log = new Logger ('message_dispatcher.router');
+final Logger log = new Logger('message_dispatcher.router');
 
 shelf.Middleware addCORSHeaders =
-  shelf.createMiddleware(requestHandler: _options, responseHandler: _cors);
+    shelf.createMiddleware(requestHandler: _options, responseHandler: _cors);
 
-const Map<String, String> textHtmlHeader = const {IO.HttpHeaders.CONTENT_TYPE: 'text/html'};
-const Map<String, String> CORSHeader = const {'Access-Control-Allow-Origin': '*'};
+const Map<String, String> textHtmlHeader = const {
+  IO.HttpHeaders.CONTENT_TYPE: 'text/html'
+};
+const Map<String, String> CORSHeader = const {
+  'Access-Control-Allow-Origin': '*'
+};
 
-shelf.Response _options(shelf.Request request) =>
-    (request.method == 'OPTIONS')
-      ? new shelf.Response.ok(null, headers: CORSHeader)
-      : null;
+shelf.Response _options(shelf.Request request) => (request.method == 'OPTIONS')
+    ? new shelf.Response.ok(null, headers: CORSHeader)
+    : null;
 
-shelf.Response _cors(shelf.Response response) => response.change(headers: CORSHeader);
+shelf.Response _cors(shelf.Response response) =>
+    response.change(headers: CORSHeader);
 
 database.MessageQueue messageQueueStore;
 database.Message messageStore;
 database.User userStore;
 
-Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4060}) {
+Future<IO.HttpServer> start(
+    {String hostname: '0.0.0.0', int port: 4060}) async {
+  Future setup() => database.Connection
+          .connect(config.database.dsn)
+          .then((database.Connection conn) {
+        database.MessageQueue mqdb = new database.MessageQueue(conn);
+        messageStore = new database.Message(conn);
+        userStore = new database.User(conn);
+        messageQueueStore = mqdb;
+        Controller.MessageQueue mq = new Controller.MessageQueue(mqdb);
 
-  Future setup () =>
-    database.Connection.connect(config.database.dsn)
-      .then((database.Connection conn) {
-    database.MessageQueue mqdb = new database.MessageQueue(conn);
-    messageStore = new database.Message(conn);
-    userStore = new database.User(conn);
-    messageQueueStore = mqdb;
-    Controller.MessageQueue mq = new Controller.MessageQueue(mqdb);
+        var router = shelf_route.router()..get('/messagequeue', mq.list);
 
-    var router = shelf_route.router()
-        ..get('/messagequeue', mq.list);
+        var handler = const shelf.Pipeline()
+            .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
+            .addMiddleware(addCORSHeaders)
+            .addHandler(router.handler);
 
-    var handler = const shelf.Pipeline()
-        .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
-        .addMiddleware(addCORSHeaders)
-        .addHandler(router.handler);
+        log.fine('Serving interfaces:');
+        shelf_route.printRoutes(router, printer: log.fine);
 
-    log.fine('Serving interfaces:');
-    shelf_route.printRoutes(router, printer : log.fine);
+        return handler;
+      });
 
-    return handler;
-  });
-
-  return setup().then((handler) => shelf_io.serve(handler, hostname, port));
+  return await setup()
+      .then((handler) => shelf_io.serve(handler, hostname, port));
 }

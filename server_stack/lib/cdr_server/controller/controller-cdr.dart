@@ -48,7 +48,7 @@ class Cdr {
         ? shelf_route.getPathParameter(request, 'inbound') == 'true'
         : false;
 
-    return _cdrStore.list(inbound, start, end).then(
+    return await _cdrStore.list(inbound, start, end).then(
         (List orgs) => _okJson({'cdr_stats': orgs.toList(growable: false)}));
   }
 
@@ -68,7 +68,9 @@ class Cdr {
       return _clientError('Failed to process body');
     }
 
-    return _cdrStore.createCheckpoint(checkpoint).then((_) => _okJson({}));
+    return await _cdrStore
+        .createCheckpoint(checkpoint)
+        .then((_) => _okJson({}));
   }
 
   /**
@@ -94,6 +96,6 @@ class Cdr {
       return _clientError('Failed to process body');
     }
 
-    return _cdrStore.create(entry).then((_) => _okJson({}));
+    return await _cdrStore.create(entry).then((_) => _okJson({}));
   }
 }

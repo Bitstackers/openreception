@@ -132,5 +132,5 @@ Future<IO.HttpServer> start(
   _log.fine('Serving interfaces:');
   shelf_route.printRoutes(router, printer: _log.fine);
 
-  return shelf_io.serve(handler, hostname, port);
+  return await shelf_io.serve(handler, hostname, port);
 }

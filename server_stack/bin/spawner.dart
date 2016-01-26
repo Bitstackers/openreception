@@ -21,12 +21,12 @@ const bool CHECKED = false;
 const bool USE_OBSERVATORY = false;
 
 Random rand = new Random();
-const int MAX_RANDOM_INT = (1<<32)-1;
+const int MAX_RANDOM_INT = (1 << 32) - 1;
 
 void main(List<String> arguments) {
   String ServerTokenDir = '/tmp/tokens${rand.nextInt(MAX_RANDOM_INT)}';
 
-  if(arguments.length > 0) {
+  if (arguments.length > 0) {
     ServerTokenDir = arguments[0];
   }
 
@@ -39,50 +39,17 @@ void main(List<String> arguments) {
       'path': 'bin/authserver.dart',
       'args': ['--servertokendir', '$serverTokenDirAbsolutPath']
     },
-    'CalendarServer': {
-      'path': 'bin/calendarserver.dart',
-      'args': []
-    },
-    'CallFlow': {
-      'path': 'bin/callflowcontrol.dart',
-      'args': []
-    },
-    'DialplanServer': {
-      'path': 'bin/dialplanserver.dart',
-      'args': []
-    },
-    'CDRServer': {
-      'path': 'bin/cdrserver.dart',
-      'args': []
-    },
-    'ContactServer': {
-      'path': 'bin/contactserver.dart',
-      'args': []
-    },
-    'MessageServer': {
-      'path': 'bin/messageserver.dart',
-      'args': []
-    },
-    'MessageDispatcher': {
-      'path': 'bin/messagedispatcher.dart',
-      'args': []
-    },
-    'ConfigServer': {
-      'path': 'bin/configserver.dart',
-      'args': []
-    },
-    'NotificationServer': {
-      'path': 'bin/notificationserver.dart',
-      'args': []
-    },
-    'ReceptionServer': {
-      'path': 'bin/receptionserver.dart',
-      'args': []
-    },
-    'UserServer': {
-      'path': 'bin/userserver.dart',
-      'args' : []
-    }
+    'CalendarServer': {'path': 'bin/calendarserver.dart', 'args': []},
+    'CallFlow': {'path': 'bin/callflowcontrol.dart', 'args': []},
+    'DialplanServer': {'path': 'bin/dialplanserver.dart', 'args': []},
+    'CDRServer': {'path': 'bin/cdrserver.dart', 'args': []},
+    'ContactServer': {'path': 'bin/contactserver.dart', 'args': []},
+    'MessageServer': {'path': 'bin/messageserver.dart', 'args': []},
+    'MessageDispatcher': {'path': 'bin/messagedispatcher.dart', 'args': []},
+    'ConfigServer': {'path': 'bin/configserver.dart', 'args': []},
+    'NotificationServer': {'path': 'bin/notificationserver.dart', 'args': []},
+    'ReceptionServer': {'path': 'bin/receptionserver.dart', 'args': []},
+    'UserServer': {'path': 'bin/userserver.dart', 'args': []}
   };
 
   ProcessSignal.SIGINT.watch().listen((_) {
@@ -107,22 +74,27 @@ void main(List<String> arguments) {
     print('Starting ${serverName}..');
 
     List<String> args = CHECKED ? ['--checked'] : [];
-    if(USE_OBSERVATORY) {
+    if (USE_OBSERVATORY) {
       args.add('--enable-vm-service=${opservatoryCount++}');
     }
     args.add(server['path']);
-    args.addAll(server['args']);
+    args.addAll(server['args'] as Iterable<String>);
 
     Process.start('dart', args).then((process) {
       server['process'] = process;
 
-      process.stdout.transform(UTF8.decoder).transform(new LineSplitter()).listen((String line) {
+      process.stdout
+          .transform(UTF8.decoder)
+          .transform(new LineSplitter())
+          .listen((String line) {
         print('${serverName} (output): ${line}');
       });
-      process.stderr.transform(UTF8.decoder).transform(new LineSplitter()).listen((String line) {
+      process.stderr
+          .transform(UTF8.decoder)
+          .transform(new LineSplitter())
+          .listen((String line) {
         print('${serverName} (errors): ${line}');
       });
     });
   });
-
 }

@@ -229,15 +229,15 @@ abstract class PBX {
   }
 
   static Future transferUUIDToExtension(
-      String uuid, String extension, ORModel.User user, String context) {
-    return api('uuid_setvar $uuid effective_caller_id_number ${user.peer}')
-        .then((_) =>
-            api('uuid_setvar $uuid effective_caller_id_name ${user.name}'))
-        .then((_) => bgapi(
-            'uuid_transfer $uuid external_transfer_$extension xml reception-$context'))
-        .then((ESL.Reply reply) => reply.status != ESL.Reply.OK
-            ? new Future.error(new PBXException(reply.replyRaw))
-            : null);
+      String uuid, String extension, ORModel.User user, String context) async {
+    await api('uuid_setvar $uuid effective_caller_id_number ${user.peer}');
+    await api('uuid_setvar $uuid effective_caller_id_name ${user.name}');
+    final ESL.Reply reply = await bgapi(
+        'uuid_transfer $uuid external_transfer_$extension xml reception-$context');
+
+    if (reply.status != ESL.Reply.OK) {
+      throw new PBXException(reply.replyRaw);
+    }
   }
 
   /**
@@ -289,7 +289,7 @@ abstract class PBX {
   }
 
   /**
-   * Writes [msg] to log and throws a [PBXException]. 
+   * Writes [msg] to log and throws a [PBXException].
    */
   static void _logAndFail(String msg) {
     log.severe(msg);

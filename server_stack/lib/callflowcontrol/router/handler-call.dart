@@ -104,8 +104,7 @@ abstract class Call {
             Model.CallList.instance.get(callID).assignedTo == user.ID;
 
     if (callID == null || callID == "") {
-      return new Future.value(
-          new shelf.Response(400, body: 'Empty call_id in path.'));
+      return new shelf.Response(400, body: 'Empty call_id in path.');
     }
 
     /// User object fetching.
@@ -145,7 +144,7 @@ abstract class Call {
         .then((OREvent.CallHangup hangupEvent) =>
             completer.complete(hangupEvent.call));
 
-    return Controller.PBX.hangup(targetCall).then((_) {
+    return await Controller.PBX.hangup(targetCall).then((_) {
       return completer.future.then((ORModel.Call hungupCall) {
         /// Update peer state.
         peer.inTransition = false;
@@ -428,7 +427,7 @@ abstract class Call {
 
     /// Parameter check.
     if (callID == null || callID == "") {
-      return new Future.value(_clientError('Empty call_id in path.'));
+      return _clientError('Empty call_id in path.');
     }
 
     /// User object fetching.
@@ -494,8 +493,8 @@ abstract class Call {
       assignedCall.assignedTo = originallyAssignedTo;
 
       /// Make sure the agent channel is closed before returning a response.
-      return new Future.delayed(new Duration(seconds: 3)).then((_) => Controller
-              .PBX
+      return await new Future.delayed(new Duration(seconds: 3)).then((_) =>
+          Controller.PBX
               .killChannel(agentChannel)
               .then((_) => _serverError(msg))
               .catchError((error, stackTrace) {
@@ -516,7 +515,7 @@ abstract class Call {
       peer.inTransition = false;
 
       /// Make sure the agent channel is closed before returning a response.
-      return Controller.PBX
+      return await Controller.PBX
           .killChannel(agentChannel)
           .then((_) => _serverError(msg))
           .catchError((error, stackTrace) {
@@ -552,25 +551,24 @@ abstract class Call {
     ORModel.User user;
 
     if (sourceCallID == null || sourceCallID == "") {
-      return new Future.value(
-          new shelf.Response(400, body: 'Empty call_id in path.'));
+      return new shelf.Response(400, body: 'Empty call_id in path.');
     }
 
     ///Check valitity of the call. (Will raise exception on invalid).
     try {
       [sourceCallID, destinationCallID].forEach(ORModel.Call.validateID);
     } on FormatException catch (_) {
-      return new Future.value(new shelf.Response(400,
-          body: 'Error in call id format (empty, null, nullID)'));
+      return new shelf.Response(400,
+          body: 'Error in call id format (empty, null, nullID)');
     }
 
     try {
       sourceCall = Model.CallList.instance.get(sourceCallID);
       destinationCall = Model.CallList.instance.get(destinationCallID);
     } on ORStorage.NotFound catch (_) {
-      return new Future.value(new shelf.Response.notFound(JSON.encode({
+      return new shelf.Response.notFound(JSON.encode({
         'description': 'At least one of the calls are ' 'no longer available'
-      })));
+      }));
     }
 
     log.finest('Transferring $sourceCall -> $destinationCall');
@@ -600,7 +598,7 @@ abstract class Call {
     /// Update peer state.
     peer.inTransition = true;
 
-    return Controller.PBX.bridge(sourceCall, destinationCall).then((_) {
+    return await Controller.PBX.bridge(sourceCall, destinationCall).then((_) {
       return new shelf.Response.ok('{"status" : "ok"}');
     }).catchError((error, stackTrace) {
       log.severe(error, stackTrace);

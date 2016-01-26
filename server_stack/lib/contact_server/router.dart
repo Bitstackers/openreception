@@ -33,7 +33,7 @@ import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 const String libraryName = 'contactserver.router';
 final Logger log = new Logger(libraryName);
 
-const Map corsHeaders = const {
+const Map<String, String> corsHeaders = const {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE'
 };
@@ -128,5 +128,5 @@ Future<IO.HttpServer> start(
   log.fine('Serving interfaces:');
   shelf_route.printRoutes(router, printer: log.fine);
 
-  return shelf_io.serve(handler, hostname, port);
+  return await shelf_io.serve(handler, hostname, port);
 }

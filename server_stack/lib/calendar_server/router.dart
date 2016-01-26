@@ -32,7 +32,7 @@ import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 
 final Logger _log = new Logger('calendarserver.router');
 
-const Map _corsHeaders = const {
+const Map<String, String> _corsHeaders = const {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE'
 };
@@ -106,5 +106,5 @@ Future<IO.HttpServer> start(
   _log.fine('Serving interfaces:');
   shelf_route.printRoutes(router, printer: _log.fine);
 
-  return shelf_io.serve(handler, hostname, port);
+  return await shelf_io.serve(handler, hostname, port);
 }

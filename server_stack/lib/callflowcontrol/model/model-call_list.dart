@@ -18,7 +18,7 @@ class CallList extends IterableBase<ORModel.Call> {
 
   Map<String, ORModel.Call> _map = new Map<String, ORModel.Call>();
 
-  Iterator get iterator => this._map.values.iterator;
+  Iterator<ORModel.Call> get iterator => this._map.values.iterator;
 
   Bus<OREvent.Event> _callEvent = new Bus<OREvent.Event>();
   Stream<OREvent.Event> get onEvent => this._callEvent.stream;

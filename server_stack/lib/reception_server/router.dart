@@ -83,8 +83,8 @@ Future<IO.HttpServer> start(
   controller.Organization organization = new controller.Organization(
       new Database.Organization(_connection), _notification);
 
-  controller.Reception reception =
-      new controller.Reception(new Database.Reception(_connection), _notification);
+  controller.Reception reception = new controller.Reception(
+      new Database.Reception(_connection), _notification);
 
   var router = shelf_route.router()
     ..get('/organization', organization.list)
@@ -111,5 +111,5 @@ Future<IO.HttpServer> start(
   _log.fine('Serving interfaces:');
   shelf_route.printRoutes(router, printer: _log.fine);
 
-  return shelf_io.serve(handler, hostname, port);
+  return await shelf_io.serve(handler, hostname, port);
 }
