@@ -14,84 +14,73 @@
 part of openreception.event;
 
 abstract class CallEvent implements Event {
-
   final DateTime timestamp;
 
-  final Call   call;
+  final Call call;
 
-  CallEvent (Call this.call) : this.timestamp = new DateTime.now();
+  CallEvent(Call this.call) : this.timestamp = new DateTime.now();
 
   Map toJson() => this.asMap;
   String toString() => this.asMap.toString();
 
   Map get asMap => EventTemplate.call(this);
 
-  CallEvent.fromMap (Map map) :
-    this.call      = new Call.fromMap             (map[Key.call]),
-    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
-
+  CallEvent.fromMap(Map map)
+      : this.call = new Call.fromMap(map[Key.call]),
+        this.timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
 }
 
 class CallLock extends CallEvent {
+  final String eventName = Key.callLock;
 
-  final String   eventName = Key.callLock;
-
-  CallLock (Call call) : super (call);
-  CallLock.fromMap (Map map) : super.fromMap(map);
+  CallLock(Call call) : super(call);
+  CallLock.fromMap(Map map) : super.fromMap(map);
 }
 
 class CallUnlock extends CallEvent {
+  final String eventName = Key.callUnlock;
 
-  final String   eventName = Key.callUnlock;
-
-  CallUnlock (Call call) : super (call);
-  CallUnlock.fromMap (Map map) : super.fromMap(map);
+  CallUnlock(Call call) : super(call);
+  CallUnlock.fromMap(Map map) : super.fromMap(map);
 }
 
 class CallOffer extends CallEvent {
+  final String eventName = Key.callOffer;
 
-  final String   eventName = Key.callOffer;
-
-  CallOffer (Call call) : super (call);
-  CallOffer.fromMap (Map map) : super.fromMap(map);
+  CallOffer(Call call) : super(call);
+  CallOffer.fromMap(Map map) : super.fromMap(map);
 }
 
 class CallPark extends CallEvent {
+  final String eventName = Key.callPark;
 
-  final String   eventName = Key.callPark;
-
-  CallPark (Call call) : super(call);
-  CallPark.fromMap (Map map) : super.fromMap(map);
+  CallPark(Call call) : super(call);
+  CallPark.fromMap(Map map) : super.fromMap(map);
 }
 
 class CallUnpark extends CallEvent {
+  final String eventName = Key.callUnpark;
 
-  final String   eventName = Key.callUnpark;
-
-  CallUnpark (Call call) : super (call);
-  CallUnpark.fromMap (Map map) : super.fromMap (map);
+  CallUnpark(Call call) : super(call);
+  CallUnpark.fromMap(Map map) : super.fromMap(map);
 }
 
 class CallPickup extends CallEvent {
+  final String eventName = Key.callPickup;
 
-  final String   eventName = Key.callPickup;
-
-  CallPickup (Call call) : super (call);
-  CallPickup.fromMap (Map map) : super.fromMap (map);
-
+  CallPickup(Call call) : super(call);
+  CallPickup.fromMap(Map map) : super.fromMap(map);
 }
 
 class CallTransfer extends CallEvent {
+  final String eventName = Key.callTransfer;
 
-  final String   eventName = Key.callTransfer;
-
-  CallTransfer (Call call) : super(call);
-  CallTransfer.fromMap (Map map) : super.fromMap(map);
+  CallTransfer(Call call) : super(call);
+  CallTransfer.fromMap(Map map) : super.fromMap(map);
 }
 
 class CallHangup extends CallEvent {
-
-  final String   eventName = Key.callHangup;
+  final String eventName = Key.callHangup;
   final String hangupCause;
 
   CallHangup(Call call, {this.hangupCause: ''}) : super(call);
@@ -100,46 +89,41 @@ class CallHangup extends CallEvent {
         super.fromMap(map);
 
   @override
-  Map get asMap => super.asMap..addAll({Key.hangupCause : this.hangupCause});
-
+  Map get asMap => super.asMap..addAll({Key.hangupCause: this.hangupCause});
 }
 
 class CallStateChanged extends CallEvent {
+  final String eventName = Key.callState;
 
-  final String   eventName = Key.callState;
-
-  CallStateChanged (Call call) : super(call);
-  CallStateChanged.fromMap (Map map) : super.fromMap(map);
+  CallStateChanged(Call call) : super(call);
+  CallStateChanged.fromMap(Map map) : super.fromMap(map);
 }
 
 class QueueJoin extends CallEvent {
+  final String eventName = Key.queueJoin;
 
-  final String   eventName = Key.queueJoin;
-
-  QueueJoin (Call call) : super(call);
-  QueueJoin.fromMap (Map map) : super.fromMap(map);
+  QueueJoin(Call call) : super(call);
+  QueueJoin.fromMap(Map map) : super.fromMap(map);
 }
 
 class QueueLeave extends CallEvent {
+  final String eventName = Key.queueLeave;
 
-  final String   eventName = Key.queueLeave;
-
-  QueueLeave (Call call) : super(call);
-  QueueLeave.fromMap (Map map) : super.fromMap(map);
+  QueueLeave(Call call) : super(call);
+  QueueLeave.fromMap(Map map) : super.fromMap(map);
 }
 
 class CallStateReload implements Event {
-
-  final String   eventName = Key.callStateReload;
+  final String eventName = Key.callStateReload;
   final DateTime timestamp;
 
-  CallStateReload () : this.timestamp = new DateTime.now();
+  CallStateReload() : this.timestamp = new DateTime.now();
 
   Map toJson() => this.asMap;
   String toString() => this.asMap.toString();
 
   Map get asMap => EventTemplate._rootElement(this);
 
-  CallStateReload.fromMap (Map map) :
-    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
+  CallStateReload.fromMap(Map map)
+      : this.timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
 }
