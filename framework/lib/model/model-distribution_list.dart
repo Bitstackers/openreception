@@ -25,15 +25,19 @@ class DistributionList extends IterableBase<DistributionListEntry> {
 
   Set<DistributionListEntry> _recipients = new Set();
 
-  Set<DistributionListEntry> get to =>
-      _recipients.where((DistributionListEntry mr) => mr.role == Role.TO).toSet();
-  Set<DistributionListEntry> get cc =>
-      _recipients.where((DistributionListEntry mr) => mr.role == Role.CC).toSet();
-  Set<DistributionListEntry> get bcc =>
-      _recipients.where((DistributionListEntry mr) => mr.role == Role.BCC).toSet();
+  Set<DistributionListEntry> get to => _recipients
+      .where((DistributionListEntry mr) => mr.role == Role.TO)
+      .toSet();
+  Set<DistributionListEntry> get cc => _recipients
+      .where((DistributionListEntry mr) => mr.role == Role.CC)
+      .toSet();
+  Set<DistributionListEntry> get bcc => _recipients
+      .where((DistributionListEntry mr) => mr.role == Role.BCC)
+      .toSet();
 
-  List toJson() =>
-      _recipients.map((DistributionListEntry recipient) => recipient.asMap).toList();
+  List toJson() => _recipients
+      .map((DistributionListEntry recipient) => recipient.asMap)
+      .toList();
 
   bool get hasRecipients => to.isNotEmpty || cc.isNotEmpty || bcc.isNotEmpty;
 
