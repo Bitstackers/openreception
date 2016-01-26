@@ -46,8 +46,8 @@ class Voicemail extends Action {
 
     /// Check for comments, or consume recipient.
     if (buffer.startsWith('(')) {
-      consumed = consumeComment(buffer);
-      note = consumed.comment;
+      var consumedComment = consumeComment(buffer);
+      note = consumedComment.comment;
     } else {
       consumed = consumeWord(buffer);
       recipient = consumed.iden;
@@ -58,8 +58,8 @@ class Voicemail extends Action {
 
     /// Check for comments.
     if (buffer.startsWith('(')) {
-      consumed = consumeComment(buffer);
-      note = consumed.comment;
+      var consumedComment = consumeComment(buffer);
+      note = consumedComment.comment;
     }
 
     return new Voicemail(vmBox, recipient: recipient, note: note);
