@@ -29,7 +29,6 @@ void testEvent() {
 }
 
 abstract class EventTests {
-
   static void endpointChange() {
     final int cid = 1;
     final int rid = 2;
@@ -37,7 +36,8 @@ abstract class EventTests {
     final address = 'someone@somewhere';
     final addressType = 'email';
 
-    Event.EndpointChange testEvent = new Event.EndpointChange(cid, rid, state, address, addressType);
+    Event.EndpointChange testEvent =
+        new Event.EndpointChange(cid, rid, state, address, addressType);
 
     Event.EndpointChange builtEvent = new Event.Event.parse(testEvent.asMap);
 
@@ -64,9 +64,11 @@ abstract class EventTests {
     final int oid = 1;
     final state = Event.OrganizationState.CREATED;
 
-    Event.OrganizationChange testEvent = new Event.OrganizationChange(oid, state);
+    Event.OrganizationChange testEvent =
+        new Event.OrganizationChange(oid, state);
 
-    Event.OrganizationChange builtEvent = new Event.Event.parse(testEvent.asMap);
+    Event.OrganizationChange builtEvent =
+        new Event.Event.parse(testEvent.asMap);
 
     expect(builtEvent.orgID, equals(oid));
     expect(builtEvent.state, equals(state));
@@ -89,19 +91,22 @@ abstract class EventTests {
     final int rid = 2;
     final state = Event.ReceptionContactState.CREATED;
 
-    Event.ReceptionContactChange testEvent = new Event.ReceptionContactChange(cid, rid, state);
+    Event.ReceptionContactChange testEvent =
+        new Event.ReceptionContactChange(cid, rid, state);
 
-    Event.ReceptionContactChange builtEvent = new Event.Event.parse(testEvent.asMap);
+    Event.ReceptionContactChange builtEvent =
+        new Event.Event.parse(testEvent.asMap);
 
     expect(builtEvent.contactID, equals(cid));
     expect(builtEvent.receptionID, equals(rid));
     expect(builtEvent.state, equals(state));
   }
+
   static void messageChangeState() {
     final int mid = 1;
     final int uid = 2;
 
-    Event.MessageChange testEvent = new Event.MessageChange.created(mid,uid);
+    Event.MessageChange testEvent = new Event.MessageChange.created(mid, uid);
 
     Event.MessageChange builtEvent = new Event.Event.parse(testEvent.asMap);
 
@@ -110,7 +115,7 @@ abstract class EventTests {
     expect(builtEvent.state, equals(Event.MessageChangeState.CREATED));
   }
 
-  static void calendarEntryState () {
+  static void calendarEntryState() {
     final int id = 1;
     final int rid = 2;
     final int cid = 3;
@@ -121,10 +126,10 @@ abstract class EventTests {
 
     Event.CalendarChange builtEvent = new Event.Event.parse(testEvent.asMap);
 
-    expect (builtEvent.contactID, equals(cid));
-    expect (builtEvent.receptionID, equals(rid));
-    expect (builtEvent.entryID, equals(id));
-    expect (builtEvent.state, equals(state));
+    expect(builtEvent.contactID, equals(cid));
+    expect(builtEvent.receptionID, equals(rid));
+    expect(builtEvent.entryID, equals(id));
+    expect(builtEvent.state, equals(state));
   }
 
   static void userChange() {
@@ -136,42 +141,46 @@ abstract class EventTests {
 
     Event.UserChange builtEvent = new Event.Event.parse(createEvent.asMap);
 
-    expect (builtEvent.userID, equals(userID));
-    expect (builtEvent.state, equals(Event.UserObjectState.CREATED));
+    expect(builtEvent.userID, equals(userID));
+    expect(builtEvent.state, equals(Event.UserObjectState.CREATED));
 
     builtEvent = new Event.Event.parse(updateEvent.asMap);
 
-    expect (builtEvent.userID, equals(userID));
-    expect (builtEvent.state, equals(Event.UserObjectState.UPDATED));
+    expect(builtEvent.userID, equals(userID));
+    expect(builtEvent.state, equals(Event.UserObjectState.UPDATED));
 
     builtEvent = new Event.Event.parse(removeEvent.asMap);
 
-    expect (builtEvent.userID, equals(userID));
-    expect (builtEvent.state, equals(Event.UserObjectState.DELETED));
+    expect(builtEvent.userID, equals(userID));
+    expect(builtEvent.state, equals(Event.UserObjectState.DELETED));
   }
 
-  static void callStateReload () {
-
+  static void callStateReload() {
     Event.CallStateReload testEvent = new Event.CallStateReload();
 
     Event.CallStateReload builtEvent = new Event.Event.parse(testEvent.asMap);
 
-    expect (builtEvent.timestamp.difference(testEvent.timestamp).inMilliseconds.abs(), lessThan(1000));
-    expect (builtEvent.eventName, equals(Event.Key.callStateReload));
-    expect (builtEvent.eventName, testEvent.eventName);
+    expect(
+        builtEvent.timestamp
+            .difference(testEvent.timestamp)
+            .inMilliseconds
+            .abs(),
+        lessThan(1000));
+    expect(builtEvent.eventName, equals(Event.Key.callStateReload));
+    expect(builtEvent.eventName, testEvent.eventName);
   }
 
-  static void callHangup () {
+  static void callHangup() {
     Model.Call testCall = new Model.Call.empty('test-id');
 
     Event.CallHangup testEvent =
-        new Event.CallHangup(testCall, hangupCause : 'no-reason');
+        new Event.CallHangup(testCall, hangupCause: 'no-reason');
 
     Event.CallHangup builtEvent = new Event.Event.parse(testEvent.toJson());
 
-    expect (builtEvent.timestamp.isAtSameMomentAs(testEvent.timestamp), isTrue);
-    expect (builtEvent.eventName, equals(Event.Key.callHangup));
-    expect (builtEvent.hangupCause, equals(testEvent.hangupCause));
-    expect (builtEvent.eventName, testEvent.eventName);
+    expect(builtEvent.timestamp.isAtSameMomentAs(testEvent.timestamp), isTrue);
+    expect(builtEvent.eventName, equals(Event.Key.callHangup));
+    expect(builtEvent.hangupCause, equals(testEvent.hangupCause));
+    expect(builtEvent.eventName, testEvent.eventName);
   }
 }
