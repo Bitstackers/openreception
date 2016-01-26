@@ -110,7 +110,7 @@ class NotificationService {
   Future<String> _enqueue(_NotificationRequest request) {
     if (!_busy) {
       _busy = true;
-      return this._performRequest(request);
+      return _performRequest(request);
     } else {
       _requestQueue.add(request);
       return request.response.future;
@@ -121,7 +121,7 @@ class NotificationService {
    * Performs the actual backend post operation.
    *
    */
-  Future _performRequest(_NotificationRequest request) {
+  Future<String> _performRequest(_NotificationRequest request) async {
     void dispatchNext() {
       if (_requestQueue.isNotEmpty) {
         _NotificationRequest currentRequest = _requestQueue.removeFirst();
@@ -133,11 +133,14 @@ class NotificationService {
       }
     }
 
-    return this
-        ._backend
-        .post(request.resource, JSON.encode(request.body))
-        .catchError((error, StackTrace) => print('${error} : ${StackTrace}'))
-        .whenComplete(dispatchNext);
+    try {
+      return await _backend
+          .post(request.resource, JSON.encode(request.body))
+          .whenComplete(dispatchNext);
+    } catch (error, StackTrace) {
+      log.warning('${error} : ${StackTrace}');
+      throw new Error();
+    }
   }
 
   /**
@@ -146,8 +149,8 @@ class NotificationService {
   static Future<NotificationSocket> socket(
       WebSocket notificationBackend, Uri host, String serverToken) {
     return notificationBackend
-        .connect(
-            _appendToken(Resource.Notification.notifications(host), serverToken))
+        .connect(_appendToken(
+            Resource.Notification.notifications(host), serverToken))
         .then((WebSocket ws) => new NotificationSocket(ws));
   }
 }
