@@ -172,7 +172,7 @@ List<String> _fallbackToDialplan(
 /**
  *
  */
-Iterable<String> _hourActionToXmlDialplan(String extension,
+Iterable<Iterable<String>> _hourActionToXmlDialplan(String extension,
         model.HourAction hourAction, DialplanCompilerOpts option) =>
     hourAction.hours.map((oh) => _openingHourToXmlDialplan(
         extension, oh, hourAction.actions, option, new Environment()));
