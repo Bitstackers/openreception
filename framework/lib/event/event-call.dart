@@ -94,9 +94,10 @@ class CallHangup extends CallEvent {
   final String   eventName = Key.callHangup;
   final String hangupCause;
 
-  CallHangup (Call call, {this.hangupCause : ''}) : super(call);
-  CallHangup.fromMap (Map map) : super.fromMap(map),
-      this.hangupCause = map[Key.hangupCause];
+  CallHangup(Call call, {this.hangupCause: ''}) : super(call);
+  CallHangup.fromMap(Map map)
+      : hangupCause = map[Key.hangupCause],
+        super.fromMap(map);
 
   @override
   Map get asMap => super.asMap..addAll({Key.hangupCause : this.hangupCause});
