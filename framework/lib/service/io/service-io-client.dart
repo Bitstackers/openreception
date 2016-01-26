@@ -17,11 +17,12 @@ part of openreception.service.io;
  * HTTP Client for use with dart:io.
  */
 class Client extends Service.WebService {
-
   static final String className = '${libraryName}.Client';
   static final Logger log = new Logger(className);
-  static final IO.ContentType contentTypeJson = new IO.ContentType("application", "json", charset: "utf-8");
-  static final IO.ContentType contentTypeApplicationForm = new IO.ContentType("application", "x-www-form-urlencoded");
+  static final IO.ContentType contentTypeJson =
+      new IO.ContentType("application", "json", charset: "utf-8");
+  static final IO.ContentType contentTypeApplicationForm =
+      new IO.ContentType("application", "x-www-form-urlencoded");
 
   final IO.HttpClient client = new IO.HttpClient();
 
@@ -29,74 +30,74 @@ class Client extends Service.WebService {
    * Retrives [resource] using HTTP GET.
    * Throws subclasses of [StorageException] upon failure.
    */
-  Future<String> get(Uri resource) {
+  Future<String> get(Uri resource) async {
     log.finest('GET $resource');
 
-    return client.getUrl(resource)
-      .then((IO.HttpClientRequest request) => request.close())
-      .then((IO.HttpClientResponse response) => _handleResponse(response, 'GET', resource));
+    IO.HttpClientRequest request = await client.getUrl(resource);
+    IO.HttpClientResponse response = await request.close();
+
+    return await _handleResponse(response, 'GET', resource);
   }
 
   /**
    * Retrives [resource] using HTTP PUT, sending [payload].
    * Throws subclasses of [StorageException] upon failure.
    */
-  Future<String> put(Uri resource, String payload) {
+  Future<String> put(Uri resource, String payload) async {
     log.finest('PUT $resource');
 
-    return client.putUrl(resource).then((IO.HttpClientRequest request) {
-      request.headers.contentType = contentTypeJson;
-      request.write(payload);
-      return request.close();
-    })
-    .then((IO.HttpClientResponse response) => _handleResponse(response, 'PUT', resource));
+    IO.HttpClientRequest request = await client.putUrl(resource)
+      ..headers.contentType = contentTypeJson
+      ..write(payload);
+    IO.HttpClientResponse response = await request.close();
+
+    return await _handleResponse(response, 'PUT', resource);
   }
 
   /**
    * Retrives [resource] using HTTP POST, sending [payload].
    * Throws subclasses of [StorageException] upon failure.
    */
-  Future<String> post(Uri resource, String payload) {
+  Future<String> post(Uri resource, String payload) async {
     log.finest('POST $resource');
 
-    return client.postUrl(resource).then((IO.HttpClientRequest request) {
-      request.headers.contentType = contentTypeJson;
-      request.write(payload);
-      return request.close();
-    })
-    .then((IO.HttpClientResponse response) => _handleResponse(response, 'POST', resource));
-  }
+    IO.HttpClientRequest request = await client.postUrl(resource)
+      ..headers.contentType = contentTypeJson
+      ..write(payload);
+    IO.HttpClientResponse response = await request.close();
 
+    return await _handleResponse(response, 'POST', resource);
+  }
 
   /**
    * Retrives [resource] using HTTP POST, sending [payload] as a from.
    * Throws subclasses of [StorageException] upon failure.
    */
-  Future<String> postForm(Uri resource, Map payload) {
+  Future<String> postForm(Uri resource, Map payload) async {
     log.finest('POST $resource');
 
-    return client.postUrl(resource).then((IO.HttpClientRequest request) {
-      request.headers.contentType = contentTypeApplicationForm;
-      request.write(mapToUrlFormEncodedPostBody(payload));
-      return request.close();
-    })
-    .then((IO.HttpClientResponse response) => _handleResponse(response, 'POST', resource));
-  }
+    IO.HttpClientRequest request = await client.postUrl(resource)
+      ..headers.contentType = contentTypeApplicationForm
+      ..write(mapToUrlFormEncodedPostBody(payload));
+    IO.HttpClientResponse response = await request.close();
 
+    return await _handleResponse(response, 'POST', resource);
+  }
 
   /**
    * Retrives [resource] using HTTP DELETE.
    * Throws subclasses of [StorageException] upon failure.
    */
-  Future<String> delete(Uri resource) {
+  Future<String> delete(Uri resource) async {
     log.finest('DELETE $resource');
 
-    return client.deleteUrl(resource)
-        .then((IO.HttpClientRequest request) => request.close())
-        .then((IO.HttpClientResponse response) => _handleResponse(response, 'DELETE', resource));
-  }
+    IO.HttpClientRequest request = await client.deleteUrl(resource);
+    IO.HttpClientResponse response = await request.close();
 
+    return await _handleResponse(response, 'DELETE', resource);
+  }
 }
 
-String mapToUrlFormEncodedPostBody(Map body) =>
-  body.keys.map((key) =>'$key=${Uri.encodeQueryComponent(body[key])}').join('&');
+String mapToUrlFormEncodedPostBody(Map body) => body.keys
+    .map((key) => '$key=${Uri.encodeQueryComponent(body[key])}')
+    .join('&');
