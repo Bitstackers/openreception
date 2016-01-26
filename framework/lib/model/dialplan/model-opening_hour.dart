@@ -27,7 +27,6 @@ Iterable<OpeningHour> parseMultipleHours(String buffer) => buffer
  * Class representing an opening hour.
  */
 class OpeningHour {
-
   WeekDay fromDay;
   int fromHour = 0;
   int fromMinute = 0;

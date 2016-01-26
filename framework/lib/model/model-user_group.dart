@@ -17,7 +17,7 @@ part of openreception.model;
  *
  */
 class UserGroup {
-  int    id;
+  int id;
   String name;
 
   /**
@@ -33,25 +33,19 @@ class UserGroup {
   UserGroup.fromMap(var value) {
     if (value is String) {
       name = value;
-    }
-    else {
-      id   = value['id'];
+    } else {
+      id = value['id'];
       name = value['name'];
-
     }
-
   }
 
-  static UserGroup decode (var map) => new UserGroup.fromMap(map);
+  static UserGroup decode(var map) => new UserGroup.fromMap(map);
 
   /**
    *
    */
   Map toJson() {
-    Map data = {
-      'id': id,
-      'name': name
-    };
+    Map data = {'id': id, 'name': name};
 
     return data;
   }
@@ -70,4 +64,4 @@ class UserGroup {
   int get hashCode => name.hashCode;
 }
 
-int compareUserGroup (UserGroup g1, UserGroup g2) => g1.name.compareTo(g2.name);
+int compareUserGroup(UserGroup g1, UserGroup g2) => g1.name.compareTo(g2.name);

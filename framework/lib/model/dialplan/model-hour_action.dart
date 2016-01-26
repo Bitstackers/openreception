@@ -20,17 +20,16 @@ class HourAction {
   List<OpeningHour> hours = [];
   List<Action> actions = [];
 
-  String toString () => '${hours.join(', ')} - ${actions.join(',')}';
+  String toString() => '${hours.join(', ')} - ${actions.join(',')}';
 
-  static HourAction parse (Map map) =>
-      new HourAction()
-        ..hours = parseMultipleHours(map['hours']).toList()
-        ..actions = map['actions'].map(Action.parse).toList();
+  static HourAction parse(Map map) => new HourAction()
+    ..hours = parseMultipleHours(map['hours']).toList()
+    ..actions = map['actions'].map(Action.parse).toList();
 
   Map toJson() => {
-    'hours' : hours.map((hour) => hour.toJson()).join(', '),
-    'actions' : actions
-  };
+        'hours': hours.map((hour) => hour.toJson()).join(', '),
+        'actions': actions
+      };
 
   bool operator ==(HourAction other) => this.toString() == other.toString();
 }

@@ -240,8 +240,9 @@ class Call {
    * String version of [Call] for debug/log purposes.
    */
   @override
-  String toString() =>
-      this == noCall ? 'no Call' : 'Call ID: ${_ID}, state: ${_state}, destination: ${destination}';
+  String toString() => this == noCall
+      ? 'no Call'
+      : 'Call ID: ${_ID}, state: ${_state}, destination: ${destination}';
 
   /**
    *

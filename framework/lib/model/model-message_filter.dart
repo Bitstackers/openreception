@@ -15,27 +15,26 @@ part of openreception.model;
 
 class InvalidState implements Exception {
   String _state;
-  InvalidState (this._state);
+  InvalidState(this._state);
 }
 
 /**
  * Message state 'enum'.
  */
 abstract class MessageState {
-
-  static const Saved   = 'saved';
-  static const Sent    = 'sent';
+  static const Saved = 'saved';
+  static const Sent = 'sent';
   static const Pending = 'pending';
   static const NotSaved = 'notsaved';
 
   static List<String> validStates = [Saved, Sent, Pending, NotSaved];
 
-  static String ofMessage (Message message) {
+  static String ofMessage(Message message) {
     if (message.enqueued) {
       return Pending;
     } else if (message.sent) {
       return Sent;
-    } else if (!message.sent && ! message.enqueued){
+    } else if (!message.sent && !message.enqueued) {
       return Saved;
     } else {
       return '';
@@ -48,13 +47,13 @@ abstract class MessageState {
  * a client to a server.
  */
 class MessageFilter {
-  String    _messageState  = '';
+  String _messageState = '';
 
-  int    upperMessageID = Message.noID;
-  int    userID         = User.noID;
-  int    receptionID    = Reception.noID;
-  int    contactID      = Contact.noID;
-  int    limitCount     = 100;
+  int upperMessageID = Message.noID;
+  int userID = User.noID;
+  int receptionID = Reception.noID;
+  int contactID = Contact.noID;
+  int limitCount = 100;
 
   /**
    * Default empty constructor.
@@ -65,45 +64,34 @@ class MessageFilter {
    * Deserializing constructor.
    */
   MessageFilter.fromMap(Map map) {
+    userID = map.containsKey(Key.userID) ? map[Key.userID] : userID;
 
-    userID = map.containsKey(Key.userID)
-        ? map[Key.userID]
-        : userID;
+    messageState = map.containsKey(Key.state) ? map[Key.state] : messageState;
 
-    messageState = map.containsKey(Key.state)
-        ? map[Key.state]
-        : messageState;
+    receptionID =
+        map.containsKey(Key.receptionID) ? map[Key.receptionID] : receptionID;
 
-    receptionID = map.containsKey(Key.receptionID)
-        ? map[Key.receptionID]
-        : receptionID;
-
-    contactID = map.containsKey(Key.contactID)
-        ? map[Key.contactID]
-        : contactID;
+    contactID = map.containsKey(Key.contactID) ? map[Key.contactID] : contactID;
 
     upperMessageID = map.containsKey(Key.upperMessageId)
         ? map[Key.upperMessageId]
         : upperMessageID;
 
-    limitCount = map.containsKey(Key.limit)
-        ? map[Key.limit]
-        : limitCount;
+    limitCount = map.containsKey(Key.limit) ? map[Key.limit] : limitCount;
   }
 
   /**
    * Current message state.
    */
-  String get messageState  => this._messageState;
-  void   set messageState (String newState) {
-
+  String get messageState => this._messageState;
+  void set messageState(String newState) {
     if (newState == null) {
       throw new ArgumentError.notNull(newState);
     }
 
     if (newState.isNotEmpty) {
       if (!MessageState.validStates.contains(newState.toLowerCase())) {
-        throw new ArgumentError.value (newState, 'newState',
+        throw new ArgumentError.value(newState, 'newState',
             'State must one of: ${MessageState.validStates}');
       }
 
@@ -116,28 +104,27 @@ class MessageFilter {
   /**
    * Check if this filter is active (any field is set).
    */
-  bool get active =>
-      userID != User.noID ||
+  bool get active => userID != User.noID ||
       receptionID != Reception.noID ||
       contactID != Contact.noID ||
       upperMessageID != Message.noID ||
       messageState.isNotEmpty;
 
-
   /**
    * Check if the filter applies to [message].
    */
-  bool appliesTo (Message message) =>
-      [message.context.contactID, Contact.noID].contains(this.contactID) &&
-      [message.context.receptionID, Reception.noID].contains(this.receptionID) &&
+  bool appliesTo(Message message) => [message.context.contactID, Contact.noID]
+          .contains(this.contactID) &&
+      [message.context.receptionID, Reception.noID]
+          .contains(this.receptionID) &&
       [message.senderId, User.noID].contains(this.userID) &&
       [MessageState.ofMessage(message), Message.noID].contains(this.contactID);
 
   /**
    * Filters [messages] using this filter.
    */
-  Iterable<Message> filter (Iterable<Message> messages) =>
-      messages.where((Message message) => this.appliesTo (message));
+  Iterable<Message> filter(Iterable<Message> messages) =>
+      messages.where((Message message) => this.appliesTo(message));
 
   /**
    * Equals operator override. All fields of filter needs match in order for
@@ -146,11 +133,11 @@ class MessageFilter {
   @override
   bool operator ==(MessageFilter other) =>
       this.upperMessageID == other.upperMessageID &&
-      this.limitCount     == other.limitCount &&
-      this.messageState   == other.messageState &&
-      this.userID         == other.userID &&
-      this.receptionID    == other.receptionID &&
-      this.contactID      == other.contactID;
+          this.limitCount == other.limitCount &&
+          this.messageState == other.messageState &&
+          this.userID == other.userID &&
+          this.receptionID == other.receptionID &&
+          this.contactID == other.contactID;
 
   /**
    * JSON serialization function.
@@ -201,34 +188,33 @@ class MessageFilter {
     }
 
     if (userID != User.noID) {
-       retval.add('taken_by_agent = ${this.userID}');
+      retval.add('taken_by_agent = ${this.userID}');
     }
 
     if (receptionID != Reception.noID) {
-       retval.add('context_reception_id = ${this.receptionID}');
+      retval.add('context_reception_id = ${this.receptionID}');
     }
 
     if (contactID != Contact.noID) {
-       retval.add('context_contact_id = ${this.contactID}');
+      retval.add('context_contact_id = ${this.contactID}');
     }
 
     switch (this._messageState) {
-      case MessageState.Pending :
+      case MessageState.Pending:
         retval.add('enqueued');
         break;
 
-      case MessageState.Sent :
+      case MessageState.Sent:
         retval.add('sent');
         break;
 
-      case MessageState.Saved :
+      case MessageState.Saved:
         retval.add('(NOT enqueued AND NOT sent)');
         break;
 
-      case MessageState.NotSaved :
+      case MessageState.NotSaved:
         retval.add('(enqueued OR sent)');
         break;
-
     }
 
     return retval;
@@ -242,5 +228,4 @@ class MessageFilter {
    */
   String get asSQL =>
       (this.active ? 'WHERE ${this._activeFields.join(' AND ')}' : '');
-
 }

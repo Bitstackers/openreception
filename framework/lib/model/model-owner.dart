@@ -12,13 +12,11 @@
 */
 part of openreception.model;
 
-
 /**
  * Model super-class representing an owner. Direct instances of this class
  * represents no owner, as it has no link to other object types.
  */
 class Owner {
-
   static final Owner none = const Owner();
 
   /**
@@ -26,13 +24,11 @@ class Owner {
    */
   factory Owner.parse(String buffer) {
     final key = buffer.split(':').first;
-    if(key == OwningReception.type) {
+    if (key == OwningReception.type) {
       return new OwningReception(int.parse(buffer.split(':').last));
-    }
-    else if(key == OwningContact.type) {
+    } else if (key == OwningContact.type) {
       return new OwningContact(int.parse(buffer.split(':').last));
-    }
-    else if(key == 'none') {
+    } else if (key == 'none') {
       return none;
     }
   }

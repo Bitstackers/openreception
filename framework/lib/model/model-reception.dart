@@ -71,24 +71,24 @@ class Reception extends ReceptionStub {
   bool enabled = false;
 
   Map get attributes => {
-    Key.addresses : addresses,
-    Key.alternateNames : alternateNames,
-    Key.bankingInfo : bankingInformation,
-    Key.customerTypes : customerTypes,
-    Key.emailAdresses : emailAddresses,
-    Key.greeting : greeting,
-    Key.handlingInstructions : handlingInstructions,
-    Key.openingHours: openingHours,
-    Key.other : otherData,
-    Key.product : product,
-    Key.salesMarketingHandling : salesMarketingHandling,
-    Key.shortGreeting : _shortGreeting,
-    Key.vatNumbers : vatNumbers,
-    Key.phoneNumbers :
-        telephoneNumbers.map((PhoneNumber number) => number.asMap).toList(),
-    Key.websites : websites,
-    Key.miniWiki: miniWiki
-  };
+        Key.addresses: addresses,
+        Key.alternateNames: alternateNames,
+        Key.bankingInfo: bankingInformation,
+        Key.customerTypes: customerTypes,
+        Key.emailAdresses: emailAddresses,
+        Key.greeting: greeting,
+        Key.handlingInstructions: handlingInstructions,
+        Key.openingHours: openingHours,
+        Key.other: otherData,
+        Key.product: product,
+        Key.salesMarketingHandling: salesMarketingHandling,
+        Key.shortGreeting: _shortGreeting,
+        Key.vatNumbers: vatNumbers,
+        Key.phoneNumbers:
+            telephoneNumbers.map((PhoneNumber number) => number.asMap).toList(),
+        Key.websites: websites,
+        Key.miniWiki: miniWiki
+      };
 
   void set attributes(Map attributes) {
     this.customerTypes = attributes[Key.customerTypes];
@@ -116,13 +116,11 @@ class Reception extends ReceptionStub {
       ..bankingInformation = attributes[Key.bankingInfo]
       ..emailAddresses = attributes[Key.emailAdresses]
       ..greeting = attributes[Key.greeting]
-      ..handlingInstructions =
-      attributes[Key.handlingInstructions]
+      ..handlingInstructions = attributes[Key.handlingInstructions]
       ..openingHours = attributes[Key.openingHours]
       ..otherData = attributes[Key.other]
       ..product = attributes[Key.product]
-      ..salesMarketingHandling =
-      attributes[Key.salesMarketingHandling]
+      ..salesMarketingHandling = attributes[Key.salesMarketingHandling]
       .._shortGreeting = attributes[Key.shortGreeting] != null
           ? attributes[Key.shortGreeting]
           : ''
@@ -159,7 +157,7 @@ class Reception extends ReceptionStub {
             ? Uri.parse(receptionMap[Key.extradataUri])
             : null
         ..lastChecked =
-        Util.unixTimestampToDateTime(receptionMap[Key.lastCheck]);
+            Util.unixTimestampToDateTime(receptionMap[Key.lastCheck]);
 
       if (receptionMap[Key.attributes] != null) {
         attributes = receptionMap[Key.attributes];
@@ -178,16 +176,16 @@ class Reception extends ReceptionStub {
    * Returns a Map representation of the Reception.
    */
   Map get asMap => {
-      Key.ID: this.ID,
-      Key.organizationId: this.organizationId,
-      Key.dialplan: this.dialplan,
-      Key.fullName: this.fullName,
-      Key.enabled : this.enabled,
-      Key.extradataUri:
-          this.extraData == null ? null : this.extraData.toString(),
-      Key.lastCheck: Util.dateTimeToUnixTimestamp (lastChecked),
-      Key.attributes: attributes
-    };
+        Key.ID: this.ID,
+        Key.organizationId: this.organizationId,
+        Key.dialplan: this.dialplan,
+        Key.fullName: this.fullName,
+        Key.enabled: this.enabled,
+        Key.extradataUri:
+            this.extraData == null ? null : this.extraData.toString(),
+        Key.lastCheck: Util.dateTimeToUnixTimestamp(lastChecked),
+        Key.attributes: attributes
+      };
 
   void validate() {
     if (this.greeting == null || this.greeting.isEmpty) throw new StateError(

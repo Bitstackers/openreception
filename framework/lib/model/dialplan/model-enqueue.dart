@@ -18,7 +18,7 @@ class Enqueue implements Action {
   final String holdMusic;
   final String note;
 
-  Enqueue(this.queueName, {this.holdMusic: 'default', this.note : ''});
+  Enqueue(this.queueName, {this.holdMusic: 'default', this.note: ''});
 
   static Enqueue parse(String buffer) {
     /// Remove leading spaces.
@@ -39,25 +39,22 @@ class Enqueue implements Action {
             buffer.indexOf(')') > 0 ? buffer.indexOf(')') : buffer.length;
         note = buffer.substring(openBracket + 1, closeBracket);
 
-        buffer = buffer.substring(closeBracket+1).trimLeft();
-
+        buffer = buffer.substring(closeBracket + 1).trimLeft();
       }
     }
 
     buffer = consumeKey(buffer, Key.enqueue).trimLeft();
 
-    if(buffer.startsWith('(')) {
+    if (buffer.startsWith('(')) {
       consumeNote();
     }
 
     int nextSpace = buffer.indexOf(' ');
     if (nextSpace == -1) {
       queuename = buffer.trim();
-
     } else {
       queuename = buffer.substring(0, nextSpace).trimRight();
       buffer = buffer.substring(nextSpace + 1).trimLeft();
-
     }
 
     /// Check if there is an occurence of the 'music' keyword.
@@ -83,7 +80,7 @@ class Enqueue implements Action {
       consumeNote();
     }
 
-    return new Enqueue(queuename, holdMusic: music, note : note);
+    return new Enqueue(queuename, holdMusic: music, note: note);
   }
 
   String toJson() => '${Key.enqueue} ${queueName}'

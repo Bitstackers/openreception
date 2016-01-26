@@ -39,11 +39,9 @@ class PhoneNumber {
 
     if (newTags is Iterable<String>) {
       tags.addAll(newTags);
-    }
-    else if (newTags is String) {
+    } else if (newTags is String) {
       tags.add(newTags);
     }
-
   }
 
   /**
@@ -62,17 +60,17 @@ class PhoneNumber {
   /**
    * Serialization function.
    */
-  Map toJson () => this.asMap;
+  Map toJson() => this.asMap;
 
   /**
    * Map representation of the object,
    */
   Map get asMap => {
-    Key.value: value,
-    Key.type: type,
-    Key.description: description,
-    Key.billingType: billing_type,
-    Key.tags: tags,
-    Key.confidential: confidential
-  };
+        Key.value: value,
+        Key.type: type,
+        Key.description: description,
+        Key.billingType: billing_type,
+        Key.tags: tags,
+        Key.confidential: confidential
+      };
 }

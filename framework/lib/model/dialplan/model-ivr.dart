@@ -17,7 +17,7 @@ class Ivr extends Action {
   final String menuName;
   final String note;
 
-  Ivr(this.menuName, {this.note : ''});
+  Ivr(this.menuName, {this.note: ''});
 
   static Ivr parse(String buffer) {
     var buf = consumeKey(buffer.trimLeft(), Key.ivr).trimLeft();
@@ -26,14 +26,14 @@ class Ivr extends Action {
 
     final String menuName = consumed.iden;
 
-    if(menuName.isEmpty) {
+    if (menuName.isEmpty) {
       throw new FormatException('Menu name is missing', buffer);
     }
     buf = consumed.buffer;
 
     final String note = consumeComment(buf).comment;
 
-    return new Ivr(menuName, note : note);
+    return new Ivr(menuName, note: note);
   }
 
   bool operator ==(Ivr other) => this.menuName == other.menuName;
@@ -41,5 +41,4 @@ class Ivr extends Action {
   String toString() => '${Key.ivr} ${menuName}';
 
   String toJson() => '${Key.ivr} ${menuName}';
-
 }
