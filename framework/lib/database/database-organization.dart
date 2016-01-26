@@ -31,21 +31,21 @@ class Organization implements Storage.Organization {
   Future<Iterable<Model.BaseContact>> contacts(int organizationID) {
     String sql = '''
 SELECT DISTINCT
-  contacts.id AS id, 
+  contacts.id AS id,
   contacts.full_name as full_name,
   contacts.contact_type as contact_type,
   contacts.enabled AS enabled
-FROM 
+FROM
   receptions
-JOIN 
+JOIN
   reception_contacts
-ON 
+ON
   reception_contacts.reception_id = receptions.id
-JOIN 
-  contacts 
-ON 
+JOIN
+  contacts
+ON
   reception_contacts.contact_id = contacts.id
-WHERE 
+WHERE
   organization_id=@organization_id
   ''';
 
@@ -142,16 +142,15 @@ WHERE
       'flag': organization.flag
     };
 
-    return _connection.query(sql, parameters).then(
-        (Iterable rows) => rows.length == 1
-            ? (organization
-      ..id = rows.first.id)
-        : new Future.error(
-                new Storage.ServerError('Failed to create new organization'))
-            .catchError((error, stackTrace) {
-      log.severe('sql:$sql :: parameters:$parameters');
-      return new Future.error(error, stackTrace);
-    }));
+    return _connection.query(sql, parameters).then((Iterable rows) =>
+        rows.length == 1
+            ? (organization..id = rows.first.id)
+            : new Future.error(new Storage.ServerError(
+                    'Failed to create new organization'))
+                .catchError((error, stackTrace) {
+                log.severe('sql:$sql :: parameters:$parameters');
+                return new Future.error(error, stackTrace);
+              }));
   }
 
   /**
@@ -175,8 +174,7 @@ WHERE
 
     return _connection
         .execute(sql, parameters)
-        .then((int rowsAffected) =>
-          rowsAffected == 1
+        .then((int rowsAffected) => rowsAffected == 1
             ? organization
             : new Future.error(new StateError('Expected exactly one row to '
                 'update, but counted $rowsAffected updates')))
@@ -190,6 +188,7 @@ WHERE
   /**
    * Delete an existing organization in the database.
    */
+  @override
   Future remove(int organizationID) {
     String sql = '''
     DELETE FROM organizations

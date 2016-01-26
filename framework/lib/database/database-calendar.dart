@@ -164,20 +164,21 @@ SELECT entry_id FROM changed_entry;
       'userID': userId
     };
 
-    return _connection
+    await _connection
         .execute(sql, parameters)
         .then((int rowsAffected) => rowsAffected > 0
-            ? entry
-            : new Future.error(
-                new Storage.NotFound('No event with id ${entry.ID}')))
+            ? ''
+            : throw new Storage.NotFound('No event with id ${entry.ID}'))
         .catchError((error, stackTrace) {
       if (error is! Storage.NotFound) {
         log.severe('Query failed! SQL Statement: $sql');
         log.severe('parameters: $parameters');
         log.severe(error, stackTrace);
       }
-      return new Future.error(error, stackTrace);
+      throw new Future.error(error, stackTrace);
     });
+
+    return entry;
   }
 
   /**
@@ -187,7 +188,8 @@ SELECT entry_id FROM changed_entry;
    * Contact Calendar entry associations will be deleted by CASCADE rule in
    * the database.
    */
-  Future remove(entryId, userId) async {
+  @override
+  Future remove(int entryId, int userId) async {
     const String sql = '''
 WITH updated_event AS (
    UPDATE calendar_events ce
@@ -330,7 +332,7 @@ AND
    * Contact Calendar entry associations will be deleted by CASCADE rule in
    * the database.
    */
-  Future purge(entryId) {
+  Future purge(int entryId) {
     String sql = '''
   DELETE FROM
      calendar_events

@@ -85,7 +85,7 @@ Model.Message _rowToMessage(var row) {
       ..phone = row.taken_from_phone
       ..cellPhone = row.taken_from_cellphone
       ..localExtension = row.taken_from_localexten)
-    ..flag = (new Model.MessageFlag(row.flags))
+    ..flag = (new Model.MessageFlag(row.flags as Iterable<String>))
     ..enqueued = row.enqueued
     ..createdAt = row.created_at
     ..sent = row.sent;
@@ -184,18 +184,18 @@ Model.Contact _rowToContact(var row) {
     ..fullName = row.full_name
     ..contactType = row.contact_type
     ..phones.addAll(phoneIterable)
-    ..backupContacts = backupContacts
-    ..departments = departments
-    ..emailaddresses = emailaddresses
-    ..handling = handling
-    ..infos = infos
-    ..titles = titles
-    ..relations.addAll(relations)
-    ..responsibilities = responsibilities
-    ..tags = tags
+    ..backupContacts = backupContacts as Iterable<String>
+    ..departments = departments as Iterable<String>
+    ..emailaddresses = emailaddresses as Iterable<String>
+    ..handling = handling as Iterable<String>
+    ..infos = infos as Iterable<String>
+    ..titles = titles as Iterable<String>
+    ..relations.addAll(relations as Iterable<String>)
+    ..responsibilities = responsibilities as Iterable<String>
+    ..tags = tags as Iterable<String>
     ..statusEmail = row.status_email
-    ..workhours = workhours
-    ..messagePrerequisites = messagePrerequisites;
+    ..workhours = workhours as Iterable<String>
+    ..messagePrerequisites = messagePrerequisites as Iterable<String>;
 
   return contact;
 }
