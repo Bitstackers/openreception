@@ -87,17 +87,17 @@ abstract class ModelContact {
         ..value = '-0045 32112345'
     ];
 
-    final List backupContacts = ['Buford'];
-    final List departments = ['Fish school', 'Clowning'];
-    final List emailaddresses = ['scaly@nibble.bits'];
-    final List handling = ['Avoid fishing rods, please'];
-    final List infos = ['He\'s a fish, what more do you need to know?'];
-    final List titles = ['GOLD-fish'];
-    final List relations = ['Yo\' mamma'];
-    final List responsibilities = ['Swimming around', 'Nibbling'];
-    final List tags = ['Fish', 'Gold', 'Athlete'];
-    final List workhours = ['Quite frankly; never'];
-    final List messagePrerequisites = ['[fishcode]'];
+    final List<String> backupContacts = ['Buford'];
+    final List<String> departments = ['Fish school', 'Clowning'];
+    final List<String> emailaddresses = ['scaly@nibble.bits'];
+    final List<String> handling = ['Avoid fishing rods, please'];
+    final List<String> infos = ['He\'s a fish, what more do you need to know?'];
+    final List<String> titles = ['GOLD-fish'];
+    final List<String> relations = ['Yo\' mamma'];
+    final List<String> responsibilities = ['Swimming around', 'Nibbling'];
+    final List<String> tags = ['Fish', 'Gold', 'Athlete'];
+    final List<String> workhours = ['Quite frankly; never'];
+    final List<String> messagePrerequisites = ['[fishcode]'];
 
     Model.Contact builtObject = new Model.Contact.empty()
       ..receptionID = receptionID

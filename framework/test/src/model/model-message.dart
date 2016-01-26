@@ -33,7 +33,7 @@ abstract class ModelMessage {
     expect(obj.callId, equals(deserializedObj.callId));
 
     expect(obj.createdAt.difference(deserializedObj.createdAt).abs(),
-           lessThan(new Duration(seconds : 1)));
+        lessThan(new Duration(seconds: 1)));
 
     expect(obj.flag.called, equals(deserializedObj.flag.called));
     expect(
@@ -42,22 +42,22 @@ abstract class ModelMessage {
     expect(obj.flag.urgent, equals(deserializedObj.flag.urgent));
     expect(obj.flag.willCallBack, equals(deserializedObj.flag.willCallBack));
     expect(obj.ID, equals(deserializedObj.ID));
+    expect(obj.context.asMap, equals(deserializedObj.context.asMap));
     expect(
-        obj.context.asMap, equals(deserializedObj.context.asMap));
-    expect(obj.recipients.toList(), equals(deserializedObj.recipients.toList()));
+        obj.recipients.toList(), equals(deserializedObj.recipients.toList()));
     expect(obj.senderId, equals(deserializedObj.senderId));
 
     expect(obj.asMap, equals(deserializedObj.asMap));
   }
 
   static void serialization() {
-
     Model.Message builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
     expect(serializedObject, isNotEmpty);
   }
+
   /**
    * Build an object, and check that the expected values are present.
    */
@@ -72,7 +72,7 @@ abstract class ModelMessage {
     final int senderId = ModelUser.buildObject().ID;
     final String callId = 'bad-ass-call';
 
-    Set rlist = new Set()
+    Set<Model.MessageRecipient> rlist = new Set<Model.MessageRecipient>()
       ..addAll([
         new Model.MessageRecipient.empty()
           ..address = 'somewhere'
@@ -80,7 +80,7 @@ abstract class ModelMessage {
           ..receptionName = 'The Office'
           ..role = Model.Role.TO
           ..type = Model.MessageEndpointType.types.first
-        ]);
+      ]);
 
     final messageBody = 'You should really clean up.';
     final createdAt = new DateTime.now();
@@ -125,24 +125,22 @@ abstract class ModelMessage {
   }
 
   static void messageFlag() {
-
     Model.Message builtObject = buildObject();
 
     builtObject.flag = new Model.MessageFlag.empty();
 
-    expect (builtObject.manuallyClosed, equals(false));
+    expect(builtObject.manuallyClosed, equals(false));
 
     builtObject.flag.manuallyClosed = true;
-    expect (builtObject.manuallyClosed, equals(true));
+    expect(builtObject.manuallyClosed, equals(true));
     builtObject.flag.manuallyClosed = false;
-    expect (builtObject.manuallyClosed, equals(false));
+    expect(builtObject.manuallyClosed, equals(false));
 
     builtObject.flag = new Model.MessageFlag.empty();
 
     builtObject.manuallyClosed = true;
-    expect (builtObject.manuallyClosed, equals(true));
+    expect(builtObject.manuallyClosed, equals(true));
     builtObject.manuallyClosed = false;
-    expect (builtObject.manuallyClosed, equals(false));
-
+    expect(builtObject.manuallyClosed, equals(false));
   }
 }

@@ -24,25 +24,22 @@ void testModelMessageQueueEntry() {
 }
 
 abstract class ModelMessageQueueEntry {
-
   static void handleRecipient() {
     Model.MessageQueueItem obj = buildObject();
 
     final int origLen = obj.unhandledRecipients.length;
-    expect (origLen, greaterThan(1));
-    expect (obj.handledRecipients, isEmpty);
+    expect(origLen, greaterThan(1));
+    expect(obj.handledRecipients, isEmpty);
 
     Model.MessageRecipient handled = obj.unhandledRecipients.first;
 
     obj.handledRecipients = [handled];
 
-    expect (obj.unhandledRecipients.length, equals(origLen-1));
-    expect (obj.handledRecipients.length, equals(1));
+    expect(obj.unhandledRecipients.length, equals(origLen - 1));
+    expect(obj.handledRecipients.length, equals(1));
 
-    expect (obj.unhandledRecipients.contains(handled), isFalse);
-    expect (obj.handledRecipients.contains(handled), isTrue);
-
-
+    expect(obj.unhandledRecipients.contains(handled), isFalse);
+    expect(obj.handledRecipients.contains(handled), isTrue);
   }
 
   static void deserialization() {
@@ -55,7 +52,8 @@ abstract class ModelMessageQueueEntry {
 
     expect(obj.messageID, equals(deserializedObj.messageID));
     expect(obj.tries, equals(deserializedObj.tries));
-    expect(obj.unhandledRecipients, equals(deserializedObj.unhandledRecipients));
+    expect(
+        obj.unhandledRecipients, equals(deserializedObj.unhandledRecipients));
   }
 
   static void serialization() {
@@ -75,24 +73,22 @@ abstract class ModelMessageQueueEntry {
     final mid = 777;
     final tries = 2;
 
-    final recipients = [
+    final List<Model.MessageRecipient> recipients = [
       new Model.MessageRecipient.empty()
         ..address = 'neverland'
         ..contactName = 'Unholy one'
         ..receptionName = 'A hot place'
         ..role = Model.Role.TO
         ..type = 'email',
-        new Model.MessageRecipient.empty()
-          ..address = 'neverland 2'
-          ..contactName = 'Unholy one jr.'
-          ..receptionName = 'A less hot place'
-          ..role = Model.Role.CC
-          ..type = 'email',
-      ];
+      new Model.MessageRecipient.empty()
+        ..address = 'neverland 2'
+        ..contactName = 'Unholy one jr.'
+        ..receptionName = 'A less hot place'
+        ..role = Model.Role.CC
+        ..type = 'email',
+    ];
 
-
-    Model.MessageQueueItem obj =
-      new Model.MessageQueueItem.empty()
+    Model.MessageQueueItem obj = new Model.MessageQueueItem.empty()
       ..ID = id
       ..lastTry = lastTry
       ..messageID = mid

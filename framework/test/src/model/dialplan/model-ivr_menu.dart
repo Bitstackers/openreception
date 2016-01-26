@@ -100,7 +100,7 @@ abstract class ModelIvrMenu {
     final Model.Playback sub2greeting =
         new Model.Playback(sub2filename, wrapInLock: false, note: note);
 
-    final entries = [
+    final List<Model.IvrEntry> entries = [
       new Model.IvrVoicemail(
           '1',
           new Model.Voicemail('vm-corp_1',
@@ -108,7 +108,7 @@ abstract class ModelIvrMenu {
       new Model.IvrSubmenu('2', 'sub-1')
     ];
 
-    final sub1entries = [
+    final List<Model.IvrEntry> sub1entries = [
       new Model.IvrVoicemail(
           '1',
           new Model.Voicemail('vm-corp_1',
@@ -117,7 +117,7 @@ abstract class ModelIvrMenu {
       new Model.IvrTopmenu('*')
     ];
 
-    final sub2entries = [
+    final List<Model.IvrEntry> sub2entries = [
       new Model.IvrVoicemail(
           '1',
           new Model.Voicemail('vm-corp_1',
@@ -155,7 +155,7 @@ abstract class ModelIvrMenu {
     final Model.Playback greeting =
         new Model.Playback(filename, wrapInLock: false, note: note);
 
-    final entries = [
+    final List<Model.IvrEntry> entries = [
       new Model.IvrVoicemail(
           '1',
           new Model.Voicemail('vm-corp_1',
