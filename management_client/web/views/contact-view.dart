@@ -7,6 +7,7 @@ import 'dart:html';
 import 'package:html5_dnd/html5_dnd.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
+import '../lib/configuration.dart';
 import '../lib/eventbus.dart';
 import '../lib/logger.dart' as log;
 import '../notification.dart' as notify;
@@ -352,7 +353,6 @@ class ContactView {
       }
     };
 
-    List<Future> loadingJobs = new List<Future>();
     TableElement table = new TableElement()..classes.add('content-table');
     div.children.add(table);
 
@@ -400,7 +400,7 @@ class ContactView {
     endpointsContainer =
         new EndpointsComponent(rightCell, onChange, _contactController, _endpointController);
     //Saving the future, so we are able to wait on it later.
-    loadingJobs.add(endpointsContainer.load(contact.receptionID, contact.ID));
+    endpointsContainer.load(contact.receptionID, contact.ID);
 
     row = createTableRowInsertInTable(tableBody);
     leftCell = createTableCellInsertInRow(row);
@@ -426,9 +426,10 @@ class ContactView {
     distributionsListContainer.load(contact);
     calendarComponent =
         new ContactCalendarComponent(rightCell, onChange, _calendarController);
-    loadingJobs.add(calendarComponent.load(contact.receptionID, contact.ID));
+    calendarComponent.load(contact.receptionID, contact.ID);
 
     li.children.add(div);
+
     return li;
   }
 
@@ -447,7 +448,7 @@ class ContactView {
   UListElement createPhoneNumbersList(
       Element container, List<ORModel.PhoneNumber> phonenumbers,
       {Function onChange}) {
-    LabelElement label = new LabelElement();
+    ParagraphElement label = new ParagraphElement();
     UListElement ul = new UListElement()..classes.add('content-list');
 
     label.text = 'Telefonnumre';
@@ -594,7 +595,7 @@ class ContactView {
   UListElement createListBox(
       Element container, String labelText, List<String> dataList,
       {Function onChange}) {
-    LabelElement label = new LabelElement();
+    ParagraphElement label = new ParagraphElement();
     UListElement ul = new UListElement()..classes.add('content-list');
 
     label.text = labelText;
@@ -607,7 +608,7 @@ class ContactView {
 
   TextAreaElement createTextBox(
       Element container, String labelText, String data, {Function onChange}) {
-    LabelElement label = new LabelElement();
+    ParagraphElement label = new ParagraphElement();
     TextAreaElement inputText = new TextAreaElement()..rows = 1;
 
     label.text = labelText;
@@ -626,7 +627,7 @@ class ContactView {
 
   InputElement createCheckBox(Element container, String labelText, bool data,
       {Function onChange}) {
-    LabelElement label = new LabelElement();
+    ParagraphElement label = new ParagraphElement();
     CheckboxInputElement inputCheckbox = new CheckboxInputElement();
 
     label.text = labelText;

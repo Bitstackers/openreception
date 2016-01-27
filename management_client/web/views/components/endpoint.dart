@@ -18,7 +18,7 @@ class EndpointsComponent {
 
   List<ORModel.MessageEndpoint> _persistenceEndpoint = [];
   UListElement _ul = new UListElement();
-  LabelElement _header = new LabelElement()..text = 'Kontaktpunkter';
+  ParagraphElement _header = new ParagraphElement()..text = 'Kontaktpunkter';
 
   SortableGroup _sortGroup;
 
@@ -97,7 +97,7 @@ class EndpointsComponent {
         _notifyChange();
       });
 
-    LabelElement confidentialLabel = new LabelElement()..text = 'Fortrolig';
+    ParagraphElement confidentialLabel = new ParagraphElement()..text = 'Fortrolig';
     CheckboxInputElement confidentialCheckbox = new CheckboxInputElement()
       ..classes.add('contact-endpoint-confidential')
       ..checked = endpoint.confidential
@@ -105,7 +105,7 @@ class EndpointsComponent {
         _notifyChange();
       });
 
-    LabelElement enabledLabel = new LabelElement()..text = 'Aktiv';
+    ParagraphElement enabledLabel = new ParagraphElement()..text = 'Aktiv';
     CheckboxInputElement enabledCheckbox = new CheckboxInputElement()
       ..classes.add('contact-endpoint-enabled')
       ..checked = endpoint.enabled
@@ -113,7 +113,7 @@ class EndpointsComponent {
         _notifyChange();
       });
 
-    LabelElement descriptionLabel = new LabelElement()..text = 'note:';
+    ParagraphElement descriptionLabel = new ParagraphElement()..text = 'note:';
     TextInputElement descriptionInput = new TextInputElement()
       ..classes.add('contact-endpoint-description')
       ..value = endpoint.description

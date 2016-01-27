@@ -36,16 +36,16 @@ class DistributionsListComponent {
    * Setup the DOM structure and graphical model.
    */
   void _setup() {
-    LabelElement header = new LabelElement()
+    ParagraphElement header = new ParagraphElement()
       ..text = 'Distributionsliste';
 
-    LabelElement toLabel = new LabelElement()
+    ParagraphElement toLabel = new ParagraphElement()
       ..text = 'To'
       ..title = 'To';
-    LabelElement ccLabel = new LabelElement()
+    ParagraphElement ccLabel = new ParagraphElement()
       ..text = 'CC'
       ..title = 'Carbon Copy';
-    LabelElement bccLabel = new LabelElement()
+    ParagraphElement bccLabel = new ParagraphElement()
       ..text = 'BCC'
       ..title = 'Blind Carbon Copy';
 

@@ -70,8 +70,12 @@ class BillingView {
 
   void refreshCdrList() {
     //The valueAsDate returns the date and adds the timezone to it.
-    DateTime from = fromInput.valueAsDate != null ? DateTime.parse(fromInput.value) : new DateTime.utc(2014, 1, 1);
-    DateTime to = toInput.valueAsDate != null ? DateTime.parse(toInput.value) : from.add(new Duration(days: 1));
+    DateTime from = fromInput.valueAsDate != null
+        ? DateTime.parse(fromInput.value)
+        : new DateTime(2014, 1, 1);
+    DateTime to = toInput.valueAsDate != null
+        ? DateTime.parse(toInput.value)
+        : from.add(new Duration(days: 1));
     if(from.isAfter(to)) {
       notify.info('Fra tidspunktet skal være før Til tidspunktet');
     } else {
@@ -91,10 +95,10 @@ class BillingView {
                        new TableCellElement()..text = '${entry.billingType}',
                        new TableCellElement()..text = '${entry.orgName}',
                        new TableCellElement()..text = '${entry.callCount}',
-                       new TableCellElement()..text = '${entry.duration}',
-                       new TableCellElement()..text = '${entry.totalWait}',
+                       new TableCellElement()..text = '${(entry.duration/1000).toStringAsFixed(2)}',
+                       new TableCellElement()..text = '${(entry.totalWait/1000).toStringAsFixed(2)}',
                        new TableCellElement()..text = '${entry.smsCount}',
-                       new TableCellElement()..text = '${entry.avgDuration}']);
+                       new TableCellElement()..text = '${(entry.avgDuration/1000).toStringAsFixed(2)}']);
               }));
         });
   }

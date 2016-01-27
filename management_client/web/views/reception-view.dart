@@ -311,7 +311,7 @@ class ReceptionView {
       ..organizationId = currentOrganizationId
       ..fullName = inputFullName.value
       ..enabled = inputEnabled.checked
-      ..extension = inputReceptionNumber.value
+      ..dialplan = inputReceptionNumber.value
 
       ..customerTypes = [inputCostumerstype.value]
       ..shortGreeting = inputShortGreeting.value
@@ -379,7 +379,7 @@ class ReceptionView {
 
         inputFullName.value = response.fullName;
         inputEnabled.checked = response.enabled;
-        inputReceptionNumber.value = response.extension;
+        inputReceptionNumber.value = response.dialplan;
 
         //TODO: Listify
         inputCostumerstype.value = response.customerTypes.isNotEmpty ? response.customerTypes.first : '';

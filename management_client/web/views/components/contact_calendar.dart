@@ -16,7 +16,7 @@ class ContactCalendarComponent {
 
   ContactCalendarComponent(Element this._parent, Function this._onChange, Controller.Calendar this._calendarController) {
     DivElement editContainer = new DivElement();
-    LabelElement header = new LabelElement()
+    ParagraphElement header = new ParagraphElement()
       ..text = 'Kalender';
     _parent.children.addAll([header, _newButton, _ul]);
 
@@ -64,7 +64,7 @@ class ContactCalendarComponent {
   }
 
   Future load(int receptionId, int contactId) {
-    return _calendarController.listContact(receptionId, contactId)
+    return _calendarController.listContact(contactId)
         .then((Iterable<ORModel.CalendarEntry> events) {
       //TODO: Sort.
       _originalEvents = events.toList();
@@ -159,7 +159,7 @@ class ContactCalendarComponent {
       //TODO: Verify that the contact and reception ID's are on the entries.
       if(!_originalEvents.any((ORModel.CalendarEntry e) => e.ID == event.ID)) {
         //Insert event
-        worklist.add(_calendarController.create(event)
+        worklist.add(_calendarController.create(event, config.userId)
             .catchError((error, stack) {
           log.error('Request to create a contacts calendarevent failed. receptionId: "${receptionId}", contactId: "${receptionId}", event: "${JSON.encode(event)}" but got: ${error} ${stack}');
           // Rethrow.
@@ -172,7 +172,7 @@ class ContactCalendarComponent {
     for(ORModel.CalendarEntry event in _originalEvents) {
       if(!currentEvents.any((ORModel.CalendarEntry e) => e.ID == event.ID)) {
         //Delete event
-        worklist.add(_calendarController.remove(event)
+        worklist.add(_calendarController.remove(event, config.userId)
             .catchError((error, stack) {
           log.error('Request to delete a contacts calendarevent failed. receptionId: "${receptionId}", contactId: "${receptionId}", event: "${JSON.encode(event)}" but got: ${error} ${stack}');
           // Rethrow.
@@ -190,7 +190,7 @@ class ContactCalendarComponent {
            e.start != event.start ||
            e.stop != event.stop) {
           //Update event
-          worklist.add(_calendarController.remove(event)
+          worklist.add(_calendarController.remove(event, config.userId)
               .catchError((error, stack) {
             log.error('Request to update a contacts calendarevent failed. receptionId: "${receptionId}", contactId: "${receptionId}", event: "${JSON.encode(event)}" but got: ${error} ${stack}');
             // Rethrow.

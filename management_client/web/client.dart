@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:html';
 
 import 'views/contact-view.dart' as conView;
@@ -16,56 +17,54 @@ import 'lib/configuration.dart';
 
 import 'package:logging/logging.dart';
 
-import 'package:openreception_framework/service.dart' as ORService;
-import 'package:openreception_framework/service-html.dart' as Transport;
+import 'package:openreception_framework/model.dart' as model;
+import 'package:openreception_framework/service.dart' as service;
+import 'package:openreception_framework/service-html.dart' as transport;
 
-void main() {
+Future main() async {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen(print);
 
   if (handleToken()) {
-    final Transport.Client client = new Transport.Client();
+    final transport.Client client = new transport.Client();
+    final model.ClientConfiguration clientConfig =
+        await (new service.RESTConfiguration(config.configUri, client))
+            .clientConfig();
 
-    final ORService.RESTUserStore _userStore =
-        new ORService.RESTUserStore(config.userURI, config.token, client);
+    /// Initialize the stores.
+    final service.RESTUserStore userStore = new service.RESTUserStore(
+        clientConfig.userServerUri, config.token, client);
+    final service.RESTDistributionListStore dlistStore =
+        new service.RESTDistributionListStore(
+            clientConfig.contactServerUri, config.token, client);
+    final service.RESTEndpointStore epStore = new service.RESTEndpointStore(
+        clientConfig.contactServerUri, config.token, client);
+    final service.RESTCDRService cdrStore =
+         new service.RESTCDRService(config.cdrURI, config.token, client);
+    final service.RESTReceptionStore receptionStore = new service.RESTReceptionStore(
+        clientConfig.receptionServerUri, config.token, client);
+    final service.RESTOrganizationStore organizationStore =
+        new service.RESTOrganizationStore(
+            clientConfig.receptionServerUri, config.token, client);
+    final service.RESTContactStore contactStore = new service.RESTContactStore(
+        clientConfig.contactServerUri, config.token, client);
+    final service.RESTCalendarStore calendarStore = new service.RESTCalendarStore(
+        clientConfig.calendarServerUri, config.token, client);
 
-    final Controller.User userController = new Controller.User(_userStore);
-
+    /// Controllers
+    final Controller.User userController = new Controller.User(userStore);
     final Controller.DistributionList dlistController =
-        new Controller.DistributionList(new ORService.RESTDistributionListStore(
-            Uri.parse('http://localhost:4010'), config.token, client));
-
-    final Controller.Endpoint epController =
-        new Controller.Endpoint(new ORService.RESTEndpointStore(
-            Uri.parse('http://localhost:4010'), config.token, client));
-
-    ORService.RESTCDRService _cdrStore =
-        new ORService.RESTCDRService(config.cdrURI, config.token, client);
-
-    ORService.RESTReceptionStore _receptionStore =
-        new ORService.RESTReceptionStore(
-            config.receptionURI, config.token, client);
-
-    ORService.RESTOrganizationStore _organizationStore =
-        new ORService.RESTOrganizationStore(
-            config.receptionURI, config.token, client);
-
-    Controller.Reception receptionController =
-        new Controller.Reception(_receptionStore);
-
-    Controller.Organization organizationController =
-        new Controller.Organization(_organizationStore);
-
-    ORService.RESTContactStore _contactStore = new ORService.RESTContactStore(
-        Uri.parse('http://localhost:4010'), config.token, client);
-
-    Controller.Contact contactController =
-        new Controller.Contact(_contactStore);
-
-    Controller.Calendar calendarController =
-        new Controller.Calendar(_contactStore, _receptionStore);
-
-    Controller.CDR cdrController = new Controller.CDR(_cdrStore);
+        new Controller.DistributionList(dlistStore);
+    final Controller.Endpoint epController = new Controller.Endpoint(epStore);
+    final Controller.Reception receptionController =
+        new Controller.Reception(receptionStore);
+    final Controller.Organization organizationController =
+        new Controller.Organization(organizationStore);
+    final Controller.Contact contactController =
+        new Controller.Contact(contactStore);
+    final Controller.Calendar calendarController =
+        new Controller.Calendar(calendarStore);
+    final Controller.CDR cdrController = new Controller.CDR(cdrStore);
 
     //Initializes the notification system.
     notify.initialize();
@@ -73,9 +72,14 @@ void main() {
         organizationController, receptionController);
     new recepView.ReceptionView(querySelector('#reception-page'),
         contactController, organizationController, receptionController);
-    new conView.ContactView(querySelector('#contact-page'), contactController,
-        organizationController, receptionController, calendarController,
-        dlistController, epController);
+    new conView.ContactView(
+        querySelector('#contact-page'),
+        contactController,
+        organizationController,
+        receptionController,
+        calendarController,
+        dlistController,
+        epController);
 //    new diaView.DialplanView(
 //        querySelector('#dialplan-page'), receptionController);
 //    new recordView.RecordView(
