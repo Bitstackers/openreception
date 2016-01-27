@@ -518,7 +518,7 @@ List<String> _ivrEntryToXml(model.IvrEntry entry, DialplanCompilerOpts option) {
         .add(_noteTemplate(entry.transfer.note));
     returnValue.add(
         '<entry action="${PbxKey.menuExecApp}" digits="${entry.digits}" '
-        'param="transfer ${_dialoutTemplate(entry.transfer.extension, option)}"/>');
+        'param="transfer ${entry.transfer.extension} XML $reception-${entry.transfer.extension}"/>');
   } else if (entry is model.IvrVoicemail) {
     returnValue.add(
         '<entry action="${PbxKey.menuExecApp}" digits="${entry.digits}" param="voicemail default \$\${domain} ${entry.voicemail.vmBox}"/>');
