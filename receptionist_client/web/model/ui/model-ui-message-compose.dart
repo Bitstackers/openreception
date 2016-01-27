@@ -272,9 +272,9 @@ class UIMessageCompose extends UIModel {
    */
   void _setupLocalKeys() {
     final Map<String, EventListener> bindings = {
-      'Ctrl+enter': (_) => _sendButton.click(),
-      'Ctrl+s': (_) => _saveButton.click(),
-      'Ctrl+Space': _toggleRecipients
+      'Ctrl+enter': (Event _) => _sendButton.click(),
+      'Ctrl+s': (Event _) => _saveButton.click(),
+      'Ctrl+Space': (Event _) => _toggleRecipients()
     };
 
     _hotKeys.registerKeysPreventDefault(_keyboard, bindings);

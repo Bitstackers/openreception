@@ -1,6 +1,6 @@
 analyzer:
   exclude:
-    - .pub-cache/**
+    # - path
   strong-mode: true
 linter:
   rules:

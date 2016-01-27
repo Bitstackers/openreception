@@ -103,7 +103,7 @@ class CalendarEditor extends ViewWidget {
     _navigate.onGo.listen(_setWidgetState);
 
     _ui.onCancel.listen((MouseEvent _) => _close());
-    _ui.onDelete.listen((MouseEvent_) => _delete());
+    _ui.onDelete.listen((MouseEvent _) => _delete());
     _ui.onSave.listen((MouseEvent _) => _save());
   }
 

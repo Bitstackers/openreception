@@ -74,7 +74,7 @@ class UIReceptionCalendar extends UIModel {
   /**
    * Fire the [onEdit] stream if an event is selected, else don't do anything.
    */
-  void _maybeEdit(KeyboardEvent event) {
+  void _maybeEdit(Event event) {
     if (_list.querySelector('.selected') != null) {
       _busEdit.fire(event);
     }
@@ -126,7 +126,10 @@ class UIReceptionCalendar extends UIModel {
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
-    final Map<String, EventListener> bindings = {'Ctrl+e': _maybeEdit, 'Ctrl+k': _busNew.fire};
+    final Map<String, EventListener> bindings = {
+      'Ctrl+e': _maybeEdit,
+      'Ctrl+k': (Event event) => _busNew.fire(event)
+    };
 
     _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
   }

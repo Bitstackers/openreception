@@ -1,21 +1,21 @@
 part of controller;
 
 enum CallCommand {
-  PICKUP,
-  PICKUPSUCCESS,
-  PICKUPFAILURE,
-  DIAL,
-  DIALSUCCESS,
-  DIALFAILURE,
-  HANGUP,
-  HANGUPSUCCESS,
-  HANGUPFAILURE,
-  PARK,
-  PARKSUCCESS,
-  PARKFAILURE,
-  TRANSFER,
-  TRANSFERSUCCESS,
-  TRANSFERFAILURE
+  pickup,
+  pickupSuccess,
+  pickupFailure,
+  dial,
+  dialSuccess,
+  dialFailure,
+  hangup,
+  hangupSuccess,
+  hangupFailure,
+  park,
+  parkSuccess,
+  parkFailure,
+  transfer,
+  transferSuccess,
+  transferFailure
 }
 
 /**
@@ -87,16 +87,16 @@ class Call {
 
     _busy = true;
 
-    _command.fire(CallCommand.DIAL);
+    _command.fire(CallCommand.dial);
 
     return await _service.originate(phoneNumber.value, context).then((ORModel.Call call) {
-      _command.fire(CallCommand.DIALSUCCESS);
+      _command.fire(CallCommand.dialSuccess);
       _appState.activeCall = call;
 
       return _appState.activeCall;
     }).catchError((error, stackTrace) {
       _log.severe(error, stackTrace);
-      _command.fire(CallCommand.DIALFAILURE);
+      _command.fire(CallCommand.dialFailure);
 
       return new ControllerError(error.toString());
     }).whenComplete(() => _busy = false);
@@ -130,16 +130,16 @@ class Call {
   Future hangup(ORModel.Call call) {
     _busy = true;
 
-    _command.fire(CallCommand.HANGUP);
+    _command.fire(CallCommand.hangup);
 
     _log.info('Hanging up $call.');
 
     return _service
         .hangup(call.ID)
-        .then((_) => _command.fire(CallCommand.HANGUPSUCCESS))
+        .then((_) => _command.fire(CallCommand.hangupSuccess))
         .catchError((error, stackTrace) {
       _log.severe(error, stackTrace);
-      _command.fire(CallCommand.HANGUPFAILURE);
+      _command.fire(CallCommand.hangupFailure);
 
       return new Future.error(new ControllerError(error.toString()));
     }).whenComplete(() => _busy = false);
@@ -159,10 +159,10 @@ class Call {
     }
 
     _busy = true;
-    _command.fire(CallCommand.PARK);
+    _command.fire(CallCommand.park);
 
     return await _service.park(call.ID).then((ORModel.Call parkedCall) {
-      _command.fire(CallCommand.PARKSUCCESS);
+      _command.fire(CallCommand.parkSuccess);
 
       _log.info('Parking ${parkedCall}');
 
@@ -170,7 +170,7 @@ class Call {
       return parkedCall;
     }).catchError((error, stackTrace) {
       _log.severe(error, stackTrace);
-      _command.fire(CallCommand.PARKFAILURE);
+      _command.fire(CallCommand.parkFailure);
 
       throw new ControllerError(error.toString());
     }).whenComplete(() => _busy = false);
@@ -187,18 +187,18 @@ class Call {
   Future<ORModel.Call> pickup(ORModel.Call call) async {
     _busy = true;
 
-    _command.fire(CallCommand.PICKUP);
+    _command.fire(CallCommand.pickup);
 
     _log.info('Picking up $call.');
 
     return await _service.pickup(call.ID).then((ORModel.Call call) {
-      _command.fire(CallCommand.PICKUPSUCCESS);
+      _command.fire(CallCommand.pickupSuccess);
       _appState.activeCall = call;
 
       return _appState.activeCall;
     }).catchError((error, stackTrace) {
       _log.severe(error, stackTrace);
-      _command.fire(CallCommand.PICKUPFAILURE);
+      _command.fire(CallCommand.pickupFailure);
 
       throw new ControllerError(error.toString());
     }).whenComplete(() => _busy = false);
@@ -240,14 +240,14 @@ class Call {
    */
   Future _transfer(ORModel.Call source, ORModel.Call destination) async {
     _busy = true;
-    _command.fire(CallCommand.TRANSFER);
+    _command.fire(CallCommand.transfer);
 
     return await _service
         .transfer(source.ID, destination.ID)
-        .then((_) => _command.fire(CallCommand.TRANSFERSUCCESS))
+        .then((_) => _command.fire(CallCommand.transferSuccess))
         .catchError((error, stackTrace) {
       _log.severe(error, stackTrace);
-      _command.fire(CallCommand.TRANSFERFAILURE);
+      _command.fire(CallCommand.transferFailure);
 
       return new ControllerError(error.toString());
     }).whenComplete(() => _busy = false);

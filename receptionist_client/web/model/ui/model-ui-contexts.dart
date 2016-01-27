@@ -19,7 +19,7 @@ part of model;
  * other contexts.
  */
 class UIContexts {
-  Map<String, HtmlElement> _contextMap;
+  Map<Controller.Context, HtmlElement> _contextMap;
 
   /**
    * Constructor.

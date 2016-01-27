@@ -115,7 +115,7 @@ class Destination {
    */
   Destination(Context this.context, Widget this.widget, {Destination this.from, Cmd this.cmd});
 
-  operator ==(Destination other) => (context == other.context) && (widget == other.widget);
+  bool operator ==(Destination other) => (context == other.context) && (widget == other.widget);
 
   int get hashCode => this.toString().hashCode;
 

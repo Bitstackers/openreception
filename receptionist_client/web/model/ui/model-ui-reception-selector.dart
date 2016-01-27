@@ -102,7 +102,7 @@ class UIReceptionSelector extends UIModel {
    * If the filter is not empty and all but one element are hidden, then hitting
    * enter will result in the remaining visible element being selected.
    */
-  void _handleEnter(KeyboardEvent event) {
+  void _handleEnter(Event _) {
     if (_filter.value.trim().isNotEmpty && _list.querySelectorAll(':not(.hide)').length == 1) {
       _markSelected(_scanForwardForVisibleElement(_list.children.first));
     }
@@ -175,7 +175,7 @@ class UIReceptionSelector extends UIModel {
    * [Reception].
    */
   void reset() => _reset(null);
-  void _reset(_) {
+  void _reset(Event _) {
     _filter.value = '';
     _filterList();
     _list.children.forEach((Element e) => e.classes.toggle('selected', false));

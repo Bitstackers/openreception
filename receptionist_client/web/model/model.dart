@@ -138,9 +138,9 @@ abstract class UIModel {
    * Tab from first to last tab element when first is in focus an a Shift+Tab
    * event is caught.
    */
-  _handleShiftTab(KeyboardEvent event) {
+  void _handleShiftTab(Event event) {
     if (isFocused && focusIsOnFirst) {
-      event.preventDefault();
+      (event as KeyboardEvent).preventDefault();
       tabToLast();
     }
   }
@@ -149,9 +149,9 @@ abstract class UIModel {
    * Tab from last to first tab element when last is in focus an a Tab event
    * is caught.
    */
-  _handleTab(KeyboardEvent event) {
+  void _handleTab(Event event) {
     if (isFocused && focusIsOnLast) {
-      event.preventDefault();
+      (event as KeyboardEvent).preventDefault();
       tabToFirst();
     }
   }
@@ -162,7 +162,7 @@ abstract class UIModel {
    * for "down" arrow and backwards for "up" arrow. Call [_markSelected] on the
    * first element found that is visible and not selected.
    */
-  _handleUpDown(KeyboardEvent event) {
+  void _handleUpDown(Event event) {
     if (_listTarget.children.isNotEmpty) {
       final LIElement selected = _listTarget.querySelector('.selected:not(.hide)');
 
@@ -171,7 +171,7 @@ abstract class UIModel {
         return;
       }
 
-      switch (event.keyCode) {
+      switch ((event as KeyboardEvent).keyCode) {
         case KeyCode.DOWN:
           _markSelected(_scanForwardForVisibleElement(selected.nextElementSibling));
           break;

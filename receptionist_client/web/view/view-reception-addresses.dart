@@ -51,7 +51,7 @@ class ReceptionAddresses extends ViewWidget {
   void _observers() {
     _navigate.onGo.listen(_setWidgetState);
 
-    _ui.onClick.listen((MouseEvent_) => _activateMe());
+    _ui.onClick.listen((MouseEvent _) => _activateMe());
 
     _receptionSelector.onSelect.listen(render);
   }

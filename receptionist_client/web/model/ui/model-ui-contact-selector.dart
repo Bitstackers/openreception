@@ -188,7 +188,7 @@ class UIContactSelector extends UIModel {
    * Remove selections, scroll to top, empty filter input and then select the
    * first contact.
    */
-  void _reset(_) {
+  void _reset(Event _) {
     _filter.value = '';
     filter();
     selectFirstContact();
