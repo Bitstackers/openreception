@@ -1,7 +1,6 @@
 part of openreception.storage;
 
 abstract class Contact {
-
   Future<Model.Contact> addToReception(Model.Contact contact, int receptionID);
 
   Future<Model.BaseContact> create(Model.BaseContact contact);
@@ -16,16 +15,16 @@ abstract class Contact {
 
   Future<Iterable<Model.BaseContact>> organizationContacts(int organizationId);
 
-  Future<Iterable<int>> organizations (int contactID);
+  Future<Iterable<int>> organizations(int contactID);
 
   @deprecated
   Future<Iterable<Model.PhoneNumber>> phones(int contactID, int receptionID);
 
-  Future<Iterable<int>> receptions (int contactID);
+  Future<Iterable<int>> receptions(int contactID);
 
   Future remove(int contactId);
 
-  Future<Model.Contact> removeFromReception(int contactId, int receptionID);
+  Future removeFromReception(int contactId, int receptionID);
 
   Future<Model.BaseContact> update(Model.BaseContact contact);
 
