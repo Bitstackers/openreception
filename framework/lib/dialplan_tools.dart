@@ -383,10 +383,7 @@ List<String> _actionToXmlDialplan(
     returnValue..add(_setVar(ORPbxKey.state, PbxKey.playback));
 
     if (!env.channelAnswered) {
-      returnValue
-        ..add('<action application="answer"/>')
-        ..add('<action application="playback" '
-            'data="tone_stream://L=1;%(500,0,425)"/>');
+      returnValue.add('<action application="answer"/>');
       env.channelAnswered = true;
     }
 
@@ -395,10 +392,8 @@ List<String> _actionToXmlDialplan(
     }
 
     returnValue.addAll([
-      _sleep(500),
       '<action application="playback" '
           'data="{loops=${action.repeat}}${option.greetingDir}/${action.filename}"/>',
-      _sleep(500),
       _setVar(ORPbxKey.greetingPlayed, true),
     ]);
 
@@ -410,10 +405,7 @@ List<String> _actionToXmlDialplan(
   /// Enqueue action.
   else if (action is model.Enqueue) {
     if (!env.channelAnswered) {
-      returnValue
-        ..add('    <action application="answer"/>')
-        ..add('    <action application="playback" '
-            'data="tone_stream://L=1;%(500,0,425)"/>');
+      returnValue.add('    <action application="answer"/>');
       env.channelAnswered = true;
     }
 
