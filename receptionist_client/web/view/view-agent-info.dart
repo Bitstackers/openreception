@@ -61,20 +61,6 @@ class AgentInfo extends ViewWidget {
   @override void _onFocus(_) {}
 
   /**
-   * Set the users state to [AgentState.IDLE].
-   */
-  void _setIdle(_) {
-    _user.setIdle(_appState.currentUser);
-  }
-
-  /**
-   * Set the users state to [AgentState.PAUSED].
-   */
-  void _setPaused(_) {
-    _user.setPaused(_appState.currentUser);
-  }
-
-  /**
    * Update the users state in the UI.
    */
   Future _reloadUserState() async {
@@ -107,16 +93,14 @@ class AgentInfo extends ViewWidget {
    * Observers.
    */
   void _observers() {
-    _hotKeys.onCtrlAltEnter.listen(_setIdle);
-    _hotKeys.onCtrlAltP.listen(_setPaused);
+    _hotKeys.onCtrlAltP.listen(_toggleAgentState);
 
     _notification.onAgentStateChange.listen((ORModel.UserStatus userStatus) {
       _userPaused[userStatus.userID] = userStatus.paused;
       _update();
     });
 
-    _notification.onClientConnectionStateChange
-        .listen((Model.ClientConnectionState state) {
+    _notification.onClientConnectionStateChange.listen((Model.ClientConnectionState state) {
       _userConnectionCount[state.userID] = state.connectionCount;
       _log.info('View.AgentInfo got '
           'Model.ClientConnectionState: ${state.asMap}');
@@ -131,7 +115,18 @@ class AgentInfo extends ViewWidget {
   }
 
   /**
-   *
+   * Toggle the idle/pause agent state. If idle, then set paused and vice versa.
+   */
+  void _toggleAgentState(_) {
+    if (_userPaused[_appState.currentUser.ID]) {
+      _user.setIdle(_appState.currentUser);
+    } else {
+      _user.setPaused(_appState.currentUser);
+    }
+  }
+
+  /**
+   * Update the active/passive counters and the user state graphic.
    */
   void _update() {
     int active = 0;
