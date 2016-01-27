@@ -216,13 +216,18 @@ class MyCallQueue extends ViewWidget {
 
   /**
    * Load the list of calls assigned to current user and not being transferred.
+   * Updates [_appState.activeCall] if any call is detected as being active.
    */
   void _loadCallList() {
     bool isMine(ORModel.Call call) =>
         call.assignedTo == _appState.currentUser.ID && call.state != ORModel.CallState.Transferred;
 
     _callController.listCalls().then((Iterable<ORModel.Call> calls) {
-      _ui.calls = calls.where(isMine).toList(growable: false);
+      Iterable<ORModel.Call> myCalls = calls.where(isMine);
+      _ui.calls = myCalls.toList(growable: false);
+      _appState.activeCall = myCalls.firstWhere(
+          (ORModel.Call call) => call.state == ORModel.CallState.Speaking,
+          orElse: () => ORModel.Call.noCall);
     });
   }
 
