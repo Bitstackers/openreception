@@ -212,15 +212,16 @@ class Receptionist {
 
     bool match(Phonio.Event event) => event is Phonio.CallIncoming;
 
-    //TODO: Assert that the call is not answered and is acutally inbound.
     if (this.currentCall != null) {
       log.finest('$this already has call, returning it.');
+
       return new Future(() => this.currentCall);
     }
 
     log.finest('$this waits for incoming call from event stream.');
     return this._phone.eventStream.firstWhere(match).then((_) {
       log.finest('$this got expected event, returning current call.');
+
       return this.currentCall;
     }).timeout(new Duration(seconds: 10));
   }
