@@ -75,6 +75,8 @@ class IvrMenu {
           list.add(entry.transfer);
         } else if (entry is IvrVoicemail) {
           list.add(entry.voicemail);
+        } else if (entry is IvrReceptionTransfer) {
+          list.add(entry.transfer);
         } else if (entry is IvrSubmenu || entry is IvrTopmenu) {
         } else throw new StateError(
             'Unknown type in entries: ${entry.runtimeType}');
