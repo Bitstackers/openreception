@@ -21,7 +21,7 @@ import 'dart:async';
  * This is basically just a thin wrapper around [StreamController].
  */
 class Bus<Type> {
-  StreamController _streamController;
+  StreamController<Type> _streamController;
 
   /**
    * Get the [Stream] stream.
