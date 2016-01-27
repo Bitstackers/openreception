@@ -50,7 +50,7 @@ class CalendarEditor extends ViewWidget {
   @override Controller.Destination get _destination => _myDestination;
   @override Model.UICalendarEditor get _ui => _uiModel;
 
-  @override void _onBlur(_) {
+  @override void _onBlur(Controller.Destination _) {
     if (_ui.isFocused) {
       _ui.reset();
     }
@@ -74,7 +74,7 @@ class CalendarEditor extends ViewWidget {
    *
    * Clear the form and navigate one step back in history.
    */
-  void _close(_) {
+  void _close() {
     _ui.reset();
     window.history.back();
   }
@@ -84,7 +84,7 @@ class CalendarEditor extends ViewWidget {
    *
    * Clear the form and navigate one step back in history.
    */
-  void _delete(_) {
+  void _delete() {
     final ORModel.CalendarEntry loadedEntry = _ui.loadedEntry;
 
     _calendarController.deleteCalendarEvent(_ui.loadedEntry).then((_) {
@@ -93,7 +93,7 @@ class CalendarEditor extends ViewWidget {
     }).catchError((error) {
       _log.shout('Could not delete calendar entry ${loadedEntry}');
       _popup.error(_langMap[Key.calendarEditorDelErrorTitle], 'ID ${loadedEntry.ID}');
-    }).whenComplete(() => _close(_));
+    }).whenComplete(() => _close());
   }
 
   /**
@@ -102,9 +102,9 @@ class CalendarEditor extends ViewWidget {
   void _observers() {
     _navigate.onGo.listen(_setWidgetState);
 
-    _ui.onCancel.listen(_close);
-    _ui.onDelete.listen(_delete);
-    _ui.onSave.listen(_save);
+    _ui.onCancel.listen((MouseEvent _) => _close());
+    _ui.onDelete.listen((MouseEvent_) => _delete());
+    _ui.onSave.listen((MouseEvent _) => _save());
   }
 
   /**
@@ -112,7 +112,7 @@ class CalendarEditor extends ViewWidget {
    *
    * Clear the form when done, and then navigate one step back in history.
    */
-  void _save(_) {
+  void _save() {
     final ORModel.CalendarEntry entry = _ui.harvestedEntry;
 
     _calendarController.saveCalendarEvent(entry).then((ORModel.CalendarEntry savedEntry) {
@@ -122,7 +122,7 @@ class CalendarEditor extends ViewWidget {
       ORModel.CalendarEntry loadedEntry = _ui.loadedEntry;
       _log.shout('Could not save calendar entry ${loadedEntry}');
       _popup.error(_langMap[Key.calendarEditorSaveErrorTitle], 'ID ${loadedEntry.ID}');
-    }).whenComplete(() => _close(_));
+    }).whenComplete(() => _close());
   }
 
   /**
@@ -156,8 +156,8 @@ class CalendarEditor extends ViewWidget {
     ORModel.CalendarEntry entry;
 
     switch (from) {
-      case Controller.Widget.ContactCalendar:
-        if (cmd == Controller.Cmd.EDIT) {
+      case Controller.Widget.contactCalendar:
+        if (cmd == Controller.Cmd.edit) {
           entry = _contactCalendar.selectedCalendarEntry;
 
           _ui.headerExtra = '(${_langMap[Key.editDelete]})';
@@ -177,8 +177,8 @@ class CalendarEditor extends ViewWidget {
           _render(entry);
         }
         break;
-      case Controller.Widget.ReceptionCalendar:
-        if (cmd == Controller.Cmd.EDIT) {
+      case Controller.Widget.receptionCalendar:
+        if (cmd == Controller.Cmd.edit) {
           entry = _receptionCalendar.selectedCalendarEntry;
 
           _ui.headerExtra = '(${_langMap[Key.editDelete]})';

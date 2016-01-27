@@ -53,14 +53,14 @@ class MessageCompose extends ViewWidget {
   @override Controller.Destination get _destination => _myDestination;
   @override Model.UIMessageCompose get _ui => _uiModel;
 
-  @override void _onBlur(_) {}
-  @override void _onFocus(_) {}
+  @override void _onBlur(Controller.Destination _) {}
+  @override void _onFocus(Controller.Destination _) {}
 
   /**
    * Simply navigate to my [_myDestination]. Matters not if this widget is
    * already focused.
    */
-  void _activateMe(_) {
+  void _activateMe() {
     _navigateToMyDestination();
   }
 
@@ -84,15 +84,14 @@ class MessageCompose extends ViewWidget {
   void _observers() {
     _navigate.onGo.listen(_setWidgetState);
 
-    _ui.onClick.listen(_activateMe);
-
-    _hotKeys.onAltB.listen(_activateMe);
+    _ui.onClick.listen((MouseEvent _) => _activateMe());
+    _hotKeys.onAltB.listen((KeyboardEvent _) => _activateMe());
 
     _contactSelector.onSelect.listen(_render);
     _receptionSelector.onSelect.listen(_resetOnEmpty);
 
-    _ui.onSave.listen(_save);
-    _ui.onSend.listen(_send);
+    _ui.onSave.listen((MouseEvent _) => _save());
+    _ui.onSend.listen((MouseEvent _) => _send());
 
     _uiMessageArchive.onMessageCopy.listen((ORModel.Message msg) {
       /**
@@ -101,7 +100,7 @@ class MessageCompose extends ViewWidget {
        * HTML textarea will not focus. I've no idea why.
        */
       new Future(() {
-        _activateMe(null);
+        _activateMe();
 
         _ui.message = msg;
       });
@@ -151,7 +150,7 @@ class MessageCompose extends ViewWidget {
   /**
    * Save message in the message archive.
    */
-  dynamic _save(_) async {
+  dynamic _save() async {
     final ORModel.Message message = _message;
 
     try {
@@ -171,7 +170,7 @@ class MessageCompose extends ViewWidget {
   /**
    * Send message. This entails first saving and then enqueueing the message.
    */
-  dynamic _send(_) async {
+  dynamic _send() async {
     final ORModel.Message message = _message;
 
     try {

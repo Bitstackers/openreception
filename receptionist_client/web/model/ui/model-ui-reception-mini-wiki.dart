@@ -18,7 +18,7 @@ part of model;
  * limits all links to same origin, which does not work for us.
  */
 class _AllUriPolicy implements UriPolicy {
-  bool allowsUri(_) => true;
+  bool allowsUri(String _) => true;
 }
 
 /**
@@ -63,8 +63,8 @@ class UIReceptionMiniWiki extends UIModel {
       _body.setInnerHtml(Markdown.markdownToHtml(miniWiki), validator: _validator);
 
       // Lets make sure all links open up in a new tab/window.
-      _body.querySelectorAll('a').forEach((AnchorElement a) {
-        a.target = '_blank';
+      _body.querySelectorAll('a').forEach((Element a) {
+        (a as AnchorElement).target = '_blank';
       });
     } else {
       _body.text = '';

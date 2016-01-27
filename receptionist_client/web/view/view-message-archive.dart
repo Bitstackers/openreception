@@ -54,11 +54,11 @@ class MessageArchive extends ViewWidget {
   @override Controller.Destination get _destination => _myDestination;
   @override Model.UIMessageArchive get _ui => _uiModel;
 
-  @override void _onBlur(_) {
+  @override void _onBlur(Controller.Destination _) {
     _ui.hideYesNoBoxes();
   }
 
-  @override void _onFocus(_) {
+  @override void _onFocus(Controller.Destination _) {
     _ui.context = new ORModel.MessageContext.empty()
       ..contactID = _contactSelector.selectedContact.ID
       ..receptionID = _receptionSelector.selectedReception.ID;
@@ -179,8 +179,8 @@ class MessageArchive extends ViewWidget {
   void _observers() {
     _navigate.onGo.listen(_setWidgetState);
 
-    _messageCompose.onSave.listen((_) => _ui.headerExtra = '');
-    _messageCompose.onSend.listen((_) => _ui.headerExtra = '');
+    _messageCompose.onSave.listen((MouseEvent _) => _ui.headerExtra = '');
+    _messageCompose.onSend.listen((MouseEvent _) => _ui.headerExtra = '');
 
     _ui.onClick.listen(_activateMe);
 

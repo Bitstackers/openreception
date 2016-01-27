@@ -39,7 +39,7 @@ class UIReceptionSelector extends UIModel {
    * on the filter input whenever a reception li element is clicked.
    */
   @override Stream<MouseEvent> get onClick => _myRoot.onMouseDown;
-  @override selectCallback get _selectCallback => _receptionSelectCallback;
+  @override SelectCallback get _selectCallback => _receptionSelectCallback;
   @override HtmlElement get _root => _myRoot;
 
   OListElement get _list => _root.querySelector('.generic-widget-list');
@@ -48,12 +48,11 @@ class UIReceptionSelector extends UIModel {
   /**
    * Construct a [reception] <li> element.
    */
-  LIElement _buildReceptionElement(ORModel.Reception reception) =>
-      new LIElement()
-        ..dataset['id'] = reception.ID.toString()
-        ..dataset['name'] = reception.name.toLowerCase()
-        ..dataset['object'] = JSON.encode(reception)
-        ..text = reception.name;
+  LIElement _buildReceptionElement(ORModel.Reception reception) => new LIElement()
+    ..dataset['id'] = reception.ID.toString()
+    ..dataset['name'] = reception.name.toLowerCase()
+    ..dataset['object'] = JSON.encode(reception)
+    ..text = reception.name;
 
   /**
    * Mark the [receptionId] list item as selected.
@@ -66,19 +65,18 @@ class UIReceptionSelector extends UIModel {
    * Filter the reception list whenever the user enters data into the [_filter]
    * input field.
    */
-  void _filterList(_) {
+  void _filterList() {
     final String filter = _filter.value.toLowerCase();
     final String trimmedFilter = filter.trim();
 
     if (filter.length == 0 || trimmedFilter.isEmpty) {
       /// Empty filter. Remove .hide from all list elements.
-      _list.children
-          .forEach((LIElement li) => li.classes.toggle('hide', false));
+      _list.children.forEach((Element li) => li.classes.toggle('hide', false));
       _list.classes.toggle('zebra', true);
     } else if (trimmedFilter.length == 1) {
       _list.classes.toggle('zebra', false);
 
-      _list.children.forEach((LIElement li) {
+      _list.children.forEach((Element li) {
         if (li.dataset['name'].startsWith(trimmedFilter)) {
           li.classes.toggle('hide', false);
         } else {
@@ -88,7 +86,7 @@ class UIReceptionSelector extends UIModel {
     } else {
       _list.classes.toggle('zebra', false);
 
-      _list.children.forEach((LIElement li) {
+      _list.children.forEach((Element li) {
         if (li.dataset['name'].contains(trimmedFilter)) {
           li.classes.toggle('hide', false);
         } else {
@@ -105,8 +103,7 @@ class UIReceptionSelector extends UIModel {
    * enter will result in the remaining visible element being selected.
    */
   void _handleEnter(KeyboardEvent event) {
-    if (_filter.value.trim().isNotEmpty &&
-        _list.querySelectorAll(':not(.hide)').length == 1) {
+    if (_filter.value.trim().isNotEmpty && _list.querySelectorAll(':not(.hide)').length == 1) {
       _markSelected(_scanForwardForVisibleElement(_list.children.first));
     }
   }
@@ -117,7 +114,7 @@ class UIReceptionSelector extends UIModel {
   void _observers() {
     _filter.onKeyDown.listen(_keyboard.press);
 
-    _filter.onInput.listen(_filterList);
+    _filter.onInput.listen((Event _) => _filterList());
 
     /// NOTE (TL): Don't switch this to _root.onClick. We need the mousedown
     /// event, not the mouseclick event. We want to keep focus on the filter at
@@ -180,7 +177,7 @@ class UIReceptionSelector extends UIModel {
   void reset() => _reset(null);
   void _reset(_) {
     _filter.value = '';
-    _filterList('');
+    _filterList();
     _list.children.forEach((Element e) => e.classes.toggle('selected', false));
     _bus.fire(new ORModel.Reception.empty());
   }
@@ -205,13 +202,9 @@ class UIReceptionSelector extends UIModel {
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
-    final Map<String, EventListener> bindings = {
-      'Enter': _handleEnter,
-      'Esc': _reset
-    };
+    final Map<String, EventListener> bindings = {'Enter': _handleEnter, 'Esc': _reset};
 
-    _hotKeys.registerKeysPreventDefault(
-        _keyboard, _defaultKeyMap(myKeys: bindings));
+    _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
   }
 
   /**

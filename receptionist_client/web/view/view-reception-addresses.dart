@@ -17,30 +17,31 @@ part of view;
  * The list of reception addresses.
  */
 class ReceptionAddresses extends ViewWidget {
-  final Controller.Destination     _myDestination;
-  final Model.UIReceptionSelector  _receptionSelector;
+  final Controller.Destination _myDestination;
+  final Model.UIReceptionSelector _receptionSelector;
   final Model.UIReceptionAddresses _uiModel;
 
   /**
    * Constructor.
    */
-  ReceptionAddresses(Model.UIReceptionAddresses this._uiModel,
-                     Controller.Destination this._myDestination,
-                     Model.UIReceptionSelector this._receptionSelector) {
+  ReceptionAddresses(
+      Model.UIReceptionAddresses this._uiModel,
+      Controller.Destination this._myDestination,
+      Model.UIReceptionSelector this._receptionSelector) {
     _observers();
   }
 
-  @override Controller.Destination     get _destination => _myDestination;
-  @override Model.UIReceptionAddresses get _ui          => _uiModel;
+  @override Controller.Destination get _destination => _myDestination;
+  @override Model.UIReceptionAddresses get _ui => _uiModel;
 
-  @override void _onBlur(_){}
-  @override void _onFocus(_){}
+  @override void _onBlur(Controller.Destination _) {}
+  @override void _onFocus(Controller.Destination _) {}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
    * focused.
    */
-  void activateMe(_) {
+  void _activateMe() {
     _navigateToMyDestination();
   }
 
@@ -50,7 +51,7 @@ class ReceptionAddresses extends ViewWidget {
   void _observers() {
     _navigate.onGo.listen(_setWidgetState);
 
-    _ui.onClick.listen(activateMe);
+    _ui.onClick.listen((MouseEvent_) => _activateMe());
 
     _receptionSelector.onSelect.listen(render);
   }
@@ -59,7 +60,7 @@ class ReceptionAddresses extends ViewWidget {
    * Render the widget with [reception].
    */
   void render(ORModel.Reception reception) {
-    if(reception.isEmpty) {
+    if (reception.isEmpty) {
       _ui.clear();
     } else {
       _ui.headerExtra = ': ${reception.name}';

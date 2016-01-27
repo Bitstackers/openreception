@@ -13,85 +13,85 @@
 
 part of controller;
 
-enum Context { Home, Homeplus, CalendarEdit, Messages }
+enum Context { home, homePlus, calendarEdit, messages }
 
 enum Widget {
-  AgentInfo,
-  CalendarEditor,
-  ContactCalendar,
-  ContactData,
-  ContactSelector,
-  GlobalCallQueue,
-  MessageArchive,
-  MessageCompose,
-  MyCallQueue,
-  ReceptionAddresses,
-  ReceptionAltNames,
-  ReceptionBankInfo,
-  ReceptionCalendar,
-  ReceptionCommands,
-  ReceptionEmail,
-  ReceptionMiniWiki,
-  ReceptionOpeningHours,
-  ReceptionProduct,
-  ReceptionSalesmen,
-  ReceptionSelector,
-  ReceptionTelephoneNumbers,
-  ReceptionType,
-  ReceptionVATNumbers,
-  ReceptionWebsites
+  agentInfo,
+  calendarEditor,
+  contactCalendar,
+  contactData,
+  contactSelector,
+  globalCallQueue,
+  messageArchive,
+  messageCompose,
+  myCallQueue,
+  receptionAddresses,
+  receptionAltNames,
+  receptionBankInfo,
+  receptionCalendar,
+  receptionCommands,
+  receptionEmail,
+  receptionMiniWiki,
+  receptionOpeningHours,
+  receptionProduct,
+  receptionSalesmen,
+  receptionSelector,
+  receptionTelephoneNumbers,
+  receptionType,
+  receptionVATNumbers,
+  receptionWebsites
 }
 
 final Map<Context, Widget> _defaultWidgets = {
-  Context.CalendarEdit: Widget.CalendarEditor,
-  Context.Home: Widget.ReceptionSelector,
-  Context.Homeplus: Widget.ReceptionMiniWiki,
-  Context.Messages: Widget.MessageArchive
+  Context.calendarEdit: Widget.calendarEditor,
+  Context.home: Widget.receptionSelector,
+  Context.homePlus: Widget.receptionMiniWiki,
+  Context.messages: Widget.messageArchive
 };
 
 final Map<String, Destination> _destinations = {
-  '${Context.CalendarEdit}-${Widget.CalendarEditor}':
-      new Destination(Context.CalendarEdit, Widget.CalendarEditor),
-  '${Context.Home}-${Widget.ContactCalendar}':
-      new Destination(Context.Home, Widget.ContactCalendar),
-  '${Context.Home}-${Widget.ContactData}': new Destination(Context.Home, Widget.ContactData),
-  '${Context.Home}-${Widget.ContactSelector}':
-      new Destination(Context.Home, Widget.ContactSelector),
-  '${Context.Home}-${Widget.GlobalCallQueue}':
-      new Destination(Context.Home, Widget.GlobalCallQueue),
-  '${Context.Home}-${Widget.MessageCompose}': new Destination(Context.Home, Widget.MessageCompose),
-  '${Context.Home}-${Widget.ReceptionCalendar}':
-      new Destination(Context.Home, Widget.ReceptionCalendar),
-  '${Context.Home}-${Widget.ReceptionCommands}':
-      new Destination(Context.Home, Widget.ReceptionCommands),
-  '${Context.Home}-${Widget.ReceptionOpeningHours}':
-      new Destination(Context.Home, Widget.ReceptionOpeningHours),
-  '${Context.Home}-${Widget.ReceptionProduct}':
-      new Destination(Context.Home, Widget.ReceptionProduct),
-  '${Context.Home}-${Widget.ReceptionSalesmen}':
-      new Destination(Context.Home, Widget.ReceptionSalesmen),
-  '${Context.Home}-${Widget.ReceptionSelector}':
-      new Destination(Context.Home, Widget.ReceptionSelector),
-  '${Context.Homeplus}-${Widget.ReceptionAddresses}':
-      new Destination(Context.Homeplus, Widget.ReceptionAddresses),
-  '${Context.Homeplus}-${Widget.ReceptionAltNames}':
-      new Destination(Context.Homeplus, Widget.ReceptionAltNames),
-  '${Context.Homeplus}-${Widget.ReceptionBankInfo}':
-      new Destination(Context.Homeplus, Widget.ReceptionBankInfo),
-  '${Context.Homeplus}-${Widget.ReceptionEmail}':
-      new Destination(Context.Homeplus, Widget.ReceptionEmail),
-  '${Context.Homeplus}-${Widget.ReceptionMiniWiki}':
-      new Destination(Context.Homeplus, Widget.ReceptionMiniWiki),
-  '${Context.Homeplus}-${Widget.ReceptionTelephoneNumbers}':
-      new Destination(Context.Homeplus, Widget.ReceptionTelephoneNumbers),
-  '${Context.Homeplus}-${Widget.ReceptionType}':
-      new Destination(Context.Homeplus, Widget.ReceptionType),
-  '${Context.Homeplus}-${Widget.ReceptionVATNumbers}':
-      new Destination(Context.Homeplus, Widget.ReceptionVATNumbers),
-  '${Context.Homeplus}-${Widget.ReceptionWebsites}':
-      new Destination(Context.Homeplus, Widget.ReceptionWebsites),
-  '${Context.Messages}-${Widget.MessageArchive}':
-      new Destination(Context.Messages, Widget.MessageArchive)
+  '${Context.calendarEdit}-${Widget.calendarEditor}':
+      new Destination(Context.calendarEdit, Widget.calendarEditor),
+  '${Context.home}-${Widget.contactCalendar}':
+      new Destination(Context.home, Widget.contactCalendar),
+  '${Context.home}-${Widget.contactData}': new Destination(Context.home, Widget.contactData),
+  '${Context.home}-${Widget.contactSelector}':
+      new Destination(Context.home, Widget.contactSelector),
+  '${Context.home}-${Widget.globalCallQueue}':
+      new Destination(Context.home, Widget.globalCallQueue),
+  '${Context.home}-${Widget.messageCompose}': new Destination(Context.home, Widget.messageCompose),
+  '${Context.home}-${Widget.receptionCalendar}':
+      new Destination(Context.home, Widget.receptionCalendar),
+  '${Context.home}-${Widget.receptionCommands}':
+      new Destination(Context.home, Widget.receptionCommands),
+  '${Context.home}-${Widget.receptionOpeningHours}':
+      new Destination(Context.home, Widget.receptionOpeningHours),
+  '${Context.home}-${Widget.receptionProduct}':
+      new Destination(Context.home, Widget.receptionProduct),
+  '${Context.home}-${Widget.receptionSalesmen}':
+      new Destination(Context.home, Widget.receptionSalesmen),
+  '${Context.home}-${Widget.receptionSelector}':
+      new Destination(Context.home, Widget.receptionSelector),
+  '${Context.homePlus}-${Widget.receptionAddresses}':
+      new Destination(Context.homePlus, Widget.receptionAddresses),
+  '${Context.homePlus}-${Widget.receptionAltNames}':
+      new Destination(Context.homePlus, Widget.receptionAltNames),
+  '${Context.homePlus}-${Widget.receptionBankInfo}':
+      new Destination(Context.homePlus, Widget.receptionBankInfo),
+  '${Context.homePlus}-${Widget.receptionEmail}':
+      new Destination(Context.homePlus, Widget.receptionEmail),
+  '${Context.homePlus}-${Widget.receptionMiniWiki}':
+      new Destination(Context.homePlus, Widget.receptionMiniWiki),
+  '${Context.homePlus}-${Widget.receptionTelephoneNumbers}':
+      new Destination(Context.homePlus, Widget.receptionTelephoneNumbers),
+  '${Context.homePlus}-${Widget.receptionType}':
+      new Destination(Context.homePlus, Widget.receptionType),
+  '${Context.homePlus}-${Widget.receptionVATNumbers}':
+      new Destination(Context.homePlus, Widget.receptionVATNumbers),
+  '${Context.homePlus}-${Widget.receptionWebsites}':
+      new Destination(Context.homePlus, Widget.receptionWebsites),
+  '${Context.messages}-${Widget.messageArchive}':
+      new Destination(Context.messages, Widget.messageArchive)
 };
 
 /**
@@ -180,31 +180,31 @@ class Navigate {
   }
 
   /**
-   * Convenience method to navigate to [Context.CalendarEdit].
+   * Convenience method to navigate to [Context.calendarEdit].
    */
   void goCalendarEdit({Destination from}) {
-    go(new Destination(Context.CalendarEdit, null, from: from, cmd: from.cmd));
+    go(new Destination(Context.calendarEdit, null, from: from, cmd: from.cmd));
   }
 
   /**
-   * Convenience method to navigate to [Context.Home].
+   * Convenience method to navigate to [Context.home].
    */
   void goHome() {
-    go(new Destination(Context.Home, null));
+    go(new Destination(Context.home, null));
   }
 
   /**
-     * Convenience method to navigate to [Context.Homeplus].
+     * Convenience method to navigate to [Context.homePlus].
      */
   void goHomeplus() {
-    go(new Destination(Context.Homeplus, null));
+    go(new Destination(Context.homePlus, null));
   }
 
   /**
-   * Convenience method to navigate to [Context.Messages].
+   * Convenience method to navigate to [Context.messages].
    */
   void goMessages() {
-    go(new Destination(Context.Messages, null));
+    go(new Destination(Context.messages, null));
   }
 
   /**

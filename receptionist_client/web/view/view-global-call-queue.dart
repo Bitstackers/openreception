@@ -46,14 +46,14 @@ class GlobalCallQueue extends ViewWidget {
   @override Controller.Destination get _destination => _myDestination;
   @override Model.UIGlobalCallQueue get _ui => _uiModel;
 
-  @override void _onBlur(_) {}
-  @override void _onFocus(_) {}
+  @override void _onBlur(Controller.Destination _) {}
+  @override void _onFocus(Controller.Destination _) {}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
    * focused.
    */
-  void _activateMe(_) {
+  void _activateMe() {
     _navigateToMyDestination();
   }
 
@@ -65,8 +65,7 @@ class GlobalCallQueue extends ViewWidget {
 
     if (event is OREvent.CallOffer) {
       _ui.appendCall(call);
-    } else if (event is OREvent.CallHangup ||
-        call.assignedTo != ORModel.User.noID) {
+    } else if (event is OREvent.CallHangup || call.assignedTo != ORModel.User.noID) {
       _ui.removeCall(call);
     } else if (call.inbound) {
       _ui.updateCall(call);
@@ -90,7 +89,7 @@ class GlobalCallQueue extends ViewWidget {
   void _observers() {
     _navigate.onGo.listen(_setWidgetState);
 
-    _ui.onClick.listen(_activateMe);
+    _ui.onClick.listen((MouseEvent _) => _activateMe());
 
     _notification.onAnyCallStateChange.listen(_handleCallStateChanges);
 
@@ -111,9 +110,7 @@ class GlobalCallQueue extends ViewWidget {
      *  the agent state is idle or unknown.
      */
     new Timer.periodic(new Duration(seconds: 2), (_) {
-      if (_ui.hasCalls &&
-          _appState.activeCall == ORModel.Call.noCall &&
-          (!_userState.paused)) {
+      if (_ui.hasCalls && _appState.activeCall == ORModel.Call.noCall && (!_userState.paused)) {
         _sound.pling();
       }
     });

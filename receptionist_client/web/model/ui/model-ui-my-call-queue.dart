@@ -95,7 +95,7 @@ class UIMyCallQueue extends UIModel {
    */
   void _callAgeUpdate() {
     new Timer.periodic(new Duration(seconds: 1), (_) {
-      _list.querySelectorAll('li span.call-wait-time').forEach((SpanElement span) {
+      _list.querySelectorAll('li span.call-wait-time').forEach((Element span) {
         if (span.text.isEmpty) {
           span.text = '0';
         } else {
@@ -110,7 +110,7 @@ class UIMyCallQueue extends UIModel {
    */
   List<ORModel.Call> get calls => _list
       .querySelectorAll('li')
-      .map((LIElement li) => new ORModel.Call.fromMap(JSON.decode(li.dataset['object'])))
+      .map((Element li) => new ORModel.Call.fromMap(JSON.decode(li.dataset['object'])))
       .toList();
 
   /**
@@ -134,7 +134,7 @@ class UIMyCallQueue extends UIModel {
   Iterable<ORModel.Call> get markedForTransfer {
     return _list
         .querySelectorAll('[transfer]')
-        .map((LIElement li) => new ORModel.Call.fromMap(JSON.decode(li.dataset['object'])));
+        .map((Element li) => new ORModel.Call.fromMap(JSON.decode(li.dataset['object'])));
   }
 
   /**
@@ -157,8 +157,8 @@ class UIMyCallQueue extends UIModel {
     _root.onKeyDown.listen(_keyboard.press);
     _root.onClick.listen((_) => _list.focus());
 
-    _list.onDoubleClick.listen((MouseEvent event) {
-      if (event.target is LIElement) {
+    _list.onDoubleClick.listen((Event event) {
+      if ((event as MouseEvent).target is LIElement) {
         _dblClickBus.fire(
             new ORModel.Call.fromMap(JSON.decode((event.target as LIElement).dataset['object'])));
       }
@@ -216,9 +216,7 @@ class UIMyCallQueue extends UIModel {
    */
   void removeTransferMarks() {
     _transferUUIDs.clear();
-    _list
-        .querySelectorAll('[transfer]')
-        .forEach((LIElement li) => li.attributes.remove('transfer'));
+    _list.querySelectorAll('[transfer]').forEach((Element li) => li.attributes.remove('transfer'));
   }
 
   /**

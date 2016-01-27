@@ -44,6 +44,6 @@ class ORCDisaster {
    */
   void _observers() {
     _appState.onStateChange.listen((Model.AppState appState) =>
-        appState == Model.AppState.ERROR ? _ui.visible = true : _ui.visible = false);
+        appState == Model.AppState.error ? _ui.visible = true : _ui.visible = false);
   }
 }

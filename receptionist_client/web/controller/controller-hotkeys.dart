@@ -85,24 +85,24 @@ class HotKeys {
     Html.window.document.onKeyDown.listen(_keyDown.press);
 
     final Map<dynamic, Html.EventListener> preventDefaultBindings = {
-      'Alt+a': _altA.fire,
-      'Alt+Down': _altArrowDown.fire,
-      'Alt+Up': _altArrowUp.fire,
-      'Alt+b': _altB.fire,
-      'Alt+c': _altC.fire,
-      'Alt+e': _altE.fire,
-      'Alt+f': _altF.fire,
-      'Alt+h': _altH.fire,
-      'Alt+i': _altI.fire,
-      'Alt+k': _altK.fire,
-      'Alt+m': _altM.fire,
-      'Alt+q': _altQ.fire,
-      'Alt+s': _altS.fire,
-      'Alt+t': _altT.fire,
-      'Alt+v': _altV.fire,
-      'Alt+w': _altW.fire,
-      'Alt+x': _altX.fire,
-      'Ctrl+Alt+Enter': _ctrlAltEnter.fire,
+      'Alt+a': (event) => _altA.fire(event),
+      'Alt+Down': (event) => _altArrowDown.fire(event),
+      'Alt+Up': (event) => _altArrowUp.fire(event),
+      'Alt+b': (event) => _altB.fire(event),
+      'Alt+c': (event) => _altC.fire(event),
+      'Alt+e': (event) => _altE.fire(event),
+      'Alt+f': (event) => _altF.fire(event),
+      'Alt+h': (event) => _altH.fire(event),
+      'Alt+i': (event) => _altI.fire(event),
+      'Alt+k': (event) => _altK.fire(event),
+      'Alt+m': (event) => _altM.fire(event),
+      'Alt+q': (event) => _altQ.fire(event),
+      'Alt+s': (event) => _altS.fire(event),
+      'Alt+t': (event) => _altT.fire(event),
+      'Alt+v': (event) => _altV.fire(event),
+      'Alt+w': (event) => _altW.fire(event),
+      'Alt+x': (event) => _altX.fire(event),
+      'Ctrl+Alt+Enter': (event) => _ctrlAltEnter.fire(event),
       'Ctrl+a': _null, // Blackhole this
       'Ctrl+d': _null, // Blackhole this
       'Ctrl+e': _null, // Blackhole this
@@ -110,15 +110,15 @@ class HotKeys {
       'Ctrl+l': _null, // Blackhole this
       'Ctrl+s': _null, // Blackhole this
       [Key.Ctrl, Key.NumPlus]: _null, // Blackhole this
-      'Ctrl+Alt+P': _ctrlAltP.fire,
-      [Key.Ctrl, Key.NumMinus]: _ctrlNumMinus.fire,
-      'F1': _f1.fire,
-      'F7': _f7.fire,
-      'F8': _f8.fire,
-      'F9': _f9.fire,
-      [Key.NumPlus]: _numPlus.fire,
-      [Key.NumDiv]: _numDiv.fire,
-      [Key.NumMult]: _numMult.fire
+      'Ctrl+Alt+P': (event) => _ctrlAltP.fire(event),
+      [Key.Ctrl, Key.NumMinus]: (event) => _ctrlNumMinus.fire(event),
+      'F1': (event) => _f1.fire(event),
+      'F7': (event) => _f7.fire(event),
+      'F8': (event) => _f8.fire(event),
+      'F9': (event) => _f9.fire(event),
+      [Key.NumPlus]: (event) => _numPlus.fire(event),
+      [Key.NumDiv]: (event) => _numDiv.fire(event),
+      [Key.NumMult]: (event) => _numMult.fire(event)
     };
 
     registerKeysPreventDefault(_keyDown, preventDefaultBindings);
@@ -127,7 +127,7 @@ class HotKeys {
   /**
    * Black hole for hotkey combos we don't want.
    */
-  void _null(_) => null;
+  _null(Html.Event _) => null;
 
   /**
    * Register the [keyMap] keybindings to [keyboard].

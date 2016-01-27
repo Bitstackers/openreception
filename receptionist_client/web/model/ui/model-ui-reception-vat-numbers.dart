@@ -60,7 +60,7 @@ class UIReceptionVATNumbers extends UIModel {
   /**
    * Add [items] to the reception VAT number list.
    */
-  set VATnumbers(List<String> items) {
+  set vatNumbers(List<String> items) {
     final List<LIElement> list = new List<LIElement>();
 
     items.forEach((String item) {

@@ -25,16 +25,18 @@ class UIContexts {
    * Constructor.
    */
   UIContexts() {
-    _contextMap = {Controller.Context.CalendarEdit: contextCalendarEdit,
-                   Controller.Context.Home        : contextHome,
-                   Controller.Context.Homeplus    : contextHomeplus,
-                   Controller.Context.Messages    : contextMessages};
+    _contextMap = {
+      Controller.Context.calendarEdit: contextCalendarEdit,
+      Controller.Context.home: contextHome,
+      Controller.Context.homePlus: contextHomeplus,
+      Controller.Context.messages: contextMessages
+    };
   }
 
   HtmlElement get contextCalendarEdit => querySelector('#context-calendar-edit');
-  HtmlElement get contextHome         => querySelector('#context-home');
-  HtmlElement get contextHomeplus     => querySelector('#context-homeplus');
-  HtmlElement get contextMessages     => querySelector('#context-messages');
+  HtmlElement get contextHome => querySelector('#context-home');
+  HtmlElement get contextHomeplus => querySelector('#context-homeplus');
+  HtmlElement get contextMessages => querySelector('#context-messages');
 
   /**
    * Make [destination].context visible and all other contexts invisible.

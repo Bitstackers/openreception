@@ -55,14 +55,14 @@ class MyCallQueue extends ViewWidget {
   @override Controller.Destination get _destination => _myDestination;
   @override Model.UIMyCallQueue get _ui => _uiModel;
 
-  @override void _onBlur(_) {}
-  @override void _onFocus(_) {}
+  @override void _onBlur(Controller.Destination _) {}
+  @override void _onFocus(Controller.Destination _) {}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
    * focused.
    */
-  void _activateMe(_) {
+  void _activateMe() {
     _navigateToMyDestination();
   }
 
@@ -232,7 +232,7 @@ class MyCallQueue extends ViewWidget {
   void _observers() {
     _navigate.onGo.listen(_setWidgetState);
 
-    _ui.onClick.listen(_activateMe);
+    _ui.onClick.listen((MouseEvent _) => _activateMe());
 
     _ui.onDblClick.listen((ORModel.Call call) => unpark(call: call));
 
@@ -270,7 +270,7 @@ class MyCallQueue extends ViewWidget {
     });
 
     /// Park
-    _hotKeys.onF7.listen((_) => park(_appState.activeCall));
+    _hotKeys.onF7.listen((KeyboardEvent _) => park(_appState.activeCall));
 
     /// Unpark
     _hotKeys.onF8.listen((_) => unpark());
@@ -310,7 +310,7 @@ class MyCallQueue extends ViewWidget {
     });
 
     /// Make call
-    _hotKeys.onNumMult.listen(_setRinging);
+    _hotKeys.onNumMult.listen((KeyboardEvent _) => _setRinging());
     _contactData.onMarkedRinging.listen(_call);
 
     _notification.onAnyCallStateChange.listen(_handleCallStateChanges);
@@ -319,7 +319,7 @@ class MyCallQueue extends ViewWidget {
   /**
    * If no phonenumber is marked ringing, mark the currently selected phone number ringing.
    */
-  void _setRinging(_) {
+  void _setRinging() {
     _contactData.ring();
   }
 

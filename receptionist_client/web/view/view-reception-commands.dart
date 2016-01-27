@@ -17,32 +17,33 @@ part of view;
  * The reception commands for general call handling.
  */
 class ReceptionCommands extends ViewWidget {
-  final Controller.Destination    _myDestination;
+  final Controller.Destination _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIReceptionCommands _uiModel;
 
   /**
    * Constructor.
    */
-  ReceptionCommands(Model.UIReceptionCommands this._uiModel,
-                    Controller.Destination this._myDestination,
-                    Model.UIReceptionSelector this._receptionSelector) {
+  ReceptionCommands(
+      Model.UIReceptionCommands this._uiModel,
+      Controller.Destination this._myDestination,
+      Model.UIReceptionSelector this._receptionSelector) {
     _ui.setHint('alt+h');
 
     _observers();
   }
 
-  @override Controller.Destination    get _destination => _myDestination;
-  @override Model.UIReceptionCommands get _ui          => _uiModel;
+  @override Controller.Destination get _destination => _myDestination;
+  @override Model.UIReceptionCommands get _ui => _uiModel;
 
-  @override void _onBlur(_){}
-  @override void _onFocus(_){}
+  @override void _onBlur(Controller.Destination _) {}
+  @override void _onFocus(Controller.Destination _) {}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
    * focused.
    */
-  void activateMe(_) {
+  void _activateMe() {
     _navigateToMyDestination();
   }
 
@@ -52,9 +53,8 @@ class ReceptionCommands extends ViewWidget {
   void _observers() {
     _navigate.onGo.listen(_setWidgetState);
 
-    _hotKeys.onAltH.listen(activateMe);
-
-    _ui.onClick.listen(activateMe);
+    _hotKeys.onAltH.listen((KeyboardEvent _) => _activateMe());
+    _ui.onClick.listen((MouseEvent _) => _activateMe());
 
     _receptionSelector.onSelect.listen(_render);
   }
@@ -63,7 +63,7 @@ class ReceptionCommands extends ViewWidget {
    * Render the widget with [reception].
    */
   void _render(ORModel.Reception reception) {
-    if(reception.isEmpty) {
+    if (reception.isEmpty) {
       _ui.clear();
     } else {
       _ui.headerExtra = ': ${reception.name}';

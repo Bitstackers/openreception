@@ -17,51 +17,53 @@ part of model;
  * The calendar editor UI model.
  */
 class UICalendarEditor extends UIModel {
-  ORModel.CalendarEntry  _loadedEntry;
-  HtmlElement            _myFirstTabElement;
-  HtmlElement            _myFocusElement;
-  HtmlElement            _myLastTabElement;
-  final DivElement       _myRoot;
-  final ORUtil.WeekDays  _weekDays;
+  ORModel.CalendarEntry _loadedEntry;
+  HtmlElement _myFirstTabElement;
+  HtmlElement _myFocusElement;
+  HtmlElement _myLastTabElement;
+  final DivElement _myRoot;
+  final ORUtil.WeekDays _weekDays;
 
   /**
    * Constructor.
    */
-  UICalendarEditor(DivElement this._myRoot,
-                   ORUtil.WeekDays this._weekDays) {
-    _myFocusElement    = _textArea;
+  UICalendarEditor(DivElement this._myRoot, ORUtil.WeekDays this._weekDays) {
+    _myFocusElement = _textArea;
     _myFirstTabElement = _textArea;
-    _myLastTabElement  = _cancelButton;
+    _myLastTabElement = _cancelButton;
 
     _setupLocalKeys();
     _observers();
   }
 
   @override HtmlElement get _firstTabElement => _myFirstTabElement;
-  @override HtmlElement get _focusElement    => _myFocusElement;
-  @override HtmlElement get _lastTabElement  => _myLastTabElement;
-  @override HtmlElement get _root            => _myRoot;
+  @override HtmlElement get _focusElement => _myFocusElement;
+  @override HtmlElement get _lastTabElement => _myLastTabElement;
+  @override HtmlElement get _root => _myRoot;
 
-  SpanElement          get _authorStamp      => _root.querySelector('.author-stamp');
-  ButtonElement        get _cancelButton     => _root.querySelector('.cancel');
-  ButtonElement        get _deleteButton     => _root.querySelector('.delete');
-  SpanElement          get _entryDuration    => _root.querySelector('div.entry-duration-container .entry-duration');
-  ElementList<Element> get _inputFields      => _root.querySelectorAll('[input-field]');
-  ButtonElement        get _saveButton       => _root.querySelector('.save');
-  InputElement         get _startHourInput   => _root.querySelector('div.entry-start-container .start-hour');
-  InputElement         get _startMinuteInput => _root.querySelector('div.entry-start-container .start-minute');
-  InputElement         get _startDayInput    => _root.querySelector('div.entry-start-container .start-day');
-  InputElement         get _startMonthInput  => _root.querySelector('div.entry-start-container .start-month');
-  SpanElement          get _startReadable    => _root.querySelector('div.readable-container .readable-start');
-  SpanElement          get _stopReadable     => _root.querySelector('div.readable-container .readable-stop');
-  InputElement         get _startYearInput   => _root.querySelector('div.entry-start-container .start-year');
-  InputElement         get _stopHourInput    => _root.querySelector('div.entry-stop-container .stop-hour');
-  InputElement         get _stopMinuteInput  => _root.querySelector('div.entry-stop-container .stop-minute');
-  InputElement         get _stopDayInput     => _root.querySelector('div.entry-stop-container .stop-day');
-  InputElement         get _stopMonthInput   => _root.querySelector('div.entry-stop-container .stop-month');
-  InputElement         get _stopYearInput    => _root.querySelector('div.entry-stop-container .stop-year');
-  ElementList<Element> get _tabElements      => _root.querySelectorAll('[tabindex]');
-  TextAreaElement      get _textArea         => _root.querySelector('textarea');
+  SpanElement get _authorStamp => _root.querySelector('.author-stamp');
+  ButtonElement get _cancelButton => _root.querySelector('.cancel');
+  ButtonElement get _deleteButton => _root.querySelector('.delete');
+  SpanElement get _entryDuration =>
+      _root.querySelector('div.entry-duration-container .entry-duration');
+  ElementList<Element> get _inputFields => _root.querySelectorAll('[input-field]');
+  ButtonElement get _saveButton => _root.querySelector('.save');
+  InputElement get _startHourInput => _root.querySelector('div.entry-start-container .start-hour');
+  InputElement get _startMinuteInput =>
+      _root.querySelector('div.entry-start-container .start-minute');
+  InputElement get _startDayInput => _root.querySelector('div.entry-start-container .start-day');
+  InputElement get _startMonthInput =>
+      _root.querySelector('div.entry-start-container .start-month');
+  SpanElement get _startReadable => _root.querySelector('div.readable-container .readable-start');
+  SpanElement get _stopReadable => _root.querySelector('div.readable-container .readable-stop');
+  InputElement get _startYearInput => _root.querySelector('div.entry-start-container .start-year');
+  InputElement get _stopHourInput => _root.querySelector('div.entry-stop-container .stop-hour');
+  InputElement get _stopMinuteInput => _root.querySelector('div.entry-stop-container .stop-minute');
+  InputElement get _stopDayInput => _root.querySelector('div.entry-stop-container .stop-day');
+  InputElement get _stopMonthInput => _root.querySelector('div.entry-stop-container .stop-month');
+  InputElement get _stopYearInput => _root.querySelector('div.entry-stop-container .stop-year');
+  ElementList<Element> get _tabElements => _root.querySelectorAll('[tabindex]');
+  TextAreaElement get _textArea => _root.querySelector('textarea');
 
   /**
    * Set the authorStamp part of the widget header. The format of the String is:
@@ -71,7 +73,7 @@ class UICalendarEditor extends UIModel {
    * Set [userName] and [timestamp] to null to set an empty authorStamp.
    */
   void authorStamp(String userName, DateTime timestamp) {
-    if(userName == null && timestamp == null) {
+    if (userName == null && timestamp == null) {
       _authorStamp.text = '';
     } else {
       _authorStamp.text = '${userName} @ ${ORUtil.humanReadableTimestamp(timestamp, _weekDays)}';
@@ -105,31 +107,30 @@ class UICalendarEditor extends UIModel {
   /**
    * Harvest a [ORModel.CalendarEntry] from the form.
    */
-  ORModel.CalendarEntry get harvestedEntry =>
-      _loadedEntry
-        ..beginsAt = _harvestStartDateTime
-        ..until    = _harvestStopDateTime
-        ..content  = _textArea.value;
+  ORModel.CalendarEntry get harvestedEntry => _loadedEntry
+    ..beginsAt = _harvestStartDateTime
+    ..until = _harvestStopDateTime
+    ..content = _textArea.value;
 
   /**
    * Harvest the start [DateTime] from the form.
    */
-  DateTime get _harvestStartDateTime =>
-      new DateTime(_startYearInput.valueAsNumber.toInt(),
-                   _startMonthInput.valueAsNumber.toInt(),
-                   _startDayInput.valueAsNumber.toInt(),
-                   _startHourInput.valueAsNumber.toInt(),
-                   _startMinuteInput.valueAsNumber.toInt());
+  DateTime get _harvestStartDateTime => new DateTime(
+      _startYearInput.valueAsNumber.toInt(),
+      _startMonthInput.valueAsNumber.toInt(),
+      _startDayInput.valueAsNumber.toInt(),
+      _startHourInput.valueAsNumber.toInt(),
+      _startMinuteInput.valueAsNumber.toInt());
 
   /**
    * Harvest the stop [DateTime] from the form.
    */
-  DateTime get _harvestStopDateTime =>
-      new DateTime(_stopYearInput.valueAsNumber.toInt(),
-                   _stopMonthInput.valueAsNumber.toInt(),
-                   _stopDayInput.valueAsNumber.toInt(),
-                   _stopHourInput.valueAsNumber.toInt(),
-                   _stopMinuteInput.valueAsNumber.toInt());
+  DateTime get _harvestStopDateTime => new DateTime(
+      _stopYearInput.valueAsNumber.toInt(),
+      _stopMonthInput.valueAsNumber.toInt(),
+      _stopDayInput.valueAsNumber.toInt(),
+      _stopHourInput.valueAsNumber.toInt(),
+      _stopMinuteInput.valueAsNumber.toInt());
 
   /**
    * Get the currently loaded [ORModel.CalendarEntry].
@@ -143,21 +144,21 @@ class UICalendarEditor extends UIModel {
     _root.onKeyDown.listen(_keyboard.press);
 
     /// Enables focused element memory for this widget.
-    _tabElements.forEach((HtmlElement element) {
+    _tabElements.forEach((Element element) {
       element.onFocus.listen((Event event) => _myFocusElement = (event.target as HtmlElement));
     });
 
-    _textArea.onInput        .listen((_) => _toggleButtons());
-    _startHourInput.onInput  .listen((_) => _update(_startHourInput));
+    _textArea.onInput.listen((_) => _toggleButtons());
+    _startHourInput.onInput.listen((_) => _update(_startHourInput));
     _startMinuteInput.onInput.listen((_) => _update(_startMinuteInput));
-    _startDayInput.onInput   .listen((_) => _update(_startDayInput));
-    _startMonthInput.onInput .listen((_) => _update(_startMonthInput));
-    _startYearInput.onInput  .listen((_) => _update(_startYearInput));
-    _stopHourInput.onInput   .listen((_) => _update(_stopHourInput));
-    _stopMinuteInput.onInput .listen((_) => _update(_stopMinuteInput));
-    _stopDayInput.onInput    .listen((_) => _update(_stopDayInput));
-    _stopMonthInput.onInput  .listen((_) => _update(_stopMonthInput));
-    _stopYearInput.onInput   .listen((_) => _update(_stopYearInput));
+    _startDayInput.onInput.listen((_) => _update(_startDayInput));
+    _startMonthInput.onInput.listen((_) => _update(_startMonthInput));
+    _startYearInput.onInput.listen((_) => _update(_startYearInput));
+    _stopHourInput.onInput.listen((_) => _update(_stopHourInput));
+    _stopMinuteInput.onInput.listen((_) => _update(_stopMinuteInput));
+    _stopDayInput.onInput.listen((_) => _update(_stopDayInput));
+    _stopMonthInput.onInput.listen((_) => _update(_stopMonthInput));
+    _stopYearInput.onInput.listen((_) => _update(_stopYearInput));
   }
 
   /**
@@ -193,16 +194,17 @@ class UICalendarEditor extends UIModel {
     });
 
     _deleteButton.disabled = true;
-    _saveButton.disabled   = true;
+    _saveButton.disabled = true;
   }
 
   /**
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
-    Map<String, EventListener> myKeys =
-        {'Ctrl+Backspace': (_) => _deleteButton.click(),
-         'Ctrl+s'        : (_) => _saveButton.click()};
+    Map<String, EventListener> myKeys = {
+      'Ctrl+Backspace': (_) => _deleteButton.click(),
+      'Ctrl+s': (_) => _saveButton.click()
+    };
 
     _hotKeys.registerKeys(_keyboard, _defaultKeyMap(myKeys: {'Esc': (_) => _cancelButton.click()}));
     _hotKeys.registerKeysPreventDefault(_keyboard, myKeys);
@@ -213,12 +215,13 @@ class UICalendarEditor extends UIModel {
    * last tab element as this depends on the state of the buttons.
    */
   void _toggleButtons() {
-    final bool toggle = !_inputFields.any((element) => element.value.isEmpty)
-        && !_inputFields.any((element) => element.validity.badInput)
-        && _harvestStartDateTime.isBefore(_harvestStopDateTime);
+    final bool toggle = !_inputFields.any((element) => element.value.isEmpty) &&
+        !_inputFields.any((element) => element.validity.badInput) &&
+        _harvestStartDateTime.isBefore(_harvestStopDateTime);
 
-    _deleteButton.disabled = !toggle || (_loadedEntry != null && _loadedEntry.ID == ORModel.CalendarEntry.noID);
-    _saveButton.disabled   = !toggle;
+    _deleteButton.disabled =
+        !toggle || (_loadedEntry != null && _loadedEntry.ID == ORModel.CalendarEntry.noID);
+    _saveButton.disabled = !toggle;
 
     _myLastTabElement = toggle ? _saveButton : _cancelButton;
   }
@@ -240,7 +243,7 @@ class UICalendarEditor extends UIModel {
 
     try {
       _updateReadableAndDuration();
-    } catch(_) {
+    } catch (_) {
       /// NOTE (TL): Errors caught here of the NaN type due to bad input in the
       /// start/stop fields.
     }
@@ -255,26 +258,26 @@ class UICalendarEditor extends UIModel {
     final DateTime stop = _harvestStopDateTime;
 
     try {
-       _startReadable.text = ORUtil.humanReadableTimestamp(start, _weekDays);
-     } catch(_) {
-       _startReadable.text = '';
-     }
+      _startReadable.text = ORUtil.humanReadableTimestamp(start, _weekDays);
+    } catch (_) {
+      _startReadable.text = '';
+    }
 
-     try {
-       _stopReadable.text = ORUtil.humanReadableTimestamp(stop, _weekDays);
-     } catch(_) {
-       _stopReadable.text = '';
-     }
+    try {
+      _stopReadable.text = ORUtil.humanReadableTimestamp(stop, _weekDays);
+    } catch (_) {
+      _stopReadable.text = '';
+    }
 
-     duration.write(stop.difference(start).inDays);
-     duration.write(' ');
-     duration.write(stop.difference(start).inHours.remainder(24));
-     duration.write(':');
-     duration.write(stop.difference(start).inMinutes.remainder(60));
+    duration.write(stop.difference(start).inDays);
+    duration.write(' ');
+    duration.write(stop.difference(start).inHours.remainder(24));
+    duration.write(':');
+    duration.write(stop.difference(start).inMinutes.remainder(60));
 
-     _entryDuration.text = duration.toString();
+    _entryDuration.text = duration.toString();
 
-     _startReadable.classes.toggle('bad-input', stop.isBefore(start));
-     _entryDuration.classes.toggle('bad-input', stop.isBefore(start));
+    _startReadable.classes.toggle('bad-input', stop.isBefore(start));
+    _entryDuration.classes.toggle('bad-input', stop.isBefore(start));
   }
 }

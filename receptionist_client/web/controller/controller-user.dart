@@ -46,9 +46,13 @@ class User {
   /**
    * Get the [Model.UserStatus] for the current user.
    */
-  Future<ORModel.UserStatus> getState(ORModel.User user) =>
-      _user.userStatus(user.ID).catchError((Exception error) =>
-          error is ORStorage.NotFound ? new ORModel.UserStatus() : error);
+  Future<ORModel.UserStatus> getState(ORModel.User user) async {
+    try {
+      return await _user.userStatus(user.ID);
+    } on ORStorage.NotFound catch (_) {
+      return new ORModel.UserStatus();
+    }
+  }
 
   /**
    * Return the users list.
@@ -58,8 +62,7 @@ class User {
   /**
    * Set the user idle.
    */
-  Future<ORModel.UserStatus> setIdle(ORModel.User user) =>
-      _user.userStateReady(user.ID);
+  Future<ORModel.UserStatus> setIdle(ORModel.User user) => _user.userStateReady(user.ID);
 
   /**
    * Set the user logged out.
@@ -70,8 +73,7 @@ class User {
   /**
    * Set the user paused.
    */
-  Future<ORModel.UserStatus> setPaused(ORModel.User user) =>
-      _user.userStatePaused(user.ID);
+  Future<ORModel.UserStatus> setPaused(ORModel.User user) => _user.userStatePaused(user.ID);
 
   /**
    * Fetches a userStates of all users

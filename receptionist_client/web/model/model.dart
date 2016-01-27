@@ -65,7 +65,7 @@ part 'ui/model-ui-welcome-message.dart';
 const libraryName = 'model';
 
 typedef String HumanReadableTimestamp(DateTime timestamp, Map<int, String> dayMap);
-typedef void selectCallback(LIElement li);
+typedef void SelectCallback(LIElement li);
 
 final Controller.HotKeys _hotKeys = new Controller.HotKeys();
 
@@ -138,7 +138,7 @@ abstract class UIModel {
    * Tab from first to last tab element when first is in focus an a Shift+Tab
    * event is caught.
    */
-  void _handleShiftTab(KeyboardEvent event) {
+  _handleShiftTab(KeyboardEvent event) {
     if (isFocused && focusIsOnFirst) {
       event.preventDefault();
       tabToLast();
@@ -149,7 +149,7 @@ abstract class UIModel {
    * Tab from last to first tab element when last is in focus an a Tab event
    * is caught.
    */
-  void _handleTab(KeyboardEvent event) {
+  _handleTab(KeyboardEvent event) {
     if (isFocused && focusIsOnLast) {
       event.preventDefault();
       tabToFirst();
@@ -162,7 +162,7 @@ abstract class UIModel {
    * for "down" arrow and backwards for "up" arrow. Call [_markSelected] on the
    * first element found that is visible and not selected.
    */
-  void _handleUpDown(KeyboardEvent event) {
+  _handleUpDown(KeyboardEvent event) {
     if (_listTarget.children.isNotEmpty) {
       final LIElement selected = _listTarget.querySelector('.selected:not(.hide)');
 
@@ -222,7 +222,7 @@ abstract class UIModel {
 
   /**
    * Mark [li] selected, scroll it into view andif [callSelectCallback] is true
-   * then call [selectCallback].
+   * then call [SelectCallback].
    * Does nothing if [li] is null or [li] is already selected.
    */
   void _markSelected(LIElement li, {bool callSelectCallback: true}) {
@@ -268,7 +268,7 @@ abstract class UIModel {
   /**
    * Is called by [_markSelected] whenever a [LIElement] is selected in the [_listTarget] element.
    */
-  selectCallback get _selectCallback => (LIElement li) => null;
+  SelectCallback get _selectCallback => (LIElement li) => null;
 
   /**
    * Set hint text
@@ -281,7 +281,7 @@ abstract class UIModel {
    * Set tabindex="[index]" on [root].querySelectorAll('[tabindex]') elements.
    */
   void _setTabIndex(int index) {
-    _root.querySelectorAll('[tabindex]').forEach((HtmlElement element) {
+    _root.querySelectorAll('[tabindex]').forEach((Element element) {
       element.tabIndex = index;
     });
   }

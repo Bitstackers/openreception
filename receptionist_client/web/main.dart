@@ -91,7 +91,7 @@ main() async {
 
       webSocketClient.onClose = () {
         log.shout('Websocket connection died. Trying reload in 10 seconds');
-        appState.changeState(Model.AppState.ERROR);
+        appState.changeState(Model.AppState.error);
         restartAppInTenSeconds(appUri);
       };
 
@@ -118,11 +118,11 @@ main() async {
         Future lCS = loadCallState(callFlowControl, appState);
 
         Future.wait([rRV, lCS]).then((_) {
-          appState.changeState(Model.AppState.READY);
+          appState.changeState(Model.AppState.ready);
           userController.setPaused(appState.currentUser);
         }).catchError((error) {
           log.shout('Loading of app failed with ${error}');
-          appState.changeState(Model.AppState.ERROR);
+          appState.changeState(Model.AppState.error);
         });
       });
     } else {
@@ -134,7 +134,7 @@ main() async {
   } catch (error, stackTrace) {
     log.shout('Could not fully initialize application. Trying again in 10 seconds');
     log.shout(error, stackTrace);
-    appState.changeState(Model.AppState.ERROR);
+    appState.changeState(Model.AppState.error);
     restartAppInTenSeconds(appUri);
   }
 }
@@ -142,11 +142,11 @@ main() async {
 /**
  * Return the configuration object for the client.
  */
-Future<ORModel.ClientConfiguration> getClientConfiguration() {
+Future<ORModel.ClientConfiguration> getClientConfiguration() async {
   ORService.RESTConfiguration configService =
-      new ORService.RESTConfiguration(CONFIGURATION_URL, new ORTransport.Client());
+      new ORService.RESTConfiguration(configurationUrl, new ORTransport.Client());
 
-  return configService.clientConfig().then((ORModel.ClientConfiguration config) {
+  return await configService.clientConfig().then((ORModel.ClientConfiguration config) {
     log.info('Loaded client config: ${config.asMap}');
     return config;
   });
@@ -214,8 +214,8 @@ Future loadCallState(ORService.CallFlowControl callFlowControl, Model.AppClientS
  */
 void observers(Controller.User userController, Model.AppClientState appState,
     ORTransport.WebSocketClient webSocketClient) {
-  windowOnBeforeUnload = window.onBeforeUnload.listen((BeforeUnloadEvent event) {
-    event.returnValue = '';
+  windowOnBeforeUnload = window.onBeforeUnload.listen((Event event) {
+    (event as BeforeUnloadEvent).returnValue = '';
   });
 
   windowOnUnload = window.onUnload.listen((_) {
@@ -324,11 +324,11 @@ void restartAppInTenSeconds(Uri appUri) {
  * Worlds most simple method to translate widget labels to supported languages.
  */
 void translate(Map<String, String> langMap) {
-  querySelectorAll('[data-lang-text]').forEach((HtmlElement element) {
+  querySelectorAll('[data-lang-text]').forEach((Element element) {
     element.text = langMap[element.dataset['lang-text']];
   });
 
-  querySelectorAll('[data-lang-placeholder]').forEach((HtmlElement element) {
+  querySelectorAll('[data-lang-placeholder]').forEach((Element element) {
     element.setAttribute('placeholder', langMap[element.dataset['lang-placeholder']]);
   });
 }

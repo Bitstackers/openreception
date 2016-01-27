@@ -40,8 +40,8 @@ class AgentInfo extends ViewWidget {
       Controller.Call this._call) {
     _ui.activeCount = 0;
     _ui.pausedCount = 0;
-    _ui.agentState = Model.AgentState.UNKNOWN;
-    _ui.alertState = Model.AlertState.OFF;
+    _ui.agentState = Model.AgentState.unknown;
+    _ui.alertState = Model.AlertState.off;
     _ui.portrait = 'images/face.png';
 
     if (_appState.currentUser.portrait.isNotEmpty) {
@@ -57,8 +57,8 @@ class AgentInfo extends ViewWidget {
   @override Controller.Destination get _destination => null;
   @override Model.UIAgentInfo get _ui => _uiModel;
 
-  @override void _onBlur(_) {}
-  @override void _onFocus(_) {}
+  @override void _onBlur(Controller.Destination _) {}
+  @override void _onFocus(Controller.Destination _) {}
 
   /**
    * Update the users state in the UI.
@@ -93,7 +93,7 @@ class AgentInfo extends ViewWidget {
    * Observers.
    */
   void _observers() {
-    _hotKeys.onCtrlAltP.listen(_toggleAgentState);
+    _hotKeys.onCtrlAltP.listen((KeyboardEvent _) => _toggleAgentState());
 
     _notification.onAgentStateChange.listen((ORModel.UserStatus userStatus) {
       _userPaused[userStatus.userID] = userStatus.paused;
@@ -117,7 +117,7 @@ class AgentInfo extends ViewWidget {
   /**
    * Toggle the idle/pause agent state. If idle, then set paused and vice versa.
    */
-  void _toggleAgentState(_) {
+  void _toggleAgentState() {
     if (_userPaused[_appState.currentUser.ID]) {
       _user.setIdle(_appState.currentUser);
     } else {
@@ -155,11 +155,11 @@ class AgentInfo extends ViewWidget {
     /// Update ui for agent's user.
     if (_userPaused.containsKey(_appState.currentUser.ID) &&
         _userPaused[_appState.currentUser.ID]) {
-      _ui.agentState = Model.AgentState.PAUSED;
+      _ui.agentState = Model.AgentState.paused;
     } else if (_appState.activeCall.ID != ORModel.Call.noID) {
-      _ui.agentState = Model.AgentState.BUSY;
+      _ui.agentState = Model.AgentState.busy;
     } else {
-      _ui.agentState = Model.AgentState.IDLE;
+      _ui.agentState = Model.AgentState.idle;
     }
 
     _ui.activeCount = active;

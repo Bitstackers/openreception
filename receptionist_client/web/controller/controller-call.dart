@@ -79,20 +79,17 @@ class Call {
       ORModel.PhoneNumber phoneNumber, ORModel.Reception reception, ORModel.Contact contact,
       {String contextCallId: ''}) async {
     _log.info('Dialing ${phoneNumber.value}.');
-    final ORModel.OriginationContext context =
-        new ORModel.OriginationContext()
-          ..contactId = contact.ID
-          ..receptionId = reception.ID
-          ..callId = contextCallId
-          ..dialplan = reception.dialplan;
+    final ORModel.OriginationContext context = new ORModel.OriginationContext()
+      ..contactId = contact.ID
+      ..receptionId = reception.ID
+      ..callId = contextCallId
+      ..dialplan = reception.dialplan;
 
     _busy = true;
 
     _command.fire(CallCommand.DIAL);
 
-    return _service
-        .originate(phoneNumber.value, context)
-        .then((ORModel.Call call) {
+    return await _service.originate(phoneNumber.value, context).then((ORModel.Call call) {
       _command.fire(CallCommand.DIALSUCCESS);
       _appState.activeCall = call;
 
@@ -101,7 +98,7 @@ class Call {
       _log.severe(error, stackTrace);
       _command.fire(CallCommand.DIALFAILURE);
 
-      return new Future.error(new ControllerError(error.toString()));
+      return new ControllerError(error.toString());
     }).whenComplete(() => _busy = false);
   }
 
@@ -156,15 +153,15 @@ class Call {
   /**
    * Tries to park [call].
    */
-  Future<ORModel.Call> park(ORModel.Call call) {
+  Future<ORModel.Call> park(ORModel.Call call) async {
     if (call == ORModel.Call.noCall) {
-      return new Future.value(ORModel.Call.noCall);
+      return ORModel.Call.noCall;
     }
 
     _busy = true;
     _command.fire(CallCommand.PARK);
 
-    return _service.park(call.ID).then((ORModel.Call parkedCall) {
+    return await _service.park(call.ID).then((ORModel.Call parkedCall) {
       _command.fire(CallCommand.PARKSUCCESS);
 
       _log.info('Parking ${parkedCall}');
@@ -175,7 +172,7 @@ class Call {
       _log.severe(error, stackTrace);
       _command.fire(CallCommand.PARKFAILURE);
 
-      return new Future.error(new ControllerError(error.toString()));
+      throw new ControllerError(error.toString());
     }).whenComplete(() => _busy = false);
   }
 
@@ -194,7 +191,7 @@ class Call {
 
     _log.info('Picking up $call.');
 
-    return _service.pickup(call.ID).then((ORModel.Call call) {
+    return await _service.pickup(call.ID).then((ORModel.Call call) {
       _command.fire(CallCommand.PICKUPSUCCESS);
       _appState.activeCall = call;
 
@@ -203,7 +200,7 @@ class Call {
       _log.severe(error, stackTrace);
       _command.fire(CallCommand.PICKUPFAILURE);
 
-      return new Future.error(new ControllerError(error.toString()));
+      throw new ControllerError(error.toString());
     }).whenComplete(() => _busy = false);
   }
 
@@ -227,7 +224,7 @@ class Call {
     _busy = false;
 
     if (foundCall != null) {
-      return pickup(foundCall);
+      return await pickup(foundCall);
     } else {
       return ORModel.Call.noCall;
     }
@@ -241,18 +238,18 @@ class Call {
   /**
    * Tries to transfer the [source] call to [destination].
    */
-  Future _transfer(ORModel.Call source, ORModel.Call destination) {
+  Future _transfer(ORModel.Call source, ORModel.Call destination) async {
     _busy = true;
     _command.fire(CallCommand.TRANSFER);
 
-    return _service
+    return await _service
         .transfer(source.ID, destination.ID)
         .then((_) => _command.fire(CallCommand.TRANSFERSUCCESS))
         .catchError((error, stackTrace) {
       _log.severe(error, stackTrace);
       _command.fire(CallCommand.TRANSFERFAILURE);
 
-      return new Future.error(new ControllerError(error.toString()));
+      return new ControllerError(error.toString());
     }).whenComplete(() => _busy = false);
   }
 

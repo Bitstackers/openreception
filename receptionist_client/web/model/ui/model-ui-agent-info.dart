@@ -13,13 +13,9 @@
 
 part of model;
 
-enum AgentState {BUSY,
-                 IDLE,
-                 PAUSED,
-                 UNKNOWN}
+enum AgentState { busy, idle, paused, unknown }
 
-enum AlertState {OFF,
-                 ON}
+enum AlertState { off, on }
 
 /**
  * Provides methods for manipulating the agent info UIX parts.
@@ -33,33 +29,33 @@ class UIAgentInfo extends UIModel {
   UIAgentInfo(DivElement this._myRoot);
 
   @override HtmlElement get _firstTabElement => null;
-  @override HtmlElement get _focusElement    => null;
-  @override HtmlElement get _lastTabElement  => null;
-  @override HtmlElement get _root            => _myRoot;
+  @override HtmlElement get _focusElement => null;
+  @override HtmlElement get _lastTabElement => null;
+  @override HtmlElement get _root => _myRoot;
 
   TableCellElement get _activeCount => _root.querySelector('.active-count');
-  ImageElement     get _agentState  => _root.querySelector('.agent-state');
-  ImageElement     get _alertState  => _root.querySelector('.alert-state');
+  ImageElement get _agentState => _root.querySelector('.agent-state');
+  ImageElement get _alertState => _root.querySelector('.alert-state');
   TableCellElement get _pausedCount => _root.querySelector('.paused-count');
-  ImageElement     get _portrait    => _root.querySelector('.portrait');
+  ImageElement get _portrait => _root.querySelector('.portrait');
 
   /**
    * Set the ::active:: count.
    */
-  set activeCount (int value) => _activeCount.text = value.toString();
+  set activeCount(int value) => _activeCount.text = value.toString();
 
   /**
    * Set the visual representation of the current agents state.
    */
-  set agentState (AgentState agentState) {
-    switch(agentState) {
-      case AgentState.BUSY:
+  set agentState(AgentState agentState) {
+    switch (agentState) {
+      case AgentState.busy:
         _agentState.src = 'images/agent_speaking.svg';
         break;
-      case AgentState.IDLE:
+      case AgentState.idle:
         _agentState.src = 'images/agent_idle.svg';
         break;
-      case AgentState.PAUSED:
+      case AgentState.paused:
         _agentState.src = 'images/agent_pause.svg';
         break;
       default:
@@ -71,12 +67,12 @@ class UIAgentInfo extends UIModel {
   /**
    * Toggle the alert state graphic.
    */
-  set alertState (AlertState alertState) {
-    switch(alertState) {
-      case AlertState.OFF:
+  set alertState(AlertState alertState) {
+    switch (alertState) {
+      case AlertState.off:
         _alertState.style.visibility = 'hidden';
         break;
-      case AlertState.ON:
+      case AlertState.on:
         _alertState.src = 'images/alert.svg';
         break;
     }
@@ -85,10 +81,10 @@ class UIAgentInfo extends UIModel {
   /**
    * Set the ::paused:: count.
    */
-  set pausedCount (int value) => _pausedCount.text = value.toString();
+  set pausedCount(int value) => _pausedCount.text = value.toString();
 
   /**
    * Set the agent portrait. [path] must be a valid source path to an image.
    */
-  set portrait (String path) => _portrait.src = path;
+  set portrait(String path) => _portrait.src = path;
 }

@@ -13,7 +13,7 @@
 
 part of model;
 
-enum AppState { LOADING, ERROR, READY }
+enum AppState { loading, error, ready }
 
 class HungUp {
   final String callId;

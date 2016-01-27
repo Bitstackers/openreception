@@ -92,7 +92,7 @@ class UIMessageArchive extends UIModel {
     final DivElement div = new DivElement()
       ..classes.add('slim')
       ..appendHtml(msg.body.replaceAll("\n", '<br>'));
-    div.onClick.listen((_) => div.classes.toggle('slim'));
+    div.onClick.listen((MouseEvent _) => div.classes.toggle('slim'));
 
     return new TableCellElement()..classes.add('message-cell')..children.add(div);
   }
@@ -165,7 +165,7 @@ class UIMessageArchive extends UIModel {
    * Get rid of all the Yes/No confirmation boxes.
    */
   void hideYesNoBoxes() {
-    _body.querySelectorAll('.yes-no-box').forEach((DivElement yesNoBox) {
+    _body.querySelectorAll('.yes-no-box').forEach((Element yesNoBox) {
       yesNoBox.style.display = 'none';
       yesNoBox.children.clear();
       yesNoBox.previousElementSibling.style.display = 'flex';

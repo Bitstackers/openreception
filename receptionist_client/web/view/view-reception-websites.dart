@@ -17,30 +17,31 @@ part of view;
  * The reception websites list.
  */
 class ReceptionWebsites extends ViewWidget {
-  final Controller.Destination    _myDestination;
+  final Controller.Destination _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIReceptionWebsites _uiModel;
 
   /**
    * Constructor.
    */
-  ReceptionWebsites(Model.UIReceptionWebsites this._uiModel,
-                    Controller.Destination this._myDestination,
-                    Model.UIReceptionSelector this._receptionSelector) {
+  ReceptionWebsites(
+      Model.UIReceptionWebsites this._uiModel,
+      Controller.Destination this._myDestination,
+      Model.UIReceptionSelector this._receptionSelector) {
     _observers();
   }
 
-  @override Controller.Destination    get _destination => _myDestination;
-  @override Model.UIReceptionWebsites get _ui          => _uiModel;
+  @override Controller.Destination get _destination => _myDestination;
+  @override Model.UIReceptionWebsites get _ui => _uiModel;
 
-  @override void _onBlur(_){}
-  @override void _onFocus(_){}
+  @override void _onBlur(Controller.Destination _) {}
+  @override void _onFocus(Controller.Destination _) {}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
    * focused.
    */
-  void _activateMe(_) {
+  void _activateMe() {
     _navigateToMyDestination();
   }
 
@@ -50,7 +51,7 @@ class ReceptionWebsites extends ViewWidget {
   void _observers() {
     _navigate.onGo.listen(_setWidgetState);
 
-    _ui.onClick.listen(_activateMe);
+    _ui.onClick.listen((MouseEvent _) => _activateMe());
 
     _receptionSelector.onSelect.listen(_render);
   }
@@ -59,7 +60,7 @@ class ReceptionWebsites extends ViewWidget {
    * Render the widget with [reception].
    */
   void _render(ORModel.Reception reception) {
-    if(reception.isEmpty) {
+    if (reception.isEmpty) {
       _ui.clear();
     } else {
       _ui.headerExtra = ': ${reception.name}';

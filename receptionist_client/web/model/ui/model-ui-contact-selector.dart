@@ -38,7 +38,7 @@ class UIContactSelector extends UIModel {
    * on the filter input whenever a contact li element is clicked.
    */
   @override Stream<MouseEvent> get onClick => _myRoot.onMouseDown;
-  @override selectCallback get _selectCallback => _contactSelectCallback;
+  @override SelectCallback get _selectCallback => _contactSelectCallback;
   @override HtmlElement get _root => _myRoot;
 
   OListElement get _list => _root.querySelector('.generic-widget-list');
@@ -101,19 +101,19 @@ class UIContactSelector extends UIModel {
    * Filter the contact list whenever the user enters data into the [_filter]
    * input field.
    */
-  void filter(_) {
+  void filter() {
     final String filter = _filter.value.toLowerCase();
     final String trimmedFilter = filter.trim();
 
     if (filter.length == 0 || trimmedFilter.isEmpty) {
       /// Empty filter. Remove .hide from all list elements.
-      _list.children.forEach((LIElement li) => li.classes.toggle('hide', false));
+      _list.children.forEach((Element li) => li.classes.toggle('hide', false));
       _list.classes.toggle('zebra', true);
     } else if (trimmedFilter.length == 1 && !filter.startsWith(' ')) {
       /// Pattern: one non-space character followed by zero or more spaces
       _list.classes.toggle('zebra', false);
 
-      _list.children.forEach((LIElement li) {
+      _list.children.forEach((Element li) {
         if (li.dataset['firstinitial'] == trimmedFilter) {
           li.classes.toggle('hide', false);
         } else {
@@ -124,7 +124,7 @@ class UIContactSelector extends UIModel {
       /// Pattern: one or more spaces followed by one non-space character
       _list.classes.toggle('zebra', false);
 
-      _list.children.forEach((LIElement li) {
+      _list.children.forEach((Element li) {
         if (li.dataset['otherinitials'].contains(trimmedFilter)) {
           li.classes.toggle('hide', false);
         } else {
@@ -135,7 +135,7 @@ class UIContactSelector extends UIModel {
       /// Pattern: one character, one space, one character
       _list.classes.toggle('zebra', false);
 
-      _list.children.forEach((LIElement li) {
+      _list.children.forEach((Element li) {
         if (li.dataset['firstinitial'] == trimmedFilter.substring(0, 1) &&
             li.dataset['otherinitials'].contains(trimmedFilter.substring(2))) {
           li.classes.toggle('hide', false);
@@ -150,7 +150,7 @@ class UIContactSelector extends UIModel {
 
       _list.classes.toggle('zebra', false);
 
-      _list.children.forEach((LIElement li) {
+      _list.children.forEach((Element li) {
         if (parts.every((String part) => li.dataset['tags'].contains(part))) {
           li.classes.toggle('hide', false);
         } else {
@@ -171,7 +171,7 @@ class UIContactSelector extends UIModel {
   void _observers() {
     _filter.onKeyDown.listen(_keyboard.press);
 
-    _filter.onInput.listen(filter);
+    _filter.onInput.listen((Event _) => filter());
 
     /// NOTE (TL): Don't switch this to _root.onClick. We need the mousedown
     /// event, not the mouseclick event. We want to keep focus on the filter at
@@ -190,7 +190,7 @@ class UIContactSelector extends UIModel {
    */
   void _reset(_) {
     _filter.value = '';
-    filter('');
+    filter();
     selectFirstContact();
   }
 
