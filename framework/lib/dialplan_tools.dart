@@ -201,6 +201,7 @@ Iterable<String> _namedExtensionToDialPlan(model.NamedExtension extension,
               [],
               (combined, current) =>
                   combined..addAll(current.map(_indent).map(_indent))))
+      ..add('    <action application="hangup"/>')
       ..add('  </condition>')
       ..add('</extension>');
 
