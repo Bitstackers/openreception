@@ -18,16 +18,13 @@ part of openreception.test;
  */
 void testModelReceptionDialplan() {
   group('Model.ReceptionDialplan', () {
-
-
-   test('buildObject', ModelReceptionDialplan.buildObject);
-   test('deserialization', ModelReceptionDialplan.deserialization);
-   test('serialization', ModelReceptionDialplan.serialization);
+    test('buildObject', ModelReceptionDialplan.buildObject);
+    test('deserialization', ModelReceptionDialplan.deserialization);
+    test('serialization', ModelReceptionDialplan.serialization);
 
 //   test('buildObject (menu)', ModelReceptionDialplan.buildObjectMenu);
 //   test('serialization (menu)', ModelReceptionDialplan.serializationMenu);
 //   test('deserialization (menu)', ModelReceptionDialplan.deserializationMenu);
-
   });
 }
 
@@ -35,7 +32,6 @@ void testModelReceptionDialplan() {
  *
  */
 abstract class ModelReceptionDialplan {
-
   static void deserialization() {
     Model.ReceptionDialplan builtObject = buildObject();
     Model.ReceptionDialplan deserializedObject =
@@ -46,8 +42,8 @@ abstract class ModelReceptionDialplan {
     expect(builtObject.extension, equals(deserializedObject.extension));
     expect(builtObject.active, equals(deserializedObject.active));
     expect(builtObject.open, equals(deserializedObject.open));
-    expect(builtObject.defaultActions, equals(deserializedObject.defaultActions));
-
+    expect(
+        builtObject.defaultActions, equals(deserializedObject.defaultActions));
   }
 
   /**
@@ -71,24 +67,18 @@ abstract class ModelReceptionDialplan {
 
     final List<Model.HourAction> open = [
       new Model.HourAction()
-      ..hours = Model.parseMultipleHours('mon-fri 16-17').toList()
-      ..actions = [
-        new Model.Playback ('somefile')
-        ]
-      ];
+        ..hours = Model.parseMultipleHours('mon-fri 16-17').toList()
+        ..actions = [new Model.Playback('somefile')]
+    ];
 
-    final List<Model.Action> closed = [
-        new Model.Playback ('otherfile')
-      ];
+    final List<Model.Action> closed = [new Model.Playback('otherfile')];
 
-
-    final Model.ReceptionDialplan builtObject =
-        new Model.ReceptionDialplan()
-    ..extension = extension
-    ..active = active
-    ..note = note
-    ..open = open
-    ..defaultActions = closed;
+    final Model.ReceptionDialplan builtObject = new Model.ReceptionDialplan()
+      ..extension = extension
+      ..active = active
+      ..note = note
+      ..open = open
+      ..defaultActions = closed;
 
     expect(builtObject.extension, equals(extension));
     expect(builtObject.extension, equals(extension));

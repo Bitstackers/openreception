@@ -18,12 +18,11 @@ void testBus() {
     final String testEvent = 'Foo!';
     Bus bus = new Bus<String>();
     Stream stream = bus.stream;
-    Timer timer;
     Future expectTestEvent =
         stream.firstWhere((String value) => value == testEvent);
-    bus.fire(testEvent);
 
     try {
+      bus.fire(testEvent);
       await expectTestEvent.timeout(new Duration(seconds: 1));
     } on TimeoutException {
       fail('Did not receive event within 1 second');
