@@ -151,9 +151,6 @@ List<String> _fallbackToDialplan(
     Iterable<model.Action> actions,
     DialplanCompilerOpts option,
     Environment env) {
-  if (actions.length == 1 && actions.last is model.Playback) {
-    actions = new List.generate(10, (_) => actions.last);
-  }
   return [
     '',
     _comment('Default fallback actions for $extension'),
