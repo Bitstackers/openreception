@@ -43,7 +43,10 @@ class PeerAccount {
     Uri url = Resource.PeerAccount.list(_host);
     url = _appendToken(url, _token);
 
-    return _backend.get(url).then(JSON.decode);
+    return _backend
+        .get(url)
+        .then(JSON.decode)
+        .then((Iterable<String> value) => value);
   }
 
   /**

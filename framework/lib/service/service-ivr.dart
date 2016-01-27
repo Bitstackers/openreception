@@ -47,9 +47,7 @@ class RESTIvrStore implements Storage.Ivr {
     Uri url = Resource.Ivr.deploy(_host, menuName);
     url = _appendToken(url, this._token);
 
-    return _backend.post(url, '')
-        .then(JSON.decode)
-        .then(Model.IvrMenu.decode);
+    return _backend.post(url, '').then(JSON.decode).then(Model.IvrMenu.decode);
   }
 
   /**

@@ -20,7 +20,7 @@ part of openreception.service;
 class _NotificationRequest {
   Map body = null;
   Uri resource = null;
-  Completer response = new Completer();
+  Completer<String> response = new Completer<String>();
 }
 
 /**
