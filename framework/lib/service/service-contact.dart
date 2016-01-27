@@ -75,7 +75,7 @@ class RESTContactStore implements Storage.Contact {
         new Model.BaseContact.fromMap(JSON.decode(response)));
   }
 
-  Future remove(contactId) {
+  Future remove(int contactId) {
     Uri url = Resource.Contact.single(this._host, contactId);
     url = _appendToken(url, this._token);
 

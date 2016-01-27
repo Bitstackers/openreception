@@ -65,7 +65,7 @@ class RESTIvrStore implements Storage.Ivr {
   /**
   *
   */
-  Future get(String menuName) {
+  Future<Model.IvrMenu> get(String menuName) {
     Uri url = Resource.Ivr.single(this._host, menuName);
     url = _appendToken(url, this._token);
 
