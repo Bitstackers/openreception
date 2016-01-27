@@ -37,6 +37,7 @@ abstract class DialplanDeployment {
 
     _log.info('Awaiting $customer\'s phone to hang up');
     await customer.waitForHangup().timeout(new Duration(seconds: 10));
+    await new Future.delayed(new Duration(milliseconds: 100));
 
     /// Check event queue.
     final int playback1 = events.indexOf(events.firstWhere((event) =>
@@ -108,6 +109,7 @@ abstract class DialplanDeployment {
 
     _log.info('Awaiting $customer\'s phone to hang up');
     await customer.waitForHangup().timeout(new Duration(seconds: 10));
+    await new Future.delayed(new Duration(milliseconds: 100));
 
     /// Check event queue.
     final int playback1 = events.indexOf(events.firstWhere((event) =>
@@ -199,6 +201,7 @@ abstract class DialplanDeployment {
 
     _log.info('Awaiting $customer\'s phone to hang up');
     await customer.waitForHangup().timeout(new Duration(seconds: 10));
+    await new Future.delayed(new Duration(milliseconds: 100));
 
     /// Check event queue.
     final int playback1 = events.indexOf(events.firstWhere((event) =>
