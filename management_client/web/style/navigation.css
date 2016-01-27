@@ -6,8 +6,8 @@ nav>ul {
   height: 100%;
 }
 
-nav img.faded {
-  opacity: 0.2;
+nav button.faded {
+  opacity: 0.4;
 }
 
 nav img {

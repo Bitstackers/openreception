@@ -21,7 +21,7 @@ class Menu {
   //root DOM element for the menu.
   HtmlElement element;
 
-  Map<String, ImageElement> menus;
+  Map<String, ButtonElement> menus;
 
   Menu(HtmlElement this.element) {
     //Build up collections of menus for easier use later.
@@ -38,7 +38,7 @@ class Menu {
 
     //Register onClicker handler on the image, and emit an event about window change.
     // for the other windows to know when to hide/show.
-    menus.forEach((String windowName, ImageElement button) {
+    menus.forEach((String windowName, ButtonElement button) {
       button.onClick.listen((_) {
         bus.fire(new WindowChanged(windowName));
       });
@@ -52,7 +52,7 @@ class Menu {
 
   //Highlights the right button.
   void _highlightItem(String window) {
-    menus.forEach((String name, ImageElement button) {
+    menus.forEach((String name, ButtonElement button) {
       button.classes.toggle('faded', window != name);
     });
   }
