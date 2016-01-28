@@ -5,7 +5,8 @@ class IdentityContainer {
   UListElement _ul;
   final Controller.User _userController;
 
-  IdentityContainer(UListElement this._ul, Controller.User this._userController);
+  IdentityContainer(
+      UListElement this._ul, Controller.User this._userController);
 
   LIElement _makeIdentityNode(ORModel.UserIdentity identity) {
     LIElement li = new LIElement();
@@ -13,11 +14,10 @@ class IdentityContainer {
     ImageElement deleteButton = new ImageElement(src: '/image/tp/red_plus.svg')
       ..classes.add('small-button')
       ..onClick.listen((_) {
-      _ul.children.remove(li);
-    });
+        _ul.children.remove(li);
+      });
 
-    SpanElement content = new SpanElement()
-      ..text = identity.identity;
+    SpanElement content = new SpanElement()..text = identity.identity;
     InputElement editBox = new InputElement(type: 'text');
 
     editableSpan(content, editBox);
@@ -36,7 +36,8 @@ class IdentityContainer {
           String item = newItem.value;
           newItem.value = '';
 
-          LIElement li = _makeIdentityNode(new ORModel.UserIdentity.empty()..identity = item);
+          LIElement li = _makeIdentityNode(
+              new ORModel.UserIdentity.empty()..identity = item);
           int index = _ul.children.length - 1;
           _ul.children.insert(index, li);
         } else if (key.keyCode == Keys.ESCAPE) {
@@ -59,26 +60,30 @@ class IdentityContainer {
   Future saveChanges(int userId) {
     List<String> foundIdentities = new List<String>();
 
-    for(LIElement item in _ul.children) {
-      SpanElement span = item.children.firstWhere((Element i) => i is SpanElement, orElse: () => null);
-      if(span != null) {
+    _ul.children.where((e) => e is LIElement).forEach((item) {
+      SpanElement span = item.children
+          .firstWhere((Element i) => i is SpanElement, orElse: () => null);
+      if (span != null) {
         String context = span.text;
         foundIdentities.add(context);
       }
-    }
+    });
 
     List<Future> worklist = new List<Future>();
 
     //Inserts
-    for(String identity in foundIdentities) {
-      if(!_identities.any((ORModel.UserIdentity i) => i.identity == identity)) {
+    for (String identity in foundIdentities) {
+      if (!_identities
+          .any((ORModel.UserIdentity i) => i.identity == identity)) {
         ORModel.UserIdentity newIdentity = new ORModel.UserIdentity.empty()
           ..identity = identity
           ..userId = userId;
 
         //Insert Identity
-        worklist.add(_userController.addIdentity(newIdentity).catchError((error, stack) {
-          log.error('Tried to create a user identity. UserId: "${userId}". Identity: "$identity" but got: ${error} ${stack}');
+        worklist.add(
+            _userController.addIdentity(newIdentity).catchError((error, stack) {
+          log.error(
+              'Tried to create a user identity. UserId: "${userId}". Identity: "$identity" but got: ${error} ${stack}');
           // Rethrow.
           throw error;
         }));
@@ -86,13 +91,13 @@ class IdentityContainer {
     }
 
     //Deletes
-    for(ORModel.UserIdentity identity in _identities) {
-      if(!foundIdentities.any((String i) => i == identity.identity)) {
-
+    for (ORModel.UserIdentity identity in _identities) {
+      if (!foundIdentities.any((String i) => i == identity.identity)) {
         //Delete Identity
-        worklist.add(_userController.removeIdentity(identity)
-            .catchError((error, stack) {
-          log.error('Tried to delete user identity. UserId: "${userId}". Identity: "${JSON.encode(identity.identity)}" but got: ${error} ${stack}');
+        worklist.add(
+            _userController.removeIdentity(identity).catchError((error, stack) {
+          log.error(
+              'Tried to delete user identity. UserId: "${userId}". Identity: "${JSON.encode(identity.identity)}" but got: ${error} ${stack}');
           // Rethrow.
           throw error;
         }));
@@ -102,7 +107,9 @@ class IdentityContainer {
   }
 
   Future showIdentities(int userId) {
-    return _userController.identities(userId).then((Iterable<ORModel.UserIdentity> identities) {
+    return _userController
+        .identities(userId)
+        .then((Iterable<ORModel.UserIdentity> identities) {
       _populateUL(identities.toList());
     });
   }

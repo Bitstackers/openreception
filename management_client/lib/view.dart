@@ -33,9 +33,9 @@ class IvrMenuList {
     LIElement template(ORModel.IvrMenu menu) =>
         new IvrMenuListItem(menu).element;
 
-    element.children = [
-      new AnchorElement(href: '/ivr/create')..text = 'Create new'
-    ]..addAll(menus.map(template));
+    element.children = new List<Element>.from(
+        [new AnchorElement(href: '/ivr/create')..text = 'Create new'])
+      ..addAll(menus.map(template));
   }
 
   final UListElement element = new UListElement()

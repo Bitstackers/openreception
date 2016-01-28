@@ -24,7 +24,6 @@ void fillList(UListElement element, List<String> items, {OnChange onChange}) {
 
   SortableGroup sortGroup = new SortableGroup()..installAll(children);
 
-
   if (onChange != null) {
     sortGroup.onSortUpdate.listen((SortableEvent event) => onChange());
   }
@@ -34,32 +33,32 @@ void fillList(UListElement element, List<String> items, {OnChange onChange}) {
 
   InputElement inputNewItem = new InputElement();
   inputNewItem
-      ..classes.add(addNewLiClass)
-      ..placeholder = 'Tilføj ny...'
-      ..onKeyPress.listen((KeyboardEvent event) {
-        KeyEvent key = new KeyEvent.wrap(event);
-        if (key.keyCode == Keys.ENTER) {
-          String item = inputNewItem.value;
-          inputNewItem.value = '';
+    ..classes.add(addNewLiClass)
+    ..placeholder = 'Tilføj ny...'
+    ..onKeyPress.listen((KeyboardEvent event) {
+      KeyEvent key = new KeyEvent.wrap(event);
+      if (key.keyCode == Keys.ENTER) {
+        String item = inputNewItem.value;
+        inputNewItem.value = '';
 
-          LIElement li = simpleListElement(item);
-          int index = element.children.length - 1;
-          sortGroup.install(li);
-          element.children.insert(index, li);
+        LIElement li = simpleListElement(item);
+        int index = element.children.length - 1;
+        sortGroup.install(li);
+        element.children.insert(index, li);
 
-          if (onChange != null) {
-            onChange();
-          }
-        } else if (key.keyCode == Keys.ESCAPE) {
-          inputNewItem.value = '';
+        if (onChange != null) {
+          onChange();
         }
-      });
+      } else if (key.keyCode == Keys.ESCAPE) {
+        inputNewItem.value = '';
+      }
+    });
 
   children.add(new LIElement()..children.add(inputNewItem));
 
   element.children
-      ..clear()
-      ..addAll(children);
+    ..clear()
+    ..addAll(children);
 }
 
 LIElement simpleListElement(String item, {Function onChange}) {
@@ -85,26 +84,27 @@ LIElement simpleListElement(String item, {Function onChange}) {
   return li;
 }
 
-void editableSpan(SpanElement content, InputElement editBox, [Function onChange]) {
+void editableSpan(SpanElement content, InputElement editBox,
+    [Function onChange]) {
   bool activeEdit = false;
   String oldDisplay = content.style.display;
   editBox
     ..style.display = 'none'
     ..onKeyDown.listen((KeyboardEvent event) {
-          KeyEvent key = new KeyEvent.wrap(event);
-          if (key.keyCode == Keys.ENTER || key.keyCode == Keys.ESCAPE) {
-            if (key.keyCode == Keys.ENTER) {
-              content.text = editBox.value;
+      KeyEvent key = new KeyEvent.wrap(event);
+      if (key.keyCode == Keys.ENTER || key.keyCode == Keys.ESCAPE) {
+        if (key.keyCode == Keys.ENTER) {
+          content.text = editBox.value;
 
-              if (onChange != null) {
-                onChange();
-              }
-            }
-            content.style.display = oldDisplay;
-            editBox.style.display = 'none';
-            activeEdit = false;
+          if (onChange != null) {
+            onChange();
           }
-        });
+        }
+        content.style.display = oldDisplay;
+        editBox.style.display = 'none';
+        activeEdit = false;
+      }
+    });
   content.onClick.listen((MouseEvent event) {
     if (!activeEdit) {
       activeEdit = true;
@@ -112,22 +112,22 @@ void editableSpan(SpanElement content, InputElement editBox, [Function onChange]
       editBox.style.display = 'inline';
 
       editBox
-          ..focus()
-          ..value = content.text;
+        ..focus()
+        ..value = content.text;
     }
   });
 }
 
 List<String> getListValues(UListElement element) {
   List<String> texts = new List<String>();
-  for (LIElement e in element.children) {
-    if (!e.classes.contains(addNewLiClass)) {
-      SpanElement content = e.children.firstWhere((elem) => elem is SpanElement,
-          orElse: () => null);
+  element.children.where((e) => e is LIElement).forEach((li) {
+    if (!li.classes.contains(addNewLiClass)) {
+      SpanElement content = li.children
+          .firstWhere((elem) => elem is SpanElement, orElse: () => null);
       if (content != null) {
         texts.add(content.text);
       }
     }
-  }
+  });
   return texts;
 }

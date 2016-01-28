@@ -1,5 +1,7 @@
 library configuration;
 
+import 'package:openreception_framework/model.dart' as model;
+
 Configuration config = new Configuration._internal();
 
 class Configuration {
@@ -13,7 +15,7 @@ class Configuration {
   Uri cdrURI = Uri.parse('http://localhost:4090');
 
   Uri userURI = Uri.parse('http://localhost:4030');
-  int userId = 0;
+  model.User user = new model.User.empty();
 
   String get cdrUrl => _cdrUrl;
   String get serverUrl => _serverUrl;

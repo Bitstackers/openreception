@@ -58,7 +58,7 @@ Future main() async {
   router.listen();
 }
 
-createIvr(_) {
+createIvr(RouteEnterEvent e) {
   (querySelector('textarea.ivr-edit') as TextAreaElement).value = _jsonpp
       .convert(new ORModel.IvrMenu(
           'new', new ORModel.Playback('...', wrapInLock: false)));
@@ -73,21 +73,21 @@ Future showIvr(RouteEvent e) async {
   ivrView.menu = currentIvrMenu();
 }
 
-Future showDialplanList(_) async {
+Future showDialplanList(RouteEnterEvent e) async {
   querySelectorAll('section:not(.hidden)').classes.toggle('hidden', true);
   querySelectorAll('#dialplans').classes.toggle('hidden', false);
   querySelector('#dialplan-list').replaceWith((new view.DialplanList()
     ..menus = await _dialplanStore.list()).element..id = 'dialplan-list');
 }
 
-Future showIvrList(_) async {
+Future showIvrList(RouteEnterEvent e) async {
   querySelectorAll('section:not(.hidden)').classes.toggle('hidden', true);
   querySelectorAll('#ivr-menus').classes.toggle('hidden', false);
   querySelector('#ivr-menu-list').replaceWith((new view.IvrMenuList()
     ..menus = await _ivrStore.list()).element..id = 'ivr-menu-list');
 }
 
-Future showDialplan(RouteEvent e) async {
+Future showDialplan(RouteEnterEvent e) async {
   final String extension = e.parameters['id'];
 
   (querySelector('#dialplan-edit') as TextAreaElement).value =

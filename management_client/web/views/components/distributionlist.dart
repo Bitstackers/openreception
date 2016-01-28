@@ -8,7 +8,8 @@ class DistributionsListComponent {
   final Controller.Reception _receptionController;
   final Controller.DistributionList _dlistController;
 
-  ORModel.DistributionList _persistentList = new ORModel.DistributionList.empty();
+  ORModel.DistributionList _persistentList =
+      new ORModel.DistributionList.empty();
 
   UListElement _ulTo = new UListElement()
     ..classes.add('zebra-even')
@@ -26,7 +27,12 @@ class DistributionsListComponent {
   SelectElement _ccPicker = new SelectElement();
   SelectElement _bccPicker = new SelectElement();
 
-  DistributionsListComponent(Element this._parent, Function this._onChange, this._contactController, this._dlistController, this._receptionController) {
+  DistributionsListComponent(
+      Element this._parent,
+      Function this._onChange,
+      this._contactController,
+      this._dlistController,
+      this._receptionController) {
     _setup();
 
     _registerEventListerns();
@@ -49,16 +55,16 @@ class DistributionsListComponent {
       ..text = 'BCC'
       ..title = 'Blind Carbon Copy';
 
-    _parent.children.addAll([header,
-                            toLabel,  _ulTo,
-                            ccLabel,  _ulCc,
-                            bccLabel, _ulBcc]);
+    _parent.children
+        .addAll([header, toLabel, _ulTo, ccLabel, _ulCc, bccLabel, _ulBcc]);
   }
 
   Set<ORModel.DistributionListEntry> _extractEntries(UListElement ul) {
-    List<ORModel.DistributionListEntry> list = new List<ORModel.DistributionListEntry>();
-    for(LIElement li in ul.children) {
-      if(li.dataset.containsKey('reception_id') && li.dataset.containsKey('contact_id')) {
+    List<ORModel.DistributionListEntry> list =
+        new List<ORModel.DistributionListEntry>();
+    ul.children.where((e) => e is LIElement).forEach((li) {
+      if (li.dataset.containsKey('reception_id') &&
+          li.dataset.containsKey('contact_id')) {
         int receptionId = int.parse(li.dataset['reception_id']);
         int contactId = int.parse(li.dataset['contact_id']);
         String receptionName = li.dataset['reception_name'];
@@ -70,7 +76,7 @@ class DistributionsListComponent {
           ..contactID = contactId
           ..contactName = contactName);
       }
-    }
+    });
 
     return list.toSet();
   }
@@ -79,33 +85,38 @@ class DistributionsListComponent {
    * Fetchs a contacts distribution list, and displays it.
    */
   void load(ORModel.Contact contact) {
-    _dlistController.list(contact.receptionID, contact.ID).then((ORModel.DistributionList dlist) {
-        _populateUL(dlist);
+    _dlistController
+        .list(contact.receptionID, contact.ID)
+        .then((ORModel.DistributionList dlist) {
+      _populateUL(dlist);
 
-        Map<int, String> receptionNameCache = {};
+      Map<int, String> receptionNameCache = {};
 
-        return _receptionController.list().then((Iterable<ORModel.Reception> receptions) {
-          receptions.forEach((ORModel.Reception r) => receptionNameCache[r.ID] = r.fullName);
-         }).then((_) {
-          return _contactController.colleagues(contact.ID).then((Iterable<ORModel.Contact> contacts) {
+      return _receptionController
+          .list()
+          .then((Iterable<ORModel.Reception> receptions) {
+        receptions.forEach(
+            (ORModel.Reception r) => receptionNameCache[r.ID] = r.fullName);
+      }).then((_) {
+        return _contactController
+            .colleagues(contact.ID)
+            .then((Iterable<ORModel.Contact> contacts) {
           _populatePicker(_toPicker, dlist.to, contacts, receptionNameCache);
           _populatePicker(_ccPicker, dlist.cc, contacts, receptionNameCache);
           _populatePicker(_bccPicker, dlist.bcc, contacts, receptionNameCache);
         });
       });
     });
- }
+  }
 
   LIElement _createEntryRow(ORModel.DistributionListEntry recipient) {
-
     LIElement li = new LIElement()
       ..dataset['reception_id'] = recipient.receptionID.toString()
       ..dataset['contact_id'] = recipient.contactID.toString()
       ..dataset['reception_name'] = recipient.receptionName
       ..dataset['contact_name'] = recipient.contactName;
 
-
-    if(recipient.id != ORModel.DistributionListEntry.noId) {
+    if (recipient.id != ORModel.DistributionListEntry.noId) {
       li.dataset['id'] = recipient.id.toString();
     }
 
@@ -113,15 +124,12 @@ class DistributionsListComponent {
 
     element.text = '${recipient.contactName} (${recipient.receptionName})';
 
-
     ImageElement deleteButton = new ImageElement(src: 'image/tp/red_plus.svg')
       ..alt = 'Slet'
       ..classes.add('small-button')
       ..onClick.listen((_) {
         li.parent.children.remove(li);
         _notifyChange();
-
-
       });
 
     li.children.addAll([deleteButton, element]);
@@ -136,7 +144,7 @@ class DistributionsListComponent {
   }
 
   void _notifyChange() {
-    if(_onChange != null) {
+    if (_onChange != null) {
       _onChange();
     }
   }
@@ -157,13 +165,13 @@ class DistributionsListComponent {
       ..clear()
       ..addAll(list.bcc.map(_createEntryRow))
       ..add(_createNewPickerRow(_bccPicker, _ulBcc));
-
   }
 
-  void _populatePicker(SelectElement picker,
-                       Iterable<ORModel.DistributionListEntry> contactDistributionList,
-                       Iterable<ORModel.Contact> contacts,
-                       Map<int, String> receptionNameCache) {
+  void _populatePicker(
+      SelectElement picker,
+      Iterable<ORModel.DistributionListEntry> contactDistributionList,
+      Iterable<ORModel.Contact> contacts,
+      Map<int, String> receptionNameCache) {
     picker.children.clear();
     picker.children.add(new OptionElement(data: 'Vælg'));
     contacts.forEach((ORModel.Contact contact) {
@@ -171,7 +179,10 @@ class DistributionsListComponent {
       picker.children.add(new OptionElement(data: displayedText)
         ..dataset['reception_id'] = contact.receptionID.toString()
         ..dataset['contact_id'] = contact.ID.toString()
-        ..dataset['reception_name'] = receptionNameCache.containsKey(contact.receptionID) ? receptionNameCache[contact.receptionID] : '??'
+        ..dataset['reception_name'] = receptionNameCache
+                .containsKey(contact.receptionID)
+            ? receptionNameCache[contact.receptionID]
+            : '??'
         ..dataset['contact_name'] = contact.fullName.toString());
     });
   }
@@ -184,20 +195,21 @@ class DistributionsListComponent {
 
   void _registerPicker(SelectElement picker, UListElement ul) {
     picker.onChange.listen((_) {
-      if(picker.selectedIndex != 0) {
+      if (picker.selectedIndex != 0) {
         OptionElement pickedOption = picker.options[picker.selectedIndex];
         int receptionId = int.parse(pickedOption.dataset['reception_id']);
         int contactId = int.parse(pickedOption.dataset['contact_id']);
         String receptionName = pickedOption.dataset['reception_name'];
         String contactName = pickedOption.dataset['contact_name'];
 
-        ORModel.DistributionListEntry entry = new ORModel.DistributionListEntry()
-          ..contactName = contactName
-          ..receptionName = receptionName
-          ..receptionID = receptionId
-          ..contactID = contactId;
+        ORModel.DistributionListEntry entry =
+            new ORModel.DistributionListEntry()
+              ..contactName = contactName
+              ..receptionName = receptionName
+              ..receptionID = receptionId
+              ..contactID = contactId;
 
-        int index = ul.children.length -1;
+        int index = ul.children.length - 1;
         ul.children.insert(index, _createEntryRow(entry));
 
         picker.selectedIndex = 0;
@@ -208,7 +220,8 @@ class DistributionsListComponent {
   }
 
   Future save(int receptionId, int contactId) {
-    ORModel.DistributionList foundEntries = new ORModel.DistributionList.empty();
+    ORModel.DistributionList foundEntries =
+        new ORModel.DistributionList.empty();
 
     _extractEntries(_ulTo).forEach((ORModel.DistributionListEntry dle) {
       dle..role = ORModel.Role.TO;
@@ -227,85 +240,96 @@ class DistributionsListComponent {
 
     //TESTING
     print('----- TO -----');
-    foundEntries.to.forEach((e) => print('Id: ${e.id} Contact: ${e.contactID} Reception: ${e.receptionID}'));
+    foundEntries.to.forEach((e) => print(
+        'Id: ${e.id} Contact: ${e.contactID} Reception: ${e.receptionID}'));
     print('----- CC -----');
-    foundEntries.cc.forEach((e) => print('Id: ${e.id} Contact: ${e.contactID} Reception: ${e.receptionID}'));
+    foundEntries.cc.forEach((e) => print(
+        'Id: ${e.id} Contact: ${e.contactID} Reception: ${e.receptionID}'));
     print('----- BCC -----');
-    foundEntries.bcc.forEach((e) => print('Id: ${e.id} Contact: ${e.contactID} Reception: ${e.receptionID}'));
+    foundEntries.bcc.forEach((e) => print(
+        'Id: ${e.id} Contact: ${e.contactID} Reception: ${e.receptionID}'));
 
-
-    List<ORModel.DistributionListEntry> deleteList = new List<ORModel.DistributionListEntry>();
+    List<ORModel.DistributionListEntry> deleteList =
+        new List<ORModel.DistributionListEntry>();
 
     //Deletes
-    for(ORModel.DistributionListEntry entry in _persistentList.to) {
-      if(!foundEntries.to.any((ORModel.DistributionListEntry e) => e.id == entry.id)) {
+    for (ORModel.DistributionListEntry entry in _persistentList.to) {
+      if (!foundEntries.to
+          .any((ORModel.DistributionListEntry e) => e.id == entry.id)) {
         //TODO delete [entry]
         print('Delete: Id: ${entry.id}');
         deleteList.add(entry);
       }
     }
 
-    for(ORModel.DistributionListEntry entry in _persistentList.cc) {
-      if(!foundEntries.cc.any((ORModel.DistributionListEntry e) => e.id == entry.id)) {
+    for (ORModel.DistributionListEntry entry in _persistentList.cc) {
+      if (!foundEntries.cc
+          .any((ORModel.DistributionListEntry e) => e.id == entry.id)) {
         //TODO delete [entry]
         print('Delete: Id: ${entry.id}');
         deleteList.add(entry);
       }
     }
 
-    for(ORModel.DistributionListEntry entry in _persistentList.bcc) {
-      if(!foundEntries.bcc.any((ORModel.DistributionListEntry e) => e.id == entry.id)) {
+    for (ORModel.DistributionListEntry entry in _persistentList.bcc) {
+      if (!foundEntries.bcc
+          .any((ORModel.DistributionListEntry e) => e.id == entry.id)) {
         //TODO delete [entry]
         print('Delete: Id: ${entry.id}');
         deleteList.add(entry);
       }
     }
 
-
-    List<ORModel.DistributionListEntry> insertList = new List<ORModel.DistributionListEntry>();
+    List<ORModel.DistributionListEntry> insertList =
+        new List<ORModel.DistributionListEntry>();
 
     //Inserts
-    for(ORModel.DistributionListEntry entry in foundEntries.to) {
-      if(entry.id == ORModel.DistributionListEntry.noId) {
+    for (ORModel.DistributionListEntry entry in foundEntries.to) {
+      if (entry.id == ORModel.DistributionListEntry.noId) {
         //TODO insert [entry] as to
-        print('Insert TO: Contact@Reception ${entry.contactID}@${entry.receptionID}');
+        print(
+            'Insert TO: Contact@Reception ${entry.contactID}@${entry.receptionID}');
         insertList.add(entry..role = ORModel.Role.TO);
       }
     }
 
-    for(ORModel.DistributionListEntry entry in foundEntries.cc) {
-      if(entry.id == ORModel.DistributionListEntry.noId) {
+    for (ORModel.DistributionListEntry entry in foundEntries.cc) {
+      if (entry.id == ORModel.DistributionListEntry.noId) {
         //TODO insert [entry] as cc
-        print('Insert CC: Contact@Reception ${entry.contactID}@${entry.receptionID}');
+        print(
+            'Insert CC: Contact@Reception ${entry.contactID}@${entry.receptionID}');
         insertList.add(entry..role = ORModel.Role.CC);
       }
     }
 
-    for(ORModel.DistributionListEntry entry in foundEntries.bcc) {
-      if(entry.id == ORModel.DistributionListEntry.noId) {
+    for (ORModel.DistributionListEntry entry in foundEntries.bcc) {
+      if (entry.id == ORModel.DistributionListEntry.noId) {
         //TODO insert [entry] as bcc
-        print('Insert BCC: Contact@Reception ${entry.contactID}@${entry.receptionID}');
+        print(
+            'Insert BCC: Contact@Reception ${entry.contactID}@${entry.receptionID}');
         insertList.add(entry..role = ORModel.Role.BCC);
       }
     }
 
     //Make sure all delete work is done, before Inserts starts.
-    return Future.wait(
-        deleteList.map((ORModel.DistributionListEntry entry) =>
-            _dlistController.removeRecipient(entry.id)
-            .catchError((error, stack) {
-          log.error('Request to delete an distribution list entry failed. receptionId: "${receptionId}", contactId: "${receptionId}", entry: "${JSON.encode(entry)}" error: ${error} ${stack}');
-          // Rethrow.
-          throw error;
-        })))
-    .then((_) => Future.wait(
-      insertList.map((ORModel.DistributionListEntry entry) =>
-          _dlistController.addRecipient(receptionId, contactId, entry)
-            .catchError((error, stack) {
-          log.error('Request to insert an distribution list entry failed. receptionId: "${receptionId}", contactId: "${receptionId}", entry: "${JSON.encode(entry)}" error: ${error} ${stack}');
-          // Rethrow.
-          throw error;
-        }))
-    ));
+    return Future
+        .wait(deleteList.map((ORModel.DistributionListEntry entry) =>
+            _dlistController
+                .removeRecipient(entry.id)
+                .catchError((error, stack) {
+              log.error(
+                  'Request to delete an distribution list entry failed. receptionId: "${receptionId}", contactId: "${receptionId}", entry: "${JSON.encode(entry)}" error: ${error} ${stack}');
+              // Rethrow.
+              throw error;
+            })))
+        .then((_) => Future.wait(insertList.map(
+            (ORModel.DistributionListEntry entry) => _dlistController
+                    .addRecipient(receptionId, contactId, entry)
+                    .catchError((error, stack) {
+                  log.error(
+                      'Request to insert an distribution list entry failed. receptionId: "${receptionId}", contactId: "${receptionId}", entry: "${JSON.encode(entry)}" error: ${error} ${stack}');
+                  // Rethrow.
+                  throw error;
+                }))));
   }
 }

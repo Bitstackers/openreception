@@ -4,8 +4,7 @@ class ContactCalendarComponent {
   final DateFormat RFC3339 = new DateFormat('yyyy-MM-dd');
 
   final Controller.Calendar _calendarController;
-  ButtonElement _newButton = new ButtonElement()
-    ..text = 'Opret ny';
+  ButtonElement _newButton = new ButtonElement()..text = 'Opret ny';
   Function _onChange;
   List<ORModel.CalendarEntry> _originalEvents;
   Element _parent;
@@ -14,10 +13,10 @@ class ContactCalendarComponent {
     ..classes.add('zebra-even')
     ..classes.add('contact-calendar-list');
 
-  ContactCalendarComponent(Element this._parent, Function this._onChange, Controller.Calendar this._calendarController) {
+  ContactCalendarComponent(Element this._parent, Function this._onChange,
+      Controller.Calendar this._calendarController) {
     DivElement editContainer = new DivElement();
-    ParagraphElement header = new ParagraphElement()
-      ..text = 'Kalender';
+    ParagraphElement header = new ParagraphElement()..text = 'Kalender';
     _parent.children.addAll([header, _newButton, _ul]);
 
     _newButton.onClick.listen((_) {
@@ -29,42 +28,54 @@ class ContactCalendarComponent {
     ORModel.CalendarEntry event = new ORModel.CalendarEntry.empty();
 
     try {
-      HiddenInputElement idField = li.querySelector('.contact-calendar-event-id');
-      TextAreaElement textField  = li.querySelector('.contact-calendar-event-text');
+      HiddenInputElement idField =
+          li.querySelector('.contact-calendar-event-id');
+      TextAreaElement textField =
+          li.querySelector('.contact-calendar-event-text');
 
-      NumberInputElement startHourField   = li.querySelector('.contact-calendar-event-start-hour');
-      NumberInputElement startMinuteField = li.querySelector('.contact-calendar-event-start-minute');
-      DateInputElement startDateField     = li.querySelector('.contact-calendar-event-start-date');
+      NumberInputElement startHourField =
+          li.querySelector('.contact-calendar-event-start-hour');
+      NumberInputElement startMinuteField =
+          li.querySelector('.contact-calendar-event-start-minute');
+      DateInputElement startDateField =
+          li.querySelector('.contact-calendar-event-start-date');
 
-      NumberInputElement stopHourField   = li.querySelector('.contact-calendar-event-stop-hour');
-      NumberInputElement stopMinuteField = li.querySelector('.contact-calendar-event-stop-minute');
-      DateInputElement stopDateField     = li.querySelector('.contact-calendar-event-stop-date');
+      NumberInputElement stopHourField =
+          li.querySelector('.contact-calendar-event-stop-hour');
+      NumberInputElement stopMinuteField =
+          li.querySelector('.contact-calendar-event-stop-minute');
+      DateInputElement stopDateField =
+          li.querySelector('.contact-calendar-event-stop-date');
 
-      if(idField.value != null && idField.value.trim().isNotEmpty) {
+      if (idField.value != null && idField.value.trim().isNotEmpty) {
         event.ID = int.parse(idField.value);
       }
 
-      DateTime startDate  = startDateField.valueAsDate;
-      int startHour   = int.parse(startHourField.value);
+      DateTime startDate = startDateField.valueAsDate;
+      int startHour = int.parse(startHourField.value);
       int startMinute = int.parse(startMinuteField.value);
-      DateTime start = new DateTime(startDate.year, startDate.month, startDate.day, startHour, startMinute);
+      DateTime start = new DateTime(startDate.year, startDate.month,
+          startDate.day, startHour, startMinute);
 
-      DateTime stopDate  = stopDateField.valueAsDate;
-      int stopHour   = int.parse(stopHourField.value);
+      DateTime stopDate = stopDateField.valueAsDate;
+      int stopHour = int.parse(stopHourField.value);
       int stopMinute = int.parse(stopMinuteField.value);
-      DateTime stop = new DateTime(stopDate.year, stopDate.month, stopDate.day, stopHour, stopMinute);
+      DateTime stop = new DateTime(
+          stopDate.year, stopDate.month, stopDate.day, stopHour, stopMinute);
 
-      event.beginsAt   = start;
+      event.beginsAt = start;
       event.until = stop;
       event.content = textField.value;
-    } catch(error, stack) {
-      log.error('CalendarComponent _extractValue error: ${error} stack: ${stack}]');
+    } catch (error, stack) {
+      log.error(
+          'CalendarComponent _extractValue error: ${error} stack: ${stack}]');
     }
     return event;
   }
 
   Future load(int receptionId, int contactId) {
-    return _calendarController.listContact(contactId)
+    return _calendarController
+        .listContact(contactId)
         .then((Iterable<ORModel.CalendarEntry> events) {
       //TODO: Sort.
       _originalEvents = events.toList();
@@ -77,11 +88,11 @@ class ContactCalendarComponent {
   LIElement _makeEventRow(ORModel.CalendarEntry event) {
     LIElement li = new LIElement();
 
-    if(event.start == null) {
+    if (event.start == null) {
       event.beginsAt = new DateTime.now();
     }
 
-    if(event.stop == null) {
+    if (event.stop == null) {
       event.until = new DateTime.now().add(new Duration(hours: 2));
     }
 
@@ -118,50 +129,67 @@ class ContactCalendarComponent {
     DocumentFragment fragment = new DocumentFragment.html(_html);
     li.children.addAll(fragment.children);
 
-    TextAreaElement textField = li.querySelector('.contact-calendar-event-text');
+    TextAreaElement textField =
+        li.querySelector('.contact-calendar-event-text');
 
-    NumberInputElement startHourField   = li.querySelector('.contact-calendar-event-start-hour');
-    NumberInputElement startMinuteField = li.querySelector('.contact-calendar-event-start-minute');
-    DateInputElement startDateField    = li.querySelector('.contact-calendar-event-start-date');
+    NumberInputElement startHourField =
+        li.querySelector('.contact-calendar-event-start-hour');
+    NumberInputElement startMinuteField =
+        li.querySelector('.contact-calendar-event-start-minute');
+    DateInputElement startDateField =
+        li.querySelector('.contact-calendar-event-start-date');
 
-    NumberInputElement stopHourField   = li.querySelector('.contact-calendar-event-stop-hour');
-    NumberInputElement stopMinuteField = li.querySelector('.contact-calendar-event-stop-minute');
-    DateInputElement stopDateField    = li.querySelector('.contact-calendar-event-stop-date');
-    List<Element> inputs = [textField,
-                            startHourField, startMinuteField, startDateField,
-                            stopHourField, stopMinuteField, stopDateField];
+    NumberInputElement stopHourField =
+        li.querySelector('.contact-calendar-event-stop-hour');
+    NumberInputElement stopMinuteField =
+        li.querySelector('.contact-calendar-event-stop-minute');
+    DateInputElement stopDateField =
+        li.querySelector('.contact-calendar-event-stop-date');
+    List<Element> inputs = [
+      textField,
+      startHourField,
+      startMinuteField,
+      startDateField,
+      stopHourField,
+      stopMinuteField,
+      stopDateField
+    ];
     inputs.forEach((Element element) {
       element.onInput.listen((_) => _notifyChange());
     });
 
-    ButtonElement deleteButton = li.querySelector('.contact-calendar-event-delete')
-        ..onClick.listen((_) {
-      _notifyChange();
-      li.parent.children.remove(li);
-    });
+    ButtonElement deleteButton =
+        li.querySelector('.contact-calendar-event-delete')
+          ..onClick.listen((_) {
+            _notifyChange();
+            li.parent.children.remove(li);
+          });
 
     return li;
   }
 
   void _notifyChange() {
-    if(_onChange != null) {
+    if (_onChange != null) {
       _onChange();
     }
   }
 
   Future save(int receptionId, int contactId) {
-    List<ORModel.CalendarEntry> currentEvents = _ul.children.map(_extractValue).toList();
+    List<ORModel.CalendarEntry> currentEvents =
+        _ul.children.map(_extractValue).toList();
 
     List<Future> worklist = new List<Future>();
 
     //Inserts
-    for(ORModel.CalendarEntry event in currentEvents) {
+    for (ORModel.CalendarEntry event in currentEvents) {
       //TODO: Verify that the contact and reception ID's are on the entries.
-      if(!_originalEvents.any((ORModel.CalendarEntry e) => e.ID == event.ID)) {
+      if (!_originalEvents.any((ORModel.CalendarEntry e) => e.ID == event.ID)) {
         //Insert event
-        worklist.add(_calendarController.create(event, config.userId)
+        worklist.add(_calendarController
+            .create(event, config.user)
             .catchError((error, stack) {
-          log.error('Request to create a contacts calendarevent failed. receptionId: "${receptionId}", contactId: "${receptionId}", event: "${JSON.encode(event)}" but got: ${error} ${stack}');
+          log.error(
+              'Request to create a contacts calendarevent failed. receptionId: "${receptionId}", contactId: "${receptionId}", event: "${JSON.encode(event)}" but got: ${error} ${stack}');
           // Rethrow.
           throw error;
         }));
@@ -169,12 +197,14 @@ class ContactCalendarComponent {
     }
 
     //Deletes
-    for(ORModel.CalendarEntry event in _originalEvents) {
-      if(!currentEvents.any((ORModel.CalendarEntry e) => e.ID == event.ID)) {
+    for (ORModel.CalendarEntry event in _originalEvents) {
+      if (!currentEvents.any((ORModel.CalendarEntry e) => e.ID == event.ID)) {
         //Delete event
-        worklist.add(_calendarController.remove(event, config.userId)
+        worklist.add(_calendarController
+            .remove(event, config.userId)
             .catchError((error, stack) {
-          log.error('Request to delete a contacts calendarevent failed. receptionId: "${receptionId}", contactId: "${receptionId}", event: "${JSON.encode(event)}" but got: ${error} ${stack}');
+          log.error(
+              'Request to delete a contacts calendarevent failed. receptionId: "${receptionId}", contactId: "${receptionId}", event: "${JSON.encode(event)}" but got: ${error} ${stack}');
           // Rethrow.
           throw error;
         }));
@@ -182,17 +212,21 @@ class ContactCalendarComponent {
     }
 
     //Update
-    for(ORModel.CalendarEntry event in currentEvents) {
-      ORModel.CalendarEntry e = _originalEvents.firstWhere((ORModel.CalendarEntry e) => e.ID == event.ID, orElse: () => null);
-      if(e != null) {
+    for (ORModel.CalendarEntry event in currentEvents) {
+      ORModel.CalendarEntry e = _originalEvents.firstWhere(
+          (ORModel.CalendarEntry e) => e.ID == event.ID,
+          orElse: () => null);
+      if (e != null) {
         //Check if there is made a change
-        if(e.content != event.content ||
-           e.start != event.start ||
-           e.stop != event.stop) {
+        if (e.content != event.content ||
+            e.start != event.start ||
+            e.stop != event.stop) {
           //Update event
-          worklist.add(_calendarController.remove(event, config.userId)
+          worklist.add(_calendarController
+              .remove(event, config.userId)
               .catchError((error, stack) {
-            log.error('Request to update a contacts calendarevent failed. receptionId: "${receptionId}", contactId: "${receptionId}", event: "${JSON.encode(event)}" but got: ${error} ${stack}');
+            log.error(
+                'Request to update a contacts calendarevent failed. receptionId: "${receptionId}", contactId: "${receptionId}", event: "${JSON.encode(event)}" but got: ${error} ${stack}');
             // Rethrow.
             throw error;
           }));

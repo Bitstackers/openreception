@@ -58,7 +58,7 @@ class EndpointsComponent {
 
     // Only accept elements from the same section.
     _sortGroup.accept.add(_sortGroup);
-    }
+  }
 
   LIElement _makeNewEndpointRow() {
     LIElement li = new LIElement();
@@ -97,7 +97,8 @@ class EndpointsComponent {
         _notifyChange();
       });
 
-    ParagraphElement confidentialLabel = new ParagraphElement()..text = 'Fortrolig';
+    ParagraphElement confidentialLabel = new ParagraphElement()
+      ..text = 'Fortrolig';
     CheckboxInputElement confidentialCheckbox = new CheckboxInputElement()
       ..classes.add('contact-endpoint-confidential')
       ..checked = endpoint.confidential
@@ -154,7 +155,7 @@ class EndpointsComponent {
         new List<ORModel.MessageEndpoint>();
 
     int index = 1;
-    for (LIElement item in _ul.children) {
+    _ul.children.where((e) => e is LIElement).forEach((item) {
       SpanElement addressSpan = item.querySelector('.contact-endpoint-address');
       SelectElement addressTypePicker =
           item.querySelector('.contact-endpoint-addresstype');
@@ -177,7 +178,7 @@ class EndpointsComponent {
           ..description = descriptionBox.value;
         foundEndpoints.add(endpoint);
       }
-    }
+    });
 
     List<Future> worklist = new List<Future>();
 
@@ -186,7 +187,8 @@ class EndpointsComponent {
       if (!_persistenceEndpoint.any((ORModel.MessageEndpoint e) =>
           e.address == endpoint.address && e.type == endpoint.type)) {
         //Insert Endpoint
-        worklist.add(_endpointController.create(receptionId, contactId, endpoint)
+        worklist.add(_endpointController
+            .create(receptionId, contactId, endpoint)
             .catchError((error, stack) {
           log.severe(
               'Request to create an endpoint failed. receptionId: "${receptionId}", contactId: "${receptionId}", endpoint: "${JSON.encode(endpoint)}" but got: ${error} ${stack}');
@@ -198,12 +200,11 @@ class EndpointsComponent {
 
     //Deletes
     for (ORModel.MessageEndpoint endpoint in _persistenceEndpoint) {
-      if (!foundEndpoints.any(
-          (ORModel.MessageEndpoint e) => e.address == endpoint.address &&
-              e.type == endpoint.type)) {
+      if (!foundEndpoints.any((ORModel.MessageEndpoint e) =>
+          e.address == endpoint.address && e.type == endpoint.type)) {
         //Delete Endpoint
-        worklist.add(_endpointController.remove(endpoint.id)
-            .catchError((error, stack) {
+        worklist.add(
+            _endpointController.remove(endpoint.id).catchError((error, stack) {
           log.severe(
               'Request to delete an endpoint failed. receptionId: "${receptionId}", contactId: "${receptionId}", endpoint: "${JSON.encode(endpoint)}" but got: ${error} ${stack}');
           // Rethrow.
@@ -217,8 +218,8 @@ class EndpointsComponent {
       if (_persistenceEndpoint.any((ORModel.MessageEndpoint e) =>
           e.address == endpoint.address && e.type == endpoint.type)) {
         //Update Endpoint
-        worklist.add(_endpointController.update(endpoint)
-            .catchError((error, stack) {
+        worklist.add(
+            _endpointController.update(endpoint).catchError((error, stack) {
           log.severe(
               'Request to update an endpoint failed. receptionId: "${receptionId}", contactId: "${receptionId}", endpoint: "${JSON.encode(endpoint)}" but got: ${error} ${stack}');
           // Rethrow.

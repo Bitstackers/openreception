@@ -38,7 +38,6 @@ class ContactView {
   final Controller.DistributionList _dlistController;
   final Controller.Endpoint _endpointController;
 
-
   UListElement ulContactList;
   UListElement ulReceptionContacts;
   UListElement ulReceptionList;
@@ -61,9 +60,14 @@ class ContactView {
   Map<int, LazyFuture> saveList = new Map<int, LazyFuture>();
   static const List<String> phonenumberTypes = const ['PSTN', 'SIP'];
 
-  ContactView(DivElement this.element, this._contactController,
-      this._organizationController, this._receptionController,
-      this._calendarController, this._dlistController, this._endpointController) {
+  ContactView(
+      DivElement this.element,
+      this._contactController,
+      this._organizationController,
+      this._receptionController,
+      this._calendarController,
+      this._dlistController,
+      this._endpointController) {
     ulContactList = element.querySelector('#contact-list');
 
     inputName = element.querySelector('#contact-input-name');
@@ -163,8 +167,8 @@ class ContactView {
   }
 
   void highlightContactInList(int id) {
-    ulContactList.children.forEach((LIElement li) => li.classes.toggle(
-        'highlightListItem', li.dataset['contactid'] == '$id'));
+    ulContactList.children.forEach((LIElement li) => li.classes
+        .toggle('highlightListItem', li.dataset['contactid'] == '$id'));
   }
 
   void activateContact(int id, [int reception_id]) {
@@ -217,11 +221,10 @@ class ContactView {
         });
 
         //FIXME: Figure out how this should look.
-        return _contactController.colleagues(id).then((Iterable<ORModel.Contact> contacts) {
-          ulReceptionList.children =
-
-          contacts.map(createColleagueNode).toList();
-
+        return _contactController
+            .colleagues(id)
+            .then((Iterable<ORModel.Contact> contacts) {
+          ulReceptionList.children = contacts.map(createColleagueNode).toList();
         });
       });
     }).catchError((error, stack) {
@@ -297,7 +300,8 @@ class ContactView {
       ..onClick.listen((_) {
         try {
           int newContactId = int.parse(newContactIdInput.value);
-          _contactController.moveReception(contact.receptionID, contact.ID, newContactId)
+          _contactController
+              .moveReception(contact.receptionID, contact.ID, newContactId)
               .then((_) {
             notify.info('Oplysningerne er nu flyttet til ${newContactId}');
             activateContact(contact.ID);
@@ -356,7 +360,8 @@ class ContactView {
     TableElement table = new TableElement()..classes.add('content-table');
     div.children.add(table);
 
-    TableSectionElement tableBody = new Element.tag('tbody');
+    TableSectionElement tableBody =
+        new Element.tag('tbody') as TableSectionElement;
     table.children.add(tableBody);
 
     TableRowElement row;
@@ -397,8 +402,8 @@ class ContactView {
     rightCell = createTableCellInsertInRow(row);
     backupList = createListBox(leftCell, 'Backup', contact.backupContacts,
         onChange: onChange);
-    endpointsContainer =
-        new EndpointsComponent(rightCell, onChange, _contactController, _endpointController);
+    endpointsContainer = new EndpointsComponent(
+        rightCell, onChange, _contactController, _endpointController);
     //Saving the future, so we are able to wait on it later.
     endpointsContainer.load(contact.receptionID, contact.ID);
 
@@ -421,8 +426,8 @@ class ContactView {
     row = createTableRowInsertInTable(tableBody);
     leftCell = createTableCellInsertInRow(row);
     rightCell = createTableCellInsertInRow(row);
-    distributionsListContainer = new DistributionsListComponent(
-        leftCell, onChange, _contactController, _dlistController, _receptionController);
+    distributionsListContainer = new DistributionsListComponent(leftCell,
+        onChange, _contactController, _dlistController, _receptionController);
     distributionsListContainer.load(contact);
     calendarComponent =
         new ContactCalendarComponent(rightCell, onChange, _calendarController);
@@ -460,8 +465,8 @@ class ContactView {
         //TODO: Figure out what value is used for.
         //li.value = number.value != null ? number.value : -1;
         SelectElement kindpicker = new SelectElement()
-          ..children.addAll(phonenumberTypes.map(
-              (String kind) => new OptionElement(
+          ..children.addAll(phonenumberTypes.map((String kind) =>
+              new OptionElement(
                   data: kind, value: kind, selected: kind == number.type)))
           ..onChange.listen((_) => onChange());
 
@@ -569,8 +574,8 @@ class ContactView {
             (elem) => elem is SpanElement &&
                 elem.classes.contains('contactgenericcontent'),
             orElse: () => null);
-        SelectElement kindpicker = li.children.firstWhere(
-            (elem) => elem is SelectElement, orElse: () => null);
+        SelectElement kindpicker = li.children
+            .firstWhere((elem) => elem is SelectElement, orElse: () => null);
         SpanElement description = li.children.firstWhere(
             (elem) => elem is SpanElement &&
                 elem.classes.contains('phonenumberdescription'),
@@ -607,7 +612,8 @@ class ContactView {
   }
 
   TextAreaElement createTextBox(
-      Element container, String labelText, String data, {Function onChange}) {
+      Element container, String labelText, String data,
+      {Function onChange}) {
     ParagraphElement label = new ParagraphElement();
     TextAreaElement inputText = new TextAreaElement()..rows = 1;
 
@@ -745,18 +751,15 @@ class ContactView {
         bus.fire(new WindowChanged(Menu.RECEPTION_WINDOW, data));
       });
 
-    UListElement contactsUl = new UListElement()
-      ..classes.add('zebra-odd');
+    UListElement contactsUl = new UListElement()..classes.add('zebra-odd');
 
-    _contactController.list(reception.ID)
-      .then((Iterable<ORModel.Contact> contacts) {
-        contactsUl.children = contacts
-              .map((ORModel.Contact collegue) =>
-                  createColleagueNode(collegue))
-              .toList();
-
+    _contactController
+        .list(reception.ID)
+        .then((Iterable<ORModel.Contact> contacts) {
+      contactsUl.children = contacts
+          .map((ORModel.Contact collegue) => createColleagueNode(collegue))
+          .toList();
     });
-
 
     rootNode.children.addAll([receptionNode, contactsUl]);
     return rootNode;
@@ -771,7 +774,10 @@ class ContactView {
       ..classes.add('colleague')
       ..text = '${collegue.fullName} (${collegue.receptionID})'
       ..onClick.listen((_) {
-        Map data = {'contact_id': collegue.ID, 'reception_id': collegue.receptionID};
+        Map data = {
+          'contact_id': collegue.ID,
+          'reception_id': collegue.receptionID
+        };
         bus.fire(new WindowChanged(Menu.CONTACT_WINDOW, data));
       });
   }

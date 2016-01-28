@@ -3,11 +3,12 @@ part of management_tool.view;
 class DialplanView {
   set dialplan(ORModel.ReceptionDialplan rdp) {
     _note.text = rdp.note;
-    _openEntries.children = []..addAll(rdp.open.map(hourActionTemplate));
+    _openEntries.children = new List<LIElement>()
+      ..addAll(rdp.open.map(hourActionTemplate));
     _active.text = rdp.active.toString();
-    _closedEntries.children = []
+    _closedEntries.children = new List<Element>()
       ..addAll(rdp.defaultActions.map(actionTemplate));
-    _extraExtensions.children = []
+    _extraExtensions.children = new List<Element>()
       ..addAll(rdp.extraExtensions.map(extensionTemplate));
   }
 

@@ -52,8 +52,9 @@ class SearchComponent<T> {
       int matchIndex = text.toLowerCase().indexOf(searchText.toLowerCase());
       String before = text.substring(0, matchIndex);
       String match = text.substring(matchIndex, matchIndex + searchText.length);
-      String after = text.substring(matchIndex + searchText.length, text.length);
-      return '${before}<em>${match}</em>${after}';
+      String after =
+          text.substring(matchIndex + searchText.length, text.length);
+      return '${before}<em>${match}</em>${after}' as String;
     }
   };
 
@@ -98,8 +99,7 @@ class SearchComponent<T> {
   }
 
   SearchComponent(DivElement this._element, String inputId) {
-    String html =
-        '''
+    String html = '''
     <div class="chosen-container chosen-container-single">
       <a class="chosen-single" tabindex="-1">
         <span></span>
@@ -114,8 +114,8 @@ class SearchComponent<T> {
     </div>
     ''';
 
-    _container = new DocumentFragment.html(html).querySelector(
-        '.chosen-container');
+    _container =
+        new DocumentFragment.html(html).querySelector('.chosen-container');
     _selectedElementText = _container.querySelector('.chosen-single > span');
     _searchBox = _container.querySelector('.chosen-search > input');
     _resultsList = _container.querySelector('.chosen-results');
@@ -197,11 +197,13 @@ class SearchComponent<T> {
     if (_highlightedLi != null) {
       if (_highlightedLi.offsetTop < _resultsList.scrollTop) {
         _resultsList.scrollTop = _highlightedLi.offsetTop;
-
-      } else if (_resultsList.scrollTop + _resultsList.clientHeight -
-          _highlightedLi.clientHeight <= _highlightedLi.offsetTop) {
+      } else if (_resultsList.scrollTop +
+              _resultsList.clientHeight -
+              _highlightedLi.clientHeight <=
+          _highlightedLi.offsetTop) {
         _resultsList.scrollTop = _highlightedLi.offsetTop +
-            _highlightedLi.clientHeight - _resultsList.clientHeight;
+            _highlightedLi.clientHeight -
+            _resultsList.clientHeight;
       }
     }
   }
@@ -229,13 +231,13 @@ class SearchComponent<T> {
       T dataElement = _dataList[index];
 
       if (_searchFilter(dataElement, searchText)) {
-        _resultsList.children.add(li..innerHtml = _listElementToString(
-            dataElement, searchText));
+        _resultsList.children
+            .add(li..innerHtml = _listElementToString(dataElement, searchText));
       }
     }
 
-    if (_resultsList.children.isNotEmpty && !_resultsList.children.contains(
-        _highlightedLi)) {
+    if (_resultsList.children.isNotEmpty &&
+        !_resultsList.children.contains(_highlightedLi)) {
       _highlightElement(_resultsList.children.first);
     } else {
       _makeElementVisible();
@@ -329,14 +331,14 @@ class SearchComponent<T> {
       T dataElement = _dataList[i];
       LIElement myLi;
       myLi = new LIElement()
-          ..classes.add('active-result')
-          ..attributes[liIdTag] = i.toString()
-          ..onMouseOver.listen((_) => _highlightElement(myLi))
-          ..onMouseDown.listen((_) {
-            _activateSelectedElement(myLi);
-            _container.classes.add('chosen-container-active');
-            new Future(_searchBox.focus);
-          });
+        ..classes.add('active-result')
+        ..attributes[liIdTag] = i.toString()
+        ..onMouseOver.listen((_) => _highlightElement(myLi))
+        ..onMouseDown.listen((_) {
+          _activateSelectedElement(myLi);
+          _container.classes.add('chosen-container-active');
+          new Future(_searchBox.focus);
+        });
 
       _list.add(myLi);
     }
