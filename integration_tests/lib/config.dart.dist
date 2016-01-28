@@ -89,11 +89,6 @@ abstract class Config {
   static Uri managementServerUri = Uri.parse('http://management.example.com');
 
   /**
-   * The URI of the notification server.
-   */
-  static Uri notificationServiceUri = Uri.parse('http://notification.example.com');
-
-  /**
    * The URI of the message store server.
    */
   static Uri messageStoreUri = Uri.parse('http://message.example.com');
@@ -103,11 +98,6 @@ abstract class Config {
    */
   static Uri receptionStoreUri = Uri.parse('http://reception.example.com');
   
-  /**
-   * The URI of the organization store server.
-   */
-  static Uri organizationStoreUri = Uri.parse('http://organization.example.com');
-
   /**
    * The URI of the user store server.
    */
@@ -128,8 +118,7 @@ abstract class Config {
    * Uri of the Notification server, where general events about the state of the
    * system is broadcasted from.
    */
-  static Uri notificationServiceUri =
-      Uri.parse('http://localhost:4200');
+  static Uri notificationServiceUri = Uri.parse('http://localhost:4200');
 
   /**
    * Uri of the Organization server. Currently located at the ReceptionServer.
