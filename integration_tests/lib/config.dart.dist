@@ -67,6 +67,11 @@ abstract class Config {
    * The URI of the authentication server.
    */
   static Uri authenticationServerUri = Uri.parse('http://auth.example.com');
+
+  /**
+   * The URI of the calendar server.
+   */
+   static URI calendarStoreUri = Uri.parse('http://calendar.example.com');
   
   /**
    * The URI of the config server.
