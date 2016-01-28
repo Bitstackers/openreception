@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<!--
+  Copyright (c) 2015, <your name>. All rights reserved. Use of this source code
+  is governed by a BSD-style license that can be found in the LICENSE file.
+-->
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="scaffolded-by" content="https://github.com/google/stagehand">
+    <title>Data management tool</title>
+    <link rel="stylesheet" href="styles.css">
+    <script async src="main.dart" type="application/dart"></script>
+    <script async src="packages/browser/dart.js"></script>
+</head>
+  <body>
+    <nav style="width: 100%; position: absolute; top: 0%; height: 5%">
+    <ul>
+      <li><a href="/ivr">IVR</a></li>
+      <li><a href="/dialplan">Dialplans</a></li>
+      <li><a href="/reception">Receptions</a></li>
+      <li><a href="/contact">Contacts</a></li>
+    </ul>
+  </nav>
+  <div id="content" style="width: 100%; position: absolute; top: 5%; height: 95%">
+  <section id="ivr-menus" class="hidden">
+    <div class="ivr-menu" style="position:absolute; left:0%; top:5%; width:100%;height: 95%; background-color: #eee">
+      <ul id="ivr-menu-list" style="background-color: #a4a4a4"></ul>
+      <textarea class="ivr-edit" style="background-color: #ccc"></textarea>
+      <div class="ivr-preview"style="background-color: #aaa"></div>
+      <pre class="hidden error-console"></pre>
+    </div>
+  </section>
+
+  <section id="dialplans" class="hidden">
+    <ul id="dialplan-list"></ul>
+    <textarea id="dialplan-edit" class="dialplan-edit" rows="40" cols="80"></textarea>
+    <div id="dialplan-view" class="dialplan-preview"></div>
+    <pre class="hidden error-console"></pre>
+    </section>
+   </div>
+  </body>
+</html>

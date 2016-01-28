@@ -1,8 +1,17 @@
-name: ManagementClient
-description: A sample web application
+name: 'management_tool'
+version: 0.0.1
+description: 
+author: Your Name <email@example.com>
+#homepage: https://www.example.com
+
+environment:
+  sdk: '>=1.0.0 <2.0.0'
+
 dependencies:
-  browser: any
+  browser: '>=0.10.0 <0.11.0'
   event_bus: any
+  dart_to_js_script_rewriter: '^0.1.0'
+  route_hierarchical: any
   html5_dnd: any
   intl: any
   logging: any
@@ -15,3 +24,13 @@ dependencies:
       ref: master
       url: https://github.com/Bitstackers/OpenReceptionFramework.git
   okeyee: any
+  openreception_framework:
+    path: /home/krc/Projects/OpenReceptionFramework
+#    git:
+#      ref: master
+#      url: https://github.com/Bitstackers/OpenreceptionFramework.git
+    version: '>=0.0.24'
+
+transformers:
+- dart_to_js_script_rewriter
+  
