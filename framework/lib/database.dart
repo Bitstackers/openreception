@@ -17,12 +17,12 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:logging/logging.dart';
-import 'package:postgresql/pool.dart'       as PGPool;
+import 'package:postgresql/pool.dart' as PGPool;
 import 'package:postgresql/postgresql.dart' as PG;
 
-import 'model.dart'   as Model;
+import 'model.dart' as Model;
 import 'storage.dart' as Storage;
-import 'keys.dart'    as Key;
+import 'keys.dart' as Key;
 
 part 'database/conversion_functions.dart';
 part 'database/database-calendar.dart';
@@ -44,16 +44,18 @@ const String libraryName = 'openreception.database';
  * Database connection class. Abstracts away connection pooling.
  */
 class Connection {
-
   ///Internal connection pool
   PGPool.Pool _pool;
 
   /**
    * Factory method that creates a new connection (and tests it).
    */
-  static Future <Connection> connect (String dsn, {int minimumConnections: 1, int maximumConnections: 5}) {
+  static Future<Connection> connect(String dsn,
+      {int minimumConnections: 1, int maximumConnections: 5}) {
     Connection db = new Connection._unConnected()
-        .._pool = new PGPool.Pool(dsn, minConnections: minimumConnections, maxConnections: maximumConnections);
+      .._pool = new PGPool.Pool(dsn,
+          minConnections: minimumConnections,
+          maxConnections: maximumConnections);
 
     return db._pool.start().then((_) => db._testConnection()).then((_) => db);
   }
@@ -66,7 +68,8 @@ class Connection {
   /**
    * Test the database connection by just opening and closing a connection.
    */
-  Future _testConnection() => this._pool.connect().then((PG.Connection conn) => conn.close());
+  Future _testConnection() =>
+      this._pool.connect().then((PG.Connection conn) => conn.close());
 
   /**
    * Close the connection
@@ -76,21 +79,23 @@ class Connection {
   /**
    * Database query wrapper.
    */
-  Future query(String sql, [Map parameters = null]) => this._pool.connect()
-    .then((PG.Connection conn) => conn.query(sql, parameters).toList()
-    .whenComplete(() => conn.close()));
+  Future query(String sql, [Map parameters = null]) =>
+      this._pool.connect().then((PG.Connection conn) => conn
+          .query(sql, parameters)
+          .toList()
+          .whenComplete(() => conn.close()));
 
   /**
    * Transaction procedure wrapper.
    */
-  Future runInTransaction(Future operation()) => this._pool.connect()
-    .then((PG.Connection conn) => conn.runInTransaction(operation)
-    .whenComplete(() => conn.close()));
+  Future runInTransaction(Future operation()) =>
+      this._pool.connect().then((PG.Connection conn) =>
+          conn.runInTransaction(operation).whenComplete(() => conn.close()));
 
   /**
    * Execute wrapper.
    */
-  Future execute(String sql, [Map parameters = null]) => this._pool.connect()
-    .then((PG.Connection conn) => conn.execute(sql, parameters)
-    .whenComplete(() => conn.close()));
+  Future execute(String sql, [Map parameters = null]) =>
+      this._pool.connect().then((PG.Connection conn) =>
+          conn.execute(sql, parameters).whenComplete(() => conn.close()));
 }
