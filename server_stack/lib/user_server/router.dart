@@ -56,19 +56,21 @@ Future startDatabase() => database.Connection
 shelf.Middleware checkAuthentication =
     shelf.createMiddleware(requestHandler: _lookupToken, responseHandler: null);
 
-Future<shelf.Response> _lookupToken(shelf.Request request) {
+Future<shelf.Response> _lookupToken(shelf.Request request) async {
   var token = request.requestedUri.queryParameters['token'];
 
-  return _authService.validate(token).then((_) => null).catchError((error) {
-    if (error is storage.NotFound) {
-      return new shelf.Response.forbidden('Invalid token');
-    } else if (error is io.SocketException) {
-      return new shelf.Response.internalServerError(
-          body: 'Cannot reach authserver');
-    } else {
-      return new shelf.Response.internalServerError(body: error.toString());
-    }
-  });
+  try {
+    await _authService.validate(token);
+  } on storage.NotFound {
+    return new shelf.Response.forbidden('Invalid token');
+  } on io.SocketException {
+    return new shelf.Response.internalServerError(
+        body: 'Cannot reach authserver');
+  } catch (error, stackTrace) {
+    log.severe('Authentication validation lookup failed: $error:$stackTrace');
+
+    return new shelf.Response.internalServerError(body: error.toString());
+  }
 }
 
 Future<io.HttpServer> start({String hostname: '0.0.0.0', int port: 4030}) {

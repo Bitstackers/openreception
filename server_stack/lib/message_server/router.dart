@@ -20,9 +20,9 @@ import 'dart:io' as IO;
 import '../configuration.dart';
 
 import 'package:logging/logging.dart';
-import 'package:openreception_framework/model.dart'   as Model;
-import 'package:openreception_framework/event.dart'   as Event;
-import 'package:openreception_framework/storage.dart'  as Storage;
+import 'package:openreception_framework/model.dart' as Model;
+import 'package:openreception_framework/event.dart' as Event;
+import 'package:openreception_framework/storage.dart' as Storage;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
 import 'package:openreception_framework/database.dart' as Database;
@@ -32,17 +32,16 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 
-
 part 'router/message.dart';
 
 const String libraryName = 'messageserver.router';
 
-final Logger log = new Logger (libraryName);
+final Logger log = new Logger(libraryName);
 
 Database.Connection _connection = null;
-Service.Authentication      _authService  = null;
+Service.Authentication _authService = null;
 Service.NotificationService _notification = null;
-Storage.Message _messageStore = new Database.Message (_connection);
+Storage.Message _messageStore = new Database.Message(_connection);
 
 const Map<String, String> corsHeaders = const {
   'Access-Control-Allow-Origin': '*',
@@ -50,42 +49,40 @@ const Map<String, String> corsHeaders = const {
 };
 
 void connectAuthService() {
-  _authService = new Service.Authentication
-      (config.authServer.externalUri,
-          config.messageServer.serverToken, new Service_IO.Client());
+  _authService = new Service.Authentication(config.authServer.externalUri,
+      config.messageServer.serverToken, new Service_IO.Client());
 }
 
 void connectNotificationService() {
-  _notification = new Service.NotificationService
-      (config.notificationServer.externalUri,
-          config.messageServer.serverToken, new Service_IO.Client());
+  _notification = new Service.NotificationService(
+      config.notificationServer.externalUri,
+      config.messageServer.serverToken,
+      new Service_IO.Client());
 }
 
-Future startDatabase() =>
-  Database.Connection.connect(config.database.dsn)
+Future startDatabase() => Database.Connection
+    .connect(config.database.dsn)
     .then((Database.Connection newConnection) => _connection = newConnection);
 
 shelf.Middleware checkAuthentication =
-  shelf.createMiddleware(requestHandler: _lookupToken, responseHandler: null);
+    shelf.createMiddleware(requestHandler: _lookupToken, responseHandler: null);
 
 Future<shelf.Response> _lookupToken(shelf.Request request) {
   var token = request.requestedUri.queryParameters['token'];
 
-  return _authService.validate(token).then((_) => null)
-  .catchError((error) {
+  return _authService.validate(token).then((_) => null).catchError((error) {
     if (error is Storage.NotFound) {
       return new shelf.Response.forbidden('Invalid token');
-    }
-    else if (error is IO.SocketException) {
-      return new shelf.Response.internalServerError(body : 'Cannot reach authserver');
-    }
-    else {
-      return new shelf.Response.internalServerError(body : error.toString());
+    } else if (error is IO.SocketException) {
+      return new shelf.Response.internalServerError(
+          body: 'Cannot reach authserver');
+    } else {
+      return new shelf.Response.internalServerError(body: error.toString());
     }
   });
 }
 
-Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
+Future<IO.HttpServer> start({String hostname: '0.0.0.0', int port: 4010}) {
   var router = shelf_route.router()
     ..get('/message/list', Message.list)
     ..get('/message/{mid}', Message.get)
@@ -95,7 +92,8 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
     ..post('/message', Message.create);
 
   var handler = const shelf.Pipeline()
-      .addMiddleware(shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
+      .addMiddleware(
+          shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
       .addMiddleware(checkAuthentication)
       .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
       .addHandler(router.handler);
