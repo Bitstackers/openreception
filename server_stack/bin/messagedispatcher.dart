@@ -124,18 +124,17 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
   Iterable<Model.MessageRecipient> currentRecipients =
       emailRecipients(queueItem.unhandledRecipients);
 
-
-  List to = currentRecipients
+  List<Address> to = currentRecipients
       .where((mr) => mr.role == Model.Role.TO)
       .map((mrto) => new Address(mrto.address, mrto.contactName))
       .toList(growable: false);
 
-  List cc = currentRecipients
+  List<Address> cc = currentRecipients
       .where((mr) => mr.role == Model.Role.CC)
       .map((mrto) => new Address(mrto.address, mrto.contactName))
       .toList(growable: false);
 
-  List bcc = currentRecipients
+  List<Address> bcc = currentRecipients
       .where((mr) => mr.role == Model.Role.BCC)
       .map((mrto) => new Address(mrto.address, mrto.contactName))
       .toList(growable: false);
