@@ -97,12 +97,8 @@ class TokenVault {
     }
   }
 
-  Future<List<FileSystemEntity>> list(String path) {
-    Directory dir = new Directory(path);
-    return dir.list().toList().then((List<FileSystemEntity> values) {
-      return values;
-    });
-  }
+  Future<List<FileSystemEntity>> list(String path) =>
+      new Directory(path).list().toList();
 
   Future<String> load(String path) => new File(path).readAsString();
 }
