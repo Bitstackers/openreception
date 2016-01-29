@@ -125,7 +125,7 @@ Future<io.HttpServer> start({String hostname: '0.0.0.0', int port: 4030}) {
       .addHandler(router.handler);
 
   log.fine('Serving interfaces:');
-  shelf_route.printRoutes(router, printer: log.fine);
+  shelf_route.printRoutes(router, printer: (String routes) => log.fine(routes));
 
   return shelf_io.serve(handler, hostname, port);
 }

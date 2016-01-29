@@ -44,9 +44,10 @@ Service.Authentication      _authService  = null;
 Service.NotificationService _notification = null;
 Storage.Message _messageStore = new Database.Message (_connection);
 
-const Map corsHeaders = const
-  {'Access-Control-Allow-Origin': '*',
-   'Access-Control-Allow-Methods' : 'GET, PUT, POST, DELETE'};
+const Map<String, String> corsHeaders = const {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE'
+};
 
 void connectAuthService() {
   _authService = new Service.Authentication
@@ -100,7 +101,7 @@ Future<IO.HttpServer> start({String hostname : '0.0.0.0', int port : 4010}) {
       .addHandler(router.handler);
 
   log.fine('Serving interfaces:');
-  shelf_route.printRoutes(router, printer : log.fine);
+  shelf_route.printRoutes(router, printer: (String item) => log.fine(item));
 
   return shelf_io.serve(handler, hostname, port);
 }

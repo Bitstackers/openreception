@@ -66,7 +66,8 @@ Future<io.HttpServer> start(
   ///Temporary logger for outputting routes.
   Logger routeLog = new Logger('cdrserver.router');
   routeLog.fine('Serving interfaces:');
-  shelf_route.printRoutes(router, printer: routeLog.fine);
+  shelf_route.printRoutes(router,
+      printer: (String item) => routeLog.fine(item));
 
   return await shelf_io.serve(handler, hostname, port);
 }

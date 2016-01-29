@@ -47,7 +47,7 @@ final Logger log = new Logger(libraryName);
 Controller.State _stateController;
 Controller.ClientNotifier _notififer;
 
-const Map corsHeaders = const {
+const Map<String, String> corsHeaders = const {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE'
 };

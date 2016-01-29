@@ -40,7 +40,7 @@ part 'router/notification.dart';
 const String libraryName = "notificationserver.router";
 final Logger _log = new Logger(libraryName);
 
-const Map corsHeaders = const {
+const Map<String, String> corsHeaders = const {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE'
 };
@@ -92,7 +92,7 @@ Future<io.HttpServer> start({String hostname: '0.0.0.0', int port: 4200}) {
       .addHandler(router.handler);
 
   _log.fine('Serving interfaces:');
-  shelf_route.printRoutes(router, printer: _log.fine);
+  shelf_route.printRoutes(router, printer: (String item) => _log.fine(item));
 
   return shelf_io.serve(handler, hostname, port);
 }

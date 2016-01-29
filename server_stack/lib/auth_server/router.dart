@@ -44,7 +44,7 @@ part 'router/refresher.dart';
 const String libraryName = 'authserver.router';
 final Logger log = new Logger(libraryName);
 
-const Map corsHeaders = const {
+const Map<String, String> corsHeaders = const {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE'
 };

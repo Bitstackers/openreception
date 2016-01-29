@@ -104,7 +104,7 @@ Future<IO.HttpServer> start(
       .addHandler(router.handler);
 
   _log.fine('Serving interfaces:');
-  shelf_route.printRoutes(router, printer: _log.fine);
+  shelf_route.printRoutes(router, printer: (String item) => _log.fine(item));
 
   return await shelf_io.serve(handler, hostname, port);
 }

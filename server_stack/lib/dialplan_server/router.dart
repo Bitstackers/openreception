@@ -33,7 +33,7 @@ import 'package:openreception_framework/dialplan_tools.dart' as dialplanTools;
 
 final Logger _log = new Logger('dialplanserver.router');
 
-const Map _corsHeaders = const {
+const Map<String, String> _corsHeaders = const {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE'
 };
