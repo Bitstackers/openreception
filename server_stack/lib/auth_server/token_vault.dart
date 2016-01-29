@@ -25,14 +25,13 @@ TokenVault vault = new TokenVault();
 const String libraryName = 'AuthServer.TokenVault';
 
 class TokenVault {
-
-  static final Logger log = new Logger ('$libraryName.TokenVault');
+  static final Logger log = new Logger('$libraryName.TokenVault');
 
   Map<String, Map> _userTokens = new Map<String, Map>();
   Map<String, Map> _serverTokens = new Map<String, Map>();
 
   Map getToken(String token) {
-    if(_userTokens.containsKey(token)) {
+    if (_userTokens.containsKey(token)) {
       return _userTokens[token];
     } else if (_serverTokens.containsKey(token)) {
       return _serverTokens[token];
@@ -42,8 +41,8 @@ class TokenVault {
   }
 
   void insertToken(String token, Map data) {
-    log.finest ('Inserting new token: $data');
-    if(_userTokens.containsKey(token)) {
+    log.finest('Inserting new token: $data');
+    if (_userTokens.containsKey(token)) {
       log.severe('Duplicate token: $token');
       throw new Exception('insertToken. Token allready exists: $token');
     } else {
@@ -52,22 +51,20 @@ class TokenVault {
   }
 
   void updateToken(String token, Map data) {
-    if(_userTokens.containsKey(token)) {
+    if (_userTokens.containsKey(token)) {
       _userTokens[token] = data;
     } else if (_serverTokens.containsKey(token)) {
-       return;
-    }
-    else {
+      return;
+    } else {
       throw new Exception('updateToken. Unknown token: ${token}');
     }
   }
 
   bool containsToken(String token) =>
-      _userTokens.containsKey(token) ||
-      _serverTokens.containsKey(token);
+      _userTokens.containsKey(token) || _serverTokens.containsKey(token);
 
   void removeToken(String token) {
-    if(_userTokens.containsKey(token)) {
+    if (_userTokens.containsKey(token)) {
       _userTokens.remove(token);
     } else {
       throw new Exception('containsToken. Unknown token: ${token}');
@@ -79,23 +76,21 @@ class TokenVault {
   }
 
   Future loadFromDirectory(String directory) {
-    if(directory != null && directory.isNotEmpty) {
+    if (directory != null && directory.isNotEmpty) {
       return list(directory).then((List<FileSystemEntity> list) {
-
         return Future.forEach(list, (FileSystemEntity item) {
-          if(item is File) {
+          if (item is File) {
             load(item.path).then((String text) {
               //TODO handle systems that do not seperate folders with "/"
               String token = item.path.split('/').last.split('.').first;
               Map data = JSON.decode(text);
               _serverTokens[token] = data;
-              log.finest ('Loaded ${_serverTokens[token]}');
+              log.finest('Loaded ${_serverTokens[token]}');
             }).catchError((error) {
-              log.severe ('TokenVault.loadFromDirectory() ${error}');
+              log.severe('TokenVault.loadFromDirectory() ${error}');
             });
           }
         });
-
       });
     } else {
       return new Future.value();
@@ -110,5 +105,4 @@ class TokenVault {
   }
 
   Future<String> load(String path) => new File(path).readAsString();
-
 }

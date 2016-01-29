@@ -14,8 +14,9 @@
 part of openreception.authentication_server.router;
 
 Future<shelf.Response> oauthCallback(shelf.Request request) {
-  final String stateString =
-      request.url.queryParameters.containsKey('state') ? request.url.queryParameters['state'] : '';
+  final String stateString = request.url.queryParameters.containsKey('state')
+      ? request.url.queryParameters['state']
+      : '';
 
   if (stateString.isEmpty) {
     return new Future.value(new shelf.Response.internalServerError(
@@ -33,7 +34,8 @@ Future<shelf.Response> oauthCallback(shelf.Request request) {
     "client_secret": config.authServer.clientSecret
   };
 
-  log.finest('Sending request to google. "${tokenEndpoint}" body "${postBody}"');
+  log.finest(
+      'Sending request to google. "${tokenEndpoint}" body "${postBody}"');
 
   //Now we have the "code" which will be exchanged to a token.
   return httpClient.postForm(tokenEndpoint, postBody).then((String response) {
@@ -45,13 +47,15 @@ Future<shelf.Response> oauthCallback(shelf.Request request) {
               'Authentication failed. "${json}"');
     } else {
       ///FIXME: Change to use format from framework AND update the dummy tokens.
-      json['expiresAt'] = new DateTime.now().add(config.authServer.tokenLifetime).toString();
+      json['expiresAt'] =
+          new DateTime.now().add(config.authServer.tokenLifetime).toString();
       return getUserInfo(json['access_token']).then((Map userData) {
         if (userData == null || userData.isEmpty) {
           log.finest('authenticationserver.router.oauthCallback() '
               'token:"${json['access_token']}" userdata:"${userData}"');
 
-          return new shelf.Response.forbidden(JSON.encode(const {'status': 'Forbidden'}));
+          return new shelf.Response.forbidden(
+              JSON.encode(const {'status': 'Forbidden'}));
         } else {
           json['identity'] = userData;
 
@@ -79,14 +83,16 @@ Future<shelf.Response> oauthCallback(shelf.Request request) {
         }
       }).catchError((error, stackTrace) {
         log.severe(error, stackTrace);
-        return new shelf.Response.forbidden(JSON.encode(const {'status': 'Forbidden'}));
+        return new shelf.Response.forbidden(
+            JSON.encode(const {'status': 'Forbidden'}));
       });
     }
   }).catchError((error, stackTrace) {
     log.severe(error, stackTrace);
 
     return new shelf.Response.internalServerError(
-        body: 'authenticationserver.router.oauthCallback uri ${request.url} error: "${error}"');
+        body:
+            'authenticationserver.router.oauthCallback uri ${request.url} error: "${error}"');
   });
 }
 
