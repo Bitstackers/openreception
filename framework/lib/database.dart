@@ -46,6 +46,7 @@ const String libraryName = 'openreception.database';
 class Connection {
   ///Internal connection pool
   PGPool.Pool _pool;
+  final Logger _log = new Logger('database.Connection');
 
   /**
    * Factory method that creates a new connection (and tests it).
@@ -68,8 +69,7 @@ class Connection {
   /**
    * Test the database connection by just opening and closing a connection.
    */
-  Future _testConnection() =>
-      this._pool.connect().then((PG.Connection conn) => conn.close());
+  Future _testConnection() => query('SELECT TRUE');
 
   /**
    * Close the connection
@@ -78,24 +78,55 @@ class Connection {
 
   /**
    * Database query wrapper.
+   * TODO(krc): Expose the Stream instead of converting to list internally.
    */
-  Future query(String sql, [Map parameters = null]) =>
-      this._pool.connect().then((PG.Connection conn) => conn
-          .query(sql, parameters)
-          .toList()
-          .whenComplete(() => conn.close()));
+  Future<Iterable<PG.Row>> query(String sql,
+      [Map parameters = const {}]) async {
+    final PG.Connection conn = await _pool.connect();
+
+    try {
+      final rows = await conn.query(sql, parameters).toList();
+      await conn.close();
+      return rows;
+    } catch (error, stackTrace) {
+      _log.severe('Query failed!\n'
+          'sql: $sql\n'
+          'parameters: ${parameters}\n'
+          'stackTrace:$stackTrace');
+
+      await conn.close();
+      throw new Storage.SqlError(error.toString());
+    }
+  }
 
   /**
    * Transaction procedure wrapper.
    */
-  Future runInTransaction(Future operation()) =>
-      this._pool.connect().then((PG.Connection conn) =>
-          conn.runInTransaction(operation).whenComplete(() => conn.close()));
+  @deprecated
+  Future runInTransaction(Future operation()) async {
+    final PG.Connection conn = await _pool.connect();
+
+    await conn.runInTransaction(operation)..whenComplete(conn.close);
+  }
 
   /**
    * Execute wrapper.
    */
-  Future execute(String sql, [Map parameters = null]) =>
-      this._pool.connect().then((PG.Connection conn) =>
-          conn.execute(sql, parameters).whenComplete(() => conn.close()));
+  Future<int> execute(String sql, [Map parameters = const {}]) async {
+    final PG.Connection conn = await _pool.connect();
+
+    try {
+      final count = await conn.execute(sql, parameters);
+      await conn.close();
+      return count;
+    } catch (error, stackTrace) {
+      _log.severe('Query failed!\n'
+          'sql: $sql\n'
+          'parameters: ${parameters}\n'
+          'stackTrace:$stackTrace');
+
+      await conn.close();
+      throw new Storage.SqlError(error.toString());
+    }
+  }
 }
