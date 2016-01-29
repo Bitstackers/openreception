@@ -22,7 +22,7 @@ shelf.Response login(shelf.Request request) {
 
   try {
     //Because the library does not allow to set custom query parameters
-    Map googleParameters = {
+    Map<String, String> googleParameters = {
       'access_type': 'online',
       'approval_prompt': 'auto',
       'state': config.authServer.redirectUri.toString()

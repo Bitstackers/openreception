@@ -60,7 +60,7 @@ Future<shelf.Response> oauthCallback(shelf.Request request) {
 
           try {
             vault.insertToken(hash, json);
-            Map queryParameters = {'settoken': hash};
+            Map<String, String> queryParameters = {'settoken': hash};
 
             return new shelf.Response.found(new Uri(
                 scheme: returnUrl.scheme,
