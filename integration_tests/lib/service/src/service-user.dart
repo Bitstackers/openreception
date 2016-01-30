@@ -75,35 +75,45 @@ abstract class User {
    * The expected behaviour is that the server should return the
    * User object.
    */
-  static Future existingUser(Storage.User userStore) {
-    const int userID = 1;
+  static Future existingUser(Storage.User userStore) async {
     log.info('Checking server behaviour on an existing user.');
 
-    return userStore.get(userID).then((value) {
-      expect(value, isNotNull);
-    });
+    final Model.User createdUser =
+        await userStore.create(Randomizer.randomUser());
+
+    final Model.User fetchedUser = await userStore.get(createdUser.ID);
+
+    expect(createdUser.address, equals(fetchedUser.address));
+    expect(createdUser.googleAppcode, equals(fetchedUser.googleAppcode));
+    expect(createdUser.googleUsername, equals(fetchedUser.googleUsername));
+    expect(createdUser.ID, equals(fetchedUser.ID));
+    expect(createdUser.name, equals(fetchedUser.name));
+    expect(createdUser.peer, equals(fetchedUser.peer));
+    expect(createdUser.portrait, equals(fetchedUser.portrait));
+
+    /// Finalization - cleanup.
+    await userStore.remove(createdUser.ID);
   }
 
   /**
    *
    */
-  static Future createUser(Storage.User userStore) {
+  static Future createUser(Storage.User userStore) async {
     log.info('Checking server behaviour on an user creation.');
 
-    Model.User newUser = Randomizer.randomUser();
+    final Model.User newUser = Randomizer.randomUser();
+    final Model.User createdUser = await userStore.create(newUser);
 
-    return userStore.create(newUser).then((Model.User createdUser) {
-      expect(createdUser.address, equals(newUser.address));
-      expect(createdUser.googleAppcode, equals(newUser.googleAppcode));
-      expect(createdUser.googleUsername, equals(newUser.googleUsername));
-      expect(createdUser.ID, isNotNull);
-      expect(createdUser.ID, greaterThan(Model.User.noID));
-      expect(createdUser.name, equals(newUser.name));
-      expect(createdUser.peer, equals(newUser.peer));
-      expect(createdUser.portrait, equals(newUser.portrait));
+    expect(createdUser.address, equals(newUser.address));
+    expect(createdUser.googleAppcode, equals(newUser.googleAppcode));
+    expect(createdUser.googleUsername, equals(newUser.googleUsername));
+    expect(createdUser.ID, isNotNull);
+    expect(createdUser.ID, greaterThan(Model.User.noID));
+    expect(createdUser.name, equals(newUser.name));
+    expect(createdUser.peer, equals(newUser.peer));
+    expect(createdUser.portrait, equals(newUser.portrait));
 
-      return userStore.remove(createdUser.ID);
-    });
+    await userStore.remove(createdUser.ID);
   }
 
   /**
@@ -161,39 +171,21 @@ abstract class User {
    *
    */
   static Future updateUserEvent(
-      Storage.User userStore, Receptionist receptionist) {
+      Storage.User userStore, Receptionist receptionist) async {
     log.info('Checking server behaviour on an user updating.');
 
-    return userStore
-        .create(Randomizer.randomUser())
-        .then((Model.User createdUser) {
-      Model.User changedUser = Randomizer.randomUser()..ID = createdUser.ID;
+    final Model.User createdUser =
+        await userStore.create(Randomizer.randomUser());
 
-      return receptionist.waitFor(eventType: Event.Key.userChange).then(
-          (Event.UserChange userChange) {
-        expect(userChange.state, equals(Event.UserObjectState.CREATED));
-        receptionist.eventStack.clear();
-      }).then((_) =>
-          userStore.update(changedUser).then((Model.User updatedUser) {
-            expect(changedUser.address, equals(updatedUser.address));
-            expect(
-                changedUser.googleAppcode, equals(updatedUser.googleAppcode));
-            expect(
-                changedUser.googleUsername, equals(updatedUser.googleUsername));
-            expect(changedUser.ID, equals(updatedUser.ID));
-            expect(changedUser.name, equals(updatedUser.name));
-            expect(changedUser.peer, equals(updatedUser.peer));
-            expect(changedUser.portrait, equals(updatedUser.portrait));
+    final Model.User changedUser = Randomizer.randomUser()..ID = createdUser.ID;
 
-            return receptionist
-                .waitFor(eventType: Event.Key.userChange)
-                .then((Event.UserChange userChange) {
-              expect(userChange.state, equals(Event.UserObjectState.UPDATED));
-              expect(userChange.userID, equals(createdUser.ID));
-              return userStore.remove(createdUser.ID);
-            }).then((_) => userStore.remove(createdUser.ID));
-          }));
-    });
+    Future expectedEvent = receptionist.notificationSocket.eventStream
+        .firstWhere((event) => event is Event.UserChange &&
+            event.userID == createdUser.ID &&
+            event.state == Event.UserObjectState.UPDATED);
+
+    await userStore.update(changedUser);
+    await expectedEvent.timeout(new Duration(seconds: 10));
   }
 
   /**
@@ -295,114 +287,83 @@ abstract class User {
    * Add a user to a group.
    */
 
-  static Future joinGroup(Storage.User userStore) {
-    Model.User newUser = Randomizer.randomUser();
+  static Future joinGroup(Storage.User userStore) async {
+    final Model.User createdUser =
+        await userStore.create(Randomizer.randomUser());
 
-    newUser.groups = [];
+    expect(await userStore.userGroups(createdUser.ID), isEmpty);
 
-    return userStore.create(newUser).then((Model.User createdUser) {
-      expect(createdUser.groups, isEmpty);
+    final Model.UserGroup joinedGroup =
+        Randomizer.randomChoice((await userStore.groups()).toList());
+    await userStore.joinGroup(createdUser.ID, joinedGroup.id);
 
-      return userStore.groups().then((Iterable<Model.UserGroup> groups) {
-        Model.UserGroup addedGroup = groups.first;
+    expect(await userStore.userGroups(createdUser.ID), isNotEmpty);
+    expect(await userStore.userGroups(createdUser.ID), contains(joinedGroup));
 
-        return userStore.joinGroup(createdUser.ID, addedGroup.id).then((_) {
-          return userStore.get(createdUser.ID).then((Model.User fetchedUser) {
-            expect(fetchedUser.groups, isNotEmpty);
-            expect(fetchedUser.groups, contains(addedGroup));
-          });
-        });
-      })
-
-          /// Finalization - cleanup.
-          .then((_) => userStore.remove(createdUser.ID));
-    });
+    /// Finalization - cleanup.
+    await userStore.remove(createdUser.ID);
   }
 
   /**
    * Remove a user from a group.
    */
 
-  static Future leaveGroup(Storage.User userStore) {
-    Model.User newUser = Randomizer.randomUser();
+  static Future leaveGroup(Storage.User userStore) async {
+    final Model.User createdUser =
+        await userStore.create(Randomizer.randomUser());
 
-    newUser.groups = [];
+    expect(await userStore.userGroups(createdUser.ID), isEmpty);
 
-    return userStore.create(newUser).then((Model.User createdUser) {
-      expect(createdUser.groups, isEmpty);
+    final Model.UserGroup joinedGroup =
+        Randomizer.randomChoice((await userStore.groups()).toList());
+    await userStore.joinGroup(createdUser.ID, joinedGroup.id);
+    await userStore.leaveGroup(createdUser.ID, joinedGroup.id);
 
-      return userStore.groups().then((Iterable<Model.UserGroup> groups) {
-        Model.UserGroup addedGroup = groups.first;
+    expect(await userStore.userGroups(createdUser.ID), isEmpty);
 
-        return userStore.joinGroup(createdUser.ID, addedGroup.id).then((_) =>
-            userStore.get(createdUser.ID).then((Model.User fetchedUser) =>
-                userStore.leaveGroup(createdUser.ID, addedGroup.id).then((_) =>
-                    userStore
-                        .get(createdUser.ID)
-                        .then((Model.User fetchedUser) {
-                      expect(fetchedUser.groups, isEmpty);
-                    }))));
-      })
-
-          /// Finalization - cleanup.
-          .then((_) => userStore.remove(createdUser.ID));
-    });
+    /// Finalization - cleanup.
+    await userStore.remove(createdUser.ID);
   }
 
   /**
    * Add an identity to a user.
    */
 
-  static Future addUserIdentity(Storage.User userStore) {
-    Model.User newUser = Randomizer.randomUser();
+  static Future addUserIdentity(Storage.User userStore) async {
+    final Model.User createdUser =
+        await userStore.create(Randomizer.randomUser());
 
-    newUser.identities = [];
+    expect(await userStore.identities(createdUser.ID), isEmpty);
 
-    return userStore.create(newUser).then((Model.User createdUser) {
-      expect(createdUser.identities, isEmpty);
-      Model.UserIdentity identity = new Model.UserIdentity.empty()
-        ..identity = Randomizer.randomUserEmail()
-        ..userId = createdUser.ID;
+    Model.UserIdentity identity = new Model.UserIdentity.empty()
+      ..identity = Randomizer.randomUserEmail()
+      ..userId = createdUser.ID;
 
-      return userStore
-          .addIdentity(identity)
-          .then((_) =>
-              userStore.get(createdUser.ID).then((Model.User fetchedUser) {
-                expect(fetchedUser.identities, isNotEmpty);
-                expect(fetchedUser.identities, contains(identity));
-              }))
+    await userStore.addIdentity(identity);
+    expect(await userStore.identities(createdUser.ID), contains(identity));
 
-          /// Finalization - cleanup.
-          .then((_) => userStore.remove(createdUser.ID));
-    });
+    /// Finalization - cleanup.
+    await userStore.remove(createdUser.ID);
   }
 
   /**
    * Remove an identity from a user.
    */
+  static Future removeUserIdentity(Storage.User userStore) async {
+    final Model.User createdUser =
+        await userStore.create(Randomizer.randomUser());
 
-  static Future removeUserIdentity(Storage.User userStore) {
-    Model.User newUser = Randomizer.randomUser();
+    expect(await userStore.identities(createdUser.ID), isEmpty);
+    Model.UserIdentity identity = new Model.UserIdentity.empty()
+      ..identity = Randomizer.randomUserEmail()
+      ..userId = createdUser.ID;
 
-    newUser.identities = [];
+    await userStore.addIdentity(identity);
+    await userStore.removeIdentity(identity);
+    expect(await userStore.identities(createdUser.ID), isEmpty);
 
-    return userStore.create(newUser).then((Model.User createdUser) {
-      expect(createdUser.identities, isEmpty);
-      Model.UserIdentity identity = new Model.UserIdentity.empty()
-        ..identity = Randomizer.randomUserEmail()
-        ..userId = createdUser.ID;
-
-      return userStore
-          .addIdentity(identity)
-          .then((_) => userStore.removeIdentity(identity))
-          .then((_) =>
-              userStore.get(createdUser.ID).then((Model.User fetchedUser) {
-                expect(fetchedUser.identities, isEmpty);
-              }))
-
-          /// Finalization - cleanup.
-          .then((_) => userStore.remove(createdUser.ID));
-    });
+    /// Finalization - cleanup.
+    await userStore.remove(createdUser.ID);
   }
 
   /**
