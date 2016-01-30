@@ -120,7 +120,8 @@ class UIContactSelector extends UIModel {
           li.classes.toggle('hide', true);
         }
       });
-    } else if (trimmedFilter.length == 1 && filter.startsWith(new RegExp(r'\s+[^ ]'))) {
+    } else if (trimmedFilter.length == 1 &&
+        filter.startsWith(new RegExp(r'\s+[^ ]'))) {
       /// Pattern: one or more spaces followed by one non-space character
       _list.classes.toggle('zebra', false);
 
@@ -131,7 +132,8 @@ class UIContactSelector extends UIModel {
           li.classes.toggle('hide', true);
         }
       });
-    } else if (trimmedFilter.length == 3 && trimmedFilter.startsWith(new RegExp(r'[^ ]\s[^ ]'))) {
+    } else if (trimmedFilter.length == 3 &&
+        trimmedFilter.startsWith(new RegExp(r'[^ ]\s[^ ]'))) {
       /// Pattern: one character, one space, one character
       _list.classes.toggle('zebra', false);
 
@@ -242,6 +244,7 @@ class UIContactSelector extends UIModel {
   void _setupLocalKeys() {
     final Map<String, EventListener> bindings = {'Esc': _reset};
 
-    _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
+    _hotKeys.registerKeysPreventDefault(
+        _keyboard, _defaultKeyMap(myKeys: bindings));
   }
 }
