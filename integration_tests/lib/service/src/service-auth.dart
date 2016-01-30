@@ -85,7 +85,6 @@ abstract class AuthService {
     expect(user.ID, equals(receptionist.user.ID));
     expect(user.name, isNotEmpty);
     expect(user.address, isNotNull);
-    expect(user.groups, isNotEmpty);
     expect(user.peer, isNotEmpty);
     log.info('Test complete');
   }
