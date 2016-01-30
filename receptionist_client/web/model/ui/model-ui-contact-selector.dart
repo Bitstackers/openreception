@@ -13,6 +13,8 @@
 
 part of model;
 
+enum filterState { empty, firstInitial, initials, otherInitials, tag }
+
 /**
  * Provides methods for manipulating the contact selector UI widget.
  */
@@ -43,6 +45,8 @@ class UIContactSelector extends UIModel {
 
   OListElement get _list => _root.querySelector('.generic-widget-list');
   InputElement get _filterInput => _root.querySelector('.filter');
+  String get filterInputValue => _filterInput.value.toLowerCase();
+  String get trimmedFilterInputValue => filterInputValue.trim();
 
   /**
    * Remove all entries from the contact list.
@@ -102,69 +106,98 @@ class UIContactSelector extends UIModel {
    * input field.
    */
   void _filter() {
-    final String filter = _filterInput.value.toLowerCase();
-    final String trimmedFilter = filter.trim();
+    switch (state) {
+      case filterState.empty:
+        _list.children
+            .forEach((Element li) => li.classes.toggle('hide', false));
+        _list.classes.toggle('zebra', true);
+        break;
+      case filterState.firstInitial:
+        _list.classes.toggle('zebra', false);
 
-    if (filter.length == 0 || trimmedFilter.isEmpty) {
-      /// Empty filter. Remove .hide from all list elements.
-      _list.children.forEach((Element li) => li.classes.toggle('hide', false));
-      _list.classes.toggle('zebra', true);
-    } else if (trimmedFilter.length == 1 && !filter.startsWith(' ')) {
-      /// Pattern: one non-space character followed by zero or more spaces
-      _list.classes.toggle('zebra', false);
+        _list.children.forEach((Element li) {
+          if (li.dataset['firstinitial'] == trimmedFilterInputValue) {
+            li.classes.toggle('hide', false);
+          } else {
+            li.classes.toggle('hide', true);
+          }
+        });
+        break;
+      case filterState.otherInitials:
+        _list.classes.toggle('zebra', false);
 
-      _list.children.forEach((Element li) {
-        if (li.dataset['firstinitial'] == trimmedFilter) {
-          li.classes.toggle('hide', false);
-        } else {
-          li.classes.toggle('hide', true);
-        }
-      });
-    } else if (trimmedFilter.length == 1 &&
-        filter.startsWith(new RegExp(r'\s+[^ ]'))) {
-      /// Pattern: one or more spaces followed by one non-space character
-      _list.classes.toggle('zebra', false);
+        _list.children.forEach((Element li) {
+          if (li.dataset['otherinitials'].contains(trimmedFilterInputValue)) {
+            li.classes.toggle('hide', false);
+          } else {
+            li.classes.toggle('hide', true);
+          }
+        });
+        break;
+      case filterState.initials:
+        _list.classes.toggle('zebra', false);
 
-      _list.children.forEach((Element li) {
-        if (li.dataset['otherinitials'].contains(trimmedFilter)) {
-          li.classes.toggle('hide', false);
-        } else {
-          li.classes.toggle('hide', true);
-        }
-      });
-    } else if (trimmedFilter.length == 3 &&
-        trimmedFilter.startsWith(new RegExp(r'[^ ]\s[^ ]'))) {
-      /// Pattern: one character, one space, one character
-      _list.classes.toggle('zebra', false);
+        _list.children.forEach((Element li) {
+          if (li.dataset['firstinitial'] ==
+                  trimmedFilterInputValue.substring(0, 1) &&
+              li.dataset['otherinitials']
+                  .contains(trimmedFilterInputValue.substring(2))) {
+            li.classes.toggle('hide', false);
+          } else {
+            li.classes.toggle('hide', true);
+          }
+        });
+        break;
+      case filterState.tag:
+        final List<String> parts = trimmedFilterInputValue.split(' ');
 
-      _list.children.forEach((Element li) {
-        if (li.dataset['firstinitial'] == trimmedFilter.substring(0, 1) &&
-            li.dataset['otherinitials'].contains(trimmedFilter.substring(2))) {
-          li.classes.toggle('hide', false);
-        } else {
-          li.classes.toggle('hide', true);
-        }
-      });
-    } else {
-      /// Split filter string on space and search for contacts that have all
-      /// the resulting parts in their tag list.
-      final List<String> parts = trimmedFilter.split(' ');
+        _list.classes.toggle('zebra', false);
 
-      _list.classes.toggle('zebra', false);
-
-      _list.children.forEach((Element li) {
-        if (parts.every((String part) => li.dataset['tags'].contains(part))) {
-          li.classes.toggle('hide', false);
-        } else {
-          li.classes.toggle('hide', true);
-        }
-      });
+        _list.children.forEach((Element li) {
+          if (parts.every((String part) => li.dataset['tags'].contains(part))) {
+            li.classes.toggle('hide', false);
+          } else {
+            li.classes.toggle('hide', true);
+          }
+        });
+        break;
     }
 
     if (_list.children.isNotEmpty) {
       /// Select the first visible item on the list
       _markSelected(_scanForwardForVisibleElement(_list.children.first));
     }
+  }
+
+  /**
+   * Return the state of the filter input. This is defined based on the pattern
+   * of the field value.
+   */
+  filterState get state {
+    filterState s;
+
+    if (filterInputValue.isEmpty || trimmedFilterInputValue.isEmpty) {
+      /// Empty filter
+      s = filterState.empty;
+    } else if (!filterInputValue.startsWith(' ') &&
+        trimmedFilterInputValue.length == 1) {
+      /// Pattern: one non-space character followed by zero or more spaces
+      s = filterState.firstInitial;
+    } else if (trimmedFilterInputValue.length == 1 &&
+        filterInputValue.startsWith(new RegExp(r'\s+[^ ]'))) {
+      /// Pattern: one or more spaces followed by one non-space character
+      s = filterState.otherInitials;
+    } else if (trimmedFilterInputValue.length == 3 &&
+        trimmedFilterInputValue.startsWith(new RegExp(r'[^ ]\s[^ ]'))) {
+      /// Pattern: one character, one space, one character
+      s = filterState.initials;
+    } else {
+      /// Split filter string on space and search for contacts that have all
+      /// the resulting parts in their tag list.
+      s = filterState.tag;
+    }
+
+    return s;
   }
 
   /**
