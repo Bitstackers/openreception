@@ -4,8 +4,6 @@ analyzer:
   strong-mode: true
 linter:
   rules:
-    #- always_declare_return_types
-    #- always_specify_types
     - camel_case_types
     - constant_identifier_names
     - empty_constructor_bodies
