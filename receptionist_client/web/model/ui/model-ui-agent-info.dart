@@ -42,7 +42,9 @@ class UIAgentInfo extends UIModel {
   /**
    * Set the ::active:: count.
    */
-  set activeCount(int value) => _activeCount.text = value.toString();
+  set activeCount(int value) {
+    _activeCount.text = value.toString();
+  }
 
   /**
    * Set the visual representation of the current agents state.
@@ -81,10 +83,14 @@ class UIAgentInfo extends UIModel {
   /**
    * Set the ::paused:: count.
    */
-  set pausedCount(int value) => _pausedCount.text = value.toString();
+  set pausedCount(int value) {
+    _pausedCount.text = value.toString();
+  }
 
   /**
    * Set the agent portrait. [path] must be a valid source path to an image.
    */
-  set portrait(String path) => _portrait.src = path;
+  set portrait(String path) {
+    _portrait.src = path;
+  }
 }
