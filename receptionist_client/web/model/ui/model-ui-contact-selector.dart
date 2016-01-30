@@ -28,9 +28,9 @@ class UIContactSelector extends UIModel {
     _observers();
   }
 
-  @override HtmlElement get _firstTabElement => _filter;
-  @override HtmlElement get _focusElement => _filter;
-  @override HtmlElement get _lastTabElement => _filter;
+  @override HtmlElement get _firstTabElement => _filterInput;
+  @override HtmlElement get _focusElement => _filterInput;
+  @override HtmlElement get _lastTabElement => _filterInput;
   @override HtmlElement get _listTarget => _list;
   /**
    * Return the mousedown click event stream for this widget. We capture
@@ -42,14 +42,14 @@ class UIContactSelector extends UIModel {
   @override HtmlElement get _root => _myRoot;
 
   OListElement get _list => _root.querySelector('.generic-widget-list');
-  InputElement get _filter => _root.querySelector('.filter');
+  InputElement get _filterInput => _root.querySelector('.filter');
 
   /**
    * Remove all entries from the contact list.
    */
   void clear() {
     _list.children.clear();
-    _filter.value = '';
+    _filterInput.value = '';
   }
 
   /**
@@ -57,7 +57,7 @@ class UIContactSelector extends UIModel {
    * empty string.
    */
   set contacts(Iterable<ORModel.Contact> contacts) {
-    _filter.value = '';
+    _filterInput.value = '';
 
     final List<LIElement> list = new List<LIElement>();
 
@@ -98,11 +98,11 @@ class UIContactSelector extends UIModel {
   }
 
   /**
-   * Filter the contact list whenever the user enters data into the [_filter]
+   * Filter the contact list whenever the user enters data into the [_filterInput]
    * input field.
    */
-  void filter() {
-    final String filter = _filter.value.toLowerCase();
+  void _filter() {
+    final String filter = _filterInput.value.toLowerCase();
     final String trimmedFilter = filter.trim();
 
     if (filter.length == 0 || trimmedFilter.isEmpty) {
@@ -171,9 +171,9 @@ class UIContactSelector extends UIModel {
    * Observers
    */
   void _observers() {
-    _filter.onKeyDown.listen(_keyboard.press);
+    _filterInput.onKeyDown.listen(_keyboard.press);
 
-    _filter.onInput.listen((Event _) => filter());
+    _filterInput.onInput.listen((Event _) => _filter());
 
     /// NOTE (TL): Don't switch this to _root.onClick. We need the mousedown
     /// event, not the mouseclick event. We want to keep focus on the filter at
@@ -191,8 +191,8 @@ class UIContactSelector extends UIModel {
    * first contact.
    */
   void _reset(Event _) {
-    _filter.value = '';
-    filter();
+    _filterInput.value = '';
+    _filter();
     selectFirstContact();
   }
 
@@ -227,7 +227,7 @@ class UIContactSelector extends UIModel {
    * of the [event].
    */
   void _selectFromClick(MouseEvent event) {
-    if (event.target != _filter) {
+    if (event.target != _filterInput) {
       /// NOTE (TL): This keeps focus on the _filter field, despite clicks on
       /// other elements.
       event.preventDefault();
