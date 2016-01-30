@@ -113,7 +113,7 @@ class Call {
           (ORModel.Call call) =>
               call.assignedTo == _appState.currentUser.ID &&
               call.state == ORModel.CallState.Parked,
-          orElse: () => ORModel.Call.noCall)) as Future<ORModel.Call>;
+          orElse: () => ORModel.Call.noCall));
 
   /**
    * Returns the [callId] [ORModel.Call].
