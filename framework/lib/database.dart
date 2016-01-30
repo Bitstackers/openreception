@@ -100,16 +100,6 @@ class Connection {
   }
 
   /**
-   * Transaction procedure wrapper.
-   */
-  @deprecated
-  Future runInTransaction(Future operation()) async {
-    final PG.Connection conn = await _pool.connect();
-
-    await conn.runInTransaction(operation)..whenComplete(conn.close);
-  }
-
-  /**
    * Execute wrapper.
    */
   Future<int> execute(String sql, [Map parameters = const {}]) async {
