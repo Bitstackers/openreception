@@ -88,7 +88,8 @@ class MessageCompose extends ViewWidget {
     _ui.onClick.listen((MouseEvent _) => _activateMe());
     _hotKeys.onAltB.listen((KeyboardEvent _) => _activateMe());
 
-    _contactSelector.onSelect.listen(_render);
+    _contactSelector.onSelect
+        .listen((Model.ContactWithFilterContext c) => _render(c.contact));
     _receptionSelector.onSelect.listen(_resetOnEmpty);
 
     _ui.onSave.listen((MouseEvent _) => _save());

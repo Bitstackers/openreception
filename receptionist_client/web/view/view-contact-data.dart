@@ -79,11 +79,11 @@ class ContactData extends ViewWidget {
   /**
    * Render the widget with [Contact].
    */
-  void _render(ORModel.Contact contact) {
-    if (contact.isEmpty) {
+  void _render(Model.ContactWithFilterContext cwfc) {
+    if (cwfc.contact.isEmpty) {
       _ui.clear(removePopup: true);
     } else {
-      _ui.contact = contact;
+      _ui.contactWithFilterContext = cwfc;
       _ui.selectFirstPhoneNumber();
     }
   }

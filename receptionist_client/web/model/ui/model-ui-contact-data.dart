@@ -98,23 +98,24 @@ class UIContactData extends UIModel {
   set commands(List<String> items) => _populateList(_commandsList, items);
 
   /**
-   * Populate widget with [contact] data.
+   * Populate widget with [cwfc.contact] data and mark tags according to the
+   * filter context.
    */
-  set contact(ORModel.Contact contact) {
+  set contactWithFilterContext(ContactWithFilterContext cwfc) {
     clear();
 
-    headerExtra = ': ${contact.fullName}';
-    additionalInfo = contact.infos;
-    backups = contact.backupContacts;
-    commands = contact.handling;
-    departments = contact.departments;
-    emailAddresses = contact.emailaddresses;
-    relations = contact.relations;
-    responsibility = contact.responsibilities;
-    tags = contact.tags;
-    telephoneNumbers = contact.phones;
-    titles = contact.titles;
-    workHours = contact.workhours;
+    headerExtra = ': ${cwfc.contact.fullName}';
+    additionalInfo = cwfc.contact.infos;
+    backups = cwfc.contact.backupContacts;
+    commands = cwfc.contact.handling;
+    departments = cwfc.contact.departments;
+    emailAddresses = cwfc.contact.emailaddresses;
+    relations = cwfc.contact.relations;
+    responsibility = cwfc.contact.responsibilities;
+    tags = cwfc;
+    telephoneNumbers = cwfc.contact.phones;
+    titles = cwfc.contact.titles;
+    workHours = cwfc.contact.workhours;
 
     if (_showPSTNSpan.classes.contains('active')) {
       _showPSTNSpan.classes.toggle('active', false);
@@ -261,7 +262,20 @@ class UIContactData extends UIModel {
   /**
    * Add [items] to the tags list.
    */
-  set tags(List<String> items) => _populateList(_tagsList, items);
+  set tags(ContactWithFilterContext cwfc) {
+    final List<String> filterParts = new List<String>()
+      ..addAll(
+          cwfc.state == filterState.tag ? cwfc.filterValue.split(' ') : []);
+    filterParts.removeWhere((String f) => f.trim().length < 2);
+    cwfc.contact.tags.forEach((String item) {
+      final LIElement li = new LIElement()..text = item;
+      li.classes.toggle(
+          'found',
+          cwfc.state == filterState.tag &&
+              filterParts.any((String f) => item.toLowerCase().contains(f)));
+      _tagsList.append(li);
+    });
+  }
 
   /**
    * Add [items] to the telephone number list.

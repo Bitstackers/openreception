@@ -13,13 +13,12 @@
 
 part of model;
 
-enum filterState { empty, firstInitial, initials, otherInitials, tag }
-
 /**
  * Provides methods for manipulating the contact selector UI widget.
  */
 class UIContactSelector extends UIModel {
-  final Bus<ORModel.Contact> _bus = new Bus<ORModel.Contact>();
+  final Bus<ContactWithFilterContext> _bus =
+      new Bus<ContactWithFilterContext>();
   final DivElement _myRoot;
 
   /**
@@ -94,11 +93,14 @@ class UIContactSelector extends UIModel {
   }
 
   /**
-   * Fire a [Contact] on [_bus]. The [Contact] is constructed from JSON found
-   * in the data-object attribute of [li].
+   * Fire a [ContactWithFilterContext] on [_bus]. The wrapped [Contact] is
+   * constructed from JSON found in the data-object attribute of [li].
    */
   void _contactSelectCallback(LIElement li) {
-    _bus.fire(new ORModel.Contact.fromMap(JSON.decode(li.dataset['object'])));
+    _bus.fire(new ContactWithFilterContext(
+        new ORModel.Contact.fromMap(JSON.decode(li.dataset['object'])),
+        state,
+        filterInputValue));
   }
 
   /**
@@ -165,7 +167,8 @@ class UIContactSelector extends UIModel {
 
     if (_list.children.isNotEmpty) {
       /// Select the first visible item on the list
-      _markSelected(_scanForwardForVisibleElement(_list.children.first));
+      _markSelected(_scanForwardForVisibleElement(_list.children.first),
+          alwaysFire: true);
     }
   }
 
@@ -215,9 +218,9 @@ class UIContactSelector extends UIModel {
   }
 
   /**
-   * Fires the selected [Contact].
+   * Fires the selected [ContactWithFilterContext].
    */
-  Stream<ORModel.Contact> get onSelect => _bus.stream;
+  Stream<ContactWithFilterContext> get onSelect => _bus.stream;
 
   /**
    * Remove selections, scroll to top, empty filter input and then select the
@@ -251,7 +254,8 @@ class UIContactSelector extends UIModel {
     if (_list.children.isNotEmpty) {
       _markSelected(_scanForwardForVisibleElement(_list.children.first));
     } else {
-      _bus.fire(new ORModel.Contact.empty());
+      _bus.fire(new ContactWithFilterContext(
+          new ORModel.Contact.empty(), state, filterInputValue));
     }
   }
 

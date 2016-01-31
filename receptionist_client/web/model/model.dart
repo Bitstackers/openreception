@@ -234,12 +234,15 @@ abstract class UIModel {
   HtmlElement get _listTarget => null;
 
   /**
-   * Mark [li] selected, scroll it into view andif [callSelectCallback] is true
+   * Mark [li] selected, scroll it into view and if [callSelectCallback] is true
    * then call [SelectCallback].
+   * If [alwaysFire] is true, then call [callSelectCallback] even if [li] is
+   * already marked selected.
    * Does nothing if [li] is null or [li] is already selected.
    */
-  void _markSelected(LIElement li, {bool callSelectCallback: true}) {
-    if (li != null && !li.classes.contains('selected')) {
+  void _markSelected(LIElement li,
+      {bool callSelectCallback: true, bool alwaysFire: false}) {
+    if (li != null && (alwaysFire || !li.classes.contains('selected'))) {
       _listTarget.children
           .forEach((Element element) => element.classes.remove('selected'));
       li.classes.add('selected');
@@ -313,4 +316,15 @@ abstract class UIModel {
   void tabToLast() {
     _lastTabElement.focus();
   }
+}
+
+enum filterState { empty, firstInitial, initials, otherInitials, tag }
+
+class ContactWithFilterContext {
+  final ORModel.Contact contact;
+  final filterState state;
+  final String filterValue;
+
+  ContactWithFilterContext(ORModel.Contact this.contact, filterState this.state,
+      String this.filterValue);
 }
