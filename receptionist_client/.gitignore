@@ -1,4 +1,5 @@
 # Don't track .packages and .pub-cache/
+**/packages
 packages/**
 .packages
 .pub-cache/**
