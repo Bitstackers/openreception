@@ -161,9 +161,12 @@ class UIMessageCompose extends UIModel {
 
     _root.onMouseDown.listen(_focusFromClick);
 
+    _hotKeys.onCtrlSpace.listen((_) => _toggleRecipients());
+
     /// Enables focused element memory for this widget.
     _tabElements.forEach((Element element) {
-      element.onFocus.listen((Event event) => _myFocusElement = (event.target as HtmlElement));
+      element.onFocus.listen(
+          (Event event) => _myFocusElement = (event.target as HtmlElement));
     });
 
     _showRecipientsSpan.onClick.listen((MouseEvent _) => _toggleRecipients());
@@ -286,8 +289,7 @@ class UIMessageCompose extends UIModel {
   void _setupLocalKeys() {
     final Map<String, EventListener> bindings = {
       'Ctrl+enter': (Event _) => _sendButton.click(),
-      'Ctrl+s': (Event _) => _saveButton.click(),
-      'Ctrl+Space': (Event _) => _toggleRecipients()
+      'Ctrl+s': (Event _) => _saveButton.click()
     };
 
     _hotKeys.registerKeysPreventDefault(_keyboard, bindings);

@@ -24,7 +24,6 @@ class UIContactData extends UIModel {
    * Constructor.
    */
   UIContactData(DivElement this._myRoot) {
-    _setupLocalKeys();
     _observers();
   }
 
@@ -151,10 +150,13 @@ class UIContactData extends UIModel {
     _hotKeys.onAltArrowDown.listen((_) => _markSelected(
         _scanForwardForVisibleElement(
             _phoneNumberList.querySelector('.selected')?.nextElementSibling)));
+
     _hotKeys.onAltArrowUp.listen((_) => _markSelected(
         _scanBackwardForVisibleElement(_phoneNumberList
             .querySelector('.selected')
             ?.previousElementSibling)));
+
+    _hotKeys.onCtrlSpace.listen((_) => _togglePopup(_showTagsSpan));
 
     _showPSTNSpan.onClick
         .listen((MouseEvent event) => _togglePopup(event.target));
@@ -248,18 +250,6 @@ class UIContactData extends UIModel {
   }
 
   /**
-   * Setup keys and bindings to methods specific for this widget.
-   */
-  void _setupLocalKeys() {
-    final Map<String, EventListener> bindings = {
-      'Ctrl+Space': (_) => _togglePopup(_showTagsSpan)
-    };
-
-    _hotKeys.registerKeysPreventDefault(
-        _keyboard, _defaultKeyMap(myKeys: bindings));
-  }
-
-  /**
    * Add [items] to the tags list.
    */
   set tags(ContactWithFilterContext cwfc) {
@@ -326,7 +316,6 @@ class UIContactData extends UIModel {
         _showTagsSpan.classes.toggle('active', true);
         _pstnInput.style.display = 'none';
         _tagsList.style.display = 'block';
-        _focusElement.focus();
       }
     } else {
       if (target == _showPSTNSpan && _showPSTNSpan.classes.contains('active')) {
