@@ -19,16 +19,13 @@ part 'storage/storage-user.dart';
 class StorageException implements Exception {}
 
 class NotFound implements StorageException {
-
   final String message;
   const NotFound([this.message = ""]);
 
   String toString() => "NotFound: $message";
 }
 
-
 class SaveFailed implements StorageException {
-
   final String message;
   const SaveFailed([this.message = ""]);
 
@@ -36,7 +33,6 @@ class SaveFailed implements StorageException {
 }
 
 class Forbidden implements StorageException {
-
   final String message;
   const Forbidden([this.message = ""]);
 
@@ -44,16 +40,13 @@ class Forbidden implements StorageException {
 }
 
 class Conflict implements StorageException {
-
   final String message;
   const Conflict([this.message = ""]);
 
   String toString() => "Conflict: $message";
 }
 
-
 class NotAuthorized implements StorageException {
-
   final String message;
   const NotAuthorized([this.message = ""]);
 
@@ -61,15 +54,27 @@ class NotAuthorized implements StorageException {
 }
 
 class ClientError implements StorageException {
-
   final String message;
   const ClientError([this.message = ""]);
 
   String toString() => "ClientError: $message";
 }
 
-class ServerError implements StorageException {
+class InternalClientError implements StorageException {
+  final String message;
+  const InternalClientError([this.message = ""]);
 
+  String toString() => "InternalClientError: $message";
+}
+
+class SqlError implements StorageException {
+  final String message;
+  const SqlError([this.message = ""]);
+
+  String toString() => "SqlError: $message";
+}
+
+class ServerError implements StorageException {
   final String message;
   const ServerError([this.message = ""]);
 
