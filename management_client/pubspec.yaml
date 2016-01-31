@@ -25,10 +25,9 @@ dependencies:
       url: https://github.com/Bitstackers/OpenReceptionFramework.git
   okeyee: any
   openreception_framework:
-    path: /home/krc/Projects/OpenReceptionFramework
-#    git:
-#      ref: master
-#      url: https://github.com/Bitstackers/OpenreceptionFramework.git
+    git:
+      ref: master
+      url: https://github.com/Bitstackers/OpenreceptionFramework.git
     version: '>=0.0.24'
 
 transformers:
