@@ -102,7 +102,7 @@ String _normalizeOpeningHour(String string) =>
 /**
  * Indent a string by [count] spaces.
  */
-String _indent(item, {int count: 2}) =>
+String _indent(String item, {int count: 2}) =>
     '${new List.filled(count, ' ').join('')}$item';
 
 /**
@@ -121,11 +121,11 @@ List<String> _openingHourToXmlDialplan(
         Iterable<model.Action> actions,
         DialplanCompilerOpts option,
         Environment env) =>
-    [
+    new List<String>.from([
       '',
       _comment('Actions for opening hour $oh'),
       '<extension name="${extension}-${_normalizeOpeningHour(oh.toString())}" continue="true">'
-    ]
+    ])
       ..addAll(_involvesReceptionists(actions)
           ? [
               '  <condition field="\${ORPbxKey.receptionOpen}" expression="^true\$"/>'
@@ -136,9 +136,9 @@ List<String> _openingHourToXmlDialplan(
       ..addAll(actions
           .map((action) => _actionToXmlDialplan(action, option, env))
           .fold(
-              [],
-              (combined, current) =>
-                  combined..addAll(current.map(_indent).map(_indent))))
+              new List<String>(),
+              (List<String> combined, List<String> current) =>
+                  combined..addAll(current.map((e) => _indent(e, count: 4)))))
       ..add('    <action application="hangup"/>')
       ..add('  </condition>')
       ..add('</extension>');
@@ -334,7 +334,7 @@ String get _callNotify => '<action application="${PbxKey.event}" '
  */
 List<String> _actionToXmlDialplan(
     model.Action action, DialplanCompilerOpts option, Environment env) {
-  List returnValue = [];
+  List<String> returnValue = [];
 
   /// Transfer action.
   if (action is model.Transfer) {
@@ -500,7 +500,7 @@ String _ivrToXml(model.IvrMenu menu, DialplanCompilerOpts option) => '''
 </include>''';
 
 List<String> _ivrEntryToXml(model.IvrEntry entry, DialplanCompilerOpts option) {
-  List returnValue = [];
+  List<String> returnValue = [];
 
   /// IvrTransfer action
   if (entry is model.IvrTransfer) {
