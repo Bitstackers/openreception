@@ -14,8 +14,9 @@
 part of openreception.storage;
 
 abstract class User {
+  Future<Model.User> get(int userID);
 
-  Future<Model.User> get (int userID);
+  Future<Model.User> getByIdentity(String identity);
 
   Future<Iterable<Model.User>> list();
 
