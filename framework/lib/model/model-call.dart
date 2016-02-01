@@ -90,7 +90,7 @@ class Call {
    *
    */
   void assignTo(User user) {
-    assignedTo = user.ID;
+    assignedTo = user.id;
   }
 
   /**
