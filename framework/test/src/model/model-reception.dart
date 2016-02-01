@@ -46,7 +46,12 @@ abstract class ModelReception {
     expect(builtObject.handlingInstructions,
         equals(deserializedObject.handlingInstructions));
     expect(builtObject.ID, equals(deserializedObject.ID));
-    expect(builtObject.lastChecked, equals(deserializedObject.lastChecked));
+    expect(
+        builtObject.lastChecked
+            .difference(deserializedObject.lastChecked)
+            .abs()
+            .inMilliseconds,
+        lessThan(1));
     expect(builtObject.miniWiki, equals(deserializedObject.miniWiki));
     expect(builtObject.name, equals(deserializedObject.name));
     expect(builtObject.openingHours, equals(deserializedObject.openingHours));

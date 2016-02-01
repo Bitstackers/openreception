@@ -186,7 +186,12 @@ abstract class EventTests {
     Event.CallHangup builtEvent =
         new Event.Event.parse(testEvent.toJson()) as Event.CallHangup;
 
-    expect(builtEvent.timestamp.isAtSameMomentAs(testEvent.timestamp), isTrue);
+    expect(
+        builtEvent.timestamp
+            .difference(testEvent.timestamp)
+            .abs()
+            .inMilliseconds,
+        lessThan(1));
     expect(builtEvent.eventName, equals(Event.Key.callHangup));
     expect(builtEvent.hangupCause, equals(testEvent.hangupCause));
     expect(builtEvent.eventName, testEvent.eventName);

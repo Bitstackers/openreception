@@ -15,15 +15,13 @@ part of openreception.test;
 
 void testModelCalendarEntry() {
   group('Model.CalendarEntry', () {
-    test('deserialization',
-        ModelCalendarEntry.deserialization);
+    test('deserialization', ModelCalendarEntry.deserialization);
     test('serialization', ModelCalendarEntry.serialization);
     test('buildObject', ModelCalendarEntry.buildObject);
   });
 }
 
 abstract class ModelCalendarEntry {
-
   static void deserialization() {
     Model.CalendarEntry builtObject = buildObject();
     Model.CalendarEntry deserialized =
@@ -32,8 +30,11 @@ abstract class ModelCalendarEntry {
     expect(builtObject.ID, equals(deserialized.ID));
     expect(builtObject.owner, equals(deserialized.owner));
     expect(builtObject.content, equals(deserialized.content));
-    expect(builtObject.start, equals(deserialized.start));
-    expect(builtObject.stop, equals(deserialized.stop));
+    expect(
+        builtObject.start.difference(deserialized.start).abs().inMilliseconds,
+        lessThan(1));
+    expect(builtObject.stop.difference(deserialized.stop).abs().inMilliseconds,
+        lessThan(1));
   }
 
   /**

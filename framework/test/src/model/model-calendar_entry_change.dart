@@ -15,15 +15,13 @@ part of openreception.test;
 
 void testModelCalendarEntryChange() {
   group('Model.CalendarEntryChange', () {
-    test('deserialization',
-         ModelCalendarEntryChange.deserialization);
+    test('deserialization', ModelCalendarEntryChange.deserialization);
     test('serialization', ModelCalendarEntryChange.serialization);
     test('buildObject', ModelCalendarEntryChange.buildObject);
   });
 }
 
 abstract class ModelCalendarEntryChange {
-
   /**
    *
    */
@@ -37,20 +35,31 @@ abstract class ModelCalendarEntryChange {
     expect(built.lastEntry.ID, equals(deserialized.lastEntry.ID));
     expect(built.lastEntry.owner, equals(deserialized.lastEntry.owner));
     expect(built.lastEntry.content, equals(deserialized.lastEntry.content));
-    expect(built.lastEntry.start, equals(deserialized.lastEntry.start));
-    expect(built.lastEntry.stop, equals(deserialized.lastEntry.stop));
+    expect(
+        built.lastEntry.start
+            .difference(deserialized.lastEntry.start)
+            .abs()
+            .inMilliseconds,
+        lessThan(1));
+
+    expect(
+        built.lastEntry.stop
+            .difference(deserialized.lastEntry.stop)
+            .abs()
+            .inMilliseconds,
+        lessThan(1));
 
     expect(built.userID, equals(deserialized.userID));
-    expect(built.changedAt.isAtSameMomentAs(deserialized.changedAt), isTrue);
+    expect(
+        built.changedAt.difference(deserialized.changedAt).abs().inMilliseconds,
+        lessThan(1));
     expect(built.username, equals(deserialized.username));
-
-
   }
 
   /**
    * Merely asserts that no exceptions arise.
    */
-  static void serialization()  {
+  static void serialization() {
     Model.CalendarEntryChange builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
@@ -63,7 +72,6 @@ abstract class ModelCalendarEntryChange {
     int changedBy = 2;
     String changedByName = 'That guy';
     Model.CalendarEntry lastEntry = ModelCalendarEntry.buildObject();
-
 
     Model.CalendarEntryChange builtObject = new Model.CalendarEntryChange()
       ..changedAt = changedAt

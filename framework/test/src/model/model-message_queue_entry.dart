@@ -48,7 +48,8 @@ abstract class ModelMessageQueueEntry {
         new Model.MessageQueueItem.fromMap(JSON.decode(JSON.encode(obj)));
 
     expect(obj.ID, equals(deserializedObj.ID));
-    expect(obj.lastTry, equals(deserializedObj.lastTry));
+    expect(obj.lastTry.difference(deserializedObj.lastTry).abs().inMilliseconds,
+        lessThan(1));
 
     expect(obj.messageID, equals(deserializedObj.messageID));
     expect(obj.tries, equals(deserializedObj.tries));
