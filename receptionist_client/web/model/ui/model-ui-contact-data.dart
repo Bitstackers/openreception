@@ -33,22 +33,18 @@ class UIContactData extends UIModel {
   @override HtmlElement get _listTarget => _phoneNumberList;
   @override HtmlElement get _root => _myRoot;
 
-  OListElement get _additionalInfoList =>
-      _root.querySelector('.additional-info');
+  OListElement get _additionalInfoList => _root.querySelector('.additional-info');
   OListElement get _backupsList => _root.querySelector('.backups');
   OListElement get _commandsList => _root.querySelector('.commands');
   OListElement get _departmentList => _root.querySelector('.department');
-  OListElement get _emailAddressesList =>
-      _root.querySelector('.email-addresses');
+  OListElement get _emailAddressesList => _root.querySelector('.email-addresses');
   DivElement get _popupDiv => _root.querySelector('.popup');
   InputElement get _pstnInput => _root.querySelector('.popup .pstn');
   OListElement get _relationsList => _root.querySelector('.relations');
-  OListElement get _responsibilityList =>
-      _root.querySelector('.responsibility');
+  OListElement get _responsibilityList => _root.querySelector('.responsibility');
   SpanElement get _showPSTNSpan => _root.querySelector('.show-pstn');
   SpanElement get _showTagsSpan => _root.querySelector('.show-tags');
-  OListElement get _tagsList =>
-      _root.querySelector('.popup .generic-widget-list');
+  OListElement get _tagsList => _root.querySelector('.popup .generic-widget-list');
   OListElement get _phoneNumberList => _root.querySelector('.telephone-number');
   OListElement get _titleList => _root.querySelector('.title');
   OListElement get _workHoursList => _root.querySelector('.work-hours');
@@ -56,8 +52,7 @@ class UIContactData extends UIModel {
   /**
    * Add [items] to the additional info list.
    */
-  set additionalInfo(List<String> items) =>
-      _populateList(_additionalInfoList, items);
+  set additionalInfo(List<String> items) => _populateList(_additionalInfoList, items);
 
   /**
    * Add [items] to the backups list.
@@ -131,14 +126,12 @@ class UIContactData extends UIModel {
   /**
    * Add [items] to the email addresses list.
    */
-  set emailAddresses(List<String> items) =>
-      _populateList(_emailAddressesList, items);
+  set emailAddresses(List<String> items) => _populateList(_emailAddressesList, items);
 
   /**
    * Return true if no phonenumbers are marked "ringing".
    */
-  bool get noRinging =>
-      !_phoneNumberList.children.any((e) => e.classes.contains('ringing'));
+  bool get noRinging => !_phoneNumberList.children.any((e) => e.classes.contains('ringing'));
 
   /**
    * Observers
@@ -147,21 +140,16 @@ class UIContactData extends UIModel {
     _root.onKeyDown.listen(_keyboard.press);
     _root.onClick.listen(_selectFromClick);
 
-    _hotKeys.onAltArrowDown.listen((_) => _markSelected(
-        _scanForwardForVisibleElement(
-            _phoneNumberList.querySelector('.selected')?.nextElementSibling)));
+    _hotKeys.onAltArrowDown.listen((_) => _markSelected(_scanForwardForVisibleElement(
+        _phoneNumberList.querySelector('.selected')?.nextElementSibling)));
 
-    _hotKeys.onAltArrowUp.listen((_) => _markSelected(
-        _scanBackwardForVisibleElement(_phoneNumberList
-            .querySelector('.selected')
-            ?.previousElementSibling)));
+    _hotKeys.onAltArrowUp.listen((_) => _markSelected(_scanBackwardForVisibleElement(
+        _phoneNumberList.querySelector('.selected')?.previousElementSibling)));
 
     _hotKeys.onCtrlSpace.listen((_) => _togglePopup(_showTagsSpan));
 
-    _showPSTNSpan.onClick
-        .listen((MouseEvent event) => _togglePopup(event.target));
-    _showTagsSpan.onClick
-        .listen((MouseEvent event) => _togglePopup(event.target));
+    _showPSTNSpan.onClick.listen((MouseEvent event) => _togglePopup(event.target));
+    _showTagsSpan.onClick.listen((MouseEvent event) => _togglePopup(event.target));
   }
 
   /**
@@ -201,8 +189,7 @@ class UIContactData extends UIModel {
   /**
    * Add [items] to the responsibility list.
    */
-  set responsibility(List<String> items) =>
-      _populateList(_responsibilityList, items);
+  set responsibility(List<String> items) => _populateList(_responsibilityList, items);
 
   /**
    * Mark selected [ORModel.PhoneNumber] ringing if we're not already ringing. If the PSTN input
@@ -211,8 +198,7 @@ class UIContactData extends UIModel {
    * This fires a [ORModel.PhoneNumber] object on the [onMarkedRinging] stream.
    */
   void ring() {
-    if (_showPSTNSpan.classes.contains('active') &&
-        _pstnInput.value.trim().isNotEmpty) {
+    if (_showPSTNSpan.classes.contains('active') && _pstnInput.value.trim().isNotEmpty) {
       ORModel.PhoneNumber phoneNumber = new ORModel.PhoneNumber.empty()
         ..value = _pstnInput.value.trim();
       _pstnInput.classes.toggle('ringing', true);
@@ -222,8 +208,7 @@ class UIContactData extends UIModel {
 
       if (li != null && noRinging) {
         li.classes.toggle('ringing');
-        _busRinging.fire(
-            new ORModel.PhoneNumber.fromMap(JSON.decode(li.dataset['object'])));
+        _busRinging.fire(new ORModel.PhoneNumber.fromMap(JSON.decode(li.dataset['object'])));
       }
     }
   }
@@ -233,8 +218,7 @@ class UIContactData extends UIModel {
    */
   void selectFirstPhoneNumber() {
     if (_phoneNumberList.children.isNotEmpty) {
-      _markSelected(
-          _scanForwardForVisibleElement(_phoneNumberList.children.first));
+      _markSelected(_scanForwardForVisibleElement(_phoneNumberList.children.first));
     }
   }
 
@@ -243,8 +227,7 @@ class UIContactData extends UIModel {
    * [event].
    */
   void _selectFromClick(MouseEvent event) {
-    if (event.target is LIElement &&
-        (event.target as LIElement).parent == _phoneNumberList) {
+    if (event.target is LIElement && (event.target as LIElement).parent == _phoneNumberList) {
       _markSelected(event.target);
     }
   }
@@ -254,8 +237,7 @@ class UIContactData extends UIModel {
    */
   set tags(ContactWithFilterContext cwfc) {
     final List<String> filterParts = new List<String>()
-      ..addAll(
-          cwfc.state == filterState.tag ? cwfc.filterValue.split(' ') : []);
+      ..addAll(cwfc.state == filterState.tag ? cwfc.filterValue.split(' ') : new List<String>());
     filterParts.removeWhere((String f) => f.trim().length < 2);
     cwfc.contact.tags.forEach((String item) {
       final LIElement li = new LIElement()..text = item;
@@ -310,8 +292,7 @@ class UIContactData extends UIModel {
         _showPSTNSpan.classes.toggle('active', true);
         _tagsList.style.display = 'none';
         _pstnInput.style.display = 'inline';
-        new Future.delayed(new Duration(milliseconds: 1))
-            .then((_) => _pstnInput.focus());
+        new Future.delayed(new Duration(milliseconds: 1)).then((_) => _pstnInput.focus());
       } else {
         _showTagsSpan.classes.toggle('active', true);
         _pstnInput.style.display = 'none';
@@ -322,20 +303,16 @@ class UIContactData extends UIModel {
         _showPSTNSpan.classes.toggle('active', false);
         _popupDiv.classes.toggle('popup-hidden', true);
         _focusElement.focus();
-      } else if (target == _showTagsSpan &&
-          _showTagsSpan.classes.contains('active')) {
+      } else if (target == _showTagsSpan && _showTagsSpan.classes.contains('active')) {
         _showTagsSpan.classes.toggle('active', false);
         _popupDiv.classes.toggle('popup-hidden', true);
-      } else if (target == _showPSTNSpan &&
-          _showTagsSpan.classes.contains('active')) {
+      } else if (target == _showPSTNSpan && _showTagsSpan.classes.contains('active')) {
         _tagsList.style.display = 'none';
         _pstnInput.style.display = 'inline';
         _showTagsSpan.classes.toggle('active', false);
         _showPSTNSpan.classes.toggle('active', true);
-        new Future.delayed(new Duration(milliseconds: 1))
-            .then((_) => _pstnInput.focus());
-      } else if (target == _showTagsSpan &&
-          _showPSTNSpan.classes.contains('active')) {
+        new Future.delayed(new Duration(milliseconds: 1)).then((_) => _pstnInput.focus());
+      } else if (target == _showTagsSpan && _showPSTNSpan.classes.contains('active')) {
         _pstnInput.style.display = 'none';
         _tagsList.style.display = 'block';
         _showPSTNSpan.classes.toggle('active', false);
