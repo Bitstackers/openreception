@@ -19,6 +19,18 @@ part of openreception.database;
 /**
  * Convert a database row into a [DistributionListEntry].
  */
+Model.MessageEndpoint _rowToMessageEndpoint(PG.Row row) =>
+    new Model.MessageEndpoint.empty()
+      ..id = row.id
+      ..address = row.address
+      ..type = row.address_type
+      ..confidential = row.confidential
+      ..enabled = row.enabled
+      ..description = row.description;
+
+/**
+ * Convert a database row into a [DistributionListEntry].
+ */
 Model.DistributionListEntry _rowToDistributionListEntry(PG.Row row) =>
     new Model.DistributionListEntry()
       ..receptionID = row.recipient_reception_id
