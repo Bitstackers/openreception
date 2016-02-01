@@ -17,163 +17,148 @@ part of openreception.service;
  * Client for contact service.
  */
 class RESTContactStore implements Storage.Contact {
-  static final String className = '${libraryName}.RESTContactStore';
-  static final Logger log = new Logger(className);
-
-  WebService _backend = null;
-  Uri _host;
-  String _token = '';
+  final WebService _backend;
+  final Uri _host;
+  final String _token;
 
   RESTContactStore(Uri this._host, String this._token, this._backend);
 
-  Future<Iterable<int>> receptions(int contactID) {
-    Uri url = Resource.Contact.receptions(this._host, contactID);
-    url = _appendToken(url, this._token);
+  Future<Iterable<int>> receptions(int contactID) async {
+    Uri url = Resource.Contact.receptions(_host, contactID);
+    url = _appendToken(url, _token);
 
-    return this._backend.get(url).then(JSON.decode);
+    return await _backend.get(url).then(JSON.decode) as Iterable<int>;
   }
 
-  Future<Iterable<int>> organizations(int contactID) {
-    Uri url = Resource.Contact.organizations(this._host, contactID);
-    url = _appendToken(url, this._token);
+  Future<Iterable<int>> organizations(int contactID) async {
+    Uri url = Resource.Contact.organizations(_host, contactID);
+    url = _appendToken(url, _token);
 
-    return this._backend.get(url).then(JSON.decode);
+    return await _backend.get(url).then(JSON.decode) as Iterable<int>;
   }
 
   Future<Iterable<Model.Contact>> managementServerList(int receptionID) {
-    Uri url = Resource.Contact.managementServerList(this._host, receptionID);
-    url = _appendToken(url, this._token);
+    Uri url = Resource.Contact.managementServerList(_host, receptionID);
+    url = _appendToken(url, _token);
 
-    return this._backend.get(url).then((String response) =>
+    return _backend.get(url).then((String response) =>
         (JSON.decode(response)['receptionContacts'] as Iterable)
             .map((Map map) => new Model.Contact.fromMap(map)));
   }
 
   Future<Model.BaseContact> get(int contactID) {
-    Uri url = Resource.Contact.single(this._host, contactID);
-    url = _appendToken(url, this._token);
+    Uri url = Resource.Contact.single(_host, contactID);
+    url = _appendToken(url, _token);
 
-    return this._backend.get(url).then((String response) =>
+    return _backend.get(url).then((String response) =>
         new Model.BaseContact.fromMap(JSON.decode(response)));
   }
 
   Future<Model.BaseContact> create(Model.BaseContact contact) {
-    Uri url = Resource.Contact.root(this._host);
-    url = _appendToken(url, this._token);
+    Uri url = Resource.Contact.root(_host);
+    url = _appendToken(url, _token);
 
     String data = JSON.encode(contact.asMap);
-    return this._backend.post(url, data).then((String response) =>
+    return _backend.post(url, data).then((String response) =>
         new Model.BaseContact.fromMap(JSON.decode(response)));
   }
 
   Future<Model.BaseContact> update(Model.BaseContact contact) {
-    Uri url = Resource.Contact.single(this._host, contact.id);
-    url = _appendToken(url, this._token);
+    Uri url = Resource.Contact.single(_host, contact.id);
+    url = _appendToken(url, _token);
 
     String data = JSON.encode(contact.asMap);
-    return this._backend.put(url, data).then((String response) =>
+    return _backend.put(url, data).then((String response) =>
         new Model.BaseContact.fromMap(JSON.decode(response)));
   }
 
   Future remove(int contactId) {
-    Uri url = Resource.Contact.single(this._host, contactId);
-    url = _appendToken(url, this._token);
+    Uri url = Resource.Contact.single(_host, contactId);
+    url = _appendToken(url, _token);
 
-    return this._backend.delete(url);
+    return _backend.delete(url);
   }
 
   Future<Iterable<Model.BaseContact>> list() {
-    Uri url = Resource.Contact.list(this._host);
-    url = _appendToken(url, this._token);
+    Uri url = Resource.Contact.list(_host);
+    url = _appendToken(url, _token);
 
-    return this._backend.get(url).then((String response) =>
-        (JSON.decode(response) as Iterable)
-            .map((Map map) => new Model.BaseContact.fromMap(map)));
+    return _backend.get(url).then((String response) => (JSON.decode(response)
+        as Iterable).map((Map map) => new Model.BaseContact.fromMap(map)));
   }
 
   Future<Model.Contact> getByReception(int contactID, int receptionID) {
-    Uri url =
-        Resource.Contact.singleByReception(this._host, contactID, receptionID);
-    url = _appendToken(url, this._token);
+    Uri url = Resource.Contact.singleByReception(_host, contactID, receptionID);
+    url = _appendToken(url, _token);
 
-    return this._backend.get(url).then(
+    return _backend.get(url).then(
         (String response) => new Model.Contact.fromMap(JSON.decode(response)));
   }
 
   Future<Iterable<Model.Contact>> listByReception(int receptionID,
       {Model.ContactFilter filter}) {
-    Uri url = Resource.Contact.listByReception(this._host, receptionID);
-    url = _appendToken(url, this._token);
+    Uri url = Resource.Contact.listByReception(_host, receptionID);
+    url = _appendToken(url, _token);
 
-    return this._backend.get(url).then((String response) =>
-        (JSON.decode(response) as Iterable)
-            .map((Map map) => new Model.Contact.fromMap(map)));
-  }
-
-  Future<Iterable<Map>> endpointsMap(int contactID, int receptionID) {
-    Uri url = Resource.Contact.endpoints(this._host, contactID, receptionID);
-    url = _appendToken(url, this._token);
-
-    return this._backend.get(url).then(JSON.decode);
+    return _backend.get(url).then((String response) => (JSON.decode(response)
+        as Iterable).map((Map map) => new Model.Contact.fromMap(map)));
   }
 
   Future<Iterable<Model.MessageEndpoint>> endpoints(
-          int contactID, int receptionID) =>
-      this.endpointsMap(contactID, receptionID).then((Iterable<Map> maps) =>
-          maps.map((Map map) => new Model.MessageEndpoint.fromMap(map)));
+      int contactID, int receptionID) {
+    Uri url = Resource.Contact.endpoints(_host, contactID, receptionID);
+    url = _appendToken(url, _token);
 
-  Future<Iterable<Map>> phonesMap(int contactID, int receptionID) {
-    Uri url = Resource.Contact.phones(this._host, contactID, receptionID);
-    url = _appendToken(url, this._token);
-
-    return this._backend.get(url).then(JSON.decode);
+    return _backend.get(url).then(JSON.decode).then((Iterable<Map> maps) =>
+        maps.map((Map map) => new Model.MessageEndpoint.fromMap(map)));
   }
 
-  Future<Iterable<Model.PhoneNumber>> phones(int contactID, int receptionID) =>
-      this.endpointsMap(contactID, receptionID).then((Iterable<Map> maps) =>
-          maps.map((Map map) => new Model.PhoneNumber.fromMap(map)));
+  Future<Iterable<Model.PhoneNumber>> phones(int contactID, int receptionID) {
+    Uri url = Resource.Contact.phones(_host, contactID, receptionID);
+    url = _appendToken(url, _token);
+
+    return _backend.get(url).then(JSON.decode).then((Iterable<Map> maps) =>
+        maps.map((Map map) => new Model.PhoneNumber.fromMap(map)));
+  }
 
   Future<Iterable<Model.BaseContact>> colleagues(int contactId) {
-    Uri url = Resource.Contact.colleagues(this._host, contactId);
-    url = _appendToken(url, this._token);
+    Uri url = Resource.Contact.colleagues(_host, contactId);
+    url = _appendToken(url, _token);
 
-    return this._backend.get(url).then((String response) =>
-        (JSON.decode(response) as Iterable)
-            .map((Map map) => new Model.BaseContact.fromMap(map)));
+    return _backend.get(url).then((String response) => (JSON.decode(response)
+        as Iterable).map((Map map) => new Model.BaseContact.fromMap(map)));
   }
 
   Future<Model.Contact> addToReception(Model.Contact contact, int receptionID) {
     Uri url =
-        Resource.Contact.singleByReception(this._host, contact.ID, receptionID);
-    url = _appendToken(url, this._token);
+        Resource.Contact.singleByReception(_host, contact.ID, receptionID);
+    url = _appendToken(url, _token);
 
-    return this._backend.post(url, JSON.encode(contact)).then(
+    return _backend.post(url, JSON.encode(contact)).then(
         (String response) => new Model.Contact.fromMap(JSON.decode(response)));
   }
 
   Future<Iterable<Model.BaseContact>> organizationContacts(int organizationId) {
-    Uri url = Resource.Contact.organizationContacts(this._host, organizationId);
-    url = _appendToken(url, this._token);
+    Uri url = Resource.Contact.organizationContacts(_host, organizationId);
+    url = _appendToken(url, _token);
 
-    return this._backend.get(url).then((String response) =>
-        (JSON.decode(response) as Iterable)
-            .map((Map map) => new Model.BaseContact.fromMap(map)));
+    return _backend.get(url).then((String response) => (JSON.decode(response)
+        as Iterable).map((Map map) => new Model.BaseContact.fromMap(map)));
   }
 
   Future removeFromReception(int contactId, int receptionID) {
-    Uri url =
-        Resource.Contact.singleByReception(this._host, contactId, receptionID);
-    url = _appendToken(url, this._token);
+    Uri url = Resource.Contact.singleByReception(_host, contactId, receptionID);
+    url = _appendToken(url, _token);
 
-    return this._backend.delete(url);
+    return _backend.delete(url);
   }
 
   Future<Model.Contact> updateInReception(Model.Contact contact) {
     Uri url = Resource.Contact
-        .singleByReception(this._host, contact.ID, contact.receptionID);
-    url = _appendToken(url, this._token);
+        .singleByReception(_host, contact.ID, contact.receptionID);
+    url = _appendToken(url, _token);
 
-    return this._backend.put(url, JSON.encode(contact)).then(
+    return _backend.put(url, JSON.encode(contact)).then(
         (String response) => new Model.Contact.fromMap(JSON.decode(response)));
   }
 }

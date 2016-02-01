@@ -19,12 +19,12 @@ part of openreception.service.io;
 class Client extends Service.WebService {
   static final String className = '${libraryName}.Client';
   static final Logger log = new Logger(className);
-  static final IO.ContentType contentTypeJson =
-      new IO.ContentType("application", "json", charset: "utf-8");
-  static final IO.ContentType contentTypeApplicationForm =
-      new IO.ContentType("application", "x-www-form-urlencoded");
+  static final io.ContentType contentTypeJson =
+      new io.ContentType("application", "json", charset: "utf-8");
+  static final io.ContentType contentTypeApplicationForm =
+      new io.ContentType("application", "x-www-form-urlencoded");
 
-  final IO.HttpClient client = new IO.HttpClient();
+  final io.HttpClient client = new io.HttpClient();
 
   /**
    * Retrives [resource] using HTTP GET.
@@ -33,8 +33,8 @@ class Client extends Service.WebService {
   Future<String> get(Uri resource) async {
     log.finest('GET $resource');
 
-    IO.HttpClientRequest request = await client.getUrl(resource);
-    IO.HttpClientResponse response = await request.close();
+    io.HttpClientRequest request = await client.getUrl(resource);
+    io.HttpClientResponse response = await request.close();
 
     return await _handleResponse(response, 'GET', resource);
   }
@@ -46,10 +46,10 @@ class Client extends Service.WebService {
   Future<String> put(Uri resource, String payload) async {
     log.finest('PUT $resource');
 
-    IO.HttpClientRequest request = await client.putUrl(resource)
+    io.HttpClientRequest request = await client.putUrl(resource)
       ..headers.contentType = contentTypeJson
       ..write(payload);
-    IO.HttpClientResponse response = await request.close();
+    io.HttpClientResponse response = await request.close();
 
     return await _handleResponse(response, 'PUT', resource);
   }
@@ -61,10 +61,10 @@ class Client extends Service.WebService {
   Future<String> post(Uri resource, String payload) async {
     log.finest('POST $resource');
 
-    IO.HttpClientRequest request = await client.postUrl(resource)
+    io.HttpClientRequest request = await client.postUrl(resource)
       ..headers.contentType = contentTypeJson
       ..write(payload);
-    IO.HttpClientResponse response = await request.close();
+    io.HttpClientResponse response = await request.close();
 
     return await _handleResponse(response, 'POST', resource);
   }
@@ -76,10 +76,10 @@ class Client extends Service.WebService {
   Future<String> postForm(Uri resource, Map payload) async {
     log.finest('POST $resource');
 
-    IO.HttpClientRequest request = await client.postUrl(resource)
+    io.HttpClientRequest request = await client.postUrl(resource)
       ..headers.contentType = contentTypeApplicationForm
       ..write(mapToUrlFormEncodedPostBody(payload));
-    IO.HttpClientResponse response = await request.close();
+    io.HttpClientResponse response = await request.close();
 
     return await _handleResponse(response, 'POST', resource);
   }
@@ -91,8 +91,8 @@ class Client extends Service.WebService {
   Future<String> delete(Uri resource) async {
     log.finest('DELETE $resource');
 
-    IO.HttpClientRequest request = await client.deleteUrl(resource);
-    IO.HttpClientResponse response = await request.close();
+    io.HttpClientRequest request = await client.deleteUrl(resource);
+    io.HttpClientResponse response = await request.close();
 
     return await _handleResponse(response, 'DELETE', resource);
   }

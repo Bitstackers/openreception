@@ -14,20 +14,21 @@
 part of openreception.service.io;
 
 class WebSocketClient extends Service.WebSocket {
-
   static final String className = '${libraryName}.WebSocketClient';
   static final Logger log = new Logger(className);
 
-  IO.WebSocket  _websocket        = null;
+  io.WebSocket _websocket;
 
-  Future<Service.WebSocket> connect (Uri path) =>
-      IO.WebSocket.connect(path.toString()).then((IO.WebSocket ws) {
-        this._websocket = ws;
-        this._websocket.listen(this.onMessage, onError: this.onError,
-            onDone: () => this.onClose);
+  Future<Service.WebSocket> connect(Uri path) async {
+    if (_websocket != null && _websocket.closeCode != null) {
+      throw new StateError('WebSocket is already open. '
+          'Close it before opening.');
+    }
+    _websocket = await io.WebSocket.connect(path.toString());
+    _websocket.listen((msg) => this.onMessage(msg),
+        onError: this.onError, onDone: () => this.onClose);
+    return this;
+  }
 
-        return this;
-    });
-
-  Future close () => this._websocket.close();
+  Future close() => _websocket.close();
 }

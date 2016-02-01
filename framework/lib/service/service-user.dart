@@ -76,7 +76,7 @@ class RESTUserStore implements Storage.User {
    *
    */
   Future<Model.User> update(Model.User user) {
-    Uri url = Resource.User.single(_host, user.ID);
+    Uri url = Resource.User.single(_host, user.id);
     url = _appendToken(url, this._token);
 
     return this

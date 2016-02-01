@@ -18,21 +18,18 @@ part of openreception.service;
  * client/server-specific web-clients.
  */
 abstract class WebSocket {
-
-  static final ID_Func = (_) => null;
-
-  static const String GET    = 'GET';
-  static const String PUT    = 'PUT';
-  static const String POST   = 'POST';
+  static const String GET = 'GET';
+  static const String PUT = 'PUT';
+  static const String POST = 'POST';
   static const String DELETE = 'DELETE';
 
-  dynamic onMessage = ID_Func;
-  dynamic onError   = ID_Func;
-  dynamic onClose   = () => null;
+  dynamic onMessage = (_) => {};
+  dynamic onError = (_) => {};
+  dynamic onClose = () => {};
 
-  Future<WebSocket> connect (Uri path);
+  Future<WebSocket> connect(Uri path);
 
-  Future close ();
+  Future close();
 
   void checkResponseCode(int responseCode) {
     switch (responseCode) {
@@ -40,20 +37,20 @@ abstract class WebSocket {
         break;
 
       case 400:
-        throw new Storage.ClientError ();
+        throw new Storage.ClientError();
         break;
 
       case 401:
-        throw new Storage.NotAuthorized ();
+        throw new Storage.NotAuthorized();
         break;
 
       case 403:
-        throw new Storage.Forbidden ();
+        throw new Storage.Forbidden();
         break;
 
       case 404:
-       throw new Storage.NotFound();
-       break;
+        throw new Storage.NotFound();
+        break;
 
       case 500:
         throw new Storage.ServerError();

@@ -17,7 +17,6 @@ part of openreception.service;
  * Client for dialplan service.
  */
 class RESTDialplanStore implements Storage.ReceptionDialplan {
-
   WebService _backend = null;
   Uri _host;
   String _token = '';
@@ -32,10 +31,9 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
    */
   Future<Model.ReceptionDialplan> create(Model.ReceptionDialplan rdp) {
     Uri url = Resource.ReceptionDialplan.list(_host);
-    url = _appendToken(url, this._token);
+    url = _appendToken(url, _token);
 
-    return this
-        ._backend
+    return _backend
         .post(url, JSON.encode(rdp))
         .then(JSON.decode)
         .then(Model.ReceptionDialplan.decode);
@@ -45,10 +43,13 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
    *
    */
   Future<Model.ReceptionDialplan> get(String extension) {
-    Uri url = Resource.ReceptionDialplan.single(this._host, extension);
-    url = _appendToken(url, this._token);
+    Uri url = Resource.ReceptionDialplan.single(_host, extension);
+    url = _appendToken(url, _token);
 
-    return this._backend.get(url).then(JSON.decode).then(Model.ReceptionDialplan.decode);
+    return _backend
+        .get(url)
+        .then(JSON.decode)
+        .then(Model.ReceptionDialplan.decode);
   }
 
   /**
@@ -56,23 +57,22 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
    */
   Future<Iterable<Model.ReceptionDialplan>> list() {
     Uri url = Resource.ReceptionDialplan.list(_host);
-    url = _appendToken(url, this._token);
+    url = _appendToken(url, _token);
 
     Iterable<Model.ReceptionDialplan> castMaps(Iterable maps) =>
         maps.map(Model.ReceptionDialplan.decode);
 
-    return this._backend.get(url).then(JSON.decode).then(castMaps);
+    return _backend.get(url).then(JSON.decode).then(castMaps);
   }
 
   /**
    *
    */
   Future<Model.ReceptionDialplan> update(Model.ReceptionDialplan rdp) {
-    Uri url = Resource.ReceptionDialplan.single(this._host, rdp.extension);
-    url = _appendToken(url, this._token);
+    Uri url = Resource.ReceptionDialplan.single(_host, rdp.extension);
+    url = _appendToken(url, _token);
 
-    return this
-        ._backend
+    return _backend
         .put(url, JSON.encode(rdp))
         .then(JSON.decode)
         .then(Model.ReceptionDialplan.decode);
@@ -82,23 +82,20 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
    *
    */
   Future remove(String extension) {
-    Uri url = Resource.ReceptionDialplan.single(this._host, extension);
-    url = _appendToken(url, this._token);
+    Uri url = Resource.ReceptionDialplan.single(_host, extension);
+    url = _appendToken(url, _token);
 
-    return this._backend.delete(url);
+    return _backend.delete(url);
   }
 
   /**
    *
    */
-  Future<Iterable<String>> analyze(String extension) {
+  Future<Iterable<String>> analyze(String extension) async {
     Uri url = Resource.ReceptionDialplan.analyze(_host, extension);
-    url = _appendToken(url, this._token);
+    url = _appendToken(url, _token);
 
-    return this
-        ._backend
-        .post(url, '')
-        .then(JSON.decode);
+    return await _backend.post(url, '').then(JSON.decode) as Iterable<String>;
   }
 
   /**
@@ -106,12 +103,9 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
    */
   Future deployDialplan(String extension, int receptionId) {
     Uri url = Resource.ReceptionDialplan.deploy(_host, extension, receptionId);
-    url = _appendToken(url, this._token);
+    url = _appendToken(url, _token);
 
-    return this
-        ._backend
-        .post(url, '')
-        .then(JSON.decode);
+    return _backend.post(url, '').then(JSON.decode);
   }
 
   /**
@@ -119,13 +113,8 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
    */
   Future reloadConfig() {
     Uri url = Resource.ReceptionDialplan.reloadConfig(_host);
-    url = _appendToken(url, this._token);
+    url = _appendToken(url, _token);
 
-    return this
-        ._backend
-        .post(url, '')
-        .then(JSON.decode);
+    return _backend.post(url, '').then(JSON.decode);
   }
-
-
 }

@@ -43,8 +43,8 @@ class NotificationService {
    * Performs a broadcast via the notification server.
    */
   Future broadcastEvent(Event.Event event) {
-    Uri uri = Resource.Notification.broadcast(this._host);
-    uri = _appendToken(uri, this._token);
+    Uri uri = Resource.Notification.broadcast(_host);
+    uri = _appendToken(uri, _token);
 
     log.finest('Broadcasting ${event.runtimeType}');
 
@@ -54,50 +54,40 @@ class NotificationService {
   }
 
   /**
-   * Retrieves the [ClientConnection]'s currently active on the server as an
-   * [Iterable<Map>]
+   * Retrieves the [ClientConnection]'s currently active on the server.
    */
-  Future<Iterable<Map>> clientConnectionsMap() {
-    Uri uri = Resource.Notification.clientConnections(this._host);
-    uri = _appendToken(uri, this._token);
+  Future<Iterable<Model.ClientConnection>> clientConnections() async {
+    Uri uri = Resource.Notification.clientConnections(_host);
+    uri = _appendToken(uri, _token);
 
     log.finest('GET $uri');
 
-    return this._backend.get(uri).then(JSON.decode);
+    return await _backend.get(uri).then(JSON.decode).then(
+        (Iterable<Map> maps) =>
+            maps.map((Map map) => new Model.ClientConnection.fromMap(map)));
   }
-
-  /**
-   * Retrieves the [ClientConnection]'s currently active on the server.
-   */
-  Future<Iterable<Model.ClientConnection>> clientConnections() =>
-      this.clientConnectionsMap().then((Iterable<Map> maps) =>
-          maps.map((Map map) => new Model.ClientConnection.fromMap(map)));
 
   /**
    * Retrieves the [ClientConnection] currently associated with [uid].
    */
-  Future<Map> clientConnectionMap(int uid) {
-    Uri uri = Resource.Notification.clientConnection(this._host, uid);
-    uri = _appendToken(uri, this._token);
+  Future<Model.ClientConnection> clientConnection(int uid) {
+    Uri uri = Resource.Notification.clientConnection(_host, uid);
+    uri = _appendToken(uri, _token);
 
     log.finest('GET $uri');
 
-    return this._backend.get(uri).then(JSON.decode);
+    return _backend
+        .get(uri)
+        .then(JSON.decode)
+        .then((Map map) => new Model.ClientConnection.fromMap(map));
   }
-
-  /**
-   * Retrieves the [ClientConnections] currently active on the server.
-   */
-  Future<Model.ClientConnection> clientConnection(uid) => this
-      .clientConnectionMap(uid)
-      .then((Map map) => new Model.ClientConnection.fromMap(map));
 
   /**
    * Sends an event via the notification server to [recipients]
    */
   Future send(Iterable<int> recipients, Event.Event event) {
-    Uri uri = Resource.Notification.send(this._host);
-    uri = _appendToken(uri, this._token);
+    Uri uri = Resource.Notification.send(_host);
+    uri = _appendToken(uri, _token);
 
     return new Future.error(new UnimplementedError());
   }
@@ -164,23 +154,23 @@ class NotificationSocket {
   WebSocket _websocket = null;
   StreamController<Event.Event> _streamController =
       new StreamController.broadcast();
-  Stream<Event.Event> get eventStream => this._streamController.stream;
+  Stream<Event.Event> get eventStream => _streamController.stream;
   static Logger log = new Logger(NotificationSocket.className);
 
   NotificationSocket(this._websocket) {
     log.finest('Created a new WebSocket.');
-    this._websocket.onMessage = this._parseAndDispatch;
-    this._websocket.onClose = () => this._streamController.close();
+    _websocket.onMessage = _parseAndDispatch;
+    _websocket.onClose = () => _streamController.close();
   }
 
-  Future close() => this._websocket.close();
+  Future close() => _websocket.close();
 
   void _parseAndDispatch(String buffer) {
     Map map = JSON.decode(buffer);
     Event.Event newEvent = new Event.Event.parse(map);
 
     if (newEvent != null) {
-      this._streamController.add(newEvent);
+      _streamController.add(newEvent);
     } else {
       log.warning('Refusing to inject null objects into event stream');
     }
