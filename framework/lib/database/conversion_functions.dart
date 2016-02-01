@@ -17,6 +17,18 @@
 part of openreception.database;
 
 /**
+ * Convert a database row into a [DistributionListEntry].
+ */
+Model.DistributionListEntry _rowToDistributionListEntry(PG.Row row) =>
+    new Model.DistributionListEntry()
+      ..receptionID = row.recipient_reception_id
+      ..receptionName = row.recipient_reception_name
+      ..contactID = row.recipient_contact_id
+      ..contactName = row.recipient_contact_name
+      ..role = row.role
+      ..id = row.id;
+
+/**
  * Convert a database row into a [Reception].
  */
 Model.Reception _rowToReception(PG.Row row) => new Model.Reception.empty()
