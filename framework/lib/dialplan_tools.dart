@@ -151,16 +151,18 @@ List<String> _fallbackToDialplan(
     Iterable<model.Action> actions,
     DialplanCompilerOpts option,
     Environment env) {
-  return [
+  return new List<String>.from([
     '',
     _comment('Default fallback actions for $extension'),
     '<extension name="${extension}-$closedSuffix">',
     '  <condition>',
-  ]
+  ])
     ..addAll(actions
         .map((action) => _actionToXmlDialplan(action, option, env))
         .fold(
-            [], (combined, current) => combined..addAll(current.map(_indent))))
+            new List<String>(),
+            (List<String> combined, List<String> current) =>
+                combined..addAll(current.map((String item) => _indent(item)))))
     ..add('    <action application="hangup"/>')
     ..add('  </condition>')
     ..add('</extension>');
