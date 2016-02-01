@@ -19,7 +19,7 @@ part of openreception.database;
 /**
  * Convert a database row into a [Reception].
  */
-Model.Reception _rowToReception(var row) => new Model.Reception.empty()
+Model.Reception _rowToReception(PG.Row row) => new Model.Reception.empty()
   ..ID = row.id
   ..fullName = row.full_name
   ..dialplan = row.dialplan
@@ -32,7 +32,7 @@ Model.Reception _rowToReception(var row) => new Model.Reception.empty()
 /**
  * Convert a database row into a [BaseContact].
  */
-Model.BaseContact _rowToBaseContact(var row) => new Model.BaseContact.empty()
+Model.BaseContact _rowToBaseContact(PG.Row row) => new Model.BaseContact.empty()
   ..id = row.id
   ..fullName = row.full_name
   ..contactType = row.contact_type
@@ -41,17 +41,18 @@ Model.BaseContact _rowToBaseContact(var row) => new Model.BaseContact.empty()
 /**
  * Convert a database row into an [Organization].
  */
-Model.Organization _rowToOrganization(var row) => new Model.Organization.empty()
-  ..billingType = row.billing_type
-  ..flag = row.flag
-  ..id = row.id
-  ..fullName = row.full_name;
+Model.Organization _rowToOrganization(PG.Row row) =>
+    new Model.Organization.empty()
+      ..billingType = row.billing_type
+      ..flag = row.flag
+      ..id = row.id
+      ..fullName = row.full_name;
 
 /**
  * Convert a database row into an [User].
  */
-Model.User _rowToUser(var row) => new Model.User.empty()
-  ..ID = row.id
+Model.User _rowToUser(PG.Row row) => new Model.User.empty()
+  ..id = row.id
   ..name = row.name
   ..googleUsername = row.google_username
   ..googleAppcode = row.google_appcode
@@ -77,7 +78,7 @@ Model.UserIdentity _rowToUserIdentity(PG.Row row) =>
 /**
  * Convert a database row into an [Message].
  */
-Model.Message _rowToMessage(var row) {
+Model.Message _rowToMessage(PG.Row row) {
   return new Model.Message.empty()
     ..ID = row.id
     ..body = row.message
@@ -108,7 +109,7 @@ Model.Message _rowToMessage(var row) {
  * FIXME: Fix the format of the distribution list. It is utterly broken, and
  * the SQL query is hell.
  */
-Model.Contact _rowToContact(var row) {
+Model.Contact _rowToContact(PG.Row row) {
   Iterable<Model.PhoneNumber> phoneIterable = row.phone.isEmpty
       ? []
       : row.phone.map((Map map) => new Model.PhoneNumber.fromMap(map));
@@ -227,7 +228,7 @@ Model.PhoneNumber _mapToPhone(Map map) {
 /**
  * Creates a [CalendarEventChange] from a database row.
  */
-Model.CalendarEntryChange _rowToCalendarEventChange(var row) =>
+Model.CalendarEntryChange _rowToCalendarEventChange(PG.Row row) =>
     new Model.CalendarEntryChange()
       ..userID = row.user_id
       ..lastEntry = Model.CalendarEntry.decode(row.last_entry)
@@ -237,7 +238,7 @@ Model.CalendarEntryChange _rowToCalendarEventChange(var row) =>
 /**
  * Creates an owner-less [CalendarEntry] from a database row.
  */
-Model.CalendarEntry _rowToCalendarEntry(var row) =>
+Model.CalendarEntry _rowToCalendarEntry(PG.Row row) =>
     new Model.CalendarEntry.empty()
       ..ID = row.id
       ..owner = row.reception_id != null
