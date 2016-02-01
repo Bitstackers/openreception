@@ -103,15 +103,14 @@ Future<Map> getUserInfo(String access_token) {
   Uri url = Uri.parse('https://www.googleapis.com/oauth2/'
       'v1/userinfo?alt=json&access_token=${access_token}');
 
-  return httpClient.get(url).then((String response) {
+  return new _transport.Client().get(url).then((String response) {
     Map googleProfile = JSON.decode(response);
-    return db.getUser(googleProfile['email']).then((Map agent) {
-      if (agent.isNotEmpty) {
-        agent['remote_attributes'] = googleProfile;
-        return agent;
-      } else {
-        return null;
-      }
+    return _userStore
+        .getByIdentity(googleProfile['email'])
+        .then((model.User user) {
+      Map agent = user.toJson();
+      agent['remote_attributes'] = googleProfile;
+      return agent;
     });
   });
 }

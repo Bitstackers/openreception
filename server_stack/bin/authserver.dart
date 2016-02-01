@@ -23,7 +23,6 @@ import 'package:args/args.dart';
 
 import 'package:logging/logging.dart';
 import '../lib/configuration.dart';
-import '../lib/auth_server/database.dart';
 import '../lib/auth_server/router.dart' as router;
 import '../lib/auth_server/token_vault.dart';
 import '../lib/auth_server/token_watcher.dart' as watcher;
@@ -31,7 +30,7 @@ import '../lib/auth_server/token_watcher.dart' as watcher;
 ArgResults parsedArgs;
 ArgParser parser = new ArgParser();
 
-Future main(List<String> args) {
+Future main(List<String> args) async {
   ///Init logging.
   Logger.root.level = config.authServer.log.level;
   Logger.root.onRecord.listen(config.authServer.log.onRecord);
@@ -39,10 +38,12 @@ Future main(List<String> args) {
   ///Handle argument parsing.
   final ArgParser parser = new ArgParser()
     ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
-    ..addOption('httpport', abbr: 'p',
+    ..addOption('httpport',
+        abbr: 'p',
         help: 'The port the HTTP server listens on.',
         defaultsTo: config.authServer.httpPort.toString())
-    ..addOption('servertokendir', abbr: 'd',
+    ..addOption('servertokendir',
+        abbr: 'd',
         help: 'A location where some predefined tokens will be loaded from.',
         defaultsTo: config.authServer.serverTokendir);
 
@@ -53,8 +54,7 @@ Future main(List<String> args) {
     exit(1);
   }
 
-  return startDatabase()
-      .then((_) => watcher.setup())
-      .then((_) => vault.loadFromDirectory(parsedArgs['servertokendir']))
-      .then((_) => router.start(port: int.parse(parsedArgs['httpport'])));
+  await watcher.setup();
+  await vault.loadFromDirectory(parsedArgs['servertokendir']);
+  await router.start(port: int.parse(parsedArgs['httpport']));
 }

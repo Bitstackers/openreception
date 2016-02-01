@@ -19,8 +19,10 @@ import 'dart:io' as IO;
 
 import 'package:logging/logging.dart';
 
+import 'package:openreception_framework/database.dart' as database;
 import 'package:openreception_framework/service-io.dart' as _transport;
 import 'package:openreception_framework/storage.dart' as storage;
+import 'package:openreception_framework/model.dart' as model;
 
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
@@ -28,7 +30,7 @@ import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 
 import '../configuration.dart';
-import 'database.dart' as db;
+//import 'database.dart' as db;
 import 'googleauth.dart';
 import 'token_watcher.dart' as watcher;
 import 'token_vault.dart';
@@ -51,7 +53,12 @@ const Map<String, String> corsHeaders = const {
 
 _transport.Client httpClient = new _transport.Client();
 
-Future<IO.HttpServer> start({String hostname: '0.0.0.0', int port: 4050}) {
+database.User _userStore;
+Future<IO.HttpServer> start(
+    {String hostname: '0.0.0.0', int port: 4050}) async {
+  _userStore =
+      new database.User(await database.Connection.connect(config.database.dsn));
+
   var router = shelf_route.router()
     ..get('/token/create', login)
     ..get('/token/oauth2callback', oauthCallback)
@@ -67,7 +74,7 @@ Future<IO.HttpServer> start({String hostname: '0.0.0.0', int port: 4050}) {
       .addHandler(router.handler);
 
   log.fine('Serving interfaces:');
-  shelf_route.printRoutes(router, printer: log.fine);
+  shelf_route.printRoutes(router, printer: (String item) => log.fine(item));
 
-  return shelf_io.serve(handler, hostname, port);
+  return await shelf_io.serve(handler, hostname, port);
 }
