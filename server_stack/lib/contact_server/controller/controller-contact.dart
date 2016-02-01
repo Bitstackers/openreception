@@ -237,18 +237,18 @@ class Contact {
   /**
    * Gives a lists of every contact in an reception.
    */
-  Future listByReception(shelf.Request request) {
-    var rid = shelf_route.getPathParameter(request, 'rid');
-    int receptionID = int.parse(rid);
+  Future listByReception(shelf.Request request) async {
+    final String rid = shelf_route.getPathParameter(request, 'rid');
+    final int receptionID = int.parse(rid);
 
-    return _contactDB
-        .listByReception(receptionID)
-        .then((Iterable<model.Contact> contacts) {
-      return new shelf.Response.ok(JSON.encode(contacts.toList()));
-    }).catchError((error) {}).catchError((error, stacktrace) {
-      _log.severe(error, stacktrace);
-      new shelf.Response.internalServerError(body: '${error}');
-    });
+    try {
+      Iterable<model.Contact> contacts =
+          await _contactDB.listByReception(receptionID);
+
+      return _okJson(contacts.toList());
+    } on storage.SqlError catch (error) {
+      new shelf.Response.internalServerError(body: error);
+    }
   }
 
   /**

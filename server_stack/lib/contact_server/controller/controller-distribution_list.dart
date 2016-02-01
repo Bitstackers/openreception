@@ -60,17 +60,15 @@ class DistributionList {
   /**
    *
    */
-  Future<Iterable<shelf.Response>> ofContact(shelf.Request request) {
-    int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
-    int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
+  Future<shelf.Response> ofContact(shelf.Request request) async {
+    final int cid = int.parse(shelf_route.getPathParameter(request, 'cid'));
+    final int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
-    return _dlistDB
-        .list(receptionID, contactID)
-        .then((model.DistributionList dlist) {
-      return new shelf.Response.ok(JSON.encode(dlist));
-    }).catchError((error, stacktrace) {
+    try {
+      return _okJson(await _dlistDB.list(rid, cid));
+    } catch (error, stacktrace) {
       _log.severe(error, stacktrace);
-      new shelf.Response.internalServerError(body: '${error}');
-    });
+      return new shelf.Response.internalServerError(body: '${error}');
+    }
   }
 }

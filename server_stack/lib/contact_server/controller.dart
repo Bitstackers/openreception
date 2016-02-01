@@ -32,3 +32,8 @@ part 'controller/controller-endpoint.dart';
 part 'controller/controller-phone.dart';
 
 const String _libraryName = 'contact_server.controller';
+
+/**
+ *
+ */
+shelf.Response _okJson(body) => new shelf.Response.ok(JSON.encode(body));
