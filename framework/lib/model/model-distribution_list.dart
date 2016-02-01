@@ -36,8 +36,8 @@ class DistributionList extends IterableBase<DistributionListEntry> {
       .toSet();
 
   List toJson() => _recipients
-      .map((DistributionListEntry recipient) => recipient.asMap)
-      .toList();
+      .map((DistributionListEntry recipient) => recipient.toJson())
+      .toList(growable: false);
 
   bool get hasRecipients => to.isNotEmpty || cc.isNotEmpty || bcc.isNotEmpty;
 

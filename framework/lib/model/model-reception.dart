@@ -91,7 +91,7 @@ class Reception extends ReceptionStub {
       };
 
   void set attributes(Map attributes) {
-    this.customerTypes = attributes[Key.customerTypes];
+    this.customerTypes = attributes[Key.customerTypes] as List<String>;
 
     //Temporary workaround for telephonenumbers to telephoneNumbers transition.
     if (attributes.containsKey(Key.phoneNumbers)) {
@@ -111,21 +111,23 @@ class Reception extends ReceptionStub {
     }
 
     this
-      ..addresses = attributes[Key.addresses]
-      ..alternateNames = attributes[Key.alternateNames]
-      ..bankingInformation = attributes[Key.bankingInfo]
-      ..emailAddresses = attributes[Key.emailAdresses]
-      ..greeting = attributes[Key.greeting]
-      ..handlingInstructions = attributes[Key.handlingInstructions]
-      ..openingHours = attributes[Key.openingHours]
-      ..otherData = attributes[Key.other]
-      ..product = attributes[Key.product]
-      ..salesMarketingHandling = attributes[Key.salesMarketingHandling]
+      ..addresses = attributes[Key.addresses] as List<String>
+      ..alternateNames = attributes[Key.alternateNames] as List<String>
+      ..bankingInformation = attributes[Key.bankingInfo] as List<String>
+      ..emailAddresses = attributes[Key.emailAdresses] as List<String>
+      ..greeting = attributes[Key.greeting] as String
+      ..handlingInstructions =
+          attributes[Key.handlingInstructions] as List<String>
+      ..openingHours = attributes[Key.openingHours] as List<String>
+      ..otherData = attributes[Key.other] as String
+      ..product = attributes[Key.product] as String
+      ..salesMarketingHandling =
+          attributes[Key.salesMarketingHandling] as List<String>
       .._shortGreeting = attributes[Key.shortGreeting] != null
           ? attributes[Key.shortGreeting]
           : ''
-      ..vatNumbers = attributes[Key.vatNumbers]
-      ..websites = attributes[Key.websites]
+      ..vatNumbers = attributes[Key.vatNumbers] as List<String>
+      ..websites = attributes[Key.websites] as List<String>
       ..miniWiki = attributes[Key.miniWiki];
   }
 

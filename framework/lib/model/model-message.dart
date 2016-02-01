@@ -68,13 +68,13 @@ class Message {
    *
    */
   Message.fromMap(Map map) {
-    Iterable iterRcp =
+    Iterable<MessageRecipient> iterRcp =
         (map[Key.recipients] as Iterable).map(MessageRecipient.decode);
 
     ID = (map.containsKey(Key.ID) ? map[Key.ID] : noID);
     recipients.addAll(iterRcp);
     context = new MessageContext.fromMap(map[Key.context]);
-    flag = new MessageFlag(map['flags']);
+    flag = new MessageFlag(map['flags'] as List<String>);
     callerInfo = new CallerInfo.fromMap(map[Key.caller]);
     body = map[Key.body];
     sent = map[Key.sent];
