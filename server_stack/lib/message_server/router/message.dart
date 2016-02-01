@@ -86,7 +86,7 @@ abstract class Message {
     try {
       content = await request.readAsString();
       message = new Model.Message.fromMap(JSON.decode(content))
-        ..senderId = user.ID;
+        ..senderId = user.id;
       if (message.ID == Model.Message.noID) {
         return _clientError('Refusing to update a non-existing message. '
             'set messageID or use the PUT method instead.');

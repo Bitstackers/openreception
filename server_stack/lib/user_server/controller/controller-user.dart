@@ -88,7 +88,7 @@ class User {
       model.User user = new model.User.fromMap(JSON.decode(content));
 
       return _userStore.create(user).then((model.User user) {
-        event.UserChange change = new event.UserChange.created(user.ID);
+        event.UserChange change = new event.UserChange.created(user.id);
 
         _notification.broadcastEvent(change);
 
@@ -200,7 +200,7 @@ class User {
     final String identity = shelf_route.getPathParameter(request, 'uid');
 
     try {
-      final mode.User user = _userStore.getByIdentity(identity);
+      final model.User user = _userStore.getByIdentity(identity);
       return _okJson(user);
     } on storage.NotFound catch (error) {
       _notFound(error.toString());

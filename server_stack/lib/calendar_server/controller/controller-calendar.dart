@@ -36,12 +36,12 @@ class Calendar {
         model.CalendarEntry.decode(JSON.decode(await request.readAsString()));
 
     final model.CalendarEntry created =
-        await _calendarStore.create(entry, user.ID);
+        await _calendarStore.create(entry, user.id);
 
     event.CalendarChange changeEvent = new event.CalendarChange(created.ID,
         entry.contactID, entry.receptionID, event.CalendarEntryState.CREATED);
 
-    _log.finest('User id:${user.ID} created entry for ${entry.owner}');
+    _log.finest('User id:${user.id} created entry for ${entry.owner}');
 
     _notification.broadcastEvent(changeEvent);
 
