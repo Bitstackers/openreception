@@ -24,7 +24,6 @@ testModelUser() {
 }
 
 abstract class ModelUser {
-
   static void serialization() {
     Model.User builtObject = buildObject();
     String serializedString = JSON.encode(builtObject);
@@ -39,13 +38,11 @@ abstract class ModelUser {
     Model.User deserializedObject =
         new Model.User.fromMap(JSON.decode(serializedString));
 
-    expect(builtObject.ID, equals(deserializedObject.ID));
+    expect(builtObject.id, equals(deserializedObject.id));
     expect(builtObject.address, equals(deserializedObject.address));
     expect(builtObject.googleAppcode, equals(deserializedObject.googleAppcode));
     expect(
         builtObject.googleUsername, equals(deserializedObject.googleUsername));
-    expect(builtObject.identities, equals(deserializedObject.identities));
-    expect(builtObject.groups, equals(deserializedObject.groups));
     expect(builtObject.name, equals(deserializedObject.name));
     expect(builtObject.peer, equals(deserializedObject.peer));
   }
@@ -59,39 +56,19 @@ abstract class ModelUser {
     final String peer = 'Hidden underneath';
     final String picture = 'too_revealing.png';
 
-    final List<Model.UserGroup> groups =
-        [new Model.UserGroup.empty()
-          ..id = 4
-          ..name = 'Sea-dweller',
-         new Model.UserGroup.empty()
-          ..id = 3
-          ..name = 'Fish'];
-
-    final List<Model.UserIdentity> identities =
-        [new Model.UserIdentity.empty()
-          ..userId = userID
-          ..identity = 'biff@sharkbait',
-         new Model.UserIdentity.empty()
-          ..userId = userID
-          ..identity = address];
-
     Model.User builtObject = new Model.User.empty()
-      ..ID = userID
+      ..id = userID
       ..address = address
       ..googleUsername = gmail
       ..googleAppcode = appcode
-      ..groups = groups
-      ..identities = identities
       ..name = name
       ..peer = peer
       ..portrait = picture;
 
-    expect(builtObject.ID, equals(userID));
+    expect(builtObject.id, equals(userID));
     expect(builtObject.address, equals(address));
     expect(builtObject.googleAppcode, equals(appcode));
     expect(builtObject.googleUsername, equals(gmail));
-    expect(builtObject.identities, equals(identities));
-    expect(builtObject.groups, equals(groups));
     expect(builtObject.name, equals(name));
     expect(builtObject.peer, equals(peer));
     expect(builtObject.portrait, equals(picture));

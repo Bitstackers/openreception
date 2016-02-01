@@ -69,7 +69,7 @@ abstract class ModelMessage {
       ..name = 'Ian Malcom'
       ..phone = 'Out of order';
 
-    final int senderId = ModelUser.buildObject().ID;
+    final int senderId = ModelUser.buildObject().id;
     final String callId = 'bad-ass-call';
 
     Set<Model.MessageRecipient> rlist = new Set<Model.MessageRecipient>()
