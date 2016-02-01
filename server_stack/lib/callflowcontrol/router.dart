@@ -44,6 +44,29 @@ part 'router/handler-channel.dart';
 const String libraryName = "callflowcontrol.router";
 final Logger log = new Logger(libraryName);
 
+/**
+ *
+ */
+shelf.Response _okJson(body) => new shelf.Response.ok(JSON.encode(body));
+
+/**
+ *
+ */
+shelf.Response _notFoundJson(body) =>
+    new shelf.Response.notFound(JSON.encode(body));
+
+/**
+ *
+ */
+shelf.Response _clientError(String reason) =>
+    new shelf.Response(400, body: reason);
+
+/**
+ *
+ */
+shelf.Response _serverError(String reason) =>
+    new shelf.Response(500, body: reason);
+
 Controller.State _stateController;
 Controller.ClientNotifier _notififer;
 
@@ -53,6 +76,7 @@ const Map<String, String> corsHeaders = const {
 };
 
 Service.Authentication AuthService = null;
+Service.RESTUserStore _userService;
 Service.NotificationService Notification = null;
 
 void connectAuthService() {
@@ -92,6 +116,9 @@ Future<IO.HttpServer> start({String hostname: '0.0.0.0', int port: 4242}) {
 
   _notififer = new Controller.ClientNotifier(Notification)
     ..listenForCallEvents(Model.CallList.instance);
+
+  _userService = new Service.RESTUserStore(config.userServer.externalUri,
+      config.callFlowControl.serverToken, new Service_IO.Client());
 
   Controller.Peer _peerController = new Controller.Peer(Model.peerlist);
 
@@ -137,7 +164,7 @@ Future<IO.HttpServer> start({String hostname: '0.0.0.0', int port: 4242}) {
       .addHandler(router.handler);
 
   log.fine('Serving interfaces:');
-  shelf_route.printRoutes(router, printer: log.fine);
+  shelf_route.printRoutes(router, printer: (String item) => log.fine(item));
 
   return shelf_io.serve(handler, hostname, port);
 }

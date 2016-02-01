@@ -95,13 +95,13 @@ abstract class Call {
     final String callID = shelf_route.getPathParameter(request, 'callid');
 
     ORModel.User user;
+    Iterable<ORModel.UserGroup> userGroups;
 
     /// Groups able to hangup any call.
     List<String> hangupGroups = ['Administrator'];
 
-    bool aclCheck(ORModel.User user) =>
-        user.groups.any(hangupGroups.contains) ||
-            Model.CallList.instance.get(callID).assignedTo == user.ID;
+    bool aclCheck(ORModel.User user) => userGroups.any(hangupGroups.contains) ||
+        Model.CallList.instance.get(callID).assignedTo == user.ID;
 
     if (callID == null || callID == "") {
       return new shelf.Response(400, body: 'Empty call_id in path.');
@@ -110,6 +110,7 @@ abstract class Call {
     /// User object fetching.
     try {
       user = await AuthService.userOf(_tokenFrom(request));
+      userGroups = await _userService.userGroups(user.ID);
     } catch (error, stackTrace) {
       final String msg = 'Failed to contact authserver';
       log.severe(msg, error, stackTrace);
@@ -139,7 +140,7 @@ abstract class Call {
     Completer<ORModel.Call> completer = new Completer<ORModel.Call>();
 
     Model.CallList.instance.onEvent
-        .firstWhere((OREvent.CallEvent event) =>
+        .firstWhere((OREvent.Event event) =>
             event is OREvent.CallHangup && event.call.ID == callID)
         .then((OREvent.CallHangup hangupEvent) =>
             completer.complete(hangupEvent.call));
@@ -341,7 +342,7 @@ abstract class Call {
   /**
    * Park a specific call.
    */
-  static Future<shelf.Response> park(shelf.Request request) {
+  static Future<shelf.Response> park(shelf.Request request) async {
     final String callID = shelf_route.getPathParameter(request, "callid");
 
     List<String> parkGroups = [
@@ -350,62 +351,49 @@ abstract class Call {
       'Receptionist'
     ];
 
+    ORModel.User user;
+    Iterable<ORModel.UserGroup> userGroups;
+
     bool aclCheck(ORModel.User user) =>
-        user.groups.any((group) => parkGroups.contains(group)) ||
-            Model.CallList.instance.get(callID).assignedTo == user.ID;
+        Model.CallList.instance.get(callID).assignedTo == user.ID ||
+            userGroups.any((group) => parkGroups.contains(group));
 
-    return AuthService.userOf(_tokenFrom(request)).then((ORModel.User user) {
-      if (callID == null || callID == "") {
-        return new Future.value(
-            new shelf.Response(400, body: 'Empty call_id in path.'));
-      }
+    /// User object fetching.
+    try {
+      user = await AuthService.userOf(_tokenFrom(request));
+      userGroups = await _userService.userGroups(user.ID);
+    } catch (error, stackTrace) {
+      final String msg = 'Failed to contact authserver';
+      log.severe(msg, error, stackTrace);
 
-      ORModel.Call call = Model.CallList.instance.get(callID);
+      return _serverError(msg);
+    }
 
-      if (!aclCheck(user)) {
-        return new Future.value(
-            new shelf.Response.forbidden('Insufficient privileges.'));
-      }
+    if (callID == null || callID == "") {
+      return _clientError('Empty call_id in path.');
+    }
 
-      return Controller.PBX.park(call, user).then((_) {
-        log.finest('Parked call ${call.ID}');
+    ORModel.Call call;
+    try {
+      call = Model.CallList.instance.get(callID);
+    } on ORStorage.NotFound {
+      return _notFoundJson({'description': 'callID : $callID'});
+    }
 
-        return _okJson(call);
-      }).catchError((error, stackTrace) {
-        log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError();
-      });
-    }).catchError((error, stackTrace) {
-      if (error is ORStorage.NotFound) {
-        return new shelf.Response.notFound(
-            JSON.encode({'description': 'callID : $callID'}));
-      } else {
-        log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError();
-      }
-    }).catchError((error, stackTrace) {
+    if (!aclCheck(user)) {
+      return new shelf.Response.forbidden('Insufficient privileges.');
+    }
+
+    try {
+      await Controller.PBX.park(call, user);
+      log.finest('Parked call ${call.ID}');
+
+      return _okJson(call);
+    } catch (error, stackTrace) {
       log.severe(error, stackTrace);
       return new shelf.Response.internalServerError();
-    });
+    }
   }
-
-  /**
-   *
-   */
-  static shelf.Response _okJson(body) =>
-      new shelf.Response.ok(JSON.encode(body));
-
-  /**
-   *
-   */
-  static shelf.Response _clientError(String reason) =>
-      new shelf.Response(400, body: reason);
-
-  /**
-   *
-   */
-  static shelf.Response _serverError(String reason) =>
-      new shelf.Response(500, body: reason);
 
   /**
    *

@@ -428,7 +428,8 @@ abstract class PBX {
     return Future.forEach(channelUUIDs, (String channelUUID) {
       return api('uuid_dump $channelUUID json').then((ESL.Response response) {
         if (response.status != ESL.Response.ERROR) {
-          Map<String, dynamic> value = JSON.decode(response.rawBody);
+          Map<String, dynamic> value =
+              JSON.decode(response.rawBody) as Map<String, dynamic>;
 
           Map<String, String> fields = {};
           Map<String, dynamic> variables = {};
