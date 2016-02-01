@@ -194,22 +194,33 @@ class User {
   }
 
   /**
+   * Response handler for the user of an identity.
+   */
+  Future<shelf.Response> userIdentity(shelf.Request request) async {
+    final String identity = shelf_route.getPathParameter(request, 'uid');
+
+    try {
+      final mode.User user = _userStore.getByIdentity(identity);
+      return _okJson(user);
+    } on storage.NotFound catch (error) {
+      _notFound(error.toString());
+    }
+  }
+
+  /**
    * Response handler for adding an identity to a user.
    */
-  Future<shelf.Response> addIdentity(shelf.Request request) {
+  Future<shelf.Response> addIdentity(shelf.Request request) async {
     int userID = int.parse(shelf_route.getPathParameter(request, 'uid'));
 
-    return request
+    final model.UserIdentity identity = await request
         .readAsString()
         .then(JSON.decode)
-        .then(model.UserIdentity.decode)
-        .then((model.UserIdentity identity) {
-      identity.userId = userID;
+        .then(model.UserIdentity.decode);
+    identity.userId = userID;
 
-      return _userStore
-          .addIdentity(identity)
-          .then((_) => new shelf.Response.ok(JSON.encode(const {})));
-    });
+    await _userStore.addIdentity(identity);
+    return new shelf.Response.ok(JSON.encode(const {}));
   }
 
   /**

@@ -71,6 +71,9 @@ Future<shelf.Response> _lookupToken(shelf.Request request) async {
 
     return new shelf.Response.internalServerError(body: error.toString());
   }
+
+  /// Do not intercept the request, but let the next handler take care of it.
+  return null;
 }
 
 Future<io.HttpServer> start({String hostname: '0.0.0.0', int port: 4030}) {
@@ -112,6 +115,7 @@ Future<io.HttpServer> start({String hostname: '0.0.0.0', int port: 4030}) {
     ..post('/user/{uid}/group/{gid}', userController.joinGroup)
     ..delete('/user/{uid}/group/{gid}', userController.leaveGroup)
     ..get('/user/{uid}/group/{gid}', userController.userGroup)
+    ..get('/user/identity/{identity}', userController.userIdentity)
     ..get('/user/{uid}/identity', userController.userIdentities)
     ..post('/user/{uid}/identity', userController.addIdentity)
     ..delete('/user/{uid}/identity/{identity}', userController.removeIdentity)

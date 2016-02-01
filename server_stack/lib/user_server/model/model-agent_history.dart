@@ -59,7 +59,7 @@ class AgentHistory {
   /**
    * Housekeeping task. Runs every [_period].
    */
-  void _housekeeping(_) {
+  void _housekeeping(Timer timer) {
     // Snapshot the time, as we need it multiple times later on.
     final DateTime now = new DateTime.now();
 
@@ -109,7 +109,7 @@ class AgentHistory {
    */
   void callHandledByAgent(int userId) => _recentCalls.containsKey(userId)
       ? _recentCalls[userId].add(new DateTime.now())
-      : _recentCalls[userId] = (new List()..add(new DateTime.now()));
+      : _recentCalls[userId] = new List<DateTime>.from([new DateTime.now()]);
 
   /**
    * JSON serialization function.
