@@ -42,7 +42,8 @@ class PeerAccount {
         '/directory/receptionists/${account.username}.xml';
 
     _log.fine('Deploying new peer account to file $xmlFilePath');
-    await new File(xmlFilePath).writeAsString(_compiler.userToXml(user, account));
+    await new File(xmlFilePath)
+        .writeAsString(_compiler.userToXml(user, account));
 
     return _okJson({});
   }
@@ -67,7 +68,7 @@ class PeerAccount {
     final List<String> listing = await new Directory(xmlFilePath)
         .list()
         .where(isXmlFile)
-        .map((fse) => fse.uri.pathSegments.last.split('.xml').first)
+        .map((fse) => fse.uri.pathSegments.last.split('.xml').first as String)
         .toList();
 
     return _okJson(listing);
@@ -84,12 +85,11 @@ class PeerAccount {
 
     final File peerAccount = new File(xmlFilePath);
 
-    if(!await peerAccount.exists()) {
+    if (!await peerAccount.exists()) {
       return _notFound('No peer account for $aid');
     }
 
     await new File(xmlFilePath).delete();
     return _okJson({});
-
   }
 }
