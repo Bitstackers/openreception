@@ -53,15 +53,26 @@ Model.Organization _rowToOrganization(var row) => new Model.Organization.empty()
 Model.User _rowToUser(var row) => new Model.User.empty()
   ..ID = row.id
   ..name = row.name
+  ..googleUsername = row.google_username
+  ..googleAppcode = row.google_appcode
   ..enabled = row.enabled
   ..address = row.send_from
-  ..peer = row.extension
-  ..groups = row.groups.isNotEmpty
-      ? row.groups.map(Model.UserGroup.decode).toList()
-      : []
-  ..identities = row.identities.isNotEmpty
-      ? row.identities.map(Model.UserIdentity.decode).toList()
-      : [];
+  ..peer = row.extension;
+
+/**
+   * Convert a database row into an [UserGroup].
+   */
+Model.UserGroup _rowToUserGroup(PG.Row row) => new Model.UserGroup.empty()
+  ..id = row.id
+  ..name = row.name;
+
+/**
+     * Convert a database row into an [UserIdentity].
+     */
+Model.UserIdentity _rowToUserIdentity(PG.Row row) =>
+    new Model.UserIdentity.empty()
+      ..identity = row.identity
+      ..userId = row.user_id;
 
 /**
  * Convert a database row into an [Message].
