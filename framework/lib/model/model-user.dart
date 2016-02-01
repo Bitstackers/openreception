@@ -13,24 +13,31 @@
 
 part of openreception.model;
 
-
 /**
  *
  */
 class User {
+  static const int noID = 0;
 
-  static const int   noID      = 0;
+  String address;
 
-  String             address;
-  List<UserGroup>    groups = [];
-  int                ID;
-  bool               enabled = true;
-  List<UserIdentity> identities = [];
-  String             name;
-  String             peer;
-  String             portrait = '';
-  String             googleUsername = '';
-  String             googleAppcode = '';
+  @deprecated
+  int get ID => id;
+  @deprecated
+  void set ID(int newId) {
+    id = newId;
+  }
+
+  int id;
+  bool enabled = true;
+
+  String name;
+  String peer;
+  String portrait = '';
+
+  /// Google gmail sending credentials.
+  String googleUsername = '';
+  String googleAppcode = '';
 
   /**
    * Constructor for creating an empty object.
@@ -40,67 +47,42 @@ class User {
   /**
    * Constructor.
    */
-  User.fromMap(Map userMap) {
-    Iterable<Map> groupMaps =
-        userMap.containsKey(Key.groups)
-        ? userMap[Key.groups]
-        : [];
-
-    Iterable<Map> identityMaps =
-        userMap.containsKey(Key.identites)
-        ? userMap[Key.identites]
-        : [];
-
-    groups.addAll(groupMaps.map(UserGroup.decode));
-    identities.addAll(identityMaps.map(UserIdentity.decode));
-
-    address    = userMap[Key.address];
-    ID         = userMap[Key.id];
-    name       = userMap[Key.name];
-    peer       = userMap[Key.extension];
-
-    /// Google gmail sending credentials.
-    if (userMap.containsKey(Key.googleUsername)) {
-      googleUsername = userMap[Key.googleUsername];
-    }
-    if (userMap.containsKey(Key.googleAppcode)) {
-      googleAppcode  = userMap[Key.googleAppcode];
-    }
-
-    /// Remote attributes from Google account.
-    if(userMap.containsKey('remote_attributes')) {
-      if((userMap['remote_attributes'] as Map).containsKey('picture')) {
-        portrait = userMap['remote_attributes']['picture'];
-      }
-    }
+  User.fromMap(Map map)
+      : address = map[Key.address],
+        id = map[Key.id],
+        name = map[Key.name],
+        peer = map[Key.extension],
+        googleUsername =
+            map.containsKey(Key.googleUsername) ? map[Key.googleUsername] : '',
+        googleAppcode =
+            map.containsKey(Key.googleAppcode) ? map[Key.googleAppcode] : '' {
+    portrait = map.containsKey('remote_attributes') &&
+            (map['remote_attributes'] as Map).containsKey('picture')
+        ? portrait = (map['remote_attributes'] as Map)['picture']
+        : '';
   }
 
   /**
    *
    */
-  Map get asSender => {'name'   : name,
-                       'id'     : ID,
-                       'address': address};
+  @deprecated
+  Map get asSender => {'name': name, 'id': id, 'address': address};
 
   /**
    *
    */
-  Map get asMap => {
-    Key.id             : ID,
-    Key.name           : name,
-    Key.address        : address,
-    Key.groups         : groups,
-    Key.identites      : identities,
-    Key.extension      : peer,
-    Key.googleUsername : googleUsername,
-    Key.googleAppcode  : googleAppcode
-  };
-
-  Map toJson() => this.asMap;
+  @deprecated
+  Map get asMap => toJson();
 
   /**
    *
    */
-  bool inAnyGroups(List<String> groupNames) =>
-    groupNames.any(groups.map((UserGroup group) => group.name).contains);
+  Map toJson() => {
+        Key.id: id,
+        Key.name: name,
+        Key.address: address,
+        Key.extension: peer,
+        Key.googleUsername: googleUsername,
+        Key.googleAppcode: googleAppcode
+      };
 }
