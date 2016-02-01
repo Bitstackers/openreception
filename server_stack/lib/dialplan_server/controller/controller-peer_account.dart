@@ -68,7 +68,7 @@ class PeerAccount {
     final List<String> listing = await new Directory(xmlFilePath)
         .list()
         .where(isXmlFile)
-        .map((fse) => fse.uri.pathSegments.last.split('.xml').first as String)
+        .map((fse) => fse.uri.pathSegments.last.split('.xml').first)
         .toList();
 
     return _okJson(listing);
