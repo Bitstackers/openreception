@@ -14,102 +14,146 @@
 part of openreception.database;
 
 class ReceptionDialplan implements Storage.ReceptionDialplan {
-  ///Logger
-  final Logger _log = new Logger('${libraryName}.ReceptionDialplan');
-
   /// Database connection.
   final Connection _connection;
 
   /**
-   * Default constructor.
+   * Default constructor needs a database [Connection] object in order to
+   * function.
    */
   ReceptionDialplan(this._connection);
 
   /**
    *
    */
-  Future<Iterable<Model.ReceptionDialplan>> list() {
+  Future<Iterable<Model.ReceptionDialplan>> list() async {
     String sql = '''
-  SELECT 
-     extension, dialplan
-  FROM
-     reception_dialplans''';
+SELECT
+ extension,
+ dialplan
+FROM
+  reception_dialplans''';
 
-    return _connection.query(sql).then((Iterable rows) => rows.map((row) =>
-        Model.ReceptionDialplan.decode(row.dialplan)
-          ..extension = row.extension));
+    try {
+      return (await _connection.query(sql)).map((row) => Model.ReceptionDialplan
+          .decode(row.dialplan)..extension = row.extension);
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
   /**
    *
    */
-  Future<Model.ReceptionDialplan> get(String extension) {
+  Future<Model.ReceptionDialplan> get(String extension) async {
     String sql = '''
-  SELECT 
-     extension, dialplan
-  FROM
-     reception_dialplans
-  WHERE
-     extension=@extension''';
+SELECT
+  extension,
+  dialplan
+FROM
+  reception_dialplans
+WHERE
+  extension = @extension''';
 
-    Map parameters = {'extension': extension};
+    final Map parameters = {'extension': extension};
 
-    return _connection.query(sql, parameters).then((Iterable rows) =>
-        rows.length == 1
-            ? (Model.ReceptionDialplan.decode(rows.first.dialplan)
-              ..extension = rows.first.extension)
-            : throw new Storage.NotFound(
-                'No dialplan with extension $extension'));
+    try {
+      Iterable rows = await _connection.query(sql, parameters);
+
+      if (rows.isEmpty) {
+        throw new Storage.NotFound('No diaplan with extension: $extension');
+      }
+
+      return Model.ReceptionDialplan.decode(rows.first.dialplan)
+        ..extension = rows.first.extension;
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
   /**
    *
    */
-  Future<Model.ReceptionDialplan> update(Model.ReceptionDialplan rdp) {
+  Future<Model.ReceptionDialplan> update(Model.ReceptionDialplan rdp) async {
     String sql = '''
-    UPDATE reception_dialplans
-    SET dialplan=@dialplan,
-        extension=@extension
-    WHERE extension=@extension;
-  ''';
+UPDATE
+  reception_dialplans
+SET
+  dialplan = @dialplan,
+  extension = @extension
+WHERE
+  extension = @extension''';
 
-    Map parameters = {'extension': rdp.extension, 'dialplan': rdp.toJson()};
+    final Map parameters = {
+      'extension': rdp.extension,
+      'dialplan': rdp.toJson()
+    };
 
-    return _connection.execute(sql, parameters).then((int rowsAffected) =>
-        rowsAffected == 1 ? rdp : throw new Storage.SaveFailed(''));
+    try {
+      final affectedRows = await _connection.execute(sql, parameters);
+
+      if (affectedRows == 0) {
+        throw new Storage.ServerError('User not updated');
+      }
+
+      return rdp;
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
   /**
    *
    */
-  Future<Model.ReceptionDialplan> create(Model.ReceptionDialplan rdp) {
+  Future<Model.ReceptionDialplan> create(Model.ReceptionDialplan rdp) async {
     String sql = '''
-    INSERT INTO reception_dialplans (extension, dialplan)
-    VALUES (@extension, @dialplan)
-    RETURNING extension''';
+INSERT INTO
+  reception_dialplans
+    (extension, dialplan)
+VALUES
+    (@extension, @dialplan)
+RETURNING
+  extension''';
 
-    Map parameters = {'extension': rdp.extension, 'dialplan': rdp.toJson()};
+    final Map parameters = {
+      'extension': rdp.extension,
+      'dialplan': rdp.toJson()
+    };
 
-    return _connection.query(sql, parameters).then((Iterable rows) =>
-        rows.length == 1
-            ? (rdp..extension = rows.first.extension)
-            : throw new Storage.SaveFailed(''));
+    try {
+      final rows = await _connection.query(sql, parameters);
+
+      if (rows.isEmpty) {
+        throw new Storage.ServerError('User not created');
+      }
+
+      rdp.extension = rows.first.extension;
+      return rdp;
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
   /**
    *
    */
-  Future remove(String extension) {
+  Future remove(String extension) async {
     String sql = '''
-    DELETE FROM reception_dialplans
-    WHERE extension = @extension''';
+DELETE FROM
+  reception_dialplans
+WHERE
+  extension = @extension''';
 
-    Map parameters = {'extension': extension};
+    final Map parameters = {'extension': extension};
 
-    return _connection.execute(sql, parameters).then((int rowAffected) =>
-        rowAffected == 1
-            ? 0
-            : throw new Storage.NotFound(
-                'No dialplan with extension $extension'));
+    try {
+      final int rowsAffected = await _connection.execute(sql, parameters);
+
+      if (rowsAffected == 0) {
+        throw new Storage.NotFound('No dialplan with extension $extension');
+      }
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 }

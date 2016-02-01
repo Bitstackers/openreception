@@ -14,36 +14,31 @@
 part of openreception.database;
 
 class Ivr implements Storage.Ivr {
-  ///Logger
-  final Logger _log = new Logger('${libraryName}.Ivr');
-
   /// Database connection.
   final Connection _connection;
 
   /**
-   * Default constructor.
+   * Default constructor needs a database [Connection] object in order to
+   * function.
    */
   Ivr(this._connection);
 
   /**
    *
    */
-  Future<Iterable<Model.IvrMenu>> list() {
+  Future<Iterable<Model.IvrMenu>> list() async {
     String sql = '''
-  SELECT 
+  SELECT
      name, menu
   FROM
      ivr_menus''';
 
-    return _connection
-        .query(sql)
-        .then((Iterable rows) =>
-            rows.map((row) => Model.IvrMenu.decode(row.menu)..name = row.name))
-        .catchError((error, stackTrace) {
-      _log.severe('sql:$sql', error, stackTrace);
-
-      return new Future.error(error, stackTrace);
-    });
+    try {
+      return (await _connection.query(sql))
+          .map((row) => Model.IvrMenu.decode(row.menu)..name = row.name);
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
   /**
@@ -51,30 +46,25 @@ class Ivr implements Storage.Ivr {
    */
   Future<Model.IvrMenu> get(String menuName) async {
     String sql = '''
-  SELECT 
+  SELECT
      name, menu
   FROM
      ivr_menus
   WHERE
      name=@name''';
 
-    Map parameters = {'name': menuName};
+    final Map parameters = {'name': menuName};
 
     try {
-      final Iterable rows = await _connection.query(sql, parameters);
+      Iterable rows = await _connection.query(sql, parameters);
 
-
-      if (rows.length != 1) {
-        throw new Storage.NotFound();
+      if (rows.isEmpty) {
+        throw new Storage.NotFound('No menu with name: $menuName');
       }
-      return Model.IvrMenu.decode(rows.first.menu)..name = rows.first.name;
-    } on Storage.NotFound {
-      throw new Storage.NotFound('No IVR menu with name $menuName');
-    } catch (error, stackTrace) {
-      final msg = 'Failed to retrieve menu sql:$sql parameters:$parameters';
-      _log.severe(msg, error, stackTrace);
 
-      throw new Storage.ServerError(msg);
+      return Model.IvrMenu.decode(rows.first.menu)..name = rows.first.name;
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
     }
   }
 
@@ -83,59 +73,71 @@ class Ivr implements Storage.Ivr {
    */
   Future<Model.IvrMenu> update(Model.IvrMenu menu) async {
     String sql = '''
-    UPDATE ivr_menus
-    SET menu=@menu
-    WHERE name=@name;
-  ''';
+UPDATE
+  ivr_menus
+SET
+  menu = @menu
+WHERE
+  name = @name''';
 
-    Map parameters = {'name': menu.name, 'menu': menu.toJson()};
+    final Map parameters = {'name': menu.name, 'menu': menu.toJson()};
 
     try {
-      final int affectedRows = await _connection.execute(sql, parameters);
+      final affectedRows = await _connection.execute(sql, parameters);
 
-      if (affectedRows != 1) {
-        throw new Storage.SaveFailed();
+      if (affectedRows == 0) {
+        throw new Storage.ServerError('Menu not updated');
       }
 
       return menu;
-    } catch (error, stackTrace) {
-      final msg = 'Failed to update menu sql:$sql parameters:$parameters';
-      _log.severe(msg, error, stackTrace);
-
-      throw new Storage.ServerError(msg);
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
     }
   }
 
   /**
    *
    */
-  Future<Model.IvrMenu> create(Model.IvrMenu menu) {
+  Future<Model.IvrMenu> create(Model.IvrMenu menu) async {
     String sql = '''
     INSERT INTO ivr_menus (name, menu)
     VALUES (@name, @menu)
     RETURNING name''';
 
-    Map parameters = {'name': menu.name, 'menu': menu.toJson()};
+    final Map parameters = {'name': menu.name, 'menu': menu.toJson()};
 
-    return _connection.query(sql, parameters).then((Iterable rows) =>
-        rows.length == 1
-            ? (menu..name = rows.first.name)
-            : throw new Storage.SaveFailed(''));
+    try {
+      final rows = await _connection.query(sql, parameters);
+
+      if (rows.isEmpty) {
+        throw new Storage.ServerError('Menu not created');
+      }
+
+      menu.name = rows.first.name;
+      return menu;
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
   /**
    *
    */
-  Future remove(String menuName) {
+  Future remove(String menuName) async {
     String sql = '''
     DELETE FROM ivr_menus
     WHERE name = @name''';
 
-    Map parameters = {'name': menuName};
+    final Map parameters = {'name': menuName};
 
-    return _connection.execute(sql, parameters).then((int rowAffected) =>
-        rowAffected == 1
-            ? 0
-            : throw new Storage.NotFound('No menu with name $menuName'));
+    try {
+      final int rowsAffected = await _connection.execute(sql, parameters);
+
+      if (rowsAffected == 0) {
+        throw new Storage.NotFound('No menu with uid: $menuName');
+      }
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 }

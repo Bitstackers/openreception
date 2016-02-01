@@ -18,6 +18,10 @@ class Calendar implements Storage.Calendar {
 
   final Connection _connection;
 
+  /**
+   * Default constructor needs a database [Connection] object in order to
+   * function.
+   */
   Calendar(this._connection);
 
   String _ownerTable(Model.Owner owner) => owner is Model.OwningContact
@@ -45,7 +49,7 @@ class Calendar implements Storage.Calendar {
    * Retrieve a single [Model.CalendarEntry] from the database based
    * on [entryID].
    */
-  Future<Model.CalendarEntry> get(int entryID, {bool deleted: false}) {
+  Future<Model.CalendarEntry> get(int entryID, {bool deleted: false}) async {
     String sql = '''SELECT
     entry.id,
     entry.start,
@@ -64,25 +68,25 @@ class Calendar implements Storage.Calendar {
 
     Map parameters = {'entryId': entryID};
 
-    return _connection
-        .query(sql, parameters)
-        .then((rows) => rows.length > 0
-            ? _rowToCalendarEntry(rows.first)
-            : new Future.error(new Storage.NotFound('eid:$entryID')))
-        .catchError((error, stackTrace) {
-      if (error is! Storage.NotFound) {
-        log.severe('Query failed! SQL Statement: $sql');
-        log.severe('parameters: $parameters');
-        log.severe(error, stackTrace);
-      }
-      return new Future.error(error, stackTrace);
-    });
+    Iterable rows = [];
+    try {
+      rows = await _connection.query(sql, parameters);
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
+
+    if (rows.length > 0) {
+      return _rowToCalendarEntry(rows.first);
+    } else {
+      throw new Storage.NotFound('eid:$entryID');
+    }
   }
 
   /**
    * Creates a [CalendarEntry] object in the database.
    */
-  Future<Model.CalendarEntry> create(Model.CalendarEntry entry, int userId) {
+  Future<Model.CalendarEntry> create(
+      Model.CalendarEntry entry, int userId) async {
     final String sql = '''
 WITH new_event AS(
   INSERT INTO calendar_events (start, stop, message)
@@ -114,17 +118,23 @@ RETURNING event_id
       'emptyEntry': new Model.CalendarEntry.empty().toJson()
     };
 
-    return _connection
-        .query(sql, parameters)
-        .then((Iterable rows) => rows.isEmpty
-            ? new Future.error(new StateError('Query did not return any rows!'))
-            : (entry..ID = rows.first.event_id))
-        .catchError((error, stackTrace) {
-      log.severe('Query Failed! SQL Statement: $sql');
+    Iterable rows = [];
+    try {
+      rows = await _connection.query(sql, parameters);
+    } catch (error, stackTrace) {
+      log.severe('Query failed! SQL Statement: $sql');
       log.severe('parameters: $parameters');
       log.severe(error, stackTrace);
-      return new Future.error(error, stackTrace);
-    });
+
+      throw new Storage.ServerError(error.toString());
+    }
+
+    if (rows.length > 0) {
+      entry.ID = rows.first.event_id;
+      return entry;
+    } else {
+      throw new Storage.NotFound('eid:${entry.ID}');
+    }
   }
 
   /**
@@ -155,7 +165,7 @@ changed_entry AS (
 SELECT entry_id FROM changed_entry;
 ''';
 
-    Map parameters = {
+    final Map parameters = {
       'eventID': entry.ID,
       'start': entry.start,
       'stop': entry.stop,
@@ -164,21 +174,17 @@ SELECT entry_id FROM changed_entry;
       'userID': userId
     };
 
-    await _connection
-        .execute(sql, parameters)
-        .then((int rowsAffected) => rowsAffected > 0
-            ? ''
-            : throw new Storage.NotFound('No event with id ${entry.ID}'))
-        .catchError((error, stackTrace) {
-      if (error is! Storage.NotFound) {
-        log.severe('Query failed! SQL Statement: $sql');
-        log.severe('parameters: $parameters');
-        log.severe(error, stackTrace);
-      }
-      throw new Future.error(error, stackTrace);
-    });
+    try {
+      final affectedRows = await _connection.execute(sql, parameters);
 
-    return entry;
+      if (affectedRows == 0) {
+        throw new Storage.ServerError('Entry not updated');
+      }
+
+      return await get(entry.ID);
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
   /**
@@ -236,7 +242,7 @@ SELECT entry_id FROM changed_entry;
    * contact specified in the parameters.
    */
   Future<Iterable<Model.CalendarEntry>> list(Model.Owner owner,
-      {bool deleted: false}) {
+      {bool deleted: false}) async {
     final String sql = '''
 SELECT
   entry.id,
@@ -257,17 +263,23 @@ AND
 
     Map parameters = {'ownerID': _ownerId(owner)};
 
-    return _connection
-        .query(sql, parameters)
-        .then((rows) => (rows as Iterable).map(_rowToCalendarEntry))
-        .catchError((error, stackTrace) {
+    Iterable rows = [];
+    try {
+      rows = await _connection.query(sql, parameters);
+    } catch (error, stackTrace) {
       log.severe('Query failed! SQL Statement: $sql');
       log.severe('parameters: $parameters');
       log.severe(error, stackTrace);
-      return new Future.error(error, stackTrace);
-    });
+
+      throw new Storage.ServerError(error.toString());
+    }
+
+    return rows.map(_rowToCalendarEntry);
   }
 
+  /**
+   *
+   */
   Future<Iterable<Model.CalendarEntryChange>> changes(int entryID) {
     String sql = '''
     SELECT
@@ -339,7 +351,7 @@ AND
   WHERE
     id     = @eventID''';
 
-    Map parameters = {'eventID': entryId};
+    final Map parameters = {'eventID': entryId};
 
     return _connection
         .execute(sql, parameters)

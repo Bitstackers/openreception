@@ -14,16 +14,19 @@
 part of openreception.database;
 
 class Endpoint implements Storage.Endpoint {
-  static const String className = '${libraryName}.Endpoint';
-
-  static final Logger log = new Logger(className);
-
   Connection _connection;
 
+  /**
+   * Default constructor needs a database [Connection] object in order to
+   * function.
+   */
   Endpoint(this._connection);
 
+  /**
+   *
+   */
   Future<Model.MessageEndpoint> create(
-      int receptionid, int contactid, Model.MessageEndpoint ep) {
+      int receptionid, int contactid, Model.MessageEndpoint ep) async {
     String sql = '''
 INSERT INTO
   messaging_end_points
@@ -32,9 +35,9 @@ INSERT INTO
 VALUES
   (@contactid, @receptionid,  @address, @addresstype,
    @confidential, @enabled, @priority, @description)
-RETURNING id;''';
+RETURNING id''';
 
-    Map parameters = {
+    final Map parameters = {
       'receptionid': receptionid,
       'contactid': contactid,
       'address': ep.address,
@@ -45,17 +48,23 @@ RETURNING id;''';
       'description': ep.description
     };
 
-    return _connection.query(sql, parameters).then((Iterable rows) =>
-        rows.length == 1
-            ? (ep..id = rows.first.id)
-            : new Future.error(new Storage.ServerError())
-                .catchError((error, stackTrace) {
-                log.severe('sql:$sql :: parameters:$parameters');
+    try {
+      final rows = await _connection.query(sql, parameters);
 
-                return new Future.error(error, stackTrace);
-              }));
+      if (rows.isEmpty) {
+        throw new Storage.ServerError('MessageEndpoint not created');
+      }
+
+      ep.id = rows.first.id;
+      return ep;
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
+  /**
+   *
+   */
   Future<int> remove(int endpointId) {
     String sql = '''
 DELETE FROM
@@ -67,41 +76,54 @@ WHERE id = @endpointId''';
     return _connection.execute(sql, parameters);
   }
 
-  Future<Iterable<Model.MessageEndpoint>> list(int receptionid, int contactid) {
+  /**
+   *
+   */
+  Future<Iterable<Model.MessageEndpoint>> list(
+      int receptionId, int contactId) async {
     String sql = '''
-    SELECT id, contact_id, reception_id, address, address_type, confidential, enabled, priority, description
-    FROM messaging_end_points
-    WHERE reception_id=@receptionid AND contact_id=@contactid;
-  ''';
+SELECT
+  id,
+  contact_id,
+  reception_id,
+  address, address_type,
+  confidential,
+  enabled,
+  priority,
+  description
+FROM
+  messaging_end_points
+WHERE
+  reception_id = @receptionid
+AND
+  contact_id = @contactid''';
 
-    Map parameters = {'receptionid': receptionid, 'contactid': contactid};
+    Map parameters = {'receptionid': receptionId, 'contactid': contactId};
 
-    return _connection.query(sql, parameters).then((List rows) {
-      List<Model.MessageEndpoint> endpoints = [];
-      for (var row in rows) {
-        endpoints.add(new Model.MessageEndpoint.empty()
-          ..id = row.id
-          ..address = row.address
-          ..type = row.address_type
-          ..confidential = row.confidential
-          ..enabled = row.enabled
-          ..description = row.description);
-      }
-      return endpoints;
-    });
+    try {
+      return (await _connection.query(sql, parameters))
+          .map(_rowToMessageEndpoint);
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
-  Future<Model.MessageEndpoint> update(Model.MessageEndpoint ep) {
+  /**
+   *
+   */
+  Future<Model.MessageEndpoint> update(Model.MessageEndpoint ep) async {
     String sql = '''
-    UPDATE messaging_end_points
-    SET address=@address,
-        address_type=@addresstype,
-        confidential=@confidential,
-        enabled=@enabled,
-        priority=@priority,
-        description=@description
-    WHERE id = @ep_id;
-  ''';
+UPDATE
+  messaging_end_points
+SET
+  address=@address,
+  address_type=@addresstype,
+  confidential=@confidential,
+  enabled=@enabled,
+  priority=@priority,
+  description=@description
+WHERE
+  id = @ep_id''';
 
     Map parameters = {
       'ep_id': ep.id,
@@ -115,6 +137,16 @@ WHERE id = @endpointId''';
       'description': ep.description
     };
 
-    return _connection.execute(sql, parameters).then((_) => ep);
+    try {
+      final affectedRows = await _connection.execute(sql, parameters);
+
+      if (affectedRows == 0) {
+        throw new Storage.ServerError('User not updated');
+      }
+
+      return ep;
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 }

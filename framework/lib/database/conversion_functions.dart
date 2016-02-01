@@ -217,7 +217,7 @@ Model.Contact _rowToContact(PG.Row row) {
   Model.Contact contact = new Model.Contact.empty()
     ..receptionID = row.reception_id
     ..ID = row.contact_id
-    ..enabled = row.rcpenabled && row.conenabled
+    ..enabled = row.enabled
     ..fullName = row.full_name
     ..contactType = row.contact_type
     ..phones.addAll(phoneIterable)

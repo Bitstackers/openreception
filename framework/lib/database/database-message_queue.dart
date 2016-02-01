@@ -14,200 +14,205 @@
 part of openreception.database;
 
 class MessageQueue implements Storage.MessageQueue {
+  final Connection _connection;
 
-  static const String className = '$libraryName.MessageQueue';
-
-  static final Logger log = new Logger(className);
-
-  Connection _connection = null;
-
+  /**
+   * Default constructor needs a database [Connection] object in order to
+   * function.
+   */
   MessageQueue(this._connection);
 
   /**
    * Archive a single message queue entry.
    */
-  Future archive(Model.MessageQueueItem queueItem) {
+  Future archive(Model.MessageQueueItem queueItem) async {
+    final String sql = '''
+WITH moved_rows AS (
+  DELETE FROM
+    message_queue mq
+  WHERE
+    id = ${queueItem.ID}
+  RETURNING
+    mq.message_id,
+    mq.enqueued_at,
+    mq.handled_endpoints,
+    mq.last_try,
+    mq.tries
+)
 
-    String sql = '''
-  WITH moved_rows AS (
-      DELETE FROM 
-         message_queue mq
-      WHERE 
-         id = ${queueItem.ID}
-      RETURNING 
-         mq.message_id, 
-         mq.enqueued_at, 
-         mq.handled_endpoints,
-         mq.last_try, 
-         mq.tries
-  )
-  INSERT INTO 
-    message_queue_history (
-        message_id,
-        enqueued_at,
-        handled_endpoints,
-        last_try,
-        tries) 
-    (SELECT 
-       message_id, 
-       enqueued_at,
-       handled_endpoints,
-       last_try, 
-       tries 
-     FROM moved_rows); ''';
+INSERT INTO
+  message_queue_history
+  (message_id, enqueued_at, handled_endpoints, last_try, tries)
+(SELECT
+   message_id, enqueued_at, handled_endpoints, last_try, tries
+ FROM moved_rows)''';
 
-    return this._connection.execute(sql).then((rows) {
-      log.finest('Archived message queue entry.');
-    }).catchError((error, stackTrace) {
-      log.severe('sql:$sql', error, stackTrace);
-    });
+    try {
+      final int rowsAffected = await _connection.execute(sql);
+
+      if (rowsAffected == 0) {
+        throw new Storage.NotFound('No queue item with id: ${queueItem.ID}}');
+      }
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
   /**
    * List all queue entries.
    */
-  Future<List<Model.MessageQueueItem>> list({int limit: 100, int maxTries : 10}) {
-
-    String sql = '''
-   SELECT
-       mq.id,
-       mq.message_id,
-       mq.unhandled_endpoints,
-       mq.handled_endpoints,
-       mq.last_try,
-       mq.tries
-   FROM 
-       message_queue mq
-   WHERE 
-       mq.tries <= @maxTries
-   ORDER BY
-       mq.last_try DESC,
-       mq.tries ASC
-   LIMIT @limit
+  Future<List<Model.MessageQueueItem>> list(
+      {int limit: 100, int maxTries: 10}) async {
+    final String sql = '''
+SELECT
+  mq.id,
+  mq.message_id,
+  mq.unhandled_endpoints,
+  mq.handled_endpoints,
+  mq.last_try,
+  mq.tries
+FROM
+  message_queue mq
+WHERE
+  mq.tries <= @maxTries
+ORDER BY
+  mq.last_try DESC,
+  mq.tries ASC
+LIMIT @limit
   ''';
 
-  final Map parameters = {
-    'maxTries' : maxTries,
-    'limit' : limit
-  };
+    final Map parameters = {'maxTries': maxTries, 'limit': limit};
 
-    return this._connection.query(sql, parameters).then((rows) {
-      log.finest('Returned ${rows.length} queued messages (limit $limit).');
+    try {
+      final rows = await _connection.query(sql, parameters);
 
-      List<Model.MessageQueueItem> queue = [];
+      final List<Model.MessageQueueItem> queue = [];
 
       for (var row in rows) {
-
         Iterable<Model.MessageRecipient> unhandled_recipients =
-            (row.unhandled_endpoints as Iterable).map
-            (Model.MessageRecipient.decode);
+            (row.unhandled_endpoints as Iterable)
+                .map(Model.MessageRecipient.decode);
 
         Iterable<Model.MessageRecipient> handled_recipients =
-            (row.handled_endpoints as Iterable).map
-            (Model.MessageRecipient.decode);
+            (row.handled_endpoints as Iterable)
+                .map(Model.MessageRecipient.decode);
 
         queue.add(new Model.MessageQueueItem.empty()
           ..ID = row.id
-          ..messageID =  row.message_id
+          ..messageID = row.message_id
           ..handledRecipients = handled_recipients
-          ..unhandledRecipients= unhandled_recipients
+          ..unhandledRecipients = unhandled_recipients
           ..tries = row.tries
-          ..lastTry =  row.last_try);
+          ..lastTry = row.last_try);
       }
 
       return queue;
-    }).catchError((error, stackTrace) {
-      log.severe('sql:$sql \nparameters:$parameters', error, stackTrace);
-    });
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
   /**
    * Retrieve a single queue entry.
    */
-  Future<Model.MessageQueueItem> get(int queueID) {
+  Future<Model.MessageQueueItem> get(int entryId) async {
+    final String sql = '''
+SELECT
+  mq.id,
+  mq.message_id,
+  mq.unhandled_endpoints,
+  mq.last_try,
+  mq.tries
+FROM
+  message_queue mq
+WHERE
+  mq.id = $entryId''';
 
-    String sql = '''
-   SELECT 
-       mq.id,
-       mq.message_id,
-       mq.unhandled_endpoints,
-       mq.last_try,
-       mq.tries
-   FROM 
-      message_queue mq
-  WHERE
-      mq.id = $queueID''';
+    try {
+      Iterable rows = await _connection.query(sql);
 
-    return this._connection.query(sql).then((rows) {
+      if (rows.isEmpty) {
+        throw new Storage.NotFound('No queue entry with id: $entryId');
+      }
 
       var row = rows.first;
 
       return new Model.MessageQueueItem.fromMap({
-        'id'                 : row.id,
-        'message_id'         : row.message_id,
+        'id': row.id,
+        'message_id': row.message_id,
         'unhandled_endpoints': row.unhandled_endpoints,
-        'tries'              : row.tries,
-        'last_try'           : row.last_try
+        'tries': row.tries,
+        'last_try': row.last_try
       });
-    }).catchError((error, stackTrace) {
-      log.severe('sql:$sql', error, stackTrace);
-    });
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
   /**
    * Removes a single queue entry from the database.
    */
-  Future remove(int queueID) {
+  Future remove(int entryId) async {
+    final String sql = '''
+DELETE FROM
+  message_queue
+WHERE
+  id = ${entryId}''';
 
-    String sql = 'DELETE FROM message_queue WHERE id = ${queueID};';
+    try {
+      final int rowsAffected = await _connection.execute(sql);
 
-    return this._connection.execute(sql).then((rowsAffected) {
-      log.finest('Removed ${rowsAffected} message from queue.');
-      return rowsAffected;
-    }).catchError((error) {
-      log.severe(sql);
-      throw error;
-    });
+      if (rowsAffected == 0) {
+        throw new Storage.NotFound('No queue entry with id: $entryId');
+      }
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
   /**
    * Updates a single queue entry in the database.
    */
-  Future<Model.MessageQueueItem> save(Model.MessageQueueItem queueItem) {
-
+  Future<Model.MessageQueueItem> save(Model.MessageQueueItem queueItem) async {
     /// We have to serialize the ID's of the contact along with the endpoint ID
     /// to avoid losing the name of the endpoint.
 
-    List<Map> unhandled_endpoints =
-        queueItem.unhandledRecipients.map((Model.MessageRecipient r) =>
-            r.asMap).toList(growable: false);
+    final List<Map> unhandled_endpoints = queueItem.unhandledRecipients
+        .map((Model.MessageRecipient r) => r.asMap)
+        .toList(growable: false);
 
-    List<Map> handled_endpoints =
-        queueItem.handledRecipients.map((Model.MessageRecipient r) =>
-            r.asMap).toList(growable: false);
+    final List<Map> handled_endpoints = queueItem.handledRecipients
+        .map((Model.MessageRecipient r) => r.asMap)
+        .toList(growable: false);
 
     final String sql = '''
-    UPDATE message_queue
-       SET last_try=NOW(), 
-       unhandled_endpoints=@unhandledEndpoints,
-       handled_endpoints=@handledEndpoints,
-       tries=@tries
-    WHERE id=@id''';
+UPDATE
+  message_queue
+SET
+  last_try = NOW(),
+  unhandled_endpoints = @unhandledEndpoints,
+  handled_endpoints = @handledEndpoints,
+  tries = @tries
+WHERE
+  id = @id''';
 
     final Map parameters = {
-      'id' : queueItem.ID,
-      'tries' : queueItem.tries,
-      'handledEndpoints' : JSON.encode(handled_endpoints),
-      'unhandledEndpoints' : JSON.encode(unhandled_endpoints),
+      'id': queueItem.ID,
+      'tries': queueItem.tries,
+      'handledEndpoints': JSON.encode(handled_endpoints),
+      'unhandledEndpoints': JSON.encode(unhandled_endpoints),
     };
 
-    return this._connection.execute(sql, parameters)
-        .then((rowCount) =>
-            rowCount == 0
-            ? throw new Storage.NotFound()
-            : queueItem)
-            .catchError((error, stackTrace) {
-      log.severe('sql:$sql \nparameters:$parameters', error, stackTrace);
-    });
+    try {
+      final affectedRows = await _connection.execute(sql, parameters);
+
+      if (affectedRows == 0) {
+        throw new Storage.ServerError('Queue entry not updated');
+      }
+
+      return queueItem;
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 }

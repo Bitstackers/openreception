@@ -14,25 +14,31 @@
 part of openreception.database;
 
 class Contact implements Storage.Contact {
-  static final Logger log = new Logger('$libraryName.Contact');
-
+  /// Database connection.
   final Connection _connection;
 
+  /**
+   * Default constructor needs a database [Connection] object in order to
+   * function.
+   */
   Contact(this._connection);
 
-  Future<Model.Contact> addToReception(Model.Contact contact, int receptionID) {
+  /**
+   * Add a [Contact] to [Reception] with ID [receptionId].
+   */
+  Future<Model.Contact> addToReception(
+      Model.Contact contact, int receptionId) async {
     String sql = '''
-    INSERT INTO
-      reception_contacts
-        (reception_id, contact_id,
-         phonenumbers, attributes, enabled, status_email)
-    VALUES
-        (@reception_id, @contact_id,
-         @phonenumbers, @attributes, @enabled, @statusEmail);
-  ''';
+INSERT INTO
+  reception_contacts
+    (reception_id, contact_id,
+     phonenumbers, attributes, enabled, status_email)
+VALUES
+    (@reception_id, @contact_id,
+     @phonenumbers, @attributes, @enabled, @statusEmail)''';
 
-    Map parameters = {
-      'reception_id': receptionID,
+    final Map parameters = {
+      'reception_id': receptionId,
       'contact_id': contact.ID,
       'phonenumbers': JSON.encode(contact.phones),
       'attributes': JSON.encode(contact.attributes),
@@ -40,39 +46,70 @@ class Contact implements Storage.Contact {
       'statusEmail': contact.statusEmail
     };
 
-    return _connection
-        .execute(sql, parameters)
-        .then((int affectedRows) => affectedRows == 1
-            ? (contact..receptionID = receptionID)
-            : new Future.error(new StateError('No association was created!')))
-        .catchError((error, stackTrace) {
-      log.severe('SQL: $sql :: Parameters : $parameters', error, stackTrace);
+    try {
+      final int rowsAffected = await _connection.execute(sql, parameters);
 
-      return new Future.error(error, stackTrace);
-    });
+      if (rowsAffected == 0) {
+        throw new Storage.ServerError(
+            'Contact with id: ${contact.ID} failed to associate '
+            'with reception ${receptionId}');
+      }
+
+      contact.receptionID = receptionId;
+      return contact;
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
-  Future<Model.Contact> removeFromReception(int contactId, int receptionId) {
+  /**
+   * Remove [Contact] with ID [contactId] from [Reception] with ID [receptionId].
+   */
+  Future removeFromReception(int contactId, int receptionId) async {
     String sql = '''
-    DELETE FROM reception_contacts
-    WHERE reception_id=@reception_id AND contact_id=@contact_id;
-  ''';
+DELETE FROM
+  reception_contacts
+WHERE
+  reception_id=@reception_id
+AND
+  contact_id=@contact_id''';
 
-    Map parameters = {'reception_id': receptionId, 'contact_id': contactId};
-    return _connection.execute(sql, parameters);
+    final Map parameters = {
+      'reception_id': receptionId,
+      'contact_id': contactId
+    };
+
+    try {
+      final int rowsAffected = await _connection.execute(sql, parameters);
+
+      if (rowsAffected == 0) {
+        throw new Storage.ServerError(
+            'Contact with id: ${contactId} failed to un-associate '
+            'with reception ${receptionId}');
+      }
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
-  Future<Model.Contact> updateInReception(Model.Contact contact) {
+  /**
+   * Update [Contact] in [Reception] with ID [receptionId].
+   */
+  Future<Model.Contact> updateInReception(Model.Contact contact) async {
     String sql = '''
-    UPDATE reception_contacts
-    SET attributes=@attributes,
-        enabled=@enabled,
-        phonenumbers=@phonenumbers,
-        status_email=@statusEmail
-    WHERE reception_id=@reception_id AND contact_id=@contact_id;
-  ''';
+UPDATE
+  reception_contacts
+SET
+  attributes=@attributes,
+  enabled=@enabled,
+  phonenumbers=@phonenumbers,
+  status_email=@statusEmail
+WHERE
+  reception_id=@reception_id
+AND
+  contact_id=@contact_id''';
 
-    Map parameters = {
+    final Map parameters = {
       'reception_id': contact.receptionID,
       'contact_id': contact.ID,
       'phonenumbers': JSON.encode(contact.phones),
@@ -81,195 +118,246 @@ class Contact implements Storage.Contact {
       'statusEmail': contact.statusEmail
     };
 
-    return _connection
-        .execute(sql, parameters)
-        .then((int affectedRows) => affectedRows == 1
-            ? contact
-            : new Future.error(new StateError('No association was updated!')))
-        .catchError((error, stackTrace) {
-      log.severe('SQL: $sql :: Parameters : $parameters', error, stackTrace);
+    try {
+      final affectedRows = await _connection.execute(sql, parameters);
 
-      return new Future.error(error, stackTrace);
-    });
+      if (affectedRows == 0) {
+        throw new Storage.ServerError('Contact not updated');
+      }
+
+      return contact;
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
-  Future<Model.BaseContact> get(int contactID) {
+  /**
+   *
+   */
+  Future<Model.BaseContact> get(int contactId) async {
     String sql = '''
-    SELECT id, full_name, contact_type, enabled
-    FROM contacts
-    WHERE id = @contactID ''';
+SELECT
+  id,
+  full_name,
+  contact_type,
+  enabled
+FROM
+  contacts
+WHERE
+  id = @contactID''';
 
-    Map parameters = {'contactID': contactID};
+    final Map parameters = {'contactID': contactId};
 
-    return _connection.query(sql, parameters).then((Iterable rows) {
+    try {
+      Iterable rows = await _connection.query(sql, parameters);
+
       if (rows.isEmpty) {
-        throw new Storage.NotFound('No contact found with ID $contactID');
+        throw new Storage.NotFound('No contact with id: $contactId');
       }
 
       return _rowToBaseContact(rows.first);
-    });
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
-  Future<List<Model.BaseContact>> list() {
+  /**
+   *
+   */
+  Future<List<Model.BaseContact>> list() async {
     String sql = '''
-    SELECT id, full_name, contact_type, enabled
-    FROM contacts
-  ''';
+SELECT
+  id,
+  full_name,
+  contact_type,
+  enabled
+FROM
+  contacts''';
 
-    return _connection
-        .query(sql)
-        .then((Iterable rows) => rows.map(_rowToBaseContact));
+    try {
+      return (await _connection.query(sql)).map(_rowToBaseContact);
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
   /**
    * Create a new [Model.BaseContact].
    */
-  Future<Model.BaseContact> create(Model.BaseContact contact) {
+  Future<Model.BaseContact> create(Model.BaseContact contact) async {
     String sql = '''
-    INSERT INTO contacts (full_name, contact_type, enabled)
-    VALUES (@full_name, @contact_type, @enabled)
-    RETURNING id;
-  ''';
+INSERT INTO
+  contacts
+    (full_name, contact_type, enabled)
+VALUES
+    (@full_name, @contact_type, @enabled)
+RETURNING
+  id;''';
 
-    Map parameters = {
+    final Map parameters = {
       'full_name': contact.fullName,
       'contact_type': contact.contactType,
       'enabled': contact.enabled
     };
 
-    return _connection
-        .query(sql, parameters)
-        .then((Iterable rows) => rows.length > 0
-            ? (contact..id = rows.first.id)
-            : new Future.error(new StateError('No contact was created!')))
-        .catchError((error, stackTrace) {
-      log.severe('SQL: $sql :: Parameters : $parameters', error, stackTrace);
+    try {
+      final rows = await _connection.query(sql, parameters);
 
-      return new Future.error(error, stackTrace);
-    });
-  }
-
-  Future<Iterable<Model.PhoneNumber>> phones(int contactID, int receptionID) {
-    String sql = '''
-        SELECT phonenumbers
-        FROM reception_contacts
-        WHERE contact_id = @contactID AND reception_id = @receptionID''';
-
-    Map parameters = {'contactID': contactID, 'receptionID': receptionID};
-
-    return _connection.query(sql, parameters).then((rows) {
-      if ((rows as Iterable).isEmpty) {
-        throw new Storage.NotFound('No contact found with ID $contactID'
-            ' in reception with ID $receptionID');
+      if (rows.isEmpty) {
+        throw new Storage.ServerError('Contact not created');
       }
 
-      Iterable<Map> phonesMap = (rows as Iterable).first.phonenumbers;
+      contact.id = rows.first.id;
+      return contact;
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
+  }
+
+  /**
+   *
+   */
+  Future<Iterable<Model.PhoneNumber>> phones(
+      int contactId, int receptionId) async {
+    String sql = '''
+SELECT
+  phonenumbers
+FROM
+  reception_contacts
+WHERE
+  contact_id = @contactID
+AND
+  reception_id = @receptionID''';
+
+    final Map parameters = {'contactID': contactId, 'receptionID': receptionId};
+
+    try {
+      final Iterable rows = await _connection.query(sql, parameters);
+      if (rows.isEmpty) {
+        throw new Storage.NotFound('No contact found with ID $contactId'
+            ' in reception with ID $receptionId');
+      }
+
+      final Iterable phonesMap = rows.first.phonenumbers;
 
       return phonesMap.map(_mapToPhone);
-    });
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
-  @deprecated
-  Future<Iterable<Model.MessageEndpoint>> endpoints(
-      int contactID, int receptionID) {
-    String sql = '''
-        SELECT address, address_type, confidential, enabled, priority,
-              description
-        FROM messaging_end_points
-        WHERE contact_id = @contactID AND reception_id = @receptionID''';
+  /**
+   *
+   */
+  Future<Iterable<Model.Contact>> listByReception(int receptionId) async {
+    final String sql = '''
+SELECT
+  rcpcon.reception_id,
+  rcpcon.contact_id,
+  rcpcon.attributes,
+  rcpcon.enabled AND con.enabled as enabled,
+  con.full_name,
+  con.contact_type,
+  rcpcon.phonenumbers as phone,
+  rcpcon.status_email as status_email
+FROM
+  contacts con
+JOIN
+  reception_contacts rcpcon
+ON
+  con.id = rcpcon.contact_id
+WHERE
+  rcpcon.reception_id = @receptionid''';
 
-    Map parameters = {'contactID': contactID, 'receptionID': receptionID};
+    final Map parameters = {'receptionid': receptionId};
 
-    return _connection.query(sql, parameters).then((rows) =>
-        (rows as Iterable).map((row) => new Model.MessageEndpoint.empty()
-          ..address = row.address
-          ..type = row.address_type
-          ..confidential = row.confidential
-          ..enabled = row.enabled
-          //..priority = row.priority,
-          ..description = row.description));
+    try {
+      return (await _connection.query(sql, parameters)).map(_rowToContact);
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
-  Future<Iterable<Model.Contact>> listByReception(int receptionId) {
+  /**
+   *
+   */
+  Future<Model.Contact> getByReception(int receptionId, int contactId) async {
     String sql = '''
-    SELECT rcpcon.reception_id,
-           rcpcon.contact_id,
-           rcpcon.attributes,
-           rcpcon.enabled as rcpenabled,
-           con.full_name,
-           con.contact_type,
-           con.enabled as conenabled,
-           rcpcon.phonenumbers as phone,
-           rcpcon.status_email as status_email
-    FROM contacts con
-      JOIN reception_contacts rcpcon on con.id = rcpcon.contact_id
-    WHERE rcpcon.reception_id = @receptionid''';
+SELECT
+  rcpcon.reception_id,
+  rcpcon.contact_id,
+  rcpcon.attributes,
+  rcpcon.enabled AND con.enabled as enabled,
+  con.full_name,
+  con.contact_type,
+  con.enabled as conenabled,
+  rcpcon.phonenumbers as phone,
+  rcpcon.status_email as status_email
+FROM
+  contacts con
+JOIN
+  reception_contacts rcpcon
+ON
+  con.id = rcpcon.contact_id
+WHERE
+  rcpcon.reception_id = @receptionid
+AND
+  rcpcon.contact_id = @contactid''';
 
-    Map parameters = {'receptionid': receptionId};
+    final Map parameters = {'receptionid': receptionId, 'contactid': contactId};
 
-    return _connection
-        .query(sql, parameters)
-        .then((rows) => (rows as Iterable).map(_rowToContact));
-  }
+    try {
+      Iterable rows = await _connection.query(sql, parameters);
 
-  Future<Model.Contact> getByReception(int receptionId, int contactId) {
-    String sql = '''
-      SELECT rcpcon.reception_id,
-             rcpcon.contact_id,
-             rcpcon.attributes,
-             rcpcon.enabled as rcpenabled,
-             con.full_name,
-             con.contact_type,
-             con.enabled as conenabled,
-             rcpcon.phonenumbers as phone,
-             rcpcon.status_email as status_email
-
-          FROM   contacts con
-            JOIN reception_contacts rcpcon on con.id = rcpcon.contact_id
-          WHERE  rcpcon.reception_id = @receptionid
-             AND rcpcon.contact_id = @contactid ;''';
-
-    Map parameters = {'receptionid': receptionId, 'contactid': contactId};
-
-    return _connection.query(sql, parameters).then((rows) {
-      if (rows != null && rows.length == 1) {
-        return (_rowToContact(rows.first));
-      } else {
-        throw new Storage.NotFound(
-            'ContactID: $contactId, ReceptionID: $receptionId');
+      if (rows.isEmpty) {
+        throw new Storage.NotFound('No contact with id: $contactId');
       }
-    }).catchError((error, stackTrace) {
-      if (error is! Storage.NotFound) {
-        log.severe(error, stackTrace);
-      }
-      return new Future.error(error, stackTrace);
-    });
+
+      return _rowToContact(rows.first);
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
   /**
    * Retrieve all contacts from an organization.
    */
-  Future<Iterable<Model.BaseContact>> organizationContacts(int organizationId) {
+  Future<Iterable<Model.BaseContact>> organizationContacts(
+      int organizationId) async {
     String sql = '''
-    SELECT DISTINCT c.id, c.full_name, c.enabled, c.contact_type
-    FROM receptions r
-      JOIN reception_contacts rc on r.id = rc.reception_id
-      JOIN contacts c on rc.contact_id = c.id
-    WHERE r.organization_id = @organization_id
-    ORDER BY c.id
-  ''';
+SELECT DISTINCT
+  c.id,
+  c.full_name,
+  c.enabled,
+  c.contact_type
+FROM
+  receptions r
+JOIN
+  reception_contacts rc
+ON
+  r.id = rc.reception_id
+JOIN
+  contacts c
+ON
+  rc.contact_id = c.id
+WHERE
+  r.organization_id=@organization_id
+ORDER BY
+  c.id''';
 
-    Map parameters = {'organization_id': organizationId};
+    final Map parameters = {'organization_id': organizationId};
 
-    return _connection
-        .query(sql, parameters)
-        .then((Iterable rows) => rows.map(_rowToBaseContact));
+    try {
+      return (await _connection.query(sql, parameters)).map(_rowToBaseContact);
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
   /**
    * Retrieve all organizations id's of a contact.
    */
-  Future<Iterable<int>> organizations(int contactID) {
+  Future<Iterable<int>> organizations(int contactID) async {
     String sql = '''
 SELECT DISTINCT
   organization_id
@@ -280,65 +368,93 @@ JOIN
 ON
   receptions.id = reception_contacts.reception_id
 WHERE
-  reception_contacts.contact_id =@contactID''';
+  reception_contacts.contact_id = @contactID''';
 
-    Map parameters = {'contactID': contactID};
+    final Map parameters = {'contactID': contactID};
 
-    return _connection.query(sql, parameters).then(
-        (rows) => (rows as Iterable).map((var row) => row.organization_id));
+    try {
+      return (await _connection.query(sql, parameters))
+          .map((var row) => row.organization_id as int);
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
   /**
    * Retrieve all reception id's of a contact.
    */
-  Future<Iterable<int>> receptions(int contactID) {
+  Future<Iterable<int>> receptions(int contactID) async {
     String sql = '''
+SELECT
+  reception_id
+FROM
+  reception_contacts
+WHERE
+  contact_id=@contactID''';
 
-    SELECT reception_id
-        FROM reception_contacts
-      WHERE
-      contact_id  =@contactID''';
+    final Map parameters = {'contactID': contactID};
 
-    Map parameters = {'contactID': contactID};
-
-    return _connection
-        .query(sql, parameters)
-        .then((rows) => (rows as Iterable).map((var row) => row.reception_id));
+    try {
+      return (await _connection.query(sql, parameters))
+          .map((var row) => row.reception_id as int);
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
   /**
    * Removes a contact from the database.
    */
-  Future remove(int contactID) {
+  Future remove(int contactID) async {
     String sql = '''
       DELETE FROM contacts
       WHERE id=@id;
     ''';
 
-    Map parameters = {'id': contactID};
-    return _connection.execute(sql, parameters).then((int rowsAffected) =>
-        rowsAffected > 0
-            ? null
-            : new Future.error(new Storage.NotFound('$contactID')));
+    final Map parameters = {'id': contactID};
+
+    try {
+      final int rowsAffected = await _connection.execute(sql, parameters);
+
+      if (rowsAffected == 0) {
+        throw new Storage.NotFound('No contact with id: $contactID');
+      }
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 
-  Future<Model.BaseContact> update(Model.BaseContact contact) {
+  /**
+   * Update a [Contact] in the database.
+   */
+  Future<Model.BaseContact> update(Model.BaseContact contact) async {
     String sql = '''
-    UPDATE contacts
-    SET full_name=@full_name, contact_type=@contact_type, enabled=@enabled
-    WHERE id=@id;
-  ''';
+UPDATE
+  contacts
+SET
+  full_name=@full_name,
+  contact_type=@contact_type,
+  enabled=@enabled
+WHERE
+  id=@id''';
 
-    Map parameters = {
+    final Map parameters = {
       'full_name': contact.fullName,
       'contact_type': contact.contactType,
       'enabled': contact.enabled,
       'id': contact.id
     };
 
-    return _connection.execute(sql, parameters).then((int rowsAffected) =>
-        rowsAffected > 0
-            ? contact
-            : new Future.error(new Storage.NotFound('en')));
+    try {
+      final affectedRows = await _connection.execute(sql, parameters);
+
+      if (affectedRows == 0) {
+        throw new Storage.ServerError('BaseContact not updated');
+      }
+
+      return contact;
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
   }
 }
