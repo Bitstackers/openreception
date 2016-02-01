@@ -134,9 +134,10 @@ Model.Message _rowToMessage(PG.Row row) {
  * the SQL query is hell.
  */
 Model.Contact _rowToContact(PG.Row row) {
-  Iterable<Model.PhoneNumber> phoneIterable = row.phone.isEmpty
-      ? []
-      : row.phone.map((Map map) => new Model.PhoneNumber.fromMap(map));
+  Iterable<Model.PhoneNumber> phoneIterable = row.phone.isNotEmpty
+      ? (row.phone as Iterable)
+          .map((Map map) => new Model.PhoneNumber.fromMap(map))
+      : [];
 
   List backupContacts = [];
   List emailaddresses = [];
