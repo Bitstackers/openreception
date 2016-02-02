@@ -116,6 +116,7 @@ Future<io.HttpServer> start({String hostname: '0.0.0.0', int port: 4030}) {
     ..delete('/user/{uid}/group/{gid}', userController.leaveGroup)
     ..get('/user/{uid}/group/{gid}', userController.userGroup)
     ..get('/user/identity/{identity}', userController.userIdentity)
+    ..get('/user/identity/{identity}@{domain}', userController.userIdentity)
     ..get('/user/{uid}/identity', userController.userIdentities)
     ..post('/user/{uid}/identity', userController.addIdentity)
     ..delete('/user/{uid}/identity/{identity}', userController.removeIdentity)

@@ -197,7 +197,12 @@ class User {
    * Response handler for the user of an identity.
    */
   Future<shelf.Response> userIdentity(shelf.Request request) async {
-    final String identity = shelf_route.getPathParameter(request, 'uid');
+    String identity = shelf_route.getPathParameter(request, 'identity');
+    String domain = shelf_route.getPathParameter(request, 'domain');
+
+    if (domain != null) {
+      identity = domain.isEmpty ? identity : '$identity@$domain';
+    }
 
     try {
       return _okJson(await _userStore.getByIdentity(identity));
