@@ -115,6 +115,8 @@
             #calendar-editor .generic-widget-body div {
               flex-grow: 1;
               display: flex;
+              min-height: 0; /* Chrome 48 bug */
+              min-width: 0; /* Chrome 48 bug */
             }
 
             #calendar-editor .padding03 {
