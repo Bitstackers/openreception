@@ -27,8 +27,6 @@ import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
 import 'package:openreception_framework/storage.dart' as Storage;
 
-//import 'package:http_parser/http_parser.dart';
-
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
@@ -108,6 +106,6 @@ Future<io.HttpServer> start({String hostname: '0.0.0.0', int port: 4200}) {
 String _tokenFrom(shelf.Request request) =>
     request.requestedUri.queryParameters['token'];
 
-Map<int, List<CompatibleWebSocket>> clientRegistry =
-    new Map<int, List<CompatibleWebSocket>>();
+Map<int, List<WebSocketChannel>> clientRegistry =
+    new Map<int, List<WebSocketChannel>>();
 Service.Authentication _authService = null;

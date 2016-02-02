@@ -32,7 +32,7 @@ shelf.Response _clientError(String reason) =>
 
 abstract class Notification {
   static const String className = '$libraryName.Notification';
-  static final Logger log = new Logger(Notification.className);
+  static final Logger _log = new Logger(Notification.className);
   static List _stats = [];
   static int _sendCountBuffer = 0;
 
@@ -69,7 +69,7 @@ abstract class Notification {
 
       return _okJson(_sendToAll(contentMap));
     } catch (error, stackTrace) {
-      log.warning('Bad client request', error, stackTrace);
+      _log.warning('Bad client request', error, stackTrace);
       return _clientError('Malformed JSON body');
     }
   }
@@ -81,23 +81,25 @@ abstract class Notification {
     int success = 0;
     int failure = 0;
 
-    clientRegistry.keys.map((int uid) {
-      return clientRegistry[uid].map((CompatibleWebSocket ws) {
-        try {
-          String contentString = JSON.encode(content);
+    List<WebSocketChannel> recipientSockets = clientRegistry.values.fold(
+        new List<WebSocketChannel>(),
+        (combined, websockets) => combined..addAll(websockets));
 
-          ws.add(contentString);
-          _sendCountBuffer += contentString.codeUnits.length;
-          success++;
-          return true;
-        } catch (error, stackTrace) {
-          failure++;
-          log.severe("Failed to send message to client $uid - error: $error");
-          log.severe(error, stackTrace);
-          return false;
-        }
-      }).toList();
-    }).toList();
+    recipientSockets.forEach(((WebSocketChannel ws) {
+      try {
+        String contentString = JSON.encode(content);
+
+        ws.sink.add(contentString);
+        _sendCountBuffer += contentString.codeUnits.length;
+        success++;
+        return true;
+      } catch (error, stackTrace) {
+        failure++;
+        _log.severe("Failed to send message to client $uid - error: $error");
+        _log.severe(error, stackTrace);
+        return false;
+      }
+    }));
 
     return {
       "status": {"success": success, "failed": failure}
@@ -108,33 +110,33 @@ abstract class Notification {
    * WebSocket registration handling.
    * Registers and un-registers the the websocket in the global registry.
    */
-  static Map _register(CompatibleWebSocket webSocket, int uid) {
-    log.info('New WebSocket connection from uid $uid');
+  static Map _register(WebSocketChannel webSocket, int uid) {
+    _log.info('New WebSocket connection from uid $uid');
 
     /// Make sure that there is a list to insert into.
     if (clientRegistry[uid] == null) {
-      clientRegistry[uid] = new List<CompatibleWebSocket>();
+      clientRegistry[uid] = new List<WebSocketChannel>();
     }
     clientRegistry[uid].add(webSocket);
 
     /// Listen for incoming data. We expect the data to be a JSON-encoded String.
-    webSocket.map((string) {
+    webSocket.stream.map((string) {
       try {
         return JSON.decode(string);
       } catch (error) {
         return {"status": "Malformed content - expected JSON string."};
       }
     }).listen((json) {
-      log.warning(
+      _log.warning(
           'Client $uid tried to send us a message. This is not supported, echoing back.');
-      webSocket.add(JSON.encode(json)); // Echo.
+      webSocket.sink.add(JSON.encode(json)); // Echo.
     }, onError: (error, stackTrace) {
-      log.severe('Client $uid sent us a very malformed message. $error : ',
+      _log.severe('Client $uid sent us a very malformed message. $error : ',
           stackTrace);
       clientRegistry[uid].remove(webSocket);
       webSocket.close(io.WebSocketStatus.UNSUPPORTED_DATA, "Bad request");
     }, onDone: () {
-      log.info(
+      _log.info(
           'Disconnected WebSocket connection from uid $uid', "handleWebsocket");
       clientRegistry[uid].remove(webSocket);
 
@@ -174,7 +176,7 @@ abstract class Notification {
     try {
       json = JSON.decode(await request.readAsString());
     } catch (error, stackTrace) {
-      log.warning('Bad client request', error, stackTrace);
+      _log.warning('Bad client request', error, stackTrace);
       return _clientError('Malformed JSON body');
     }
 
@@ -190,8 +192,8 @@ abstract class Notification {
     recipients.forEach((int uid) {
       if (clientRegistry[uid] != null) {
         int count = 0;
-        clientRegistry[uid].forEach((CompatibleWebSocket clientSocket) {
-          clientSocket.add(json['message']);
+        clientRegistry[uid].forEach((WebSocketChannel clientSocket) {
+          clientSocket.sink.add(json['message']);
           count++;
         });
         delivery_status.add({'uid': uid, 'sent': count});
