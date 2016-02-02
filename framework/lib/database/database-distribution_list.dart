@@ -76,8 +76,8 @@ AND
   /**
    *
    */
-  Future<Model.DistributionListEntry> addRecipient(int ownerReceptionId,
-      int ownerContactId, Model.DistributionListEntry recipient) async {
+  Future<Model.DistributionListEntry> addRecipient(
+      int ownerReceptionId, int ownerContactId, Model.DistributionListEntry recipient) async {
     String sql = '''
 INSERT INTO
   distribution_list
