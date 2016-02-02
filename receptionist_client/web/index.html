@@ -1019,6 +1019,8 @@
 
                   #reception-commands .generic-widget-list {
                     outline: 0;
+                    min-height: 0; /* Chrome 48 bug */
+                    min-width: 0; /* Chrome 48 bug */
                   }
                 </style>
 
@@ -1117,14 +1119,16 @@
 
                   #message-compose .recipients ol li {
                     padding: 0.1em;
+                    min-height: 0; /* Chrome 48 bug */
+                    min-width: 0; /* Chrome 48 bug */
                   }
 
                   #message-compose .recipients .cc:before {
-                    content: '(cc) '
+                    content: '(cc) ';
                   }
 
                   #message-compose .recipients .bcc:before {
-                    content: '(bcc) '
+                    content: '(bcc) ';
                   }
 
                   /*#message-compose .name-hint {
@@ -1133,6 +1137,8 @@
 
                   #message-compose .names {
                     margin-top: 0.3em;
+                    min-height: 0; /* Chrome 48 bug */
+                    min-width: 0; /* Chrome 48 bug */
                   }
 
                   #message-compose .names input.caller {
@@ -1145,6 +1151,8 @@
 
                   #message-compose .phone-numbers {
                     margin-top: 0.7em;
+                    min-height: 0; /* Chrome 48 bug */
+                    min-width: 0; /* Chrome 48 bug */
                   }
 
                   #message-compose .phone-numbers input.landline {
@@ -1181,6 +1189,8 @@
                   #message-compose .checks-and-buttons {
                     margin-top: 0.7em;
                     padding: 0 0 0 0.5em;
+                    min-height: 0; /* Chrome 48 bug */
+                    min-width: 0; /* Chrome 48 bug */
                   }
 
                   #message-compose .checks-and-buttons .checks {
