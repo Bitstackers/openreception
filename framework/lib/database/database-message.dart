@@ -344,7 +344,7 @@ WHERE
    * Removes a single message from the database.
    */
   Future remove(int messageId) async {
-    final sqlMacro = 'WITH $sqlQueueStatus,$sqlSentStatus';
+    final String sqlMacro = 'WITH $sqlQueueStatus,$sqlSentStatus';
 
     String sql = '''
 $sqlMacro,
