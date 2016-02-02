@@ -46,22 +46,32 @@ class UICalendarEditor extends UIModel {
   ButtonElement get _deleteButton => _root.querySelector('.delete');
   SpanElement get _entryDuration =>
       _root.querySelector('div.entry-duration-container .entry-duration');
-  ElementList<Element> get _inputFields => _root.querySelectorAll('[input-field]');
+  ElementList<InputElement> get _inputFields => _root.querySelectorAll('input');
   ButtonElement get _saveButton => _root.querySelector('.save');
-  InputElement get _startHourInput => _root.querySelector('div.entry-start-container .start-hour');
+  InputElement get _startHourInput =>
+      _root.querySelector('div.entry-start-container .start-hour');
   InputElement get _startMinuteInput =>
       _root.querySelector('div.entry-start-container .start-minute');
-  InputElement get _startDayInput => _root.querySelector('div.entry-start-container .start-day');
+  InputElement get _startDayInput =>
+      _root.querySelector('div.entry-start-container .start-day');
   InputElement get _startMonthInput =>
       _root.querySelector('div.entry-start-container .start-month');
-  SpanElement get _startReadable => _root.querySelector('div.readable-container .readable-start');
-  SpanElement get _stopReadable => _root.querySelector('div.readable-container .readable-stop');
-  InputElement get _startYearInput => _root.querySelector('div.entry-start-container .start-year');
-  InputElement get _stopHourInput => _root.querySelector('div.entry-stop-container .stop-hour');
-  InputElement get _stopMinuteInput => _root.querySelector('div.entry-stop-container .stop-minute');
-  InputElement get _stopDayInput => _root.querySelector('div.entry-stop-container .stop-day');
-  InputElement get _stopMonthInput => _root.querySelector('div.entry-stop-container .stop-month');
-  InputElement get _stopYearInput => _root.querySelector('div.entry-stop-container .stop-year');
+  SpanElement get _startReadable =>
+      _root.querySelector('div.readable-container .readable-start');
+  SpanElement get _stopReadable =>
+      _root.querySelector('div.readable-container .readable-stop');
+  InputElement get _startYearInput =>
+      _root.querySelector('div.entry-start-container .start-year');
+  InputElement get _stopHourInput =>
+      _root.querySelector('div.entry-stop-container .stop-hour');
+  InputElement get _stopMinuteInput =>
+      _root.querySelector('div.entry-stop-container .stop-minute');
+  InputElement get _stopDayInput =>
+      _root.querySelector('div.entry-stop-container .stop-day');
+  InputElement get _stopMonthInput =>
+      _root.querySelector('div.entry-stop-container .stop-month');
+  InputElement get _stopYearInput =>
+      _root.querySelector('div.entry-stop-container .stop-year');
   ElementList<Element> get _tabElements => _root.querySelectorAll('[tabindex]');
   TextAreaElement get _textArea => _root.querySelector('textarea');
 
@@ -76,7 +86,8 @@ class UICalendarEditor extends UIModel {
     if (userName == null && timestamp == null) {
       _authorStamp.text = '';
     } else {
-      _authorStamp.text = '${userName} @ ${ORUtil.humanReadableTimestamp(timestamp, _weekDays)}';
+      _authorStamp.text =
+          '${userName} @ ${ORUtil.humanReadableTimestamp(timestamp, _weekDays)}';
     }
   }
 
@@ -145,7 +156,8 @@ class UICalendarEditor extends UIModel {
 
     /// Enables focused element memory for this widget.
     _tabElements.forEach((Element element) {
-      element.onFocus.listen((Event event) => _myFocusElement = (event.target as HtmlElement));
+      element.onFocus.listen(
+          (Event event) => _myFocusElement = (event.target as HtmlElement));
     });
 
     _textArea.onInput.listen((_) => _toggleButtons());
@@ -193,6 +205,9 @@ class UICalendarEditor extends UIModel {
       element.classes.remove('bad-input');
     });
 
+    _textArea.value = '';
+    _textArea.classes.remove('bad-input');
+
     _deleteButton.disabled = true;
     _saveButton.disabled = true;
   }
@@ -206,7 +221,8 @@ class UICalendarEditor extends UIModel {
       'Ctrl+s': (_) => _saveButton.click()
     };
 
-    _hotKeys.registerKeys(_keyboard, _defaultKeyMap(myKeys: {'Esc': (_) => _cancelButton.click()}));
+    _hotKeys.registerKeys(_keyboard,
+        _defaultKeyMap(myKeys: {'Esc': (_) => _cancelButton.click()}));
     _hotKeys.registerKeysPreventDefault(_keyboard, myKeys);
   }
 
@@ -215,12 +231,17 @@ class UICalendarEditor extends UIModel {
    * last tab element as this depends on the state of the buttons.
    */
   void _toggleButtons() {
-    final bool toggle = !_inputFields.any((element) => element.value.isEmpty) &&
-        !_inputFields.any((element) => element.validity.badInput) &&
+    bool inputIsEmpty(InputElement input) => input.value.trim().isEmpty;
+    bool inputIsInvalid(InputElement input) => input.validity.badInput;
+
+    final bool toggle = !_inputFields.any(inputIsEmpty) &&
+        !_inputFields.any(inputIsInvalid) &&
+        !_textArea.value.trim().isEmpty &&
+        !_textArea.validity.badInput &&
         _harvestStartDateTime.isBefore(_harvestStopDateTime);
 
-    _deleteButton.disabled =
-        !toggle || (_loadedEntry != null && _loadedEntry.ID == ORModel.CalendarEntry.noID);
+    _deleteButton.disabled = !toggle ||
+        (_loadedEntry != null && _loadedEntry.ID == ORModel.CalendarEntry.noID);
     _saveButton.disabled = !toggle;
 
     _myLastTabElement = toggle ? _saveButton : _cancelButton;

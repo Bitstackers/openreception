@@ -45,7 +45,8 @@ class Call {
   /**
    * Constructor.
    */
-  Call(ORService.CallFlowControl this._service, Model.AppClientState this._appState);
+  Call(ORService.CallFlowControl this._service,
+      Model.AppClientState this._appState);
 
   /**
    * Return true if the Call object is already busy talking to the server.
@@ -75,8 +76,8 @@ class Call {
    *
    * Setting [contextCallId] creates a reference between the newly created call and the given id.
    */
-  Future<ORModel.Call> dial(
-      ORModel.PhoneNumber phoneNumber, ORModel.Reception reception, ORModel.Contact contact,
+  Future<ORModel.Call> dial(ORModel.PhoneNumber phoneNumber,
+      ORModel.Reception reception, ORModel.Contact contact,
       {String contextCallId: ''}) async {
     _log.info('Dialing ${phoneNumber.value}.');
     final ORModel.OriginationContext context = new ORModel.OriginationContext()
@@ -89,7 +90,9 @@ class Call {
 
     _command.fire(CallCommand.dial);
 
-    return await _service.originate(phoneNumber.value, context).then((ORModel.Call call) {
+    return await _service
+        .originate(phoneNumber.value, context)
+        .then((ORModel.Call call) {
       _command.fire(CallCommand.dialSuccess);
       _appState.activeCall = call;
 
@@ -105,10 +108,11 @@ class Call {
   /**
    * Returns the first parked call.
    */
-  Future<ORModel.Call> _firstParkedCall() =>
-      _service.callList().then((Iterable<ORModel.Call> calls) => calls.firstWhere(
+  Future<ORModel.Call> _firstParkedCall() => _service.callList().then(
+      (Iterable<ORModel.Call> calls) => calls.firstWhere(
           (ORModel.Call call) =>
-              call.assignedTo == _appState.currentUser.ID && call.state == ORModel.CallState.Parked,
+              call.assignedTo == _appState.currentUser.ID &&
+              call.state == ORModel.CallState.Parked,
           orElse: () => ORModel.Call.noCall));
 
   /**
@@ -207,8 +211,10 @@ class Call {
   /**
    * Tries to pickup the first parked call and returns it if successful.
    */
-  Future<ORModel.Call> pickupFirstParkedCall() => _firstParkedCall().then(
-      (ORModel.Call parkedCall) => parkedCall != null ? pickup(parkedCall) : ORModel.Call.noCall);
+  Future<ORModel.Call> pickupFirstParkedCall() =>
+      _firstParkedCall().then((ORModel.Call parkedCall) =>
+          parkedCall != null ? pickup(parkedCall) : ORModel.Call.noCall)
+      as Future<ORModel.Call>;
 
   /**
    * Requests the next available call, and returns it if successful.
@@ -219,7 +225,8 @@ class Call {
         call.assignedTo == ORModel.User.noID && !call.locked;
 
     Iterable<ORModel.Call> calls = await _service.callList();
-    ORModel.Call foundCall = calls.firstWhere(availableForPickup, orElse: () => null);
+    ORModel.Call foundCall =
+        calls.firstWhere(availableForPickup, orElse: () => null);
 
     _busy = false;
 

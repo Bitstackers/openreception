@@ -42,6 +42,7 @@ class HotKeys {
   final Bus<Html.KeyboardEvent> _ctrlAltEnter = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _ctrlAltP = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _ctrlNumMinus = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _ctrlSpace = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _f1 = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _f7 = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _f8 = new Bus<Html.KeyboardEvent>();
@@ -70,6 +71,7 @@ class HotKeys {
   Stream<Html.KeyboardEvent> get onCtrlAltEnter => _ctrlAltEnter.stream;
   Stream<Html.KeyboardEvent> get onCtrlAltP => _ctrlAltP.stream;
   Stream<Html.KeyboardEvent> get onCtrlNumMinus => _ctrlNumMinus.stream;
+  Stream<Html.KeyboardEvent> get onCtrlSpace => _ctrlSpace.stream;
   Stream<Html.KeyboardEvent> get onF1 => _f1.stream;
   Stream<Html.KeyboardEvent> get onF7 => _f7.stream;
   Stream<Html.KeyboardEvent> get onF8 => _f8.stream;
@@ -109,6 +111,7 @@ class HotKeys {
       'Ctrl+k': _null, // Blackhole this
       'Ctrl+l': _null, // Blackhole this
       'Ctrl+s': _null, // Blackhole this
+      'Ctrl+Space': (event) => _ctrlSpace.fire(event),
       [Key.Ctrl, Key.NumPlus]: _null, // Blackhole this
       'Ctrl+Alt+P': (event) => _ctrlAltP.fire(event),
       [Key.Ctrl, Key.NumMinus]: (event) => _ctrlNumMinus.fire(event),
@@ -132,7 +135,8 @@ class HotKeys {
   /**
    * Register the [keyMap] keybindings to [keyboard].
    */
-  void registerKeys(Keyboard keyboard, Map<dynamic, Html.EventListener> keyMap) {
+  void registerKeys(
+      Keyboard keyboard, Map<dynamic, Html.EventListener> keyMap) {
     keyMap.forEach((dynamic key, Html.EventListener callback) {
       keyboard.register(key, callback);
     });
@@ -142,7 +146,8 @@ class HotKeys {
    * Register the [keyMap] key bindings to [keyboard]. Prevent default on all
    * key events.
    */
-  void registerKeysPreventDefault(Keyboard keyboard, Map<dynamic, Html.EventListener> keyMap) {
+  void registerKeysPreventDefault(
+      Keyboard keyboard, Map<dynamic, Html.EventListener> keyMap) {
     keyMap.forEach((dynamic key, Html.EventListener callback) {
       keyboard.register(key, (Html.Event event) {
         event.preventDefault();
@@ -184,6 +189,7 @@ class SimulationHotKeys {
   void ctrlAltEnter() => _hotKeys._ctrlAltEnter.fire(null);
   void ctrlAltP() => _hotKeys._ctrlAltP.fire(null);
   void ctrlNumMinus() => _hotKeys._ctrlNumMinus.fire(null);
+  void ctrlSpace() => _hotKeys._ctrlSpace.fire(null);
   void f1() => _hotKeys._f1.fire(null);
   void f7() => _hotKeys._f7.fire(null);
   void f8() => _hotKeys._f8.fire(null);

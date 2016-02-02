@@ -9,6 +9,6 @@ distclean:
 	-rm -r build
 
 pub_upgrade:
-	pub --no-package-symlinks upgrade
+	pub upgrade
 
 .PHONY: build

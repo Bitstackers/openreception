@@ -17,7 +17,8 @@ part of model;
  * Provides methods for manipulating the contact selector UI widget.
  */
 class UIContactSelector extends UIModel {
-  final Bus<ORModel.Contact> _bus = new Bus<ORModel.Contact>();
+  final Bus<ContactWithFilterContext> _bus =
+      new Bus<ContactWithFilterContext>();
   final DivElement _myRoot;
 
   /**
@@ -28,9 +29,9 @@ class UIContactSelector extends UIModel {
     _observers();
   }
 
-  @override HtmlElement get _firstTabElement => _filter;
-  @override HtmlElement get _focusElement => _filter;
-  @override HtmlElement get _lastTabElement => _filter;
+  @override HtmlElement get _firstTabElement => _filterInput;
+  @override HtmlElement get _focusElement => _filterInput;
+  @override HtmlElement get _lastTabElement => _filterInput;
   @override HtmlElement get _listTarget => _list;
   /**
    * Return the mousedown click event stream for this widget. We capture
@@ -42,14 +43,16 @@ class UIContactSelector extends UIModel {
   @override HtmlElement get _root => _myRoot;
 
   OListElement get _list => _root.querySelector('.generic-widget-list');
-  InputElement get _filter => _root.querySelector('.filter');
+  InputElement get _filterInput => _root.querySelector('.filter');
+  String get filterInputValue => _filterInput.value.toLowerCase();
+  String get trimmedFilterInputValue => filterInputValue.trim();
 
   /**
    * Remove all entries from the contact list.
    */
   void clear() {
     _list.children.clear();
-    _filter.value = '';
+    _filterInput.value = '';
   }
 
   /**
@@ -57,7 +60,7 @@ class UIContactSelector extends UIModel {
    * empty string.
    */
   set contacts(Iterable<ORModel.Contact> contacts) {
-    _filter.value = '';
+    _filterInput.value = '';
 
     final List<LIElement> list = new List<LIElement>();
 
@@ -90,88 +93,123 @@ class UIContactSelector extends UIModel {
   }
 
   /**
-   * Fire a [Contact] on [_bus]. The [Contact] is constructed from JSON found
-   * in the data-object attribute of [li].
+   * Fire a [ContactWithFilterContext] on [_bus]. The wrapped [Contact] is
+   * constructed from JSON found in the data-object attribute of [li].
    */
   void _contactSelectCallback(LIElement li) {
-    _bus.fire(new ORModel.Contact.fromMap(JSON.decode(li.dataset['object'])));
+    _bus.fire(new ContactWithFilterContext(
+        new ORModel.Contact.fromMap(JSON.decode(li.dataset['object'])),
+        state,
+        filterInputValue));
   }
 
   /**
-   * Filter the contact list whenever the user enters data into the [_filter]
+   * Filter the contact list whenever the user enters data into the [_filterInput]
    * input field.
    */
-  void filter() {
-    final String filter = _filter.value.toLowerCase();
-    final String trimmedFilter = filter.trim();
+  void _filter() {
+    switch (state) {
+      case filterState.empty:
+        _list.children
+            .forEach((Element li) => li.classes.toggle('hide', false));
+        _list.classes.toggle('zebra', true);
+        break;
+      case filterState.firstInitial:
+        _list.classes.toggle('zebra', false);
 
-    if (filter.length == 0 || trimmedFilter.isEmpty) {
-      /// Empty filter. Remove .hide from all list elements.
-      _list.children.forEach((Element li) => li.classes.toggle('hide', false));
-      _list.classes.toggle('zebra', true);
-    } else if (trimmedFilter.length == 1 && !filter.startsWith(' ')) {
-      /// Pattern: one non-space character followed by zero or more spaces
-      _list.classes.toggle('zebra', false);
+        _list.children.forEach((Element li) {
+          if (li.dataset['firstinitial'] == trimmedFilterInputValue) {
+            li.classes.toggle('hide', false);
+          } else {
+            li.classes.toggle('hide', true);
+          }
+        });
+        break;
+      case filterState.otherInitials:
+        _list.classes.toggle('zebra', false);
 
-      _list.children.forEach((Element li) {
-        if (li.dataset['firstinitial'] == trimmedFilter) {
-          li.classes.toggle('hide', false);
-        } else {
-          li.classes.toggle('hide', true);
-        }
-      });
-    } else if (trimmedFilter.length == 1 && filter.startsWith(new RegExp(r'\s+[^ ]'))) {
-      /// Pattern: one or more spaces followed by one non-space character
-      _list.classes.toggle('zebra', false);
+        _list.children.forEach((Element li) {
+          if (li.dataset['otherinitials'].contains(trimmedFilterInputValue)) {
+            li.classes.toggle('hide', false);
+          } else {
+            li.classes.toggle('hide', true);
+          }
+        });
+        break;
+      case filterState.initials:
+        _list.classes.toggle('zebra', false);
 
-      _list.children.forEach((Element li) {
-        if (li.dataset['otherinitials'].contains(trimmedFilter)) {
-          li.classes.toggle('hide', false);
-        } else {
-          li.classes.toggle('hide', true);
-        }
-      });
-    } else if (trimmedFilter.length == 3 && trimmedFilter.startsWith(new RegExp(r'[^ ]\s[^ ]'))) {
-      /// Pattern: one character, one space, one character
-      _list.classes.toggle('zebra', false);
+        _list.children.forEach((Element li) {
+          if (li.dataset['firstinitial'] ==
+                  trimmedFilterInputValue.substring(0, 1) &&
+              li.dataset['otherinitials']
+                  .contains(trimmedFilterInputValue.substring(2))) {
+            li.classes.toggle('hide', false);
+          } else {
+            li.classes.toggle('hide', true);
+          }
+        });
+        break;
+      case filterState.tag:
+        final List<String> parts = trimmedFilterInputValue.split(' ');
 
-      _list.children.forEach((Element li) {
-        if (li.dataset['firstinitial'] == trimmedFilter.substring(0, 1) &&
-            li.dataset['otherinitials'].contains(trimmedFilter.substring(2))) {
-          li.classes.toggle('hide', false);
-        } else {
-          li.classes.toggle('hide', true);
-        }
-      });
-    } else {
-      /// Split filter string on space and search for contacts that have all
-      /// the resulting parts in their tag list.
-      final List<String> parts = trimmedFilter.split(' ');
+        _list.classes.toggle('zebra', false);
 
-      _list.classes.toggle('zebra', false);
-
-      _list.children.forEach((Element li) {
-        if (parts.every((String part) => li.dataset['tags'].contains(part))) {
-          li.classes.toggle('hide', false);
-        } else {
-          li.classes.toggle('hide', true);
-        }
-      });
+        _list.children.forEach((Element li) {
+          if (parts.every((String part) => li.dataset['tags'].contains(part))) {
+            li.classes.toggle('hide', false);
+          } else {
+            li.classes.toggle('hide', true);
+          }
+        });
+        break;
     }
 
     if (_list.children.isNotEmpty) {
       /// Select the first visible item on the list
-      _markSelected(_scanForwardForVisibleElement(_list.children.first));
+      _markSelected(_scanForwardForVisibleElement(_list.children.first),
+          alwaysFire: true);
     }
+  }
+
+  /**
+   * Return the state of the filter input. This is defined based on the pattern
+   * of the field value.
+   */
+  filterState get state {
+    filterState s;
+
+    if (filterInputValue.isEmpty || trimmedFilterInputValue.isEmpty) {
+      /// Empty filter
+      s = filterState.empty;
+    } else if (!filterInputValue.startsWith(' ') &&
+        trimmedFilterInputValue.length == 1) {
+      /// Pattern: one non-space character followed by zero or more spaces
+      s = filterState.firstInitial;
+    } else if (trimmedFilterInputValue.length == 1 &&
+        filterInputValue.startsWith(new RegExp(r'\s+[^ ]'))) {
+      /// Pattern: one or more spaces followed by one non-space character
+      s = filterState.otherInitials;
+    } else if (trimmedFilterInputValue.length == 3 &&
+        trimmedFilterInputValue.startsWith(new RegExp(r'[^ ]\s[^ ]'))) {
+      /// Pattern: one character, one space, one character
+      s = filterState.initials;
+    } else {
+      /// Split filter string on space and search for contacts that have all
+      /// the resulting parts in their tag list.
+      s = filterState.tag;
+    }
+
+    return s;
   }
 
   /**
    * Observers
    */
   void _observers() {
-    _filter.onKeyDown.listen(_keyboard.press);
+    _filterInput.onKeyDown.listen(_keyboard.press);
 
-    _filter.onInput.listen((Event _) => filter());
+    _filterInput.onInput.listen((Event _) => _filter());
 
     /// NOTE (TL): Don't switch this to _root.onClick. We need the mousedown
     /// event, not the mouseclick event. We want to keep focus on the filter at
@@ -180,17 +218,17 @@ class UIContactSelector extends UIModel {
   }
 
   /**
-   * Fires the selected [Contact].
+   * Fires the selected [ContactWithFilterContext].
    */
-  Stream<ORModel.Contact> get onSelect => _bus.stream;
+  Stream<ContactWithFilterContext> get onSelect => _bus.stream;
 
   /**
    * Remove selections, scroll to top, empty filter input and then select the
    * first contact.
    */
   void _reset(Event _) {
-    _filter.value = '';
-    filter();
+    _filterInput.value = '';
+    _filter();
     selectFirstContact();
   }
 
@@ -216,7 +254,8 @@ class UIContactSelector extends UIModel {
     if (_list.children.isNotEmpty) {
       _markSelected(_scanForwardForVisibleElement(_list.children.first));
     } else {
-      _bus.fire(new ORModel.Contact.empty());
+      _bus.fire(new ContactWithFilterContext(
+          new ORModel.Contact.empty(), state, filterInputValue));
     }
   }
 
@@ -225,7 +264,7 @@ class UIContactSelector extends UIModel {
    * of the [event].
    */
   void _selectFromClick(MouseEvent event) {
-    if (event.target != _filter) {
+    if (event.target != _filterInput) {
       /// NOTE (TL): This keeps focus on the _filter field, despite clicks on
       /// other elements.
       event.preventDefault();
@@ -242,6 +281,7 @@ class UIContactSelector extends UIModel {
   void _setupLocalKeys() {
     final Map<String, EventListener> bindings = {'Esc': _reset};
 
-    _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
+    _hotKeys.registerKeysPreventDefault(
+        _keyboard, _defaultKeyMap(myKeys: bindings));
   }
 }
