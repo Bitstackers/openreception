@@ -25,12 +25,24 @@ import 'package:openreception_framework/model.dart' as ORModel;
 
 _Simulation simulation = new _Simulation();
 
-Controller.SimulationHotKeys key = new Controller.SimulationHotKeys(new Controller.HotKeys());
+Controller.SimulationHotKeys key =
+    new Controller.SimulationHotKeys(new Controller.HotKeys());
 
 enum ReceptionistState { idle, hunting, activeCall, parkedCall, receivingCall }
 
 ///Important. Fill out this one with actual PSTN numbers.
-List<String> calleeNumbers = [];
+List<String> calleeNumbers = [
+  "1200@10.10.1.118:5100",
+  "1201@10.10.1.118:5101",
+  "1202@10.10.1.118:5102",
+  "1203@10.10.1.118:5103",
+  "1204@10.10.1.118:5104",
+  "1205@10.10.1.118:5105",
+  "1206@10.10.1.118:5106",
+  "1207@10.10.1.118:5107",
+  "1208@10.10.1.118:5108",
+  "1209@10.10.1.118:5109",
+];
 
 /**
  * Automated simulation of the UI.
@@ -74,7 +86,8 @@ class _Simulation {
   InputElement get _pstnInputField => querySelector('#contact-data input.pstn');
 
   bool get isInCall => querySelector('.greeting').classes.contains('incall');
-  bool get hasParkedCalls => querySelector('.greeting').classes.contains('incall');
+  bool get hasParkedCalls =>
+      querySelector('.greeting').classes.contains('incall');
 
   bool get callsInCallQueue => callQueue.children.length > 0;
 
@@ -106,18 +119,21 @@ class _Simulation {
 
     if (isInCall) {
       final Duration delay = new Duration(milliseconds: randomResponseTime);
-      log.info('Active call detected, hanging up after ${delay.inMilliseconds}ms');
+      log.info(
+          'Active call detected, hanging up after ${delay.inMilliseconds}ms');
       new Future.delayed(delay, hangupCall);
     } else if (hasLocalCalls) {
       state = ReceptionistState.parkedCall;
       final Duration delay = new Duration(milliseconds: randomResponseTime);
-      log.info('Calls detected in local call list, hanging up after ${delay.inMilliseconds}ms');
+      log.info(
+          'Calls detected in local call list, hanging up after ${delay.inMilliseconds}ms');
 
       new Future.delayed(delay, unParkAndHangup);
     } else if (callsInCallQueue) {
       state = ReceptionistState.hunting;
       final Duration delay = new Duration(milliseconds: randomResponseTime);
-      log.info('Calls detected in call list, hunting one after ${delay.inMilliseconds}ms');
+      log.info(
+          'Calls detected in call list, hunting one after ${delay.inMilliseconds}ms');
 
       new Future.delayed(delay, tryPickup);
     }
@@ -142,10 +158,12 @@ class _Simulation {
    *
    */
   Future continouslyPickup() async {
-    Future tryWait() => _callController.commandStream.first.then((Controller.CallCommand command) {
+    Future tryWait() => _callController.commandStream.first
+            .then((Controller.CallCommand command) {
           log.info('Got $command');
           if (command != Controller.CallCommand.pickup) {
-            throw new StateError('Expected pickup command, but recieved $command');
+            throw new StateError(
+                'Expected pickup command, but recieved $command');
           }
 
           return command;
@@ -192,13 +210,15 @@ class _Simulation {
         log.shout('Pickup failed while still in call, hangin it up in 1s');
         new Future.delayed(new Duration(milliseconds: 1000), hangupCall);
       } else {
-        log.shout('Call was hung up before we could park it, returning to idle');
+        log.shout(
+            'Call was hung up before we could park it, returning to idle');
         state = ReceptionistState.idle;
       }
       return;
     }
 
-    final Controller.CallCommand response = await _callController.commandStream.first;
+    final Controller.CallCommand response =
+        await _callController.commandStream.first;
 
     if (response == Controller.CallCommand.pickupSuccess) {
       log.info('Got a call, expecting the UI to update.');
@@ -227,13 +247,15 @@ class _Simulation {
         log.shout('Park failed while still in call, hangin it up in 1s');
         new Future.delayed(new Duration(milliseconds: 1000), hangupCall);
       } else {
-        log.shout('Call was hung up before we could park it, returning to idle');
+        log.shout(
+            'Call was hung up before we could park it, returning to idle');
         state = ReceptionistState.idle;
       }
       return;
     }
 
-    final Controller.CallCommand response = await _callController.commandStream.first;
+    final Controller.CallCommand response =
+        await _callController.commandStream.first;
 
     if (response == Controller.CallCommand.pickupSuccess) {
       log.info('Got a call, expecting the UI to update.');
@@ -316,7 +338,8 @@ class _Simulation {
       throw new StateError('Expected hangup command, but recieved $command');
     }
 
-    final Controller.CallCommand response = await _callController.commandStream.first;
+    final Controller.CallCommand response =
+        await _callController.commandStream.first;
 
     if (response == Controller.CallCommand.hangupSuccess) {
       log.info('Hung up call, returning to idle.');
@@ -329,18 +352,37 @@ class _Simulation {
     }
   }
 
+  Future<Controller.CallCommand> _awaitAnyOf(
+          List<Controller.CallCommand> callCommands,
+          {Duration timeout: const Duration(seconds: 10)}) =>
+      _callController.commandStream.firstWhere(callCommands.contains)
+      as Future<Controller.CallCommand>;
+
   Future<bool> _performOrigination() async {
     await new Future.delayed(new Duration(seconds: 1));
     _showPstnBox.click();
     _pstnInputField.value = _randomChoice(calleeNumbers);
 
     await continouslyDial();
-    final Controller.CallCommand response = await _callController.commandStream.first;
+    final Controller.CallCommand response =
+        await _callController.commandStream.first;
 
     if (response == Controller.CallCommand.dialSuccess) {
       log.info('Dial success!');
+
       _state = ReceptionistState.activeCall;
     } else if (response == Controller.CallCommand.dialFailure) {
+      _state = ReceptionistState.ACTIVE_CALL;
+    } else if (response == Controller.CallCommand.PARK) {
+      final Controller.CallCommand response =
+          await _callController.commandStream.first;
+      if (response == Controller.CallCommand.DIALSUCCESS) {
+        log.info('Dial success!');
+        _state = ReceptionistState.ACTIVE_CALL;
+      } else if (response == Controller.CallCommand.DIALFAILURE) {
+        log.warning('Dial failed! Don\'t known what do to next!');
+      }
+    } else if (response == Controller.CallCommand.DIALFAILURE) {
       log.warning('Dial failed! Don\'t known what do to next!');
     } else {
       throw new StateError('Expected dial response, but recieved $response');
@@ -380,7 +422,8 @@ class _Simulation {
       }).timeout(timeout);
     } on TimeoutException {
       if (isInCall) {
-        log.info('Call was not answered within ${timeout.inMilliseconds}ms. Hanging it up');
+        log.info(
+            'Call was not answered within ${timeout.inMilliseconds}ms. Hanging it up');
         await hangupCall();
       }
 
@@ -394,16 +437,11 @@ class _Simulation {
    *
    */
   Future continouslyDial() async {
-    Future tryWait() => _callController.commandStream.first.then((Controller.CallCommand command) {
-          log.info('Got $command');
-          if (command != Controller.CallCommand.dial) {
-            throw new StateError('Expected dial command, but recieved $command');
-          }
-
-          return command;
-        }).timeout(new Duration(milliseconds: 1000));
-
-    key.numMult();
+    Future tryWait() async {
+      Future reply = _awaitAnyOf([Controller.CallCommand.dial]);
+      key.numMult();
+      await reply;
+    }
 
     try {
       await tryWait();
@@ -435,10 +473,12 @@ class _Simulation {
    *
    */
   Future continouslyPark() async {
-    Future tryWait() => _callController.commandStream.first.then((Controller.CallCommand command) {
+    Future tryWait() => _callController.commandStream.first
+            .then((Controller.CallCommand command) {
           log.info('Got $command');
           if (command != Controller.CallCommand.park) {
-            throw new StateError('Expected park command, but recieved $command');
+            throw new StateError(
+                'Expected park command, but recieved $command');
           }
 
           return command;
@@ -478,10 +518,12 @@ class _Simulation {
    *
    */
   Future continouslyUnPark() async {
-    Future tryWait() => _callController.commandStream.first.then((Controller.CallCommand command) {
+    Future tryWait() => _callController.commandStream.first
+            .then((Controller.CallCommand command) {
           log.info('Got $command');
           if (command != Controller.CallCommand.pickup) {
-            throw new StateError('Expected PICKUP command, but recieved $command');
+            throw new StateError(
+                'Expected PICKUP command, but recieved $command');
           }
 
           return command;
@@ -519,10 +561,12 @@ class _Simulation {
    *
    */
   Future _continouslyTransfer() async {
-    Future tryWait() => _callController.commandStream.first.then((Controller.CallCommand command) {
+    Future tryWait() => _callController.commandStream.first
+            .then((Controller.CallCommand command) {
           log.info('Got $command');
           if (command != Controller.CallCommand.transfer) {
-            throw new StateError('Expected TRANSFER command, but recieved $command');
+            throw new StateError(
+                'Expected TRANSFER command, but recieved $command');
           }
 
           return command;
@@ -559,7 +603,8 @@ class _Simulation {
   Future _performTransfer() async {
     await _continouslyTransfer();
 
-    final Controller.CallCommand responsep = await _callController.commandStream.first;
+    final Controller.CallCommand responsep =
+        await _callController.commandStream.first;
 
     if (responsep == Controller.CallCommand.transferSuccess) {
       log.info('Transferred call. Returning to idle');
@@ -585,14 +630,16 @@ class _Simulation {
         log.shout('Park failed while still in call, hangin it up in 1s');
         new Future.delayed(new Duration(milliseconds: 1000), hangupCall);
       } else {
-        log.shout('Call was hung up before we could park it, returning to idle');
+        log.shout(
+            'Call was hung up before we could park it, returning to idle');
         state = ReceptionistState.idle;
       }
       return;
     }
 
     log.info('Waiting response.');
-    final Controller.CallCommand response = await _callController.commandStream.first;
+    final Controller.CallCommand response =
+        await _callController.commandStream.first;
 
     log.info('got response.');
     if (response == Controller.CallCommand.parkSuccess) {
@@ -615,7 +662,8 @@ class _Simulation {
     // Pickup the call again.
     await continouslyUnPark();
 
-    final Controller.CallCommand responsep = await _callController.commandStream.first;
+    final Controller.CallCommand responsep =
+        await _callController.commandStream.first;
 
     if (responsep == Controller.CallCommand.pickupSuccess) {
       log.info('Got a call, expecting the UI to update.');
