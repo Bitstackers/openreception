@@ -36,7 +36,7 @@ class User {
    * Fetches the connection state of a single user.
    */
   Future<ORModel.ClientConnection> connection(ORModel.User user) =>
-      _connectionService.clientConnection(user.ID);
+      _connectionService.clientConnection(user.id);
 
   /**
    *
@@ -48,7 +48,7 @@ class User {
    */
   Future<ORModel.UserStatus> getState(ORModel.User user) async {
     try {
-      return await _user.userStatus(user.ID);
+      return await _user.userStatus(user.id);
     } on ORStorage.NotFound catch (_) {
       return new ORModel.UserStatus();
     }
@@ -62,7 +62,7 @@ class User {
   /**
    * Set the user idle.
    */
-  Future<ORModel.UserStatus> setIdle(ORModel.User user) => _user.userStateReady(user.ID);
+  Future<ORModel.UserStatus> setIdle(ORModel.User user) => _user.userStateReady(user.id);
 
   /**
    * Set the user logged out.
@@ -73,7 +73,7 @@ class User {
   /**
    * Set the user paused.
    */
-  Future<ORModel.UserStatus> setPaused(ORModel.User user) => _user.userStatePaused(user.ID);
+  Future<ORModel.UserStatus> setPaused(ORModel.User user) => _user.userStatePaused(user.id);
 
   /**
    * Fetches a userStates of all users

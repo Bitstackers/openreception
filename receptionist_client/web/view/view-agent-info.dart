@@ -66,7 +66,7 @@ class AgentInfo extends ViewWidget {
   Future _reloadUserState() async {
     await _user.list().then((users) {
       users.forEach((user) {
-        _userPeer[user.ID] = user.peer;
+        _userPeer[user.id] = user.peer;
       });
     });
 
@@ -118,7 +118,7 @@ class AgentInfo extends ViewWidget {
    * Toggle the idle/pause agent state. If idle, then set paused and vice versa.
    */
   void _toggleAgentState() {
-    if (_userPaused[_appState.currentUser.ID]) {
+    if (_userPaused[_appState.currentUser.id]) {
       _user.setIdle(_appState.currentUser);
     } else {
       _user.setPaused(_appState.currentUser);
@@ -153,8 +153,8 @@ class AgentInfo extends ViewWidget {
     });
 
     /// Update ui for agent's user.
-    if (_userPaused.containsKey(_appState.currentUser.ID) &&
-        _userPaused[_appState.currentUser.ID]) {
+    if (_userPaused.containsKey(_appState.currentUser.id) &&
+        _userPaused[_appState.currentUser.id]) {
       _ui.agentState = Model.AgentState.paused;
     } else if (_appState.activeCall.ID != ORModel.Call.noID) {
       _ui.agentState = Model.AgentState.busy;

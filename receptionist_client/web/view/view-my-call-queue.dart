@@ -166,7 +166,7 @@ class MyCallQueue extends ViewWidget {
    * Add, remove, update the queue list, depending on the [event.call] state.
    */
   void _handleCallStateChanges(OREvent.CallEvent event) {
-    if (event.call.assignedTo != _appState.currentUser.ID) {
+    if (event.call.assignedTo != _appState.currentUser.id) {
       return;
     }
 
@@ -220,7 +220,7 @@ class MyCallQueue extends ViewWidget {
    */
   void _loadCallList() {
     bool isMine(ORModel.Call call) =>
-        call.assignedTo == _appState.currentUser.ID && call.state != ORModel.CallState.Transferred;
+        call.assignedTo == _appState.currentUser.id && call.state != ORModel.CallState.Transferred;
 
     _callController.listCalls().then((Iterable<ORModel.Call> calls) {
       Iterable<ORModel.Call> myCalls = calls.where(isMine);
