@@ -97,7 +97,7 @@ class GlobalCallQueue extends ViewWidget {
      * Change the user/agent state for the currently logged in user.
      */
     _notification.onAgentStateChange.listen((ORModel.UserStatus userStatus) {
-      if (userStatus.userID == _appState.currentUser.ID) {
+      if (userStatus.userID == _appState.currentUser.id) {
         _userState = userStatus;
       }
     });

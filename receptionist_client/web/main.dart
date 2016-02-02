@@ -196,7 +196,7 @@ Future loadCallState(ORService.CallFlowControl callFlowControl, Model.AppClientS
   return callFlowControl.callList().then((Iterable<ORModel.Call> calls) {
     ORModel.Call myActiveCall = calls.firstWhere(
         (ORModel.Call call) =>
-            call.assignedTo == appState.currentUser.ID && call.state == ORModel.CallState.Speaking,
+            call.assignedTo == appState.currentUser.id && call.state == ORModel.CallState.Speaking,
         orElse: () => null);
 
     if (myActiveCall != null) {

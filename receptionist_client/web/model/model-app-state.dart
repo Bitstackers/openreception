@@ -65,8 +65,8 @@ class AppClientState {
         'Changing active call to ${_activeCall == ORModel.Call.noCall ? 'noCall' : _activeCall}');
 
     /// Clean up the hungup calls list.
-    _hungupCalls.removeWhere((HungUp hungUp) =>
-        hungUp.timestamp.difference(new DateTime.now()) > _maxHungUpAge);
+    _hungupCalls.removeWhere(
+        (HungUp hungUp) => hungUp.timestamp.difference(new DateTime.now()) > _maxHungUpAge);
   }
 
   /**
@@ -93,9 +93,8 @@ class AppClientState {
    */
   void _observers() {
     _notification.onAnyCallStateChange.listen((OREvent.CallEvent event) {
-      if (event is OREvent.CallHangup &&
-          event.call.assignedTo == currentUser.ID) {
-        _hungupCalls.add(new HungUp(event.call.ID, new DateTime.now()));
+      if (event is OREvent.CallHangup && event.call.assignedTo == currentUser.id) {
+        _hungupCalls.add(new HungUp(event.call.channel, new DateTime.now()));
         activeCall = event.call;
       }
     });

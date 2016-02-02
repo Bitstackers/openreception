@@ -31,8 +31,7 @@ class UIMessageArchive extends UIModel {
   /**
    * Constructor.
    */
-  UIMessageArchive(
-      DivElement this._myRoot, ORUtil.WeekDays this._weekDays, this._langMap) {
+  UIMessageArchive(DivElement this._myRoot, ORUtil.WeekDays this._weekDays, this._langMap) {
     _setupLocalKeys();
     _observers();
   }
@@ -44,8 +43,7 @@ class UIMessageArchive extends UIModel {
 
   DivElement get _body => _root.querySelector('.generic-widget-body');
   String get header => _root.querySelector('h4 span.extra-header').text;
-  TableSectionElement get _savedTbody =>
-      _root.querySelector('table tbody.saved-messages-tbody');
+  TableSectionElement get _savedTbody => _root.querySelector('table tbody.saved-messages-tbody');
   TableSectionElement get _notSavedTbody =>
       _root.querySelector('table tbody.not-saved-messages-tbody');
   DivElement get _tableContainer => _body.querySelector('div');
@@ -54,37 +52,31 @@ class UIMessageArchive extends UIModel {
    * Construct the send | delete | copy | close <td> cell.
    */
   TableCellElement _buildActionsCell(ORModel.Message message) {
-    final DivElement actionsContainer = new DivElement()
-      ..classes.add('actions-container');
+    final DivElement actionsContainer = new DivElement()..classes.add('actions-container');
     final DivElement buttonBox = new DivElement()..classes.add('button-box');
-    final TableCellElement cell = new TableCellElement()
-      ..classes.add('actions');
+    final TableCellElement cell = new TableCellElement()..classes.add('actions');
     final DivElement yesNoBox = new DivElement()..classes.add('yes-no-box');
 
     buttonBox.children.addAll([
       new ImageElement()
         ..src = 'images/copy.svg'
         ..title = _langMap['copy'].toLowerCase()
-        ..onClick.listen(
-            (_) => _yesNo(buttonBox, yesNoBox, message, _messageCopyBus)),
+        ..onClick.listen((_) => _yesNo(buttonBox, yesNoBox, message, _messageCopyBus)),
       new ImageElement()
         ..src = 'images/send.svg'
         ..title = _langMap['send'].toLowerCase()
         ..style.visibility = message.closed ? 'hidden' : 'visible'
-        ..onClick.listen(
-            (_) => _yesNo(buttonBox, yesNoBox, message, _messageSendBus)),
+        ..onClick.listen((_) => _yesNo(buttonBox, yesNoBox, message, _messageSendBus)),
       new ImageElement()
         ..src = 'images/bin.svg'
         ..title = _langMap['delete'].toLowerCase()
         ..style.visibility = message.closed ? 'hidden' : 'visible'
-        ..onClick.listen(
-            (_) => _yesNo(buttonBox, yesNoBox, message, _messageDeleteBus)),
+        ..onClick.listen((_) => _yesNo(buttonBox, yesNoBox, message, _messageDeleteBus)),
       new ImageElement()
         ..src = 'images/close.svg'
         ..title = _langMap['close'].toLowerCase()
         ..style.visibility = message.closed ? 'hidden' : 'visible'
-        ..onClick.listen(
-            (_) => _yesNo(buttonBox, yesNoBox, message, _messageCloseBus))
+        ..onClick.listen((_) => _yesNo(buttonBox, yesNoBox, message, _messageCloseBus))
     ]);
 
     actionsContainer.children.addAll([buttonBox, yesNoBox]);
@@ -102,9 +94,7 @@ class UIMessageArchive extends UIModel {
       ..appendHtml(msg.body.replaceAll("\n", '<br>'));
     div.onClick.listen((MouseEvent _) => div.classes.toggle('slim'));
 
-    return new TableCellElement()
-      ..classes.add('message-cell')
-      ..children.add(div);
+    return new TableCellElement()..classes.add('message-cell')..children.add(div);
   }
 
   /**
@@ -115,8 +105,8 @@ class UIMessageArchive extends UIModel {
       ..dataset['message-id'] = message.ID.toString()
       ..dataset['contact-string'] = message.context.contactString;
 
-    row.children.add(new TableCellElement()
-      ..text = ORUtil.humanReadableTimestamp(message.createdAt, _weekDays));
+    row.children.add(
+        new TableCellElement()..text = ORUtil.humanReadableTimestamp(message.createdAt, _weekDays));
 
     if (saved) {
       row.children.addAll([
@@ -126,8 +116,7 @@ class UIMessageArchive extends UIModel {
     }
 
     row.children.addAll([
-      new TableCellElement()
-        ..text = _users[message.senderId] ?? message.senderId.toString(),
+      new TableCellElement()..text = _users[message.senderId] ?? message.senderId.toString(),
       new TableCellElement()..text = message.callerInfo.name,
       new TableCellElement()..text = message.callerInfo.company,
       new TableCellElement()..text = message.callerInfo.phone,
@@ -223,8 +212,7 @@ class UIMessageArchive extends UIModel {
    * NOTE: This is a visual only action. It does not perform any actions on the server.
    */
   void moveMessage(ORModel.Message message) {
-    final TableRowElement tr =
-        _savedTbody.querySelector('[data-message-id="${message.ID}"]');
+    final TableRowElement tr = _savedTbody.querySelector('[data-message-id="${message.ID}"]');
 
     if (tr != null) {
       tr.classes.add('fade-out');
@@ -233,8 +221,7 @@ class UIMessageArchive extends UIModel {
           tr.remove();
           _savedTbody.parent.hidden = _savedTbody.children.isEmpty;
           if (_currentContext == message.context) {
-            _notSavedTbody.insertBefore(
-                _buildRow(message, false), _notSavedTbody.firstChild);
+            _notSavedTbody.insertBefore(_buildRow(message, false), _notSavedTbody.firstChild);
           }
         }
       });
@@ -263,12 +250,10 @@ class UIMessageArchive extends UIModel {
     _root.onClick.listen((_) => _tableContainer.focus());
 
     _tableContainer.onScroll.listen((Event event) {
-      if (_tableContainer.getBoundingClientRect().height +
-              _tableContainer.scrollTop >=
+      if (_tableContainer.getBoundingClientRect().height + _tableContainer.scrollTop >=
           _tableContainer.scrollHeight) {
         if (_notSavedTbody.children.isNotEmpty) {
-          _scrollBus.fire(
-              int.parse(_notSavedTbody.children.last.dataset['message-id']));
+          _scrollBus.fire(int.parse(_notSavedTbody.children.last.dataset['message-id']));
         }
       }
     });
@@ -300,8 +285,7 @@ class UIMessageArchive extends UIModel {
    * NOTE: This is a visual only action. It does not perform any actions on the server.
    */
   void removeMessage(ORModel.Message message) {
-    final TableRowElement tr =
-        _savedTbody.querySelector('[data-message-id="${message.ID}"]');
+    final TableRowElement tr = _savedTbody.querySelector('[data-message-id="${message.ID}"]');
 
     if (tr != null) {
       tr.classes.add('fade-out');
@@ -348,15 +332,14 @@ class UIMessageArchive extends UIModel {
    */
   set users(Iterable<ORModel.User> list) {
     list.forEach((ORModel.User user) {
-      _users[user.ID] = user.name;
+      _users[user.id] = user.name;
     });
   }
 
   /**
    * Setup the yes|no action confirmation box.
    */
-  void _yesNo(DivElement actionBox, DivElement yesNoBox,
-      ORModel.Message message, Bus bus) {
+  void _yesNo(DivElement actionBox, DivElement yesNoBox, ORModel.Message message, Bus bus) {
     yesNoBox.children.addAll([
       new SpanElement()
         ..text = _langMap[Key.yes]
