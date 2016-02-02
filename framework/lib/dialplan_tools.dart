@@ -106,42 +106,41 @@ String _indent(String item, {int count: 2}) =>
     '${new List.filled(count, ' ').join('')}$item';
 
 /**
- * Determine if an Iterable of actions involves receptions.
- */
-bool _involvesReceptionists(Iterable<model.Action> actions) => actions
-    .where((action) => action is model.Notify)
-    .any((notify) => notify.eventName == ORPbxKey.callNotify);
-
-/**
  *
  */
 List<String> _openingHourToXmlDialplan(
-        String extension,
-        model.OpeningHour oh,
-        Iterable<model.Action> actions,
-        DialplanCompilerOpts option,
-        Environment env) =>
-    new List<String>.from([
-      '',
-      _comment('Actions for opening hour $oh'),
-      '<extension name="${extension}-${_normalizeOpeningHour(oh.toString())}" continue="true">'
-    ])
-      ..addAll(_involvesReceptionists(actions)
-          ? [
-              '  <condition field="\${ORPbxKey.receptionOpen}" expression="^true\$"/>'
-            ]
-          : [])
-      ..add(
-          '  <condition ${_openingHourToFreeSwitch(oh)} break="${PbxKey.onTrue}">')
-      ..addAll(actions
-          .map((action) => _actionToXmlDialplan(action, option, env))
-          .fold(
-              new List<String>(),
-              (List<String> combined, List<String> current) =>
-                  combined..addAll(current.map((e) => _indent(e, count: 4)))))
-      ..add('    <action application="hangup"/>')
-      ..add('  </condition>')
-      ..add('</extension>');
+    String extension,
+    model.OpeningHour oh,
+    Iterable<model.Action> actions,
+    DialplanCompilerOpts option,
+    Environment env) {
+  List<String> lines = new List<String>();
+  Iterable<String> actionLines = actions
+      .map((action) => _actionToXmlDialplan(action, option, env))
+      .fold(
+          new List<String>(),
+          (List<String> combined, List<String> current) =>
+              combined..addAll(current.map((e) => _indent(e, count: 4))));
+
+  lines.addAll([
+    '',
+    _comment('Actions for opening hour $oh'),
+    '<extension name="${extension}-${_normalizeOpeningHour(oh.toString())}" continue="true">'
+  ]);
+
+  if (env.callAnnounced) {
+    lines.add(
+        '  <condition field="\${ORPbxKey.receptionOpen}" expression="^true\$"/>');
+  }
+  lines
+    ..add(
+        '  <condition ${_openingHourToFreeSwitch(oh)} break="${PbxKey.onTrue}">')
+    ..addAll(actionLines)
+    ..add('    <action application="hangup"/>')
+    ..add('  </condition>')
+    ..add('</extension>');
+  return lines;
+}
 
 /**
  * Generate A fallback extension.
@@ -506,16 +505,16 @@ List<String> _ivrEntryToXml(model.IvrEntry entry, DialplanCompilerOpts option) {
 
   /// IvrTransfer action
   if (entry is model.IvrTransfer) {
-    if (entry.transfer.note.isNotEmpty) returnValue
-        .add(_noteTemplate(entry.transfer.note));
+    if (entry.transfer.note.isNotEmpty)
+      returnValue.add(_noteTemplate(entry.transfer.note));
     returnValue.add(
         '<entry action="${PbxKey.menuExecApp}" digits="${entry.digits}" '
         'param="transfer ${_dialoutTemplate(entry.transfer.extension, option)}"/>');
 
     /// IvrReceptionTransfer action
   } else if (entry is model.IvrReceptionTransfer) {
-    if (entry.transfer.note.isNotEmpty) returnValue
-        .add(_noteTemplate(entry.transfer.note));
+    if (entry.transfer.note.isNotEmpty)
+      returnValue.add(_noteTemplate(entry.transfer.note));
     returnValue.add(
         '<entry action="${PbxKey.menuExecApp}" digits="${entry.digits}" '
         'param="transfer ${entry.transfer.extension} XML $reception-${entry.transfer.extension}"/>');
@@ -528,10 +527,11 @@ List<String> _ivrEntryToXml(model.IvrEntry entry, DialplanCompilerOpts option) {
   } else if (entry is model.IvrTopmenu) {
     returnValue
         .add('<entry action="${PbxKey.menuTop}" digits="${entry.digits}"/>');
-  } else throw new ArgumentError.value(
-      entry.runtimeType,
-      'entry'
-      'type ${entry.runtimeType} is not supported by translation tool');
+  } else
+    throw new ArgumentError.value(
+        entry.runtimeType,
+        'entry'
+        'type ${entry.runtimeType} is not supported by translation tool');
 
   return returnValue;
 }
