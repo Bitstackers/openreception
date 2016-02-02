@@ -89,21 +89,27 @@ class CallFlowControl {
   /**
    * Retrives the current channel list as a Map.
    */
+  @deprecated
   Future<Iterable<Map>> channelListMap() {
     Uri uri = Resource.CallFlowControl.channelList(_host);
     uri = _appendToken(uri, _token);
 
-    return _backend.get(uri).then((String response) => (JSON.decode(response)));
+    return _backend
+        .get(uri)
+        .then((String response) => (JSON.decode(response) as Iterable<Map>));
   }
 
   /**
    * Retrives the a specific channel as a Map.
    */
+  @deprecated
   Future<Map> channelMap(String uuid) {
     Uri uri = Resource.CallFlowControl.channel(_host, uuid);
     uri = _appendToken(uri, _token);
 
-    return _backend.get(uri).then((String response) => (JSON.decode(response)));
+    return _backend
+        .get(uri)
+        .then((String response) => (JSON.decode(response) as Map));
   }
 
   /**
@@ -167,7 +173,7 @@ class CallFlowControl {
 
     return _backend
         .get(uri)
-        .then((String response) => (JSON.decode(response) as List))
+        .then((String response) => (JSON.decode(response)))
         .then((Iterable<Map> maps) =>
             maps.map((Map map) => new Model.Peer.fromMap(map)));
   }

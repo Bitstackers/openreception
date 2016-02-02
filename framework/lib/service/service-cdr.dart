@@ -28,33 +28,31 @@ class RESTCDRService implements Storage.CDR {
   /**
    *
    */
-  Future<Iterable<Model.CDREntry>> listEntries(DateTime from, DateTime to) {
-    String fromParameter =
-        'date_from=${(from.millisecondsSinceEpoch)}';
+  Future<Iterable<Model.CDREntry>> listEntries(
+      DateTime from, DateTime to) async {
+    String fromParameter = 'date_from=${(from.millisecondsSinceEpoch)}';
     String toParameter = 'date_to=${(to.millisecondsSinceEpoch)}';
 
     Uri url = Resource.CDR.list(this._host, fromParameter, toParameter);
     url = _appendToken(url, this._token);
 
-    return this._backend.get(url).then((String response) {
-      Iterable decodedData = JSON.decode(response)['cdr_stats'];
+    final Iterable decodedData =
+        (await _backend.get(url).then((JSON.decode)))['cdr_stats'];
 
-      return decodedData.map((r) => new Model.CDREntry.fromJson(r));
-    });
+    return decodedData.map((r) => new Model.CDREntry.fromJson(r));
   }
 
   /**
    *
    */
-  Future<Iterable<Model.CDRCheckpoint>> checkpoints() {
+  Future<Iterable<Model.CDRCheckpoint>> checkpoints() async {
     Uri url = Resource.CDR.checkpoint(this._host);
     url = _appendToken(url, this._token);
 
-    return this._backend.get(url).then((String response) {
-      Iterable decodedData = JSON.decode(response)['checkpoints'];
+    final Iterable decodedData =
+        (await _backend.get(url).then(JSON.decode))['checkpoints'];
 
-      return decodedData.map((r) => new Model.CDRCheckpoint.fromMap(r));
-    });
+    return decodedData.map((r) => new Model.CDRCheckpoint.fromMap(r));
   }
 
   /**
@@ -65,8 +63,8 @@ class RESTCDRService implements Storage.CDR {
     Uri url = Resource.CDR.checkpoint(this._host);
     url = _appendToken(url, this._token);
 
-    return this._backend.post(url, JSON.encode(checkpoint))
-      .then((String response) =>
-        new Model.CDRCheckpoint.fromMap(JSON.decode(response)));
+    return this._backend.post(url, JSON.encode(checkpoint)).then(
+        (String response) =>
+            new Model.CDRCheckpoint.fromMap(JSON.decode(response)));
   }
 }
