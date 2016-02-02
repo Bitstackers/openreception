@@ -60,17 +60,17 @@ class CallList extends IterableBase<ORModel.Call> {
               int.parse(channel.fields['Caller-Channel-Created-Time']) ~/ 1000)
           ..assignedTo = assignedTo
           ..b_Leg = channel.fields['Other-Leg-Unique-ID']
-          ..greetingPlayed = channel.variables
-                  .containsKey(ORPbxKey.greetingPlayed)
-              ? channel.variables[ORPbxKey.greetingPlayed] == 'true'
-              : false
+          ..greetingPlayed =
+              channel.variables.containsKey(ORPbxKey.greetingPlayed)
+                  ? channel.variables[ORPbxKey.greetingPlayed] == 'true'
+                  : false
           ..locked = false
           ..inbound =
               (channel.fields['Call-Direction'] == 'inbound' ? true : false)
-          ..callerID = channel.fields
-                  .containsKey('Caller-Orig-Caller-ID-Number')
-              ? channel.fields['Caller-Orig-Caller-ID-Number']
-              : channel.fields['Caller-Caller-ID-Number']
+          ..callerID =
+              channel.fields.containsKey('Caller-Orig-Caller-ID-Number')
+                  ? channel.fields['Caller-Orig-Caller-ID-Number']
+                  : channel.fields['Caller-Caller-ID-Number']
           ..destination = channel.variables[ORPbxKey.destination]
           ..receptionID = channel.variables.containsKey(ORPbxKey.receptionId)
               ? int.parse(channel.variables[ORPbxKey.receptionId])
@@ -149,15 +149,15 @@ class CallList extends IterableBase<ORModel.Call> {
   ORModel.Call requestSpecificCall(String callID, ORModel.User user) {
     ORModel.Call call = this.get(callID);
 
-    if (![user.ID, ORModel.User.noID].contains(call.assignedTo)) {
+    if (![user.id, ORModel.User.noID].contains(call.assignedTo)) {
       log.fine('Call ${callID} already assigned to uid: ${call.assignedTo}');
       throw new ORStorage.Forbidden(callID);
     } else if (call.locked) {
-      if (call.assignedTo == user.ID) {
+      if (call.assignedTo == user.id) {
         log.fine('Call $callID locked, but assigned. Unlocking.');
         call.locked = false;
       } else {
-        log.fine('Uid ${user.ID} requested locked call $callID');
+        log.fine('Uid ${user.id} requested locked call $callID');
         throw new ORStorage.Conflict(callID);
       }
     }
@@ -238,10 +238,10 @@ class CallList extends IterableBase<ORModel.Call> {
         this._createCall(event);
 
         this.get(event.uniqueID)
-          ..receptionID = event.contentAsMap
-                  .containsKey('variable_${ORPbxKey.receptionId}')
-              ? int.parse(event.field('variable_${ORPbxKey.receptionId}'))
-              : 0
+          ..receptionID =
+              event.contentAsMap.containsKey('variable_${ORPbxKey.receptionId}')
+                  ? int.parse(event.field('variable_${ORPbxKey.receptionId}'))
+                  : 0
           ..changeState(ORModel.CallState.Created);
 
         break;
@@ -375,15 +375,15 @@ class CallList extends IterableBase<ORModel.Call> {
 
     log.finest('Creating new call ${event.uniqueID}');
 
-    int contactID = event.contentAsMap
-            .containsKey('variable_${ORPbxKey.contactId}')
-        ? int.parse(event.field('variable_${ORPbxKey.contactId}'))
-        : ORModel.Contact.noID;
+    int contactID =
+        event.contentAsMap.containsKey('variable_${ORPbxKey.contactId}')
+            ? int.parse(event.field('variable_${ORPbxKey.contactId}'))
+            : ORModel.Contact.noID;
 
-    int receptionID = event.contentAsMap
-            .containsKey('variable_${ORPbxKey.receptionId}')
-        ? int.parse(event.field('variable_${ORPbxKey.receptionId}'))
-        : ORModel.Reception.noID;
+    int receptionID =
+        event.contentAsMap.containsKey('variable_${ORPbxKey.receptionId}')
+            ? int.parse(event.field('variable_${ORPbxKey.receptionId}'))
+            : ORModel.Reception.noID;
 
     int userID = event.contentAsMap.containsKey('variable_${ORPbxKey.userId}')
         ? int.parse(event.field('variable_${ORPbxKey.userId}'))

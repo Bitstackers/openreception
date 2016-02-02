@@ -40,7 +40,7 @@ abstract class Notification {
     new Timer.periodic(new Duration(seconds: 1), _tick);
   }
 
-  static _tick(_) {
+  static _tick(Timer t) {
     if (_stats.length > 60) {
       _stats.removeAt(0);
     }
@@ -158,7 +158,7 @@ abstract class Notification {
     Model.User user = await _authService.userOf(_tokenFrom(request));
 
     shelf.Handler handleConnection = sWs.webSocketHandler((ws) {
-      Notification._register(ws, user.ID);
+      Notification._register(ws, user.id);
     });
 
     return handleConnection(request);

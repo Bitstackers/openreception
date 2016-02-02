@@ -83,7 +83,7 @@ abstract class PBX {
 
     List<String> b_legvariables = [
       '${ORPbxKey.receptionId}=${receptionID}',
-      '${ORPbxKey.userId}=${user.ID}',
+      '${ORPbxKey.userId}=${user.id}',
       '${ORPbxKey.contactId}=${contactID}'
     ];
 
@@ -113,7 +113,7 @@ abstract class PBX {
   static Future<String> createAgentChannel(ORModel.User user,
       {Map<String, String> extravars: const {}}) {
     final int msecs = new DateTime.now().millisecondsSinceEpoch;
-    final String new_call_uuid = 'agent-${user.ID}-${msecs}';
+    final String new_call_uuid = 'agent-${user.id}-${msecs}';
     final String destination = 'user/${user.peer}';
 
     _log.finest('New uuid: $new_call_uuid');
@@ -145,7 +145,7 @@ abstract class PBX {
         error = new NoAnswer('destination: $destination');
       } else {
         error = new PBXException('Creation of agent channel for '
-            'uid:${user.ID} failed. Destination:$destination. '
+            'uid:${user.id} failed. Destination:$destination. '
             'PBX responded: ${response.rawBody}');
       }
 
@@ -164,7 +164,7 @@ abstract class PBX {
    */
   static Future<String> createAgentChannelBg(ORModel.User user) async {
     final int msecs = new DateTime.now().millisecondsSinceEpoch;
-    final String new_call_uuid = 'agent-${user.ID}-${msecs}';
+    final String new_call_uuid = 'agent-${user.id}-${msecs}';
     final String destination = 'user/${user.peer}';
 
     _log.finest('New uuid: $new_call_uuid');
@@ -189,22 +189,22 @@ abstract class PBX {
 
     if (reply.status != ESL.Response.OK) {
       throw new PBXException('Creation of agent channel for '
-          'uid:${user.ID} failed. Destination:$destination. '
+          'uid:${user.id} failed. Destination:$destination. '
           'PBX responded: ${reply.content}');
     }
 
     /// Create a subscription that looks for the outbound channel.
     bool outboundCallWithUuid(ESL.Event event) =>
         event.eventName == 'CHANNEL_ORIGINATE' &&
-            event.channel.fields['Unique-ID'] == new_call_uuid;
+        event.channel.fields['Unique-ID'] == new_call_uuid;
 
     await eventClient.eventStream
         .firstWhere(outboundCallWithUuid, defaultValue: () => null);
 
     bool inviteClosed(ESL.Event event) =>
         event.channel.fields['Unique-ID'] == new_call_uuid &&
-            (event.eventName == 'CHANNEL_ANSWER' ||
-                event.eventName == 'CHANNEL_HANGUP');
+        (event.eventName == 'CHANNEL_ANSWER' ||
+            event.eventName == 'CHANNEL_HANGUP');
 
     ESL.Event event;
     try {
@@ -223,7 +223,7 @@ abstract class PBX {
       return new_call_uuid;
     } else {
       throw new PBXException('Creation of agent channel for '
-          'uid:${user.ID} failed. Destination:$destination. '
+          'uid:${user.id} failed. Destination:$destination. '
           'Got event type: ${event.eventType}');
     }
   }
@@ -259,7 +259,7 @@ abstract class PBX {
       String soundFilePath, ORModel.User user) {
     List<String> variables = [
       '${ORPbxKey.receptionId}=${receptionID}',
-      '${ORPbxKey.userId}=${user.ID}',
+      '${ORPbxKey.userId}=${user.id}',
       'recordpath=${soundFilePath}'
     ];
 
@@ -361,8 +361,8 @@ abstract class PBX {
    */
   static Future _checkAgentChannel(String uuid) =>
       new Future.delayed(new Duration(milliseconds: 100)).then((_) => Model
-          .ChannelList
-          .instance.containsChannel(uuid) ? _cleanupChannel(uuid) : null);
+          .ChannelList.instance
+          .containsChannel(uuid) ? _cleanupChannel(uuid) : null);
 
   /**
    * Kills the active channel for a call.

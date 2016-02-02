@@ -30,3 +30,7 @@ part 'controller/controller-organization.dart';
 part 'controller/controller-reception.dart';
 
 const String _libraryName = 'reception_server.controller';
+
+shelf.Response _okJson(body) => new shelf.Response.ok(JSON.encode(body));
+
+shelf.Response _notFound(body) => new shelf.Response.notFound(body);

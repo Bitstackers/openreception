@@ -14,8 +14,9 @@
 part of openreception.reception_server.controller;
 
 void _validate(model.Organization org) {
-  if (org.fullName.isEmpty) throw new ArgumentError.value(
-      org.fullName, 'organization.fullName', 'Must not be empty');
+  if (org.fullName.isEmpty)
+    throw new ArgumentError.value(
+        org.fullName, 'organization.fullName', 'Must not be empty');
 }
 
 class Organization {
@@ -31,26 +32,17 @@ class Organization {
           new shelf.Response.ok(
               JSON.encode(organizations.toList(growable: false))));
 
-  Future<shelf.Response> get(shelf.Request request) {
-    int organizationID =
-        int.parse(shelf_route.getPathParameter(request, 'oid'));
+  /**
+   *
+   */
+  Future<shelf.Response> get(shelf.Request request) async {
+    final int oid = int.parse(shelf_route.getPathParameter(request, 'oid'));
 
-    return _organizationDB
-        .get(organizationID)
-        .then((model.Organization organization) =>
-            new shelf.Response.ok(JSON.encode(organization)))
-        .catchError((error, stackTrace) {
-      if (error is storage.NotFound) {
-        return new shelf.Response.notFound(JSON.encode({
-          'description': 'No organization '
-              'found with ID $organizationID'
-        }));
-      }
-
-      _log.severe(error, stackTrace);
-      return new shelf.Response.internalServerError(
-          body: 'receptionserver.router.getReception: $error');
-    });
+    try {
+      return _okJson(await _organizationDB.get(oid));
+    } on storage.NotFound catch (error) {
+      return _notFound(error.toString());
+    }
   }
 
   /**

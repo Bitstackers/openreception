@@ -71,23 +71,14 @@ class Reception {
     });
   }
 
-  Future<shelf.Response> get(shelf.Request request) {
-    int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
+  Future<shelf.Response> get(shelf.Request request) async {
+    final int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
-    return _receptionDB.get(receptionID).then((model.Reception reception) {
-      return new shelf.Response.ok(JSON.encode(reception));
-    }).catchError((error, stackTrace) {
-      if (error is storage.NotFound) {
-        return new shelf.Response.notFound(JSON.encode({
-          'description': 'No reception '
-              'found with ID $receptionID'
-        }));
-      }
-
-      _log.severe(error, stackTrace);
-      return new shelf.Response.internalServerError(
-          body: 'receptionserver.router.getReception: $error');
-    });
+    try {
+      return _okJson(await _receptionDB.get(rid));
+    } on storage.NotFound catch (error) {
+      return _notFound(error.toString());
+    }
   }
 
   /**

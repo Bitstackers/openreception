@@ -49,7 +49,7 @@ abstract class Call {
 
     /// User object fetching.
     try {
-      user = await AuthService.userOf(_tokenFrom(request));
+      user = await authService.userOf(_tokenFrom(request));
     } catch (error, stackTrace) {
       final String msg = 'Failed to contact authserver';
       log.severe(msg, error, stackTrace);
@@ -59,7 +59,8 @@ abstract class Call {
 
     ///Find the current call of the agent.
     ORModel.Call call = Model.CallList.instance.firstWhere(
-        (ORModel.Call call) => call.assignedTo == user.ID &&
+        (ORModel.Call call) =>
+            call.assignedTo == user.id &&
             call.state == ORModel.CallState.Speaking,
         orElse: () => ORModel.Call.noCall);
 
@@ -100,8 +101,9 @@ abstract class Call {
     /// Groups able to hangup any call.
     List<String> hangupGroups = ['Administrator'];
 
-    bool aclCheck(ORModel.User user) => userGroups.any(hangupGroups.contains) ||
-        Model.CallList.instance.get(callID).assignedTo == user.ID;
+    bool aclCheck(ORModel.User user) =>
+        userGroups.any(hangupGroups.contains) ||
+        Model.CallList.instance.get(callID).assignedTo == user.id;
 
     if (callID == null || callID == "") {
       return new shelf.Response(400, body: 'Empty call_id in path.');
@@ -109,8 +111,8 @@ abstract class Call {
 
     /// User object fetching.
     try {
-      user = await AuthService.userOf(_tokenFrom(request));
-      userGroups = await _userService.userGroups(user.ID);
+      user = await authService.userOf(_tokenFrom(request));
+      userGroups = await _userService.userGroups(user.id);
     } catch (error, stackTrace) {
       final String msg = 'Failed to contact authserver';
       log.severe(msg, error, stackTrace);
@@ -171,8 +173,10 @@ abstract class Call {
    * agent and then perform the orgination in the background.
    */
   static Future<shelf.Response> originate(shelf.Request request) async {
-    final String callId = shelf_route.getPathParameters(request).containsKey(
-        'callId') ? shelf_route.getPathParameter(request, 'callId') : '';
+    final String callId =
+        shelf_route.getPathParameters(request).containsKey('callId')
+            ? shelf_route.getPathParameter(request, 'callId')
+            : '';
     final int receptionID =
         int.parse(shelf_route.getPathParameter(request, 'rid'));
     final int contactID =
@@ -204,7 +208,7 @@ abstract class Call {
 
     /// User object fetching.
     try {
-      user = await AuthService.userOf(_tokenFrom(request));
+      user = await authService.userOf(_tokenFrom(request));
     } catch (error, stackTrace) {
       final String msg = 'Failed to contact authserver';
       log.severe(msg, error, stackTrace);
@@ -225,7 +229,7 @@ abstract class Call {
 
     /// The user has not registered its peer to transfer the call to. Abort.
     if (peer == null || !peer.registered) {
-      return _clientError('User with id ${user.ID} has no peer '
+      return _clientError('User with id ${user.id} has no peer '
           '(peer: ${user.peer}) available');
     }
 
@@ -245,7 +249,7 @@ abstract class Call {
     /// Park all the users calls.
     try {
       await Future.forEach(
-          Model.CallList.instance.callsOf(user.ID).where(isSpeaking), parkIt);
+          Model.CallList.instance.callsOf(user.id).where(isSpeaking), parkIt);
     } catch (error, stackTrace) {
       final String msg = 'Failed to park user\'s active calls';
       log.severe(msg, error, stackTrace);
@@ -279,7 +283,7 @@ abstract class Call {
     /// Create a subscription that listens for the next outbound call.
     bool outboundCallWithUuid(ESL.Event event) =>
         event.eventName == 'CHANNEL_ORIGINATE' &&
-            event.channel.fields['Other-Leg-Unique-ID'] == agentChannel;
+        event.channel.fields['Other-Leg-Unique-ID'] == agentChannel;
 
     Future<ORModel.Call> outboundCall = Controller.PBX.eventClient.eventStream
         .firstWhere(outboundCallWithUuid, defaultValue: () => null)
@@ -304,7 +308,7 @@ abstract class Call {
 
     /// Update the call with the info from the originate request.
     call
-      ..assignedTo = user.ID
+      ..assignedTo = user.id
       ..callerID = Controller.PBX.callerID
       ..destination = extension
       ..receptionID = receptionID
@@ -316,7 +320,7 @@ abstract class Call {
 
     try {
       await Controller.PBX
-          .setVariable(call.channel, ORPbxKey.userId, user.ID.toString());
+          .setVariable(call.channel, ORPbxKey.userId, user.id.toString());
       await Controller.PBX.setVariable(
           call.channel, ORPbxKey.receptionId, receptionID.toString());
       await Controller.PBX
@@ -355,13 +359,13 @@ abstract class Call {
     Iterable<ORModel.UserGroup> userGroups;
 
     bool aclCheck(ORModel.User user) =>
-        Model.CallList.instance.get(callID).assignedTo == user.ID ||
-            userGroups.any((group) => parkGroups.contains(group));
+        Model.CallList.instance.get(callID).assignedTo == user.id ||
+        userGroups.any((group) => parkGroups.contains(group));
 
     /// User object fetching.
     try {
-      user = await AuthService.userOf(_tokenFrom(request));
-      userGroups = await _userService.userGroups(user.ID);
+      user = await authService.userOf(_tokenFrom(request));
+      userGroups = await _userService.userGroups(user.id);
     } catch (error, stackTrace) {
       final String msg = 'Failed to contact authserver';
       log.severe(msg, error, stackTrace);
@@ -398,7 +402,8 @@ abstract class Call {
   /**
    *
    */
-  static bool _phoneUnreachable(ORModel.Peer peer) => peer.inTransition ||
+  static bool _phoneUnreachable(ORModel.Peer peer) =>
+      peer.inTransition ||
       Model.ChannelList.instance.hasActiveChannels(peer.name);
 
   /**
@@ -420,7 +425,7 @@ abstract class Call {
 
     /// User object fetching.
     try {
-      user = await AuthService.userOf(_tokenFrom(request));
+      user = await authService.userOf(_tokenFrom(request));
     } catch (error, stackTrace) {
       final String msg = 'Failed to contact authserver';
       log.severe(msg, error, stackTrace);
@@ -433,7 +438,7 @@ abstract class Call {
 
     /// The user has not registered its peer to transfer the call to. Abort.
     if (peer == null) {
-      return _clientError('User with id ${user.ID} has no peer '
+      return _clientError('User with id ${user.id} has no peer '
           '(${_peerInfo(peer)} available');
     }
 
@@ -464,9 +469,9 @@ abstract class Call {
     /// Update the user state
     peer.inTransition = true;
     originallyAssignedTo = assignedCall.assignedTo;
-    assignedCall.assignedTo = user.ID;
+    assignedCall.assignedTo = user.id;
 
-    log.finest('Assigned call ${assignedCall.ID} to user with ID ${user.ID}');
+    log.finest('Assigned call ${assignedCall.ID} to user with ID ${user.id}');
 
     /// Create an agent channel
     try {
@@ -515,7 +520,7 @@ abstract class Call {
     /// Tag the channel as assigned to the user.
     try {
       await Controller.PBX.setVariable(
-          assignedCall.channel, ORPbxKey.userId, user.ID.toString());
+          assignedCall.channel, ORPbxKey.userId, user.id.toString());
     } catch (error, stackTrace) {
       final String msg = 'Failed set user id for channel $agentChannel.'
           'Channel reload will be inaccurate.';
@@ -573,7 +578,7 @@ abstract class Call {
 
     /// User object fetching.
     try {
-      user = await AuthService.userOf(_tokenFrom(request));
+      user = await authService.userOf(_tokenFrom(request));
     } catch (error, stackTrace) {
       final String msg = 'Failed to contact authserver';
       log.severe(msg, error, stackTrace);

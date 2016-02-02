@@ -110,7 +110,7 @@ class Calendar {
     model.CalendarEntry removed;
     try {
       removed = await _calendarStore.get(eid);
-      await _calendarStore.remove(eid, user.ID);
+      await _calendarStore.remove(eid, user.id);
     } on storage.NotFound {
       return _notFound('No entry with id $eid');
     }

@@ -55,7 +55,7 @@ abstract class Message {
       Model.Message message = await _messageStore.get(mid);
 
       return _ok(JSON.encode(message));
-    } on Storage.NotFound {
+    } on storage.NotFound {
       return _notFound('Not found: $mid');
     } catch (error, stackTrace) {
       final String msg = 'Failed to retrieve message with ID $mid';
@@ -101,7 +101,7 @@ abstract class Message {
     Model.Message createdMessage = await _messageStore.update(message);
 
     _notification.broadcastEvent(
-        new Event.MessageChange.updated(createdMessage.ID, user.ID));
+        new Event.MessageChange.updated(createdMessage.ID, user.id));
 
     return _ok(JSON.encode(createdMessage));
   }
@@ -115,7 +115,7 @@ abstract class Message {
 
     try {
       await _messageStore.remove(messageID);
-    } on Storage.NotFound {
+    } on storage.NotFound {
       return _notFound('$messageID');
     }
 
@@ -172,7 +172,7 @@ abstract class Message {
     try {
       content = await request.readAsString();
       message = new Model.Message.fromMap(JSON.decode(content))
-        ..senderId = user.ID;
+        ..senderId = user.id;
 
       if ([Model.Message.noID, null].contains(message.ID)) {
         return _clientError('Invalid message ID');
@@ -188,7 +188,7 @@ abstract class Message {
         .enqueue(message)
         .then((Model.MessageQueueItem queueItem) {
       _notification
-          .broadcastEvent(new Event.MessageChange.updated(message.ID, user.ID));
+          .broadcastEvent(new Event.MessageChange.updated(message.ID, user.id));
 
       return _ok(JSON.encode(queueItem));
     });
@@ -216,7 +216,7 @@ abstract class Message {
     try {
       content = await request.readAsString();
       message = new Model.Message.fromMap(JSON.decode(content))
-        ..senderId = user.ID;
+        ..senderId = user.id;
 
       if (message.ID != Model.Message.noID) {
         return _clientError('Refusing to re-create existing message. '
@@ -233,7 +233,7 @@ abstract class Message {
         .create(message)
         .then((Model.Message createdMessage) {
       _notification
-          .broadcastEvent(new Event.MessageChange.created(message.ID, user.ID));
+          .broadcastEvent(new Event.MessageChange.created(message.ID, user.id));
 
       return _ok(JSON.encode(createdMessage));
     });
