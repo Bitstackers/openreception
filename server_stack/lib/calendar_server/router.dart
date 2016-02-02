@@ -14,7 +14,7 @@
 library openreception.calendar_server.router;
 
 import 'dart:async';
-import 'dart:io' as IO;
+import 'dart:io' as io;
 
 import '../configuration.dart';
 import 'controller.dart' as controller;
@@ -37,7 +37,7 @@ const Map<String, String> _corsHeaders = const {
   'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE'
 };
 
-Future<IO.HttpServer> start(
+Future<io.HttpServer> start(
     {String hostname: '0.0.0.0', int port: 4110}) async {
   final Service.Authentication _authService = new Service.Authentication(
       config.authServer.externalUri,
@@ -45,21 +45,27 @@ Future<IO.HttpServer> start(
       new Service_IO.Client());
 
   /**
-   * Validate a token by looking it up on the authentication server.
-   */
+       * Validate a token by looking it up on the authentication server.
+       */
   Future<shelf.Response> _lookupToken(shelf.Request request) async {
-    final token = request.requestedUri.queryParameters['token'];
+    var token = request.requestedUri.queryParameters['token'];
 
     try {
-      _authService.validate(token);
+      await _authService.validate(token);
     } on Storage.NotFound {
       return new shelf.Response.forbidden('Invalid token');
-    } on IO.SocketException {
+    } on io.SocketException {
       return new shelf.Response.internalServerError(
           body: 'Cannot reach authserver');
     } catch (error, stackTrace) {
+      _log.severe(
+          'Authentication validation lookup failed: $error:$stackTrace');
+
       return new shelf.Response.internalServerError(body: error.toString());
     }
+
+    /// Do not intercept the request, but let the next handler take care of it.
+    return null;
   }
 
   /**

@@ -50,19 +50,27 @@ void connectAuthService() {
       config.userServer.serverToken, new Service_IO.Client());
 }
 
-Future<shelf.Response> _lookupToken(shelf.Request request) {
+/**
+ * Validate a token by looking it up on the authentication server.
+ */
+Future<shelf.Response> _lookupToken(shelf.Request request) async {
   var token = request.requestedUri.queryParameters['token'];
 
-  return _authService.validate(token).then((_) => null).catchError((error) {
-    if (error is Storage.NotFound) {
-      return new shelf.Response.forbidden('Invalid token');
-    } else if (error is io.SocketException) {
-      return new shelf.Response.internalServerError(
-          body: 'Cannot reach authserver');
-    } else {
-      return new shelf.Response.internalServerError(body: error.toString());
-    }
-  });
+  try {
+    await _authService.validate(token);
+  } on Storage.NotFound {
+    return new shelf.Response.forbidden('Invalid token');
+  } on io.SocketException {
+    return new shelf.Response.internalServerError(
+        body: 'Cannot reach authserver');
+  } catch (error, stackTrace) {
+    _log.severe('Authentication validation lookup failed: $error:$stackTrace');
+
+    return new shelf.Response.internalServerError(body: error.toString());
+  }
+
+  /// Do not intercept the request, but let the next handler take care of it.
+  return null;
 }
 
 shelf.Middleware checkAuthentication =

@@ -15,14 +15,14 @@ library openreception.message_server.router;
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io' as IO;
+import 'dart:io' as io;
 
 import '../configuration.dart';
 
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/model.dart' as Model;
 import 'package:openreception_framework/event.dart' as Event;
-import 'package:openreception_framework/storage.dart' as Storage;
+import 'package:openreception_framework/storage.dart' as storage;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
 import 'package:openreception_framework/database.dart' as Database;
@@ -41,7 +41,7 @@ final Logger log = new Logger(libraryName);
 Database.Connection _connection = null;
 Service.Authentication _authService = null;
 Service.NotificationService _notification = null;
-Storage.Message _messageStore = new Database.Message(_connection);
+storage.Message _messageStore = new Database.Message(_connection);
 
 const Map<String, String> corsHeaders = const {
   'Access-Control-Allow-Origin': '*',
@@ -67,22 +67,30 @@ Future startDatabase() => Database.Connection
 shelf.Middleware checkAuthentication =
     shelf.createMiddleware(requestHandler: _lookupToken, responseHandler: null);
 
-Future<shelf.Response> _lookupToken(shelf.Request request) {
+/**
+     * Validate a token by looking it up on the authentication server.
+     */
+Future<shelf.Response> _lookupToken(shelf.Request request) async {
   var token = request.requestedUri.queryParameters['token'];
 
-  return _authService.validate(token).then((_) => null).catchError((error) {
-    if (error is Storage.NotFound) {
-      return new shelf.Response.forbidden('Invalid token');
-    } else if (error is IO.SocketException) {
-      return new shelf.Response.internalServerError(
-          body: 'Cannot reach authserver');
-    } else {
-      return new shelf.Response.internalServerError(body: error.toString());
-    }
-  });
+  try {
+    await _authService.validate(token);
+  } on storage.NotFound {
+    return new shelf.Response.forbidden('Invalid token');
+  } on io.SocketException {
+    return new shelf.Response.internalServerError(
+        body: 'Cannot reach authserver');
+  } catch (error, stackTrace) {
+    log.severe('Authentication validation lookup failed: $error:$stackTrace');
+
+    return new shelf.Response.internalServerError(body: error.toString());
+  }
+
+  /// Do not intercept the request, but let the next handler take care of it.
+  return null;
 }
 
-Future<IO.HttpServer> start({String hostname: '0.0.0.0', int port: 4010}) {
+Future<io.HttpServer> start({String hostname: '0.0.0.0', int port: 4010}) {
   var router = shelf_route.router()
     ..get('/message/list', Message.list)
     ..get('/message/{mid}', Message.get)

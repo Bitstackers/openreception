@@ -15,14 +15,14 @@ library openreception.reception_server.router;
 
 import 'dart:async';
 
-import 'dart:io' as IO;
+import 'dart:io' as io;
 
 import '../configuration.dart';
 import 'controller.dart' as controller;
 
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/database.dart' as Database;
-import 'package:openreception_framework/storage.dart' as Storage;
+import 'package:openreception_framework/storage.dart' as storage;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
 
@@ -39,7 +39,7 @@ final Map<String, String> corsHeaders = {
   'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE'
 };
 
-Future<IO.HttpServer> start(
+Future<io.HttpServer> start(
     {String hostname: '0.0.0.0', int port: 4010}) async {
   final Service.Authentication _authService = new Service.Authentication(
       config.authServer.externalUri,
@@ -53,19 +53,25 @@ Future<IO.HttpServer> start(
   /**
    * Validate a token by looking it up on the authentication server.
    */
-  Future<shelf.Response> _lookupToken(shelf.Request request) {
+  Future<shelf.Response> _lookupToken(shelf.Request request) async {
     var token = request.requestedUri.queryParameters['token'];
 
-    return _authService.validate(token).then((_) => null).catchError((error) {
-      if (error is Storage.NotFound) {
-        return new shelf.Response.forbidden('Invalid token');
-      } else if (error is IO.SocketException) {
-        return new shelf.Response.internalServerError(
-            body: 'Cannot reach authserver');
-      } else {
-        return new shelf.Response.internalServerError(body: error.toString());
-      }
-    });
+    try {
+      await _authService.validate(token);
+    } on storage.NotFound {
+      return new shelf.Response.forbidden('Invalid token');
+    } on io.SocketException {
+      return new shelf.Response.internalServerError(
+          body: 'Cannot reach authserver');
+    } catch (error, stackTrace) {
+      _log.severe(
+          'Authentication validation lookup failed: $error:$stackTrace');
+
+      return new shelf.Response.internalServerError(body: error.toString());
+    }
+
+    /// Do not intercept the request, but let the next handler take care of it.
+    return null;
   }
 
   /**

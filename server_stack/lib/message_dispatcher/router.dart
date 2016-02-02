@@ -51,29 +51,23 @@ database.User userStore;
 
 Future<IO.HttpServer> start(
     {String hostname: '0.0.0.0', int port: 4060}) async {
-  Future setup() => database.Connection
-          .connect(config.database.dsn)
-          .then((database.Connection conn) {
-        database.MessageQueue mqdb = new database.MessageQueue(conn);
-        messageStore = new database.Message(conn);
-        userStore = new database.User(conn);
-        messageQueueStore = mqdb;
-        Controller.MessageQueue mq = new Controller.MessageQueue(mqdb);
+  final database.Connection conn =
+      await database.Connection.connect(config.database.dsn);
+  final database.MessageQueue mqdb = new database.MessageQueue(conn);
+  messageStore = new database.Message(conn);
+  userStore = new database.User(conn);
+  messageQueueStore = mqdb;
+  final Controller.MessageQueue mq = new Controller.MessageQueue(mqdb);
 
-        var router = shelf_route.router()..get('/messagequeue', mq.list);
+  var router = shelf_route.router()..get('/messagequeue', mq.list);
 
-        var handler = const shelf.Pipeline()
-            .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
-            .addMiddleware(addCORSHeaders)
-            .addHandler(router.handler);
+  var handler = const shelf.Pipeline()
+      .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
+      .addMiddleware(addCORSHeaders)
+      .addHandler(router.handler);
 
-        log.fine('Serving interfaces:');
-        shelf_route.printRoutes(router,
-            printer: (String item) => log.fine(item));
+  log.fine('Serving interfaces:');
+  shelf_route.printRoutes(router, printer: (String item) => log.fine(item));
 
-        return handler;
-      });
-
-  return await setup()
-      .then((handler) => shelf_io.serve(handler, hostname, port));
+  return await shelf_io.serve(handler, hostname, port);
 }
