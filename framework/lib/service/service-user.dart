@@ -61,6 +61,19 @@ class RESTUserStore implements Storage.User {
   /**
    *
    */
+  Future<Model.User> getByIdentity(String identity) {
+    Uri url = Resource.User.singleByIdentity(_host, identity);
+    url = _appendToken(url, this._token);
+
+    return _backend
+        .get(url)
+        .then(JSON.decode)
+        .then(((Map userMap) => new Model.User.fromMap(userMap)));
+  }
+
+  /**
+   *
+   */
   Future<Model.User> create(Model.User user) {
     Uri url = Resource.User.root(_host);
     url = _appendToken(url, this._token);

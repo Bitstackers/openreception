@@ -25,6 +25,9 @@ abstract class User {
   static Uri single(Uri host, int userID) =>
       Uri.parse('${root(host)}/${userID}');
 
+  static Uri singleByIdentity(Uri host, String identity) =>
+      Uri.parse('${root(host)}/identity/${identity}');
+
   static Uri root(Uri host) =>
       Uri.parse('${Util.removeTailingSlashes(host)}/$_user');
 
