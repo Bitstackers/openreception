@@ -38,6 +38,8 @@ _databaseUserTests() {
 
     test('Existing user', () => User.existingUser(userDB));
 
+    test('user get by identity', () => User.getUserByIdentity(userDB));
+
     test('Create', () => User.createUser(userDB));
 
     test('Update', () => User.updateUser(userDB));

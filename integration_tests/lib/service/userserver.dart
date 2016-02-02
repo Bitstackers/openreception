@@ -55,6 +55,8 @@ runUserTests() {
 
     test('identity add', () => User.addUserIdentity(userStore));
 
+    test('user get by identity', () => User.getUserByIdentity(userStore));
+
     test('identity remove', () => User.removeUserIdentity(userStore));
 
     setUp(() {

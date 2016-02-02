@@ -328,7 +328,34 @@ abstract class User {
   /**
    * Add an identity to a user.
    */
+  static Future getUserByIdentity(Storage.User userStore) async {
+    final Model.User createdUser =
+        await userStore.create(Randomizer.randomUser());
 
+    expect(await userStore.identities(createdUser.id), isEmpty);
+
+    Model.UserIdentity identity = new Model.UserIdentity.empty()
+      ..identity = Randomizer.randomUserEmail()
+      ..userId = createdUser.id;
+
+    await userStore.addIdentity(identity);
+    final fetchedUser = await userStore.getByIdentity(identity.identity);
+    expect(createdUser.address, equals(fetchedUser.address));
+    expect(createdUser.enabled, equals(fetchedUser.enabled));
+    expect(createdUser.googleAppcode, equals(fetchedUser.googleAppcode));
+    expect(createdUser.googleUsername, equals(fetchedUser.googleUsername));
+    expect(createdUser.id, equals(fetchedUser.id));
+    expect(createdUser.name, equals(fetchedUser.name));
+    expect(createdUser.peer, equals(fetchedUser.peer));
+    expect(createdUser.portrait, equals(fetchedUser.portrait));
+
+    /// Finalization - cleanup.
+    await userStore.remove(createdUser.ID);
+  }
+
+  /**
+   * Add an identity to a user.
+   */
   static Future addUserIdentity(Storage.User userStore) async {
     final Model.User createdUser =
         await userStore.create(Randomizer.randomUser());
