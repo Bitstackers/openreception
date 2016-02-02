@@ -24,7 +24,7 @@ class HourAction {
 
   static HourAction parse(Map map) => new HourAction()
     ..hours = parseMultipleHours(map['hours']).toList()
-    ..actions = map['actions'].map(Action.parse).toList();
+    ..actions = (map['actions'] as Iterable).map(Action.parse).toList();
 
   Map toJson() => {
         'hours': hours.map((hour) => hour.toJson()).join(', '),

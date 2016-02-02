@@ -30,7 +30,7 @@ class NamedExtension extends Extension {
   NamedExtension(this.name, this.actions);
 
   static NamedExtension decode(Map map) => new NamedExtension(
-      map[Key.name], map[Key.actions].map(Action.parse).toList());
+      map[Key.name], (map[Key.actions] as Iterable).map(Action.parse).toList());
 
   Map toJson() => {Key.name: name, Key.actions: actions};
 }

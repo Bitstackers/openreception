@@ -20,5 +20,4 @@ class IvrTopmenu implements IvrEntry {
 
   @override
   String toJson() => '$digits: ${Key.ivrTopmenu}';
-
 }

@@ -21,4 +21,8 @@ class IvrReceptionTransfer implements IvrEntry {
 
   @override
   String toJson() => '$digits: ${transfer.toJson()}';
+
+  bool operator ==(IvrEntry other) =>
+      digits == other.digits &&
+      transfer == (other as IvrReceptionTransfer).transfer;
 }
