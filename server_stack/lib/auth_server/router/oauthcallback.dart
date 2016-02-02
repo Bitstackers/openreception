@@ -99,18 +99,17 @@ Future<shelf.Response> oauthCallback(shelf.Request request) {
 /**
  * Asks google for the user data, for the user bound to the [access_token].
  */
-Future<Map> getUserInfo(String access_token) {
+Future<Map> getUserInfo(String access_token) async {
   Uri url = Uri.parse('https://www.googleapis.com/oauth2/'
       'v1/userinfo?alt=json&access_token=${access_token}');
 
-  return new _transport.Client().get(url).then((String response) {
-    Map googleProfile = JSON.decode(response);
-    return _userStore
-        .getByIdentity(googleProfile['email'])
-        .then((model.User user) {
-      Map agent = user.toJson();
-      agent['remote_attributes'] = googleProfile;
-      return agent;
-    });
-  });
+  final Map googleProfile =
+      await new _transport.Client().get(url).then(JSON.decode);
+
+  final model.User user =
+      await _userStore.getByIdentity(googleProfile['email']);
+  Map agent = user.toJson();
+  agent['remote_attributes'] = googleProfile;
+
+  return agent;
 }
