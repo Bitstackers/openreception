@@ -84,6 +84,7 @@ Future<io.HttpServer> start(
   final Database.Ivr _ivrStore = new Database.Ivr(_connection);
   final Database.ReceptionDialplan _dpStore =
       new Database.ReceptionDialplan(_connection);
+  final Database.Reception _rStore = new Database.Reception(_connection);
 
   /// Setup dialplan tools.
   final dialplanTools.DialplanCompiler compiler =
@@ -99,7 +100,7 @@ Future<io.HttpServer> start(
 
   final controller.Ivr ivrHandler = new controller.Ivr(_ivrStore, compiler);
   final controller.ReceptionDialplan receptionDialplanHandler =
-      new controller.ReceptionDialplan(_dpStore, compiler);
+      new controller.ReceptionDialplan(_dpStore, _rStore, compiler);
 
   final Database.User _userStore = new Database.User(_connection);
   final controller.PeerAccount peerAccountHandler =

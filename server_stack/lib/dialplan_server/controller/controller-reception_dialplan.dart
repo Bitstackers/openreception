@@ -18,6 +18,7 @@ part of openreception.dialplan_server.controller;
  */
 class ReceptionDialplan {
   final database.ReceptionDialplan _receptionDialplanStore;
+  final database.Reception _receptionStore;
   final dialplanTools.DialplanCompiler compiler;
   final Logger _log = new Logger('$_libraryName.ReceptionDialplan');
   esl.Connection _eslClient;
@@ -25,7 +26,8 @@ class ReceptionDialplan {
   /**
    *
    */
-  ReceptionDialplan(this._receptionDialplanStore, this.compiler) {
+  ReceptionDialplan(
+      this._receptionDialplanStore, this._receptionStore, this.compiler) {
     _connectESLClient();
   }
 
@@ -68,8 +70,10 @@ class ReceptionDialplan {
     final int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
     model.ReceptionDialplan rdp;
+    model.Reception r;
     try {
       rdp = await _receptionDialplanStore.get(extension);
+      r = await _receptionStore.get(rid);
     } on storage.NotFound {
       return _notFound('No dialplan with extension $extension');
     }
@@ -77,7 +81,7 @@ class ReceptionDialplan {
         '/dialplan/receptions/$extension.xml';
 
     _log.fine('Deploying new dialplan to file $xmlFilePath');
-    await new File(xmlFilePath).writeAsString(compiler.dialplanToXml(rdp, rid));
+    await new File(xmlFilePath).writeAsString(compiler.dialplanToXml(rdp, r));
 
     Iterable<model.Voicemail> voicemailAccounts =
         rdp.allActions.where((a) => a is model.Voicemail);
