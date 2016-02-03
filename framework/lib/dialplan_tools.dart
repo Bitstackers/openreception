@@ -21,7 +21,6 @@ import 'pbx-keys.dart';
 
 const String closedSuffix = 'closed';
 const String outboundSuffix = 'outbound';
-const String reception = 'reception';
 
 String _toBase64(String item) => CryptoUtils.bytesToBase64(UTF8.encode(item));
 
@@ -240,7 +239,7 @@ String _dialplanToXml(model.ReceptionDialplan dialplan,
     DialplanCompilerOpts option, model.Reception reception) {
   return '''<!-- Dialplan for extension ${dialplan.extension}. Generated ${new DateTime.now()} -->
 <include>
-  <context name="$reception-${dialplan.extension}">
+  <context name="reception-${dialplan.extension}">
 
     <!-- Initialize channel variables -->
     <extension name="${dialplan.extension}" continue="true">
@@ -308,7 +307,7 @@ String _transferTemplate(String extension, DialplanCompilerOpts option) =>
  */
 String _receptionTransferTemplate(
         String extension, DialplanCompilerOpts option) =>
-    '<action application="transfer" data="${extension} XML $reception-${extension}"/>';
+    '<action application="transfer" data="${extension} XML reception-${extension}"/>';
 
 /**
  * Template for a sleep action.
@@ -540,7 +539,7 @@ List<String> _ivrEntryToXml(model.IvrEntry entry, DialplanCompilerOpts option) {
       returnValue.add(_noteTemplate(entry.transfer.note));
     returnValue.add(
         '<entry action="${PbxKey.menuExecApp}" digits="${entry.digits}" '
-        'param="transfer ${entry.transfer.extension} XML $reception-${entry.transfer.extension}"/>');
+        'param="transfer ${entry.transfer.extension} XML reception-${entry.transfer.extension}"/>');
   } else if (entry is model.IvrVoicemail) {
     returnValue.add(
         '<entry action="${PbxKey.menuExecApp}" digits="${entry.digits}" param="voicemail default \$\${domain} ${entry.voicemail.vmBox}"/>');
