@@ -50,29 +50,20 @@ AND
   owner_contact_id = @contact_id;
 ''';
 
-    final Map parameters = {
-      'reception_id': receptionId,
-      'contact_id': contactId
-    };
+    final Map parameters = {'reception_id': receptionId, 'contact_id': contactId};
 
     try {
       Iterable rows = await _connection.query(sql, parameters);
 
-      if (rows.isEmpty) {
-        throw new Storage.NotFound(
-            'No distribution list for $contactId@$receptionId');
-      }
-
       final Model.DistributionList list = new Model.DistributionList.empty();
       for (var row in rows) {
-        Model.DistributionListEntry recipient =
-            new Model.DistributionListEntry()
-              ..receptionID = row.recipient_reception_id
-              ..receptionName = row.recipient_reception_name
-              ..contactID = row.recipient_contact_id
-              ..contactName = row.recipient_contact_name
-              ..role = row.role
-              ..id = row.id;
+        Model.DistributionListEntry recipient = new Model.DistributionListEntry()
+          ..receptionID = row.recipient_reception_id
+          ..receptionName = row.recipient_reception_name
+          ..contactID = row.recipient_contact_id
+          ..contactName = row.recipient_contact_name
+          ..role = row.role
+          ..id = row.id;
 
         list.add(recipient);
       }
@@ -85,8 +76,8 @@ AND
   /**
    *
    */
-  Future<Model.DistributionListEntry> addRecipient(int ownerReceptionId,
-      int ownerContactId, Model.DistributionListEntry recipient) async {
+  Future<Model.DistributionListEntry> addRecipient(
+      int ownerReceptionId, int ownerContactId, Model.DistributionListEntry recipient) async {
     String sql = '''
 INSERT INTO
   distribution_list
