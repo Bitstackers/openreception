@@ -66,6 +66,8 @@ class Notification {
    * Fire [event] on relevant bus.
    */
   void _dispatch(OREvent.Event event) {
+    _log.finest(event.toJson());
+
     if (event is OREvent.CallEvent) {
       _callEvent(event);
     } else if (event is OREvent.CalendarChange) {
