@@ -19,7 +19,10 @@ library openreception.pbx_keys;
 class ORPbxKey {
   static const String namespace = '__or__';
 
-  static const String agentChannel = 'agent-channel';
+  static const String agentBeginEpoch = namespace + 'agent-begin-epoch';
+  static const String agentChannel = namespace + 'agent-channel';
+  static const String agentEndEpoch = namespace + 'agent-end-epoch';
+  static const String base64VoicemailSubject = namespace + 'base64-vm-subject';
   static const String callLock = namespace + 'call-lock';
   static const String callNotify = namespace + 'call-notify';
   static const String callUnlock = namespace + 'call-unlock';
@@ -27,7 +30,7 @@ class ORPbxKey {
   static const String contextCallId = namespace + 'context-call-id';
   static const String destination = namespace + 'destination';
   static const String emailDateHeader = namespace + 'email-date-header';
-  static const String base64VoicemailSubject = namespace + 'base64-vm-subject';
+  static const String externalTransferEpoch = namespace + 'external-transfer-epoch';
   static const String greetingPlayed = namespace + 'greeting-played';
   static const String locked = namespace + 'locked';
   static const String parkingLotEnter = namespace + 'parking-lot-enter';
@@ -46,8 +49,6 @@ class ORPbxKey {
  * overlap with keys found in [ORPbxKey]. Use the latter if you need the '__OR__' namespace.
  */
 class PbxKey {
-  static const String agentBeginEpoch = 'agent-begin-epoch';
-  static const String agentEndEpoch = 'agent-end-epoch';
   static const String answerEpoch = 'answer_epoch';
   static const String billSec = 'billsec';
   static const String bridgeUuid = 'bridge_uuid';
@@ -61,7 +62,6 @@ class PbxKey {
   static const String eventName = 'Event-Name';
   static const String eventSubclass = 'Event-Subclass';
   static const String externalTransfer = 'external_transfer';
-  static const String externalTransferEpoch = 'external-transfer-epoch';
   static const String finalTransferAction = 'final-transfer-action';
   static const String greetLong = 'greet-long';
   static const String greetShort = 'greet-short';
