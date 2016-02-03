@@ -95,7 +95,7 @@ abstract class Notification {
         return true;
       } catch (error, stackTrace) {
         failure++;
-        _log.severe("Failed to send message to client $uid - error: $error");
+        _log.severe("Failed to send message to client");
         _log.severe(error, stackTrace);
         return false;
       }
@@ -134,7 +134,7 @@ abstract class Notification {
       _log.severe('Client $uid sent us a very malformed message. $error : ',
           stackTrace);
       clientRegistry[uid].remove(webSocket);
-      webSocket.close(io.WebSocketStatus.UNSUPPORTED_DATA, "Bad request");
+      webSocket.sink.close(io.WebSocketStatus.UNSUPPORTED_DATA, "Bad request");
     }, onDone: () {
       _log.info(
           'Disconnected WebSocket connection from uid $uid', "handleWebsocket");
