@@ -136,7 +136,7 @@ List<String> _openingHourToXmlDialplan(
 
   if (env.callAnnounced) {
     lines.add(
-        '  <condition field="\${ORPbxKey.receptionOpen}" expression="^true\$"/>');
+        '  <condition field="${ORPbxKey.receptionOpen}" expression="^true\$"/>');
   }
   lines
     ..add(
