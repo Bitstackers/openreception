@@ -105,11 +105,14 @@ class Call {
   /**
    * Returns the first parked call.
    */
-  Future<ORModel.Call> _firstParkedCall() =>
-      _service.callList().then((Iterable<ORModel.Call> calls) => calls.firstWhere(
-          (ORModel.Call call) =>
-              call.assignedTo == _appState.currentUser.id && call.state == ORModel.CallState.Parked,
-          orElse: () => ORModel.Call.noCall));
+  Future<ORModel.Call> _firstParkedCall() async {
+    final Iterable<ORModel.Call> calls = await _service.callList();
+
+    return await calls.firstWhere(
+        (ORModel.Call call) =>
+            call.assignedTo == _appState.currentUser.id && call.state == ORModel.CallState.Parked,
+        orElse: () => ORModel.Call.noCall);
+  }
 
   /**
    * Returns the [callId] [ORModel.Call].

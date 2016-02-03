@@ -132,7 +132,11 @@ button::-moz-focus-inner {
 }
 
 .hint.hidden {
-  display: none;
+  /* Chrome 48 bug
+     correct code is a simple display: none;
+     Setting opacity to 0 is a workaround to keep Chrome 48 from crapping out
+  */
+  opacity: 0;
 }
 
 input {

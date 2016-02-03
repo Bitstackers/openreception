@@ -115,6 +115,8 @@
             #calendar-editor .generic-widget-body div {
               flex-grow: 1;
               display: flex;
+              min-height: 0; /* Chrome 48 bug */
+              min-width: 0; /* Chrome 48 bug */
             }
 
             #calendar-editor .padding03 {
@@ -1019,6 +1021,8 @@
 
                   #reception-commands .generic-widget-list {
                     outline: 0;
+                    min-height: 0; /* Chrome 48 bug */
+                    min-width: 0; /* Chrome 48 bug */
                   }
                 </style>
 
@@ -1117,14 +1121,16 @@
 
                   #message-compose .recipients ol li {
                     padding: 0.1em;
+                    min-height: 0; /* Chrome 48 bug */
+                    min-width: 0; /* Chrome 48 bug */
                   }
 
                   #message-compose .recipients .cc:before {
-                    content: '(cc) '
+                    content: '(cc) ';
                   }
 
                   #message-compose .recipients .bcc:before {
-                    content: '(bcc) '
+                    content: '(bcc) ';
                   }
 
                   /*#message-compose .name-hint {
@@ -1133,31 +1139,45 @@
 
                   #message-compose .names {
                     margin-top: 0.3em;
+                    min-height: 0; /* Chrome 48 bug */
+                    min-width: 0; /* Chrome 48 bug */
                   }
 
                   #message-compose .names input.caller {
                     margin-right: 0.3em;
+                    min-height: 0; /* Chrome 48 bug */
+                    min-width: 0; /* Chrome 48 bug */
                   }
 
                   #message-compose .names input.company {
                     margin-left: 0.3em;
+                    min-height: 0; /* Chrome 48 bug */
+                    min-width: 0; /* Chrome 48 bug */
                   }
 
                   #message-compose .phone-numbers {
                     margin-top: 0.7em;
+                    min-height: 0; /* Chrome 48 bug */
+                    min-width: 0; /* Chrome 48 bug */
                   }
 
                   #message-compose .phone-numbers input.landline {
                     margin-right: 0.3em;
+                    min-height: 0; /* Chrome 48 bug */
+                    min-width: 0; /* Chrome 48 bug */
                   }
 
                   #message-compose .phone-numbers input.cell {
                     margin-left: 0.3em;
                     margin-right: 0.3em;
+                    min-height: 0; /* Chrome 48 bug */
+                    min-width: 0; /* Chrome 48 bug */
                   }
 
                   #message-compose .phone-numbers input.extension {
                     margin-left: 0.3em;
+                    min-height: 0; /* Chrome 48 bug */
+                    min-width: 0; /* Chrome 48 bug */
                   }
 
                   #message-compose .prerequisites {
@@ -1165,26 +1185,36 @@
                     margin: 0.7em 0.3em 0 0.3em;
                     color: #ff5621;
                     font-weight: bold;
+                    min-height: 0; /* Chrome 48 bug */
+                    min-width: 0; /* Chrome 48 bug */
                   }
 
                   #message-compose .message {
                     flex-grow: 1;
                     margin-top: 0.7em;
+                    min-height: 0; /* Chrome 48 bug */
+                    min-width: 0; /* Chrome 48 bug */
                   }
 
                   #message-compose .message textarea {
                     resize: none;
                     flex-grow: 1;
                     font-size: 1em;
+                    min-height: 0; /* Chrome 48 bug */
+                    min-width: 0; /* Chrome 48 bug */
                   }
 
                   #message-compose .checks-and-buttons {
                     margin-top: 0.7em;
                     padding: 0 0 0 0.5em;
+                    min-height: 0; /* Chrome 48 bug */
+                    min-width: 0; /* Chrome 48 bug */
                   }
 
                   #message-compose .checks-and-buttons .checks {
                     flex-grow: 1;
+                    min-height: 0; /* Chrome 48 bug */
+                    min-width: 0; /* Chrome 48 bug */
                   }
 
                   #message-compose .checks-and-buttons .checks ol {
@@ -1254,7 +1284,7 @@
                     <input type="text" class="extension" placeholder="::local extension::" tabindex="-1" data-lang-placeholder="message-compose-local-ext">
                   </div>
 
-                  <div class="prerequisites display-flex-row"></div>
+                  <div class="prerequisites"></div>
 
                   <div class="message display-flex-row">
                     <textarea class="padding03" placeholder="::message::" tabindex="-1" data-lang-placeholder="message-compose-message"></textarea>
