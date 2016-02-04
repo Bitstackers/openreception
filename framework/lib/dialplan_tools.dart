@@ -142,9 +142,10 @@ List<String> _openingHourToXmlDialplan(
     '<extension name="${extension}-${_normalizeOpeningHour(oh.toString())}" continue="true">'
   ]);
 
-  // if (env.callAnnounced) {
-  //   lines.add('  <condition field="reception-open" expression="^true"/>');
-  // }
+  if (env.callAnnounced) {
+    lines.add(
+        '  <condition field="\${${ORPbxKey.receptionOpen}}" expression="^true\$"/>');
+  }
   lines
     ..add(
         '  <condition ${_openingHourToFreeSwitch(oh)} break="${PbxKey.onTrue}">')
