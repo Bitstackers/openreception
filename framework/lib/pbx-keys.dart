@@ -22,7 +22,7 @@ class ORPbxKey {
   static const String agentBeginEpoch = namespace + 'agent-begin-epoch';
   static const String agentChannel = namespace + 'agent-channel';
   static const String agentEndEpoch = namespace + 'agent-end-epoch';
-  static const String base64VoicemailSubject = namespace + 'base64-vm-subject';
+  static const String receptionName = namespace + 'reception-name';
   static const String callLock = namespace + 'call-lock';
   static const String callNotify = namespace + 'call-notify';
   static const String callUnlock = namespace + 'call-unlock';

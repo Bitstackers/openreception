@@ -245,6 +245,9 @@ Iterable<String> _extraExtensionsToDialplan(
  */
 String _dialplanToXml(model.ReceptionDialplan dialplan,
     DialplanCompilerOpts option, model.Reception reception) {
+  final String htmlEncodedReceptionName =
+      new HtmlEscape(HtmlEscapeMode.ATTRIBUTE).convert(reception.name);
+
   return '''<!-- Dialplan for extension ${dialplan.extension}. Generated ${new DateTime.now()} -->
 <include>
   <context name="reception-${dialplan.extension}">
@@ -256,6 +259,7 @@ String _dialplanToXml(model.ReceptionDialplan dialplan,
         ${_setVar(ORPbxKey.receptionId, reception.ID)}
         ${_setVar(ORPbxKey.greetingPlayed, false)}
         ${_setVar(ORPbxKey.locked, false)}
+        ${_setVar(ORPbxKey.receptionName, htmlEncodedReceptionName)}
       </condition>
     </extension>
 
@@ -446,13 +450,10 @@ List<String> _actionToXmlDialplan(model.Action action,
 
   /// Voicemail  action.
   else if (action is model.Voicemail) {
-    final String headerText = '${reception.name} har modtaget en ny voicemail';
-
     if (action.note.isNotEmpty) returnValue.add(_noteTemplate(action.note));
     returnValue.addAll([
       _setVar(
           ORPbxKey.emailDateHeader, '\${strftime(%a, %d %b %Y %H:%M:%S %z)}'),
-      _setVar(ORPbxKey.base64VoicemailSubject, _toBase64(headerText)),
       '<action application="voicemail" data="default \$\${domain} ${action.vmBox}"/>'
     ]);
   }
