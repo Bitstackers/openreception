@@ -37,12 +37,20 @@ class DialplanCompilerOpts {
       this.testEmail: 'some-guy@somewhere'});
 }
 
+/**
+ * Environment that enables state to be passed along to the next function in
+ * the chain.
+ */
 class Environment {
   String channelState = '';
   bool channelAnswered = false;
   bool callAnnounced = false;
 }
 
+/**
+ * Dialplan compiler. Builds xml dialplans, xml ivr menus and xml user
+ * accounts for FreeSWITCH.
+ */
 class DialplanCompiler {
   DialplanCompilerOpts option;
 
