@@ -93,9 +93,34 @@ class AppClientState {
    */
   void _observers() {
     _notification.onAnyCallStateChange.listen((OREvent.CallEvent event) {
-      if (event is OREvent.CallHangup && event.call.assignedTo == currentUser.id) {
+      ORModel.Call call = event.call;
+
+      if (call.assignedTo != currentUser.id) {
+        return;
+      }
+
+      /// Hung up call.
+      else if (event is OREvent.CallHangup &&
+          event.call.assignedTo == currentUser.id) {
         _hungupCalls.add(new HungUp(event.call.channel, new DateTime.now()));
         activeCall = event.call;
+      }
+
+      if ((call.state == ORModel.CallState.Ringing ||
+              call.state == ORModel.CallState.Speaking) &&
+          activeCall != call) {
+        activeCall = call;
+      }
+
+      /// Hung up call.
+      else if (event is OREvent.CallHangup &&
+          event.call.assignedTo == currentUser.id) {
+        _hungupCalls.add(new HungUp(event.call.channel, new DateTime.now()));
+        activeCall = event.call;
+      } else if (event is OREvent.CallTransfer && call == activeCall) {
+        activeCall = ORModel.Call.noCall;
+      } else if (event is OREvent.CallPark && call == activeCall) {
+        activeCall = ORModel.Call.noCall;
       }
     });
   }

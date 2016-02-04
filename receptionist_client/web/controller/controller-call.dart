@@ -89,11 +89,12 @@ class Call {
 
     _command.fire(CallCommand.dial);
 
-    return await _service.originate(phoneNumber.value, context).then((ORModel.Call call) {
+    return await _service
+        .originate(phoneNumber.endpoint, context)
+        .then((ORModel.Call call) {
       _command.fire(CallCommand.dialSuccess);
-      _appState.activeCall = call;
 
-      return _appState.activeCall;
+      return call;
     }).catchError((error, stackTrace) {
       _log.severe(error, stackTrace);
       _command.fire(CallCommand.dialFailure);
@@ -169,7 +170,6 @@ class Call {
 
       _log.info('Parking ${parkedCall}');
 
-      _appState.activeCall = ORModel.Call.noCall;
       return parkedCall;
     }).catchError((error, stackTrace) {
       _log.severe(error, stackTrace);
@@ -196,9 +196,8 @@ class Call {
 
     return await _service.pickup(call.ID).then((ORModel.Call call) {
       _command.fire(CallCommand.pickupSuccess);
-      _appState.activeCall = call;
 
-      return _appState.activeCall;
+      return call;
     }).catchError((error, stackTrace) {
       _log.severe(error, stackTrace);
       _command.fire(CallCommand.pickupFailure);
@@ -261,9 +260,7 @@ class Call {
    * Tries to transfer [source] to [destination].
    */
   Future transfer(ORModel.Call source, ORModel.Call destination) {
-    return _transfer(source, destination).then((_) {
-      _appState.activeCall = ORModel.Call.noCall;
-    });
+    return _transfer(source, destination);
   }
 
   /**
@@ -272,9 +269,7 @@ class Call {
   Future transferToFirstParkedCall(ORModel.Call source) {
     return _firstParkedCall().then((ORModel.Call parkedCall) {
       if (parkedCall != null) {
-        return _transfer(source, parkedCall).then((_) {
-          _appState.activeCall = ORModel.Call.noCall;
-        });
+        return _transfer(source, parkedCall);
       }
 
       return null;
