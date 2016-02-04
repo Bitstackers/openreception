@@ -13,7 +13,7 @@
 
 part of openreception.model.dialplan;
 
-class IvrVoicemail implements IvrEntry {
+class IvrVoicemail extends IvrEntry {
   final String digits;
   final Voicemail voicemail;
 

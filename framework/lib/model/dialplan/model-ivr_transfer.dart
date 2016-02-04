@@ -13,7 +13,7 @@
 
 part of openreception.model.dialplan;
 
-class IvrTransfer implements IvrEntry {
+class IvrTransfer extends IvrEntry {
   final String digits;
   final Transfer transfer;
 
@@ -21,5 +21,4 @@ class IvrTransfer implements IvrEntry {
 
   @override
   String toJson() => '$digits: ${transfer.toJson()}';
-
 }
