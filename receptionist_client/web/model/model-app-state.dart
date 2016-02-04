@@ -15,20 +15,11 @@ part of model;
 
 enum AppState { loading, error, ready }
 
-class HungUp {
-  final String callId;
-  final DateTime timestamp;
-
-  HungUp(String this.callId, DateTime this.timestamp);
-}
-
 class AppClientState {
   ORModel.Call _activeCall = ORModel.Call.noCall;
   final Bus<ORModel.Call> _activeCallChangeBus = new Bus<ORModel.Call>();
   ORModel.User _currentUser = new ORModel.User.empty();
-  List<HungUp> _hungupCalls = new List<HungUp>();
   final Logger _log = new Logger('${libraryName}.AppClientState');
-  final Duration _maxHungUpAge = new Duration(seconds: 60);
   final Controller.Notification _notification;
   final Bus<AppState> _stateChange = new Bus<AppState>();
 
@@ -53,20 +44,15 @@ class AppClientState {
    * Set the currently active call. A hangup is when [newCall] is [ORModel.Call.noCall].
    */
   set activeCall(ORModel.Call newCall) {
-    if (_hungupCalls.any((HungUp hungUp) => hungUp.callId == newCall.ID)) {
-      _activeCall = ORModel.Call.noCall;
-    } else {
-      _activeCall = newCall;
+    ORModel.Call previousCall = _activeCall;
+
+    _activeCall = newCall;
+
+    if (_activeCall.ID != previousCall.ID) {
+      _activeCallChangeBus.fire(_activeCall);
+      _log.finest(
+          'Changing active call to ${_activeCall == ORModel.Call.noCall ? 'noCall' : _activeCall}');
     }
-
-    _activeCallChangeBus.fire(_activeCall);
-
-    _log.finest(
-        'Changing active call to ${_activeCall == ORModel.Call.noCall ? 'noCall' : _activeCall}');
-
-    /// Clean up the hungup calls list.
-    _hungupCalls.removeWhere(
-        (HungUp hungUp) => hungUp.timestamp.difference(new DateTime.now()) > _maxHungUpAge);
   }
 
   /**
@@ -93,33 +79,16 @@ class AppClientState {
    */
   void _observers() {
     _notification.onAnyCallStateChange.listen((OREvent.CallEvent event) {
-      ORModel.Call call = event.call;
+      final ORModel.Call call = event.call;
 
       if (call.assignedTo != currentUser.id) {
         return;
       }
 
-      /// Hung up call.
-      else if (event is OREvent.CallHangup &&
-          event.call.assignedTo == currentUser.id) {
-        _hungupCalls.add(new HungUp(event.call.channel, new DateTime.now()));
-        activeCall = event.call;
-      }
-
-      if ((call.state == ORModel.CallState.Ringing ||
-              call.state == ORModel.CallState.Speaking) &&
-          activeCall != call) {
+      if (call.state == ORModel.CallState.Ringing ||
+          call.state == ORModel.CallState.Speaking) {
         activeCall = call;
-      }
-
-      /// Hung up call.
-      else if (event is OREvent.CallHangup &&
-          event.call.assignedTo == currentUser.id) {
-        _hungupCalls.add(new HungUp(event.call.channel, new DateTime.now()));
-        activeCall = event.call;
-      } else if (event is OREvent.CallTransfer && call == activeCall) {
-        activeCall = ORModel.Call.noCall;
-      } else if (event is OREvent.CallPark && call == activeCall) {
+      } else if (activeCall == call) {
         activeCall = ORModel.Call.noCall;
       }
     });
