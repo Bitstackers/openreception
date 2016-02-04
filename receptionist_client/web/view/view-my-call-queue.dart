@@ -226,7 +226,9 @@ class MyCallQueue extends ViewWidget {
       Iterable<ORModel.Call> myCalls = calls.where(isMine);
       _ui.calls = myCalls.toList(growable: false);
       _appState.activeCall = myCalls.firstWhere(
-          (ORModel.Call call) => call.state == ORModel.CallState.Speaking,
+          (ORModel.Call call) =>
+              call.state == ORModel.CallState.Speaking ||
+              call.state == ORModel.CallState.Ringing,
           orElse: () => ORModel.Call.noCall);
     });
   }
