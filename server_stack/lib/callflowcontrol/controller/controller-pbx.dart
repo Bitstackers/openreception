@@ -231,7 +231,7 @@ abstract class PBX {
   static Future transferUUIDToExtension(
       String uuid, String extension, ORModel.User user, String context) async {
     await api('uuid_setvar $uuid effective_caller_id_number ${user.peer}');
-    await api('uuid_setvar $uuid effective_caller_id_name ${user.name}');
+    await api('uuid_setvar $uuid effective_caller_id_name ${user.address}');
     final ESL.Reply reply = await bgapi(
         'uuid_transfer $uuid external_transfer_$extension xml reception-$context');
 
