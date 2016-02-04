@@ -85,7 +85,7 @@ class DialplanCompiler {
 
 List<String> _externalTrunkTransfer(String extension, int rid) => [
       '<extension name="${extension}-${outboundSuffix}-trunk" continue="true">',
-      '  <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(\\d+)">',
+      '  <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(\\d+)\$">',
       '    <action application="set" data="ringback=\${dk-ring}"/>',
       '    <action application="ring_ready" />',
       '    <action application="bridge" data="{${ORPbxKey.receptionId}=${rid},originate_timeout=120}[leg_timeout=50,${ORPbxKey.receptionId}=${rid},fifo_music=default]sofia/gateway/\${default_trunk}/\$1"/>',
