@@ -22,8 +22,6 @@ import 'pbx-keys.dart';
 const String closedSuffix = 'closed';
 const String outboundSuffix = 'outbound';
 
-String _toBase64(String item) => CryptoUtils.bytesToBase64(UTF8.encode(item));
-
 class DialplanCompilerOpts {
   final bool goLive;
   final String greetingDir;
