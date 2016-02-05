@@ -461,7 +461,7 @@ class ContactView {
     List<LIElement> children = new List<LIElement>();
     if (phonenumbers != null) {
       for (ORModel.PhoneNumber number in phonenumbers) {
-        LIElement li = simpleListElement(number.value, onChange: onChange);
+        LIElement li = simpleListElement(number.endpoint, onChange: onChange);
         //TODO: Figure out what value is used for.
         //li.value = number.value != null ? number.value : -1;
         SelectElement kindpicker = new SelectElement()
@@ -588,7 +588,7 @@ class ContactView {
         if (content != null && kindpicker != null) {
           phonenumbers.add(new ORModel.PhoneNumber.empty()
             ..type = kindpicker.options[kindpicker.selectedIndex].value
-            ..value = content.text
+            ..endpoint = content.text
             ..description = description.text
             ..billing_type = billingType.text);
         }
