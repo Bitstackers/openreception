@@ -22,12 +22,13 @@ class MessageCompose extends ViewWidget {
   final Controller.DistributionList _distributionListController;
   final Controller.Endpoint _endpointController;
   final Map<String, String> _langMap;
+  ORModel.Contact _latestContact = new ORModel.Contact.empty();
   final Logger _log = new Logger('$libraryName.MessageCompose');
-  final Model.UIMessageArchive _uiMessageArchive;
   final Controller.Message _messageController;
   final Controller.Destination _myDestination;
   final Controller.Popup _popup;
   final Model.UIReceptionSelector _receptionSelector;
+  final Model.UIMessageArchive _uiMessageArchive;
   final Model.UIMessageCompose _uiModel;
 
   /**
@@ -111,30 +112,34 @@ class MessageCompose extends ViewWidget {
    * Render the widget with [Contact].
    */
   void _render(ORModel.Contact contact) {
-    _ui.headerExtra = ': ${contact.fullName}';
+    if (_latestContact.ID != contact.ID) {
+      _latestContact = contact;
 
-    if (contact.isEmpty) {
-      _ui.resetOnEmptyContact();
-    } else {
-      final Set<ORModel.MessageRecipient> recipients = new Set<ORModel.MessageRecipient>();
+      _ui.headerExtra = ': ${contact.fullName}';
 
-      _distributionListController
-          .list(contact.receptionID, contact.ID)
-          .then((ORModel.DistributionList dList) {
-        Future.forEach(dList, (ORModel.DistributionListEntry dle) {
-          return _endpointController
-              .list(dle.receptionID, dle.contactID)
-              .then((Iterable<ORModel.MessageEndpoint> meps) {
-            recipients.addAll(
-                (meps.map((ORModel.MessageEndpoint mep) => new ORModel.MessageRecipient(mep, dle))
-                    as Iterable<ORModel.MessageRecipient>));
+      if (contact.isEmpty) {
+        _ui.resetOnEmptyContact();
+      } else {
+        final Set<ORModel.MessageRecipient> recipients = new Set<ORModel.MessageRecipient>();
+
+        _distributionListController
+            .list(contact.receptionID, contact.ID)
+            .then((ORModel.DistributionList dList) {
+          Future.forEach(dList, (ORModel.DistributionListEntry dle) {
+            return _endpointController
+                .list(dle.receptionID, dle.contactID)
+                .then((Iterable<ORModel.MessageEndpoint> meps) {
+              recipients.addAll(
+                  (meps.map((ORModel.MessageEndpoint mep) => new ORModel.MessageRecipient(mep, dle))
+                      as Iterable<ORModel.MessageRecipient>));
+            });
+          }).whenComplete(() {
+            _ui.recipients = recipients;
           });
-        }).whenComplete(() {
-          _ui.recipients = recipients;
         });
-      });
 
-      _ui.messagePrerequisites = contact.messagePrerequisites;
+        _ui.messagePrerequisites = contact.messagePrerequisites;
+      }
     }
   }
 

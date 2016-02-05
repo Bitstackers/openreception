@@ -165,7 +165,7 @@ class UIContactSelector extends UIModel {
       _bus.fire(new ContactWithFilterContext(new ORModel.Contact.empty(), state, filterInputValue));
     } else if (_list.children.isNotEmpty) {
       final LIElement selected = _list.querySelector('.selected');
-      if (selected.classes.contains('hide')) {
+      if (selected != null && selected.classes.contains('hide')) {
         /// The selected item is hidden. Select the first visible item on the remaining list
         _markSelected(_scanForwardForVisibleElement(_list.children.first), alwaysFire: true);
       } else {

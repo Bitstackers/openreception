@@ -20,6 +20,7 @@ part of view;
 class ContactData extends ViewWidget {
   final Model.UIContactSelector _contactSelector;
   final Map<String, String> _langMap;
+  ORModel.Contact _latestContact = new ORModel.Contact.empty();
   final Controller.Destination _myDestination;
   final Controller.Popup _popup;
   final Model.UIReceptionSelector _receptionSelector;
@@ -80,11 +81,15 @@ class ContactData extends ViewWidget {
    * Render the widget with [Contact].
    */
   void _render(Model.ContactWithFilterContext cwfc) {
-    if (cwfc.contact.isEmpty) {
-      _ui.clear(removePopup: false);
-    } else {
-      _ui.contactWithFilterContext = cwfc;
-      _ui.selectFirstPhoneNumber();
+    if (_latestContact.ID != cwfc.contact.ID) {
+      _latestContact = cwfc.contact;
+
+      if (cwfc.contact.isEmpty) {
+        _ui.clear(removePopup: false);
+      } else {
+        _ui.contactWithFilterContext = cwfc;
+        _ui.selectFirstPhoneNumber();
+      }
     }
   }
 }

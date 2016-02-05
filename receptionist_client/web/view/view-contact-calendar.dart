@@ -18,6 +18,7 @@ part of view;
  */
 class ContactCalendar extends ViewWidget {
   final Model.UIContactSelector _contactSelector;
+  ORModel.Contact _latestContact = new ORModel.Contact.empty();
   final Controller.Destination _myDestination;
   final Controller.Notification _notification;
   final Model.UIReceptionSelector _receptionSelector;
@@ -109,11 +110,15 @@ class ContactCalendar extends ViewWidget {
    * Render the widget with [contact].
    */
   void _render(ORModel.Contact contact) {
-    if (contact.isEmpty) {
-      _ui.clear();
-    } else {
-      _ui.headerExtra = ': ${contact.fullName}';
-      _fetchCalendar(contact);
+    if (_latestContact.ID != contact.ID) {
+      _latestContact = contact;
+
+      if (contact.isEmpty) {
+        _ui.clear();
+      } else {
+        _ui.headerExtra = ': ${contact.fullName}';
+        _fetchCalendar(contact);
+      }
     }
   }
 
