@@ -25,6 +25,6 @@ bool handleToken() {
 
 /**Sends the user to the login site.*/
 void login() {
-  String loginUrl = '${config.authBaseUrl}/token/create?returnurl=${window.location}';
+  String loginUrl = '${config.clientConfig.authServerUri}/token/create?returnurl=${window.location}';
   window.location.assign(loginUrl);
 }

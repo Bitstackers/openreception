@@ -25,31 +25,33 @@ Future main() async {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen(print);
 
+
+  final transport.Client client = new transport.Client();
+  config.clientConfig =
+      await (new service.RESTConfiguration(config.configUri, client))
+          .clientConfig();
+
+
   if (handleToken()) {
-    final transport.Client client = new transport.Client();
-    final model.ClientConfiguration clientConfig =
-        await (new service.RESTConfiguration(config.configUri, client))
-            .clientConfig();
+
 
     /// Initialize the stores.
     final service.RESTUserStore userStore = new service.RESTUserStore(
-        clientConfig.userServerUri, config.token, client);
+        config.clientConfig.userServerUri, config.token, client);
     final service.RESTDistributionListStore dlistStore =
         new service.RESTDistributionListStore(
-            clientConfig.contactServerUri, config.token, client);
+            config.clientConfig.contactServerUri, config.token, client);
     final service.RESTEndpointStore epStore = new service.RESTEndpointStore(
-        clientConfig.contactServerUri, config.token, client);
-    final service.RESTCDRService cdrStore =
-         new service.RESTCDRService(config.cdrURI, config.token, client);
+        config.clientConfig.contactServerUri, config.token, client);
     final service.RESTReceptionStore receptionStore = new service.RESTReceptionStore(
-        clientConfig.receptionServerUri, config.token, client);
+        config.clientConfig.receptionServerUri, config.token, client);
     final service.RESTOrganizationStore organizationStore =
         new service.RESTOrganizationStore(
-            clientConfig.receptionServerUri, config.token, client);
+            config.clientConfig.receptionServerUri, config.token, client);
     final service.RESTContactStore contactStore = new service.RESTContactStore(
-        clientConfig.contactServerUri, config.token, client);
+        config.clientConfig.contactServerUri, config.token, client);
     final service.RESTCalendarStore calendarStore = new service.RESTCalendarStore(
-        clientConfig.calendarServerUri, config.token, client);
+        config.clientConfig.calendarServerUri, config.token, client);
 
     /// Controllers
     final Controller.User userController = new Controller.User(userStore);
@@ -64,7 +66,6 @@ Future main() async {
         new Controller.Contact(contactStore);
     final Controller.Calendar calendarController =
         new Controller.Calendar(calendarStore);
-    final Controller.CDR cdrController = new Controller.CDR(cdrStore);
 
     //Initializes the notification system.
     notify.initialize();
@@ -85,7 +86,7 @@ Future main() async {
 //    new recordView.RecordView(
 //        querySelector('#record-page'), receptionController);
     new userView.UserView(querySelector('#user-page'), userController);
-    new billView.BillingView(querySelector('#billing-page'), cdrController);
+//    new billView.BillingView(querySelector('#billing-page'), cdrController);
 //    new musicView.MusicView(querySelector('#music-page'));
     new Menu(querySelector('nav#navigation'));
   }
