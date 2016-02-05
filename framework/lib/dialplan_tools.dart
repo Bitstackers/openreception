@@ -287,8 +287,8 @@ String _dialoutTemplate(String extension, DialplanCompilerOpts option) =>
     _isInternalExtension(extension)
         ? extension
         : option.goLive
-            ? '${PbxKey.externalTransfer}_${extension} XML receptions'
-            : '${PbxKey.externalTransfer}_${option.testNumber} XML receptions';
+            ? '${PbxKey.externalTransfer}_${extension}'
+            : '${PbxKey.externalTransfer}_${option.testNumber}';
 
 /**
  *
