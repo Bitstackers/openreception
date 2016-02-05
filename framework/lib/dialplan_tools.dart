@@ -433,7 +433,7 @@ List<String> _actionToXmlDialplan(model.Action action,
   /// Enqueue action.
   else if (action is model.Enqueue) {
     if (!env.channelAnswered) {
-      returnValue.add('    <action application="answer"/>');
+      returnValue.add('<action application="answer"/>');
       env.channelAnswered = true;
     }
 
@@ -448,6 +448,10 @@ List<String> _actionToXmlDialplan(model.Action action,
 
   /// Voicemail  action.
   else if (action is model.Voicemail) {
+    if (!env.channelAnswered) {
+      returnValue.add('<action application="answer"/>');
+      env.channelAnswered = true;
+    }
     if (action.note.isNotEmpty) returnValue.add(_noteTemplate(action.note));
     returnValue.addAll([
       _setVar(
@@ -458,6 +462,11 @@ List<String> _actionToXmlDialplan(model.Action action,
 
   /// Ivr action.
   else if (action is model.Ivr) {
+    if (!env.channelAnswered) {
+      returnValue.add('<action application="answer"/>');
+      env.channelAnswered = true;
+    }
+
     returnValue.addAll([
       _setVar(
           ORPbxKey.emailDateHeader, '\${strftime(%a, %d %b %Y %H:%M:%S %z)}'),
