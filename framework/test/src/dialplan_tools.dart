@@ -36,7 +36,7 @@ class DialplanToolsReceptionDialplan {
     Model.ReceptionDialplan rdp = new Model.ReceptionDialplan();
 
     xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
-        .dialplanToXml(rdp, 4));
+        .dialplanToXml(rdp, new Model.Reception.empty()..fullName = 'ost'));
   }
 
   /**
@@ -58,7 +58,7 @@ class DialplanToolsReceptionDialplan {
       ];
 
     xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
-        .dialplanToXml(rdp, 4));
+        .dialplanToXml(rdp, new Model.Reception.empty()..fullName = 'ost'));
   }
 
   /**
@@ -70,7 +70,7 @@ class DialplanToolsReceptionDialplan {
       ..defaultActions = [new Model.Playback('closed', wrapInLock: false)];
 
     xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
-        .dialplanToXml(rdp, 4));
+        .dialplanToXml(rdp, new Model.Reception.empty()..fullName = 'ost'));
   }
 
   /**
@@ -105,7 +105,7 @@ class DialplanToolsReceptionDialplan {
       ];
 
     xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
-        .dialplanToXml(rdp, 4));
+        .dialplanToXml(rdp, new Model.Reception.empty()..fullName = 'ost'));
   }
 }
 
