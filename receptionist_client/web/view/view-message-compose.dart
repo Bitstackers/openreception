@@ -125,8 +125,9 @@ class MessageCompose extends ViewWidget {
           return _endpointController
               .list(dle.receptionID, dle.contactID)
               .then((Iterable<ORModel.MessageEndpoint> meps) {
-            recipients.addAll((meps
-                .map((ORModel.MessageEndpoint mep) => new ORModel.MessageRecipient(mep, dle))));
+            recipients.addAll(
+                (meps.map((ORModel.MessageEndpoint mep) => new ORModel.MessageRecipient(mep, dle))
+                    as Iterable<ORModel.MessageRecipient>));
           });
         }).whenComplete(() {
           _ui.recipients = recipients;

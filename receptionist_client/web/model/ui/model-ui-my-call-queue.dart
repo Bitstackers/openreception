@@ -117,7 +117,7 @@ class UIMyCallQueue extends UIModel {
    * Add [calls] to the calls list.
    */
   set calls(Iterable<ORModel.Call> calls) {
-    _list.children = calls.map(_buildCallElement).toList();
+    _list.children = calls.map(_buildCallElement).toList() as List<Element>;
     _queueLengthUpdate();
   }
 
