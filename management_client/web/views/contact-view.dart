@@ -278,10 +278,12 @@ class ContactView {
     DivElement div = new DivElement()..classes.add('contact-reception');
     LIElement li = new LIElement()..tabIndex = -1;
     SpanElement header = new SpanElement()
-      //TODO: insert name.
-      ..text = contact.receptionID.toString()
       ..classes.add('reception-contact-header');
     div.children.add(header);
+
+    _receptionController.get(contact.receptionID).then((ORModel.Reception r) {
+      header.text = r.name;
+    });
 
     ButtonElement delete = new ButtonElement()
       ..text = 'fjern'
