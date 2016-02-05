@@ -200,7 +200,7 @@ class UIContactData extends UIModel {
   void ring() {
     if (_showPSTNSpan.classes.contains('active') && _pstnInput.value.trim().isNotEmpty) {
       ORModel.PhoneNumber phoneNumber = new ORModel.PhoneNumber.empty()
-        ..value = _pstnInput.value.trim();
+        ..endpoint = _pstnInput.value.trim();
       _pstnInput.classes.toggle('ringing', true);
       _busRinging.fire(phoneNumber);
     } else {
@@ -261,7 +261,7 @@ class UIContactData extends UIModel {
 
       spanNumber.classes.toggle('secret', item.confidential);
       spanNumber.classes.add('number');
-      spanNumber.text = item.value;
+      spanNumber.text = item.endpoint;
 
       spanLabel.classes.add('label');
       spanLabel.text = item.description;

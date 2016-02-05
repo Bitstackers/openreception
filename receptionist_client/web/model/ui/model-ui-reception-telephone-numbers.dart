@@ -71,7 +71,7 @@ class UIReceptionTelephoneNumbers extends UIModel {
 
       spanNumber.classes.toggle('secret', item.confidential);
       spanNumber.classes.add('number');
-      spanNumber.text = item.value;
+      spanNumber.text = item.endpoint;
 
       spanLabel.classes.add('label');
       spanLabel.text = item.description;

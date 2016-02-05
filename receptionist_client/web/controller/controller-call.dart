@@ -78,7 +78,7 @@ class Call {
   Future<ORModel.Call> dial(
       ORModel.PhoneNumber phoneNumber, ORModel.Reception reception, ORModel.Contact contact,
       {String contextCallId: ''}) async {
-    _log.info('Dialing ${phoneNumber.value}.');
+    _log.info('Dialing ${phoneNumber.endpoint}.');
     final ORModel.OriginationContext context = new ORModel.OriginationContext()
       ..contactId = contact.ID
       ..receptionId = reception.ID
