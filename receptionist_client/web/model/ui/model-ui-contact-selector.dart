@@ -165,10 +165,17 @@ class UIContactSelector extends UIModel {
         break;
     }
 
-    if (_list.children.isNotEmpty) {
-      /// Select the first visible item on the list
-      _markSelected(_scanForwardForVisibleElement(_list.children.first),
-          alwaysFire: true);
+    if (_list.querySelectorAll('.hide').length == _list.children.length) {
+      _bus.fire(new ContactWithFilterContext(new ORModel.Contact.empty(), state, filterInputValue));
+    } else if (_list.children.isNotEmpty) {
+      final LIElement selected = _list.querySelector('.selected');
+      if (selected.classes.contains('hide')) {
+        /// The selected item is hidden. Select the first visible item on the remaining list
+        _markSelected(_scanForwardForVisibleElement(_list.children.first), alwaysFire: true);
+      } else {
+        /// The selected item is visible
+        _contactSelectCallback(selected);
+      }
     }
   }
 

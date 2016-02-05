@@ -114,7 +114,7 @@ class MessageCompose extends ViewWidget {
     _ui.headerExtra = ': ${contact.fullName}';
 
     if (contact.isEmpty) {
-      _log.info('Got an empty contact - undecided on what to do');
+      _ui.resetOnEmptyContact();
     } else {
       final Set<ORModel.MessageRecipient> recipients = new Set<ORModel.MessageRecipient>();
 
