@@ -36,13 +36,13 @@ abstract class ModelPhoneNumber {
         ..description = description
         ..tags = tags
         ..type = type
-        ..value = value;
+        ..endpoint = value;
 
     expect (phoneNumber.billing_type, equals(billing_type));
     expect (phoneNumber.confidential, equals(confidential));
     expect (phoneNumber.description, equals(description));
     expect (phoneNumber.tags, equals(tags));
     expect (phoneNumber.type, equals(type));
-    expect (phoneNumber.value, equals(value));
+    expect (phoneNumber.endpoint, equals(value));
   }
 }

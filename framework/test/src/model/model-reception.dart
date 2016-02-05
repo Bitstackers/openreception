@@ -99,9 +99,9 @@ abstract class ModelReception {
     final List<String> salesMarketingHandling = ['Ask them to GTFO'];
     final String shortGreeting = 'Please go';
     final List<Model.PhoneNumber> telephoneNumbers = [
-      new Model.PhoneNumber.empty()..value = '56 33 21 44',
+      new Model.PhoneNumber.empty()..endpoint = '56 33 21 44',
       new Model.PhoneNumber.empty()
-        ..value = '56 33 21 43'
+        ..endpoint = '56 33 21 43'
         ..confidential = true
         ..description = 'Home phone'
     ];

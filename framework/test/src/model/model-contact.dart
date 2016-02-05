@@ -84,7 +84,7 @@ abstract class ModelContact {
         ..description = 'Fluid connection'
         ..tags = ['Gulping sound', 'Silence']
         ..type = 'Very mobile'
-        ..value = '-0045 32112345'
+        ..endpoint = '-0045 32112345'
     ];
 
     final List<String> backupContacts = ['Buford'];
