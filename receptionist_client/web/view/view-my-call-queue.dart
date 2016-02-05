@@ -96,7 +96,7 @@ class MyCallQueue extends ViewWidget {
         _log.info('marked ${newCall.ID} for transfer');
       }
     } catch (error) {
-      _error(error, _langMap[Key.callFailed], phoneNumber.value);
+      _error(error, _langMap[Key.callFailed], phoneNumber.endpoint);
       _log.warning('dialing failed with ${error}');
     }
 
@@ -227,8 +227,7 @@ class MyCallQueue extends ViewWidget {
       _ui.calls = myCalls.toList(growable: false);
       _appState.activeCall = myCalls.firstWhere(
           (ORModel.Call call) =>
-              call.state == ORModel.CallState.Speaking ||
-              call.state == ORModel.CallState.Ringing,
+              call.state == ORModel.CallState.Speaking || call.state == ORModel.CallState.Ringing,
           orElse: () => ORModel.Call.noCall);
     });
   }
