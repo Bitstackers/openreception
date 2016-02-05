@@ -229,8 +229,7 @@ class MyCallQueue extends ViewWidget {
       _ui.calls = myCalls.toList(growable: false);
       _appState.activeCall = myCalls.firstWhere(
           (ORModel.Call call) =>
-              call.state == ORModel.CallState.Speaking ||
-              call.state == ORModel.CallState.Ringing,
+              call.state == ORModel.CallState.Speaking || call.state == ORModel.CallState.Ringing,
           orElse: () => ORModel.Call.noCall);
     });
   }

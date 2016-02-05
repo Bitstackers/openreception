@@ -17,8 +17,7 @@ part of model;
  * Provides methods for manipulating the contact selector UI widget.
  */
 class UIContactSelector extends UIModel {
-  final Bus<ContactWithFilterContext> _bus =
-      new Bus<ContactWithFilterContext>();
+  final Bus<ContactWithFilterContext> _bus = new Bus<ContactWithFilterContext>();
   final DivElement _myRoot;
 
   /**
@@ -98,20 +97,19 @@ class UIContactSelector extends UIModel {
    */
   void _contactSelectCallback(LIElement li) {
     _bus.fire(new ContactWithFilterContext(
-        new ORModel.Contact.fromMap(JSON.decode(li.dataset['object'])),
-        state,
-        filterInputValue));
+        new ORModel.Contact.fromMap(JSON.decode(li.dataset['object'])), state, filterInputValue));
   }
 
   /**
    * Filter the contact list whenever the user enters data into the [_filterInput]
    * input field.
+   *
+   * Venture forth at your own peril!
    */
   void _filter() {
     switch (state) {
       case filterState.empty:
-        _list.children
-            .forEach((Element li) => li.classes.toggle('hide', false));
+        _list.children.forEach((Element li) => li.classes.toggle('hide', false));
         _list.classes.toggle('zebra', true);
         break;
       case filterState.firstInitial:
@@ -140,10 +138,8 @@ class UIContactSelector extends UIModel {
         _list.classes.toggle('zebra', false);
 
         _list.children.forEach((Element li) {
-          if (li.dataset['firstinitial'] ==
-                  trimmedFilterInputValue.substring(0, 1) &&
-              li.dataset['otherinitials']
-                  .contains(trimmedFilterInputValue.substring(2))) {
+          if (li.dataset['firstinitial'] == trimmedFilterInputValue.substring(0, 1) &&
+              li.dataset['otherinitials'].contains(trimmedFilterInputValue.substring(2))) {
             li.classes.toggle('hide', false);
           } else {
             li.classes.toggle('hide', true);
@@ -165,10 +161,17 @@ class UIContactSelector extends UIModel {
         break;
     }
 
-    if (_list.children.isNotEmpty) {
-      /// Select the first visible item on the list
-      _markSelected(_scanForwardForVisibleElement(_list.children.first),
-          alwaysFire: true);
+    if (_list.querySelectorAll('.hide').length == _list.children.length) {
+      _bus.fire(new ContactWithFilterContext(new ORModel.Contact.empty(), state, filterInputValue));
+    } else if (_list.children.isNotEmpty) {
+      final LIElement selected = _list.querySelector('.selected');
+      if (selected != null && selected.classes.contains('hide')) {
+        /// The selected item is hidden. Select the first visible item on the remaining list
+        _markSelected(_scanForwardForVisibleElement(_list.children.first), alwaysFire: true);
+      } else {
+        /// The selected item is visible
+        _contactSelectCallback(selected);
+      }
     }
   }
 
@@ -182,8 +185,7 @@ class UIContactSelector extends UIModel {
     if (filterInputValue.isEmpty || trimmedFilterInputValue.isEmpty) {
       /// Empty filter
       s = filterState.empty;
-    } else if (!filterInputValue.startsWith(' ') &&
-        trimmedFilterInputValue.length == 1) {
+    } else if (!filterInputValue.startsWith(' ') && trimmedFilterInputValue.length == 1) {
       /// Pattern: one non-space character followed by zero or more spaces
       s = filterState.firstInitial;
     } else if (trimmedFilterInputValue.length == 1 &&
@@ -254,8 +256,7 @@ class UIContactSelector extends UIModel {
     if (_list.children.isNotEmpty) {
       _markSelected(_scanForwardForVisibleElement(_list.children.first));
     } else {
-      _bus.fire(new ContactWithFilterContext(
-          new ORModel.Contact.empty(), state, filterInputValue));
+      _bus.fire(new ContactWithFilterContext(new ORModel.Contact.empty(), state, filterInputValue));
     }
   }
 
@@ -281,7 +282,6 @@ class UIContactSelector extends UIModel {
   void _setupLocalKeys() {
     final Map<String, EventListener> bindings = {'Esc': _reset};
 
-    _hotKeys.registerKeysPreventDefault(
-        _keyboard, _defaultKeyMap(myKeys: bindings));
+    _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
   }
 }

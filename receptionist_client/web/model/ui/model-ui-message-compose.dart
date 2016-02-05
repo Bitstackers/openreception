@@ -270,6 +270,16 @@ class UIMessageCompose extends UIModel {
   }
 
   /**
+   * Reset the recipients list and toggle buttons when receiving and empty contact.
+   */
+  void resetOnEmptyContact() {
+    _recipientsList.dataset['recipients-list'] = '';
+    _recipientsList.children.clear();
+
+    _toggleButtons();
+  }
+
+  /**
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {

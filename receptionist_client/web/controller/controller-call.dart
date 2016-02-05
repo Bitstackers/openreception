@@ -89,9 +89,7 @@ class Call {
 
     _command.fire(CallCommand.dial);
 
-    return await _service
-        .originate(phoneNumber.endpoint, context)
-        .then((ORModel.Call call) {
+    return await _service.originate(phoneNumber.endpoint, context).then((ORModel.Call call) {
       _command.fire(CallCommand.dialSuccess);
 
       return call;
