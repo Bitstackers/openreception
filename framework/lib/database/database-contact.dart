@@ -238,7 +238,7 @@ AND
             ' in reception with ID $receptionId');
       }
 
-      final Iterable<Map> phonesMap = rows.first.phonenumbers;
+      final Iterable<Map> phonesMap = rows.first.phonenumbers as Iterable<Map>;
 
       return phonesMap.map(_mapToPhone);
     } on Storage.SqlError catch (error) {
