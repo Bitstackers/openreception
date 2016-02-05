@@ -34,8 +34,8 @@ class Ivr implements Storage.Ivr {
      ivr_menus''';
 
     try {
-      return (await _connection.query(sql))
-          .map((row) => Model.IvrMenu.decode(row.menu)..name = row.name);
+      final Iterable<PG.Row> rows = await _connection.query(sql);
+      return rows.map((row) => Model.IvrMenu.decode(row.menu)..name = row.name);
     } on Storage.SqlError catch (error) {
       throw new Storage.ServerError(error.toString());
     }

@@ -68,17 +68,16 @@ class Calendar implements Storage.Calendar {
 
     Map parameters = {'entryId': entryID};
 
-    Iterable rows = [];
     try {
-      rows = await _connection.query(sql, parameters);
+      final Iterable rows = await _connection.query(sql, parameters);
+
+      if (rows.length > 0) {
+        return _rowToCalendarEntry(rows.first);
+      } else {
+        throw new Storage.NotFound('eid:$entryID');
+      }
     } on Storage.SqlError catch (error) {
       throw new Storage.ServerError(error.toString());
-    }
-
-    if (rows.length > 0) {
-      return _rowToCalendarEntry(rows.first);
-    } else {
-      throw new Storage.NotFound('eid:$entryID');
     }
   }
 
@@ -261,11 +260,11 @@ AND
   ${_ownerField(owner)} = @ownerID;
 ''';
 
-    Map parameters = {'ownerID': _ownerId(owner)};
+    final Map parameters = {'ownerID': _ownerId(owner)};
 
-    Iterable rows = [];
     try {
-      rows = await _connection.query(sql, parameters);
+      final Iterable rows = await _connection.query(sql, parameters);
+      return rows.map(_rowToCalendarEntry);
     } catch (error, stackTrace) {
       log.severe('Query failed! SQL Statement: $sql');
       log.severe('parameters: $parameters');
@@ -273,8 +272,6 @@ AND
 
       throw new Storage.ServerError(error.toString());
     }
-
-    return rows.map(_rowToCalendarEntry);
   }
 
   /**

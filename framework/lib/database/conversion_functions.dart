@@ -103,12 +103,16 @@ Model.UserIdentity _rowToUserIdentity(PG.Row row) =>
  * Convert a database row into an [Message].
  */
 Model.Message _rowToMessage(PG.Row row) {
+  final Iterable<Map> rMaps = row.recipients as Iterable<Map>;
+  final Iterable<Model.MessageRecipient> rs =
+      rMaps.map((Map map) => new Model.MessageRecipient.fromMap(map))
+      as Iterable<Model.MessageRecipient>;
+
   return new Model.Message.empty()
     ..ID = row.id
     ..body = row.message
     ..callId = row.call_id
-    ..recipients
-        .addAll((row.recipients as Iterable).map(Model.MessageRecipient.decode))
+    ..recipients.addAll(rs)
     ..context = (new Model.MessageContext.empty()
       ..contactID = row.context_contact_id
       ..contactName = row.context_contact_name
@@ -134,10 +138,10 @@ Model.Message _rowToMessage(PG.Row row) {
  * the SQL query is hell.
  */
 Model.Contact _rowToContact(PG.Row row) {
-  Iterable<Model.PhoneNumber> phoneIterable = row.phone.isNotEmpty
-      ? (row.phone as Iterable)
-          .map((Map map) => new Model.PhoneNumber.fromMap(map))
-      : [];
+  Iterable<Map> pMaps = row.phone as Iterable<Map>;
+  Iterable<Model.PhoneNumber> ps =
+      pMaps.map((Map map) => new Model.PhoneNumber.fromMap(map))
+      as Iterable<Model.PhoneNumber>;
 
   List backupContacts = [];
   List emailaddresses = [];
@@ -220,7 +224,7 @@ Model.Contact _rowToContact(PG.Row row) {
     ..enabled = row.enabled
     ..fullName = row.full_name
     ..contactType = row.contact_type
-    ..phones.addAll(phoneIterable)
+    ..phones.addAll(ps)
     ..backupContacts = backupContacts as Iterable<String>
     ..departments = departments as Iterable<String>
     ..emailaddresses = emailaddresses as Iterable<String>

@@ -101,8 +101,9 @@ AND
     Map parameters = {'receptionid': receptionId, 'contactid': contactId};
 
     try {
-      return (await _connection.query(sql, parameters))
-          .map(_rowToMessageEndpoint);
+      final Iterable<PG.Row> rows = await _connection.query(sql, parameters);
+
+      return rows.map(_rowToMessageEndpoint);
     } on Storage.SqlError catch (error) {
       throw new Storage.ServerError(error.toString());
     }

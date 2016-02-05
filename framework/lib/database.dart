@@ -52,13 +52,15 @@ class Connection {
    * Factory method that creates a new connection (and tests it).
    */
   static Future<Connection> connect(String dsn,
-      {int minimumConnections: 1, int maximumConnections: 5}) {
+      {int minimumConnections: 1, int maximumConnections: 5}) async {
     Connection db = new Connection._unConnected()
       .._pool = new PGPool.Pool(dsn,
           minConnections: minimumConnections,
           maxConnections: maximumConnections);
 
-    return db._pool.start().then((_) => db._testConnection()).then((_) => db);
+    await db._pool.start();
+    await db._testConnection();
+    return db;
   }
 
   /**

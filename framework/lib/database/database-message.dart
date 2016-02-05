@@ -148,7 +148,8 @@ LIMIT
   ${filter.limitCount}''';
 
     try {
-      return (await _connection.query(sql)).map(_rowToMessage);
+      final Iterable<PG.Rows> rows = await _connection.query(sql);
+      return rows.map(_rowToMessage);
     } on Storage.SqlError catch (error) {
       throw new Storage.ServerError(error.toString());
     }
