@@ -245,7 +245,7 @@ Model.PhoneNumber _mapToPhone(Map map) {
   Model.PhoneNumber p = new Model.PhoneNumber.empty()
     ..billing_type = map['billing_type']
     ..description = map['description']
-    ..value = map['value']
+    ..endpoint = map['value']
     ..type = map['kind'];
   if (map['tag'] != null) {
     p.tags.add(map['tag']);

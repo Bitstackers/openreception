@@ -19,7 +19,7 @@ part of openreception.model;
  */
 class PhoneNumber {
   String description = '';
-  String value = '';
+  String endpoint = '';
   String type = '';
   bool confidential = false;
   String billing_type = '';
@@ -30,7 +30,7 @@ class PhoneNumber {
    */
   PhoneNumber.fromMap(Map map) {
     description = map[Key.description];
-    value = map[Key.value];
+    endpoint = map[Key.value];
     confidential = map[Key.confidential];
     type = map[Key.type];
     billing_type = map[Key.billingType];
@@ -46,11 +46,11 @@ class PhoneNumber {
 
   /**
    * A phone number is, by this definition, equal to another phone number, if
-   * both their value and type is the same.
+   * both their endpoint and type is the same.
    */
   @override
   bool operator ==(PhoneNumber other) =>
-      this.value == other.value && this.type == other.type;
+      this.endpoint == other.endpoint && this.type == other.type;
 
   /**
    * Default empty constructor.
@@ -66,7 +66,7 @@ class PhoneNumber {
    * Map representation of the object,
    */
   Map get asMap => {
-        Key.value: value,
+        Key.value: endpoint,
         Key.type: type,
         Key.description: description,
         Key.billingType: billing_type,
