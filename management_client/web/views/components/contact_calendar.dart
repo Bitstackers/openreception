@@ -201,7 +201,7 @@ class ContactCalendarComponent {
       if (!currentEvents.any((ORModel.CalendarEntry e) => e.ID == event.ID)) {
         //Delete event
         worklist.add(_calendarController
-            .remove(event, config.userId)
+            .remove(event, config.user)
             .catchError((error, stack) {
           log.error(
               'Request to delete a contacts calendarevent failed. receptionId: "${receptionId}", contactId: "${receptionId}", event: "${JSON.encode(event)}" but got: ${error} ${stack}');
@@ -223,7 +223,7 @@ class ContactCalendarComponent {
             e.stop != event.stop) {
           //Update event
           worklist.add(_calendarController
-              .remove(event, config.userId)
+              .remove(event, config.user)
               .catchError((error, stack) {
             log.error(
                 'Request to update a contacts calendarevent failed. receptionId: "${receptionId}", contactId: "${receptionId}", event: "${JSON.encode(event)}" but got: ${error} ${stack}');
