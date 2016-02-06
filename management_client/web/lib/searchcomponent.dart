@@ -24,7 +24,6 @@ class SearchComponent<T> {
   T _currentElement;
   List<T> _dataList = new List<T>();
   DivElement _element;
-  bool _hasFocus = false;
   LIElement _highlightedLi;
   static const String liIdTag = 'data-index';
   List<LIElement> _list = new List<LIElement>();

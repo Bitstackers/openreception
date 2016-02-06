@@ -1,9 +1,7 @@
 library management_tool.view;
 
 import 'dart:html';
-import 'package:logging/logging.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
-import 'package:openreception_framework/service.dart' as ORService;
 
 part 'view-dialplan.dart';
 part 'view-dialplan_list.dart';
