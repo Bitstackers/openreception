@@ -131,6 +131,18 @@ class CallList extends IterableBase<ORModel.Call> {
     }
   }
 
+  void update(String callID, ORModel.Call call) {
+    if (call.ID != callID) {
+      throw new ArgumentError('call.ID and callID must match!');
+    }
+
+    if (_map.containsKey(callID)) {
+      _map[callID] = call;
+    } else {
+      throw new ORStorage.NotFound(callID);
+    }
+  }
+
   void remove(String callID) {
     if (this._map.containsKey(callID)) {
       this._map.remove(callID);

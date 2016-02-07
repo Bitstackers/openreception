@@ -135,6 +135,8 @@ Future<io.HttpServer> start({String hostname: '0.0.0.0', int port: 4242}) {
         ..get('/peer', _peerController.list)
         ..get('/peer/{peerid}', _peerController.get)
         ..get('/call/{callid}', Call.get)
+        ..post('/call/{callid}', Call.update)
+        ..delete('/call/{callid}', Call.remove)
         ..get('/call', Call.list)
         ..post('/state/reload', _stateController.reloadAll)
         ..get('/channel', Channel.list)

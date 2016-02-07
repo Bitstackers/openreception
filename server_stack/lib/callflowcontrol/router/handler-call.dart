@@ -598,4 +598,109 @@ abstract class Call {
       return new shelf.Response.internalServerError();
     }).whenComplete(() => peer.inTransition = false);
   }
+
+  /**
+   * Remove a specific call identified by the supplied call id.
+   */
+  static Future<shelf.Response> remove(shelf.Request request) async {
+    final String callID = shelf_route.getPathParameter(request, 'callid');
+
+    ORModel.User user;
+    Iterable<ORModel.UserGroup> userGroups;
+
+    /// Groups able to remove any call.
+    List<String> updateGroups = ['Administrator'];
+
+    bool aclCheck(ORModel.User user) =>
+        userGroups.any(updateGroups.contains) ||
+        Model.CallList.instance.get(callID).assignedTo == user.id;
+
+    if (callID == null || callID == "") {
+      return new shelf.Response(400, body: 'Empty call_id in path.');
+    }
+
+    /// User object fetching.
+    try {
+      user = await authService.userOf(_tokenFrom(request));
+      userGroups = await _userService.userGroups(user.id);
+    } catch (error, stackTrace) {
+      final String msg = 'Failed to contact authserver';
+      log.severe(msg, error, stackTrace);
+
+      return _serverError(msg);
+    }
+
+    /// The agent is not allowed to terminate the call.
+    if (!aclCheck(user)) {
+      return new shelf.Response.forbidden('Insufficient privileges.');
+    }
+
+    /// Verify existence of call targeted for update.
+    if (Model.CallList.instance.containsID(callID)) {
+      Model.CallList.instance.remove(callID);
+      return _okJson({});
+    } else {
+      return _notFoundJson({'call_id': callID});
+    }
+  }
+
+  /**
+   * Update a specific call identified by the supplied call id.
+   */
+  static Future<shelf.Response> update(shelf.Request request) async {
+    final String callID = shelf_route.getPathParameter(request, 'callid');
+
+    ORModel.User user;
+    Iterable<ORModel.UserGroup> userGroups;
+
+    ORModel.Call updatedCall;
+    try {
+      updatedCall = await request
+          .readAsString()
+          .then(JSON.decode)
+          .then((Map map) => new ORModel.Call.fromMap(map));
+    } catch (error, stackTrace) {
+      log.warning(
+          'Bad parameters from user '
+          '${user.name} (id:${user.id})',
+          error,
+          stackTrace);
+      return _clientError(error.toString());
+    }
+
+    /// Groups able to update a call.
+    List<String> updateGroups = ['Administrator'];
+
+    bool aclCheck(ORModel.User user) =>
+        userGroups.any(updateGroups.contains) ||
+        Model.CallList.instance.get(callID).assignedTo == user.id;
+
+    if (callID == null || callID == "") {
+      return new shelf.Response(400, body: 'Empty call_id in path.');
+    }
+
+    /// User object fetching.
+    try {
+      user = await authService.userOf(_tokenFrom(request));
+      userGroups = await _userService.userGroups(user.id);
+    } catch (error, stackTrace) {
+      final String msg = 'Failed to contact authserver';
+      log.severe(msg, error, stackTrace);
+
+      return _serverError(msg);
+    }
+
+    /// The agent is not allowed to terminate the call.
+    if (!aclCheck(user)) {
+      return new shelf.Response.forbidden('Insufficient privileges.');
+    }
+
+    /// Verify existence of call targeted for update.
+    if (Model.CallList.instance.containsID(callID)) {
+      Model.CallList.instance.update(callID, updatedCall);
+      return _okJson(updatedCall);
+    } else {
+      return _notFoundJson({'call_id': callID});
+    }
+  }
 }
