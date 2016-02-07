@@ -269,9 +269,7 @@ class CallList extends IterableBase<ORModel.Call> {
       case (ORPbxKey.callLock):
         if (_map.containsKey(event.uniqueID)) {
           ESL.Channel channel = new ESL.Channel.fromPacket(event);
-          final int assignedTo = channel.variables.containsKey(ORPbxKey.userId)
-              ? int.parse(channel.variables[ORPbxKey.userId])
-              : ORModel.User.noID;
+          final int assignedTo = get(event.uniqueID).assignedTo;
 
           if (assignedTo == ORModel.User.noID) {
             log.finest('Locking ${event.uniqueID}');
