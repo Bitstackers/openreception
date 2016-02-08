@@ -18,6 +18,7 @@ part of model;
  */
 class UIContactData extends UIModel {
   final Bus<ORModel.PhoneNumber> _busRinging = new Bus<ORModel.PhoneNumber>();
+  ORModel.Contact _latestContact = new ORModel.Contact.empty();
   final DivElement _myRoot;
 
   /**
@@ -96,26 +97,30 @@ class UIContactData extends UIModel {
    * filter context.
    */
   set contactWithFilterContext(ContactWithFilterContext cwfc) {
-    clear();
+    if (_latestContact.ID != cwfc.contact.ID) {
+      clear();
 
-    headerExtra = ': ${cwfc.contact.fullName}';
-    additionalInfo = cwfc.contact.infos;
-    backups = cwfc.contact.backupContacts;
-    commands = cwfc.contact.handling;
-    departments = cwfc.contact.departments;
-    emailAddresses = cwfc.contact.emailaddresses;
-    relations = cwfc.contact.relations;
-    responsibility = cwfc.contact.responsibilities;
-    tags = cwfc;
-    telephoneNumbers = cwfc.contact.phones;
-    titles = cwfc.contact.titles;
-    workHours = cwfc.contact.workhours;
+      headerExtra = ': ${cwfc.contact.fullName}';
+      additionalInfo = cwfc.contact.infos;
+      backups = cwfc.contact.backupContacts;
+      commands = cwfc.contact.handling;
+      departments = cwfc.contact.departments;
+      emailAddresses = cwfc.contact.emailaddresses;
+      relations = cwfc.contact.relations;
+      responsibility = cwfc.contact.responsibilities;
+      telephoneNumbers = cwfc.contact.phones;
+      titles = cwfc.contact.titles;
+      workHours = cwfc.contact.workhours;
 
-    if (_showPSTNSpan.classes.contains('active')) {
-      _showPSTNSpan.classes.toggle('active', false);
-      _popupDiv.classes.toggle('popup-hidden', true);
-      _focusElement.focus();
+      if (_showPSTNSpan.classes.contains('active')) {
+        _showPSTNSpan.classes.toggle('active', false);
+        _popupDiv.classes.toggle('popup-hidden', true);
+        _focusElement.focus();
+      }
     }
+
+    /// Always set tags, no matter what kind of contact and filter context we have.
+    tags = cwfc;
   }
 
   /**
@@ -239,6 +244,7 @@ class UIContactData extends UIModel {
     final List<String> filterParts = new List<String>()
       ..addAll(cwfc.state == filterState.tag ? cwfc.filterValue.split(' ') : new List<String>());
     filterParts.removeWhere((String f) => f.trim().length < 2);
+
     cwfc.contact.tags.forEach((String item) {
       final LIElement li = new LIElement()..text = item;
       li.classes.toggle(
