@@ -36,11 +36,7 @@ class CallRejected extends PBXException {
 }
 
 abstract class PBX {
-  //TODO: Move these to configuration.
   static final Logger _log = new Logger('${libraryName}.PBX');
-  static const String callerID = '39990141';
-  static const int _timeOutSeconds = 20;
-  static const int _agentChantimeOut = 20;
   static const String _dialplan = 'xml receptions';
 
   static final Logger log = new Logger('${libraryName}.PBX');
@@ -87,9 +83,13 @@ abstract class PBX {
       '${ORPbxKey.contactId}=${contactID}'
     ];
 
+    final String callerIdName = config.callFlowControl.callerIdName;
+    final String callerIdNumber = config.callFlowControl.callerIdNumber;
+    final int timeout = config.callFlowControl.originateTimeout;
+
     return api('originate {${a_legvariables.join(',')}}user/${user.peer} '
             '&bridge([${b_legvariables.join(',')}]sofia/external/${extension}) '
-            '${_dialplan} $callerID $callerID $_timeOutSeconds')
+            '${_dialplan} $callerIdName $callerIdNumber $timeout')
         .then((ESL.Response response) {
       if (response.status != ESL.Response.OK) {
         throw new StateError('ESL returned ${response.rawBody}');
@@ -119,15 +119,17 @@ abstract class PBX {
     _log.finest('New uuid: $new_call_uuid');
     _log.finest('Dialing receptionist at user/${user.peer}');
 
+    final String callerIdNumber = config.callFlowControl.callerIdNumber;
+
     Map variables = {
       'ignore_early_media': true,
       ORPbxKey.agentChannel: true,
-      'park_timeout': _agentChantimeOut,
+      'park_timeout': config.callFlowControl.agentChantimeOut,
       'hangup_after_bridge': true,
       'origination_uuid': new_call_uuid,
-      'originate_timeout': _agentChantimeOut,
+      'originate_timeout': config.callFlowControl.agentChantimeOut,
       'origination_caller_id_name': 'Connecting...',
-      'origination_caller_id_number': callerID
+      'origination_caller_id_number': callerIdNumber
     }..addAll(extravars);
 
     String variableString =
@@ -170,15 +172,17 @@ abstract class PBX {
     _log.finest('New uuid: $new_call_uuid');
     _log.finest('Dialing receptionist at user/${user.peer}');
 
+    final String callerIdNumber = config.callFlowControl.callerIdNumber;
+
     Map variables = {
       'ignore_early_media': true,
       ORPbxKey.agentChannel: true,
-      'park_timeout': _agentChantimeOut,
+      'park_timeout': config.callFlowControl.agentChantimeOut,
       'hangup_after_bridge': true,
       'origination_uuid': new_call_uuid,
-      'originate_timeout': _agentChantimeOut,
+      'originate_timeout': config.callFlowControl.agentChantimeOut,
       'origination_caller_id_name': 'Connecting...',
-      'origination_caller_id_number': callerID
+      'origination_caller_id_number': callerIdNumber
     };
 
     String variableString =
@@ -210,7 +214,8 @@ abstract class PBX {
     try {
       event = await eventClient.eventStream
           .firstWhere(inviteClosed, defaultValue: () => null)
-          .timeout(new Duration(seconds: _agentChantimeOut));
+          .timeout(
+              new Duration(seconds: config.callFlowControl.agentChantimeOut));
     } on TimeoutException {
       _cleanupChannel(ORPbxKey.agentChannel);
 
@@ -262,9 +267,12 @@ abstract class PBX {
       '${ORPbxKey.userId}=${user.id}',
       'recordpath=${soundFilePath}'
     ];
+    final String callerIdName = config.callFlowControl.callerIdName;
+    final String callerIdNumber = config.callFlowControl.callerIdNumber;
+    final int timeout = config.callFlowControl.originateTimeout;
 
-    String command =
-        'originate {${variables.join(',')}}user/${user.peer} ${recordExtension} ${_dialplan} $callerID $callerID $_timeOutSeconds';
+    final String command =
+        'originate {${variables.join(',')}}user/${user.peer} ${recordExtension} ${_dialplan} $callerIdName $callerIdNumber $timeout';
     return api(command).then((ESL.Response response) {
       if (response.status != ESL.Response.OK) {
         throw new StateError('ESL returned ${response.rawBody}');

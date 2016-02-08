@@ -309,7 +309,7 @@ abstract class Call {
     /// Update the call with the info from the originate request.
     call
       ..assignedTo = user.id
-      ..callerID = Controller.PBX.callerID
+      ..callerID = config.callFlowControl.callerIdNumber
       ..destination = extension
       ..receptionID = receptionID
       ..contactID = contactID

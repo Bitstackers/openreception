@@ -112,9 +112,28 @@ class CalendarServer extends StandardConfig {
  * Call-flow-control server configuration values.
  */
 class CallFlowControl extends StandardConfig {
-  final String dialoutPrefix = '';
+  /// Enable or disable recordings globally.
   final bool enableRecordings = false;
+
+  /**
+   * The directory where FreeSWITCH will store its recordings.
+   * The verbatim string ${RECORDINGS_DIR} is a FreeSWITCH variable that
+   * unfolds into its default configured recordings directory.
+   * Any other full path may be specified here.
+   */
   final String recordingsDir = '\${RECORDINGS_DIR}';
+
+  /// Outbound caller-ID number
+  final String callerIdNumber = '00000000';
+
+  /// Outbound caller-ID name
+  final String callerIdName = '??';
+
+  /// Timeout (in seconds) of an origination.
+  final int originateTimeout = 120;
+
+  /// Timeout (in seconds) of vaiting for an agent channel to establish.
+  final int agentChantimeOut = 20;
 
   final EslConfig eslConfig = const EslConfig();
 

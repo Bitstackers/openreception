@@ -26,6 +26,7 @@ import 'package:openreception_framework/service.dart' as ORService;
 import 'package:openreception_framework/storage.dart' as ORStorage;
 
 import 'model/model.dart' as Model;
+import '../configuration.dart';
 
 part 'controller/controller-active_recording.dart';
 part 'controller/controller-client_notifier.dart';
