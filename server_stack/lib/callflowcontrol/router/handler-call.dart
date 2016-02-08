@@ -193,6 +193,7 @@ abstract class Call {
     ORModel.User user;
     ORModel.Peer peer;
 
+    /// Call is a SIP call.
     if (host != null) {
       extension = '$extension@$host:$port';
     }
