@@ -89,7 +89,9 @@ class MyCallQueue extends ViewWidget {
     _busyCallController();
     try {
       ORModel.Call newCall = await _callController.dial(
-          phoneNumber, _receptionSelector.selectedReception, _contactSelector.selectedContact,
+          phoneNumber,
+          _receptionSelector.selectedReception,
+          _contactSelector.selectedContact,
           contextCallId: contextCallId);
       if (markTransfer || parkAndMarkTransfer) {
         _ui.markForTransfer(newCall);
