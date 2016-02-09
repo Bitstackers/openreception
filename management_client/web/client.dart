@@ -8,7 +8,7 @@ import 'views/user-view.dart' as userView;
 import 'menu.dart';
 import 'package:management_tool/controller.dart' as Controller;
 import 'lib/auth.dart';
-import 'notification.dart' as notify;
+import 'package:management_tool/notification.dart' as notify;
 import 'lib/configuration.dart';
 
 import 'package:logging/logging.dart';
@@ -78,7 +78,8 @@ Future main() async {
 //        querySelector('#dialplan-page'), receptionController);
 //    new recordView.RecordView(
 //        querySelector('#record-page'), receptionController);
-    new userView.UserView(querySelector('#user-page'), userController);
+    querySelector("#user-page")
+        .replaceWith(new userView.UserPage(userController).element);
 //    new billView.BillingView(querySelector('#billing-page'), cdrController);
 //    new musicView.MusicView(querySelector('#music-page'));
     new Menu(querySelector('nav#navigation'));

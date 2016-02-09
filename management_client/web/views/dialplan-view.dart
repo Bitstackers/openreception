@@ -11,7 +11,7 @@ import 'ivr-view.dart';
 import '../lib/logger.dart' as log;
 import 'package:libdialplan/libdialplan.dart';
 import 'package:libdialplan/ivr.dart';
-import '../notification.dart' as notify;
+import 'package:management_tool/notification.dart' as notify;
 import '../lib/searchcomponent.dart';
 import '../lib/utilities.dart';
 import 'package:openreception_framework/model.dart' as ORModel;

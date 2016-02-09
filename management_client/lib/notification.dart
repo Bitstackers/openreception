@@ -1,4 +1,4 @@
-library notification;
+library management_tool.notification;
 
 import 'dart:async';
 import 'dart:collection';

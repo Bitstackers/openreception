@@ -51,7 +51,7 @@ class Dialplan {
 
     ///TODO: distinguish between create and update.
     _saveButton.onClick.listen((_) {
-      _dialplanController.save(dialplan);
+      _dialplanController.update(dialplan);
     });
 
   }

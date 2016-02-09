@@ -1,174 +1,140 @@
-library user.view;
+library management_tool.page.user;
 
 import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 
 import '../lib/eventbus.dart';
-import '../lib/logger.dart' as log;
-import 'package:management_tool/controller.dart' as Controller;
-import '../lib/view_utilities.dart';
-import '../notification.dart' as notify;
-import 'package:openreception_framework/model.dart' as ORModel;
 
-part 'components/user_groups.dart';
-part 'components/user_identity.dart';
+import 'package:management_tool/controller.dart' as controller;
+import 'package:management_tool/view.dart' as view;
+import 'package:openreception_framework/model.dart' as model;
 
-class UserView {
+const String _libraryName = 'management_tool.page.user';
+
+/**
+ *
+ */
+class UserPage {
   static const String viewName = 'user';
-  DivElement element;
-  final Controller.User _userController;
+  final DivElement element = new DivElement()..id = "user-page";
 
-  ButtonElement newUserButton, saveUserButton, removeUserButton;
+  final controller.User _userController;
+  view.User _userView;
 
-  UListElement userList;
-  UserGroupContainer groupContainer;
-  IdentityContainer identityContainer;
+  final ButtonElement _createButton = new ButtonElement()
+    ..text = 'Opret ny bruger'
+    ..classes.add('create');
 
-  TextInputElement userName, userExtension, userSendFrom;
+  final UListElement _userList = new UListElement()
+    ..id = 'user-list'
+    ..classes.add('zebra-even');
 
-  int selectedUserId;
-  bool isNewUser = false;
+  /// Extracts the uid of the currently selected user.
+  int get selectedUserId => _userView.userId;
 
-  UserView(DivElement this.element, Controller.User this._userController) {
-    newUserButton = element.querySelector('#user-create');
-    userList = element.querySelector('#user-list');
+  /**
+   *
+   */
+  UserPage(this._userController) {
+    _userView = new view.User(_userController);
 
-    saveUserButton = element.querySelector('#user-save');
-    removeUserButton = element.querySelector('#user-delete');
-    groupContainer = new UserGroupContainer(element.querySelector('#groups-table'), _userController);
-    identityContainer = new IdentityContainer(element.querySelector('#user-identities'), _userController);
+    element.children = [
+      (new DivElement()
+        ..id = "user-listing"
+        ..children = [
+          new DivElement()
+            ..id = "user-controlbar"
+            ..classes.add('basic3controls')
+            ..children = [_createButton],
+          _userList,
+        ]),
+      _userView.element
+    ];
 
-    userName = element.querySelector('#user-name');
-    userExtension = element.querySelector('#user-extension');
-    userSendFrom = element.querySelector('#user-sendfrom');
-
-    refreshList();
-    registrateEventHandlers();
+    _refreshList();
+    _observers();
   }
 
-  void registrateEventHandlers() {
+  /**
+   * Observers.
+   */
+  void _observers() {
     bus.on(WindowChanged).listen((WindowChanged event) {
       element.classes.toggle('hidden', event.window != viewName);
     });
 
     bus.on(UserAddedEvent).listen((UserAddedEvent event) {
-      refreshList();
+      _refreshList();
     });
 
     bus.on(UserRemovedEvent).listen((UserRemovedEvent event) {
-      refreshList();
+      _refreshList();
     });
 
-    newUserButton.onClick.listen((_) => newUser());
-    saveUserButton.onClick.listen((_) => saveChanges());
-    removeUserButton.onClick.listen((_) => deleteUser());
-  }
+    _createButton.onClick.listen((_) => _createUser());
 
-  Future refreshList() {
-    return _userController.list().then((Iterable<ORModel.User> users) {
-      //users.sort();
-      renderUserList(users);
+    _userView.changes.listen((view.UserChange uc) {
+      _refreshList();
+
+      if (uc.type != view.Change.deleted) {
+        _activateUser(uc.user.id);
+      }
     });
   }
 
-  void renderUserList(Iterable<ORModel.User> users) {
-    userList.children
+  /**
+   *
+   */
+  Future _refreshList() async {
+    final users = (await _userController.list()).toList()
+      ..sort((model.User userA, model.User userB) =>
+          userA.name.toLowerCase().compareTo(userB.name.toLowerCase()));
+
+    renderUserList(users);
+  }
+
+  /**
+   *
+   */
+  void renderUserList(Iterable<model.User> users) {
+    _userList.children
       ..clear()
-      ..addAll(users.map(makeUserNode));
+      ..addAll(users.map(_makeUserNode));
   }
 
-  LIElement makeUserNode(ORModel.User user) {
+  /**
+   *
+   */
+  LIElement _makeUserNode(model.User user) {
     return new LIElement()
       ..text = user.name
       ..classes.add('clickable')
-      ..dataset['userid'] = '${user.ID}'
-      ..onClick.listen((_) => activateUser(user.ID));
+      ..dataset['userid'] = '${user.id}'
+      ..onClick.listen((_) => _activateUser(user.id));
   }
 
-  void activateUser(int userId) {
-    _userController.get(userId).then((ORModel.User user) {
-      isNewUser = false;
-      selectedUserId = userId;
-
-      userName.value = user.name;
-      userExtension.value = user.peer;
-      userSendFrom.value = user.address;
-
-      highlightUserInList(userId);
-      identityContainer.showIdentities(userId);
-      return groupContainer.showUsersGroups(userId);
-    });
+  /**
+   *
+   */
+  Future _activateUser(int userId) async {
+    _userView.user = await _userController.get(userId);
+    highlightUserInList(userId);
   }
 
+  /**
+   *
+   */
   void highlightUserInList(int id) {
-    userList.children.forEach((LIElement li) => li.classes.toggle('highlightListItem', li.dataset['userid'] == '$id'));
+    _userList.children.forEach((LIElement li) =>
+        li.classes.toggle('highlightListItem', li.dataset['userid'] == '$id'));
   }
 
-  void newUser() {
-    isNewUser = true;
-
-    userName.value = '';
-    userExtension.value = '';
-    userSendFrom.value = '';
-
-    groupContainer.showNewUsersGroups();
-    identityContainer.showNewUsersIdentities();
-  }
-
-  void saveChanges() {
-    ORModel.User user = new ORModel.User.empty()
-      ..peer = userExtension.value
-      ..name = userName.value
-      ..address = userSendFrom.value;
-
-    Future basicInformationRequest;
-    if(isNewUser) {
-      basicInformationRequest = _userController.create(user)
-        .then((ORModel.User user) {
-          selectedUserId = user.ID;
-          isNewUser = false;
-          bus.fire(new UserAddedEvent(user.ID));
-          notify.info('Brugeren blev oprettet');
-      }).catchError((error, stack) {
-        log.error('Tried to create a new user from data: "${JSON.encode(user)}" but got: ${error} ${stack}');
-        notify.error('Der skete en fejl i forbindelse med oprettelsen af brugeren. Fejl: ${error}');
-      });
-    } else {
-      basicInformationRequest = _userController.update(user)
-          .then((_) {
-        notify.info('Brugeren blev opdateret');
-      }).catchError((error, stack) {
-        log.error('Tried to update user "${selectedUserId}" from data: "${JSON.encode(user)}" but got: ${error} ${stack}');
-        notify.error('Der skete en fejl i forbindelse med opdateringen af brugeren. Fejl: ${error}');
-      });
-    }
-
-    basicInformationRequest
-      .then((_) =>
-        identityContainer.saveChanges(selectedUserId))
-      .catchError((error, stack) {
-          notify.error('Lageringen af brugerens identiteter gav en fejl. ${error}');
-        })
-      .then((_) =>
-        groupContainer.saveChanges(selectedUserId)
-      ).catchError((error) {
-        notify.error('Lageringen af brugerens rettigheder gav en fejl.');
-      });
-  }
-
-  void deleteUser() {
-    if(!isNewUser && selectedUserId != null) {
-      _userController.remove(selectedUserId)
-        .then((_) {
-          bus.fire(new UserRemovedEvent(selectedUserId));
-          selectedUserId = null;
-          notify.info('Brugeren er slettet.');
-        })
-        .catchError((error) {
-          notify.error('Der skete en fejl i forbindelse med sletningen af brugeren');
-          log.error('Delete user failed with: ${error}');
-        });
-    }
+  /**
+   *
+   */
+  void _createUser() {
+    _userView.user = new model.User.empty()..id = model.User.noID;
+    highlightUserInList(model.User.noID);
   }
 }

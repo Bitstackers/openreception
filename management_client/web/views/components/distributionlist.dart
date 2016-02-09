@@ -259,8 +259,8 @@ class DistributionsListComponent {
         picker.selectedIndex = 0;
         picker.children.remove(pickedOption);
 
-        _changes.add(
-            () => _dlistController.addRecipient(_owner.receptionID, _owner.ID, entry));
+        _changes.add(() => _dlistController.addRecipient(
+            _owner.receptionID, _owner.ID, entry));
 
         _notifyChange();
       }

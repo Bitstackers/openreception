@@ -54,7 +54,7 @@ Future main() async {
       (new service.RESTDialplanStore(
       clientConfig.dialplanServerUri, config.token, new transport.Client()));
 
-  dpView = new view.Dialplan();
+  dpView = new view.Dialplan(dpController);
   querySelector('#dialplan-view').replaceWith(dpView.element);
 
   ivrView = new view.IvrMenuView();
