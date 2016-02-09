@@ -8,7 +8,7 @@ import '../lib/logger.dart' as log;
 import '../notification.dart' as notify;
 import '../menu.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
-import '../lib/controller.dart' as Controller;
+import 'package:management_tool/controller.dart' as Controller;
 
 class OrganizationView {
   static const String viewName = 'organization';

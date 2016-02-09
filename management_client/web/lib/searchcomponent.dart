@@ -40,8 +40,8 @@ class SearchComponent<T> {
   /**
    * Given an [_element] and the [searchText] tells whether the element gets displayed.
    */
-  SearchFilter<T> _searchFilter = (T element, String searchText) =>
-      element.toString().contains(searchText);
+  SearchFilter<T> _searchFilter =
+      (T element, String searchText) => element.toString().contains(searchText);
 
   ElementToString<T> _listElementToString = (T element, String searchText) {
     if (searchText == null || searchText.isEmpty) {

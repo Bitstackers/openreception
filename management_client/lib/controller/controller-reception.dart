@@ -1,4 +1,4 @@
-part of openreception.managementclient.controller;
+part of management_tool.controller;
 
 class Reception {
   final ORService.RESTReceptionStore _service;
@@ -16,5 +16,4 @@ class Reception {
       _service.update(reception);
 
   Future<Iterable<ORModel.Reception>> list() => _service.list();
-
 }

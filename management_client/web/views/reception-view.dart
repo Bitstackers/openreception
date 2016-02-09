@@ -9,7 +9,7 @@ import '../lib/view_utilities.dart';
 import '../lib/searchcomponent.dart';
 import '../notification.dart' as notify;
 import '../menu.dart';
-import '../lib/controller.dart' as Controller;
+import 'package:management_tool/controller.dart' as Controller;
 
 import 'package:openreception_framework/model.dart' as ORModel;
 

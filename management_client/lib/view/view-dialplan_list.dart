@@ -1,8 +1,8 @@
 part of management_tool.view;
 
 class DialplanList {
-  set menus(Iterable<ORModel.ReceptionDialplan> dialplans) {
-    LIElement template(ORModel.ReceptionDialplan rdp) =>
+  set menus(Iterable<model.ReceptionDialplan> dialplans) {
+    LIElement template(model.ReceptionDialplan rdp) =>
         new DialplanListItem(rdp).element;
 
     element.children = new List<Element>.from(
@@ -15,7 +15,7 @@ class DialplanList {
 }
 
 class DialplanListItem {
-  DialplanListItem(ORModel.ReceptionDialplan rdp) {
+  DialplanListItem(model.ReceptionDialplan rdp) {
     element.children = [
       new AnchorElement(href: '/dialplan/${rdp.extension}')
         ..text = rdp.extension.toString()

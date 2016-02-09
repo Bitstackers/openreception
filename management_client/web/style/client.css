@@ -112,6 +112,19 @@ nav#navigation img {
   background-color: lightgreen;
 }
 
+
+
+button.save {
+  float: right;
+  padding: 0.4em 0.8em 0.4em 0.8em;
+  font-weight: bold;
+}
+
+button.save:enabled {
+  background-color: red;
+}
+
+
 .notificationboxerror {
   background-color: #FF3333;
 }

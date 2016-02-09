@@ -1,4 +1,4 @@
-part of openreception.managementclient.controller;
+part of management_tool.controller;
 
 class CDR {
   ORService.RESTCDRService _service;

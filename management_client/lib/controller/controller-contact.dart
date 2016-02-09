@@ -1,4 +1,4 @@
-part of openreception.managementclient.controller;
+part of management_tool.controller;
 
 class Contact {
   final ORService.RESTContactStore _service;
@@ -48,7 +48,8 @@ class Contact {
 
     return _service
         .receptions(contactId)
-        .then((Iterable<int> receptionIds) => Future.forEach(receptionIds,
+        .then((Iterable<int> receptionIds) => Future.forEach(
+            receptionIds,
             (int receptionId) => _service
                 .listByReception(receptionId)
                 .then(foundColleagues.addAll)))

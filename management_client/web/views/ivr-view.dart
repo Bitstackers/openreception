@@ -6,7 +6,7 @@ import 'dart:html';
 import 'package:libdialplan/libdialplan.dart';
 import 'package:libdialplan/ivr.dart' as libIvr;
 
-import '../lib/controller.dart' as Controller;
+import 'package:management_tool/controller.dart' as Controller;
 import '../lib/logger.dart' as log;
 import '../notification.dart' as notify;
 import '../lib/view_utilities.dart';
