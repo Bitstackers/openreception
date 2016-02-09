@@ -121,7 +121,7 @@ class Calendar {
         removed.receptionID,
         event.CalendarEntryState.DELETED);
 
-    _log.finest('User id:${user.ID} removed entry for ${removed.owner}');
+    _log.finest('User id:${user.id} removed entry for ${removed.owner}');
 
     _notification.broadcastEvent(changeEvent);
 
@@ -147,12 +147,12 @@ class Calendar {
         model.CalendarEntry.decode(JSON.decode(await request.readAsString()));
 
     final model.CalendarEntry updated =
-        await _calendarStore.update(entry, user.ID);
+        await _calendarStore.update(entry, user.id);
 
     event.CalendarChange changeEvent = new event.CalendarChange(updated.ID,
         entry.contactID, entry.receptionID, event.CalendarEntryState.UPDATED);
 
-    _log.finest('User id:${user.ID} updated entry for ${entry.owner}');
+    _log.finest('User id:${user.id} updated entry for ${entry.owner}');
 
     _notification.broadcastEvent(changeEvent);
 
