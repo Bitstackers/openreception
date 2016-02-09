@@ -15,7 +15,7 @@ import '../notification.dart' as notify;
 import '../lib/searchcomponent.dart';
 import '../lib/utilities.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
-import '../lib/controller.dart' as Controller;
+import 'package:management_tool/controller.dart' as Controller;
 
 class _ControlLookUp {
   static const int TIME_CONTROL    = 0;

@@ -6,7 +6,7 @@ import 'views/organization-view.dart' as orgView;
 import 'views/reception-view.dart' as recepView;
 import 'views/user-view.dart' as userView;
 import 'menu.dart';
-import 'lib/controller.dart' as Controller;
+import 'package:management_tool/controller.dart' as Controller;
 import 'lib/auth.dart';
 import 'notification.dart' as notify;
 import 'lib/configuration.dart';
@@ -20,16 +20,12 @@ Future main() async {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen(print);
 
-
   final transport.Client client = new transport.Client();
   config.clientConfig =
       await (new service.RESTConfiguration(config.configUri, client))
           .clientConfig();
 
-
   if (handleToken()) {
-
-
     /// Initialize the stores.
     final service.RESTUserStore userStore = new service.RESTUserStore(
         config.clientConfig.userServerUri, config.token, client);
@@ -38,15 +34,17 @@ Future main() async {
             config.clientConfig.contactServerUri, config.token, client);
     final service.RESTEndpointStore epStore = new service.RESTEndpointStore(
         config.clientConfig.contactServerUri, config.token, client);
-    final service.RESTReceptionStore receptionStore = new service.RESTReceptionStore(
-        config.clientConfig.receptionServerUri, config.token, client);
+    final service.RESTReceptionStore receptionStore =
+        new service.RESTReceptionStore(
+            config.clientConfig.receptionServerUri, config.token, client);
     final service.RESTOrganizationStore organizationStore =
         new service.RESTOrganizationStore(
             config.clientConfig.receptionServerUri, config.token, client);
     final service.RESTContactStore contactStore = new service.RESTContactStore(
         config.clientConfig.contactServerUri, config.token, client);
-    final service.RESTCalendarStore calendarStore = new service.RESTCalendarStore(
-        config.clientConfig.calendarServerUri, config.token, client);
+    final service.RESTCalendarStore calendarStore =
+        new service.RESTCalendarStore(
+            config.clientConfig.calendarServerUri, config.token, client);
 
     /// Controllers
     final Controller.User userController = new Controller.User(userStore);

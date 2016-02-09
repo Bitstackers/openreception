@@ -1,10 +1,9 @@
-part of openreception.managementclient.controller;
+part of management_tool.controller;
 
 class User {
-
   final ORService.RESTUserStore _service;
 
-  User (this._service);
+  User(this._service);
 
   Future<Iterable<ORModel.User>> list() => _service.list();
 
@@ -16,7 +15,8 @@ class User {
 
   Future<ORModel.User> update(ORModel.User user) => _service.update(user);
 
-  Future<Iterable<ORModel.UserGroup>> userGroups(int userID) => _service.userGroups(userID);
+  Future<Iterable<ORModel.UserGroup>> userGroups(int userID) =>
+      _service.userGroups(userID);
 
   Future<Iterable<ORModel.UserGroup>> groups() => _service.groups();
 

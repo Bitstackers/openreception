@@ -1,4 +1,4 @@
-library openreception.managementclient.controller;
+library management_tool.controller;
 
 import 'dart:async';
 import 'package:libdialplan/libdialplan.dart' as libdialplan;

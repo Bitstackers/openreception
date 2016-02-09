@@ -5,32 +5,56 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 import 'package:management_tool/view.dart' as view;
+import 'package:management_tool/controller.dart' as controller;
+
 import 'package:route_hierarchical/client.dart';
 import 'package:logging/logging.dart';
-import 'package:openreception_framework/model.dart' as ORModel;
-import 'package:openreception_framework/service.dart' as ORService;
-import 'package:openreception_framework/service-html.dart' as ORTransport;
+import 'package:openreception_framework/model.dart' as model;
+import 'package:openreception_framework/service.dart' as service;
+import 'package:openreception_framework/service-html.dart' as transport;
+
+import 'lib/auth.dart';
+import 'lib/configuration.dart';
 
 final Uri CONFIGURATION_URL = Uri.parse('http://localhost:4080');
-final String token = 'secretstuff';
 
 var _jsonpp = new JsonEncoder.withIndent('  ');
 view.IvrMenuView ivrView;
-view.DialplanView dpView;
-ORService.RESTIvrStore _ivrStore;
-ORService.RESTDialplanStore _dialplanStore;
+view.Dialplan dpView;
+service.RESTIvrStore _ivrStore;
+service.RESTDialplanStore _dialplanStore;
+
+
 Future main() async {
-  ORModel.ClientConfiguration clientConfig =
-      await new ORService.RESTConfiguration(
-          CONFIGURATION_URL, new ORTransport.Client()).clientConfig();
+  Logger _log = new Logger('main');
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen(print);
 
-  _ivrStore = new ORService.RESTIvrStore(
-      clientConfig.dialplanServerUri, token, new ORTransport.Client());
+  final transport.Client client = new transport.Client();
+  config.clientConfig =
+      await (new service.RESTConfiguration(config.configUri, client))
+          .clientConfig();
 
-  _dialplanStore = new ORService.RESTDialplanStore(
-      clientConfig.dialplanServerUri, token, new ORTransport.Client());
+//  if (!handleToken()) {
+//    _log.warning('Authentication failure');
+//    return;
+//  }
 
-  dpView = new view.DialplanView();
+  model.ClientConfiguration clientConfig =
+      await new service.RESTConfiguration(
+          CONFIGURATION_URL, new transport.Client()).clientConfig();
+
+  _ivrStore = new service.RESTIvrStore(
+      clientConfig.dialplanServerUri, config.token, new transport.Client());
+
+  _dialplanStore = new service.RESTDialplanStore(
+      clientConfig.dialplanServerUri, config.token, new transport.Client());
+
+  controller.Dialplan dpController = new controller.Dialplan
+      (new service.RESTDialplanStore(
+      clientConfig.dialplanServerUri, config.token, new transport.Client()));
+
+  dpView = new view.Dialplan();
   querySelector('#dialplan-view').replaceWith(dpView.element);
 
   ivrView = new view.IvrMenuView();
@@ -49,19 +73,22 @@ Future main() async {
   // Webapps need routing to listen for changes to the URL.
   var router = new Router();
   router.root
+    ..addRoute(name: 'organizations', path: '/organization', enter: _showOrganizationList)
+
     ..addRoute(name: 'ivr-list', path: '/ivr', enter: showIvrList)
     ..addRoute(name: 'ivr-create', path: '/ivr/create', enter: createIvr)
     ..addRoute(name: 'ivr', path: '/ivr/:id', enter: showIvr)
     ..addRoute(name: 'dialplan', path: '/dialplan/:id', enter: showDialplan)
     ..addRoute(
         name: 'dialplan-list', path: '/dialplan', enter: showDialplanList);
+
   router.listen();
 }
 
 createIvr(RouteEnterEvent e) {
   (querySelector('textarea.ivr-edit') as TextAreaElement).value = _jsonpp
-      .convert(new ORModel.IvrMenu(
-          'new', new ORModel.Playback('...', wrapInLock: false)));
+      .convert(new model.IvrMenu(
+          'new', new model.Playback('...', wrapInLock: false)));
   ivrView.menu = currentIvrMenu();
 }
 
@@ -95,37 +122,45 @@ Future showDialplan(RouteEnterEvent e) async {
   dpView.dialplan = currentDialplan();
 }
 
-ORModel.IvrMenu currentIvrMenu() {
+Future _showOrganizationList(RouteEnterEvent e) async {
+  querySelectorAll('section:not(.hidden)').classes.toggle('hidden', true);
+  querySelector('section#organizations').classes.toggle('hidden', false);
+  querySelector('section#organizations').
+    children = [
+      new view.Organization().element];
+}
+
+model.IvrMenu currentIvrMenu() {
   try {
     //querySelector('.dialplan-view-widget').classes.toggle('hidden', false);
     querySelector('#ivr-menus .error-console')
       ..classes.toggle('hidden', true)
       ..text = '';
-    return ORModel.IvrMenu.decode(JSON
+    return model.IvrMenu.decode(JSON
         .decode((querySelector('textarea.ivr-edit') as TextAreaElement).value));
   } catch (error, stackTrace) {
     querySelector('.dialplan-view-widget').classes.toggle('hidden', true);
     querySelector('#ivr-menus .error-console')
       ..classes.toggle('hidden', false)
       ..text = '$error \n\n$stackTrace';
-    return new ORModel.IvrMenu(
-        '...', new ORModel.Playback('...', wrapInLock: false));
+    return new model.IvrMenu(
+        '...', new model.Playback('...', wrapInLock: false));
   }
 }
 
-ORModel.ReceptionDialplan currentDialplan() {
+model.ReceptionDialplan currentDialplan() {
   try {
     querySelector('.dialplan-view-widget').classes.toggle('hidden', false);
     querySelector('#dialplans .error-console')
       ..classes.toggle('hidden', true)
       ..text = '';
-    return ORModel.ReceptionDialplan.decode(JSON
+    return model.ReceptionDialplan.decode(JSON
         .decode((querySelector('#dialplan-edit') as TextAreaElement).value));
   } catch (error, stackTrace) {
     querySelector('.dialplan-view-widget').classes.toggle('hidden', true);
     querySelector('#dialplans .error-console')
       ..classes.toggle('hidden', false)
       ..text = '$error \n\n$stackTrace';
-    return new ORModel.ReceptionDialplan();
+    return new model.ReceptionDialplan();
   }
 }

@@ -1,8 +1,11 @@
-part of openreception.managementclient.controller;
+part of management_tool.controller;
+
 
 class Dialplan {
 
-  Dialplan();
+  final ORService.RESTDialplanStore _dpStore;
+
+  Dialplan(this._dpStore);
 
   Future<Iterable<ORModel.DialplanTemplate>> getTemplates() => throw new UnimplementedError();
 

@@ -4,22 +4,31 @@ class DistributionsListComponent {
   final Element _parent;
   final Function _onChange;
 
+  final Queue _changes = new Queue();
+
   final Controller.Contact _contactController;
   final Controller.Reception _receptionController;
   final Controller.DistributionList _dlistController;
+  final ORModel.Contact _owner;
 
+  /// Local cached copy.
   ORModel.DistributionList _persistentList =
       new ORModel.DistributionList.empty();
 
-  UListElement _ulTo = new UListElement()
+  final ButtonElement _saveButton = new ButtonElement()
+    ..text = 'Gem'
+    ..classes.add('save')
+    ..disabled = true;
+
+  final UListElement _ulTo = new UListElement()
     ..classes.add('zebra-even')
     ..classes.add('distributionlist');
 
-  UListElement _ulCc = new UListElement()
+  final UListElement _ulCc = new UListElement()
     ..classes.add('zebra-even')
     ..classes.add('distributionlist');
 
-  UListElement _ulBcc = new UListElement()
+  final UListElement _ulBcc = new UListElement()
     ..classes.add('zebra-even')
     ..classes.add('distributionlist');
 
@@ -32,7 +41,8 @@ class DistributionsListComponent {
       Function this._onChange,
       this._contactController,
       this._dlistController,
-      this._receptionController) {
+      this._receptionController,
+      this._owner) {
     _setup();
 
     _registerEventListerns();
@@ -55,8 +65,29 @@ class DistributionsListComponent {
       ..text = 'BCC'
       ..title = 'Blind Carbon Copy';
 
-    _parent.children
-        .addAll([header, toLabel, _ulTo, ccLabel, _ulCc, bccLabel, _ulBcc]);
+    _saveButton.onClick.listen((_) async {
+      _saveButton.disabled = true;
+
+      await Future.doWhile(() async {
+        if (_changes.isEmpty) {
+          return false;
+        }
+
+        await _changes.removeFirst()();
+        return true;
+      }).whenComplete(() => _saveButton.disabled = _changes.isEmpty);
+    });
+
+    _parent.children.addAll([
+      _saveButton,
+      header,
+      toLabel,
+      _ulTo,
+      ccLabel,
+      _ulCc,
+      bccLabel,
+      _ulBcc
+    ]);
   }
 
   Set<ORModel.DistributionListEntry> _extractEntries(UListElement ul) {
@@ -84,13 +115,15 @@ class DistributionsListComponent {
   /**
    * Fetchs a contacts distribution list, and displays it.
    */
-  void load(ORModel.Contact contact) {
+  Future load(ORModel.Contact contact) async {
     _dlistController
         .list(contact.receptionID, contact.ID)
-        .then((ORModel.DistributionList dlist) {
+        .then((ORModel.DistributionList dlist) async {
       _populateUL(dlist);
 
+      Iterable<ORModel.Reception> rs = await _receptionController.list();
       Map<int, String> receptionNameCache = {};
+      rs.forEach((ORModel.Reception r) => receptionNameCache[r.ID] = r.name);
 
       return _receptionController
           .list()
@@ -109,26 +142,31 @@ class DistributionsListComponent {
     });
   }
 
-  LIElement _createEntryRow(ORModel.DistributionListEntry recipient) {
+  /**
+   *
+   */
+  LIElement _createEntryRow(ORModel.DistributionListEntry entry) {
     LIElement li = new LIElement()
-      ..dataset['reception_id'] = recipient.receptionID.toString()
-      ..dataset['contact_id'] = recipient.contactID.toString()
-      ..dataset['reception_name'] = recipient.receptionName
-      ..dataset['contact_name'] = recipient.contactName;
+      ..dataset['reception_id'] = entry.receptionID.toString()
+      ..dataset['contact_id'] = entry.contactID.toString()
+      ..dataset['reception_name'] = entry.receptionName
+      ..dataset['contact_name'] = entry.contactName;
 
-    if (recipient.id != ORModel.DistributionListEntry.noId) {
-      li.dataset['id'] = recipient.id.toString();
+    if (entry.id != ORModel.DistributionListEntry.noId) {
+      li.dataset['id'] = entry.id.toString();
     }
 
     SpanElement element = new SpanElement();
 
-    element.text = '${recipient.contactName} (${recipient.receptionName})';
+    element.text = '${entry.contactName} (${entry.receptionName})';
 
     ImageElement deleteButton = new ImageElement(src: 'image/tp/red_plus.svg')
       ..alt = 'Slet'
       ..classes.add('small-button')
       ..onClick.listen((_) {
         li.parent.children.remove(li);
+
+        _changes.add(() => _dlistController.removeRecipient(entry.id));
         _notifyChange();
       });
 
@@ -147,10 +185,12 @@ class DistributionsListComponent {
     if (_onChange != null) {
       _onChange();
     }
+
+    _saveButton.disabled = false;
   }
 
   void _populateUL(ORModel.DistributionList list) {
-    this._persistentList = list;
+    _persistentList = list;
     _ulTo.children
       ..clear()
       ..addAll(list.to.map(_createEntryRow))
@@ -175,25 +215,28 @@ class DistributionsListComponent {
     picker.children.clear();
     picker.children.add(new OptionElement(data: 'Vælg'));
     contacts.forEach((ORModel.Contact contact) {
-      String displayedText = '${contact.fullName} (${contact.receptionID})';
+      final String receptionName = receptionNameCache.containsKey(
+          contact.receptionID) ? receptionNameCache[contact.receptionID] : '??';
+
+      String displayedText = '${contact.fullName} ($receptionName)';
       picker.children.add(new OptionElement(data: displayedText)
         ..dataset['reception_id'] = contact.receptionID.toString()
         ..dataset['contact_id'] = contact.ID.toString()
-        ..dataset['reception_name'] = receptionNameCache
-                .containsKey(contact.receptionID)
-            ? receptionNameCache[contact.receptionID]
-            : '??'
+        ..dataset['reception_name'] =
+            receptionNameCache.containsKey(contact.receptionID)
+                ? receptionNameCache[contact.receptionID]
+                : '??'
         ..dataset['contact_name'] = contact.fullName.toString());
     });
   }
 
   void _registerEventListerns() {
-    _registerPicker(_toPicker, _ulTo);
-    _registerPicker(_ccPicker, _ulCc);
-    _registerPicker(_bccPicker, _ulBcc);
+    _registerPicker(_toPicker, _ulTo, ORModel.Role.TO);
+    _registerPicker(_ccPicker, _ulCc, ORModel.Role.CC);
+    _registerPicker(_bccPicker, _ulBcc, ORModel.Role.BCC);
   }
 
-  void _registerPicker(SelectElement picker, UListElement ul) {
+  void _registerPicker(SelectElement picker, UListElement ul, String role) {
     picker.onChange.listen((_) {
       if (picker.selectedIndex != 0) {
         OptionElement pickedOption = picker.options[picker.selectedIndex];
@@ -204,6 +247,7 @@ class DistributionsListComponent {
 
         ORModel.DistributionListEntry entry =
             new ORModel.DistributionListEntry()
+              ..role = role
               ..contactName = contactName
               ..receptionName = receptionName
               ..receptionID = receptionId
@@ -214,6 +258,10 @@ class DistributionsListComponent {
 
         picker.selectedIndex = 0;
         picker.children.remove(pickedOption);
+
+        _changes.add(
+            () => _dlistController.addRecipient(_owner.receptionID, _owner.ID, entry));
+
         _notifyChange();
       }
     });

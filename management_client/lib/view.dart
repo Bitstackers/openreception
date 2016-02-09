@@ -1,15 +1,16 @@
 library management_tool.view;
 
 import 'dart:html';
-import 'package:openreception_framework/model.dart' as ORModel;
+import 'package:openreception_framework/model.dart' as model;
 
-part 'view-dialplan.dart';
-part 'view-dialplan_list.dart';
+part 'view/view-dialplan.dart';
+part 'view/view-dialplan_list.dart';
+part 'view/view-organization.dart';
 
-LIElement actionTemplate(ORModel.Action oh) =>
+LIElement actionTemplate(model.Action oh) =>
     new LIElement()..text = oh.toString();
 
-LIElement hourActionTemplate(ORModel.HourAction ha) => new LIElement()
+LIElement hourActionTemplate(model.HourAction ha) => new LIElement()
   ..children = [
     new HeadingElement.h4()..text = 'Hours',
     new UListElement()
@@ -20,15 +21,15 @@ LIElement hourActionTemplate(ORModel.HourAction ha) => new LIElement()
     new UListElement()..children = (ha.actions.map(actionTemplate).toList())
   ];
 
-LIElement extensionTemplate(ORModel.NamedExtension ne) => new LIElement()
+LIElement extensionTemplate(model.NamedExtension ne) => new LIElement()
   ..children = [
     new HeadingElement.h4()..text = ne.name,
     new UListElement()..children = (ne.actions.map(actionTemplate).toList())
   ];
 
 class IvrMenuList {
-  set menus(Iterable<ORModel.IvrMenu> menus) {
-    LIElement template(ORModel.IvrMenu menu) =>
+  set menus(Iterable<model.IvrMenu> menus) {
+    LIElement template(model.IvrMenu menu) =>
         new IvrMenuListItem(menu).element;
 
     element.children = new List<Element>.from(
@@ -41,7 +42,7 @@ class IvrMenuList {
 }
 
 class IvrMenuListItem {
-  IvrMenuListItem(ORModel.IvrMenu menu) {
+  IvrMenuListItem(model.IvrMenu menu) {
     element.children = [
       new AnchorElement(href: '/ivr/${menu.name}')..text = menu.name
     ];
@@ -68,7 +69,7 @@ class IvrMenuView {
     ];
   }
 
-  set menu(ORModel.IvrMenu menu) {
+  set menu(model.IvrMenu menu) {
     element.id = 'ivr-menu-${menu.name}';
     _nameInput
       ..id = 'ivr-menu${menu.name}-name'
@@ -78,10 +79,10 @@ class IvrMenuView {
     _entries.value = menu.entries.map((entry) => entry.toJson()).join('\n');
   }
 
-  ORModel.IvrMenu get menu => new ORModel.IvrMenu(
-      _nameInput.value, ORModel.Playback.parse(_longGreeting.text))
+  model.IvrMenu get menu => new model.IvrMenu(
+      _nameInput.value, model.Playback.parse(_longGreeting.text))
     ..name = name
-    ..entries = _entries.value.split('\n').map(ORModel.IvrEntry.parse).toList();
+    ..entries = _entries.value.split('\n').map(model.IvrEntry.parse).toList();
 
   final DivElement element = new DivElement()..classes = ['ivr-edit-widget'];
   final InputElement _nameInput = new InputElement();

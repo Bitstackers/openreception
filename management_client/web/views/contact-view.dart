@@ -2,6 +2,7 @@ library contact.view;
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:collection';
 import 'dart:html';
 
 import 'package:html5_dnd/html5_dnd.dart';
@@ -15,7 +16,7 @@ import '../lib/searchcomponent.dart';
 import '../lib/view_utilities.dart';
 import '../menu.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
-import '../lib/controller.dart' as Controller;
+import 'package:management_tool/controller.dart' as Controller;
 import 'package:logging/logging.dart';
 
 part 'components/contact_calendar.dart';
@@ -94,7 +95,7 @@ class ContactView {
 
     fillSearchComponent();
 
-    registrateEventHandlers();
+    registerEventHandlers();
 
     refreshList();
 
@@ -111,7 +112,7 @@ class ContactView {
     return reception.fullName.toLowerCase().contains(searchTerm.toLowerCase());
   }
 
-  void registrateEventHandlers() {
+  void registerEventHandlers() {
     bus.on(WindowChanged).listen((WindowChanged event) {
       element.classes.toggle('hidden', event.window != viewName);
       if (event.data.containsKey('contact_id')) {
@@ -171,6 +172,9 @@ class ContactView {
         .toggle('highlightListItem', li.dataset['contactid'] == '$id'));
   }
 
+  /**
+   *
+   */
   void activateContact(int id, [int reception_id]) {
     _contactController.get(id).then((ORModel.BaseContact contact) {
       buttonSave.text = 'Gem';
@@ -429,7 +433,8 @@ class ContactView {
     leftCell = createTableCellInsertInRow(row);
     rightCell = createTableCellInsertInRow(row);
     distributionsListContainer = new DistributionsListComponent(leftCell,
-        onChange, _contactController, _dlistController, _receptionController);
+        onChange, _contactController, _dlistController, _receptionController,
+        contact);
     distributionsListContainer.load(contact);
     calendarComponent =
         new ContactCalendarComponent(rightCell, onChange, _calendarController);
@@ -573,17 +578,20 @@ class ContactView {
     for (LIElement li in element.children) {
       if (!li.classes.contains(addNewLiClass)) {
         SpanElement content = li.children.firstWhere(
-            (elem) => elem is SpanElement &&
+            (elem) =>
+                elem is SpanElement &&
                 elem.classes.contains('contactgenericcontent'),
             orElse: () => null);
         SelectElement kindpicker = li.children
             .firstWhere((elem) => elem is SelectElement, orElse: () => null);
         SpanElement description = li.children.firstWhere(
-            (elem) => elem is SpanElement &&
+            (elem) =>
+                elem is SpanElement &&
                 elem.classes.contains('phonenumberdescription'),
             orElse: () => null);
         SpanElement billingType = li.children.firstWhere(
-            (elem) => elem is SpanElement &&
+            (elem) =>
+                elem is SpanElement &&
                 elem.classes.contains('phonenumberbillingtype'),
             orElse: () => null);
 
