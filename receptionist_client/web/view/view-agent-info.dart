@@ -49,8 +49,8 @@ class AgentInfo extends ViewWidget {
     }
 
     _reloadUserState().then((_) {
-      _updateCounters();
       _observers();
+      _user.setPaused(_appState.currentUser);
     });
   }
 
