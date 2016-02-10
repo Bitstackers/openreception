@@ -11,7 +11,7 @@ import 'package:intl/intl.dart' show DateFormat;
 import '../lib/configuration.dart';
 import '../lib/eventbus.dart';
 import '../lib/logger.dart' as log;
-import '../notification.dart' as notify;
+import 'package:management_tool/notification.dart' as notify;
 import '../lib/searchcomponent.dart';
 import '../lib/view_utilities.dart';
 import '../menu.dart';

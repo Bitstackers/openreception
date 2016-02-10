@@ -6,7 +6,7 @@ import 'dart:html';
 
 import '../lib/logger.dart' as log;
 import '../lib/eventbus.dart';
-import '../notification.dart' as notify;
+import 'package:management_tool/notification.dart' as notify;
 import 'package:openreception_framework/model.dart' as ORModel;
 import 'package:management_tool/controller.dart' as Controller;
 

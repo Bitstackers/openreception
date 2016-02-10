@@ -7,7 +7,7 @@ import '../lib/logger.dart' as log;
 import '../lib/eventbus.dart';
 import '../lib/view_utilities.dart';
 import '../lib/searchcomponent.dart';
-import '../notification.dart' as notify;
+import 'package:management_tool/notification.dart' as notify;
 import '../menu.dart';
 import 'package:management_tool/controller.dart' as Controller;
 

@@ -7,8 +7,8 @@
 }
 
 body {
-  background-color: #F8F8F8;
-  font-family: 'Open Sans', sans-serif;
+  background-color: #fafafa;
+  font-family: "Roboto","Helvetica","Arial",sans-serif;
   font-size: 14px;
   font-weight: normal;
   line-height: 1.2em;
@@ -111,17 +111,60 @@ nav#navigation img {
 .notificationboxinfo {
   background-color: lightgreen;
 }
+/*
+  color: black!important;
+    line-height: 20px;
 
 
+    background: 0 0;
+    border: none;
+    border-radius: 2px;
+    color: #000;
+    position: relative;
+    height: 36px;
+    margin: 0;
+    min-width: 64px;
+    padding: 0 16px;
+    font-family: "Roboto","Helvetica","Arial",sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0;
+    overflow: hidden;
+    will-change: box-shadow;
 
-button.save {
-  float: right;
-  padding: 0.4em 0.8em 0.4em 0.8em;
-  font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    line-height: 36px;
+    vertical-align: middle; */
+button {
+background: rgba(158,158,158,.2);
+will-change: box-shadow;
+box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+ transition: box-shadow .2s cubic-bezier(.4,0,1,1),background-color .2s cubic-bezier(.4,0,.2,1),color .2s cubic-bezier(.4,0,.2,1);
+    outline: none;
 }
 
-button.save:enabled {
-  background-color: red;
+
+button.create {
+}
+
+button.save, button.delete  {
+  padding: 0.4em 1.2em;
+  float: right;
+}
+
+button.delete:enabled {
+  background-color: #ff4081;
+  float: right;
+}
+
+
+button.save:enabled, button.delete:enabled {
+  color: black;
+  font-weight:bold;
+
+
 }
 
 
@@ -141,7 +184,7 @@ button.save:enabled {
   display: flex;
   margin: 5px 1px;
 
-  border: 1px solid grey;
+  border: 1px solid transparent;
   border-radius: 5px;
 
   padding: 1px 2px;
