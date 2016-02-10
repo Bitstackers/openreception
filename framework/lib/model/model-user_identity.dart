@@ -16,6 +16,25 @@ part of openreception.model;
 /**
  *
  */
+List<FormatException> validateUserIdentity(UserIdentity uiden) {
+  final List<FormatException> errors = new List<FormatException>();
+
+  if (uiden.identity == null || uiden.identity.isEmpty) {
+    errors.add(new FormatException(
+        'Bad value for UserIdentity.identity', uiden.identity));
+  }
+
+  if (uiden.userId == null || uiden.userId == User.noID) {
+    errors.add(
+        new FormatException('Bad value for UserIdentity.userId', uiden.userId));
+  }
+
+  return errors;
+}
+
+/**
+ *
+ */
 class UserIdentity {
   String identity;
   int userId;
