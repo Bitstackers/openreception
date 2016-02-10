@@ -369,6 +369,12 @@ List<String> _actionToXmlDialplan(model.Action action,
   /// Transfer action.
   if (action is model.Transfer) {
     if (action.note.isNotEmpty) returnValue.add(_noteTemplate(action.note));
+    if (!env.channelAnswered) {
+      returnValue.add('<action application="answer"/>');
+      env.channelAnswered = true;
+    }
+    returnValue.add('<action application="playback" '
+        'data="{loops=1}${option.greetingDir}/A-no-sound-message.wav"/>');
 
     returnValue.add(_transferTemplate(action.extension, option));
   }
