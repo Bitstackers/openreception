@@ -199,18 +199,24 @@ class UIContactData extends UIModel {
    * Mark selected [ORModel.PhoneNumber] ringing if we're not already ringing. If the PSTN input
    * field is active and contains something, then call that.
    *
+   * Numbers that start with 0 are illegal to ring from the PSTN field.
+   *
    * This fires a [ORModel.PhoneNumber] object on the [onMarkedRinging] stream.
    */
   void ring() {
-    if (_showPSTNSpan.classes.contains('active') && _pstnInput.value.trim().isNotEmpty) {
+    if (_showPSTNSpan.classes.contains('active') &&
+        _pstnInput.value.trim().isNotEmpty &&
+        _headerExtra.text.isNotEmpty &&
+        !_pstnInput.value.trim().startsWith('0') &&
+        noRinging) {
       ORModel.PhoneNumber phoneNumber = new ORModel.PhoneNumber.empty()
         ..endpoint = _pstnInput.value.trim();
       _pstnInput.classes.toggle('ringing', true);
       _busRinging.fire(phoneNumber);
-    } else {
+    } else if (!_showPSTNSpan.classes.contains('active') && noRinging) {
       LIElement li = _phoneNumberList.querySelector('.selected');
 
-      if (li != null && noRinging) {
+      if (li != null) {
         li.classes.toggle('ringing');
         _busRinging.fire(new ORModel.PhoneNumber.fromMap(JSON.decode(li.dataset['object'])));
       }
