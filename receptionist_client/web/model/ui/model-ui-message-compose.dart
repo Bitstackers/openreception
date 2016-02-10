@@ -30,7 +30,7 @@ class UIMessageCompose extends UIModel {
     _myFirstTabElement = _callerNameInput;
     _myLastTabElement = _urgentInput;
 
-    _haveCalledInput.checked = true;
+    _pleaseCallInput.checked = true;
 
     _setupLocalKeys();
     _observers();
