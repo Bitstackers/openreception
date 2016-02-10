@@ -18,7 +18,6 @@ part of model;
  */
 class UIContactData extends UIModel {
   final Bus<ORModel.PhoneNumber> _busRinging = new Bus<ORModel.PhoneNumber>();
-  ORModel.Contact _latestContact = new ORModel.Contact.empty();
   final DivElement _myRoot;
 
   /**
@@ -97,7 +96,7 @@ class UIContactData extends UIModel {
    * filter context.
    */
   set contactWithFilterContext(ContactWithFilterContext cwfc) {
-    if (_latestContact.ID != cwfc.contact.ID) {
+    if (cwfc.contact != ORModel.Contact.noContact) {
       clear();
 
       headerExtra = ': ${cwfc.contact.fullName}';
