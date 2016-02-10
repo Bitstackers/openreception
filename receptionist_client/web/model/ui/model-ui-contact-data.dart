@@ -96,7 +96,7 @@ class UIContactData extends UIModel {
    * filter context.
    */
   set contactWithFilterContext(ContactWithFilterContext cwfc) {
-    if (cwfc.contact != ORModel.Contact.noContact) {
+    if (cwfc.contact.isNotEmpty) {
       clear();
 
       headerExtra = ': ${cwfc.contact.fullName}';

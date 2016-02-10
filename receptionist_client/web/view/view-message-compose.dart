@@ -115,7 +115,7 @@ class MessageCompose extends ViewWidget {
     if (_latestContact.ID != contact.ID) {
       _latestContact = contact;
 
-      _ui.headerExtra = ': ${contact.fullName}';
+      _ui.headerExtra = contact.fullName.isEmpty ? '' : ': ${contact.fullName}';
 
       if (contact.isEmpty) {
         _ui.resetOnEmptyContact();
