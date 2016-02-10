@@ -49,7 +49,7 @@ class AgentInfo extends ViewWidget {
     }
 
     _reloadUserState().then((_) {
-      _update();
+      _updateCounters();
       _observers();
     });
   }
@@ -97,20 +97,44 @@ class AgentInfo extends ViewWidget {
 
     _notification.onAgentStateChange.listen((ORModel.UserStatus userStatus) {
       _userPaused[userStatus.userID] = userStatus.paused;
-      _update();
+      _updateCounters();
+
+      if (userStatus.userID == _appState.currentUser.id &&
+          _appState.activeCall == ORModel.Call.noCall) {
+        if (_userPaused.containsKey(_appState.currentUser.id) &&
+            _userPaused[_appState.currentUser.id]) {
+          _ui.agentState = Model.AgentState.paused;
+        } else {
+          _ui.agentState = Model.AgentState.idle;
+        }
+      }
     });
 
-    _notification.onClientConnectionStateChange.listen((Model.ClientConnectionState state) {
+    _notification.onClientConnectionStateChange
+        .listen((Model.ClientConnectionState state) {
       _userConnectionCount[state.userID] = state.connectionCount;
       _log.info('View.AgentInfo got '
           'Model.ClientConnectionState: ${state.asMap}');
-      _update();
+      _updateCounters();
     });
 
     _notification.onPeerStateChange.listen((OREvent.PeerState state) {
       _log.info('View.AgentInfo got OREvent.PeerState: ${state.asMap}');
       _peerState[state.peer.name] = state.peer.registered;
-      _update();
+      _updateCounters();
+    });
+
+    _appState.activeCallChanged.listen((ORModel.Call newCall) {
+      if (newCall != ORModel.Call.noCall) {
+        _ui.agentState = Model.AgentState.busy;
+      } else {
+        if (_userPaused.containsKey(_appState.currentUser.id) &&
+            _userPaused[_appState.currentUser.id]) {
+          _ui.agentState = Model.AgentState.paused;
+        } else {
+          _ui.agentState = Model.AgentState.idle;
+        }
+      }
     });
   }
 
@@ -128,7 +152,7 @@ class AgentInfo extends ViewWidget {
   /**
    * Update the active/passive counters and the user state graphic.
    */
-  void _update() {
+  void _updateCounters() {
     int active = 0;
     int passive = 0;
     bool available = false;
@@ -136,11 +160,14 @@ class AgentInfo extends ViewWidget {
     /// Update counters.
     _userPeer.forEach((userId, peerId) {
       bool peerRegistered = _userPeer.containsKey(userId)
-          ? _peerState.containsKey(_userPeer[userId]) ? _peerState[_userPeer[userId]] : false
+          ? _peerState.containsKey(_userPeer[userId])
+              ? _peerState[_userPeer[userId]]
+              : false
           : false;
 
-      int connectionCount =
-          _userConnectionCount.containsKey(userId) ? _userConnectionCount[userId] : 0;
+      int connectionCount = _userConnectionCount.containsKey(userId)
+          ? _userConnectionCount[userId]
+          : 0;
 
       available = peerRegistered && connectionCount > 0;
       if (available) {
@@ -151,16 +178,6 @@ class AgentInfo extends ViewWidget {
         }
       }
     });
-
-    /// Update ui for agent's user.
-    if (_userPaused.containsKey(_appState.currentUser.id) &&
-        _userPaused[_appState.currentUser.id]) {
-      _ui.agentState = Model.AgentState.paused;
-    } else if (_appState.activeCall.ID != ORModel.Call.noID) {
-      _ui.agentState = Model.AgentState.busy;
-    } else {
-      _ui.agentState = Model.AgentState.idle;
-    }
 
     _ui.activeCount = active;
     _ui.pausedCount = passive;
