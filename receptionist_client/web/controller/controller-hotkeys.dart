@@ -112,6 +112,7 @@ class HotKeys {
       'Ctrl+k': _null, // Blackhole this
       'Ctrl+l': _null, // Blackhole this
       'Ctrl+s': _null, // Blackhole this
+      [Key.NumMinus]: _null, // Blackhole this
       'Ctrl+Space': (event) => _ctrlSpace.fire(event),
       [Key.Ctrl, Key.NumPlus]: _null, // Blackhole this
       'Ctrl+Alt+P': (event) => _ctrlAltP.fire(event),
