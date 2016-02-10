@@ -2,11 +2,16 @@ part of management_tool.view;
 
 class UserGroupChange {
   final Change type;
-  final int uid;
-  final model.UserGroup group;
+  final int groupId;
 
-  UserGroupChange.added(this.uid, this.group) : type = Change.added;
-  UserGroupChange.delete(this.uid, this.group) : type = Change.deleted;
+  UserGroupChange.join(this.groupId) : type = Change.added;
+  UserGroupChange.leave(this.groupId) : type = Change.deleted;
+
+  /**
+   *
+   */
+  @override
+  String toString() => '$type, gid:$groupId';
 }
 
 class UserGroups {
@@ -15,12 +20,12 @@ class UserGroups {
 
   final DivElement element = new DivElement();
 
-  Stream<UserGroupChange> get changes => _changeBus.stream;
-  final Bus<UserGroupChange> _changeBus = new Bus<UserGroupChange>();
+  Function onChange = () => null;
 
   List<CheckboxInputElement> _checkboxs = new List<CheckboxInputElement>();
   final TableElement _table = new TableElement();
-  List<model.UserGroup> _groupList = new List<model.UserGroup>();
+  List<model.UserGroup> _allGroups = new List<model.UserGroup>();
+  List<model.UserGroup> _originalGroups = new List<model.UserGroup>();
 
   UserGroups(this._userController) {
     element.children = [_table];
@@ -56,7 +61,13 @@ class UserGroups {
 
     _table.children
       ..clear()
-      ..addAll(_groupList.map(_makeGroupRow));
+      ..addAll(_allGroups.map(_makeGroupRow));
+
+    _checkboxs.forEach((cbx) => cbx.onChange.listen((e) {
+          if (onChange != null) {
+            onChange();
+          }
+        }));
   }
 
   /**
@@ -64,15 +75,37 @@ class UserGroups {
    */
   void _refreshGroupList() {
     _userController.groups().then((Iterable<model.UserGroup> groups) {
-      _groupList = groups.toList();
+      _allGroups = groups.toList();
       _renderBaseList();
     });
+  }
+
+  /**
+   * Finds the groups the user should join/leave and sends the changes to the server.
+   */
+  Iterable<UserGroupChange> changes() {
+    final List<UserGroupChange> changeList = [];
+
+    for (CheckboxInputElement item in _checkboxs) {
+      int groupId = int.parse(item.dataset['id']);
+      bool userIsAMember =
+          _originalGroups.any((model.UserGroup group) => group.id == groupId);
+
+      if (item.checked && !userIsAMember) {
+        changeList.add(new UserGroupChange.join(groupId));
+      } else if (!item.checked && userIsAMember) {
+        changeList.add(new UserGroupChange.leave(groupId));
+      }
+    }
+
+    return changeList;
   }
 
   /**
    *
    */
   void set groups(Iterable<model.UserGroup> gs) {
+    _originalGroups = gs.toList(growable: false);
     for (CheckboxInputElement checkbox in _checkboxs) {
       checkbox.checked = gs.any((model.UserGroup userGroup) =>
           userGroup.id == int.parse(checkbox.dataset['id']));

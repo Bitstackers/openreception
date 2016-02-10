@@ -1,11 +1,11 @@
 library management_tool.page.user;
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:html';
 
 import '../lib/eventbus.dart';
 
+import 'package:logging/logging.dart';
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/view.dart' as view;
 import 'package:openreception_framework/model.dart' as model;
@@ -16,7 +16,9 @@ const String _libraryName = 'management_tool.page.user';
  *
  */
 class UserPage {
-  static const String viewName = 'user';
+  static const String _viewName = 'user';
+  final Logger _log = new Logger('$_libraryName.UserPage');
+
   final DivElement element = new DivElement()..id = "user-page";
 
   final controller.User _userController;
@@ -61,23 +63,18 @@ class UserPage {
    */
   void _observers() {
     bus.on(WindowChanged).listen((WindowChanged event) {
-      element.classes.toggle('hidden', event.window != viewName);
-    });
-
-    bus.on(UserAddedEvent).listen((UserAddedEvent event) {
-      _refreshList();
-    });
-
-    bus.on(UserRemovedEvent).listen((UserRemovedEvent event) {
-      _refreshList();
+      element.classes.toggle('hidden', event.window != _viewName);
     });
 
     _createButton.onClick.listen((_) => _createUser());
 
-    _userView.changes.listen((view.UserChange uc) {
-      _refreshList();
-
-      if (uc.type != view.Change.deleted) {
+    _userView.changes.listen((view.UserChange uc) async {
+      if (uc.type == view.Change.deleted) {
+        await _refreshList();
+      } else if (uc.type == view.Change.updated) {
+        _activateUser(uc.user.id);
+      } else if (uc.type == view.Change.created) {
+        await _refreshList();
         _activateUser(uc.user.id);
       }
     });
@@ -118,8 +115,10 @@ class UserPage {
    *
    */
   Future _activateUser(int userId) async {
-    _userView.user = await _userController.get(userId);
+    _log.finest('Activating user $userId');
     highlightUserInList(userId);
+    _userView.user = await _userController.get(userId);
+    highlightUserInList(_userView.user.id);
   }
 
   /**
