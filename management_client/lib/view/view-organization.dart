@@ -38,7 +38,7 @@ class Organization {
     ..text = 'Slet'
     ..classes.add('delete');
 
-  //buttonDelete = element.querySelector('#organization-delete');
+  final HeadingElement _heading = new HeadingElement.h2();
 
   final InputElement _billingTypeInput = new InputElement()..value = '';
   final InputElement _flagInput = new InputElement()..value = '';
@@ -49,11 +49,17 @@ class Organization {
     _billingTypeInput.value = org.billingType;
     _flagInput.value = org.flag;
     _nameInput.value = org.fullName;
-    _oidLabel.text = 'orgid:${organization.id}';
 
     element.hidden = false;
 
-    _saveButton.disabled = organization.id != model.Organization.noID;
+    if (organization.id != model.Organization.noID) {
+      _heading.text = 'Retter organisation: "${org.fullName}" - (oid: ${organization.id})';
+      _saveButton.disabled = true;
+    } else {
+      _heading.text = 'Opretter ny organisation';
+      _saveButton.disabled = false;
+    }
+
     _deleteButton.disabled = !_saveButton.disabled;
   }
 
@@ -73,7 +79,7 @@ class Organization {
     element.children = [
       _saveButton,
       _deleteButton,
-      _oidLabel..htmlFor = _idInput.id,
+      _heading,
       _idInput,
       new DivElement()
         ..children = [

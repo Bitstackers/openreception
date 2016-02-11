@@ -1,4 +1,4 @@
-library search_component;
+library management_tool.search_component;
 
 import 'dart:async';
 import 'dart:html';

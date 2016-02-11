@@ -12,7 +12,7 @@ import '../lib/logger.dart' as log;
 import 'package:libdialplan/libdialplan.dart';
 import 'package:libdialplan/ivr.dart';
 import 'package:management_tool/notification.dart' as notify;
-import '../lib/searchcomponent.dart';
+import 'package:management_tool/searchcomponent.dart';
 import '../lib/utilities.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
 import 'package:management_tool/controller.dart' as Controller;

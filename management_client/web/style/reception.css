@@ -22,8 +22,8 @@
 
 #reception-list {
   height: 100%;
-  height: -moz-calc(100% - 70px);
-  height: -webkit-calc(100% - 70px);
+  height: -moz-calc(100% - 82px);
+  height: -webkit-calc(100% - 82px);
   overflow: auto;
   padding: 0;
 }
@@ -31,6 +31,10 @@
 #reception-list>li {
   border-left: 2px solid transparent;
   padding: 5px 0 5px 5px;
+}
+
+#reception-list>li:hover {
+  border-left: 2px solid red;
 }
 
 #reception-list>li.highlightListItem {

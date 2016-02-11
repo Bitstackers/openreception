@@ -6,6 +6,10 @@
   box-sizing: border-box;
 }
 
+h2 {
+  margin: 0.8em 0.2em;
+}
+
 body {
   font-family: "Roboto","Helvetica","Arial",sans-serif;
   font-size: 14px;
@@ -16,6 +20,11 @@ body {
 /*DART STUFF*/
 html,body {
   height: 100%;
+}
+
+div.col-1-2 {
+  width: 50%;
+  float:left;
 }
 
 nav#navigation {
@@ -46,6 +55,30 @@ nav#navigation img {
   /*display: none;*/
   position: absolute;
   left: -99999px;
+}
+
+.page input {
+  margin: 5px;
+  padding: 5px;
+}
+
+.page textarea {
+  margin: 5px;
+  padding: 5px;
+  min-height: 8em;
+}
+
+.wide {
+   min-width: 95%;
+}
+
+.semi-wide {
+  min-width: 70%;
+}
+
+
+.page label {
+  display: block;
 }
 
 .dnd-placeholder {
@@ -176,6 +209,12 @@ button.create {
       color: #fff;
   margin: 9px;
 }
+
+button.deploy {
+      background-color: #0f9d58;
+      color: #fff;
+}
+
 
 button.save, button.delete  {
   padding: 0.4em 1.8em;

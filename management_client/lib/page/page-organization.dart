@@ -55,7 +55,6 @@ class OrganizationView {
    */
   OrganizationView(controller.Organization this._organizationController,
       controller.Reception this._receptionController) {
-
     _organizationView = new view.Organization(_organizationController);
 
     element.children = [
@@ -119,16 +118,12 @@ class OrganizationView {
 
     _searchBox.onInput.listen((_) => _performSearch());
 
-
     _organizationView.changes.listen((view.OrganizationChange ogc) async {
       await _refreshList();
-      if (ogc.type == view.Change.deleted) {
-
-      } else if (ogc.type == view.Change.updated) {
-
+      if (ogc.type == view.Change.deleted) {} else if (ogc.type ==
+          view.Change.updated) {
         await _activateOrganization(ogc.organization.id);
       } else if (ogc.type == view.Change.created) {
-
         await _activateOrganization(ogc.organization.id);
       }
     });
@@ -152,7 +147,6 @@ class OrganizationView {
         .toList();
     _renderOrganizationList(filteredList);
   }
-
 
   /**
    *

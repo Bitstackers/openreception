@@ -12,7 +12,7 @@ import '../lib/configuration.dart';
 import 'package:management_tool/eventbus.dart';
 import '../lib/logger.dart' as log;
 import 'package:management_tool/notification.dart' as notify;
-import '../lib/searchcomponent.dart';
+import 'package:management_tool/searchcomponent.dart';
 import '../lib/view_utilities.dart';
 import '../menu.dart';
 import 'package:openreception_framework/model.dart' as ORModel;

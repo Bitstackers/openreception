@@ -1,22 +1,29 @@
 library management_tool.view;
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:html';
 
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/bus.dart';
 import 'package:openreception_framework/model.dart' as model;
+import 'package:openreception_framework/util.dart' as util;
+
+import 'package:management_tool/searchcomponent.dart';
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/notification.dart' as notify;
 
 part 'view/view-dialplan.dart';
 part 'view/view-dialplan_list.dart';
 part 'view/view-organization.dart';
+part 'view/view-reception.dart';
 part 'view/view-user.dart';
 part 'view/view-user_groups.dart';
 part 'view/view-user_identities.dart';
 
 const String _libraryName = 'management_tool.view';
+
+var _jsonpp = new JsonEncoder.withIndent('  ');
 
 abstract class Key {
   static const int ESCAPE = 27;
