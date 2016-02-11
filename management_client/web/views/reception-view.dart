@@ -20,7 +20,13 @@ class ReceptionView {
   final Controller.Organization _organizationController;
   final Controller.Reception _receptionController;
 
-  DivElement element;
+
+  DivElement get element => querySelector("#reception-page");
+
+//  final DivElement element = new DivElement()
+//    ..id = 'reception-page'
+//    ..classes.addAll(['hidden','page']);
+
   TextAreaElement inputFullName, inputShortGreeting, inputProduct, inputGreeting, inputOther,
       inputCostumerstype, inputReceptionNumber, extradataUrl;
   ButtonElement buttonDialplan;
@@ -41,7 +47,7 @@ class ReceptionView {
       currentOrganizationId = 0;
   bool createNew = false;
 
-  ReceptionView(DivElement this.element, Controller.Contact this._contactController,
+  ReceptionView(Controller.Contact this._contactController,
                     Controller.Organization this._organizationController,
                         Controller.Reception this._receptionController) {
     searchBox       = element.querySelector('#reception-search-box');

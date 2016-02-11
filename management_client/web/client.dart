@@ -62,11 +62,17 @@ Future main() async {
 
     //Initializes the notification system.
     notify.initialize();
-    querySelector("#organization-page")
-            .replaceWith(new orgView.OrganizationView(organizationController, receptionController).element);
 
-//    new recepView.ReceptionView(querySelector('#reception-page'),
-//        contactController, organizationController, receptionController);
+    final orgView.OrganizationView orgPage =
+        new orgView.OrganizationView(organizationController, receptionController);
+
+    querySelector("#organization-page")
+            .replaceWith(orgPage.element);
+
+    querySelector("#reception-page")
+            .replaceWith(new recepView.ReceptionView(contactController, organizationController, receptionController).element);
+
+
     new conView.ContactView(
         querySelector('#contact-page'),
         contactController,
