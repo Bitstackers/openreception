@@ -3,7 +3,7 @@ import 'dart:html';
 
 import 'views/contact-view.dart' as conView;
 import 'package:management_tool/page/page-organization.dart' as orgView;
-import 'views/reception-view.dart' as recepView;
+import 'package:management_tool/page/reception-view.dart' as recepView;
 import 'package:management_tool/page/page-user.dart' as userView;
 import 'menu.dart';
 import 'package:management_tool/controller.dart' as Controller;

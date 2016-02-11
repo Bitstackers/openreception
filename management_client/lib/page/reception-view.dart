@@ -1,14 +1,9 @@
-library reception.view;
+library management_tool.page.reception;
 
 import 'dart:async';
 import 'dart:html';
 
-import '../lib/logger.dart' as log;
 import 'package:management_tool/eventbus.dart';
-import '../lib/view_utilities.dart';
-import 'package:management_tool/searchcomponent.dart';
-import 'package:management_tool/notification.dart' as notify;
-import '../menu.dart';
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/view.dart' as view;
 
@@ -193,7 +188,7 @@ class ReceptionView {
       ..text = contact.fullName
       ..onClick.listen((_) {
         Map data = {'contact_id': contact.ID, 'reception_id': receptionId};
-        bus.fire(new WindowChanged(Menu.CONTACT_WINDOW, data));
+        bus.fire(new WindowChanged('contact', data));
       });
     return li;
   }
