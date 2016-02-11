@@ -22,8 +22,8 @@
 
 #organization-list {
   height: 100%;
-  height: -moz-calc(100% - 70px);
-  height: -webkit-calc(100% - 70px);
+  height: -moz-calc(100% - 82px);
+  height: -webkit-calc(100% - 82px);
   overflow: auto;
   padding: 0;
 }
@@ -33,9 +33,13 @@
   padding: 5px 0 5px 5px;
 }
 
+#organization-list>li:hover {
+  border-left: 2px solid red;
+}
+
 #organization-list>li.highlightListItem {
   border-left: 2px solid red;
-    background-color: #B3E5FC;
+  background-color: #B3E5FC;
   font-weight: bold;
 }
 
@@ -98,5 +102,10 @@
 }
 
 #organization-reception-list li,#organization-contact-list li {
+  border-left: 2px solid transparent;
   margin-left: 10px;
+}
+
+#organization-reception-list li:hover,#organization-contact-list li:hover {
+  border-left: 2px solid red;
 }

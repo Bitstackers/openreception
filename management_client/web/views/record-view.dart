@@ -3,7 +3,7 @@ library record.view;
 import 'dart:async';
 import 'dart:html';
 
-import '../lib/eventbus.dart';
+import 'package:management_tool/eventbus.dart';
 import 'package:management_tool/notification.dart' as notify;
 
 import 'package:openreception_framework/model.dart' as ORModel;

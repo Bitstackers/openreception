@@ -9,7 +9,7 @@ import 'package:html5_dnd/html5_dnd.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
 import '../lib/configuration.dart';
-import '../lib/eventbus.dart';
+import 'package:management_tool/eventbus.dart';
 import '../lib/logger.dart' as log;
 import 'package:management_tool/notification.dart' as notify;
 import '../lib/searchcomponent.dart';

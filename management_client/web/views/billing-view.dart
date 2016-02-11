@@ -5,7 +5,7 @@ import 'dart:html';
 import 'package:intl/intl.dart';
 
 import 'package:management_tool/controller.dart' as Controller;
-import '../lib/eventbus.dart';
+import 'package:management_tool/eventbus.dart';
 import 'package:management_tool/notification.dart' as notify;
 import 'package:openreception_framework/model.dart' as ORModel;
 

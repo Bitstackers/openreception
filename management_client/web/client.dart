@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:html';
 
 import 'views/contact-view.dart' as conView;
-import 'views/organization-view.dart' as orgView;
+import 'package:management_tool/page/page-organization.dart' as orgView;
 import 'views/reception-view.dart' as recepView;
-import 'views/user-view.dart' as userView;
+import 'package:management_tool/page/page-user.dart' as userView;
 import 'menu.dart';
 import 'package:management_tool/controller.dart' as Controller;
 import 'lib/auth.dart';
@@ -62,10 +62,11 @@ Future main() async {
 
     //Initializes the notification system.
     notify.initialize();
-    new orgView.OrganizationView(querySelector('#organization-page'),
-        organizationController, receptionController);
-    new recepView.ReceptionView(querySelector('#reception-page'),
-        contactController, organizationController, receptionController);
+    querySelector("#organization-page")
+            .replaceWith(new orgView.OrganizationView(organizationController, receptionController).element);
+
+//    new recepView.ReceptionView(querySelector('#reception-page'),
+//        contactController, organizationController, receptionController);
     new conView.ContactView(
         querySelector('#contact-page'),
         contactController,

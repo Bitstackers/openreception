@@ -119,14 +119,19 @@ class User {
 
     _groupsView.onChange = () {
       _saveButton.disabled = false;
+      _deleteButton.disabled = !_saveButton.disabled;
     };
 
     _identitiesView.onChange = () {
       _saveButton.disabled = false;
+      _deleteButton.disabled = !_saveButton.disabled;
     };
 
     inputs.forEach((InputElement ine) {
-      ine.onInput.listen((_) => _saveButton.disabled = false);
+      ine.onInput.listen((_) {
+        _saveButton.disabled = false;
+        _deleteButton.disabled = !_saveButton.disabled;
+      });
     });
 
     _saveButton.onClick.listen((_) {
@@ -143,6 +148,7 @@ class User {
     _uidLabel.text = 'uid:${u.id}${!u.enabled ? ' (inaktiv)': ''}';
     _deleteButton.disabled = u.id == model.User.noID;
     _saveButton.disabled = u.id != model.User.noID;
+    _deleteButton.disabled = !_saveButton.disabled;
     _userIdInput.value = u.id.toString();
     _userNameInput.value = u.name;
     _userSendFromInput.value = u.address;

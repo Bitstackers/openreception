@@ -2,7 +2,7 @@ library menu;
 
 import 'dart:html';
 
-import 'lib/eventbus.dart';
+import 'package:management_tool/eventbus.dart';
 
 /**
  * Widget to control the menu on the left side of the screen.

@@ -7,7 +7,6 @@
 }
 
 body {
-  background-color: #fafafa;
   font-family: "Roboto","Helvetica","Arial",sans-serif;
   font-size: 14px;
   font-weight: normal;
@@ -138,33 +137,60 @@ nav#navigation img {
     line-height: 36px;
     vertical-align: middle; */
 button {
-background: rgba(158,158,158,.2);
-will-change: box-shadow;
+      position: relative;
+
+      line-height: 32px;
+      border-radius: 2px;
+      font-size: 0.9em;
+      background-color: #fff;
+      color: #646464;
+      border: none;
+      background-color: #0f9d58;
+      color: #fff;
+      will-change: box-shadow;
+      cursor: pointer;
+
 box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
  transition: box-shadow .2s cubic-bezier(.4,0,1,1),background-color .2s cubic-bezier(.4,0,.2,1),color .2s cubic-bezier(.4,0,.2,1);
     outline: none;
 }
 
+button:hover:enabled {
+  opacity: 0.6;
+}
+
+button:disabled {
+   background-color: #eee;
+   color: #aaa;
+}
+
+button:enabled {
+   background-color: #eee;
+   text-transform: uppercase;
+  font-weight:bold;
+}
+
 
 button.create {
+      background-color: #0f9d58;
+      color: #fff;
+  margin: 9px;
 }
 
 button.save, button.delete  {
-  padding: 0.4em 1.2em;
-  float: right;
+  padding: 0.4em 1.8em;
+  margin: 1.2em;
+    float: right;
+
 }
 
 button.delete:enabled {
-  background-color: #ff4081;
-  float: right;
+  background-color: #db4437;
 }
 
-
-button.save:enabled, button.delete:enabled {
-  color: black;
-  font-weight:bold;
-
-
+button.save:enabled {
+  background-color: #4285f4;
+  color: #fff;
 }
 
 

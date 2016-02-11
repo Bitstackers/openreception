@@ -1,20 +1,46 @@
 part of management_tool.view;
 
+class OrganizationChange {
+  final Change type;
+  final model.Organization organization;
+
+  OrganizationChange.create(this.organization) : type = Change.created;
+  OrganizationChange.delete(this.organization) : type = Change.deleted;
+  OrganizationChange.update(this.organization) : type = Change.updated;
+}
+
+/**
+ *
+ */
 class Organization {
   final DivElement element = new DivElement()
-    ..classes = ['organization-view-widget'];
+    ..classes = ['organization', 'page']
+    ..hidden = true;
 
-  final InputElement _idInput = new InputElement()
-    ..value = model.Organization.noID.toString();
+  final Logger _log = new Logger('$_libraryName.Organization');
+  final controller.Organization _orgController;
+
+  Stream<OrganizationChange> get changes => _changeBus.stream;
+  final Bus<OrganizationChange> _changeBus = new Bus<OrganizationChange>();
 
   int get _id => int.parse(_idInput.value);
   void set _id(int newId) {
     _idInput.value = newId.toString();
   }
 
+  final LabelElement _oidLabel = new LabelElement()..text = 'orgid:??';
+  final HiddenInputElement _idInput = new HiddenInputElement()
+    ..value = model.Organization.noID.toString();
+  final ButtonElement _saveButton = new ButtonElement()
+    ..classes.add('save')
+    ..text = 'Gem';
+  final ButtonElement _deleteButton = new ButtonElement()
+    ..text = 'Slet'
+    ..classes.add('delete');
+
+  //buttonDelete = element.querySelector('#organization-delete');
+
   final InputElement _billingTypeInput = new InputElement()..value = '';
-  final CheckboxInputElement _activeInput = new CheckboxInputElement()
-    ..checked = true;
   final InputElement _flagInput = new InputElement()..value = '';
   final InputElement _nameInput = new InputElement()..value = '';
 
@@ -23,25 +49,110 @@ class Organization {
     _billingTypeInput.value = org.billingType;
     _flagInput.value = org.flag;
     _nameInput.value = org.fullName;
+    _oidLabel.text = 'orgid:${organization.id}';
+
+    element.hidden = false;
+
+    _saveButton.disabled = organization.id != model.Organization.noID;
+    _deleteButton.disabled = !_saveButton.disabled;
   }
 
+  /**
+   *
+   */
   model.Organization get organization => new model.Organization.empty()
     ..id = _id
     ..billingType = _billingTypeInput.value
     ..flag = _flagInput.value
     ..fullName = _nameInput.value;
 
-  Organization() {
+  /**
+   *
+   */
+  Organization(this._orgController) {
     element.children = [
+      _saveButton,
+      _deleteButton,
+      _oidLabel..htmlFor = _idInput.id,
       _idInput,
-      new HeadingElement.h3()..text = 'Active',
-      _activeInput,
-      new HeadingElement.h3()..text = 'Name',
-      _nameInput,
-      new HeadingElement.h3()..text = 'Billing type',
-      _billingTypeInput,
-      new HeadingElement.h3()..text = 'flag',
-      _flagInput,
+      new DivElement()
+        ..children = [
+          new LabelElement()
+            ..text = 'Navn'
+            ..htmlFor = _nameInput.id,
+          _nameInput
+        ],
+      new DivElement()
+        ..children = [
+          new LabelElement()
+            ..text = 'Regnings Type'
+            ..htmlFor = _billingTypeInput.id,
+          _billingTypeInput
+        ],
+      new DivElement()
+        ..children = [
+          new LabelElement()
+            ..text = 'Flag'
+            ..htmlFor = _flagInput.id,
+          _flagInput
+        ],
     ];
+
+    _observers();
+  }
+
+  /**
+   *
+   */
+  void _observers() {
+    Iterable<InputElement> inputs =
+        element.querySelectorAll('input') as Iterable<InputElement>;
+
+    inputs.forEach((InputElement ine) {
+      ine.onInput.listen((_) {
+        _saveButton.disabled = false;
+        _deleteButton.disabled = !_saveButton.disabled;
+      });
+    });
+
+    _deleteButton.onClick.listen((_) async {
+      element.hidden = true;
+      try {
+        await _orgController.remove(organization.id);
+        _changeBus.fire(new OrganizationChange.delete(organization));
+        notify.info('Organisationen blev slettet.');
+      } catch (error) {
+        notify.error('Der skete en fejl, så organisationen blev ikke slettet.');
+        _log.severe('Tried to remove an organization, but got: $error');
+        element.hidden = false;
+      }
+    });
+
+    _saveButton.onClick.listen((_) async {
+      element.hidden = true;
+      if (organization.id == model.Organization.noID) {
+        try {
+          model.Organization newOrg = await _orgController.create(organization);
+          _changeBus.fire(new OrganizationChange.create(newOrg));
+          notify.info('Organisationen blev oprettet.');
+        } catch (error) {
+          notify.error(
+              'Der skete en fejl, så organisationen blev ikke oprettet.');
+          _log.severe('Tried to create an new organization, but got: $error');
+          element.hidden = false;
+        }
+      } else {
+        try {
+          await _orgController.update(organization);
+          _changeBus.fire(new OrganizationChange.update(organization));
+          notify.info('Ændringerne blev gemt.');
+        } catch (error) {
+          notify.error(
+              'Der skete en fejl i forbindelse med forsøget på at gemme ændringerne til organisationen.');
+          _log.severe('Tried to update an organization, but got: $error');
+          element.hidden = false;
+        }
+      }
+    });
   }
 }

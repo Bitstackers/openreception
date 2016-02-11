@@ -6,7 +6,7 @@ import 'dart:html';
 
 import 'package:html5_dnd/html5_dnd.dart';
 
-import '../lib/eventbus.dart';
+import '../../lib/eventbus.dart';
 import 'ivr-view.dart';
 import '../lib/logger.dart' as log;
 import 'package:libdialplan/libdialplan.dart';

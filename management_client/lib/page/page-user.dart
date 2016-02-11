@@ -3,10 +3,10 @@ library management_tool.page.user;
 import 'dart:async';
 import 'dart:html';
 
-import '../lib/eventbus.dart';
 
 import 'package:logging/logging.dart';
 import 'package:management_tool/controller.dart' as controller;
+import 'package:management_tool/eventbus.dart';
 import 'package:management_tool/view.dart' as view;
 import 'package:openreception_framework/model.dart' as model;
 
@@ -19,13 +19,15 @@ class UserPage {
   static const String _viewName = 'user';
   final Logger _log = new Logger('$_libraryName.UserPage');
 
-  final DivElement element = new DivElement()..id = "user-page";
+  final DivElement element = new DivElement()
+    ..id = "user-page"
+    ..classes.addAll(['hidden','page']);
 
   final controller.User _userController;
   view.User _userView;
 
   final ButtonElement _createButton = new ButtonElement()
-    ..text = 'Opret ny bruger'
+    ..text = 'Opret'
     ..classes.add('create');
 
   final UListElement _userList = new UListElement()
@@ -72,10 +74,10 @@ class UserPage {
       if (uc.type == view.Change.deleted) {
         await _refreshList();
       } else if (uc.type == view.Change.updated) {
-        _activateUser(uc.user.id);
+        await _activateUser(uc.user.id);
       } else if (uc.type == view.Change.created) {
         await _refreshList();
-        _activateUser(uc.user.id);
+        await _activateUser(uc.user.id);
       }
     });
   }
