@@ -10,8 +10,8 @@
   float: left;
   width: 20%;
   height: 100%;
-  padding: 0 5px;
-    box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
+  padding-left: 5px;
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
 }
 
 #user-content input {
@@ -25,12 +25,10 @@
 
 #user-list {
   height: 100%;
-  height: -moz-calc(100% - 38px);
-  height: -webkit-calc(100% - 38px);
+  height: -moz-calc(100% - 70px);
+  height: -webkit-calc(100% - 70px);
   overflow: auto;
-  padding-right: 5px;
-  padding-left: 0;
-  list-style-type: none;
+  padding: 0;
 }
 
 #user-list > li {
@@ -50,13 +48,12 @@
 #user-content {
   float: left;
   width: 80%;
-  width: -moz-calc(80% - 10px);
-  width: -webkit-calc(80% - 10px);
+  width: -moz-calc(80% - 19px);
+  width: -webkit-calc(80% - 19px);
   height: 100%;
-  height: -moz-calc(100% - 10px);
-  height: -webkit-calc(100% - 10px);
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
   padding: 5px;
-  margin: 5px;
+  margin-left: 9px;
   overflow: auto;
 }
 

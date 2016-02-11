@@ -10,24 +10,21 @@
   float: left;
   width: 20%;
   height: 100%;
-  padding: 0 5px;
+  padding-left: 5px;
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
 }
 
 #organization-search-box {
   width: 100%;
   margin-bottom: 5px;
-  border: 1px solid grey;
-  border-radius: 5px;
   padding: 5px;
 }
 
 #organization-list {
   height: 100%;
-  height: -moz-calc(100% - 68px);
-  height: -webkit-calc(100% - 68px);
+  height: -moz-calc(100% - 70px);
+  height: -webkit-calc(100% - 70px);
   overflow: auto;
-  border: 1px solid grey;
-  border-radius: 2px;
   padding: 0;
 }
 
@@ -38,6 +35,8 @@
 
 #organization-list>li.highlightListItem {
   border-left: 2px solid red;
+    background-color: #B3E5FC;
+  font-weight: bold;
 }
 
 /******************
@@ -50,12 +49,9 @@
   width: -moz-calc(60% - 5px);
   width: -webkit-calc(60% - 5px);
   height: 100%;
-  height: -moz-calc(100% - 10px);
-  height: -webkit-calc(100% - 10px);
-  border: solid 2px grey;
-  border-radius: 10px;
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
   padding: 5px;
-  margin: 5px;
+  margin-left: 9px;
   overflow: auto;
 }
 
@@ -83,8 +79,7 @@
 
 #organization-rightbar>div>div {
   height: 100%;
-  border: 2px solid grey;
-  border-radius: 10px;
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
   padding: 5px;
 }
 
