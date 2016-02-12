@@ -27,12 +27,16 @@ class DialplanCompilerOpts {
   final String greetingDir;
   final String testNumber;
   final String testEmail;
+  final String callerIdName;
+  final String callerIdNumber;
 
   DialplanCompilerOpts(
       {this.goLive: false,
       this.greetingDir: 'converted-vox',
       this.testNumber: 'xxxxxxxx',
-      this.testEmail: 'some-guy@somewhere'});
+      this.testEmail: 'some-guy@somewhere',
+      this.callerIdName: 'Undefined',
+      this.callerIdNumber: '00000000'});
 }
 
 /**
@@ -81,27 +85,42 @@ class DialplanCompiler {
 </include>''';
 }
 
-List<String> _externalTrunkTransfer(String extension, int rid) => [
-      '<extension name="${extension}-${outboundSuffix}-trunk" continue="true">',
-      '  <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(\\d+)\$">',
-      '    <action application="set" data="ringback=\${dk-ring}"/>',
-      '    <action application="ring_ready" />',
-      '    <action application="bridge" data="{${ORPbxKey.receptionId}=${rid},originate_timeout=120}[leg_timeout=50,${ORPbxKey.receptionId}=${rid},fifo_music=default]sofia/gateway/\${default_trunk}/\$1"/>',
-      '    <action application="hangup"/>',
-      '  </condition>',
-      '</extension>'
-    ];
+List<String> _externalTrunkTransfer(
+    String extension, int rid, DialplanCompilerOpts opts) {
+  final String callerIdName =
+      new HtmlEscape(HtmlEscapeMode.ATTRIBUTE).convert(opts.callerIdName);
+  final String callerIdNumber =
+      new HtmlEscape(HtmlEscapeMode.ATTRIBUTE).convert(opts.callerIdNumber);
 
-List<String> _externalSipTransfer(String extension, int rid) => [
-      '<extension name="${extension}-${outboundSuffix}-sip" continue="true">',
-      '  <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(.*)">',
-      '    <action application="set" data="ringback=\${dk-ring}"/>',
-      '    <action application="ring_ready" />',
-      '    <action application="bridge" data="sofia/external/\$1"/>',
-      '    <action application="hangup"/>',
-      '  </condition>',
-      '</extension>'
-    ];
+  return [
+    '<extension name="${extension}-${outboundSuffix}-trunk" continue="true">',
+    '  <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(\\d+)\$">',
+    '    <action application="set" data="ringback=\${dk-ring}"/>',
+    '    <action application="ring_ready" />',
+    '    <action application="bridge" data="{${ORPbxKey.receptionId}=${rid},originate_timeout=120,origination_caller_id_name=$callerIdName,origination_caller_id_number=$callerIdNumber}[leg_timeout=50,${ORPbxKey.receptionId}=${rid},fifo_music=default]sofia/gateway/\${default_trunk}/\$1"/>',
+    '    <action application="hangup"/>',
+    '  </condition>',
+    '</extension>'
+  ];
+}
+
+List<String> _externalSipTransfer(
+    String extension, int rid, DialplanCompilerOpts opts) {
+  final String callerIdName =
+      new HtmlEscape(HtmlEscapeMode.ATTRIBUTE).convert(opts.callerIdName);
+  final String callerIdNumber =
+      new HtmlEscape(HtmlEscapeMode.ATTRIBUTE).convert(opts.callerIdNumber);
+  return [
+    '<extension name="${extension}-${outboundSuffix}-sip" continue="true">',
+    '  <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(.*)">',
+    '    <action application="set" data="ringback=\${dk-ring}"/>',
+    '    <action application="ring_ready" />',
+    '    <action application="bridge" data="{${ORPbxKey.receptionId}=${rid},originate_timeout=120,origination_caller_id_name=$callerIdName,origination_caller_id_number=$callerIdNumber}[leg_timeout=50,${ORPbxKey.receptionId}=${rid},fifo_music=default]sofia/external/\$1"/>',
+    '    <action application="hangup"/>',
+    '  </condition>',
+    '</extension>'
+  ];
+}
 
 /**
  * Normalizes an opening hour string for use in extension name by removing the
@@ -263,10 +282,10 @@ String _dialplanToXml(model.ReceptionDialplan dialplan,
 
     ${_extraExtensionsToDialplan(dialplan.extraExtensions, option, reception).join('\n    ')}
     <!-- Perform outbound PSTN calls -->
-    ${_externalTrunkTransfer(dialplan.extension, reception.ID).join('\n    ')}
+    ${_externalTrunkTransfer(dialplan.extension, reception.ID, option).join('\n    ')}
 
     <!-- Perform outbound SIP calls -->
-    ${_externalSipTransfer(dialplan.extension, reception.ID).join('\n    ')}
+    ${_externalSipTransfer(dialplan.extension, reception.ID, option).join('\n    ')}
 
     ${_hourActionsToXmlDialplan(dialplan.extension, dialplan.open, option, reception).fold([], (combined, current) => combined..addAll(current)).join('\n    ')}
     ${_fallbackToDialplan(dialplan.extension, dialplan.defaultActions, option, new Environment(), reception).join('\n    ')}
