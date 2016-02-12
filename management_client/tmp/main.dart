@@ -13,7 +13,7 @@ import 'package:openreception_framework/model.dart' as model;
 import 'package:openreception_framework/service.dart' as service;
 import 'package:openreception_framework/service-html.dart' as transport;
 
-import 'lib/auth.dart';
+import '../web/lib/auth.dart';
 import 'package:management_tool/configuration.dart';
 final Uri CONFIGURATION_URL = Uri.parse('http://localhost:4080');
 

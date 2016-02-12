@@ -17,8 +17,8 @@ import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/notification.dart' as notify;
 import 'package:html5_dnd/html5_dnd.dart';
 
-part 'view/view-dialplan.dart';
-part 'view/view-dialplan_list.dart';
+//part 'view/view-dialplan.dart';
+//part 'view/view-dialplan_list.dart';
 part 'view/view-organization.dart';
 part 'view/view-reception.dart';
 part 'view/view-reception_contact.dart';
