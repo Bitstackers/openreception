@@ -142,7 +142,7 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
   if (currentRecipients.isNotEmpty) {
     Model.TemplateEmail templateEmail = new Model.TemplateEmail(message, user);
     Email email =
-        new Email(new Address(user.address, user.name), 'smtp.gmail.com')
+        new Email(new Address(user.address, user.name), config.messageDispatcher.smtp.hostname)
           ..to = to
           ..cc = cc
           ..bcc = bcc
@@ -169,7 +169,7 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
   if (currentRecipients.isNotEmpty) {
     Model.Template templateSMS = new Model.TemplateSMS(message);
     Email sms =
-        new Email(new Address(user.address, user.name), 'smtp.gmail.com')
+        new Email(new Address(user.address, user.name), config.messageDispatcher.smtp.hostname)
           ..to = currentRecipients.map((mrto) => new Address(mrto.address, ''))
           ..partText = templateSMS.bodyText;
 
