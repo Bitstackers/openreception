@@ -230,6 +230,7 @@ class DialplanServer extends StandardConfig {
 class MessageDispatcher extends StandardConfig {
   final int maxTries = 10;
   final mailerPeriod = const Duration(seconds: 1);
+  final String smsKey = 'some-key@some-host.tld';
 
   @override
   final int httpPort = 4070;

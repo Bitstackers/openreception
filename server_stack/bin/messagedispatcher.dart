@@ -170,7 +170,8 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
     Model.Template templateSMS = new Model.TemplateSMS(message);
     Email sms =
         new Email(new Address(user.address, user.name), config.messageDispatcher.smtp.hostname)
-          ..to = currentRecipients.map((mrto) => new Address(mrto.address, ''))
+          ..to = currentRecipients
+              .map((mrto) => new Address(mrto.address + config.messageDispatcher.smsKey, ''))
           ..partText = templateSMS.bodyText;
 
     await new SmtpClient(options).send(sms).then((_) {
