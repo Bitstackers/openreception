@@ -103,7 +103,7 @@ class Reception extends ReceptionStub {
       } catch (_) {
         log.warning('Failed to extract phoneNumber map, trying String');
         pns = values
-            .map((String number) => new PhoneNumber.empty()..value = number)
+            .map((String number) => new PhoneNumber.empty()..endpoint = number)
             .toList();
       }
 
