@@ -14,7 +14,6 @@
 library openreception.dialplan_tools;
 
 import 'dart:convert';
-import 'package:crypto/crypto.dart';
 
 import 'model.dart' as model;
 import 'pbx-keys.dart';
