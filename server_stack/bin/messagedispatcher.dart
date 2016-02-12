@@ -63,18 +63,14 @@ void main(List<String> args) {
 /**
  *
  */
-Iterable<Model.MessageRecipient> emailRecipients(
-        Iterable<Model.MessageRecipient> rcps) =>
-    rcps.where((Model.MessageRecipient rcp) =>
-        rcp.type == Model.MessageEndpointType.EMAIL);
+Iterable<Model.MessageRecipient> emailRecipients(Iterable<Model.MessageRecipient> rcps) =>
+    rcps.where((Model.MessageRecipient rcp) => rcp.type == Model.MessageEndpointType.EMAIL);
 
 /**
  *
  */
-Iterable<Model.MessageRecipient> smsRecipients(
-        Iterable<Model.MessageRecipient> rcps) =>
-    rcps.where((Model.MessageRecipient rcp) =>
-        rcp.type == Model.MessageEndpointType.SMS);
+Iterable<Model.MessageRecipient> smsRecipients(Iterable<Model.MessageRecipient> rcps) =>
+    rcps.where((Model.MessageRecipient rcp) => rcp.type == Model.MessageEndpointType.SMS);
 
 /**
  * The Periodic task that passes emails on to the SMTP server.
@@ -102,8 +98,7 @@ void periodicEmailSend() {
 /**
  *
  */
-Timer reSchedule() =>
-    new Timer(config.messageDispatcher.mailerPeriod, periodicEmailSend);
+Timer reSchedule() => new Timer(config.messageDispatcher.mailerPeriod, periodicEmailSend);
 
 /**
  *
