@@ -92,7 +92,9 @@ Future<io.HttpServer> start(
           goLive: config.dialplanserver.goLive,
           greetingDir: config.dialplanserver.playbackPrefix,
           testNumber: config.dialplanserver.testNumber,
-          testEmail: config.dialplanserver.testEmail));
+          testEmail: config.dialplanserver.testEmail,
+          callerIdName: config.callFlowControl.callerIdName,
+          callerIdNumber: config.callFlowControl.callerIdNumber));
 
   _log.info('Dialplan tools are ${compiler.option.goLive ? 'live ' : 'NOT live '
     'diverting all voicemails to ${compiler.option.testEmail} and directing '
