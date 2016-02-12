@@ -3,14 +3,13 @@ import 'dart:html';
 
 import 'views/contact-view.dart' as conView;
 import 'package:management_tool/page/page-organization.dart' as orgView;
-import 'package:management_tool/page/reception-view.dart' as recepView;
+import 'package:management_tool/page/page-reception.dart' as recepView;
 import 'package:management_tool/page/page-user.dart' as userView;
 import 'menu.dart';
 import 'package:management_tool/controller.dart' as Controller;
 import 'lib/auth.dart';
 import 'package:management_tool/notification.dart' as notify;
-import 'lib/configuration.dart';
-
+import 'package:management_tool/configuration.dart';
 import 'package:logging/logging.dart';
 
 import 'package:openreception_framework/service.dart' as service;

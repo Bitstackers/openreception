@@ -2,32 +2,56 @@ library management_tool.view;
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:collection';
 import 'dart:html';
 
+import 'package:intl/intl.dart' show DateFormat;
+import 'package:management_tool/configuration.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/bus.dart';
 import 'package:openreception_framework/model.dart' as model;
 import 'package:openreception_framework/util.dart' as util;
-
+import 'package:management_tool/view_utilities.dart';
 import 'package:management_tool/searchcomponent.dart';
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/notification.dart' as notify;
+import 'package:html5_dnd/html5_dnd.dart';
 
 part 'view/view-dialplan.dart';
 part 'view/view-dialplan_list.dart';
 part 'view/view-organization.dart';
 part 'view/view-reception.dart';
+part 'view/view-reception_contact.dart';
 part 'view/view-user.dart';
 part 'view/view-user_groups.dart';
 part 'view/view-user_identities.dart';
+part 'view/view-contact_calendar.dart';
+part 'view/view-distributionlist.dart';
+part 'view/view-endpoint.dart';
 
 const String _libraryName = 'management_tool.view';
+const List<String> phonenumberTypes = const ['PSTN', 'SIP'];
 
 var _jsonpp = new JsonEncoder.withIndent('  ');
 
-abstract class Key {
-  static const int ESCAPE = 27;
-  static const int ENTER = 13;
+/**
+ *
+ */
+List<String> _valuesFromListTextArea(TextAreaElement ta) =>
+    new List<String>.from(ta.value
+        .split('\n')
+        .map((String str) => str.trim())
+        .where((String str) => str.isNotEmpty));
+
+/**
+ * Returns a valid URI from a string - or null if it is malformed.
+ */
+Uri _validUri(String str) {
+  try {
+    return Uri.parse(str);
+  } catch (_) {
+    return null;
+  }
 }
 
 LIElement actionTemplate(model.Action oh) =>

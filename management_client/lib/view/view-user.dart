@@ -51,8 +51,6 @@ class User {
     ..text = 'Slet'
     ..classes.add('delete');
 
-  final List<UserGroupChange> _groupChanges = [];
-
   int get userId => int.parse(_userIdInput.value);
 
   void hide() {
@@ -170,6 +168,9 @@ class User {
       _identitiesView.identities = [];
       _groupsView.groups = [];
     }
+
+    /// Reset labels.
+    _deleteButton.text = 'Slet';
     show();
   }
 
@@ -189,10 +190,17 @@ class User {
    */
   Future _deleteUser() async {
     _log.finest('Deleting user uid$userId');
-    _saveButton.disabled = true;
-    _deleteButton.disabled = true;
+    final String confirmationText = 'Bekræft sletning af uid: ${user.id}?';
+
+    if(_deleteButton.text != confirmationText) {
+      _deleteButton.text = confirmationText;
+      return;
+    }
+
 
     try {
+      _deleteButton.disabled = true;
+
       await _userController.remove(userId);
       notify.info('Brugeren er slettet.');
       _changeBus.fire(new UserChange.delete(user));
@@ -202,6 +210,8 @@ class User {
           .error('Der skete en fejl i forbindelse med sletningen af brugeren');
       _log.severe('Delete user failed with: ${error}');
     }
+
+    _deleteButton.text = 'Slet';
   }
 
   /**

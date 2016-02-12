@@ -25,8 +25,8 @@
 
 #contact-list {
   height: 100%;
-  height: -moz-calc(100% - 70px);
-  height: -webkit-calc(100% - 70px);
+  height: -moz-calc(100% - 100px);
+  height: -webkit-calc(100% - 100px);
   overflow: auto;
   padding: 0;
 }
@@ -62,6 +62,7 @@
 }
 
 #contact-base-info {
+  height: 200px;
   padding: 0px;
   box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
 
@@ -70,12 +71,14 @@
 #reception-contacts {
   margin-top: 0px;
   height: 85%;
-  height: -moz-calc(100% - 118px - 15px);
-  height: -webkit-calc(100% - 118px - 15px);
+  height: -moz-calc(100% - 250px);
+  height: -webkit-calc(100% - 250px);
   overflow: auto;
 }
 
 .contact-reception {
+  overflow:hidden;
+  display: block;
   border-top: 1px solid #aaa;
   margin-top: 9px;
   padding: 6px;

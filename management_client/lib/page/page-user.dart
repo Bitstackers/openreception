@@ -70,12 +70,11 @@ class UserPage {
     _createButton.onClick.listen((_) => _createUser());
 
     _userView.changes.listen((view.UserChange uc) async {
-      if (uc.type == view.Change.deleted) {
-        await _refreshList();
-      } else if (uc.type == view.Change.updated) {
+      await _refreshList();
+      if (uc.type == view.Change.deleted) {} else if (uc.type ==
+          view.Change.updated) {
         await _activateUser(uc.user.id);
       } else if (uc.type == view.Change.created) {
-        await _refreshList();
         await _activateUser(uc.user.id);
       }
     });

@@ -1,4 +1,4 @@
-library view_utilities;
+library management_tool.view_utilities;
 
 import 'dart:html';
 

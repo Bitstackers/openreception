@@ -1,4 +1,4 @@
-part of contact.view;
+part of management_tool.view;
 
 /**
  * Visual representation of an endpoint collection belonging to a contact.
@@ -6,43 +6,49 @@ part of contact.view;
  * TODO: Add reference to endpoint owner.
  */
 class EndpointsComponent {
-  List<String> get _addressTypes => ORModel.MessageEndpointType.types;
+  List<String> get _addressTypes => model.MessageEndpointType.types;
 
   Logger log = new Logger('$_libraryName.EndpointsComponent');
 
-  final Controller.Contact _contactController;
-  final Controller.Endpoint _endpointController;
+  final controller.Contact _contactController;
+  final controller.Endpoint _endpointController;
 
-  Element _element;
+  final DivElement element = new DivElement();
   Function _onChange;
 
-  List<ORModel.MessageEndpoint> _persistenceEndpoint = [];
+  List<model.MessageEndpoint> _persistenceEndpoint = [];
   UListElement _ul = new UListElement();
   ParagraphElement _header = new ParagraphElement()..text = 'Kontaktpunkter';
 
+  ///TODO: Turn this into a textarea
   SortableGroup _sortGroup;
 
-  EndpointsComponent(Element this._element, Function this._onChange,
-      Controller.Contact this._contactController, this._endpointController) {
-    _element.children.add(_header);
-    _element.children.add(_ul);
+
+  final PreElement _tmpTextInput = new PreElement();
+
+  EndpointsComponent(Function this._onChange,
+      controller.Contact this._contactController, this._endpointController) {
+//    element.children.add(_header);
+//    element.children.add(_ul);
+
+    element.children = [_tmpTextInput];
   }
 
   Future load(int receptionId, int contactId) {
     log.finest('̈́Loading endpoints for $contactId@$receptionId');
-    _persistenceEndpoint = new List<ORModel.MessageEndpoint>();
+    _persistenceEndpoint = new List<model.MessageEndpoint>();
     return _endpointController
         .list(receptionId, contactId)
-        .then((Iterable<ORModel.MessageEndpoint> endpoints) {
+        .then((Iterable<model.MessageEndpoint> endpoints) {
       endpoints.forEach((ep) => print(ep.asMap));
       _populateUL(endpoints);
     });
   }
 
-  void _populateUL(Iterable<ORModel.MessageEndpoint> endpoints) {
+  void _populateUL(Iterable<model.MessageEndpoint> endpoints) {
     _persistenceEndpoint = endpoints.toList();
 
-    int compareTo(ORModel.MessageEndpoint m1, ORModel.MessageEndpoint m2) =>
+    int compareTo(model.MessageEndpoint m1, model.MessageEndpoint m2) =>
         m1.address.compareTo(m2.address);
 
     _persistenceEndpoint.sort(compareTo);
@@ -58,6 +64,8 @@ class EndpointsComponent {
 
     // Only accept elements from the same section.
     _sortGroup.accept.add(_sortGroup);
+
+    _tmpTextInput.text = _jsonpp.convert(_persistenceEndpoint);
   }
 
   LIElement _makeNewEndpointRow() {
@@ -66,7 +74,7 @@ class EndpointsComponent {
     ButtonElement createButton = new ButtonElement()
       ..text = 'Ny'
       ..onClick.listen((_) {
-        ORModel.MessageEndpoint endpoint = new ORModel.MessageEndpoint.empty()
+        model.MessageEndpoint endpoint = new model.MessageEndpoint.empty()
           ..address = 'mig@eksempel.dk'
           ..enabled = true;
         LIElement row = _makeEndpointRow(endpoint);
@@ -80,7 +88,7 @@ class EndpointsComponent {
     return li;
   }
 
-  LIElement _makeEndpointRow(ORModel.MessageEndpoint endpoint) {
+  LIElement _makeEndpointRow(model.MessageEndpoint endpoint) {
     LIElement li = new LIElement();
 
     SpanElement address = new SpanElement()
@@ -151,8 +159,8 @@ class EndpointsComponent {
   }
 
   Future save(int receptionId, int contactId) {
-    List<ORModel.MessageEndpoint> foundEndpoints =
-        new List<ORModel.MessageEndpoint>();
+    List<model.MessageEndpoint> foundEndpoints =
+        new List<model.MessageEndpoint>();
 
     int index = 1;
     _ul.children.where((e) => e is LIElement).forEach((item) {
@@ -170,7 +178,7 @@ class EndpointsComponent {
           addressTypePicker != null &&
           confidentialBox != null &&
           enabledBox != null) {
-        ORModel.MessageEndpoint endpoint = new ORModel.MessageEndpoint.empty()
+        model.MessageEndpoint endpoint = new model.MessageEndpoint.empty()
           ..address = addressSpan.text
           ..type = addressTypePicker.selectedOptions.first.value
           ..confidential = confidentialBox.checked
@@ -183,8 +191,8 @@ class EndpointsComponent {
     List<Future> worklist = new List<Future>();
 
     //Inserts
-    for (ORModel.MessageEndpoint endpoint in foundEndpoints) {
-      if (!_persistenceEndpoint.any((ORModel.MessageEndpoint e) =>
+    for (model.MessageEndpoint endpoint in foundEndpoints) {
+      if (!_persistenceEndpoint.any((model.MessageEndpoint e) =>
           e.address == endpoint.address && e.type == endpoint.type)) {
         //Insert Endpoint
         worklist.add(_endpointController
@@ -199,8 +207,8 @@ class EndpointsComponent {
     }
 
     //Deletes
-    for (ORModel.MessageEndpoint endpoint in _persistenceEndpoint) {
-      if (!foundEndpoints.any((ORModel.MessageEndpoint e) =>
+    for (model.MessageEndpoint endpoint in _persistenceEndpoint) {
+      if (!foundEndpoints.any((model.MessageEndpoint e) =>
           e.address == endpoint.address && e.type == endpoint.type)) {
         //Delete Endpoint
         worklist.add(
@@ -214,8 +222,8 @@ class EndpointsComponent {
     }
 
     //Update
-    for (ORModel.MessageEndpoint endpoint in foundEndpoints) {
-      if (_persistenceEndpoint.any((ORModel.MessageEndpoint e) =>
+    for (model.MessageEndpoint endpoint in foundEndpoints) {
+      if (_persistenceEndpoint.any((model.MessageEndpoint e) =>
           e.address == endpoint.address && e.type == endpoint.type)) {
         //Update Endpoint
         worklist.add(

@@ -122,16 +122,23 @@ class Organization {
     });
 
     _deleteButton.onClick.listen((_) async {
-      element.hidden = true;
+
+      if(_deleteButton.text.toLowerCase() == 'slet') {
+        _deleteButton.text = 'Bekræft sletning?';
+        return;
+      }
       try {
         await _orgController.remove(organization.id);
         _changeBus.fire(new OrganizationChange.delete(organization));
+        element.hidden = true;
         notify.info('Organisationen blev slettet.');
+
       } catch (error) {
         notify.error('Der skete en fejl, så organisationen blev ikke slettet.');
         _log.severe('Tried to remove an organization, but got: $error');
         element.hidden = false;
       }
+      _deleteButton.text = 'Slet';
     });
 
     _saveButton.onClick.listen((_) async {

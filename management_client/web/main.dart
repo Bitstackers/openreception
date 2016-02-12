@@ -14,8 +14,7 @@ import 'package:openreception_framework/service.dart' as service;
 import 'package:openreception_framework/service-html.dart' as transport;
 
 import 'lib/auth.dart';
-import 'lib/configuration.dart';
-
+import 'package:management_tool/configuration.dart';
 final Uri CONFIGURATION_URL = Uri.parse('http://localhost:4080');
 
 var _jsonpp = new JsonEncoder.withIndent('  ');
@@ -24,7 +23,7 @@ view.Dialplan dpView;
 service.RESTIvrStore _ivrStore;
 service.RESTDialplanStore _dialplanStore;
 
-
+controller.Organization orgController;
 Future main() async {
   Logger _log = new Logger('main');
   Logger.root.level = Level.ALL;
@@ -53,6 +52,10 @@ Future main() async {
   controller.Dialplan dpController = new controller.Dialplan
       (new service.RESTDialplanStore(
       clientConfig.dialplanServerUri, config.token, new transport.Client()));
+
+  orgController = new controller.Organization
+      (new service.RESTOrganizationStore(
+      clientConfig.receptionServerUri, config.token, new transport.Client()));
 
   dpView = new view.Dialplan(dpController);
   querySelector('#dialplan-view').replaceWith(dpView.element);
@@ -127,7 +130,7 @@ Future _showOrganizationList(RouteEnterEvent e) async {
   querySelector('section#organizations').classes.toggle('hidden', false);
   querySelector('section#organizations').
     children = [
-      new view.Organization().element];
+      new view.Organization(orgController).element];
 }
 
 model.IvrMenu currentIvrMenu() {

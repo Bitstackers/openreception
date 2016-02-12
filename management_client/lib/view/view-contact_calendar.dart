@@ -1,12 +1,13 @@
-part of contact.view;
+part of management_tool.view;
 
 class ContactCalendarComponent {
   final DateFormat RFC3339 = new DateFormat('yyyy-MM-dd');
+  final Logger _log = new Logger('$_libraryName.ContactCalendarComponent');
 
-  final Controller.Calendar _calendarController;
+  final controller.Calendar _calendarController;
   ButtonElement _newButton = new ButtonElement()..text = 'Opret ny';
   Function _onChange;
-  List<ORModel.CalendarEntry> _originalEvents;
+  List<model.CalendarEntry> _originalEvents;
   Element _parent;
 
   UListElement _ul = new UListElement()
@@ -14,18 +15,18 @@ class ContactCalendarComponent {
     ..classes.add('contact-calendar-list');
 
   ContactCalendarComponent(Element this._parent, Function this._onChange,
-      Controller.Calendar this._calendarController) {
+      controller.Calendar this._calendarController) {
     DivElement editContainer = new DivElement();
     ParagraphElement header = new ParagraphElement()..text = 'Kalender';
     _parent.children.addAll([header, _newButton, _ul]);
 
     _newButton.onClick.listen((_) {
-      _ul.children.insert(0, _makeEventRow(new ORModel.CalendarEntry.empty()));
+      _ul.children.insert(0, _makeEventRow(new model.CalendarEntry.empty()));
     });
   }
 
-  ORModel.CalendarEntry _extractValue(LIElement li) {
-    ORModel.CalendarEntry event = new ORModel.CalendarEntry.empty();
+  model.CalendarEntry _extractValue(LIElement li) {
+    model.CalendarEntry event = new model.CalendarEntry.empty();
 
     try {
       HiddenInputElement idField =
@@ -67,7 +68,7 @@ class ContactCalendarComponent {
       event.until = stop;
       event.content = textField.value;
     } catch (error, stack) {
-      log.error(
+      _log.severe(
           'CalendarComponent _extractValue error: ${error} stack: ${stack}]');
     }
     return event;
@@ -76,7 +77,7 @@ class ContactCalendarComponent {
   Future load(int receptionId, int contactId) {
     return _calendarController
         .listContact(contactId)
-        .then((Iterable<ORModel.CalendarEntry> events) {
+        .then((Iterable<model.CalendarEntry> events) {
       //TODO: Sort.
       _originalEvents = events.toList();
       _ul.children
@@ -85,7 +86,7 @@ class ContactCalendarComponent {
     });
   }
 
-  LIElement _makeEventRow(ORModel.CalendarEntry event) {
+  LIElement _makeEventRow(model.CalendarEntry event) {
     LIElement li = new LIElement();
 
     if (event.start == null) {
@@ -175,20 +176,20 @@ class ContactCalendarComponent {
   }
 
   Future save(int receptionId, int contactId) {
-    List<ORModel.CalendarEntry> currentEvents =
+    List<model.CalendarEntry> currentEvents =
         _ul.children.map(_extractValue).toList();
 
     List<Future> worklist = new List<Future>();
 
     //Inserts
-    for (ORModel.CalendarEntry event in currentEvents) {
+    for (model.CalendarEntry event in currentEvents) {
       //TODO: Verify that the contact and reception ID's are on the entries.
-      if (!_originalEvents.any((ORModel.CalendarEntry e) => e.ID == event.ID)) {
+      if (!_originalEvents.any((model.CalendarEntry e) => e.ID == event.ID)) {
         //Insert event
         worklist.add(_calendarController
             .create(event, config.user)
             .catchError((error, stack) {
-          log.error(
+          _log.severe(
               'Request to create a contacts calendarevent failed. receptionId: "${receptionId}", contactId: "${receptionId}", event: "${JSON.encode(event)}" but got: ${error} ${stack}');
           // Rethrow.
           throw error;
@@ -197,13 +198,13 @@ class ContactCalendarComponent {
     }
 
     //Deletes
-    for (ORModel.CalendarEntry event in _originalEvents) {
-      if (!currentEvents.any((ORModel.CalendarEntry e) => e.ID == event.ID)) {
+    for (model.CalendarEntry event in _originalEvents) {
+      if (!currentEvents.any((model.CalendarEntry e) => e.ID == event.ID)) {
         //Delete event
         worklist.add(_calendarController
             .remove(event, config.user)
             .catchError((error, stack) {
-          log.error(
+          _log.severe(
               'Request to delete a contacts calendarevent failed. receptionId: "${receptionId}", contactId: "${receptionId}", event: "${JSON.encode(event)}" but got: ${error} ${stack}');
           // Rethrow.
           throw error;
@@ -212,9 +213,9 @@ class ContactCalendarComponent {
     }
 
     //Update
-    for (ORModel.CalendarEntry event in currentEvents) {
-      ORModel.CalendarEntry e = _originalEvents.firstWhere(
-          (ORModel.CalendarEntry e) => e.ID == event.ID,
+    for (model.CalendarEntry event in currentEvents) {
+      model.CalendarEntry e = _originalEvents.firstWhere(
+          (model.CalendarEntry e) => e.ID == event.ID,
           orElse: () => null);
       if (e != null) {
         //Check if there is made a change
@@ -225,7 +226,7 @@ class ContactCalendarComponent {
           worklist.add(_calendarController
               .remove(event, config.user)
               .catchError((error, stack) {
-            log.error(
+            _log.severe(
                 'Request to update a contacts calendarevent failed. receptionId: "${receptionId}", contactId: "${receptionId}", event: "${JSON.encode(event)}" but got: ${error} ${stack}');
             // Rethrow.
             throw error;

@@ -49,7 +49,7 @@ class UserIdentities {
       ..placeholder = 'Tilføj ny...'
       ..onKeyPress.listen((KeyboardEvent event) {
         KeyEvent key = new KeyEvent.wrap(event);
-        if (key.keyCode == Key.ENTER) {
+        if (key.keyCode == 13) {
           String item = newItem.value;
           newItem.value = '';
 
@@ -61,7 +61,7 @@ class UserIdentities {
               new model.UserIdentity.empty()..identity = item);
           int index = element.children.length - 1;
           element.children.insert(index, li);
-        } else if (key.keyCode == Key.ESCAPE) {
+        } else if (key.keyCode == 27) {
           newItem.value = '';
         }
       });

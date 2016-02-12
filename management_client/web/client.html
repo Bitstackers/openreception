@@ -250,9 +250,7 @@
       <!-- Searchbar and contact list -->
       <div id="contact-listing">
         <div id="contact-controlbar" class="basic3controls">
-          <button id="contact-create">Ny</button>
-          <button id="contact-save">Gem</button>
-          <button id="contact-delete">Slet</button>
+          <button id="contact-create" class="create">Opret</button>
         </div>
         <input id="contact-search-box" type="search" placeholder="Søg...">
         <ul id="contact-list" class="zebra-even"></ul>
@@ -266,7 +264,7 @@
             <tr>
               <td>
                 <label for="contact-input-name">Navn</label>
-                <textarea rows="1" id="contact-input-name"></textarea>
+                <input type="text" id="contact-input-name"></input>
               </td>
               <td rowspan="2">
                 <label>Reception</label>

@@ -9,7 +9,7 @@ import 'package:libdialplan/ivr.dart' as libIvr;
 import 'package:management_tool/controller.dart' as Controller;
 import '../lib/logger.dart' as log;
 import 'package:management_tool/notification.dart' as notify;
-import '../lib/view_utilities.dart';
+import 'package:management_tool/view_utilities.dart';
 import 'package:openreception_framework/model.dart' as ORModel;
 
 class IvrView {

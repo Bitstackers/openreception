@@ -35,6 +35,7 @@ class Reception {
     ..classes.add('delete');
   final ButtonElement _deployDialplanButton = new ButtonElement()
     ..text = 'Udrul'
+    ..disabled = true
     ..classes.add('deploy');
 
   final HeadingElement _heading = new HeadingElement.h2();
@@ -135,7 +136,8 @@ class Reception {
         : 'Sidst checket: ${r.lastChecked}';
 
     _activeInput.checked = r.enabled;
-    _extraDataInput.value = r.extraData.toString();
+    _extraDataInput.value = r.extraData != null ? r.extraData.toString() : '';
+
 
     _telephoneNumbersInput.value = _jsonpp.convert(r.telephoneNumbers);
 
@@ -198,25 +200,7 @@ class Reception {
     });
   }
 
-  /**
-   *
-   */
-  List<String> _valuesFromListTextArea(TextAreaElement ta) =>
-      new List<String>.from(ta.value
-          .split('\n')
-          .map((String str) => str.trim())
-          .where((String str) => str.isNotEmpty));
 
-  /**
-   * Returns a valid URI from a string - or null if it is malformed.
-   */
-  Uri _validUri(String str) {
-    try {
-      return Uri.parse(str);
-    } catch (_) {
-      return null;
-    }
-  }
 
   /**
    *
@@ -447,11 +431,17 @@ class Reception {
     });
 
     _deleteButton.onClick.listen((_) async {
-      element.hidden = true;
+      if(_deleteButton.text.toLowerCase() == 'slet') {
+        _deleteButton.text = 'Bekræft sletning?';
+        return;
+      }
+
       try {
         await _recController.remove(reception.ID);
         _changeBus.fire(new ReceptionChange.delete(reception));
+        element.hidden = true;
         notify.info('Receptionen blev slettet.');
+
       } catch (error) {
         notify.error('Der skete en fejl, så recpetionen blev ikke slettet.');
         _log.severe('Tried to remove a reception, but got: $error');

@@ -2,7 +2,7 @@ library auth;
 
 import 'dart:html';
 
-import 'configuration.dart';
+import 'package:management_tool/configuration.dart';
 
 /**
  * Returns true if there is a token.

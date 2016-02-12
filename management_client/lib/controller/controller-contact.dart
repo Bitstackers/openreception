@@ -39,10 +39,6 @@ class Contact {
   Future<ORModel.Contact> updateInReception(ORModel.Contact contact) =>
       _service.updateInReception(contact);
 
-  Future<ORModel.Contact> moveReception(
-          int receptionId, int oldContactId, int newContactId) =>
-      throw new UnimplementedError();
-
   Future<Iterable<ORModel.Contact>> colleagues(int contactId) {
     List<ORModel.Contact> foundColleagues = [];
 

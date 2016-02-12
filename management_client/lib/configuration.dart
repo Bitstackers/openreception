@@ -1,4 +1,4 @@
-library configuration;
+library management_tool.configuration;
 
 import 'package:openreception_framework/model.dart' as model;
 
