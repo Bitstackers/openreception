@@ -160,6 +160,16 @@ class UIReceptionSelector extends UIModel {
   }
 
   /**
+   * Refresh [reception] in the reception list, and mark it selected.
+   */
+  void refreshReception(ORModel.Reception reception) {
+    final LIElement newLi = _buildReceptionElement(reception);
+    final LIElement oldLi = _list.querySelector('[data-id="${reception.ID}"]');
+    oldLi.replaceWith(newLi);
+    _markSelected(newLi);
+  }
+
+  /**
    * Reloads the receptions list. Does not take selected receptions into
    * account, so should only be called when no receptions are selected.
    */
@@ -210,7 +220,7 @@ class UIReceptionSelector extends UIModel {
   /**
    * Returns the currently selected [Reception].
    *
-   * Return [Reception.none] if no [Reception] is selected.
+   * Return [Reception.empty] if no [Reception] is selected.
    */
   ORModel.Reception get selectedReception {
     LIElement li = _list.querySelector('.selected');

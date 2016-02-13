@@ -70,6 +70,13 @@ class ReceptionSelector extends ViewWidget {
     _hotKeys.onAltV.listen((KeyboardEvent _) => _activateMe());
     _ui.onClick.listen((MouseEvent _) => _activateMe());
 
+    _hotKeys.onCtrlAltR.listen((KeyboardEvent _) {
+      final ORModel.Reception selected = _ui.selectedReception;
+      if (selected.ID != ORModel.Reception.noID) {
+        _receptionController.get(selected.ID).then(_ui.refreshReception);
+      }
+    });
+
     _notification.onReceptionChange
         .listen((OREvent.ReceptionChange _) => _refreshReceptionsCache = true);
 
