@@ -14,10 +14,17 @@
 part of openreception.authentication_server.router;
 
 shelf.Response userinfo(shelf.Request request) {
-  final String token = shelf_route.getPathParameters(request).containsKey(
-      'token') ? shelf_route.getPathParameter(request, 'token') : '';
+  final String token =
+      shelf_route.getPathParameters(request).containsKey('token')
+          ? shelf_route.getPathParameter(request, 'token')
+          : '';
 
   try {
+    if (token == config.authServer.serverToken) {
+      return new shelf.Response.ok(
+          JSON.encode(new model.User.empty()..id = model.User.noID));
+    }
+
     Map content = vault.getToken(token);
     try {
       watcher.seen(token);
@@ -33,11 +40,11 @@ shelf.Response userinfo(shelf.Request request) {
     return new shelf.Response.ok(JSON.encode(content['identity']));
   } on storage.NotFound {
     return new shelf.Response.notFound(
-      JSON.encode({'Status': 'Token $token not found'}));
+        JSON.encode({'Status': 'Token $token not found'}));
   } catch (error, stacktrace) {
     log.severe(error, stacktrace);
 
-    return new shelf.Response
-      .internalServerError(body : JSON.encode({'Status': 'Not found'}));
+    return new shelf.Response.internalServerError(
+        body: JSON.encode({'Status': 'Not found'}));
   }
 }
