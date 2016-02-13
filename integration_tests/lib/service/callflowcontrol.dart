@@ -138,7 +138,7 @@ void _callFlowControlTransfer() {
       Model.OpeningHour justNow = new Model.OpeningHour.empty()
         ..fromDay = toWeekDay(now.weekday)
         ..toDay = toWeekDay(now.weekday)
-        ..fromHour = now.hour
+        ..fromHour = now.hour - 1
         ..toHour = now.hour + 1
         ..fromMinute = now.minute
         ..toMinute = now.minute;
