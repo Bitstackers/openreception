@@ -16,7 +16,6 @@ library usermon;
 import 'dart:async';
 import 'dart:html';
 import 'package:logging/logging.dart';
-import 'package:openreception_framework/event.dart' as OREvent;
 import 'package:openreception_framework/model.dart' as or_model;
 import 'package:openreception_framework/service.dart' as ORService;
 import 'package:openreception_framework/service-html.dart' as ORTransport;
@@ -34,7 +33,8 @@ Future main() async {
   ///Basic setup.
   or_model.ClientConfiguration clientConfig =
       await new ORService.RESTConfiguration(
-          config.CONFIGURATION_URL, new ORTransport.Client()).clientConfig();
+              config.CONFIGURATION_URL, new ORTransport.Client())
+          .clientConfig();
 
   ORService.CallFlowControl callFlowControl = new ORService.CallFlowControl(
       clientConfig.callFlowServerUri, config.token, new ORTransport.Client());
@@ -48,7 +48,6 @@ Future main() async {
 
   ORService.RESTMessageStore messageStore = new ORService.RESTMessageStore(
       clientConfig.messageServerUri, config.token, new ORTransport.Client());
-
 
   webSocketClient
       .connect(Uri
@@ -69,7 +68,7 @@ Future main() async {
   });
 
   Iterable<or_model.User> users = await userService.list();
-  querySelector('#user-list').replaceWith(
-      new view.AgentInfoList(users, callFlowControl, notificationSocket, messageStore)
-          .element);
+  querySelector('#user-list').replaceWith(new view.AgentInfoList(
+          users, callFlowControl, userService, notificationSocket, messageStore)
+      .element);
 }

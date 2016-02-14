@@ -6,27 +6,40 @@ class AgentInfo {
   int _numMessage = 0;
 
   int get numMessage => _numMessage;
+  Set<String> _callshandled = new Set();
 
-  set numMessage (int count) {
+  set numMessage(int count) {
     _numMessage = count;
     currentCallCell.text = '$_numMessage';
   }
 
   set agentStatistics(or_model.AgentStatistics stats) {
-    statsCell.text = '${stats.total} kald i dag (${stats.recent} for nyligt)' ;
+    statsCell.text = '${stats.total} kald i dag (${stats.recent} for nyligt)';
+  }
+
+  set call(or_model.Call c) {
+    _callshandled.add(c.ID);
+    if (c.state == or_model.CallState.Hungup ||
+        c.state == or_model.CallState.Transferred) {
+      currentCallCell.text = '';
+      _updateStats();
+    } else {
+      currentCallCell.text = c.callerID;
+    }
+  }
+
+  _updateStats() {
+    statsCell.text = 'Håndterede kald: ${_callshandled.length}';
   }
 
   set userStatus(or_model.UserStatus status) {
-    stateCell.text = '${status.state} (${status.lastState}})';
-    String lastActivity = status.lastActivity != null
-        ? '${new DateTime.now().difference(status.lastActivity).inSeconds}s'
-        : 'Never';
+    stateCell.text = '${status.paused ? 'paused' : 'active'}';
 
-    lastSeenCell.text = lastActivity;
+    lastSeenCell.text = '??';
 
     element.classes
       ..clear()
-      ..add(status.state);
+      ..add('speaking');
   }
 
   /**
@@ -34,7 +47,7 @@ class AgentInfo {
    */
   AgentInfo.fromModel(this._user) {
     ///Base data
-    element.id = 'uid_${_user.ID}';
+    element.id = 'uid_${_user.id}';
     nameCell.text = _user.name;
 
     ///Setup visual model.
