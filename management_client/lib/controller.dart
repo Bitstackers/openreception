@@ -1,8 +1,6 @@
 library management_tool.controller;
 
 import 'dart:async';
-import 'package:libdialplan/libdialplan.dart' as libdialplan;
-import 'package:libdialplan/ivr.dart' as ivr;
 
 import 'package:openreception_framework/service.dart' as ORService;
 import 'package:openreception_framework/model.dart' as ORModel;

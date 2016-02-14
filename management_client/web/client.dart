@@ -4,6 +4,7 @@ import 'dart:html';
 import 'views/contact-view.dart' as conView;
 import 'package:management_tool/page/page-calendar.dart' as page;
 
+import 'package:management_tool/page/page-dialplan.dart' as page;
 import 'package:management_tool/page/page-organization.dart' as orgView;
 import 'package:management_tool/page/page-reception.dart' as recepView;
 import 'package:management_tool/page/page-user.dart' as userView;
@@ -46,6 +47,9 @@ Future main() async {
     final service.RESTCalendarStore calendarStore =
         new service.RESTCalendarStore(
             config.clientConfig.calendarServerUri, config.token, client);
+    final service.RESTDialplanStore dialplanStore =
+        new service.RESTDialplanStore(
+            config.clientConfig.dialplanServerUri, config.token, client);
 
     /// Controllers
     final Controller.User userController = new Controller.User(userStore);
@@ -60,7 +64,8 @@ Future main() async {
         new Controller.Contact(contactStore);
     final Controller.Calendar calendarController =
         new Controller.Calendar(calendarStore);
-
+    final Controller.Dialplan dialplanController =
+        new Controller.Dialplan(dialplanStore);
     //Initializes the notification system.
     notify.initialize();
 
@@ -88,10 +93,8 @@ Future main() async {
             contactController,
             receptionController)
         .element);
-//    new diaView.DialplanView(
-//        querySelector('#dialplan-page'), receptionController);
-//    new recordView.RecordView(
-//        querySelector('#record-page'), receptionController);
+    querySelector('#dialplan-page')
+        .replaceWith(new page.Dialplan(dialplanController).element);
     querySelector("#user-page")
         .replaceWith(new userView.UserPage(userController).element);
 //    new billView.BillingView(querySelector('#billing-page'), cdrController);
