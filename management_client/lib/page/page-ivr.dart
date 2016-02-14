@@ -19,11 +19,11 @@ class Ivr {
   final Logger _log = new Logger('$_libraryName.Ivr');
 
   final DivElement element = new DivElement()
-    ..id = "ivr-page"
+    ..id = "calendar-page"
     ..classes.addAll(['hidden', 'page']);
 
-  final controller.User _userController;
-  view.User _userView;
+  final controller.Ivr _ivrController;
+  //view.Ivr _ivrView;
 
   final ButtonElement _createButton = new ButtonElement()
     ..text = 'Opret'
@@ -33,26 +33,21 @@ class Ivr {
     ..id = 'user-list'
     ..classes.add('zebra-even');
 
-  /// Extracts the uid of the currently selected user.
-  int get selectedUserId => _userView.userId;
-
   /**
    *
    */
-  Ivr(this._userController) {
-    _userView = new view.User(_userController);
+  Ivr(this._ivrController) {
+    //_ivrView = new view.Ivr(_dialplanController);
 
     element.children = [
       (new DivElement()
         ..classes.add('object-listing')
         ..children = [
           new DivElement()
-            ..id = "user-controlbar"
             ..classes.add('basic3controls')
             ..children = [_createButton],
           _userList,
         ]),
-      _userView.element
     ];
 
     _refreshList();
@@ -67,74 +62,63 @@ class Ivr {
       element.classes.toggle('hidden', event.window != _viewName);
     });
 
-    _createButton.onClick.listen((_) => _createUser());
-
-    _userView.changes.listen((view.UserChange uc) async {
-      if (uc.type == view.Change.deleted) {
-        await _refreshList();
-      } else if (uc.type == view.Change.updated) {
-        await _activateUser(uc.user.id);
-      } else if (uc.type == view.Change.created) {
-        await _refreshList();
-        await _activateUser(uc.user.id);
-      }
-    });
+    _createButton.onClick.listen((_) => _createDialplan());
   }
 
   /**
    *
    */
   Future _refreshList() async {
-    final users = (await _userController.list()).toList()
-      ..sort((model.User userA, model.User userB) =>
-          userA.name.toLowerCase().compareTo(userB.name.toLowerCase()));
+    final menus = (await _ivrController.list()).toList()
+      ..sort((model.IvrMenu menuA, model.IvrMenu menuB) =>
+          menuA.name.toLowerCase().compareTo(menuB.name.toLowerCase()));
 
-    renderUserList(users);
+    _renderDialplanList(menus);
   }
 
   /**
    *
    */
-  void renderUserList(Iterable<model.User> users) {
+  void _renderDialplanList(Iterable<model.IvrMenu> menus) {
     _userList.children
       ..clear()
-      ..addAll(users.map(_makeUserNode));
+      ..addAll(menus.map(_makeMenuNode));
   }
 
   /**
    *
    */
-  LIElement _makeUserNode(model.User user) {
+  LIElement _makeMenuNode(model.IvrMenu menu) {
     return new LIElement()
-      ..text = user.name
+      ..text = menu.name
       ..classes.add('clickable')
-      ..dataset['userid'] = '${user.id}'
-      ..onClick.listen((_) => _activateUser(user.id));
+      ..dataset['ivr-name'] = '${menu.name}'
+      ..onClick.listen((_) => _activateIvrMenu(menu));
   }
 
   /**
    *
    */
-  Future _activateUser(int userId) async {
-    _log.finest('Activating user $userId');
-    highlightUserInList(userId);
-    _userView.user = await _userController.get(userId);
-    highlightUserInList(_userView.user.id);
+  Future _activateIvrMenu(model.IvrMenu menu) async {
+    _log.finest('Activating dialplan ${menu.name}');
+    _highlightDialplanInList(menu.name);
+    //_ivrView.menu = menu;
+    _highlightDialplanInList(menu.name);
   }
 
   /**
    *
    */
-  void highlightUserInList(int id) {
-    _userList.children.forEach((LIElement li) =>
-        li.classes.toggle('highlightListItem', li.dataset['userid'] == '$id'));
+  void _highlightDialplanInList(String exten) {
+    _userList.children.forEach((LIElement li) => li.classes
+        .toggle('highlightListItem', li.dataset['extension'] == '$exten'));
   }
 
   /**
    *
    */
-  void _createUser() {
-    _userView.user = new model.User.empty()..id = model.User.noID;
-    highlightUserInList(model.User.noID);
+  void _createDialplan() {
+    //_ivrView.dialplan = new model.ReceptionDialplan();
+    _highlightDialplanInList('');
   }
 }

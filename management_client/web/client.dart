@@ -5,6 +5,7 @@ import 'views/contact-view.dart' as conView;
 import 'package:management_tool/page/page-calendar.dart' as page;
 
 import 'package:management_tool/page/page-dialplan.dart' as page;
+import 'package:management_tool/page/page-ivr.dart' as page;
 import 'package:management_tool/page/page-organization.dart' as orgView;
 import 'package:management_tool/page/page-reception.dart' as recepView;
 import 'package:management_tool/page/page-user.dart' as userView;
@@ -50,6 +51,8 @@ Future main() async {
     final service.RESTDialplanStore dialplanStore =
         new service.RESTDialplanStore(
             config.clientConfig.dialplanServerUri, config.token, client);
+    final service.RESTIvrStore ivrStore = new service.RESTIvrStore(
+        config.clientConfig.dialplanServerUri, config.token, client);
 
     /// Controllers
     final Controller.User userController = new Controller.User(userStore);
@@ -66,6 +69,8 @@ Future main() async {
         new Controller.Calendar(calendarStore);
     final Controller.Dialplan dialplanController =
         new Controller.Dialplan(dialplanStore);
+
+    final Controller.Ivr ivrController = new Controller.Ivr(ivrStore);
     //Initializes the notification system.
     notify.initialize();
 
@@ -95,10 +100,10 @@ Future main() async {
         .element);
     querySelector('#dialplan-page')
         .replaceWith(new page.Dialplan(dialplanController).element);
+    querySelector('#ivr-page').replaceWith(new page.Ivr(ivrController).element);
     querySelector("#user-page")
         .replaceWith(new userView.UserPage(userController).element);
-//    new billView.BillingView(querySelector('#billing-page'), cdrController);
-//    new musicView.MusicView(querySelector('#music-page'));
+
     new Menu(querySelector('nav#navigation'));
   }
 }
