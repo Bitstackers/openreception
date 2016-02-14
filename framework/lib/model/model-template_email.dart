@@ -39,7 +39,7 @@ class TemplateEmail extends Template {
     final String company = _message.callerInfo.company;
     final String extension = _message.callerInfo.localExtension;
 
-    sb.write('Til ${_message.context.contactName}.<br><br>');
+    sb.write('Til ${_message.context.contactName} (${_message.context.receptionName}).<br><br>');
     sb.write(
         'Der er besked fra ${_message.callerInfo.name}${company.isEmpty ? '' : ', ${company}'}<br><br>');
     sb.write(
