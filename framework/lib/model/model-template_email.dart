@@ -39,10 +39,11 @@ class TemplateEmail extends Template {
     final String company = _message.callerInfo.company;
     final String extension = _message.callerInfo.localExtension;
 
-    sb.write('Til ${_message.context.contactName}.<br><br>');
+    sb.write('Til ${_message.context.contactName} (${_message.context.receptionName}).<br><br>');
     sb.write(
         'Der er besked fra ${_message.callerInfo.name}${company.isEmpty ? '' : ', ${company}'}<br><br>');
-    sb.write('Tlf. ${_message.callerInfo.phone} ${extension.isEmpty ? '' : 'ext: ${extension}'}<br>');
+    sb.write(
+        'Tlf. ${_message.callerInfo.phone} ${extension.isEmpty ? '' : 'ext: ${extension}'}<br>');
     sb.write('Mob. ${_message.callerInfo.cellPhone}<br><br>');
     if (booleanFields.isNotEmpty) {
       sb.write('${_booleanFieldsHtml}<br>');
@@ -93,5 +94,5 @@ class TemplateEmail extends Template {
       'Besked fra ${_message.callerInfo.name}'
       '${_message.callerInfo.company.isEmpty ? '' : ', ${_message.callerInfo.company}'}'
       '${_message.callerInfo.phone.isEmpty ? '' : ', ${_message.callerInfo.phone}'}'
-      ' (besked-id ${_message.ID.toString()})';
+      ' (id:${_message.ID.toString()})';
 }
