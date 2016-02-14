@@ -76,8 +76,7 @@ LIElement extensionTemplate(model.NamedExtension ne) => new LIElement()
 
 class IvrMenuList {
   set menus(Iterable<model.IvrMenu> menus) {
-    LIElement template(model.IvrMenu menu) =>
-        new IvrMenuListItem(menu).element;
+    LIElement template(model.IvrMenu menu) => new IvrMenuListItem(menu).element;
 
     element.children = new List<Element>.from(
         [new AnchorElement(href: '/ivr/create')..text = 'Create new'])

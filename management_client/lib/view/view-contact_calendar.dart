@@ -16,7 +16,6 @@ class ContactCalendarComponent {
 
   ContactCalendarComponent(Element this._parent, Function this._onChange,
       controller.Calendar this._calendarController) {
-    DivElement editContainer = new DivElement();
     ParagraphElement header = new ParagraphElement()..text = 'Kalender';
     _parent.children.addAll([header, _newButton, _ul]);
 

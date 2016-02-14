@@ -53,7 +53,7 @@ class SearchComponent<T> {
       String match = text.substring(matchIndex, matchIndex + searchText.length);
       String after =
           text.substring(matchIndex + searchText.length, text.length);
-      return '${before}<em>${match}</em>${after}' as String;
+      return '${before}<em>${match}</em>${after}';
     }
   };
 
@@ -322,12 +322,10 @@ class SearchComponent<T> {
   }
 
   void updateSourceList(List<T> newList) {
-    //    log.debug('SearchComponent. updateSourceList. numberOfElements: ${newList.length}');ls
     clearSelection();
     _dataList = newList;
     _list.clear();
     for (int i = 0; i < _dataList.length; i++) {
-      T dataElement = _dataList[i];
       LIElement myLi;
       myLi = new LIElement()
         ..classes.add('active-result')

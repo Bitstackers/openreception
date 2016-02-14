@@ -246,7 +246,11 @@ class OrganizationView {
 
       List list = contacts.toList()..sort(compareTo);
 
-      _currentContactList = list;
+      _currentContactList = list
+          .map((c) => new ORModel.BaseContact.empty()
+            ..id = c.id
+            ..fullName = c.fullName)
+          .toList();
       _ulContactList.children
         ..clear()
         ..addAll(list.map(_makeContactNode));

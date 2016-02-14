@@ -1,8 +1,7 @@
-library management_tool.page.user;
+library management_tool.page.calendar;
 
 import 'dart:async';
 import 'dart:html';
-
 
 import 'package:logging/logging.dart';
 import 'package:management_tool/controller.dart' as controller;
