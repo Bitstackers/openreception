@@ -288,7 +288,7 @@ Map<String, String> da = {
   Key.receptionAddressesHeader: 'Adresser',
   Key.receptionAltNamesHeader: 'Alternative navne',
   Key.receptionBankInfoHeader: 'Bank',
-  Key.receptionCalendarHeader: 'ReceptionsKalender',
+  Key.receptionCalendarHeader: 'Receptionskalender',
   Key.receptionCommandsHeader: 'Kommandoer',
   Key.receptionChanged: 'Henter ny receptionsliste ved næste kaldbesvarelse',
   Key.receptionEmailHeader: 'Emailadresser',
