@@ -17,7 +17,7 @@ part of openreception.model;
  * Does not check for null values.
  */
 List<FormatException> validateOriginationContext(OriginationContext context) {
-  List errors = [];
+  List<FormatException> errors = [];
 
   if (context.contactId > Contact.noID) {
     errors.add(new FormatException('context.contactId <= Contact.noID'));
