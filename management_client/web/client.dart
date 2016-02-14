@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:html';
 
 import 'views/contact-view.dart' as conView;
+import 'package:management_tool/page/page-calendar.dart' as page;
+
 import 'package:management_tool/page/page-organization.dart' as orgView;
 import 'package:management_tool/page/page-reception.dart' as recepView;
 import 'package:management_tool/page/page-user.dart' as userView;
@@ -62,15 +64,14 @@ Future main() async {
     //Initializes the notification system.
     notify.initialize();
 
-    final orgView.OrganizationView orgPage =
-        new orgView.OrganizationView(organizationController, receptionController);
+    final orgView.OrganizationView orgPage = new orgView.OrganizationView(
+        organizationController, receptionController);
 
-    querySelector("#organization-page")
-            .replaceWith(orgPage.element);
+    querySelector("#organization-page").replaceWith(orgPage.element);
 
-    querySelector("#reception-page")
-            .replaceWith(new recepView.ReceptionView(contactController, organizationController, receptionController).element);
-
+    querySelector("#reception-page").replaceWith(new recepView.ReceptionView(
+            contactController, organizationController, receptionController)
+        .element);
 
     new conView.ContactView(
         querySelector('#contact-page'),
@@ -80,6 +81,13 @@ Future main() async {
         calendarController,
         dlistController,
         epController);
+
+    querySelector('#calendar-page').replaceWith(new page.Calendar(
+            userController,
+            calendarController,
+            contactController,
+            receptionController)
+        .element);
 //    new diaView.DialplanView(
 //        querySelector('#dialplan-page'), receptionController);
 //    new recordView.RecordView(

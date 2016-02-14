@@ -14,127 +14,106 @@ const String _libraryName = 'management_tool.page.user';
 /**
  *
  */
-class UserPage {
-  static const String _viewName = 'user';
-  final Logger _log = new Logger('$_libraryName.UserPage');
+class Calendar {
+  static const String _viewName = 'calendar';
+  final Logger _log = new Logger('$_libraryName.Calendar');
 
   final DivElement element = new DivElement()
-    ..id = "user-page"
-    ..classes.addAll(['hidden','page']);
+    ..id = "calendar-page"
+    ..hidden = true
+    ..classes.addAll(['page']);
 
   final controller.User _userController;
-  view.User _userView;
+  final controller.Calendar _calendarController;
+  final controller.Contact _contactController;
+  final controller.Reception _receptionController;
+  view.CalendarLogFilter _filterView;
 
-  final ButtonElement _createButton = new ButtonElement()
-    ..text = 'Opret'
-    ..classes.add('create');
-
-  final UListElement _userList = new UListElement()
-    ..id = 'user-list'
-    ..classes.add('zebra-even');
-
-  /// Extracts the uid of the currently selected user.
-  int get selectedUserId => _userView.userId;
+  final UListElement _calendarChangeList = new UListElement()
+    ..classes.add('calendar-change');
 
   /**
    *
    */
-  UserPage(this._userController) {
-    _userView = new view.User(_userController);
+  Calendar(this._userController, this._calendarController,
+      this._contactController, this._receptionController) {
+    element.children = [_calendarChangeList];
 
-    element.children = [
-      (new DivElement()
-        ..id = "user-listing"
-        ..children = [
-          new DivElement()
-            ..id = "user-controlbar"
-            ..classes.add('basic3controls')
-            ..children = [_createButton],
-          _userList,
-        ]),
-      _userView.element
-    ];
-
-    _refreshList();
     _observers();
   }
+
+  /**
+   *
+   */
+  Future _activatePage() async {
+    _log.info('Activating calendar page');
+    Iterable<model.CalendarEntry> entries = await _calendarController.list();
+
+    _calendarChangeList.children = []..addAll(entries.map(_calendarEntryNode));
+  }
+
+  /**
+   *
+   */
+  LIElement _calendarEntryNode(model.CalendarEntry ce) {
+    final UListElement changeUl = new UListElement();
+    final DivElement _ownerNode = new DivElement();
+
+    _getOwnerNode(ce.owner).then((DivElement ownerElement) {
+      _ownerNode.replaceWith(ownerElement);
+    });
+
+    _calendarController
+        .changes(ce.ID)
+        .then((Iterable<model.CalendarEntryChange> changes) {
+      changeUl..children = ([]..addAll(changes.map(_changeToNode)));
+    });
+
+    return new LIElement()
+      ..children = [
+        new DivElement()
+          ..children = [
+            new HeadingElement.h3()..text = ce.content,
+            _ownerNode,
+            new HeadingElement.h4()..text = 'Ændringer',
+            changeUl
+          ]
+      ];
+  }
+
+  /**
+   *
+   */
+  Future<DivElement> _getOwnerNode(model.Owner owner) async {
+    final DivElement de = new DivElement();
+    if (owner is model.OwningContact) {
+      final model.BaseContact contact =
+          await _contactController.get(owner.contactId);
+      de.text = contact.fullName;
+    } else if (owner is model.OwningReception) {
+      final model.Reception reception =
+          await _receptionController.get(owner.receptionId);
+      de.text = reception.name;
+    } else {
+      de.text = 'Ingen ejer';
+    }
+
+    return de;
+  }
+
+  /**
+   *
+   */
+  LIElement _changeToNode(model.CalendarEntryChange cec) =>
+      new LIElement()..text = 'Ændret ${cec.changedAt} af ${cec.username}';
 
   /**
    * Observers.
    */
   void _observers() {
     bus.on(WindowChanged).listen((WindowChanged event) {
-      element.classes.toggle('hidden', event.window != _viewName);
+      element.hidden = event.window != _viewName;
+      _activatePage();
     });
-
-    _createButton.onClick.listen((_) => _createUser());
-
-    _userView.changes.listen((view.UserChange uc) async {
-      if (uc.type == view.Change.deleted) {
-        await _refreshList();
-      } else if (uc.type == view.Change.updated) {
-        await _activateUser(uc.user.id);
-      } else if (uc.type == view.Change.created) {
-        await _refreshList();
-        await _activateUser(uc.user.id);
-      }
-    });
-  }
-
-  /**
-   *
-   */
-  Future _refreshList() async {
-    final users = (await _userController.list()).toList()
-      ..sort((model.User userA, model.User userB) =>
-          userA.name.toLowerCase().compareTo(userB.name.toLowerCase()));
-
-    renderUserList(users);
-  }
-
-  /**
-   *
-   */
-  void renderUserList(Iterable<model.User> users) {
-    _userList.children
-      ..clear()
-      ..addAll(users.map(_makeUserNode));
-  }
-
-  /**
-   *
-   */
-  LIElement _makeUserNode(model.User user) {
-    return new LIElement()
-      ..text = user.name
-      ..classes.add('clickable')
-      ..dataset['userid'] = '${user.id}'
-      ..onClick.listen((_) => _activateUser(user.id));
-  }
-
-  /**
-   *
-   */
-  Future _activateUser(int userId) async {
-    _log.finest('Activating user $userId');
-    highlightUserInList(userId);
-    _userView.user = await _userController.get(userId);
-    highlightUserInList(_userView.user.id);
-  }
-
-  /**
-   *
-   */
-  void highlightUserInList(int id) {
-    _userList.children.forEach((LIElement li) =>
-        li.classes.toggle('highlightListItem', li.dataset['userid'] == '$id'));
-  }
-
-  /**
-   *
-   */
-  void _createUser() {
-    _userView.user = new model.User.empty()..id = model.User.noID;
-    highlightUserInList(model.User.noID);
   }
 }

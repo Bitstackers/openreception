@@ -20,7 +20,8 @@ class UserPage {
 
   final DivElement element = new DivElement()
     ..id = "user-page"
-    ..classes.addAll(['hidden', 'page']);
+    ..hidden = true
+    ..classes.addAll(['page']);
 
   final controller.User _userController;
   view.User _userView;
@@ -64,6 +65,8 @@ class UserPage {
    */
   void _observers() {
     bus.on(WindowChanged).listen((WindowChanged event) {
+      print(event.window != _viewName);
+      element.hidden = event.window != _viewName;
       element.classes.toggle('hidden', event.window != _viewName);
     });
 

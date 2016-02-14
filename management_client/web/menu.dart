@@ -31,6 +31,7 @@ class Menu {
       'reception': element.querySelector('#reception-button') as ButtonElement,
       'contact': element.querySelector('#contact-button') as ButtonElement,
       'dialplan': element.querySelector('#dialplan-button') as ButtonElement,
+      'calendar': element.querySelector('#calendar-button') as ButtonElement,
       'record': element.querySelector('#record-button') as ButtonElement,
       'user': element.querySelector('#user-button') as ButtonElement,
       'billing': element.querySelector('#billing-button') as ButtonElement,
