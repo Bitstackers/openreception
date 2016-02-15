@@ -32,7 +32,6 @@ class Dialplan {
       ..addAll(rdp.extraExtensions.map(extensionTemplate));
   }
 
-
   /**
    *
    * TODO: Implement
@@ -40,11 +39,10 @@ class Dialplan {
   model.ReceptionDialplan get dialplan =>
       new model.ReceptionDialplan()..note = _noteInput.value;
 
-
   /**
    *
    */
-  void observers () {
+  void observers() {
     _addHourActionButton.onClick.listen((_) {
       _hourActionsView.addHourAction(new model.HourAction());
     });
@@ -53,14 +51,12 @@ class Dialplan {
     _saveButton.onClick.listen((_) {
       _dialplanController.update(dialplan);
     });
-
   }
 
   /**
     *
     */
   Dialplan(this._dialplanController) {
-
     element.children = [
       _saveButton,
       new HeadingElement.h3()..text = 'Opening hours',
@@ -79,7 +75,7 @@ class Dialplan {
 class HourActions {
   final UListElement element = new UListElement()..classes = ['hour-actions'];
 
-  final List<HourAction> hourActions = [];
+  final List<HourAction> _hourActions = [];
 
   ///
   final TextAreaElement _actionsInput = new TextAreaElement()
@@ -89,26 +85,27 @@ class HourActions {
    *
    */
   void set hourActions(Iterable<model.HourAction> has) {
-    hourActions
+    _hourActions
       ..clear()
       ..addAll(has.map((ha) => new HourAction()..action = ha));
 
-    element.children = []..addAll(hourActions.map((a) => a.element));
+    element.children = []..addAll(_hourActions.map((a) => a.element));
   }
 
   void addHourAction(model.HourAction ha) {
     final view = new HourAction()..action = ha;
-    hourActions.add(view);
+    _hourActions.add(view);
 
     element.children.add(view.element);
-
   }
 }
 
 class HourAction {
   final DivElement element = new DivElement()..classes = ['hour-action'];
 
-  final ButtonElement _deleteButton = new ButtonElement()..classes = ['delete']..text = 'Delete';
+  final ButtonElement _deleteButton = new ButtonElement()
+    ..classes = ['delete']
+    ..text = 'Delete';
   final InputElement _openHourInput = new InputElement()..value = '';
 
   ///
@@ -127,8 +124,8 @@ class HourAction {
    *
    */
   HourAction() {
-    _deleteButton.onClick.listen((_)  {
-       element.remove();
+    _deleteButton.onClick.listen((_) {
+      element.remove();
     });
 
     element.children = [
