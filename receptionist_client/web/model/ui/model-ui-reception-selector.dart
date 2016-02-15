@@ -141,14 +141,12 @@ class UIReceptionSelector extends UIModel {
   }
 
   /**
-   * Add [items] to the receptions list cache. This does NOT update the actual
-   * receptions list. Call [refreshReceptions()] to update the list using the
+   * Set [items] as the receptions list cache. This does NOT update the actual
+   * receptions list. Call [refreshReceptions] to update the list using the
    * cached values.
    */
   set receptionsCache(List<ORModel.Reception> items) {
-    items.forEach((ORModel.Reception item) {
-      _receptionsCache.add(_buildReceptionElement(item));
-    });
+    _receptionsCache = items.map(_buildReceptionElement).toList() as List<Element>;
   }
 
   /**
