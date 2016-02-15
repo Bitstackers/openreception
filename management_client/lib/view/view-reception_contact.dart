@@ -17,9 +17,11 @@ class ReceptionContact {
   final controller.DistributionList _dlistController;
 
   ///TODO: Add additional validation checks
-  bool get inputHasErrors => _endpointsView.validationError;
+  bool get inputHasErrors =>
+      _endpointsView.validationError || _distributionsListView.validationError;
 
   final UListElement _endPointChangesList = new UListElement();
+  final UListElement _dlistChangesList = new UListElement();
 
   final HeadingElement _header = new HeadingElement.h4()
     ..classes.add('reception-contact-header');
@@ -84,7 +86,7 @@ class ReceptionContact {
     ..checked = true;
 
   Endpoints _endpointsView;
-  DistributionsList _distributionsListView;
+  DistributionList _distributionsListView;
   ContactCalendarComponent _calendarComponent;
 
   /**
@@ -98,8 +100,7 @@ class ReceptionContact {
       this._dlistController) {
     _endpointsView = new Endpoints(_contactController, _endpointController);
 
-    _distributionsListView = new DistributionsList(
-        _contactController, _dlistController, _receptionController);
+    _distributionsListView = new DistributionList();
 
     element.children = [
       _header,
@@ -220,6 +221,7 @@ class ReceptionContact {
               new LabelElement()
                 ..text = 'Distributionsliste'
                 ..htmlFor = _distributionsListView.element.id,
+              _dlistChangesList,
               _distributionsListView.element
             ],
         ],
@@ -256,6 +258,22 @@ class ReceptionContact {
           }));
         } catch (e) {
           notify.error('Beskedadresser ikke opdateret: $e');
+        }
+
+        try {
+          await Future.wait(
+              _distributionsListView.distributionListChanges.map((dlc) async {
+            if (dlc.type == Change.created) {
+              await _dlistController.addRecipient(
+                  contact.receptionID, contact.ID, dlc.entry);
+            } else if (dlc.type == Change.deleted) {
+              await _dlistController.removeRecipient(dlc.entry.id);
+            } else {
+              throw new ArgumentError('Bad type of change : ${dlc.type}');
+            }
+          }));
+        } catch (e) {
+          notify.error('Distributionsliste ikke opdateret: $e');
         }
 
         notify.info('Receptions-kontakten blev opdateret.');
@@ -302,20 +320,29 @@ class ReceptionContact {
         _endPointChangesList.text = 'Valideringsfejl.';
       }
     };
+
+    _distributionsListView.onChange = () {
+      try {
+        _dlistChangesList.children = []
+          ..addAll(_distributionsListView.distributionListChanges
+              .map(_distributionListChangeNode));
+      } on FormatException {
+        _endPointChangesList.text = 'Valideringsfejl.';
+      }
+    };
   }
 
   /**
    *
    */
-  LIElement _endpointChangeNode(EndpointChange change) {
-    const Map<Change, String> label = const {
-      Change.created: 'Oprettede',
-      Change.updated: 'Opdaterede',
-      Change.deleted: 'Slettede'
-    };
+  LIElement _distributionListChangeNode(DistributionListChange change) =>
+      new LIElement()..text = '${changeLabel[change.type]} ${change.entry}';
 
-    return new LIElement()..text = '${label[change.type]} ${change.endpoint}';
-  }
+  /**
+   *
+   */
+  LIElement _endpointChangeNode(EndpointChange change) =>
+      new LIElement()..text = '${changeLabel[change.type]} ${change.endpoint}';
 
   /**
    *
@@ -370,12 +397,9 @@ class ReceptionContact {
       _endpointsView.endpoints = eps;
     });
 
-    _distributionsListView.owner = contact;
-
-    //TODO: Implement this.
-//    _calendarComponent =
-//        new ContactCalendarComponent(rightCell, _onChange, _calendarController);
-//    _calendarComponent.load(contact.receptionID, contact.ID);
+    _dlistController.list(contact.receptionID, contact.ID).then((dlist) {
+      _distributionsListView.distributionList = dlist;
+    });
 
     _deleteButton.disabled = !_saveButton.disabled;
   }
@@ -383,7 +407,7 @@ class ReceptionContact {
   /**
    *
    */
-  UListElement createPhoneNumbersList(
+  UListElement _createPhoneNumbersList(
       Element container, List<model.PhoneNumber> phonenumbers,
       {Function onChange}) {
     ParagraphElement label = new ParagraphElement();
@@ -395,8 +419,7 @@ class ReceptionContact {
     if (phonenumbers != null) {
       for (model.PhoneNumber number in phonenumbers) {
         LIElement li = simpleListElement(number.endpoint, onChange: onChange);
-        //TODO: Figure out what value is used for.
-        //li.value = number.value != null ? number.value : -1;
+
         SelectElement kindpicker = new SelectElement()
           ..children.addAll(phonenumberTypes.map((String kind) =>
               new OptionElement(

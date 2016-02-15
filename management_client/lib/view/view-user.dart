@@ -2,6 +2,12 @@ part of management_tool.view;
 
 enum Change { added, created, updated, deleted }
 
+const Map<Change, String> changeLabel = const {
+  Change.created: 'Oprettede',
+  Change.updated: 'Opdaterede',
+  Change.deleted: 'Slettede'
+};
+
 class UserChange {
   final Change type;
   final model.User user;
@@ -192,11 +198,10 @@ class User {
     _log.finest('Deleting user uid$userId');
     final String confirmationText = 'Bekræft sletning af uid: ${user.id}?';
 
-    if(_deleteButton.text != confirmationText) {
+    if (_deleteButton.text != confirmationText) {
       _deleteButton.text = confirmationText;
       return;
     }
-
 
     try {
       _deleteButton.disabled = true;
