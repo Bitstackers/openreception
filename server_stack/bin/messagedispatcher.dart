@@ -113,7 +113,7 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
   }
 
   final String senderAddress = config.messageDispatcher.staticSenderAddress.isNotEmpty
-      ? config.messageDispatcher.staticSenderAdress
+      ? config.messageDispatcher.staticSenderAddress
       : user.address;
 
   final String senderName = config.messageDispatcher.staticSenderName.isNotEmpty
