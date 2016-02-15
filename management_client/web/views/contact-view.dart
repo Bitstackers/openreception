@@ -50,14 +50,18 @@ class ContactView {
     ..classes.add('create')
     ..text = 'Importer';
 
+  final HiddenInputElement _bcidInput = new HiddenInputElement()
+    ..value = model.Contact.noID.toString();
+
   final SelectElement _typeInput = new SelectElement();
   final HeadingElement _header = new HeadingElement.h2();
   final CheckboxInputElement _enabledInput = new CheckboxInputElement()
     ..id = 'contact-input-enabled';
 
   DivElement get _baseInfoContainer =>
-      element.querySelector('#contact-base-info')..id = 'contact-base-info'
-      ..hidden = true;
+      element.querySelector('#contact-base-info')
+        ..id = 'contact-base-info'
+        ..hidden = true;
 
   final ButtonElement _createButton = new ButtonElement()
     ..id = 'contact-create'
@@ -79,9 +83,6 @@ class ContactView {
     ..id = 'contact-reception-selector';
 
   SearchComponent<model.Reception> _search;
-  final HiddenInputElement _cidInput = new HiddenInputElement()
-    ..value = model.Contact.noID.toString()
-    ..hidden = true;
   bool createNew = false;
 
   static const List<String> phonenumberTypes = const ['PSTN', 'SIP'];
@@ -98,6 +99,7 @@ class ContactView {
       _deleteButton,
       _saveButton,
       _header,
+      _bcidInput,
       new DivElement()
         ..classes.add('col-1-2')
         ..children = [
@@ -124,8 +126,6 @@ class ContactView {
     ];
 
     element.querySelector('#contact-create').replaceWith(_createButton);
-
-
 
     _ulContactList = element.querySelector('#contact-list');
     element.classes.add('page');
@@ -167,10 +167,10 @@ class ContactView {
         option.selected = option.value == bc.contactType);
     _enabledInput.checked = bc.enabled;
 
-
     _importButton.text = 'Importer';
     _importCidInput.value = '';
     _deleteButton.text = 'Slet';
+    _bcidInput.value = bc.id.toString();
 
     if (bc.id != model.Contact.noID) {
       _activateContact(bc.id);
@@ -178,6 +178,7 @@ class ContactView {
       _header.text = 'Retter basisinfo for ${bc.fullName} (cid: ${bc.id})';
     } else {
       _header.text = 'Opret ny basiskontakt';
+
       _saveButton.disabled = false;
       _ulReceptionList.children = [];
       _ulOrganizationList.children = [];
@@ -186,11 +187,10 @@ class ContactView {
 
     _deleteButton.disabled = !_saveButton.disabled;
     _baseInfoContainer.hidden = false;
-
   }
 
   model.BaseContact get baseContact => new model.BaseContact.empty()
-    ..id = int.parse(_cidInput.value)
+    ..id = int.parse(_bcidInput.value)
     ..enabled = _enabledInput.checked
     ..contactType = _typeInput.value
     ..fullName = _nameInput.value;
@@ -203,7 +203,6 @@ class ContactView {
       _saveButton.disabled = false;
       _deleteButton.disabled = !_saveButton.disabled;
     });
-
 
     _enabledInput.onChange.listen((_) {
       _saveButton.disabled = false;
@@ -220,14 +219,12 @@ class ContactView {
       _deleteButton.disabled = true;
     });
 
-
     _saveButton.onClick.listen((_) async {
       model.BaseContact updated;
       if (baseContact.id == model.Contact.noID) {
         updated = await _contactController.create(baseContact);
         notify.info('Oprettede basis-kontakt ${updated.fullName}');
       } else {
-
         updated = await _contactController.update(baseContact);
         notify.info('Opdaterede basis-kontakt ${updated.fullName}');
       }
@@ -411,8 +408,6 @@ class ContactView {
       _enabledInput.checked = contact.enabled;
       _header.text = 'Basisinfo for ${contact.fullName} (cid: ${contact.id})';
 
-      _cidInput.value = contact.id.toString();
-
       _highlightContactInList(id);
 
       return _contactController
@@ -514,7 +509,7 @@ class ContactView {
   }
 
   void _saveChanges() {
-    int contactId = int.parse(_cidInput.value);
+    int contactId = int.parse(_bcidInput.value);
     if (contactId != null && contactId > 0 && createNew == false) {
       List<Future> work = new List<Future>();
       model.BaseContact updatedContact = new model.BaseContact.empty()
@@ -578,12 +573,12 @@ class ContactView {
    *
    */
   void _addReceptionToContact() {
-    if (_search.currentElement != null && int.parse(_cidInput.value) > 0) {
+    if (_search.currentElement != null && int.parse(_bcidInput.value) > 0) {
       model.Reception reception = _search.currentElement;
 
       model.Contact template = new model.Contact.empty()
         ..receptionID = reception.ID
-        ..ID = int.parse(_cidInput.value);
+        ..ID = int.parse(_bcidInput.value);
 
       _contactController
           .addToReception(template, reception.ID)
@@ -668,13 +663,13 @@ class ContactView {
    */
   Future _deleteSelectedContact() async {
     _log.finest('Deleting baseContact cid${baseContact.id}');
-    final String confirmationText = 'Bekræft sletning af cid: ${baseContact.id}?';
+    final String confirmationText =
+        'Bekræft sletning af cid: ${baseContact.id}?';
 
-    if(_deleteButton.text != confirmationText) {
+    if (_deleteButton.text != confirmationText) {
       _deleteButton.text = confirmationText;
       return;
     }
-
 
     try {
       _deleteButton.disabled = true;
@@ -686,14 +681,12 @@ class ContactView {
       _clearContent();
       _joinReceptionbutton.disabled = true;
       _cidInput.value = model.Contact.noID.toString();
-
     } catch (error) {
-      notify
-          .error('Der skete en fejl i forbindelse med sletningen af kontaktperson');
+      notify.error(
+          'Der skete en fejl i forbindelse med sletningen af kontaktperson');
       _log.severe('Delete baseContact failed with: ${error}');
     }
 
     _deleteButton.text = 'Slet';
-
   }
 }
