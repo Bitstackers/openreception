@@ -138,7 +138,6 @@ class Reception {
     _activeInput.checked = r.enabled;
     _extraDataInput.value = r.extraData != null ? r.extraData.toString() : '';
 
-
     _telephoneNumbersInput.value = _jsonpp.convert(r.telephoneNumbers);
 
     _addressesInput.value = r.addresses != null ? r.addresses.join('\n') : '';
@@ -200,15 +199,13 @@ class Reception {
     });
   }
 
-
-
   /**
    *
    */
   model.Reception get reception => new model.Reception.empty()
     ..ID = int.parse(_idInput.value)
     ..fullName = _nameInput.value
-    ..addresses = _valuesFromListTextArea(_alternateNamesInput)
+    ..addresses = _valuesFromListTextArea(_addressesInput)
     ..alternateNames = _valuesFromListTextArea(_alternateNamesInput)
     ..bankingInformation = _valuesFromListTextArea(_bankingInformationInput)
     ..customerTypes = _valuesFromListTextArea(_customerTypesInput)
@@ -241,7 +238,6 @@ class Reception {
         _organizationSelector, 'reception-organization-searchbox')
       ..selectedElementChanged = (model.Organization organization) {
         _organizationId = organization.id;
-
       }
       ..listElementToString =
           (model.Organization organization, String searchterm) {
@@ -253,8 +249,6 @@ class Reception {
             .contains(searchTerm.toLowerCase());
       }
       ..searchPlaceholder = 'Søg...';
-
-
 
     element.children = [
       new DivElement()
@@ -414,8 +408,7 @@ class Reception {
    *
    */
   void _observers() {
-    Iterable<Element> inputs =
-        element.querySelectorAll('input,textarea');
+    Iterable<Element> inputs = element.querySelectorAll('input,textarea');
 
     inputs.forEach((Element ine) {
       ine.onInput.listen((_) {
@@ -425,13 +418,12 @@ class Reception {
     });
 
     _activeInput.onChange.listen((_) {
-
       _saveButton.disabled = false;
       _deleteButton.disabled = !_saveButton.disabled;
     });
 
     _deleteButton.onClick.listen((_) async {
-      if(_deleteButton.text.toLowerCase() == 'slet') {
+      if (_deleteButton.text.toLowerCase() == 'slet') {
         _deleteButton.text = 'Bekræft sletning?';
         return;
       }
@@ -441,7 +433,6 @@ class Reception {
         _changeBus.fire(new ReceptionChange.delete(reception));
         element.hidden = true;
         notify.info('Receptionen blev slettet.');
-
       } catch (error) {
         notify.error('Der skete en fejl, så recpetionen blev ikke slettet.');
         _log.severe('Tried to remove a reception, but got: $error');
