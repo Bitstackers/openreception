@@ -194,27 +194,6 @@ class MyCallQueue extends ViewWidget {
   }
 
   /**
-   * Park [call].
-   */
-  Future<ORModel.Call> park(ORModel.Call call) async {
-    ORModel.Call parkedCall = ORModel.Call.noCall;
-
-    if (!_callControllerBusy && call != ORModel.Call.noCall) {
-      try {
-        _busyCallController();
-        parkedCall = await _callController.park(call);
-      } catch (error) {
-        _error(error, _langMap[Key.errorCallPark], 'ID ${_appState.activeCall.ID}');
-        _log.warning('parking failed with ${error}');
-      }
-    }
-
-    await _readyCallController();
-
-    return parkedCall;
-  }
-
-  /**
    * Load the list of calls assigned to current user and not being transferred.
    * Updates [_appState.activeCall] if any call is detected as being active.
    */
@@ -320,6 +299,27 @@ class MyCallQueue extends ViewWidget {
     _contactData.onMarkedRinging.listen(_call);
 
     _notification.onAnyCallStateChange.listen(_handleCallStateChanges);
+  }
+
+  /**
+   * Park [call].
+   */
+  Future<ORModel.Call> park(ORModel.Call call) async {
+    ORModel.Call parkedCall = ORModel.Call.noCall;
+
+    if (!_callControllerBusy && call != ORModel.Call.noCall) {
+      try {
+        _busyCallController();
+        parkedCall = await _callController.park(call);
+      } catch (error) {
+        _error(error, _langMap[Key.errorCallPark], 'ID ${_appState.activeCall.ID}');
+        _log.warning('parking failed with ${error}');
+      }
+    }
+
+    await _readyCallController();
+
+    return parkedCall;
   }
 
   /**
