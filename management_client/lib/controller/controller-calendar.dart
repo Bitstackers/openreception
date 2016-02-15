@@ -5,8 +5,13 @@ class Calendar {
 
   Calendar(this._calendarService);
 
+  Future<Iterable<ORModel.CalendarEntryChange>> changes(int entryId) =>
+      _calendarService.changes(entryId);
+
   Future<Iterable<ORModel.CalendarEntry>> listContact(int contactId) =>
       _calendarService.list(new ORModel.OwningContact(contactId));
+
+  Future<Iterable<ORModel.CalendarEntry>> list() => _calendarService.listAll();
 
   Future<Iterable<ORModel.CalendarEntry>> listReception(int receptionId) =>
       _calendarService.list(new ORModel.OwningReception(receptionId));

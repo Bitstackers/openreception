@@ -2,6 +2,10 @@ import 'dart:async';
 import 'dart:html';
 
 import 'views/contact-view.dart' as conView;
+import 'package:management_tool/page/page-calendar.dart' as page;
+
+import 'package:management_tool/page/page-dialplan.dart' as page;
+import 'package:management_tool/page/page-ivr.dart' as page;
 import 'package:management_tool/page/page-organization.dart' as orgView;
 import 'package:management_tool/page/page-reception.dart' as recepView;
 import 'package:management_tool/page/page-user.dart' as userView;
@@ -44,6 +48,11 @@ Future main() async {
     final service.RESTCalendarStore calendarStore =
         new service.RESTCalendarStore(
             config.clientConfig.calendarServerUri, config.token, client);
+    final service.RESTDialplanStore dialplanStore =
+        new service.RESTDialplanStore(
+            config.clientConfig.dialplanServerUri, config.token, client);
+    final service.RESTIvrStore ivrStore = new service.RESTIvrStore(
+        config.clientConfig.dialplanServerUri, config.token, client);
 
     /// Controllers
     final Controller.User userController = new Controller.User(userStore);
@@ -58,19 +67,21 @@ Future main() async {
         new Controller.Contact(contactStore);
     final Controller.Calendar calendarController =
         new Controller.Calendar(calendarStore);
+    final Controller.Dialplan dialplanController =
+        new Controller.Dialplan(dialplanStore);
 
+    final Controller.Ivr ivrController = new Controller.Ivr(ivrStore);
     //Initializes the notification system.
     notify.initialize();
 
-    final orgView.OrganizationView orgPage =
-        new orgView.OrganizationView(organizationController, receptionController);
+    final orgView.OrganizationView orgPage = new orgView.OrganizationView(
+        organizationController, receptionController);
 
-    querySelector("#organization-page")
-            .replaceWith(orgPage.element);
+    querySelector("#organization-page").replaceWith(orgPage.element);
 
-    querySelector("#reception-page")
-            .replaceWith(new recepView.ReceptionView(contactController, organizationController, receptionController).element);
-
+    querySelector("#reception-page").replaceWith(new recepView.ReceptionView(
+            contactController, organizationController, receptionController)
+        .element);
 
     new conView.ContactView(
         querySelector('#contact-page'),
@@ -80,14 +91,19 @@ Future main() async {
         calendarController,
         dlistController,
         epController);
-//    new diaView.DialplanView(
-//        querySelector('#dialplan-page'), receptionController);
-//    new recordView.RecordView(
-//        querySelector('#record-page'), receptionController);
+
+    querySelector('#calendar-page').replaceWith(new page.Calendar(
+            userController,
+            calendarController,
+            contactController,
+            receptionController)
+        .element);
+    querySelector('#dialplan-page')
+        .replaceWith(new page.Dialplan(dialplanController).element);
+    querySelector('#ivr-page').replaceWith(new page.Ivr(ivrController).element);
     querySelector("#user-page")
         .replaceWith(new userView.UserPage(userController).element);
-//    new billView.BillingView(querySelector('#billing-page'), cdrController);
-//    new musicView.MusicView(querySelector('#music-page'));
+
     new Menu(querySelector('nav#navigation'));
   }
 }

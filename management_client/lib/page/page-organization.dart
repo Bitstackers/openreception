@@ -23,7 +23,8 @@ class OrganizationView {
 
   final DivElement element = new DivElement()
     ..id = "organization-page"
-    ..classes.add('hidden');
+    ..hidden = true
+    ..classes.add('page');
   final UListElement _orgUList = new UListElement()
     ..id = 'organization-list'
     ..classes.add('zebra-even');
@@ -96,8 +97,6 @@ class OrganizationView {
     ];
 
     _observers();
-
-    _refreshList();
   }
 
   /**
@@ -109,10 +108,15 @@ class OrganizationView {
       _organizationView.organization = new ORModel.Organization.empty();
     });
 
-    bus.on(WindowChanged).listen((WindowChanged event) {
-      element.classes.toggle('hidden', event.window != viewName);
-      if (event.data.containsKey('organization_id')) {
-        _activateOrganization(event.data['organization_id']);
+    bus.on(WindowChanged).listen((WindowChanged event) async {
+      if (event.window == viewName) {
+        element.hidden = false;
+        await _refreshList();
+        if (event.data.containsKey('organization_id')) {
+          _activateOrganization(event.data['organization_id']);
+        }
+      } else {
+        element.hidden = true;
       }
     });
 
@@ -246,7 +250,11 @@ class OrganizationView {
 
       List list = contacts.toList()..sort(compareTo);
 
-      _currentContactList = list;
+      _currentContactList = list
+          .map((c) => new ORModel.BaseContact.empty()
+            ..id = c.id
+            ..fullName = c.fullName)
+          .toList();
       _ulContactList.children
         ..clear()
         ..addAll(list.map(_makeContactNode));

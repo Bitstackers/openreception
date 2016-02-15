@@ -18,7 +18,8 @@ class ReceptionView {
 
   final DivElement element = new DivElement()
     ..id = 'reception-page'
-    ..classes.addAll(['hidden']);
+    ..hidden = true
+    ..classes.addAll(['page']);
 
   final ButtonElement _createButton = new ButtonElement()
     ..text = 'Opret'
@@ -78,8 +79,6 @@ class ReceptionView {
     ];
 
     _observers();
-
-    _refreshList();
   }
 
   void _observers() {
@@ -88,12 +87,17 @@ class ReceptionView {
       _receptionView.reception = new ORModel.Reception.empty();
     });
 
-    bus.on(WindowChanged).listen((WindowChanged event) {
-      element.classes.toggle('hidden', event.window != viewName);
-      if (event.data.containsKey('organization_id') &&
-          event.data.containsKey('reception_id')) {
-        _activateReception(
-            event.data['organization_id'], event.data['reception_id']);
+    bus.on(WindowChanged).listen((WindowChanged event) async {
+      element.hidden = false;
+      if (event.window == viewName) {
+        await _refreshList();
+        if (event.data.containsKey('organization_id') &&
+            event.data.containsKey('reception_id')) {
+          await _activateReception(
+              event.data['organization_id'], event.data['reception_id']);
+        }
+      } else {
+        element.hidden = true;
       }
     });
 

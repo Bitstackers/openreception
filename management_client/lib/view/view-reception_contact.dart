@@ -16,6 +16,11 @@ class ReceptionContact {
   final controller.Calendar _calendarController;
   final controller.DistributionList _dlistController;
 
+  ///TODO: Add additional validation checks
+  bool get inputHasErrors => _endpointsView.validationError;
+
+  final UListElement _endPointChangesList = new UListElement();
+
   final HeadingElement _header = new HeadingElement.h4()
     ..classes.add('reception-contact-header');
 
@@ -78,7 +83,7 @@ class ReceptionContact {
   final CheckboxInputElement _statusEmailInput = new CheckboxInputElement()
     ..checked = true;
 
-  EndpointsComponent _endpointsView;
+  Endpoints _endpointsView;
   DistributionsList _distributionsListView;
   ContactCalendarComponent _calendarComponent;
 
@@ -91,8 +96,7 @@ class ReceptionContact {
       this._endpointController,
       this._calendarController,
       this._dlistController) {
-    _endpointsView = new EndpointsComponent(
-        _onChange, _contactController, _endpointController);
+    _endpointsView = new Endpoints(_contactController, _endpointController);
 
     _distributionsListView = new DistributionsList(
         _contactController, _dlistController, _receptionController);
@@ -160,6 +164,7 @@ class ReceptionContact {
               new LabelElement()
                 ..text = 'Beskedadresser'
                 ..htmlFor = _endpointsView.element.id,
+              _endPointChangesList,
               _endpointsView.element
             ],
         ],
@@ -232,18 +237,41 @@ class ReceptionContact {
   void _observers() {
     _saveButton.onClick.listen((_) async {
       try {
-        _contactController.updateInReception(contact);
-        _saveButton.disabled = false;
-        _deleteButton.disabled = !_saveButton.disabled;
+        await _contactController.updateInReception(contact);
+        _saveButton.disabled = inputHasErrors;
+        _deleteButton.disabled = inputHasErrors || !_saveButton.disabled;
+
+        try {
+          await Future.wait(_endpointsView.endpointChanges.map((epc) async {
+            if (epc.type == Change.created) {
+              await _endpointController.create(
+                  contact.receptionID, contact.ID, epc.endpoint);
+            } else if (epc.type == Change.deleted) {
+              await _endpointController.remove(epc.endpoint.id);
+            } else if (epc.type == Change.updated) {
+              await _endpointController.update(epc.endpoint);
+            } else {
+              throw new ArgumentError('Bad type of change : ${epc.type}');
+            }
+          }));
+        } catch (e) {
+          notify.error('Beskedadresser ikke opdateret: $e');
+        }
+
         notify.info('Receptions-kontakten blev opdateret.');
       } catch (error) {
         notify.error('Receptions-kontakten blev ikke opdateret.');
       }
+
+      /// Reload the contact.
+      contact = await _contactController.getByReception(
+          contact.ID, contact.receptionID);
     });
 
     _deleteButton.onClick.listen((_) async {
       try {
-        _contactController.removeFromReception(contact.ID, contact.receptionID);
+        await _contactController.removeFromReception(
+            contact.ID, contact.receptionID);
         notify.info(
             'Receptions-kontakten blev fjernet fra receptionen ${_header.text}');
         element.remove();
@@ -256,25 +284,42 @@ class ReceptionContact {
 
     inputs.forEach((Element ine) {
       ine.onInput.listen((_) {
-        _saveButton.disabled = false;
-        _deleteButton.disabled = !_saveButton.disabled;
+        _saveButton.disabled = inputHasErrors;
+        _deleteButton.disabled = inputHasErrors || !_saveButton.disabled;
       });
     });
 
     _statusEmailInput.onChange.listen((_) {
-      _saveButton.disabled = false;
-      _deleteButton.disabled = !_saveButton.disabled;
+      _saveButton.disabled = inputHasErrors;
+      _deleteButton.disabled = inputHasErrors || !_saveButton.disabled;
     });
+
+    _endpointsView.onChange = () {
+      try {
+        _endPointChangesList.children = []
+          ..addAll(_endpointsView.endpointChanges.map(_endpointChangeNode));
+      } on FormatException {
+        _endPointChangesList.text = 'Valideringsfejl.';
+      }
+    };
   }
 
   /**
    *
    */
-  void _onChange() {
-    _saveButton.disabled = false;
-    _deleteButton.disabled = !_saveButton.disabled;
+  LIElement _endpointChangeNode(EndpointChange change) {
+    const Map<Change, String> label = const {
+      Change.created: 'Oprettede',
+      Change.updated: 'Opdaterede',
+      Change.deleted: 'Slettede'
+    };
+
+    return new LIElement()..text = '${label[change.type]} ${change.endpoint}';
   }
 
+  /**
+   *
+   */
   model.Contact get contact => new model.Contact.empty()
     ..ID = int.parse(_cidInput.value)
     ..receptionID = int.parse(_ridInput.value)
@@ -321,7 +366,9 @@ class ReceptionContact {
     _telephoneNumbersInput.value = _jsonpp.convert(contact.phones);
     _workHoursInput.value = contact.workhours.join('\n');
 
-    _endpointsView.load(contact.receptionID, contact.ID);
+    _endpointController.list(contact.receptionID, contact.ID).then((eps) {
+      _endpointsView.endpoints = eps;
+    });
 
     _distributionsListView.owner = contact;
 
