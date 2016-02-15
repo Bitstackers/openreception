@@ -246,11 +246,11 @@ class UIMessageCompose extends UIModel {
     _cellphoneInput.value = '';
     _companyNameInput.value = '';
     _extensionInput.value = '';
-    _haveCalledInput.checked = true;
+    _haveCalledInput.checked = false;
     _landlineInput.value = '';
     _messageTextarea.value = '';
     messagePrerequisites = [];
-    _pleaseCallInput.checked = false;
+    _pleaseCallInput.checked = true;
     _urgentInput.checked = false;
 
     _myFocusElement = _callerNameInput;
