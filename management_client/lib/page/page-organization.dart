@@ -96,8 +96,6 @@ class OrganizationView {
     ];
 
     _observers();
-
-    _refreshList();
   }
 
   /**

@@ -53,8 +53,6 @@ class Dialplan {
         ]),
       _dpView.element
     ];
-
-    _refreshList();
     _observers();
   }
 

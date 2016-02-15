@@ -50,7 +50,6 @@ class Ivr {
         ]),
     ];
 
-    _refreshList();
     _observers();
   }
 

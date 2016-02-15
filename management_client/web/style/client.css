@@ -10,6 +10,10 @@ h2 {
   margin: 0.8em 0.2em;
 }
 
+textarea.error {
+  background-color: red;
+}
+
 body {
   font-family: "Roboto","Helvetica","Arial",sans-serif;
   font-size: 14px;
