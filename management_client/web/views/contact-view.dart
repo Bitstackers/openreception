@@ -680,7 +680,7 @@ class ContactView {
       _refreshList();
       _clearContent();
       _joinReceptionbutton.disabled = true;
-      _cidInput.value = model.Contact.noID.toString();
+      baseContact = new model.BaseContact.empty();
     } catch (error) {
       notify.error(
           'Der skete en fejl i forbindelse med sletningen af kontaktperson');
