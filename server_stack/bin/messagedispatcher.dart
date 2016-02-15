@@ -112,6 +112,14 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
     return router.messageQueueStore.archive(queueItem);
   }
 
+  final String senderAddress = config.messageDispatcher.staticSenderAddress.isNotEmpty
+      ? config.messageDispatcher.staticSenderAdress
+      : user.address;
+
+  final String senderName = config.messageDispatcher.staticSenderName.isNotEmpty
+      ? config.messageDispatcher.staticSenderName
+      : user.name;
+
   _log.fine('Dispatching messageID ${message.ID} - queueID: ${queueItem.ID}');
   queueItem.tries++;
 
@@ -137,7 +145,7 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
   if (currentRecipients.isNotEmpty) {
     Model.TemplateEmail templateEmail = new Model.TemplateEmail(message, user);
     Email email =
-        new Email(new Address(user.address, user.name), config.messageDispatcher.smtp.hostname)
+        new Email(new Address(senderAddress, senderName), config.messageDispatcher.smtp.hostname)
           ..to = to
           ..cc = cc
           ..bcc = bcc
@@ -164,7 +172,7 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
   if (currentRecipients.isNotEmpty) {
     Model.Template templateSMS = new Model.TemplateSMS(message);
     Email sms =
-        new Email(new Address(user.address, user.name), config.messageDispatcher.smtp.hostname)
+        new Email(new Address(senderAddress, senderName), config.messageDispatcher.smtp.hostname)
           ..to = currentRecipients
               .map((mrto) => new Address(mrto.address + config.messageDispatcher.smsKey, ''))
           ..partText = templateSMS.bodyText;
