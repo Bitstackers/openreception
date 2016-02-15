@@ -179,15 +179,20 @@ class UIReceptionSelector extends UIModel {
   }
 
   /**
-   * Remove selections, scroll to top, empty filter input and fire a null
-   * [Reception].
+   * Remove selections, scroll to top, empty filter input and fire an empty [Reception].
    */
-  void reset() => _reset(null);
-  void _reset(Event _) {
+  void resetAndFireEmptyReception() {
+    resetFilter();
+    _bus.fire(new ORModel.Reception.empty());
+  }
+
+  /**
+   * Remove selections, scroll to top and empty filter input.
+   */
+  void resetFilter() {
     _filter.value = '';
     _filterList();
     _list.children.forEach((Element e) => e.classes.toggle('selected', false));
-    _bus.fire(new ORModel.Reception.empty());
   }
 
   /**
@@ -210,7 +215,11 @@ class UIReceptionSelector extends UIModel {
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
-    final Map<String, EventListener> bindings = {'Enter': _handleEnter, 'Esc': _reset};
+    final Map<String, EventListener> bindings = {
+      'Enter': _handleEnter,
+      'Esc': (_) => resetFilter(),
+      'Ctrl+Esc': (_) => resetAndFireEmptyReception()
+    };
 
     _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
   }
