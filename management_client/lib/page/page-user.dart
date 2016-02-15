@@ -56,7 +56,6 @@ class UserPage {
       _userView.element
     ];
 
-    _refreshList();
     _observers();
   }
 
@@ -64,10 +63,13 @@ class UserPage {
    * Observers.
    */
   void _observers() {
-    bus.on(WindowChanged).listen((WindowChanged event) {
-      print(event.window != _viewName);
-      element.hidden = event.window != _viewName;
-      element.classes.toggle('hidden', event.window != _viewName);
+    bus.on(WindowChanged).listen((WindowChanged event) async {
+      if (event.window == _viewName) {
+        element.hidden = false;
+        await _refreshList();
+      } else {
+        element.hidden = true;
+      }
     });
 
     _createButton.onClick.listen((_) => _createUser());

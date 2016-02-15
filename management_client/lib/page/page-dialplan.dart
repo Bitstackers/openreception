@@ -20,7 +20,8 @@ class Dialplan {
 
   final DivElement element = new DivElement()
     ..id = "calendar-page"
-    ..classes.addAll(['hidden', 'page']);
+    ..hidden = true
+    ..classes.addAll(['page']);
 
   final controller.Dialplan _dialplanController;
   view.Dialplan _dpView;
@@ -60,8 +61,13 @@ class Dialplan {
    * Observers.
    */
   void _observers() {
-    bus.on(WindowChanged).listen((WindowChanged event) {
-      element.classes.toggle('hidden', event.window != _viewName);
+    bus.on(WindowChanged).listen((WindowChanged event) async {
+      if (event.window == _viewName) {
+        element.hidden = false;
+        await _refreshList();
+      } else {
+        element.hidden = true;
+      }
     });
 
     _createButton.onClick.listen((_) => _createDialplan());

@@ -112,8 +112,12 @@ class Calendar {
    */
   void _observers() {
     bus.on(WindowChanged).listen((WindowChanged event) {
-      element.hidden = event.window != _viewName;
-      _activatePage();
+      if (event.window == _viewName) {
+        element.hidden = false;
+        _activatePage();
+      } else {
+        element.hidden = true;
+      }
     });
   }
 }

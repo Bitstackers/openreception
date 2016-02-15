@@ -57,8 +57,13 @@ class Ivr {
    * Observers.
    */
   void _observers() {
-    bus.on(WindowChanged).listen((WindowChanged event) {
-      element.classes.toggle('hidden', event.window != _viewName);
+    bus.on(WindowChanged).listen((WindowChanged event) async {
+      if (event.window == _viewName) {
+        element.hidden = false;
+        await _refreshList();
+      } else {
+        element.hidden = true;
+      }
     });
 
     _createButton.onClick.listen((_) => _createDialplan());
