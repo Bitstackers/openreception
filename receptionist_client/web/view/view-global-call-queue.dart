@@ -21,6 +21,7 @@ part of view;
 class GlobalCallQueue extends ViewWidget {
   final Model.AppClientState _appState;
   final Controller.Call _callController;
+  DateTime _lastPling = new DateTime.now();
   final Controller.Destination _myDestination;
   final Controller.Notification _notification;
   final Controller.Sound _sound;
@@ -65,6 +66,7 @@ class GlobalCallQueue extends ViewWidget {
 
     if (event is OREvent.CallOffer) {
       _ui.appendCall(call);
+      _pling();
     } else if (event is OREvent.CallHangup || call.assignedTo != ORModel.User.noID) {
       _ui.removeCall(call);
     } else if (call.inbound) {
@@ -103,16 +105,29 @@ class GlobalCallQueue extends ViewWidget {
     });
 
     /**
-     * Play the pling sound every 2 seconds if
-     *
-     *  there are calls in the queue AND
-     *  appState.activeCall is NOT noCall AND
-     *  the agent state is idle or unknown.
+     * Check each second to see if it is time to pling!
      */
-    new Timer.periodic(new Duration(seconds: 2), (_) {
-      if (_ui.hasCalls && _appState.activeCall == ORModel.Call.noCall && (!_userState.paused)) {
-        _sound.pling();
-      }
+    new Timer.periodic(new Duration(seconds: 1), (_) {
+      _pling();
     });
+  }
+
+  /**
+   * Pling - if:
+   *  there are calls in the queue AND
+   *  appState.activeCall is NOT noCall AND
+   *  the agent state is idle or unknown AND
+   *  >= 5 seconds have passed since the previous ping.
+   */
+  void _pling() {
+    final DateTime now = new DateTime.now();
+    final Duration difference = now.difference(_lastPling);
+    if (difference.inSeconds >= 5 &&
+        _ui.hasCalls &&
+        _appState.activeCall == ORModel.Call.noCall &&
+        !_userState.paused) {
+      _lastPling = now;
+      _sound.pling();
+    }
   }
 }
