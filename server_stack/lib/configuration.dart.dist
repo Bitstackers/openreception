@@ -231,6 +231,8 @@ class MessageDispatcher extends StandardConfig {
   final int maxTries = 10;
   final mailerPeriod = const Duration(seconds: 1);
   final String smsKey = 'some-key@some-host.tld';
+  final String staticSenderAddress = ''; // Overrides user.address if not empty.
+  final String staticSenderName = ''; // Overrides user.name if not empty.
 
   @override
   final int httpPort = 4070;
