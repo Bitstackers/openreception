@@ -2,8 +2,6 @@ library management_tool.view_utilities;
 
 import 'dart:html';
 
-import 'package:html5_dnd/html5_dnd.dart';
-
 const String addNewLiClass = 'addnew';
 
 typedef void OnChange();
@@ -22,15 +20,6 @@ void fillList(UListElement element, List<String> items, {OnChange onChange}) {
     }
   }
 
-  SortableGroup sortGroup = new SortableGroup()..installAll(children);
-
-  if (onChange != null) {
-    sortGroup.onSortUpdate.listen((SortableEvent event) => onChange());
-  }
-
-  // Only accept elements from this section.
-  sortGroup.accept.add(sortGroup);
-
   InputElement inputNewItem = new InputElement();
   inputNewItem
     ..classes.add(addNewLiClass)
@@ -43,7 +32,6 @@ void fillList(UListElement element, List<String> items, {OnChange onChange}) {
 
         LIElement li = simpleListElement(item);
         int index = element.children.length - 1;
-        sortGroup.install(li);
         element.children.insert(index, li);
 
         if (onChange != null) {

@@ -449,15 +449,6 @@ class ReceptionContact {
       }
     }
 
-    SortableGroup sortGroup = new SortableGroup()..installAll(children);
-
-    if (onChange != null) {
-      sortGroup.onSortUpdate.listen((SortableEvent event) => onChange());
-    }
-
-    // Only accept elements from this section.
-    sortGroup.accept.add(sortGroup);
-
     InputElement inputNewItem = new InputElement();
     inputNewItem
       ..classes.add(addNewLiClass)
@@ -499,7 +490,6 @@ class ReceptionContact {
           ]);
 
           int index = ul.children.length - 1;
-          sortGroup.install(li);
           ul.children.insert(index, li);
 
           if (onChange != null) {
