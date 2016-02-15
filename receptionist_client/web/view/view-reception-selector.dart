@@ -21,6 +21,7 @@ class ReceptionSelector extends ViewWidget {
   final Map<String, String> _langMap;
   final Controller.Destination _myDestination;
   final Controller.Notification _notification;
+  final List<ORModel.Call> _pickedUpCalls = new List<ORModel.Call>();
   final Controller.Popup _popup;
   final Controller.Reception _receptionController;
   final List<ORModel.Reception> _receptions;
@@ -80,6 +81,13 @@ class ReceptionSelector extends ViewWidget {
     _notification.onReceptionChange
         .listen((OREvent.ReceptionChange _) => _refreshReceptionsCache = true);
 
+    _notification.onAnyCallStateChange.listen((OREvent.CallEvent event) {
+      if (event.call.assignedTo == _appState.currentUser.id &&
+          event.call.state == ORModel.CallState.Hungup) {
+        _pickedUpCalls.removeWhere((ORModel.Call c) => c.ID == event.call.ID);
+      }
+    });
+
     refreshReceptionsCacheTimer = new Timer.periodic(new Duration(seconds: 5), (_) {
       if (_refreshReceptionsCache) {
         _refreshReceptionsCache = false;
@@ -95,8 +103,12 @@ class ReceptionSelector extends ViewWidget {
       if (newCall != ORModel.Call.noCall &&
           newCall.inbound &&
           _ui.selectedReception.ID != newCall.receptionID) {
-        _ui.reset();
-        _ui.changeActiveReception(newCall.receptionID);
+        if (!_pickedUpCalls.any((ORModel.Call c) => c.ID == newCall.ID)) {
+          _pickedUpCalls.add(newCall);
+
+          _ui.resetFilter();
+          _ui.changeActiveReception(newCall.receptionID);
+        }
       }
     });
   }
