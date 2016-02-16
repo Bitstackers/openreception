@@ -69,9 +69,16 @@ class CallSummary {
 }
 
 class CallStat {
+  bool done = false;
   DateTime arrived;
   DateTime answered;
   int userId = model.User.noID;
+
+  Map toJson() => {
+        'arrived': arrived.toString(),
+        'answered': answered.toString(),
+        'userId': userId,
+      };
 }
 
 CallSummary totalSummary(Map<String, CallStat> history) {
@@ -85,13 +92,13 @@ CallSummary totalSummary(Map<String, CallStat> history) {
       } else if (answerLatencyInMs > new Duration(minutes: 1)) {
         summary.callWaitingMoreThanOneMinute++;
       }
-    } else {
+    } else if (stat.done) {
       summary.callsUnAnswered++;
     }
 
     if (stat.userId != model.User.noID) {
       summary.callsByAgent[stat.userId] = summary.callsByAgent
-          .containsKey(stat.userId) ? summary.callsByAgent[stat.userId]++ : 1;
+          .containsKey(stat.userId) ? summary.callsByAgent[stat.userId] + 1 : 1;
     }
   });
 
@@ -119,24 +126,57 @@ Future main(List<String> args) async {
   });
 
   dispatchEvent(event.Event e) async {
-    if (e is event.CallEvent) {
-      if (!_history.containsKey(e.call.ID)) {
-        _history[e.call.ID] = new CallStat()..arrived = e.call.arrived;
+    if (e is! event.CallEvent) {
+      return;
+    }
+    model.Call call = (e as event.CallEvent).call;
+
+    if (e is event.CallOffer) {
+      _history[call.ID] = new CallStat()..arrived = e.call.arrived;
+    } else if (e is event.CallPickup && call.inbound) {
+      if (_history.containsKey(call.ID)) {
+        _history[call.ID] = new CallStat()..arrived = e.call.arrived;
       }
 
-      if (e is event.CallPickup &&
-          _history[e.call.ID].userId == model.User.noID) {
-        _history[e.call.ID]
+      if (_history[call.ID].userId == model.User.noID) {
+        _history[e.call.ID] = new CallStat()
+          ..arrived = e.call.arrived
           ..userId = e.call.assignedTo
-          ..answered = new DateTime.now();
+          ..answered = e.timestamp;
+
         new File('/tmp/agentstats.json')
             .writeAsString(JSON.encode(totalSummary(_history)));
       }
+    } else if (e is event.CallHangup && call.inbound) {
+      if (!_history.containsKey(call.ID)) {
+        _history[call.ID] = new CallStat()..arrived = e.call.arrived;
+      }
+
+      _history[call.ID]..done = true;
     }
   }
+
   notificationSocket.eventStream.listen((event.Event e) {
     try {
       dispatchEvent(e);
-    } catch (e, s) {}
+    } catch (e, s) {
+      print(e);
+      print(s);
+    }
   });
+
+  if (args.isNotEmpty) {
+    List<String> lines = await new File(args.first).readAsLines();
+
+    lines.forEach((String line) {
+      Map json = JSON.decode(line);
+      event.Event e = new event.Event.parse(json);
+      try {
+        dispatchEvent(e);
+      } catch (e, s) {
+        print(e);
+        print(s);
+      }
+    });
+  }
 }
