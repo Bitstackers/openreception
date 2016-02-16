@@ -26,6 +26,8 @@ class MessageCompose extends ViewWidget {
   final Logger _log = new Logger('$libraryName.MessageCompose');
   final Controller.Message _messageController;
   final Controller.Destination _myDestination;
+  final Controller.Notification _notification;
+  final List<ORModel.Call> _pickedUpCalls = new List<ORModel.Call>();
   final Controller.Popup _popup;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIMessageArchive _uiMessageArchive;
@@ -42,6 +44,7 @@ class MessageCompose extends ViewWidget {
       Model.UIContactSelector this._contactSelector,
       Model.UIReceptionSelector this._receptionSelector,
       Controller.Message this._messageController,
+      Controller.Notification this._notification,
       Controller.DistributionList this._distributionListController,
       Controller.Endpoint this._endpointController,
       Controller.Popup this._popup,
@@ -89,7 +92,23 @@ class MessageCompose extends ViewWidget {
     _hotKeys.onAltB.listen((KeyboardEvent _) => _activateMe());
 
     _contactSelector.onSelect.listen((Model.ContactWithFilterContext c) => _render(c.contact));
-    _receptionSelector.onSelect.listen(resetOnEmpty);
+
+    _notification.onAnyCallStateChange.listen((OREvent.CallEvent event) {
+      if (event.call.assignedTo == _appState.currentUser.id &&
+          event.call.state == ORModel.CallState.Hungup) {
+        _pickedUpCalls.removeWhere((ORModel.Call c) => c.ID == event.call.ID);
+      }
+    });
+
+    _appState.activeCallChanged.listen((ORModel.Call newCall) {
+      if (newCall != ORModel.Call.noCall &&
+          newCall.inbound &&
+          !_pickedUpCalls.any((ORModel.Call c) => c.ID == newCall.ID)) {
+        _pickedUpCalls.add(newCall);
+
+        _ui.reset(pristine: true);
+      }
+    });
 
     _ui.onSave.listen((MouseEvent _) => _save());
     _ui.onSend.listen((MouseEvent _) => _send());
@@ -144,16 +163,6 @@ class MessageCompose extends ViewWidget {
 
         _ui.messagePrerequisites = contact.messagePrerequisites;
       }
-    }
-  }
-
-  /**
-   * If we get an empty reception then reset the widget to it's pristine state.
-   */
-  void resetOnEmpty(ORModel.Reception reception) {
-    if (reception.isEmpty) {
-      _ui.reset(pristine: true);
-      _ui.headerExtra = '';
     }
   }
 

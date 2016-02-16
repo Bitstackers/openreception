@@ -208,6 +208,7 @@ class ORCReady {
         _uiContactSelector,
         _uiReceptionSelector,
         _messageController,
+        _notification,
         _distributionListController,
         _endpointController,
         _popup,
