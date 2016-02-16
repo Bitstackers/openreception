@@ -38,6 +38,7 @@ class CallSummary {
   int callWaitingMoreThanOneMinute = 0;
   int talkTime = 0;
   Map<int, int> callsByAgent = {};
+  Map<int, int> obCallsByAgent = {};
 
   List<Map<int, int>> agentSummay() {
     List<Map<int, int>> ret = [];
@@ -81,24 +82,91 @@ class CallStat {
       };
 }
 
-CallSummary totalSummary(Map<String, CallStat> history) {
-  CallSummary summary = new CallSummary()..totalCalls = history.length;
-  history.values.forEach((CallStat stat) {
-    if (stat.answered != null) {
-      final Duration answerLatencyInMs =
-          stat.answered.difference(stat.arrived).abs();
-      if (answerLatencyInMs < new Duration(seconds: 20)) {
-        summary.callsAnsweredWithin20s++;
-      } else if (answerLatencyInMs > new Duration(minutes: 1)) {
-        summary.callWaitingMoreThanOneMinute++;
-      }
-    } else if (stat.done) {
-      summary.callsUnAnswered++;
-    }
+class CallHistory {
+  List<event.CallEvent> _events = [];
 
-    if (stat.userId != model.User.noID) {
-      summary.callsByAgent[stat.userId] = summary.callsByAgent
-          .containsKey(stat.userId) ? summary.callsByAgent[stat.userId] + 1 : 1;
+  void addEvent(event.Event e) {
+    _events.add(e);
+    _events.sort((e1, e2) => e1.timestamp.compareTo(e2.timestamp));
+  }
+
+  int get assignee => _events
+      .firstWhere((event.CallEvent ce) => ce.call.assignedTo != model.User.noID,
+          orElse: () => _events.first)
+      .call
+      .assignedTo;
+
+  bool get unAssigned => assignee == model.User.noID;
+
+  String eventString() =>
+      '  events:\n' +
+      _events
+          .map((e) =>
+              '  - ${e.timestamp.millisecondsSinceEpoch~/1000}: ${e.eventName}')
+          .join('\n');
+
+  String toString() => 'done:$isDone\n'
+      'owner: $assignee\n'
+      'isAnswered:$isAnswered${isAnswered && inbound ? ' (latency:${answerLatency.inMilliseconds}ms)' : ''}\n'
+      'inbound:$inbound\n'
+      '${eventString()}';
+
+  bool get inbound => _events.first.call.inbound;
+
+  bool get isAnswered =>
+      _events.any((event.CallEvent ce) => ce is event.CallPickup);
+
+  Duration get answerLatency {
+    final offerEvent =
+        _events.firstWhere((event.CallEvent ce) => ce is event.CallOffer);
+
+    final pickupEvent =
+        _events.firstWhere((event.CallEvent ce) => ce is event.CallPickup);
+
+    return pickupEvent.timestamp.difference(offerEvent.timestamp);
+  }
+
+  bool get isDone => _events.any((event.CallEvent ce) =>
+      ce is event.CallHangup || ce is event.CallTransfer);
+}
+
+CallSummary _summarize(Map<String, CallHistory> history) {
+  final CallSummary summary = new CallSummary();
+
+  history.forEach((callId, call) {
+    if (call.inbound) {
+      summary.totalCalls++;
+
+      /// Individual agent stats.
+      if (call.unAssigned && call.isDone) {
+        summary.callsUnAnswered++;
+      } else if (!call.unAssigned) {
+        if (!summary.callsByAgent.containsKey(call.assignee)) {
+          summary.callsByAgent[call.assignee] = 0;
+        }
+
+        summary.callsByAgent[call.assignee] =
+            summary.callsByAgent[call.assignee] + 1;
+
+        if (call.isAnswered) {
+          if (call.answerLatency < new Duration(seconds: 20)) {
+            summary.callsAnsweredWithin20s++;
+          } else if (call.answerLatency > new Duration(seconds: 60)) {
+            summary.callWaitingMoreThanOneMinute++;
+          }
+        }
+      }
+    } else {
+      if (!summary.obCallsByAgent.containsKey(call.assignee)) {
+        summary.obCallsByAgent[call.assignee] = 0;
+      }
+
+      if (call.unAssigned) {
+        print('!!!!HELP!!!');
+        print(call);
+      }
+      summary.obCallsByAgent[call.assignee] =
+          summary.obCallsByAgent[call.assignee] + 1;
     }
   });
 
@@ -106,7 +174,7 @@ CallSummary totalSummary(Map<String, CallStat> history) {
 }
 
 Future main(List<String> args) async {
-  Map<String, CallStat> _history = {};
+  Map<String, CallHistory> _eventHistory = {};
 
   transport.WebSocketClient client = new transport.WebSocketClient();
   await client.connect(Uri.parse(
@@ -126,33 +194,13 @@ Future main(List<String> args) async {
   });
 
   dispatchEvent(event.Event e) async {
-    if (e is! event.CallEvent) {
+    if (e is event.CallEvent) {
+      if (!_eventHistory.containsKey(e.call.ID)) {
+        _eventHistory[e.call.ID] = new CallHistory();
+      }
+      _eventHistory[e.call.ID].addEvent(e);
+    } else {
       return;
-    }
-    model.Call call = (e as event.CallEvent).call;
-
-    if (e is event.CallOffer) {
-      _history[call.ID] = new CallStat()..arrived = e.call.arrived;
-    } else if (e is event.CallPickup && call.inbound) {
-      if (_history.containsKey(call.ID)) {
-        _history[call.ID] = new CallStat()..arrived = e.call.arrived;
-      }
-
-      if (_history[call.ID].userId == model.User.noID) {
-        _history[e.call.ID] = new CallStat()
-          ..arrived = e.call.arrived
-          ..userId = e.call.assignedTo
-          ..answered = e.timestamp;
-
-        new File('/tmp/agentstats.json')
-            .writeAsString(JSON.encode(totalSummary(_history)));
-      }
-    } else if (e is event.CallHangup && call.inbound) {
-      if (!_history.containsKey(call.ID)) {
-        _history[call.ID] = new CallStat()..arrived = e.call.arrived;
-      }
-
-      _history[call.ID]..done = true;
     }
   }
 
@@ -179,4 +227,14 @@ Future main(List<String> args) async {
       }
     });
   }
+
+  String jsonCache = '';
+  new Timer.periodic(new Duration(seconds: 10), (_) {
+    final newCache = JSON.encode(_summarize(_eventHistory).toJson());
+
+    if (newCache.hashCode != jsonCache.hashCode) {
+      jsonCache = newCache;
+      new File('/tmp/agentstats.json').writeAsStringSync(jsonCache);
+    }
+  });
 }
