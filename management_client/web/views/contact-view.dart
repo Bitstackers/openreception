@@ -331,10 +331,10 @@ class ContactView {
       }
     });
 
-    bus.on(WindowChanged).listen((WindowChanged event) {
+    bus.on(WindowChanged).listen((WindowChanged event) async {
       element.classes.toggle('hidden', event.window != _viewName);
       if (event.data.containsKey('contact_id')) {
-        _activateContact(event.data['contact_id'], event.data['reception_id']);
+        baseContact = await _contactController.get(event.data['contact_id']);
       }
     });
 
@@ -498,69 +498,6 @@ class ContactView {
       _log.severe(
           'Tried to update a Reception Contact, but failed with "$error" ${stack}');
     });
-  }
-
-  TableCellElement _createTableCellInsertInRow(TableRowElement row) {
-    TableCellElement td = new TableCellElement();
-    row.children.add(td);
-    return td;
-  }
-
-  TableRowElement _createTableRowInsertInTable(TableSectionElement table) {
-    TableRowElement row = new TableRowElement();
-    table.children.add(row);
-    return row;
-  }
-
-  void _saveChanges() {
-    int contactId = int.parse(_bcidInput.value);
-    if (contactId != null && contactId > 0 && createNew == false) {
-      List<Future> work = new List<Future>();
-      model.BaseContact updatedContact = new model.BaseContact.empty()
-        ..id = contactId
-        ..fullName = _nameInput.value
-        ..contactType = _typeInput.selectedOptions.first != null
-            ? _typeInput.selectedOptions.first.value
-            : _typeInput.options.first.value
-        ..enabled = _enabledInput.checked;
-
-      work.add(_contactController.update(updatedContact).then((_) {
-        //TODO: Show a message that tells the user, that the changes went through.
-        _refreshList();
-      }).catchError((error) {
-        _log.severe(
-            'Tried to update a contact but failed with error "${error}" from body: "${JSON.encode(updatedContact)}"');
-      }));
-
-      //When all updates are applied. Reload the contact.
-      Future.wait(work).then((_) {
-        return _activateContact(contactId);
-      }).catchError((error, stack) {
-        _log.severe(
-            'Contact was appling update for ${contactId} when "$error", ${stack}');
-      });
-    } else if (createNew) {
-      model.BaseContact newContact = new model.BaseContact.empty()
-        ..fullName = _nameInput.value
-        ..contactType = _typeInput.selectedOptions.first != null
-            ? _typeInput.selectedOptions.first.value
-            : _typeInput.options.first.value
-        ..enabled = _enabledInput.checked;
-
-      _contactController
-          .create(newContact)
-          .then((model.BaseContact responseContact) {
-        bus.fire(new ContactAddedEvent(responseContact.id));
-        _refreshList();
-        _activateContact(responseContact.id);
-        notify.info('Kontaktpersonen blev oprettet.');
-      }).catchError((error) {
-        notify.info(
-            'Der skete en fejl i forbindelse med oprettelsen af kontaktpersonen. ${error}');
-        _log.severe(
-            'Tried to make a new contact but failed with error "${error}" from body: "${JSON.encode(newContact)}"');
-      });
-    }
   }
 
   /**

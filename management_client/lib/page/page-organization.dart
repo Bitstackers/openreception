@@ -246,7 +246,7 @@ class OrganizationView {
         .contacts(organizationId)
         .then((Iterable<ORModel.BaseContact> contacts) {
       int compareTo(ORModel.BaseContact c1, ORModel.BaseContact c2) =>
-          c1.fullName.compareTo(c2.fullName);
+          c1.fullName.toLowerCase().compareTo(c2.fullName.toLowerCase());
 
       List list = contacts.toList()..sort(compareTo);
 

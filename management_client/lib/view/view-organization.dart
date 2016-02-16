@@ -53,13 +53,14 @@ class Organization {
     element.hidden = false;
 
     if (organization.id != model.Organization.noID) {
-      _heading.text = 'Retter organisation: "${org.fullName}" - (oid: ${organization.id})';
+      _heading.text =
+          'Retter organisation: "${org.fullName}" - (oid: ${organization.id})';
       _saveButton.disabled = true;
     } else {
       _heading.text = 'Opretter ny organisation';
       _saveButton.disabled = false;
     }
-
+    _deleteButton.text = 'Slet';
     _deleteButton.disabled = !_saveButton.disabled;
   }
 
@@ -122,9 +123,8 @@ class Organization {
     });
 
     _deleteButton.onClick.listen((_) async {
-
-      if(_deleteButton.text.toLowerCase() == 'slet') {
-        _deleteButton.text = 'Bekræft sletning?';
+      if (_deleteButton.text.toLowerCase() == 'slet') {
+        _deleteButton.text = 'Bekræft sletning af oid: ${organization.id}?';
         return;
       }
       try {
@@ -132,7 +132,6 @@ class Organization {
         _changeBus.fire(new OrganizationChange.delete(organization));
         element.hidden = true;
         notify.info('Organisationen blev slettet.');
-
       } catch (error) {
         notify.error('Der skete en fejl, så organisationen blev ikke slettet.');
         _log.severe('Tried to remove an organization, but got: $error');

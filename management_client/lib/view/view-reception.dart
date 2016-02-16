@@ -183,7 +183,9 @@ class Reception {
       _saveButton.disabled = false;
     }
 
-    _deleteButton.disabled = !_saveButton.disabled;
+    _deleteButton
+      ..text = 'Slet'
+      ..disabled = !_saveButton.disabled;
 
     _orgController.list().then((Iterable<model.Organization> orgs) {
       int compareTo(model.Organization org1, model.Organization org2) =>
@@ -425,7 +427,7 @@ class Reception {
 
     _deleteButton.onClick.listen((_) async {
       if (_deleteButton.text.toLowerCase() == 'slet') {
-        _deleteButton.text = 'Bekræft sletning?';
+        _deleteButton.text = 'Bekræft sletning af rid:${reception.ID}?';
         return;
       }
 
