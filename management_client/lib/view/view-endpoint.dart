@@ -27,9 +27,14 @@ class Endpoints {
   final DivElement element = new DivElement();
   bool _validationError = false;
   bool get validationError => _validationError;
+  final ButtonElement _addNew = new ButtonElement()
+    ..text = 'Indsæt ny tom'
+    ..classes.add('create');
+
   Function onChange;
 
   final TextAreaElement _endpointsInput = new TextAreaElement()
+    ..style.height = '15em'
     ..classes.add('wide');
 
   List<model.MessageEndpoint> _originalList = [];
@@ -38,7 +43,7 @@ class Endpoints {
    */
   Endpoints(
       controller.Contact this._contactController, this._endpointController) {
-    element.children = [_endpointsInput];
+    element.children = [_addNew, _endpointsInput];
     _observers();
   }
 
@@ -46,6 +51,21 @@ class Endpoints {
    *
    */
   void _observers() {
+    _addNew.onClick.listen((_) {
+      final model.MessageEndpoint template = new model.MessageEndpoint.empty()
+        ..address = 'eksempel@domæne.dk'
+        ..confidential = false
+        ..description = 'Kort beskrivelse'
+        ..enabled = true
+        ..type = model.MessageEndpointType.EMAIL;
+
+      endpoints = endpoints.toList()..add(template);
+
+      if (onChange != null) {
+        onChange();
+      }
+    });
+
     _endpointsInput.onInput.listen((_) {
       _validationError = false;
       _endpointsInput.classes.toggle('error', false);
@@ -53,6 +73,7 @@ class Endpoints {
         final eps = endpoints;
 
         ///TODO: Validate endpoints
+
       } on FormatException {
         _validationError = true;
         _endpointsInput.classes.toggle('error', true);

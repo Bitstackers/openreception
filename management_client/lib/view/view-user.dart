@@ -3,9 +3,9 @@ part of management_tool.view;
 enum Change { added, created, updated, deleted }
 
 const Map<Change, String> changeLabel = const {
-  Change.created: 'Oprettede',
-  Change.updated: 'Opdaterede',
-  Change.deleted: 'Slettede'
+  Change.created: 'Opretter',
+  Change.updated: 'Opdater',
+  Change.deleted: 'Sletter'
 };
 
 class UserChange {

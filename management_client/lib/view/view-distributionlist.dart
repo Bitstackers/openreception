@@ -12,15 +12,23 @@ class DistributionListChange {
  *
  */
 class DistributionList {
-  Logger _log = new Logger('$_libraryName.DistributionList');
+  final Logger _log = new Logger('$_libraryName.DistributionList');
 
   final DivElement element = new DivElement();
   bool _validationError = false;
   bool get validationError => _validationError;
 
+  model.Contact owner = new model.Contact.empty();
+  String receptionName = '';
+
+  final ButtonElement _addNew = new ButtonElement()
+    ..text = 'Indsæt ny tom'
+    ..classes.add('create');
+
   Function onChange;
 
   final TextAreaElement _dlistInput = new TextAreaElement()
+    ..style.height = '15em'
     ..classes.add('wide');
 
   model.DistributionList _originalList = new model.DistributionList.empty();
@@ -28,7 +36,7 @@ class DistributionList {
      *
      */
   DistributionList() {
-    element.children = [_dlistInput];
+    element.children = [_addNew, _dlistInput];
     _observers();
   }
 
@@ -36,6 +44,22 @@ class DistributionList {
    *
    */
   void _observers() {
+    _addNew.onClick.listen((_) {
+      final model.DistributionListEntry dle =
+          new model.DistributionListEntry.empty()
+            ..contactID = owner.ID
+            ..contactName = owner.fullName
+            ..receptionID = owner.receptionID
+            ..receptionName = receptionName
+            ..role = model.Role.TO;
+
+      distributionList = distributionList..add(dle);
+
+      if (onChange != null) {
+        onChange();
+      }
+    });
+
     _dlistInput.onInput.listen((_) {
       _validationError = false;
       _dlistInput.classes.toggle('error', false);

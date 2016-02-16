@@ -20,6 +20,7 @@ part 'view/view-calendar_log_filter.dart';
 part 'view/view-dialplan.dart';
 part 'view/view-dialplan_list.dart';
 part 'view/view-organization.dart';
+part 'view/view-phonenumbers.dart';
 part 'view/view-reception.dart';
 part 'view/view-reception_contact.dart';
 part 'view/view-user.dart';

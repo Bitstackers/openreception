@@ -18,7 +18,9 @@ class ReceptionContact {
 
   ///TODO: Add additional validation checks
   bool get inputHasErrors =>
-      _endpointsView.validationError || _distributionsListView.validationError;
+      _endpointsView.validationError ||
+      _distributionsListView.validationError ||
+      _phoneNumberView.validationError;
 
   final UListElement _endPointChangesList = new UListElement();
   final UListElement _dlistChangesList = new UListElement();
@@ -64,9 +66,6 @@ class ReceptionContact {
   final TextAreaElement _messagePrerequisiteInput = new TextAreaElement()
     ..classes.add('wide')
     ..value = '';
-  final TextAreaElement _telephoneNumbersInput = new TextAreaElement()
-    ..classes.add('wide')
-    ..value = '';
   final TextAreaElement _relationsInput = new TextAreaElement()
     ..classes.add('wide')
     ..value = '';
@@ -87,6 +86,7 @@ class ReceptionContact {
 
   Endpoints _endpointsView;
   DistributionList _distributionsListView;
+  Phonenumbers _phoneNumberView;
   ContactCalendarComponent _calendarComponent;
 
   /**
@@ -101,6 +101,8 @@ class ReceptionContact {
     _endpointsView = new Endpoints(_contactController, _endpointController);
 
     _distributionsListView = new DistributionList();
+
+    _phoneNumberView = new Phonenumbers();
 
     element.children = [
       _header,
@@ -150,8 +152,8 @@ class ReceptionContact {
             ..children = [
               new LabelElement()
                 ..text = 'Telefonnumre'
-                ..htmlFor = _telephoneNumbersInput.id,
-              _telephoneNumbersInput
+                ..htmlFor = _phoneNumberView.element.id,
+              _phoneNumberView.element
             ],
           new DivElement()
             ..children = [
@@ -319,6 +321,9 @@ class ReceptionContact {
       } on FormatException {
         _endPointChangesList.text = 'Valideringsfejl.';
       }
+
+      _saveButton.disabled = inputHasErrors;
+      _deleteButton.disabled = inputHasErrors || !_saveButton.disabled;
     };
 
     _distributionsListView.onChange = () {
@@ -329,6 +334,13 @@ class ReceptionContact {
       } on FormatException {
         _endPointChangesList.text = 'Valideringsfejl.';
       }
+      _saveButton.disabled = inputHasErrors;
+      _deleteButton.disabled = inputHasErrors || !_saveButton.disabled;
+    };
+
+    _phoneNumberView.onChange = () {
+      _saveButton.disabled = inputHasErrors;
+      _deleteButton.disabled = inputHasErrors || !_saveButton.disabled;
     };
   }
 
@@ -356,16 +368,13 @@ class ReceptionContact {
     ..handling = _valuesFromListTextArea(_handlingInput)
     ..infos = _valuesFromListTextArea(_infoInput)
     ..messagePrerequisites = _valuesFromListTextArea(_messagePrerequisiteInput)
-    ..phones = ([]
-      ..addAll(JSON
-          .decode(_telephoneNumbersInput.value)
-          .map((m) => new model.PhoneNumber.fromMap(m))))
     ..relations = _valuesFromListTextArea(_relationsInput)
     ..responsibilities = _valuesFromListTextArea(_responsibilitiesInput)
     ..statusEmail = _statusEmailInput.checked
     ..tags = _valuesFromListTextArea(_tagsInput)
     ..titles = _valuesFromListTextArea(_titlesInput)
-    ..workhours = _valuesFromListTextArea(_workHoursInput);
+    ..workhours = _valuesFromListTextArea(_workHoursInput)
+    ..phones = _phoneNumberView.phoneNumbers.toList();
 
   /**
    *
@@ -373,10 +382,6 @@ class ReceptionContact {
   void set contact(model.Contact contact) {
     _ridInput.value = contact.receptionID.toString();
     _cidInput.value = contact.ID.toString();
-
-    _receptionController.get(contact.receptionID).then((model.Reception r) {
-      _header.text = r.name;
-    });
 
     _tagsInput.value = contact.tags.join('\n');
     _statusEmailInput.checked = contact.wantsMessage;
@@ -390,7 +395,7 @@ class ReceptionContact {
     _emailAddessesInput.value = contact.emailaddresses.join('\n');
     _messagePrerequisiteInput.value = contact.messagePrerequisites.join('\n');
 
-    _telephoneNumbersInput.value = _jsonpp.convert(contact.phones);
+    _phoneNumberView.phoneNumbers = contact.phones;
     _workHoursInput.value = contact.workhours.join('\n');
 
     _endpointController.list(contact.receptionID, contact.ID).then((eps) {
@@ -399,6 +404,12 @@ class ReceptionContact {
 
     _dlistController.list(contact.receptionID, contact.ID).then((dlist) {
       _distributionsListView.distributionList = dlist;
+      _distributionsListView.owner = contact;
+    });
+
+    _receptionController.get(contact.receptionID).then((model.Reception r) {
+      _header.text = '${r.name} (rid: ${r.ID})';
+      _distributionsListView.receptionName = r.name;
     });
 
     _deleteButton.disabled = !_saveButton.disabled;

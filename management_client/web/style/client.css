@@ -84,6 +84,10 @@ nav#navigation img {
    min-width: 95%;
 }
 
+.full-width {
+   min-width: 98%;
+}
+
 .semi-wide {
   min-width: 70%;
 }

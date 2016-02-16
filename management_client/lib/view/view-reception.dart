@@ -108,7 +108,8 @@ class Reception {
     ..value = '';
 
   final TextAreaElement _miniWikiInput = new TextAreaElement()
-    ..classes.add('wide')
+    ..classes.addAll(['full-width'])
+    ..style.height = '20em'
     ..value = '';
 
   final TextAreaElement _telephoneNumbersInput = new TextAreaElement()
@@ -359,13 +360,6 @@ class Reception {
           new DivElement()
             ..children = [
               new LabelElement()
-                ..text = 'MiniWiki'
-                ..htmlFor = _miniWikiInput.id,
-              _miniWikiInput
-            ],
-          new DivElement()
-            ..children = [
-              new LabelElement()
                 ..text = 'Åbningstider'
                 ..htmlFor = _openingHoursInput.id,
               _openingHoursInput
@@ -398,7 +392,15 @@ class Reception {
                 ..htmlFor = _productInput.id,
               _productInput
             ],
-        ]
+        ],
+      new DivElement()
+        ..style.clear = 'both'
+        ..children = [
+          new LabelElement()
+            ..text = 'MiniWiki'
+            ..htmlFor = _miniWikiInput.id,
+          _miniWikiInput
+        ],
     ];
 
     _observers();
