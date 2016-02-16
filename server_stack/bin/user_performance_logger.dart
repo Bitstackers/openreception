@@ -20,8 +20,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 
-import 'package:args/args.dart';
-
 import '../lib/configuration.dart';
 
 import 'package:openreception_framework/event.dart' as event;
@@ -30,6 +28,8 @@ import 'package:openreception_framework/model.dart' as model;
 
 import 'package:openreception_framework/service.dart' as service;
 import 'package:openreception_framework/service-io.dart' as transport;
+
+final Map<int, String> _userNameCache = {};
 
 class CallSummary {
   int totalCalls = 0;
@@ -42,7 +42,11 @@ class CallSummary {
   List<Map<int, int>> agentSummay() {
     List<Map<int, int>> ret = [];
     callsByAgent.forEach((k, v) {
-      ret.add({'uid:$k': v});
+      ret.add({
+        'uid': k,
+        'answered': v,
+        'name': _userNameCache.containsKey(k) ? _userNameCache[k] : '??'
+      });
     });
 
     return ret;
@@ -103,6 +107,16 @@ Future main(List<String> args) async {
 
   service.NotificationSocket notificationSocket =
       new service.NotificationSocket(client);
+  service.RESTUserStore userStore = new service.RESTUserStore(
+      config.configserver.userServerUri,
+      config.authServer.serverToken,
+      new transport.Client());
+
+  await userStore.list().then((Iterable<model.User> users) {
+    users.forEach((user) {
+      _userNameCache[user.id] = user.name;
+    });
+  });
 
   dispatchEvent(event.Event e) async {
     if (e is event.CallEvent) {
