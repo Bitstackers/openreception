@@ -21,6 +21,8 @@ class Reception {
   final controller.Reception _recController;
   final controller.Organization _orgController;
 
+  bool get inputHasErrors => _phoneNumberView._validationError;
+
   Stream<ReceptionChange> get changes => _changeBus.stream;
   final Bus<ReceptionChange> _changeBus = new Bus<ReceptionChange>();
 
@@ -112,9 +114,7 @@ class Reception {
     ..style.height = '20em'
     ..value = '';
 
-  final TextAreaElement _telephoneNumbersInput = new TextAreaElement()
-    ..classes.add('wide')
-    ..value = '';
+  Phonenumbers _phoneNumberView;
 
   final DivElement _organizationSelector = new DivElement();
 
@@ -139,7 +139,7 @@ class Reception {
     _activeInput.checked = r.enabled;
     _extraDataInput.value = r.extraData != null ? r.extraData.toString() : '';
 
-    _telephoneNumbersInput.value = _jsonpp.convert(r.telephoneNumbers);
+    _phoneNumberView.phoneNumbers = r.telephoneNumbers;
 
     _addressesInput.value = r.addresses != null ? r.addresses.join('\n') : '';
 
@@ -224,10 +224,7 @@ class Reception {
     ..product = _productInput.value
     ..salesMarketingHandling =
         _valuesFromListTextArea(_salesMarketingHandlingInput)
-    ..telephoneNumbers = ([]
-      ..addAll(JSON
-          .decode(_telephoneNumbersInput.value)
-          .map((m) => new model.PhoneNumber.fromMap(m))))
+    ..telephoneNumbers = _phoneNumberView.phoneNumbers.toList()
     ..vatNumbers = _valuesFromListTextArea(_vatNumbersInput)
     ..websites = _valuesFromListTextArea(_websitesInput);
 
@@ -235,6 +232,8 @@ class Reception {
    *
    */
   Reception(this._recController, this._orgController) {
+    _phoneNumberView = new Phonenumbers();
+
     _search = new SearchComponent<model.Organization>(
         _organizationSelector, 'reception-organization-searchbox')
       ..selectedElementChanged = (model.Organization organization) {
@@ -300,8 +299,8 @@ class Reception {
             ..children = [
               new LabelElement()
                 ..text = 'Telefonnumre'
-                ..htmlFor = _telephoneNumbersInput.id,
-              _telephoneNumbersInput
+                ..htmlFor = _phoneNumberView.element.id,
+              _phoneNumberView.element
             ],
           new DivElement()
             ..children = [
@@ -440,6 +439,11 @@ class Reception {
         _log.severe('Tried to remove a reception, but got: $error');
         element.hidden = false;
       }
+
+      _phoneNumberView.onChange = () {
+        _saveButton.disabled = inputHasErrors;
+        _deleteButton.disabled = inputHasErrors || !_saveButton.disabled;
+      };
     });
 
     _saveButton.onClick.listen((_) async {
