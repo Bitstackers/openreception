@@ -451,8 +451,12 @@ class ContactView {
         return _contactController
             .colleagues(id)
             .then((Iterable<model.Contact> contacts) {
-          _ulReceptionList.children =
-              contacts.map(_createColleagueNode).toList();
+          int compareTo(model.Contact c1, model.Contact c2) =>
+              c1.fullName.toLowerCase().compareTo(c2.fullName.toLowerCase());
+
+          List list = contacts.toList()..sort(compareTo);
+
+          _ulReceptionList.children = list.map(_createColleagueNode).toList();
         });
       });
     }).catchError((error, stack) {
