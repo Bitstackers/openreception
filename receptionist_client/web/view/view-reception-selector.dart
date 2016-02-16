@@ -78,6 +78,8 @@ class ReceptionSelector extends ViewWidget {
       }
     });
 
+    _hotKeys.onCtrlEsc.listen((KeyboardEvent _) => _ui.resetAndFireEmptyReception());
+
     _notification.onReceptionChange
         .listen((OREvent.ReceptionChange _) => _refreshReceptionsCache = true);
 

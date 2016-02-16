@@ -42,6 +42,7 @@ class HotKeys {
   final Bus<Html.KeyboardEvent> _ctrlAltEnter = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _ctrlAltP = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _ctrlAltR = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _ctrlEsc = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _ctrlNumMinus = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _ctrlSpace = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _f1 = new Bus<Html.KeyboardEvent>();
@@ -72,6 +73,7 @@ class HotKeys {
   Stream<Html.KeyboardEvent> get onCtrlAltEnter => _ctrlAltEnter.stream;
   Stream<Html.KeyboardEvent> get onCtrlAltP => _ctrlAltP.stream;
   Stream<Html.KeyboardEvent> get onCtrlAltR => _ctrlAltR.stream;
+  Stream<Html.KeyboardEvent> get onCtrlEsc => _ctrlEsc.stream;
   Stream<Html.KeyboardEvent> get onCtrlNumMinus => _ctrlNumMinus.stream;
   Stream<Html.KeyboardEvent> get onCtrlSpace => _ctrlSpace.stream;
   Stream<Html.KeyboardEvent> get onF1 => _f1.stream;
@@ -110,6 +112,7 @@ class HotKeys {
       'Ctrl+Alt+Enter': (event) => _ctrlAltEnter.fire(event),
       'Ctrl+a': _null, // Blackhole this
       'Ctrl+d': _null, // Blackhole this
+      'Ctrl+Esc': (event) => _ctrlEsc.fire(event),
       'Ctrl+e': _null, // Blackhole this
       'Ctrl+k': _null, // Blackhole this
       'Ctrl+l': _null, // Blackhole this
@@ -192,6 +195,7 @@ class SimulationHotKeys {
   void ctrlAltEnter() => _hotKeys._ctrlAltEnter.fire(null);
   void ctrlAltP() => _hotKeys._ctrlAltP.fire(null);
   void ctrlAltR() => _hotKeys._ctrlAltR.fire(null);
+  void ctrlEsc() => _hotKeys._ctrlEsc.fire(null);
   void ctrlNumMinus() => _hotKeys._ctrlNumMinus.fire(null);
   void ctrlSpace() => _hotKeys._ctrlSpace.fire(null);
   void f1() => _hotKeys._f1.fire(null);

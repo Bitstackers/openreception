@@ -217,8 +217,7 @@ class UIReceptionSelector extends UIModel {
   void _setupLocalKeys() {
     final Map<String, EventListener> bindings = {
       'Enter': _handleEnter,
-      'Esc': (_) => resetFilter(),
-      'Ctrl+Esc': (_) => resetAndFireEmptyReception()
+      'Esc': (_) => resetFilter()
     };
 
     _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
