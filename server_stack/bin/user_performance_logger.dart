@@ -134,5 +134,9 @@ Future main(List<String> args) async {
       }
     }
   }
-  notificationSocket.eventStream.listen(dispatchEvent);
+  notificationSocket.eventStream.listen((event.Event e) {
+    try {
+      dispatchEvent(e);
+    } catch (e, s) {}
+  });
 }
