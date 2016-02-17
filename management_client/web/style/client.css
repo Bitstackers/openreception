@@ -39,6 +39,30 @@ nav#navigation {
   float: left;
 }
 
+.page-content {
+  float: left;
+  width: 80%;
+  width: -moz-calc(80% - 19px);
+  width: -webkit-calc(80% - 19px);
+  height: 100%;
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
+  padding: 5px;
+  margin-left: 9px;
+  overflow: auto;
+}
+
+.page-content-with-rightbar {
+  float: left;
+  width: 60%;
+  width: -moz-calc(60% - 19px);
+  width: -webkit-calc(60% - 19px);
+  height: 100%;
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
+  padding: 5px;
+  margin-left: 9px;
+  overflow: auto;
+}
+
 nav#navigation li {
   width: 100%;
   padding: 5px 1px;
@@ -56,6 +80,34 @@ nav#navigation img {
   box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
 }
 
+.object-listing ul {
+  height: -webkit-calc(100% - 100px);
+  overflow: auto;
+  padding: 0;
+}
+
+.object-listing ul>li {
+  border-left: 2px solid transparent;
+  padding: 5px 0 5px 5px;
+}
+
+.object-listing ul>li.highlightListItem {
+  border-left: 2px solid red;
+    background-color: #B3E5FC;
+  font-weight: bold;
+}
+
+.rightbar {
+  float: right;
+  width: 20%;
+  width: -moz-calc(20% - 10px);
+  width: -webkit-calc(20% - 10px);
+  height: 100%;
+  padding: 5px 10px 5px 0px;
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
+
+}
+
 #page-main-screen {
   float: left;
   width: 97%;
@@ -67,6 +119,10 @@ nav#navigation img {
   /*display: none;*/
   position: absolute;
   left: -99999px;
+}
+
+.page {
+  height: 100%;
 }
 
 .page input {

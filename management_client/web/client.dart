@@ -68,7 +68,7 @@ Future main() async {
     final Controller.Calendar calendarController =
         new Controller.Calendar(calendarStore);
     final Controller.Dialplan dialplanController =
-        new Controller.Dialplan(dialplanStore);
+        new Controller.Dialplan(dialplanStore, receptionStore);
 
     final Controller.Ivr ivrController = new Controller.Ivr(ivrStore);
     //Initializes the notification system.

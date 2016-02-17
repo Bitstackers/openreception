@@ -30,9 +30,10 @@ class Dialplan {
     ..text = 'Opret'
     ..classes.add('create');
 
-  final UListElement _userList = new UListElement()
-    ..id = 'user-list'
-    ..classes.add('zebra-even');
+  final UListElement _userList = new UListElement()..classes.add('zebra-even');
+
+  final UListElement _receptionsList = new UListElement()
+    ..classes.add('zebra-odd');
 
   /// Extracts the uid of the currently selected user.
   model.ReceptionDialplan get selectedDialplan => _dpView.dialplan;
@@ -52,7 +53,15 @@ class Dialplan {
             ..children = [_createButton],
           _userList,
         ]),
-      _dpView.element
+      new DivElement()
+        ..classes.add('page-content-with-rightbar')
+        ..children = [_dpView.element],
+      new DivElement()
+        ..classes.add('rightbar')
+        ..children = [
+          new HeadingElement.h3()..text = 'Receptioner',
+          _receptionsList
+        ]
     ];
     _observers();
   }
@@ -71,6 +80,41 @@ class Dialplan {
     });
 
     _createButton.onClick.listen((_) => _createDialplan());
+
+    _dpView.onDelete = ((_) {
+      _userList.children.forEach(
+          (LIElement li) => li.classes.toggle('highlightListItem', false));
+    });
+
+    _dpView.onUpdate = ((String extension) {
+      _activateDialplan(extension);
+    });
+  }
+
+  /**
+   *
+   */
+  void _renderReceptionList(Iterable<model.Reception> receptions) {
+    _receptionsList.children
+      ..clear()
+      ..addAll(receptions.map(_makeReceptionNode));
+  }
+
+  /**
+   *
+   */
+  LIElement _makeReceptionNode(model.Reception reception) {
+    LIElement li = new LIElement()
+      ..classes.add('clickable')
+      ..text = '${reception.fullName}'
+      ..onClick.listen((_) {
+        Map data = {
+          'organization_id': reception.organizationId,
+          'reception_id': reception.ID
+        };
+        bus.fire(new WindowChanged('reception', data));
+      });
+    return li;
   }
 
   /**
@@ -101,17 +145,17 @@ class Dialplan {
       ..text = rdp.extension
       ..classes.add('clickable')
       ..dataset['extension'] = '${rdp.extension}'
-      ..onClick.listen((_) => _activateDialplan(rdp));
+      ..onClick.listen((_) => _activateDialplan(rdp.extension));
   }
 
   /**
    *
    */
-  Future _activateDialplan(model.ReceptionDialplan rdp) async {
-    _log.finest('Activating dialplan ${rdp.extension}');
-    _highlightDialplanInList(rdp.extension);
-    _dpView.dialplan = rdp;
-    _highlightDialplanInList(_dpView.dialplan.extension);
+  Future _activateDialplan(String extension) async {
+    _log.finest('Activating dialplan ${extension}');
+    _dpView.dialplan = await _dialplanController.get(extension);
+    _highlightDialplanInList(extension);
+    _renderReceptionList(await _dialplanController.listUsage(extension));
   }
 
   /**
