@@ -50,7 +50,7 @@ class MessageCompose extends ViewWidget {
       Controller.Endpoint this._endpointController,
       Controller.Popup this._popup,
       Map<String, String> this._langMap) {
-    _ui.setHint('alt+b | ctrl+space | ctrl+s | ctrl+enter');
+    _ui.setHint('alt+b | alt+d | ctrl+space | ctrl+s | ctrl+enter');
 
     _myDestinationMessageBox = new Controller.Destination(
         Controller.Context.home, Controller.Widget.messageCompose,
@@ -106,10 +106,14 @@ class MessageCompose extends ViewWidget {
     _navigate.onGo.listen(_setWidgetState);
 
     _ui.onClick.listen((MouseEvent _) => _activateMe());
-    _hotKeys.onAltB.listen((KeyboardEvent _) => _activateMe());
+    _hotKeys.onAltB.listen((KeyboardEvent _) {
+      if (_ui.isFocused) {
+        _ui.focusCallerNameInput();
+      } else {
+        _activateMe();
+      }
+    });
     _hotKeys.onAltD.listen((KeyboardEvent _) => _navigateToMessageTextArea());
-
-    _hotKeys.onCtrlEsc.listen((KeyboardEvent _) => _ui.reset(pristine: true));
 
     _contactSelector.onSelect.listen((Model.ContactWithFilterContext c) => _render(c.contact));
 

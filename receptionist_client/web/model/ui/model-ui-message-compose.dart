@@ -81,6 +81,13 @@ class UIMessageCompose extends UIModel {
   }
 
   /**
+   * Focus the message text area.
+   */
+  void focusCallerNameInput() {
+    _callerNameInput.focus();
+  }
+
+  /**
    * Sets focus on whichever widget element is currently considered the widget
    * default.
    */
@@ -154,7 +161,14 @@ class UIMessageCompose extends UIModel {
     _root.onKeyDown.listen(_keyboard.press);
 
     _root.onMouseDown.listen(_focusFromClick);
-
+    _hotKeys.onCtrlEsc.listen((KeyboardEvent _) {
+      reset(pristine: true);
+      if (isFocused) {
+        _callerNameInput.focus();
+      } else {
+        _myFocusElement = _callerNameInput;
+      }
+    });
     _hotKeys.onCtrlSpace.listen((_) => _toggleRecipients());
 
     /// Enables focused element memory for this widget.
