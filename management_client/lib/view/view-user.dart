@@ -88,6 +88,13 @@ class User {
       new DivElement()
         ..children = [
           new LabelElement()
+            ..text = 'Lokalnummer'
+            ..htmlFor = _userExtensionInput.id,
+          _userExtensionInput
+        ],
+      new DivElement()
+        ..children = [
+          new LabelElement()
             ..text = 'Send-fra adresse'
             ..htmlFor = _userSendFromInput.id,
           _userSendFromInput
