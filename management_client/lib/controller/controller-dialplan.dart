@@ -15,6 +15,9 @@ class Dialplan {
   Future<ORModel.ReceptionDialplan> get(String extension) =>
       _dpStore.get(extension);
 
+  Future<ORModel.ReceptionDialplan> deploy(String extension, int rid) =>
+      _dpStore.deployDialplan(extension, rid);
+
   Future<ORModel.ReceptionDialplan> update(ORModel.ReceptionDialplan rdp) =>
       _dpStore.update(rdp);
 

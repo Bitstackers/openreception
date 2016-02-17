@@ -19,6 +19,7 @@ class Reception {
 
   final Logger _log = new Logger('$_libraryName.Reception');
   final controller.Reception _recController;
+  final controller.Dialplan _dpController;
   final controller.Organization _orgController;
 
   bool get inputHasErrors => _phoneNumberView._validationError;
@@ -186,6 +187,7 @@ class Reception {
     _deleteButton
       ..text = 'Slet'
       ..disabled = !_saveButton.disabled;
+    _deployDialplanButton.disabled = _deleteButton.disabled;
 
     _orgController.list().then((Iterable<model.Organization> orgs) {
       int compareTo(model.Organization org1, model.Organization org2) =>
@@ -233,7 +235,7 @@ class Reception {
   /**
    *
    */
-  Reception(this._recController, this._orgController) {
+  Reception(this._recController, this._orgController, this._dpController) {
     _phoneNumberView = new Phonenumbers();
 
     _search = new SearchComponent<model.Organization>(
@@ -417,12 +419,14 @@ class Reception {
       ine.onInput.listen((_) {
         _saveButton.disabled = false;
         _deleteButton.disabled = !_saveButton.disabled;
+        _deployDialplanButton.disabled = _deleteButton.disabled;
       });
     });
 
     _activeInput.onChange.listen((_) {
       _saveButton.disabled = false;
       _deleteButton.disabled = !_saveButton.disabled;
+      _deployDialplanButton.disabled = _deleteButton.disabled;
     });
 
     _deleteButton.onClick.listen((_) async {
@@ -445,6 +449,7 @@ class Reception {
       _phoneNumberView.onChange = () {
         _saveButton.disabled = inputHasErrors;
         _deleteButton.disabled = inputHasErrors || !_saveButton.disabled;
+        _deployDialplanButton.disabled = _deleteButton.disabled;
       };
     });
 
@@ -471,6 +476,16 @@ class Reception {
           _log.severe('Tried to update a reception, but got: $error');
           element.hidden = false;
         }
+      }
+    });
+
+    _deployDialplanButton.onClick.listen((_) async {
+      try {
+        await _dpController.deploy(reception.dialplan, reception.ID);
+        notify.info('Udrullede kaldplan.');
+      } catch (e, s) {
+        _log.severe('Could not deploy dialplan', e, s);
+        notify.error('Kunne ikke udrulle kaldplan!');
       }
     });
   }

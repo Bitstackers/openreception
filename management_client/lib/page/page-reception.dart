@@ -15,6 +15,7 @@ class ReceptionView {
   final controller.Contact _contactController;
   final controller.Organization _organizationController;
   final controller.Reception _receptionController;
+  final controller.Dialplan _dpController;
 
   final DivElement element = new DivElement()
     ..id = 'reception-page'
@@ -45,9 +46,10 @@ class ReceptionView {
   ReceptionView(
       controller.Contact this._contactController,
       controller.Organization this._organizationController,
-      controller.Reception this._receptionController) {
-    _receptionView =
-        new view.Reception(_receptionController, _organizationController);
+      controller.Reception this._receptionController,
+      controller.Dialplan this._dpController) {
+    _receptionView = new view.Reception(
+        _receptionController, _organizationController, _dpController);
 
     element.children = [
       new DivElement()

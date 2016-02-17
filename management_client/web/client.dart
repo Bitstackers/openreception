@@ -81,7 +81,10 @@ Future main() async {
     querySelector("#organization-page").replaceWith(orgPage.element);
 
     querySelector("#reception-page").replaceWith(new recepView.ReceptionView(
-            contactController, organizationController, receptionController)
+            contactController,
+            organizationController,
+            receptionController,
+            dialplanController)
         .element);
 
     new conView.ContactView(
