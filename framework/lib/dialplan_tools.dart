@@ -480,6 +480,7 @@ List<String> _actionToXmlDialplan(model.Action action,
     returnValue.addAll([
       _setVar(
           ORPbxKey.emailDateHeader, '\${strftime(%a, %d %b %Y %H:%M:%S %z)}'),
+      _setVar('record_waste_resources', 'true'),
       '<action application="voicemail" data="default \$\${domain} ${action.vmBox}"/>'
     ]);
   }
@@ -492,6 +493,7 @@ List<String> _actionToXmlDialplan(model.Action action,
     }
 
     returnValue.addAll([
+      _setVar('record_waste_resources', 'true'),
       _setVar(
           ORPbxKey.emailDateHeader, '\${strftime(%a, %d %b %Y %H:%M:%S %z)}'),
       '<action application="ivr" data="${action.menuName}"/>'
