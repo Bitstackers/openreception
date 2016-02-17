@@ -179,20 +179,13 @@ class UIReceptionSelector extends UIModel {
   }
 
   /**
-   * Remove selections, scroll to top, empty filter input and fire an empty [Reception].
-   */
-  void resetAndFireEmptyReception() {
-    resetFilter();
-    _bus.fire(new ORModel.Reception.empty());
-  }
-
-  /**
-   * Remove selections, scroll to top and empty filter input.
+   * Remove selections, scroll to top and empty filter input and fire an empty [Reception].
    */
   void resetFilter() {
     _filter.value = '';
     _filterList();
     _list.children.forEach((Element e) => e.classes.toggle('selected', false));
+    _bus.fire(new ORModel.Reception.empty());
   }
 
   /**

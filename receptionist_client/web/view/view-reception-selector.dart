@@ -78,7 +78,7 @@ class ReceptionSelector extends ViewWidget {
       }
     });
 
-    _hotKeys.onCtrlEsc.listen((KeyboardEvent _) => _ui.resetAndFireEmptyReception());
+    _hotKeys.onCtrlEsc.listen((KeyboardEvent _) => _ui.resetFilter());
 
     _notification.onReceptionChange
         .listen((OREvent.ReceptionChange _) => _refreshReceptionsCache = true);
