@@ -52,6 +52,7 @@ class UIContactSelector extends UIModel {
   void clear() {
     _list.children.clear();
     _filterInput.value = '';
+    _bus.fire(new ContactWithFilterContext(new ORModel.Contact.empty(), state, filterInputValue));
   }
 
   /**
