@@ -50,7 +50,7 @@ class TemplateEmail extends Template {
     }
     sb.write('Vedr.:<br>');
     sb.write('${_message.body.trim().replaceAll('\n', '<br>')}<br><br>');
-    sb.write('Modtaget den ${_dateFormat.format(_message.createdAt)}<br><br>');
+    sb.write('Modtaget den ${_dateFormat.format(_message.createdAt.toLocal())}<br><br>');
     sb.write('Med venlig hilsen<br>');
     sb.write('${_sender.name}<br>');
     sb.write('Responsum K/S<br><br>');
@@ -79,7 +79,7 @@ class TemplateEmail extends Template {
     }
     sb.write('Vedr.:\n');
     sb.write('${_message.body}\n\n');
-    sb.write('Modtaget den ${_dateFormat.format(_message.createdAt)}\n\n');
+    sb.write('Modtaget den ${_dateFormat.format(_message.createdAt.toLocal())}\n\n');
     sb.write('Med venlig hilsen\n');
     sb.write('${_sender.name}\n');
     sb.write('Responsum K/S\n\n');
