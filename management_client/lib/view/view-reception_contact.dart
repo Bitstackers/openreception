@@ -13,7 +13,6 @@ class ReceptionContact {
   final controller.Reception _receptionController;
   final controller.Contact _contactController;
   final controller.Endpoint _endpointController;
-  final controller.Calendar _calendarController;
   final controller.DistributionList _dlistController;
 
   ///TODO: Add additional validation checks
@@ -87,17 +86,12 @@ class ReceptionContact {
   Endpoints _endpointsView;
   DistributionList _distributionsListView;
   Phonenumbers _phoneNumberView;
-  ContactCalendarComponent _calendarComponent;
 
   /**
    *
    */
-  ReceptionContact(
-      this._receptionController,
-      this._contactController,
-      this._endpointController,
-      this._calendarController,
-      this._dlistController) {
+  ReceptionContact(this._receptionController, this._contactController,
+      this._endpointController, this._dlistController) {
     _endpointsView = new Endpoints(_contactController, _endpointController);
 
     _distributionsListView = new DistributionList();
@@ -414,193 +408,4 @@ class ReceptionContact {
 
     _deleteButton.disabled = !_saveButton.disabled;
   }
-
-  /**
-   *
-   */
-  UListElement _createPhoneNumbersList(
-      Element container, List<model.PhoneNumber> phonenumbers,
-      {Function onChange}) {
-    ParagraphElement label = new ParagraphElement();
-    UListElement ul = new UListElement()..classes.add('content-list');
-
-    label.text = 'Telefonnumre';
-
-    List<LIElement> children = new List<LIElement>();
-    if (phonenumbers != null) {
-      for (model.PhoneNumber number in phonenumbers) {
-        LIElement li = simpleListElement(number.endpoint, onChange: onChange);
-
-        SelectElement kindpicker = new SelectElement()
-          ..children.addAll(phonenumberTypes.map((String kind) =>
-              new OptionElement(
-                  data: kind, value: kind, selected: kind == number.type)))
-          ..onChange.listen((_) => onChange());
-
-        SpanElement descriptionContent = new SpanElement()
-          ..text = number.description
-          ..classes.add('phonenumberdescription');
-        InputElement descriptionEditBox = new InputElement(type: 'text');
-        editableSpan(descriptionContent, descriptionEditBox, onChange);
-
-        SpanElement billingTypeContent = new SpanElement()
-          ..text = number.billing_type
-          ..classes.add('phonenumberbillingtype');
-        InputElement billingTypeEditBox = new InputElement(type: 'text');
-        editableSpan(billingTypeContent, billingTypeEditBox, onChange);
-
-        li.children.addAll([
-          kindpicker,
-          descriptionContent,
-          descriptionEditBox,
-          billingTypeContent,
-          billingTypeEditBox
-        ]);
-        children.add(li);
-      }
-    }
-
-    InputElement inputNewItem = new InputElement();
-    inputNewItem
-      ..classes.add(addNewLiClass)
-      ..placeholder = 'Tilføj ny...'
-      ..onKeyPress.listen((KeyboardEvent event) {
-        KeyEvent key = new KeyEvent.wrap(event);
-        if (key.keyCode == Keys.ENTER) {
-          String item = inputNewItem.value;
-          inputNewItem.value = '';
-
-          LIElement li = simpleListElement(item);
-          //A bit of a hack to get a unique id.
-          li.value = item.hashCode;
-          SelectElement kindpicker = new SelectElement()
-            ..children.addAll(phonenumberTypes.map(
-                (String kind) => new OptionElement(data: kind, value: kind)))
-            ..onChange.listen((_) => onChange());
-
-          SpanElement descriptionContent = new SpanElement()
-            ..text = 'kontor'
-            ..classes.add('phonenumberdescription');
-          InputElement descriptionEditBox = new InputElement(type: 'text')
-            ..placeholder = 'beskrivelse';
-          editableSpan(descriptionContent, descriptionEditBox, onChange);
-
-          SpanElement billingTypeContent = new SpanElement()
-            ..text = 'fastnet'
-            ..classes.add('phonenumberbillingtype');
-          InputElement billingTypeEditBox = new InputElement(type: 'text')
-            ..placeholder = 'taksttype';
-          editableSpan(billingTypeContent, billingTypeEditBox, onChange);
-
-          li.children.addAll([
-            kindpicker,
-            descriptionContent,
-            descriptionEditBox,
-            billingTypeContent,
-            billingTypeEditBox
-          ]);
-
-          int index = ul.children.length - 1;
-          ul.children.insert(index, li);
-
-          if (onChange != null) {
-            onChange();
-          }
-        } else if (key.keyCode == Keys.ESCAPE) {
-          inputNewItem.value = '';
-        }
-      });
-
-    children.add(new LIElement()..children.add(inputNewItem));
-
-    ul.children
-      ..clear()
-      ..addAll(children);
-
-    container.children.addAll([label, ul]);
-
-    return ul;
-  }
-
-  /**
-   *
-   */
-  List<model.PhoneNumber> getPhoneNumbersFromDOM(UListElement element) {
-    List<model.PhoneNumber> phonenumbers = new List<model.PhoneNumber>();
-
-    for (LIElement li in element.children) {
-      if (!li.classes.contains(addNewLiClass)) {
-        SpanElement content = li.children.firstWhere(
-            (elem) =>
-                elem is SpanElement &&
-                elem.classes.contains('contactgenericcontent'),
-            orElse: () => null);
-        SelectElement kindpicker = li.children
-            .firstWhere((elem) => elem is SelectElement, orElse: () => null);
-        SpanElement description = li.children.firstWhere(
-            (elem) =>
-                elem is SpanElement &&
-                elem.classes.contains('phonenumberdescription'),
-            orElse: () => null);
-        SpanElement billingType = li.children.firstWhere(
-            (elem) =>
-                elem is SpanElement &&
-                elem.classes.contains('phonenumberbillingtype'),
-            orElse: () => null);
-
-        if (content != null && kindpicker != null) {
-          phonenumbers.add(new model.PhoneNumber.empty()
-            ..type = kindpicker.options[kindpicker.selectedIndex].value
-            ..endpoint = content.text
-            ..description = description.text
-            ..billing_type = billingType.text);
-        }
-      }
-    }
-    return phonenumbers;
-  }
-}
-
-InputElement createCheckBox(Element container, String labelText, bool data,
-    {Function onChange}) {
-  ParagraphElement label = new ParagraphElement();
-  CheckboxInputElement inputCheckbox = new CheckboxInputElement();
-
-  label.text = labelText;
-  inputCheckbox.checked = data;
-
-  if (onChange != null) {
-    inputCheckbox.onChange.listen((_) {
-      onChange();
-    });
-  }
-
-  container.children.addAll([label, inputCheckbox]);
-  return inputCheckbox;
-}
-
-TableCellElement createTableCellInsertInRow(TableRowElement row) {
-  TableCellElement td = new TableCellElement();
-  row.children.add(td);
-  return td;
-}
-
-TableRowElement createTableRowInsertInTable(TableSectionElement table) {
-  TableRowElement row = new TableRowElement();
-  table.children.add(row);
-  return row;
-}
-
-UListElement createListBox(
-    Element container, String labelText, List<String> dataList,
-    {Function onChange}) {
-  ParagraphElement label = new ParagraphElement();
-  UListElement ul = new UListElement()..classes.add('content-list');
-
-  label.text = labelText;
-  fillList(ul, dataList, onChange: onChange);
-
-  container.children.addAll([label, ul]);
-
-  return ul;
 }

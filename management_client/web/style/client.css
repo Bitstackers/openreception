@@ -14,6 +14,30 @@ textarea.error {
   background-color: red;
 }
 
+span.centered-info {
+  display: block;
+  text-align: center;
+  padding:2em;
+  font-size: 120%;
+  font-weight:  bold;
+  opacity: 0.3;
+}
+
+td {
+  padding: 0.4em;
+}
+
+table>thead {
+  background-color: #999;
+  color:white;
+  font-weight: bold;;
+
+}
+
+table {
+  border-spacing: 0px;
+}
+
 body {
   font-family: "Roboto","Helvetica","Arial",sans-serif;
   font-size: 14px;
@@ -162,11 +186,19 @@ nav#navigation img {
   cursor: pointer;
 }
 
-.zebra-even li:nth-of-type(even) {
+.zebra-even>li:nth-of-type(even) {
   background-color: #eee;
 }
 
-.zebra-odd li:nth-of-type(odd) {
+.zebra-odd>li:nth-of-type(odd) {
+  background-color: #eee;
+}
+
+.zebra-even>tr:nth-of-type(even) {
+  background-color: #eee;
+}
+
+.zebra-odd>tr:nth-of-type(odd) {
   background-color: #eee;
 }
 

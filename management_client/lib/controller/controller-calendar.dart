@@ -8,13 +8,17 @@ class Calendar {
   Future<Iterable<ORModel.CalendarEntryChange>> changes(int entryId) =>
       _calendarService.changes(entryId);
 
-  Future<Iterable<ORModel.CalendarEntry>> listContact(int contactId) =>
-      _calendarService.list(new ORModel.OwningContact(contactId));
+  Future<Iterable<ORModel.CalendarEntry>> listContact(int contactId,
+          {bool deleted: false}) =>
+      _calendarService.list(new ORModel.OwningContact(contactId),
+          deleted: deleted);
 
   Future<Iterable<ORModel.CalendarEntry>> list() => _calendarService.listAll();
 
-  Future<Iterable<ORModel.CalendarEntry>> listReception(int receptionId) =>
-      _calendarService.list(new ORModel.OwningReception(receptionId));
+  Future<Iterable<ORModel.CalendarEntry>> listReception(int receptionId,
+          {bool deleted: false}) =>
+      _calendarService.list(new ORModel.OwningReception(receptionId),
+          deleted: deleted);
 
   Future<ORModel.CalendarEntry> create(
           ORModel.CalendarEntry entry, ORModel.User user) =>
@@ -24,6 +28,12 @@ class Calendar {
           ORModel.CalendarEntry entry, ORModel.User user) =>
       _calendarService.update(entry, user.id);
 
-  Future remove(ORModel.CalendarEntry entry, ORModel.User user) =>
+  Future remove(ORModel.CalendarEntry entry, ORModel.User user,
+          {bool purge: false}) =>
+      purge
+          ? _calendarService.purge(entry.ID)
+          : _calendarService.remove(entry.ID, user.id);
+
+  Future(ORModel.CalendarEntry entry, ORModel.User user) =>
       _calendarService.remove(entry.ID, user.id);
 }

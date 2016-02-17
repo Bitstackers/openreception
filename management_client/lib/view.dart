@@ -16,8 +16,7 @@ import 'package:management_tool/searchcomponent.dart';
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/notification.dart' as notify;
 
-part 'view/view-calendar_log_filter.dart';
-part 'view/view-contact_calendar.dart';
+part 'view/view-calendar.dart';
 part 'view/view-dialplan.dart';
 part 'view/view-dialplan_list.dart';
 part 'view/view-distributionlist.dart';

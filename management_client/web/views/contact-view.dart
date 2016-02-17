@@ -39,6 +39,9 @@ class ContactView {
   List<model.BaseContact> _contactList = new List<model.BaseContact>();
   SearchInputElement _searchBox;
 
+  view.Calendar _calendarView;
+  view.Calendar _deletedCalendarView;
+
   final TextInputElement _nameInput = new TextInputElement()
     ..id = 'contact-input-name'
     ..classes.add('wide');
@@ -79,8 +82,15 @@ class ContactView {
   final ButtonElement _deleteButton = new ButtonElement()
     ..text = 'Slet'
     ..classes.add('delete');
+
+  final AnchorElement _calendarToggle = new AnchorElement()
+    ..href = '#calendar'
+    ..text = 'Vis kalenderaftaler';
+
   final DivElement _receptionOuterSelector = new DivElement()
     ..id = 'contact-reception-selector';
+
+  final DivElement _calendarsContainer = new DivElement()..style.clear = 'both';
 
   SearchComponent<model.Reception> _search;
   bool createNew = false;
@@ -123,12 +133,36 @@ class ContactView {
           _receptionOuterSelector,
           _joinReceptionbutton
         ],
+      new DivElement()
+        ..style.clear = 'both'
+        ..children = [_calendarToggle]
     ];
+
+    _calendarView = new view.Calendar(_calendarController, false);
+    _deletedCalendarView = new view.Calendar(_calendarController, true);
 
     element.querySelector('#contact-create').replaceWith(_createButton);
 
     _ulContactList = element.querySelector('#contact-list');
     element.classes.add('page');
+
+    _calendarsContainer
+      ..children = [
+        new HeadingElement.h4()..text = 'Kalender',
+        _calendarView.element,
+        new HeadingElement.h4()..text = 'Slettede KalenderPoster',
+        _deletedCalendarView.element
+      ];
+
+    _calendarToggle.onClick.listen((_) {
+      _calendarsContainer.hidden = !_calendarsContainer.hidden;
+
+      _calendarToggle.text = _calendarsContainer.hidden
+          ? 'Vis kalenderaftaler'
+          : 'Skjul kalenderaftaler';
+    });
+
+    _baseInfoContainer.children.add(_calendarsContainer);
 
     _ulReceptionContacts = element.querySelector('#reception-contacts');
     _ulReceptionList = element.querySelector('#contact-reception-list');
@@ -171,6 +205,9 @@ class ContactView {
     _importCidInput.value = '';
     _deleteButton.text = 'Slet';
     _bcidInput.value = bc.id.toString();
+
+    _calendarsContainer..hidden = true;
+    _calendarToggle..text = 'Vis kalenderaftaler';
 
     if (bc.id != model.Contact.noID) {
       _activateContact(bc.id);
@@ -218,6 +255,34 @@ class ContactView {
       _saveButton.disabled = true;
       _deleteButton.disabled = true;
     });
+
+    _calendarView.onDelete = () async {
+      _calendarController
+          .listContact(baseContact.id, deleted: false)
+          .then((Iterable<model.CalendarEntry> entries) {
+        _calendarView.entries = entries;
+      });
+
+      _calendarController
+          .listContact(baseContact.id, deleted: true)
+          .then((Iterable<model.CalendarEntry> entries) {
+        _deletedCalendarView.entries = entries;
+      });
+    };
+
+    _deletedCalendarView.onDelete = () async {
+      _calendarController
+          .listContact(baseContact.id, deleted: false)
+          .then((Iterable<model.CalendarEntry> entries) {
+        _calendarView.entries = entries;
+      });
+
+      _calendarController
+          .listContact(baseContact.id, deleted: true)
+          .then((Iterable<model.CalendarEntry> entries) {
+        _deletedCalendarView.entries = entries;
+      });
+    };
 
     _saveButton.onClick.listen((_) async {
       model.BaseContact updated;
@@ -410,6 +475,18 @@ class ContactView {
 
       _highlightContactInList(id);
 
+      _calendarController
+          .listContact(contact.id, deleted: false)
+          .then((Iterable<model.CalendarEntry> entries) {
+        _calendarView.entries = entries;
+      });
+
+      _calendarController
+          .listContact(contact.id, deleted: true)
+          .then((Iterable<model.CalendarEntry> entries) {
+        _deletedCalendarView.entries = entries;
+      });
+
       return _contactController
           .receptions(id)
           .then((Iterable<int> receptionIDs) {
@@ -422,7 +499,6 @@ class ContactView {
                 _receptionController,
                 _contactController,
                 _endpointController,
-                _calendarController,
                 _dlistController)..contact = contact;
 
             _ulReceptionContacts.children.add(rcView.element);
@@ -528,7 +604,6 @@ class ContactView {
             _receptionController,
             _contactController,
             _endpointController,
-            _calendarController,
             _dlistController)..contact = template;
 
         _ulReceptionContacts.children..add(rcView.element);

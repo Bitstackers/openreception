@@ -27,7 +27,6 @@ class Calendar {
   final controller.Calendar _calendarController;
   final controller.Contact _contactController;
   final controller.Reception _receptionController;
-  view.CalendarLogFilter _filterView;
 
   final UListElement _calendarChangeList = new UListElement()
     ..classes.add('calendar-change');
