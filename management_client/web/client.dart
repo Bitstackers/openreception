@@ -70,7 +70,8 @@ Future main() async {
     final Controller.Dialplan dialplanController =
         new Controller.Dialplan(dialplanStore, receptionStore);
 
-    final Controller.Ivr ivrController = new Controller.Ivr(ivrStore);
+    final Controller.Ivr ivrController =
+        new Controller.Ivr(ivrStore, dialplanStore);
     //Initializes the notification system.
     notify.initialize();
 

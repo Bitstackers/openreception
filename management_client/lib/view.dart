@@ -17,18 +17,19 @@ import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/notification.dart' as notify;
 
 part 'view/view-calendar_log_filter.dart';
+part 'view/view-contact_calendar.dart';
 part 'view/view-dialplan.dart';
 part 'view/view-dialplan_list.dart';
+part 'view/view-distributionlist.dart';
+part 'view/view-endpoint.dart';
+part 'view/view-ivr_menu.dart';
 part 'view/view-organization.dart';
 part 'view/view-phonenumbers.dart';
-part 'view/view-reception.dart';
 part 'view/view-reception_contact.dart';
+part 'view/view-reception.dart';
 part 'view/view-user.dart';
 part 'view/view-user_groups.dart';
 part 'view/view-user_identities.dart';
-part 'view/view-contact_calendar.dart';
-part 'view/view-distributionlist.dart';
-part 'view/view-endpoint.dart';
 
 const String _libraryName = 'management_tool.view';
 const List<String> phonenumberTypes = const ['PSTN', 'SIP'];

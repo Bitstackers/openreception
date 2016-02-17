@@ -35,9 +35,6 @@ class Dialplan {
   final UListElement _receptionsList = new UListElement()
     ..classes.add('zebra-odd');
 
-  /// Extracts the uid of the currently selected user.
-  model.ReceptionDialplan get selectedDialplan => _dpView.dialplan;
-
   /**
    *
    */
@@ -74,6 +71,10 @@ class Dialplan {
       if (event.window == _viewName) {
         element.hidden = false;
         await _refreshList();
+
+        if (event.data.containsKey('extension')) {
+          _activateDialplan(event.data['extension']);
+        }
       } else {
         element.hidden = true;
       }
