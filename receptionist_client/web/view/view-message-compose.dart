@@ -26,6 +26,7 @@ class MessageCompose extends ViewWidget {
   final Logger _log = new Logger('$libraryName.MessageCompose');
   final Controller.Message _messageController;
   final Controller.Destination _myDestination;
+  Controller.Destination _myDestinationMessageBox;
   final Controller.Notification _notification;
   final List<ORModel.Call> _pickedUpCalls = new List<ORModel.Call>();
   final Controller.Popup _popup;
@@ -51,6 +52,10 @@ class MessageCompose extends ViewWidget {
       Map<String, String> this._langMap) {
     _ui.setHint('alt+b | ctrl+space | ctrl+s | ctrl+enter');
 
+    _myDestinationMessageBox = new Controller.Destination(
+        Controller.Context.home, Controller.Widget.messageCompose,
+        cmd: Controller.Cmd.focusMessageArea);
+
     _observers();
   }
 
@@ -58,7 +63,11 @@ class MessageCompose extends ViewWidget {
   @override Model.UIMessageCompose get _ui => _uiModel;
 
   @override void _onBlur(Controller.Destination _) {}
-  @override void _onFocus(Controller.Destination _) {}
+  @override void _onFocus(Controller.Destination destination) {
+    if (destination.cmd == Controller.Cmd.focusMessageArea) {
+      _ui.focusMessageTextArea();
+    }
+  }
 
   /**
    * Simply navigate to my [_myDestination]. Matters not if this widget is
@@ -83,6 +92,14 @@ class MessageCompose extends ViewWidget {
   }
 
   /**
+   * If a contact is selected in [_contactSelector], then navigate to the
+   * calendar editor with [cmd] set.
+   */
+  void _navigateToMessageTextArea() {
+    _navigate.go(_myDestinationMessageBox);
+  }
+
+  /**
    * Observers.
    */
   void _observers() {
@@ -90,6 +107,7 @@ class MessageCompose extends ViewWidget {
 
     _ui.onClick.listen((MouseEvent _) => _activateMe());
     _hotKeys.onAltB.listen((KeyboardEvent _) => _activateMe());
+    _hotKeys.onAltD.listen((KeyboardEvent _) => _navigateToMessageTextArea());
 
     _hotKeys.onCtrlEsc.listen((KeyboardEvent _) => _ui.reset(pristine: true));
 
@@ -108,7 +126,14 @@ class MessageCompose extends ViewWidget {
           !_pickedUpCalls.any((ORModel.Call c) => c.ID == newCall.ID)) {
         _pickedUpCalls.add(newCall);
 
+        /// This is somewhat nasty. We're assuming that this fires _before_ the _contactSelector
+        /// fires a newly selected contact.
         _ui.reset(pristine: true);
+
+        if (_ui.isFocused) {
+          /// Will focus whichever element that has been registered by the _ui.reset() call.
+          _ui.focusOnCurrentFocusElement();
+        }
       }
     });
 

@@ -74,6 +74,13 @@ class UIMessageCompose extends UIModel {
   }
 
   /**
+   * Focus the message text area.
+   */
+  void focusMessageTextArea() {
+    _messageTextarea.focus();
+  }
+
+  /**
    * Sets focus on whichever widget element is currently considered the widget
    * default.
    */
@@ -234,9 +241,10 @@ class UIMessageCompose extends UIModel {
   }
 
   /**
-   * Reset the widget fields to their pristine state and set focus on the
-   * message body field. By default shis maintains the recipient list of the
-   * currently selected contact.
+   * Reset the widget fields to their pristine state and registers [_callerNameInput] as the field
+   * that will get focus on next navigate.
+   *
+   * By default this maintains the recipient list of the currently selected contact.
    *
    * If [pristine] is true, then also clear and close the recipient list.
    */

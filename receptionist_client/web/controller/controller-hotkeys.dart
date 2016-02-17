@@ -27,6 +27,7 @@ class HotKeys {
   final Bus<Html.KeyboardEvent> _altArrowUp = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _altB = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _altC = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _altD = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _altE = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _altF = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _altH = new Bus<Html.KeyboardEvent>();
@@ -58,6 +59,7 @@ class HotKeys {
   Stream<Html.KeyboardEvent> get onAltArrowUp => _altArrowUp.stream;
   Stream<Html.KeyboardEvent> get onAltB => _altB.stream;
   Stream<Html.KeyboardEvent> get onAltC => _altC.stream;
+  Stream<Html.KeyboardEvent> get onAltD => _altD.stream;
   Stream<Html.KeyboardEvent> get onAltE => _altE.stream;
   Stream<Html.KeyboardEvent> get onAltF => _altF.stream;
   Stream<Html.KeyboardEvent> get onAltH => _altH.stream;
@@ -96,7 +98,7 @@ class HotKeys {
       'Alt+Up': (event) => _altArrowUp.fire(event),
       'Alt+b': (event) => _altB.fire(event),
       'Alt+c': (event) => _altC.fire(event),
-      'Alt+d': _null, // Blackhole this
+      'Alt+d': (event) => _altD.fire(event),
       'Alt+e': (event) => _altE.fire(event),
       'Alt+f': (event) => _altF.fire(event),
       'Alt+h': (event) => _altH.fire(event),
@@ -180,6 +182,7 @@ class SimulationHotKeys {
   void altArrowUp() => _hotKeys._altArrowUp.fire(null);
   void altB() => _hotKeys._altB.fire(null);
   void altC() => _hotKeys._altC.fire(null);
+  void altD() => _hotKeys._altD.fire(null);
   void altE() => _hotKeys._altE.fire(null);
   void altF() => _hotKeys._altF.fire(null);
   void altH() => _hotKeys._altH.fire(null);

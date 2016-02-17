@@ -42,7 +42,7 @@ part 'controller-user.dart';
 
 const String libraryName = 'controller';
 
-enum Cmd { edit, create, save }
+enum Cmd { edit, create, save, focusMessageArea }
 
 class ControllerError implements Exception {
   final String message;
