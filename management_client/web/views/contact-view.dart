@@ -8,7 +8,6 @@ import 'package:logging/logging.dart';
 import 'package:management_tool/eventbus.dart';
 import 'package:management_tool/view.dart' as view;
 
-import 'package:management_tool/notification.dart' as notify;
 import 'package:management_tool/searchcomponent.dart';
 import 'package:management_tool/configuration.dart';
 import '../menu.dart';
@@ -18,6 +17,8 @@ import 'package:openreception_framework/storage.dart' as storage;
 import 'package:management_tool/controller.dart' as controller;
 
 const String _libraryName = 'contact.view';
+
+controller.Popup notify = controller.popup;
 
 class ContactView {
   static const String _viewName = 'contact';
@@ -287,10 +288,10 @@ class ContactView {
       model.BaseContact updated;
       if (baseContact.id == model.Contact.noID) {
         updated = await _contactController.create(baseContact);
-        notify.info('Oprettede basis-kontakt ${updated.fullName}');
+        notify.success('Oprettede kontaktperson', '${updated.fullName}');
       } else {
         updated = await _contactController.update(baseContact);
-        notify.info('Opdaterede basis-kontakt ${updated.fullName}');
+        notify.success('Opdaterede kontaktperson', '${updated.fullName}');
       }
       _saveButton.disabled = false;
       _deleteButton.disabled = !_saveButton.disabled;
@@ -316,11 +317,11 @@ class ContactView {
           sourceCid = int.parse(_importCidInput.value);
 
           if (sourceCid == baseContact.id) {
-            notify.error('"${_importCidInput.value}" er egen ID');
+            notify.error('"${_importCidInput.value}" er egen ID', '');
             return;
           }
         } on FormatException {
-          notify.error('"${_importCidInput.value}" er ikke et tal');
+          notify.error('"${_importCidInput.value}" er ikke et tal', '');
           return;
         }
 
@@ -382,13 +383,14 @@ class ContactView {
           _log.finest('Deleting cid:$sourceCid');
           await _contactController.remove(sourceCid);
 
-          notify.info(
-              'Tilføjede ${baseContact.fullName} til ${rids.length} receptioner');
+          notify.success(
+              'Tilføjede ${baseContact.fullName} til ${rids.length} receptioner',
+              '');
 
           _refreshList();
           baseContact = await _contactController.get(dcid);
         } on storage.NotFound {
-          notify.error('cid:${sourceCid} Findes ikke');
+          notify.error('cid:${sourceCid} Findes ikke', '');
 
           return;
         }
@@ -553,11 +555,11 @@ class ContactView {
 
   Future _receptionContactUpdate(model.Contact ca) {
     return _contactController.updateInReception(ca).then((_) {
-      notify.info('Oplysningerne blev gemt.');
+      notify.success('Oplysningerne blev gemt', '');
     }).catchError((error, stack) {
-      notify.error('Ændringerne blev ikke gemt.');
-      _log.severe(
-          'Tried to update a Reception Contact, but failed with "${error}", ${stack}');
+      notify.error('Ændringerne blev ikke gemt', 'Fejl: $error');
+      _log.severe('Tried to update a Reception Contact, '
+          'but failed with "${error}", ${stack}');
     });
   }
 
@@ -565,11 +567,12 @@ class ContactView {
     return _contactController
         .addToReception(contact, contact.receptionID)
         .then((_) {
-      notify.info('Lageringen gik godt.');
+      notify.success('Tilføjet til reception',
+          '${contact.fullName} til (rid: ${contact.receptionID})');
       bus.fire(new ReceptionContactAddedEvent(contact.receptionID, contact.ID));
     }).catchError((error, stack) {
       notify.error(
-          'Der skete en fejl, så forbindelsen mellem kontakt og receptionen blev ikke oprettet. ${error}');
+          'Kunne ikke tilføje kontakt til reception', 'Fejl: ${error}');
       _log.severe(
           'Tried to update a Reception Contact, but failed with "$error" ${stack}');
     });
@@ -606,6 +609,11 @@ class ContactView {
             _dlistController)..contact = template;
 
         _ulReceptionContacts.children..add(rcView.element);
+        notify.success('Tilføjede kontaktperson til reception',
+            '${baseContact.fullName} til ${reception.name}');
+      }).catchError((e) {
+        notify.error(
+            'Kunne ikke tilføje kontaktperson til reception', 'Fejl: ${e}');
       });
     }
   }
@@ -690,15 +698,14 @@ class ContactView {
       _deleteButton.disabled = true;
 
       await _contactController.remove(baseContact.id);
-      notify.info('Kontaktperson er slettet.');
+      notify.success('Kontaktperson slettet', baseContact.fullName);
       _baseInfoContainer.hidden = true;
       _refreshList();
       _clearContent();
       _joinReceptionbutton.disabled = true;
       baseContact = new model.BaseContact.empty();
     } catch (error) {
-      notify.error(
-          'Der skete en fejl i forbindelse med sletningen af kontaktperson');
+      notify.error('Kunne ikke slette kontaktperson', baseContact.fullName);
       _log.severe('Delete baseContact failed with: ${error}');
     }
 

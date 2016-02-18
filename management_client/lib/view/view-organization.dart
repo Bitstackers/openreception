@@ -131,9 +131,10 @@ class Organization {
         await _orgController.remove(organization.id);
         _changeBus.fire(new OrganizationChange.delete(organization));
         element.hidden = true;
-        notify.info('Organisationen blev slettet.');
+        notify.success('Organisationen blev slettet', organization.fullName);
       } catch (error) {
-        notify.error('Der skete en fejl, så organisationen blev ikke slettet.');
+        notify.error('Der skete en fejl, så organisationen blev ikke slettet.',
+            'Fejl: $error');
         _log.severe('Tried to remove an organization, but got: $error');
         element.hidden = false;
       }
@@ -146,10 +147,11 @@ class Organization {
         try {
           model.Organization newOrg = await _orgController.create(organization);
           _changeBus.fire(new OrganizationChange.create(newOrg));
-          notify.info('Organisationen blev oprettet.');
+          notify.success('Organisationen blev oprettet', newOrg.fullName);
         } catch (error) {
           notify.error(
-              'Der skete en fejl, så organisationen blev ikke oprettet.');
+              'Der skete en fejl, så organisationen blev ikke oprettet',
+              'Fejl: $error');
           _log.severe('Tried to create an new organization, but got: $error');
           element.hidden = false;
         }
@@ -157,10 +159,10 @@ class Organization {
         try {
           await _orgController.update(organization);
           _changeBus.fire(new OrganizationChange.update(organization));
-          notify.info('Ændringerne blev gemt.');
+          notify.success('Ændringerne blev gemt', organization.fullName);
         } catch (error) {
-          notify.error(
-              'Der skete en fejl i forbindelse med forsøget på at gemme ændringerne til organisationen.');
+          notify.error('Kunne ikke gemme ændringerne til organisationen',
+              'Fejl: $error');
           _log.severe('Tried to update an organization, but got: $error');
           element.hidden = false;
         }

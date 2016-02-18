@@ -31,9 +31,10 @@ class Menu {
       'reception': element.querySelector('#reception-button') as ButtonElement,
       'contact': element.querySelector('#contact-button') as ButtonElement,
       'dialplan': element.querySelector('#dialplan-button') as ButtonElement,
-      'record': element.querySelector('#record-button') as ButtonElement,
+      'soundfile': element.querySelector('#soundfile-button') as ButtonElement,
       'user': element.querySelector('#user-button') as ButtonElement,
       'ivr': element.querySelector('#ivr-button') as ButtonElement,
+      'messages': element.querySelector('#message-button') as ButtonElement,
       'billing': element.querySelector('#billing-button') as ButtonElement,
       'music': element.querySelector('#music-button') as ButtonElement,
     };

@@ -9,14 +9,15 @@ import 'package:management_tool/page/page-organization.dart' as orgView;
 import 'package:management_tool/page/page-reception.dart' as recepView;
 import 'package:management_tool/page/page-user.dart' as userView;
 import 'menu.dart';
-import 'package:management_tool/controller.dart' as Controller;
+import 'package:management_tool/controller.dart' as controller;
 import 'lib/auth.dart';
-import 'package:management_tool/notification.dart' as notify;
 import 'package:management_tool/configuration.dart';
 import 'package:logging/logging.dart';
 
 import 'package:openreception_framework/service.dart' as service;
 import 'package:openreception_framework/service-html.dart' as transport;
+
+controller.Popup notify = controller.popup;
 
 Future main() async {
   Logger.root.level = Level.ALL;
@@ -54,25 +55,23 @@ Future main() async {
         config.clientConfig.dialplanServerUri, config.token, client);
 
     /// Controllers
-    final Controller.User userController = new Controller.User(userStore);
-    final Controller.DistributionList dlistController =
-        new Controller.DistributionList(dlistStore);
-    final Controller.Endpoint epController = new Controller.Endpoint(epStore);
-    final Controller.Reception receptionController =
-        new Controller.Reception(receptionStore);
-    final Controller.Organization organizationController =
-        new Controller.Organization(organizationStore);
-    final Controller.Contact contactController =
-        new Controller.Contact(contactStore);
-    final Controller.Calendar calendarController =
-        new Controller.Calendar(calendarStore);
-    final Controller.Dialplan dialplanController =
-        new Controller.Dialplan(dialplanStore, receptionStore);
+    final controller.User userController = new controller.User(userStore);
+    final controller.DistributionList dlistController =
+        new controller.DistributionList(dlistStore);
+    final controller.Endpoint epController = new controller.Endpoint(epStore);
+    final controller.Reception receptionController =
+        new controller.Reception(receptionStore);
+    final controller.Organization organizationController =
+        new controller.Organization(organizationStore);
+    final controller.Contact contactController =
+        new controller.Contact(contactStore);
+    final controller.Calendar calendarController =
+        new controller.Calendar(calendarStore);
+    final controller.Dialplan dialplanController =
+        new controller.Dialplan(dialplanStore, receptionStore);
 
-    final Controller.Ivr ivrController =
-        new Controller.Ivr(ivrStore, dialplanStore);
-    //Initializes the notification system.
-    notify.initialize();
+    final controller.Ivr ivrController =
+        new controller.Ivr(ivrStore, dialplanStore);
 
     final orgView.OrganizationView orgPage = new orgView.OrganizationView(
         organizationController, receptionController);

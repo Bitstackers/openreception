@@ -68,7 +68,7 @@ class Calendar {
       if (deleteButton.text == confirmText) {
         await _calendarController.remove(entry, config.user,
             purge: _containsDeleted);
-        notify.info('Slettede kalenderpost eid:${entry.ID}');
+        notify.success('Slettede kalenderpost', 'eid:${entry.ID}');
 
         onDelete != null ? onDelete() : '';
       } else {

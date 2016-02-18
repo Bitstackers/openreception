@@ -5,11 +5,12 @@ import 'dart:html';
 
 import 'package:logging/logging.dart';
 import 'package:management_tool/eventbus.dart';
-import 'package:management_tool/notification.dart' as notify;
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/view.dart' as view;
 
 import 'package:openreception_framework/model.dart' as ORModel;
+
+controller.Popup notify = controller.popup;
 
 const String _libraryName = 'management_tool.page.organization';
 
@@ -166,7 +167,7 @@ class OrganizationView {
       this._organizations = list;
       _renderOrganizationList(list);
     }).catchError((error) {
-      notify.error('Organisationerne blev ikke hentet da der er sket en fejl.');
+      notify.error('Organisationsliste kunne ikke hentes', 'Fejl: $error');
       _log.severe('Tried to fetch organization list, got error: $error');
     });
   }
@@ -198,7 +199,8 @@ class OrganizationView {
           await _organizationController.get(organizationId);
     } catch (error) {
       notify.error(
-          'Der skete en fejl i forbindelse med at hente alt information for organisationen.');
+          'Kunne ikke hente stamdata for organisation oid:$organizationId',
+          'Fejl: $error');
       _log.severe(
           'Tried to activate organization "$organizationId" but gave error: $error');
     }
@@ -259,8 +261,7 @@ class OrganizationView {
         ..clear()
         ..addAll(list.map(_makeContactNode));
     }).catchError((error) {
-      notify.error(
-          'Der skete en fejl i forbindelse med at hente kontakterne tilknyttet organisationen.');
+      notify.error('Kunne ikke hente organisationskontakter', 'Fejl: $error');
       _log.severe(
           'Tried to fetch the contactlist from an organization Error: $error');
     });

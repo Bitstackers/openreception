@@ -253,7 +253,7 @@ class ReceptionContact {
             }
           }));
         } catch (e) {
-          notify.error('Beskedadresser ikke opdateret: $e');
+          notify.error('Beskedadresser ikke opdateret', 'Fejl: $e');
         }
 
         try {
@@ -269,12 +269,12 @@ class ReceptionContact {
             }
           }));
         } catch (e) {
-          notify.error('Distributionsliste ikke opdateret: $e');
+          notify.error('Distributionsliste ikke opdateret', 'Fejl: $e');
         }
 
-        notify.info('Receptions-kontakten blev opdateret.');
+        notify.success('Receptions-kontakten blev opdateret', contact.fullName);
       } catch (error) {
-        notify.error('Receptions-kontakten blev ikke opdateret.');
+        notify.error('Receptions-kontakten blev ikke opdateret', 'Fejl:$error');
       }
 
       /// Reload the contact.
@@ -283,14 +283,22 @@ class ReceptionContact {
     });
 
     _deleteButton.onClick.listen((_) async {
+      final String confirmText = 'Bekræft fjernelse af ${contact.fullName} fra '
+          'receptionen ${_header.text}';
+
+      if (_deleteButton.text != confirmText) {
+        _deleteButton.text = confirmText;
+        return;
+      }
+
       try {
         await _contactController.removeFromReception(
             contact.ID, contact.receptionID);
-        notify.info(
-            'Receptions-kontakten blev fjernet fra receptionen ${_header.text}');
+        notify.success(
+            'Receptions-kontakt fjernet fra reception', '${_header.text}');
         element.remove();
       } catch (error) {
-        notify.error('Receptions-kontakten blev ikke slettet.');
+        notify.error('Receptions-kontakten ikke fjernet', 'Fejl: $error');
       }
     });
 

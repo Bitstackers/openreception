@@ -75,7 +75,7 @@ class IvrMenu {
     _saveButton.onClick.listen((_) async {
       await _menuController.update(menu);
       onUpdate != null ? onUpdate(menu.name) : '';
-      notify.info('IVR-Menu blev opdateret.');
+      notify.success('IVR-Menu blev opdateret.', menu.name);
     });
 
     _deleteButton.onClick.listen((_) => _deleteMenu());
@@ -104,7 +104,7 @@ class IvrMenu {
       _deleteButton.disabled = true;
 
       await _menuController.remove(menu.name);
-      notify.info('Menuen er slettet.');
+      notify.success('Menuen er slettet.', menu.name);
 
       onDelete != null ? onDelete(menu.name) : '';
 
@@ -112,7 +112,8 @@ class IvrMenu {
       _menuInput.value = '';
       element.hidden = true;
     } catch (error) {
-      notify.error('Der skete en fejl i forbindelse med sletningen af menuen.');
+      notify.error('Der skete en fejl i forbindelse med sletningen af menuen.',
+          'Fejl: $error');
       _log.severe('Delete ivrmenu failed with: ${error}');
     }
 

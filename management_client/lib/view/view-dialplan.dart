@@ -76,7 +76,7 @@ class Dialplan {
     _saveButton.onClick.listen((_) async {
       await _dialplanController.update(dialplan);
       onUpdate != null ? onUpdate(dialplan.extension) : '';
-      notify.info('Kaldplan blev opdateret.');
+      notify.success('Kaldplan blev opdateret.', dialplan.extension);
     });
 
     _deleteButton.onClick.listen((_) => _deleteDialplan());
@@ -106,7 +106,7 @@ class Dialplan {
       _deleteButton.disabled = true;
 
       await _dialplanController.remove(dialplan.extension);
-      notify.info('Kaldplan er slettet.');
+      notify.success('Kaldplan er slettet.', dialplan.extension);
 
       onDelete != null ? onDelete(dialplan.extension) : '';
 
@@ -115,7 +115,7 @@ class Dialplan {
       element.hidden = true;
     } catch (error) {
       notify.error(
-          'Der skete en fejl i forbindelse med sletningen af kaldplanen. '
+          'Der skete en fejl i forbindelse med sletningen af kaldplanen',
           'Check at den ikke bruges af en reception.');
       _log.severe('Delete dialplan failed with: ${error}');
     }

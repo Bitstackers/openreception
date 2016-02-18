@@ -12,7 +12,6 @@ import 'package:openreception_framework/model.dart' as model;
 import 'package:openreception_framework/util.dart' as util;
 import 'package:management_tool/searchcomponent.dart';
 import 'package:management_tool/controller.dart' as controller;
-import 'package:management_tool/notification.dart' as notify;
 
 part 'view/view-calendar.dart';
 part 'view/view-dialplan.dart';
@@ -30,6 +29,7 @@ part 'view/view-user_identities.dart';
 
 const String _libraryName = 'management_tool.view';
 const List<String> phonenumberTypes = const ['PSTN', 'SIP'];
+controller.Popup notify = controller.popup;
 
 var _jsonpp = new JsonEncoder.withIndent('  ');
 

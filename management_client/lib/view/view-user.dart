@@ -214,12 +214,11 @@ class User {
       _deleteButton.disabled = true;
 
       await _userController.remove(userId);
-      notify.info('Brugeren er slettet.');
+      notify.success('Bruger slettet', user.name);
       _changeBus.fire(new UserChange.delete(user));
       hide();
     } catch (error) {
-      notify
-          .error('Der skete en fejl i forbindelse med sletningen af brugeren');
+      notify.error('Bruger ikke slettet', 'Fejl: $error');
       _log.severe('Delete user failed with: ${error}');
     }
 
@@ -267,9 +266,9 @@ class User {
         }
       });
 
-      notify.info('Brugeren blev opdateret.');
+      notify.success('Brugeren blev opdateret', user.name);
     } catch (error) {
-      notify.error('Der skete en fejl i forbindelse med lagringen af brugeren');
+      notify.error('Kunne ikke opdatere bruger', 'Fejl: $error');
       _log.severe('Save user failed with: ${error}');
     }
   }

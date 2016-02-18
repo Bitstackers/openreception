@@ -512,9 +512,9 @@ class Reception {
         await _recController.remove(reception.ID);
         _changeBus.fire(new ReceptionChange.delete(reception));
         element.hidden = true;
-        notify.info('Receptionen blev slettet.');
+        notify.success('Receptionen blev slettet', reception.name);
       } catch (error) {
-        notify.error('Der skete en fejl, så recpetionen blev ikke slettet.');
+        notify.error('Kunne ikke slette reception', reception.name);
         _log.severe('Tried to remove a reception, but got: $error');
         element.hidden = false;
       }
@@ -532,9 +532,9 @@ class Reception {
         try {
           model.Reception newRec = await _recController.create(reception);
           _changeBus.fire(new ReceptionChange.create(newRec));
-          notify.info('Receptionen blev oprettet.');
+          notify.success('Receptionen blev oprettet', reception.fullName);
         } catch (error) {
-          notify.error('Der skete en fejl, så receptionen blev ikke oprettet.');
+          notify.error('Receptionen kunne ikke oprettes', 'Fejl: $error');
           _log.severe('Tried to create a new reception, but got: $error');
           element.hidden = false;
         }
@@ -542,10 +542,9 @@ class Reception {
         try {
           await _recController.update(reception);
           _changeBus.fire(new ReceptionChange.update(reception));
-          notify.info('Ændringerne blev gemt.');
+          notify.success('Reception opdateret', reception.name);
         } catch (error) {
-          notify.error(
-              'Der skete en fejl i forbindelse med forsøget på at gemme ændringerne til receptionen.');
+          notify.error('Kunne ikke opdatere reception', 'Fejl: $error');
           _log.severe('Tried to update a reception, but got: $error');
           element.hidden = false;
         }
@@ -555,10 +554,13 @@ class Reception {
     _deployDialplanButton.onClick.listen((_) async {
       try {
         await _dpController.deploy(reception.dialplan, reception.ID);
-        notify.info('Udrullede kaldplan.');
+        notify.success(
+            'Udrullede kaldplan',
+            'Kaldplan ${reception.dialplan} til '
+            'reception ${reception.name} (rid: ${reception.ID})');
       } catch (e, s) {
         _log.severe('Could not deploy dialplan', e, s);
-        notify.error('Kunne ikke udrulle kaldplan!');
+        notify.error('Kunne ikke udrulle kaldplan!', 'Fejl: $e');
       }
     });
   }
