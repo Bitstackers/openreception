@@ -13,6 +13,7 @@ part 'controller/controller-distribution_list.dart';
 part 'controller/controller-dialplan.dart';
 part 'controller/controller-endpoint.dart';
 part 'controller/controller-ivr.dart';
+part 'controller/controller-message.dart';
 part 'controller/controller-popup.dart';
 part 'controller/controller-organization.dart';
 part 'controller/controller-reception.dart';

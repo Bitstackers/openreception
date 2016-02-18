@@ -70,6 +70,11 @@ div.col-1-2 {
   float:left;
 }
 
+select:disabled {
+  background-color: #eee;
+  color: #aaa;
+}
+
 nav#navigation {
   left: 0%;
   top: 0%;

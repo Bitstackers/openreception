@@ -5,6 +5,8 @@ import 'views/contact-view.dart' as conView;
 
 import 'package:management_tool/page/page-dialplan.dart' as page;
 import 'package:management_tool/page/page-ivr.dart' as page;
+import 'package:management_tool/page/page-message.dart' as page;
+
 import 'package:management_tool/page/page-organization.dart' as orgView;
 import 'package:management_tool/page/page-reception.dart' as recepView;
 import 'package:management_tool/page/page-user.dart' as userView;
@@ -54,6 +56,9 @@ Future main() async {
     final service.RESTIvrStore ivrStore = new service.RESTIvrStore(
         config.clientConfig.dialplanServerUri, config.token, client);
 
+    final service.RESTMessageStore messageStore = new service.RESTMessageStore(
+        config.clientConfig.messageServerUri, config.token, client);
+
     /// Controllers
     final controller.User userController = new controller.User(userStore);
     final controller.DistributionList dlistController =
@@ -69,6 +74,8 @@ Future main() async {
         new controller.Calendar(calendarStore);
     final controller.Dialplan dialplanController =
         new controller.Dialplan(dialplanStore, receptionStore);
+    final controller.Message messageController =
+        new controller.Message(messageStore);
 
     final controller.Ivr ivrController =
         new controller.Ivr(ivrStore, dialplanStore);
@@ -95,8 +102,13 @@ Future main() async {
         dlistController,
         epController);
 
-    querySelector('#dialplan-page')
-        .replaceWith(new page.Dialplan(dialplanController).element);
+    final messagePage = new page.Message(contactController, messageController,
+        receptionController, userController);
+    final dialplanPage = new page.Dialplan(dialplanController);
+
+    querySelector('#message-page').replaceWith(messagePage.element);
+    querySelector('#dialplan-page').replaceWith(dialplanPage.element);
+
     querySelector('#ivr-page').replaceWith(new page.Ivr(ivrController).element);
     querySelector("#user-page")
         .replaceWith(new userView.UserPage(userController).element);

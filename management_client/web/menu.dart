@@ -34,7 +34,7 @@ class Menu {
       'soundfile': element.querySelector('#soundfile-button') as ButtonElement,
       'user': element.querySelector('#user-button') as ButtonElement,
       'ivr': element.querySelector('#ivr-button') as ButtonElement,
-      'messages': element.querySelector('#message-button') as ButtonElement,
+      'message': element.querySelector('#message-button') as ButtonElement,
       'billing': element.querySelector('#billing-button') as ButtonElement,
       'music': element.querySelector('#music-button') as ButtonElement,
     };

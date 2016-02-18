@@ -19,6 +19,8 @@ part 'view/view-dialplan_list.dart';
 part 'view/view-distributionlist.dart';
 part 'view/view-endpoint.dart';
 part 'view/view-ivr_menu.dart';
+part 'view/view-message_filter.dart';
+part 'view/view-messages.dart';
 part 'view/view-organization.dart';
 part 'view/view-phonenumbers.dart';
 part 'view/view-reception_contact.dart';

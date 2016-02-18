@@ -9,7 +9,7 @@ import 'package:management_tool/eventbus.dart';
 import 'package:management_tool/view.dart' as view;
 import 'package:openreception_framework/model.dart' as model;
 
-const String _libraryName = 'management_tool.page.user';
+const String _libraryName = 'management_tool.page.ivr';
 
 /**
  *
