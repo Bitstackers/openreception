@@ -84,7 +84,8 @@ Future main() async {
             contactController,
             organizationController,
             receptionController,
-            dialplanController)
+            dialplanController,
+            calendarController)
         .element);
 
     new conView.ContactView(

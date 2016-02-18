@@ -21,6 +21,7 @@ class Reception {
   final controller.Reception _recController;
   final controller.Dialplan _dpController;
   final controller.Organization _orgController;
+  final controller.Calendar _calendarController;
 
   bool get inputHasErrors => _phoneNumberView._validationError;
 
@@ -122,7 +123,17 @@ class Reception {
   SearchComponent<model.Organization> _search;
   int _organizationId = model.Organization.noID;
 
+  final AnchorElement _calendarToggle = new AnchorElement()
+    ..href = '#calendar'
+    ..text = 'Vis kalenderaftaler';
+
+  final DivElement _calendarsContainer = new DivElement()..style.clear = 'both';
+  Calendar _calendarView;
+  Calendar _deletedCalendarView;
+
   void set reception(model.Reception r) {
+    _calendarsContainer..hidden = true;
+    _calendarToggle..text = 'Vis kalenderaftaler';
     _organizationId = r.organizationId;
     _heading.text = r.name;
     _idInput.value = r.ID.toString();
@@ -189,6 +200,18 @@ class Reception {
       ..disabled = !_saveButton.disabled;
     _deployDialplanButton.disabled = _deleteButton.disabled;
 
+    _calendarController
+        .listReception(reception.ID, deleted: false)
+        .then((Iterable<model.CalendarEntry> entries) {
+      _calendarView.entries = entries;
+    });
+
+    _calendarController
+        .listReception(reception.ID, deleted: true)
+        .then((Iterable<model.CalendarEntry> entries) {
+      _deletedCalendarView.entries = entries;
+    });
+
     _orgController.list().then((Iterable<model.Organization> orgs) {
       int compareTo(model.Organization org1, model.Organization org2) =>
           org1.fullName.compareTo(org2.fullName);
@@ -235,8 +258,27 @@ class Reception {
   /**
    *
    */
-  Reception(this._recController, this._orgController, this._dpController) {
+  Reception(this._recController, this._orgController, this._dpController,
+      this._calendarController) {
     _phoneNumberView = new Phonenumbers();
+    _calendarView = new Calendar(_calendarController, false);
+    _deletedCalendarView = new Calendar(_calendarController, true);
+
+    _calendarsContainer
+      ..children = [
+        new HeadingElement.h4()..text = 'Kalender',
+        _calendarView.element,
+        new HeadingElement.h4()..text = 'Slettede KalenderPoster',
+        _deletedCalendarView.element
+      ];
+
+    _calendarToggle.onClick.listen((_) {
+      _calendarsContainer.hidden = !_calendarsContainer.hidden;
+
+      _calendarToggle.text = _calendarsContainer.hidden
+          ? 'Vis kalenderaftaler'
+          : 'Skjul kalenderaftaler';
+    });
 
     _search = new SearchComponent<model.Organization>(
         _organizationSelector, 'reception-organization-searchbox')
@@ -268,6 +310,9 @@ class Reception {
           _activeInput,
         ],
       _idInput,
+      new DivElement()
+        ..style.clear = 'both'
+        ..children = [_calendarToggle, _calendarsContainer],
       new DivElement()
         ..classes.add('col-1-2')
         ..children = [
@@ -414,6 +459,34 @@ class Reception {
    */
   void _observers() {
     Iterable<Element> inputs = element.querySelectorAll('input,textarea');
+
+    _deletedCalendarView.onDelete = () async {
+      _calendarController
+          .listReception(reception.ID, deleted: false)
+          .then((Iterable<model.CalendarEntry> entries) {
+        _calendarView.entries = entries;
+      });
+
+      _calendarController
+          .listReception(reception.ID, deleted: true)
+          .then((Iterable<model.CalendarEntry> entries) {
+        _deletedCalendarView.entries = entries;
+      });
+    };
+
+    _calendarView.onDelete = () async {
+      _calendarController
+          .listReception(reception.ID, deleted: false)
+          .then((Iterable<model.CalendarEntry> entries) {
+        _calendarView.entries = entries;
+      });
+
+      _calendarController
+          .listReception(reception.ID, deleted: true)
+          .then((Iterable<model.CalendarEntry> entries) {
+        _deletedCalendarView.entries = entries;
+      });
+    };
 
     inputs.forEach((Element ine) {
       ine.onInput.listen((_) {
