@@ -2,7 +2,6 @@ library management_tool.view;
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:collection';
 import 'dart:html';
 
 import 'package:intl/intl.dart' show DateFormat;
@@ -11,7 +10,6 @@ import 'package:logging/logging.dart';
 import 'package:openreception_framework/bus.dart';
 import 'package:openreception_framework/model.dart' as model;
 import 'package:openreception_framework/util.dart' as util;
-import 'package:management_tool/view_utilities.dart';
 import 'package:management_tool/searchcomponent.dart';
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/notification.dart' as notify;

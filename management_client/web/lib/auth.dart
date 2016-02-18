@@ -13,7 +13,6 @@ import 'package:management_tool/configuration.dart';
  */
 bool handleToken() {
   Uri url = Uri.parse(window.location.href);
-  //TODO Save to localStorage. and check on upstart if it's still valid
   if (url.queryParameters.containsKey('settoken')) {
     config.token = url.queryParameters['settoken'];
     return true;
@@ -25,6 +24,7 @@ bool handleToken() {
 
 /**Sends the user to the login site.*/
 void login() {
-  String loginUrl = '${config.clientConfig.authServerUri}/token/create?returnurl=${window.location}';
+  String loginUrl =
+      '${config.clientConfig.authServerUri}/token/create?returnurl=${window.location}';
   window.location.assign(loginUrl);
 }

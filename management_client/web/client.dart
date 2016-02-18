@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:html';
 
 import 'views/contact-view.dart' as conView;
-import 'package:management_tool/page/page-calendar.dart' as page;
 
 import 'package:management_tool/page/page-dialplan.dart' as page;
 import 'package:management_tool/page/page-ivr.dart' as page;
@@ -97,12 +96,6 @@ Future main() async {
         dlistController,
         epController);
 
-    querySelector('#calendar-page').replaceWith(new page.Calendar(
-            userController,
-            calendarController,
-            contactController,
-            receptionController)
-        .element);
     querySelector('#dialplan-page')
         .replaceWith(new page.Dialplan(dialplanController).element);
     querySelector('#ivr-page').replaceWith(new page.Ivr(ivrController).element);

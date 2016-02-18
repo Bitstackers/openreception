@@ -1,7 +1,6 @@
 library contact.view;
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:html';
 
 import 'package:logging/logging.dart';

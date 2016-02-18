@@ -13,8 +13,6 @@ class Calendar {
       _calendarService.list(new ORModel.OwningContact(contactId),
           deleted: deleted);
 
-  Future<Iterable<ORModel.CalendarEntry>> list() => _calendarService.listAll();
-
   Future<Iterable<ORModel.CalendarEntry>> listReception(int receptionId,
           {bool deleted: false}) =>
       _calendarService.list(new ORModel.OwningReception(receptionId),
