@@ -81,10 +81,27 @@ class Calendar {
         .then((Iterable<model.CalendarEntryChange> changes) {
       UListElement changeUl = new UListElement();
       List changeList = changes.toList();
-      LIElement creation = _changeToLI(changeList.removeLast(), 'Oprettet');
+      LIElement creation;
+
+      try {
+        creation = _changeToLI(changeList.removeLast(), 'Oprettet');
+      } catch (e) {
+        creation = new LIElement()
+          ..classes.add('error')
+          ..text = 'Oprettelse ikke fundet';
+      }
 
       if (_containsDeleted) {
-        LIElement deletion = _changeToLI(changeList.removeAt(0), 'Slettet');
+        LIElement deletion;
+
+        try {
+          deletion = _changeToLI(changeList.removeAt(0), 'Slettet');
+        } catch (e) {
+          creation = new LIElement()
+            ..classes.add('error')
+            ..text = 'Sletning ikke fundet';
+        }
+
         changeUl.children.add(deletion);
       }
 
