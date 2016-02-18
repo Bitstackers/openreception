@@ -8,7 +8,7 @@ class Calendar {
   Future<Iterable<model.CalendarEntryChange>> changes(int entryId) =>
       _calendarService.changes(entryId);
 
-  Future(model.CalendarEntry entry, model.User user) =>
+  Future get(model.CalendarEntry entry, model.User user) =>
       _calendarService.remove(entry.ID, user.id);
 
   Future<Iterable<model.CalendarEntry>> listContact(int contactId,
