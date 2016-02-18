@@ -1,37 +1,37 @@
 part of management_tool.controller;
 
 class Calendar {
-  final ORService.RESTCalendarStore _calendarService;
+  final service.RESTCalendarStore _calendarService;
 
   Calendar(this._calendarService);
 
-  Future<Iterable<ORModel.CalendarEntryChange>> changes(int entryId) =>
+  Future<Iterable<model.CalendarEntryChange>> changes(int entryId) =>
       _calendarService.changes(entryId);
 
-  Future<Iterable<ORModel.CalendarEntry>> listContact(int contactId,
+  Future(model.CalendarEntry entry, model.User user) =>
+      _calendarService.remove(entry.ID, user.id);
+
+  Future<Iterable<model.CalendarEntry>> listContact(int contactId,
           {bool deleted: false}) =>
-      _calendarService.list(new ORModel.OwningContact(contactId),
+      _calendarService.list(new model.OwningContact(contactId),
           deleted: deleted);
 
-  Future<Iterable<ORModel.CalendarEntry>> listReception(int receptionId,
+  Future<Iterable<model.CalendarEntry>> listReception(int receptionId,
           {bool deleted: false}) =>
-      _calendarService.list(new ORModel.OwningReception(receptionId),
+      _calendarService.list(new model.OwningReception(receptionId),
           deleted: deleted);
 
-  Future<ORModel.CalendarEntry> create(
-          ORModel.CalendarEntry entry, ORModel.User user) =>
+  Future<model.CalendarEntry> create(
+          model.CalendarEntry entry, model.User user) =>
       _calendarService.create(entry, user.id);
 
-  Future<ORModel.CalendarEntry> update(
-          ORModel.CalendarEntry entry, ORModel.User user) =>
+  Future<model.CalendarEntry> update(
+          model.CalendarEntry entry, model.User user) =>
       _calendarService.update(entry, user.id);
 
-  Future remove(ORModel.CalendarEntry entry, ORModel.User user,
+  Future remove(model.CalendarEntry entry, model.User user,
           {bool purge: false}) =>
       purge
           ? _calendarService.purge(entry.ID)
           : _calendarService.remove(entry.ID, user.id);
-
-  Future(ORModel.CalendarEntry entry, ORModel.User user) =>
-      _calendarService.remove(entry.ID, user.id);
 }

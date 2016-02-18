@@ -1,25 +1,22 @@
 part of management_tool.controller;
 
 class Ivr {
-  final ORService.RESTIvrStore _ivrStore;
-  final ORService.RESTDialplanStore _dpStore;
+  final service.RESTIvrStore _ivrStore;
+  final service.RESTDialplanStore _dpStore;
 
   Ivr(this._ivrStore, this._dpStore);
 
-  Future<Iterable<ORModel.IvrMenu>> list() => _ivrStore.list();
-  Future<Iterable<ORModel.ReceptionDialplan>> listUsage(
-          String menuName) async =>
-      (await _dpStore.list()).where((ORModel.ReceptionDialplan rdp) =>
-          rdp.allActions.any((action) =>
-              action is ORModel.Ivr && action.menuName == menuName));
+  Future<Iterable<model.IvrMenu>> list() => _ivrStore.list();
+  Future<Iterable<model.ReceptionDialplan>> listUsage(String menuName) async =>
+      (await _dpStore.list()).where((model.ReceptionDialplan rdp) => rdp
+          .allActions
+          .any((action) => action is model.Ivr && action.menuName == menuName));
 
-  Future<ORModel.IvrMenu> update(ORModel.IvrMenu menu) =>
-      _ivrStore.update(menu);
+  Future<model.IvrMenu> update(model.IvrMenu menu) => _ivrStore.update(menu);
 
-  Future<ORModel.IvrMenu> create(ORModel.IvrMenu menu) =>
-      _ivrStore.create(menu);
+  Future<model.IvrMenu> create(model.IvrMenu menu) => _ivrStore.create(menu);
 
-  Future<ORModel.IvrMenu> get(String menuName) => _ivrStore.get(menuName);
+  Future<model.IvrMenu> get(String menuName) => _ivrStore.get(menuName);
 
   Future remove(String menuName) => _ivrStore.remove(menuName);
 }

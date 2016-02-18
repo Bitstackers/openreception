@@ -1,19 +1,19 @@
 part of management_tool.controller;
 
 class Reception {
-  final ORService.RESTReceptionStore _service;
+  final service.RESTReceptionStore _service;
 
   Reception(this._service);
 
-  Future<ORModel.Reception> create(ORModel.Reception reception) =>
+  Future<model.Reception> create(model.Reception reception) =>
       _service.create(reception);
 
-  Future<ORModel.Reception> get(int receptionID) => _service.get(receptionID);
+  Future<model.Reception> get(int receptionID) => _service.get(receptionID);
 
   Future remove(int receptionID) => _service.remove(receptionID);
 
-  Future<ORModel.Reception> update(ORModel.Reception reception) =>
+  Future<model.Reception> update(model.Reception reception) =>
       _service.update(reception);
 
-  Future<Iterable<ORModel.Reception>> list() => _service.list();
+  Future<Iterable<model.Reception>> list() => _service.list();
 }

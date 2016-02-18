@@ -1,27 +1,27 @@
 part of management_tool.controller;
 
 class Dialplan {
-  final ORService.RESTDialplanStore _dpStore;
-  final ORService.RESTReceptionStore _rStore;
+  final service.RESTDialplanStore _dpStore;
+  final service.RESTReceptionStore _rStore;
 
   Dialplan(this._dpStore, this._rStore);
 
-  Future<Iterable<ORModel.ReceptionDialplan>> list() => _dpStore.list();
+  Future<Iterable<model.ReceptionDialplan>> list() => _dpStore.list();
 
-  Future<Iterable<ORModel.Reception>> listUsage(String extension) async =>
+  Future<Iterable<model.Reception>> listUsage(String extension) async =>
       (await _rStore.list())
-          .where((ORModel.Reception r) => r.dialplan == extension);
+          .where((model.Reception r) => r.dialplan == extension);
 
-  Future<ORModel.ReceptionDialplan> get(String extension) =>
+  Future<model.ReceptionDialplan> get(String extension) =>
       _dpStore.get(extension);
 
-  Future<ORModel.ReceptionDialplan> deploy(String extension, int rid) =>
+  Future<model.ReceptionDialplan> deploy(String extension, int rid) =>
       _dpStore.deployDialplan(extension, rid);
 
-  Future<ORModel.ReceptionDialplan> update(ORModel.ReceptionDialplan rdp) =>
+  Future<model.ReceptionDialplan> update(model.ReceptionDialplan rdp) =>
       _dpStore.update(rdp);
 
-  Future<ORModel.ReceptionDialplan> create(ORModel.ReceptionDialplan rdp) =>
+  Future<model.ReceptionDialplan> create(model.ReceptionDialplan rdp) =>
       _dpStore.create(rdp);
 
   Future remove(String rdpExtension) => _dpStore.remove(rdpExtension);

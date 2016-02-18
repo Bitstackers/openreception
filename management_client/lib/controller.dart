@@ -2,8 +2,8 @@ library management_tool.controller;
 
 import 'dart:async';
 
-import 'package:openreception_framework/service.dart' as ORService;
-import 'package:openreception_framework/model.dart' as ORModel;
+import 'package:openreception_framework/service.dart' as service;
+import 'package:openreception_framework/model.dart' as model;
 
 part 'controller/controller-calendar.dart';
 part 'controller/controller-cdr.dart';
