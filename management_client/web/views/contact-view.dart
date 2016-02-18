@@ -650,7 +650,7 @@ class ContactView {
     return new LIElement()
       ..classes.add('clickable')
       ..classes.add('colleague')
-      ..text = '${collegue.fullName} (${collegue.receptionID})'
+      ..text = '${collegue.fullName} (rid: ${collegue.receptionID})'
       ..onClick.listen((_) {
         Map data = {
           'contact_id': collegue.ID,
