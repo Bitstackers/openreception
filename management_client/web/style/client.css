@@ -1,3 +1,6 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto);
+@import url(https://fonts.googleapis.com/css?family=Roboto+Mono);
+
 * {
   margin: 0;
   padding: 0;
@@ -8,6 +11,18 @@
 
 h2 {
   margin: 0.8em 0.2em;
+}
+
+input {
+  font-family: "Roboto","Helvetica","Arial",sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 1.2em;
+  margin: 0;
+}
+
+textarea {
+  font-family: "Roboto Mono" monospace;
 }
 
 textarea.error {
@@ -40,7 +55,7 @@ table {
 
 body {
   font-family: "Roboto","Helvetica","Arial",sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: normal;
   line-height: 1.2em;
   margin: 0;
@@ -85,6 +100,10 @@ nav#navigation {
   padding: 5px;
   margin-left: 9px;
   overflow: auto;
+}
+
+.page label {
+  font-weight: bolder;
 }
 
 nav#navigation li {
@@ -284,23 +303,22 @@ button:enabled {
 
 
 button.create {
-      background-color: #0f9d58;
-      color: #fff;
+  background-color: #0f9d58;
+  color: #fff;
   margin: 9px;
+  padding: 0.4em 1.8em;
 }
 
 button.deploy:enabled {
-      background-color: #0f9d58;
-      color: #fff;
+  padding: 0.4em 1.8em;
+  background-color: #0f9d58;
+  color: #fff;
 }
 
-
 button.save, button.delete  {
-
   padding: 0.4em 1.8em;
   margin: 1.2em;
-    float: right;
-
+  float: right;
 }
 
 button.delete:enabled {
