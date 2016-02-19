@@ -71,7 +71,9 @@ class CalendarEntry {
   /**
    * Decoding factory.
    */
-  static CalendarEntry decode(Map map) => new CalendarEntry.fromMap(map);
+  static CalendarEntry decode(Map map) => map.isNotEmpty
+      ? new CalendarEntry.fromMap(map)
+      : new CalendarEntry.empty();
 
   /**
    * Return true if now is between after [start] and before [stop].
