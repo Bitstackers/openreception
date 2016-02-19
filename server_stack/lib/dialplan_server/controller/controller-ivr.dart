@@ -13,6 +13,21 @@
 
 part of openreception.dialplan_server.controller;
 
+Future<List<String>> _writeVoicemailfiles(Iterable<model.Voicemail> vms,
+        dialplanTools.DialplanCompiler compiler, Logger _log) async =>
+    await Future.wait(vms.map((vm) => _writeVoicemailfile(vm, compiler, _log)));
+
+Future<String> _writeVoicemailfile(model.Voicemail vm,
+    dialplanTools.DialplanCompiler compiler, Logger _log) async {
+  final String vmFilePath = '${config.dialplanserver.freeswitchConfPath}'
+      '/directory/voicemail/${vm.vmBox}.xml';
+
+  _log.fine('Deploying voicemail account ${vm.vmBox} to file $vmFilePath');
+  await new File(vmFilePath).writeAsString(compiler.voicemailToXml(vm));
+
+  return vmFilePath;
+}
+
 /**
  * Ivr menu controller class.
  */
@@ -20,6 +35,42 @@ class Ivr {
   final database.Ivr _ivrStore;
   final dialplanTools.DialplanCompiler compiler;
   final Logger _log = new Logger('$_libraryName.Ivr');
+
+  Future<List<String>> _writeIvrfile(model.IvrMenu menu,
+      dialplanTools.DialplanCompiler compiler, Logger _log) async {
+    final String xmlFilePath = '${config.dialplanserver.freeswitchConfPath}'
+        '/ivr_menus/${menu.name}.xml';
+
+    final List<String> generatedFiles = new List<String>.from([xmlFilePath]);
+
+    _log.fine('Deploying new dialplan to file $xmlFilePath');
+    new File(xmlFilePath).writeAsString(compiler.ivrToXml(menu));
+
+    Iterable<model.Voicemail> voicemailAccounts =
+        menu.allActions.where((a) => a is model.Voicemail);
+
+    generatedFiles.addAll(
+        (await _writeVoicemailfiles(voicemailAccounts, compiler, _log)));
+
+    return generatedFiles;
+  }
+
+  Future<List<String>> _writeIvrfiles(Iterable<String> menuNames,
+      dialplanTools.DialplanCompiler compiler, Logger _log) async {
+    List<String> allFiles = new List<String>();
+
+    Iterable written = await Future.wait(menuNames.map((menuName) async {
+      final menu = await _ivrStore.get(menuName);
+
+      return _writeIvrfile(menu, compiler, _log);
+    }));
+
+    written.forEach((Iterable<String> files) {
+      allFiles.addAll(files);
+    });
+
+    return allFiles;
+  }
 
   /**
    *
@@ -44,25 +95,7 @@ class Ivr {
 
     final model.IvrMenu menu = await _ivrStore.get(menuName);
 
-    final String xmlFilePath = '${config.dialplanserver.freeswitchConfPath}'
-        '/ivr_menus/${menu.name}.xml';
-
-    _log.fine('Deploying new dialplan to file $xmlFilePath');
-    new File(xmlFilePath).writeAsString(compiler.ivrToXml(menu));
-
-    Iterable<model.Voicemail> voicemailAccounts =
-        menu.allActions.where((a) => a is model.Voicemail);
-
-    await Future.forEach(voicemailAccounts, (vm) async {
-      final String vmFilePath = '${config.dialplanserver.freeswitchConfPath}'
-          '/directory/voicemail/${vm.vmBox}.xml';
-
-      _log.fine('Deploying voicemail account ${vm.vmBox} to file $vmFilePath');
-      await new File(vmFilePath)
-          .writeAsString(compiler.voicemailToXml(vm));
-    });
-
-    return _okJson(menu);
+    return _okJson(await _writeIvrfile(menu, compiler, _log));
   }
 
   /**

@@ -102,7 +102,7 @@ Future<io.HttpServer> start(
 
   final controller.Ivr ivrHandler = new controller.Ivr(_ivrStore, compiler);
   final controller.ReceptionDialplan receptionDialplanHandler =
-      new controller.ReceptionDialplan(_dpStore, _rStore, compiler);
+      new controller.ReceptionDialplan(_dpStore, _rStore, compiler, ivrHandler);
 
   final Database.User _userStore = new Database.User(_connection);
   final controller.PeerAccount peerAccountHandler =

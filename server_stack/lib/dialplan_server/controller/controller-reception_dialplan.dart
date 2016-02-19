@@ -20,14 +20,15 @@ class ReceptionDialplan {
   final database.ReceptionDialplan _receptionDialplanStore;
   final database.Reception _receptionStore;
   final dialplanTools.DialplanCompiler compiler;
+  final Ivr _ivrController;
   final Logger _log = new Logger('$_libraryName.ReceptionDialplan');
   esl.Connection _eslClient;
 
   /**
    *
    */
-  ReceptionDialplan(
-      this._receptionDialplanStore, this._receptionStore, this.compiler) {
+  ReceptionDialplan(this._receptionDialplanStore, this._receptionStore,
+      this.compiler, this._ivrController) {
     _connectESLClient();
   }
 
@@ -79,22 +80,25 @@ class ReceptionDialplan {
     }
     final String xmlFilePath = '${config.dialplanserver.freeswitchConfPath}'
         '/dialplan/receptions/$extension.xml';
+    final List<String> generatedFiles = new List<String>.from([xmlFilePath]);
 
     _log.fine('Deploying new dialplan to file $xmlFilePath');
     await new File(xmlFilePath).writeAsString(compiler.dialplanToXml(rdp, r));
 
-    Iterable<model.Voicemail> voicemailAccounts =
+    /// Generate associated voicemail acccounts.
+    final Iterable<model.Voicemail> voicemailAccounts =
         rdp.allActions.where((a) => a is model.Voicemail);
 
-    voicemailAccounts.forEach((vm) async {
-      final String vmFilePath = '${config.dialplanserver.freeswitchConfPath}'
-          '/directory/voicemail/${vm.vmBox}.xml';
+    generatedFiles.addAll(
+        (await _writeVoicemailfiles(voicemailAccounts, compiler, _log)));
 
-      _log.fine('Deploying voicemail account ${vm.vmBox} to file $vmFilePath');
-      await new File(vmFilePath).writeAsString(compiler.voicemailToXml(vm));
-    });
+    // /// Generate associated IVR menus.
+    Iterable<model.Ivr> ivrMenus = rdp.allActions.where((a) => a is model.Ivr);
 
-    return _okJson(rdp);
+    generatedFiles.addAll(await _ivrController._writeIvrfiles(
+        ivrMenus.map((menuAction) => menuAction.menuName), compiler, _log));
+
+    return _okJson(generatedFiles);
   }
 
   /**

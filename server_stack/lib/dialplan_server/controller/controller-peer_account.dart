@@ -40,12 +40,13 @@ class PeerAccount {
 
     final String xmlFilePath = '${config.dialplanserver.freeswitchConfPath}'
         '/directory/receptionists/${account.username}.xml';
+    final List<String> generatedFiles = new List<String>.from([xmlFilePath]);
 
     _log.fine('Deploying new peer account to file $xmlFilePath');
     await new File(xmlFilePath)
         .writeAsString(_compiler.userToXml(user, account));
 
-    return _okJson({});
+    return _okJson(generatedFiles);
   }
 
   /**
