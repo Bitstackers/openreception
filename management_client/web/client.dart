@@ -24,6 +24,7 @@ controller.Popup notify = controller.popup;
 Future main() async {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen(print);
+  Logger _log = Logger.root;
 
   final transport.Client client = new transport.Client();
   config.clientConfig =
@@ -114,5 +115,14 @@ Future main() async {
         .replaceWith(new userView.UserPage(userController).element);
 
     new Menu(querySelector('nav#navigation'));
+
+    /// Verify that we support HTMl5 notifications
+    if (Notification.supported) {
+      Notification
+          .requestPermission()
+          .then((String perm) => _log.info('HTML5 permission ${perm}'));
+    } else {
+      _log.shout('HTML5 notifications not supported.');
+    }
   }
 }
