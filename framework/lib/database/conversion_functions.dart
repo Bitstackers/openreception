@@ -241,6 +241,9 @@ Model.Contact _rowToContact(PG.Row row) {
   return contact;
 }
 
+/**
+ *
+ */
 Model.PhoneNumber _mapToPhone(Map map) {
   Model.PhoneNumber p = new Model.PhoneNumber.empty()
     ..billing_type = map['billing_type']
@@ -274,7 +277,7 @@ Model.CalendarEntry _rowToCalendarEntry(PG.Row row) =>
           ? new Model.OwningReception(row.reception_id)
           : row.contact_id != null
               ? new Model.OwningContact(row.contact_id)
-              : throw new ArgumentError('Undefined owner type row$row')
+              : new Model.Owner()
       ..beginsAt = row.start
       ..until = row.stop
       ..content = row.message;
