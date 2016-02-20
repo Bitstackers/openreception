@@ -81,10 +81,19 @@ class DialplanCalenderPlot {
 
     List availableColours = ['red', 'brown', 'blue', 'green'];
 
-    _legendBox.children.clear();
+    _legendBox.children = [new HeadingElement.h3()..text = 'Åben-handlinger'];
     rdp.open.forEach((model.HourAction ha) {
       _renderHourAction(ha, availableColours.removeLast());
     });
+    _legendBox.children.addAll([
+      new HeadingElement.h3()..text = 'Lukket-handlinger',
+      new DivElement()
+        ..classes.addAll(['calendar-legend'])
+        ..children = [
+          new OListElement()
+            ..children = ([]..addAll(rdp.defaultActions.map(_actionToLi)))
+        ]
+    ]);
 
     element.hidden = false;
   }
