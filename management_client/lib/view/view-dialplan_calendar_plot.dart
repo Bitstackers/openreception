@@ -1,7 +1,7 @@
 part of management_tool.view;
 
 class DialplanCalenderPlot {
-  final DivElement element = new DivElement();
+  final DivElement element = new DivElement()..hidden = true;
   final DivElement _legendBox = new DivElement()
     ..style.marginLeft = '1em'
     ..style.float = 'left';
@@ -85,6 +85,8 @@ class DialplanCalenderPlot {
     rdp.open.forEach((model.HourAction ha) {
       _renderHourAction(ha, availableColours.removeLast());
     });
+
+    element.hidden = false;
   }
 
   _toTdId(model.WeekDay wday, int hour, int minute) {
