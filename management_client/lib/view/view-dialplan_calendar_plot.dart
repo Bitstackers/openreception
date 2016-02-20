@@ -81,8 +81,9 @@ class DialplanCalenderPlot {
 
     List availableColours = ['red', 'brown', 'blue', 'green'];
 
+    _legendBox.children.clear();
     rdp.open.forEach((model.HourAction ha) {
-      renderHourAction(ha, availableColours.removeLast());
+      _renderHourAction(ha, availableColours.removeLast());
     });
   }
 
@@ -114,7 +115,7 @@ class DialplanCalenderPlot {
     querySelectorAll('td.marked-blue').classes.toggle('marked-blue', false);
   }
 
-  renderOpeningHour(model.OpeningHour oh, String colour) {
+  _renderOpeningHour(model.OpeningHour oh, String colour) {
     //TODO handle "all" days.
     Iterable openDays;
     if (oh.fromDay.index <= oh.toDay.index) {
@@ -155,8 +156,8 @@ class DialplanCalenderPlot {
     element.classes.toggle('dimmed', false);
   }
 
-  void renderHourAction(model.HourAction ha, String colour) {
-    ha.hours.forEach((model.OpeningHour oh) => renderOpeningHour(oh, colour));
+  void _renderHourAction(model.HourAction ha, String colour) {
+    ha.hours.forEach((model.OpeningHour oh) => _renderOpeningHour(oh, colour));
 
     _legendBox.children.add(new DivElement()
       ..classes.addAll(['calendar-legend', colour])

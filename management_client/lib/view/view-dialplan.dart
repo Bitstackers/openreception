@@ -12,6 +12,7 @@ class Dialplan {
 
   Function onUpdate = (String extension) => null;
   Function onDelete = (String extension) => null;
+  Function onChange = () => null;
 
   final TextAreaElement _dialplanInput = new TextAreaElement()
     ..classes.add('full-width')
@@ -86,6 +87,8 @@ class Dialplan {
 
       _saveButton.disabled = hasValidationError;
       _deleteButton.disabled = !_saveButton.disabled || hasValidationError;
+
+      onChange != null ? onChange() : '';
     });
   }
 

@@ -14,6 +14,7 @@ import 'package:management_tool/searchcomponent.dart';
 import 'package:management_tool/controller.dart' as controller;
 
 part 'view/view-calendar.dart';
+part 'view/view-dialplan_calendar_plot.dart';
 part 'view/view-dialplan.dart';
 part 'view/view-dialplan_list.dart';
 part 'view/view-distributionlist.dart';

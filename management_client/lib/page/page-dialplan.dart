@@ -25,6 +25,7 @@ class Dialplan {
 
   final controller.Dialplan _dialplanController;
   view.Dialplan _dpView;
+  view.DialplanCalenderPlot _dpPlot;
 
   final ButtonElement _createButton = new ButtonElement()
     ..text = 'Opret'
@@ -40,6 +41,7 @@ class Dialplan {
    */
   Dialplan(this._dialplanController) {
     _dpView = new view.Dialplan(_dialplanController);
+    _dpPlot = new view.DialplanCalenderPlot();
 
     element.children = [
       (new DivElement()
@@ -52,7 +54,7 @@ class Dialplan {
         ]),
       new DivElement()
         ..classes.add('page-content-with-rightbar')
-        ..children = [_dpView.element],
+        ..children = [_dpView.element, _dpPlot.element],
       new DivElement()
         ..classes.add('rightbar')
         ..children = [
@@ -82,14 +84,22 @@ class Dialplan {
 
     _createButton.onClick.listen((_) => _createDialplan());
 
-    _dpView.onDelete = ((_) {
+    _dpView.onDelete = (_) {
       _userList.children.forEach(
           (LIElement li) => li.classes.toggle('highlightListItem', false));
-    });
+    };
 
-    _dpView.onUpdate = ((String extension) {
+    _dpView.onUpdate = (String extension) {
       _activateDialplan(extension);
-    });
+    };
+
+    _dpView.onChange = () {
+      if (_dpView.hasValidationError) {
+        _dpPlot.dim();
+      } else {
+        _dpPlot.dialplan = _dpView.dialplan;
+      }
+    };
   }
 
   /**
@@ -155,6 +165,7 @@ class Dialplan {
   Future _activateDialplan(String extension) async {
     _log.finest('Activating dialplan ${extension}');
     _dpView.dialplan = await _dialplanController.get(extension);
+    _dpPlot.dialplan = _dpView.dialplan;
     _highlightDialplanInList(extension);
     _renderReceptionList(await _dialplanController.listUsage(extension));
   }
