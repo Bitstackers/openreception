@@ -18,7 +18,7 @@ abstract class Benchmark {
     await Future.doWhile(() async {
       final Iterable<Model.Call> calls = await r.callFlowControl.callList();
       if (calls.isEmpty) {
-        log.info('No more calls. Aborting.');
+        log.info('$r detected no more calls. Aborting.');
         return false;
       }
 
@@ -68,7 +68,10 @@ abstract class Benchmark {
             .then((Iterable<Model.Call> calls) => calls.length != 0))));
 
     // Each customer spawns a call
+    // The delays are need to avoid FreeSWITCH standard call-per-second
+    // restriction. The standard is 20/s.
     int spawned = 0;
+    log.info('Waiting for call list to spawn');
     await Future.wait(customers.map((Customer customer) async {
       await customer.dial('12340001');
       spawned++;
@@ -83,8 +86,6 @@ abstract class Benchmark {
       spawned++;
     }));
 
-    log.info('Waiting for call list to fill');
-
     await Future.doWhile(() async {
       final Iterable<Model.Call> calls =
           await callWaiter.callFlowControl.callList();
@@ -92,7 +93,7 @@ abstract class Benchmark {
     });
 
     handled = 0;
-    log.info('Call list filled, starting to handle the calls');
+    log.info('$spawned calls spawned filled, starting to handle the calls');
     await Future.wait(
         receptionists.map((Receptionist r) => _receptionistRequestsCall(r)));
     log.info('Wait for call list to empty');
