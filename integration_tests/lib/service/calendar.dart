@@ -37,7 +37,7 @@ void runCalendarTests() {
     tearDown(() async {
       transport.client.close(force: true);
       await contactStore.remove(contact.id);
-      await userStore.remove(creator.ID);
+      await userStore.remove(creator.id);
     });
 
     test('get (non-existing)',
@@ -86,7 +86,7 @@ void runCalendarTests() {
     tearDown(() async {
       transport.client.close(force: true);
       await receptionStore.remove(reception.ID);
-      await userStore.remove(creator.ID);
+      await userStore.remove(creator.id);
     });
 
     /**

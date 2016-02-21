@@ -134,11 +134,11 @@ class SupportTools {
         (Phonio.SIPAccount acc) =>
             new Model.PeerAccount(acc.username, acc.password, 'receptions'));
 
-    log.info(tokenMap[peerMap[peerAccounts.first.username]].ID);
+    log.info(tokenMap[peerMap[peerAccounts.first.username]].id);
 
     return Future
         .wait(peerAccounts.map((pa) =>
-            paService.deployAccount(pa, tokenMap[peerMap[pa.username]].ID)))
+            paService.deployAccount(pa, tokenMap[peerMap[pa.username]].id)))
         .then((_) => rdpStore.reloadConfig())
         .then((_) => callFlow.stateReload())
         .whenComplete(() => transport.client.close(force: true));
@@ -163,7 +163,7 @@ class SupportTools {
         (Phonio.SIPAccount acc) =>
             new Model.PeerAccount(acc.username, acc.password, 'receptionists'));
 
-    log.info(tokenMap[peerMap[peerAccounts.first.username]].ID);
+    log.info(tokenMap[peerMap[peerAccounts.first.username]].id);
 
     return Future
         .wait(peerAccounts.map((pa) => paService.remove(pa.username)))

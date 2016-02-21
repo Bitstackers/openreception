@@ -31,7 +31,7 @@ class Receptionist {
         'event_stack': eventStack.toList()
       };
 
-  int get hashCode => user.ID;
+  int get hashCode => user.id;
 
   /// The amout of time the actor will wait before answering an incoming call.
   Duration answerLatency = new Duration(seconds: 0);
@@ -72,7 +72,7 @@ class Receptionist {
         onDone: () => log.info('$this closing event listener.'));
     await _phone.autoAnswer(true);
     await _phone.register();
-    await userStore.userStateReady(user.ID);
+    await userStore.userStateReady(user.id);
     eventStack.clear();
     currentCall = null;
 
@@ -450,7 +450,7 @@ class Receptionist {
    * Debug-friendly representation of the receptionist.
    */
   @override
-  String toString() => 'Receptionist:${this.user.name}, uid:${this.user.ID}, '
+  String toString() => 'Receptionist:${this.user.name}, uid:${this.user.id}, '
       'Phone:${this._phone}';
 
   /**
@@ -483,5 +483,5 @@ class Receptionist {
   /**
    * Pause the receptionist.
    */
-  Future pause() => userStore.userStatePaused(user.ID);
+  Future pause() => userStore.userStatePaused(user.id);
 }

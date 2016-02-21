@@ -82,7 +82,7 @@ abstract class AuthService {
     log.info('Checking server behaviour on a non-existing token.');
 
     final Model.User user = await authService.userOf(receptionist.authToken);
-    expect(user.ID, equals(receptionist.user.ID));
+    expect(user.id, equals(receptionist.user.id));
     expect(user.name, isNotEmpty);
     expect(user.address, isNotNull);
     expect(user.peer, isNotEmpty);

@@ -9,7 +9,7 @@ abstract class StorageCalendar {
   static create(Model.Owner owner, Storage.Calendar calendarStore,
       Model.User creator) async {
     Model.CalendarEntry createdEntry = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator.ID);
+        Randomizer.randomCalendarEntry()..owner = owner, creator.id);
 
     await calendarStore.purge(createdEntry.ID);
   }
@@ -20,7 +20,7 @@ abstract class StorageCalendar {
   static update(Model.Owner owner, Storage.Calendar calendarStore,
       Model.User creator) async {
     Model.CalendarEntry createdEntry = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator.ID);
+        Randomizer.randomCalendarEntry()..owner = owner, creator.id);
 
     {
       Model.CalendarEntry changes = Randomizer.randomCalendarEntry()
@@ -29,7 +29,7 @@ abstract class StorageCalendar {
       createdEntry = changes;
     }
 
-    await calendarStore.update(createdEntry, creator.ID);
+    await calendarStore.update(createdEntry, creator.id);
 
     await calendarStore.purge(createdEntry.ID);
   }
@@ -44,7 +44,7 @@ abstract class StorageCalendar {
   static get(Model.Owner owner, Storage.Calendar calendarStore,
       Model.User creator) async {
     Model.CalendarEntry created = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator.ID);
+        Randomizer.randomCalendarEntry()..owner = owner, creator.id);
 
     Model.CalendarEntry fetched = await calendarStore.get(created.ID);
 
@@ -74,7 +74,7 @@ abstract class StorageCalendar {
   static list(Model.Owner owner, Storage.Calendar calendarStore,
       Model.User creator) async {
     Model.CalendarEntry created = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator.ID);
+        Randomizer.randomCalendarEntry()..owner = owner, creator.id);
 
     Iterable<Model.CalendarEntry> listing = await calendarStore.list(owner);
 
@@ -98,10 +98,10 @@ abstract class StorageCalendar {
   static remove(Model.Owner owner, Storage.Calendar calendarStore,
       Model.User creator) async {
     Model.CalendarEntry created = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator.ID);
+        Randomizer.randomCalendarEntry()..owner = owner, creator.id);
 
     _log.info('Removing calendar entry');
-    await calendarStore.remove(created.ID, creator.ID);
+    await calendarStore.remove(created.ID, creator.id);
 
     _log.info('Asserting that the created entry is no longer found');
     expect(calendarStore.get(created.ID),
@@ -128,7 +128,7 @@ abstract class StorageCalendar {
   static purge(Model.Owner owner, Storage.Calendar calendarStore,
       Model.User creator) async {
     Model.CalendarEntry created = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator.ID);
+        Randomizer.randomCalendarEntry()..owner = owner, creator.id);
 
     _log.info('Purging calendar entry');
     await calendarStore.purge(created.ID);
@@ -152,7 +152,7 @@ abstract class StorageCalendar {
   static Future changeOnCreate(Model.Owner owner,
       Storage.Calendar calendarStore, Model.User creator) async {
     Model.CalendarEntry created = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator.ID);
+        Randomizer.randomCalendarEntry()..owner = owner, creator.id);
 
     _log.info('Creating a calendar event for owner $owner.');
 
@@ -164,7 +164,7 @@ abstract class StorageCalendar {
     expect(changes.length, equals(1));
     expect(changes.first.changedAt.millisecondsSinceEpoch,
         lessThan(new DateTime.now().millisecondsSinceEpoch));
-    expect(changes.first.userID, equals(creator.ID));
+    expect(changes.first.userID, equals(creator.id));
 
     await calendarStore.purge(created.ID);
   }
@@ -175,7 +175,7 @@ abstract class StorageCalendar {
   static Future latestChangeOnCreate(Model.Owner owner,
       Storage.Calendar calendarStore, Model.User creator) async {
     Model.CalendarEntry created = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator.ID);
+        Randomizer.randomCalendarEntry()..owner = owner, creator.id);
 
     _log.info('Creating a calendar event for owner $owner.');
 
@@ -300,7 +300,7 @@ abstract class StorageCalendar {
 
     _log.info('Removing calendar event for owner $owner.');
 
-    await calendarStore.remove(created.ID, creator.ID);
+    await calendarStore.remove(created.ID, creator.id);
     Iterable<Model.CalendarEntryChange> changes =
         await calendarStore.changes(created.ID);
 

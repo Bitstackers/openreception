@@ -72,7 +72,7 @@ abstract class MessageStore {
     expect(createdMessage.body, isNotEmpty);
     expect(createdMessage.enqueued, isFalse);
     expect(createdMessage.sent, isFalse);
-    expect(createdMessage.senderId, sender.user.ID);
+    expect(createdMessage.senderId, sender.user.id);
 
     return messageStore.remove(createdMessage.ID);
   }

@@ -363,7 +363,7 @@ _databaseCalenderTests() {
 
     tearDown(() async {
       await contactDB.remove(contact.id);
-      await userDB.remove(creator.ID);
+      await userDB.remove(creator.id);
 
       return connection.close();
     });
@@ -424,7 +424,7 @@ _databaseCalenderTests() {
 
     tearDown(() async {
       await receptionDB.remove(reception.ID);
-      await userDB.remove(creator.ID);
+      await userDB.remove(creator.id);
 
       return connection.close();
     });

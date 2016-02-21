@@ -112,7 +112,7 @@ abstract class RESTMessageStore {
               expect(changeEvent.messageID, isNotNull);
               expect(changeEvent.messageID, equals(message.ID));
               expect(changeEvent.userID, isNotNull);
-              expect(changeEvent.userID, equals(sender.user.ID));
+              expect(changeEvent.userID, equals(sender.user.id));
             }))
         .whenComplete(() => log.info('Finished messageCreateEvent test'));
   }
@@ -140,7 +140,7 @@ abstract class RESTMessageStore {
         bool idAndStateMatches(Event.Event event) {
           if (event is Event.MessageChange) {
             return event.messageID == createdMessage.ID &&
-                event.userID == sender.user.ID &&
+                event.userID == sender.user.id &&
                 event.state == Event.MessageChangeState.UPDATED;
           }
 
@@ -174,7 +174,7 @@ abstract class RESTMessageStore {
         log.info(event.asMap);
 
         return event.messageID == createdMessage.ID &&
-            event.userID == sender.user.ID &&
+            event.userID == sender.user.id &&
             event.state == Event.MessageChangeState.UPDATED;
       }
 

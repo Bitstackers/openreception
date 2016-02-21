@@ -81,18 +81,18 @@ abstract class User {
     final Model.User createdUser =
         await userStore.create(Randomizer.randomUser());
 
-    final Model.User fetchedUser = await userStore.get(createdUser.ID);
+    final Model.User fetchedUser = await userStore.get(createdUser.id);
 
     expect(createdUser.address, equals(fetchedUser.address));
     expect(createdUser.googleAppcode, equals(fetchedUser.googleAppcode));
     expect(createdUser.googleUsername, equals(fetchedUser.googleUsername));
-    expect(createdUser.ID, equals(fetchedUser.ID));
+    expect(createdUser.id, equals(fetchedUser.id));
     expect(createdUser.name, equals(fetchedUser.name));
     expect(createdUser.peer, equals(fetchedUser.peer));
     expect(createdUser.portrait, equals(fetchedUser.portrait));
 
     /// Finalization - cleanup.
-    await userStore.remove(createdUser.ID);
+    await userStore.remove(createdUser.id);
   }
 
   /**
@@ -107,13 +107,13 @@ abstract class User {
     expect(createdUser.address, equals(newUser.address));
     expect(createdUser.googleAppcode, equals(newUser.googleAppcode));
     expect(createdUser.googleUsername, equals(newUser.googleUsername));
-    expect(createdUser.ID, isNotNull);
-    expect(createdUser.ID, greaterThan(Model.User.noID));
+    expect(createdUser.id, isNotNull);
+    expect(createdUser.id, greaterThan(Model.User.noID));
     expect(createdUser.name, equals(newUser.name));
     expect(createdUser.peer, equals(newUser.peer));
     expect(createdUser.portrait, equals(newUser.portrait));
 
-    await userStore.remove(createdUser.ID);
+    await userStore.remove(createdUser.id);
   }
 
   /**
@@ -129,7 +129,7 @@ abstract class User {
       bool eventMatches(Event.Event event) {
         if (event is Event.UserChange) {
           return event.state == Event.UserObjectState.CREATED &&
-              event.userID == createdUser.ID;
+              event.userID == createdUser.id;
         }
 
         return false;
@@ -138,7 +138,7 @@ abstract class User {
       return receptionist.notificationSocket.eventStream
           .firstWhere(eventMatches)
           .timeout(new Duration(seconds: 10))
-          .then((_) => userStore.remove(createdUser.ID));
+          .then((_) => userStore.remove(createdUser.id));
     });
   }
 
@@ -151,7 +151,7 @@ abstract class User {
     return userStore
         .create(Randomizer.randomUser())
         .then((Model.User createdUser) {
-      Model.User changedUser = Randomizer.randomUser()..ID = createdUser.ID;
+      Model.User changedUser = Randomizer.randomUser()..id = createdUser.id;
 
       return userStore.update(changedUser).then((Model.User updatedUser) {
         expect(changedUser.address, equals(updatedUser.address));
@@ -177,7 +177,7 @@ abstract class User {
     final Model.User createdUser =
         await userStore.create(Randomizer.randomUser());
 
-    final Model.User changedUser = Randomizer.randomUser()..ID = createdUser.ID;
+    final Model.User changedUser = Randomizer.randomUser()..id = createdUser.id;
 
     Future expectedEvent = receptionist.notificationSocket.eventStream
         .firstWhere((event) => event is Event.UserChange &&
@@ -195,7 +195,7 @@ abstract class User {
     log.info('Checking server behaviour on an user removal.');
 
     Model.User createdUser = await userStore.create(Randomizer.randomUser());
-    expect(createdUser.ID, greaterThan(Model.User.noID));
+    expect(createdUser.id, greaterThan(Model.User.noID));
 
     await userStore.remove(createdUser.ID);
 

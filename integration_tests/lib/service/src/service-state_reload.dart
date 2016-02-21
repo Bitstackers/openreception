@@ -81,7 +81,7 @@ abstract class StateReload {
                 .callList()
                 .then((Iterable<Model.Call> calls) {
               expect(calls.length, equals(1));
-              expect(calls.first.assignedTo, equals(receptionist.user.ID));
+              expect(calls.first.assignedTo, equals(receptionist.user.id));
               orignalCallQueue = calls;
             }))
         .then((_) => log.info('Performing state reload'))
@@ -109,7 +109,7 @@ abstract class StateReload {
     final Iterable<Model.Call> orignalCallQueue =
         await receptionist.callFlowControl.callList();
     expect(orignalCallQueue.length, equals(1));
-    expect(orignalCallQueue.first.assignedTo, equals(receptionist.user.ID));
+    expect(orignalCallQueue.first.assignedTo, equals(receptionist.user.id));
 
     log.info('Performing state reload');
     await receptionist.callFlowControl.stateReload();
@@ -143,7 +143,7 @@ abstract class StateReload {
     final Iterable<Model.Call> orignalCallQueue =
         await receptionist.callFlowControl.callList();
     expect(orignalCallQueue.length, equals(1));
-    expect(orignalCallQueue.first.assignedTo, equals(receptionist.user.ID));
+    expect(orignalCallQueue.first.assignedTo, equals(receptionist.user.id));
     expect(orignalCallQueue.first.state, equals(Model.CallState.Speaking));
 
     log.info('Performing state reload');
@@ -175,7 +175,7 @@ abstract class StateReload {
                 .callList()
                 .then((Iterable<Model.Call> calls) {
               expect(calls.length, equals(1));
-              expect(calls.first.assignedTo, equals(receptionist.user.ID));
+              expect(calls.first.assignedTo, equals(receptionist.user.id));
               expect(calls, contains(outboundCall));
               orignalCallQueue = calls;
             }))
@@ -211,7 +211,7 @@ abstract class StateReload {
                 .callList()
                 .then((Iterable<Model.Call> calls) {
               expect(calls.length, equals(1));
-              expect(calls.first.assignedTo, equals(receptionist.user.ID));
+              expect(calls.first.assignedTo, equals(receptionist.user.id));
               expect(calls, contains(outboundCall));
               orignalCallQueue = calls;
             }))
@@ -260,7 +260,7 @@ abstract class StateReload {
                 .callList()
                 .then((Iterable<Model.Call> calls) {
               expect(calls.length, equals(2));
-              expect(calls.first.assignedTo, equals(receptionist.user.ID));
+              expect(calls.first.assignedTo, equals(receptionist.user.id));
               expect(calls, contains(outboundCall));
               orignalCallQueue = calls;
             }))
@@ -276,7 +276,7 @@ abstract class StateReload {
         .then((_) =>
             receptionist.callFlowControl.callList().then((Iterable<Model.Call> calls) {
               expect(calls.length, equals(2));
-              expect(calls.first.assignedTo, equals(receptionist.user.ID));
+              expect(calls.first.assignedTo, equals(receptionist.user.id));
               expect(calls, contains(outboundCall));
               orignalCallQueue = calls;
             }))

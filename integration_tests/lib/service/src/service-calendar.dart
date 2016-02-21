@@ -14,7 +14,7 @@ abstract class RESTCalendarStore {
     Future<Event.CalendarChange> nextCreateEvent =
         receptionist.waitFor(eventType: Event.Key.calendarChange);
     Model.CalendarEntry createdEntry = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, receptionist.user.ID);
+        Randomizer.randomCalendarEntry()..owner = owner, receptionist.user.id);
 
     Event.CalendarChange createEvent = await nextCreateEvent;
 
@@ -34,7 +34,7 @@ abstract class RESTCalendarStore {
   static Future calendarEntryUpdateEvent(Model.Owner owner,
       Storage.Calendar calendarStore, Receptionist receptionist) async {
     Model.CalendarEntry createdEntry = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, receptionist.user.ID);
+        Randomizer.randomCalendarEntry()..owner = owner, receptionist.user.id);
 
     {
       Model.CalendarEntry changes = Randomizer.randomCalendarEntry()
@@ -50,7 +50,7 @@ abstract class RESTCalendarStore {
             event.state == Event.CalendarEntryState.UPDATED))
         .timeout(new Duration(seconds: 10));
 
-    await calendarStore.update(createdEntry, receptionist.user.ID);
+    await calendarStore.update(createdEntry, receptionist.user.id);
 
     await nextUpdateEvent;
   }
@@ -65,7 +65,7 @@ abstract class RESTCalendarStore {
   static Future calendarEntryDeleteEvent(Model.Owner owner,
       Storage.Calendar calendarStore, Receptionist receptionist) async {
     Model.CalendarEntry createdEntry = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, receptionist.user.ID);
+        Randomizer.randomCalendarEntry()..owner = owner, receptionist.user.id);
 
     Future<Event.CalendarChange> nextRemoveEvent = receptionist
         .notificationSocket.eventStream
@@ -74,7 +74,7 @@ abstract class RESTCalendarStore {
             event.state == Event.CalendarEntryState.DELETED))
         .timeout(new Duration(seconds: 10));
 
-    await calendarStore.remove(createdEntry.ID, receptionist.user.ID);
+    await calendarStore.remove(createdEntry.ID, receptionist.user.id);
     await nextRemoveEvent;
   }
 }

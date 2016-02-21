@@ -50,7 +50,7 @@ runPeerAccountTests() {
     tearDown(() async {
       paService = null;
       transport.client.close(force: true);
-      await userStore.remove(user.ID);
+      await userStore.remove(user.id);
     });
 
     test('remove', () => PeerAccountService.remove(user, paService));
@@ -72,7 +72,7 @@ runPeerAccountTests() {
 
     tearDown(() async {
       transport.client.close(force: true);
-      await userStore.remove(user.ID);
+      await userStore.remove(user.id);
     });
 
     test(

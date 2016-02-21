@@ -18,7 +18,7 @@ abstract class PeerAccountService {
     _log.info('Deploying peer account ${pa.toJson()} for user'
         ' ${user.toJson()}');
 
-    await paService.deployAccount(pa, user.ID);
+    await paService.deployAccount(pa, user.id);
     expect((await paService.list()).contains(pa.username), isTrue);
 
     await paService.remove(pa.username);
@@ -32,7 +32,7 @@ abstract class PeerAccountService {
     _log.info('Deploying peer account ${pa.toJson()} '
         'for user ${user.toJson()}');
 
-    await paService.deployAccount(pa, user.ID);
+    await paService.deployAccount(pa, user.id);
     await paService.remove(pa.username);
     expect((await paService.list()).contains(pa.username), isFalse);
   }
@@ -49,7 +49,7 @@ abstract class PeerAccountService {
     _log.info('Deploying peer account ${pa.toJson()} for user'
         ' ${user.toJson()}');
 
-    await paService.deployAccount(pa, user.ID);
+    await paService.deployAccount(pa, user.id);
     await dpStore.reloadConfig();
     await callFlow.stateReload();
 
