@@ -1,7 +1,6 @@
 part of management_tool.view;
 
 class MessageFilter {
-  final DateFormat RFC3339 = new DateFormat('yyyy-MM-dd HH:mm');
   final Logger _log = new Logger('$_libraryName.Calendar');
   final controller.Contact _contactController;
   final controller.Reception _receptionController;

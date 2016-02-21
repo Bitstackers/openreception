@@ -1,7 +1,6 @@
 part of management_tool.view;
 
 class Calendar {
-  final DateFormat rfc3339 = new DateFormat('yyyy-MM-dd HH:mm');
   final Logger _log = new Logger('$_libraryName.Calendar');
 
   final bool _containsDeleted;

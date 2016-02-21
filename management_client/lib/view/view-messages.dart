@@ -1,7 +1,6 @@
 part of management_tool.view;
 
 class Messages {
-  final DateFormat RFC3339 = new DateFormat('yyyy-MM-dd HH:mm');
   final Logger _log = new Logger('$_libraryName.Messages');
 
   final controller.Message _msgController;
@@ -101,7 +100,7 @@ class Messages {
 
     return new TableRowElement()
       ..children = [
-        new TableCellElement()..text = RFC3339.format(msg.createdAt),
+        new TableCellElement()..text = rfc3339.format(msg.createdAt),
         new TableCellElement()..children = [contextInfo(msg.context)],
         new TableCellElement()..text = msg.body,
         new TableCellElement()..children = [callerInfo(msg.callerInfo)],
@@ -117,7 +116,7 @@ class Messages {
           ..text = '$prefix '
           ..style.fontWeight = 'bold',
         new SpanElement()
-          ..text = RFC3339.format(change.changedAt) + ' - ${change.username}'
+          ..text = rfc3339.format(change.changedAt) + ' - ${change.username}'
       ];
 
     return li;

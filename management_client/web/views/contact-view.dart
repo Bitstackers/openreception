@@ -462,7 +462,7 @@ class ContactView {
   /**
    *
    */
-  void _activateContact(int id, [int reception_id]) {
+  void _activateContact(int id, [int receptionId]) {
     _contactController.get(id).then((model.BaseContact contact) {
       _joinReceptionbutton.disabled = false;
       createNew = false;
