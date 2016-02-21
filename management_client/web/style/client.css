@@ -463,6 +463,15 @@ button.save:enabled {
    border-color: rgba(0,255,0,0.4);
  }
 
+ table.calendar td.marked-yellow {
+   background-color: rgba(255,255,0,0.4);
+   border: none;
+   border-right: 1px solid #eee;
+ }
+
+ div.calendar-legend.yellow {
+   border-color: rgba(255,255,0,0.4);
+ }
 
  table.calendar thead td {
    min-width: 50px;

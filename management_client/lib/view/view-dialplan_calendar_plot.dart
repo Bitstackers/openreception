@@ -79,7 +79,7 @@ class DialplanCalenderPlot {
   void set dialplan(model.ReceptionDialplan rdp) {
     _clearOpeningHours();
 
-    List availableColours = ['red', 'brown', 'blue', 'green'];
+    List availableColours = ['yellow', 'red', 'brown', 'blue', 'green'];
 
     _legendBox.children = [new HeadingElement.h3()..text = 'Åben-handlinger'];
     rdp.open.forEach((model.HourAction ha) {
@@ -124,6 +124,7 @@ class DialplanCalenderPlot {
     querySelectorAll('td.marked-brown').classes.toggle('marked-brown', false);
     querySelectorAll('td.marked-green').classes.toggle('marked-green', false);
     querySelectorAll('td.marked-blue').classes.toggle('marked-blue', false);
+    querySelectorAll('td.marked-yellow').classes.toggle('marked-yellow', false);
   }
 
   _renderOpeningHour(model.OpeningHour oh, String colour) {
