@@ -17,7 +17,7 @@ typedef bool SearchFilter<T>(T element, String searchText);
 typedef String ElementToString<T>(T element, String searchText);
 typedef void ElementInvokation<T>(T element);
 typedef bool Equality<T>(T element, T referenceElement);
-typedef void callback();
+typedef void Callback();
 
 class SearchComponent<T> {
   DivElement _container;
@@ -35,7 +35,7 @@ class SearchComponent<T> {
 
   T get currentElement => _currentElement;
 
-  callback _whenClearSelection = () {};
+  Callback _whenClearSelection = () {};
 
   /**
    * Given an [_element] and the [searchText] tells whether the element gets displayed.
@@ -59,7 +59,7 @@ class SearchComponent<T> {
 
   ElementInvokation<T> _selectedElementChanged;
 
-  void set whenClearSelection(callback function) {
+  void set whenClearSelection(Callback function) {
     if (function != null) {
       _whenClearSelection = function;
     }

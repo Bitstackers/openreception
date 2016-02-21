@@ -1,7 +1,7 @@
 part of management_tool.view;
 
 class Calendar {
-  final DateFormat RFC3339 = new DateFormat('yyyy-MM-dd HH:mm');
+  final DateFormat rfc3339 = new DateFormat('yyyy-MM-dd HH:mm');
   final Logger _log = new Logger('$_libraryName.Calendar');
 
   final bool _containsDeleted;
@@ -114,8 +114,8 @@ class Calendar {
 
     return new TableRowElement()
       ..children = [
-        new TableCellElement()..text = RFC3339.format(entry.start),
-        new TableCellElement()..text = RFC3339.format(entry.stop),
+        new TableCellElement()..text = rfc3339.format(entry.start),
+        new TableCellElement()..text = rfc3339.format(entry.stop),
         new TableCellElement()..text = entry.content,
         changeCell,
         deleteCell
@@ -129,7 +129,7 @@ class Calendar {
           ..text = '$prefix '
           ..style.fontWeight = 'bold',
         new SpanElement()
-          ..text = RFC3339.format(change.changedAt) + ' - ${change.username}'
+          ..text = rfc3339.format(change.changedAt) + ' - ${change.username}'
       ];
 
     return li;

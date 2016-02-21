@@ -7,7 +7,6 @@ import 'package:logging/logging.dart';
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/eventbus.dart';
 import 'package:management_tool/view.dart' as view;
-import 'package:openreception_framework/model.dart' as model;
 
 const String _libraryName = 'management_tool.page.message';
 

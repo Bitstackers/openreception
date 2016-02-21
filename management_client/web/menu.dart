@@ -9,15 +9,6 @@ import 'package:management_tool/eventbus.dart';
  * It lets the user switch between windows.
  */
 class Menu {
-  static const String ORGANIZATION_WINDOW = 'organization';
-  static const String RECEPTION_WINDOW = 'reception';
-  static const String CONTACT_WINDOW = 'contact';
-  static const String DIALPLAN_WINDOW = 'dialplan';
-  static const String RECORD_WINDOW = 'record';
-  static const String USER_WINDOW = 'user';
-  static const String BILLING_WINDOW = 'billing';
-  static const String MUSIC_WINDOW = 'music';
-
   //root DOM element for the menu.
   HtmlElement element;
 

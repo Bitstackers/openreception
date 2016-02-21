@@ -7,8 +7,8 @@ const String addNewLiClass = 'addnew';
 typedef void OnChange();
 
 class Keys {
-  static const int ESCAPE = 27;
-  static const int ENTER = 13;
+  static const int escape = 27;
+  static const int enter = 13;
 }
 
 void fillList(UListElement element, List<String> items, {OnChange onChange}) {
@@ -26,7 +26,7 @@ void fillList(UListElement element, List<String> items, {OnChange onChange}) {
     ..placeholder = 'Tilføj ny...'
     ..onKeyPress.listen((KeyboardEvent event) {
       KeyEvent key = new KeyEvent.wrap(event);
-      if (key.keyCode == Keys.ENTER) {
+      if (key.keyCode == Keys.enter) {
         String item = inputNewItem.value;
         inputNewItem.value = '';
 
@@ -37,7 +37,7 @@ void fillList(UListElement element, List<String> items, {OnChange onChange}) {
         if (onChange != null) {
           onChange();
         }
-      } else if (key.keyCode == Keys.ESCAPE) {
+      } else if (key.keyCode == Keys.escape) {
         inputNewItem.value = '';
       }
     });
@@ -80,8 +80,8 @@ void editableSpan(SpanElement content, InputElement editBox,
     ..style.display = 'none'
     ..onKeyDown.listen((KeyboardEvent event) {
       KeyEvent key = new KeyEvent.wrap(event);
-      if (key.keyCode == Keys.ENTER || key.keyCode == Keys.ESCAPE) {
-        if (key.keyCode == Keys.ENTER) {
+      if (key.keyCode == Keys.enter || key.keyCode == Keys.escape) {
+        if (key.keyCode == Keys.enter) {
           content.text = editBox.value;
 
           if (onChange != null) {

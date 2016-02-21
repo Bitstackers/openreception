@@ -10,7 +10,6 @@ import 'package:management_tool/view.dart' as view;
 
 import 'package:management_tool/searchcomponent.dart';
 import 'package:management_tool/configuration.dart';
-import '../menu.dart';
 import 'package:openreception_framework/model.dart' as model;
 import 'package:openreception_framework/storage.dart' as storage;
 
@@ -633,7 +632,7 @@ class ContactView {
           'organization_id': reception.organizationId,
           'reception_id': reception.ID
         };
-        bus.fire(new WindowChanged(Menu.RECEPTION_WINDOW, data));
+        bus.fire(new WindowChanged('reception', data));
       });
 
     UListElement contactsUl = new UListElement()..classes.add('zebra-odd');
@@ -663,7 +662,7 @@ class ContactView {
           'contact_id': collegue.ID,
           'reception_id': collegue.receptionID
         };
-        bus.fire(new WindowChanged(Menu.CONTACT_WINDOW, data));
+        bus.fire(new WindowChanged('contact', data));
       });
   }
 
@@ -676,7 +675,7 @@ class ContactView {
       ..text = '${organization.fullName}'
       ..onClick.listen((_) {
         Map data = {'organization_id': organization.id,};
-        bus.fire(new WindowChanged(Menu.ORGANIZATION_WINDOW, data));
+        bus.fire(new WindowChanged('organization', data));
       });
     return li;
   }
