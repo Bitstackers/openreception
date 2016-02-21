@@ -368,14 +368,14 @@ abstract class Randomizer {
   /**
    * Generates a random [Model.ReceptionDialplan].
    */
-  static Model.ReceptionDialplan randomDialplan() =>
-      new Model.ReceptionDialplan()
-        ..open = randomDialplanHourActions()
-        ..extension =
-            '${randomPhoneNumber()}-${new DateTime.now().millisecondsSinceEpoch}'
-        ..defaultActions = randomDialplanActions()
-        ..note = randomDialplanNote()
-        ..active = rand.nextBool();
+  static Model
+      .ReceptionDialplan randomDialplan() => new Model.ReceptionDialplan()
+    ..open = randomDialplanHourActions()
+    ..extension =
+        '${randomPhoneNumber()}-${new DateTime.now().millisecondsSinceEpoch}'
+    ..defaultActions = randomDialplanActions()
+    ..note = randomDialplanNote()
+    ..active = rand.nextBool();
 
   /**
    *
@@ -577,7 +577,7 @@ abstract class Randomizer {
     ..emailAddresses = []
     ..enabled = true
     ..extraData = Uri.parse('http://localhost/test')
-    ..fullName = 'Test test'
+    ..fullName = randomCompany()
     ..greeting = 'Go away'
     ..handlingInstructions = ['Hang up']
     ..lastChecked = new DateTime.now()
@@ -586,7 +586,9 @@ abstract class Randomizer {
     ..product = 'Butter'
     ..salesMarketingHandling = []
     ..shortGreeting = 'Please go'
-    ..telephoneNumbers = [new Model.PhoneNumber.empty()..value = '56 33 21 44']
+    ..telephoneNumbers = [
+      new Model.PhoneNumber.empty()..endpoint = '56 33 21 44'
+    ]
     ..vatNumbers = []
     ..websites = []
     ..organizationId = 1;
