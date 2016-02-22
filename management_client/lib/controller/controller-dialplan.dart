@@ -15,8 +15,10 @@ class Dialplan {
   Future<model.ReceptionDialplan> get(String extension) =>
       _dpStore.get(extension);
 
-  Future<model.ReceptionDialplan> deploy(String extension, int rid) =>
+  Future<Iterable<String>> deploy(String extension, int rid) =>
       _dpStore.deployDialplan(extension, rid);
+
+  Future reloadConfig() => _dpStore.reloadConfig();
 
   Future<model.ReceptionDialplan> update(model.ReceptionDialplan rdp) =>
       _dpStore.update(rdp);

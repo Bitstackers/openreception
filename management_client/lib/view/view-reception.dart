@@ -115,6 +115,9 @@ class Reception {
     ..classes.addAll(['full-width'])
     ..style.height = '20em'
     ..value = '';
+  final PreElement _dialplanMiniLog = new PreElement()
+    ..classes.addAll(['full-width', 'miniLog'])
+    ..text = '';
 
   Phonenumbers _phoneNumberView;
 
@@ -195,6 +198,7 @@ class Reception {
       _saveButton.disabled = false;
     }
 
+    _dialplanMiniLog.text = '';
     _deleteButton
       ..text = 'Slet'
       ..disabled = !_saveButton.disabled;
@@ -389,7 +393,8 @@ class Reception {
                 ..text = 'Kaldplan'
                 ..htmlFor = _dialplanInput.id,
               _dialplanInput,
-              _deployDialplanButton
+              _deployDialplanButton,
+              _dialplanMiniLog
             ],
           new DivElement()
             ..children = [
@@ -553,7 +558,18 @@ class Reception {
 
     _deployDialplanButton.onClick.listen((_) async {
       try {
-        await _dpController.deploy(reception.dialplan, reception.ID);
+        _dialplanMiniLog.text = '';
+        _deployDialplanButton.disabled = true;
+
+        _dialplanMiniLog.text += 'Uruller kaldplan ${reception.dialplan} til '
+            'reception ${reception.fullName} (rid: ${reception.ID})...\n';
+        List<String> files =
+            await _dpController.deploy(reception.dialplan, reception.ID);
+        _dialplanMiniLog.text += 'Udrullede ${files.length} nye filer:\n';
+        _dialplanMiniLog.text += files.join('\n') + '\n';
+        _dialplanMiniLog.text += 'Genindlæser konfiguration\n';
+        await _dpController.reloadConfig();
+        _dialplanMiniLog.text += '${files.length} nye filer aktive\n';
         notify.success(
             'Udrullede kaldplan',
             'Kaldplan ${reception.dialplan} til '
