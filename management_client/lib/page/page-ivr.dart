@@ -150,6 +150,7 @@ class Ivr {
   Future _activateIvrmenu(String name) async {
     _log.finest('Activating menu ${name}');
     _ivrView.menu = await _menuController.get(name);
+    _ivrView.create = false;
     _highlightIvrmenuInList(name);
 
     _renderDialplanList(await _menuController.listUsage(name));

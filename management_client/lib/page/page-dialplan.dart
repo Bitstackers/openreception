@@ -166,6 +166,7 @@ class Dialplan {
     _log.finest('Activating dialplan ${extension}');
     _dpView.dialplan = await _dialplanController.get(extension);
     _dpPlot.dialplan = _dpView.dialplan;
+    _dpView.create = false;
     _highlightDialplanInList(extension);
     _renderReceptionList(await _dialplanController.listUsage(extension));
   }
@@ -183,6 +184,7 @@ class Dialplan {
    */
   void _createDialplan() {
     _dpView.dialplan = new model.ReceptionDialplan();
+    _dpView.create = true;
     _highlightDialplanInList('');
   }
 }

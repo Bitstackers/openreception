@@ -9,6 +9,7 @@ class IvrMenu {
 
   bool get hasValidationError => _menuInput.classes.contains('error');
   final UListElement _inputErrorList = new UListElement();
+  bool create = false;
 
   Function onUpdate = (String extension) => null;
   Function onDelete = (String extension) => null;
@@ -73,9 +74,25 @@ class IvrMenu {
    */
   void _observers() {
     _saveButton.onClick.listen((_) async {
-      await _menuController.update(menu);
+      if (create) {
+        try {
+          await _menuController.create(menu);
+          notify.success('IVR-Menu blev oprettet.', menu.name);
+        } catch (e, s) {
+          _log.shout('Failed to create', e, s);
+          notify.error('IVR-Menu blev ikke oprettet.', menu.name);
+        }
+      } else {
+        try {
+          await _menuController.update(menu);
+          notify.success('IVR-Menu blev opdateret.', menu.name);
+        } catch (e, s) {
+          _log.shout('Failed to update', e, s);
+          notify.error('IVR-Menu blev ikke opdateret.', menu.name);
+        }
+      }
+
       onUpdate != null ? onUpdate(menu.name) : '';
-      notify.success('IVR-Menu blev opdateret.', menu.name);
     });
 
     _deleteButton.onClick.listen((_) => _deleteMenu());

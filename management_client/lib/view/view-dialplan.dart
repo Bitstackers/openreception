@@ -9,6 +9,7 @@ class Dialplan {
 
   bool get hasValidationError => _dialplanInput.classes.contains('error');
   final UListElement _inputErrorList = new UListElement();
+  bool create = false;
 
   Function onUpdate = (String extension) => null;
   Function onDelete = (String extension) => null;
@@ -75,9 +76,25 @@ class Dialplan {
    */
   void _observers() {
     _saveButton.onClick.listen((_) async {
-      await _dialplanController.update(dialplan);
+      if (create) {
+        try {
+          await _dialplanController.create(dialplan);
+          notify.success('Kaldplan oprettet.', dialplan.extension);
+        } catch (e, s) {
+          _log.shout('Failed to create', e, s);
+          notify.error('Kaldplan ikke oprettet.', dialplan.extension);
+        }
+      } else {
+        try {
+          await _dialplanController.update(dialplan);
+          notify.success('Kaldplan opdateret.', dialplan.extension);
+        } catch (e, s) {
+          _log.shout('Failed to update', e, s);
+          notify.error('Kaldplan ikke opdateret.', dialplan.extension);
+        }
+      }
+
       onUpdate != null ? onUpdate(dialplan.extension) : '';
-      notify.success('Kaldplan blev opdateret.', dialplan.extension);
     });
 
     _deleteButton.onClick.listen((_) => _deleteDialplan());
