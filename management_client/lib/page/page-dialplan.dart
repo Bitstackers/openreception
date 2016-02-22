@@ -84,13 +84,13 @@ class Dialplan {
 
     _createButton.onClick.listen((_) => _createDialplan());
 
-    _dpView.onDelete = (_) {
-      _userList.children.forEach(
-          (LIElement li) => li.classes.toggle('highlightListItem', false));
+    _dpView.onDelete = (_) async {
+      await _refreshList();
     };
 
-    _dpView.onUpdate = (String extension) {
-      _activateDialplan(extension);
+    _dpView.onUpdate = (String extension) async {
+      await _refreshList();
+      await _activateDialplan(extension);
     };
 
     _dpView.onChange = () {

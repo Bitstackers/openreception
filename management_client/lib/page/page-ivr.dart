@@ -78,13 +78,15 @@ class Ivr {
 
     _createButton.onClick.listen((_) => _createIvrMenu());
 
-    _ivrView.onDelete = ((_) {
+    _ivrView.onDelete = ((_) async {
+      await _refreshList();
       _userList.children.forEach(
           (LIElement li) => li.classes.toggle('highlightListItem', false));
     });
 
-    _ivrView.onUpdate = ((String extension) {
-      _activateIvrmenu(extension);
+    _ivrView.onUpdate = ((String menuName) async {
+      await _refreshList();
+      await _activateIvrmenu(menuName);
     });
   }
 
@@ -166,7 +168,8 @@ class Ivr {
    */
   void _createIvrMenu() {
     _ivrView.menu =
-        new model.IvrMenu('menu-navn', new model.Playback('velkomst.wav'));
-    _highlightIvrmenuInList('');
+        new model.IvrMenu('ny-menu', new model.Playback('velkomst.wav'));
+    _ivrView.create = true;
+    _highlightIvrmenuInList('ny-menu');
   }
 }
