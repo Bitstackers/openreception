@@ -117,16 +117,10 @@ class ReceptionContact {
           new DivElement()
             ..children = [
               new LabelElement()
-                ..text = 'Backup kontakter'
-                ..htmlFor = _backupContactsInput.id,
-              _backupContactsInput
-            ],
-          new DivElement()
-            ..children = [
-              new LabelElement()
-                ..text = 'Afdelinger'
-                ..htmlFor = _departmentsInput.id,
-              _departmentsInput
+                ..text = 'Beskedadresser'
+                ..htmlFor = _endpointsView.element.id,
+              _endPointChangesList,
+              _endpointsView.element
             ],
           new DivElement()
             ..children = [
@@ -145,44 +139,16 @@ class ReceptionContact {
           new DivElement()
             ..children = [
               new LabelElement()
-                ..text = 'Telefonnumre'
-                ..htmlFor = _phoneNumberView.element.id,
-              _phoneNumberView.element
+                ..text = 'Arbejdstider'
+                ..htmlFor = _workHoursInput.id,
+              _workHoursInput
             ],
           new DivElement()
             ..children = [
               new LabelElement()
-                ..text = 'Info'
-                ..htmlFor = _infoInput.id,
-              _infoInput
-            ],
-          new DivElement()
-            ..children = [
-              new LabelElement()
-                ..text = 'Beskedadresser'
-                ..htmlFor = _endpointsView.element.id,
-              _endPointChangesList,
-              _endpointsView.element
-            ],
-        ],
-
-      /// Right column.
-      new DivElement()
-        ..classes.add('col-1-2')
-        ..children = [
-          new DivElement()
-            ..children = [
-              new LabelElement()
-                ..text = 'Beskedinstrukser'
-                ..htmlFor = _messagePrerequisiteInput.id,
-              _messagePrerequisiteInput
-            ],
-          new DivElement()
-            ..children = [
-              new LabelElement()
-                ..text = 'Relationer'
-                ..htmlFor = _relationsInput.id,
-              _relationsInput
+                ..text = 'Backup kontakter'
+                ..htmlFor = _backupContactsInput.id,
+              _backupContactsInput
             ],
           new DivElement()
             ..children = [
@@ -201,16 +167,22 @@ class ReceptionContact {
           new DivElement()
             ..children = [
               new LabelElement()
-                ..text = 'Titler'
-                ..htmlFor = _titlesInput.id,
-              _titlesInput
+                ..text = 'Info'
+                ..htmlFor = _infoInput.id,
+              _infoInput
             ],
+        ],
+
+      /// Right column.
+      new DivElement()
+        ..classes.add('col-1-2')
+        ..children = [
           new DivElement()
             ..children = [
               new LabelElement()
-                ..text = 'Arbejdstider'
-                ..htmlFor = _workHoursInput.id,
-              _workHoursInput
+                ..text = 'Telefonnumre'
+                ..htmlFor = _phoneNumberView.element.id,
+              _phoneNumberView.element
             ],
           new DivElement()
             ..children = [
@@ -219,6 +191,34 @@ class ReceptionContact {
                 ..htmlFor = _distributionsListView.element.id,
               _dlistChangesList,
               _distributionsListView.element
+            ],
+          new DivElement()
+            ..children = [
+              new LabelElement()
+                ..text = 'Beskedinstrukser'
+                ..htmlFor = _messagePrerequisiteInput.id,
+              _messagePrerequisiteInput
+            ],
+          new DivElement()
+            ..children = [
+              new LabelElement()
+                ..text = 'Titler'
+                ..htmlFor = _titlesInput.id,
+              _titlesInput
+            ],
+          new DivElement()
+            ..children = [
+              new LabelElement()
+                ..text = 'Relationer'
+                ..htmlFor = _relationsInput.id,
+              _relationsInput
+            ],
+          new DivElement()
+            ..children = [
+              new LabelElement()
+                ..text = 'Afdelinger'
+                ..htmlFor = _departmentsInput.id,
+              _departmentsInput
             ],
         ],
       new DivElement()
