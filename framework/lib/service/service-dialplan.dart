@@ -29,7 +29,8 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
   /**
    *
    */
-  Future<Model.ReceptionDialplan> create(Model.ReceptionDialplan rdp) {
+  Future<Model.ReceptionDialplan> create(Model.ReceptionDialplan rdp,
+      [Model.User user]) {
     Uri url = Resource.ReceptionDialplan.list(_host);
     url = _appendToken(url, _token);
 
@@ -68,7 +69,8 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
   /**
    *
    */
-  Future<Model.ReceptionDialplan> update(Model.ReceptionDialplan rdp) {
+  Future<Model.ReceptionDialplan> update(Model.ReceptionDialplan rdp,
+      [Model.User user]) {
     Uri url = Resource.ReceptionDialplan.single(_host, rdp.extension);
     url = _appendToken(url, _token);
 
@@ -81,7 +83,7 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
   /**
    *
    */
-  Future remove(String extension) {
+  Future remove(String extension, [Model.User user]) {
     Uri url = Resource.ReceptionDialplan.single(_host, extension);
     url = _appendToken(url, _token);
 

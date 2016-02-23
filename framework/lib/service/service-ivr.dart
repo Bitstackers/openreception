@@ -29,7 +29,7 @@ class RESTIvrStore implements Storage.Ivr {
   /**
    *
    */
-  Future<Model.IvrMenu> create(Model.IvrMenu menu) {
+  Future<Model.IvrMenu> create(Model.IvrMenu menu, [Model.User user]) {
     Uri url = Resource.Ivr.list(_host);
     url = _appendToken(url, this._token);
 
@@ -53,7 +53,7 @@ class RESTIvrStore implements Storage.Ivr {
   /**
    *
    */
-  Future remove(String menuName) {
+  Future remove(String menuName, [Model.User user]) {
     Uri url = Resource.Ivr.single(this._host, menuName);
     url = _appendToken(url, this._token);
 
@@ -86,7 +86,7 @@ class RESTIvrStore implements Storage.Ivr {
   /**
    *
    */
-  Future<Model.IvrMenu> update(Model.IvrMenu menu) {
+  Future<Model.IvrMenu> update(Model.IvrMenu menu, [Model.User user]) {
     Uri url = Resource.Ivr.single(this._host, menu.name);
     url = _appendToken(url, this._token);
 
