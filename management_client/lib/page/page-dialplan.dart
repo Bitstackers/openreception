@@ -86,6 +86,7 @@ class Dialplan {
 
     _dpView.onDelete = (_) async {
       await _refreshList();
+      _dpPlot.element.hidden = true;
     };
 
     _dpView.onUpdate = (String extension) async {
