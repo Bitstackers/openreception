@@ -15,7 +15,6 @@ library openreception.client.simulation;
 
 import 'dart:async';
 import 'dart:html';
-import 'dart:convert';
 import 'dart:math' show Random;
 
 import 'controller/controller.dart' as Controller;
