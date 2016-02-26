@@ -43,18 +43,44 @@ class UIContactCalendar extends UIModel {
    */
   set calendarEntries(Iterable<ORModel.CalendarEntry> items) {
     final List<LIElement> list = new List<LIElement>();
+    final DateTime now = new DateTime.now();
+
+    bool isToday(DateTime stamp) =>
+        stamp.day == now.day && stamp.month == now.month && stamp.year == now.year;
+
+    SpanElement labelElement() {
+      final SpanElement label = new SpanElement()
+        ..classes.add('label')
+        ..text = 'label';
+
+      return label;
+    }
 
     items.forEach((ORModel.CalendarEntry item) {
       final DivElement content = new DivElement()..text = item.content;
 
-      final String start = ORUtil.humanReadableTimestamp(item.start, _weekDays);
-      final String stop = ORUtil.humanReadableTimestamp(item.stop, _weekDays);
-      final DivElement timeStamps = new DivElement()
-        ..classes.add('timestamps')
-        ..text = '${start} - ${stop}';
+      String start = ORUtil.humanReadableTimestamp(item.start, _weekDays);
+      String stop = ORUtil.humanReadableTimestamp(item.stop, _weekDays);
+
+      if (isToday(item.start) && !isToday(item.stop)) {
+        start = 'i dag $start';
+      }
+
+      if (isToday(item.stop) && !isToday(item.start)) {
+        stop = 'i dag $stop';
+      }
+
+      final DivElement labelAndTimestamp = new DivElement()
+        ..classes.add('label-and-timestamp')
+        ..children.addAll([
+          labelElement(),
+          new SpanElement()
+            ..classes.add('timestamp')
+            ..text = '${start} - ${stop}'
+        ]);
 
       list.add(new LIElement()
-        ..children.addAll([content, timeStamps])
+        ..children.addAll([content, labelAndTimestamp])
         ..title = 'Id: ${item.ID.toString()}'
         ..dataset['object'] = JSON.encode(item)
         ..classes.toggle('active', item.active));

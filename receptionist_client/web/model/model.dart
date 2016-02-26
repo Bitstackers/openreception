@@ -64,8 +64,7 @@ part 'ui/model-ui-welcome-message.dart';
 
 const libraryName = 'model';
 
-typedef String HumanReadableTimestamp(
-    DateTime timestamp, Map<int, String> dayMap);
+typedef String HumanReadableTimestamp(DateTime timestamp, Map<int, String> dayMap);
 typedef void SelectCallback(LIElement li);
 
 final Controller.HotKeys _hotKeys = new Controller.HotKeys();
@@ -99,12 +98,8 @@ abstract class UIModel {
    * It MAY contain "down" and "up", if [_listTarget] is not null. These two
    * are mapped to [_handleUpDown].
    */
-  Map<String, EventListener> _defaultKeyMap(
-      {Map<String, EventListener> myKeys}) {
-    Map<String, EventListener> map = {
-      'Shift+Tab': _handleShiftTab,
-      'Tab': _handleTab
-    };
+  Map<String, EventListener> _defaultKeyMap({Map<String, EventListener> myKeys}) {
+    Map<String, EventListener> map = {'Shift+Tab': _handleShiftTab, 'Tab': _handleTab};
     if (_listTarget != null) {
       map.addAll({'down': _handleUpDown, 'up': _handleUpDown});
     }
@@ -169,23 +164,19 @@ abstract class UIModel {
    */
   void _handleUpDown(Event event) {
     if (_listTarget.children.isNotEmpty) {
-      final LIElement selected =
-          _listTarget.querySelector('.selected:not(.hide)');
+      final LIElement selected = _listTarget.querySelector('.selected:not(.hide)');
 
       if (selected == null) {
-        _markSelected(
-            _scanForwardForVisibleElement(_listTarget.children.first));
+        _markSelected(_scanForwardForVisibleElement(_listTarget.children.first));
         return;
       }
 
       switch ((event as KeyboardEvent).keyCode) {
         case KeyCode.DOWN:
-          _markSelected(
-              _scanForwardForVisibleElement(selected.nextElementSibling));
+          _markSelected(_scanForwardForVisibleElement(selected.nextElementSibling));
           break;
         case KeyCode.UP:
-          _markSelected(
-              _scanBackwardForVisibleElement(selected.previousElementSibling));
+          _markSelected(_scanBackwardForVisibleElement(selected.previousElementSibling));
           break;
       }
     }
@@ -240,11 +231,9 @@ abstract class UIModel {
    * already marked selected.
    * Does nothing if [li] is null or [li] is already selected.
    */
-  void _markSelected(LIElement li,
-      {bool callSelectCallback: true, bool alwaysFire: false}) {
+  void _markSelected(LIElement li, {bool callSelectCallback: true, bool alwaysFire: false}) {
     if (li != null && (alwaysFire || !li.classes.contains('selected'))) {
-      _listTarget.children
-          .forEach((Element element) => element.classes.remove('selected'));
+      _listTarget.children.forEach((Element element) => element.classes.remove('selected'));
       li.classes.add('selected');
       li.scrollIntoView();
       if (callSelectCallback) {
@@ -325,6 +314,6 @@ class ContactWithFilterContext {
   final filterState state;
   final String filterValue;
 
-  ContactWithFilterContext(ORModel.Contact this.contact, filterState this.state,
-      String this.filterValue);
+  ContactWithFilterContext(
+      ORModel.Contact this.contact, filterState this.state, String this.filterValue);
 }
