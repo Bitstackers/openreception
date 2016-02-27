@@ -93,6 +93,7 @@ abstract class Key {
   static const String extension = 'extension';
 
   static const String filter = 'filter';
+  static const String future = 'future';
 
   static const String globalCallQueueHeader = 'global-call-queue-header';
 
@@ -125,7 +126,9 @@ abstract class Key {
 
   static const String name = 'name';
   static const String no = 'no';
+  static const String now = 'now';
 
+  static const String past = 'past';
   static const String paused = 'paused';
   static const String phone = 'phone';
 
@@ -159,6 +162,8 @@ abstract class Key {
   static const String stateLoadingHeader = 'state-loading-header';
   static const String status = 'status';
   static const String stop = 'stop';
+
+  static const String today = 'today';
 
   static const String unknown = 'unknown';
 
@@ -246,6 +251,7 @@ Map<String, String> da = {
   Key.extension: 'Lokalnummer',
 
   Key.filter: 'filter...',
+  Key.future: 'fremtid',
 
   Key.globalCallQueueHeader: 'Kø',
 
@@ -278,7 +284,9 @@ Map<String, String> da = {
 
   Key.name: 'Navn',
   Key.no: 'Nej',
+  Key.now: 'nu',
 
+  Key.past: 'fortid',
   Key.paused: 'Pause',
   Key.phone: 'Telefon',
 
@@ -312,6 +320,8 @@ Map<String, String> da = {
   Key.stateLoadingHeader: 'Hold på bits og bytes mens vi starter programmet',
   Key.status: 'Status',
   Key.stop: 'Stop',
+
+  Key.today: 'i dag',
 
   Key.unknown: 'Ukendt',
 
@@ -399,6 +409,7 @@ Map<String, String> en = {
   Key.extension: 'Extension',
 
   Key.filter: 'filter...',
+  Key.future: 'future',
 
   Key.globalCallQueueHeader: 'Queue',
 
@@ -431,7 +442,9 @@ Map<String, String> en = {
 
   Key.name: 'Name',
   Key.no: 'Nej',
+  Key.now: 'now',
 
+  Key.past: 'past',
   Key.paused: 'Paused',
   Key.phone: 'Phone',
 
@@ -465,6 +478,8 @@ Map<String, String> en = {
   Key.stateLoadingHeader: 'Hold on to your bits while we\'re loading the application',
   Key.status: 'Status',
   Key.stop: 'Stop',
+
+  Key.today: 'today',
 
   Key.unknown: 'Unknown',
 
