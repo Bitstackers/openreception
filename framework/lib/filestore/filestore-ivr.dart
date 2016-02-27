@@ -83,7 +83,7 @@ class Ivr implements storage.Ivr {
   /**
    *
    */
-  Future<model.IvrMenu> update(model.IvrMenu menu, [model.User user]) async {
+  Future<model.IvrMenu> update(model.IvrMenu menu, model.User user) async {
     final File file = new File('$path/${menu.name}.json');
 
     if (!file.existsSync()) {

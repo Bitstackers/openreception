@@ -13,9 +13,18 @@
 
 part of openreception.filestore;
 
+class Change {
+  final DateTime changeTime;
+  final String author;
+  final String message;
+
+  const Change(this.changeTime, this.author, {this.message: ''});
+}
+
 class GitEngine {
   final Logger _log = new Logger('$libraryName.GitEngine');
   final String path;
+  bool logStdout = false;
 
   Future get initialized => _initialized.future;
   final Completer _initialized = new Completer();
@@ -44,7 +53,7 @@ class GitEngine {
           workingDirectory: path);
 
       final String stdout = result.stdout;
-      if (stdout.isNotEmpty) {
+      if (stdout.isNotEmpty && logStdout) {
         _log.finest(stdout);
       }
 
@@ -75,7 +84,7 @@ class GitEngine {
         ProcessResult result = await Process.run('/usr/bin/git', ['init', path],
             workingDirectory: path);
 
-        if (result.stdout.isNotEmpty) {
+        if (result.stdout.isNotEmpty && logStdout) {
           _log.finest(stdout);
         }
 
@@ -115,18 +124,48 @@ class GitEngine {
   /**
    *
    */
-  Future commit(String commitMsg, String author) async {
+  Future commit(File file, String commitMsg, String author) async {
     await init();
     _lock();
 
     _busy = new Completer();
 
     try {
+      if (!await _hasChanges(file)) {
+        throw new storage.Unchanged('No new content');
+      }
       await _commit(commitMsg, author);
       _unlock();
     } catch (e, s) {
       _unlockError(e, s);
     }
+  }
+
+  /**
+   *
+   */
+  Future<bool> _hasChanges(File file) async {
+    final ProcessResult result = await Process.run(
+        '/usr/bin/git', ['status', '--porcelain', file.path],
+        workingDirectory: path);
+
+    String stderr = result.stderr;
+    if (stderr.isNotEmpty) {
+      _log.severe(stderr);
+    }
+
+    if (result.exitCode != 0) {
+      _log.shout('Failed to add ${path}');
+      throw new storage.ServerError();
+    }
+
+    final List<String> lines = result.stdout.split('\n');
+
+    if (!lines.any((line) => line.contains(file.path))) {
+      return false;
+    }
+
+    return true;
   }
 
   /**
@@ -148,12 +187,38 @@ class GitEngine {
   /**
    *
    */
+  Future changes(File file) async {
+    final ProcessResult result = await Process.run('/usr/bin/git',
+        ['log', '--pretty=format:"%ct%x09%aE%x09%s"', file.path],
+        workingDirectory: path);
+
+    List<String> lines = result.stdout.split('\n');
+    List<Change> changeList = [];
+    lines.forEach((line) {
+      List<String> parts = line.split(new String.fromCharCode(9));
+      print(parts);
+    });
+
+    String stderr = result.stderr;
+    if (stderr.isNotEmpty) {
+      _log.severe(stderr);
+    }
+
+    if (result.exitCode != 0) {
+      _log.shout('Failed to add ${path}');
+      throw new storage.ServerError();
+    }
+  }
+
+  /**
+   *
+   */
   Future _add(File file) async {
     final ProcessResult result = await Process
         .run('/usr/bin/git', ['add', file.path], workingDirectory: path);
 
     String stdout = result.stdout;
-    if (stdout.isNotEmpty) {
+    if (stdout.isNotEmpty && logStdout) {
       _log.finest(stdout);
     }
 
@@ -177,7 +242,7 @@ class GitEngine {
         workingDirectory: path);
 
     String stdout = result.stdout;
-    if (stdout.isNotEmpty) {
+    if (stdout.isNotEmpty && logStdout) {
       _log.finest(stdout);
     }
 
@@ -199,7 +264,7 @@ class GitEngine {
     final ProcessResult result = await Process
         .run('/usr/bin/git', ['rm', file.path], workingDirectory: path);
     String stdout = result.stdout;
-    if (stdout.isNotEmpty) {
+    if (stdout.isNotEmpty && logStdout) {
       _log.finest(stdout);
     }
 

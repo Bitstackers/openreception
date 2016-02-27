@@ -18,18 +18,28 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:logging/logging.dart';
+import 'package:uuid/uuid.dart';
+import 'package:path/path.dart';
 
 import 'model.dart' as model;
 import 'storage.dart' as storage;
 
+part 'filestore/filestore-calendar.dart';
+part 'filestore/filestore-contact.dart';
 part 'filestore/filestore-git_engine.dart';
 part 'filestore/filestore-ivr.dart';
+part 'filestore/filestore-message_queue.dart';
+part 'filestore/filestore-message.dart';
+part 'filestore/filestore-organization.dart';
 part 'filestore/filestore-reception_dialplan.dart';
+part 'filestore/filestore-reception.dart';
+part 'filestore/filestore-user.dart';
 
 const String libraryName = 'openreception.filestore';
 
 final JsonEncoder _jsonpp = new JsonEncoder.withIndent('  ');
 
+final Uuid _uuid = new Uuid();
 final model.User _systemUser = new model.User.empty()
   ..name = 'System'
   ..address = 'root@localhost';

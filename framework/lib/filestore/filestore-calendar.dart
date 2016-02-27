@@ -21,10 +21,12 @@ class Calendar implements storage.Calendar {
   Future get initialized => _git.initialized;
   Future get ready => _git.whenReady;
 
+  String get _newUuid => _uuid.v4();
+
   /**
    *
    */
-  Ivr({String this.path: 'json-data/ivr'}) {
+  Calendar({String this.path: 'json-data/calendar'}) {
     _git = new GitEngine(path);
     _git.init();
   }
@@ -32,8 +34,22 @@ class Calendar implements storage.Calendar {
   /**
    *
    */
-  Future<model.IvrMenu> create(model.IvrMenu menu, [model.User user]) async {
-    final File file = new File('$path/${menu.name}.json');
+  Future<Iterable<model.CalendarEntryChange>> changes(entryId) async {
+    Iterable<Change> gitChanges =
+        await _git.changes(new File('$path/${entryId}.json'));
+
+    return gitChanges.map((change) => new model.CalendarEntryChange()
+      ..changedAt = change.changeTime
+      ..userUuid = change.author);
+  }
+
+  /**
+   *
+   */
+  Future<model.CalendarEntry> create(
+      model.CalendarEntry entry, model.User user) async {
+    entry.uuid = _newUuid;
+    final File file = new File('$path/${entry.uuid}.json');
 
     if (file.existsSync()) {
       throw new storage.ClientError(
@@ -45,26 +61,26 @@ class Calendar implements storage.Calendar {
       user = _systemUser;
     }
 
-    file.writeAsStringSync(_jsonpp.convert(menu));
+    file.writeAsStringSync(_jsonpp.convert(entry));
 
-    await _git.add(file, 'Added ${menu.name}', _authorString(user));
+    await _git.add(file, 'Added ${entry.uuid}', _authorString(user));
 
-    return menu;
+    return entry;
   }
 
   /**
    *
    */
-  Future<model.IvrMenu> get(String menuName) async {
-    final File file = new File('$path/${menuName}.json');
+  Future<model.CalendarEntry> get(entryId, {bool deleted: false}) async {
+    final File file = new File('$path/${entryId}.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file with name ${menuName}');
+      throw new storage.NotFound('No file with name ${entryId}');
     }
 
     try {
-      final model.IvrMenu menu =
-          model.IvrMenu.decode(JSON.decode(file.readAsStringSync()));
+      final model.CalendarEntry menu =
+          model.CalendarEntry.decode(JSON.decode(file.readAsStringSync()));
       return menu;
     } catch (e) {
       throw e;
@@ -74,17 +90,31 @@ class Calendar implements storage.Calendar {
   /**
    *
    */
-  Future<Iterable<model.IvrMenu>> list() async => new Directory(path)
-      .listSync()
-      .where((fse) => fse is File && fse.path.endsWith('.json'))
-      .map((File fse) =>
-          model.IvrMenu.decode(JSON.decode(fse.readAsStringSync())));
+  Future<model.CalendarEntryChange> latestChange(entryId) async =>
+      (await changes(entryId)).first;
 
   /**
    *
    */
-  Future<model.IvrMenu> update(model.IvrMenu menu, [model.User user]) async {
-    final File file = new File('$path/${menu.name}.json');
+  Future<Iterable<model.CalendarEntry>> list(model.Owner owner,
+          {bool deleted: false}) async =>
+      (await _list()).where((entry) => entry.owner == owner);
+  /**
+   *
+   */
+  Future<Iterable<model.CalendarEntry>> _list() async => new Directory(path)
+      .listSync()
+      .where((fse) => fse is File && fse.path.endsWith('.json'))
+      .map((File fse) =>
+          model.CalendarEntry.decode(JSON.decode(fse.readAsStringSync())));
+
+  /**
+   * Trashes the [Model.CalendarEntry] associated with [entryId] in the
+   * database, but keeps the object (in a hidden state) in the database.
+   * The action is logged to be performed by user with ID [userId].
+   */
+  Future remove(entryId, model.User user) async {
+    final File file = new File('$path/${entryId}.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
@@ -95,18 +125,15 @@ class Calendar implements storage.Calendar {
       user = _systemUser;
     }
 
-    file.writeAsStringSync(_jsonpp.convert(menu));
-
-    await _git._commit('Updated ${menu.name}', _authorString(user));
-
-    return menu;
+    await _git.remove(file, 'Removed $entryId', _authorString(user));
   }
 
   /**
    *
    */
-  Future remove(String menuName, [model.User user]) async {
-    final File file = new File('$path/${menuName}.json');
+  Future<model.CalendarEntry> update(
+      model.CalendarEntry entry, model.User user) async {
+    final File file = new File('$path/${entry.uuid}.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
@@ -117,6 +144,10 @@ class Calendar implements storage.Calendar {
       user = _systemUser;
     }
 
-    await _git.remove(file, 'Removed $menuName', _authorString(user));
+    file.writeAsStringSync(_jsonpp.convert(entry));
+
+    await _git._commit('Updated ${entry.uuid}', _authorString(user));
+
+    return entry;
   }
 }
