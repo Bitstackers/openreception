@@ -14,7 +14,7 @@
 part of openreception.model;
 
 /**
- *
+ * Model class of a recording currently active in the system.
  */
 class ActiveRecording {
   final String agentChannel;
@@ -24,30 +24,29 @@ class ActiveRecording {
   final DateTime started;
 
   /**
-   *
+   * Default constructor. Requires [agentChannel] and [path] to be provided
    */
-  ActiveRecording(this.agentChannel, this.path)
-      : started = new DateTime.now();
+  ActiveRecording(this.agentChannel, this.path) : started = new DateTime.now();
 
   /**
-   *
+   * Deconding factory.
    */
   static ActiveRecording decode(Map map) => new ActiveRecording.fromMap(map);
 
   /**
-   *
+   * Deserializing constructor.
    */
-  ActiveRecording.fromMap(Map map) :
-    agentChannel = map[Key.agentChannel],
-    path = map[Key.path],
-    started = Util.unixTimestampToDateTime(map[Key.started]);
+  ActiveRecording.fromMap(Map map)
+      : agentChannel = map[Key.agentChannel],
+        path = map[Key.path],
+        started = Util.unixTimestampToDateTime(map[Key.started]);
 
   /**
-   *
+   * Serialization function.
    */
   Map toJson() => {
-    Key.agentChannel : agentChannel,
-    Key.path : path,
-    Key.started : Util.dateTimeToUnixTimestamp(started)
-  };
+        Key.agentChannel: agentChannel,
+        Key.path: path,
+        Key.started: Util.dateTimeToUnixTimestamp(started)
+      };
 }
