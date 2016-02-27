@@ -124,7 +124,7 @@ class ORCReady {
         _langMap[Key.daySaturday],
         _langMap[Key.daySunday]);
     Model.UIContactCalendar _uiContactCalendar =
-        new Model.UIContactCalendar(querySelector('#contact-calendar'), _weekDays);
+        new Model.UIContactCalendar(querySelector('#contact-calendar'), _weekDays, _langMap);
     Model.UIContactData _uiContactData = new Model.UIContactData(querySelector('#contact-data'));
     Model.UIContactSelector _uiContactSelector =
         new Model.UIContactSelector(querySelector('#contact-selector'));
@@ -133,7 +133,7 @@ class ORCReady {
     Model.UIMessageCompose _uiMessageCompose =
         new Model.UIMessageCompose(querySelector('#message-compose'));
     Model.UIReceptionCalendar _uiReceptionCalendar =
-        new Model.UIReceptionCalendar(querySelector('#reception-calendar'), _weekDays);
+        new Model.UIReceptionCalendar(querySelector('#reception-calendar'), _weekDays, _langMap);
     Model.UIReceptionSelector _uiReceptionSelector =
         new Model.UIReceptionSelector(querySelector('#reception-selector'));
 

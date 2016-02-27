@@ -19,13 +19,15 @@ part of model;
 class UIContactCalendar extends UIModel {
   final Bus<KeyboardEvent> _busEdit = new Bus<KeyboardEvent>();
   final Bus<KeyboardEvent> _busNew = new Bus<KeyboardEvent>();
+  final Map<String, String> _langMap;
   final DivElement _myRoot;
   final ORUtil.WeekDays _weekDays;
 
   /**
    * Constructor.
    */
-  UIContactCalendar(DivElement this._myRoot, ORUtil.WeekDays this._weekDays) {
+  UIContactCalendar(
+      DivElement this._myRoot, ORUtil.WeekDays this._weekDays, Map<String, String> this._langMap) {
     _setupLocalKeys();
     _observers();
   }
@@ -48,10 +50,19 @@ class UIContactCalendar extends UIModel {
     bool isToday(DateTime stamp) =>
         stamp.day == now.day && stamp.month == now.month && stamp.year == now.year;
 
-    SpanElement labelElement() {
-      final SpanElement label = new SpanElement()
-        ..classes.add('label')
-        ..text = 'label';
+    SpanElement labelElement(ORModel.CalendarEntry item) {
+      final SpanElement label = new SpanElement();
+
+      if (!item.active) {
+        final DateTime now = new DateTime.now();
+        if (item.start.isBefore(now)) {
+          label.classes.add('label-past');
+          label.text = _langMap[Key.past];
+        } else {
+          label.classes.add('label-future');
+          label.text = _langMap[Key.future];
+        }
+      }
 
       return label;
     }
@@ -63,17 +74,17 @@ class UIContactCalendar extends UIModel {
       String stop = ORUtil.humanReadableTimestamp(item.stop, _weekDays);
 
       if (isToday(item.start) && !isToday(item.stop)) {
-        start = 'i dag $start';
+        start = '${_langMap[Key.today]} $start';
       }
 
       if (isToday(item.stop) && !isToday(item.start)) {
-        stop = 'i dag $stop';
+        stop = '${_langMap[Key.today]} $stop';
       }
 
       final DivElement labelAndTimestamp = new DivElement()
         ..classes.add('label-and-timestamp')
         ..children.addAll([
-          labelElement(),
+          labelElement(item),
           new SpanElement()
             ..classes.add('timestamp')
             ..text = '${start} - ${stop}'

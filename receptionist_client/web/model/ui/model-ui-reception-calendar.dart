@@ -19,13 +19,15 @@ part of model;
 class UIReceptionCalendar extends UIModel {
   final Bus<KeyboardEvent> _busEdit = new Bus<KeyboardEvent>();
   final Bus<KeyboardEvent> _busNew = new Bus<KeyboardEvent>();
+  final Map<String, String> _langMap;
   final DivElement _myRoot;
   final ORUtil.WeekDays _weekDays;
 
   /**
    * Constructor.
    */
-  UIReceptionCalendar(DivElement this._myRoot, ORUtil.WeekDays this._weekDays) {
+  UIReceptionCalendar(
+      DivElement this._myRoot, ORUtil.WeekDays this._weekDays, Map<String, String> this._langMap) {
     _setupLocalKeys();
     _observers();
   }
@@ -43,18 +45,53 @@ class UIReceptionCalendar extends UIModel {
    */
   set calendarEntries(Iterable<ORModel.CalendarEntry> items) {
     final List<LIElement> list = new List<LIElement>();
+    final DateTime now = new DateTime.now();
+
+    bool isToday(DateTime stamp) =>
+        stamp.day == now.day && stamp.month == now.month && stamp.year == now.year;
+
+    SpanElement labelElement(ORModel.CalendarEntry item) {
+      final SpanElement label = new SpanElement();
+
+      if (!item.active) {
+        final DateTime now = new DateTime.now();
+        if (item.start.isBefore(now)) {
+          label.classes.add('label-past');
+          label.text = _langMap[Key.past];
+        } else {
+          label.classes.add('label-future');
+          label.text = _langMap[Key.future];
+        }
+      }
+
+      return label;
+    }
 
     items.forEach((ORModel.CalendarEntry item) {
       final DivElement content = new DivElement()..text = item.content;
 
-      final String start = ORUtil.humanReadableTimestamp(item.start, _weekDays);
-      final String stop = ORUtil.humanReadableTimestamp(item.stop, _weekDays);
-      final DivElement timeStamps = new DivElement()
-        ..classes.add('timestamps')
-        ..text = '${start} - ${stop}';
+      String start = ORUtil.humanReadableTimestamp(item.start, _weekDays);
+      String stop = ORUtil.humanReadableTimestamp(item.stop, _weekDays);
+
+      if (isToday(item.start) && !isToday(item.stop)) {
+        start = '${_langMap[Key.today]} $start';
+      }
+
+      if (isToday(item.stop) && !isToday(item.start)) {
+        stop = '${_langMap[Key.today]} $stop';
+      }
+
+      final DivElement labelAndTimestamp = new DivElement()
+        ..classes.add('label-and-timestamp')
+        ..children.addAll([
+          labelElement(item),
+          new SpanElement()
+            ..classes.add('timestamp')
+            ..text = '${start} - ${stop}'
+        ]);
 
       list.add(new LIElement()
-        ..children.addAll([content, timeStamps])
+        ..children.addAll([content, labelAndTimestamp])
         ..title = 'Id: ${item.ID.toString()}'
         ..dataset['object'] = JSON.encode(item)
         ..classes.toggle('active', item.active));
