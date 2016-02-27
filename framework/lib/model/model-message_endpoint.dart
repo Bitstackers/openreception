@@ -40,6 +40,9 @@ class MessageEndpoint {
   bool confidential;
   bool enabled;
 
+  String role = Role.TO;
+  String name = '';
+
   @deprecated
   DistributionListEntry recipient = null;
 
@@ -59,6 +62,9 @@ class MessageEndpoint {
     address = map[Key.address];
     confidential = map[Key.confidential];
     description = map[Key.description];
+
+    name = map.containsKey(Key.name) ? map[Key.name] : '';
+    role = map.containsKey(Key.role) ? map[Key.role] : Role.TO;
 
     enabled = map[Key.enabled];
     if (map.containsKey('recipient')) {
@@ -86,7 +92,9 @@ class MessageEndpoint {
         Key.confidential: confidential,
         Key.enabled: enabled,
         Key.description: description,
-        Key.priority: priority
+        Key.priority: priority,
+        Key.name: name,
+        Key.role: role
       };
 
   /**
