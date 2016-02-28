@@ -75,7 +75,7 @@ shelf.Middleware checkAuthentication =
     shelf.createMiddleware(requestHandler: _lookupToken, responseHandler: null);
 
 shelf.Response _handleHttpRequest(shelf.Request request) =>
-    new shelf.Response.ok('asds');
+    new shelf.Response.ok('');
 
 /**
  *
