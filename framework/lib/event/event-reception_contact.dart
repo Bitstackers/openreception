@@ -57,5 +57,5 @@ class ReceptionContactChange implements Event {
       : this.contactID = map[Key.receptionContactChange][Key.contactID],
         this.receptionID = map[Key.receptionContactChange][Key.receptionID],
         this.state = map[Key.receptionContactChange][Key.state],
-        this.timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
+        this.timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
 }

@@ -62,5 +62,5 @@ class EndpointChange implements Event {
     this.address = map[Key.endpointChange][Key.address],
     this.addressType = map[Key.endpointChange][Key.addressType],
     this.state = map[Key.endpointChange][Key.state],
-    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
+    this.timestamp = util.unixTimestampToDateTime (map[Key.timestamp]);
 }

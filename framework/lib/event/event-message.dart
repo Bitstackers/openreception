@@ -64,5 +64,5 @@ class MessageChange implements Event {
     userID = map[Key.messageChange][Key.userID],
     messageID = map[Key.messageChange][Key.messageID],
     state = map[Key.messageChange][Key.state],
-    timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
+    timestamp = util.unixTimestampToDateTime (map[Key.timestamp]);
 }

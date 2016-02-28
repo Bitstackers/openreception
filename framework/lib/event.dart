@@ -15,7 +15,7 @@ library openreception.event;
 
 import 'package:logging/logging.dart';
 
-import 'util.dart' as Util;
+import 'util.dart' as util;
 import 'model.dart';
 
 part 'event/event-calendar.dart';
@@ -100,12 +100,11 @@ abstract class Key {
  * interface for [Event] objects, and a parsing factory constructor.
  */
 abstract class Event {
-
   static final Logger log = new Logger('$libraryName.Event');
 
   DateTime get timestamp;
-  String   get eventName;
-  Map      get asMap;
+  String get eventName;
+  Map get asMap;
 
   /**
    * Every specialized class needs a toJson function.
@@ -115,7 +114,7 @@ abstract class Event {
   /**
    * Parse an an event that has already been deserialized from JSON string.
    */
-  factory Event.parse (Map map) {
+  factory Event.parse(Map map) {
     try {
       switch (map[Key.event]) {
         case Key.peerState:

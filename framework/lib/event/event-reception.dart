@@ -51,5 +51,5 @@ class ReceptionChange implements Event {
   ReceptionChange.fromMap (Map map) :
     this.receptionID = map[Key.receptionChange][Key.receptionID],
     this.state = map[Key.receptionChange][Key.state],
-    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
+    this.timestamp = util.unixTimestampToDateTime (map[Key.timestamp]);
 }

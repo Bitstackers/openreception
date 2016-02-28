@@ -16,7 +16,7 @@ part of openreception.event;
 abstract class EventTemplate {
   static Map _rootElement(Event event) => {
     Key.event     : event.eventName,
-    Key.timestamp : Util.dateTimeToUnixTimestamp (event.timestamp)
+    Key.timestamp : util.dateTimeToUnixTimestamp (event.timestamp)
   };
 
   static Map call(CallEvent event) =>

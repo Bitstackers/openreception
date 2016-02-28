@@ -61,7 +61,5 @@ class CalendarChange implements Event {
     this.contactID = map[Key.calendarChange][Key.contactID],
     this.receptionID = map[Key.calendarChange][Key.receptionID],
     this.state = map[Key.calendarChange][Key.state],
-    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
+    this.timestamp = util.unixTimestampToDateTime (map[Key.timestamp]);
 }
-
-

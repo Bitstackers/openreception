@@ -52,5 +52,5 @@ class ContactChange implements Event {
   ContactChange.fromMap (Map map) :
     this.contactID = map[Key.calendarChange][Key.contactID],
     this.state = map[Key.calendarChange][Key.state],
-    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
+    this.timestamp = util.unixTimestampToDateTime (map[Key.timestamp]);
 }

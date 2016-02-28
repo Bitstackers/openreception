@@ -33,5 +33,5 @@ class ClientConnectionState implements Event {
 
   ClientConnectionState.fromMap (Map map) :
     this.conn      = new ClientConnection.fromMap (map[Key.state]),
-    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
+    this.timestamp = util.unixTimestampToDateTime (map[Key.timestamp]);
 }

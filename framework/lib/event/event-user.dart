@@ -62,5 +62,5 @@ class UserChange implements Event {
   UserChange.fromMap (Map map) :
     userID = map[Key.userChange][Key.userID],
     state = map[Key.userChange][Key.state],
-    timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
+    timestamp = util.unixTimestampToDateTime (map[Key.timestamp]);
 }

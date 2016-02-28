@@ -29,6 +29,6 @@ class PeerState implements Event {
 
   PeerState.fromMap (Map map) :
     this.peer      = new Peer.fromMap             (map[Key.peer]),
-    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
+    this.timestamp = util.unixTimestampToDateTime (map[Key.timestamp]);
 
 }

@@ -51,5 +51,5 @@ class OrganizationChange implements Event {
   OrganizationChange.fromMap (Map map) :
     this.orgID = map[Key.organizationChange ][Key.organizationID],
     this.state = map[Key.organizationChange ][Key.state],
-    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
+    this.timestamp = util.unixTimestampToDateTime (map[Key.timestamp]);
 }
