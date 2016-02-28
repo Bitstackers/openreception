@@ -51,6 +51,7 @@ const Map<String, String> corsHeaders = const {
 };
 
 _transport.Client httpClient = new _transport.Client();
+Map<int, Set<String>> _userTokens = {};
 
 database.User _userStore;
 Future<IO.HttpServer> start(
@@ -62,6 +63,7 @@ Future<IO.HttpServer> start(
     ..get('/token/create', login)
     ..get('/token/oauth2callback', oauthCallback)
     ..get('/token/{token}', userinfo)
+    ..get('/token/portraits', userportraits)
     ..get('/token/{token}/validate', validateToken)
     ..post('/token/{token}/invalidate', invalidateToken)
     ..get('/token/{token}/refresh', login);

@@ -13,6 +13,15 @@
 
 part of openreception.authentication_server.router;
 
+shelf.Response userportraits(shelf.Request request) {
+  final Map<String, String> picturemap = {};
+
+  vault.usermap.values.forEach((model.User user) {
+    picturemap[user.address] = user.portrait;
+  });
+  return new shelf.Response.ok(JSON.encode(picturemap));
+}
+
 shelf.Response userinfo(shelf.Request request) {
   final String token =
       shelf_route.getPathParameters(request).containsKey('token')

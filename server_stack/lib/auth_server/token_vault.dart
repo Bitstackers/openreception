@@ -19,6 +19,7 @@ import 'dart:io';
 
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/storage.dart' as storage;
+import 'package:openreception_framework/model.dart' as model;
 
 TokenVault vault = new TokenVault();
 
@@ -27,12 +28,25 @@ const String libraryName = 'AuthServer.TokenVault';
 class TokenVault {
   static final Logger log = new Logger('$libraryName.TokenVault');
 
-  Map<String, Map> _userTokens = new Map<String, Map>();
+  Map<String, Map> _tokens = new Map<String, Map>();
   Map<String, Map> _serverTokens = new Map<String, Map>();
 
+  Map<int, model.User> get usermap {
+    Map<int, model.User> users = new Map<int, model.User>();
+
+    _tokens.values.forEach((Map map) {
+      if (map.containsKey('identity')) {
+        model.User user = new model.User.fromMap(map['identity']);
+        users[user.id] = user;
+      }
+    });
+
+    return users;
+  }
+
   Map getToken(String token) {
-    if (_userTokens.containsKey(token)) {
-      return _userTokens[token];
+    if (_tokens.containsKey(token)) {
+      return _tokens[token];
     } else if (_serverTokens.containsKey(token)) {
       return _serverTokens[token];
     } else {
@@ -42,17 +56,17 @@ class TokenVault {
 
   void insertToken(String token, Map data) {
     log.finest('Inserting new token: $data');
-    if (_userTokens.containsKey(token)) {
+    if (_tokens.containsKey(token)) {
       log.severe('Duplicate token: $token');
       throw new Exception('insertToken. Token allready exists: $token');
     } else {
-      _userTokens[token] = data;
+      _tokens[token] = data;
     }
   }
 
   void updateToken(String token, Map data) {
-    if (_userTokens.containsKey(token)) {
-      _userTokens[token] = data;
+    if (_tokens.containsKey(token)) {
+      _tokens[token] = data;
     } else if (_serverTokens.containsKey(token)) {
       return;
     } else {
@@ -61,18 +75,18 @@ class TokenVault {
   }
 
   bool containsToken(String token) =>
-      _userTokens.containsKey(token) || _serverTokens.containsKey(token);
+      _tokens.containsKey(token) || _serverTokens.containsKey(token);
 
   void removeToken(String token) {
-    if (_userTokens.containsKey(token)) {
-      _userTokens.remove(token);
+    if (_tokens.containsKey(token)) {
+      _tokens.remove(token);
     } else {
       throw new Exception('containsToken. Unknown token: ${token}');
     }
   }
 
   Iterable<String> listUserTokens() {
-    return _userTokens.keys;
+    return _tokens.keys;
   }
 
   Future loadFromDirectory(String directory) {
