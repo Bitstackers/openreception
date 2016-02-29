@@ -131,7 +131,7 @@ Future<io.HttpServer> start({String hostname: '0.0.0.0', int port: 4030}) {
       .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
       .addHandler(router.handler);
 
-  log.fine('Serving interfaces:');
+  _log.fine('Serving interfaces on port $port:');
   shelf_route.printRoutes(router, printer: (String routes) => log.fine(routes));
 
   return shelf_io.serve(handler, hostname, port);

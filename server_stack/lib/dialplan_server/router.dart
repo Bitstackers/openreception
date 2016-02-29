@@ -138,7 +138,7 @@ Future<io.HttpServer> start(
       .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
       .addHandler(router.handler);
 
-  _log.fine('Serving interfaces:');
+  _log.fine('Serving interfaces on port $port:');
   shelf_route.printRoutes(router, printer: _log.fine);
 
   return await shelf_io.serve(handler, hostname, port);
