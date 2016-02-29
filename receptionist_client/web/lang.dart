@@ -208,7 +208,7 @@ Map<String, String> da = {
   Key.company: 'Virksomhed',
 
   Key.contactCalendarHeader: 'Kontaktkalender',
-  Key.contactDataAddInfo: 'Diverse',
+  Key.contactDataAddInfo: 'Info',
   Key.contactDataBackup: 'Backup',
   Key.contactDataCommands: 'Kommandoer',
   Key.contactDataDepartment: 'Afdeling',
