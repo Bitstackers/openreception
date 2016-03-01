@@ -1,10 +1,10 @@
-part of or_test_fw;
+part of openreception_tests.benchmark;
 
 Future _sleep(int milliseconds) =>
     new Future.delayed(new Duration(milliseconds: milliseconds));
 
-abstract class Benchmark {
-  static final Logger log = new Logger('$libraryName.Benchmark');
+abstract class Call {
+  static final Logger log = new Logger('$_namespace.Call');
   static int handled = 0;
 
   /**
@@ -12,38 +12,38 @@ abstract class Benchmark {
    * call, also covering the possible alternate scenarios that may occur.
    */
   static Future _receptionistRequestsCall(Receptionist r) async {
-    bool callAvailable(Model.Call call) =>
-        call.assignedTo == Model.User.noID && !call.locked;
+    bool callAvailable(model.Call call) =>
+        call.assignedTo == model.User.noId && !call.locked;
 
     await Future.doWhile(() async {
-      final Iterable<Model.Call> calls = await r.callFlowControl.callList();
+      final Iterable<model.Call> calls = await r.callFlowControl.callList();
       if (calls.isEmpty) {
         log.info('$r detected no more calls. Aborting.');
         return false;
       }
 
-      final Model.Call nextCall =
-          calls.firstWhere(callAvailable, orElse: () => Model.Call.noCall);
+      final model.Call nextCall =
+          calls.firstWhere(callAvailable, orElse: () => model.Call.noCall);
 
-      if (nextCall == Model.Call.noCall) {
+      if (nextCall == model.Call.noCall) {
         return true;
       }
 
       try {
-        final Model.Call activeCall =
+        final model.Call activeCall =
             await r.pickup(nextCall, waitForEvent: true);
         log.info('$r got $activeCall, hangin it up after 100ms');
         await new Future.delayed(new Duration(milliseconds: 100));
         await r.hangUp(activeCall);
         await r.waitForPhoneHangup();
         handled++;
-      } on Storage.Conflict {
+      } on storage.Conflict {
         log.fine('$nextCall is locked, trying again later.');
-      } on Storage.NotFound {
+      } on storage.NotFound {
         log.fine('$nextCall is hung up, trying the next one.');
-      } on Storage.Forbidden {
+      } on storage.Forbidden {
         log.fine('$nextCall is already assigned, trying the next one.');
-      } on Storage.ServerError {
+      } on storage.ServerError {
         await r.waitForPhoneHangup();
       }
 
@@ -65,7 +65,7 @@ abstract class Benchmark {
         new Duration(milliseconds: 1000),
         () => callWaiter.callFlowControl
             .callList()
-            .then((Iterable<Model.Call> calls) => calls.length != 0))));
+            .then((Iterable<model.Call> calls) => calls.length != 0))));
 
     // Each customer spawns a call
     // The delays are need to avoid FreeSWITCH standard call-per-second
@@ -87,7 +87,7 @@ abstract class Benchmark {
     }));
 
     await Future.doWhile(() async {
-      final Iterable<Model.Call> calls =
+      final Iterable<model.Call> calls =
           await callWaiter.callFlowControl.callList();
       return calls.length <= (customers.length);
     });

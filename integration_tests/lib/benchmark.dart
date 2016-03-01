@@ -1,7 +1,19 @@
-part of or_test_fw;
+library openreception_tests.benchmark;
+
+import 'dart:async';
+import 'package:openreception_tests/support.dart';
+import 'package:openreception_framework/model.dart' as model;
+import 'package:openreception_framework/storage.dart' as storage;
+
+import 'package:unittest/unittest.dart';
+import 'package:logging/logging.dart';
+
+part 'benchmark/benchmark-call.dart';
+
+const String _namespace = 'test.benchmark';
 
 void runBenchmarkTests() {
-  group('Benchmark', () {
+  group(_namespace + '.call', () {
     Set<Receptionist> receptionists;
     Set<Customer> customers;
 
@@ -38,6 +50,6 @@ void runBenchmarkTests() {
               .wait(customers.map((Customer customer) => customer.teardown())));
     });
 
-    test('callRush', () => Benchmark.callRush(receptionists, customers));
+    test('call-rush', () => Call.callRush(receptionists, customers));
   });
 }
