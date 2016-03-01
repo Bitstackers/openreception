@@ -1,4 +1,4 @@
-name: openreception_acceptance_tests
+name: openreception_tests
 version: 0.1.9
 description: OpenReception Acceptance and integration tests
 dependencies:
