@@ -66,7 +66,7 @@ Future<IO.HttpServer> start(
       .addMiddleware(addCORSHeaders)
       .addHandler(router.handler);
 
-  _log.fine('Serving interfaces on port $port:');
+  log.fine('Serving interfaces on port $port:');
   shelf_route.printRoutes(router, printer: (String item) => log.fine(item));
 
   return await shelf_io.serve(handler, hostname, port);
