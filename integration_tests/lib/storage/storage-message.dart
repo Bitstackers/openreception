@@ -1,7 +1,7 @@
-part of or_test_fw;
+part of openreception_tests.storage;
 
 abstract class MessageStore {
-  static final Logger log = new Logger('$libraryName.MessageStore');
+  static final Logger log = new Logger('$_libraryName.MessageStore');
 
   /**
    * Test server behaviour when trying to retrieve a non-filtered list of
@@ -10,44 +10,43 @@ abstract class MessageStore {
    * The expected behaviour is that the server should return a list
    * of message objects.
    */
-  static Future list(Storage.Message messageStore) {
+  static Future list(storage.Message messageStore) {
     log.info('Listing messages non-filtered.');
 
-    return messageStore.list().then((Iterable<Model.Message> messages) {
+    return messageStore.list().then((Iterable<model.Message> messages) {
       expect(messages.length, greaterThan(0));
-      expect(messages.every((msg) => msg is Model.Message), isTrue);
+      expect(messages.every((msg) => msg is model.Message), isTrue);
     });
   }
 
   /**
    *
    */
-  static Future<Model.Message> _createMessage(
-      Storage.Message messageStore,
-      Storage.Contact contactStore,
-      Storage.Reception receptionStore,
-      Storage.DistributionList dlStore,
-      Storage.Endpoint epStore,
+  static Future<model.Message> _createMessage(
+      storage.Message messageStore,
+      storage.Contact contactStore,
+      storage.Reception receptionStore,
+      storage.Endpoint epStore,
       Receptionist sender) async {
-    int receptionID = 1;
-    int contactID = 4;
-    Model.Contact contact =
+    String receptionID = '1';
+    String contactID = '4';
+    model.ReceptionAttributes contact =
         await contactStore.getByReception(contactID, receptionID);
-    Model.Reception reception = await receptionStore.get(receptionID);
-    Set<Model.MessageRecipient> recipients = new Set();
+    model.Reception reception = await receptionStore.get(receptionID);
+    Set<model.MessageRecipient> recipients = new Set();
 
     await Future.wait(
         (await dlStore.list(contact.receptionID, contact.ID)).map((dle) async {
-      Iterable<Model.MessageEndpoint> eps =
+      Iterable<model.MessageEndpoint> eps =
           await epStore.list(contact.receptionID, contact.ID);
       recipients.addAll(eps.map(
-          (Model.MessageEndpoint mep) => new Model.MessageRecipient(mep, dle)));
+          (model.MessageEndpoint mep) => new model.MessageRecipient(mep, dle)));
     }));
 
-    Model.Message newMessage = Randomizer.randomMessage()
-      ..context = new Model.MessageContext.fromContact(contact, reception)
+    model.Message newMessage = Randomizer.randomMessage()
+      ..context = new model.MessageContext.fromContact(contact, reception)
       ..recipients = recipients
-      ..senderId = sender.user.ID;
+      ..senderUuid = sender.user.ID;
 
     return messageStore.create(newMessage);
   }
@@ -56,23 +55,23 @@ abstract class MessageStore {
    *
    */
   static Future create(
-      Storage.Message messageStore,
-      Storage.Contact contactStore,
-      Storage.Reception receptionStore,
+      storage.Message messageStore,
+      storage.Contact contactStore,
+      storage.Reception receptionStore,
       Storage.DistributionList dlStore,
-      Storage.Endpoint epStore,
+      storage.Endpoint epStore,
       Receptionist sender) async {
-    Model.Message createdMessage = await _createMessage(
+    model.Message createdMessage = await _createMessage(
         messageStore, contactStore, receptionStore, dlStore, epStore, sender);
 
-    Model.Message fetchedMessage = await messageStore.get(createdMessage.ID);
+    model.Message fetchedMessage = await messageStore.get(createdMessage.ID);
 
     expect(createdMessage.asMap, equals(fetchedMessage.asMap));
 
     expect(createdMessage.body, isNotEmpty);
     expect(createdMessage.enqueued, isFalse);
     expect(createdMessage.sent, isFalse);
-    expect(createdMessage.senderId, sender.user.id);
+    expect(createdMessage.senderUuid, sender.user.id);
 
     return messageStore.remove(createdMessage.ID);
   }
@@ -81,29 +80,29 @@ abstract class MessageStore {
    *
    */
   static Future remove(
-      Storage.Message messageStore,
-      Storage.Contact contactStore,
-      Storage.Reception receptionStore,
+      storage.Message messageStore,
+      storage.Contact contactStore,
+      storage.Reception receptionStore,
       Storage.DistributionList dlStore,
-      Storage.Endpoint epStore,
+      storage.Endpoint epStore,
       Receptionist sender) async {
-    Model.Message createdMessage = await _createMessage(
+    model.Message createdMessage = await _createMessage(
         messageStore, contactStore, receptionStore, dlStore, epStore, sender);
 
     await messageStore.remove(createdMessage.ID);
 
     expect(messageStore.get(createdMessage.ID),
-        throwsA(new isInstanceOf<Storage.NotFound>()));
+        throwsA(new isInstanceOf<storage.NotFound>()));
   }
 
   static Future enqueue(
-      Storage.Message messageStore,
-      Storage.Contact contactStore,
-      Storage.Reception receptionStore,
+      storage.Message messageStore,
+      storage.Contact contactStore,
+      storage.Reception receptionStore,
       Storage.DistributionList dlStore,
-      Storage.Endpoint epStore,
+      storage.Endpoint epStore,
       Receptionist sender) async {
-    Model.Message createdMessage = await _createMessage(
+    model.Message createdMessage = await _createMessage(
         messageStore, contactStore, receptionStore, dlStore, epStore, sender);
 
     return messageStore.enqueue(createdMessage);
@@ -116,12 +115,12 @@ abstract class MessageStore {
    * The expected behaviour is that the server should return the
    * Reception object.
    */
-  static Future<Model.Message> get(Storage.Message messageStore) {
+  static Future<model.Message> get(storage.Message messageStore) {
     int existingMessageID = 1;
 
     log.info('Checking server behaviour on an existing message.');
 
-    return messageStore.get(existingMessageID).then((Model.Message message) {
+    return messageStore.get(existingMessageID).then((model.Message message) {
       expect(message.ID, equals(existingMessageID));
     });
   }
@@ -130,25 +129,25 @@ abstract class MessageStore {
    *
    */
   static Future update(
-      Storage.Message messageStore,
-      Storage.Contact contactStore,
-      Storage.Reception receptionStore,
+      storage.Message messageStore,
+      storage.Contact contactStore,
+      storage.Reception receptionStore,
       Storage.DistributionList dlStore,
-      Storage.Endpoint epStore,
+      storage.Endpoint epStore,
       Receptionist sender) {
     return _createMessage(messageStore, contactStore, receptionStore, dlStore,
-        epStore, sender).then((Model.Message createdMessage) {
+        epStore, sender).then((model.Message createdMessage) {
       {
-        Model.Message randMsg = Randomizer.randomMessage();
+        model.Message randMsg = Randomizer.randomMessage();
         randMsg.ID = createdMessage.ID;
         randMsg.context = createdMessage.context;
-        randMsg.senderId = createdMessage.senderId;
+        randMsg.senderUuid = createdMessage.senderUuid;
         createdMessage = randMsg;
       }
 
       return messageStore
           .update(createdMessage)
-          .then((Model.Message updatedMessage) {
+          .then((model.Message updatedMessage) {
         expect(createdMessage.ID, equals(updatedMessage.ID));
         expect(createdMessage.asMap, equals(updatedMessage.asMap));
         expect(createdMessage.body, equals(updatedMessage.body));
@@ -160,7 +159,7 @@ abstract class MessageStore {
         expect(
             createdMessage.hasRecpients, equals(updatedMessage.hasRecpients));
         expect(createdMessage.recipients, equals(updatedMessage.recipients));
-        expect(createdMessage.senderId, equals(updatedMessage.senderId));
+        expect(createdMessage.senderUuid, equals(updatedMessage.senderUuid));
         expect(createdMessage.sent, equals(updatedMessage.sent));
       });
     });
