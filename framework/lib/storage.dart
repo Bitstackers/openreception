@@ -1,7 +1,7 @@
 library openreception.storage;
 
 import 'dart:async';
-import 'model.dart' as Model;
+import 'model.dart' as model;
 
 part 'storage/storage-calendar.dart';
 part 'storage/storage-cdr.dart';
@@ -79,4 +79,18 @@ class ServerError implements StorageException {
   const ServerError([this.message = ""]);
 
   String toString() => "ServerError: $message";
+}
+
+class Busy implements StorageException {
+  final String message;
+  const Busy([this.message = ""]);
+
+  String toString() => "Busy: $message";
+}
+
+class Unchanged implements StorageException {
+  final String message;
+  const Unchanged([this.message = ""]);
+
+  String toString() => "Unchanged: $message";
 }

@@ -4,17 +4,19 @@ part of openreception.storage;
  *
  */
 abstract class Reception {
-  Future<Model.Reception> create(Model.Reception reception);
+  Future<model.ReceptionReference> create(
+      model.Reception reception, model.User modifier);
 
-  Future<Model.Reception> get(int receptionID);
+  Future<model.Reception> get(int id);
 
-  Future<Model.Reception> getByExtension(String extension);
+  Future<model.Reception> getByExtension(String extension);
 
-  Future<String> extensionOf(int receptionId);
+  Future<String> extensionOf(int id);
 
-  Future<Iterable<Model.Reception>> list();
+  Future<Iterable<model.ReceptionReference>> list();
 
-  Future remove(int receptionId);
+  Future remove(int id, model.User modifier);
 
-  Future<Model.Reception> update(Model.Reception reception);
+  Future<model.ReceptionReference> update(
+      model.Reception reception, model.User modifier);
 }

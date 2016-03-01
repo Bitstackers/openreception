@@ -1,12 +1,13 @@
 part of openreception.storage;
 
+@deprecated
 abstract class Endpoint {
-  Future<Model.MessageEndpoint> create(
-      int receptionid, int contactid, Model.MessageEndpoint ep);
+  Future<model.MessageEndpoint> create(
+      int receptionid, int contactid, model.MessageEndpoint ep);
 
   Future remove(int endpointId);
 
-  Future<Iterable<Model.MessageEndpoint>> list(int receptionid, int contactid);
+  Future<Iterable<model.MessageEndpoint>> list(int receptionid, int contactid);
 
-  Future<Model.MessageEndpoint> update(Model.MessageEndpoint ep);
+  Future<model.MessageEndpoint> update(model.MessageEndpoint ep);
 }

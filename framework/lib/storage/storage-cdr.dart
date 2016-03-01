@@ -14,10 +14,9 @@
 part of openreception.storage;
 
 abstract class CDR {
+  Future<Iterable<model.CDREntry>> listEntries(DateTime from, DateTime to);
 
-  Future<Iterable<Model.CDREntry>>listEntries(DateTime from, DateTime to);
+  Future<Iterable<model.CDRCheckpoint>> checkpoints();
 
-  Future<Iterable<Model.CDRCheckpoint>> checkpoints();
-
-  Future<Model.CDRCheckpoint> createCheckpoint(Model.CDRCheckpoint checkpoint);
+  Future<model.CDRCheckpoint> createCheckpoint(model.CDRCheckpoint checkpoint);
 }

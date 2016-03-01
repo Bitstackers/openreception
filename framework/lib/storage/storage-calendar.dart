@@ -20,44 +20,37 @@ abstract class Calendar {
   /**
    *
    */
-  Future<Iterable<Model.CalendarEntryChange>> changes(entryId);
+  Future<Iterable<model.CalendarEntryChange>> changes(int id);
 
   /**
    *
    */
-  Future<Model.CalendarEntry> create(Model.CalendarEntry entry, int userId);
+  Future<model.CalendarEntry> create(
+      model.CalendarEntry entry, model.User modifier);
 
   /**
    *
    */
-  Future<Model.CalendarEntry> get(int entryId, {bool deleted: false});
+  Future<model.CalendarEntry> get(int id);
 
   /**
    *
    */
-  Future<Model.CalendarEntryChange> latestChange(entryID);
+  Future<model.CalendarEntryChange> latestChange(int id);
 
   /**
    *
    */
-  Future<Iterable<Model.CalendarEntry>> list(Model.Owner owner,
-      {bool deleted: false});
-
-  /**
-   * Completely wipes the [Model.CalendarEntry] associated with [entryId]
-   * from the database.
-   */
-  Future purge(int entryId);
-
-  /**
-   * Trashes the [Model.CalendarEntry] associated with [entryId] in the
-   * database, but keeps the object (in a hidden state) in the database.
-   * The action is logged to be performed by user with ID [userId].
-   */
-  Future remove(int entryId, int userId);
+  Future<Iterable<model.CalendarEntry>> list(model.Owner owner);
 
   /**
    *
    */
-  Future<Model.CalendarEntry> update(Model.CalendarEntry entry, int userId);
+  Future remove(int id, model.User modifier);
+
+  /**
+   *
+   */
+  Future<model.CalendarEntry> update(
+      model.CalendarEntry entry, model.User modifier);
 }

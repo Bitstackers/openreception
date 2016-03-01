@@ -13,15 +13,34 @@
 
 part of openreception.storage;
 
+/**
+ *
+ */
 abstract class ReceptionDialplan {
+  /**
+   *
+   */
+  Future<model.ReceptionDialplan> create(
+      model.ReceptionDialplan rdp, model.User user);
 
-  Future<Model.ReceptionDialplan> create(Model.ReceptionDialplan rdp);
+  /**
+   *
+   */
+  Future<model.ReceptionDialplan> get(String extension);
 
-  Future<Model.ReceptionDialplan> get(String extension);
+  /**
+   *
+   */
+  Future<Iterable<model.ReceptionDialplan>> list();
 
-  Future<Iterable<Model.ReceptionDialplan>> list();
+  /**
+   *
+   */
+  Future<model.ReceptionDialplan> update(
+      model.ReceptionDialplan rdp, model.User user);
 
-  Future<Model.ReceptionDialplan> update(Model.ReceptionDialplan rdp);
-
-  Future remove(String extension);
+  /**
+   *
+   */
+  Future remove(String extension, model.User user);
 }

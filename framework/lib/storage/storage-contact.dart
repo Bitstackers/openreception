@@ -1,32 +1,34 @@
 part of openreception.storage;
 
 abstract class Contact {
-  Future<Model.Contact> addToReception(Model.Contact contact, int receptionID);
+  Future<model.ReceptionContactReference> addToReception(
+      model.ReceptionAttributes attr, model.User modifier);
 
-  Future<Model.BaseContact> create(Model.BaseContact contact);
+  Future<model.ContactReference> create(
+      model.BaseContact contact, model.User modifier);
 
-  Future<Model.BaseContact> get(int contactID);
+  Future<model.BaseContact> get(int id);
 
-  Future<Model.Contact> getByReception(int contactID, int receptionID);
+  Future<model.ReceptionAttributes> getByReception(int id, int receptionId);
 
-  Future<Iterable<Model.BaseContact>> list();
+  Future<Iterable<model.ContactReference>> list();
 
-  Future<Iterable<Model.Contact>> listByReception(int receptionID);
+  Future<Iterable<model.ReceptionAttributes>> listByReception(int receptionId);
 
-  Future<Iterable<Model.BaseContact>> organizationContacts(int organizationId);
+  Future<Iterable<model.ContactReference>> organizationContacts(
+      int organizationId);
 
-  Future<Iterable<int>> organizations(int contactID);
+  Future<Iterable<model.OrganizationReference>> organizations(int id);
 
-  @deprecated
-  Future<Iterable<Model.PhoneNumber>> phones(int contactID, int receptionID);
+  Future<Iterable<model.ReceptionReference>> receptions(int id);
 
-  Future<Iterable<int>> receptions(int contactID);
+  Future remove(int id, model.User modifier);
 
-  Future remove(int contactId);
+  Future removeFromReception(int id, int receptionId, model.User modifier);
 
-  Future removeFromReception(int contactId, int receptionID);
+  Future<model.ContactReference> update(
+      model.BaseContact contact, model.User modifier);
 
-  Future<Model.BaseContact> update(Model.BaseContact contact);
-
-  Future<Model.Contact> updateInReception(Model.Contact contact);
+  Future<model.ReceptionContactReference> updateInReception(
+      model.ReceptionAttributes contact, model.User modifier);
 }

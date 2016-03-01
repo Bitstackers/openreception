@@ -14,14 +14,13 @@
 part of openreception.storage;
 
 abstract class Ivr {
+  Future<model.IvrMenu> create(model.IvrMenu menu, model.User user);
 
-  Future<Model.IvrMenu> create(Model.IvrMenu menu);
+  Future<model.IvrMenu> get(String menuName);
 
-  Future<Model.IvrMenu> get(String menuName);
+  Future<Iterable<model.IvrMenu>> list();
 
-  Future<Iterable<Model.IvrMenu>> list();
+  Future<model.IvrMenu> update(model.IvrMenu menu, model.User user);
 
-  Future<Model.IvrMenu> update(Model.IvrMenu menu);
-
-  Future remove(String menuName);
+  Future remove(String menuName, model.User user);
 }

@@ -14,16 +14,13 @@
 part of openreception.storage;
 
 abstract class Message {
+  Future<model.Message> get(int id);
 
-  Future enqueue (Model.Message message);
+  Future<Iterable<model.Message>> list({model.MessageFilter filter});
 
-  Future<Model.Message> get (int messageID);
+  Future<model.Message> create(model.Message message, model.User modifier);
 
-  Future<Iterable<Model.Message>> list ({Model.MessageFilter filter});
+  Future<model.Message> update(model.Message message, model.User modifier);
 
-  Future<Model.Message> create (Model.Message message);
-
-  Future<Model.Message> update (Model.Message message);
-
-  Future remove (int messageId);
+  Future remove(int id, model.User modifier);
 }

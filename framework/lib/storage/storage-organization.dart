@@ -14,17 +14,19 @@
 part of openreception.storage;
 
 abstract class Organization {
-  Future<Iterable<Model.BaseContact>> contacts(int organizationID);
+  Future<Iterable<model.ContactReference>> contacts(int id);
 
-  Future<Model.Organization> create(Model.Organization organization);
+  Future<model.OrganizationReference> create(
+      model.Organization organization, model.User user);
 
-  Future<Model.Organization> get(int organizationID);
+  Future<model.Organization> get(int id);
 
-  Future<Iterable<Model.Organization>> list();
+  Future<Iterable<model.OrganizationReference>> list();
 
-  Future remove(int organizationID);
+  Future remove(int id, model.User user);
 
-  Future<Model.Organization> update(Model.Organization organization);
+  Future<model.OrganizationReference> update(
+      model.Organization organization, model.User user);
 
-  Future<Iterable<int>> receptions(int organizationID);
+  Future<Iterable<model.ReceptionReference>> receptions(int id);
 }
