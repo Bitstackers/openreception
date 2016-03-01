@@ -17,11 +17,10 @@ part of openreception.model;
  * Class representing a historic change, by a [User] in a [CalendarEntry].
  */
 class CalendarEntryChange {
-
-  int userID = User.noID;
   DateTime changedAt;
-  String username;
-  CalendarEntry lastEntry;
+  int userId;
+  String author;
+  String parentRef;
 
   /**
    * Default constructor.
@@ -31,32 +30,24 @@ class CalendarEntryChange {
   /**
    * Deserializing constructor.
    */
-  CalendarEntryChange.fromMap(Map map) {
-    userID = map[Key.userID];
-    changedAt = Util.unixTimestampToDateTime(map[Key.updatedAt]);
-    username = map[Key.username];
-    lastEntry = CalendarEntry.decode(map[Key.lastEntry]);
-  }
+  CalendarEntryChange.fromMap(Map map)
+      : userId = map[Key.userId],
+        changedAt = Util.unixTimestampToDateTime(map[Key.updatedAt]),
+        parentRef = map[Key.parentRef];
 
   /**
    * Decoding factory.
    */
-  static CalendarEntryChange decode (Map map) =>
+  static CalendarEntryChange decode(Map map) =>
       new CalendarEntryChange.fromMap(map);
 
   /**
    * Returns a map representation of the object.
    * Suitable for serialization.
    */
-  Map get asMap => {
-    Key.userID : userID,
-    Key.updatedAt : Util.dateTimeToUnixTimestamp(changedAt),
-    Key.username : username,
-    Key.lastEntry : lastEntry.asMap
-  };
-
-  /**
-   * Serialization function.
-   */
-  Map toJson() => asMap;
+  Map toJson() => {
+        Key.userId: userId,
+        Key.updatedAt: Util.dateTimeToUnixTimestamp(changedAt),
+        Key.parentRef: parentRef
+      };
 }

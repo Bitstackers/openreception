@@ -17,20 +17,85 @@ part of openreception.model;
  * Available types for [BaseContact] objects.
  */
 abstract class ContactType {
- static const String human = 'human';
- static const String function = 'function';
- static const String invisible = 'invisible';
+  static const String human = 'human';
+  static const String function = 'function';
+  static const String invisible = 'invisible';
 
- /// Iterable enumerating the different contact types.
- static const Iterable types = const [human, function, invisible];
+  /// Iterable enumerating the different contact types.
+  static const Iterable types = const [human, function, invisible];
+}
+
+abstract class ObjectReference {
+  int get id;
+  String get name;
+
+  Map toJson();
+}
+
+class ContactReference implements ObjectReference {
+  final int id;
+  final String name;
+
+  const ContactReference(this.id, this.name);
+
+  static ContactReference decode(Map map) =>
+      new ContactReference(map[Key.id], map[Key.name]);
+
+  Map toJson() => {Key.id: id, Key.name: name};
+
+  int get hashCode => id.hashCode;
+}
+
+class OrganizationReference implements ObjectReference {
+  final int id;
+  final String name;
+
+  const OrganizationReference(this.id, this.name);
+
+  static OrganizationReference decode(Map map) =>
+      new OrganizationReference(map[Key.id], map[Key.name]);
+
+  Map toJson() => {Key.id: id, Key.name: name};
+
+  int get hashCode => id.hashCode;
+}
+
+class ReceptionContactReference {
+  final ContactReference contact;
+  final ReceptionReference reception;
+
+  const ReceptionContactReference(this.contact, this.reception);
+
+  static ReceptionContactReference decode(Map map) =>
+      new ReceptionContactReference(ContactReference.decode(map[Key.contact]),
+          ReceptionReference.decode(map[Key.contact]));
+
+  Map toJson() =>
+      {Key.contact: contact.toJson(), Key.reception: reception.toJson()};
+}
+
+class ReceptionReference implements ObjectReference {
+  final int id;
+  final String name;
+
+  const ReceptionReference(this.id, this.name);
+
+  static ReceptionReference decode(Map map) =>
+      new ReceptionReference(map[Key.id], map[Key.name]);
+
+  Map toJson() => {Key.id: id, Key.name: name};
+
+  int get hashCode => id.hashCode;
 }
 
 /**
  * A base contact represents a contact outside the context of a reception.
  */
 class BaseContact {
-  int id = Contact.noID;
-  String fullName = '';
+  static int noId = 0;
+
+  int id = noId;
+  String name = '';
   String contactType = '';
   bool enabled = true;
 
@@ -40,21 +105,31 @@ class BaseContact {
   BaseContact.empty();
 
   /**
+   * Decoding factory.
+   */
+  static BaseContact decode(Map map) => new BaseContact.fromMap(map);
+
+  /**
    * Deserializing constructor.
    */
-  BaseContact.fromMap(Map map) {
-    id = map[Key.contactID];
-    fullName = map[Key.fullName];
-    contactType = map[Key.contactType];
-    enabled = map[Key.enabled];
-  }
+  BaseContact.fromMap(Map map)
+      : id = map[Key.id],
+        name = map[Key.name],
+        contactType = map[Key.contactType],
+        enabled = map[Key.enabled];
 
-  Map get asMap => {
-    Key.contactID: id,
-    Key.fullName: fullName,
-    Key.contactType: contactType,
-    Key.enabled: enabled
-  };
+  /**
+   *
+   */
+  Map toJson() => {
+        Key.id: id,
+        Key.name: name,
+        Key.contactType: contactType,
+        Key.enabled: enabled
+      };
 
-  Map toJson() => this.asMap;
+  /**
+   *
+   */
+  ContactReference get reference => new ContactReference(id, name);
 }

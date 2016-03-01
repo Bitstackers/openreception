@@ -20,29 +20,22 @@ part of openreception.model;
 class PhoneNumber {
   String description = '';
   String endpoint = '';
-  String type = '';
   bool confidential = false;
-  String billing_type = '';
   List<String> tags = [];
 
   /**
    * Deserializing constructor.
    */
-  PhoneNumber.fromMap(Map map) {
-    description = map[Key.description];
-    endpoint = map[Key.value];
-    confidential = map[Key.confidential];
-    type = map[Key.type];
-    billing_type = map[Key.billingType];
+  PhoneNumber.fromMap(Map map)
+      : description = map[Key.description],
+        endpoint = map[Key.endpoint],
+        confidential = map[Key.confidential],
+        tags = map[Key.tags];
 
-    var newTags = map[Key.tags];
-
-    if (newTags is Iterable<String>) {
-      tags.addAll(newTags);
-    } else if (newTags is String) {
-      tags.add(newTags);
-    }
-  }
+  /**
+   *
+   */
+  static PhoneNumber decode(Map map) => new PhoneNumber.fromMap(map);
 
   /**
    * A phone number is, by this definition, equal to another phone number, if
@@ -50,7 +43,7 @@ class PhoneNumber {
    */
   @override
   bool operator ==(PhoneNumber other) =>
-      this.endpoint == other.endpoint && this.type == other.type;
+      endpoint.toLowerCase() == other.endpoint.toLowerCase();
 
   /**
    * Default empty constructor.
@@ -58,19 +51,12 @@ class PhoneNumber {
   PhoneNumber.empty();
 
   /**
-   * Serialization function.
+   * Map representation of the object. Serialization function.
    */
-  Map toJson() => this.asMap;
-
-  /**
-   * Map representation of the object,
-   */
-  Map get asMap => {
-        Key.value: endpoint,
-        Key.type: type,
+  Map toJson() => {
+        Key.endpoint: endpoint,
+        Key.confidential: confidential,
         Key.description: description,
-        Key.billingType: billing_type,
-        Key.tags: tags,
-        Key.confidential: confidential
+        Key.tags: tags
       };
 }

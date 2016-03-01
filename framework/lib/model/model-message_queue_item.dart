@@ -14,9 +14,10 @@
 part of openreception.model;
 
 class MessageQueueItem {
-  int ID;
+  static const int noId = 0;
+  int id = noId;
   int tries = 0;
-  int messageID = Message.noID;
+  int messageId = Message.noId;
   DateTime lastTry = Util.never;
 
   Set<MessageRecipient> _handledRecipients = new Set();
@@ -34,7 +35,7 @@ class MessageQueueItem {
     _handledRecipients.addAll(handled);
   }
 
-  set unhandledRecipients (Iterable<MessageRecipient> unhandled) {
+  set unhandledRecipients(Iterable<MessageRecipient> unhandled) {
     _unhandledRecipients = new Set()..addAll(unhandled);
   }
 
@@ -47,26 +48,28 @@ class MessageQueueItem {
    * Creates a message from the information given in [map].
    */
   MessageQueueItem.fromMap(Map map) {
-    ID = map[Key.id];
+    id = map[Key.id];
     tries = map[Key.tries];
-    messageID = map[Key.messageId];
+    messageId = map[Key.messageId];
     lastTry = Util.unixTimestampToDateTime(map[Key.lastTry]);
     handledRecipients = map[Key.handledRecipients]
-      .map(MessageRecipient.decode).toList(growable : false);
+        .map(MessageRecipient.decode)
+        .toList(growable: false);
     unhandledRecipients = map[Key.unhandledRecipients]
-      .map(MessageRecipient.decode).toList(growable : false);
+        .map(MessageRecipient.decode)
+        .toList(growable: false);
   }
   /**
    * Serialization function
    */
   Map toJson() => {
-        Key.id: ID,
+        Key.id: id,
         Key.tries: tries,
-        Key.messageId: messageID,
+        Key.messageId: messageId,
         Key.lastTry: Util.dateTimeToUnixTimestamp(lastTry),
-        Key.handledRecipients: handledRecipients
-          .map((r) => r.asMap).toList(growable : false),
-        Key.unhandledRecipients: unhandledRecipients
-          .map((r) => r.asMap).toList(growable : false)
+        Key.handledRecipients:
+            handledRecipients.map((r) => r.asMap).toList(growable: false),
+        Key.unhandledRecipients:
+            unhandledRecipients.map((r) => r.asMap).toList(growable: false)
       };
 }

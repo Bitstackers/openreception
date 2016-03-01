@@ -14,18 +14,10 @@
 part of openreception.model;
 
 class MessageContext {
-  final String className = libraryName + "MessageContext";
-
-  int contactID = 0;
-  int receptionID = 0;
+  int contactId = BaseContact.noId;
+  int receptionId = Reception.noId;
   String contactName = '';
   String receptionName = '';
-
-  /**
-   * Default constructor.
-   */
-  @deprecated
-  MessageContext();
 
   /**
    * Default empty constructor.
@@ -35,45 +27,47 @@ class MessageContext {
   /**
    * Constructor. Deserializes the object from Map representation.
    */
-  MessageContext.fromMap(Map map) {
-    this
-      ..contactID = map[Key.contact][Key.ID]
-      ..contactName = map[Key.contact][Key.name]
-      ..receptionID = map[Key.reception][Key.ID]
-      ..receptionName = map[Key.reception][Key.name];
-  }
+  MessageContext.fromMap(Map map)
+      : contactId = map[Key.contactId],
+        contactName = map[Key.contactName],
+        receptionId = map[Key.receptionId],
+        receptionName = map[Key.receptionName];
 
   /**
-   * Creates a messagContext from a [Contact] object
+   * Creates a messagContext from a [ReceptionAttributes] object
    */
-  MessageContext.fromContact(Contact contact, Reception reception) {
-    contactID = contact.ID;
-    contactName = contact.fullName;
-    receptionID = reception.ID;
+  MessageContext.fromContact(BaseContact contact, Reception reception) {
+    contactId = contact.id;
+    contactName = contact.name;
+    receptionId = reception.id;
     receptionName = reception.name;
   }
 
   /**
    * Returns a map representation of the object. Suitable for serialization.
    */
-  Map get asMap => {
-        'contact': {'id': contactID, 'name': contactName},
-        'reception': {'id': receptionID, 'name': receptionName}
+  Map toJson() => {
+        Key.contactId: contactId,
+        Key.contactName: contactName,
+        Key.receptionId: receptionId,
+        Key.receptionName: receptionName
       };
 
-  Map toJson() => this.asMap;
-
   @override
-  int get hashCode {
-    return (this.contactString).hashCode;
-  }
+  int get hashCode => contactString.hashCode;
 
   @override
   bool operator ==(MessageContext other) =>
-      this.contactID == other.contactID && this.receptionID == other.receptionID;
+      contactId == other.contactId && receptionId == other.receptionId;
 
-  String get contactString => contactID.toString() + "@" + receptionID.toString();
+  /**
+   *
+   */
+  String get contactString => '$contactId@$receptionId';
 
+  /**
+   *
+   */
   @override
-  String toString() => '${this.contactString} - ${this.contactName}@${this.receptionName}';
+  String toString() => '$contactString - $contactName@$receptionName';
 }

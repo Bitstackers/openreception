@@ -34,7 +34,7 @@ class CDRCheckpoint {
   CDRCheckpoint.fromMap(Map map) {
     id = map[Key.id];
     start = Util.unixTimestampToDateTime(map[Key.start]);
-    end = Util.unixTimestampToDateTime(map[Key.end]);
+    end = Util.unixTimestampToDateTime(map[Key.stop]);
     name = map[Key.name];
   }
 
@@ -42,11 +42,11 @@ class CDRCheckpoint {
    * JSON representation of the model class.
    */
   Map toJson() => {
-    Key.id: id,
-    Key.start: Util.dateTimeToUnixTimestamp(start),
-    Key.end: Util.dateTimeToUnixTimestamp(end),
-    Key.name: name
-  };
+        Key.id: id,
+        Key.start: Util.dateTimeToUnixTimestamp(start),
+        Key.stop: Util.dateTimeToUnixTimestamp(end),
+        Key.name: name
+      };
 }
 
 /**

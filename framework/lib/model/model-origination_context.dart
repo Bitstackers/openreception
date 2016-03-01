@@ -19,12 +19,12 @@ part of openreception.model;
 List<FormatException> validateOriginationContext(OriginationContext context) {
   List<FormatException> errors = [];
 
-  if (context.contactId > Contact.noID) {
-    errors.add(new FormatException('context.contactId <= Contact.noID'));
+  if (context.contactId == ReceptionAttributes.noId) {
+    errors.add(new FormatException('context.contactUuid == Contact.noId'));
   }
 
-  if (context.receptionId > Reception.noID) {
-    errors.add(new FormatException('context.receptionId <= Reception.noID'));
+  if (context.receptionId == Reception.noId) {
+    errors.add(new FormatException('context.receptionUuid == Reception.noId'));
   }
 
   if (context.dialplan.isEmpty) {
@@ -35,8 +35,8 @@ List<FormatException> validateOriginationContext(OriginationContext context) {
 }
 
 class OriginationContext {
-  int contactId = Contact.noID;
-  int receptionId = Reception.noID;
+  int contactId = BaseContact.noId;
+  int receptionId = Reception.noId;
   String dialplan = '';
   String callId = '';
 }

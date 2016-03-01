@@ -13,10 +13,7 @@
 
 part of openreception.model;
 
-abstract class ContactDefault {
-  static get phones => new List<String>();
-}
-
+@deprecated
 class Contact {
   static const int noID = 0;
   static final Contact noContact = new Contact.empty();
@@ -40,7 +37,7 @@ class Contact {
   }
 
   int ID = noID;
-  int receptionID = Reception.noID;
+  int receptionID = Reception.noId;
 
   @deprecated
   bool wantsMessage = true;
@@ -88,14 +85,16 @@ class Contact {
   Map toJson() => this.asMap;
 
   Map get asMap => {
-        Key.contactID: this.ID,
-        Key.receptionID: this.receptionID,
+        Key.contactId: this.ID,
+        Key.receptionId: this.receptionID,
         Key.departments: this.departments,
         Key.enabled: this.enabled,
-        Key.fullName: this.fullName,
+        Key.name: this.fullName,
         Key.contactType: this.contactType,
-        Key.phones:
-            this.phones.map((PhoneNumber p) => p.asMap).toList(growable: false),
+        Key.phones: this
+            .phones
+            .map((PhoneNumber p) => p.toJson())
+            .toList(growable: false),
         Key.backup: this.backupContacts,
         Key.emailaddresses: this.emailaddresses,
         Key.handling: this.handling,
@@ -118,11 +117,11 @@ class Contact {
 
     this.phones.addAll(phones.toList());
 
-    this.ID = mapValue(Key.contactID, map);
-    this.receptionID = mapValue(Key.receptionID, map);
+    this.ID = mapValue(Key.contactId, map);
+    this.receptionID = mapValue(Key.receptionId, map);
     this.departments = mapValue(Key.departments, map);
     this.enabled = mapValue(Key.enabled, map);
-    this.fullName = mapValue(Key.fullName, map);
+    this.fullName = mapValue(Key.name, map);
     this.contactType = mapValue(Key.contactType, map);
 
     this.messagePrerequisites =

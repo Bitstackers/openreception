@@ -22,14 +22,11 @@ abstract class Role {
 }
 
 class Message {
-  static const String className = '${libraryName}.Message';
-  static const int noID = 0;
-
-  static final Logger log = new Logger(className);
+  static const int noId = 0;
 
   Set<MessageRecipient> recipients = new Set();
 
-  int ID = noID;
+  int id = noId;
   MessageContext context = new MessageContext.empty();
   MessageFlag flag = new MessageFlag.empty();
   CallerInfo callerInfo;
@@ -71,7 +68,7 @@ class Message {
     Iterable<MessageRecipient> iterRcp =
         (map[Key.recipients] as Iterable).map(MessageRecipient.decode);
 
-    ID = (map.containsKey(Key.ID) ? map[Key.ID] : noID);
+    id = (map.containsKey(Key.id) ? map[Key.id] : noId);
     recipients.addAll(iterRcp);
     context = new MessageContext.fromMap(map[Key.context]);
     flag = new MessageFlag(map['flags'] as List<String>);
@@ -85,9 +82,9 @@ class Message {
   }
 
   Map get asMap => {
-        Key.id: ID,
+        Key.id: id,
         Key.body: body,
-        Key.context: context.asMap,
+        Key.context: context.toJson(),
         Key.takenByAgent: senderId,
         Key.caller: callerInfo.asMap,
         Key.callId: callId,

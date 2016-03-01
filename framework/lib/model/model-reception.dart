@@ -13,34 +13,13 @@
 
 part of openreception.model;
 
-class ReceptionStub {
-  int ID = Reception.noID;
-  String fullName = null;
+class Reception {
+  static const int noId = 0;
 
-  String get name => this.fullName;
+  int id = Reception.noId;
+  String name = '';
 
-  /**
-   * [Reception] as String, for debug/log purposes.
-   */
-  String toString() => '${name}-${ID}';
-
-  ReceptionStub.fromMap(Map map) {
-    if (map == null) throw new ArgumentError.notNull('Null map');
-
-    this.ID = map[Key.ID];
-
-    this.fullName = map[Key.fullName];
-  }
-
-  ReceptionStub.empty();
-}
-
-class Reception extends ReceptionStub {
-  static const String className = '$libraryName.Reception';
-  static final Logger log = new Logger(Reception.className);
-  static const int noID = 0;
-
-  int organizationId = noID;
+  int organizationId = Organization.noId;
   Uri extraData = null;
   DateTime lastChecked =
       new DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
@@ -84,8 +63,8 @@ class Reception extends ReceptionStub {
         Key.salesMarketingHandling: salesMarketingHandling,
         Key.shortGreeting: _shortGreeting,
         Key.vatNumbers: vatNumbers,
-        Key.phoneNumbers:
-            telephoneNumbers.map((PhoneNumber number) => number.asMap).toList(),
+        Key.phoneNumbers: new List<Map>.from(
+            telephoneNumbers.map((PhoneNumber number) => number.toJson())),
         Key.websites: websites,
         Key.miniWiki: miniWiki
       };
@@ -101,13 +80,12 @@ class Reception extends ReceptionStub {
       try {
         pns = values.map((Map map) => new PhoneNumber.fromMap(map)).toList();
       } catch (_) {
-        log.warning('Failed to extract phoneNumber map, trying String');
         pns = values
             .map((String number) => new PhoneNumber.empty()..endpoint = number)
             .toList();
       }
 
-      this.telephoneNumbers.addAll(pns);
+      telephoneNumbers.addAll(pns);
     }
 
     this
@@ -145,14 +123,16 @@ class Reception extends ReceptionStub {
   }
 
   /// Default initializing contructor
-  Reception.empty() : super.empty();
+  Reception.empty();
 
-  Reception.fromMap(Map receptionMap) : super.fromMap(receptionMap) {
+  static Reception decode(Map map) => new Reception.fromMap(map);
+
+  Reception.fromMap(Map receptionMap) {
     try {
       this
-        ..ID = receptionMap[Key.ID]
+        ..id = receptionMap[Key.id]
         ..organizationId = receptionMap[Key.organizationId]
-        ..fullName = receptionMap[Key.fullName]
+        ..name = receptionMap[Key.name]
         ..enabled = receptionMap[Key.enabled]
         ..dialplan = receptionMap[Key.dialplan]
         ..extraData = receptionMap[Key.extradataUri] != null
@@ -165,39 +145,29 @@ class Reception extends ReceptionStub {
         attributes = receptionMap[Key.attributes];
       }
     } catch (error, stacktrace) {
-      log.severe('Parsing of reception failed.', error, stacktrace);
       throw new ArgumentError('Invalid data in map');
     }
-
-    this.validate();
   }
-
-  Map toJson() => this.asMap;
 
   /**
    * Returns a Map representation of the Reception.
    */
-  Map get asMap => {
-        Key.ID: this.ID,
-        Key.organizationId: this.organizationId,
-        Key.dialplan: this.dialplan,
-        Key.fullName: this.fullName,
-        Key.enabled: this.enabled,
-        Key.extradataUri:
-            this.extraData == null ? null : this.extraData.toString(),
+  Map toJson() => {
+        Key.id: id,
+        Key.enabled: enabled,
+        Key.organizationId: organizationId,
+        Key.dialplan: dialplan,
+        Key.name: name,
+        Key.extradataUri: extraData == null ? null : extraData.toString(),
         Key.lastCheck: Util.dateTimeToUnixTimestamp(lastChecked),
         Key.attributes: attributes
       };
 
-  void validate() {
-    if (this.greeting == null || this.greeting.isEmpty) throw new StateError(
-        'Greeting not allowed to be empty. '
-        'Value: "${this.greeting}" Id: "${this.ID}" ReceptionName: "${this.fullName}"');
-  }
-
   @override
-  bool operator ==(Reception other) => this.ID == other.ID;
+  bool operator ==(Reception other) => this.id == other.id;
 
   bool get isNotEmpty => !this.isEmpty;
-  bool get isEmpty => this.ID == noReception.ID;
+  bool get isEmpty => this.id == noReception.id;
+
+  ReceptionReference get reference => new ReceptionReference(id, name);
 }

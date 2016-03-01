@@ -28,17 +28,15 @@ abstract class UserState {
 
 class UserStatus {
   bool paused = true;
-  int userID = User.noID;
+  int userId = User.noId;
 
-  Map toJson() => this.asMap;
+  Map toJson() => {Key.userId: userId, Key.paused: paused};
 
   UserStatus();
 
   static UserStatus decode(Map map) => new UserStatus.fromMap(map);
 
   UserStatus.fromMap(Map map)
-      : userID = map[Key.id],
+      : userId = map[Key.userId],
         paused = map[Key.paused];
-
-  Map get asMap => {Key.id: userID, Key.paused: paused};
 }

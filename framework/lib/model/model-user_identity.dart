@@ -24,7 +24,7 @@ List<FormatException> validateUserIdentity(UserIdentity uiden) {
         'Bad value for UserIdentity.identity', uiden.identity));
   }
 
-  if (uiden.userId == null || uiden.userId == User.noID) {
+  if (uiden.userId == null || uiden.userId == User.noId) {
     errors.add(
         new FormatException('Bad value for UserIdentity.userId', uiden.userId));
   }

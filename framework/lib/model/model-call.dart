@@ -45,16 +45,16 @@ class Call {
 
   DateTime arrived = new DateTime.now();
   DateTime answeredAt = Util.never;
-  int assignedTo = User.noID;
+  int assignedTo = User.noId;
   String b_Leg = null;
   String callerID = '';
-  int contactID = Contact.noID;
+  int contactID = BaseContact.noId;
   String destination = '';
   bool greetingPlayed = false;
   String _ID = noID;
   bool inbound = null;
   bool _locked = false;
-  int receptionID = Reception.noID;
+  int receptionID = Reception.noId;
   String _state = CallState.Unknown;
   String hangupCause = '';
 
@@ -66,14 +66,14 @@ class Call {
   /**
    * Constructor.
    */
-  factory Call.fromMap(Map map) => new Call.empty(map[Key.ID])
+  factory Call.fromMap(Map map) => new Call.empty(map[Key.id])
     .._state = map[PbxKey.state]
     ..answeredAt = Util.unixTimestampToDateTime(map[Key.answeredAt])
     ..b_Leg = map[Key.bLeg]
     .._locked = map[Key.locked]
     ..inbound = map[Key.inbound]
     ..destination = map[Key.destination]
-    ..callerID = map[Key.callerID]
+    ..callerID = map[Key.callerId]
     ..greetingPlayed = map[Key.greetingPlayed]
     ..receptionID = map[ORPbxKey.receptionId]
     ..contactID = map[ORPbxKey.contactId]
@@ -233,7 +233,7 @@ class Call {
    *
    */
   void release() {
-    assignedTo = User.noID;
+    assignedTo = User.noId;
   }
 
   /**
@@ -248,13 +248,13 @@ class Call {
    *
    */
   Map toJson() => {
-        Key.ID: _ID,
+        Key.id: _ID,
         PbxKey.state: _state,
         Key.bLeg: b_Leg,
         Key.locked: locked,
         Key.inbound: inbound,
         Key.destination: destination,
-        Key.callerID: callerID,
+        Key.callerId: callerID,
         Key.greetingPlayed: greetingPlayed,
         ORPbxKey.receptionId: receptionID,
         ORPbxKey.contactId: contactID,

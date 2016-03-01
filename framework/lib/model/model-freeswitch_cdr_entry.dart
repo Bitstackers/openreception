@@ -16,14 +16,14 @@ part of openreception.model;
 class FreeSWITCHCDREntry {
   String uuid = '';
   bool inbound = false;
-  int receptionId = Reception.noID;
+  int receptionId = Reception.noId;
   String extension = '';
   int duration = -1;
   int waitTime = -1;
   DateTime startedAt = Util.never;
 
-  int owner = User.noID;
-  int contact_id = Contact.noID;
+  int owner = User.noId;
+  String contact_id = ReceptionAttributes.noId;
 
   Map json = {};
 
@@ -37,27 +37,27 @@ class FreeSWITCHCDREntry {
 
     uuid = variables['uuid'];
     inbound = variables['direction'] == 'inbound';
-    receptionId = int.parse(variables[ORPbxKey.receptionId]);
+    receptionId = variables[ORPbxKey.receptionId];
 
     if (json['callflow'] is List) {
       List<Map> callFlow = json['callflow'];
-      extension = callFlow.firstWhere((Map map) => map['profile_index'] == '1')['caller_profile']
-          ['destination_number'];
+      extension = callFlow.firstWhere((Map map) => map['profile_index'] == '1')[
+          'caller_profile']['destination_number'];
     } else {
       extension = json['callflow']['caller_profile']['destination_number'];
     }
 
     duration = int.parse(variables['billsec']);
     waitTime = int.parse(variables['waitsec']);
-    startedAt =
-        new DateTime.fromMillisecondsSinceEpoch(int.parse(json['variables']['start_epoch']) * 1000);
+    startedAt = new DateTime.fromMillisecondsSinceEpoch(
+        int.parse(json['variables']['start_epoch']) * 1000);
 
     if (variables.containsKey('owner')) {
-      owner = int.parse(variables['owner']);
+      owner = variables['owner'];
     }
 
     if (variables.containsKey(ORPbxKey.contactId)) {
-      contact_id = int.parse(variables[ORPbxKey.contactId]);
+      contact_id = variables[ORPbxKey.contactId];
     }
   }
 }

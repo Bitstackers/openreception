@@ -13,19 +13,46 @@
 
 part of openreception.model;
 
+/**
+ * Validate an organization before and after serializing and deserializing.
+ * Put any constraints that must hold at these times in this function.
+ */
+List<FormatException> validateOrganization(Organization org) {
+  List<FormatException> errors = [];
+
+  if (org.id == null) {
+    errors.add(new FormatException('uuid is null'));
+  }
+
+  if (org.name == null) {
+    errors.add(new FormatException('name is null'));
+  }
+
+  if (org.name.isEmpty) {
+    errors.add(new FormatException('name is empty'));
+  }
+
+  if (org.billingType == null) {
+    errors.add(new FormatException('billingType is null'));
+  }
+
+  if (org.flags == null) {
+    errors.add(new FormatException('flags is null'));
+  }
+
+  return errors;
+}
 
 /**
  * Class representing an organization.
  */
 class Organization {
-  static const String className = '$libraryName.Organization';
-  static final Logger log = new Logger(Organization.className);
-  static const int noID = 0;
+  static const int noId = 0;
 
-  int id = noID;
-  String fullName = '';
-  String billingType  = '';
-  String flag  = '';
+  int id = noId;
+  String name = '';
+  String billingType = '';
+  List<String> flags = [];
 
   /**
    * Default empty constructor.
@@ -35,41 +62,27 @@ class Organization {
   /**
    * Constructor used in serializing.
    */
-  Organization.fromMap(Map organizationMap) {
-    if (organizationMap == null) throw new ArgumentError('Null map');
+  Organization.fromMap(Map map)
+      : id = map[Key.id],
+        name = map[Key.name],
+        billingType = map[Key.billingType],
+        flags = map[Key.flags];
 
-    try {
-      this
-        ..id = organizationMap[Key.ID]
-        ..billingType = organizationMap[Key.billingType]
-        ..flag = organizationMap[Key.flag]
-        ..fullName = organizationMap[Key.fullName];
-    } catch (error, stacktrace) {
-      log.severe('Parsing of organization failed.', error, stacktrace);
-      throw new ArgumentError('Invalid data in map');
-    }
+  /**
+   * Deserializing factor.
+   */
+  static Organization decode(Map map) => new Organization.fromMap(map);
 
-    this.validate();
-  }
+  OrganizationReference get reference => new OrganizationReference(id, name);
 
   /**
    * Returns a Map representation of the Organization.
-   */
-  Map get asMap => {
-    Key.ID: this.id,
-    Key.billingType: this.billingType,
-    Key.flag: this.flag,
-    Key.fullName: this.fullName
-  };
-
-  /**
-   * Validate an organization before and after serializing and deserializing.
-   * Put any constraints that must hold at these times in this function.
-   */
-  void validate() {}
-
-  /**
    * Serialization function.
    */
-  Map toJson() => this.asMap;
+  Map toJson() => {
+        Key.id: id,
+        Key.billingType: billingType,
+        Key.flags: flags,
+        Key.name: name
+      };
 }

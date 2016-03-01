@@ -38,11 +38,11 @@ class DistributionListEntry {
    * otherwise.
    */
   DistributionListEntry.fromMap(Map map, {String role: Role.TO}) {
-    contactID = map[Key.contact][Key.ID];
+    contactID = map[Key.contact][Key.id];
     contactName = map[Key.contact][Key.name];
-    receptionID = map[Key.reception][Key.ID];
+    receptionID = map[Key.reception][Key.id];
     receptionName = map[Key.reception][Key.name];
-    id = map[Key.ID];
+    id = map[Key.id];
 
     if (map.containsKey(Key.role)) {
       this.role = map[Key.role];
@@ -53,11 +53,11 @@ class DistributionListEntry {
    * Returns a map representation of the object. Suitable for serialization.
    */
   Map get asMap => {
-    Key.ID: id,
-    Key.role: role,
-    Key.contact: {Key.ID: contactID, Key.name: contactName},
-    Key.reception: {Key.ID: receptionID, Key.name: receptionName},
-  };
+        Key.id: id,
+        Key.role: role,
+        Key.contact: {Key.id: contactID, Key.name: contactName},
+        Key.reception: {Key.id: receptionID, Key.name: receptionName},
+      };
 
   /**
    * Deserializing factory constructor.
@@ -82,5 +82,5 @@ class DistributionListEntry {
   @override
   bool operator ==(DistributionListEntry other) =>
       this.contactID == other.contactID &&
-          this.receptionID == other.receptionID;
+      this.receptionID == other.receptionID;
 }

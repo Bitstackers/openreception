@@ -20,14 +20,13 @@ part of openreception.model;
  * TODO: Move keys to keys package.
  */
 class CalendarEntry {
-  static final String className = '${libraryName}.CalendarEntry';
-  static final Logger log = new Logger(className);
-  int ID = CalendarEntry.noID;
+  static const int noId = 0;
 
-  String _content;
-  static const int noID = 0;
-  DateTime _start;
-  DateTime _stop;
+  int id = noId;
+
+  String content;
+  DateTime start;
+  DateTime stop;
 
   Owner owner = Owner.none;
 
@@ -39,34 +38,17 @@ class CalendarEntry {
   CalendarEntry.empty();
 
   /**
-   * Constructor for [Contact] calendar entries.
-   */
-  @deprecated
-  CalendarEntry.contact(int contactId, int receptionId) {
-    owner = new OwningContact(contactId);
-  }
-
-  /**
-   * Constructor for [Reception] calendar entries.
-   */
-  @deprecated
-  CalendarEntry.reception(int receptionId) {
-    owner = new OwningReception(receptionId);
-  }
-
-  /**
    * [CalendarEntry] deserializing constructor.
    * 'start' and 'stop' MUST be in a format that can be parsed by the
    * [DateTime.parse] method. Please use the methods in the [Util] library to
    * help getting the right format. 'content' is the actual entry body.
    */
-  CalendarEntry.fromMap(Map json) {
-    ID = json['id'];
-    owner = new Owner.parse(json['owner']);
-    _start = Util.unixTimestampToDateTime(json['start']);
-    _stop = Util.unixTimestampToDateTime(json['stop']);
-    _content = json['content'];
-  }
+  CalendarEntry.fromMap(Map map)
+      : id = map[Key.id],
+        owner = new Owner.parse(map[Key.owner]),
+        start = Util.unixTimestampToDateTime(map[Key.start]),
+        stop = Util.unixTimestampToDateTime(map[Key.stop]),
+        content = map[Key.body];
 
   /**
    * Decoding factory.
@@ -80,83 +62,37 @@ class CalendarEntry {
    */
   bool get active {
     DateTime now = new DateTime.now();
-    return (now.isAfter(_start) && now.isBefore(_stop));
+    return (now.isAfter(start) && now.isBefore(stop));
   }
 
   /**
-   * Returns a map representation of the calendar entry.
-   * Suitable for serialization.
-   */
-  Map get asMap => {
-        'id': ID,
-        'owner': owner.toJson(),
-        'start': Util.dateTimeToUnixTimestamp(start),
-        'stop': Util.dateTimeToUnixTimestamp(stop),
-        'content': content
-      };
-
-  /**
-   * The calendar entry starts at [start].
-   */
-  void set beginsAt(DateTime start) {
-    _start = start;
-  }
-
-  /**
-   * Return the contact id for this calendar entry. MAY be [Contact.noID] if
+   * Return the contact id for this calendar entry. MAY be [ReceptionAttributes.noID] if
    * this is a reception only entry.
    */
-  int get contactID => owner is OwningContact
-      ? (owner as OwningContact).contactId
-      : Contact.noID;
-
-  /**
-   * Get the actual calendar entry text content.
-   */
-  String get content => _content;
-
-  /**
-   * Set the calendar entry text content.
-   */
-  void set content(String entryBody) {
-    _content = entryBody;
-  }
+  int get contactId =>
+      owner is OwningContact ? owner.id : ReceptionAttributes.noId;
 
   /**
    * ID of owning reception.
    */
-  int get receptionID => owner is OwningReception
-      ? (owner as OwningReception).receptionId
-      : Reception.noID;
-
-  /**
-   * When this calendar entry begins.
-   */
-  DateTime get start => _start;
-
-  /**
-   * When this calendar entry ends.
-   */
-  DateTime get stop => _stop;
+  int get receptionId => owner is OwningReception ? owner.id : Reception.noId;
 
   /**
    * Serialization function.
    */
-  Map toJson() => asMap;
+  Map toJson() => {
+        Key.id: id,
+        Key.owner: owner.toJson(),
+        Key.body: content,
+        Key.start: Util.dateTimeToUnixTimestamp(start),
+        Key.stop: Util.dateTimeToUnixTimestamp(stop)
+      };
 
   /**
    * [CalendarEntry] as String, for debug/log purposes.
    */
   String toString() => 'start: ${start.toIso8601String()}, '
       'stop: ${stop.toIso8601String()}, '
-      'rid: ${receptionID}, '
-      'cid: ${contactID}, '
+      'owner: ${owner}'
       'content: ${content}';
-
-  /**
-   * The calendar entry ends at [stop].
-   */
-  void set until(DateTime stop) {
-    _stop = stop;
-  }
 }

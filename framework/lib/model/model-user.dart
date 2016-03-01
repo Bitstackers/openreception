@@ -13,31 +13,27 @@
 
 part of openreception.model;
 
+abstract class UserGroups {
+  static const String receptionist = 'Receptionist';
+  static const String administrator = 'Administrator';
+  static const String serviceAgent = 'Service agent';
+}
+
 /**
  *
  */
 class User {
-  static const int noID = 0;
+  static const int noId = 0;
 
   String address;
 
-  @deprecated
-  int get ID => id;
-  @deprecated
-  void set ID(int newId) {
-    id = newId;
-  }
-
-  int id;
   bool enabled = true;
 
-  String name;
-  String peer;
+  int id = noId;
+  String name = '';
+  String peer = '';
   String portrait = '';
-
-  /// Google gmail sending credentials.
-  String googleUsername = '';
-  String googleAppcode = '';
+  List<String> groups = [];
 
   /**
    * Constructor for creating an empty object.
@@ -45,34 +41,23 @@ class User {
   User.empty();
 
   /**
+   * Deserializing factory
+   */
+  static User decode(Map map) => new User.fromMap(map);
+
+  /**
    * Constructor.
    */
   User.fromMap(Map map)
-      : address = map[Key.address],
-        id = map[Key.id],
+      : id = map[Key.id],
+        address = map[Key.address],
         name = map[Key.name],
         peer = map[Key.extension],
-        googleUsername =
-            map.containsKey(Key.googleUsername) ? map[Key.googleUsername] : '',
-        googleAppcode =
-            map.containsKey(Key.googleAppcode) ? map[Key.googleAppcode] : '' {
-    portrait = map.containsKey('remote_attributes') &&
-            (map['remote_attributes'] as Map).containsKey('picture')
-        ? portrait = (map['remote_attributes'] as Map)['picture']
-        : '';
-  }
-
-  /**
-   *
-   */
-  @deprecated
-  Map get asSender => {'name': name, 'id': id, 'address': address};
-
-  /**
-   *
-   */
-  @deprecated
-  Map get asMap => toJson();
+        groups = map[Key.groups],
+        portrait = map.containsKey('remote_attributes') &&
+                (map['remote_attributes'] as Map).containsKey('picture')
+            ? (map['remote_attributes'] as Map)['picture']
+            : '';
 
   /**
    *
@@ -82,7 +67,6 @@ class User {
         Key.name: name,
         Key.address: address,
         Key.extension: peer,
-        Key.googleUsername: googleUsername,
-        Key.googleAppcode: googleAppcode
+        Key.groups: groups
       };
 }

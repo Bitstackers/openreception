@@ -17,10 +17,10 @@ part of openreception.model;
  * 'Enum' type representing the different types of messaging endpoints.
  */
 abstract class MessageEndpointType {
-  static const String SMS = 'sms';
-  static const String EMAIL = 'email';
+  static const String sms = 'sms';
+  static const String email = 'email';
 
-  static const List<String> types = const [SMS, EMAIL];
+  static const List<String> types = const [sms, email];
 }
 
 /**
@@ -30,11 +30,10 @@ abstract class MessageEndpointType {
  */
 class MessageEndpoint {
   static const int noId = 0;
+  int id = noId;
 
   /// Type of endpoint. Must be one of [MessageEndpointType].
-  int id = noId;
-  int priority = 0;
-  String type;
+  String type = MessageEndpointType.email;
   String address;
   String description;
   bool confidential;
@@ -42,9 +41,6 @@ class MessageEndpoint {
 
   String role = Role.TO;
   String name = '';
-
-  @deprecated
-  DistributionListEntry recipient = null;
 
   /**
    * Default empty constructor.
@@ -55,9 +51,8 @@ class MessageEndpoint {
    * Deserializing constructor.
    */
   MessageEndpoint.fromMap(Map map) {
-    id = map[Key.ID];
+    id = map[Key.id];
     type = map[Key.type];
-    priority = map[Key.priority];
 
     address = map[Key.address];
     confidential = map[Key.confidential];
@@ -67,9 +62,6 @@ class MessageEndpoint {
     role = map.containsKey(Key.role) ? map[Key.role] : Role.TO;
 
     enabled = map[Key.enabled];
-    if (map.containsKey('recipient')) {
-      recipient = new DistributionListEntry.fromMap(map['recipient']);
-    }
   }
 
   /**
@@ -86,13 +78,12 @@ class MessageEndpoint {
    * Map representation of the object.
    */
   Map get asMap => {
-        Key.ID: id,
+        Key.id: id,
         Key.type: type,
         Key.address: address,
         Key.confidential: confidential,
         Key.enabled: enabled,
         Key.description: description,
-        Key.priority: priority,
         Key.name: name,
         Key.role: role
       };

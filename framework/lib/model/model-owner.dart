@@ -18,6 +18,8 @@ part of openreception.model;
  */
 class Owner {
   static final Owner none = const Owner();
+  static String type = 'none';
+  final int id = 0;
 
   /**
    *
@@ -28,11 +30,19 @@ class Owner {
       return new OwningReception(int.parse(buffer.split(':').last));
     } else if (key == OwningContact.type) {
       return new OwningContact(int.parse(buffer.split(':').last));
-    } else if (key == 'none') {
+    } else if (key == Owner.type) {
       return none;
     }
   }
 
+  /**
+   *
+   */
+  bool operator ==(Owner other) => id == other.id;
+
+  /**
+   *
+   */
   const Owner();
 
   /**
@@ -51,15 +61,14 @@ class Owner {
  * For example a [CalendarEntry].
  */
 class OwningReception extends Owner {
-  final int receptionId;
+  final int id;
 
   static final String type = 'r';
 
-  const OwningReception(this.receptionId);
+  const OwningReception(this.id);
 
   @override
-  bool operator ==(OwningReception other) =>
-      this.receptionId == other.receptionId;
+  bool operator ==(OwningReception other) => this.id == other.id;
 
   /**
    *
@@ -69,21 +78,18 @@ class OwningReception extends Owner {
   /**
    *
    */
-  String toString() => '$type:$receptionId';
+  String toString() => '$type:$id';
 }
 
 /**
- * Specialized [Owner] class that associates a [Contact] with another object.
+ * Specialized [Owner] class that associates a [ReceptionAttributes] with another object.
  * For example a [CalendarEntry].
  */
 class OwningContact extends Owner {
-  final int contactId;
+  final int id;
   static final String type = 'c';
 
-  const OwningContact(this.contactId);
-
-  @override
-  bool operator ==(OwningContact other) => this.contactId == other.contactId;
+  const OwningContact(this.id);
 
   /**
    *
@@ -93,5 +99,5 @@ class OwningContact extends Owner {
   /**
    *
    */
-  String toString() => '$type:$contactId';
+  String toString() => '$type:$id';
 }

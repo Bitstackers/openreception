@@ -49,10 +49,9 @@ abstract class MessageState {
 class MessageFilter {
   String _messageState = '';
 
-  int upperMessageID = Message.noID;
-  int userID = User.noID;
-  int receptionID = Reception.noID;
-  int contactID = Contact.noID;
+  int userId = User.noId;
+  int receptionId = Reception.noId;
+  int contactId = BaseContact.noId;
   int limitCount = 100;
 
   /**
@@ -64,18 +63,14 @@ class MessageFilter {
    * Deserializing constructor.
    */
   MessageFilter.fromMap(Map map) {
-    userID = map.containsKey(Key.userID) ? map[Key.userID] : userID;
+    userId = map.containsKey(Key.userId) ? map[Key.userId] : userId;
 
     messageState = map.containsKey(Key.state) ? map[Key.state] : messageState;
 
-    receptionID =
-        map.containsKey(Key.receptionID) ? map[Key.receptionID] : receptionID;
+    receptionId =
+        map.containsKey(Key.receptionId) ? map[Key.receptionId] : receptionId;
 
-    contactID = map.containsKey(Key.contactID) ? map[Key.contactID] : contactID;
-
-    upperMessageID = map.containsKey(Key.upperMessageId)
-        ? map[Key.upperMessageId]
-        : upperMessageID;
+    contactId = map.containsKey(Key.contactId) ? map[Key.contactId] : contactId;
 
     limitCount = map.containsKey(Key.limit) ? map[Key.limit] : limitCount;
   }
@@ -95,36 +90,36 @@ class MessageFilter {
             'State must one of: ${MessageState.validStates}');
       }
 
-      this._messageState = newState.toLowerCase();
+      _messageState = newState.toLowerCase();
     } else {
-      this._messageState = '';
+      _messageState = '';
     }
   }
 
   /**
    * Check if this filter is active (any field is set).
    */
-  bool get active => userID != User.noID ||
-      receptionID != Reception.noID ||
-      contactID != Contact.noID ||
-      upperMessageID != Message.noID ||
+  bool get active =>
+      userId != User.noId ||
+      receptionId != Reception.noId ||
+      contactId != ReceptionAttributes.noId ||
       messageState.isNotEmpty;
 
   /**
    * Check if the filter applies to [message].
    */
-  bool appliesTo(Message message) => [message.context.contactID, Contact.noID]
-          .contains(this.contactID) &&
-      [message.context.receptionID, Reception.noID]
-          .contains(this.receptionID) &&
-      [message.senderId, User.noID].contains(this.userID) &&
-      [MessageState.ofMessage(message), Message.noID].contains(this.contactID);
+  bool appliesTo(Message message) =>
+      [message.context.contactId, ReceptionAttributes.noId]
+          .contains(contactId) &&
+      [message.context.receptionId, Reception.noId].contains(receptionId) &&
+      [message.senderId, User.noId].contains(userId) &&
+      [MessageState.ofMessage(message), Message.noId].contains(contactId);
 
   /**
    * Filters [messages] using this filter.
    */
   Iterable<Message> filter(Iterable<Message> messages) =>
-      messages.where((Message message) => this.appliesTo(message));
+      messages.where((Message message) => appliesTo(message));
 
   /**
    * Equals operator override. All fields of filter needs match in order for
@@ -132,47 +127,35 @@ class MessageFilter {
    */
   @override
   bool operator ==(MessageFilter other) =>
-      this.upperMessageID == other.upperMessageID &&
-          this.limitCount == other.limitCount &&
-          this.messageState == other.messageState &&
-          this.userID == other.userID &&
-          this.receptionID == other.receptionID &&
-          this.contactID == other.contactID;
+      limitCount == other.limitCount &&
+      messageState == other.messageState &&
+      userId == other.userId &&
+      receptionId == other.receptionId &&
+      contactId == other.contactId;
 
   /**
-   * JSON serialization function.
+   * JSON serialization function. Returns a map representation of the object.
    */
-  Map toJson() => this.asMap;
-
-  /**
-   * Returns a map representation of the object.
-   */
-  Map get asMap {
+  Map toJson() {
     Map retval = {};
 
-    if (this.userID != User.noID) {
-      retval[Key.userID] = this.userID;
+    if (userId != User.noId) {
+      retval[Key.userId] = userId;
     }
 
-    if (this.messageState != Message.noID) {
-      retval[Key.state] = this.messageState;
+    if (messageState != Message.noId) {
+      retval[Key.state] = messageState;
     }
 
-    if (this.receptionID != Reception.noID) {
-      retval[Key.receptionID] = this.receptionID;
+    if (receptionId != Reception.noId) {
+      retval[Key.receptionId] = receptionId;
     }
 
-    if (this.contactID != Contact.noID) {
-      retval[Key.contactID] = this.contactID;
+    if (contactId != ReceptionAttributes.noId) {
+      retval[Key.contactId] = contactId;
     }
 
-    if (this.upperMessageID != Message.noID) {
-      retval[Key.upperMessageId] = upperMessageID;
-    }
-
-    if (this.limitCount != Message.noID) {
-      retval[Key.limit] = this.limitCount;
-    }
+    retval[Key.limit] = limitCount;
 
     return retval;
   }
@@ -183,20 +166,16 @@ class MessageFilter {
   List<String> get _activeFields {
     List<String> retval = [];
 
-    if (this.upperMessageID != Message.noID) {
-      retval.add('message.id <= ${this.upperMessageID}');
+    if (userId != User.noId) {
+      retval.add('taken_by_agent = ${this.userId}');
     }
 
-    if (userID != User.noID) {
-      retval.add('taken_by_agent = ${this.userID}');
+    if (receptionId != Reception.noId) {
+      retval.add('context_reception_id = ${this.receptionId}');
     }
 
-    if (receptionID != Reception.noID) {
-      retval.add('context_reception_id = ${this.receptionID}');
-    }
-
-    if (contactID != Contact.noID) {
-      retval.add('context_contact_id = ${this.contactID}');
+    if (contactId != ReceptionAttributes.noId) {
+      retval.add('context_contact_id = ${this.contactId}');
     }
 
     switch (this._messageState) {

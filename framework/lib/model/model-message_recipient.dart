@@ -21,15 +21,9 @@ class MessageRecipient {
   String type;
 
   /**
-   * Constructor.
+   * Default Constructor.
    */
-  MessageRecipient(MessageEndpoint ep, DistributionListEntry de) {
-    address = ep.address;
-    contactName = de.contactName;
-    receptionName = de.receptionName;
-    role = de.role;
-    type = ep.type;
-  }
+  MessageRecipient();
 
   /**
    * Empty constructor.

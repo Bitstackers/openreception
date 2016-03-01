@@ -39,7 +39,8 @@ class TemplateEmail extends Template {
     final String company = _message.callerInfo.company;
     final String extension = _message.callerInfo.localExtension;
 
-    sb.write('Til ${_message.context.contactName} (${_message.context.receptionName}).<br><br>');
+    sb.write(
+        'Til ${_message.context.contactName} (${_message.context.receptionName}).<br><br>');
     sb.write(
         'Der er besked fra ${_message.callerInfo.name}${company.isEmpty ? '' : ', ${company}'}<br><br>');
     sb.write(
@@ -50,7 +51,8 @@ class TemplateEmail extends Template {
     }
     sb.write('Vedr.:<br>');
     sb.write('${_message.body.trim().replaceAll('\n', '<br>')}<br><br>');
-    sb.write('Modtaget den ${_dateFormat.format(_message.createdAt.toLocal())}<br><br>');
+    sb.write(
+        'Modtaget den ${_dateFormat.format(_message.createdAt.toLocal())}<br><br>');
     sb.write('Med venlig hilsen<br>');
     sb.write('${_sender.name}<br>');
     sb.write('Responsum K/S<br><br>');
@@ -72,14 +74,16 @@ class TemplateEmail extends Template {
     sb.write('Til ${_message.context.contactName}.\n\n');
     sb.write(
         'Der er besked fra ${_message.callerInfo.name}${company.isEmpty ? '' : ', ${company}'}\n\n');
-    sb.write('Tlf. ${_message.callerInfo.phone} ${extension.isEmpty ? '' : 'ext: ${extension}'}\n');
+    sb.write(
+        'Tlf. ${_message.callerInfo.phone} ${extension.isEmpty ? '' : 'ext: ${extension}'}\n');
     sb.write('Mob. ${_message.callerInfo.cellPhone}\n\n');
     if (booleanFields.isNotEmpty) {
       sb.write('${booleanFields}\n');
     }
     sb.write('Vedr.:\n');
     sb.write('${_message.body}\n\n');
-    sb.write('Modtaget den ${_dateFormat.format(_message.createdAt.toLocal())}\n\n');
+    sb.write(
+        'Modtaget den ${_dateFormat.format(_message.createdAt.toLocal())}\n\n');
     sb.write('Med venlig hilsen\n');
     sb.write('${_sender.name}\n');
     sb.write('Responsum K/S\n\n');
@@ -90,9 +94,9 @@ class TemplateEmail extends Template {
   /**
    * Return the [Message] subject line.
    */
-  String get subject => '${_message.flag.urgent ? '[${URGENT.toUpperCase()}]' : ''} '
+  String get subject =>
+      '${_message.flag.urgent ? '[${URGENT.toUpperCase()}]' : ''} '
       'Besked fra ${_message.callerInfo.name}'
       '${_message.callerInfo.company.isEmpty ? '' : ', ${_message.callerInfo.company}'}'
-      '${_message.callerInfo.phone.isEmpty ? '' : ', ${_message.callerInfo.phone}'}'
-      ' (id:${_message.ID.toString()})';
+      '${_message.callerInfo.phone.isEmpty ? '' : ', ${_message.callerInfo.phone}'}';
 }
