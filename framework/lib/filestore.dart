@@ -16,6 +16,7 @@ library openreception.filestore;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' show max;
 
 import 'package:logging/logging.dart';
 import 'package:uuid/uuid.dart';
@@ -33,6 +34,7 @@ part 'filestore/filestore-message.dart';
 part 'filestore/filestore-organization.dart';
 part 'filestore/filestore-reception_dialplan.dart';
 part 'filestore/filestore-reception.dart';
+part 'filestore/filestore-sequencer.dart';
 part 'filestore/filestore-user.dart';
 
 const String libraryName = 'openreception.filestore';

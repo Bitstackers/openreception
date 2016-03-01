@@ -16,23 +16,30 @@ part of openreception.filestore;
 class Reception implements storage.Reception {
   final Logger _log = new Logger('$libraryName.Reception');
   final String path;
+  Sequencer _sequencer;
   GitEngine _git;
 
   Future get initialized => _git.initialized;
   Future get ready => _git.whenReady;
 
-  String get _newUuid => _uuid.v4();
+  int get _nextId => _sequencer.nextInt();
 
   /**
    *
    */
   Reception({String this.path: 'json-data/reception'}) {
+    if (!new Directory(path).existsSync()) {
+      new Directory(path).createSync(recursive: true);
+    }
     _git = new GitEngine(path);
     _git.init();
+    _sequencer = new Sequencer(path);
   }
 
-  Future<Iterable<model.ReceptionReference>> _receptionsOfOrg(
-      String uuid) async {
+  /**
+   *
+   */
+  Future<Iterable<model.ReceptionReference>> _receptionsOfOrg(int id) async {
     Iterable files = new Directory('$path')
         .listSync()
         .where((fse) => fse is File && fse.path.endsWith('.json'));
@@ -44,7 +51,7 @@ class Reception implements storage.Reception {
             .then(model.Reception.decode))));
 
     return receptions
-        .where((r) => r.organizationUuid == uuid)
+        .where((r) => r.organizationId == id)
         .map((r) => r.reference);
   }
 
@@ -53,15 +60,10 @@ class Reception implements storage.Reception {
    */
   Future<model.ReceptionReference> create(
       model.Reception reception, model.User modifier) async {
-    _log.info(_newUuid);
-    _log.info(_newUuid);
-    _log.info(_newUuid);
-    _log.info(_newUuid);
-
-    if (reception.uuid == model.Reception.noId) {
-      reception.uuid = _newUuid;
+    if (reception.id == model.Reception.noId) {
+      reception.id = _nextId;
     }
-    final File file = new File('$path/${reception.uuid}.json');
+    final File file = new File('$path/${reception.id}.json');
 
     if (file.existsSync()) {
       throw new storage.ClientError(
@@ -76,7 +78,7 @@ class Reception implements storage.Reception {
     _log.finest('Creating new file ${file.path}');
     file.writeAsStringSync(_jsonpp.convert(reception));
 
-    await _git.add(file, 'Added ${reception.uuid}', _authorString(modifier));
+    await _git.add(file, 'Added ${reception.id}', _authorString(modifier));
 
     return reception.reference;
   }
@@ -84,11 +86,11 @@ class Reception implements storage.Reception {
   /**
    *
    */
-  Future<model.Reception> get(String uuid) async {
-    final File file = new File('$path/${uuid}.json');
+  Future<model.Reception> get(int id) async {
+    final File file = new File('$path/${id}.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file with name ${uuid}');
+      throw new storage.NotFound('No file with name ${id}');
     }
 
     try {
@@ -100,24 +102,43 @@ class Reception implements storage.Reception {
     }
   }
 
-  Future<model.Reception> getByExtension(String extension) async {
-    new Directory(path).listSync().where((fse) => fse is File && fse.path.endsWith('.json')).map((fse) {
-      fse.
-    });
-  }
+  /**
+   *
+   */
+  Future<model.Reception> getByExtension(String extension) async =>
+      new Directory(path)
+          .listSync()
+          .where((fse) => fse is File && fse.path.endsWith('.json'))
+          .map((File fse) =>
+              model.Reception.decode(JSON.decode(fse.readAsStringSync())))
+          .firstWhere((rec) => rec.dialplan == extension,
+              orElse: () => throw new storage.NotFound(
+                  'No reception with dialplan $extension'));
 
-  Future<Iterable<Map<String,model.ReceptionReference>>> extensionMap() {
-
-  }
-
-  Future<String> extensionOf(String uuid) async => (await get(uuid)).dialplan;
-
-  Future<Iterable<model.ReceptionReference>> list() {
+  /**
+   *
+   */
+  Future<Iterable<Map<String, model.ReceptionReference>>> extensionMap() {
     throw new UnimplementedError();
   }
 
-  Future remove(String uuid, model.User modifier) async {
-    final File file = new File('$path/${uuid}.json');
+  /**
+   *
+   */
+  Future<String> extensionOf(int id) async => (await get(id)).dialplan;
+
+  /**
+   *
+   */
+  Future<Iterable<model.ReceptionReference>> list() async => new Directory(path)
+      .listSync()
+      .where((fse) => fse is File && fse.path.endsWith('.json'))
+      .map((File fse) => model.Reception
+          .decode(JSON.decode(fse.readAsStringSync()))
+          .reference);
+
+  Future remove(int id, model.User modifier) async {
+    final File file = new File('$path/${id}.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
@@ -128,7 +149,7 @@ class Reception implements storage.Reception {
       modifier = _systemUser;
     }
 
-    await _git.remove(file, 'Removed $uuid', _authorString(modifier));
+    await _git.remove(file, 'Removed $id', _authorString(modifier));
   }
 
   /**
@@ -136,12 +157,10 @@ class Reception implements storage.Reception {
    */
   Future<model.ReceptionReference> update(
       model.Reception rec, model.User modifier) async {
-    final File file = new File('$path/${rec.uuid}.json');
-
-    if (rec.uuid == model.Reception.noId) {
-      throw new storage.ClientError('uuid may not be "noId"');
+    if (rec.id == model.Reception.noId) {
+      throw new storage.ClientError('id may not be "noId"');
     }
-
+    final File file = new File('$path/${rec.id}.json');
     if (!file.existsSync()) {
       throw new storage.NotFound();
     }

@@ -17,28 +17,33 @@ class User implements storage.User {
   final Logger _log = new Logger('$libraryName.User');
   final String path;
   GitEngine _git;
+  Sequencer _sequencer;
 
   Future get initialized => _git.initialized;
   Future get ready => _git.whenReady;
 
-  String get _newUuid => _uuid.v4();
+  int get _nextId => _sequencer.nextInt();
 
   /**
    *
    */
   User({String this.path: 'json-data/user'}) {
+    if (!new Directory(path).existsSync()) {
+      new Directory(path).createSync(recursive: true);
+    }
     _git = new GitEngine(path);
     _git.init();
+    _sequencer = new Sequencer(path);
   }
 
   /**
    *
    */
-  Future<model.User> get(String uuid) async {
-    final File file = new File('$path/${uuid}.json');
+  Future<model.User> get(int id) async {
+    final File file = new File('$path/${id}.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file with name ${uuid}');
+      throw new storage.NotFound('No file with name ${id}');
     }
 
     try {
@@ -53,7 +58,8 @@ class User implements storage.User {
   /**
    *
    */
-  Future<model.User> getByIdentity(String identity) => get(identity);
+  Future<model.User> getByIdentity(String identity) =>
+      throw new UnimplementedError();
 
   /**
    *
@@ -68,8 +74,8 @@ class User implements storage.User {
    *
    */
   Future<model.User> create(model.User user, model.User modifier) async {
-    user.uuid = _newUuid;
-    final File file = new File('$path/${user.uuid}.json');
+    user.id = _nextId;
+    final File file = new File('$path/${user.id}.json');
 
     if (file.existsSync()) {
       throw new storage.ClientError(
@@ -83,7 +89,7 @@ class User implements storage.User {
 
     file.writeAsStringSync(_jsonpp.convert(user));
 
-    await _git.add(file, 'Added ${user.uuid}', _authorString(modifier));
+    await _git.add(file, 'Added ${user.id}', _authorString(modifier));
 
     return user;
   }
@@ -92,7 +98,7 @@ class User implements storage.User {
    *
    */
   Future<model.User> update(model.User user, model.User modifier) async {
-    final File file = new File('$path/${user.uuid}.json');
+    final File file = new File('$path/${user.id}.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
@@ -105,7 +111,7 @@ class User implements storage.User {
 
     file.writeAsStringSync(_jsonpp.convert(user));
 
-    await _git._commit('Updated ${user.uuid}', _authorString(modifier));
+    await _git._commit('Updated ${user.id}', _authorString(modifier));
 
     return user;
   }
@@ -113,8 +119,8 @@ class User implements storage.User {
   /**
    *
    */
-  Future remove(String uuid, model.User modifier) async {
-    final File file = new File('$path/${uuid}.json');
+  Future remove(int id, model.User modifier) async {
+    final File file = new File('$path/${id}.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
@@ -125,6 +131,6 @@ class User implements storage.User {
       modifier = _systemUser;
     }
 
-    await _git.remove(file, 'Removed $uuid', _authorString(modifier));
+    await _git.remove(file, 'Removed $id', _authorString(modifier));
   }
 }

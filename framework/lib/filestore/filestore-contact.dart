@@ -18,42 +18,46 @@ class Contact implements storage.Contact {
   final String path;
   final Reception _receptionStore;
   GitEngine _git;
+  Sequencer _sequencer;
 
   Future get initialized => _git.initialized;
   Future get ready => _git.whenReady;
 
-  String get _newUuid => _uuid.v4();
+  int get _nextId => _sequencer.nextInt();
 
   /**
    *
    */
   Contact(this._receptionStore, {String this.path: 'json-data/contact'}) {
+    if (!new Directory(path).existsSync()) {
+      new Directory(path).createSync(recursive: true);
+    }
     _git = new GitEngine(path);
     _git.init();
+    _sequencer = new Sequencer(path);
   }
 
   /**
    *
    */
-  Future<Iterable<model.ContactReference>> _contactsOfReception(
-          String rUuid) async =>
+  Future<Iterable<model.ContactReference>> _contactsOfReception(int id) async =>
       (await list()).where((model.ContactReference cRef) =>
-          new File('$path/${cRef.uuid}/receptions/${rUuid}.json').existsSync());
+          new File('$path/${cRef.id}/receptions/${id}.json').existsSync());
 
   /**
    *
    */
-  Future<model.ReceptionAttributes> addContactToReception(
+  Future<model.ReceptionContactReference> addToReception(
       model.ReceptionAttributes attr, model.User user) async {
-    if (attr.receptionUuid == model.Reception.noId) {
+    if (attr.receptionId == model.Reception.noId) {
       throw new ArgumentError('attr.receptionUuid must be valid');
     }
-    final recDir = new Directory('$path/${attr.contactUuid}/receptions');
+    final recDir = new Directory('$path/${attr.contactId}/receptions');
     if (!recDir.existsSync()) {
       recDir.createSync(recursive: true);
     }
 
-    final File file = new File('${recDir.path}/${attr.receptionUuid}.json');
+    final File file = new File('${recDir.path}/${attr.receptionId}.json');
 
     if (file.existsSync()) {
       throw new storage.ClientError(
@@ -68,10 +72,10 @@ class Contact implements storage.Contact {
     file.writeAsStringSync(_jsonpp.convert(attr));
     _log.finest('Created new file ${file.path}');
 
-    await _git.add(file, 'Added ${attr.contactUuid} to ${attr.receptionUuid}',
+    await _git.add(file, 'Added ${attr.contactId} to ${attr.receptionId}',
         _authorString(user));
 
-    return attr;
+    return attr.reference;
   }
 
   /**
@@ -79,10 +83,10 @@ class Contact implements storage.Contact {
    */
   Future<model.ContactReference> create(
       model.BaseContact contact, model.User modifier) async {
-    if (contact.uuid == model.BaseContact.noId) {
-      contact.uuid = _newUuid;
+    if (contact.id == model.BaseContact.noId) {
+      contact.id = _nextId;
     }
-    final File file = new File('$path/${contact.uuid}.json');
+    final File file = new File('$path/${contact.id}.json');
 
     if (file.existsSync()) {
       throw new storage.ClientError(
@@ -97,7 +101,7 @@ class Contact implements storage.Contact {
     _log.finest('Creating new file ${file.path}');
     file.writeAsStringSync(_jsonpp.convert(contact));
 
-    await _git.add(file, 'Added ${contact.uuid}', _authorString(modifier));
+    await _git.add(file, 'Added ${contact.id}', _authorString(modifier));
 
     return contact.reference;
   }
@@ -105,8 +109,8 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<model.BaseContact> get(String uuid) async {
-    final File file = new File('$path/${uuid}.json');
+  Future<model.BaseContact> get(int id) async {
+    final File file = new File('$path/${id}.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound('No file ${file.path}');
@@ -125,8 +129,8 @@ class Contact implements storage.Contact {
    *
    */
   Future<model.ReceptionAttributes> getByReception(
-      String uuid, String receptionUuid) async {
-    final file = new File('$path/$uuid/receptions/$receptionUuid.json');
+      int id, int receptionId) async {
+    final file = new File('$path/$id/receptions/$receptionId.json');
     if (!file.existsSync()) {
       throw new storage.NotFound('No file: ${file.path}');
     }
@@ -155,13 +159,13 @@ class Contact implements storage.Contact {
    *
    */
   Future<Iterable<model.ReceptionAttributes>> listByReception(
-      String receptionUuid) async {
+      int receptionId) async {
     final subdirs =
         new Directory(path).listSync().where((fse) => fse is Directory);
 
     List<model.ReceptionAttributes> attrs = [];
     subdirs.forEach((Directory dir) {
-      final attrFile = new File(dir.path + '/receptions/$receptionUuid.json');
+      final attrFile = new File(dir.path + '/receptions/$receptionId.json');
       if (attrFile.existsSync()) {
         attrs.add(model.ReceptionAttributes
             .decode(JSON.decode(attrFile.readAsStringSync())));
@@ -175,13 +179,13 @@ class Contact implements storage.Contact {
    *
    */
   Future<Iterable<model.ContactReference>> organizationContacts(
-      String organizationUuid) async {
-    Iterable recIds = await _receptionStore._receptionsOfOrg(organizationUuid);
+      int organizationId) async {
+    Iterable rRefs = await _receptionStore._receptionsOfOrg(organizationId);
 
     Set<model.ContactReference> contacts = new Set();
 
-    await Future.wait(recIds.map((rid) async {
-      contacts.addAll(await _contactsOfReception(rid.uuid));
+    await Future.wait(rRefs.map((rRef) async {
+      contacts.addAll(await _contactsOfReception(rRef.id));
     }));
 
     return contacts;
@@ -190,16 +194,13 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<Iterable<model.OrganizationReference>> organizations(
-      String uuid) async {
-    Iterable<model.ReceptionReference> recIds = await receptions(uuid);
-
-    print(recIds);
+  Future<Iterable<model.OrganizationReference>> organizations(int id) async {
+    Iterable<model.ReceptionReference> rRefs = await receptions(id);
 
     Set<model.OrganizationReference> orgs = new Set();
-    await Future.wait(recIds.map((rid) async {
+    await Future.wait(rRefs.map((rid) async {
       orgs.add(new model.OrganizationReference(
-          (await _receptionStore.get(rid.uuid)).organizationUuid, ''));
+          (await _receptionStore.get(rid.id)).organizationId, ''));
     }));
 
     return orgs;
@@ -208,13 +209,13 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<Iterable<model.ReceptionReference>> receptions(String uuid) async {
-    final File contactFile = new File('$path/${uuid}.json');
+  Future<Iterable<model.ReceptionReference>> receptions(int id) async {
+    final File contactFile = new File('$path/${id}.json');
     if (!contactFile.existsSync()) {
       throw new storage.NotFound('No file: ${contactFile.path}');
     }
 
-    final rDir = new Directory('$path/$uuid/receptions');
+    final rDir = new Directory('$path/$id/receptions');
     if (!rDir.existsSync()) {
       return [];
     }
@@ -225,10 +226,10 @@ class Contact implements storage.Contact {
         .listSync()
         .where((fse) => fse is File && fse.path.endsWith('.json'))
         .map((File file) async {
-      String id = basenameWithoutExtension(file.path);
+      int fileId = int.parse(basenameWithoutExtension(file.path));
 
       refs.add(new model.ReceptionReference(
-          id, (await _receptionStore.get(id)).name));
+          fileId, (await _receptionStore.get(fileId)).name));
     }));
 
     return refs;
@@ -237,8 +238,8 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future remove(String uuid, model.User user) async {
-    final File file = new File('$path/${uuid}.json');
+  Future remove(int id, model.User user) async {
+    final File file = new File('$path/${id}.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
@@ -249,21 +250,20 @@ class Contact implements storage.Contact {
       user = _systemUser;
     }
 
-    await _git.remove(file, 'Removed $uuid', _authorString(user));
+    await _git.remove(file, 'Removed $id', _authorString(user));
   }
 
   /**
    *
    */
   Future removeFromReception(
-      String uuid, String receptionUuid, model.User modifier) async {
-    if (uuid == model.BaseContact.noId ||
-        receptionUuid == model.Reception.noId) {
+      int id, int receptionId, model.User modifier) async {
+    if (id == model.BaseContact.noId || receptionId == model.Reception.noId) {
       throw new storage.ClientError('Empty id');
     }
 
-    final recDir = new Directory('$path/${uuid}/receptions');
-    final File file = new File('${recDir.path}/${receptionUuid}.json');
+    final recDir = new Directory('$path/${id}/receptions');
+    final File file = new File('${recDir.path}/${receptionId}.json');
     if (!file.existsSync()) {
       throw new storage.NotFound('No file ${file}');
     }
@@ -276,7 +276,7 @@ class Contact implements storage.Contact {
     _log.finest('Removing file ${file.path}');
 
     await _git.remove(
-        file, 'Removed ${uuid} from ${receptionUuid}', _authorString(modifier));
+        file, 'Removed ${id} from ${receptionId}', _authorString(modifier));
   }
 
   /**
@@ -284,7 +284,7 @@ class Contact implements storage.Contact {
    */
   Future<model.BaseContact> update(
       model.BaseContact contact, model.User user) async {
-    final File file = new File('$path/${contact.uuid}.json');
+    final File file = new File('$path/${contact.id}.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
@@ -305,13 +305,13 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<model.ReceptionAttributes> updateInReception(
+  Future<model.ReceptionContactReference> updateInReception(
       model.ReceptionAttributes attr, model.User modifier) async {
-    if (attr.contactUuid == model.BaseContact.noId) {
+    if (attr.contactId == model.BaseContact.noId) {
       throw new storage.ClientError('Empty id');
     }
-    final recDir = new Directory('$path/${attr.contactUuid}/receptions');
-    final File file = new File('${recDir.path}/${attr.receptionUuid}.json');
+    final recDir = new Directory('$path/${attr.contactId}/receptions');
+    final File file = new File('${recDir.path}/${attr.receptionId}.json');
     if (!file.existsSync()) {
       throw new storage.NotFound('No file ${file}');
     }
@@ -324,9 +324,9 @@ class Contact implements storage.Contact {
     _log.finest('Creating new file ${file.path}');
     file.writeAsStringSync(_jsonpp.convert(attr));
 
-    await _git.add(file, 'Updated ${attr.contactUuid} in ${attr.receptionUuid}',
+    await _git.add(file, 'Updated ${attr.contactId} in ${attr.receptionId}',
         _authorString(modifier));
 
-    return attr;
+    return attr.reference;
   }
 }

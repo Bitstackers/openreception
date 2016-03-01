@@ -24,10 +24,10 @@ class Change {
 class GitEngine {
   final Logger _log = new Logger('$libraryName.GitEngine');
   final String path;
-  bool logStdout = false;
+  bool logStdout = true;
 
   Future get initialized => _initialized.future;
-  final Completer _initialized = new Completer();
+  Completer _initialized;
   bool get ready => _busy.isCompleted;
 
   Future get whenReady => _busy.future;
@@ -41,9 +41,11 @@ class GitEngine {
    */
   Future init() async {
     final _storeDir = new Directory(path);
-    if (_initialized.isCompleted) {
-      return;
+
+    if (_initialized != null) {
+      return whenReady;
     }
+    _initialized = new Completer();
 
     if (!_storeDir.existsSync()) {
       _log.info('Directory "$path" not found - creating it');
@@ -52,14 +54,12 @@ class GitEngine {
       ProcessResult result = await Process.run('/usr/bin/git', ['init', path],
           workingDirectory: path);
 
-      final String stdout = result.stdout;
-      if (stdout.isNotEmpty && logStdout) {
-        _log.finest(stdout);
+      if (result.stdout.isNotEmpty && logStdout) {
+        _log.finest(result.stdout);
       }
 
-      final String stderr = result.stderr;
-      if (stderr.isNotEmpty) {
-        _log.severe(stderr);
+      if (result.stderr.isNotEmpty) {
+        _log.severe(result.stderr);
       }
 
       if (result.exitCode != 0) {
@@ -80,16 +80,22 @@ class GitEngine {
       ProcessResult status =
           await Process.run('/usr/bin/git', ['status'], workingDirectory: path);
 
+      if (!(_containsDotGit(path)) && status.exitCode == 0) {
+        throw new StateError(
+            'Path ${_storeDir.absolute} is already under Git revisioning. Consider relocating store');
+      }
+
       if (status.exitCode != 0) {
+        _log.info('Git repos not found in "$path" not found - creating it');
         ProcessResult result = await Process.run('/usr/bin/git', ['init', path],
             workingDirectory: path);
 
         if (result.stdout.isNotEmpty && logStdout) {
-          _log.finest(stdout);
+          _log.finest(result.stdout);
         }
 
         if (result.stderr.isNotEmpty) {
-          _log.severe(stderr);
+          _log.severe(result.stderr);
         }
 
         if (result.exitCode != 0) {
@@ -99,6 +105,17 @@ class GitEngine {
           _initialized.complete();
         }
       } else {
+        _log.info('Git repos found  in "$path"');
+        ProcessResult result =
+            await Process.run('/bin/pwd', [], workingDirectory: path);
+        if (result.stdout.isNotEmpty && logStdout) {
+          _log.finest(result.stdout.split('\n').first);
+        }
+
+        if (result.stderr.isNotEmpty) {
+          _log.severe(result.stderr);
+        }
+
         _initialized.complete();
       }
     }
@@ -209,6 +226,11 @@ class GitEngine {
       throw new storage.ServerError();
     }
   }
+
+  /**
+   * Determine if a path contains a .git folder
+   */
+  bool _containsDotGit(String path) => new Directory('$path/.git').existsSync();
 
   /**
    *

@@ -16,19 +16,24 @@ part of openreception.filestore;
 class Calendar implements storage.Calendar {
   final Logger _log = new Logger('$libraryName.Calendar');
   final String path;
+  Sequencer _sequencer;
   GitEngine _git;
 
   Future get initialized => _git.initialized;
   Future get ready => _git.whenReady;
 
-  String get _newUuid => _uuid.v4();
+  int get _nextId => _sequencer.nextInt();
 
   /**
    *
    */
   Calendar({String this.path: 'json-data/calendar'}) {
+    if (!new Directory(path).existsSync()) {
+      new Directory(path).createSync(recursive: true);
+    }
     _git = new GitEngine(path);
     _git.init();
+    _sequencer = new Sequencer(path);
   }
 
   /**
@@ -40,7 +45,7 @@ class Calendar implements storage.Calendar {
 
     return gitChanges.map((change) => new model.CalendarEntryChange()
       ..changedAt = change.changeTime
-      ..userUuid = change.author);
+      ..author = change.author);
   }
 
   /**
@@ -48,8 +53,8 @@ class Calendar implements storage.Calendar {
    */
   Future<model.CalendarEntry> create(
       model.CalendarEntry entry, model.User user) async {
-    entry.uuid = _newUuid;
-    final File file = new File('$path/${entry.uuid}.json');
+    entry.id = _nextId;
+    final File file = new File('$path/${entry.id}.json');
 
     if (file.existsSync()) {
       throw new storage.ClientError(
@@ -63,7 +68,7 @@ class Calendar implements storage.Calendar {
 
     file.writeAsStringSync(_jsonpp.convert(entry));
 
-    await _git.add(file, 'Added ${entry.uuid}', _authorString(user));
+    await _git.add(file, 'Added ${entry.id}', _authorString(user));
 
     return entry;
   }
@@ -133,7 +138,7 @@ class Calendar implements storage.Calendar {
    */
   Future<model.CalendarEntry> update(
       model.CalendarEntry entry, model.User user) async {
-    final File file = new File('$path/${entry.uuid}.json');
+    final File file = new File('$path/${entry.id}.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
@@ -146,7 +151,7 @@ class Calendar implements storage.Calendar {
 
     file.writeAsStringSync(_jsonpp.convert(entry));
 
-    await _git._commit('Updated ${entry.uuid}', _authorString(user));
+    await _git._commit('Updated ${entry.id}', _authorString(user));
 
     return entry;
   }

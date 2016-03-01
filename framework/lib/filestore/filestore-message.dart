@@ -17,6 +17,7 @@ class Message implements storage.Message {
   final Logger _log = new Logger('$libraryName.Organization');
   final String path;
   GitEngine _git;
+  Sequencer _sequencer;
 
   Future get initialized => _git.initialized;
   Future get ready => _git.whenReady;
@@ -26,8 +27,12 @@ class Message implements storage.Message {
    *
    */
   Message({String this.path: 'json-data/message'}) {
+    if (!new Directory(path).existsSync()) {
+      new Directory(path).createSync(recursive: true);
+    }
     _git = new GitEngine(path);
     _git.init();
+    _sequencer = new Sequencer(path);
   }
 
   Future enqueue(model.Message message) {

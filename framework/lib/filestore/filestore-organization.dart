@@ -19,30 +19,35 @@ class Organization implements storage.Organization {
   final Contact _contactFileStore;
   final Reception _receptionFileStore;
   GitEngine _git;
+  Sequencer _sequencer;
 
   Future get initialized => _git.initialized;
   Future get ready => _git.whenReady;
 
-  String get _newUuid => _uuid.v4();
+  int get _nextId => _sequencer.nextInt();
 
   /**
    *
    */
   Organization(this._contactFileStore, this._receptionFileStore,
       {String this.path: 'json-data/organization'}) {
+    if (!new Directory(path).existsSync()) {
+      new Directory(path).createSync(recursive: true);
+    }
     _git = new GitEngine(path);
     _git.init();
+    _sequencer = new Sequencer(path);
   }
 
   /**
    *
    */
-  Future<Iterable<model.ContactReference>> contacts(String uuid) async {
+  Future<Iterable<model.ContactReference>> contacts(int id) async {
     List<model.ContactReference> cRefs = [];
-    List<model.ReceptionReference> rRefs = await receptionsOf(uuid);
+    List<model.ReceptionReference> rRefs = await receptions(id);
 
     await Future.forEach(rRefs, (rRef) async {
-      cRefs.addAll(await _contactFileStore._contactsOfReception(rRef.uuid));
+      cRefs.addAll(await _contactFileStore._contactsOfReception(rRef.id));
     });
 
     return cRefs;
@@ -53,15 +58,15 @@ class Organization implements storage.Organization {
    */
   Future<model.OrganizationReference> create(
       model.Organization org, model.User user) async {
-    if (org.uuid == null) {
+    if (org.id == null) {
       throw new storage.ClientError(
-          new ArgumentError.notNull(org.uuid).toString());
+          new ArgumentError.notNull(org.id.toString()).toString());
     }
 
-    if (org.uuid == model.Organization.noId) {
-      org.uuid = _newUuid;
+    if (org.id == model.Organization.noId) {
+      org.id = _nextId;
     }
-    final File file = new File('$path/${org.uuid}.json');
+    final File file = new File('$path/${org.id}.json');
 
     if (file.existsSync()) {
       throw new storage.ClientError(
@@ -83,11 +88,11 @@ class Organization implements storage.Organization {
   /**
    *
    */
-  Future<model.Organization> get(String uuid) async {
-    final File file = new File('$path/${uuid}.json');
+  Future<model.Organization> get(int id) async {
+    final File file = new File('$path/${id}.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file with name ${uuid}');
+      throw new storage.NotFound('No file with name ${id}');
     }
 
     try {
@@ -113,8 +118,8 @@ class Organization implements storage.Organization {
   /**
    *
    */
-  Future remove(String uuid, model.User modifier) async {
-    final File file = new File('$path/${uuid}.json');
+  Future remove(int id, model.User modifier) async {
+    final File file = new File('$path/${id}.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
@@ -125,7 +130,7 @@ class Organization implements storage.Organization {
       modifier = _systemUser;
     }
 
-    await _git.remove(file, 'Removed $uuid', _authorString(modifier));
+    await _git.remove(file, 'Removed $id', _authorString(modifier));
   }
 
   /**
@@ -133,9 +138,9 @@ class Organization implements storage.Organization {
    */
   Future<model.OrganizationReference> update(
       model.Organization org, model.User user) async {
-    final File file = new File('$path/${org.uuid}.json');
+    final File file = new File('$path/${org.id}.json');
 
-    if (org.uuid == model.Organization.noId) {
+    if (org.id == model.Organization.noId) {
       throw new storage.ClientError('uuid may not be "noId"');
     }
 
@@ -158,6 +163,6 @@ class Organization implements storage.Organization {
   /**
    *
    */
-  Future<Iterable<model.ReceptionReference>> receptionsOf(String uuid) =>
+  Future<Iterable<model.ReceptionReference>> receptions(int uuid) =>
       _receptionFileStore._receptionsOfOrg(uuid);
 }

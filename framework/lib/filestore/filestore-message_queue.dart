@@ -17,6 +17,7 @@ class MessageQueue implements storage.MessageQueue {
   final Logger _log = new Logger('$libraryName.MessageQueue');
   final String path;
   GitEngine _git;
+  Sequencer _sequencer;
 
   Future get initialized => _git.initialized;
   Future get ready => _git.whenReady;
@@ -27,8 +28,12 @@ class MessageQueue implements storage.MessageQueue {
    *
    */
   MessageQueue({String this.path: 'json-data/message-queue'}) {
+    if (!new Directory(path).existsSync()) {
+      new Directory(path).createSync(recursive: true);
+    }
     _git = new GitEngine(path);
     _git.init();
+    _sequencer = new Sequencer(path);
   }
 
   Future<model.MessageQueueItem> save(model.MessageQueueItem queueItem) {
