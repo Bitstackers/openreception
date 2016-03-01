@@ -1,10 +1,9 @@
-part of config;
+part of openreception_tests.config;
 
 /**
  * Helper functions for keeping track how config resource usage.
  */
 abstract class ConfigPool {
-
   static int aquiredLocalSIPAccounts = 0;
   static int aquiredExternalSipAccounts = 0;
   static int aquiredSnomHosts = 0;

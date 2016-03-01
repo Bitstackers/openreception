@@ -1,4 +1,4 @@
-part of or_test_fw;
+part of openreception_tests.support;
 
 /**
  * TODO: Implement event stack here instead of just perform logic based on the

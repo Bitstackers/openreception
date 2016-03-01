@@ -1,10 +1,8 @@
-part of or_test_fw;
+part of openreception_tests.support;
 
-class CustomerPool extends Pool<Customer>{
-
+class CustomerPool extends Pool<Customer> {
   /// Singleton.
   static CustomerPool instance = null;
 
-  CustomerPool(Iterable<Customer> elements) : super (elements);
-
+  CustomerPool(Iterable<Customer> elements) : super(elements);
 }
