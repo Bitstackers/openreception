@@ -9,9 +9,9 @@ abstract class Originate {
 
   static Future originationToHostedNumber(Receptionist receptionist) async {
     final Model.OriginationContext context = new Model.OriginationContext()
-      ..contactId = 4
+      ..contactUuid = 4
       ..dialplan = '12340004'
-      ..receptionId = 4;
+      ..receptionUuid = 4;
 
     await receptionist.originate('12340005', context);
 
@@ -31,9 +31,9 @@ abstract class Originate {
   static Future originationOnAgentCallRejected(
       Receptionist receptionist, Customer customer) async {
     final Model.OriginationContext context = new Model.OriginationContext()
-      ..contactId = 4
+      ..contactUuid = 4
       ..dialplan = '12340001'
-      ..receptionId = 1;
+      ..receptionUuid = 1;
 
     await receptionist.autoAnswer(false);
 
@@ -56,9 +56,9 @@ abstract class Originate {
   static Future originationOnAgentAutoAnswerDisabled(
       Receptionist receptionist, Customer customer) async {
     final Model.OriginationContext context = new Model.OriginationContext()
-      ..contactId = 4
+      ..contactUuid = 4
       ..dialplan = '12340001'
-      ..receptionId = 1;
+      ..receptionUuid = 1;
 
     await receptionist.autoAnswer(false);
 
@@ -77,9 +77,9 @@ abstract class Originate {
    */
   static void originationToForbiddenNumber(Receptionist receptionist) {
     final Model.OriginationContext context = new Model.OriginationContext()
-      ..contactId = 4
+      ..contactUuid = 4
       ..dialplan = '12340001'
-      ..receptionId = 1;
+      ..receptionUuid = 1;
 
     return expect(receptionist.originate('X', context),
         throwsA(new isInstanceOf<Storage.ClientError>()));
@@ -91,9 +91,9 @@ abstract class Originate {
   static Future originationToPeer(
       Receptionist receptionist, Customer customer) async {
     final Model.OriginationContext context = new Model.OriginationContext()
-      ..contactId = 4
+      ..contactUuid = 4
       ..dialplan = '12340001'
-      ..receptionId = 1;
+      ..receptionUuid = 1;
 
     await receptionist.originate(customer.extension, context);
     Phonio.Call call = await customer.waitForInboundCall();
@@ -111,8 +111,8 @@ abstract class Originate {
     Model.Call call = await receptionist.callFlowControl
         .originate(customer.extension, new Model.OriginationContext()
           ..callId = callId
-          ..contactId = 4
-          ..receptionId = 1
+          ..contactUuid = 4
+          ..receptionUuid = 1
           ..dialplan = '12340001');
 
     await customer.waitForInboundCall();
@@ -130,9 +130,9 @@ abstract class Originate {
   static Future originationToPeerCheckforduplicate(
       Receptionist receptionist, Customer customer) {
     final Model.OriginationContext context = new Model.OriginationContext()
-      ..contactId = 4
+      ..contactUuid = 4
       ..dialplan = '12340001'
-      ..receptionId = 1;
+      ..receptionUuid = 1;
     return receptionist
         .originate(customer.extension, context)
         .then((_) => customer.waitForInboundCall())

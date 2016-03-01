@@ -43,7 +43,8 @@ abstract class StateReload {
 
     Iterable<Model.Call> orignalCallQueue;
 
-    return Future.wait([])
+    return Future
+        .wait([])
         .then((_) => log.info('Caller dials the reception at $receptionNumber'))
         .then((_) => caller.dial(receptionNumber))
         .then((_) => log.info('Waiting for the call to be queued'))
@@ -71,7 +72,8 @@ abstract class StateReload {
 
     Iterable<Model.Call> orignalCallQueue;
 
-    return Future.wait([])
+    return Future
+        .wait([])
         .then((_) => log.info('Caller dials the reception at $receptionNumber'))
         .then((_) => caller.dial(receptionNumber))
         .then((_) => log.info('Receptionist hunt down the call'))
@@ -160,11 +162,12 @@ abstract class StateReload {
     Iterable<Model.Call> orignalCallQueue;
     Model.Call outboundCall;
     final Model.OriginationContext context = new Model.OriginationContext()
-      ..contactId = 4
+      ..contactUuid = 4
       ..dialplan = '12340001'
-      ..receptionId = 1;
+      ..receptionUuid = 1;
 
-    return Future.wait([])
+    return Future
+        .wait([])
         .then((_) =>
             log.info('Receptionist dials the callee at ${callee.extension}'))
         .then((_) => receptionist
@@ -193,11 +196,12 @@ abstract class StateReload {
     Iterable<Model.Call> orignalCallQueue;
     Model.Call outboundCall;
     final Model.OriginationContext context = new Model.OriginationContext()
-      ..contactId = 4
+      ..contactUuid = 4
       ..dialplan = '12340001'
-      ..receptionId = 1;
+      ..receptionUuid = 1;
 
-    return Future.wait([])
+    return Future
+        .wait([])
         .then((_) =>
             log.info('Receptionist dials the callee at ${callee.extension}'))
         .then((_) => receptionist
@@ -228,16 +232,17 @@ abstract class StateReload {
       Receptionist receptionist, Customer caller, Customer callee) {
     final String receptionNumber = '12340001';
     final Model.OriginationContext context = new Model.OriginationContext()
-      ..contactId = 4
+      ..contactUuid = 4
       ..dialplan = '12340001'
-      ..receptionId = 1;
+      ..receptionUuid = 1;
 
     Iterable<Model.Call> orignalCallQueue;
 
     Model.Call inboundCall;
     Model.Call outboundCall;
 
-    return Future.wait([])
+    return Future
+        .wait([])
         .then((_) => log.info('Caller dials the reception at $receptionNumber'))
         .then((_) => caller.dial(receptionNumber))
         .then((_) => log.info('Receptionist hunt down the call'))

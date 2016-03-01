@@ -1,7 +1,6 @@
 part of or_test_fw;
 
 runContactTests() {
-  serviceDistributionListTests();
   serviceContactTests();
   serviceEndpoint();
 }
@@ -22,17 +21,71 @@ void serviceEndpoint() {
       transport.client.close(force: true);
     });
 
-    test('list', () => ContactStore.endpoints(endpointStore));
+    test('list', () => storeTest.Contact.endpoints(endpointStore));
 
-    test('create', () => ContactStore.endpointCreate(endpointStore));
+    test('create', () => storeTest.Contact.endpointCreate(endpointStore));
 
-    test('remove', () => ContactStore.endpointRemove(endpointStore));
+    test('remove', () => storeTest.Contact.endpointRemove(endpointStore));
 
-    test('update', () => ContactStore.endpointUpdate(endpointStore));
+    test('update', () => storeTest.Contact.endpointUpdate(endpointStore));
   });
 }
 
 void serviceContactTests() {
+  var _log = new Logger('tmp');
+  /**
+   * Test for the presence of CORS headers.
+   */
+  Future isCORSHeadersPresent(HttpClient client) {
+    Uri uri = Uri.parse('${Config.contactStoreUri}/nonexistingpath');
+
+    _log.info('Checking CORS headers on a non-existing URL.');
+    return client
+        .getUrl(uri)
+        .then((HttpClientRequest request) =>
+            request.close().then((HttpClientResponse response) {
+              if (response.headers['access-control-allow-origin'] == null &&
+                  response.headers['Access-Control-Allow-Origin'] == null) {
+                fail('No CORS headers on path $uri');
+              }
+            }))
+        .then((_) {
+      _log.info('Checking CORS headers on an existing URL.');
+      uri = Resource.Reception.single(Config.contactStoreUri, 1);
+      return client.getUrl(uri).then((HttpClientRequest request) =>
+          request.close().then((HttpClientResponse response) {
+            if (response.headers['access-control-allow-origin'] == null &&
+                response.headers['Access-Control-Allow-Origin'] == null) {
+              fail('No CORS headers on path $uri');
+            }
+          }));
+    });
+  }
+
+  /**
+   * Test server behaviour when trying to access a resource not associated with
+   * a handler.
+   *
+   * The expected behaviour is that the server should return a Not Found error.
+   */
+  Future nonExistingPath(HttpClient client) {
+    Uri uri = Uri.parse(
+        '${Config.contactStoreUri}/nonexistingpath?token=${Config.serverToken}');
+
+    _log.info('Checking server behaviour on a non-existing path.');
+
+    return client
+        .getUrl(uri)
+        .then((HttpClientRequest request) =>
+            request.close().then((HttpClientResponse response) {
+              if (response.statusCode != 404) {
+                fail('Expected to received a 404 on path $uri');
+              }
+            }))
+        .then((_) => _log.info('Got expected status code 404.'))
+        .whenComplete(() => client.close(force: true));
+  }
+
   group('RESTContactStore', () {
     Transport.Client transport = null;
     Service.RESTEndpointStore endpointStore;
@@ -67,26 +120,27 @@ void serviceContactTests() {
       endpointStore = null;
       transport.client.close(force: true);
     });
-    test('getByReception', () => ContactStore.getByReception(contactStore));
+    test(
+        'getByReception', () => storeTest.Contact.getByReception(contactStore));
 
     test('organizationContacts',
-        () => ContactStore.organizationContacts(contactStore));
+        () => storeTest.Contact.organizationContacts(contactStore));
 
-    test('organizations', () => ContactStore.organizations(contactStore));
+    test('organizations', () => storeTest.Contact.organizations(contactStore));
 
-    test('organizations', () => ContactStore.organizations(contactStore));
+    test('organizations', () => storeTest.Contact.organizations(contactStore));
 
-    test('receptions', () => ContactStore.receptions(contactStore));
+    test('receptions', () => storeTest.Contact.receptions(contactStore));
 
-    test('list', () => ContactStore.list(contactStore));
+    test('list', () => storeTest.Contact.list(contactStore));
 
-    test('get', () => ContactStore.get(contactStore));
+    test('get', () => storeTest.Contact.get(contactStore));
 
-    test('BaseContact create', () => ContactStore.create(contactStore));
+    test('BaseContact create', () => storeTest.Contact.create(contactStore));
 
-    test('BaseContact update', () => ContactStore.update(contactStore));
+    test('BaseContact update', () => storeTest.Contact.update(contactStore));
 
-    test('BaseContact remove', () => ContactStore.remove(contactStore));
+    test('BaseContact remove', () => storeTest.Contact.remove(contactStore));
 
     test('Non-existing contact',
         () => ContactStore.nonExistingContact(contactStore));
@@ -110,40 +164,17 @@ void serviceContactTests() {
       transport.client.close(force: true);
     });
 
-    test('Endpoint listing', () => ContactStore.endpoints(endpointStore));
+    test('Endpoint listing', () => storeTest.Contact.endpoints(endpointStore));
 
-    test('Phone listing', () => ContactStore.phones(contactStore));
+    test('Phone listing', () => storeTest.Contact.phones(contactStore));
 
-    test('addToReception', () => ContactStore.addToReception(contactStore));
+    test(
+        'addToReception', () => storeTest.Contact.addToReception(contactStore));
 
     test('updateInReception',
-        () => ContactStore.updateInReception(contactStore));
+        () => storeTest.Contact.updateInReception(contactStore));
 
     test('deleteFromReception',
-        () => ContactStore.deleteFromReception(contactStore));
-  });
-}
-
-void serviceDistributionListTests() {
-  group('Service.RESTDistributionList', () {
-    Transport.Client transport = null;
-    Service.RESTDistributionListStore dlistStore;
-
-    setUp(() {
-      transport = new Transport.Client();
-      dlistStore = new Service.RESTDistributionListStore(
-          Config.contactStoreUri, Config.serverToken, transport);
-    });
-
-    tearDown(() {
-      dlistStore = null;
-      transport.client.close(force: true);
-    });
-
-    test('list', () => ContactStore.distributionList(dlistStore));
-
-    test('create', () => ContactStore.distributionRecipientAdd(dlistStore));
-
-    test('remove', () => ContactStore.distributionRecipientRemove(dlistStore));
+        () => storeTest.Contact.deleteFromReception(contactStore));
   });
 }

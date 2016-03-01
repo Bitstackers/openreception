@@ -164,13 +164,14 @@ void _callFlowControlTransfer() {
           await receptionStore.create(Randomizer.randomReception()
             ..enabled = true
             ..dialplan = createdDialplan.extension);
-      await rdpStore.deployDialplan(rdp.extension, r.ID);
+      await rdpStore.deployDialplan(rdp.extension, r.uuid);
       await rdpStore.reloadConfig();
 
       context = new Model.OriginationContext()
-        ..receptionId = r.ID
-        ..contactId =
-            (await contactStore.create(Randomizer.randomBaseContact())).id
+        ..receptionUuid = r.uuid
+        ..contactUuid = (await contactStore.create(
+                Randomizer.randomBaseContact(), receptionist.user))
+            .uuid
         ..dialplan = createdDialplan.extension;
 
       await Future.wait([
@@ -185,10 +186,10 @@ void _callFlowControlTransfer() {
       CustomerPool.instance.release(caller);
       CustomerPool.instance.release(callee);
 
-      await receptionStore.remove(context.receptionId);
+      await receptionStore.remove(context.receptionUuid);
       await Future.wait([
         rdpStore.remove(context.dialplan),
-        contactStore.remove(context.contactId),
+        contactStore.remove(context.contactUuid),
         receptionist.teardown(),
         caller.teardown(),
         callee.teardown()

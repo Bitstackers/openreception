@@ -83,12 +83,12 @@ abstract class RESTMessageStore {
       expect(messages.length, greaterThan(0));
 
       /// Update the filter
-      filter.receptionID = messages.first.context.receptionID;
+      filter.receptionUuid = messages.first.context.receptionUuid;
     }).then((_) => messageStore
                 .list(filter: filter)
                 .then((Iterable<Model.Message> messages) {
               bool matchesFilter(Model.Message message) =>
-                  message.context.receptionID == filter.receptionID;
+                  message.context.receptionUuid == filter.receptionUuid;
 
               expect(messages.every(matchesFilter), isTrue);
             }));
@@ -132,7 +132,7 @@ abstract class RESTMessageStore {
         Model.Message randMsg = Randomizer.randomMessage();
         randMsg.ID = createdMessage.ID;
         randMsg.context = createdMessage.context;
-        randMsg.senderId = createdMessage.senderId;
+        randMsg.senderUuid = createdMessage.senderUuid;
         createdMessage = randMsg;
       }
 

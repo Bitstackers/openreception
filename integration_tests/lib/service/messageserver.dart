@@ -6,7 +6,6 @@ void runMessageTests() {
     Storage.Message messageStore = null;
     Storage.Reception receptionStore = null;
     Storage.Contact contactStore = null;
-    Storage.DistributionList dlStore;
     Storage.Endpoint epStore;
 
     Receptionist r;
@@ -78,36 +77,36 @@ void runMessageTests() {
     test(
         'create',
         () => MessageStore.create(
-            messageStore, contactStore, receptionStore, dlStore, epStore, r));
+            messageStore, contactStore, receptionStore, null, epStore, r));
 
     test(
         'update',
         () => MessageStore.update(
-            messageStore, contactStore, receptionStore, dlStore, epStore, r));
+            messageStore, contactStore, receptionStore, null, epStore, r));
 
     test(
         'enqueue',
         () => MessageStore.enqueue(
-            messageStore, contactStore, receptionStore, dlStore, epStore, r));
+            messageStore, contactStore, receptionStore, null, epStore, r));
 
     test(
         'remove',
         () => MessageStore.remove(
-            messageStore, contactStore, receptionStore, dlStore, epStore, r));
+            messageStore, contactStore, receptionStore, null, epStore, r));
 
     test(
         'message enqueue (event presence)',
         () => RESTMessageStore.messageEnqueueEvent(
-            messageStore, contactStore, receptionStore, dlStore, epStore, r));
+            messageStore, contactStore, receptionStore, null, epStore, r));
 
     test(
         'message update (event presence)',
         () => RESTMessageStore.messageUpdateEvent(
-            messageStore, contactStore, receptionStore, dlStore, epStore, r));
+            messageStore, contactStore, receptionStore, null, epStore, r));
 
     test(
         'message create (event presence)',
         () => RESTMessageStore.messageCreateEvent(
-            messageStore, contactStore, receptionStore, dlStore, epStore, r));
+            messageStore, contactStore, receptionStore, null, epStore, r));
   });
 }

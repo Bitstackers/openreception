@@ -77,14 +77,14 @@ runIvrTests() {
       transport.client.close(force: true);
     });
 
-    test('create', () => StorageIvr.create(ivrStore));
+    test('create', () => storeTest.Ivr.create(ivrStore));
 
-    test('get', () => StorageIvr.get(ivrStore));
+    test('get', () => storeTest.Ivr.get(ivrStore));
 
-    test('list', () => StorageIvr.list(ivrStore));
+    test('list', () => storeTest.Ivr.list(ivrStore));
 
-    test('remove', () => StorageIvr.remove(ivrStore));
+    test('remove', () => storeTest.Ivr.remove(ivrStore));
 
-    test('update', () => StorageIvr.update(ivrStore));
+    test('update', () => storeTest.Ivr.update(ivrStore));
   });
 }

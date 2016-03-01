@@ -26,7 +26,7 @@ abstract class DialplanDeployment {
     Model.Reception r = await rStore.create(Randomizer.randomReception()
       ..enabled = true
       ..dialplan = createdDialplan.extension);
-    await rdpStore.deployDialplan(rdp.extension, r.ID);
+    await rdpStore.deployDialplan(rdp.extension, r.uuid);
     await rdpStore.reloadConfig();
 
     _log.info('Subscribing for events.');
@@ -42,22 +42,20 @@ abstract class DialplanDeployment {
     /// Check event queue.
     final int playback1 = events.indexOf(events.firstWhere((event) =>
         event.field('Application-Data') != null &&
-            event
-                .field('Application-Data')
-                .contains('sorry-dude-were-closed')));
+        event.field('Application-Data').contains('sorry-dude-were-closed')));
 
     final int playback2 = events.indexOf(events.firstWhere((event) =>
         event.field('Application-Data') != null &&
-            event
-                .field('Application-Data')
-                .contains('sorry-dude-were-really-closed')));
+        event
+            .field('Application-Data')
+            .contains('sorry-dude-were-really-closed')));
 
     expect(playback1, lessThan(playback2));
 
     /// Cleanup.
     _log.info('Test successful. Cleaning up.');
 
-    await rStore.remove(r.ID);
+    await rStore.remove(r.uuid);
     await rdpStore.remove(createdDialplan.extension);
   }
 
@@ -114,13 +112,13 @@ abstract class DialplanDeployment {
     /// Check event queue.
     final int playback1 = events.indexOf(events.firstWhere((event) =>
         event.field('Application-Data') != null &&
-            event.field('Application-Data').contains('sorry-dude-were-open')));
+        event.field('Application-Data').contains('sorry-dude-were-open')));
 
     final int playback2 = events.indexOf(events.firstWhere((event) =>
         event.field('Application-Data') != null &&
-            event
-                .field('Application-Data')
-                .contains('sorry-dude-were-really-open')));
+        event
+            .field('Application-Data')
+            .contains('sorry-dude-were-really-open')));
 
     expect(playback1, lessThan(playback2));
 
@@ -206,11 +204,11 @@ abstract class DialplanDeployment {
     /// Check event queue.
     final int playback1 = events.indexOf(events.firstWhere((event) =>
         event.field('Application-Data') != null &&
-            event.field('Application-Data').contains(firstDialplanGreeting)));
+        event.field('Application-Data').contains(firstDialplanGreeting)));
 
     final int playback2 = events.indexOf(events.firstWhere((event) =>
         event.field('Application-Data') != null &&
-            event.field('Application-Data').contains(secondDialplanGreeting)));
+        event.field('Application-Data').contains(secondDialplanGreeting)));
 
     expect(playback1, lessThan(playback2));
 

@@ -12,9 +12,9 @@ abstract class UserState {
     String receptionNumber = '12340005';
 
     final Model.OriginationContext context = new Model.OriginationContext()
-      ..contactId = 4
+      ..contactUuid = 4
       ..dialplan = '12340001'
-      ..receptionId = 1;
+      ..receptionUuid = 1;
 
     log.info('Caller dials the reception at $receptionNumber');
     await caller.dial(receptionNumber);

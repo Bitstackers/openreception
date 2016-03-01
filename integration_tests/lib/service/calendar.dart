@@ -28,39 +28,36 @@ void runCalendarTests() {
       userStore = new Service.RESTUserStore(
           Config.userStoreUri, Config.serverToken, transport);
 
-      contact = await contactStore.create(Randomizer.randomBaseContact());
-      creator = await userStore.create(Randomizer.randomUser());
+      contact =
+          await contactStore.create(Randomizer.randomBaseContact(), creator);
 
-      owner = new Model.OwningContact(contact.id);
+      owner = new Model.OwningContact(contact.uuid);
     });
 
     tearDown(() async {
       transport.client.close(force: true);
-      await contactStore.remove(contact.id);
-      await userStore.remove(creator.id);
     });
 
     test('get (non-existing)',
-        () => StorageCalendar.getNonExistingEntry(calendarStore));
+        () => storeTest.Calendar.getNonExistingEntry(calendarStore));
 
     /**
      * Basic CRUD tests for contact owner.
      */
     test('create (contact owner)',
-        () => StorageCalendar.create(owner, calendarStore, creator));
+        () => storeTest.Calendar.create(owner, calendarStore, creator));
 
     test('get (contact owner)',
-        () => StorageCalendar.get(owner, calendarStore, creator));
+        () => storeTest.Calendar.get(owner, calendarStore, creator));
 
     test('update (contact owner)',
-        () => StorageCalendar.update(owner, calendarStore, creator));
+        () => storeTest.Calendar.update(owner, calendarStore, creator));
+
     test('list (contact owner)',
-        () => StorageCalendar.list(owner, calendarStore, creator));
-    test('purge (contact owner)',
-        () => StorageCalendar.purge(owner, calendarStore, creator));
+        () => storeTest.Calendar.list(owner, calendarStore, creator));
 
     test('remove (contact owner)',
-        () => StorageCalendar.remove(owner, calendarStore, creator));
+        () => storeTest.Calendar.remove(owner, calendarStore, creator));
 
     /**
      * Setup/teardown Basic CRUD tests for reception owner.
@@ -80,35 +77,32 @@ void runCalendarTests() {
       reception = await receptionStore.create(Randomizer.randomReception());
       creator = await userStore.create(Randomizer.randomUser());
 
-      owner = new Model.OwningReception(reception.ID);
+      owner = new Model.OwningReception(reception.uuid);
     });
 
     tearDown(() async {
       transport.client.close(force: true);
-      await receptionStore.remove(reception.ID);
-      await userStore.remove(creator.id);
+      await receptionStore.remove(reception.uuid);
+      await userStore.remove(creator.uuid);
     });
 
     /**
      * Basic CRUD tests for reception owner.
      */
     test('get (reception owner)',
-        () => StorageCalendar.get(owner, calendarStore, creator));
+        () => storeTest.Calendar.get(owner, calendarStore, creator));
 
     test('create (reception owner)',
-        () => StorageCalendar.create(owner, calendarStore, creator));
+        () => storeTest.Calendar.create(owner, calendarStore, creator));
 
     test('list (reception owner)',
-        () => StorageCalendar.list(owner, calendarStore, creator));
+        () => storeTest.Calendar.list(owner, calendarStore, creator));
 
     test('remove (reception owner)',
-        () => StorageCalendar.remove(owner, calendarStore, creator));
+        () => storeTest.Calendar.remove(owner, calendarStore, creator));
 
     test('update (reception owner)',
-        () => StorageCalendar.update(owner, calendarStore, creator));
-
-    test('purge (reception owner)',
-        () => StorageCalendar.purge(owner, calendarStore, creator));
+        () => storeTest.Calendar.update(owner, calendarStore, creator));
 
     /**
      * Tests for event presence upon creating calendar entries for contacts.
@@ -123,13 +117,13 @@ void runCalendarTests() {
 
       contact = await contactStore.create(Randomizer.randomBaseContact());
 
-      owner = new Model.OwningContact(contact.id);
+      owner = new Model.OwningContact(contact.uuid);
 
       return r.initialize();
     });
 
     tearDown(() async {
-      await contactStore.remove(contact.id);
+      await contactStore.remove(contact.uuid);
 
       transport.client.close(force: true);
       ReceptionistPool.instance.release(r);
@@ -152,28 +146,28 @@ void runCalendarTests() {
             owner, calendarStore, r));
 
     test('change listing on create (contact owner)',
-        () => StorageCalendar.changeOnCreate(owner, calendarStore, r.user));
+        () => storeTest.Calendar.changeOnCreate(owner, calendarStore, r.user));
 
     test(
         'latest change on create (contact owner)',
-        () =>
-            StorageCalendar.latestChangeOnCreate(owner, calendarStore, r.user));
+        () => storeTest.Calendar
+            .latestChangeOnCreate(owner, calendarStore, r.user));
 
     test('change listing on update (contact owner)',
-        () => StorageCalendar.changeOnUpdate(owner, calendarStore, r.user));
+        () => storeTest.Calendar.changeOnUpdate(owner, calendarStore, r.user));
 
     test(
         'latest change on update (contact owner)',
-        () =>
-            StorageCalendar.latestChangeOnUpdate(owner, calendarStore, r.user));
+        () => storeTest.Calendar
+            .latestChangeOnUpdate(owner, calendarStore, r.user));
 
     test('change listing on remove (contact owner)',
-        () => StorageCalendar.changeOnRemove(owner, calendarStore, r.user));
+        () => storeTest.Calendar.changeOnRemove(owner, calendarStore, r.user));
 
     test(
         'latest change on remove (contact owner)',
-        () =>
-            StorageCalendar.latestChangeOnRemove(owner, calendarStore, r.user));
+        () => storeTest.Calendar
+            .latestChangeOnRemove(owner, calendarStore, r.user));
 
     /**
    * Tests for event presence upon creating calendar entries for receptions.

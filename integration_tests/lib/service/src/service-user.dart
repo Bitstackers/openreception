@@ -180,7 +180,8 @@ abstract class User {
     final Model.User changedUser = Randomizer.randomUser()..id = createdUser.id;
 
     Future expectedEvent = receptionist.notificationSocket.eventStream
-        .firstWhere((event) => event is Event.UserChange &&
+        .firstWhere((event) =>
+            event is Event.UserChange &&
             event.userID == createdUser.ID &&
             event.state == Event.UserObjectState.UPDATED);
 
@@ -215,7 +216,8 @@ abstract class User {
     expect(createdUser.ID, greaterThan(Model.User.noID));
 
     Future expectedEvent = receptionist.notificationSocket.eventStream
-        .firstWhere((event) => event is Event.UserChange &&
+        .firstWhere((event) =>
+            event is Event.UserChange &&
             event.userID == createdUser.ID &&
             event.state == Event.UserObjectState.DELETED);
     await userStore.remove(createdUser.ID);
@@ -420,7 +422,8 @@ abstract class User {
     expect(createdUser.ID, greaterThan(Model.User.noID));
 
     Future expectedEvent = receptionist.notificationSocket.eventStream
-        .firstWhere((event) => event is Event.UserChange &&
+        .firstWhere((event) =>
+            event is Event.UserChange &&
             event.userID == createdUser.ID &&
             event.state == Event.UserObjectState.DELETED);
     await userStore.remove(createdUser.ID);
