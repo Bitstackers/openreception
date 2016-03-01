@@ -1,12 +1,10 @@
-part of or_test_fw;
+part of openreception_tests.support;
 
-class ReceptionistPool extends Pool<Receptionist>{
-
+class ReceptionistPool extends Pool<Receptionist> {
   static ReceptionistPool instance = null;
 
-  ReceptionistPool(Iterable<Receptionist> elements) : super (elements);
+  ReceptionistPool(Iterable<Receptionist> elements) : super(elements);
 
-  Future initialized () =>
+  Future initialized() =>
       Future.forEach(this.elements, (Receptionist r) => r.ready());
 }
-

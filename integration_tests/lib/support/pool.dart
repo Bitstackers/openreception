@@ -1,25 +1,22 @@
-part of or_test_fw;
+part of openreception_tests.support;
 
 class NoAvailable implements Exception {}
+
 class NotAquired implements Exception {}
 
 abstract class Pool<T> {
-
-  static const String className = '$libraryName.Pool';
-
-  static final Logger log = new Logger(Pool.className);
+  static final Logger log = new Logger('support.Pool');
 
   Queue<T> available = new Queue();
-  Set<T> busy        = new Set();
+  Set<T> busy = new Set();
 
-  Iterable get elements => (new Set()
-                           ..addAll(this.available.toSet())
-                           ..addAll(this.busy.toSet()));
+  Iterable get elements =>
+      (new Set()..addAll(this.available.toSet())..addAll(this.busy.toSet()));
 
-  dynamic onAquire  = (T element) => null;
+  dynamic onAquire = (T element) => null;
   dynamic onRelease = (T element) => null;
 
-  Pool (Iterable<T> element) {
+  Pool(Iterable<T> element) {
     this.available.addAll(element);
   }
 
@@ -34,7 +31,7 @@ abstract class Pool<T> {
 
     log.finest('Aquired pool object $aquired');
 
-    onAquire (aquired);
+    onAquire(aquired);
     return aquired;
   }
 

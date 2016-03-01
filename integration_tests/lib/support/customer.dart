@@ -34,19 +34,19 @@ class Customer {
   /**
    *
    */
-  Future initialize() => this.phone.initialize().then((_) =>
-      eventSubscription = this.phone.eventStream.listen(this._onPhoneEvent,
-          onDone: () => log.info('$this closing event listener.')));
+  Future initialize() => this.phone.initialize().then((_) => eventSubscription =
+      this.phone.eventStream.listen(this._onPhoneEvent,
+          onDone: () => log.fine('$this closing event listener.')));
 
   teardown() {
-    log.info('$this Waiting for teardown');
+    log.fine('$this Waiting for teardown');
 
     return this
         .phone
         .teardown()
-        .then((_) => log.info('$this Got phone teardown'))
+        .then((_) => log.fine('$this Got phone teardown'))
         .then((_) => this.currentCall = null)
-        .then((_) => log.info('$this is done teardown'))
+        .then((_) => log.fine('$this is done teardown'))
         .then((_) => new Future.delayed(new Duration(milliseconds: 10)))
         .catchError((error, stackTrace) {
       log.severe(

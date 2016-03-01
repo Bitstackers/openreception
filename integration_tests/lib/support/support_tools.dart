@@ -1,4 +1,4 @@
-part of or_test_fw;
+part of openreception_tests.support;
 
 class SupportTools {
   List<Receptionist> receptionists = [];
@@ -35,7 +35,7 @@ class SupportTools {
   }
 
   /// Maps token to a User object.
-  Map<String, Model.User> tokenMap = {};
+  Map<String, model.User> tokenMap = {};
 
   /// Maps a peerID to a token.
   Map<String, String> peerMap = {};
@@ -49,7 +49,7 @@ class SupportTools {
         .forEach(
             Config.authTokens,
             ((String token) =>
-                authService.userOf(token).then((Model.User user) {
+                authService.userOf(token).then((model.User user) {
                   tokenMap[token] = user;
                   peerMap[user.peer] = token;
                 })))
@@ -65,7 +65,7 @@ class SupportTools {
         String token = peerMap[account.username];
         Phonio.SIPPhone phone = new Phonio.PJSUAProcess(
             Config.simpleClientBinaryPath, ConfigPool.requestPjsuaPort());
-        Model.User user = tokenMap[token];
+        model.User user = tokenMap[token];
 
         phone.addAccount(account);
 
@@ -108,10 +108,8 @@ class SupportTools {
    * Tear down the state of the support tools.
    */
   Future tearDown() async {
-    await Future.wait([
-      tearDownCustomers(),
-      tearDownReceptionists(),
-      removePeerAccounts()]);
+    await Future.wait(
+        [tearDownCustomers(), tearDownReceptionists(), removePeerAccounts()]);
     ConfigPool.resetCounters();
   }
 
@@ -132,7 +130,7 @@ class SupportTools {
 
     Iterable peerAccounts = Config.localSipAccounts.map(
         (Phonio.SIPAccount acc) =>
-            new Model.PeerAccount(acc.username, acc.password, 'receptions'));
+            new model.PeerAccount(acc.username, acc.password, 'receptions'));
 
     log.info(tokenMap[peerMap[peerAccounts.first.username]].id);
 
@@ -161,7 +159,7 @@ class SupportTools {
 
     Iterable peerAccounts = Config.localSipAccounts.map(
         (Phonio.SIPAccount acc) =>
-            new Model.PeerAccount(acc.username, acc.password, 'receptionists'));
+            new model.PeerAccount(acc.username, acc.password, 'receptionists'));
 
     log.info(tokenMap[peerMap[peerAccounts.first.username]].id);
 
@@ -175,7 +173,7 @@ class SupportTools {
   @override
   String toString() {
     Iterable tokenMappings =
-        tokenMap.keys.map((String key) => '$key -> ${tokenMap[key].asSender}');
+        tokenMap.keys.map((String key) => '$key -> ${tokenMap[key].address}');
 
     Iterable peerMappings =
         peerMap.keys.map((String key) => '$key -> ${peerMap[key]}');

@@ -1,4 +1,4 @@
-part of or_test_fw;
+part of openreception_tests.support;
 
 /**
  * Class modeling the domain actor "Receptionist".
@@ -9,7 +9,7 @@ part of or_test_fw;
 class Receptionist {
   static final Logger log = new Logger('Receptionist');
 
-  final Model.User user;
+  final model.User user;
   final Phonio.SIPPhone _phone;
   final String authToken;
 
@@ -31,7 +31,7 @@ class Receptionist {
         'event_stack': eventStack.toList()
       };
 
-  int get hashCode => user.id;
+  int get hashCode => user.id.hashCode;
 
   /// The amout of time the actor will wait before answering an incoming call.
   Duration answerLatency = new Duration(seconds: 0);
@@ -65,11 +65,11 @@ class Receptionist {
     await wsc.connect(
         Uri.parse('${Config.NotificationSocketUri}?token=${this.authToken}'));
     notificationSocket.eventStream.listen(_handleEvent,
-        onDone: () => log.info('$this closing notification listener.'));
+        onDone: () => log.fine('$this closing notification listener.'));
 
     await _phone.initialize();
     _phone.eventStream.listen(this._onPhoneEvent,
-        onDone: () => log.info('$this closing event listener.'));
+        onDone: () => log.fine('$this closing event listener.'));
     await _phone.autoAnswer(true);
     await _phone.register();
     await userStore.userStateReady(user.id);
@@ -85,7 +85,7 @@ class Receptionist {
    * After teardown is completed, the object may be initialized again.
    */
   Future teardown() {
-    log.info('Clearing state of $this');
+    log.finest('Clearing state of $this');
     if (this._transport != null) {
       this._transport.client.close(force: true);
     }
@@ -155,7 +155,7 @@ class Receptionist {
    * Transfers active [callA] to active [callB] via the
    * [CallFlowControl] service.
    */
-  Future transferCall(Model.Call callA, Model.Call callB) =>
+  Future transferCall(model.Call callA, model.Call callB) =>
       this.callFlowControl.transfer(callA.ID, callB.ID);
 
   /**
@@ -164,10 +164,10 @@ class Receptionist {
    * set [waitForEvent] that will make this method wait until the notification
    * socket confirms the the call was sucessfully parked.
    */
-  Future park(Model.Call call, {bool waitForEvent: false}) {
+  Future park(model.Call call, {bool waitForEvent: false}) {
     Future parkAction = this.callFlowControl.park(call.ID);
 
-    Model.Call validateCall(Model.Call parkedCall) {
+    model.Call validateCall(model.Call parkedCall) {
       expect(call.ID, parkedCall.ID);
       expect(
           call.answeredAt
@@ -186,7 +186,7 @@ class Receptionist {
       expect(call.inbound, parkedCall.inbound);
       //expect(call.locked, parkedCall.locked);
       expect(call.receptionID, parkedCall.receptionID);
-      expect(parkedCall.state, equals(Model.CallState.Parked));
+      expect(parkedCall.state, equals(model.CallState.Parked));
 
       return parkedCall;
     }
@@ -252,14 +252,14 @@ class Receptionist {
   /**
    * Originates a new call to [extension] via the [CallFlowControl] service.
    */
-  Future<Model.Call> originate(
-          String extension, Model.OriginationContext context) =>
+  Future<model.Call> originate(
+          String extension, model.OriginationContext context) =>
       callFlowControl.originate(extension, context);
 
   /**
    * Hangup [call]  via the [CallFlowControl] service.
    */
-  Future hangUp(Model.Call call) =>
+  Future hangUp(model.Call call) =>
       this.callFlowControl.hangup(call.ID).catchError((error, stackTrace) {
         log.severe(
             'Tried to hang up call with info ${call.toJson()}. Receptionist info ${toJson()}',
@@ -340,7 +340,7 @@ class Receptionist {
    * socket confirms the the call was picked up.
    * This method picks up a specific call.
    */
-  Future pickup(Model.Call call, {waitForEvent: false}) {
+  Future pickup(model.Call call, {waitForEvent: false}) {
     Future pickupAction = this.callFlowControl.pickup(call.ID);
 
     if (waitForEvent) {
@@ -358,10 +358,10 @@ class Receptionist {
    * returned will complete only after the call has been confirmed connected
    * via the notification socket (a call_pickup event is received).
    */
-  Future<Model.Call> huntNextCall() {
-    Model.Call selectedCall;
+  Future<model.Call> huntNextCall() {
+    model.Call selectedCall;
 
-    Future<Model.Call> pickupAfterCallUnlock() {
+    Future<model.Call> pickupAfterCallUnlock() {
       log.info('Call not aquired. $this expects the call to be locked.');
 
       return this
@@ -381,23 +381,23 @@ class Receptionist {
     log.info('$this goes hunting for a call.');
     return this
         .waitForCall()
-        .then((Model.Call offeredCall) => selectedCall = offeredCall)
-        .then((_) => log.info('$this attempts to pickup $selectedCall.'))
+        .then((model.Call offeredCall) => selectedCall = offeredCall)
+        .then((_) => log.fine('$this attempts to pickup $selectedCall.'))
         .then((_) => this
                 .pickup(selectedCall, waitForEvent: true)
-                .then((Model.Call pickedUpCall) {
+                .then((model.Call pickedUpCall) {
               log.info('$this got call $pickedUpCall');
               return pickedUpCall;
             }).catchError((error, stackTrace) {
-              if (error is Storage.Conflict) {
+              if (error is storage.Conflict) {
                 // Call is locked.
                 return pickupAfterCallUnlock();
-              } else if (error is Storage.NotFound) {
+              } else if (error is storage.NotFound) {
                 // Call is hungup
 
                 callEventsOnSelecteCall(Event.Event event) {
-                  if (event is Event.CallEvent) return event.call.ID ==
-                      selectedCall.ID;
+                  if (event is Event.CallEvent)
+                    return event.call.ID == selectedCall.ID;
                 }
 
                 log.info('$this waits for $selectedCall to hangup');
@@ -428,7 +428,7 @@ class Receptionist {
    * Convenience function for waiting for the next call being offered to the
    * receptionist.
    */
-  Future<Model.Call> waitForCall() => this
+  Future<model.Call> waitForCall() => this
       .waitFor(eventType: Event.Key.callOffer)
       .then((Event.CallOffer offered) => offered.call);
 
