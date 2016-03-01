@@ -1,0 +1,47 @@
+part of openreception_tests.filestore;
+
+void _runOrganizationTests() {
+  group('$_namespace.Organization', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+      await env.organizationStore.ready;
+    });
+
+    tearDown(() async {
+      env.clear();
+    });
+
+    test('create', () => storeTest.Organization.create(sa));
+    test('create (empty)', () => storeTest.Organization.createEmpty(sa));
+
+    test('update', () => storeTest.Organization.update(sa));
+    test('update (invalid)', () => storeTest.Organization.updateInvalid(sa));
+
+    test('remove', () => storeTest.Organization.remove(sa));
+    test('remove (non-existing)',
+        () => storeTest.Organization.removeNonExisting(sa));
+
+    test('get', () => storeTest.Organization.existingOrganization(sa));
+
+    test('get (non-existing)',
+        () => storeTest.Organization.nonExistingOrganization(sa));
+
+    test('list', () => storeTest.Organization.list(sa));
+
+    test('Contact list',
+        () => storeTest.Organization.existingOrganizationContacts(sa));
+
+    test('Contact list (non-existing organization)',
+        () => storeTest.Organization.nonExistingOrganizationContacts(sa));
+
+    test('Reception listing',
+        () => storeTest.Organization.existingOrganizationReceptions(sa));
+
+    test('Reception listing Non-existing organization',
+        () => storeTest.Organization.nonExistingOrganizationReceptions(sa));
+  });
+}
