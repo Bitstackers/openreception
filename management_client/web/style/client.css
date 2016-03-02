@@ -188,7 +188,7 @@ nav#navigation img {
 .page textarea {
   margin: 5px;
   padding: 5px;
-  min-height: 8em;
+  min-height: 10em;
 }
 
 .wide {
@@ -328,6 +328,14 @@ button.deploy:enabled {
 }
 
 button.save, button.delete  {
+  padding: 0.4em 1.8em;
+  margin: 1.2em;
+  float: right;
+}
+
+button.fold-unfold {
+  background-color: #0f9d58;
+  color: #fff;
   padding: 0.4em 1.8em;
   margin: 1.2em;
   float: right;
