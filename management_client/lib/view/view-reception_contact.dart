@@ -10,6 +10,7 @@ class ReceptionContactChange {
 }
 
 class ReceptionContact {
+  final bool _single; // Are we alone in the list?
   final controller.Reception _receptionController;
   final controller.Contact _contactController;
   final controller.Endpoint _endpointController;
@@ -21,7 +22,7 @@ class ReceptionContact {
       _distributionsListView.validationError ||
       _phoneNumberView.validationError;
 
-  final HeadingElement _header = new HeadingElement.h4()..classes.add('reception-contact-header');
+  final HeadingElement _header = new HeadingElement.h2()..classes.add('reception-contact-header');
 
   final TextInputElement _ridInput = new TextInputElement()
     ..value = model.Reception.noID.toString()
@@ -86,7 +87,11 @@ class ReceptionContact {
    *
    */
   ReceptionContact(this._receptionController, this._contactController, this._endpointController,
-      this._dlistController) {
+      this._dlistController, bool this._single) {
+    if (!_single) {
+      element.style.height = '45px';
+    }
+
     _endpointsView = new Endpoints(_contactController, _endpointController);
 
     _distributionsListView = new DistributionList();
@@ -201,10 +206,15 @@ class ReceptionContact {
     _observers();
   }
 
-  /**
-   *
-   */
   void _observers() {
+    _header.onClick.listen((_) {
+      if (element.client.height > 45) {
+        element.style.height = '45px';
+      } else {
+        element.style.height = '';
+      }
+    });
+
     _saveButton.onClick.listen((_) async {
       try {
         await _contactController.updateInReception(contact);
