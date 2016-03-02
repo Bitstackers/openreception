@@ -1,12 +1,18 @@
 part of management_tool.view;
 
-/**
- *
- */
 class Phonenumbers {
   final Logger _log = new Logger('$_libraryName.Phonenumbers');
 
+  Function onChange;
+
   final DivElement element = new DivElement();
+  final DivElement _header = new DivElement()
+    ..style.display = 'flex'
+    ..style.justifyContent = 'space-between'
+    ..style.alignItems = 'flex-end'
+    ..style.width = '97%'
+    ..style.paddingLeft = '10px';
+  final DivElement _buttons = new DivElement();
   bool _validationError = false;
   bool get validationError => _validationError;
 
@@ -14,23 +20,29 @@ class Phonenumbers {
     ..text = 'Indsæt ny tom'
     ..classes.add('create');
 
-  Function onChange;
+  final ButtonElement _foldJson = new ButtonElement()
+    ..text = 'Fold sammen'
+    ..classes.add('create')
+    ..hidden = true;
 
-  final TextAreaElement _phonenumberInput = new TextAreaElement()
-    ..style.height = '15em'
-    ..classes.add('wide');
+  final HeadingElement _label = new HeadingElement.h3()
+    ..text = 'Telefonnumre'
+    ..style.margin = '0px'
+    ..style.padding = '0px 0px 4px 0px';
 
-  /**
-     *
-     */
+  final TextAreaElement _phonenumberInput = new TextAreaElement()..classes.add('wide');
+
+  final ButtonElement _unfoldJson = new ButtonElement()
+    ..text = 'Fold ud'
+    ..classes.add('create');
+
   Phonenumbers() {
-    element.children = [_addNew, _phonenumberInput];
+    _buttons.children = [_addNew, _foldJson, _unfoldJson];
+    _header.children = [_label, _buttons];
+    element.children = [_header, _phonenumberInput];
     _observers();
   }
 
-  /**
-   *
-   */
   void _observers() {
     _addNew.onClick.listen((_) {
       final model.PhoneNumber pn = new model.PhoneNumber.empty()
@@ -41,7 +53,13 @@ class Phonenumbers {
         ..tags = ['Kontor']
         ..type = 'mobil';
 
-      phoneNumbers = phoneNumbers.toList()..add(pn);
+      if (_unfoldJson.hidden) {
+        _phonenumberInput.value = _jsonpp.convert(phoneNumbers.toList()..add(pn));
+      } else {
+        phoneNumbers = phoneNumbers.toList()..add(pn);
+      }
+
+      _resizeInput();
 
       if (onChange != null) {
         onChange();
@@ -64,19 +82,32 @@ class Phonenumbers {
         onChange();
       }
     });
+
+    _unfoldJson.onClick.listen((_) {
+      _unfoldJson.hidden = true;
+      _foldJson.hidden = false;
+      _phonenumberInput.value = _jsonpp.convert(phoneNumbers.toList());
+      _resizeInput();
+    });
+
+    _foldJson.onClick.listen((_) {
+      _foldJson.hidden = true;
+      _unfoldJson.hidden = false;
+      _phonenumberInput.style.height = '';
+      _phonenumberInput.value = JSON.encode(phoneNumbers.toList());
+    });
   }
 
-  /**
-   *
-   */
   void set phoneNumbers(Iterable<model.PhoneNumber> pns) {
-    _phonenumberInput.value = _jsonpp.convert(pns.toList(growable: false));
+    _phonenumberInput.value = JSON.encode(pns.toList());
   }
 
-  /**
-   *
-   */
-  Iterable<model.PhoneNumber> get phoneNumbers => JSON
-      .decode(_phonenumberInput.value)
-      .map((m) => new model.PhoneNumber.fromMap(m));
+  Iterable<model.PhoneNumber> get phoneNumbers =>
+      JSON.decode(_phonenumberInput.value).map((m) => new model.PhoneNumber.fromMap(m));
+
+  void _resizeInput() {
+    while (_phonenumberInput.client.height < _phonenumberInput.scrollHeight) {
+      _phonenumberInput.style.height = '${_phonenumberInput.client.height + 10}px';
+    }
+  }
 }
