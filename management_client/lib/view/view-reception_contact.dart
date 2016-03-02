@@ -21,9 +21,6 @@ class ReceptionContact {
       _distributionsListView.validationError ||
       _phoneNumberView.validationError;
 
-  final UListElement _endPointChangesList = new UListElement();
-  final UListElement _dlistChangesList = new UListElement();
-
   final HeadingElement _header = new HeadingElement.h4()..classes.add('reception-contact-header');
 
   final TextInputElement _ridInput = new TextInputElement()
@@ -109,14 +106,7 @@ class ReceptionContact {
       new DivElement()
         ..classes.add('col-1-2')
         ..children = [
-          new DivElement()
-            ..children = [
-              new LabelElement()
-                ..text = 'Beskedadresser'
-                ..htmlFor = _endpointsView.element.id,
-              _endPointChangesList,
-              _endpointsView.element
-            ],
+          _endpointsView.element,
           new DivElement()
             ..children = [
               new LabelElement()
@@ -293,24 +283,11 @@ class ReceptionContact {
     });
 
     _endpointsView.onChange = () {
-      try {
-        _endPointChangesList.children = []
-          ..addAll(_endpointsView.endpointChanges.map(_endpointChangeNode));
-      } on FormatException {
-        _endPointChangesList.text = 'Valideringsfejl.';
-      }
-
       _saveButton.disabled = inputHasErrors;
       _deleteButton.disabled = inputHasErrors || !_saveButton.disabled;
     };
 
     _distributionsListView.onChange = () {
-      try {
-        _dlistChangesList.children = []
-          ..addAll(_distributionsListView.distributionListChanges.map(_distributionListChangeNode));
-      } on FormatException {
-        _endPointChangesList.text = 'Valideringsfejl.';
-      }
       _saveButton.disabled = inputHasErrors;
       _deleteButton.disabled = inputHasErrors || !_saveButton.disabled;
     };
@@ -321,21 +298,6 @@ class ReceptionContact {
     };
   }
 
-  /**
-   *
-   */
-  LIElement _distributionListChangeNode(DistributionListChange change) =>
-      new LIElement()..text = '${changeLabel[change.type]} ${change.entry}';
-
-  /**
-   *
-   */
-  LIElement _endpointChangeNode(EndpointChange change) =>
-      new LIElement()..text = '${changeLabel[change.type]} ${change.endpoint}';
-
-  /**
-   *
-   */
   model.Contact get contact => new model.Contact.empty()
     ..ID = int.parse(_cidInput.value)
     ..receptionID = int.parse(_ridInput.value)
@@ -353,9 +315,6 @@ class ReceptionContact {
     ..workhours = _valuesFromListTextArea(_workHoursInput)
     ..phones = _phoneNumberView.phoneNumbers.toList();
 
-  /**
-   *
-   */
   void set contact(model.Contact contact) {
     _ridInput.value = contact.receptionID.toString();
     _cidInput.value = contact.ID.toString();
