@@ -13,6 +13,7 @@
 
 library openreception.user_server;
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
@@ -22,48 +23,29 @@ import 'package:logging/logging.dart';
 import '../lib/configuration.dart';
 import '../lib/user_server/router.dart' as router;
 
-Logger log = new Logger('UserServer');
-ArgResults parsedArgs;
-ArgParser parser = new ArgParser();
-
-void main(List<String> args) {
+Future main(List<String> args) async {
   ///Init logging. Inherit standard values.
   Logger.root.level = config.userServer.log.level;
   Logger.root.onRecord.listen(config.userServer.log.onRecord);
 
-  try {
-    Directory.current = dirname(Platform.script.toFilePath());
+  Logger log = new Logger('UserServer');
 
-    registerAndParseCommandlineArguments(args);
+  ArgParser parser = new ArgParser()
+    ..addFlag('help', abbr: 'h', help: 'Output this help')
+    ..addOption('httpport',
+        help: 'The port the HTTP server listens on. '
+            'Defaults to ${config.userServer.httpPort}',
+        defaultsTo: config.userServer.httpPort.toString());
 
-    if (showHelp()) {
-      print(parser.usage);
-    } else {
-      router.connectAuthService();
-      router
-          .startDatabase()
-          .then((_) => router.start(port: config.userServer.httpPort))
-          .catchError(log.shout);
-    }
-  } catch (error, stackTrace) {
-    log.shout(error, stackTrace);
+  final ArgResults parsedArgs = parser.parse(args);
+
+  bool showHelp() => parsedArgs['help'];
+
+  if (parsedArgs['help']) {
+    print(parser.usage);
+    exit(1);
   }
+
+  await router.start(port: int.parse(parsedArgs['httpport']));
+  log.info('Ready to handle requests');
 }
-
-void registerAndParseCommandlineArguments(List<String> arguments) {
-  parser.addFlag('help', abbr: 'h', help: 'Output this help');
-  parser.addOption('configfile',
-      help: 'The JSON configuration file. Defaults to config.json');
-  parser.addOption('httpport',
-      help: 'The port the HTTP server listens on.  Defaults to 8080');
-  parser.addOption('dbuser', help: 'The database user');
-  parser.addOption('dbpassword', help: 'The database password');
-  parser.addOption('dbhost', help: 'The database host. Defaults to localhost');
-  parser.addOption('dbport', help: 'The database port. Defaults to 5432');
-  parser.addOption('dbname', help: 'The database name');
-  parser.addOption('servertoken', help: 'Server-Token');
-
-  parsedArgs = parser.parse(arguments);
-}
-
-bool showHelp() => parsedArgs['help'];
