@@ -40,11 +40,11 @@ class UserStatusList {
     return status;
   }
 
-  model.UserStatus getOrCreate(int userID) {
-    if (!this._userStatus.containsKey(userID)) {
-      this._userStatus[userID] = new model.UserStatus()..userID = userID;
+  model.UserStatus getOrCreate(int userId) {
+    if (!this._userStatus.containsKey(userId)) {
+      this._userStatus[userId] = new model.UserStatus()..userId = userId;
     }
 
-    return this._userStatus[userID];
+    return this._userStatus[userId];
   }
 }

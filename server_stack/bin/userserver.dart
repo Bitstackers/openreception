@@ -30,8 +30,9 @@ Future main(List<String> args) async {
 
   Logger log = new Logger('UserServer');
 
-  ArgParser parser = new ArgParser()
+  final ArgParser parser = new ArgParser()
     ..addFlag('help', abbr: 'h', help: 'Output this help')
+    ..addOption('filestore', abbr: 'f', help: 'Path to the filestore backend')
     ..addOption('httpport',
         help: 'The port the HTTP server listens on. '
             'Defaults to ${config.userServer.httpPort}',
@@ -39,13 +40,19 @@ Future main(List<String> args) async {
 
   final ArgResults parsedArgs = parser.parse(args);
 
-  bool showHelp() => parsedArgs['help'];
-
   if (parsedArgs['help']) {
     print(parser.usage);
     exit(1);
   }
 
-  await router.start(port: int.parse(parsedArgs['httpport']));
+  if (parsedArgs['filestore'] == null) {
+    print('Filestore path is required');
+    print(parser.usage);
+    exit(1);
+  }
+
+  await router.start(
+      port: int.parse(parsedArgs['httpport']),
+      filepath: parsedArgs['filestore']);
   log.info('Ready to handle requests');
 }

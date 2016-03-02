@@ -17,12 +17,13 @@ import 'dart:async';
 import 'dart:io' as io;
 
 import '../configuration.dart';
+import '../response_utils.dart';
 
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/storage.dart' as storage;
 import 'package:openreception_framework/service.dart' as service;
 import 'package:openreception_framework/service-io.dart' as serviceIO;
-import 'package:openreception_framework/database.dart' as database;
+import 'package:openreception_framework/filestore.dart' as filestore;
 
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
@@ -36,58 +37,49 @@ const String libraryName = 'userserver.router';
 
 final Logger _log = new Logger(libraryName);
 
-database.Connection _connection = null;
-service.Authentication _authService = null;
-
-const Map<String, String> corsHeaders = const {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE'
-};
-
-void connectAuthService() {
-  _authService = new service.Authentication(config.authServer.externalUri,
-      config.userServer.serverToken, new serviceIO.Client());
-}
-
-Future startDatabase() => database.Connection
-    .connect(config.database.dsn)
-    .then((database.Connection newConnection) => _connection = newConnection);
-
-shelf.Middleware checkAuthentication =
-    shelf.createMiddleware(requestHandler: _lookupToken, responseHandler: null);
-
-Future<shelf.Response> _lookupToken(shelf.Request request) async {
-  var token = request.requestedUri.queryParameters['token'];
-
-  try {
-    await _authService.validate(token);
-  } on storage.NotFound {
-    return new shelf.Response.forbidden('Invalid token');
-  } on io.SocketException {
-    return new shelf.Response.internalServerError(
-        body: 'Cannot reach authserver');
-  } catch (error, stackTrace) {
-    _log.severe('Authentication validation lookup failed: $error:$stackTrace');
-
-    return new shelf.Response.internalServerError(body: error.toString());
-  }
-
-  /// Do not intercept the request, but let the next handler take care of it.
-  return null;
-}
-
-Future<io.HttpServer> start({String hostname: '0.0.0.0', int port: 4030}) {
+Future<io.HttpServer> start(
+    {String hostname: '0.0.0.0', int port: 4030, String filepath: ''}) {
   final model.AgentHistory agentHistory = new model.AgentHistory();
   final model.UserStatusList userStatus = new model.UserStatusList();
+
+  final service.Authentication _authService = new service.Authentication(
+      config.authServer.externalUri,
+      config.userServer.serverToken,
+      new serviceIO.Client());
+
+  Future<shelf.Response> _lookupToken(shelf.Request request) async {
+    var token = request.requestedUri.queryParameters['token'];
+
+    try {
+      await _authService.validate(token);
+    } on storage.NotFound {
+      return new shelf.Response.forbidden('Invalid token');
+    } on io.SocketException {
+      return new shelf.Response.internalServerError(
+          body: 'Cannot reach authserver');
+    } catch (error, stackTrace) {
+      _log.severe(
+          'Authentication validation lookup failed: $error:$stackTrace');
+
+      return new shelf.Response.internalServerError(body: error.toString());
+    }
+
+    /// Do not intercept the request, but let the next handler take care of it.
+    return null;
+  }
+
+  shelf.Middleware checkAuthentication = shelf.createMiddleware(
+      requestHandler: _lookupToken, responseHandler: null);
 
   final service.NotificationService _notification =
       new service.NotificationService(config.notificationServer.externalUri,
           config.userServer.serverToken, new serviceIO.Client());
 
-  final database.User _userStore = new database.User(_connection);
+  final filestore.User _userStore =
+      new filestore.User(path: filepath + '/user');
 
   controller.User userController =
-      new controller.User(_userStore, _notification);
+      new controller.User(_userStore, _notification, _authService);
 
   controller.AgentStatistics _statsController =
       new controller.AgentStatistics(agentHistory);
@@ -111,17 +103,8 @@ Future<io.HttpServer> start({String hostname: '0.0.0.0', int port: 4030}) {
     ..get('/user/{uid}/state', userStateController.get)
     ..post('/user/{uid}/state/{state}', userStateController.set)
     ..post('/user', userController.create)
-    ..get('/user/{uid}/group', userController.userGroups)
-    ..post('/user/{uid}/group/{gid}', userController.joinGroup)
-    ..delete('/user/{uid}/group/{gid}', userController.leaveGroup)
-    ..get('/user/{uid}/group/{gid}', userController.userGroup)
     ..get('/user/identity/{identity}', userController.userIdentity)
     ..get('/user/identity/{identity}@{domain}', userController.userIdentity)
-    ..get('/user/{uid}/identity', userController.userIdentities)
-    ..post('/user/{uid}/identity', userController.addIdentity)
-    ..delete('/user/{uid}/identity/{identity}', userController.removeIdentity)
-    ..delete('/user/{uid}/identity/{identity}@{domain}',
-        userController.removeIdentity)
     ..get('/group', userController.groups);
 
   var handler = const shelf.Pipeline()
