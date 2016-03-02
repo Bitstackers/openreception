@@ -34,7 +34,7 @@ import 'model.dart' as model;
 
 const String libraryName = 'userserver.router';
 
-final Logger log = new Logger(libraryName);
+final Logger _log = new Logger(libraryName);
 
 database.Connection _connection = null;
 service.Authentication _authService = null;
@@ -67,7 +67,7 @@ Future<shelf.Response> _lookupToken(shelf.Request request) async {
     return new shelf.Response.internalServerError(
         body: 'Cannot reach authserver');
   } catch (error, stackTrace) {
-    log.severe('Authentication validation lookup failed: $error:$stackTrace');
+    _log.severe('Authentication validation lookup failed: $error:$stackTrace');
 
     return new shelf.Response.internalServerError(body: error.toString());
   }
@@ -132,7 +132,8 @@ Future<io.HttpServer> start({String hostname: '0.0.0.0', int port: 4030}) {
       .addHandler(router.handler);
 
   _log.fine('Serving interfaces on port $port:');
-  shelf_route.printRoutes(router, printer: (String routes) => log.fine(routes));
+  shelf_route.printRoutes(router,
+      printer: (String routes) => _log.fine(routes));
 
   return shelf_io.serve(handler, hostname, port);
 }
