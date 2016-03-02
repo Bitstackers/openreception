@@ -111,7 +111,12 @@ class DistributionList {
   }
 
   void set distributionList(model.DistributionList dlist) {
-    _dlistInput.value = JSON.encode(dlist.toList());
+    _originalList = dlist;
+    if (_unfoldJson.hidden) {
+      _dlistInput.value = _jsonpp.convert(dlist);
+    } else {
+      _dlistInput.value = JSON.encode(dlist.toList());
+    }
   }
 
   Iterable<DistributionListChange> get distributionListChanges {

@@ -99,7 +99,11 @@ class Phonenumbers {
   }
 
   void set phoneNumbers(Iterable<model.PhoneNumber> pns) {
-    _phonenumberInput.value = JSON.encode(pns.toList());
+    if (_unfoldJson.hidden) {
+      _phonenumberInput.value = _jsonpp.convert(pns.toList());
+    } else {
+      _phonenumberInput.value = JSON.encode(pns.toList());
+    }
   }
 
   Iterable<model.PhoneNumber> get phoneNumbers =>

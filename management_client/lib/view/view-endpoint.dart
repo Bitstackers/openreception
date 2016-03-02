@@ -121,7 +121,11 @@ class Endpoints {
 
   void set endpoints(Iterable<model.MessageEndpoint> eps) {
     _originalList = eps.toList(growable: false);
-    _endpointsInput.value = JSON.encode(_originalList);
+    if (_unfoldJson.hidden) {
+      _endpointsInput.value = _jsonpp.convert(_originalList);
+    } else {
+      _endpointsInput.value = JSON.encode(_originalList);
+    }
   }
 
   Iterable<EndpointChange> get endpointChanges {
