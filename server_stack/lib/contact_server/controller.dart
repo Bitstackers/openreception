@@ -16,24 +16,19 @@ library openreception.contact_server.controller;
 import 'dart:async';
 import 'dart:convert';
 
+import '../response_utils.dart';
+
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import 'package:logging/logging.dart';
 
-import 'package:openreception_framework/database.dart' as database;
+import 'package:openreception_framework/filestore.dart' as filestore;
+import 'package:openreception_framework/filestore.dart' as database;
 import 'package:openreception_framework/event.dart' as event;
 import 'package:openreception_framework/model.dart' as model;
 import 'package:openreception_framework/service.dart' as service;
 import 'package:openreception_framework/storage.dart' as storage;
 
 part 'controller/controller-contact.dart';
-part 'controller/controller-distribution_list.dart';
-part 'controller/controller-endpoint.dart';
-part 'controller/controller-phone.dart';
 
 const String _libraryName = 'contact_server.controller';
-
-/**
- *
- */
-shelf.Response _okJson(body) => new shelf.Response.ok(JSON.encode(body));

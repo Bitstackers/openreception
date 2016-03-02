@@ -30,24 +30,34 @@ ArgParser parser = new ArgParser();
  * The OR-Stack contact server. Provides a REST interface for retrieving and
  * manipulating contacts.
  */
-Future main(List<String> args) {
+Future main(List<String> args) async {
   ///Init logging.
   Logger.root.level = config.contactServer.log.level;
   Logger.root.onRecord.listen(config.contactServer.log.onRecord);
 
   ///Handle argument parsing.
-  ArgParser parser = new ArgParser()
+  final ArgParser parser = new ArgParser()
     ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
+    ..addOption('filestore', abbr: 'f', help: 'Path to the filestore backend')
     ..addOption('httpport',
         defaultsTo: config.contactServer.httpPort.toString(),
         help: 'The port the HTTP server listens on.');
 
-  ArgResults parsedArgs = parser.parse(args);
+  final ArgResults parsedArgs = parser.parse(args);
 
   if (parsedArgs['help']) {
     print(parser.usage);
     exit(1);
   }
 
-  return router.start(port: int.parse(parsedArgs['httpport']));
+  if (parsedArgs['filestore'] == null) {
+    print('Filestore path is required');
+    print(parser.usage);
+    exit(1);
+  }
+
+  await router.start(
+      port: int.parse(parsedArgs['httpport']),
+      filepath: parsedArgs['filestore']);
+  log.info('Ready to handle requests');
 }

@@ -20,10 +20,10 @@ import '../configuration.dart';
 import 'controller.dart' as controller;
 
 import 'package:logging/logging.dart';
-import 'package:openreception_framework/database.dart' as Database;
+import 'package:openreception_framework/filestore.dart' as filestore;
 import 'package:openreception_framework/storage.dart' as storage;
-import 'package:openreception_framework/service.dart' as Service;
-import 'package:openreception_framework/service-io.dart' as Service_IO;
+import 'package:openreception_framework/service.dart' as service;
+import 'package:openreception_framework/service-io.dart' as transport;
 
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
@@ -42,19 +42,19 @@ const Map<String, String> corsHeaders = const {
  * TODO: Add Contact (not just BaseContact) updates.
  */
 Future<io.HttpServer> start(
-    {String hostname: '0.0.0.0', int port: 4010}) async {
-  final Service.Authentication _authService = new Service.Authentication(
+    {String hostname: '0.0.0.0', int port: 4010, String filepath: ''}) async {
+  final service.Authentication _authService = new service.Authentication(
       config.authServer.externalUri,
       config.userServer.serverToken,
-      new Service_IO.Client());
+      new transport.Client());
 
-  final Service.NotificationService _notification =
-      new Service.NotificationService(config.notificationServer.externalUri,
-          config.userServer.serverToken, new Service_IO.Client());
+  final service.NotificationService _notification =
+      new service.NotificationService(config.notificationServer.externalUri,
+          config.userServer.serverToken, new transport.Client());
 
   /**
-           * Validate a token by looking it up on the authentication server.
-           */
+   * Validate a token by looking it up on the authentication server.
+   */
   Future<shelf.Response> _lookupToken(shelf.Request request) async {
     var token = request.requestedUri.queryParameters['token'];
 
@@ -84,30 +84,15 @@ Future<io.HttpServer> start(
   /**
    * Controllers.
    */
-  final Database.Connection connection =
-      await Database.Connection.connect(config.database.dsn);
-  final contactDB = new Database.Contact(connection);
-  final endpointDB = new Database.Endpoint(connection);
-  final dlistDB = new Database.DistributionList(connection);
+  final filestore.Reception rStore =
+      new filestore.Reception(path: filepath + '/reception');
+  final filestore.Contact cStore =
+      new filestore.Contact(rStore, path: filepath + '/contact');
 
-  controller.Contact contact = new controller.Contact(contactDB, _notification);
-  controller.Endpoint endpoint = new controller.Endpoint(endpointDB);
-  controller.Phone phone = new controller.Phone(contactDB);
-  controller.DistributionList dList = new controller.DistributionList(dlistDB);
+  controller.Contact contact =
+      new controller.Contact(cStore, _notification, _authService);
 
   var router = shelf_route.router()
-    ..get('/contact/{cid}/reception/{rid}/endpoints', endpoint.ofContact)
-    ..get('/contact/{cid}/reception/{rid}/endpoint', endpoint.ofContact)
-    ..post('/contact/{cid}/reception/{rid}/endpoint', endpoint.create)
-    ..put('/endpoint/{eid}', endpoint.update)
-    ..delete('/endpoint/{eid}', endpoint.remove)
-    ..get('/contact/{cid}/reception/{rid}/phones', phone.ofContact)
-    ..post('/contact/{cid}/reception/{rid}/phones', phone.add)
-    ..put('/contact/{cid}/reception/{rid}/phones/{eid}', phone.update)
-    ..delete('/contact/{cid}/reception/{rid}/phones/{eid}', phone.remove)
-    ..get('/contact/{cid}/reception/{rid}/dlist', dList.ofContact)
-    ..post('/contact/{cid}/reception/{rid}/dlist', dList.addRecipient)
-    ..delete('/dlist/{did}', dList.removeRecipient)
     ..get('/contact/list/reception/{rid}', contact.listByReception)
     ..post('/contact/{cid}/reception/{rid}', contact.addToReception)
     ..put('/contact/{cid}/reception/{rid}', contact.updateInReception)
@@ -130,7 +115,7 @@ Future<io.HttpServer> start(
       .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
       .addHandler(router.handler);
 
-  _log.fine('Serving interfaces on port $port:');
+  log.fine('Serving interfaces on port $port:');
   shelf_route.printRoutes(router, printer: (String item) => log.fine(item));
 
   return await shelf_io.serve(handler, hostname, port);

@@ -15,237 +15,187 @@ part of openreception.contact_server.controller;
 
 class Contact {
   final Logger _log = new Logger('$_libraryName.Contact');
-  final database.Contact _contactDB;
+  final service.Authentication _authservice;
+  final filestore.Contact _contactStore;
   final service.NotificationService _notification;
 
-  Contact(this._contactDB, this._notification);
+  Contact(this._contactStore, this._notification, this._authservice);
 
   /**
    * Retrives a single base contact based on contactID.
    */
-  Future base(shelf.Request request) {
-    int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
+  Future<shelf.Response> base(shelf.Request request) async {
+    final int cid = int.parse(shelf_route.getPathParameter(request, 'cid'));
 
-    return _contactDB
-        .get(contactID)
-        .then((model.BaseContact contact) =>
-            new shelf.Response.ok(JSON.encode(contact)))
-        .catchError((error, stacktrace) {
-      if (error is storage.NotFound) {
-        return new shelf.Response.notFound('$error');
-      }
-
-      _log.severe(error, stacktrace);
-      return new shelf.Response.internalServerError(
-          body: 'contactserver.router._fetchAndCacheContact() ${error}');
-    });
+    try {
+      return okJson(await _contactStore.get(cid));
+    } on storage.NotFound catch (e) {
+      return notFound(e.toString());
+    }
   }
 
   /**
    * Creates a new base contact.
    */
-  Future create(shelf.Request request) {
-    return request.readAsString().then((String content) {
-      model.BaseContact contact;
+  Future<shelf.Response> create(shelf.Request request) async {
+    model.BaseContact contact;
+    model.User creator;
 
-      try {
-        Map data = JSON.decode(content);
-        contact = new model.BaseContact.fromMap(data);
-      } catch (error) {
-        Map response = {
-          'status': 'bad request',
-          'description': 'passed contact argument '
-              'is too long, missing or invalid',
-          'error': error.toString()
-        };
-        return new shelf.Response(400, body: JSON.encode(response));
-      }
+    try {
+      contact = await request
+          .readAsString()
+          .then(JSON.decode)
+          .then(model.BaseContact.decode);
+    } on FormatException {
+      return clientError('Failed to parse contact object');
+    }
 
-      return _contactDB
-          .create(contact)
-          .then((model.BaseContact createdContact) {
-        event.ContactChange changeEvent = new event.ContactChange(
-            createdContact.id, event.ContactState.CREATED);
+    try {
+      creator = await _authservice.userOf(tokenFrom(request));
+    } catch (e) {
+      return serverError('Could not contact auth server');
+    }
 
-        _notification.broadcastEvent(changeEvent);
+    final rRef = await _contactStore.create(contact, creator);
 
-        return new shelf.Response.ok(JSON.encode(contact));
-      }).catchError((error, stackTrace) {
-        _log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError(
-            body: 'Failed to update event in database');
-      });
-    });
+    _notification.broadcastEvent(
+        new event.ContactChange(rRef.id, event.ContactState.CREATED));
+
+    return okJson(rRef);
   }
 
   /**
    * Retrives a single base contact based on contactID.
    */
-  Future listBase(shelf.Request request) {
-    return _contactDB
-        .list()
-        .then((Iterable<model.BaseContact> contacts) => new shelf.Response.ok(
-            JSON.encode(contacts.toList(growable: false))))
-        .catchError((error, stacktrace) {
-      _log.severe(error, stacktrace);
-      return new shelf.Response.internalServerError(
-          body: 'contactserver.router._fetchAndCacheContact() ${error}');
-    });
-  }
+  Future<shelf.Response> listBase(shelf.Request request) async =>
+      okJson((await _contactStore.list()).toList(growable: false));
 
   /**
    * Retrives a list of base contacts associated with the provided
    * organization id.
    */
-  Future listByOrganization(shelf.Request request) {
-    int organizationID =
-        int.parse(shelf_route.getPathParameter(request, 'oid'));
+  Future<shelf.Response> listByOrganization(shelf.Request request) async {
+    final int oid = int.parse(shelf_route.getPathParameter(request, 'oid'));
 
-    return _contactDB
-        .organizationContacts(organizationID)
-        .then((Iterable<model.BaseContact> contacts) => new shelf.Response.ok(
-            JSON.encode(contacts.toList(growable: false))))
-        .catchError((error, stacktrace) {
-      _log.severe(error, stacktrace);
-      return new shelf.Response.internalServerError(
-          body: 'contactserver.router._fetchAndCacheContact() ${error}');
-    });
+    return okJson((await _contactStore.organizationContacts(oid))
+        .toList(growable: false));
   }
 
   /**
    * Retrives a single contact based on receptionID and contactID.
    */
-  Future get(shelf.Request request) {
-    int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
-    int receptionID = int.parse(shelf_route.getPathParameter(request, 'rid'));
+  Future<shelf.Response> get(shelf.Request request) async {
+    final int cid = int.parse(shelf_route.getPathParameter(request, 'cid'));
+    final int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
-    return _contactDB
-        .getByReception(receptionID, contactID)
-        .then((model.Contact contact) {
-      if (contact == model.Contact.noContact) {
-        return new shelf.Response.notFound(
-            {'description': 'no contact $contactID@$receptionID'});
-      } else {
-        return new shelf.Response.ok(JSON.encode(contact.asMap));
-      }
-    }).catchError((error, stacktrace) {
-      _log.severe(error, stacktrace);
-      new shelf.Response.internalServerError(
-          body: 'contactserver.router._fetchAndCacheContact() ${error}');
-    });
+    try {
+      final attr = await _contactStore.getByReception(cid, rid);
+      return okJson((attr));
+    } on storage.NotFound catch (e) {
+      return notFound(e.toString());
+    }
   }
 
   /**
    * Returns the id's of all organizations that a contact is associated to.
    */
-  Future<int> organizations(shelf.Request request) {
-    int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
+  Future<shelf.Response> organizations(shelf.Request request) async {
+    final int cid = int.parse(shelf_route.getPathParameter(request, 'cid'));
 
-    return _contactDB
-        .organizations(contactID)
-        .then((Iterable<int> organizationsIds) {
-      return new shelf.Response.ok(JSON.encode(organizationsIds.toList()));
-    }).catchError((error, stacktrace) {
-      _log.severe(error, stacktrace);
-      new shelf.Response.internalServerError(
-          body: 'contactserver.router._fetchAndCacheContact() ${error}');
-    });
+    return okJson(
+        ((await _contactStore.organizations(cid)).toList(growable: false)));
   }
 
   /**
    * Returns the id's of all receptions that a contact is associated to.
    */
-  Future<int> receptions(shelf.Request request) {
-    int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
+  Future<shelf.Response> receptions(shelf.Request request) async {
+    final int cid = int.parse(shelf_route.getPathParameter(request, 'cid'));
 
-    return _contactDB.receptions(contactID).then((Iterable<int> receptionIDs) {
-      return new shelf.Response.ok(JSON.encode(receptionIDs.toList()));
-    }).catchError((error, stacktrace) {
-      _log.severe(error, stacktrace);
-      new shelf.Response.internalServerError(
-          body: 'contactserver.router._fetchAndCacheContact() ${error}');
-    });
+    return okJson(
+        (await _contactStore.receptions(cid)).toList(growable: false));
   }
 
   /**
    * Removes a single contact from the data store.
    */
-  Future remove(shelf.Request request) {
-    int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
+  Future<shelf.Response> remove(shelf.Request request) async {
+    final int cid = int.parse(shelf_route.getPathParameter(request, 'cid'));
+    model.User modifier;
 
-    return _contactDB.remove(contactID).then((_) {
+    try {
+      modifier = await _authservice.userOf(tokenFrom(request));
+    } catch (e) {
+      return serverError('Could not contact auth server');
+    }
+
+    try {
+      await _contactStore.remove(cid, modifier);
       event.ContactChange changeEvent =
-          new event.ContactChange(contactID, event.ContactState.DELETED);
+          new event.ContactChange(cid, event.ContactState.DELETED);
 
       _notification.broadcastEvent(changeEvent);
-
-      return new shelf.Response.ok(
-          JSON.encode({'status': 'ok', 'description': 'Contact deleted'}));
-    }).catchError((error, stackTrace) {
-      if (error is storage.NotFound) {
-        return new shelf.Response.notFound(JSON
-            .encode({'description': 'No contact found with ID $contactID'}));
-      }
-      _log.severe(error, stackTrace);
-      return new shelf.Response.internalServerError(
-          body: 'Failed to execute database query');
-    });
+      return okJson(const {});
+    } on storage.NotFound catch (e) {
+      return notFound(e.toString());
+    }
   }
 
   /**
    * Update the base information of a contact
    */
-  Future update(shelf.Request request) {
-    int contactID = int.parse(shelf_route.getPathParameter(request, 'cid'));
+  Future<shelf.Response> update(shelf.Request request) async {
+    final int cid = int.parse(shelf_route.getPathParameter(request, 'cid'));
 
-    return request.readAsString().then((String content) {
-      model.BaseContact contact;
+    model.User modifier;
+    try {
+      modifier = await _authservice.userOf(tokenFrom(request));
+    } catch (e) {
+      return serverError('Could not contact auth server');
+    }
 
-      try {
-        Map data = JSON.decode(content);
-        contact = new model.BaseContact.fromMap(data);
-      } catch (error) {
-        Map response = {
-          'status': 'bad request',
-          'description': 'passed contact argument '
-              'is too long, missing or invalid',
-          'error': error.toString()
-        };
-        return new shelf.Response(400, body: JSON.encode(response));
-      }
+    model.BaseContact contact;
 
-      return _contactDB.update(contact).then((_) {
-        event.ContactChange changeEvent =
-            new event.ContactChange(contactID, event.ContactState.UPDATED);
+    try {
+      contact = await request
+          .readAsString()
+          .then(JSON.decode)
+          .then(model.BaseContact.decode);
+    } catch (error) {
+      final Map response = {
+        'status': 'bad request',
+        'description': 'passed contact argument '
+            'is too long, missing or invalid',
+        'error': error.toString()
+      };
+      return clientErrorJson(response);
+    }
 
-        _notification.broadcastEvent(changeEvent);
+    try {
+      final ref = await _contactStore.update(contact, modifier);
+      event.ContactChange changeEvent =
+          new event.ContactChange(cid, event.ContactState.UPDATED);
 
-        return new shelf.Response.ok(JSON.encode(contact));
-      }).catchError((error, stackTrace) {
-        if (error is storage.NotFound) {
-          return new shelf.Response.notFound(
-              'Contact with id $contactID not found');
-        }
+      _notification.broadcastEvent(changeEvent);
 
-        _log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError(
-            body: 'Failed to update event in database');
-      });
-    });
+      return okJson(ref);
+    } on storage.NotFound catch (e) {
+      return notFound(e.toString());
+    }
   }
 
   /**
    * Gives a lists of every contact in an reception.
    */
-  Future listByReception(shelf.Request request) async {
+  Future<shelf.Response> listByReception(shelf.Request request) async {
     final String rid = shelf_route.getPathParameter(request, 'rid');
     final int receptionID = int.parse(rid);
 
     try {
-      Iterable<model.Contact> contacts =
-          await _contactDB.listByReception(receptionID);
+      Iterable<model.ReceptionAttributes> contacts =
+          await _contactStore.listByReception(receptionID);
 
-      return _okJson(contacts.toList());
+      return okJson(contacts.toList());
     } on storage.SqlError catch (error) {
       new shelf.Response.internalServerError(body: error);
     }
@@ -254,100 +204,107 @@ class Contact {
   /**
    *
    */
-  Future addToReception(shelf.Request request) {
-    int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
+  Future<shelf.Response> addToReception(shelf.Request request) async {
+    final int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
-    return request.readAsString().then((String content) {
-      model.Contact contact;
+    model.ReceptionAttributes attr;
+    model.User modifier;
 
-      try {
-        Map data = JSON.decode(content);
-        contact = new model.Contact.fromMap(data);
-      } catch (error) {
-        Map response = {
-          'status': 'bad request',
-          'description': 'passed contact argument '
-              'is too long, missing or invalid',
-          'error': error.toString()
-        };
-        return new shelf.Response(400, body: JSON.encode(response));
-      }
+    try {
+      Map data = JSON.decode(await request.readAsString());
+      attr = new model.ReceptionAttributes.fromMap(data);
+    } catch (error) {
+      final Map response = {
+        'status': 'bad request',
+        'description': 'passed contact argument '
+            'is too long, missing or invalid',
+        'error': error.toString()
+      };
+      return clientErrorJson(response);
+    }
 
-      return _contactDB
-          .addToReception(contact, rid)
-          .then((model.Contact createdContact) {
-        event.ContactChange changeEvent = new event.ContactChange(
-            createdContact.ID, event.ContactState.UPDATED);
+    try {
+      modifier = await _authservice.userOf(tokenFrom(request));
+    } catch (e) {
+      return serverError('Could not contact auth server');
+    }
 
-        _notification.broadcastEvent(changeEvent);
+    final ref = await _contactStore.addToReception(attr, modifier);
 
-        return new shelf.Response.ok(JSON.encode(contact));
-      }).catchError((error, stackTrace) {
-        _log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError(
-            body: 'Failed to update event in database');
-      });
-    });
+    event.ContactChange changeEvent =
+        new event.ContactChange(attr.contactId, event.ContactState.UPDATED);
+
+    _notification.broadcastEvent(changeEvent);
+
+    return okJson(ref);
   }
 
   /**
    *
    */
-  Future updateInReception(shelf.Request request) {
-    int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
+  Future<shelf.Response> updateInReception(shelf.Request request) async {
+    final int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
-    return request.readAsString().then((String content) {
-      model.Contact contact;
+    model.User modifier;
+    try {
+      modifier = await _authservice.userOf(tokenFrom(request));
+    } catch (e) {
+      return serverError('Could not contact auth server');
+    }
 
-      try {
-        Map data = JSON.decode(content);
-        contact = new model.Contact.fromMap(data);
-        contact.receptionID = rid;
-      } catch (error) {
-        Map response = {
-          'status': 'bad request',
-          'description': 'passed contact argument '
-              'is too long, missing or invalid',
-          'error': error.toString()
-        };
-        return new shelf.Response(400, body: JSON.encode(response));
-      }
+    model.ReceptionAttributes attr;
+    try {
+      attr = await request
+          .readAsString()
+          .then(JSON.decode)
+          .then(model.ReceptionAttributes.decode);
+    } catch (error) {
+      Map response = {
+        'status': 'bad request',
+        'description': 'passed contact argument '
+            'is too long, missing or invalid',
+        'error': error.toString()
+      };
 
-      return _contactDB
-          .updateInReception(contact)
-          .then((model.Contact createdContact) {
-        event.ContactChange changeEvent =
-            new event.ContactChange(contact.ID, event.ContactState.UPDATED);
+      return clientErrorJson(response);
+    }
 
-        _notification.broadcastEvent(changeEvent);
-
-        return new shelf.Response.ok(JSON.encode(contact));
-      }).catchError((error, stackTrace) {
-        _log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError(
-            body: 'Failed to update event in database');
-      });
-    });
-  }
-
-  /**
-   *
-   */
-  Future removeFromReception(shelf.Request request) {
-    int cid = int.parse(shelf_route.getPathParameter(request, 'cid'));
-    int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
-
-    return _contactDB.removeFromReception(cid, rid).then((_) {
+    try {
+      final ref = await _contactStore.updateInReception(attr, modifier);
       event.ContactChange changeEvent =
-          new event.ContactChange(cid, event.ContactState.UPDATED);
+          new event.ContactChange(attr.contactId, event.ContactState.UPDATED);
 
       _notification.broadcastEvent(changeEvent);
 
-      return new shelf.Response.ok(JSON.encode(const {}));
-    }).catchError((error, stackTrace) {
-      _log.severe(error, stackTrace);
-      return new shelf.Response.internalServerError(
-          body: 'Failed to update event in database');
-    });
+      return okJson(ref);
+    } on storage.NotFound catch (e) {
+      return notFound(e.toString());
+    }
+  }
+
+  /**
+   *
+   */
+  Future<shelf.Response> removeFromReception(shelf.Request request) async {
+    final int cid = int.parse(shelf_route.getPathParameter(request, 'cid'));
+    final int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
+
+    model.User modifier;
+    try {
+      modifier = await _authservice.userOf(tokenFrom(request));
+    } catch (e) {
+      return serverError('Could not contact auth server');
+    }
+
+    try {
+      await _contactStore.removeFromReception(cid, rid, modifier);
+      event.ContactChange changeEvent =
+          new event.ContactChange(cid, event.ContactState.UPDATED);
+      _notification.broadcastEvent(changeEvent);
+
+      return okJson(const {});
+    } on storage.NotFound catch (e) {
+      return notFound(e.toString());
+    }
   }
 }
