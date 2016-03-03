@@ -3,6 +3,7 @@ packages
 .packages
 .project
 .pub/
+build/
 pubspec.lock
 
 # Don't track config files.
