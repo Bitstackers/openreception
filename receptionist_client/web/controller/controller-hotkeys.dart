@@ -131,7 +131,8 @@ class HotKeys {
       'F9': (event) => _f9.fire(event),
       [Key.NumPlus]: (event) => _numPlus.fire(event),
       [Key.NumDiv]: (event) => _numDiv.fire(event),
-      [Key.NumMult]: (event) => _numMult.fire(event)
+      [Key.NumMult]: (event) => _numMult.fire(event),
+      'Shift+Esc': _null
     };
 
     registerKeysPreventDefault(_keyDown, preventDefaultBindings);
