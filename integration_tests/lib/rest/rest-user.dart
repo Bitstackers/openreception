@@ -10,12 +10,14 @@ void _runUserTests() {
     process.AuthServer aProcess;
     transport.Client client;
     AuthToken authToken;
+    service.RESTUserStore restStore;
 
     setUp(() async {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();
       client = new transport.Client();
       authToken = new AuthToken(sa.user);
+      sa.authToken = authToken.tokenName;
 
       aProcess = new process.AuthServer(
           Config.serverStackPath, env.runpath.path,
@@ -23,9 +25,9 @@ void _runUserTests() {
 
       uProcess =
           new process.UserServer(Config.serverStackPath, env.runpath.path);
-
-      sa.userStore = new service.RESTUserStore(
+      restStore = new service.RESTUserStore(
           Config.userStoreUri, authToken.tokenName, client);
+      sa.userStore = restStore;
       await Future.wait([uProcess.whenReady, aProcess.whenReady]);
     });
 
@@ -33,6 +35,7 @@ void _runUserTests() {
       await Future.wait([uProcess.terminate(), aProcess.terminate()]);
       env.clear();
       client.client.close();
+      sa.cleanup();
     });
     test(
         'CORS headers present (existingUri)',
@@ -76,5 +79,10 @@ void _runUserTests() {
     test('identity remove', () => storeTest.User.removeUserIdentity(sa));
 
     test('get (by identity)', () => storeTest.User.getUserByIdentity(sa));
+
+    test('userState change', () => User.stateChange(sa, restStore));
+
+    test(
+        'userState change (event)', () => User.stateChangeEvent(sa, restStore));
   });
 }

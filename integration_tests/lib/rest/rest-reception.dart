@@ -2,17 +2,20 @@ part of openreception_tests.rest;
 
 void _runReceptionTests() {
   group('$_namespace.Reception', () {
+    Logger log = new Logger('$_namespace.Organization');
+
     ServiceAgent sa;
     TestEnvironment env;
     process.ReceptionServer rProcess;
     process.AuthServer aProcess;
     transport.Client client;
+    AuthToken authToken;
 
     setUp(() async {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();
       client = new transport.Client();
-      AuthToken authToken = new AuthToken(sa.user);
+      authToken = new AuthToken(sa.user);
 
       aProcess = new process.AuthServer(
           Config.serverStackPath, env.runpath.path,
@@ -31,6 +34,22 @@ void _runReceptionTests() {
       env.clear();
       client.client.close();
     });
+    test(
+        'CORS headers present (existingUri)',
+        () => isCORSHeadersPresent(
+            resource.ReceptionDialplan.list(Config.receptionStoreUri), log));
+
+    test(
+        'CORS headers present (non-existingUri)',
+        () => isCORSHeadersPresent(
+            Uri.parse('${Config.receptionStoreUri}/nonexistingpath'), log));
+
+    test(
+        'Non-existing path',
+        () => nonExistingPath(
+            Uri.parse('${Config.receptionStoreUri}/nonexistingpath'
+                '?token=${authToken.tokenName}'),
+            log));
 
     test('create', () => storeTest.Reception.create(sa));
     test('update', () => storeTest.Reception.update(sa));
