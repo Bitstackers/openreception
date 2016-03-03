@@ -35,13 +35,8 @@ class User {
   final LabelElement _uidLabel = new LabelElement()..text = 'uid:??';
   final HiddenInputElement _userIdInput = new HiddenInputElement()
     ..id = 'user-id'
-    ..text = model.User.noID.toString();
+    ..text = model.User.noId.toString();
   final InputElement _userNameInput = new InputElement()..id = 'user-name';
-
-  final InputElement _googleAppCodeInput = new InputElement()
-    ..id = 'user-google-appcode';
-  final InputElement _googleUsernameInput = new InputElement()
-    ..id = 'user-google-username';
 
   final InputElement _userSendFromInput = new InputElement()
     ..id = 'user-sendfrom';
@@ -99,20 +94,6 @@ class User {
             ..htmlFor = _userSendFromInput.id,
           _userSendFromInput
         ],
-      new DivElement()
-        ..children = [
-          new LabelElement()
-            ..text = 'Google brugernavn'
-            ..htmlFor = _googleUsernameInput.id,
-          _googleUsernameInput
-        ],
-      new DivElement()
-        ..children = [
-          new LabelElement()
-            ..text = 'Google Appcode'
-            ..htmlFor = _googleAppCodeInput.id,
-          _googleAppCodeInput
-        ],
       new LabelElement()..text = 'Grupper',
       _groupsView.element,
       new LabelElement()..text = 'Identitieter',
@@ -157,30 +138,16 @@ class User {
   ///
   void set user(model.User u) {
     _uidLabel.text = 'uid:${u.id}${!u.enabled ? ' (inaktiv)': ''}';
-    _deleteButton.disabled = u.id == model.User.noID;
-    _saveButton.disabled = u.id != model.User.noID;
+    _deleteButton.disabled = u.id == model.User.noId;
+    _saveButton.disabled = u.id != model.User.noId;
     _deleteButton.disabled = !_saveButton.disabled;
     _userIdInput.value = u.id.toString();
     _userNameInput.value = u.name;
     _userSendFromInput.value = u.address;
     _userExtensionInput.value = u.peer;
-    _googleAppCodeInput.value = u.googleAppcode;
-    _googleUsernameInput.value = u.googleUsername;
 
-    if (u.id != model.User.noID) {
-      _userController.userGroups(u.id).then((Iterable<model.UserGroup> groups) {
-        _groupsView.groups = groups;
-      });
-
-      _userController
-          .identities(u.id)
-          .then((Iterable<model.UserIdentity> identities) {
-        _identitiesView.identities = identities;
-      });
-    } else {
-      _identitiesView.identities = [];
-      _groupsView.groups = [];
-    }
+    _groupsView.groups = u.groups;
+    _identitiesView.identities = u.identities;
 
     /// Reset labels.
     _deleteButton.text = 'Slet';
@@ -194,8 +161,8 @@ class User {
     ..id = userId
     ..name = _userNameInput.value
     ..address = _userSendFromInput.value
-    ..googleAppcode = _googleAppCodeInput.value
-    ..googleUsername = _googleUsernameInput.value
+    ..groups = _groupsView.groups.toSet()
+    ..identities = _identitiesView.identities.toSet()
     ..peer = _userExtensionInput.value;
 
   /**
@@ -235,36 +202,17 @@ class User {
     model.User u;
 
     try {
-      if (userId != model.User.noID) {
-        u = await _userController.update(user);
+      if (userId != model.User.noId) {
+        u = await _userController
+            .update(user)
+            .then((ref) => _userController.get(ref.id));
         _changeBus.fire(new UserChange.update(u));
       } else {
-        u = await _userController.create(user);
+        u = await _userController
+            .create(user)
+            .then((ref) => _userController.get(ref.id));
         _changeBus.fire(new UserChange.create(u));
       }
-
-      /// Store group changes:
-      await Future.forEach(_groupsView.changes(), (UserGroupChange ugc) async {
-        if (ugc.type == Change.added) {
-          await _userController.joinGroup(u.id, ugc.groupId);
-        } else if (ugc.type == Change.deleted) {
-          await _userController.leaveGroup(u.id, ugc.groupId);
-        }
-      });
-
-      /// Store identity changes:
-      await Future.forEach(_identitiesView.changes(),
-          (UserIdentityChange uic) async {
-        model.UserIdentity identity = new model.UserIdentity.empty()
-          ..userId = u.id
-          ..identity = uic.identity;
-
-        if (uic.type == Change.added) {
-          await _userController.addIdentity(identity);
-        } else if (uic.type == Change.deleted) {
-          await _userController.removeIdentity(identity);
-        }
-      });
 
       notify.success('Brugeren blev opdateret', user.name);
     } catch (error) {

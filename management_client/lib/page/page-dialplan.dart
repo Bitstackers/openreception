@@ -118,11 +118,11 @@ class Dialplan {
   LIElement _makeReceptionNode(model.Reception reception) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
-      ..text = '${reception.fullName}'
+      ..text = '${reception.name}'
       ..onClick.listen((_) {
         Map data = {
           'organization_id': reception.organizationId,
-          'reception_id': reception.ID
+          'reception_id': reception.id
         };
         bus.fire(new WindowChanged('reception', data));
       });
@@ -169,7 +169,8 @@ class Dialplan {
     _dpPlot.dialplan = _dpView.dialplan;
     _dpView.create = false;
     _highlightDialplanInList(extension);
-    _renderReceptionList(await _dialplanController.listUsage(extension));
+    _renderReceptionList(
+        [await _dialplanController.getByExtensions(extension)]);
   }
 
   /**

@@ -24,8 +24,8 @@ class UserGroups {
 
   List<CheckboxInputElement> _checkboxs = new List<CheckboxInputElement>();
   final TableElement _table = new TableElement();
-  List<model.UserGroup> _allGroups = new List<model.UserGroup>();
-  List<model.UserGroup> _originalGroups = new List<model.UserGroup>();
+  List<String> _allGroups = new List<String>();
+  List<String> _originalGroups = new List<String>();
 
   UserGroups(this._userController) {
     element.children = [_table];
@@ -35,20 +35,20 @@ class UserGroups {
   /**
    *
    */
-  TableRowElement _makeGroupRow(model.UserGroup group) {
+  TableRowElement _makeGroupRow(String group) {
     TableRowElement row = new TableRowElement();
 
     CheckboxInputElement checkbox = new CheckboxInputElement()
-      ..id = 'grp_${group.id}'
-      ..dataset['id'] = group.id.toString();
+      ..id = 'grp_${group}'
+      ..dataset['id'] = group;
     _checkboxs.add(checkbox);
 
     TableCellElement checkCell = new TableCellElement()..children.add(checkbox);
 
     TableCellElement labelCell = new TableCellElement()
       ..children.add(new LabelElement()
-        ..htmlFor = 'grp_${group.id}'
-        ..text = group.name);
+        ..htmlFor = 'grp_${group}'
+        ..text = group);
 
     return row..children.addAll([checkCell, labelCell]);
   }
@@ -74,7 +74,7 @@ class UserGroups {
    *
    */
   void _refreshGroupList() {
-    _userController.groups().then((Iterable<model.UserGroup> groups) {
+    _userController.groups().then((Iterable<String> groups) {
       _allGroups = groups.toList();
       _renderBaseList();
     });
@@ -89,7 +89,7 @@ class UserGroups {
     for (CheckboxInputElement item in _checkboxs) {
       int groupId = int.parse(item.dataset['id']);
       bool userIsAMember =
-          _originalGroups.any((model.UserGroup group) => group.id == groupId);
+          _originalGroups.any((String group) => group == groupId);
 
       if (item.checked && !userIsAMember) {
         changeList.add(new UserGroupChange.join(groupId));
@@ -104,11 +104,20 @@ class UserGroups {
   /**
    *
    */
-  void set groups(Iterable<model.UserGroup> gs) {
+  Iterable<String> get groups {
+    return _checkboxs
+        .where((box) => box.checked)
+        .map((box) => box.dataset['id']);
+  }
+
+  /**
+   *
+   */
+  void set groups(Iterable<String> gs) {
     _originalGroups = gs.toList(growable: false);
     for (CheckboxInputElement checkbox in _checkboxs) {
-      checkbox.checked = gs.any((model.UserGroup userGroup) =>
-          userGroup.id == int.parse(checkbox.dataset['id']));
+      checkbox.checked =
+          gs.any((String userGroup) => userGroup == checkbox.dataset['id']);
     }
   }
 }

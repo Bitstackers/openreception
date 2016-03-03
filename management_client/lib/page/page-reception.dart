@@ -39,7 +39,8 @@ class ReceptionView {
 
   view.Reception _receptionView;
 
-  List<ORModel.Reception> receptions = new List<ORModel.Reception>();
+  List<ORModel.ReceptionReference> receptions =
+      new List<ORModel.ReceptionReference>();
 
   /**
    *
@@ -97,8 +98,7 @@ class ReceptionView {
         await _refreshList();
         if (event.data.containsKey('organization_id') &&
             event.data.containsKey('reception_id')) {
-          await _activateReception(
-              event.data['organization_id'], event.data['reception_id']);
+          await _activateReception(event.data['reception_id']);
         }
       } else {
         element.hidden = true;
@@ -109,9 +109,9 @@ class ReceptionView {
       await _refreshList();
       if (rc.type == view.Change.deleted) {} else if (rc.type ==
           view.Change.updated) {
-        await _activateReception(rc.reception.organizationId, rc.reception.ID);
+        await _activateReception(rc.reception.id);
       } else if (rc.type == view.Change.created) {
-        await _activateReception(rc.reception.organizationId, rc.reception.ID);
+        await _activateReception(rc.reception.id);
       }
     });
 
@@ -120,14 +120,14 @@ class ReceptionView {
 
   void _performSearch() {
     String searchText = _searchBox.value;
-    List<ORModel.Reception> filteredList = receptions
-        .where((ORModel.Reception recep) =>
-            recep.fullName.toLowerCase().contains(searchText.toLowerCase()))
+    List<ORModel.ReceptionReference> filteredList = receptions
+        .where((ORModel.ReceptionReference recep) =>
+            recep.name.toLowerCase().contains(searchText.toLowerCase()))
         .toList();
     _renderReceptionList(filteredList);
   }
 
-  void _renderReceptionList(List<ORModel.Reception> receptions) {
+  void _renderReceptionList(List<ORModel.ReceptionReference> receptions) {
     _uiReceptionList.children
       ..clear()
       ..addAll(receptions.map(_makeReceptionNode));
@@ -139,9 +139,10 @@ class ReceptionView {
   Future _refreshList() {
     return _receptionController
         .list()
-        .then((Iterable<ORModel.Reception> receptions) {
-      int compareTo(ORModel.Reception r1, ORModel.Reception r2) =>
-          r1.fullName.compareTo(r2.fullName);
+        .then((Iterable<ORModel.ReceptionReference> receptions) {
+      int compareTo(
+              ORModel.ReceptionReference r1, ORModel.ReceptionReference r2) =>
+          r1.name.compareTo(r2.name);
 
       List list = receptions.toList()..sort(compareTo);
       this.receptions = list;
@@ -149,13 +150,13 @@ class ReceptionView {
     });
   }
 
-  LIElement _makeReceptionNode(ORModel.Reception reception) {
+  LIElement _makeReceptionNode(ORModel.ReceptionReference rRef) {
     return new LIElement()
       ..classes.add('clickable')
-      ..dataset['receptionid'] = '${reception.ID}'
-      ..text = reception.fullName
+      ..dataset['receptionid'] = '${rRef.id}'
+      ..text = rRef.name
       ..onClick.listen((_) {
-        _activateReception(reception.organizationId, reception.ID);
+        _activateReception(rRef.id);
       });
   }
 
@@ -164,8 +165,8 @@ class ReceptionView {
         .toggle('highlightListItem', li.dataset['receptionid'] == '$id'));
   }
 
-  Future _activateReception(int organizationId, int receptionId) async {
-    if (receptionId != ORModel.Reception.noID) {
+  Future _activateReception(int receptionId) async {
+    if (receptionId != ORModel.Reception.noId) {
       _receptionView.reception = await _receptionController.get(receptionId);
 
       _highlightContactInList(receptionId);
@@ -177,25 +178,27 @@ class ReceptionView {
 
   void _updateContactList(int receptionId) {
     _contactController
-        .list(receptionId)
-        .then((Iterable<ORModel.Contact> contacts) {
-      int compareTo(ORModel.Contact c1, ORModel.Contact c2) =>
-          c1.fullName.compareTo(c2.fullName);
+        .receptionAttributes(receptionId)
+        .then((Iterable<ORModel.ReceptionAttributes> attrs) {
+      int compareTo(
+              ORModel.ReceptionAttributes c1, ORModel.ReceptionAttributes c2) =>
+          c1.reference.reception.name.compareTo(c2.reference.reception.name);
 
-      List<ORModel.Contact> sorted = contacts.toList()..sort(compareTo);
+      List<ORModel.ReceptionAttributes> sorted = attrs.toList()
+        ..sort(compareTo);
       _ulContactList.children
         ..clear()
-        ..addAll(sorted.map((ORModel.Contact contact) =>
-            makeContactNode(contact, receptionId)));
+        ..addAll(sorted.map((ORModel.ReceptionAttributes attr) =>
+            makeContactNode(attr, receptionId)));
     });
   }
 
-  LIElement makeContactNode(ORModel.Contact contact, int receptionId) {
+  LIElement makeContactNode(ORModel.ReceptionAttributes attr, int rid) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
-      ..text = contact.fullName
+      ..text = attr.reference.reception.name
       ..onClick.listen((_) {
-        Map data = {'contact_id': contact.ID, 'reception_id': receptionId};
+        Map data = {'contact_id': attr.contactId, 'reception_id': rid};
         bus.fire(new WindowChanged('contact', data));
       });
     return li;

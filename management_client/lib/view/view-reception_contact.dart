@@ -1,35 +1,23 @@
 part of management_tool.view;
 
-class ReceptionContactChange {
-  final Change type;
-  final model.Contact contact;
-
-  ReceptionContactChange.create(this.contact) : type = Change.created;
-  ReceptionContactChange.delete(this.contact) : type = Change.deleted;
-  ReceptionContactChange.update(this.contact) : type = Change.updated;
-}
-
 class ReceptionContact {
   final bool _single; // Are we alone in the list?
   final controller.Reception _receptionController;
   final controller.Contact _contactController;
-  final controller.Endpoint _endpointController;
-  final controller.DistributionList _dlistController;
 
   ///TODO: Add additional validation checks
   bool get inputHasErrors =>
-      _endpointsView.validationError ||
-      _distributionsListView.validationError ||
-      _phoneNumberView.validationError;
+      _endpointsView.validationError || _phoneNumberView.validationError;
 
-  final HeadingElement _header = new HeadingElement.h2()..classes.add('reception-contact-header');
+  final HeadingElement _header = new HeadingElement.h2()
+    ..classes.add('reception-contact-header');
 
   final TextInputElement _ridInput = new TextInputElement()
-    ..value = model.Reception.noID.toString()
+    ..value = model.Reception.noId.toString()
     ..hidden = true;
 
   final TextInputElement _cidInput = new TextInputElement()
-    ..value = model.Contact.noID.toString()
+    ..value = model.BaseContact.noId.toString()
     ..hidden = true;
 
   final ButtonElement _saveButton = new ButtonElement()
@@ -77,24 +65,22 @@ class ReceptionContact {
   final TextAreaElement _workHoursInput = new TextAreaElement()
     ..classes.add('wide')
     ..value = '';
-  final CheckboxInputElement _statusEmailInput = new CheckboxInputElement()..checked = true;
+  final CheckboxInputElement _statusEmailInput = new CheckboxInputElement()
+    ..checked = true;
 
   Endpoints _endpointsView;
-  DistributionList _distributionsListView;
   Phonenumbers _phoneNumberView;
 
   /**
    *
    */
-  ReceptionContact(this._receptionController, this._contactController, this._endpointController,
-      this._dlistController, bool this._single) {
+  ReceptionContact(
+      this._receptionController, this._contactController, bool this._single) {
     if (!_single) {
       element.style.height = '45px';
     }
 
-    _endpointsView = new Endpoints(_contactController, _endpointController);
-
-    _distributionsListView = new DistributionList();
+    _endpointsView = new Endpoints(_contactController);
 
     _phoneNumberView = new Phonenumbers();
 
@@ -105,7 +91,10 @@ class ReceptionContact {
       _ridInput,
 
       new DivElement()
-        ..children = [new LabelElement()..text = 'Ønsker statusmails', _statusEmailInput],
+        ..children = [
+          new LabelElement()..text = 'Ønsker statusmails',
+          _statusEmailInput
+        ],
 
       /// Left column.
       new DivElement()
@@ -168,7 +157,6 @@ class ReceptionContact {
         ..classes.add('col-1-2')
         ..children = [
           _phoneNumberView.element,
-          _distributionsListView.element,
           new DivElement()
             ..children = [
               new LabelElement()
@@ -217,51 +205,24 @@ class ReceptionContact {
 
     _saveButton.onClick.listen((_) async {
       try {
-        await _contactController.updateInReception(contact);
+        await _contactController.updateInReception(attributes);
         _saveButton.disabled = inputHasErrors;
         _deleteButton.disabled = inputHasErrors || !_saveButton.disabled;
 
-        try {
-          await Future.wait(_endpointsView.endpointChanges.map((epc) async {
-            if (epc.type == Change.created) {
-              await _endpointController.create(contact.receptionID, contact.ID, epc.endpoint);
-            } else if (epc.type == Change.deleted) {
-              await _endpointController.remove(epc.endpoint.id);
-            } else if (epc.type == Change.updated) {
-              await _endpointController.update(epc.endpoint);
-            } else {
-              throw new ArgumentError('Bad type of change : ${epc.type}');
-            }
-          }));
-        } catch (e) {
-          notify.error('Beskedadresser ikke opdateret', 'Fejl: $e');
-        }
-
-        try {
-          await Future.wait(_distributionsListView.distributionListChanges.map((dlc) async {
-            if (dlc.type == Change.created) {
-              await _dlistController.addRecipient(contact.receptionID, contact.ID, dlc.entry);
-            } else if (dlc.type == Change.deleted) {
-              await _dlistController.removeRecipient(dlc.entry.id);
-            } else {
-              throw new ArgumentError('Bad type of change : ${dlc.type}');
-            }
-          }));
-        } catch (e) {
-          notify.error('Distributionsliste ikke opdateret', 'Fejl: $e');
-        }
-
-        notify.success('Receptions-kontakten blev opdateret', contact.fullName);
+        notify.success('Receptions-kontakten blev opdateret',
+            attributes.reference.contact.name);
       } catch (error) {
         notify.error('Receptions-kontakten blev ikke opdateret', 'Fejl:$error');
       }
 
       /// Reload the contact.
-      contact = await _contactController.getByReception(contact.ID, contact.receptionID);
+      attributes = await _contactController.getByReception(
+          attributes.contactId, attributes.receptionId);
     });
 
     _deleteButton.onClick.listen((_) async {
-      final String confirmText = 'Bekræft fjernelse af ${contact.fullName} fra '
+      final String confirmText =
+          'Bekræft fjernelse af ${attributes.reference.contact.name} fra '
           'receptionen ${_header.text}';
 
       if (_deleteButton.text != confirmText) {
@@ -270,8 +231,10 @@ class ReceptionContact {
       }
 
       try {
-        await _contactController.removeFromReception(contact.ID, contact.receptionID);
-        notify.success('Receptions-kontakt fjernet fra reception', '${_header.text}');
+        await _contactController.removeFromReception(
+            attributes.contactId, attributes.receptionId);
+        notify.success(
+            'Receptions-kontakt fjernet fra reception', '${_header.text}');
         element.remove();
       } catch (error) {
         notify.error('Receptions-kontakten ikke fjernet', 'Fejl: $error');
@@ -297,40 +260,37 @@ class ReceptionContact {
       _deleteButton.disabled = inputHasErrors || !_saveButton.disabled;
     };
 
-    _distributionsListView.onChange = () {
-      _saveButton.disabled = inputHasErrors;
-      _deleteButton.disabled = inputHasErrors || !_saveButton.disabled;
-    };
-
     _phoneNumberView.onChange = () {
       _saveButton.disabled = inputHasErrors;
       _deleteButton.disabled = inputHasErrors || !_saveButton.disabled;
     };
   }
 
-  model.Contact get contact => new model.Contact.empty()
-    ..ID = int.parse(_cidInput.value)
-    ..receptionID = int.parse(_ridInput.value)
-    ..backupContacts = _valuesFromListTextArea(_backupContactsInput)
-    ..departments = _valuesFromListTextArea(_departmentsInput)
-    ..emailaddresses = _valuesFromListTextArea(_emailAddessesInput)
-    ..handling = _valuesFromListTextArea(_handlingInput)
-    ..infos = _valuesFromListTextArea(_infoInput)
-    ..messagePrerequisites = _valuesFromListTextArea(_messagePrerequisiteInput)
-    ..relations = _valuesFromListTextArea(_relationsInput)
-    ..responsibilities = _valuesFromListTextArea(_responsibilitiesInput)
-    ..statusEmail = _statusEmailInput.checked
-    ..tags = _valuesFromListTextArea(_tagsInput)
-    ..titles = _valuesFromListTextArea(_titlesInput)
-    ..workhours = _valuesFromListTextArea(_workHoursInput)
-    ..phones = _phoneNumberView.phoneNumbers.toList();
+  model.ReceptionAttributes get attributes =>
+      new model.ReceptionAttributes.empty()
+        ..contactId = int.parse(_cidInput.value)
+        ..receptionId = int.parse(_ridInput.value)
+        ..backupContacts = _valuesFromListTextArea(_backupContactsInput)
+        ..departments = _valuesFromListTextArea(_departmentsInput)
+        ..emailaddresses = _valuesFromListTextArea(_emailAddessesInput)
+        ..handling = _valuesFromListTextArea(_handlingInput)
+        ..infos = _valuesFromListTextArea(_infoInput)
+        ..messagePrerequisites =
+            _valuesFromListTextArea(_messagePrerequisiteInput)
+        ..relations = _valuesFromListTextArea(_relationsInput)
+        ..responsibilities = _valuesFromListTextArea(_responsibilitiesInput)
+        ..statusEmail = _statusEmailInput.checked
+        ..tags = _valuesFromListTextArea(_tagsInput)
+        ..titles = _valuesFromListTextArea(_titlesInput)
+        ..workhours = _valuesFromListTextArea(_workHoursInput)
+        ..phones = _phoneNumberView.phoneNumbers.toList();
 
-  void set contact(model.Contact contact) {
-    _ridInput.value = contact.receptionID.toString();
-    _cidInput.value = contact.ID.toString();
+  void set attributes(model.ReceptionAttributes contact) {
+    _ridInput.value = contact.receptionId.toString();
+    _cidInput.value = contact.contactId.toString();
 
     _tagsInput.value = contact.tags.join('\n');
-    _statusEmailInput.checked = contact.wantsMessage;
+    _statusEmailInput.checked = contact.statusEmail;
     _backupContactsInput.value = contact.backupContacts.join('\n');
     _handlingInput.value = contact.handling.join('\n');
     _departmentsInput.value = contact.departments.join('\n');
@@ -344,18 +304,10 @@ class ReceptionContact {
     _phoneNumberView.phoneNumbers = contact.phones;
     _workHoursInput.value = contact.workhours.join('\n');
 
-    _endpointController.list(contact.receptionID, contact.ID).then((eps) {
-      _endpointsView.endpoints = eps;
-    });
+    _endpointsView.endpoints = contact.endpoints;
 
-    _dlistController.list(contact.receptionID, contact.ID).then((dlist) {
-      _distributionsListView.distributionList = dlist;
-      _distributionsListView.owner = contact;
-    });
-
-    _receptionController.get(contact.receptionID).then((model.Reception r) {
-      _header.text = '${r.name} (rid: ${r.ID})';
-      _distributionsListView.receptionName = r.name;
+    _receptionController.get(contact.receptionId).then((model.Reception r) {
+      _header.text = '${r.name} (rid: ${r.id})';
     });
 
     _deleteButton.disabled = !_saveButton.disabled;

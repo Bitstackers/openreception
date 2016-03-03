@@ -56,7 +56,7 @@ class Messages {
   }
 
   TableRowElement _entryToRow(model.Message msg) {
-    final changeCell = new TableCellElement();
+    //final changeCell = new TableCellElement();
     final ButtonElement deleteButton = new ButtonElement()
       ..text = 'Slet'
       ..classes.add('delete');
@@ -64,11 +64,11 @@ class Messages {
       ..children = msg.sent || msg.enqueued ? [] : [deleteButton];
 
     deleteButton.onClick.listen((_) async {
-      final confirmText = 'Bekræft sletning af mid${msg.ID}?';
+      final confirmText = 'Bekræft sletning af mid${msg.id}?';
 
       if (deleteButton.text == confirmText) {
-        await _msgController.remove(msg.ID);
-        notify.success('Slettede besked', 'mid:${msg.ID}');
+        await _msgController.remove(msg.id);
+        notify.success('Slettede besked', 'mid:${msg.id}');
 
         onDelete != null ? onDelete() : '';
       } else {
@@ -116,7 +116,7 @@ class Messages {
           ..text = '$prefix '
           ..style.fontWeight = 'bold',
         new SpanElement()
-          ..text = rfc3339.format(change.changedAt) + ' - ${change.username}'
+          ..text = rfc3339.format(change.changedAt) + ' - ${change.author}'
       ];
 
     return li;

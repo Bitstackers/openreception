@@ -30,7 +30,7 @@ class Organization {
 
   final LabelElement _oidLabel = new LabelElement()..text = 'orgid:??';
   final HiddenInputElement _idInput = new HiddenInputElement()
-    ..value = model.Organization.noID.toString();
+    ..value = model.Organization.noId.toString();
   final ButtonElement _saveButton = new ButtonElement()
     ..classes.add('save')
     ..text = 'Gem';
@@ -47,14 +47,14 @@ class Organization {
   void set organization(model.Organization org) {
     _id = org.id;
     _billingTypeInput.value = org.billingType;
-    _flagInput.value = org.flag;
-    _nameInput.value = org.fullName;
+    _flagInput.value = org.flags.join(', ');
+    _nameInput.value = org.name;
 
     element.hidden = false;
 
-    if (organization.id != model.Organization.noID) {
+    if (organization.id != model.Organization.noId) {
       _heading.text =
-          'Retter organisation: "${org.fullName}" - (oid: ${organization.id})';
+          'Retter organisation: "${org.name}" - (oid: ${organization.id})';
       _saveButton.disabled = true;
     } else {
       _heading.text = 'Opretter ny organisation';
@@ -70,8 +70,9 @@ class Organization {
   model.Organization get organization => new model.Organization.empty()
     ..id = _id
     ..billingType = _billingTypeInput.value
-    ..flag = _flagInput.value
-    ..fullName = _nameInput.value;
+    ..flags = new List<String>.from(
+        _flagInput.value.split(',').map((str) => str.trim()))
+    ..name = _nameInput.value;
 
   /**
    *
@@ -131,7 +132,7 @@ class Organization {
         await _orgController.remove(organization.id);
         _changeBus.fire(new OrganizationChange.delete(organization));
         element.hidden = true;
-        notify.success('Organisationen blev slettet', organization.fullName);
+        notify.success('Organisationen blev slettet', organization.name);
       } catch (error) {
         notify.error('Der skete en fejl, så organisationen blev ikke slettet.',
             'Fejl: $error');
@@ -143,11 +144,13 @@ class Organization {
 
     _saveButton.onClick.listen((_) async {
       element.hidden = true;
-      if (organization.id == model.Organization.noID) {
+      if (organization.id == model.Organization.noId) {
         try {
-          model.Organization newOrg = await _orgController.create(organization);
-          _changeBus.fire(new OrganizationChange.create(newOrg));
-          notify.success('Organisationen blev oprettet', newOrg.fullName);
+          model.OrganizationReference newOrg =
+              await _orgController.create(organization);
+          _changeBus.fire(new OrganizationChange.create(
+              await _orgController.get(newOrg.id)));
+          notify.success('Organisationen blev oprettet', newOrg.name);
         } catch (error) {
           notify.error(
               'Der skete en fejl, så organisationen blev ikke oprettet',
@@ -159,7 +162,7 @@ class Organization {
         try {
           await _orgController.update(organization);
           _changeBus.fire(new OrganizationChange.update(organization));
-          notify.success('Ændringerne blev gemt', organization.fullName);
+          notify.success('Ændringerne blev gemt', organization.name);
         } catch (error) {
           notify.error('Kunne ikke gemme ændringerne til organisationen',
               'Fejl: $error');

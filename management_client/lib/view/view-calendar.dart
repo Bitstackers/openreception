@@ -62,12 +62,11 @@ class Calendar {
 
     deleteButton.onClick.listen((_) async {
       final confirmText = 'Bekræft ${_containsDeleted ? 'fuldstændig' :''}'
-          ' sletning af eid${entry.ID}?';
+          ' sletning af eid${entry.id}?';
 
       if (deleteButton.text == confirmText) {
-        await _calendarController.remove(entry, config.user,
-            purge: _containsDeleted);
-        notify.success('Slettede kalenderpost', 'eid:${entry.ID}');
+        await _calendarController.remove(entry, config.user);
+        notify.success('Slettede kalenderpost', 'eid:${entry.id}');
 
         onDelete != null ? onDelete() : '';
       } else {
@@ -76,7 +75,7 @@ class Calendar {
     });
 
     _calendarController
-        .changes(entry.ID)
+        .changes(entry.id)
         .then((Iterable<model.CalendarEntryChange> changes) {
       UListElement changeUl = new UListElement();
       List changeList = changes.toList();
@@ -128,7 +127,7 @@ class Calendar {
           ..text = '$prefix '
           ..style.fontWeight = 'bold',
         new SpanElement()
-          ..text = rfc3339.format(change.changedAt) + ' - ${change.username}'
+          ..text = rfc3339.format(change.changedAt) + ' - ${change.author}'
       ];
 
     return li;

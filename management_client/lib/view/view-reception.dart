@@ -30,7 +30,7 @@ class Reception {
 
   final LabelElement _oidLabel = new LabelElement()..text = 'rid:??';
   final HiddenInputElement _idInput = new HiddenInputElement()
-    ..value = model.Reception.noID.toString();
+    ..value = model.Reception.noId.toString();
   final ButtonElement _saveButton = new ButtonElement()
     ..classes.add('save')
     ..text = 'Gem';
@@ -68,7 +68,8 @@ class Reception {
     ..classes.add('wide')
     ..value = '';
 
-  final CheckboxInputElement _activeInput = new CheckboxInputElement()..checked = true;
+  final CheckboxInputElement _activeInput = new CheckboxInputElement()
+    ..checked = true;
 
   final TextAreaElement _productInput = new TextAreaElement()
     ..classes.add('wide')
@@ -122,8 +123,8 @@ class Reception {
 
   final DivElement _organizationSelector = new DivElement();
 
-  SearchComponent<model.Organization> _search;
-  int _organizationId = model.Organization.noID;
+  SearchComponent<model.OrganizationReference> _search;
+  int _organizationId = model.Organization.noId;
 
   final AnchorElement _calendarToggle = new AnchorElement()
     ..href = '#calendar'
@@ -138,10 +139,10 @@ class Reception {
     _calendarToggle..text = 'Vis kalenderaftaler';
     _organizationId = r.organizationId;
     _heading.text = r.name;
-    _idInput.value = r.ID.toString();
+    _idInput.value = r.id.toString();
 
-    _nameInput.value = r.fullName;
-    _oidLabel.text = 'rid:${r.ID}';
+    _nameInput.value = r.name;
+    _oidLabel.text = 'rid:${r.id}';
     _greetingInput.value = r.greeting;
     _shortGreetingInput.value = r.shortGreeting;
     _dialplanInput.value = r.dialplan != null ? r.dialplan : 'empty';
@@ -157,20 +158,26 @@ class Reception {
 
     _addressesInput.value = r.addresses != null ? r.addresses.join('\n') : '';
 
-    _alternateNamesInput.value = r.alternateNames != null ? r.alternateNames.join('\n') : '';
+    _alternateNamesInput.value =
+        r.alternateNames != null ? r.alternateNames.join('\n') : '';
     _bankingInformationInput.value =
         r.bankingInformation != null ? r.bankingInformation.join('\n') : '';
-    _salesMarketingHandlingInput.value =
-        r.salesMarketingHandling != null ? r.salesMarketingHandling.join('\n') : '';
-    _emailAddressesInput.value = r.emailAddresses != null ? r.emailAddresses.join('\n') : '';
+    _salesMarketingHandlingInput.value = r.salesMarketingHandling != null
+        ? r.salesMarketingHandling.join('\n')
+        : '';
+    _emailAddressesInput.value =
+        r.emailAddresses != null ? r.emailAddresses.join('\n') : '';
 
-    _openingHoursInput.value = r.openingHours != null ? r.openingHours.join('\n') : '';
+    _openingHoursInput.value =
+        r.openingHours != null ? r.openingHours.join('\n') : '';
 
-    _vatNumbersInput.value = r.vatNumbers != null ? r.vatNumbers.join('\n') : '';
+    _vatNumbersInput.value =
+        r.vatNumbers != null ? r.vatNumbers.join('\n') : '';
 
     _websitesInput.value = r.websites != null ? r.websites.join('\n') : '';
 
-    _customerTypesInput.value = r.customerTypes != null ? r.customerTypes.join('\n') : '';
+    _customerTypesInput.value =
+        r.customerTypes != null ? r.customerTypes.join('\n') : '';
 
     _instructionsInput.value =
         r.handlingInstructions != null ? r.handlingInstructions.join('\n') : '';
@@ -182,8 +189,9 @@ class Reception {
     _otherDataInput.value = r.otherData;
     _productInput.value = r.product;
 
-    if (reception.ID != model.Reception.noID) {
-      _heading.text = 'Retter reception "${reception.name}" (rid:${reception.ID})';
+    if (reception.id != model.Reception.noId) {
+      _heading.text =
+          'Retter reception "${reception.name}" (rid:${reception.id})';
       _saveButton.disabled = true;
     } else {
       _heading.text = 'Opretter ny reception';
@@ -197,25 +205,26 @@ class Reception {
     _deployDialplanButton.disabled = _deleteButton.disabled;
 
     _calendarController
-        .listReception(reception.ID, deleted: false)
+        .listReception(reception.id, deleted: false)
         .then((Iterable<model.CalendarEntry> entries) {
       _calendarView.entries = entries;
     });
 
     _calendarController
-        .listReception(reception.ID, deleted: true)
+        .listReception(reception.id, deleted: true)
         .then((Iterable<model.CalendarEntry> entries) {
       _deletedCalendarView.entries = entries;
     });
 
-    _orgController.list().then((Iterable<model.Organization> orgs) {
-      int compareTo(model.Organization org1, model.Organization org2) =>
-          org1.fullName.compareTo(org2.fullName);
+    _orgController.list().then((Iterable<model.OrganizationReference> orgs) {
+      int compareTo(model.OrganizationReference org1,
+              model.OrganizationReference org2) =>
+          org1.name.compareTo(org2.name);
 
       List list = orgs.toList()..sort(compareTo);
       _search.updateSourceList(list);
 
-      _search.selectElement(null, (model.Organization listItem, _) {
+      _search.selectElement(null, (model.OrganizationReference listItem, _) {
         return listItem.id == r.organizationId;
       });
 
@@ -227,8 +236,8 @@ class Reception {
    *
    */
   model.Reception get reception => new model.Reception.empty()
-    ..ID = int.parse(_idInput.value)
-    ..fullName = _nameInput.value
+    ..id = int.parse(_idInput.value)
+    ..name = _nameInput.value
     ..addresses = _valuesFromListTextArea(_addressesInput)
     ..alternateNames = _valuesFromListTextArea(_alternateNamesInput)
     ..bankingInformation = _valuesFromListTextArea(_bankingInformationInput)
@@ -245,7 +254,8 @@ class Reception {
     ..organizationId = _organizationId
     ..otherData = _otherDataInput.value
     ..product = _productInput.value
-    ..salesMarketingHandling = _valuesFromListTextArea(_salesMarketingHandlingInput)
+    ..salesMarketingHandling =
+        _valuesFromListTextArea(_salesMarketingHandlingInput)
     ..telephoneNumbers = _phoneNumberView.phoneNumbers.toList()
     ..vatNumbers = _valuesFromListTextArea(_vatNumbersInput)
     ..websites = _valuesFromListTextArea(_websitesInput);
@@ -253,8 +263,8 @@ class Reception {
   /**
    *
    */
-  Reception(
-      this._recController, this._orgController, this._dpController, this._calendarController) {
+  Reception(this._recController, this._orgController, this._dpController,
+      this._calendarController) {
     _phoneNumberView = new Phonenumbers();
     _calendarView = new Calendar(_calendarController, false);
     _deletedCalendarView = new Calendar(_calendarController, true);
@@ -270,20 +280,25 @@ class Reception {
     _calendarToggle.onClick.listen((_) {
       _calendarsContainer.hidden = !_calendarsContainer.hidden;
 
-      _calendarToggle.text =
-          _calendarsContainer.hidden ? 'Vis kalenderaftaler' : 'Skjul kalenderaftaler';
+      _calendarToggle.text = _calendarsContainer.hidden
+          ? 'Vis kalenderaftaler'
+          : 'Skjul kalenderaftaler';
     });
 
-    _search = new SearchComponent<model.Organization>(
+    _search = new SearchComponent<model.OrganizationReference>(
         _organizationSelector, 'reception-organization-searchbox')
-      ..selectedElementChanged = (model.Organization organization) {
+      ..selectedElementChanged = (model.OrganizationReference organization) {
         _organizationId = organization.id;
       }
-      ..listElementToString = (model.Organization organization, String searchterm) {
-        return '${organization.fullName}';
+      ..listElementToString =
+          (model.OrganizationReference organization, String searchterm) {
+        return '${organization.name}';
       }
-      ..searchFilter = (model.Organization organization, String searchTerm) {
-        return organization.fullName.toLowerCase().contains(searchTerm.toLowerCase());
+      ..searchFilter =
+          (model.OrganizationReference organization, String searchTerm) {
+        return organization.name
+            .toLowerCase()
+            .contains(searchTerm.toLowerCase());
       }
       ..searchPlaceholder = 'Søg...';
 
@@ -448,13 +463,13 @@ class Reception {
 
     _deletedCalendarView.onDelete = () async {
       _calendarController
-          .listReception(reception.ID, deleted: false)
+          .listReception(reception.id, deleted: false)
           .then((Iterable<model.CalendarEntry> entries) {
         _calendarView.entries = entries;
       });
 
       _calendarController
-          .listReception(reception.ID, deleted: true)
+          .listReception(reception.id, deleted: true)
           .then((Iterable<model.CalendarEntry> entries) {
         _deletedCalendarView.entries = entries;
       });
@@ -462,13 +477,13 @@ class Reception {
 
     _calendarView.onDelete = () async {
       _calendarController
-          .listReception(reception.ID, deleted: false)
+          .listReception(reception.id, deleted: false)
           .then((Iterable<model.CalendarEntry> entries) {
         _calendarView.entries = entries;
       });
 
       _calendarController
-          .listReception(reception.ID, deleted: true)
+          .listReception(reception.id, deleted: true)
           .then((Iterable<model.CalendarEntry> entries) {
         _deletedCalendarView.entries = entries;
       });
@@ -490,12 +505,12 @@ class Reception {
 
     _deleteButton.onClick.listen((_) async {
       if (_deleteButton.text.toLowerCase() == 'slet') {
-        _deleteButton.text = 'Bekræft sletning af rid:${reception.ID}?';
+        _deleteButton.text = 'Bekræft sletning af rid:${reception.id}?';
         return;
       }
 
       try {
-        await _recController.remove(reception.ID);
+        await _recController.remove(reception.id);
         _changeBus.fire(new ReceptionChange.delete(reception));
         element.hidden = true;
         notify.success('Receptionen blev slettet', reception.name);
@@ -514,11 +529,13 @@ class Reception {
 
     _saveButton.onClick.listen((_) async {
       element.hidden = true;
-      if (reception.ID == model.Reception.noID) {
+      if (reception.id == model.Reception.noId) {
         try {
-          model.Reception newRec = await _recController.create(reception);
-          _changeBus.fire(new ReceptionChange.create(newRec));
-          notify.success('Receptionen blev oprettet', reception.fullName);
+          model.ReceptionReference newRec =
+              await _recController.create(reception);
+          _changeBus.fire(
+              new ReceptionChange.create(await _recController.get(newRec.id)));
+          notify.success('Receptionen blev oprettet', reception.name);
         } catch (error) {
           notify.error('Receptionen kunne ikke oprettes', 'Fejl: $error');
           _log.severe('Tried to create a new reception, but got: $error');
@@ -543,8 +560,9 @@ class Reception {
         _deployDialplanButton.disabled = true;
 
         _dialplanMiniLog.text += 'Uruller kaldplan ${reception.dialplan} til '
-            'reception ${reception.fullName} (rid: ${reception.ID})...\n';
-        List<String> files = await _dpController.deploy(reception.dialplan, reception.ID);
+            'reception ${reception.name} (rid: ${reception.id})...\n';
+        List<String> files =
+            await _dpController.deploy(reception.dialplan, reception.id);
         _dialplanMiniLog.text += 'Udrullede ${files.length} nye filer:\n';
         _dialplanMiniLog.text += files.join('\n') + '\n';
         _dialplanMiniLog.text += 'Genindlæser konfiguration\n';
@@ -553,7 +571,7 @@ class Reception {
         notify.success(
             'Udrullede kaldplan',
             'Kaldplan ${reception.dialplan} til '
-            'reception ${reception.name} (rid: ${reception.ID})');
+            'reception ${reception.name} (rid: ${reception.id})');
       } catch (e, s) {
         _log.severe('Could not deploy dialplan', e, s);
         notify.error('Kunne ikke udrulle kaldplan!', 'Fejl: $e');

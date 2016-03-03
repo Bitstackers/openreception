@@ -22,7 +22,6 @@ class Endpoints {
   Function onChange;
 
   final controller.Contact _contactController;
-  final controller.Endpoint _endpointController;
 
   final DivElement element = new DivElement();
   final DivElement _header = new DivElement()
@@ -49,7 +48,8 @@ class Endpoints {
     ..style.margin = '0px'
     ..style.padding = '0px 0px 4px 0px';
 
-  final TextAreaElement _endpointsInput = new TextAreaElement()..classes.add('wide');
+  final TextAreaElement _endpointsInput = new TextAreaElement()
+    ..classes.add('wide');
 
   final ButtonElement _unfoldJson = new ButtonElement()
     ..text = 'Fold ud'
@@ -57,7 +57,7 @@ class Endpoints {
 
   List<model.MessageEndpoint> _originalList = [];
 
-  Endpoints(controller.Contact this._contactController, this._endpointController) {
+  Endpoints(controller.Contact this._contactController) {
     _buttons.children = [_addNew, _foldJson, _unfoldJson];
     _header.children = [_label, _buttons];
     element.children = [_header, _endpointsInput];
@@ -71,33 +71,16 @@ class Endpoints {
         ..confidential = false
         ..description = 'Kort beskrivelse'
         ..enabled = true
-        ..type = model.MessageEndpointType.EMAIL;
+        ..type = model.MessageEndpointType.email;
 
       if (_unfoldJson.hidden) {
-        _endpointsInput.value = _jsonpp.convert(endpoints.toList()..add(template));
+        _endpointsInput.value =
+            _jsonpp.convert(endpoints.toList()..add(template));
       } else {
         endpoints = endpoints.toList()..add(template);
       }
 
       _resizeInput();
-
-      if (onChange != null) {
-        onChange();
-      }
-    });
-
-    _endpointsInput.onInput.listen((_) {
-      _validationError = false;
-      _endpointsInput.classes.toggle('error', false);
-      try {
-        final eps = endpoints;
-
-        ///TODO: Validate endpoints
-
-      } on FormatException {
-        _validationError = true;
-        _endpointsInput.classes.toggle('error', true);
-      }
 
       if (onChange != null) {
         onChange();

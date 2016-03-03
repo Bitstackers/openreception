@@ -2,25 +2,25 @@ part of management_tool.controller;
 
 class Organization {
   final service.RESTOrganizationStore _service;
+  final model.User _appUser;
 
-  Organization(this._service);
+  Organization(this._service, this._appUser);
 
-  Future<model.Organization> get(int organizationID) =>
-      _service.get(organizationID);
+  Future<model.Organization> get(int oid) => _service.get(oid);
 
-  Future<Iterable<model.Organization>> list() => _service.list();
+  Future<Iterable<model.OrganizationReference>> list() => _service.list();
 
-  Future<Iterable<model.BaseContact>> contacts(int organizationID) =>
-      _service.contacts(organizationID);
+  Future<Iterable<model.ContactReference>> contacts(int oid) =>
+      _service.contacts(oid);
 
-  Future<Iterable<int>> receptions(int organizationID) =>
-      _service.receptions(organizationID);
+  Future<Iterable<model.ReceptionReference>> receptions(int oid) =>
+      _service.receptions(oid);
 
-  Future remove(int organizationID) => _service.remove(organizationID);
+  Future remove(int oid) => _service.remove(oid, _appUser);
 
-  Future<model.Organization> create(model.Organization org) =>
-      _service.create(org);
+  Future<model.OrganizationReference> create(model.Organization org) =>
+      _service.create(org, _appUser);
 
-  Future<model.Organization> update(model.Organization org) =>
-      _service.update(org);
+  Future<model.OrganizationReference> update(model.Organization org) =>
+      _service.update(org, _appUser);
 }

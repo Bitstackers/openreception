@@ -47,10 +47,13 @@ class OrganizationView {
 
   view.Organization _organizationView;
 
-  List<ORModel.Organization> _organizations = new List<ORModel.Organization>();
+  List<ORModel.OrganizationReference> _organizations =
+      new List<ORModel.OrganizationReference>();
 
-  List<ORModel.Contact> _currentContactList = new List<ORModel.Contact>();
-  List<ORModel.Reception> _currentReceptionList = new List<ORModel.Reception>();
+  List<ORModel.ContactReference> _currentContactList =
+      new List<ORModel.ContactReference>();
+  List<ORModel.ReceptionReference> _currentReceptionList =
+      new List<ORModel.ReceptionReference>();
 
   /**
    *
@@ -135,7 +138,7 @@ class OrganizationView {
   }
 
   void _clearRightBar() {
-    _currentContactList.clear();
+    //_currentContactList.clear();
     _currentReceptionList.clear();
     _ulContactList.children.clear();
     _ulReceptionList.children.clear();
@@ -146,9 +149,9 @@ class OrganizationView {
    */
   void _performSearch() {
     String searchText = _searchBox.value;
-    List<ORModel.Organization> filteredList = _organizations
-        .where((ORModel.Organization org) =>
-            org.fullName.toLowerCase().contains(searchText.toLowerCase()))
+    List<ORModel.OrganizationReference> filteredList = _organizations
+        .where((ORModel.OrganizationReference org) =>
+            org.name.toLowerCase().contains(searchText.toLowerCase()))
         .toList();
     _renderOrganizationList(filteredList);
   }
@@ -159,9 +162,10 @@ class OrganizationView {
   Future _refreshList() async {
     await _organizationController
         .list()
-        .then((Iterable<ORModel.Organization> organizations) {
-      int compareTo(ORModel.Organization org1, ORModel.Organization org2) =>
-          org1.fullName.compareTo(org2.fullName);
+        .then((Iterable<ORModel.OrganizationReference> organizations) {
+      int compareTo(ORModel.OrganizationReference org1,
+              ORModel.OrganizationReference org2) =>
+          org1.name.compareTo(org2.name);
 
       List list = organizations.toList()..sort(compareTo);
       this._organizations = list;
@@ -172,17 +176,18 @@ class OrganizationView {
     });
   }
 
-  void _renderOrganizationList(List<ORModel.Organization> organizations) {
+  void _renderOrganizationList(
+      List<ORModel.OrganizationReference> organizations) {
     _orgUList.children
       ..clear()
       ..addAll(organizations.map(_makeOrganizationNode));
   }
 
-  LIElement _makeOrganizationNode(ORModel.Organization organization) {
+  LIElement _makeOrganizationNode(ORModel.OrganizationReference organization) {
     return new LIElement()
       ..classes.add('clickable')
       ..dataset['organizationid'] = '${organization.id}'
-      ..text = '${organization.fullName}'
+      ..text = '${organization.name}'
       ..onClick.listen((_) {
         _activateOrganization(organization.id);
       });
@@ -214,30 +219,20 @@ class OrganizationView {
   void _updateReceptionList(int organizationId) {
     _organizationController
         .receptions(organizationId)
-        .then((Iterable<int> receptionIDs) {
-      List list = [];
-      Future
-          .forEach(receptionIDs,
-              (int id) => _receptionController.get(id).then(list.add))
-          .then((_) {
-        list.sort(_compareReception);
-        _currentReceptionList = list;
-        _ulReceptionList.children
-          ..clear()
-          ..addAll(list.map(_makeReceptionNode));
-      });
+        .then((Iterable<ORModel.ReceptionReference> rRefs) {
+      _currentReceptionList = rRefs.toList();
+      _ulReceptionList.children
+        ..clear()
+        ..addAll(rRefs.map(_makeReceptionNode));
     });
   }
 
-  LIElement _makeReceptionNode(ORModel.Reception reception) {
+  LIElement _makeReceptionNode(ORModel.ReceptionReference rRef) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
-      ..text = '${reception.fullName}'
+      ..text = '${rRef.name}'
       ..onClick.listen((_) {
-        Map data = {
-          'organization_id': reception.organizationId,
-          'reception_id': reception.ID
-        };
+        Map data = {'reception_id': rRef.id};
         bus.fire(new WindowChanged('reception', data));
       });
     return li;
@@ -246,16 +241,16 @@ class OrganizationView {
   void _updateContactList(int organizationId) {
     _organizationController
         .contacts(organizationId)
-        .then((Iterable<ORModel.BaseContact> contacts) {
-      int compareTo(ORModel.BaseContact c1, ORModel.BaseContact c2) =>
-          c1.fullName.toLowerCase().compareTo(c2.fullName.toLowerCase());
+        .then((Iterable<ORModel.ContactReference> contacts) {
+      int compareTo(ORModel.ContactReference c1, ORModel.ContactReference c2) =>
+          c1.name.toLowerCase().compareTo(c2.name.toLowerCase());
 
       List list = contacts.toList()..sort(compareTo);
 
       _currentContactList = list
           .map((c) => new ORModel.BaseContact.empty()
             ..id = c.id
-            ..fullName = c.fullName)
+            ..name = c.name)
           .toList();
       _ulContactList.children
         ..clear()
@@ -267,17 +262,14 @@ class OrganizationView {
     });
   }
 
-  LIElement _makeContactNode(ORModel.BaseContact contact) {
+  LIElement _makeContactNode(ORModel.ContactReference cRef) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
-      ..text = '${contact.fullName}'
+      ..text = '${cRef.name}'
       ..onClick.listen((_) {
-        Map data = {'contact_id': contact.id};
+        Map data = {'contact_id': cRef.id};
         bus.fire(new WindowChanged('contact', data));
       });
     return li;
   }
 }
-
-int _compareReception(ORModel.Reception r1, ORModel.Reception r2) =>
-    r1.fullName.compareTo(r2.fullName);

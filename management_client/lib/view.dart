@@ -17,7 +17,6 @@ part 'view/view-calendar.dart';
 part 'view/view-dialplan_calendar_plot.dart';
 part 'view/view-dialplan.dart';
 part 'view/view-dialplan_list.dart';
-part 'view/view-distributionlist.dart';
 part 'view/view-endpoint.dart';
 part 'view/view-ivr_menu.dart';
 part 'view/view-message_filter.dart';

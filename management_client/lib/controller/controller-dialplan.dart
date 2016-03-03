@@ -8,9 +8,8 @@ class Dialplan {
 
   Future<Iterable<model.ReceptionDialplan>> list() => _dpStore.list();
 
-  Future<Iterable<model.Reception>> listUsage(String extension) async =>
-      (await _rStore.list())
-          .where((model.Reception r) => r.dialplan == extension);
+  Future<model.Reception> getByExtensions(String extension) =>
+      _rStore.getByExtension(extension);
 
   Future<model.ReceptionDialplan> get(String extension) =>
       _dpStore.get(extension);

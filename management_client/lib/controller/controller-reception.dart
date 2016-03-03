@@ -2,18 +2,19 @@ part of management_tool.controller;
 
 class Reception {
   final service.RESTReceptionStore _service;
+  final model.User _appUser;
 
-  Reception(this._service);
+  Reception(this._service, this._appUser);
 
-  Future<model.Reception> create(model.Reception reception) =>
-      _service.create(reception);
+  Future<model.ReceptionReference> create(model.Reception r) =>
+      _service.create(r, _appUser);
 
-  Future<model.Reception> get(int receptionID) => _service.get(receptionID);
+  Future<model.Reception> get(int rid) => _service.get(rid);
 
-  Future remove(int receptionID) => _service.remove(receptionID);
+  Future remove(int rid) => _service.remove(rid, _appUser);
 
-  Future<model.Reception> update(model.Reception reception) =>
-      _service.update(reception);
+  Future<model.ReceptionReference> update(model.Reception r) =>
+      _service.update(r, _appUser);
 
-  Future<Iterable<model.Reception>> list() => _service.list();
+  Future<Iterable<model.ReceptionReference>> list() => _service.list();
 }

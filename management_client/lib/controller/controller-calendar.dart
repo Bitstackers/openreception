@@ -9,7 +9,7 @@ class Calendar {
       _calendarService.changes(entryId);
 
   Future get(model.CalendarEntry entry, model.User user) =>
-      _calendarService.remove(entry.ID, user.id);
+      _calendarService.remove(entry.id, user.id);
 
   Future<Iterable<model.CalendarEntry>> listContact(int contactId,
           {bool deleted: false}) =>
@@ -23,15 +23,12 @@ class Calendar {
 
   Future<model.CalendarEntry> create(
           model.CalendarEntry entry, model.User user) =>
-      _calendarService.create(entry, user.id);
+      _calendarService.create(entry, user);
 
   Future<model.CalendarEntry> update(
           model.CalendarEntry entry, model.User user) =>
       _calendarService.update(entry, user.id);
 
-  Future remove(model.CalendarEntry entry, model.User user,
-          {bool purge: false}) =>
-      purge
-          ? _calendarService.purge(entry.ID)
-          : _calendarService.remove(entry.ID, user.id);
+  Future remove(model.CalendarEntry entry, model.User user) =>
+      _calendarService.remove(entry.id, user.id);
 }

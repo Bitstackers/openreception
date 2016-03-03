@@ -2,53 +2,54 @@ part of management_tool.controller;
 
 class Contact {
   final service.RESTContactStore _service;
+  final model.User _appUser;
 
-  Contact(this._service);
+  Contact(this._service, this._appUser);
 
-  Future<Iterable<model.Contact>> list(int receptionID) =>
-      _service.listByReception(receptionID);
+  Future<Iterable<model.ReceptionAttributes>> receptionAttributes(int rid) =>
+      _service.listByReception(rid);
 
-  Future<Iterable<int>> contactOrganizations(int contactID) =>
-      _service.organizations(contactID);
+  Future<Iterable<model.OrganizationReference>> contactOrganizations(int cid) =>
+      _service.organizations(cid);
 
-  Future<model.Contact> getByReception(int contactID, int receptionID) =>
-      _service.getByReception(contactID, receptionID);
+  Future<model.ReceptionAttributes> getByReception(int cid, int rid) =>
+      _service.getByReception(cid, rid);
 
-  Future<Iterable<model.BaseContact>> listAll() => _service.list();
+  Future<Iterable<model.ContactReference>> list() => _service.list();
 
-  Future<model.BaseContact> get(int contactID) => _service.get(contactID);
+  Future<model.BaseContact> get(int cid) => _service.get(cid);
 
-  Future<model.BaseContact> update(model.BaseContact contact) =>
-      _service.update(contact);
+  Future<model.ContactReference> update(model.BaseContact contact) =>
+      _service.update(contact, _appUser);
 
-  Future<model.BaseContact> create(model.BaseContact contact) =>
-      _service.create(contact);
+  Future<model.ContactReference> create(model.BaseContact contact) =>
+      _service.create(contact, _appUser);
 
-  Future remove(int contactId) => _service.remove(contactId);
+  Future remove(int cid) => _service.remove(cid, _appUser);
 
-  Future<Iterable<int>> receptions(int contactID) =>
-      _service.receptions(contactID);
+  Future<Iterable<model.ReceptionReference>> receptions(int cid) =>
+      _service.receptions(cid);
 
-  Future<model.Contact> addToReception(
-          model.Contact contact, int receptionId) =>
-      _service.addToReception(contact, receptionId);
+  Future<model.ReceptionContactReference> addToReception(
+          model.ReceptionAttributes attr) =>
+      _service.addToReception(attr, _appUser);
 
-  Future removeFromReception(int contactId, int receptionId) =>
-      _service.removeFromReception(contactId, receptionId);
+  Future removeFromReception(int cid, int rid) =>
+      _service.removeFromReception(cid, rid, _appUser);
 
-  Future<model.Contact> updateInReception(model.Contact contact) =>
-      _service.updateInReception(contact);
+  Future<model.ReceptionContactReference> updateInReception(
+          model.ReceptionAttributes attr) =>
+      _service.updateInReception(attr, _appUser);
 
-  Future<Iterable<model.Contact>> colleagues(int contactId) {
-    List<model.Contact> foundColleagues = [];
+  Future<Iterable<model.ReceptionAttributes>> colleagues(int cid) {
+    List<model.ReceptionAttributes> foundColleagues = [];
 
     return _service
-        .receptions(contactId)
-        .then((Iterable<int> receptionIds) => Future.forEach(
-            receptionIds,
-            (int receptionId) => _service
-                .listByReception(receptionId)
-                .then(foundColleagues.addAll)))
+        .receptions(cid)
+        .then((Iterable<model.ReceptionReference> rRefs) => Future.forEach(
+            rRefs,
+            (rRef) =>
+                _service.listByReception(rRef.id).then(foundColleagues.addAll)))
         .then((_) => foundColleagues);
   }
 }

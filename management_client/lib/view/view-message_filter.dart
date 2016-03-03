@@ -30,7 +30,7 @@ class MessageFilter {
   int get _cid {
     if (_contactSelector.selectedOptions.length < 1 ||
         _contactSelector.disabled) {
-      return model.Contact.noID;
+      return model.BaseContact.noId;
     }
 
     return int.parse(_contactSelector.selectedOptions.first.value);
@@ -76,7 +76,7 @@ class MessageFilter {
       _reloadContactSelector();
       onChange != null ? onChange() : '';
 
-      _contactSelector.disabled = _rid == model.Contact.noID;
+      _contactSelector.disabled = _rid == model.BaseContact.noId;
     });
 
     _contactSelector.onInput.listen((_) {
@@ -88,17 +88,19 @@ class MessageFilter {
    *
    */
   Future _reloadContactSelector() async {
-    Iterable<model.Contact> contacts =
-        _rid != model.Reception.noID ? await _contactController.list(_rid) : [];
+    Iterable<model.ReceptionAttributes> contacts = _rid != model.Reception.noId
+        ? await _contactController.receptionAttributes(_rid)
+        : [];
 
-    OptionElement contactToOption(model.Contact contact) => new OptionElement()
-      ..label = contact.fullName
-      ..value = contact.ID.toString();
+    OptionElement contactToOption(model.ReceptionAttributes attr) =>
+        new OptionElement()
+          ..label = attr.reference.contact.name
+          ..value = attr.contactId.toString();
 
     _contactSelector.children = [
       new OptionElement()
         ..text = ''
-        ..value = model.Contact.noID.toString()
+        ..value = model.BaseContact.noId.toString()
     ]..addAll(contacts.map(contactToOption));
   }
 
@@ -106,9 +108,9 @@ class MessageFilter {
    *
    */
   Future _reloadUserSelector() async {
-    Iterable<model.User> users = await _userController.list();
+    Iterable<model.UserReference> users = await _userController.list();
 
-    OptionElement userToOption(model.User user) => new OptionElement()
+    OptionElement userToOption(model.UserReference user) => new OptionElement()
       ..label = user.name
       ..value = user.id.toString();
 
@@ -124,11 +126,12 @@ class MessageFilter {
    */
 
   Future _reloadReceptionSelector() async {
-    Iterable<model.Reception> rcps = await _receptionController.list();
+    Iterable<model.ReceptionReference> rcps = await _receptionController.list();
 
-    OptionElement receptionToOption(model.Reception r) => new OptionElement()
-      ..label = r.name
-      ..value = r.ID.toString();
+    OptionElement receptionToOption(model.ReceptionReference r) =>
+        new OptionElement()
+          ..label = r.name
+          ..value = r.id.toString();
 
     _receptionSelector.children = [
       new OptionElement()
@@ -140,7 +143,7 @@ class MessageFilter {
   void set filter(model.MessageFilter filter) {}
 
   model.MessageFilter get filter => new model.MessageFilter.empty()
-    ..contactID = _cid
-    ..userID = _uid
-    ..receptionID = _rid;
+    ..contactId = _cid
+    ..userId = _uid
+    ..receptionId = _rid;
 }

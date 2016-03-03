@@ -35,9 +35,7 @@ Future main() async {
     /// Initialize the stores.
     final service.RESTUserStore userStore = new service.RESTUserStore(
         config.clientConfig.userServerUri, config.token, client);
-    final service.RESTDistributionListStore dlistStore =
-        new service.RESTDistributionListStore(
-            config.clientConfig.contactServerUri, config.token, client);
+
     final service.RESTEndpointStore epStore = new service.RESTEndpointStore(
         config.clientConfig.contactServerUri, config.token, client);
     final service.RESTReceptionStore receptionStore =
@@ -61,16 +59,15 @@ Future main() async {
         config.clientConfig.messageServerUri, config.token, client);
 
     /// Controllers
-    final controller.User userController = new controller.User(userStore);
-    final controller.DistributionList dlistController =
-        new controller.DistributionList(dlistStore);
-    final controller.Endpoint epController = new controller.Endpoint(epStore);
+    final controller.User userController =
+        new controller.User(userStore, config.user);
+
     final controller.Reception receptionController =
-        new controller.Reception(receptionStore);
+        new controller.Reception(receptionStore, config.user);
     final controller.Organization organizationController =
-        new controller.Organization(organizationStore);
+        new controller.Organization(organizationStore, config.user);
     final controller.Contact contactController =
-        new controller.Contact(contactStore);
+        new controller.Contact(contactStore, config.user);
     final controller.Calendar calendarController =
         new controller.Calendar(calendarStore);
     final controller.Dialplan dialplanController =
@@ -94,14 +91,8 @@ Future main() async {
             calendarController)
         .element);
 
-    new conView.ContactView(
-        querySelector('#contact-page'),
-        contactController,
-        organizationController,
-        receptionController,
-        calendarController,
-        dlistController,
-        epController);
+    new conView.ContactView(querySelector('#contact-page'), contactController,
+        organizationController, receptionController, calendarController);
 
     final messagePage = new page.Message(contactController, messageController,
         receptionController, userController);

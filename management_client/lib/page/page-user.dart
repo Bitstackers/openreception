@@ -90,7 +90,7 @@ class UserPage {
    */
   Future _refreshList() async {
     final users = (await _userController.list()).toList()
-      ..sort((model.User userA, model.User userB) =>
+      ..sort((model.UserReference userA, model.UserReference userB) =>
           userA.name.toLowerCase().compareTo(userB.name.toLowerCase()));
 
     renderUserList(users);
@@ -99,7 +99,7 @@ class UserPage {
   /**
    *
    */
-  void renderUserList(Iterable<model.User> users) {
+  void renderUserList(Iterable<model.UserReference> users) {
     _userList.children
       ..clear()
       ..addAll(users.map(_makeUserNode));
@@ -108,7 +108,7 @@ class UserPage {
   /**
    *
    */
-  LIElement _makeUserNode(model.User user) {
+  LIElement _makeUserNode(model.UserReference user) {
     return new LIElement()
       ..text = user.name
       ..classes.add('clickable')
@@ -138,7 +138,7 @@ class UserPage {
    *
    */
   void _createUser() {
-    _userView.user = new model.User.empty()..id = model.User.noID;
-    highlightUserInList(model.User.noID);
+    _userView.user = new model.User.empty()..id = model.User.noId;
+    highlightUserInList(model.User.noId);
   }
 }

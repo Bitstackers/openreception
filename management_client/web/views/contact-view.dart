@@ -28,14 +28,13 @@ class ContactView {
   final controller.Calendar _calendarController;
   final controller.Organization _organizationController;
   final controller.Reception _receptionController;
-  final controller.DistributionList _dlistController;
-  final controller.Endpoint _endpointController;
 
   UListElement _ulContactList;
   UListElement _ulReceptionContacts;
   UListElement _ulReceptionList;
   UListElement _ulOrganizationList;
-  List<model.BaseContact> _contactList = new List<model.BaseContact>();
+  List<model.ContactReference> _contactList =
+      new List<model.ContactReference>();
   SearchInputElement _searchBox;
 
   view.Calendar _calendarView;
@@ -53,16 +52,17 @@ class ContactView {
     ..text = 'Importer';
 
   final HiddenInputElement _bcidInput = new HiddenInputElement()
-    ..value = model.Contact.noID.toString();
+    ..value = model.BaseContact.noId.toString();
 
   final SelectElement _typeInput = new SelectElement();
   final HeadingElement _header = new HeadingElement.h2();
   final CheckboxInputElement _enabledInput = new CheckboxInputElement()
     ..id = 'contact-input-enabled';
 
-  DivElement get _baseInfoContainer => element.querySelector('#contact-base-info')
-    ..id = 'contact-base-info'
-    ..hidden = true;
+  DivElement get _baseInfoContainer =>
+      element.querySelector('#contact-base-info')
+        ..id = 'contact-base-info'
+        ..hidden = true;
 
   final ButtonElement _createButton = new ButtonElement()
     ..id = 'contact-create'
@@ -85,11 +85,12 @@ class ContactView {
     ..href = '#calendar'
     ..text = 'Vis kalenderaftaler';
 
-  final DivElement _receptionOuterSelector = new DivElement()..id = 'contact-reception-selector';
+  final DivElement _receptionOuterSelector = new DivElement()
+    ..id = 'contact-reception-selector';
 
   final DivElement _calendarsContainer = new DivElement()..style.clear = 'both';
 
-  SearchComponent<model.Reception> _search;
+  SearchComponent<model.ReceptionReference> _search;
   bool createNew = false;
 
   static const List<String> phonenumberTypes = const ['PSTN', 'SIP'];
@@ -99,9 +100,7 @@ class ContactView {
       this._contactController,
       this._organizationController,
       this._receptionController,
-      this._calendarController,
-      this._dlistController,
-      this._endpointController) {
+      this._calendarController) {
     _baseInfoContainer.children = [
       _deleteButton,
       _saveButton,
@@ -110,8 +109,10 @@ class ContactView {
       new DivElement()
         ..classes.add('col-1-2')
         ..children = [
-          new DivElement()..children = [new LabelElement()..text = 'Aktiv', _enabledInput],
-          new DivElement()..children = [new LabelElement()..text = 'Navn', _nameInput],
+          new DivElement()
+            ..children = [new LabelElement()..text = 'Aktiv', _enabledInput],
+          new DivElement()
+            ..children = [new LabelElement()..text = 'Navn', _nameInput],
           new DivElement()
             ..children = [
               new LabelElement()..text = 'Importer receptioner fra kontakt',
@@ -122,7 +123,8 @@ class ContactView {
       new DivElement()
         ..classes.add('col-1-2')
         ..children = [
-          new DivElement()..children = [new LabelElement()..text = 'Type', _typeInput],
+          new DivElement()
+            ..children = [new LabelElement()..text = 'Type', _typeInput],
           new LabelElement()..text = 'Tilføj til Reception:',
           _receptionOuterSelector,
           _joinReceptionbutton
@@ -151,8 +153,9 @@ class ContactView {
     _calendarToggle.onClick.listen((_) {
       _calendarsContainer.hidden = !_calendarsContainer.hidden;
 
-      _calendarToggle.text =
-          _calendarsContainer.hidden ? 'Vis kalenderaftaler' : 'Skjul kalenderaftaler';
+      _calendarToggle.text = _calendarsContainer.hidden
+          ? 'Vis kalenderaftaler'
+          : 'Skjul kalenderaftaler';
     });
 
     _baseInfoContainer.children.add(_calendarsContainer);
@@ -163,11 +166,11 @@ class ContactView {
 
     _searchBox = element.querySelector('#contact-search-box');
 
-    _search =
-        new SearchComponent<model.Reception>(_receptionOuterSelector, 'contact-reception-searchbox')
-          ..listElementToString = _receptionToSearchboxString
-          ..searchFilter = _receptionSearchHandler
-          ..searchPlaceholder = 'Søg...';
+    _search = new SearchComponent<model.ReceptionReference>(
+        _receptionOuterSelector, 'contact-reception-searchbox')
+      ..listElementToString = _receptionToSearchboxString
+      ..searchFilter = _receptionSearchHandler
+      ..searchPlaceholder = 'Søg...';
 
     _fillSearchComponent();
 
@@ -175,22 +178,24 @@ class ContactView {
 
     _refreshList();
 
-    _typeInput.children
-        .addAll(model.ContactType.types.map((type) => new OptionElement(data: type, value: type)));
+    _typeInput.children.addAll(model.ContactType.types
+        .map((type) => new OptionElement(data: type, value: type)));
   }
 
-  String _receptionToSearchboxString(model.Reception reception, String searchterm) {
-    return '${reception.fullName}';
+  String _receptionToSearchboxString(
+      model.ReceptionReference reception, String searchterm) {
+    return '${reception.name}';
   }
 
-  bool _receptionSearchHandler(model.Reception reception, String searchTerm) {
-    return reception.fullName.toLowerCase().contains(searchTerm.toLowerCase());
+  bool _receptionSearchHandler(
+      model.ReceptionReference ref, String searchTerm) {
+    return ref.name.toLowerCase().contains(searchTerm.toLowerCase());
   }
 
   void set baseContact(model.BaseContact bc) {
-    _nameInput.value = bc.fullName;
-    _typeInput.options
-        .forEach((OptionElement option) => option.selected = option.value == bc.contactType);
+    _nameInput.value = bc.name;
+    _typeInput.options.forEach((OptionElement option) =>
+        option.selected = option.value == bc.contactType);
     _enabledInput.checked = bc.enabled;
 
     _importButton.text = 'Importer';
@@ -201,10 +206,10 @@ class ContactView {
     _calendarsContainer..hidden = true;
     _calendarToggle..text = 'Vis kalenderaftaler';
 
-    if (bc.id != model.Contact.noID) {
+    if (bc.id != model.ReceptionAttributes.noId) {
       _activateContact(bc.id);
       _saveButton.disabled = true;
-      _header.text = 'Retter basisinfo for ${bc.fullName} (cid: ${bc.id})';
+      _header.text = 'Retter basisinfo for ${bc.name} (cid: ${bc.id})';
     } else {
       _header.text = 'Opret ny basiskontakt';
 
@@ -222,7 +227,7 @@ class ContactView {
     ..id = int.parse(_bcidInput.value)
     ..enabled = _enabledInput.checked
     ..contactType = _typeInput.value
-    ..fullName = _nameInput.value;
+    ..name = _nameInput.value;
 
   /**
    *
@@ -277,13 +282,13 @@ class ContactView {
     };
 
     _saveButton.onClick.listen((_) async {
-      model.BaseContact updated;
-      if (baseContact.id == model.Contact.noID) {
+      model.ContactReference updated;
+      if (baseContact.id == model.ReceptionAttributes.noId) {
         updated = await _contactController.create(baseContact);
-        notify.success('Oprettede kontaktperson', '${updated.fullName}');
+        notify.success('Oprettede kontaktperson', '${updated.name}');
       } else {
         updated = await _contactController.update(baseContact);
-        notify.success('Opdaterede kontaktperson', '${updated.fullName}');
+        notify.success('Opdaterede kontaktperson', '${updated.name}');
       }
       _saveButton.disabled = false;
       _deleteButton.disabled = !_saveButton.disabled;
@@ -293,7 +298,8 @@ class ContactView {
 
     _importButton.onClick.listen((_) async {
       int sourceCid;
-      final String confirmationText = 'Bekræft import (slet cid:${_importCidInput.value})';
+      final String confirmationText =
+          'Bekræft import (slet cid:${_importCidInput.value})';
 
       if (_importCidInput.value.isEmpty) {
         return;
@@ -318,40 +324,15 @@ class ContactView {
 
         try {
           final int dcid = baseContact.id;
-          final List<int> rids = await _contactController.receptions(sourceCid);
+          final List<model.ReceptionReference> rRefs =
+              await _contactController.receptions(sourceCid);
 
-          await Future.wait(rids.map((int rid) async {
-            final model.Contact contactData =
-                await _contactController.getByReception(sourceCid, rid);
-            contactData.ID = dcid;
-            await _contactController.addToReception(contactData, rid);
-
-            /// Import endpoints
-            Iterable<model.MessageEndpoint> endpoints =
-                await _endpointController.list(rid, sourceCid);
-
-            _log.finest('Found endpoints: ${endpoints.join(', ')}');
-
-            await Future.wait(endpoints.map((mep) async {
-              _log.finest('Adding endpoint $mep to cid:$dcid');
-              mep.id = model.MessageEndpoint.noId;
-              await _endpointController.create(rid, dcid, mep);
-            }));
-
-            /// Import distribution list
-            model.DistributionList dlist = await _dlistController.list(rid, sourceCid);
-
-            _log.finest('Found distribution list : ${dlist.join(', ')}');
-
-            await Future.wait(dlist.map((dle) async {
-              dle.id = model.DistributionListEntry.noId;
-              if (dle.contactID == sourceCid) {
-                dle.contactID = dcid;
-              }
-
-              _log.finest('Adding dlist entry ${dle.toJson()} to cid:$dcid');
-              await _dlistController.addRecipient(rid, dcid, dle);
-            }));
+          await Future.wait(rRefs.map((model.ReceptionReference rRef) async {
+            final model.ReceptionAttributes contactData =
+                await _contactController.getByReception(sourceCid, rRef.id);
+            contactData.contactId = dcid;
+            contactData.receptionId = rRef.id;
+            await _contactController.addToReception(contactData);
           }));
 
           /// Import calender entries
@@ -362,7 +343,7 @@ class ContactView {
 
           await Future.wait(entries.map((ce) async {
             ce
-              ..ID = model.CalendarEntry.noID
+              ..id = model.CalendarEntry.noId
               ..owner = new model.OwningContact(dcid);
 
             _log.finest('Adding calendar entry ${ce.toJson()} to cid:$dcid');
@@ -373,7 +354,9 @@ class ContactView {
           _log.finest('Deleting cid:$sourceCid');
           await _contactController.remove(sourceCid);
 
-          notify.success('Tilføjede ${baseContact.fullName} til ${rids.length} receptioner', '');
+          notify.success(
+              'Tilføjede ${baseContact.name} til ${rRefs.length} receptioner',
+              '');
 
           _refreshList();
           baseContact = await _contactController.get(dcid);
@@ -409,11 +392,11 @@ class ContactView {
   }
 
   void _refreshList() {
-    _contactController.listAll().then((Iterable<model.BaseContact> contacts) {
-      int compareTo(model.BaseContact c1, model.BaseContact c2) =>
-          c1.fullName.compareTo(c2.fullName);
+    _contactController.list().then((Iterable<model.ContactReference> cRefs) {
+      int compareTo(model.ContactReference c1, model.ContactReference c2) =>
+          c1.name.compareTo(c2.name);
 
-      List<model.BaseContact> list = contacts.toList()..sort(compareTo);
+      List<model.ContactReference> list = cRefs.toList()..sort(compareTo);
       this._contactList = list;
       _performSearch();
     }).catchError((error) {
@@ -426,26 +409,26 @@ class ContactView {
     _ulContactList.children
       ..clear()
       ..addAll(_contactList
-          .where((model.BaseContact contact) =>
-              contact.fullName.toLowerCase().contains(searchTerm.toLowerCase()))
+          .where((model.ContactReference contact) =>
+              contact.name.toLowerCase().contains(searchTerm.toLowerCase()))
           .map(_makeContactNode));
   }
 
-  LIElement _makeContactNode(model.BaseContact contact) {
+  LIElement _makeContactNode(model.ContactReference contact) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
-      ..text = '${contact.fullName}'
+      ..text = '${contact.name}'
       ..dataset['contactid'] = '${contact.id}'
-      ..onClick.listen((_) {
-        baseContact = contact;
+      ..onClick.listen((_) async {
+        await _activateContact(contact.id);
       });
 
     return li;
   }
 
   void _highlightContactInList(int id) {
-    _ulContactList.children.forEach(
-        (LIElement li) => li.classes.toggle('highlightListItem', li.dataset['contactid'] == '$id'));
+    _ulContactList.children.forEach((LIElement li) => li.classes
+        .toggle('highlightListItem', li.dataset['contactid'] == '$id'));
   }
 
   /**
@@ -456,11 +439,11 @@ class ContactView {
       _joinReceptionbutton.disabled = false;
       createNew = false;
 
-      _nameInput.value = contact.fullName;
-      _typeInput.options
-          .forEach((OptionElement option) => option.selected = option.value == contact.contactType);
+      _nameInput.value = contact.name;
+      _typeInput.options.forEach((OptionElement option) =>
+          option.selected = option.value == contact.contactType);
       _enabledInput.checked = contact.enabled;
-      _header.text = 'Basisinfo for ${contact.fullName} (cid: ${contact.id})';
+      _header.text = 'Basisinfo for ${contact.name} (cid: ${contact.id})';
 
       _highlightContactInList(id);
 
@@ -476,38 +459,45 @@ class ContactView {
         _deletedCalendarView.entries = entries;
       });
 
-      return _contactController.receptions(id).then((Iterable<int> receptionIDs) {
+      return _contactController
+          .receptions(id)
+          .then((Iterable<model.ReceptionReference> rRefs) {
         _ulReceptionContacts.children = [];
-        Future.forEach(receptionIDs, (int receptionID) {
-          _contactController.getByReception(id, receptionID).then((model.Contact contact) {
+        Future.forEach(rRefs, (model.ReceptionReference rRef) {
+          _contactController
+              .getByReception(id, rRef.id)
+              .then((model.ReceptionAttributes attr) {
             view.ReceptionContact rcView = new view.ReceptionContact(
-                _receptionController,
-                _contactController,
-                _endpointController,
-                _dlistController,
-                receptionIDs.length == 1)..contact = contact;
+                _receptionController, _contactController, rRefs.length == 1)
+              ..attributes = attr;
 
             _ulReceptionContacts.children.add(rcView.element);
           });
         });
 
         //Rightbar
-        _contactController.contactOrganizations(id).then((Iterable<int> organizationsIDs) {
+        _contactController
+            .contactOrganizations(id)
+            .then((Iterable<model.OrganizationReference> oRefs) {
           _ulOrganizationList.children..clear();
 
-          Future.forEach(organizationsIDs, (int organizationID) {
-            _organizationController.get(organizationID).then((model.Organization org) {
-              _ulOrganizationList.children.add(_createOrganizationNode(org));
-            });
+          Future.forEach(oRefs, (model.OrganizationReference oRef) {
+            _createOrganizationNode(oRef);
           });
         }).catchError((error, stack) {
-          _log.severe('Tried to update contact "${id}"s rightbar but got "${error}" \n${stack}');
+          _log.severe(
+              'Tried to update contact "${id}"s rightbar but got "${error}" \n${stack}');
         });
 
         //FIXME: Figure out how this should look.
-        return _contactController.colleagues(id).then((Iterable<model.Contact> contacts) {
-          int compareTo(model.Contact c1, model.Contact c2) =>
-              c1.fullName.toLowerCase().compareTo(c2.fullName.toLowerCase());
+        return _contactController
+            .colleagues(id)
+            .then((Iterable<model.ReceptionAttributes> contacts) {
+          int compareTo(
+                  model.ReceptionAttributes c1, model.ReceptionAttributes c2) =>
+              c1.reference.reception.name
+                  .toLowerCase()
+                  .compareTo(c2.reference.reception.name.toLowerCase());
 
           List list = contacts.toList()..sort(compareTo);
 
@@ -515,14 +505,18 @@ class ContactView {
         });
       });
     }).catchError((error, stack) {
-      _log.severe('Tried to activate contact "${id}" but gave "${error}" \n${stack}');
+      _log.severe(
+          'Tried to activate contact "${id}" but gave "${error}" \n${stack}');
     });
   }
 
   void _fillSearchComponent() {
-    _receptionController.list().then((Iterable<model.Reception> receptions) {
-      int compareTo(model.Reception rs1, model.Reception rs2) =>
-          rs1.fullName.compareTo(rs2.fullName);
+    _receptionController
+        .list()
+        .then((Iterable<model.ReceptionReference> receptions) {
+      int compareTo(
+              model.ReceptionReference rs1, model.ReceptionReference rs2) =>
+          rs1.name.compareTo(rs2.name);
 
       List list = receptions.toList()..sort(compareTo);
 
@@ -530,7 +524,7 @@ class ContactView {
     });
   }
 
-  Future _receptionContactUpdate(model.Contact ca) {
+  Future _receptionContactUpdate(model.ReceptionAttributes ca) {
     return _contactController.updateInReception(ca).then((_) {
       notify.success('Oplysningerne blev gemt', '');
     }).catchError((error, stack) {
@@ -540,14 +534,17 @@ class ContactView {
     });
   }
 
-  Future _receptionContactCreate(model.Contact contact) {
-    return _contactController.addToReception(contact, contact.receptionID).then((_) {
-      notify.success(
-          'Tilføjet til reception', '${contact.fullName} til (rid: ${contact.receptionID})');
-      bus.fire(new ReceptionContactAddedEvent(contact.receptionID, contact.ID));
+  Future _receptionContactCreate(model.ReceptionAttributes attr) {
+    return _contactController.addToReception(attr).then((_) {
+      notify.success('Tilføjet til reception',
+          '${attr.reference.reception.name} til (rid: ${attr.receptionId})');
+      bus.fire(
+          new ReceptionContactAddedEvent(attr.receptionId, attr.contactId));
     }).catchError((error, stack) {
-      notify.error('Kunne ikke tilføje kontakt til reception', 'Fejl: ${error}');
-      _log.severe('Tried to update a Reception Contact, but failed with "$error" ${stack}');
+      notify.error(
+          'Kunne ikke tilføje kontakt til reception', 'Fejl: ${error}');
+      _log.severe(
+          'Tried to update a Reception Contact, but failed with "$error" ${stack}');
     });
   }
 
@@ -566,24 +563,25 @@ class ContactView {
    */
   void _addReceptionToContact() {
     if (_search.currentElement != null && int.parse(_bcidInput.value) > 0) {
-      model.Reception reception = _search.currentElement;
+      model.ReceptionReference reception = _search.currentElement;
 
-      model.Contact template = new model.Contact.empty()
-        ..receptionID = reception.ID
-        ..ID = int.parse(_bcidInput.value);
+      model.ReceptionAttributes template = new model.ReceptionAttributes.empty()
+        ..receptionId = reception.id
+        ..contactId = int.parse(_bcidInput.value);
 
       _contactController
-          .addToReception(template, reception.ID)
-          .then((model.Contact createdContact) {
+          .addToReception(template)
+          .then((model.ReceptionContactReference ref) {
         view.ReceptionContact rcView = new view.ReceptionContact(
-            _receptionController, _contactController, _endpointController, _dlistController, true)
-          ..contact = template;
+            _receptionController, _contactController, true)
+          ..attributes = template;
 
         _ulReceptionContacts.children..add(rcView.element);
         notify.success('Tilføjede kontaktperson til reception',
-            '${baseContact.fullName} til ${reception.name}');
+            '${baseContact.name} til ${reception.name}');
       }).catchError((e) {
-        notify.error('Kunne ikke tilføje kontaktperson til reception', 'Fejl: ${e}');
+        notify.error(
+            'Kunne ikke tilføje kontaktperson til reception', 'Fejl: ${e}');
       });
     }
   }
@@ -597,17 +595,24 @@ class ContactView {
     LIElement rootNode = new LIElement();
     HeadingElement receptionNode = new HeadingElement.h4()
       ..classes.add('clickable')
-      ..text = reception.fullName
+      ..text = reception.name
       ..onClick.listen((_) {
-        Map data = {'organization_id': reception.organizationId, 'reception_id': reception.ID};
+        Map data = {
+          'organization_id': reception.organizationId,
+          'reception_id': reception.id
+        };
         bus.fire(new WindowChanged('reception', data));
       });
 
     UListElement contactsUl = new UListElement()..classes.add('zebra-odd');
 
-    _contactController.list(reception.ID).then((Iterable<model.Contact> contacts) {
-      contactsUl.children =
-          contacts.map((model.Contact collegue) => _createColleagueNode(collegue)).toList();
+    _contactController
+        .receptionAttributes(reception.id)
+        .then((Iterable<model.ReceptionAttributes> contacts) {
+      contactsUl.children = contacts
+          .map((model.ReceptionAttributes collegue) =>
+              _createColleagueNode(collegue))
+          .toList();
     });
 
     rootNode.children.addAll([receptionNode, contactsUl]);
@@ -617,13 +622,17 @@ class ContactView {
   /**
    * TODO: Add reception Name.
    */
-  LIElement _createColleagueNode(model.Contact collegue) {
+  LIElement _createColleagueNode(model.ReceptionAttributes collegue) {
     return new LIElement()
       ..classes.add('clickable')
       ..classes.add('colleague')
-      ..text = '${collegue.fullName} (rid: ${collegue.receptionID})'
+      ..text =
+          '${collegue.reference.contact.name} (rid: ${collegue.receptionId})'
       ..onClick.listen((_) {
-        Map data = {'contact_id': collegue.ID, 'reception_id': collegue.receptionID};
+        Map data = {
+          'contact_id': collegue.contactId,
+          'reception_id': collegue.receptionId
+        };
         bus.fire(new WindowChanged('contact', data));
       });
   }
@@ -631,12 +640,12 @@ class ContactView {
   /**
    *
    */
-  LIElement _createOrganizationNode(model.Organization organization) {
+  LIElement _createOrganizationNode(model.OrganizationReference oref) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
-      ..text = '${organization.fullName}'
+      ..text = '${oref.name}'
       ..onClick.listen((_) {
-        Map data = {'organization_id': organization.id,};
+        Map data = {'organization_id': oref.id,};
         bus.fire(new WindowChanged('organization', data));
       });
     return li;
@@ -647,7 +656,8 @@ class ContactView {
    */
   Future _deleteSelectedContact() async {
     _log.finest('Deleting baseContact cid${baseContact.id}');
-    final String confirmationText = 'Bekræft sletning af cid: ${baseContact.id}?';
+    final String confirmationText =
+        'Bekræft sletning af cid: ${baseContact.id}?';
 
     if (_deleteButton.text != confirmationText) {
       _deleteButton.text = confirmationText;
@@ -658,14 +668,14 @@ class ContactView {
       _deleteButton.disabled = true;
 
       await _contactController.remove(baseContact.id);
-      notify.success('Kontaktperson slettet', baseContact.fullName);
+      notify.success('Kontaktperson slettet', baseContact.name);
       _baseInfoContainer.hidden = true;
       _refreshList();
       _clearContent();
       _joinReceptionbutton.disabled = true;
       baseContact = new model.BaseContact.empty();
     } catch (error) {
-      notify.error('Kunne ikke slette kontaktperson', baseContact.fullName);
+      notify.error('Kunne ikke slette kontaktperson', baseContact.name);
       _log.severe('Delete baseContact failed with: ${error}');
     }
 
