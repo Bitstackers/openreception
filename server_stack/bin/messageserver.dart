@@ -13,55 +13,41 @@
 
 library openreception.message_server;
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:path/path.dart';
 
 import 'package:logging/logging.dart';
 import '../lib/configuration.dart';
 import '../lib/message_server/router.dart' as router;
 
-Logger log = new Logger ('MessageServer');
-ArgResults parsedArgs;
-ArgParser  parser = new ArgParser();
-
-void main(List<String> args) {
+Future main(List<String> args) async {
   ///Init logging. Inherit standard values.
   Logger.root.level = config.messageServer.log.level;
   Logger.root.onRecord.listen(config.messageServer.log.onRecord);
+  Logger log = new Logger('MessageServer');
 
-  try {
-    Directory.current = dirname(Platform.script.toFilePath());
+  final ArgParser parser = new ArgParser()
+    ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
+    ..addOption('filestore', abbr: 'f', help: 'Path to the filestore backend')
+    ..addOption('httpport',
+        help: 'The port the HTTP server listens on.  Defaults to 8080')
+    ..addOption('servertoken', help: 'Server-Token');
 
-    registerAndParseCommandlineArguments(args);
+  final ArgResults parsedArgs = parser.parse(args);
 
-    if(showHelp()) {
-      print(parser.usage);
-    } else {
-        router.connectAuthService();
-        router.connectNotificationService();
-        router.startDatabase()
-        .then((_) => router.start(port : config.messageServer.httpPort))
-        .catchError(log.shout);
-    }
-  } catch(error, stackTrace) {
-    log.shout(error, stackTrace);
+  if (parsedArgs['help']) {
+    print(parser.usage);
+    exit(1);
   }
+
+  if (parsedArgs['filestore'] == null) {
+    print('Filestore path is required');
+    print(parser.usage);
+    exit(1);
+  }
+
+  await router.start(
+      port: config.messageServer.httpPort, filepath: parsedArgs['filestore']);
 }
-
-void registerAndParseCommandlineArguments(List<String> arguments) {
-  parser.addFlag  ('help', abbr: 'h', help: 'Output this help');
-  parser.addOption('configfile',      help: 'The JSON configuration file. Defaults to config.json');
-  parser.addOption('httpport',        help: 'The port the HTTP server listens on.  Defaults to 8080');
-  parser.addOption('dbuser',          help: 'The database user');
-  parser.addOption('dbpassword',      help: 'The database password');
-  parser.addOption('dbhost',          help: 'The database host. Defaults to localhost');
-  parser.addOption('dbport',          help: 'The database port. Defaults to 5432');
-  parser.addOption('dbname',          help: 'The database name');
-  parser.addOption('servertoken',     help: 'Server-Token');
-
-  parsedArgs = parser.parse(arguments);
-}
-
-bool showHelp() => parsedArgs['help'];

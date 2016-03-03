@@ -37,7 +37,7 @@ abstract class Call {
       final String msg = 'Could not retrive call list';
       log.severe(msg, error, stackTrace);
 
-      return _serverError(msg);
+      return serverError(msg);
     }
   }
 
@@ -49,12 +49,12 @@ abstract class Call {
 
     /// User object fetching.
     try {
-      user = await authService.userOf(_tokenFrom(request));
+      user = await authService.userOf(tokenFrom(request));
     } catch (error, stackTrace) {
       final String msg = 'Failed to contact authserver';
       log.severe(msg, error, stackTrace);
 
-      return _serverError(msg);
+      return serverError(msg);
     }
 
     ///Find the current call of the agent.
@@ -85,7 +85,7 @@ abstract class Call {
       /// We can no longer assume anything about the users' state.
       Model.peerlist.get(user.peer).inTransition = false;
 
-      return _serverError(msg);
+      return serverError(msg);
     }
   }
 
@@ -96,13 +96,12 @@ abstract class Call {
     final String callID = shelf_route.getPathParameter(request, 'callid');
 
     ORModel.User user;
-    Iterable<ORModel.UserGroup> userGroups;
 
     /// Groups able to hangup any call.
     List<String> hangupGroups = ['Administrator'];
 
     bool aclCheck(ORModel.User user) =>
-        userGroups.any(hangupGroups.contains) ||
+        user.groups.any(hangupGroups.contains) ||
         Model.CallList.instance.get(callID).assignedTo == user.id;
 
     if (callID == null || callID == "") {
@@ -111,13 +110,12 @@ abstract class Call {
 
     /// User object fetching.
     try {
-      user = await authService.userOf(_tokenFrom(request));
-      userGroups = await _userService.userGroups(user.id);
+      user = await authService.userOf(tokenFrom(request));
     } catch (error, stackTrace) {
       final String msg = 'Failed to contact authserver';
       log.severe(msg, error, stackTrace);
 
-      return _serverError(msg);
+      return serverError(msg);
     }
 
     /// The agent is not allowed to terminate the call.
@@ -187,7 +185,7 @@ abstract class Call {
     final String port = shelf_route.getPathParameter(request, 'port');
 
     if (dialplan.isEmpty) {
-      return _clientError('Dialplan must not be empty');
+      return clientError('Dialplan must not be empty');
     }
 
     ORModel.User user;
@@ -209,12 +207,12 @@ abstract class Call {
 
     /// User object fetching.
     try {
-      user = await authService.userOf(_tokenFrom(request));
+      user = await authService.userOf(tokenFrom(request));
     } catch (error, stackTrace) {
       final String msg = 'Failed to contact authserver';
       log.severe(msg, error, stackTrace);
 
-      return _serverError(msg);
+      return serverError(msg);
     }
 
     if (!aclCheck(user)) {
@@ -230,13 +228,13 @@ abstract class Call {
 
     /// The user has not registered its peer to transfer the call to. Abort.
     if (peer == null || !peer.registered) {
-      return _clientError('User with id ${user.id} has no peer '
+      return clientError('User with id ${user.id} has no peer '
           '(peer: ${user.peer}) available');
     }
 
     /// The user has no reachable phone to transfer the call to. Abort.
     if (_phoneUnreachable(peer)) {
-      return _clientError('Phone is not ready. ${_peerInfo(peer)}');
+      return clientError('Phone is not ready. ${_peerInfo(peer)}');
     }
 
     /// Update the peer state
@@ -256,7 +254,7 @@ abstract class Call {
       log.severe(msg, error, stackTrace);
       peer.inTransition = false;
 
-      return _serverError(msg);
+      return serverError(msg);
     }
 
     /// Create an agent channel;
@@ -266,19 +264,19 @@ abstract class Call {
     } on Controller.CallRejected {
       peer.inTransition = false;
 
-      return _clientError('Phone is not reachable'
+      return clientError('Phone is not reachable'
           ' (call rejected). Check configuration.');
     } on Controller.NoAnswer {
       peer.inTransition = false;
 
-      return _clientError('Phone is not reachable'
+      return clientError('Phone is not reachable'
           ' (no answer). Check autoanswer.');
     } catch (error, stackTrace) {
       final String msg = 'Failed to create agent channel';
       log.severe(msg, error, stackTrace);
       peer.inTransition = false;
 
-      return _serverError(msg);
+      return serverError(msg);
     }
 
     /// Create a subscription that listens for the next outbound call.
@@ -304,7 +302,7 @@ abstract class Call {
 
       peer.inTransition = false;
 
-      return _serverError(msg);
+      return serverError(msg);
     }
 
     /// Update the call with the info from the originate request.
@@ -337,7 +335,7 @@ abstract class Call {
       final String msg = 'Failed to create agent channel';
       log.severe(msg, error, stackTrace);
       peer.inTransition = false;
-      return _serverError(msg);
+      return serverError(msg);
     }
 
     peer.inTransition = false;
@@ -357,32 +355,30 @@ abstract class Call {
     ];
 
     ORModel.User user;
-    Iterable<ORModel.UserGroup> userGroups;
 
     bool aclCheck(ORModel.User user) =>
         Model.CallList.instance.get(callID).assignedTo == user.id ||
-        userGroups.any((group) => parkGroups.contains(group));
+        user.groups.any((group) => parkGroups.contains(group));
 
     /// User object fetching.
     try {
-      user = await authService.userOf(_tokenFrom(request));
-      userGroups = await _userService.userGroups(user.id);
+      user = await authService.userOf(tokenFrom(request));
     } catch (error, stackTrace) {
       final String msg = 'Failed to contact authserver';
       log.severe(msg, error, stackTrace);
 
-      return _serverError(msg);
+      return serverError(msg);
     }
 
     if (callID == null || callID == "") {
-      return _clientError('Empty call_id in path.');
+      return clientError('Empty call_id in path.');
     }
 
     ORModel.Call call;
     try {
       call = Model.CallList.instance.get(callID);
     } on ORStorage.NotFound {
-      return _notFoundJson({'description': 'callID : $callID'});
+      return notFoundJson({'description': 'callID : $callID'});
     }
 
     if (!aclCheck(user)) {
@@ -393,7 +389,7 @@ abstract class Call {
       await Controller.PBX.park(call, user);
       log.finest('Parked call ${call.ID}');
 
-      return _okJson(call);
+      return okJson(call);
     } catch (error, stackTrace) {
       log.severe(error, stackTrace);
       return new shelf.Response.internalServerError();
@@ -417,21 +413,21 @@ abstract class Call {
     ORModel.Peer peer;
     ORModel.Call assignedCall;
     String agentChannel;
-    int originallyAssignedTo = ORModel.User.noID;
+    int originallyAssignedTo = ORModel.User.noId;
 
     /// Parameter check.
     if (callID == null || callID == "") {
-      return _clientError('Empty call_id in path.');
+      return clientError('Empty call_id in path.');
     }
 
     /// User object fetching.
     try {
-      user = await authService.userOf(_tokenFrom(request));
+      user = await authService.userOf(tokenFrom(request));
     } catch (error, stackTrace) {
       final String msg = 'Failed to contact authserver';
       log.severe(msg, error, stackTrace);
 
-      return _serverError(msg);
+      return serverError(msg);
     }
 
     /// Retrieve peer information.
@@ -439,13 +435,13 @@ abstract class Call {
 
     /// The user has not registered its peer to transfer the call to. Abort.
     if (peer == null) {
-      return _clientError('User with id ${user.id} has no peer '
+      return clientError('User with id ${user.id} has no peer '
           '(${_peerInfo(peer)} available');
     }
 
     /// The user has no reachable phone to transfer the call to. Abort.
     if (_phoneUnreachable(peer)) {
-      return _clientError('Phone is not ready. ${_peerInfo(peer)}');
+      return clientError('Phone is not ready. ${_peerInfo(peer)}');
     }
 
     try {
@@ -464,7 +460,7 @@ abstract class Call {
       final String msg = 'Failed retrieve call from call list';
       log.severe(msg, error, stackTrace);
 
-      return _serverError(msg);
+      return serverError(msg);
     }
 
     /// Update the user state
@@ -490,10 +486,10 @@ abstract class Call {
       return await new Future.delayed(new Duration(seconds: 3)).then((_) =>
           Controller.PBX
               .killChannel(agentChannel)
-              .then((_) => _serverError(msg))
+              .then((_) => serverError(msg))
               .catchError((error, stackTrace) {
             log.severe('Failed to close agent channel', error, stackTrace);
-            return _serverError(msg);
+            return serverError(msg);
           }));
     }
 
@@ -511,10 +507,10 @@ abstract class Call {
       /// Make sure the agent channel is closed before returning a response.
       return await Controller.PBX
           .killChannel(agentChannel)
-          .then((_) => _serverError(msg))
+          .then((_) => serverError(msg))
           .catchError((error, stackTrace) {
         log.severe('Failed to close agent channel', error, stackTrace);
-        return _serverError(msg);
+        return serverError(msg);
       });
     }
 
@@ -579,12 +575,12 @@ abstract class Call {
 
     /// User object fetching.
     try {
-      user = await authService.userOf(_tokenFrom(request));
+      user = await authService.userOf(tokenFrom(request));
     } catch (error, stackTrace) {
       final String msg = 'Failed to contact authserver';
       log.severe(msg, error, stackTrace);
 
-      return _serverError(msg);
+      return serverError(msg);
     }
 
     ORModel.Peer peer = Model.peerlist.get(user.peer);
@@ -607,13 +603,12 @@ abstract class Call {
     final String callID = shelf_route.getPathParameter(request, 'callid');
 
     ORModel.User user;
-    Iterable<ORModel.UserGroup> userGroups;
 
     /// Groups able to remove any call.
     List<String> updateGroups = ['Administrator'];
 
     bool aclCheck(ORModel.User user) =>
-        userGroups.any(updateGroups.contains) ||
+        user.groups.any(updateGroups.contains) ||
         Model.CallList.instance.get(callID).assignedTo == user.id;
 
     if (callID == null || callID == "") {
@@ -622,13 +617,12 @@ abstract class Call {
 
     /// User object fetching.
     try {
-      user = await authService.userOf(_tokenFrom(request));
-      userGroups = await _userService.userGroups(user.id);
+      user = await authService.userOf(tokenFrom(request));
     } catch (error, stackTrace) {
       final String msg = 'Failed to contact authserver';
       log.severe(msg, error, stackTrace);
 
-      return _serverError(msg);
+      return serverError(msg);
     }
 
     /// The agent is not allowed to terminate the call.
@@ -639,9 +633,9 @@ abstract class Call {
     /// Verify existence of call targeted for update.
     if (Model.CallList.instance.containsID(callID)) {
       Model.CallList.instance.remove(callID);
-      return _okJson({});
+      return okJson({});
     } else {
-      return _notFoundJson({'call_id': callID});
+      return notFoundJson({'call_id': callID});
     }
   }
 
@@ -652,7 +646,6 @@ abstract class Call {
     final String callID = shelf_route.getPathParameter(request, 'callid');
 
     ORModel.User user;
-    Iterable<ORModel.UserGroup> userGroups;
 
     ORModel.Call updatedCall;
     try {
@@ -666,14 +659,14 @@ abstract class Call {
           '${user.name} (id:${user.id})',
           error,
           stackTrace);
-      return _clientError(error.toString());
+      return clientError(error.toString());
     }
 
     /// Groups able to update a call.
     List<String> updateGroups = ['Administrator'];
 
     bool aclCheck(ORModel.User user) =>
-        userGroups.any(updateGroups.contains) ||
+        user.groups.any(updateGroups.contains) ||
         Model.CallList.instance.get(callID).assignedTo == user.id;
 
     if (callID == null || callID == "") {
@@ -682,13 +675,12 @@ abstract class Call {
 
     /// User object fetching.
     try {
-      user = await authService.userOf(_tokenFrom(request));
-      userGroups = await _userService.userGroups(user.id);
+      user = await authService.userOf(tokenFrom(request));
     } catch (error, stackTrace) {
       final String msg = 'Failed to contact authserver';
       log.severe(msg, error, stackTrace);
 
-      return _serverError(msg);
+      return serverError(msg);
     }
 
     /// The agent is not allowed to terminate the call.
@@ -699,9 +691,9 @@ abstract class Call {
     /// Verify existence of call targeted for update.
     if (Model.CallList.instance.containsID(callID)) {
       Model.CallList.instance.update(callID, updatedCall);
-      return _okJson(updatedCall);
+      return okJson(updatedCall);
     } else {
-      return _notFoundJson({'call_id': callID});
+      return notFoundJson({'call_id': callID});
     }
   }
 }

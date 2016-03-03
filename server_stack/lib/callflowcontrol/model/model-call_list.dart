@@ -52,7 +52,7 @@ class CallList extends IterableBase<ORModel.Call> {
     channels.forEach((ESL.Channel channel) {
       final int assignedTo = channel.variables.containsKey(ORPbxKey.userId)
           ? int.parse(channel.variables[ORPbxKey.userId])
-          : ORModel.User.noID;
+          : ORModel.User.noId;
 
       if (!channel.variables.containsKey(ORPbxKey.agentChannel)) {
         calls[channel.UUID] = new ORModel.Call.empty(channel.UUID)
@@ -74,10 +74,10 @@ class CallList extends IterableBase<ORModel.Call> {
           ..destination = channel.variables[ORPbxKey.destination]
           ..receptionID = channel.variables.containsKey(ORPbxKey.receptionId)
               ? int.parse(channel.variables[ORPbxKey.receptionId])
-              : ORModel.Reception.noID
+              : ORModel.Reception.noId
           ..contactID = channel.variables.containsKey(ORPbxKey.contactId)
               ? int.parse(channel.variables[ORPbxKey.contactId])
-              : ORModel.Contact.noID
+              : ORModel.BaseContact.noId
           ..event.listen(this._callEvent.fire);
       } else {
         log.info('Ignoring local channel ${channel.UUID}');
@@ -155,13 +155,13 @@ class CallList extends IterableBase<ORModel.Call> {
       //TODO: Implement a real algorithm for selecting calls.
       this.firstWhere(
           (ORModel.Call call) =>
-              call.assignedTo == ORModel.User.noID && !call.locked,
+              call.assignedTo == ORModel.User.noId && !call.locked,
           orElse: () => throw new ORStorage.NotFound("No calls available"));
 
   ORModel.Call requestSpecificCall(String callID, ORModel.User user) {
     ORModel.Call call = this.get(callID);
 
-    if (![user.id, ORModel.User.noID].contains(call.assignedTo)) {
+    if (![user.id, ORModel.User.noId].contains(call.assignedTo)) {
       log.fine('Call ${callID} already assigned to uid: ${call.assignedTo}');
       throw new ORStorage.Forbidden(callID);
     } else if (call.locked) {
@@ -271,7 +271,7 @@ class CallList extends IterableBase<ORModel.Call> {
           ESL.Channel channel = new ESL.Channel.fromPacket(event);
           final int assignedTo = get(event.uniqueID).assignedTo;
 
-          if (assignedTo == ORModel.User.noID) {
+          if (assignedTo == ORModel.User.noId) {
             log.finest('Locking ${event.uniqueID}');
             CallList.instance.get(event.uniqueID).locked = true;
           } else {
@@ -388,16 +388,16 @@ class CallList extends IterableBase<ORModel.Call> {
     int contactID =
         event.contentAsMap.containsKey('variable_${ORPbxKey.contactId}')
             ? int.parse(event.field('variable_${ORPbxKey.contactId}'))
-            : ORModel.Contact.noID;
+            : ORModel.BaseContact.noId;
 
     int receptionID =
         event.contentAsMap.containsKey('variable_${ORPbxKey.receptionId}')
             ? int.parse(event.field('variable_${ORPbxKey.receptionId}'))
-            : ORModel.Reception.noID;
+            : ORModel.Reception.noId;
 
     int userID = event.contentAsMap.containsKey('variable_${ORPbxKey.userId}')
         ? int.parse(event.field('variable_${ORPbxKey.userId}'))
-        : ORModel.User.noID;
+        : ORModel.User.noId;
 
     final ESL.Channel channel = new ESL.Channel.fromPacket(event);
 

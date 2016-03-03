@@ -18,6 +18,7 @@ import 'dart:convert';
 import 'dart:io' as io;
 
 import '../configuration.dart';
+import '../response_utils.dart';
 
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/model.dart' as Model;
@@ -25,7 +26,7 @@ import 'package:openreception_framework/event.dart' as Event;
 import 'package:openreception_framework/storage.dart' as storage;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
-import 'package:openreception_framework/database.dart' as Database;
+import 'package:openreception_framework/filestore.dart' as Database;
 
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
@@ -38,10 +39,10 @@ const String libraryName = 'messageserver.router';
 
 final Logger log = new Logger(libraryName);
 
-Database.Connection _connection = null;
+var _connection = null;
 Service.Authentication _authService = null;
 Service.NotificationService _notification = null;
-storage.Message _messageStore = new Database.Message(_connection);
+storage.Message _messageStore = new Database.Message();
 
 const Map<String, String> corsHeaders = const {
   'Access-Control-Allow-Origin': '*',
@@ -59,10 +60,6 @@ void connectNotificationService() {
       config.messageServer.serverToken,
       new Service_IO.Client());
 }
-
-Future startDatabase() => Database.Connection
-    .connect(config.database.dsn)
-    .then((Database.Connection newConnection) => _connection = newConnection);
 
 shelf.Middleware checkAuthentication =
     shelf.createMiddleware(requestHandler: _lookupToken, responseHandler: null);
@@ -90,7 +87,8 @@ Future<shelf.Response> _lookupToken(shelf.Request request) async {
   return null;
 }
 
-Future<io.HttpServer> start({String hostname: '0.0.0.0', int port: 4010}) {
+Future<io.HttpServer> start(
+    {String hostname: '0.0.0.0', int port: 4010, String filepath: ''}) {
   var router = shelf_route.router()
     ..get('/message/list', Message.list)
     ..get('/message/{mid}', Message.get)

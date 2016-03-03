@@ -13,6 +13,7 @@
 
 library openreception.notification_server;
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
@@ -22,41 +23,35 @@ import 'package:logging/logging.dart';
 import '../lib/configuration.dart';
 import '../lib/notification_server/router.dart' as router;
 
-Logger log = new Logger('NotificationServer');
-ArgResults parsedArgs;
-ArgParser parser = new ArgParser();
-
-void main(List<String> args) {
+Future main(List<String> args) async {
   ///Init logging. Inherit standard values.
   Logger.root.level = config.notificationServer.log.level;
   Logger.root.onRecord.listen(config.notificationServer.log.onRecord);
 
-  try {
-    Directory.current = dirname(Platform.script.toFilePath());
+  Logger log = new Logger('NotificationServer');
+  ArgParser parser = new ArgParser()
+    ..addFlag('help', abbr: 'h', help: 'Output this help')
+    ..addOption('filestore', abbr: 'f', help: 'Path to the filestore backend')
+    ..addOption('configfile',
+        help: 'The JSON configuration file. Defaults to config.json')
+    ..addOption('httpport',
+        help: 'The port the HTTP server listens on.  Defaults to 4200');
 
-    registerAndParseCommandlineArguments(args);
+  final ArgResults parsedArgs = parser.parse(args);
 
-    if (showHelp()) {
-      print(parser.usage);
-    } else {
-      router.connectAuthService();
-      router.start(
-          hostname: config.notificationServer.externalHostName,
-          port: config.notificationServer.httpPort);
-    }
-  } catch (error, stackTrace) {
-    log.shout(error, stackTrace);
+  if (parsedArgs['help']) {
+    print(parser.usage);
+    exit(1);
   }
+
+  if (parsedArgs['filestore'] == null) {
+    print('Filestore path is required');
+    print(parser.usage);
+    exit(1);
+  }
+
+  await router.connectAuthService();
+  await router.start(
+      hostname: config.notificationServer.externalHostName,
+      port: config.notificationServer.httpPort);
 }
-
-void registerAndParseCommandlineArguments(List<String> arguments) {
-  parser.addFlag('help', abbr: 'h', help: 'Output this help');
-  parser.addOption('configfile',
-      help: 'The JSON configuration file. Defaults to config.json');
-  parser.addOption('httpport',
-      help: 'The port the HTTP server listens on.  Defaults to 4200');
-
-  parsedArgs = parser.parse(arguments);
-}
-
-bool showHelp() => parsedArgs['help'];

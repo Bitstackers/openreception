@@ -21,7 +21,7 @@ import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
-import 'package:openreception_framework/database.dart' as database;
+import 'package:openreception_framework/filestore.dart' as database;
 
 import '../configuration.dart';
 import 'controller.dart' as Controller;
@@ -50,12 +50,10 @@ database.Message messageStore;
 database.User userStore;
 
 Future<IO.HttpServer> start(
-    {String hostname: '0.0.0.0', int port: 4060}) async {
-  final database.Connection conn =
-      await database.Connection.connect(config.database.dsn);
-  final database.MessageQueue mqdb = new database.MessageQueue(conn);
-  messageStore = new database.Message(conn);
-  userStore = new database.User(conn);
+    {String hostname: '0.0.0.0', int port: 4060, String filepath: ''}) async {
+  final database.MessageQueue mqdb = new database.MessageQueue();
+  messageStore = new database.Message();
+  userStore = new database.User();
   messageQueueStore = mqdb;
   final Controller.MessageQueue mq = new Controller.MessageQueue(mqdb);
 

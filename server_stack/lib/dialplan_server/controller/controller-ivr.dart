@@ -32,8 +32,9 @@ Future<String> _writeVoicemailfile(model.Voicemail vm,
  * Ivr menu controller class.
  */
 class Ivr {
-  final database.Ivr _ivrStore;
+  final storage.Ivr _ivrStore;
   final dialplanTools.DialplanCompiler compiler;
+  final service.Authentication _authService;
   final Logger _log = new Logger('$_libraryName.Ivr');
 
   Future<List<String>> _writeIvrfile(model.IvrMenu menu,
@@ -75,7 +76,7 @@ class Ivr {
   /**
    *
    */
-  Ivr(this._ivrStore, this.compiler);
+  Ivr(this._ivrStore, this.compiler, this._authService);
 
   /**
    *
@@ -84,7 +85,15 @@ class Ivr {
     final model.IvrMenu ivrMenu =
         model.IvrMenu.decode(JSON.decode(await request.readAsString()));
 
-    return _okJson(await _ivrStore.create(ivrMenu));
+    model.User user;
+    try {
+      user = await _authService.userOf(tokenFrom(request));
+    } catch (e, s) {
+      _log.warning('Could not connect to auth server');
+      return authServerDown();
+    }
+
+    return okJson(await _ivrStore.create(ivrMenu, user));
   }
 
   /**
@@ -95,7 +104,7 @@ class Ivr {
 
     final model.IvrMenu menu = await _ivrStore.get(menuName);
 
-    return _okJson(await _writeIvrfile(menu, compiler, _log));
+    return okJson(await _writeIvrfile(menu, compiler, _log));
   }
 
   /**
@@ -105,9 +114,9 @@ class Ivr {
     final String menuName = shelf_route.getPathParameter(request, 'name');
 
     try {
-      return _okJson(await _ivrStore.get(menuName));
+      return okJson(await _ivrStore.get(menuName));
     } on storage.NotFound {
-      return _notFound('No menu named $menuName');
+      return notFound('No menu named $menuName');
     }
   }
 
@@ -115,7 +124,7 @@ class Ivr {
    *
    */
   Future<shelf.Response> list(shelf.Request request) async =>
-      _okJson((await _ivrStore.list()).toList(growable: false));
+      okJson((await _ivrStore.list()).toList(growable: false));
 
   /**
    *
@@ -123,7 +132,14 @@ class Ivr {
   Future<shelf.Response> remove(shelf.Request request) async {
     final String menuName = shelf_route.getPathParameter(request, 'name');
 
-    return _okJson(await _ivrStore.remove(menuName));
+    model.User user;
+    try {
+      user = await _authService.userOf(tokenFrom(request));
+    } catch (e, s) {
+      _log.warning('Could not connect to auth server');
+      return authServerDown();
+    }
+    return okJson(await _ivrStore.remove(menuName, user));
   }
 
   /**
@@ -132,6 +148,14 @@ class Ivr {
   Future<shelf.Response> update(shelf.Request request) async {
     final model.IvrMenu ivrMenu =
         model.IvrMenu.decode(JSON.decode(await request.readAsString()));
-    return _okJson(await _ivrStore.update(ivrMenu));
+
+    model.User user;
+    try {
+      user = await _authService.userOf(tokenFrom(request));
+    } catch (e, s) {
+      _log.warning('Could not connect to auth server');
+      return authServerDown();
+    }
+    return okJson(await _ivrStore.update(ivrMenu, user));
   }
 }

@@ -22,14 +22,16 @@ import 'package:logging/logging.dart';
 import '../lib/configuration.dart';
 import '../lib/dialplan_server/router.dart' as router;
 
-Future main(List<String> args) {
+Future main(List<String> args) async {
   ///Init logging.
   Logger.root.level = config.dialplanserver.log.level;
   Logger.root.onRecord.listen(config.dialplanserver.log.onRecord);
+  Logger log = new Logger('dialplan_server');
 
   ///Handle argument parsing.
   final ArgParser parser = new ArgParser()
     ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
+    ..addOption('filestore', abbr: 'f', help: 'Path to the filestore backend')
     ..addOption('httpport',
         defaultsTo: config.dialplanserver.httpPort.toString(),
         help: 'The port the HTTP server listens on.');
@@ -41,5 +43,27 @@ Future main(List<String> args) {
     exit(1);
   }
 
-  return router.start(port: int.parse(parsedArgs['httpport']));
+  final String filepath = parsedArgs['filestore'];
+  if (filepath == null || filepath.isEmpty) {
+    stderr.writeln('Filestore path is required');
+    print('');
+    print(parser.usage);
+    exit(1);
+  }
+
+  int port;
+  try {
+    port = int.parse(parsedArgs['httpport']);
+    if (port < 1 || port > 65535) {
+      throw new FormatException();
+    }
+  } on FormatException {
+    stderr.writeln('Bad port argument: ${parsedArgs['httpport']}');
+    print('');
+    print(parser.usage);
+    exit(1);
+  }
+
+  await router.start(port: port, filepath: filepath);
+  log.info('Ready to handle requests');
 }

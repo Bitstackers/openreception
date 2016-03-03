@@ -20,10 +20,10 @@ import '../configuration.dart';
 import 'controller.dart' as controller;
 
 import 'package:logging/logging.dart';
+import 'package:openreception_framework/filestore.dart' as filestore;
 import 'package:openreception_framework/storage.dart' as storage;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
-import 'package:openreception_framework/database.dart' as Database;
 
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
@@ -39,7 +39,7 @@ const Map<String, String> _corsHeaders = const {
 };
 
 Future<io.HttpServer> start(
-    {String hostname: '0.0.0.0', int port: 4030}) async {
+    {String hostname: '0.0.0.0', int port: 4030, String filepath: ''}) async {
   final Service.Authentication _authService = new Service.Authentication(
       config.authServer.externalUri,
       config.userServer.serverToken,
@@ -78,13 +78,15 @@ Future<io.HttpServer> start(
   /**
    * Controllers.
    */
-  final Database.Connection _connection =
-      await Database.Connection.connect(config.database.dsn);
 
-  final Database.Ivr _ivrStore = new Database.Ivr(_connection);
-  final Database.ReceptionDialplan _dpStore =
-      new Database.ReceptionDialplan(_connection);
-  final Database.Reception _rStore = new Database.Reception(_connection);
+  final filestore.Ivr _ivrStore = new filestore.Ivr(path: filepath + '/ivr');
+  final filestore.ReceptionDialplan _dpStore =
+      new filestore.ReceptionDialplan(path: filepath + '/dialplan');
+
+  final filestore.Reception _rStore =
+      new filestore.Reception(path: filepath + '/reception');
+  final filestore.User _userStore =
+      new filestore.User(path: filepath + '/user');
 
   /// Setup dialplan tools.
   final dialplanTools.DialplanCompiler compiler =
@@ -100,11 +102,11 @@ Future<io.HttpServer> start(
     'diverting all voicemails to ${compiler.option.testEmail} and directing '
     'all calls to ${compiler.option.testNumber}'}');
 
-  final controller.Ivr ivrHandler = new controller.Ivr(_ivrStore, compiler);
+  final controller.Ivr ivrHandler =
+      new controller.Ivr(_ivrStore, compiler, _authService);
   final controller.ReceptionDialplan receptionDialplanHandler =
       new controller.ReceptionDialplan(_dpStore, _rStore, compiler, ivrHandler);
 
-  final Database.User _userStore = new Database.User(_connection);
   final controller.PeerAccount peerAccountHandler =
       new controller.PeerAccount(_userStore, compiler);
 

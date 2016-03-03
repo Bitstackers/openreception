@@ -53,7 +53,7 @@ class Contact {
     try {
       creator = await _authservice.userOf(tokenFrom(request));
     } catch (e) {
-      return serverError('Could not contact auth server');
+      return authServerDown();
     }
 
     final rRef = await _contactStore.create(contact, creator);
@@ -126,7 +126,7 @@ class Contact {
     try {
       modifier = await _authservice.userOf(tokenFrom(request));
     } catch (e) {
-      return serverError('Could not contact auth server');
+      return authServerDown();
     }
 
     try {
@@ -151,7 +151,7 @@ class Contact {
     try {
       modifier = await _authservice.userOf(tokenFrom(request));
     } catch (e) {
-      return serverError('Could not contact auth server');
+      return authServerDown();
     }
 
     model.BaseContact contact;
@@ -226,7 +226,7 @@ class Contact {
     try {
       modifier = await _authservice.userOf(tokenFrom(request));
     } catch (e) {
-      return serverError('Could not contact auth server');
+      return authServerDown();
     }
 
     final ref = await _contactStore.addToReception(attr, modifier);
@@ -249,7 +249,7 @@ class Contact {
     try {
       modifier = await _authservice.userOf(tokenFrom(request));
     } catch (e) {
-      return serverError('Could not contact auth server');
+      return authServerDown();
     }
 
     model.ReceptionAttributes attr;
@@ -293,7 +293,7 @@ class Contact {
     try {
       modifier = await _authservice.userOf(tokenFrom(request));
     } catch (e) {
-      return serverError('Could not contact auth server');
+      return authServerDown();
     }
 
     try {

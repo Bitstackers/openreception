@@ -47,10 +47,10 @@ class ReceptionDialplan {
     } on FormatException {
       /// Could not parse dialplan
     } on storage.NotFound {
-      return _notFound({});
+      return notFound({});
     }
 
-    return errors.isEmpty ? _okJson({}) : _clientError(errors);
+    return errors.isEmpty ? okJson({}) : clientErrorJson(errors);
   }
 
   /**
@@ -60,7 +60,7 @@ class ReceptionDialplan {
     final model.ReceptionDialplan rdp = model.ReceptionDialplan
         .decode(JSON.decode(await request.readAsString()));
 
-    return _okJson(await _receptionDialplanStore.create(rdp));
+    return okJson(await _receptionDialplanStore.create(rdp));
   }
 
   /**
@@ -76,7 +76,7 @@ class ReceptionDialplan {
       rdp = await _receptionDialplanStore.get(extension);
       r = await _receptionStore.get(rid);
     } on storage.NotFound {
-      return _notFound('No dialplan with extension $extension');
+      return notFound('No dialplan with extension $extension');
     }
     final String xmlFilePath = '${config.dialplanserver.freeswitchConfPath}'
         '/dialplan/receptions/$extension.xml';
@@ -98,7 +98,7 @@ class ReceptionDialplan {
     generatedFiles.addAll(await _ivrController._writeIvrfiles(
         ivrMenus.map((menuAction) => menuAction.menuName), compiler, _log));
 
-    return _okJson(generatedFiles);
+    return okJson(generatedFiles);
   }
 
   /**
@@ -108,9 +108,9 @@ class ReceptionDialplan {
     final String extension = shelf_route.getPathParameter(request, 'extension');
 
     try {
-      return _okJson(await _receptionDialplanStore.get(extension));
+      return okJson(await _receptionDialplanStore.get(extension));
     } on storage.NotFound {
-      return _notFound('No dialplan with extension $extension');
+      return notFound('No dialplan with extension $extension');
     }
   }
 
@@ -118,7 +118,7 @@ class ReceptionDialplan {
    *
    */
   Future<shelf.Response> list(shelf.Request request) async =>
-      _okJson((await _receptionDialplanStore.list()).toList(growable: false));
+      okJson((await _receptionDialplanStore.list()).toList(growable: false));
 
   /**
    *
@@ -127,13 +127,13 @@ class ReceptionDialplan {
     shelf.Response logAndReturn(esl.Response response) {
       final msg = 'Failed to reload: PBX response: ${response.rawBody}';
       _log.shout(msg);
-      return _serverError(msg);
+      return serverError(msg);
     }
 
     return await _eslClient.api('reloadxml').then((eslResponse) =>
         eslResponse.status != esl.Response.OK
             ? logAndReturn(eslResponse)
-            : _okJson({}));
+            : okJson({}));
   }
 
   /**
@@ -143,9 +143,9 @@ class ReceptionDialplan {
     final String extension = shelf_route.getPathParameter(request, 'extension');
 
     try {
-      return _okJson(await _receptionDialplanStore.remove(extension));
+      return okJson(await _receptionDialplanStore.remove(extension));
     } on storage.NotFound {
-      return _notFound('No dialplan with extension $extension');
+      return notFound('No dialplan with extension $extension');
     }
   }
 
@@ -155,7 +155,7 @@ class ReceptionDialplan {
   Future<shelf.Response> update(shelf.Request request) async {
     final model.ReceptionDialplan rdp = model.ReceptionDialplan
         .decode(JSON.decode(await request.readAsString()));
-    return _okJson(await _receptionDialplanStore.update(rdp));
+    return okJson(await _receptionDialplanStore.update(rdp));
   }
 
 /**

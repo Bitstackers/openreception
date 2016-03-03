@@ -34,10 +34,12 @@ Future main(List<String> args) async {
   ///Init logging.
   Logger.root.level = config.authServer.log.level;
   Logger.root.onRecord.listen(config.authServer.log.onRecord);
+  final Logger log = new Logger('authserver');
 
   ///Handle argument parsing.
   final ArgParser parser = new ArgParser()
     ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
+    ..addOption('filestore', abbr: 'f', help: 'Path to the filestore backend')
     ..addOption('httpport',
         abbr: 'p',
         help: 'The port the HTTP server listens on.',
@@ -54,7 +56,16 @@ Future main(List<String> args) async {
     exit(1);
   }
 
+  if (parsedArgs['filestore'] == null) {
+    print('Filestore path is required');
+    print(parser.usage);
+    exit(1);
+  }
+
   await watcher.setup();
   await vault.loadFromDirectory(parsedArgs['servertokendir']);
-  await router.start(port: int.parse(parsedArgs['httpport']));
+  await router.start(
+      port: int.parse(parsedArgs['httpport']),
+      filepath: parsedArgs['filestore']);
+  log.info('Ready to handle requests');
 }

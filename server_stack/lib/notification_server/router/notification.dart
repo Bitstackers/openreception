@@ -13,23 +13,6 @@
 
 part of openreception.notification_server.router;
 
-/**
- *
- */
-shelf.Response _okJson(body) => new shelf.Response.ok(JSON.encode(body));
-
-/**
- *
- */
-shelf.Response _notFoundJson(body) =>
-    new shelf.Response.notFound(JSON.encode(body));
-
-/**
- *
- */
-shelf.Response _clientError(String reason) =>
-    new shelf.Response(400, body: reason);
-
 abstract class Notification {
   static const String className = '$libraryName.Notification';
   static final Logger _log = new Logger(Notification.className);
@@ -67,10 +50,10 @@ abstract class Notification {
     try {
       Map contentMap = JSON.decode(await request.readAsString());
 
-      return _okJson(_sendToAll(contentMap));
+      return okJson(_sendToAll(contentMap));
     } catch (error, stackTrace) {
       _log.warning('Bad client request', error, stackTrace);
-      return _clientError('Malformed JSON body');
+      return clientError('Malformed JSON body');
     }
   }
 
@@ -157,7 +140,13 @@ abstract class Notification {
   }
 
   static Future<shelf.Response> _handleWsConnect(shelf.Request request) async {
-    Model.User user = await _authService.userOf(_tokenFrom(request));
+    Model.User user;
+    try {
+      user = await _authService.userOf(_tokenFrom(request));
+    } catch (e, s) {
+      _log.warning('Could not reach authentication server', e, s);
+      return authServerDown();
+    }
 
     shelf.Handler handleConnection = sWs.webSocketHandler((ws) {
       Notification._register(ws, user.id);
@@ -177,7 +166,7 @@ abstract class Notification {
       json = JSON.decode(await request.readAsString());
     } catch (error, stackTrace) {
       _log.warning('Bad client request', error, stackTrace);
-      return _clientError('Malformed JSON body');
+      return clientError('Malformed JSON body');
     }
 
     List<int> recipients = new List<int>();
@@ -185,7 +174,7 @@ abstract class Notification {
     (json['recipients'] as List).forEach((int item) => recipients.add(item));
 
     if (!json.containsKey("message")) {
-      return _clientError("Malformed JSON body");
+      return clientError("Malformed JSON body");
     }
 
     List delivery_status = new List();
@@ -202,7 +191,7 @@ abstract class Notification {
       }
     });
 
-    return _okJson({"status": "ok", "delivery_status": delivery_status});
+    return okJson({"status": "ok", "delivery_status": delivery_status});
   }
 
   /**
@@ -214,7 +203,7 @@ abstract class Notification {
           ..userID = uid
           ..connectionCount = clientRegistry[uid].length);
 
-    return _okJson(connections.toList(growable: false));
+    return okJson(connections.toList(growable: false));
   }
 
   /**
@@ -228,9 +217,9 @@ abstract class Notification {
         ..userID = uid
         ..connectionCount = clientRegistry[uid].length;
 
-      return _okJson(conn);
+      return okJson(conn);
     } else {
-      return _notFoundJson({'error': 'No connections for uid $uid'});
+      return notFoundJson({'error': 'No connections for uid $uid'});
     }
   }
 }

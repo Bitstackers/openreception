@@ -31,7 +31,7 @@ shelf.Response userinfo(shelf.Request request) {
   try {
     if (token == config.authServer.serverToken) {
       return new shelf.Response.ok(
-          JSON.encode(new model.User.empty()..id = model.User.noID));
+          JSON.encode(new model.User.empty()..id = model.User.noId));
     }
 
     Map content = vault.getToken(token);

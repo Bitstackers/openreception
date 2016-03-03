@@ -17,13 +17,15 @@ import 'dart:async';
 import 'dart:io' as io;
 
 import '../configuration.dart';
+import '../response_utils.dart';
+
 import 'controller.dart' as controller;
 
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/storage.dart' as Storage;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
-import 'package:openreception_framework/database.dart' as Database;
+import 'package:openreception_framework/filestore.dart' as filestore;
 
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
@@ -32,13 +34,8 @@ import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 
 final Logger _log = new Logger('calendarserver.router');
 
-const Map<String, String> _corsHeaders = const {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE'
-};
-
 Future<io.HttpServer> start(
-    {String hostname: '0.0.0.0', int port: 4110}) async {
+    {String hostname: '0.0.0.0', int port: 4110, String filepath: ''}) async {
   final Service.Authentication _authService = new Service.Authentication(
       config.authServer.externalUri,
       config.userServer.serverToken,
@@ -77,10 +74,9 @@ Future<io.HttpServer> start(
   /**
    * Controllers.
    */
-  final Database.Connection _connection =
-      await Database.Connection.connect(config.database.dsn);
 
-  final Database.Calendar _calendarStore = new Database.Calendar(_connection);
+  final filestore.Calendar _calendarStore =
+      new filestore.Calendar(path: filepath + '/calender');
 
   Service.NotificationService _notification = new Service.NotificationService(
       config.notificationServer.externalUri,
@@ -97,14 +93,13 @@ Future<io.HttpServer> start(
     ..get('/calendarentry/{eid}/deleted', calendarController.getDeleted)
     ..put('/calendarentry/{eid}', calendarController.update)
     ..delete('/calendarentry/{eid}', calendarController.remove)
-    ..delete('/calendarentry/{eid}/purge', calendarController.purge)
     ..post('/calendarentry', calendarController.create)
     ..get('/calendarentry/{eid}/change/latest', calendarController.changeLatest)
     ..get('/calendarentry/{eid}/change', calendarController.changes);
 
   var handler = const shelf.Pipeline()
       .addMiddleware(
-          shelf_cors.createCorsHeadersMiddleware(corsHeaders: _corsHeaders))
+          shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
       .addMiddleware(checkAuthentication)
       .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
       .addHandler(router.handler);

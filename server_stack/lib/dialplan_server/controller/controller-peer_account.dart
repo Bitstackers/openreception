@@ -46,7 +46,7 @@ class PeerAccount {
     await new File(xmlFilePath)
         .writeAsString(_compiler.userToXml(user, account));
 
-    return _okJson(generatedFiles);
+    return okJson(generatedFiles);
   }
 
   /**
@@ -72,7 +72,7 @@ class PeerAccount {
         .map((fse) => fse.uri.pathSegments.last.split('.xml').first)
         .toList();
 
-    return _okJson(listing);
+    return okJson(listing);
   }
 
   /**
@@ -87,10 +87,10 @@ class PeerAccount {
     final File peerAccount = new File(xmlFilePath);
 
     if (!await peerAccount.exists()) {
-      return _notFound('No peer account for $aid');
+      return notFound('No peer account for $aid');
     }
 
     await new File(xmlFilePath).delete();
-    return _okJson({});
+    return okJson({});
   }
 }

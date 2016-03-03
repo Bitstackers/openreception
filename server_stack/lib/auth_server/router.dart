@@ -19,7 +19,7 @@ import 'dart:io' as IO;
 
 import 'package:logging/logging.dart';
 
-import 'package:openreception_framework/database.dart' as database;
+import 'package:openreception_framework/filestore.dart' as filestore;
 import 'package:openreception_framework/service-io.dart' as _transport;
 import 'package:openreception_framework/storage.dart' as storage;
 import 'package:openreception_framework/model.dart' as model;
@@ -30,6 +30,7 @@ import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 
 import '../configuration.dart';
+import '../response_utils.dart';
 import 'googleauth.dart';
 import 'token_watcher.dart' as watcher;
 import 'token_vault.dart';
@@ -45,19 +46,15 @@ part 'router/refresher.dart';
 const String libraryName = 'authserver.router';
 final Logger log = new Logger(libraryName);
 
-const Map<String, String> corsHeaders = const {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE'
-};
-
 _transport.Client httpClient = new _transport.Client();
 Map<int, Set<String>> _userTokens = {};
 
-database.User _userStore;
+filestore.User _userStore;
 Future<IO.HttpServer> start(
-    {String hostname: '0.0.0.0', int port: 4050}) async {
-  _userStore =
-      new database.User(await database.Connection.connect(config.database.dsn));
+    {String hostname: '0.0.0.0',
+    int port: 4050,
+    String filepath: 'json-data'}) async {
+  _userStore = new filestore.User(path: filepath + '/user');
 
   var router = shelf_route.router()
     ..get('/token/create', login)

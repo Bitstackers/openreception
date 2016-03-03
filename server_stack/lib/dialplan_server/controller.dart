@@ -22,24 +22,17 @@ import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import 'package:logging/logging.dart';
 
 import 'package:esl/esl.dart' as esl;
-import 'package:openreception_framework/database.dart' as database;
+import 'package:openreception_framework/filestore.dart' as database;
 import 'package:openreception_framework/model.dart' as model;
 import 'package:openreception_framework/storage.dart' as storage;
+import 'package:openreception_framework/service.dart' as service;
 import 'package:openreception_framework/dialplan_tools.dart' as dialplanTools;
 
 import '../configuration.dart';
+import '../response_utils.dart';
 
 part 'controller/controller-ivr.dart';
 part 'controller/controller-peer_account.dart';
 part 'controller/controller-reception_dialplan.dart';
 
 const String _libraryName = 'dialplan_server.controller';
-
-shelf.Response _okJson(body) => new shelf.Response.ok(JSON.encode(body));
-
-shelf.Response _clientError(body) => new shelf.Response(400, body: body);
-
-shelf.Response _notFound(body) => new shelf.Response.notFound(body);
-
-shelf.Response _serverError(body) =>
-    new shelf.Response.internalServerError(body : body);

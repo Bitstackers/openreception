@@ -23,7 +23,7 @@ import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
-import 'package:openreception_framework/database.dart' as database;
+import 'package:openreception_framework/filestore.dart' as database;
 
 import '../configuration.dart';
 import 'controller/controller.dart' as controller;
@@ -49,8 +49,7 @@ shelf.Response _cors(shelf.Response response) =>
 
 Future<io.HttpServer> start(
     {String hostname: '0.0.0.0', int port: 4090}) async {
-  final controller.Cdr cdrController = new controller.Cdr(
-      new database.Cdr(await database.Connection.connect(config.database.dsn)));
+  final controller.Cdr cdrController = new controller.Cdr(null);
 
   var router = shelf_route.router(fallbackHandler: send404)
     ..get('/cdr', cdrController.list)

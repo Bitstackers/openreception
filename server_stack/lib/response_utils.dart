@@ -24,7 +24,12 @@ const Map<String, String> corsHeaders = const {
 /**
  *
  */
-shelf.Response okJson(body) => new shelf.Response.ok(JSON.encode(body));
+shelf.Response okJson(body) => ok(JSON.encode(body));
+
+/**
+ *
+ */
+shelf.Response ok(body) => new shelf.Response.ok(body);
 
 /**
  *
@@ -54,6 +59,9 @@ shelf.Response clientErrorJson(reason) =>
  */
 shelf.Response serverError(String reason) =>
     new shelf.Response(500, body: reason);
+
+shelf.Response authServerDown() =>
+    new shelf.Response(502, body: 'Authentication server is not reachable');
 
 String tokenFrom(shelf.Request request) =>
     request.requestedUri.queryParameters['token'];

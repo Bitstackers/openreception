@@ -18,10 +18,11 @@ import 'dart:async';
 import 'dart:io' as io;
 
 import '../configuration.dart';
+import '../response_utils.dart';
 import 'controller.dart' as controller;
 
 import 'package:logging/logging.dart';
-import 'package:openreception_framework/database.dart' as Database;
+import 'package:openreception_framework/filestore.dart' as filestore;
 import 'package:openreception_framework/storage.dart' as storage;
 import 'package:openreception_framework/service.dart' as Service;
 import 'package:openreception_framework/service-io.dart' as Service_IO;
@@ -34,13 +35,10 @@ import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 const String libraryName = 'receptionserver.router';
 final Logger _log = new Logger(libraryName);
 
-final Map<String, String> corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE'
-};
-
 Future<io.HttpServer> start(
-    {String hostname: '0.0.0.0', int port: 4010}) async {
+    {String hostname: '0.0.0.0',
+    int port: 4010,
+    String filepath: 'json-data'}) async {
   final Service.Authentication _authService = new Service.Authentication(
       config.authServer.externalUri,
       config.userServer.serverToken,
@@ -83,14 +81,20 @@ Future<io.HttpServer> start(
   /**
    * Controllers.
    */
-  final Database.Connection _connection =
-      await Database.Connection.connect(config.database.dsn);
 
-  controller.Organization organization = new controller.Organization(
-      new Database.Organization(_connection), _notification);
+  final filestore.Reception rStore =
+      new filestore.Reception(path: filepath + '/reception');
+  final filestore.Contact cStore =
+      new filestore.Contact(rStore, path: filepath + '/contact');
+  final filestore.Organization oStore = new filestore.Organization(
+      cStore, rStore,
+      path: filepath + '/organization');
 
-  controller.Reception reception = new controller.Reception(
-      new Database.Reception(_connection), _notification);
+  controller.Organization organization =
+      new controller.Organization(oStore, _notification, _authService);
+
+  controller.Reception reception =
+      new controller.Reception(rStore, _notification, _authService);
 
   var router = shelf_route.router()
     ..get('/organization', organization.list)
@@ -105,8 +109,8 @@ Future<io.HttpServer> start(
     ..get('/reception/{rid}', reception.get)
     ..get('/reception/extension/{exten}', reception.getByExtension)
     ..get('/reception/{rid}/extension', reception.extensionOf)
-    ..put('/reception/{oid}', reception.update)
-    ..delete('/reception/{oid}', reception.remove);
+    ..put('/reception/{rid}', reception.update)
+    ..delete('/reception/{rid}', reception.remove);
   var handler = const shelf.Pipeline()
       .addMiddleware(
           shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))

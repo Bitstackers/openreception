@@ -78,7 +78,7 @@ abstract class Message {
       final String msg = 'Failed to contact authserver';
       log.severe(msg, error, stackTrace);
 
-      return _authServerDown();
+      return authServerDown();
     }
 
     String content;
@@ -87,7 +87,7 @@ abstract class Message {
       content = await request.readAsString();
       message = new Model.Message.fromMap(JSON.decode(content))
         ..senderId = user.id;
-      if (message.ID == Model.Message.noID) {
+      if (message.id == Model.Message.noId) {
         return _clientError('Refusing to update a non-existing message. '
             'set messageID or use the PUT method instead.');
       }
@@ -98,10 +98,10 @@ abstract class Message {
       return _clientError(msg);
     }
 
-    Model.Message createdMessage = await _messageStore.update(message);
+    Model.Message createdMessage = await _messageStore.update(message, null);
 
     _notification.broadcastEvent(
-        new Event.MessageChange.updated(createdMessage.ID, user.id));
+        new Event.MessageChange.updated(createdMessage.id, user.id));
 
     return _ok(JSON.encode(createdMessage));
   }
@@ -114,7 +114,7 @@ abstract class Message {
         int.parse(shelf_route.getPathParameter(request, 'mid'));
 
     try {
-      await _messageStore.remove(messageID);
+      await _messageStore.remove(messageID, null);
     } on storage.NotFound {
       return _notFound('$messageID');
     }
@@ -164,7 +164,7 @@ abstract class Message {
       final String msg = 'Failed to contact authserver';
       log.severe(msg, error, stackTrace);
 
-      return _authServerDown();
+      return authServerDown();
     }
 
     String content;
@@ -174,7 +174,7 @@ abstract class Message {
       message = new Model.Message.fromMap(JSON.decode(content))
         ..senderId = user.id;
 
-      if ([Model.Message.noID, null].contains(message.ID)) {
+      if ([Model.Message.noId, null].contains(message.id)) {
         return _clientError('Invalid message ID');
       }
     } catch (error, stackTrace) {
@@ -188,7 +188,7 @@ abstract class Message {
         .enqueue(message)
         .then((Model.MessageQueueItem queueItem) {
       _notification
-          .broadcastEvent(new Event.MessageChange.updated(message.ID, user.id));
+          .broadcastEvent(new Event.MessageChange.updated(message.id, user.id));
 
       return _ok(JSON.encode(queueItem));
     });
@@ -208,7 +208,7 @@ abstract class Message {
       final String msg = 'Failed to contact authserver';
       log.severe(msg, error, stackTrace);
 
-      return _authServerDown();
+      return authServerDown();
     }
 
     String content;
@@ -218,7 +218,7 @@ abstract class Message {
       message = new Model.Message.fromMap(JSON.decode(content))
         ..senderId = user.id;
 
-      if (message.ID != Model.Message.noID) {
+      if (message.id != Model.Message.noId) {
         return _clientError('Refusing to re-create existing message. '
             'Remove messageID or use the POST method instead.');
       }
@@ -230,10 +230,10 @@ abstract class Message {
     }
 
     return await _messageStore
-        .create(message)
+        .create(message, null)
         .then((Model.Message createdMessage) {
       _notification
-          .broadcastEvent(new Event.MessageChange.created(message.ID, user.id));
+          .broadcastEvent(new Event.MessageChange.created(message.id, user.id));
 
       return _ok(JSON.encode(createdMessage));
     });

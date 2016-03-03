@@ -14,23 +14,26 @@
 part of openreception.reception_server.controller;
 
 void _validate(model.Organization org) {
-  if (org.fullName.isEmpty)
-    throw new ArgumentError.value(
-        org.fullName, 'organization.fullName', 'Must not be empty');
+  if (org.name.isEmpty)
+    throw new FormatException('organization.name must not be empty');
 }
 
 class Organization {
   final Logger _log = new Logger('$_libraryName.Organization');
-  final database.Organization _organizationDB;
+  final filestore.Organization _orgStore;
+  final service.Authentication _authservice;
   final service.NotificationService _notification;
 
-  Organization(this._organizationDB, this._notification);
+  /**
+   * Default constructor.
+   */
+  Organization(this._orgStore, this._notification, this._authservice);
 
-  Future<shelf.Response> list(shelf.Request request) => _organizationDB
-      .list()
-      .then((Iterable<model.Organization> organizations) =>
-          new shelf.Response.ok(
-              JSON.encode(organizations.toList(growable: false))));
+  /**
+   *
+   */
+  Future<shelf.Response> list(shelf.Request request) async =>
+      okJson((await _orgStore.list()).toList(growable: false));
 
   /**
    *
@@ -39,9 +42,9 @@ class Organization {
     final int oid = int.parse(shelf_route.getPathParameter(request, 'oid'));
 
     try {
-      return _okJson(await _organizationDB.get(oid));
+      return okJson(await _orgStore.get(oid));
     } on storage.NotFound catch (error) {
-      return _notFound(error.toString());
+      return notFound(error.toString());
     }
   }
 
@@ -49,131 +52,120 @@ class Organization {
    * shelf request handler for listing every contact associated with the
    * organization.
    */
-  Future contacts(shelf.Request request) {
-    int organizationID =
-        int.parse(shelf_route.getPathParameter(request, 'oid'));
+  Future contacts(shelf.Request request) async {
+    final int oid = int.parse(shelf_route.getPathParameter(request, 'oid'));
 
-    return _organizationDB.contacts(organizationID).then(
-        (Iterable<model.BaseContact> contacts) => new shelf.Response.ok(
-            JSON.encode(contacts.toList(growable: false))));
+    return okJson((await _orgStore.contacts(oid)).toList(growable: false));
   }
 
   /**
    * shelf request handler for listing every reception associated with the
    * organization.
    */
-  Future receptions(shelf.Request request) {
-    int organizationID =
-        int.parse(shelf_route.getPathParameter(request, 'oid'));
+  Future receptions(shelf.Request request) async {
+    final int orgid = int.parse(shelf_route.getPathParameter(request, 'oid'));
 
-    return _organizationDB.receptions(organizationID).then(
-        (Iterable<int> receptionIDs) => new shelf.Response.ok(
-            JSON.encode(receptionIDs.toList(growable: false))));
+    return okJson((await _orgStore.receptions(orgid)).toList(growable: false));
   }
 
   /**
    * shelf request handler for creating a new organization.
    */
-  Future create(shelf.Request request) {
-    return request.readAsString().then((String content) {
-      model.Organization organization;
+  Future create(shelf.Request request) async {
+    model.Organization organization;
+    model.User creator;
 
-      try {
-        organization = new model.Organization.fromMap(JSON.decode(content));
+    try {
+      organization = await request
+          .readAsString()
+          .then(JSON.decode)
+          .then(model.Organization.decode);
+      _validate(organization);
+    } on FormatException catch (error) {
+      Map response = {
+        'status': 'bad request',
+        'description': 'passed organization argument '
+            'is too long, missing or invalid',
+        'error': error.toString()
+      };
+      return clientErrorJson(response);
+    }
 
-        _validate(organization);
-      } catch (error) {
-        Map response = {
-          'status': 'bad request',
-          'description': 'passed organization argument '
-              'is too long, missing or invalid',
-          'error': error.toString()
-        };
-        return new shelf.Response(400, body: JSON.encode(response));
-      }
+    try {
+      creator = await _authservice.userOf(tokenFrom(request));
+    } catch (e) {
+      return authServerDown();
+    }
 
-      return _organizationDB
-          .create(organization)
-          .then((model.Organization createdOrganization) {
-        event.OrganizationChange changeEvent = new event.OrganizationChange(
-            createdOrganization.id, event.OrganizationState.CREATED);
+    final oRef = await _orgStore.create(organization, creator);
+    _notification.broadcastEvent(
+        new event.OrganizationChange.created(oRef.id, creator.id));
 
-        _notification.broadcastEvent(changeEvent);
-
-        return new shelf.Response.ok(JSON.encode(createdOrganization));
-      }).catchError((error, stackTrace) {
-        _log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError(
-            body: 'Failed to update organization in database');
-      });
-    });
+    return okJson(oRef);
   }
 
   /**
    * Update an organization.
    */
-  Future update(shelf.Request request) {
-    int organizationID =
-        int.parse(shelf_route.getPathParameter(request, 'oid'));
+  Future update(shelf.Request request) async {
+    model.Organization org;
+    model.User modifier;
+    try {
+      org = await request
+          .readAsString()
+          .then(JSON.decode)
+          .then(model.Organization.decode);
+      _validate(org);
+    } on FormatException catch (error) {
+      Map response = {
+        'status': 'bad request',
+        'description': 'passed organization argument '
+            'is too long, missing or invalid',
+        'error': error.toString()
+      };
+      return clientErrorJson(response);
+    }
 
-    return request.readAsString().then((String content) {
-      model.Organization organization;
+    try {
+      modifier = await _authservice.userOf(tokenFrom(request));
+    } catch (e) {
+      return authServerDown();
+    }
 
-      try {
-        organization = new model.Organization.fromMap(JSON.decode(content));
-      } catch (error) {
-        Map response = {
-          'status': 'bad request',
-          'description': 'passed organization argument '
-              'is too long, missing or invalid',
-          'error': error.toString()
-        };
-        return new shelf.Response(400, body: JSON.encode(response));
-      }
-
-      return _organizationDB.update(organization).then((_) {
-        event.OrganizationChange changeEvent = new event.OrganizationChange(
-            organizationID, event.OrganizationState.UPDATED);
-
-        _notification.broadcastEvent(changeEvent);
-
-        return new shelf.Response.ok(JSON.encode(organization));
-      }).catchError((error, stackTrace) {
-        if (error is storage.NotFound) {
-          return new shelf.Response.notFound(
-              'Organization with id $organizationID not found');
-        }
-
-        _log.severe(error, stackTrace);
-        return new shelf.Response.internalServerError(
-            body: 'Failed to update event in database');
-      });
-    });
+    try {
+      final rRef = await _orgStore.update(org, modifier);
+      _notification.broadcastEvent(
+          new event.OrganizationChange.updated(rRef.id, modifier.id));
+      return okJson(rRef);
+    } on storage.NotFound catch (e) {
+      return notFound(e.toString());
+    } on storage.ClientError catch (e) {
+      return clientError(e.toString());
+    }
   }
 
   /**
    * Removes a single organization from the data store.
    */
-  Future remove(shelf.Request request) {
-    int organizationID =
-        int.parse(shelf_route.getPathParameter(request, 'oid'));
+  Future remove(shelf.Request request) async {
+    final int oid = int.parse(shelf_route.getPathParameter(request, 'oid'));
+    model.User modifier;
 
-    return _organizationDB.remove(organizationID).then((_) {
-      event.OrganizationChange changeEvent = new event.OrganizationChange(
-          organizationID, event.OrganizationState.DELETED);
+    try {
+      modifier = await _authservice.userOf(tokenFrom(request));
+    } catch (e) {
+      return authServerDown();
+    }
 
-      _notification.broadcastEvent(changeEvent);
+    try {
+      await _orgStore.remove(oid, modifier);
+      _notification.broadcastEvent(
+          new event.OrganizationChange.deleted(oid, modifier.id));
 
-      return new shelf.Response.ok(
-          JSON.encode({'status': 'ok', 'description': 'Organization deleted'}));
-    }).catchError((error, stackTrace) {
-      if (error is storage.NotFound) {
-        return new shelf.Response.notFound(JSON.encode(
-            {'description': 'No organization found with ID $organizationID'}));
-      }
-      _log.severe(error, stackTrace);
-      return new shelf.Response.internalServerError(
-          body: 'Failed to execute database query');
-    });
+      return okJson({'status': 'ok', 'description': 'Organization deleted'});
+    } on storage.NotFound {
+      return notFoundJson(
+          {'description': 'No Organization found with ID $oid'});
+    }
   }
 }

@@ -22,7 +22,7 @@ import 'package:logging/logging.dart';
 import '../lib/configuration.dart';
 import '../lib/reception_server/router.dart' as router;
 
-Future main(List<String> args) {
+Future main(List<String> args) async {
   ///Init logging.
   final Logger log = new Logger('reception_server');
   Logger.root.level = config.receptionServer.log.level;
@@ -31,7 +31,9 @@ Future main(List<String> args) {
   ///Handle argument parsing.
   ArgParser parser = new ArgParser()
     ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
+    ..addOption('filestore', abbr: 'f', help: 'Path to the filestore backend')
     ..addOption('httpport',
+        abbr: 'p',
         defaultsTo: config.receptionServer.httpPort.toString(),
         help: 'The port the HTTP server listens on.');
 
@@ -42,7 +44,14 @@ Future main(List<String> args) {
     exit(1);
   }
 
-  return router
-      .start(port: int.parse(parsedArgs['httpport']))
-      .catchError((e,s) => log.shout('Failed to start router: $e $s'));
+  if (parsedArgs['filestore'] == null) {
+    print('Filestore path is required');
+    print(parser.usage);
+    exit(1);
+  }
+
+  await router.start(
+      port: int.parse(parsedArgs['httpport']),
+      filepath: parsedArgs['filestore']);
+  log.info('Ready to handle requests');
 }

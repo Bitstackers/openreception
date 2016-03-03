@@ -31,15 +31,21 @@ class Calendar {
    *
    */
   Future<shelf.Response> create(shelf.Request request) async {
-    final model.User user = await _authService.userOf(_tokenFrom(request));
+    model.User user;
+    try {
+      user = await _authService.userOf(tokenFrom(request));
+    } catch (e, s) {
+      _log.warning('Could not connect to auth server');
+      return authServerDown();
+    }
     final model.CalendarEntry entry =
         model.CalendarEntry.decode(JSON.decode(await request.readAsString()));
 
     final model.CalendarEntry created =
-        await _calendarStore.create(entry, user.id);
+        await _calendarStore.create(entry, user);
 
-    event.CalendarChange changeEvent = new event.CalendarChange(created.ID,
-        entry.contactID, entry.receptionID, event.CalendarEntryState.CREATED);
+    event.CalendarChange changeEvent = new event.CalendarChange(created.id,
+        entry.contactId, entry.receptionId, event.CalendarEntryState.CREATED);
 
     _log.finest('User id:${user.id} created entry for ${entry.owner}');
 
@@ -103,22 +109,28 @@ class Calendar {
    *
    */
   Future<shelf.Response> remove(shelf.Request request) async {
-    final model.User user = await _authService.userOf(_tokenFrom(request));
+    model.User user;
+    try {
+      user = await _authService.userOf(tokenFrom(request));
+    } catch (e, s) {
+      _log.warning('Could not connect to auth server');
+      return authServerDown();
+    }
 
     final int eid = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
     model.CalendarEntry removed;
     try {
       removed = await _calendarStore.get(eid);
-      await _calendarStore.remove(eid, user.id);
+      await _calendarStore.remove(eid, user);
     } on storage.NotFound {
       return _notFound('No entry with id $eid');
     }
 
     event.CalendarChange changeEvent = new event.CalendarChange(
-        removed.ID,
-        removed.contactID,
-        removed.receptionID,
+        removed.id,
+        removed.contactId,
+        removed.receptionId,
         event.CalendarEntryState.DELETED);
 
     _log.finest('User id:${user.id} removed entry for ${removed.owner}');
@@ -131,26 +143,24 @@ class Calendar {
   /**
    *
    */
-  Future<shelf.Response> purge(shelf.Request request) async {
-    final int eid = int.parse(shelf_route.getPathParameter(request, 'eid'));
-
-    return _okJson(await _calendarStore.purge(eid));
-  }
-
-  /**
-   *
-   */
   Future<shelf.Response> update(shelf.Request request) async {
-    final model.User user = await _authService.userOf(_tokenFrom(request));
+    model.User user;
+
+    try {
+      user = await _authService.userOf(tokenFrom(request));
+    } catch (e, s) {
+      _log.warning('Could not connect to auth server');
+      return authServerDown();
+    }
 
     final model.CalendarEntry entry =
         model.CalendarEntry.decode(JSON.decode(await request.readAsString()));
 
     final model.CalendarEntry updated =
-        await _calendarStore.update(entry, user.id);
+        await _calendarStore.update(entry, user);
 
-    event.CalendarChange changeEvent = new event.CalendarChange(updated.ID,
-        entry.contactID, entry.receptionID, event.CalendarEntryState.UPDATED);
+    event.CalendarChange changeEvent = new event.CalendarChange(updated.id,
+        entry.contactId, entry.receptionId, event.CalendarEntryState.UPDATED);
 
     _log.finest('User id:${user.id} updated entry for ${entry.owner}');
 

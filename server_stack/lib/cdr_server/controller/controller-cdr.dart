@@ -14,7 +14,7 @@
 part of openreception.cdr_server.controller;
 
 class Cdr {
-  final database.Cdr _cdrStore;
+  final _cdrStore;
   final Logger _log = new Logger('cdr_server.controller.cdr');
 
   Cdr(this._cdrStore);
@@ -42,11 +42,10 @@ class Cdr {
       return _clientError('Bad parameter: ${error}');
     }
 
-    final bool inbound = shelf_route
-            .getPathParameters(request)
-            .containsKey('inbound')
-        ? shelf_route.getPathParameter(request, 'inbound') == 'true'
-        : false;
+    final bool inbound =
+        shelf_route.getPathParameters(request).containsKey('inbound')
+            ? shelf_route.getPathParameter(request, 'inbound') == 'true'
+            : false;
 
     return await _cdrStore.list(inbound, start, end).then(
         (List orgs) => _okJson({'cdr_stats': orgs.toList(growable: false)}));

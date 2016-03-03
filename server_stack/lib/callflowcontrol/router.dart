@@ -18,6 +18,7 @@ import 'dart:io' as io;
 import 'dart:convert';
 
 import '../configuration.dart';
+import '../response_utils.dart';
 
 import 'controller.dart' as Controller;
 import 'model/model.dart' as Model;
@@ -44,29 +45,6 @@ part 'router/handler-channel.dart';
 
 const String libraryName = "callflowcontrol.router";
 final Logger log = new Logger(libraryName);
-
-/**
- *
- */
-shelf.Response _okJson(body) => new shelf.Response.ok(JSON.encode(body));
-
-/**
- *
- */
-shelf.Response _notFoundJson(body) =>
-    new shelf.Response.notFound(JSON.encode(body));
-
-/**
- *
- */
-shelf.Response _clientError(String reason) =>
-    new shelf.Response(400, body: reason);
-
-/**
- *
- */
-shelf.Response _serverError(String reason) =>
-    new shelf.Response(500, body: reason);
 
 Controller.State _stateController;
 Controller.ClientNotifier _notififer;
@@ -179,6 +157,3 @@ Future<io.HttpServer> start({String hostname: '0.0.0.0', int port: 4242}) {
 
   return shelf_io.serve(handler, hostname, port);
 }
-
-String _tokenFrom(shelf.Request request) =>
-    request.requestedUri.queryParameters['token'];

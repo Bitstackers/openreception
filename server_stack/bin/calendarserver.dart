@@ -28,15 +28,18 @@ import '../lib/calendar_server/router.dart' as router;
 ArgResults parsedArgs;
 ArgParser parser = new ArgParser();
 
-Future main(List<String> args) {
+Future main(List<String> args) async {
   ///Init logging.
   Logger.root.level = config.calendarServer.log.level;
   Logger.root.onRecord.listen(config.calendarServer.log.onRecord);
+  Logger log = new Logger('calendarserver');
 
   ///Handle argument parsing.
   ArgParser parser = new ArgParser()
     ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
+    ..addOption('filestore', abbr: 'f', help: 'Path to the filestore backend')
     ..addOption('httpport',
+        abbr: 'p',
         defaultsTo: config.calendarServer.httpPort.toString(),
         help: 'The port the HTTP server listens on.');
 
@@ -47,5 +50,27 @@ Future main(List<String> args) {
     exit(1);
   }
 
-  return router.start(port: int.parse(parsedArgs['httpport']));
+  final String filepath = parsedArgs['filestore'];
+  if (filepath == null || filepath.isEmpty) {
+    stderr.writeln('Filestore path is required');
+    print('');
+    print(parser.usage);
+    exit(1);
+  }
+
+  int port;
+  try {
+    port = int.parse(parsedArgs['httpport']);
+    if (port < 1 || port > 65535) {
+      throw new FormatException();
+    }
+  } on FormatException {
+    stderr.writeln('Bad port argument: ${parsedArgs['httpport']}');
+    print('');
+    print(parser.usage);
+    exit(1);
+  }
+
+  await router.start(port: port, filepath: filepath);
+  log.info('Ready to handle requests');
 }
