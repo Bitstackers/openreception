@@ -24,9 +24,10 @@ class MessageArchive extends ViewWidget {
   final Controller.Message _messageController;
   final Model.UIMessageCompose _messageCompose;
   final Controller.Destination _myDestination;
-  final ORModel.MessageFilter _notSavedFilter = new ORModel.MessageFilter.empty()
-    ..limitCount = 100
-    ..messageState = ORModel.MessageState.NotSaved;
+  final ORModel.MessageFilter _notSavedFilter =
+      new ORModel.MessageFilter.empty()
+        ..limitCount = 100
+        ..messageState = ORModel.MessageState.NotSaved;
   final Controller.Popup _popup;
   final Model.UIReceptionSelector _receptionSelector;
   final ORModel.MessageFilter _savedFilter = new ORModel.MessageFilter.empty()
@@ -75,9 +76,8 @@ class MessageArchive extends ViewWidget {
     _user.list().then((Iterable<ORModel.User> users) {
       _ui.users = users;
 
-      _messageController
-          .list(_savedFilter)
-          .then((Iterable<ORModel.Message> messages) => _ui.savedMessages = messages);
+      _messageController.list(_savedFilter).then(
+          (Iterable<ORModel.Message> messages) => _ui.savedMessages = messages);
 
       if (header != _ui.header) {
         _ui.headerExtra = header;
@@ -87,9 +87,9 @@ class MessageArchive extends ViewWidget {
           _notSavedFilter.contactID = _contactSelector.selectedContact.ID;
           _notSavedFilter.receptionID = _receptionSelector.selectedReception.ID;
 
-          _messageController
-              .list(_notSavedFilter)
-              .then((Iterable<ORModel.Message> messages) => _ui.notSavedMessages = messages);
+          _messageController.list(_notSavedFilter).then(
+              (Iterable<ORModel.Message> messages) =>
+                  _ui.notSavedMessages = messages);
         }
       }
     });
@@ -113,14 +113,16 @@ class MessageArchive extends ViewWidget {
       message.recipients = new Set();
 
       ORModel.Message savedMessage = await _messageController.save(message);
-      ORModel.MessageQueueItem response = await _messageController.enqueue(savedMessage);
+      ORModel.MessageQueueItem response =
+          await _messageController.enqueue(savedMessage);
 
       message.flag.manuallyClosed = true;
 
       _ui.moveMessage(savedMessage);
 
       _log.info('Message id ${response.messageID} successfully enqueued');
-      _popup.success(_langMap[Key.messageCloseSuccessTitle], 'ID ${response.messageID}');
+      _popup.success(
+          _langMap[Key.messageCloseSuccessTitle], 'ID ${response.messageID}');
     } catch (error) {
       _log.shout('Could not close ${message.asMap} $error');
       _popup.error(_langMap[Key.messageCloseErrorTitle], 'ID ${message.ID}');
@@ -137,7 +139,8 @@ class MessageArchive extends ViewWidget {
       _ui.removeMessage(message);
 
       _log.info('Message id ${message.ID} successfully deleted');
-      _popup.success(_langMap[Key.messageDeleteSuccessTitle], 'ID ${message.ID}');
+      _popup.success(
+          _langMap[Key.messageDeleteSuccessTitle], 'ID ${message.ID}');
     } catch (error) {
       _log.shout('Could not delete ${message.asMap} $error');
       _popup.error(_langMap[Key.messageDeleteErrorTitle], 'ID ${message.ID}');
@@ -164,7 +167,8 @@ class MessageArchive extends ViewWidget {
 
       _messageController
           .list(filter)
-          .then((Iterable<ORModel.Message> messages) => _ui.notSavedMessages = messages)
+          .then((Iterable<ORModel.Message> messages) =>
+              _ui.notSavedMessages = messages)
           .whenComplete(() {
         new Timer(new Duration(seconds: 1), () {
           _getMessagesOnScroll = true;
@@ -198,14 +202,16 @@ class MessageArchive extends ViewWidget {
   dynamic _sendMessage(ORModel.Message message) async {
     try {
       ORModel.Message savedMessage = await _messageController.save(message);
-      ORModel.MessageQueueItem response = await _messageController.enqueue(savedMessage);
+      ORModel.MessageQueueItem response =
+          await _messageController.enqueue(savedMessage);
 
       savedMessage.enqueued = true;
 
       _ui.moveMessage(savedMessage);
 
       _log.info('Message id ${response.messageID} successfully enqueued');
-      _popup.success(_langMap[Key.messageSaveSendSuccessTitle], 'ID ${response.messageID}');
+      _popup.success(_langMap[Key.messageSaveSendSuccessTitle],
+          'ID ${response.messageID}');
     } catch (error) {
       _log.shout('Could not save/enqueue ${message.asMap} $error');
       _popup.error(_langMap[Key.messageSaveSendErrorTitle], 'ID ${message.ID}');

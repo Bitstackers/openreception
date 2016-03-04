@@ -123,31 +123,37 @@ class ORCReady {
         _langMap[Key.dayFriday],
         _langMap[Key.daySaturday],
         _langMap[Key.daySunday]);
-    Model.UIContactCalendar _uiContactCalendar =
-        new Model.UIContactCalendar(querySelector('#contact-calendar'), _weekDays, _langMap);
-    Model.UIContactData _uiContactData = new Model.UIContactData(querySelector('#contact-data'));
+    Model.UIContactCalendar _uiContactCalendar = new Model.UIContactCalendar(
+        querySelector('#contact-calendar'), _weekDays, _langMap);
+    Model.UIContactData _uiContactData =
+        new Model.UIContactData(querySelector('#contact-data'));
     Model.UIContactSelector _uiContactSelector =
         new Model.UIContactSelector(querySelector('#contact-selector'));
-    Model.UIMessageArchive _uiMessageArchive =
-        new Model.UIMessageArchive(querySelector('#message-archive'), _weekDays, _langMap);
+    Model.UIMessageArchive _uiMessageArchive = new Model.UIMessageArchive(
+        querySelector('#message-archive'), _weekDays, _langMap);
     Model.UIMessageCompose _uiMessageCompose =
         new Model.UIMessageCompose(querySelector('#message-compose'));
     Model.UIReceptionCalendar _uiReceptionCalendar =
-        new Model.UIReceptionCalendar(querySelector('#reception-calendar'), _weekDays, _langMap);
+        new Model.UIReceptionCalendar(
+            querySelector('#reception-calendar'), _weekDays, _langMap);
     Model.UIReceptionSelector _uiReceptionSelector =
         new Model.UIReceptionSelector(querySelector('#reception-selector'));
 
     new Contexts(new Model.UIContexts());
     new Hint(new Model.UIHint());
 
-    _userController.getState(_appState.currentUser).then((ORModel.UserStatus userStatus) {
-      new AgentInfo(new Model.UIAgentInfo(querySelector('#agent-info')), _appState, _userController,
-          _notification, _callController);
+    _userController
+        .getState(_appState.currentUser)
+        .then((ORModel.UserStatus userStatus) {
+      new AgentInfo(new Model.UIAgentInfo(querySelector('#agent-info')),
+          _appState, _userController, _notification, _callController);
 
       new GlobalCallQueue(
-          new Model.UIGlobalCallQueue(querySelector('#global-call-queue'), _langMap),
+          new Model.UIGlobalCallQueue(
+              querySelector('#global-call-queue'), _langMap),
           _appState,
-          new Controller.Destination(Controller.Context.home, Controller.Widget.globalCallQueue),
+          new Controller.Destination(
+              Controller.Context.home, Controller.Widget.globalCallQueue),
           _notification,
           _callController,
           _sound,
@@ -156,7 +162,8 @@ class ORCReady {
 
     _contactCalendar = new ContactCalendar(
         _uiContactCalendar,
-        new Controller.Destination(Controller.Context.home, Controller.Widget.contactCalendar),
+        new Controller.Destination(
+            Controller.Context.home, Controller.Widget.contactCalendar),
         _uiContactSelector,
         _uiReceptionSelector,
         _contactController,
@@ -165,14 +172,16 @@ class ORCReady {
 
     new ContactData(
         _uiContactData,
-        new Controller.Destination(Controller.Context.home, Controller.Widget.contactData),
+        new Controller.Destination(
+            Controller.Context.home, Controller.Widget.contactData),
         _uiContactSelector,
         _uiReceptionSelector,
         _popup,
         _langMap);
 
     new CalendarEditor(
-        new Model.UICalendarEditor(querySelector('#calendar-editor'), _weekDays),
+        new Model.UICalendarEditor(
+            querySelector('#calendar-editor'), _weekDays),
         new Controller.Destination(
             Controller.Context.calendarEdit, Controller.Widget.calendarEditor),
         _uiContactCalendar,
@@ -185,13 +194,15 @@ class ORCReady {
 
     _contactSelector = new ContactSelector(
         _uiContactSelector,
-        new Controller.Destination(Controller.Context.home, Controller.Widget.contactSelector),
+        new Controller.Destination(
+            Controller.Context.home, Controller.Widget.contactSelector),
         _uiReceptionSelector,
         _contactController);
 
     new MessageArchive(
         _uiMessageArchive,
-        new Controller.Destination(Controller.Context.messages, Controller.Widget.messageArchive),
+        new Controller.Destination(
+            Controller.Context.messages, Controller.Widget.messageArchive),
         _messageController,
         _userController,
         _uiContactSelector,
@@ -204,7 +215,8 @@ class ORCReady {
         _uiMessageCompose,
         _uiMessageArchive,
         _appState,
-        new Controller.Destination(Controller.Context.home, Controller.Widget.messageCompose),
+        new Controller.Destination(
+            Controller.Context.home, Controller.Widget.messageCompose),
         _uiContactSelector,
         _uiReceptionSelector,
         _messageController,
@@ -215,10 +227,11 @@ class ORCReady {
         _langMap);
 
     new MyCallQueue(
-        new Model.UIMyCallQueue(
-            querySelector('#my-call-queue'), _langMap, _contactController, _receptionController),
+        new Model.UIMyCallQueue(querySelector('#my-call-queue'), _langMap,
+            _contactController, _receptionController),
         _appState,
-        new Controller.Destination(Controller.Context.home, Controller.Widget.myCallQueue),
+        new Controller.Destination(
+            Controller.Context.home, Controller.Widget.myCallQueue),
         _notification,
         _callController,
         _popup,
@@ -247,19 +260,22 @@ class ORCReady {
 
     _receptionCalendar = new ReceptionCalendar(
         _uiReceptionCalendar,
-        new Controller.Destination(Controller.Context.home, Controller.Widget.receptionCalendar),
+        new Controller.Destination(
+            Controller.Context.home, Controller.Widget.receptionCalendar),
         _uiReceptionSelector,
         _calendarController,
         _notification);
 
     new ReceptionCommands(
         new Model.UIReceptionCommands(querySelector('#reception-commands')),
-        new Controller.Destination(Controller.Context.home, Controller.Widget.receptionCommands),
+        new Controller.Destination(
+            Controller.Context.home, Controller.Widget.receptionCommands),
         _uiReceptionSelector);
 
     new ReceptionEmail(
         new Model.UIReceptionEmail(querySelector('#reception-email')),
-        new Controller.Destination(Controller.Context.homePlus, Controller.Widget.receptionEmail),
+        new Controller.Destination(
+            Controller.Context.homePlus, Controller.Widget.receptionEmail),
         _uiReceptionSelector);
 
     new ReceptionMiniWiki(
@@ -269,25 +285,29 @@ class ORCReady {
         _uiReceptionSelector);
 
     new ReceptionOpeningHours(
-        new Model.UIReceptionOpeningHours(querySelector('#reception-opening-hours')),
+        new Model.UIReceptionOpeningHours(
+            querySelector('#reception-opening-hours')),
         new Controller.Destination(
             Controller.Context.home, Controller.Widget.receptionOpeningHours),
         _uiReceptionSelector);
 
     new ReceptionProduct(
         new Model.UIReceptionProduct(querySelector('#reception-product')),
-        new Controller.Destination(Controller.Context.home, Controller.Widget.receptionProduct),
+        new Controller.Destination(
+            Controller.Context.home, Controller.Widget.receptionProduct),
         _uiReceptionSelector);
 
     new ReceptionSalesmen(
         new Model.UIReceptionSalesmen(querySelector('#reception-salesmen')),
-        new Controller.Destination(Controller.Context.home, Controller.Widget.receptionSalesmen),
+        new Controller.Destination(
+            Controller.Context.home, Controller.Widget.receptionSalesmen),
         _uiReceptionSelector);
 
     _receptionSelector = new ReceptionSelector(
         _uiReceptionSelector,
         _appState,
-        new Controller.Destination(Controller.Context.home, Controller.Widget.receptionSelector),
+        new Controller.Destination(
+            Controller.Context.home, Controller.Widget.receptionSelector),
         _notification,
         _sortedReceptions,
         _receptionController,
@@ -295,18 +315,21 @@ class ORCReady {
         _langMap);
 
     new ReceptionTelephoneNumbers(
-        new Model.UIReceptionTelephoneNumbers(querySelector('#reception-telephone-numbers')),
-        new Controller.Destination(
-            Controller.Context.homePlus, Controller.Widget.receptionTelephoneNumbers),
+        new Model.UIReceptionTelephoneNumbers(
+            querySelector('#reception-telephone-numbers')),
+        new Controller.Destination(Controller.Context.homePlus,
+            Controller.Widget.receptionTelephoneNumbers),
         _uiReceptionSelector);
 
     new ReceptionType(
         new Model.UIReceptionType(querySelector('#reception-type')),
-        new Controller.Destination(Controller.Context.homePlus, Controller.Widget.receptionType),
+        new Controller.Destination(
+            Controller.Context.homePlus, Controller.Widget.receptionType),
         _uiReceptionSelector);
 
     new ReceptionVATNumbers(
-        new Model.UIReceptionVATNumbers(querySelector('#reception-vat-numbers')),
+        new Model.UIReceptionVATNumbers(
+            querySelector('#reception-vat-numbers')),
         new Controller.Destination(
             Controller.Context.homePlus, Controller.Widget.receptionVATNumbers),
         _uiReceptionSelector);
@@ -317,11 +340,16 @@ class ORCReady {
             Controller.Context.homePlus, Controller.Widget.receptionWebsites),
         _uiReceptionSelector);
 
-    new WelcomeMessage(new Model.UIWelcomeMessage(querySelector('#welcome-message')), _appState,
-        _uiReceptionSelector, _langMap);
+    new WelcomeMessage(
+        new Model.UIWelcomeMessage(querySelector('#welcome-message')),
+        _appState,
+        _uiReceptionSelector,
+        _langMap);
 
     _ui.visible = true;
 
-    window.location.hash.isEmpty ? _navigate.goHome() : _navigate.goWindowLocation();
+    window.location.hash.isEmpty
+        ? _navigate.goHome()
+        : _navigate.goWindowLocation();
   }
 }

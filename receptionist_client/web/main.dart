@@ -42,19 +42,25 @@ main() async {
   final Uri appUri = Uri.parse(window.location.href);
 
   /// Hang here until the client configuration has been loaded from the server.
-  final ORModel.ClientConfiguration clientConfig = await getClientConfiguration();
+  final ORModel.ClientConfiguration clientConfig =
+      await getClientConfiguration();
   Map<String, String> language;
 
   /// This is the 'settoken' URL path parameter.
   final String token = getToken(appUri);
 
-  final ORTransport.WebSocketClient webSocketClient = new ORTransport.WebSocketClient();
+  final ORTransport.WebSocketClient webSocketClient =
+      new ORTransport.WebSocketClient();
 
-  final ORService.NotificationService notificationService = new ORService.NotificationService(
-      clientConfig.notificationServerUri, token, new ORTransport.Client());
-  final Controller.Notification notificationController = new Controller.Notification(
-      new ORService.NotificationSocket(webSocketClient), notificationService);
-  final Model.AppClientState appState = new Model.AppClientState(notificationController);
+  final ORService.NotificationService notificationService =
+      new ORService.NotificationService(
+          clientConfig.notificationServerUri, token, new ORTransport.Client());
+  final Controller.Notification notificationController =
+      new Controller.Notification(
+          new ORService.NotificationSocket(webSocketClient),
+          notificationService);
+  final Model.AppClientState appState =
+      new Model.AppClientState(notificationController);
 
   try {
     Logger.root.level = Level.ALL;
@@ -62,7 +68,9 @@ main() async {
 
     /// Verify that we support HTMl5 notifications
     if (Notification.supported) {
-      Notification.requestPermission().then((String perm) => log.info('HTML5 permission ${perm}'));
+      Notification
+          .requestPermission()
+          .then((String perm) => log.info('HTML5 permission ${perm}'));
     } else {
       log.shout('HTML5 notifications not supported.');
     }
@@ -81,7 +89,10 @@ main() async {
     /// elements. This is simply done by searching for the "ignoreclickfocus"
     /// attribute and ignoring mousedown events for those elements.
     document.onMouseDown.listen((MouseEvent event) {
-      if ((event.target as HtmlElement).attributes.keys.contains('ignoreclickfocus')) {
+      if ((event.target as HtmlElement)
+          .attributes
+          .keys
+          .contains('ignoreclickfocus')) {
         event.preventDefault();
       }
     });
@@ -95,25 +106,30 @@ main() async {
         restartAppInTenSeconds(appUri);
       };
 
-      Uri uri = Uri.parse('${clientConfig.notificationSocketUri}?token=${token}');
+      Uri uri =
+          Uri.parse('${clientConfig.notificationSocketUri}?token=${token}');
 
       webSocketClient.connect(uri).then((_) {
         log.info('WebSocketClient connect succeeded - NotificationSocket up');
 
-        final ORService.CallFlowControl callFlowControl = new ORService.CallFlowControl(
-            clientConfig.callFlowServerUri, token, new ORTransport.Client());
-        final ORService.NotificationService notificationService = new ORService.NotificationService(
-            clientConfig.notificationServerUri, token, new ORTransport.Client());
+        final ORService.CallFlowControl callFlowControl =
+            new ORService.CallFlowControl(clientConfig.callFlowServerUri, token,
+                new ORTransport.Client());
+        final ORService.NotificationService notificationService =
+            new ORService.NotificationService(
+                clientConfig.notificationServerUri,
+                token,
+                new ORTransport.Client());
         final ORService.RESTUserStore userService = new ORService.RESTUserStore(
             clientConfig.userServerUri, token, new ORTransport.Client());
 
-        final Controller.User userController =
-            new Controller.User(callFlowControl, notificationService, userService);
+        final Controller.User userController = new Controller.User(
+            callFlowControl, notificationService, userService);
 
         observers(userController, appState, webSocketClient);
 
-        Future rRV = registerReadyView(appState, clientConfig, userController, callFlowControl,
-            notificationController, language, token);
+        Future rRV = registerReadyView(appState, clientConfig, userController,
+            callFlowControl, notificationController, language, token);
 
         Future lCS = loadCallState(callFlowControl, appState);
 
@@ -131,7 +147,8 @@ main() async {
       window.location.replace(loginUrl);
     }
   } catch (error, stackTrace) {
-    log.shout('Could not fully initialize application. Trying again in 10 seconds');
+    log.shout(
+        'Could not fully initialize application. Trying again in 10 seconds');
     log.shout(error, stackTrace);
     appState.changeState(Model.AppState.error);
     restartAppInTenSeconds(appUri);
@@ -142,10 +159,12 @@ main() async {
  * Return the configuration object for the client.
  */
 Future<ORModel.ClientConfiguration> getClientConfiguration() async {
-  ORService.RESTConfiguration configService =
-      new ORService.RESTConfiguration(configurationUrl, new ORTransport.Client());
+  ORService.RESTConfiguration configService = new ORService.RESTConfiguration(
+      configurationUrl, new ORTransport.Client());
 
-  return await configService.clientConfig().then((ORModel.ClientConfiguration config) {
+  return await configService
+      .clientConfig()
+      .then((ORModel.ClientConfiguration config) {
     log.info('Loaded client config: ${config.asMap}');
     return config;
   });
@@ -182,8 +201,8 @@ String getToken(Uri appUri) => appUri.queryParameters['settoken'];
  * Return the current user.
  */
 Future<ORModel.User> getUser(Uri authServerUri, String token) {
-  ORService.Authentication authService =
-      new ORService.Authentication(authServerUri, token, new ORTransport.Client());
+  ORService.Authentication authService = new ORService.Authentication(
+      authServerUri, token, new ORTransport.Client());
 
   return authService.userOf(token);
 }
@@ -191,11 +210,13 @@ Future<ORModel.User> getUser(Uri authServerUri, String token) {
 /**
  * Load call state for current user.
  */
-Future loadCallState(ORService.CallFlowControl callFlowControl, Model.AppClientState appState) {
+Future loadCallState(
+    ORService.CallFlowControl callFlowControl, Model.AppClientState appState) {
   return callFlowControl.callList().then((Iterable<ORModel.Call> calls) {
     ORModel.Call myActiveCall = calls.firstWhere(
         (ORModel.Call call) =>
-            call.assignedTo == appState.currentUser.id && call.state == ORModel.CallState.Speaking,
+            call.assignedTo == appState.currentUser.id &&
+            call.state == ORModel.CallState.Speaking,
         orElse: () => null);
 
     if (myActiveCall != null) {
@@ -262,21 +283,31 @@ Future registerReadyView(
   ORService.RESTMessageStore messageStore = new ORService.RESTMessageStore(
       clientConfig.messageServerUri, token, new ORTransport.Client());
   Controller.Message messageController = new Controller.Message(messageStore);
-  ORService.RESTReceptionStore receptionStore = new ORService.RESTReceptionStore(
-      clientConfig.receptionServerUri, token, new ORTransport.Client());
-  Controller.Reception receptionController = new Controller.Reception(receptionStore);
+  ORService.RESTReceptionStore receptionStore =
+      new ORService.RESTReceptionStore(
+          clientConfig.receptionServerUri, token, new ORTransport.Client());
+  Controller.Reception receptionController =
+      new Controller.Reception(receptionStore);
   Controller.DistributionList distributionListController =
       new Controller.DistributionList(distributionListStore);
-  Controller.Endpoint endpointController = new Controller.Endpoint(endpointStore);
-  Controller.Calendar calendarController = new Controller.Calendar(calendarStore);
-  Controller.Call callController = new Controller.Call(callFlowControl, appState);
+  Controller.Endpoint endpointController =
+      new Controller.Endpoint(endpointStore);
+  Controller.Calendar calendarController =
+      new Controller.Calendar(calendarStore);
+  Controller.Call callController =
+      new Controller.Call(callFlowControl, appState);
 
-  Controller.Popup popup = new Controller.Popup(new Uri.file('/images/popup_error.png'),
-      new Uri.file('/images/popup_info.png'), new Uri.file('/images/popup_success.png'));
+  Controller.Popup popup = new Controller.Popup(
+      new Uri.file('/images/popup_error.png'),
+      new Uri.file('/images/popup_info.png'),
+      new Uri.file('/images/popup_success.png'));
 
-  Controller.Sound sound = new Controller.Sound(querySelector('audio.sound-pling'));
+  Controller.Sound sound =
+      new Controller.Sound(querySelector('audio.sound-pling'));
 
-  return receptionController.list().then((Iterable<ORModel.Reception> receptions) {
+  return receptionController
+      .list()
+      .then((Iterable<ORModel.Reception> receptions) {
     Iterable<ORModel.Reception> sortedReceptions = receptions.toList()
       ..sort((x, y) => x.name.toLowerCase().compareTo(y.name.toLowerCase()));
 
@@ -328,6 +359,7 @@ void translate(Map<String, String> langMap) {
   });
 
   querySelectorAll('[data-lang-placeholder]').forEach((Element element) {
-    element.setAttribute('placeholder', langMap[element.dataset['lang-placeholder']]);
+    element.setAttribute(
+        'placeholder', langMap[element.dataset['lang-placeholder']]);
   });
 }

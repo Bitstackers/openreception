@@ -89,10 +89,12 @@ class CalendarEditor extends ViewWidget {
 
     _calendarController.deleteCalendarEvent(_ui.loadedEntry).then((_) {
       _log.info('${loadedEntry} successfully deleted from database');
-      _popup.success(_langMap[Key.calendarEditorDelSuccessTitle], 'ID ${loadedEntry.ID}');
+      _popup.success(
+          _langMap[Key.calendarEditorDelSuccessTitle], 'ID ${loadedEntry.ID}');
     }).catchError((error) {
       _log.shout('Could not delete calendar entry ${loadedEntry}');
-      _popup.error(_langMap[Key.calendarEditorDelErrorTitle], 'ID ${loadedEntry.ID}');
+      _popup.error(
+          _langMap[Key.calendarEditorDelErrorTitle], 'ID ${loadedEntry.ID}');
     }).whenComplete(() => _close());
   }
 
@@ -115,13 +117,17 @@ class CalendarEditor extends ViewWidget {
   void _save() {
     final ORModel.CalendarEntry entry = _ui.harvestedEntry;
 
-    _calendarController.saveCalendarEvent(entry).then((ORModel.CalendarEntry savedEntry) {
+    _calendarController
+        .saveCalendarEvent(entry)
+        .then((ORModel.CalendarEntry savedEntry) {
       _log.info('${savedEntry} successfully saved to database');
-      _popup.success(_langMap[Key.calendarEditorSaveSuccessTitle], 'ID ${savedEntry.ID}');
+      _popup.success(
+          _langMap[Key.calendarEditorSaveSuccessTitle], 'ID ${savedEntry.ID}');
     }).catchError((error) {
       ORModel.CalendarEntry loadedEntry = _ui.loadedEntry;
       _log.shout('Could not save calendar entry ${loadedEntry}');
-      _popup.error(_langMap[Key.calendarEditorSaveErrorTitle], 'ID ${loadedEntry.ID}');
+      _popup.error(
+          _langMap[Key.calendarEditorSaveErrorTitle], 'ID ${loadedEntry.ID}');
     }).whenComplete(() => _close());
   }
 
@@ -166,7 +172,8 @@ class CalendarEditor extends ViewWidget {
           _render(entry);
         } else {
           entry = new ORModel.CalendarEntry.empty()
-            ..owner = new ORModel.OwningContact(_contactSelector.selectedContact.ID)
+            ..owner =
+                new ORModel.OwningContact(_contactSelector.selectedContact.ID)
             ..beginsAt = new DateTime.now()
             ..until = new DateTime.now().add(new Duration(hours: 1))
             ..content = '';
@@ -187,7 +194,8 @@ class CalendarEditor extends ViewWidget {
           _render(entry);
         } else {
           entry = new ORModel.CalendarEntry.empty()
-            ..owner = new ORModel.OwningReception(_receptionSelector.selectedReception.ID)
+            ..owner = new ORModel.OwningReception(
+                _receptionSelector.selectedReception.ID)
             ..beginsAt = new DateTime.now()
             ..until = new DateTime.now().add(new Duration(hours: 1))
             ..content = '';

@@ -24,7 +24,9 @@ class ReceptionType extends ViewWidget {
   /**
    * Constructor.
    */
-  ReceptionType(Model.UIReceptionType this._uiModel, Controller.Destination this._myDestination,
+  ReceptionType(
+      Model.UIReceptionType this._uiModel,
+      Controller.Destination this._myDestination,
       Model.UIReceptionSelector this._receptionSelector) {
     _observers();
   }

@@ -24,7 +24,9 @@ class ReceptionEmail extends ViewWidget {
   /**
    * Constructor.
    */
-  ReceptionEmail(Model.UIReceptionEmail this._uiModel, Controller.Destination this._myDestination,
+  ReceptionEmail(
+      Model.UIReceptionEmail this._uiModel,
+      Controller.Destination this._myDestination,
       Model.UIReceptionSelector this._receptionSelector) {
     _observers();
   }

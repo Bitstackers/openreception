@@ -68,8 +68,11 @@ class ContactCalendar extends ViewWidget {
    * Fetch all calendar entries for [contact].
    */
   void _fetchCalendar(ORModel.Contact contact) {
-    _calendarController.contactCalendar(contact).then((Iterable<ORModel.CalendarEntry> entries) {
-      _ui.calendarEntries = entries.toList()..sort((a, b) => a.start.compareTo(b.start));
+    _calendarController
+        .contactCalendar(contact)
+        .then((Iterable<ORModel.CalendarEntry> entries) {
+      _ui.calendarEntries = entries.toList()
+        ..sort((a, b) => a.start.compareTo(b.start));
     });
   }
 
@@ -97,7 +100,8 @@ class ContactCalendar extends ViewWidget {
 
     _notification.onCalendarChange.listen(_updateOnChange);
 
-    _contactSelector.onSelect.listen((Model.ContactWithFilterContext c) => _render(c.contact));
+    _contactSelector.onSelect
+        .listen((Model.ContactWithFilterContext c) => _render(c.contact));
 
     _receptionSelector.onSelect.listen(_clear);
   }

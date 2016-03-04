@@ -25,8 +25,11 @@ class WelcomeMessage extends ViewWidget {
   /**
    * Constructor.
    */
-  WelcomeMessage(Model.UIWelcomeMessage this._uiModel, Model.AppClientState this._appState,
-      Model.UIReceptionSelector this._receptionSelector, Map<String, String> this._langMap) {
+  WelcomeMessage(
+      Model.UIWelcomeMessage this._uiModel,
+      Model.AppClientState this._appState,
+      Model.UIReceptionSelector this._receptionSelector,
+      Map<String, String> this._langMap) {
     _observers();
   }
 
@@ -56,8 +59,9 @@ class WelcomeMessage extends ViewWidget {
       _ui.greeting = _langMap[Key.standardGreeting];
     } else {
       if (_appState.activeCall != ORModel.Call.noCall) {
-        _ui.greeting =
-            _appState.activeCall.greetingPlayed ? reception.greeting : reception.shortGreeting;
+        _ui.greeting = _appState.activeCall.greetingPlayed
+            ? reception.greeting
+            : reception.shortGreeting;
       } else {
         _ui.greeting = reception.greeting;
       }

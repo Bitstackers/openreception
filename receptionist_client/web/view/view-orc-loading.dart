@@ -24,7 +24,8 @@ class ORCLoading {
   /**
    * Constructor.
    */
-  factory ORCLoading(Model.AppClientState appState, Model.UIORCLoading uiLoading) {
+  factory ORCLoading(
+      Model.AppClientState appState, Model.UIORCLoading uiLoading) {
     if (_singleton == null) {
       _singleton = new ORCLoading._internal(appState, uiLoading);
     } else {
@@ -35,7 +36,8 @@ class ORCLoading {
   /**
    * Internal constructor.
    */
-  ORCLoading._internal(Model.AppClientState this._appState, Model.UIORCLoading this._ui) {
+  ORCLoading._internal(
+      Model.AppClientState this._appState, Model.UIORCLoading this._ui) {
     _observers();
   }
 
@@ -43,7 +45,7 @@ class ORCLoading {
    * Observers.
    */
   void _observers() {
-    _appState.onStateChange.listen((Model.AppState appState) =>
-        appState == Model.AppState.loading ? _ui.visible = true : _ui.visible = false);
+    _appState.onStateChange.listen((Model.AppState appState) => appState ==
+        Model.AppState.loading ? _ui.visible = true : _ui.visible = false);
   }
 }

@@ -90,13 +90,18 @@ class ReceptionSelector extends ViewWidget {
       }
     });
 
-    refreshReceptionsCacheTimer = new Timer.periodic(new Duration(seconds: 5), (_) {
+    refreshReceptionsCacheTimer =
+        new Timer.periodic(new Duration(seconds: 5), (_) {
       if (_refreshReceptionsCache) {
         _refreshReceptionsCache = false;
-        _popup.info(_langMap[Key.receptionChanged], '', closeAfter: new Duration(seconds: 3));
-        _receptionController.list().then((Iterable<ORModel.Reception> receptions) {
+        _popup.info(_langMap[Key.receptionChanged], '',
+            closeAfter: new Duration(seconds: 3));
+        _receptionController
+            .list()
+            .then((Iterable<ORModel.Reception> receptions) {
           _ui.receptionsCache = receptions.toList()
-            ..sort((x, y) => x.name.toLowerCase().compareTo(y.name.toLowerCase()));
+            ..sort(
+                (x, y) => x.name.toLowerCase().compareTo(y.name.toLowerCase()));
         });
       }
     });

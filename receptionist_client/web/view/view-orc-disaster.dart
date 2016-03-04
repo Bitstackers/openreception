@@ -24,7 +24,8 @@ class ORCDisaster {
   /**
    * Constructor.
    */
-  factory ORCDisaster(Model.AppClientState appClientState, Model.UIORCDisaster uiDisaster) {
+  factory ORCDisaster(
+      Model.AppClientState appClientState, Model.UIORCDisaster uiDisaster) {
     if (_singleton == null) {
       _singleton = new ORCDisaster._internal(appClientState, uiDisaster);
     } else {
@@ -35,7 +36,8 @@ class ORCDisaster {
   /**
    * Internal constructor.
    */
-  ORCDisaster._internal(Model.AppClientState this._appState, Model.UIORCDisaster this._ui) {
+  ORCDisaster._internal(
+      Model.AppClientState this._appState, Model.UIORCDisaster this._ui) {
     _observers();
   }
 
@@ -43,7 +45,7 @@ class ORCDisaster {
    * Observers.
    */
   void _observers() {
-    _appState.onStateChange.listen((Model.AppState appState) =>
-        appState == Model.AppState.error ? _ui.visible = true : _ui.visible = false);
+    _appState.onStateChange.listen((Model.AppState appState) => appState ==
+        Model.AppState.error ? _ui.visible = true : _ui.visible = false);
   }
 }

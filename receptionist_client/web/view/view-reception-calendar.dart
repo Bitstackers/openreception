@@ -58,7 +58,8 @@ class ReceptionCalendar extends ViewWidget {
     _calendarController
         .receptionCalendar(reception)
         .then((Iterable<ORModel.CalendarEntry> entries) {
-      _ui.calendarEntries = entries.toList()..sort((a, b) => a.start.compareTo(b.start));
+      _ui.calendarEntries = entries.toList()
+        ..sort((a, b) => a.start.compareTo(b.start));
     });
   }
 
@@ -106,7 +107,8 @@ class ReceptionCalendar extends ViewWidget {
    * reception, and update accordingly if so.
    */
   void _updateOnChange(OREvent.CalendarChange calendarChange) {
-    final ORModel.Reception currentReception = _receptionSelector.selectedReception;
+    final ORModel.Reception currentReception =
+        _receptionSelector.selectedReception;
 
     if (calendarChange.receptionID == currentReception.ID) {
       _fetchCalendar(currentReception);

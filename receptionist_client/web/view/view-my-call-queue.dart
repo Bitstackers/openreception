@@ -74,10 +74,10 @@ class MyCallQueue extends ViewWidget {
    */
   Future _call(ORModel.PhoneNumber phoneNumber) async {
     ORModel.Call parkedCall;
-    bool markTransfer =
-        _appState.activeCall == ORModel.Call.noCall && _ui.markedForTransfer.length == 1;
-    bool parkAndMarkTransfer =
-        _appState.activeCall != ORModel.Call.noCall && _ui.markedForTransfer.length < 2;
+    bool markTransfer = _appState.activeCall == ORModel.Call.noCall &&
+        _ui.markedForTransfer.length == 1;
+    bool parkAndMarkTransfer = _appState.activeCall != ORModel.Call.noCall &&
+        _ui.markedForTransfer.length < 2;
 
     if (parkAndMarkTransfer) {
       _ui.removeTransferMarks();
@@ -89,7 +89,9 @@ class MyCallQueue extends ViewWidget {
     _busyCallController();
     try {
       ORModel.Call newCall = await _callController.dial(
-          phoneNumber, _receptionSelector.selectedReception, _contactSelector.selectedContact,
+          phoneNumber,
+          _receptionSelector.selectedReception,
+          _contactSelector.selectedContact,
           contextCallId: contextCallId);
       if (markTransfer || parkAndMarkTransfer) {
         _ui.markForTransfer(newCall);
@@ -119,7 +121,8 @@ class MyCallQueue extends ViewWidget {
   void clearStaleCalls() {
     _ui.calls.forEach((ORModel.Call call) {
       _callController.get(call.ID).then((ORModel.Call c) {
-        if (c == ORModel.Call.noCall || c.callState == ORModel.CallState.Transferred) {
+        if (c == ORModel.Call.noCall ||
+            c.callState == ORModel.CallState.Transferred) {
           if (c.ID == contextCallId) {
             contextCallId = '';
           }
@@ -148,7 +151,8 @@ class MyCallQueue extends ViewWidget {
    *  spamming commands at the call controller.
    */
   Future _readyCallController() {
-    return new Future.delayed(new Duration(milliseconds: 100), () => _callControllerBusy = false);
+    return new Future.delayed(
+        new Duration(milliseconds: 100), () => _callControllerBusy = false);
   }
 
   /**
@@ -156,7 +160,8 @@ class MyCallQueue extends ViewWidget {
    */
   void _error(error, String title, String message) {
     if (error is Controller.BusyException) {
-      _popup.error(_langMap[Key.errorSystem], _langMap[Key.errorCallControllerBusy]);
+      _popup.error(
+          _langMap[Key.errorSystem], _langMap[Key.errorCallControllerBusy]);
     } else {
       _popup.error(title, message);
     }
@@ -199,14 +204,16 @@ class MyCallQueue extends ViewWidget {
    */
   void _loadCallList() {
     bool isMine(ORModel.Call call) =>
-        call.assignedTo == _appState.currentUser.id && call.state != ORModel.CallState.Transferred;
+        call.assignedTo == _appState.currentUser.id &&
+        call.state != ORModel.CallState.Transferred;
 
     _callController.listCalls().then((Iterable<ORModel.Call> calls) {
       Iterable<ORModel.Call> myCalls = calls.where(isMine);
       _ui.calls = myCalls.toList(growable: false);
       _appState.activeCall = myCalls.firstWhere(
           (ORModel.Call call) =>
-              call.state == ORModel.CallState.Speaking || call.state == ORModel.CallState.Ringing,
+              call.state == ORModel.CallState.Speaking ||
+              call.state == ORModel.CallState.Ringing,
           orElse: () => ORModel.Call.noCall);
     });
   }
@@ -222,7 +229,8 @@ class MyCallQueue extends ViewWidget {
     _ui.onDblClick.listen((ORModel.Call call) => unpark(call: call));
 
     _receptionSelector.onSelect.listen((ORModel.Reception reception) {
-      if (_appState.activeCall == ORModel.Call.noCall || !_appState.activeCall.inbound) {
+      if (_appState.activeCall == ORModel.Call.noCall ||
+          !_appState.activeCall.inbound) {
         contextCallId = '';
       }
     });
@@ -235,10 +243,10 @@ class MyCallQueue extends ViewWidget {
           _appState.activeCall != ORModel.Call.noCall &&
           calls.length == 2 &&
           calls.any((ORModel.Call call) => _appState.activeCall == call)) {
-        final ORModel.Call source =
-            calls.firstWhere((ORModel.Call call) => call.ID == _appState.activeCall.ID);
-        final ORModel.Call destination =
-            calls.firstWhere((ORModel.Call call) => call.ID != _appState.activeCall.ID);
+        final ORModel.Call source = calls.firstWhere(
+            (ORModel.Call call) => call.ID == _appState.activeCall.ID);
+        final ORModel.Call destination = calls.firstWhere(
+            (ORModel.Call call) => call.ID != _appState.activeCall.ID);
 
         _busyCallController();
 
@@ -248,7 +256,8 @@ class MyCallQueue extends ViewWidget {
           }
           clearStaleCalls();
         }).catchError((error) {
-          _error(error, _langMap[Key.errorCallTransfer], 'ID ${_appState.activeCall.ID}');
+          _error(error, _langMap[Key.errorCallTransfer],
+              'ID ${_appState.activeCall.ID}');
           _log.warning('transfer failed with ${error}');
         }).whenComplete(() => _readyCallController());
       }
@@ -271,7 +280,8 @@ class MyCallQueue extends ViewWidget {
           }
           clearStaleCalls();
         }).catchError((error) {
-          _error(error, _langMap[Key.errorCallHangup], 'ID ${_appState.activeCall.ID}');
+          _error(error, _langMap[Key.errorCallHangup],
+              'ID ${_appState.activeCall.ID}');
           _log.warning('hangup failed with ${error}');
         }).whenComplete(() => _readyCallController());
       }
@@ -288,7 +298,8 @@ class MyCallQueue extends ViewWidget {
           _ui.removeTransferMarks();
           clearStaleCalls();
         }).catchError((error) {
-          _error(error, _langMap[Key.errorCallNotFound], _langMap[Key.errorCallNotFoundExtended]);
+          _error(error, _langMap[Key.errorCallNotFound],
+              _langMap[Key.errorCallNotFoundExtended]);
           _log.warning('pickup failed with ${error}');
         }).whenComplete(() => _readyCallController());
       }
@@ -312,7 +323,8 @@ class MyCallQueue extends ViewWidget {
         _busyCallController();
         parkedCall = await _callController.park(call);
       } catch (error) {
-        _error(error, _langMap[Key.errorCallPark], 'ID ${_appState.activeCall.ID}');
+        _error(error, _langMap[Key.errorCallPark],
+            'ID ${_appState.activeCall.ID}');
         _log.warning('parking failed with ${error}');
       }
     }
@@ -335,10 +347,12 @@ class MyCallQueue extends ViewWidget {
   void unpark({ORModel.Call call}) {
     if (!_callControllerBusy &&
         _appState.activeCall == ORModel.Call.noCall &&
-        _ui.calls.any((ORModel.Call call) => call.state == ORModel.CallState.Parked)) {
+        _ui.calls.any(
+            (ORModel.Call call) => call.state == ORModel.CallState.Parked)) {
       _busyCallController();
-      final Future<ORModel.Call> unparkCall =
-          call != null ? _callController.pickup(call) : _callController.pickupFirstParkedCall();
+      final Future<ORModel.Call> unparkCall = call != null
+          ? _callController.pickup(call)
+          : _callController.pickupFirstParkedCall();
 
       unparkCall.then((ORModel.Call call) {
         if (call.inbound) {

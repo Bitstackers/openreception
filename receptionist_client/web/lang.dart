@@ -21,10 +21,13 @@ abstract class Key {
   static const String agent = 'agent';
 
   static const String calendarEditorDelErrorTitle = 'calendar-editor-del-error';
-  static const String calendarEditorDelSuccessTitle = 'calendar-editor-del-success';
+  static const String calendarEditorDelSuccessTitle =
+      'calendar-editor-del-success';
   static const String calendarEditorHeader = 'calendar-editor-header';
-  static const String calendarEditorSaveErrorTitle = 'calendar-editor-save-error';
-  static const String calendarEditorSaveSuccessTitle = 'calendar-editor-save-success';
+  static const String calendarEditorSaveErrorTitle =
+      'calendar-editor-save-error';
+  static const String calendarEditorSaveSuccessTitle =
+      'calendar-editor-save-success';
 
   static const String callFailed = 'call-failed';
 
@@ -54,14 +57,16 @@ abstract class Key {
   static const String contactDataBackup = 'contact-data-backup';
   static const String contactDataCommands = 'contact-data-commands';
   static const String contactDataDepartment = 'contact-data-department';
-  static const String contactDataEmailAddresses = 'contact-data-email-addresses';
+  static const String contactDataEmailAddresses =
+      'contact-data-email-addresses';
   static const String contactDataHeader = 'contact-data-header';
   static const String contactDataPSTN = 'contact-data-pstn';
   static const String contactDataRelations = 'contact-data-relations';
   static const String contactDataResponsibility = 'contact-data-responsibility';
   static const String contactDataShowPSTN = 'contact-data-show-pstn';
   static const String contactDataShowTags = 'contact-data-show-tags';
-  static const String contactDataTelephoneNumbers = 'contact-data-telephone-numbers';
+  static const String contactDataTelephoneNumbers =
+      'contact-data-telephone-numbers';
   static const String contactDataTitle = 'contact-data-title';
   static const String contactDataWorkHours = 'contact-data-work-hours';
   static const String contactSelectorHeader = 'contact-selector-header';
@@ -85,7 +90,8 @@ abstract class Key {
   static const String errorCallControllerBusy = 'error-call-controller-busy';
   static const String errorCallHangup = 'error-call-hangup';
   static const String errorCallNotFound = 'error-call-not-found';
-  static const String errorCallNotFoundExtended = 'error-call-not-found-extended';
+  static const String errorCallNotFoundExtended =
+      'error-call-not-found-extended';
   static const String errorCallPark = 'error-call-park';
   static const String errorCallTransfer = 'error-call-transfer';
   static const String errorCallUnpark = 'error-call-unpark';
@@ -105,7 +111,8 @@ abstract class Key {
   static const String messageComposeCallerName = 'message-compose-caller-name';
   static const String messageComposeCallsBack = 'message-compose-calls-back';
   static const String messageComposeCellPhone = 'message-compose-cell-phone';
-  static const String messageComposeCompanyName = 'message-compose-company-name';
+  static const String messageComposeCompanyName =
+      'message-compose-company-name';
   static const String messageComposeHaveCalled = 'message-compose-have-called';
   static const String messageComposeHeader = 'message-compose-header';
   static const String messageComposeLocalExt = 'message-compose-local-ext';
@@ -113,8 +120,10 @@ abstract class Key {
   static const String messageComposeNameHint = 'message-compose-name-hint';
   static const String messageComposePleaseCall = 'message-compose-please-call';
   static const String messageComposePhone = 'message-compose-phone';
-  static const String messageComposeShowRecipients = 'message-compose-show-recipients';
-  static const String messageComposeShowNoRecipients = 'message-compose-show-no-recipients';
+  static const String messageComposeShowRecipients =
+      'message-compose-show-recipients';
+  static const String messageComposeShowNoRecipients =
+      'message-compose-show-no-recipients';
   static const String messageComposeUrgent = 'message-compose-urgent';
   static const String messageDeleteErrorTitle = 'message-delete-error';
   static const String messageDeleteSuccessTitle = 'message-delete-success';
@@ -143,13 +152,16 @@ abstract class Key {
   static const String receptionChanged = 'reception-changed';
   static const String receptionEmailHeader = 'reception-email-header';
   static const String receptionMiniWikiHeader = 'reception-mini-wiki-header';
-  static const String receptionOpeningHoursHeader = 'reception-opening-hours-header';
+  static const String receptionOpeningHoursHeader =
+      'reception-opening-hours-header';
   static const String receptionProductHeader = 'reception-product-header';
   static const String receptionSalesmenHeader = 'reception-salesmen-header';
   static const String receptionSelectorHeader = 'reception-selector-header';
-  static const String receptionTelephoneNumbersHeader = 'reception-telephone-numbers-header';
+  static const String receptionTelephoneNumbersHeader =
+      'reception-telephone-numbers-header';
   static const String receptionTypeHeader = 'reception-type-header';
-  static const String receptionVATNumbersHeader = 'reception-vat-numbers-header';
+  static const String receptionVATNumbersHeader =
+      'reception-vat-numbers-header';
   static const String receptionWebsitesHeader = 'reception-websites-header';
 
   static const String save = 'save';
@@ -316,7 +328,8 @@ Map<String, String> da = {
   Key.sent: 'Sendt',
   Key.standardGreeting: 'Velkommen til....',
   Key.start: 'Start',
-  Key.stateDisasterHeader: 'Vi har problemer - prøver at genstarte hvert 10. sekund',
+  Key.stateDisasterHeader:
+      'Vi har problemer - prøver at genstarte hvert 10. sekund',
   Key.stateLoadingHeader: 'Hold på bits og bytes mens vi starter programmet',
   Key.status: 'Status',
   Key.stop: 'Stop',
@@ -474,8 +487,10 @@ Map<String, String> en = {
   Key.sent: 'Sent',
   Key.standardGreeting: 'You\'ve called....',
   Key.start: 'Start',
-  Key.stateDisasterHeader: 'Problems discovered. Trying to recover every 10 seconds',
-  Key.stateLoadingHeader: 'Hold on to your bits while we\'re loading the application',
+  Key.stateDisasterHeader:
+      'Problems discovered. Trying to recover every 10 seconds',
+  Key.stateLoadingHeader:
+      'Hold on to your bits while we\'re loading the application',
   Key.status: 'Status',
   Key.stop: 'Stop',
 

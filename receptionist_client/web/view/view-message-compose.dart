@@ -83,8 +83,9 @@ class MessageCompose extends ViewWidget {
    */
   ORModel.Message get _message {
     final ORModel.Message message = _ui.message;
-    final ORModel.MessageContext messageContext = new ORModel.MessageContext.fromContact(
-        _contactSelector.selectedContact, _receptionSelector.selectedReception);
+    final ORModel.MessageContext messageContext =
+        new ORModel.MessageContext.fromContact(_contactSelector.selectedContact,
+            _receptionSelector.selectedReception);
 
     message.context = messageContext;
 
@@ -115,7 +116,8 @@ class MessageCompose extends ViewWidget {
     });
     _hotKeys.onAltD.listen((KeyboardEvent _) => _navigateToMessageTextArea());
 
-    _contactSelector.onSelect.listen((Model.ContactWithFilterContext c) => _render(c.contact));
+    _contactSelector.onSelect
+        .listen((Model.ContactWithFilterContext c) => _render(c.contact));
 
     _notification.onAnyCallStateChange.listen((OREvent.CallEvent event) {
       if (event.call.assignedTo == _appState.currentUser.id &&
@@ -170,7 +172,8 @@ class MessageCompose extends ViewWidget {
       if (contact.isEmpty) {
         _ui.resetOnEmptyContact();
       } else {
-        final Set<ORModel.MessageRecipient> recipients = new Set<ORModel.MessageRecipient>();
+        final Set<ORModel.MessageRecipient> recipients =
+            new Set<ORModel.MessageRecipient>();
 
         _distributionListController
             .list(contact.receptionID, contact.ID)
@@ -179,7 +182,8 @@ class MessageCompose extends ViewWidget {
             return _endpointController
                 .list(dle.receptionID, dle.contactID)
                 .then((Iterable<ORModel.MessageEndpoint> meps) {
-              final List<ORModel.MessageRecipient> mrl = new List<ORModel.MessageRecipient>();
+              final List<ORModel.MessageRecipient> mrl =
+                  new List<ORModel.MessageRecipient>();
 
               for (ORModel.MessageEndpoint mep in meps) {
                 mrl.add(new ORModel.MessageRecipient(mep, dle));
@@ -210,7 +214,8 @@ class MessageCompose extends ViewWidget {
       _ui.focusOnCurrentFocusElement();
 
       _log.info('Message id ${savedMessage.ID} successfully saved');
-      _popup.success(_langMap[Key.messageSaveSuccessTitle], 'ID ${savedMessage.ID}');
+      _popup.success(
+          _langMap[Key.messageSaveSuccessTitle], 'ID ${savedMessage.ID}');
     } catch (error) {
       _log.shout('Could not save ${message.asMap} $error');
       _popup.error(_langMap[Key.messageSaveErrorTitle], 'ID ${message.ID}');
@@ -225,13 +230,15 @@ class MessageCompose extends ViewWidget {
 
     try {
       ORModel.Message savedMessage = await _messageController.save(message);
-      ORModel.MessageQueueItem response = await _messageController.enqueue(savedMessage);
+      ORModel.MessageQueueItem response =
+          await _messageController.enqueue(savedMessage);
 
       _ui.reset();
       _ui.focusOnCurrentFocusElement();
 
       _log.info('Message id ${response.messageID} successfully enqueued');
-      _popup.success(_langMap[Key.messageSaveSendSuccessTitle], 'ID ${response.messageID}');
+      _popup.success(_langMap[Key.messageSaveSendSuccessTitle],
+          'ID ${response.messageID}');
     } catch (error) {
       _log.shout('Could not save/enqueue ${message.asMap} $error');
       _popup.error(_langMap[Key.messageSaveSendErrorTitle], 'ID ${message.ID}');
