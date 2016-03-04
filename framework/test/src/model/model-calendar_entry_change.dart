@@ -32,28 +32,11 @@ abstract class ModelCalendarEntryChange {
 
     expect(built.toJson(), equals(deserialized.toJson()));
 
-    expect(built.lastEntry.ID, equals(deserialized.lastEntry.ID));
-    expect(built.lastEntry.owner, equals(deserialized.lastEntry.owner));
-    expect(built.lastEntry.content, equals(deserialized.lastEntry.content));
-    expect(
-        built.lastEntry.start
-            .difference(deserialized.lastEntry.start)
-            .abs()
-            .inMilliseconds,
-        lessThan(1));
-
-    expect(
-        built.lastEntry.stop
-            .difference(deserialized.lastEntry.stop)
-            .abs()
-            .inMilliseconds,
-        lessThan(1));
-
-    expect(built.userID, equals(deserialized.userID));
+    expect(built.parentRef, equals(deserialized.parentRef));
     expect(
         built.changedAt.difference(deserialized.changedAt).abs().inMilliseconds,
         lessThan(1));
-    expect(built.username, equals(deserialized.username));
+    expect(built.userId, equals(deserialized.userId));
   }
 
   /**
@@ -68,23 +51,18 @@ abstract class ModelCalendarEntryChange {
   }
 
   static Model.CalendarEntryChange buildObject() {
-    DateTime changedAt = new DateTime.now();
-    int changedBy = 2;
-    String changedByName = 'That guy';
-    Model.CalendarEntry lastEntry = ModelCalendarEntry.buildObject();
+    final DateTime changedAt = new DateTime.now();
+    final String parentRef = 'asdm3mmf';
+    final int changedBy = 1;
 
     Model.CalendarEntryChange builtObject = new Model.CalendarEntryChange()
       ..changedAt = changedAt
-      ..userID = changedBy
-      ..username = changedByName
-      ..lastEntry = lastEntry;
+      ..parentRef = parentRef
+      ..userId = changedBy;
 
-    builtObject.lastEntry;
-
-    expect(builtObject.lastEntry, equals(lastEntry));
-    expect(builtObject.userID, equals(changedBy));
+    expect(builtObject.parentRef, equals(parentRef));
     expect(builtObject.changedAt, equals(changedAt));
-    expect(builtObject.username, equals(changedByName));
+    expect(builtObject.userId, equals(changedBy));
 
     return builtObject;
   }

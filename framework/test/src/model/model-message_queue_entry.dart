@@ -47,12 +47,10 @@ abstract class ModelMessageQueueEntry {
     Model.MessageQueueItem deserializedObj =
         new Model.MessageQueueItem.fromMap(JSON.decode(JSON.encode(obj)));
 
-    expect(obj.ID, equals(deserializedObj.ID));
-    expect(obj.lastTry.difference(deserializedObj.lastTry).abs().inMilliseconds,
-        lessThan(1));
+    expect(obj.id, equals(deserializedObj.id));
 
-    expect(obj.messageID, equals(deserializedObj.messageID));
-    expect(obj.tries, equals(deserializedObj.tries));
+    expect(obj.message.toJson(), equals(deserializedObj.message.toJson()));
+
     expect(
         obj.unhandledRecipients, equals(deserializedObj.unhandledRecipients));
   }
@@ -71,8 +69,7 @@ abstract class ModelMessageQueueEntry {
   static Model.MessageQueueItem buildObject() {
     final id = 666;
     final lastTry = new DateTime.now();
-    final mid = 777;
-    final tries = 2;
+    final message = ModelMessage.buildObject();
 
     final List<Model.MessageRecipient> recipients = [
       new Model.MessageRecipient.empty()
@@ -90,17 +87,14 @@ abstract class ModelMessageQueueEntry {
     ];
 
     Model.MessageQueueItem obj = new Model.MessageQueueItem.empty()
-      ..ID = id
-      ..lastTry = lastTry
-      ..messageID = mid
-      ..tries = tries
+      ..id = id
+      ..message = message
       ..unhandledRecipients = recipients;
 
-    expect(obj.ID, equals(id));
-    expect(obj.lastTry, equals(lastTry));
+    expect(obj.id, equals(id));
 
-    expect(obj.messageID, equals(mid));
-    expect(obj.tries, equals(tries));
+    expect(obj.message.toJson(), equals(message.toJson()));
+
     expect(obj.unhandledRecipients, equals(recipients));
 
     return obj;

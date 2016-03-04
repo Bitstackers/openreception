@@ -77,8 +77,7 @@ abstract class ModelReceptionAttributes {
       new Model.PhoneNumber.empty()
         ..confidential = true
         ..description = 'Fluid connection'
-        ..tags = ['Gulping sound', 'Silence']
-        ..endpoint = '-0045 32112345'
+        ..destination = '-0045 32112345'
     ];
 
     final List<String> backupContacts = ['Buford'];

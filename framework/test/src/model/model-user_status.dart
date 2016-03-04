@@ -33,7 +33,7 @@ abstract class ModelUserStatus {
         new Model.UserStatus.fromMap(JSON.decode(serializedObject));
 
     expect(built.paused, equals(decoded.paused));
-    expect(built.userID, equals(decoded.userID));
+    expect(built.userId, equals(decoded.userId));
 
     expect(built.toJson(), equals(decoded.toJson()));
   }
@@ -48,14 +48,14 @@ abstract class ModelUserStatus {
 
   static Model.UserStatus buildObject() {
     final bool paused = true;
-    final int userID = 2;
+    final int userId = 2;
 
     Model.UserStatus builtObject = new Model.UserStatus()
       ..paused = paused
-      ..userID = userID;
+      ..userId = userId;
 
     expect(builtObject.paused, equals(paused));
-    expect(builtObject.userID, equals(userID));
+    expect(builtObject.userId, equals(userId));
 
     return builtObject;
   }

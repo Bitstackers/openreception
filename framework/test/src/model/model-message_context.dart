@@ -22,19 +22,18 @@ void testModelMessageContext() {
 }
 
 abstract class ModelMessageContext {
-
   static void deserialization() {
     Model.MessageContext obj = buildObject();
     Model.MessageContext deserializedObj =
         new Model.MessageContext.fromMap(JSON.decode(JSON.encode(obj)));
 
-    expect(obj.contactID, equals(deserializedObj.contactID));
+    expect(obj.contactId, equals(deserializedObj.contactId));
     expect(obj.contactName, equals(deserializedObj.contactName));
 
-    expect(obj.receptionID, equals(deserializedObj.receptionID));
+    expect(obj.receptionId, equals(deserializedObj.receptionId));
     expect(obj.receptionName, equals(deserializedObj.receptionName));
 
-    expect(obj.asMap, equals(deserializedObj.asMap));
+    expect(obj.toJson(), equals(deserializedObj.toJson()));
   }
 
   static void serialization() {
@@ -55,15 +54,15 @@ abstract class ModelMessageContext {
     final String receptionName = 'Lasagna-makers inc.';
 
     Model.MessageContext obj = new Model.MessageContext.empty()
-      ..contactID = contactId
+      ..contactId = contactId
       ..contactName = contactName
-      ..receptionID = receptionId
+      ..receptionId = receptionId
       ..receptionName = receptionName;
 
-    expect(obj.contactID, equals(contactId));
+    expect(obj.contactId, equals(contactId));
     expect(obj.contactName, equals(contactName));
 
-    expect(obj.receptionID, equals(receptionId));
+    expect(obj.receptionId, equals(receptionId));
     expect(obj.receptionName, equals(receptionName));
 
     return obj;

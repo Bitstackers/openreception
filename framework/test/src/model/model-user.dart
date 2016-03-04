@@ -40,35 +40,33 @@ abstract class ModelUser {
 
     expect(builtObject.id, equals(deserializedObject.id));
     expect(builtObject.address, equals(deserializedObject.address));
-    expect(builtObject.googleAppcode, equals(deserializedObject.googleAppcode));
-    expect(
-        builtObject.googleUsername, equals(deserializedObject.googleUsername));
+    expect(builtObject.groups, equals(deserializedObject.groups));
     expect(builtObject.name, equals(deserializedObject.name));
     expect(builtObject.peer, equals(deserializedObject.peer));
   }
 
   static Model.User buildObject() {
-    final int userID = 2;
+    final int id = 123;
     final String address = 'golden@fish.net';
-    final String gmail = 'golden@sea-mail.net';
-    final String appcode = 'buford';
+    final List<String> groups = [
+      Model.UserGroups.administrator,
+      Model.UserGroups.receptionist
+    ];
     final String name = 'Biff, the gold fish';
     final String peer = 'Hidden underneath';
     final String picture = 'too_revealing.png';
 
     Model.User builtObject = new Model.User.empty()
-      ..id = userID
+      ..id = id
       ..address = address
-      ..googleUsername = gmail
-      ..googleAppcode = appcode
+      ..groups = groups.toSet()
       ..name = name
       ..peer = peer
       ..portrait = picture;
 
-    expect(builtObject.id, equals(userID));
+    expect(builtObject.id, equals(id));
     expect(builtObject.address, equals(address));
-    expect(builtObject.googleAppcode, equals(appcode));
-    expect(builtObject.googleUsername, equals(gmail));
+    expect(builtObject.groups, equals(groups));
     expect(builtObject.name, equals(name));
     expect(builtObject.peer, equals(peer));
     expect(builtObject.portrait, equals(picture));

@@ -19,14 +19,14 @@ void testResourceEndpoint() {
     test('single', ResourceEndpoint.single);
   });
 }
+
 abstract class ResourceEndpoint {
   static final Uri endpointServer = Uri.parse('http://localhost:4010');
 
-  static void ofContact() =>
-    expect(Resource.Endpoint.ofContact(endpointServer, 4, 1),
-            equals(Uri.parse('${endpointServer}/contact/1/reception/4/endpoint')));
+  static void ofContact() => expect(
+      Resource.Endpoint.ofContact(endpointServer, 4, 1),
+      equals(Uri.parse('${endpointServer}/contact/1/reception/4/endpoint')));
 
-  static void single() =>
-    expect(Resource.Endpoint.single(endpointServer, 99),
-           equals(Uri.parse('${endpointServer}/endpoint/99')));
+  static void single() => expect(Resource.Endpoint.single(endpointServer, 99),
+      equals(Uri.parse('${endpointServer}/endpoint/99')));
 }

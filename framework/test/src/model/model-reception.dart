@@ -27,8 +27,6 @@ abstract class ModelReception {
     Model.Reception deserializedObject =
         new Model.Reception.fromMap(JSON.decode(JSON.encode(builtObject)));
 
-    expect(builtObject.ID, equals(deserializedObject.ID));
-
     expect(builtObject.addresses, equals(deserializedObject.addresses));
     expect(
         builtObject.alternateNames, equals(deserializedObject.alternateNames));
@@ -41,11 +39,11 @@ abstract class ModelReception {
         builtObject.emailAddresses, equals(deserializedObject.emailAddresses));
     expect(builtObject.enabled, equals(deserializedObject.enabled));
     expect(builtObject.extraData, equals(deserializedObject.extraData));
-    expect(builtObject.fullName, equals(deserializedObject.fullName));
+    expect(builtObject.name, equals(deserializedObject.name));
     expect(builtObject.greeting, equals(deserializedObject.greeting));
     expect(builtObject.handlingInstructions,
         equals(deserializedObject.handlingInstructions));
-    expect(builtObject.ID, equals(deserializedObject.ID));
+    expect(builtObject.id, equals(deserializedObject.id));
     expect(
         builtObject.lastChecked
             .difference(deserializedObject.lastChecked)
@@ -99,9 +97,9 @@ abstract class ModelReception {
     final List<String> salesMarketingHandling = ['Ask them to GTFO'];
     final String shortGreeting = 'Please go';
     final List<Model.PhoneNumber> telephoneNumbers = [
-      new Model.PhoneNumber.empty()..endpoint = '56 33 21 44',
+      new Model.PhoneNumber.empty()..destination = '56 33 21 44',
       new Model.PhoneNumber.empty()
-        ..endpoint = '56 33 21 43'
+        ..destination = '56 33 21 43'
         ..confidential = true
         ..description = 'Home phone'
     ];
@@ -117,10 +115,10 @@ abstract class ModelReception {
       ..emailAddresses = emailAddresses
       ..enabled = enabled
       ..extraData = extraData
-      ..fullName = name
+      ..name = name
       ..greeting = greeting
       ..handlingInstructions = handlingInstructions
-      ..ID = id
+      ..id = id
       ..lastChecked = lastChecked
       ..openingHours = openingHours
       ..organizationId = organizationId
@@ -141,10 +139,10 @@ abstract class ModelReception {
     expect(buildObject.bankingInformation, equals(bankingInformation));
     expect(buildObject.customerTypes, equals(customerTypes));
 
-    expect(buildObject.fullName, equals(name));
+    expect(buildObject.name, equals(name));
     expect(buildObject.greeting, equals(greeting));
     expect(buildObject.handlingInstructions, equals(handlingInstructions));
-    expect(buildObject.ID, equals(id));
+    expect(buildObject.id, equals(id));
     expect(buildObject.lastChecked, equals(lastChecked));
     expect(buildObject.openingHours, equals(openingHours));
     expect(buildObject.organizationId, equals(organizationId));

@@ -25,7 +25,6 @@ testModelBaseContact() {
 }
 
 abstract class ModelBaseContact {
-
   static void serialization() {
     Model.BaseContact builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
@@ -41,27 +40,25 @@ abstract class ModelBaseContact {
 
     expect(builtObject.id, equals(deserializedObject.id));
     expect(builtObject.enabled, equals(deserializedObject.enabled));
-    expect(builtObject.fullName, equals(deserializedObject.fullName));
+    expect(builtObject.name, equals(deserializedObject.name));
     expect(builtObject.contactType, equals(deserializedObject.contactType));
-
-
   }
 
   static Model.BaseContact buildObject() {
-    final int contactID = 2;
+    final int id = 21;
     final bool enabled = true;
     final String fullName = 'Biff, the goldfish';
     final String contactType = Model.ContactType.human;
 
     Model.BaseContact builtObject = new Model.BaseContact.empty()
-      ..id = contactID
+      ..id = id
       ..enabled = enabled
-      ..fullName = fullName
+      ..name = fullName
       ..contactType = contactType;
 
-    expect(builtObject.id, equals(contactID));
+    expect(builtObject.id, equals(id));
     expect(builtObject.enabled, equals(enabled));
-    expect(builtObject.fullName, equals(fullName));
+    expect(builtObject.name, equals(fullName));
     expect(builtObject.contactType, equals(contactType));
 
     return builtObject;

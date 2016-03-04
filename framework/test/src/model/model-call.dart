@@ -23,14 +23,14 @@ void testModelCall() {
     test('callStateCreatedToRinging', ModelCall.callStateCreatedToRinging);
     test('callStateParkToHangup', ModelCall.callStateParkToHangup);
     test('callEventStream', ModelCall.callEventStream);
-    test('callEventStreamUnparkFromHangup', ModelCall.callEventStreamUnparkFromHangup);
-    test('callEventStreamQueueLeaveFromHangup', ModelCall.callEventStreamQueueLeaveFromHangup);
-
+    test('callEventStreamUnparkFromHangup',
+        ModelCall.callEventStreamUnparkFromHangup);
+    test('callEventStreamQueueLeaveFromHangup',
+        ModelCall.callEventStreamQueueLeaveFromHangup);
   });
 }
 
 abstract class ModelCall {
-
   /**
    * Merely asserts that no exceptions arise.
    */
@@ -39,22 +39,22 @@ abstract class ModelCall {
 
     expect(() => JSON.encode(builtObject), returnsNormally);
   }
+
   /**
    * Asserts that the event stream spawns events.
    */
   static Future callEventStream() {
     List<Event.Event> stateChanges = [];
 
-    Model.Call builtObject = buildObject()
-      ..event.listen(stateChanges.add);
+    Model.Call builtObject = buildObject()..event.listen(stateChanges.add);
 
     int initialStateChangeCount = stateChanges.length;
 
     builtObject.changeState(Model.CallState.Created);
 
-    return new Future.delayed(new Duration(milliseconds : 20), () {
-      expect (stateChanges.length, equals (initialStateChangeCount+1));
-      expect (stateChanges.last, new isInstanceOf<Event.Event>());
+    return new Future.delayed(new Duration(milliseconds: 20), () {
+      expect(stateChanges.length, equals(initialStateChangeCount + 1));
+      expect(stateChanges.last, new isInstanceOf<Event.Event>());
     });
   }
 
@@ -69,13 +69,14 @@ abstract class ModelCall {
       ..event.listen(stateChanges.add);
 
     int initialStateChangeCount = stateChanges.length;
-    expect (builtObject.state, equals(Model.CallState.Parked));
+    expect(builtObject.state, equals(Model.CallState.Parked));
     builtObject.changeState(Model.CallState.Hungup);
 
-    return new Future.delayed(new Duration(milliseconds : 20), () {
-      expect (stateChanges.length, equals (initialStateChangeCount+2));
-      expect (stateChanges[stateChanges.length-2], new isInstanceOf<Event.CallUnpark>());
-      expect (stateChanges.last, new isInstanceOf<Event.CallHangup>());
+    return new Future.delayed(new Duration(milliseconds: 20), () {
+      expect(stateChanges.length, equals(initialStateChangeCount + 2));
+      expect(stateChanges[stateChanges.length - 2],
+          new isInstanceOf<Event.CallUnpark>());
+      expect(stateChanges.last, new isInstanceOf<Event.CallHangup>());
     });
   }
 
@@ -91,13 +92,14 @@ abstract class ModelCall {
       ..event.listen(stateChanges.add);
 
     int initialStateChangeCount = stateChanges.length;
-    expect (builtObject.state, equals(Model.CallState.Queued));
+    expect(builtObject.state, equals(Model.CallState.Queued));
     builtObject.changeState(Model.CallState.Hungup);
 
-    return new Future.delayed(new Duration(milliseconds : 20), () {
-      expect (stateChanges.length, equals (initialStateChangeCount+2));
-      expect (stateChanges[stateChanges.length-2], new isInstanceOf<Event.QueueLeave>());
-      expect (stateChanges.last, new isInstanceOf<Event.CallHangup>());
+    return new Future.delayed(new Duration(milliseconds: 20), () {
+      expect(stateChanges.length, equals(initialStateChangeCount + 2));
+      expect(stateChanges[stateChanges.length - 2],
+          new isInstanceOf<Event.QueueLeave>());
+      expect(stateChanges.last, new isInstanceOf<Event.CallHangup>());
     });
   }
 
@@ -107,15 +109,14 @@ abstract class ModelCall {
   static Future callStateStream() {
     List<String> stateChanges = [];
 
-    Model.Call builtObject = buildObject()
-        ..callState.listen(stateChanges.add);
+    Model.Call builtObject = buildObject()..callState.listen(stateChanges.add);
 
     int initialStateChangeCount = stateChanges.length;
 
     builtObject.state = Model.CallState.Transferring;
 
-    return new Future.delayed(new Duration(milliseconds : 20), () {
-      expect (stateChanges.length, equals (initialStateChangeCount+1));
+    return new Future.delayed(new Duration(milliseconds: 20), () {
+      expect(stateChanges.length, equals(initialStateChangeCount + 1));
     });
   }
 
@@ -125,17 +126,16 @@ abstract class ModelCall {
   static Future callStateUnknownToCreated() {
     List<String> stateChanges = [];
 
-    Model.Call builtObject = buildObject()
-        ..callState.listen(stateChanges.add);
+    Model.Call builtObject = buildObject()..callState.listen(stateChanges.add);
 
     int initialStateChangeCount = stateChanges.length;
 
     builtObject.state = Model.CallState.Unknown;
     builtObject.state = Model.CallState.Created;
 
-    return new Future.delayed(new Duration(milliseconds : 20), () {
-      expect (stateChanges.length, equals (initialStateChangeCount+2));
-      expect (stateChanges.last, equals(Model.CallState.Created));
+    return new Future.delayed(new Duration(milliseconds: 20), () {
+      expect(stateChanges.length, equals(initialStateChangeCount + 2));
+      expect(stateChanges.last, equals(Model.CallState.Created));
     });
   }
 
@@ -145,18 +145,18 @@ abstract class ModelCall {
   static Future callStateParkToHangup() {
     List<String> stateChanges = [];
 
-    Model.Call builtObject = buildObject()
-        ..callState.listen(stateChanges.add);
+    Model.Call builtObject = buildObject()..callState.listen(stateChanges.add);
 
     int initialStateChangeCount = stateChanges.length;
 
     builtObject.state = Model.CallState.Parked;
     builtObject.state = Model.CallState.Hungup;
 
-    return new Future.delayed(new Duration(milliseconds : 20), () {
-      expect (stateChanges.length, equals (initialStateChangeCount+2));
-      expect (stateChanges[stateChanges.length-2], equals(Model.CallState.Parked));
-      expect (stateChanges.last, equals(Model.CallState.Hungup));
+    return new Future.delayed(new Duration(milliseconds: 20), () {
+      expect(stateChanges.length, equals(initialStateChangeCount + 2));
+      expect(stateChanges[stateChanges.length - 2],
+          equals(Model.CallState.Parked));
+      expect(stateChanges.last, equals(Model.CallState.Hungup));
     });
   }
 
@@ -166,17 +166,16 @@ abstract class ModelCall {
   static Future callStateCreatedToRinging() {
     List<String> stateChanges = [];
 
-    Model.Call builtObject = buildObject()
-        ..callState.listen(stateChanges.add);
+    Model.Call builtObject = buildObject()..callState.listen(stateChanges.add);
 
     int initialStateChangeCount = stateChanges.length;
 
     builtObject.state = Model.CallState.Created;
     builtObject.state = Model.CallState.Ringing;
 
-    return new Future.delayed(new Duration(milliseconds : 20), () {
-      expect (stateChanges.length, equals (initialStateChangeCount+2));
-      expect (stateChanges.last, equals(Model.CallState.Ringing));
+    return new Future.delayed(new Duration(milliseconds: 20), () {
+      expect(stateChanges.length, equals(initialStateChangeCount + 2));
+      expect(stateChanges.last, equals(Model.CallState.Ringing));
     });
   }
 
@@ -191,9 +190,9 @@ abstract class ModelCall {
 
     expect(builtCall.ID, equals(decodedCall.ID));
     expect(builtCall.arrived.difference(decodedCall.arrived).abs(),
-           lessThan(new Duration(seconds : 1)));
+        lessThan(new Duration(seconds: 1)));
     expect(builtCall.answeredAt.difference(decodedCall.answeredAt).abs(),
-           lessThan(new Duration(seconds : 1)));
+        lessThan(new Duration(seconds: 1)));
     expect(builtCall.assignedTo, equals(decodedCall.assignedTo));
     expect(builtCall.b_Leg, equals(decodedCall.b_Leg));
     expect(builtCall.callerID, equals(decodedCall.callerID));
@@ -206,14 +205,14 @@ abstract class ModelCall {
     expect(builtCall.state, equals(decodedCall.state));
 
     expect(builtCall.toJson(), equals(decodedCall.toJson()));
-
   }
 
   static Model.Call buildObject() {
     final String testId = 'test-id';
     final String blegTestId = 'b-leg-test-id';
     final DateTime arrived = new DateTime.now();
-    final DateTime answeredAt = new DateTime.now()..add(new Duration(seconds :30));
+    final DateTime answeredAt = new DateTime.now()
+      ..add(new Duration(seconds: 30));
     final int assignedTo = 1;
     final String callerId = 'That guy';
     final int contactId = 2;
@@ -232,7 +231,7 @@ abstract class ModelCall {
       ..callerID = callerId
       ..contactID = contactId
       ..destination = destination
-      ..greetingPlayed =greetingPlayed
+      ..greetingPlayed = greetingPlayed
       ..inbound = inbound
       ..locked = locked
       ..receptionID = receptionId

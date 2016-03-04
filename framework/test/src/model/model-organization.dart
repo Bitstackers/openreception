@@ -20,8 +20,8 @@ void testModelOrganization() {
     test('deserialization', ModelOrganization.deserialization);
   });
 }
-abstract class ModelOrganization{
 
+abstract class ModelOrganization {
   /**
    * Merely asserts that no exceptions arise.
    */
@@ -42,30 +42,29 @@ abstract class ModelOrganization{
         new Model.Organization.fromMap(JSON.decode(serializedObject));
 
     expect(builtObject.billingType, equals(decodedObject.billingType));
-    expect(builtObject.flag, equals(decodedObject.flag));
+    expect(builtObject.flags, equals(decodedObject.flags));
     expect(builtObject.id, equals(decodedObject.id));
-    expect(builtObject.fullName, equals(decodedObject.fullName));
+    expect(builtObject.name, equals(decodedObject.name));
 
     expect(builtObject.toJson(), equals(decodedObject.toJson()));
   }
 
-  static Model.Organization buildObject () {
+  static Model.Organization buildObject() {
     final String billingType = 'GOOOOLD';
-    final String flag = 'Goldmember';
-    final int id = 4;
-    final fullName = 'Hey Goldmember!';
+    final List<String> flags = ['Goldmember'];
+    final int id = 42;
+    final String name = 'Hey Goldmember!';
 
     Model.Organization testOrganization = new Model.Organization.empty()
       ..billingType = billingType
-      ..flag = flag
+      ..flags = flags
       ..id = id
-      ..fullName = fullName;
+      ..name = name;
     expect(testOrganization.billingType, equals(billingType));
-    expect(testOrganization.flag, equals(flag));
+    expect(testOrganization.flags, equals(flags));
     expect(testOrganization.id, equals(id));
-    expect(testOrganization.fullName, equals(fullName));
+    expect(testOrganization.name, equals(name));
 
     return testOrganization;
   }
 }
-

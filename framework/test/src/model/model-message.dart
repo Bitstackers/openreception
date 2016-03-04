@@ -41,8 +41,8 @@ abstract class ModelMessage {
     expect(obj.flag.pleaseCall, equals(deserializedObj.flag.pleaseCall));
     expect(obj.flag.urgent, equals(deserializedObj.flag.urgent));
     expect(obj.flag.willCallBack, equals(deserializedObj.flag.willCallBack));
-    expect(obj.ID, equals(deserializedObj.ID));
-    expect(obj.context.asMap, equals(deserializedObj.context.asMap));
+    expect(obj.id, equals(deserializedObj.id));
+    expect(obj.context.toJson(), equals(deserializedObj.context.toJson()));
     expect(
         obj.recipients.toList(), equals(deserializedObj.recipients.toList()));
     expect(obj.senderId, equals(deserializedObj.senderId));
@@ -87,9 +87,9 @@ abstract class ModelMessage {
     final id = 42;
 
     final Model.MessageContext context = new Model.MessageContext.empty()
-      ..contactID = 2
+      ..contactId = 2
       ..contactName = 'John Doe'
-      ..receptionID = 4
+      ..receptionId = 4
       ..receptionName = 'Nowhere';
 
     final Model.Message obj = new Model.Message.empty()
@@ -102,7 +102,7 @@ abstract class ModelMessage {
       ..flag.pleaseCall = true
       ..flag.urgent = true
       ..flag.willCallBack = true
-      ..ID = id
+      ..id = id
       ..context = context
       ..recipients = rlist
       ..senderId = senderId;
@@ -116,8 +116,8 @@ abstract class ModelMessage {
     expect(obj.flag.pleaseCall, isTrue);
     expect(obj.flag.urgent, isTrue);
     expect(obj.flag.willCallBack, isTrue);
-    expect(obj.ID, equals(id));
-    expect(obj.context.asMap, equals(context.asMap));
+    expect(obj.id, equals(id));
+    expect(obj.context.toJson(), equals(context.toJson()));
     expect(obj.recipients.toList(), equals(rlist.toList()));
     expect(obj.senderId, equals(senderId));
 

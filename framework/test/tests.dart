@@ -17,8 +17,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import '../lib/bus.dart';
-import '../lib/event.dart'    as Event;
-import '../lib/model.dart'    as Model;
+import '../lib/event.dart' as Event;
+import '../lib/model.dart' as Model;
 import '../lib/resource.dart' as Resource;
 import '../lib/dialplan_tools.dart' as dpTools;
 //import '../lib/service.dart'  as Service;
@@ -38,10 +38,8 @@ part 'src/model/model-caller_info.dart';
 //part 'src/model-channel.dart';
 part 'src/model/model-client_configuration.dart';
 part 'src/model/model-client_connection.dart';
-part 'src/model/model-contact.dart';
+part 'src/model/model-reception_attributes.dart';
 //part 'src/model-contact_filter.dart';
-part 'src/model/model-distribution_list.dart';
-part 'src/model/model-distribution_list_entry.dart';
 part 'src/model/model-message.dart';
 part 'src/model/model-message_context.dart';
 //part 'src/model-message_header.dart';
@@ -81,7 +79,6 @@ part 'src/resource/resource-call_flow_control.dart';
 part 'src/resource/resource-cdr.dart';
 part 'src/resource/resource-config.dart';
 part 'src/resource/resource-contact.dart';
-part 'src/resource/resource-distribution_list.dart';
 part 'src/resource/resource-endpoint.dart';
 part 'src/resource/resource-message.dart';
 part 'src/resource/resource-notification.dart';
@@ -95,10 +92,10 @@ part 'src/event-message_change.dart';
 
 void main(List<String> arguments) {
   Logger.root.level = Level.FINEST;
-  Logger.root.onRecord.listen((LogRecord record) =>
-      logMessage(record.toString()));
+  Logger.root.onRecord
+      .listen((LogRecord record) => logMessage(record.toString()));
 
-  if(!arguments.contains('text-output')) {
+  if (!arguments.contains('text-output')) {
     JUnitConfiguration.install();
   }
 
@@ -131,9 +128,7 @@ void main(List<String> arguments) {
   testModelCall();
   testModelClientConfiguration();
   testModelClientConnection();
-  testModelContact();
-  testModelDistributionList();
-  testModelDistributionListEntry();
+  testModelReceptionAttributes();
 
   testModelOrganization();
   testModelReception();
@@ -155,7 +150,6 @@ void main(List<String> arguments) {
   testResourceCDR();
   testResourceConfig();
   testResourceContact();
-  testResourceDistributionList();
   testResourceEndpoint();
   testResourceMessage();
   testResourceNotification();

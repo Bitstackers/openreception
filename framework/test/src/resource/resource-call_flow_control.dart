@@ -84,8 +84,13 @@ abstract class ResourceCallFlowControl {
       equals(Uri.parse('${callFlowControlUri}/call/abcde/pickup')));
 
   static void originate() => expect(
-      Resource.CallFlowControl
-          .originate(callFlowControlUri, '12345678', '12340001', 1, 2),
+      Resource.CallFlowControl.originate(
+          callFlowControlUri,
+          '12345678',
+          new Model.OriginationContext()
+            ..dialplan = '12340001'
+            ..receptionId = 1
+            ..contactId = 2),
       equals(Uri.parse(
           '${callFlowControlUri}/call/originate/12345678/dialplan/12340001/reception/1/contact/2')));
 
