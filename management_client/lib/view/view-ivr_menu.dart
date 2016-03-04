@@ -6,7 +6,8 @@ class IvrMenu {
     ..classes.add('delete')
     ..text = 'Slet'
     ..hidden = true;
-  final DivElement element = new DivElement()..classes = ['ivrmenu-view-widget'];
+  final DivElement element = new DivElement()
+    ..classes = ['ivrmenu-view-widget'];
   final ButtonElement _foldJson = new ButtonElement()
     ..text = 'Fold sammen'
     ..classes.add('fold-unfold')
@@ -53,7 +54,8 @@ class IvrMenu {
       try {
         menu = model.IvrMenu.decode(json);
       } on FormatException {
-        _inputErrorList.children.add(new LIElement()..text = 'Kaldplan-parser fejl.');
+        _inputErrorList.children
+            .add(new LIElement()..text = 'Kaldplan-parser fejl.');
         _menuInput.classes.toggle('error', true);
       }
     } on FormatException {
@@ -83,7 +85,8 @@ class IvrMenu {
       _menuInput.value = '';
       element.hidden = true;
     } catch (error) {
-      notify.error('Der skete en fejl i forbindelse med sletningen af menuen.', 'Fejl: $error');
+      notify.error('Der skete en fejl i forbindelse med sletningen af menuen.',
+          'Fejl: $error');
       _log.severe('Delete ivrmenu failed with: ${error}');
     }
 

@@ -49,7 +49,8 @@ class Endpoints {
     ..style.margin = '0px'
     ..style.padding = '0px 0px 4px 0px';
 
-  final TextAreaElement _endpointsInput = new TextAreaElement()..classes.add('wide');
+  final TextAreaElement _endpointsInput = new TextAreaElement()
+    ..classes.add('wide');
 
   final ButtonElement _unfoldJson = new ButtonElement()
     ..text = 'Fold ud'
@@ -57,7 +58,8 @@ class Endpoints {
 
   List<model.MessageEndpoint> _originalList = [];
 
-  Endpoints(controller.Contact this._contactController, this._endpointController) {
+  Endpoints(
+      controller.Contact this._contactController, this._endpointController) {
     _buttons.children = [_addNew, _foldJson, _unfoldJson];
     _header.children = [_label, _buttons];
     element.children = [_header, _endpointsInput];
@@ -74,7 +76,8 @@ class Endpoints {
         ..type = model.MessageEndpointType.EMAIL;
 
       if (_unfoldJson.hidden) {
-        _endpointsInput.value = _jsonpp.convert(endpoints.toList()..add(template));
+        _endpointsInput.value =
+            _jsonpp.convert(endpoints.toList()..add(template));
       } else {
         endpoints = endpoints.toList()..add(template);
       }

@@ -41,7 +41,8 @@ class DistributionList {
     ..style.margin = '0px'
     ..style.padding = '0px 0px 4px 0px';
 
-  final TextAreaElement _dlistInput = new TextAreaElement()..classes.add('wide');
+  final TextAreaElement _dlistInput = new TextAreaElement()
+    ..classes.add('wide');
 
   final ButtonElement _unfoldJson = new ButtonElement()
     ..text = 'Fold ud'
@@ -58,15 +59,17 @@ class DistributionList {
 
   void _observers() {
     _addNew.onClick.listen((_) {
-      final model.DistributionListEntry dle = new model.DistributionListEntry.empty()
-        ..contactID = owner.ID
-        ..contactName = owner.fullName
-        ..receptionID = owner.receptionID
-        ..receptionName = receptionName
-        ..role = model.Role.TO;
+      final model.DistributionListEntry dle =
+          new model.DistributionListEntry.empty()
+            ..contactID = owner.ID
+            ..contactName = owner.fullName
+            ..receptionID = owner.receptionID
+            ..receptionName = receptionName
+            ..role = model.Role.TO;
 
       if (_unfoldJson.hidden) {
-        _dlistInput.value = _jsonpp.convert(distributionList.toList()..add(dle));
+        _dlistInput.value =
+            _jsonpp.convert(distributionList.toList()..add(dle));
       } else {
         distributionList = distributionList..add(dle);
       }
@@ -126,7 +129,8 @@ class DistributionList {
     _originalList.forEach((model.DistributionListEntry dle) {
       mepIdMap[dle.id] = dle;
 
-      if (!distributionList.any((model.DistributionListEntry chDle) => chDle.id == dle.id)) {
+      if (!distributionList
+          .any((model.DistributionListEntry chDle) => chDle.id == dle.id)) {
         epcs.add(new DistributionListChange.remove(dle));
       }
     });

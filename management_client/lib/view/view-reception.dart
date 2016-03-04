@@ -68,7 +68,8 @@ class Reception {
     ..classes.add('wide')
     ..value = '';
 
-  final CheckboxInputElement _activeInput = new CheckboxInputElement()..checked = true;
+  final CheckboxInputElement _activeInput = new CheckboxInputElement()
+    ..checked = true;
 
   final TextAreaElement _productInput = new TextAreaElement()
     ..classes.add('wide')
@@ -157,20 +158,26 @@ class Reception {
 
     _addressesInput.value = r.addresses != null ? r.addresses.join('\n') : '';
 
-    _alternateNamesInput.value = r.alternateNames != null ? r.alternateNames.join('\n') : '';
+    _alternateNamesInput.value =
+        r.alternateNames != null ? r.alternateNames.join('\n') : '';
     _bankingInformationInput.value =
         r.bankingInformation != null ? r.bankingInformation.join('\n') : '';
-    _salesMarketingHandlingInput.value =
-        r.salesMarketingHandling != null ? r.salesMarketingHandling.join('\n') : '';
-    _emailAddressesInput.value = r.emailAddresses != null ? r.emailAddresses.join('\n') : '';
+    _salesMarketingHandlingInput.value = r.salesMarketingHandling != null
+        ? r.salesMarketingHandling.join('\n')
+        : '';
+    _emailAddressesInput.value =
+        r.emailAddresses != null ? r.emailAddresses.join('\n') : '';
 
-    _openingHoursInput.value = r.openingHours != null ? r.openingHours.join('\n') : '';
+    _openingHoursInput.value =
+        r.openingHours != null ? r.openingHours.join('\n') : '';
 
-    _vatNumbersInput.value = r.vatNumbers != null ? r.vatNumbers.join('\n') : '';
+    _vatNumbersInput.value =
+        r.vatNumbers != null ? r.vatNumbers.join('\n') : '';
 
     _websitesInput.value = r.websites != null ? r.websites.join('\n') : '';
 
-    _customerTypesInput.value = r.customerTypes != null ? r.customerTypes.join('\n') : '';
+    _customerTypesInput.value =
+        r.customerTypes != null ? r.customerTypes.join('\n') : '';
 
     _instructionsInput.value =
         r.handlingInstructions != null ? r.handlingInstructions.join('\n') : '';
@@ -183,7 +190,8 @@ class Reception {
     _productInput.value = r.product;
 
     if (reception.ID != model.Reception.noID) {
-      _heading.text = 'Retter reception "${reception.name}" (rid:${reception.ID})';
+      _heading.text =
+          'Retter reception "${reception.name}" (rid:${reception.ID})';
       _saveButton.disabled = true;
     } else {
       _heading.text = 'Opretter ny reception';
@@ -245,7 +253,8 @@ class Reception {
     ..organizationId = _organizationId
     ..otherData = _otherDataInput.value
     ..product = _productInput.value
-    ..salesMarketingHandling = _valuesFromListTextArea(_salesMarketingHandlingInput)
+    ..salesMarketingHandling =
+        _valuesFromListTextArea(_salesMarketingHandlingInput)
     ..telephoneNumbers = _phoneNumberView.phoneNumbers.toList()
     ..vatNumbers = _valuesFromListTextArea(_vatNumbersInput)
     ..websites = _valuesFromListTextArea(_websitesInput);
@@ -253,8 +262,8 @@ class Reception {
   /**
    *
    */
-  Reception(
-      this._recController, this._orgController, this._dpController, this._calendarController) {
+  Reception(this._recController, this._orgController, this._dpController,
+      this._calendarController) {
     _phoneNumberView = new Phonenumbers();
     _calendarView = new Calendar(_calendarController, false);
     _deletedCalendarView = new Calendar(_calendarController, true);
@@ -270,8 +279,9 @@ class Reception {
     _calendarToggle.onClick.listen((_) {
       _calendarsContainer.hidden = !_calendarsContainer.hidden;
 
-      _calendarToggle.text =
-          _calendarsContainer.hidden ? 'Vis kalenderaftaler' : 'Skjul kalenderaftaler';
+      _calendarToggle.text = _calendarsContainer.hidden
+          ? 'Vis kalenderaftaler'
+          : 'Skjul kalenderaftaler';
     });
 
     _search = new SearchComponent<model.Organization>(
@@ -279,11 +289,14 @@ class Reception {
       ..selectedElementChanged = (model.Organization organization) {
         _organizationId = organization.id;
       }
-      ..listElementToString = (model.Organization organization, String searchterm) {
+      ..listElementToString =
+          (model.Organization organization, String searchterm) {
         return '${organization.fullName}';
       }
       ..searchFilter = (model.Organization organization, String searchTerm) {
-        return organization.fullName.toLowerCase().contains(searchTerm.toLowerCase());
+        return organization.fullName
+            .toLowerCase()
+            .contains(searchTerm.toLowerCase());
       }
       ..searchPlaceholder = 'Søg...';
 
@@ -544,7 +557,8 @@ class Reception {
 
         _dialplanMiniLog.text += 'Uruller kaldplan ${reception.dialplan} til '
             'reception ${reception.fullName} (rid: ${reception.ID})...\n';
-        List<String> files = await _dpController.deploy(reception.dialplan, reception.ID);
+        List<String> files =
+            await _dpController.deploy(reception.dialplan, reception.ID);
         _dialplanMiniLog.text += 'Udrullede ${files.length} nye filer:\n';
         _dialplanMiniLog.text += files.join('\n') + '\n';
         _dialplanMiniLog.text += 'Genindlæser konfiguration\n';

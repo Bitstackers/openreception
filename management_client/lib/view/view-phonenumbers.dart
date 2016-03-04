@@ -30,7 +30,8 @@ class Phonenumbers {
     ..style.margin = '0px'
     ..style.padding = '0px 0px 4px 0px';
 
-  final TextAreaElement _phonenumberInput = new TextAreaElement()..classes.add('wide');
+  final TextAreaElement _phonenumberInput = new TextAreaElement()
+    ..classes.add('wide');
 
   final ButtonElement _unfoldJson = new ButtonElement()
     ..text = 'Fold ud'
@@ -54,7 +55,8 @@ class Phonenumbers {
         ..type = 'mobil';
 
       if (_unfoldJson.hidden) {
-        _phonenumberInput.value = _jsonpp.convert(phoneNumbers.toList()..add(pn));
+        _phonenumberInput.value =
+            _jsonpp.convert(phoneNumbers.toList()..add(pn));
       } else {
         phoneNumbers = phoneNumbers.toList()..add(pn);
       }
@@ -106,12 +108,14 @@ class Phonenumbers {
     }
   }
 
-  Iterable<model.PhoneNumber> get phoneNumbers =>
-      JSON.decode(_phonenumberInput.value).map((m) => new model.PhoneNumber.fromMap(m));
+  Iterable<model.PhoneNumber> get phoneNumbers => JSON
+      .decode(_phonenumberInput.value)
+      .map((m) => new model.PhoneNumber.fromMap(m));
 
   void _resizeInput() {
     while (_phonenumberInput.client.height < _phonenumberInput.scrollHeight) {
-      _phonenumberInput.style.height = '${_phonenumberInput.client.height + 10}px';
+      _phonenumberInput.style.height =
+          '${_phonenumberInput.client.height + 10}px';
     }
   }
 }
