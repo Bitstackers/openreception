@@ -37,9 +37,8 @@ class RESTCalendarStore implements Storage.Calendar {
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }
 
-  Future<Model.CalendarEntry> get(int entryId, {bool deleted: false}) {
-    Uri url =
-        Resource.Calendar.single(_calendarHost, entryId, deleted: deleted);
+  Future<Model.CalendarEntry> get(int id, {bool deleted: false}) {
+    Uri url = Resource.Calendar.single(_calendarHost, id, deleted: deleted);
     url = _appendToken(url, this._token);
 
     return this
@@ -52,7 +51,8 @@ class RESTCalendarStore implements Storage.Calendar {
   /**
    *
    */
-  Future<Model.CalendarEntry> create(Model.CalendarEntry entry, [int userId]) {
+  Future<Model.CalendarEntry> create(
+      Model.CalendarEntry entry, Model.User user) {
     Uri url = Resource.Calendar.base(_calendarHost);
     url = _appendToken(url, this._token);
 
@@ -67,7 +67,7 @@ class RESTCalendarStore implements Storage.Calendar {
    *
    */
   Future<Model.CalendarEntry> update(Model.CalendarEntry entry, [int userId]) {
-    Uri url = Resource.Calendar.single(_calendarHost, entry.ID);
+    Uri url = Resource.Calendar.single(_calendarHost, entry.id);
     url = _appendToken(url, this._token);
 
     return this
@@ -81,7 +81,7 @@ class RESTCalendarStore implements Storage.Calendar {
    *
    */
   Future removeEntry(Model.CalendarEntry entry) {
-    Uri url = Resource.Calendar.single(_calendarHost, entry.ID);
+    Uri url = Resource.Calendar.single(_calendarHost, entry.id);
     url = _appendToken(url, this._token);
 
     return this._backend.delete(url);
@@ -90,8 +90,8 @@ class RESTCalendarStore implements Storage.Calendar {
   /**
    *
    */
-  Future remove(int entryId, [int userId]) {
-    Uri url = Resource.Calendar.single(_calendarHost, entryId);
+  Future remove(int uuid, [int userId]) {
+    Uri url = Resource.Calendar.single(_calendarHost, uuid);
     url = _appendToken(url, this._token);
 
     return this._backend.delete(url);
@@ -123,15 +123,5 @@ class RESTCalendarStore implements Storage.Calendar {
         .get(url)
         .then(JSON.decode)
         .then(Model.CalendarEntryChange.decode);
-  }
-
-  /**
-   *
-   */
-  Future purge(int entryId) {
-    Uri url = Resource.Calendar.purge(_calendarHost, entryId);
-    url = _appendToken(url, this._token);
-
-    return this._backend.delete(url);
   }
 }

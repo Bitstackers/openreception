@@ -140,9 +140,7 @@ class CallFlowControl {
    */
   Future<Model.Call> originate(
       String extension, Model.OriginationContext context) {
-    Uri uri = Resource.CallFlowControl.originate(_host, extension,
-        context.dialplan, context.receptionId, context.contactId,
-        callId: context.callId);
+    Uri uri = Resource.CallFlowControl.originate(_host, extension, context);
     uri = _appendToken(uri, _token);
 
     return _backend

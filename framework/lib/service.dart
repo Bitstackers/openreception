@@ -30,8 +30,6 @@ part 'service/service-cdr.dart';
 part 'service/service-configuration.dart';
 part 'service/service-contact.dart';
 part 'service/service-dialplan.dart';
-part 'service/service-distribution_list.dart';
-part 'service/service-endpoint.dart';
 part 'service/service-ivr.dart';
 part 'service/service-message.dart';
 part 'service/service-notification.dart';

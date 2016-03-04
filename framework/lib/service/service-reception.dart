@@ -25,14 +25,15 @@ class RESTReceptionStore implements Storage.Reception {
   /**
    * Returns a reception as a pure map.
    */
-  Future<Model.Reception> create(Model.Reception reception) {
+  Future<Model.ReceptionReference> create(
+      Model.Reception reception, Model.User modifier) {
     Uri url = Resource.Reception.root(this._host);
     url = _appendToken(url, this._token);
 
-    String data = JSON.encode(reception.asMap);
-
-    return this._backend.post(url, data).then((String response) =>
-        new Model.Reception.fromMap(JSON.decode(response)));
+    return _backend
+        .post(url, JSON.encode(reception))
+        .then(JSON.decode)
+        .then(Model.ReceptionReference.decode);
   }
 
   /**
@@ -49,7 +50,7 @@ class RESTReceptionStore implements Storage.Reception {
   /**
    *
    */
-  Future<String> extensionOf (int receptionId) {
+  Future<String> extensionOf(int receptionId) {
     Uri url = Resource.Reception.extensionOf(this._host, receptionId);
     url = _appendToken(url, this._token);
 
@@ -70,46 +71,36 @@ class RESTReceptionStore implements Storage.Reception {
   /**
    * Returns a reception list.
    */
-  Future<Iterable<Model.Reception>> list() {
+  Future<Iterable<Model.ReceptionReference>> list() {
     Uri url = Resource.Reception.list(this._host);
     url = _appendToken(url, this._token);
 
-    return this._backend.get(url).then(
-        (String response) => (JSON.decode(response) as Iterable)
-            .map((Map map) => new Model.Reception.fromMap(map)));
+    return this._backend.get(url).then((String response) =>
+        (JSON.decode(response) as Iterable)
+            .map((Map map) => Model.ReceptionReference.decode(map)));
   }
 
   /**
    *
    */
-  Future remove(int receptionID) {
-    Uri url = Resource.Reception.single(this._host, receptionID);
+  Future remove(int rid, Model.User modifier) async {
+    Uri url = Resource.Reception.single(this._host, rid);
     url = _appendToken(url, this._token);
 
-    return this._backend.delete(url).then(JSON.decode);
+    await _backend.delete(url);
   }
 
   /**
    *
    */
-  Future<Model.Reception> save(Model.Reception reception) {
-    if (reception.ID != null && reception.ID != Model.Reception.noID) {
-      return this.update(reception);
-    } else {
-      return this.create(reception);
-    }
-  }
-
-  /**
-   *
-   */
-  Future<Model.Reception> update(Model.Reception reception) {
-    Uri url = Resource.Reception.single(this._host, reception.ID);
+  Future<Model.ReceptionReference> update(
+      Model.Reception reception, Model.User modifier) {
+    Uri url = Resource.Reception.single(this._host, reception.id);
     url = _appendToken(url, this._token);
 
-    String data = JSON.encode(reception.asMap);
+    String data = JSON.encode(reception);
 
     return this._backend.put(url, data).then((String response) =>
-        new Model.Reception.fromMap(JSON.decode(response)));
+        Model.ReceptionReference.decode(JSON.decode(response)));
   }
 }

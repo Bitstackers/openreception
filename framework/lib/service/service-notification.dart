@@ -117,7 +117,8 @@ class NotificationService {
         _NotificationRequest currentRequest = _requestQueue.removeFirst();
 
         _performRequest(currentRequest)
-            .then((_) => currentRequest.response.complete());
+            .then((_) => currentRequest.response.complete())
+            .catchError(currentRequest.response.completeError);
       } else {
         _busy = false;
       }
