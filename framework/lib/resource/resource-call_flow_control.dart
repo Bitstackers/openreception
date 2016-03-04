@@ -96,15 +96,14 @@ abstract class CallFlowControl {
    * with an optional call ID appended.
    *
    */
-  static Uri originate(Uri host, String extension, String dialplan,
-          int receptionID, int contactID,
-          {String callId: ''}) =>
+  static Uri originate(
+          Uri host, String extension, Model.OriginationContext context) =>
       Uri.parse('${_root(host)}'
           '/originate/${extension}'
-          '/dialplan/${dialplan}'
-          '/reception/${receptionID}'
-          '/contact/${contactID}'
-          '${callId.isNotEmpty ? '/call/$callId' : ''}');
+          '/dialplan/${context.dialplan}'
+          '/reception/${context.receptionId}'
+          '/contact/${context.contactId}'
+          '${context.callId.isNotEmpty ? '/call/${context.callId}' : ''}');
 
   /**
    * Builds a Uri to park a specific call resource.
