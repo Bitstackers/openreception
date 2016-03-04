@@ -271,8 +271,8 @@ String _dialplanToXml(model.ReceptionDialplan dialplan,
     <!-- Initialize channel variables -->
     <extension name="${dialplan.extension}" continue="true">
       <condition field="destination_number" expression="^${dialplan.extension}\$" break="${PbxKey.onFalse}">
-        <action application="log" data="INFO Setting variables of call to ${dialplan.extension}, currently allocated to rid ${reception.ID}."/>
-        ${_setVar(ORPbxKey.receptionId, reception.ID)}
+        <action application="log" data="INFO Setting variables of call to ${dialplan.extension}, currently allocated to rid ${reception.id}."/>
+        ${_setVar(ORPbxKey.receptionId, reception.id)}
         ${_setVar(ORPbxKey.greetingPlayed, false)}
         ${_setVar(ORPbxKey.locked, false)}
         ${_setVar(ORPbxKey.receptionName, htmlEncodedReceptionName)}
@@ -281,10 +281,10 @@ String _dialplanToXml(model.ReceptionDialplan dialplan,
 
     ${_extraExtensionsToDialplan(dialplan.extraExtensions, option, reception).join('\n    ')}
     <!-- Perform outbound PSTN calls -->
-    ${_externalTrunkTransfer(dialplan.extension, reception.ID, option).join('\n    ')}
+    ${_externalTrunkTransfer(dialplan.extension, reception.id, option).join('\n    ')}
 
     <!-- Perform outbound SIP calls -->
-    ${_externalSipTransfer(dialplan.extension, reception.ID, option).join('\n    ')}
+    ${_externalSipTransfer(dialplan.extension, reception.id, option).join('\n    ')}
 
     ${_hourActionsToXmlDialplan(dialplan.extension, dialplan.open, option, reception).fold([], (combined, current) => combined..addAll(current)).join('\n    ')}
     ${_fallbackToDialplan(dialplan.extension, dialplan.defaultActions, option, new Environment(), reception).join('\n    ')}
