@@ -13,32 +13,39 @@
 
 library openreception.keys;
 
+const String uuid = 'uuid';
+const String id = 'id';
+const String contactId = 'cid';
+const String receptionId = 'rid';
+const String organizationId = 'oid';
+const String messageId = 'mid';
+const String userId = 'uid';
+const String callId = 'call_id';
+
+const String owner = 'owner';
+const String destination = 'destination';
+const String message = 'message';
+
 const String recent = 'recent';
 const String total = 'total';
 const String agentChannel = 'agentChannel';
-const String uuid = 'uuid';
 const String path = 'path';
 const String started = 'started';
-const String contactID = 'contact_id';
+const String parentRef = 'parentRef';
 const String contactName = 'contact_name';
 const String receptionName = 'reception_name';
-const String fullName = 'full_name';
 const String contactType = 'contact_type';
 const String enabled = 'enabled';
-const String userID = 'uid';
 const String updatedAt = 'updated';
 const String username = 'username';
-const String ID = 'id';
-const String callId = 'call_id';
 const String state = 'state';
 const String bLeg = 'b_leg';
 const String locked = 'locked';
 const String inbound = 'inbound';
 const String isCall = 'is_call';
-const String destination = 'destination';
-const String callerID = 'caller_id';
+const String note = 'note';
+const String callerId = 'caller_id';
 const String greetingPlayed = 'greeting_played';
-const String receptionID = 'reception_id';
 const String assignedTo = 'assigned_to';
 const String channel = 'channel';
 const String arrivalTime = 'arrival_time';
@@ -93,7 +100,6 @@ const String value = 'value';
 const String confidential = 'confidential';
 const String type = 'type';
 const String tag = 'tag';
-const String organizationId = 'organization_id';
 const String dialplan = 'dialplan';
 const String extradataUri = 'extradatauri';
 const String receptionTelephonenumber = 'reception_telephonenumber';
@@ -121,20 +127,18 @@ const String miniWiki = 'miniwiki';
 
 const String address = 'address';
 const String groups = 'groups';
-const String id = 'id';
-const String identites = 'identites';
+const String identites = 'identities';
 const String name = 'name';
 const String extension = 'extension';
 const String googleUsername = 'google_username';
 const String googleAppcode = 'google_appcode';
-const String UserID = 'userID';
 const String lastState = 'lastState';
 const String lastActivity = 'lastActivity';
 const String callsHandled = 'callsHandled';
 const String assignedCalls = 'assignedCalls';
 
 const String start = 'start';
-const String end = 'end';
+const String stop = 'stop';
 
 const String takenByAgent = 'taken_by_agent';
 const String enqueued = 'enqueued';
@@ -145,7 +149,6 @@ const String body = 'message';
 const String createdAt = 'created_at';
 const String recipients = 'recipients';
 const String tries = 'tries';
-const String messageId = 'messageId';
 const String lastTry = 'lastTry';
 const String handledRecipients = 'handledRecipients';
 const String unhandledRecipients = 'unhandledRecipients';
