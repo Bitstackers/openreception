@@ -39,7 +39,6 @@ part 'model/model-cdr_entry.dart';
 part 'model/model-channel.dart';
 part 'model/model-client_configuration.dart';
 part 'model/model-client_connection.dart';
-part 'model/model-contact.dart';
 part 'model/model-distribution_list.dart';
 part 'model/model-distribution_list_entry.dart';
 part 'model/model-freeswitch_cdr_entry.dart';
