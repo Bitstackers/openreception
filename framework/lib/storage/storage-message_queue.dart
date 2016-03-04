@@ -14,13 +14,35 @@
 part of openreception.storage;
 
 abstract class MessageQueue {
-  Future<model.MessageQueueItem> enqueue(
-      model.Message message, model.User modifier);
+  /**
+   *
+   */
+  Future enqueue(int mid, model.User modifier);
 
-  Future<model.MessageQueueItem> save(model.MessageQueueItem queueItem);
+  /**
+   *
+   */
+  @deprecated
+  Future save(model.MessageQueueItem queueItem);
 
+  /**
+   *
+   */
+  Future update(model.MessageQueueItem queueItem);
+
+  /**
+   *
+   */
+  @deprecated
   Future archive(model.MessageQueueItem queueItem);
 
-  Future<Iterable<model.MessageQueueItem>> list(
-      {int limit: 100, int maxTries: 10});
+  /**
+   *
+   */
+  Future remove(int mqid);
+
+  /**
+   *
+   */
+  Future<Iterable<model.MessageQueueItem>> list();
 }

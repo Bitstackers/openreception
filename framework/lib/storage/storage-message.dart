@@ -14,13 +14,28 @@
 part of openreception.storage;
 
 abstract class Message {
-  Future<model.Message> get(int id);
+  /**
+   *
+   */
+  Future<model.Message> get(int mid);
 
+  /**
+   *
+   */
   Future<Iterable<model.Message>> list({model.MessageFilter filter});
 
+  /**
+   *
+   */
   Future<model.Message> create(model.Message message, model.User modifier);
 
+  /**
+   *
+   */
   Future<model.Message> update(model.Message message, model.User modifier);
 
-  Future remove(int id, model.User modifier);
+  /**
+   *
+   */
+  Future remove(int mid, model.User modifier);
 }

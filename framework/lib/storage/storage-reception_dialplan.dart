@@ -21,7 +21,7 @@ abstract class ReceptionDialplan {
    *
    */
   Future<model.ReceptionDialplan> create(
-      model.ReceptionDialplan rdp, model.User user);
+      model.ReceptionDialplan rdp, model.User modifier);
 
   /**
    *
@@ -37,10 +37,10 @@ abstract class ReceptionDialplan {
    *
    */
   Future<model.ReceptionDialplan> update(
-      model.ReceptionDialplan rdp, model.User user);
+      model.ReceptionDialplan rdp, model.User modifier);
 
   /**
    *
    */
-  Future remove(String extension, model.User user);
+  Future remove(String extension, model.User modifier);
 }

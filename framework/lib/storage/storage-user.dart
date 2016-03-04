@@ -14,15 +14,38 @@
 part of openreception.storage;
 
 abstract class User {
-  Future<model.User> get(int id);
+  /**
+   *
+   */
+  Future<model.User> get(int uid);
 
+  /**
+   *
+   */
   Future<model.User> getByIdentity(String identity);
 
-  Future<Iterable<model.User>> list();
+  /**
+   *
+   */
+  Future<Iterable<String>> groups();
 
-  Future<model.User> create(model.User user, model.User modifier);
+  /**
+   *
+   */
+  Future<Iterable<model.UserReference>> list();
 
-  Future<model.User> update(model.User user, model.User modifier);
+  /**
+   *
+   */
+  Future<model.UserReference> create(model.User user, model.User modifier);
 
-  Future remove(int id, model.User modifier);
+  /**
+   *
+   */
+  Future<model.UserReference> update(model.User user, model.User modifier);
+
+  /**
+   *
+   */
+  Future remove(int uid, model.User modifier);
 }
