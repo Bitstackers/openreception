@@ -61,6 +61,8 @@ class Message {
 
   Map toJson() => this.asMap;
 
+  static Message decode(Map map) => new Message.fromMap(map);
+
   /**
    *
    */

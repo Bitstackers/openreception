@@ -81,7 +81,8 @@ class Reception {
         pns = values.map((Map map) => new PhoneNumber.fromMap(map)).toList();
       } catch (_) {
         pns = values
-            .map((String number) => new PhoneNumber.empty()..endpoint = number)
+            .map((String number) =>
+                new PhoneNumber.empty()..destination = number)
             .toList();
       }
 

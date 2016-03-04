@@ -68,7 +68,7 @@ class ReceptionContactReference {
 
   static ReceptionContactReference decode(Map map) =>
       new ReceptionContactReference(ContactReference.decode(map[Key.contact]),
-          ReceptionReference.decode(map[Key.contact]));
+          ReceptionReference.decode(map[Key.reception]));
 
   Map toJson() =>
       {Key.contact: contact.toJson(), Key.reception: reception.toJson()};

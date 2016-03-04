@@ -16,9 +16,8 @@ part of openreception.model;
 class MessageQueueItem {
   static const int noId = 0;
   int id = noId;
-  int tries = 0;
-  int messageId = Message.noId;
-  DateTime lastTry = Util.never;
+
+  Message message = new Message.empty();
 
   Set<MessageRecipient> _handledRecipients = new Set();
   Set<MessageRecipient> _unhandledRecipients = new Set();
@@ -49,9 +48,8 @@ class MessageQueueItem {
    */
   MessageQueueItem.fromMap(Map map) {
     id = map[Key.id];
-    tries = map[Key.tries];
-    messageId = map[Key.messageId];
-    lastTry = Util.unixTimestampToDateTime(map[Key.lastTry]);
+    message = Message.decode(map[Key.message]);
+
     handledRecipients = map[Key.handledRecipients]
         .map(MessageRecipient.decode)
         .toList(growable: false);
@@ -64,9 +62,7 @@ class MessageQueueItem {
    */
   Map toJson() => {
         Key.id: id,
-        Key.tries: tries,
-        Key.messageId: messageId,
-        Key.lastTry: Util.dateTimeToUnixTimestamp(lastTry),
+        Key.message: message.toJson(),
         Key.handledRecipients:
             handledRecipients.map((r) => r.asMap).toList(growable: false),
         Key.unhandledRecipients:

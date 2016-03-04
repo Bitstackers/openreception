@@ -19,6 +19,20 @@ abstract class UserGroups {
   static const String serviceAgent = 'Service agent';
 }
 
+class UserReference implements ObjectReference {
+  final int id;
+  final String name;
+
+  const UserReference(this.id, this.name);
+
+  static UserReference decode(Map map) =>
+      new UserReference(map[Key.id], map[Key.name]);
+
+  Map toJson() => {Key.id: id, Key.name: name};
+
+  int get hashCode => id.hashCode;
+}
+
 /**
  *
  */
@@ -33,7 +47,8 @@ class User {
   String name = '';
   String peer = '';
   String portrait = '';
-  List<String> groups = [];
+  Set<String> groups = new Set<String>();
+  Set<String> identities = new Set<String>();
 
   /**
    * Constructor for creating an empty object.
@@ -53,7 +68,8 @@ class User {
         address = map[Key.address],
         name = map[Key.name],
         peer = map[Key.extension],
-        groups = map[Key.groups],
+        groups = new Set<String>.from(map[Key.groups]),
+        identities = new Set<String>.from(map[Key.identites]),
         portrait = map.containsKey('remote_attributes') &&
                 (map['remote_attributes'] as Map).containsKey('picture')
             ? (map['remote_attributes'] as Map)['picture']
@@ -65,8 +81,14 @@ class User {
   Map toJson() => {
         Key.id: id,
         Key.name: name,
+        Key.identites: identities.toList(growable: false),
         Key.address: address,
         Key.extension: peer,
-        Key.groups: groups
+        Key.groups: groups.toList(growable: false)
       };
+
+  /**
+   *
+   */
+  UserReference get reference => new UserReference(id, name);
 }

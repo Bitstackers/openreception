@@ -19,8 +19,17 @@ part of openreception.model;
 abstract class MessageEndpointType {
   static const String sms = 'sms';
   static const String email = 'email';
+  static const String emailTo = 'email-to';
+  static const String emailCc = 'email-cc';
+  static const String emailBcc = 'email-bcc';
 
-  static const List<String> types = const [sms, email];
+  static const List<String> types = const [
+    sms,
+    email,
+    emailTo,
+    emailCc,
+    emailBcc
+  ];
 }
 
 /**
@@ -29,18 +38,12 @@ abstract class MessageEndpointType {
  * endpoints are identified by [MessageEndpointType].
  */
 class MessageEndpoint {
-  static const int noId = 0;
-  int id = noId;
-
-  /// Type of endpoint. Must be one of [MessageEndpointType].
-  String type = MessageEndpointType.email;
-  String address;
-  String description;
-  bool confidential;
-  bool enabled;
-
-  String role = Role.TO;
+  /// Type of endpoint. Must be one of [MessageEndpointType.types].
+  String type = MessageEndpointType.emailTo;
   String name = '';
+  String address = '';
+
+  String note = '';
 
   /**
    * Default empty constructor.
@@ -51,17 +54,10 @@ class MessageEndpoint {
    * Deserializing constructor.
    */
   MessageEndpoint.fromMap(Map map) {
-    id = map[Key.id];
     type = map[Key.type];
-
-    address = map[Key.address];
-    confidential = map[Key.confidential];
-    description = map[Key.description];
-
     name = map.containsKey(Key.name) ? map[Key.name] : '';
-    role = map.containsKey(Key.role) ? map[Key.role] : Role.TO;
-
-    enabled = map[Key.enabled];
+    address = map[Key.address];
+    note = map[Key.note];
   }
 
   /**
@@ -77,16 +73,8 @@ class MessageEndpoint {
   /**
    * Map representation of the object.
    */
-  Map get asMap => {
-        Key.id: id,
-        Key.type: type,
-        Key.address: address,
-        Key.confidential: confidential,
-        Key.enabled: enabled,
-        Key.description: description,
-        Key.name: name,
-        Key.role: role
-      };
+  Map get asMap =>
+      {Key.type: type, Key.address: address, Key.name: name, Key.note: note};
 
   /**
    * Stringify the object.

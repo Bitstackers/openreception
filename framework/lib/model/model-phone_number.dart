@@ -18,19 +18,17 @@ part of openreception.model;
  * contact.
  */
 class PhoneNumber {
+  String destination = '';
   String description = '';
-  String endpoint = '';
   bool confidential = false;
-  List<String> tags = [];
 
   /**
    * Deserializing constructor.
    */
   PhoneNumber.fromMap(Map map)
       : description = map[Key.description],
-        endpoint = map[Key.endpoint],
-        confidential = map[Key.confidential],
-        tags = map[Key.tags];
+        destination = map[Key.destination],
+        confidential = map[Key.confidential];
 
   /**
    *
@@ -43,7 +41,7 @@ class PhoneNumber {
    */
   @override
   bool operator ==(PhoneNumber other) =>
-      endpoint.toLowerCase() == other.endpoint.toLowerCase();
+      destination.toLowerCase() == other.destination.toLowerCase();
 
   /**
    * Default empty constructor.
@@ -54,9 +52,8 @@ class PhoneNumber {
    * Map representation of the object. Serialization function.
    */
   Map toJson() => {
-        Key.endpoint: endpoint,
+        Key.destination: destination,
         Key.confidential: confidential,
-        Key.description: description,
-        Key.tags: tags
+        Key.description: description
       };
 }
