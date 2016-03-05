@@ -143,14 +143,12 @@ class GitEngine {
    */
   Future commit(File file, String commitMsg, String author) async {
     await init();
+    if (!await _hasChanges(file)) {
+      throw new storage.Unchanged('No new content');
+    }
+
     _lock();
-
-    _busy = new Completer();
-
     try {
-      if (!await _hasChanges(file)) {
-        throw new storage.Unchanged('No new content');
-      }
       await _commit(commitMsg, author);
       _unlock();
     } catch (e, s) {
@@ -162,8 +160,13 @@ class GitEngine {
    *
    */
   Future<bool> _hasChanges(File file) async {
+    String filePath = file.path.replaceFirst(path, '');
+    while (filePath.startsWith('/')) {
+      filePath = filePath.replaceFirst('/', '');
+    }
+
     final ProcessResult result = await Process.run(
-        '/usr/bin/git', ['status', '--porcelain', file.path],
+        '/usr/bin/git', ['status', '--porcelain', filePath],
         workingDirectory: path);
 
     String stderr = result.stderr;
@@ -178,7 +181,7 @@ class GitEngine {
 
     final List<String> lines = result.stdout.split('\n');
 
-    if (!lines.any((line) => line.contains(file.path))) {
+    if (!lines.any((line) => line.contains(filePath))) {
       return false;
     }
 
@@ -213,7 +216,6 @@ class GitEngine {
     List<Change> changeList = [];
     lines.forEach((line) {
       List<String> parts = line.split(new String.fromCharCode(9));
-      print(parts);
     });
 
     String stderr = result.stderr;

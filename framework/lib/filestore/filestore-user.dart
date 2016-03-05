@@ -39,6 +39,15 @@ class User implements storage.User {
   /**
    *
    */
+  Future<Iterable<String>> groups() async => [
+        model.UserGroups.administrator,
+        model.UserGroups.receptionist,
+        model.UserGroups.serviceAgent
+      ];
+
+  /**
+   *
+   */
   Future<model.User> get(int id) async {
     final File file = new File('$path/${id}.json');
 
@@ -58,22 +67,35 @@ class User implements storage.User {
   /**
    *
    */
-  Future<model.User> getByIdentity(String identity) =>
-      throw new UnimplementedError();
+  Future<model.User> getByIdentity(String identity) async {
+    model.User user;
+    await Future.wait((await list()).map((userRef) async {
+      final u = await get(userRef.id);
+      if (u.identities.contains(identity)) {
+        user = u;
+      }
+    }));
+
+    if (user == null) {
+      throw new storage.NotFound('No user found with identity : $identity');
+    }
+    return user;
+  }
 
   /**
    *
    */
-  Future<Iterable<model.User>> list() async => new Directory(path)
+  Future<Iterable<model.UserReference>> list() async => new Directory(path)
       .listSync()
       .where((fse) => fse is File && fse.path.endsWith('.json'))
-      .map(
-          (File fse) => model.User.decode(JSON.decode(fse.readAsStringSync())));
+      .map((File fse) =>
+          model.User.decode(JSON.decode(fse.readAsStringSync())).reference);
 
   /**
    *
    */
-  Future<model.User> create(model.User user, model.User modifier) async {
+  Future<model.UserReference> create(
+      model.User user, model.User modifier) async {
     user.id = _nextId;
     final File file = new File('$path/${user.id}.json');
 
@@ -91,13 +113,14 @@ class User implements storage.User {
 
     await _git.add(file, 'Added ${user.id}', _authorString(modifier));
 
-    return user;
+    return user.reference;
   }
 
   /**
    *
    */
-  Future<model.User> update(model.User user, model.User modifier) async {
+  Future<model.UserReference> update(
+      model.User user, model.User modifier) async {
     final File file = new File('$path/${user.id}.json');
 
     if (!file.existsSync()) {
@@ -109,11 +132,13 @@ class User implements storage.User {
       modifier = _systemUser;
     }
 
+    _log.info(file.readAsStringSync());
     file.writeAsStringSync(_jsonpp.convert(user));
+    _log.info(file.readAsStringSync());
 
-    await _git._commit('Updated ${user.id}', _authorString(modifier));
+    await _git.commit(file, 'Updated ${user.id}', _authorString(modifier));
 
-    return user;
+    return user.reference;
   }
 
   /**

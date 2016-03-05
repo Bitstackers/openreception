@@ -47,7 +47,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<model.ReceptionContactReference> addToReception(
+  Future<model.ReceptionContactReference> addData(
       model.ReceptionAttributes attr, model.User user) async {
     if (attr.receptionId == model.Reception.noId) {
       throw new ArgumentError('attr.receptionUuid must be valid');
@@ -128,8 +128,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<model.ReceptionAttributes> getByReception(
-      int id, int receptionId) async {
+  Future<model.ReceptionAttributes> data(int id, int receptionId) async {
     final file = new File('$path/$id/receptions/$receptionId.json');
     if (!file.existsSync()) {
       throw new storage.NotFound('No file: ${file.path}');
@@ -158,19 +157,17 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<Iterable<model.ReceptionAttributes>> listByReception(
-      int receptionId) async {
+  Future<Iterable<model.ReceptionReference>> receptions(int receptionId) async {
     final subdirs =
         new Directory(path).listSync().where((fse) => fse is Directory);
 
-    List<model.ReceptionAttributes> attrs = [];
-    subdirs.forEach((Directory dir) {
+    List<model.ReceptionReference> attrs = [];
+    await Future.wait(subdirs.map((Directory dir) async {
       final attrFile = new File(dir.path + '/receptions/$receptionId.json');
       if (attrFile.existsSync()) {
-        attrs.add(model.ReceptionAttributes
-            .decode(JSON.decode(attrFile.readAsStringSync())));
+        attrs.add((await _receptionStore.get(receptionId)).reference);
       }
-    });
+    }));
 
     return attrs;
   }
@@ -194,8 +191,8 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<Iterable<model.OrganizationReference>> organizations(int id) async {
-    Iterable<model.ReceptionReference> rRefs = await receptions(id);
+  Future<Iterable<model.OrganizationReference>> organizations(int cid) async {
+    Iterable<model.ReceptionReference> rRefs = await receptions(cid);
 
     Set<model.OrganizationReference> orgs = new Set();
     await Future.wait(rRefs.map((rid) async {
@@ -209,13 +206,13 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<Iterable<model.ReceptionReference>> receptions(int id) async {
-    final File contactFile = new File('$path/${id}.json');
+  Future<Iterable<model.ContactReference>> receptionContacts(int rid) async {
+    final File contactFile = new File('$path/${rid}.json');
     if (!contactFile.existsSync()) {
       throw new storage.NotFound('No file: ${contactFile.path}');
     }
 
-    final rDir = new Directory('$path/$id/receptions');
+    final rDir = new Directory('$path/$rid/receptions');
     if (!rDir.existsSync()) {
       return [];
     }
@@ -256,8 +253,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future removeFromReception(
-      int id, int receptionId, model.User modifier) async {
+  Future removeData(int id, int receptionId, model.User modifier) async {
     if (id == model.BaseContact.noId || receptionId == model.Reception.noId) {
       throw new storage.ClientError('Empty id');
     }
@@ -305,7 +301,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<model.ReceptionContactReference> updateInReception(
+  Future<model.ReceptionContactReference> updateData(
       model.ReceptionAttributes attr, model.User modifier) async {
     if (attr.contactId == model.BaseContact.noId) {
       throw new storage.ClientError('Empty id');

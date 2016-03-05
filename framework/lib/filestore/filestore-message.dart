@@ -47,15 +47,15 @@ class Message implements storage.Message {
     throw new UnimplementedError();
   }
 
-  Future<model.Message> create(model.Message message) {
+  Future<model.Message> create(model.Message message, model.User modifier) {
     throw new UnimplementedError();
   }
 
-  Future<model.Message> update(model.Message message) {
+  Future<model.Message> update(model.Message message, model.User modifier) {
     throw new UnimplementedError();
   }
 
-  Future remove(int messageId) {
+  Future remove(int mid, model.User modifier) {
     throw new UnimplementedError();
   }
 }

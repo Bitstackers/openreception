@@ -137,6 +137,9 @@ class Reception implements storage.Reception {
           .decode(JSON.decode(fse.readAsStringSync()))
           .reference);
 
+  /**
+   *
+   */
   Future remove(int id, model.User modifier) async {
     final File file = new File('$path/${id}.json');
 
