@@ -23,16 +23,38 @@ abstract class ReceptionState {
 }
 
 class ReceptionChange implements Event {
-
   final DateTime timestamp;
 
   String get eventName => Key.receptionChange;
 
   final int receptionID;
+  int userId;
   final String state;
 
-  ReceptionChange (this.receptionID, this.state) :
-    this.timestamp = new DateTime.now();
+  /**
+   *
+   */
+  ReceptionChange.created(this.receptionID, [this.userId])
+      : this.state = ReceptionState.CREATED,
+        this.timestamp = new DateTime.now();
+
+  /**
+   *
+   */
+  ReceptionChange.updated(this.receptionID, [this.userId])
+      : this.state = ReceptionState.UPDATED,
+        this.timestamp = new DateTime.now();
+
+  /**
+   *
+   */
+  ReceptionChange.deleted(this.receptionID, [this.userId])
+      : this.state = ReceptionState.DELETED,
+        this.timestamp = new DateTime.now();
+
+  @deprecated
+  ReceptionChange(this.receptionID, this.state)
+      : this.timestamp = new DateTime.now();
 
   Map toJson() => this.asMap;
   String toString() => this.asMap.toString();
@@ -40,16 +62,20 @@ class ReceptionChange implements Event {
   Map get asMap {
     Map template = EventTemplate._rootElement(this);
 
-    Map body = {Key.receptionID : this.receptionID,
-                Key.state       : this.state};
+    Map body = {
+      Key.receptionID: this.receptionID,
+      Key.state: this.state,
+      Key.userID: userId
+    };
 
     template[this.eventName] = body;
 
     return template;
   }
 
-  ReceptionChange.fromMap (Map map) :
-    this.receptionID = map[Key.receptionChange][Key.receptionID],
-    this.state = map[Key.receptionChange][Key.state],
-    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
+  ReceptionChange.fromMap(Map map)
+      : this.receptionID = map[Key.receptionChange][Key.receptionID],
+        this.state = map[Key.receptionChange][Key.state],
+        this.userId = map[Key.receptionChange][Key.userID],
+        this.timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
 }

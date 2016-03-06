@@ -34,6 +34,15 @@ part 'event/event-user.dart';
 part 'event/event-user_state.dart';
 
 /**
+ * 'Enum' representing different outcomes of an change.
+ */
+abstract class Change {
+  static const String created = 'created';
+  static const String updated = 'updated';
+  static const String deleted = 'deleted';
+}
+
+/**
  * Keys for the serialization and deserialization.
  */
 abstract class Key {
@@ -59,13 +68,18 @@ abstract class Key {
   static const address = 'address';
   static const addressType = 'addressType';
 
+  static const owner = 'owner';
   static const entryID = 'eid';
-  static const ID = 'id';
+  static const id = 'id';
   static const timestamp = 'timestamp';
   static const userID = 'userID';
+  static const changedBy = 'changedBy';
   static const connectionCount = 'connectionCount';
 
   static const connectionState = 'connectionState';
+
+  static const callAssign = 'call_assign';
+  static const callUnassign = 'call_unassign';
   static const callOffer = 'call_offer';
   static const callLock = 'call_lock';
   static const callUnlock = 'call_unlock';
@@ -100,12 +114,11 @@ abstract class Key {
  * interface for [Event] objects, and a parsing factory constructor.
  */
 abstract class Event {
-
   static final Logger log = new Logger('$libraryName.Event');
 
   DateTime get timestamp;
-  String   get eventName;
-  Map      get asMap;
+  String get eventName;
+  Map get asMap;
 
   /**
    * Every specialized class needs a toJson function.
@@ -115,7 +128,7 @@ abstract class Event {
   /**
    * Parse an an event that has already been deserialized from JSON string.
    */
-  factory Event.parse (Map map) {
+  factory Event.parse(Map map) {
     try {
       switch (map[Key.event]) {
         case Key.peerState:

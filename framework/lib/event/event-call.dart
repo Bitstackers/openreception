@@ -37,6 +37,30 @@ class CallLock extends CallEvent {
   CallLock.fromMap(Map map) : super.fromMap(map);
 }
 
+class CallAssign extends CallEvent {
+  final String eventName = Key.callAssign;
+  final int userId;
+
+  CallAssign(Call call, this.userId) : super(call);
+  CallAssign.fromMap(Map map)
+      : super.fromMap(map),
+        userId = map[Key.userID];
+
+  Map toJson() => super.toJson()..addAll({Key.userID: userId});
+}
+
+class CallUnassign extends CallEvent {
+  final String eventName = Key.callUnassign;
+  final int userId;
+
+  CallUnassign(Call call, this.userId) : super(call);
+  CallUnassign.fromMap(Map map)
+      : super.fromMap(map),
+        userId = map[Key.userID];
+
+  Map toJson() => super.toJson()..addAll({Key.userID: userId});
+}
+
 class CallUnlock extends CallEvent {
   final String eventName = Key.callUnlock;
 

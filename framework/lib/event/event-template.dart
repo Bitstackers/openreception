@@ -15,24 +15,24 @@ part of openreception.event;
 
 abstract class EventTemplate {
   static Map _rootElement(Event event) => {
-    Key.event     : event.eventName,
-    Key.timestamp : Util.dateTimeToUnixTimestamp (event.timestamp)
-  };
+        Key.event: event.eventName,
+        Key.timestamp: Util.dateTimeToUnixTimestamp(event.timestamp)
+      };
 
   static Map call(CallEvent event) =>
-      _rootElement(event)..addAll( {Key.call : event.call.toJson()});
+      _rootElement(event)..addAll({Key.call: event.call.toJson()});
 
   static Map peer(PeerState event) =>
-      _rootElement(event)..addAll( {Key.peer : event.peer.toJson()});
+      _rootElement(event)..addAll({Key.peer: event.peer.toJson()});
 
   static Map userState(UserState event) =>
-      _rootElement(event)..addAll(event.status.asMap);
+      _rootElement(event)..addAll(event.status.toJson());
 
-  static Map channel(ChannelState event) =>
-      _rootElement(event)..addAll(
-           {Key.channel :
-             {Key.ID : event.channelID}});
+  static Map channel(ChannelState event) => _rootElement(event)
+    ..addAll({
+      Key.channel: {Key.id: event.channelID}
+    });
 
   static Map connection(ClientConnectionState event) =>
-      _rootElement(event)..addAll({Key.state : event.conn});
+      _rootElement(event)..addAll({Key.state: event.conn});
 }

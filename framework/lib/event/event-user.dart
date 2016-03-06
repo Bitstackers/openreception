@@ -23,25 +23,25 @@ abstract class UserObjectState {
 }
 
 class UserChange implements Event {
-
   final DateTime timestamp;
 
   String get eventName => Key.userChange;
 
   final int userID;
+  int changedBy;
   final String state;
 
-  UserChange._internal (this.userID, this.state) :
-    timestamp = new DateTime.now();
+  UserChange._internal(this.userID, this.state, [this.changedBy])
+      : timestamp = new DateTime.now();
 
-  factory UserChange.created (int userID) =>
-    new UserChange._internal(userID, UserObjectState.CREATED);
+  factory UserChange.created(int userID, [int changedBy]) =>
+      new UserChange._internal(userID, Change.created);
 
-  factory UserChange.updated (int userID) =>
-    new UserChange._internal(userID, UserObjectState.UPDATED);
+  factory UserChange.updated(int userID, [int changedBy]) =>
+      new UserChange._internal(userID, Change.updated);
 
-  factory UserChange.deleted (int userID) =>
-    new UserChange._internal(userID, UserObjectState.DELETED);
+  factory UserChange.deleted(int userID, [int changedBy]) =>
+      new UserChange._internal(userID, Change.deleted);
 
   Map toJson() => this.asMap;
 
@@ -51,16 +51,20 @@ class UserChange implements Event {
   Map get asMap {
     final Map template = EventTemplate._rootElement(this);
 
-    final Map body = {Key.userID : userID,
-                Key.state  : state};
+    final Map body = {
+      Key.userID: userID,
+      Key.state: state,
+      Key.changedBy: changedBy
+    };
 
     template[this.eventName] = body;
 
     return template;
   }
 
-  UserChange.fromMap (Map map) :
-    userID = map[Key.userChange][Key.userID],
-    state = map[Key.userChange][Key.state],
-    timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
+  UserChange.fromMap(Map map)
+      : userID = map[Key.userChange][Key.userID],
+        state = map[Key.userChange][Key.state],
+        changedBy = map[Key.userChange][Key.changedBy],
+        timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
 }
