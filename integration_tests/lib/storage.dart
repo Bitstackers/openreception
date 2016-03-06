@@ -1,6 +1,7 @@
 library openreception_tests.storage;
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
@@ -15,5 +16,9 @@ part 'storage/storage-ivr.dart';
 //part 'storage/storage-message.dart';
 part 'storage/storage-organization.dart';
 part 'storage/storage-reception.dart';
+part 'storage/storage-user.dart';
 
 const String _libraryName = 'storage';
+
+final notFoundError = new isInstanceOf<storage.NotFound>();
+final unchangedError = new isInstanceOf<storage.Unchanged>();

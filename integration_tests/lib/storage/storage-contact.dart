@@ -9,11 +9,11 @@ abstract class Contact {
    *
    * The expected behaviour is that the server should return a Not Found error.
    */
-  static void nonExistingContact(storage.Contact contactStore) {
+  static Future nonExistingContact(ServiceAgent sa) async {
     _log.info('Checking server behaviour on a non-existing contact.');
 
-    return expect(
-        contactStore.get(-1), throwsA(new isInstanceOf<storage.NotFound>()));
+    await expect(
+        sa.contactStore.get(-1), throwsA(new isInstanceOf<storage.NotFound>()));
   }
 
   /**
@@ -40,28 +40,26 @@ abstract class Contact {
     await sa.addsContactToReception(con3, rec1);
     await sa.addsContactToReception(con4, rec2);
 
-    final Iterable<model.ReceptionAttributes> rattr1 =
-        await sa.contactStore.listByReception(rec1.id);
+    final Iterable<model.ContactReference> cRefs1 =
+        await sa.contactStore.receptionContacts(rec1.id);
 
-    final Iterable<model.ReceptionAttributes> rattr2 =
-        await sa.contactStore.listByReception(rec2.id);
+    final Iterable<model.ContactReference> cRefs2 =
+        await sa.contactStore.receptionContacts(rec2.id);
 
-    _log.finest(
-        'Fetched 1: ' + rattr1.map((cref) => cref.contactId).join(', '));
-    _log.finest(
-        'Fetched 2: ' + rattr2.map((cref) => cref.contactId).join(', '));
+    _log.finest('Fetched 1: ' + cRefs1.map((cref) => cref.id).join(', '));
+    _log.finest('Fetched 2: ' + cRefs2.map((cref) => cref.id).join(', '));
 
-    expect(rattr1.length, equals(3));
-    expect(rattr2.length, equals(1));
+    expect(cRefs1.length, equals(3));
+    expect(cRefs2.length, equals(1));
 
-    expect(rattr1.any((ref) => ref.contactId == con1.id), isTrue);
-    expect(rattr1.any((ref) => ref.contactId == con2.id), isTrue);
-    expect(rattr1.any((ref) => ref.contactId == con3.id), isTrue);
-    expect(rattr1.any((ref) => ref.contactId == con4.id), isFalse);
-    expect(rattr2.any((ref) => ref.contactId == con1.id), isFalse);
-    expect(rattr2.any((ref) => ref.contactId == con2.id), isFalse);
-    expect(rattr2.any((ref) => ref.contactId == con3.id), isFalse);
-    expect(rattr2.any((ref) => ref.contactId == con4.id), isTrue);
+    expect(cRefs1.any((ref) => ref.id == con1.id), isTrue);
+    expect(cRefs1.any((ref) => ref.id == con2.id), isTrue);
+    expect(cRefs1.any((ref) => ref.id == con3.id), isTrue);
+    expect(cRefs1.any((ref) => ref.id == con4.id), isFalse);
+    expect(cRefs2.any((ref) => ref.id == con1.id), isFalse);
+    expect(cRefs2.any((ref) => ref.id == con2.id), isFalse);
+    expect(cRefs2.any((ref) => ref.id == con3.id), isFalse);
+    expect(cRefs2.any((ref) => ref.id == con4.id), isTrue);
   }
 
   /**
@@ -135,6 +133,10 @@ abstract class Contact {
     await sa.addsContactToReception(con, rec1);
     await sa.addsContactToReception(con, rec2);
 
+    Iterable<model.ReceptionReference> rRefs =
+        await sa.contactStore.receptions(con.id);
+    expect(rRefs.length, equals(2));
+
     Iterable<model.OrganizationReference> oRefs =
         await sa.contactStore.organizations(con.id);
 
@@ -186,7 +188,7 @@ abstract class Contact {
     await sa.addsContactToReception(con, rec);
 
     final model.ReceptionAttributes contact =
-        await sa.contactStore.getByReception(con.id, rec.id);
+        await sa.contactStore.data(con.id, rec.id);
     expect(contact, isNotNull);
   }
 
@@ -200,8 +202,8 @@ abstract class Contact {
     _log.info('Creating a new base contact.');
 
     final contact = Randomizer.randomBaseContact();
-    final uuid = (await sa.createsContact(contact: contact)).id;
-    final fetched = await sa.contactStore.get(uuid);
+    contact.id = (await sa.createsContact(contact: contact)).id;
+    final fetched = await sa.contactStore.get(contact.id);
 
     expect(contact.id, equals(fetched.id));
     expect(contact.contactType, equals(fetched.contactType));
@@ -222,8 +224,8 @@ abstract class Contact {
     _log.info(
         'Checking server behaviour on list of contacts in reception $receptionId.');
 
-    final Iterable<model.ReceptionAttributes> contacts =
-        await sa.contactStore.listByReception(receptionId);
+    final Iterable<model.ContactReference> contacts =
+        await sa.contactStore.receptionContacts(receptionId);
 
     expect(contacts, isEmpty);
   }
@@ -239,6 +241,7 @@ abstract class Contact {
 
     final contact = Randomizer.randomBaseContact();
     final ref = await sa.contactStore.create(contact, sa.user);
+    contact.id = ref.id;
     final fetched = await sa.contactStore.get(ref.id);
 
     expect(contact.id, equals(fetched.id));
@@ -318,7 +321,7 @@ abstract class Contact {
     await sa.addsContactToReception(con, rec);
 
     final model.ReceptionAttributes contact =
-        await sa.contactStore.getByReception(con.id, rec.id);
+        await sa.contactStore.data(con.id, rec.id);
     expect(contact.endpoints, isNotEmpty);
   }
 
@@ -335,7 +338,7 @@ abstract class Contact {
     await sa.addsContactToReception(con, rec);
 
     final model.ReceptionAttributes attr =
-        await sa.contactStore.getByReception(con.id, rec.id);
+        await sa.contactStore.data(con.id, rec.id);
 
     final eps = [
       Randomizer.randomMessageEndpoint(),
@@ -344,10 +347,10 @@ abstract class Contact {
 
     attr.endpoints = eps;
 
-    await sa.contactStore.updateInReception(attr, sa.user);
+    await sa.contactStore.updateData(attr, sa.user);
 
     final model.ReceptionAttributes attrUpdated =
-        await sa.contactStore.getByReception(con.id, rec.id);
+        await sa.contactStore.data(con.id, rec.id);
 
     expect(attrUpdated.endpoints.toList(), equals(eps.toList()));
   }
@@ -365,7 +368,7 @@ abstract class Contact {
     await sa.addsContactToReception(con, rec);
 
     final model.ReceptionAttributes attr =
-        await sa.contactStore.getByReception(con.id, rec.id);
+        await sa.contactStore.data(con.id, rec.id);
 
     final eps = [
       Randomizer.randomMessageEndpoint(),
@@ -374,26 +377,26 @@ abstract class Contact {
 
     attr.endpoints = eps;
 
-    await sa.contactStore.updateInReception(attr, sa.user);
+    await sa.contactStore.updateData(attr, sa.user);
 
     model.ReceptionAttributes attrUpdated =
-        await sa.contactStore.getByReception(con.id, rec.id);
+        await sa.contactStore.data(con.id, rec.id);
 
     expect(attrUpdated.endpoints.toList(), equals(eps.toList()));
 
     attr.endpoints = eps..removeLast();
 
-    await sa.contactStore.updateInReception(attr, sa.user);
+    await sa.contactStore.updateData(attr, sa.user);
 
-    attrUpdated = await sa.contactStore.getByReception(con.id, rec.id);
+    attrUpdated = await sa.contactStore.data(con.id, rec.id);
 
     expect(attrUpdated.endpoints.toList(), equals(eps.toList()));
 
     attr.endpoints = [];
 
-    await sa.contactStore.updateInReception(attr, sa.user);
+    await sa.contactStore.updateData(attr, sa.user);
 
-    attrUpdated = await sa.contactStore.getByReception(con.id, rec.id);
+    attrUpdated = await sa.contactStore.data(con.id, rec.id);
 
     expect(attrUpdated.endpoints, equals([]));
   }
@@ -411,7 +414,7 @@ abstract class Contact {
     await sa.addsContactToReception(con, rec);
 
     final model.ReceptionAttributes attr =
-        await sa.contactStore.getByReception(con.id, rec.id);
+        await sa.contactStore.data(con.id, rec.id);
 
     final eps = attr.endpoints
       ..addAll([
@@ -419,10 +422,10 @@ abstract class Contact {
         Randomizer.randomMessageEndpoint()
       ]);
 
-    await sa.contactStore.updateInReception(attr, sa.user);
+    await sa.contactStore.updateData(attr, sa.user);
 
     final model.ReceptionAttributes attrUpdated =
-        await sa.contactStore.getByReception(con.id, rec.id);
+        await sa.contactStore.data(con.id, rec.id);
 
     expect(attrUpdated.endpoints.toList(), equals(eps.toList()));
   }
@@ -443,16 +446,16 @@ abstract class Contact {
     await sa.addsContactToReception(con, rec);
 
     final model.ReceptionAttributes attr =
-        await sa.contactStore.getByReception(con.id, rec.id);
+        await sa.contactStore.data(con.id, rec.id);
 
     final phones = [Randomizer.randomPhone(), Randomizer.randomPhone()];
 
     attr.phones = phones;
 
-    await sa.contactStore.updateInReception(attr, sa.user);
+    await sa.contactStore.updateData(attr, sa.user);
 
     final model.ReceptionAttributes attrUpdated =
-        await sa.contactStore.getByReception(con.id, rec.id);
+        await sa.contactStore.data(con.id, rec.id);
 
     expect(attrUpdated.phones.toList(), equals(phones.toList()));
   }
@@ -466,8 +469,8 @@ abstract class Contact {
     final org = await sa.createsOrganization();
     final rec = await sa.createsReception(org);
 
-    Iterable<model.ReceptionAttributes> rRefs =
-        await sa.contactStore.listByReception(rec.id);
+    Iterable<model.ContactReference> rRefs =
+        await sa.contactStore.receptionContacts(rec.id);
 
     expect(rRefs.length, equals(0));
 
@@ -475,10 +478,10 @@ abstract class Contact {
       ..contactId = con.id
       ..receptionId = rec.id;
 
-    final ref = await sa.contactStore.addToReception(attr, sa.user);
+    final ref = await sa.contactStore.addData(attr, sa.user);
     expect(ref.contact.id, equals(con.id));
     expect(ref.reception.id, equals(rec.id));
-    final fetched = await sa.contactStore.getByReception(con.id, rec.id);
+    final fetched = await sa.contactStore.data(con.id, rec.id);
 
     expect(attr.toJson(), equals(fetched.toJson()));
   }
@@ -492,20 +495,20 @@ abstract class Contact {
     final org = await sa.createsOrganization();
     final rec = await sa.createsReception(org);
 
-    Iterable<model.ReceptionAttributes> rRefs =
-        await sa.contactStore.listByReception(rec.id);
+    Iterable<model.ContactReference> cRefs =
+        await sa.contactStore.receptionContacts(rec.id);
 
-    expect(rRefs.length, equals(0));
+    expect(cRefs.length, equals(0));
 
     final attr = Randomizer.randomAttributes()
       ..contactId = con.id
       ..receptionId = rec.id;
 
     {
-      final ref = await sa.contactStore.addToReception(attr, sa.user);
+      final ref = await sa.contactStore.addData(attr, sa.user);
       expect(ref.contact.id, equals(con.id));
       expect(ref.reception.id, equals(rec.id));
-      final fetched = await sa.contactStore.getByReception(con.id, rec.id);
+      final fetched = await sa.contactStore.data(con.id, rec.id);
 
       expect(attr.toJson(), equals(fetched.toJson()));
     }
@@ -515,10 +518,10 @@ abstract class Contact {
       ..receptionId = rec.id;
 
     {
-      final ref = await sa.contactStore.updateInReception(updated, sa.user);
+      final ref = await sa.contactStore.updateData(updated, sa.user);
       expect(ref.contact.id, equals(con.id));
       expect(ref.reception.id, equals(rec.id));
-      final fetched = await sa.contactStore.getByReception(con.id, rec.id);
+      final fetched = await sa.contactStore.data(con.id, rec.id);
 
       expect(updated.toJson(), equals(fetched.toJson()));
     }
@@ -537,32 +540,29 @@ abstract class Contact {
     await sa.addsContactToReception(con1, rec);
     await sa.addsContactToReception(con2, rec);
 
-    Iterable<model.ReceptionAttributes> rRefs =
-        await sa.contactStore.listByReception(rec.id);
+    Iterable<model.ContactReference> cRefs =
+        await sa.contactStore.receptionContacts(rec.id);
 
-    _log.finest(
-        'Fetched: ' + rRefs.map((cref) => cref.reference.toJson()).join(', '));
-    expect(rRefs.length, equals(2));
+    _log.finest('Fetched: ' + cRefs.map((cref) => cref.toJson()).join(', '));
+    expect(cRefs.length, equals(2));
 
-    expect(rRefs.any((ref) => ref.contactId == con1.id), isTrue);
-    expect(rRefs.any((ref) => ref.contactId == con2.id), isTrue);
+    expect(cRefs.any((ref) => ref.id == con1.id), isTrue);
+    expect(cRefs.any((ref) => ref.id == con2.id), isTrue);
 
     await sa.removesContactFromReception(con1, rec);
-    rRefs = await sa.contactStore.listByReception(rec.id);
-    _log.finest(
-        'Fetched: ' + rRefs.map((cref) => cref.reference.toJson()).join(', '));
-    expect(rRefs.length, equals(1));
+    cRefs = await sa.contactStore.receptionContacts(rec.id);
+    _log.finest('Fetched: ' + cRefs.map((cref) => cref.toJson()).join(', '));
+    expect(cRefs.length, equals(1));
 
-    expect(rRefs.any((ref) => ref.contactId == con1.id), isFalse);
-    expect(rRefs.any((ref) => ref.contactId == con2.id), isTrue);
+    expect(cRefs.any((ref) => ref.id == con1.id), isFalse);
+    expect(cRefs.any((ref) => ref.id == con2.id), isTrue);
 
     await sa.removesContactFromReception(con2, rec);
-    rRefs = await sa.contactStore.listByReception(rec.id);
-    _log.finest(
-        'Fetched: ' + rRefs.map((cref) => cref.reference.toJson()).join(', '));
-    expect(rRefs.length, equals(0));
+    cRefs = await sa.contactStore.receptionContacts(rec.id);
+    _log.finest('Fetched: ' + cRefs.map((cref) => cref.toJson()).join(', '));
+    expect(cRefs.length, equals(0));
 
-    expect(rRefs.any((ref) => ref.contactId == con1.id), isFalse);
-    expect(rRefs.any((ref) => ref.contactId == con2.id), isFalse);
+    expect(cRefs.any((ref) => ref.id == con1.id), isFalse);
+    expect(cRefs.any((ref) => ref.id == con2.id), isFalse);
   }
 }

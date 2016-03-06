@@ -41,7 +41,7 @@ abstract class Calendar {
    * The expected behaviour is that the server should return a list of
    * CalendarEntry objects.
    */
-  static get(model.Owner owner, storage.Calendar calendarStore,
+  static Future get(model.Owner owner, storage.Calendar calendarStore,
       model.User creator) async {
     model.CalendarEntry created = await calendarStore.create(
         Randomizer.randomCalendarEntry()..owner = owner, creator);
@@ -70,8 +70,10 @@ abstract class Calendar {
    *
    * The expected behaviour is that the server should return "Not Found".
    */
-  static getNonExistingEntry(storage.Calendar calendarStore) => expect(
-      calendarStore.get(0), throwsA(new isInstanceOf<storage.NotFound>()));
+  static Future getNonExistingEntry(storage.Calendar calendarStore) async {
+    await expect(
+        calendarStore.get(-1), throwsA(new isInstanceOf<storage.NotFound>()));
+  }
 
   /**
    *

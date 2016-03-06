@@ -84,14 +84,14 @@ abstract class User {
    *
    */
   static Future remove(ServiceAgent sa) async {
-    log.info('Checking server behaviour on an user removal.');
+    _log.info('Checking server behaviour on an user removal.');
 
     model.User created = await sa.createsUser();
-    expect(created.id, greaterThan(model.User.noID));
+    expect(created.id, greaterThan(model.User.noId));
 
-    await userStore.remove(created.id);
+    await sa.userStore.remove(created.id, sa.user);
 
-    return expect(userStore.get(created.id),
+    return expect(sa.userStore.get(created.id),
         throwsA(new isInstanceOf<storage.NotFound>()));
   }
 
@@ -167,7 +167,7 @@ abstract class User {
   static Future userGroups(ServiceAgent sa) async {
     final model.User user = await sa.createsUser();
     if (user.groups.isNotEmpty) {
-      user.groups = [];
+      user.groups.clear();
       await sa.userStore.update(user, sa.user);
     }
 
@@ -185,7 +185,7 @@ abstract class User {
     final model.User user = await sa.createsUser();
     _log.info('Clearing user groups');
     if (user.groups.isNotEmpty) {
-      user.groups = [];
+      user.groups = [].toSet();
       await sa.userStore.update(user, sa.user);
     }
 
@@ -236,7 +236,7 @@ abstract class User {
     final model.User user = await sa.createsUser();
     _log.info('Clearing user groups');
     if (user.groups.isNotEmpty) {
-      user.groups = [];
+      user.groups = [].toSet();
       await sa.userStore.update(user, sa.user);
     }
 
@@ -285,7 +285,7 @@ abstract class User {
     final model.User created = await sa.createsUser();
     _log.info('Clearing user identities');
     if (created.identities.isNotEmpty) {
-      created.identities = [];
+      created.identities = [].toSet();
       await sa.userStore.update(created, sa.user);
     }
 
@@ -323,7 +323,7 @@ abstract class User {
     final model.User user = await sa.createsUser();
     _log.info('Clearing user identities');
     if (user.identities.isNotEmpty) {
-      user.identities = [];
+      user.identities = [].toSet();
       await sa.userStore.update(user, sa.user);
     }
 
@@ -373,7 +373,7 @@ abstract class User {
     final model.User user = await sa.createsUser();
     _log.info('Clearing user identities');
     if (user.identities.isNotEmpty) {
-      user.identities = [];
+      user.identities = [].toSet();
       await sa.userStore.update(user, sa.user);
     }
 
