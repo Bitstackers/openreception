@@ -175,7 +175,7 @@ class GitEngine {
     }
 
     if (result.exitCode != 0) {
-      _log.shout('Failed to get status of ${filepath}');
+      _log.shout('Failed to get status of ${filePath}');
       throw new storage.ServerError();
     }
 
