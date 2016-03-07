@@ -29,7 +29,6 @@ abstract class ModelMessageFilter {
 
     expect(obj.contactId, equals(deserializedObj.contactId));
     expect(obj.limitCount, equals(deserializedObj.limitCount));
-    expect(obj.messageState, equals(deserializedObj.messageState));
     expect(obj.receptionId, equals(deserializedObj.receptionId));
     expect(obj.userId, equals(deserializedObj.userId));
   }
@@ -48,7 +47,6 @@ abstract class ModelMessageFilter {
   static Model.MessageFilter buildObject() {
     final int contactId = 1;
     final int limitCount = 100;
-    final String messageState = Model.MessageState.validStates.first;
     final int receptionId = 2;
 
     final int userId = 99;
@@ -56,13 +54,11 @@ abstract class ModelMessageFilter {
     Model.MessageFilter obj = new Model.MessageFilter.empty()
       ..contactId = contactId
       ..limitCount = limitCount
-      ..messageState = messageState
       ..receptionId = receptionId
       ..userId = userId;
 
     expect(obj.contactId, equals(contactId));
     expect(obj.limitCount, equals(limitCount));
-    expect(obj.messageState, equals(messageState));
     expect(obj.receptionId, equals(receptionId));
     expect(obj.userId, equals(userId));
 

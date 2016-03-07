@@ -23,37 +23,34 @@ void testEventMessageChange() {
 }
 
 abstract class EventMessageChange {
-
   static void buildObject() {
     final int mid = 1;
     final int uid = 2;
 
-    Event.MessageChange testEvent = new Event.MessageChange.created(mid, uid);
+    Event.MessageChange testEvent = new Event.MessageChange.create(mid, uid);
 
-    expect(testEvent.messageID, equals(mid));
-    expect(testEvent.userID, equals(uid));
-    expect(testEvent.state, equals(Event.MessageChangeState.CREATED));
+    expect(testEvent.mid, equals(mid));
+    expect(testEvent.modifierUid, equals(uid));
+    expect(testEvent.state, equals(Event.Change.created));
 
+    testEvent = new Event.MessageChange.update(mid, uid);
 
-    testEvent = new Event.MessageChange.updated(mid, uid);
+    expect(testEvent.mid, equals(mid));
+    expect(testEvent.modifierUid, equals(uid));
+    expect(testEvent.state, equals(Event.Change.updated));
 
-    expect(testEvent.messageID, equals(mid));
-    expect(testEvent.userID, equals(uid));
-    expect(testEvent.state, equals(Event.MessageChangeState.UPDATED));
+    testEvent = new Event.MessageChange.delete(mid, uid);
 
-    testEvent = new Event.MessageChange.deleted(mid, uid);
-
-    expect(testEvent.messageID, equals(mid));
-    expect(testEvent.userID, equals(uid));
-    expect(testEvent.state, equals(Event.MessageChangeState.DELETED));
-
+    expect(testEvent.mid, equals(mid));
+    expect(testEvent.modifierUid, equals(uid));
+    expect(testEvent.state, equals(Event.Change.deleted));
   }
 
   static void serialization() {
     final int mid = 1;
     final int uid = 2;
 
-    Event.MessageChange testEvent = new Event.MessageChange.created(mid, uid);
+    Event.MessageChange testEvent = new Event.MessageChange.create(mid, uid);
 
     expect(testEvent.toJson, returnsNormally);
   }
@@ -62,13 +59,11 @@ abstract class EventMessageChange {
     final int mid = 1;
     final int uid = 2;
 
-    final state = Event.MessageChangeState.CREATED;
+    Event.MessageChange testEvent = new Event.MessageChange.create(mid, uid);
 
-    Event.MessageChange testEvent = new Event.MessageChange.created(mid, uid);
-
-    expect(testEvent.messageID, equals(mid));
-    expect(testEvent.userID, equals(uid));
-    expect(testEvent.state, equals(state));
+    expect(testEvent.mid, equals(mid));
+    expect(testEvent.modifierUid, equals(uid));
+    expect(testEvent.state, equals(Event.Change.created));
 
     Map serialized = testEvent.toJson();
 

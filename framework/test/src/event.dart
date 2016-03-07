@@ -16,7 +16,6 @@ part of openreception.test;
 void testEvent() {
   group('Event.parse', () {
     test('contactChangeState', EventTests.contactChangeState);
-    test('endpointChange', EventTests.endpointChange);
     test('organizationChangeState', EventTests.organizationChangeState);
     test('receptionChangeState', EventTests.receptionChangeState);
     test('receptionContactChangeState', EventTests.receptionContactChangeState);
@@ -29,136 +28,127 @@ void testEvent() {
 }
 
 abstract class EventTests {
-  static void endpointChange() {
-    final int cid = 1;
-    final int rid = 2;
-    final state = Event.EndpointState.CREATED;
-    final address = 'someone@somewhere';
-    final addressType = 'email';
-
-    Event.EndpointChange testEvent =
-        new Event.EndpointChange(cid, rid, state, address, addressType);
-
-    Event.EndpointChange builtEvent =
-        new Event.Event.parse(testEvent.asMap) as Event.EndpointChange;
-
-    expect(builtEvent.contactID, equals(cid));
-    expect(builtEvent.receptionID, equals(rid));
-    expect(builtEvent.state, equals(state));
-    expect(builtEvent.address, equals(address));
-    expect(builtEvent.addressType, equals(addressType));
-  }
-
   static void contactChangeState() {
     final int cid = 1;
-    final state = Event.ContactState.CREATED;
 
-    Event.ContactChange testEvent = new Event.ContactChange(cid, state);
+    Event.ContactChange testEvent = new Event.ContactChange.create(cid);
 
     Event.ContactChange builtEvent =
-        new Event.Event.parse(testEvent.asMap) as Event.ContactChange;
+        new Event.Event.parse(testEvent.toJson()) as Event.ContactChange;
 
-    expect(builtEvent.contactID, equals(cid));
-    expect(builtEvent.state, equals(state));
+    expect(builtEvent.cid, equals(cid));
+    expect(builtEvent.state, equals(Event.Change.created));
   }
 
   static void organizationChangeState() {
     final int oid = 1;
-    final state = Event.OrganizationState.CREATED;
+    final int uid = 3;
 
     Event.OrganizationChange testEvent =
-        new Event.OrganizationChange(oid, state);
+        new Event.OrganizationChange.created(oid, uid);
 
     Event.OrganizationChange builtEvent =
         new Event.Event.parse(testEvent.asMap) as Event.OrganizationChange;
 
-    expect(builtEvent.orgID, equals(oid));
-    expect(builtEvent.state, equals(state));
+    expect(builtEvent.oid, equals(oid));
+    expect(builtEvent.modifierUid, equals(uid));
+    expect(builtEvent.state, equals(Event.Change.created));
   }
 
   static void receptionChangeState() {
     final int rid = 1;
-    final state = Event.ReceptionState.CREATED;
+    final int uid = 3;
 
-    Event.ReceptionChange testEvent = new Event.ReceptionChange(rid, state);
+    Event.ReceptionChange testEvent =
+        new Event.ReceptionChange.created(rid, uid);
 
     Event.ReceptionChange builtEvent =
-        new Event.Event.parse(testEvent.asMap) as Event.ReceptionChange;
+        new Event.Event.parse(testEvent.toJson()) as Event.ReceptionChange;
 
-    expect(builtEvent.receptionID, equals(rid));
-    expect(builtEvent.state, equals(state));
+    expect(builtEvent.rid, equals(rid));
+    expect(builtEvent.modifierUid, equals(uid));
+    expect(builtEvent.state, equals(Event.Change.created));
   }
 
   static void receptionContactChangeState() {
     final int cid = 1;
     final int rid = 2;
-    final state = Event.ReceptionContactState.CREATED;
+    final int uid = 3;
 
-    Event.ReceptionContactChange testEvent =
-        new Event.ReceptionContactChange(cid, rid, state);
+    Event.ReceptionData testEvent =
+        new Event.ReceptionData.create(cid, rid, uid);
 
-    Event.ReceptionContactChange builtEvent =
-        new Event.Event.parse(testEvent.asMap) as Event.ReceptionContactChange;
+    Event.ReceptionData builtEvent =
+        new Event.Event.parse(testEvent.toJson()) as Event.ReceptionData;
 
-    expect(builtEvent.contactID, equals(cid));
-    expect(builtEvent.receptionID, equals(rid));
-    expect(builtEvent.state, equals(state));
+    expect(builtEvent.cid, equals(cid));
+    expect(builtEvent.rid, equals(rid));
+    expect(builtEvent.modifierUid, equals(uid));
+    expect(builtEvent.state, equals(Event.Change.created));
   }
 
   static void messageChangeState() {
     final int mid = 1;
     final int uid = 2;
 
-    Event.MessageChange testEvent = new Event.MessageChange.created(mid, uid);
+    Event.MessageChange testEvent = new Event.MessageChange.create(mid, uid);
 
     Event.MessageChange builtEvent =
         new Event.Event.parse(testEvent.asMap) as Event.MessageChange;
 
-    expect(builtEvent.messageID, equals(mid));
-    expect(builtEvent.userID, equals(uid));
-    expect(builtEvent.state, equals(Event.MessageChangeState.CREATED));
+    expect(builtEvent.mid, equals(mid));
+    expect(builtEvent.modifierUid, equals(uid));
+    expect(builtEvent.state, equals(Event.Change.created));
   }
 
   static void calendarEntryState() {
-    final int id = 1;
-    final int rid = 2;
-    final int cid = 3;
-    final state = Event.CalendarEntryState.CREATED;
+    final int eid = 1;
+    final owner = new Model.OwningReception(3);
+    final uid = 3;
 
     Event.CalendarChange testEvent =
-        new Event.CalendarChange(id, cid, rid, state);
+        new Event.CalendarChange.create(eid, owner, uid);
 
     Event.CalendarChange builtEvent =
-        new Event.Event.parse(testEvent.asMap) as Event.CalendarChange;
+        new Event.Event.parse(testEvent.toJson()) as Event.CalendarChange;
 
-    expect(builtEvent.contactID, equals(cid));
-    expect(builtEvent.receptionID, equals(rid));
-    expect(builtEvent.entryID, equals(id));
-    expect(builtEvent.state, equals(state));
+    expect(builtEvent.owner.toJson(), equals(owner.toJson()));
+    expect(builtEvent.eid, equals(eid));
+    expect(builtEvent.modifierUid, equals(uid));
+    expect(builtEvent.state, equals(Event.Change.created));
   }
 
   static void userChange() {
-    final int userID = 1234;
+    final int userId = 1234;
+    final int modifier = 4312;
 
-    Event.UserChange createEvent = new Event.UserChange.created(userID);
-    Event.UserChange updateEvent = new Event.UserChange.updated(userID);
-    Event.UserChange removeEvent = new Event.UserChange.deleted(userID);
+    Event.UserChange createEvent =
+        new Event.UserChange.created(userId, modifier);
+    Event.UserChange updateEvent =
+        new Event.UserChange.updated(userId, modifier);
+    Event.UserChange removeEvent =
+        new Event.UserChange.deleted(userId, modifier);
 
     Event.UserChange builtEvent =
-        new Event.Event.parse(createEvent.asMap) as Event.UserChange;
+        new Event.Event.parse(createEvent.toJson()) as Event.UserChange;
 
-    expect(builtEvent.userID, equals(userID));
-    expect(builtEvent.state, equals(Event.UserObjectState.CREATED));
+    expect(builtEvent.uid, equals(userId));
+    expect(builtEvent.modifierUid, equals(modifier));
+    expect(builtEvent.state, equals(Event.Change.created));
 
-    builtEvent = new Event.Event.parse(updateEvent.asMap) as Event.UserChange;
+    builtEvent =
+        new Event.Event.parse(updateEvent.toJson()) as Event.UserChange;
 
-    expect(builtEvent.userID, equals(userID));
-    expect(builtEvent.state, equals(Event.UserObjectState.UPDATED));
+    expect(builtEvent.uid, equals(userId));
+    expect(builtEvent.modifierUid, equals(modifier));
+    expect(builtEvent.state, equals(Event.Change.updated));
 
-    builtEvent = new Event.Event.parse(removeEvent.asMap) as Event.UserChange;
+    builtEvent =
+        new Event.Event.parse(removeEvent.toJson()) as Event.UserChange;
 
-    expect(builtEvent.userID, equals(userID));
-    expect(builtEvent.state, equals(Event.UserObjectState.DELETED));
+    expect(builtEvent.uid, equals(userId));
+    expect(builtEvent.modifierUid, equals(modifier));
+    expect(builtEvent.state, equals(Event.Change.deleted));
   }
 
   static void callStateReload() {

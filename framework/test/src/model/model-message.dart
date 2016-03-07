@@ -45,7 +45,7 @@ abstract class ModelMessage {
     expect(obj.context.toJson(), equals(deserializedObj.context.toJson()));
     expect(
         obj.recipients.toList(), equals(deserializedObj.recipients.toList()));
-    expect(obj.senderId, equals(deserializedObj.senderId));
+    expect(obj.sender.id, equals(deserializedObj.sender.id));
 
     expect(obj.asMap, equals(deserializedObj.asMap));
   }
@@ -69,7 +69,7 @@ abstract class ModelMessage {
       ..name = 'Ian Malcom'
       ..phone = 'Out of order';
 
-    final int senderId = ModelUser.buildObject().id;
+    final Model.User sender = ModelUser.buildObject();
     final String callId = 'bad-ass-call';
 
     Set<Model.MessageRecipient> rlist = new Set<Model.MessageRecipient>()
@@ -87,9 +87,9 @@ abstract class ModelMessage {
     final id = 42;
 
     final Model.MessageContext context = new Model.MessageContext.empty()
-      ..contactId = 2
+      ..cid = 2
       ..contactName = 'John Doe'
-      ..receptionId = 4
+      ..rid = 4
       ..receptionName = 'Nowhere';
 
     final Model.Message obj = new Model.Message.empty()
@@ -105,10 +105,10 @@ abstract class ModelMessage {
       ..id = id
       ..context = context
       ..recipients = rlist
-      ..senderId = senderId;
+      ..sender = sender;
 
     expect(obj.body, equals(messageBody));
-    expect(obj.callerInfo.asMap, equals(info.asMap));
+    expect(obj.callerInfo.toJson(), equals(info.toJson()));
     expect(obj.callId, equals(callId));
     expect(obj.createdAt, equals(createdAt));
     expect(obj.flag.called, isTrue);
@@ -119,7 +119,7 @@ abstract class ModelMessage {
     expect(obj.id, equals(id));
     expect(obj.context.toJson(), equals(context.toJson()));
     expect(obj.recipients.toList(), equals(rlist.toList()));
-    expect(obj.senderId, equals(senderId));
+    expect(obj.sender.toJson(), equals(sender.toJson()));
 
     return obj;
   }

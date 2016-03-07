@@ -27,10 +27,10 @@ abstract class ModelMessageContext {
     Model.MessageContext deserializedObj =
         new Model.MessageContext.fromMap(JSON.decode(JSON.encode(obj)));
 
-    expect(obj.contactId, equals(deserializedObj.contactId));
+    expect(obj.cid, equals(deserializedObj.cid));
     expect(obj.contactName, equals(deserializedObj.contactName));
 
-    expect(obj.receptionId, equals(deserializedObj.receptionId));
+    expect(obj.rid, equals(deserializedObj.rid));
     expect(obj.receptionName, equals(deserializedObj.receptionName));
 
     expect(obj.toJson(), equals(deserializedObj.toJson()));
@@ -54,15 +54,15 @@ abstract class ModelMessageContext {
     final String receptionName = 'Lasagna-makers inc.';
 
     Model.MessageContext obj = new Model.MessageContext.empty()
-      ..contactId = contactId
+      ..cid = contactId
       ..contactName = contactName
-      ..receptionId = receptionId
+      ..rid = receptionId
       ..receptionName = receptionName;
 
-    expect(obj.contactId, equals(contactId));
+    expect(obj.cid, equals(contactId));
     expect(obj.contactName, equals(contactName));
 
-    expect(obj.receptionId, equals(receptionId));
+    expect(obj.rid, equals(receptionId));
     expect(obj.receptionName, equals(receptionName));
 
     return obj;

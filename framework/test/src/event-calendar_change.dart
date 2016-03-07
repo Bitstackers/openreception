@@ -23,46 +23,40 @@ void testEventCalendarChange() {
 }
 
 abstract class EventCalendarChange {
+  static Event.CalendarChange buildObject() {
+    final int eid = 1;
+    final owner = new Model.OwningContact(3);
+    final int uid = 1;
 
-  static void buildObject() {
-    final int id = 1;
-    final int rid = 2;
-    final int cid = 3;
-    final state = Event.CalendarEntryState.CREATED;
+    Event.CalendarChange built =
+        new Event.CalendarChange.create(eid, owner, uid);
 
-    Event.CalendarChange testEvent =
-        new Event.CalendarChange(id, cid, rid, state);
+    expect(built.eid, equals(eid));
+    expect(built.owner.toJson(), equals(owner.toJson()));
+    expect(built.modifierUid, equals(uid));
+    expect(built.state, equals(Event.Change.created));
 
-    expect(testEvent.entryID, equals(id));
-    expect(testEvent.contactID, equals(cid));
-    expect(testEvent.receptionID, equals(rid));
-    expect(testEvent.state, equals(state));
+    Logger.root.shout(built.toJson());
+
+    return built;
   }
 
   static void serialization() {
-    final int id = 1;
-    final int rid = 2;
-    final int cid = 3;
-    final state = Event.CalendarEntryState.CREATED;
+    Event.CalendarChange builtObject = buildObject();
+    String serializedObject = JSON.encode(builtObject);
 
-    Event.CalendarChange testEvent =
-        new Event.CalendarChange(id, cid, rid, state);
-
-    expect(testEvent.toJson, returnsNormally);
+    expect(serializedObject, isNotNull);
+    expect(serializedObject, isNotEmpty);
   }
 
   static void serializationDeserialization() {
-    final int id = 1;
-    final int rid = 2;
-    final int cid = 3;
-    final state = Event.CalendarEntryState.CREATED;
+    Event.CalendarChange built = buildObject();
+    Event.CalendarChange deserialized =
+        new Event.CalendarChange.fromMap(JSON.decode(JSON.encode(built)));
 
-    Event.CalendarChange testEvent =
-        new Event.CalendarChange(id, cid, rid, state);
-
-    Map serialized = testEvent.toJson();
-
-    expect(
-        new Event.CalendarChange.fromMap(serialized).asMap, equals(serialized));
+    expect(built.eid, equals(deserialized.eid));
+    expect(built.owner.toJson(), equals(deserialized.owner.toJson()));
+    expect(built.modifierUid, equals(deserialized.modifierUid));
+    expect(built.state, equals(deserialized.state));
   }
 }
