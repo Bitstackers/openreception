@@ -16,8 +16,6 @@ part of openreception.model;
 /**
  * CalendarEntry class representing a single entry in a calendar. Can be owned
  * by either a contact or a reception.
- *
- * TODO: Move keys to keys package.
  */
 class CalendarEntry {
   static const int noId = 0;
@@ -91,8 +89,5 @@ class CalendarEntry {
   /**
    * [CalendarEntry] as String, for debug/log purposes.
    */
-  String toString() => 'start: ${start.toIso8601String()}, '
-      'stop: ${stop.toIso8601String()}, '
-      'owner: ${owner}'
-      'content: ${content}';
+  String toString() => toJson().toString();
 }
