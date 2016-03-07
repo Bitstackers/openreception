@@ -13,48 +13,48 @@
 
 part of openreception.model;
 
-class MessageQueueItem {
+class MessageQueueEntry {
   static const int noId = 0;
   int id = noId;
   int tries = 0;
 
   Message message = new Message.empty();
 
-  Set<MessageRecipient> _handledRecipients = new Set();
-  Set<MessageRecipient> _unhandledRecipients = new Set();
+  Set<MessageEndpoint> _handledRecipients = new Set();
+  Set<MessageEndpoint> _unhandledRecipients = new Set();
 
-  Iterable<MessageRecipient> get handledRecipients => _handledRecipients;
-  Iterable<MessageRecipient> get unhandledRecipients => _unhandledRecipients;
+  Iterable<MessageEndpoint> get handledRecipients => _handledRecipients;
+  Iterable<MessageEndpoint> get unhandledRecipients => _unhandledRecipients;
 
   /**
    * Update the handled recipients set. This operation will automatically
    * remove the handled recipients from the unhandled set.
    */
-  set handledRecipients(Iterable<MessageRecipient> handled) {
+  set handledRecipients(Iterable<MessageEndpoint> handled) {
     _unhandledRecipients = _unhandledRecipients.difference(handled.toSet());
     _handledRecipients.addAll(handled);
   }
 
-  set unhandledRecipients(Iterable<MessageRecipient> unhandled) {
+  set unhandledRecipients(Iterable<MessageEndpoint> unhandled) {
     _unhandledRecipients = new Set()..addAll(unhandled);
   }
 
   /**
    * Default empty constructor.
    */
-  MessageQueueItem.empty();
+  MessageQueueEntry.empty();
 
   /**
    * Creates a message from the information given in [map].
    */
-  MessageQueueItem.fromMap(Map map)
+  MessageQueueEntry.fromMap(Map map)
       : id = map[Key.id],
         message = Message.decode(map[Key.message]),
         _handledRecipients = map[Key.handledRecipients]
-            .map(MessageRecipient.decode)
+            .map(MessageEndpoint.decode)
             .toList(growable: false),
         _unhandledRecipients = map[Key.unhandledRecipients]
-            .map(MessageRecipient.decode)
+            .map(MessageEndpoint.decode)
             .toList(growable: false),
         tries = map[Key.tries];
 

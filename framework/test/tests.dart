@@ -43,16 +43,14 @@ part 'src/model/model-reception_attributes.dart';
 part 'src/model/model-message.dart';
 part 'src/model/model-message_context.dart';
 //part 'src/model-message_header.dart';
-//part 'src/model-message_endpoint.dart';
+part 'src/model/model-message_endpoint.dart';
 part 'src/model/model-message_filter.dart';
 part 'src/model/model-message_queue_entry.dart';
-part 'src/model/model-message_recipient.dart';
 part 'src/model/model-organization.dart';
 //part 'src/model-peer.dart';
 part 'src/model/model-peer_account.dart';
 part 'src/model/model-phone_number.dart';
 part 'src/model/model-reception.dart';
-//part 'src/model-reception_filter.dart';
 //part 'src/model-template.dart';
 //part 'src/model-template_email.dart';
 part 'src/model/model-user.dart';
@@ -137,7 +135,7 @@ void main(List<String> arguments) {
   testModelMessageContext();
   testModelMessageFilter();
   testModelMessageQueueEntry();
-  testModelMessageRecipient();
+  testModelMessageEndpoint();
 
   testModelPeerAccount();
   testModelPhoneNumber();

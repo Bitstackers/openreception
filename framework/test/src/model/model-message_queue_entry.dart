@@ -25,13 +25,13 @@ void testModelMessageQueueEntry() {
 
 abstract class ModelMessageQueueEntry {
   static void handleRecipient() {
-    Model.MessageQueueItem obj = buildObject();
+    Model.MessageQueueEntry obj = buildObject();
 
     final int origLen = obj.unhandledRecipients.length;
     expect(origLen, greaterThan(1));
     expect(obj.handledRecipients, isEmpty);
 
-    Model.MessageRecipient handled = obj.unhandledRecipients.first;
+    Model.MessageEndpoint handled = obj.unhandledRecipients.first;
 
     obj.handledRecipients = [handled];
 
@@ -43,9 +43,9 @@ abstract class ModelMessageQueueEntry {
   }
 
   static void deserialization() {
-    Model.MessageQueueItem obj = buildObject();
-    Model.MessageQueueItem deserializedObj =
-        new Model.MessageQueueItem.fromMap(JSON.decode(JSON.encode(obj)));
+    Model.MessageQueueEntry obj = buildObject();
+    Model.MessageQueueEntry deserializedObj =
+        new Model.MessageQueueEntry.fromMap(JSON.decode(JSON.encode(obj)));
 
     expect(obj.id, equals(deserializedObj.id));
 
@@ -56,7 +56,7 @@ abstract class ModelMessageQueueEntry {
   }
 
   static void serialization() {
-    Model.MessageQueueItem builtObject = buildObject();
+    Model.MessageQueueEntry builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -66,27 +66,25 @@ abstract class ModelMessageQueueEntry {
   /**
    * Build an object manually.
    */
-  static Model.MessageQueueItem buildObject() {
+  static Model.MessageQueueEntry buildObject() {
     final id = 666;
     final lastTry = new DateTime.now();
     final message = ModelMessage.buildObject();
 
-    final List<Model.MessageRecipient> recipients = [
-      new Model.MessageRecipient.empty()
+    final List<Model.MessageEndpoint> recipients = [
+      new Model.MessageEndpoint.empty()
         ..address = 'neverland'
-        ..contactName = 'Unholy one'
-        ..receptionName = 'A hot place'
-        ..role = Model.Role.TO
-        ..type = 'email',
-      new Model.MessageRecipient.empty()
+        ..name = 'Unholy one'
+        ..note = 'A hot place'
+        ..type = Model.MessageEndpointType.emailTo,
+      new Model.MessageEndpoint.empty()
         ..address = 'neverland 2'
-        ..contactName = 'Unholy one jr.'
-        ..receptionName = 'A less hot place'
-        ..role = Model.Role.CC
-        ..type = 'email',
+        ..name = 'Unholy one jr.'
+        ..note = 'A less hot place'
+        ..type = Model.MessageEndpointType.emailBcc,
     ];
 
-    Model.MessageQueueItem obj = new Model.MessageQueueItem.empty()
+    Model.MessageQueueEntry obj = new Model.MessageQueueEntry.empty()
       ..id = id
       ..message = message
       ..unhandledRecipients = recipients;
