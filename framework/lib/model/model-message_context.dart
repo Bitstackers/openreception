@@ -14,8 +14,8 @@
 part of openreception.model;
 
 class MessageContext {
-  int contactId = BaseContact.noId;
-  int receptionId = Reception.noId;
+  int cid = BaseContact.noId;
+  int rid = Reception.noId;
   String contactName = '';
   String receptionName = '';
 
@@ -28,18 +28,18 @@ class MessageContext {
    * Constructor. Deserializes the object from Map representation.
    */
   MessageContext.fromMap(Map map)
-      : contactId = map[Key.contactId],
+      : cid = map[Key.contactId],
         contactName = map[Key.contactName],
-        receptionId = map[Key.receptionId],
+        rid = map[Key.receptionId],
         receptionName = map[Key.receptionName];
 
   /**
    * Creates a messagContext from a [ReceptionAttributes] object
    */
   MessageContext.fromContact(BaseContact contact, Reception reception) {
-    contactId = contact.id;
+    cid = contact.id;
     contactName = contact.name;
-    receptionId = reception.id;
+    rid = reception.id;
     receptionName = reception.name;
   }
 
@@ -47,9 +47,9 @@ class MessageContext {
    * Returns a map representation of the object. Suitable for serialization.
    */
   Map toJson() => {
-        Key.contactId: contactId,
+        Key.contactId: cid,
         Key.contactName: contactName,
-        Key.receptionId: receptionId,
+        Key.receptionId: rid,
         Key.receptionName: receptionName
       };
 
@@ -58,12 +58,12 @@ class MessageContext {
 
   @override
   bool operator ==(MessageContext other) =>
-      contactId == other.contactId && receptionId == other.receptionId;
+      cid == other.cid && rid == other.rid;
 
   /**
    *
    */
-  String get contactString => '$contactId@$receptionId';
+  String get contactString => '$cid@$rid';
 
   /**
    *
