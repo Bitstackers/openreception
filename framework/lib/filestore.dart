@@ -16,7 +16,6 @@ library openreception.filestore;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math' show max;
 
 import 'package:logging/logging.dart';
 import 'package:uuid/uuid.dart';
