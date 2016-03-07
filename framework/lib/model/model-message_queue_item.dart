@@ -16,6 +16,7 @@ part of openreception.model;
 class MessageQueueItem {
   static const int noId = 0;
   int id = noId;
+  int tries = 0;
 
   Message message = new Message.empty();
 
@@ -46,26 +47,27 @@ class MessageQueueItem {
   /**
    * Creates a message from the information given in [map].
    */
-  MessageQueueItem.fromMap(Map map) {
-    id = map[Key.id];
-    message = Message.decode(map[Key.message]);
+  MessageQueueItem.fromMap(Map map)
+      : id = map[Key.id],
+        message = Message.decode(map[Key.message]),
+        _handledRecipients = map[Key.handledRecipients]
+            .map(MessageRecipient.decode)
+            .toList(growable: false),
+        _unhandledRecipients = map[Key.unhandledRecipients]
+            .map(MessageRecipient.decode)
+            .toList(growable: false),
+        tries = map[Key.tries];
 
-    handledRecipients = map[Key.handledRecipients]
-        .map(MessageRecipient.decode)
-        .toList(growable: false);
-    unhandledRecipients = map[Key.unhandledRecipients]
-        .map(MessageRecipient.decode)
-        .toList(growable: false);
-  }
   /**
    * Serialization function
    */
   Map toJson() => {
         Key.id: id,
+        Key.tries: tries,
         Key.message: message.toJson(),
         Key.handledRecipients:
-            handledRecipients.map((r) => r.asMap).toList(growable: false),
+            _handledRecipients.map((r) => r.asMap).toList(growable: false),
         Key.unhandledRecipients:
-            unhandledRecipients.map((r) => r.asMap).toList(growable: false)
+            _unhandledRecipients.map((r) => r.asMap).toList(growable: false)
       };
 }
