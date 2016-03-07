@@ -49,7 +49,7 @@ class NotificationService {
     log.finest('Broadcasting ${event.runtimeType}');
 
     return _enqueue(new _NotificationRequest()
-      ..body = event.asMap
+      ..body = event.toJson()
       ..resource = uri);
   }
 
