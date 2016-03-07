@@ -22,19 +22,7 @@ abstract class MessageQueue {
   /**
    *
    */
-  @deprecated
-  Future save(model.MessageQueueItem queueItem);
-
-  /**
-   *
-   */
   Future update(model.MessageQueueItem queueItem);
-
-  /**
-   *
-   */
-  @deprecated
-  Future archive(model.MessageQueueItem queueItem);
 
   /**
    *
