@@ -22,13 +22,13 @@ part of openreception.model;
 class CDREntry {
   double avgDuration;
   String billingType;
-  int    callCount;
-  int    duration;
+  int callCount;
+  int duration;
   String flag;
-  int    orgId;
+  int orgId;
   String orgName;
-  int    smsCount;
-  int    totalWait;
+  int smsCount;
+  int totalWait;
 
   /**
    * Default empty constructor.
@@ -39,13 +39,13 @@ class CDREntry {
    * Deserializing constructor.
    */
   CDREntry.fromJson(Map json) {
-    orgId       = json['org_id'];
-    callCount   = json['call_count'];
-    orgName     = json['org_name'];
-    totalWait   = json['total_wait'];
+    orgId = json['org_id'];
+    callCount = json['call_count'];
+    orgName = json['org_name'];
+    totalWait = json['total_wait'];
     billingType = json['billing_type'];
-    duration    = json['duration'];
-    flag        = json['flag'];
+    duration = json['duration'];
+    flag = json['flag'];
     avgDuration = json['avg_duration'];
 
     //TODO Extract Data when the interface is updated.
@@ -56,14 +56,14 @@ class CDREntry {
    * JSON serialization representation.
    */
   Map toJson() => {
-    'org_id':  orgId,
-    'call_count' : callCount,
-    'org_name': orgName,
-    'total_wait' : totalWait,
-    'billing_type' : billingType,
-    'duration' : duration,
-    'flag' : flag,
-    'avg_duration' : avgDuration,
-    'sms_count' : smsCount
-  };
+        'org_id': orgId,
+        'call_count': callCount,
+        'org_name': orgName,
+        'total_wait': totalWait,
+        'billing_type': billingType,
+        'duration': duration,
+        'flag': flag,
+        'avg_duration': avgDuration,
+        'sms_count': smsCount
+      };
 }
