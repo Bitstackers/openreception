@@ -42,8 +42,24 @@ class MessageEndpoint {
   String type = MessageEndpointType.emailTo;
   String name = '';
   String address = '';
-
   String note = '';
+
+  String get role {
+    switch (type) {
+      case MessageEndpointType.sms:
+      case MessageEndpointType.email:
+      case MessageEndpointType.emailTo:
+        return Role.TO;
+
+      case MessageEndpointType.emailCc:
+        return Role.CC;
+
+      case MessageEndpointType.emailBcc:
+        return Role.BCC;
+    }
+
+    throw new StateError('Unknown type: $type');
+  }
 
   /**
    * Default empty constructor.
