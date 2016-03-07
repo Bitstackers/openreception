@@ -24,7 +24,7 @@ abstract class Role {
 class Message {
   static const int noId = 0;
 
-  Set<MessageRecipient> recipients = new Set();
+  Set<MessageEndpoint> recipients = new Set();
 
   int id = noId;
   MessageContext context = new MessageContext.empty();
@@ -34,12 +34,8 @@ class Message {
   String body = '';
   String callId = '';
 
-  /// The user ID of the sender.
-  int senderId;
-  bool enqueued = false;
-  bool sent = false;
-
-  bool get closed => enqueued || sent || flag.manuallyClosed;
+  /// The user of the sender.
+  User sender;
 
   bool get manuallyClosed => flag.manuallyClosed;
   set manuallyClosed(bool closed) {
@@ -48,14 +44,14 @@ class Message {
 
   Message.empty();
 
-  Iterable<MessageRecipient> get to =>
-      recipients.where((MessageRecipient r) => r.role == Role.TO);
+  Iterable<MessageEndpoint> get to =>
+      recipients.where((MessageEndpoint ep) => ep.role == Role.TO);
 
-  Iterable<MessageRecipient> get cc =>
-      recipients.where((MessageRecipient r) => r.role == Role.CC);
+  Iterable<MessageEndpoint> get cc =>
+      recipients.where((MessageEndpoint ep) => ep.role == Role.CC);
 
-  Iterable<MessageRecipient> get bcc =>
-      recipients.where((MessageRecipient r) => r.role == Role.BCC);
+  Iterable<MessageEndpoint> get bcc =>
+      recipients.where((MessageEndpoint ep) => ep.role == Role.BCC);
 
   bool get hasRecpients => recipients.isNotEmpty;
 
@@ -67,8 +63,8 @@ class Message {
    *
    */
   Message.fromMap(Map map) {
-    Iterable<MessageRecipient> iterRcp =
-        (map[Key.recipients] as Iterable).map(MessageRecipient.decode);
+    Iterable<MessageEndpoint> iterRcp =
+        (map[Key.recipients] as Iterable).map(MessageEndpoint.decode);
 
     id = (map.containsKey(Key.id) ? map[Key.id] : noId);
     recipients.addAll(iterRcp);
@@ -76,10 +72,8 @@ class Message {
     flag = new MessageFlag(map['flags'] as List<String>);
     callerInfo = new CallerInfo.fromMap(map[Key.caller]);
     body = map[Key.body];
-    sent = map[Key.sent];
     callId = map[Key.callId];
-    enqueued = map[Key.enqueued];
-    senderId = map[Key.takenByAgent];
+    sender = User.decode(map[Key.takenByAgent]);
     createdAt = Util.unixTimestampToDateTime(map[Key.createdAt]);
   }
 
@@ -87,15 +81,13 @@ class Message {
         Key.id: id,
         Key.body: body,
         Key.context: context.toJson(),
-        Key.takenByAgent: senderId,
-        Key.caller: callerInfo.asMap,
+        Key.takenByAgent: sender.toJson(),
+        Key.caller: callerInfo.toJson(),
         Key.callId: callId,
         Key.flags: flag.toJson(),
-        Key.sent: sent,
-        Key.enqueued: enqueued,
         Key.createdAt: Util.dateTimeToUnixTimestamp(createdAt),
         Key.recipients: recipients
-            .map((MessageRecipient r) => r.asMap)
+            .map((MessageEndpoint ep) => ep.toJson())
             .toList(growable: false)
       };
 }
