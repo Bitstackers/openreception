@@ -76,17 +76,17 @@ class Calendar implements storage.Calendar {
   /**
    *
    */
-  Future<model.CalendarEntry> get(entryId, {bool deleted: false}) async {
-    final File file = new File('$path/${entryId}.json');
+  Future<model.CalendarEntry> get(int eid) async {
+    final File file = new File('$path/${eid}.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file with name ${entryId}');
+      throw new storage.NotFound('No file ${file.path}');
     }
 
     try {
-      final model.CalendarEntry menu =
+      final model.CalendarEntry entry =
           model.CalendarEntry.decode(JSON.decode(file.readAsStringSync()));
-      return menu;
+      return entry;
     } catch (e) {
       throw e;
     }

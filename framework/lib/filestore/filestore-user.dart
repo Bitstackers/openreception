@@ -48,11 +48,11 @@ class User implements storage.User {
   /**
    *
    */
-  Future<model.User> get(int id) async {
-    final File file = new File('$path/${id}.json');
+  Future<model.User> get(int uid) async {
+    final File file = new File('$path/${uid}.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file with name ${id}');
+      throw new storage.NotFound('No file with name ${uid}');
     }
 
     try {

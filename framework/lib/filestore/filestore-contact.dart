@@ -157,19 +157,21 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<Iterable<model.ReceptionReference>> receptions(int receptionId) async {
-    final subdirs =
-        new Directory(path).listSync().where((fse) => fse is Directory);
+  Future<Iterable<model.ReceptionReference>> receptions(int cid) async {
+    final rDir = new Directory(path + '/$cid/receptions');
+    if (!rDir.existsSync()) {
+      return [];
+    }
 
-    List<model.ReceptionReference> attrs = [];
-    await Future.wait(subdirs.map((Directory dir) async {
-      final attrFile = new File(dir.path + '/receptions/$receptionId.json');
-      if (attrFile.existsSync()) {
-        attrs.add((await _receptionStore.get(receptionId)).reference);
-      }
+    final rFiles = rDir
+        .listSync()
+        .where((fse) => fse is File && fse.path.endsWith('.json'));
+
+    return await Future.wait(rFiles.map((File f) async {
+      final int rid = int.parse(basenameWithoutExtension(f.path));
+
+      return (await _receptionStore.get(rid)).reference;
     }));
-
-    return attrs;
   }
 
   /**
@@ -207,27 +209,18 @@ class Contact implements storage.Contact {
    *
    */
   Future<Iterable<model.ContactReference>> receptionContacts(int rid) async {
-    final File contactFile = new File('$path/${rid}.json');
-    if (!contactFile.existsSync()) {
-      throw new storage.NotFound('No file: ${contactFile.path}');
-    }
+    final subDirs =
+        new Directory(path).listSync().where((fse) => fse is Directory);
 
-    final rDir = new Directory('$path/$rid/receptions');
-    if (!rDir.existsSync()) {
-      return [];
-    }
-
-    Set<model.ReceptionReference> refs = new Set<model.ReceptionReference>();
-
-    await Future.wait(rDir
-        .listSync()
-        .where((fse) => fse is File && fse.path.endsWith('.json'))
-        .map((File file) async {
-      int fileId = int.parse(basenameWithoutExtension(file.path));
-
-      refs.add(new model.ReceptionReference(
-          fileId, (await _receptionStore.get(fileId)).name));
-    }));
+    List refs = [];
+    await Future.forEach((subDirs), (dir) async {
+      if (new File(dir.path + '/receptions/$rid.json').existsSync()) {
+        final String bn = basename(dir.path);
+        if (!bn.startsWith('.')) {
+          refs.add(await get(int.parse(bn)));
+        }
+      }
+    });
 
     return refs;
   }
@@ -278,8 +271,8 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<model.BaseContact> update(
-      model.BaseContact contact, model.User user) async {
+  Future<model.ContactReference> update(
+      model.BaseContact contact, model.User modifier) async {
     final File file = new File('$path/${contact.id}.json');
 
     if (!file.existsSync()) {
@@ -287,15 +280,15 @@ class Contact implements storage.Contact {
     }
 
     /// Set the user
-    if (user == null) {
-      user = _systemUser;
+    if (modifier == null) {
+      modifier = _systemUser;
     }
 
     file.writeAsStringSync(_jsonpp.convert(contact));
 
-    await _git.add(file, 'Updated ${contact.name}', _authorString(user));
+    await _git.add(file, 'Updated ${contact.name}', _authorString(modifier));
 
-    return contact;
+    return contact.reference;
   }
 
   /**

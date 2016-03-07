@@ -16,23 +16,18 @@ part of openreception.filestore;
 class MessageQueue implements storage.MessageQueue {
   final Logger _log = new Logger('$libraryName.MessageQueue');
   final String path;
-  GitEngine _git;
   Sequencer _sequencer;
 
-  Future get initialized => _git.initialized;
-  Future get ready => _git.whenReady;
-
-  String get _newUuid => _uuid.v4();
+  int get _nextInt => _sequencer.nextInt();
 
   /**
    *
    */
-  MessageQueue({String this.path: 'json-data/message-queue'}) {
+  MessageQueue({String this.path: 'json-data/message_queue'}) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync(recursive: true);
     }
-    _git = new GitEngine(path);
-    _git.init();
+
     _sequencer = new Sequencer(path);
   }
 
@@ -44,8 +39,23 @@ class MessageQueue implements storage.MessageQueue {
     throw new UnimplementedError();
   }
 
-  Future<Iterable<model.MessageQueueItem>> list(
-      {int limit: 100, int maxTries: 10}) {
-    throw new UnimplementedError();
-  }
+  /**
+   *
+   */
+  Future enqueue(int mid, model.User modifier) {}
+
+  /**
+   *
+   */
+  Future update(model.MessageQueueItem queueItem) {}
+
+  /**
+   *
+   */
+  Future remove(int mqid) {}
+
+  /**
+   *
+   */
+  Future<Iterable<model.MessageQueueItem>> list() {}
 }
