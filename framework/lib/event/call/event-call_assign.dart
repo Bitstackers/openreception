@@ -13,23 +13,14 @@
 
 part of openreception.event;
 
-/**
- * Event that spawns whenever a user changes its call-handling state.
- */
-class UserState implements Event {
-  final DateTime timestamp;
-  final String eventName = Key.userState;
+class CallAssign extends CallEvent {
+  final String eventName = Key.callAssign;
+  final int uid;
 
-  final model.UserStatus status;
+  CallAssign(model.Call call, this.uid) : super(call);
+  CallAssign.fromMap(Map map)
+      : super.fromMap(map),
+        uid = map[Key.modifierUid];
 
-  UserState(model.UserStatus this.status) : this.timestamp = new DateTime.now();
-
-  Map toJson() => this.asMap;
-  String toString() => this.asMap.toString();
-
-  Map get asMap => EventTemplate.userState(this);
-
-  UserState.fromMap(Map map)
-      : this.status = new model.UserStatus.fromMap(map),
-        this.timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
+  Map toJson() => super.toJson()..addAll({Key.modifierUid: uid});
 }

@@ -13,39 +13,48 @@
 
 part of openreception.event;
 
-/**
- * 'Enum' representing different outcomes of an [ReceptionContact] change.
- *
- * TODO (krc): Move this to a general state enum.
- */
-abstract class ReceptionContactState {
-  static const String CREATED = 'created';
-  static const String UPDATED = 'updated';
-  static const String DELETED = 'deleted';
-}
-
-class ReceptionContactChange implements Event {
+class ReceptionData implements Event {
   final DateTime timestamp;
 
-  String get eventName => Key.receptionContactChange;
+  String get eventName => Key.receptionData;
 
-  final int receptionID;
-  final int contactID;
+  final int rid;
+  final int cid;
+  final int modifierUid;
   final String state;
 
-  ReceptionContactChange(this.contactID, this.receptionID, this.state)
-      : this.timestamp = new DateTime.now();
+  /**
+   *
+   */
+  ReceptionData.create(this.cid, this.rid, this.modifierUid)
+      : this.timestamp = new DateTime.now(),
+        state = Change.created;
 
-  Map toJson() => this.asMap;
-  String toString() => this.asMap.toString();
+  /**
+   *
+   */
+  ReceptionData.update(this.cid, this.rid, this.modifierUid)
+      : this.timestamp = new DateTime.now(),
+        state = Change.updated;
 
-  Map get asMap {
+  /**
+   *
+   */
+  ReceptionData.delete(this.cid, this.rid, this.modifierUid)
+      : this.timestamp = new DateTime.now(),
+        state = Change.deleted;
+
+  /**
+   *
+   */
+  Map toJson() {
     Map template = EventTemplate._rootElement(this);
 
     Map body = {
-      Key.contactID: contactID,
-      Key.receptionID: receptionID,
-      Key.state: state
+      Key.contactID: cid,
+      Key.receptionID: rid,
+      Key.state: state,
+      Key.modifierUid: modifierUid
     };
 
     template[this.eventName] = body;
@@ -53,9 +62,18 @@ class ReceptionContactChange implements Event {
     return template;
   }
 
-  ReceptionContactChange.fromMap(Map map)
-      : this.contactID = map[Key.receptionContactChange][Key.contactID],
-        this.receptionID = map[Key.receptionContactChange][Key.receptionID],
-        this.state = map[Key.receptionContactChange][Key.state],
-        this.timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
+  /**
+   *
+   */
+  String toString() => toJson().toString();
+
+  /**
+   *
+   */
+  ReceptionData.fromMap(Map map)
+      : cid = map[Key.receptionData][Key.contactID],
+        rid = map[Key.receptionData][Key.receptionID],
+        state = map[Key.receptionData][Key.state],
+        modifierUid = map[Key.receptionData][Key.modifierUid],
+        timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
 }

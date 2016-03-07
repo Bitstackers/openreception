@@ -13,49 +13,35 @@
 
 part of openreception.event;
 
-/**
- * 'Enum' representing different outcomes of an [Organization] change.
- */
-@deprecated
-abstract class OrganizationState {
-  static const String CREATED = 'created';
-  static const String UPDATED = 'updated';
-  static const String DELETED = 'deleted';
-}
-
 class OrganizationChange implements Event {
   final DateTime timestamp;
 
   String get eventName => Key.organizationChange;
 
-  final int orgID;
-  int userId;
+  final int oid;
+  final int modifierUid;
   final String state;
 
   /**
    *
    */
-  OrganizationChange.created(this.orgID, [this.userId])
+  OrganizationChange.created(this.oid, this.modifierUid)
       : this.state = Change.created,
         this.timestamp = new DateTime.now();
 
   /**
    *
    */
-  OrganizationChange.updated(this.orgID, [this.userId])
+  OrganizationChange.updated(this.oid, this.modifierUid)
       : this.state = Change.updated,
         this.timestamp = new DateTime.now();
 
   /**
    *
    */
-  OrganizationChange.deleted(this.orgID, [this.userId])
+  OrganizationChange.deleted(this.oid, this.modifierUid)
       : this.state = Change.deleted,
         this.timestamp = new DateTime.now();
-
-  @deprecated
-  OrganizationChange(this.orgID, this.state)
-      : this.timestamp = new DateTime.now();
 
   Map toJson() => this.asMap;
   String toString() => this.asMap.toString();
@@ -64,9 +50,9 @@ class OrganizationChange implements Event {
     Map template = EventTemplate._rootElement(this);
 
     Map body = {
-      Key.organizationID: this.orgID,
+      Key.organizationID: this.oid,
       Key.state: this.state,
-      Key.userID: userId
+      Key.modifierUid: modifierUid
     };
 
     template[this.eventName] = body;
@@ -75,8 +61,8 @@ class OrganizationChange implements Event {
   }
 
   OrganizationChange.fromMap(Map map)
-      : this.orgID = map[Key.organizationChange][Key.organizationID],
+      : this.oid = map[Key.organizationChange][Key.organizationID],
         this.state = map[Key.organizationChange][Key.state],
-        this.userId = map[Key.organizationChange][Key.userID],
+        this.modifierUid = map[Key.organizationChange][Key.modifierUid],
         this.timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
 }

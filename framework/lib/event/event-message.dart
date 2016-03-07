@@ -14,35 +14,28 @@
 part of openreception.event;
 
 /**
- * 'Enum' representing different outcomes of a [Message] change.
+ *
  */
-abstract class MessageChangeState {
-  static const String CREATED = 'created';
-  static const String UPDATED = 'updated';
-  static const String DELETED = 'deleted';
-}
-
 class MessageChange implements Event {
-
   final DateTime timestamp;
 
   String get eventName => Key.messageChange;
 
-  final int messageID;
-  final int userID;
+  final int mid;
+  final int modifierUid;
   final String state;
 
-  MessageChange.created (this.messageID, this.userID) :
-    timestamp = new DateTime.now(),
-    state = MessageChangeState.CREATED;
+  MessageChange._internal(this.mid, this.modifierUid, this.state)
+      : timestamp = new DateTime.now();
 
-  MessageChange.updated (this.messageID, this.userID) :
-    timestamp = new DateTime.now(),
-    state = MessageChangeState.UPDATED;
+  factory MessageChange.create(int mid, int modifierUid) =>
+      new MessageChange._internal(mid, modifierUid, Change.created);
 
-  MessageChange.deleted (this.messageID, this.userID) :
-    timestamp = new DateTime.now(),
-    state = MessageChangeState.DELETED;
+  factory MessageChange.update(int mid, int modifierUid) =>
+      new MessageChange._internal(mid, modifierUid, Change.updated);
+
+  factory MessageChange.delete(int mid, int modifierUid) =>
+      new MessageChange._internal(mid, modifierUid, Change.deleted);
 
   Map toJson() => this.asMap;
   String toString() => this.asMap.toString();
@@ -51,18 +44,19 @@ class MessageChange implements Event {
     Map template = EventTemplate._rootElement(this);
 
     Map body = {
-      Key.userID    : this.userID,
-      Key.messageID : this.messageID,
-      Key.state     : this.state};
+      Key.modifierUid: this.modifierUid,
+      Key.messageID: this.mid,
+      Key.state: this.state
+    };
 
     template[this.eventName] = body;
 
     return template;
   }
 
-  MessageChange.fromMap (Map map) :
-    userID = map[Key.messageChange][Key.userID],
-    messageID = map[Key.messageChange][Key.messageID],
-    state = map[Key.messageChange][Key.state],
-    timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
+  MessageChange.fromMap(Map map)
+      : modifierUid = map[Key.messageChange][Key.modifierUid],
+        mid = map[Key.messageChange][Key.messageID],
+        state = map[Key.messageChange][Key.state],
+        timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
 }

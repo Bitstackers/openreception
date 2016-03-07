@@ -13,48 +13,34 @@
 
 part of openreception.event;
 
-/**
- * 'Enum' representing different outcomes of a [User] change.
- */
-abstract class UserObjectState {
-  static const String CREATED = 'created';
-  static const String UPDATED = 'updated';
-  static const String DELETED = 'deleted';
-}
-
 class UserChange implements Event {
   final DateTime timestamp;
 
   String get eventName => Key.userChange;
 
-  final int userID;
-  int changedBy;
+  final int uid;
+  final int modifierUid;
   final String state;
 
-  UserChange._internal(this.userID, this.state, [this.changedBy])
+  UserChange._internal(this.uid, this.state, this.modifierUid)
       : timestamp = new DateTime.now();
 
-  factory UserChange.created(int userID, [int changedBy]) =>
-      new UserChange._internal(userID, Change.created);
+  factory UserChange.created(int userID, int changedBy) =>
+      new UserChange._internal(userID, Change.created, changedBy);
 
-  factory UserChange.updated(int userID, [int changedBy]) =>
-      new UserChange._internal(userID, Change.updated);
+  factory UserChange.updated(int userID, int changedBy) =>
+      new UserChange._internal(userID, Change.updated, changedBy);
 
-  factory UserChange.deleted(int userID, [int changedBy]) =>
-      new UserChange._internal(userID, Change.deleted);
+  factory UserChange.deleted(int userID, int changedBy) =>
+      new UserChange._internal(userID, Change.deleted, changedBy);
 
-  Map toJson() => this.asMap;
-
-  @override
-  String toString() => 'UserChange, uid:$userID, state:$state';
-
-  Map get asMap {
+  Map toJson() {
     final Map template = EventTemplate._rootElement(this);
 
     final Map body = {
-      Key.userID: userID,
+      Key.modifierUid: uid,
       Key.state: state,
-      Key.changedBy: changedBy
+      Key.changedBy: modifierUid
     };
 
     template[this.eventName] = body;
@@ -62,9 +48,18 @@ class UserChange implements Event {
     return template;
   }
 
+  /**
+   *
+   */
+  @override
+  String toString() => 'UserChange, uid:$uid, state:$state';
+
+  /**
+  *
+  */
   UserChange.fromMap(Map map)
-      : userID = map[Key.userChange][Key.userID],
+      : uid = map[Key.userChange][Key.modifierUid],
         state = map[Key.userChange][Key.state],
-        changedBy = map[Key.userChange][Key.changedBy],
+        modifierUid = map[Key.userChange][Key.changedBy],
         timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
 }

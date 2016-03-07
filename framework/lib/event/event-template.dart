@@ -30,7 +30,7 @@ abstract class EventTemplate {
 
   static Map channel(ChannelState event) => _rootElement(event)
     ..addAll({
-      Key.channel: {Key.id: event.channelID}
+      Key.channel: {Key.id: event.channelUuid}
     });
 
   static Map connection(ClientConnectionState event) =>

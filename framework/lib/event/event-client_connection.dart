@@ -17,21 +17,18 @@ part of openreception.event;
  * Event that spawns every time a client opens or closes a connection.
  */
 class ClientConnectionState implements Event {
-
   final DateTime timestamp;
 
-  final ClientConnection conn;
+  final model.ClientConnection conn;
   String get eventName => Key.connectionState;
 
-  ClientConnectionState (ClientConnection this.conn) :
-    this.timestamp = new DateTime.now();
+  ClientConnectionState(model.ClientConnection this.conn)
+      : timestamp = new DateTime.now();
 
-  Map toJson() => this.asMap;
-  String toString() => this.asMap.toString();
+  Map toJson() => EventTemplate.connection(this);
+  String toString() => toJson().toString();
 
-  Map get asMap => EventTemplate.connection(this);
-
-  ClientConnectionState.fromMap (Map map) :
-    this.conn      = new ClientConnection.fromMap (map[Key.state]),
-    this.timestamp = Util.unixTimestampToDateTime (map[Key.timestamp]);
+  ClientConnectionState.fromMap(Map map)
+      : conn = new model.ClientConnection.fromMap(map[Key.state]),
+        timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
 }

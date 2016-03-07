@@ -13,59 +13,46 @@
 
 part of openreception.event;
 
-/**
- * 'Enum' representing different outcomes of a [Reception] change.
- */
-abstract class ReceptionState {
-  static const String CREATED = 'created';
-  static const String UPDATED = 'updated';
-  static const String DELETED = 'deleted';
-}
-
 class ReceptionChange implements Event {
   final DateTime timestamp;
 
   String get eventName => Key.receptionChange;
 
-  final int receptionID;
-  int userId;
+  final int rid;
+  int modifierUid;
   final String state;
 
   /**
    *
    */
-  ReceptionChange.created(this.receptionID, [this.userId])
-      : this.state = ReceptionState.CREATED,
+  ReceptionChange.created(this.rid, this.modifierUid)
+      : this.state = Change.created,
         this.timestamp = new DateTime.now();
 
   /**
    *
    */
-  ReceptionChange.updated(this.receptionID, [this.userId])
-      : this.state = ReceptionState.UPDATED,
+  ReceptionChange.updated(this.rid, this.modifierUid)
+      : this.state = Change.updated,
         this.timestamp = new DateTime.now();
 
   /**
    *
    */
-  ReceptionChange.deleted(this.receptionID, [this.userId])
-      : this.state = ReceptionState.DELETED,
+  ReceptionChange.deleted(this.rid, this.modifierUid)
+      : this.state = Change.deleted,
         this.timestamp = new DateTime.now();
 
-  @deprecated
-  ReceptionChange(this.receptionID, this.state)
-      : this.timestamp = new DateTime.now();
-
-  Map toJson() => this.asMap;
-  String toString() => this.asMap.toString();
-
-  Map get asMap {
+  /**
+   *
+   */
+  Map toJson() {
     Map template = EventTemplate._rootElement(this);
 
     Map body = {
-      Key.receptionID: this.receptionID,
+      Key.receptionID: this.rid,
       Key.state: this.state,
-      Key.userID: userId
+      Key.modifierUid: modifierUid
     };
 
     template[this.eventName] = body;
@@ -73,9 +60,17 @@ class ReceptionChange implements Event {
     return template;
   }
 
+  /**
+   *
+   */
+  String toString() => toJson().toString();
+
+  /**
+   *
+   */
   ReceptionChange.fromMap(Map map)
-      : this.receptionID = map[Key.receptionChange][Key.receptionID],
+      : this.rid = map[Key.receptionChange][Key.receptionID],
         this.state = map[Key.receptionChange][Key.state],
-        this.userId = map[Key.receptionChange][Key.userID],
+        this.modifierUid = map[Key.receptionChange][Key.modifierUid],
         this.timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
 }

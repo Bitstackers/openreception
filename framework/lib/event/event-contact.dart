@@ -13,35 +13,70 @@
 
 part of openreception.event;
 
+/**
+ *
+ */
 class ContactChange implements Event {
   final DateTime timestamp;
 
   String get eventName => Key.contactChange;
 
-  final int contactID;
+  final int cid;
   final int modifierUid;
   final String state;
 
-  ContactChange(this.contactID, this.state)
-      : this.timestamp = new DateTime.now();
+  /**
+   *
+   */
+  ContactChange.create(this.cid, [int uid])
+      : timestamp = new DateTime.now(),
+        state = Change.created,
+        modifierUid = uid != null ? uid : model.User.noId;
 
-  ContactChange.create(this.contactID) : this.timestamp = new DateTime.now();
+  /**
+   *
+   */
+  ContactChange.update(this.cid, [int uid])
+      : timestamp = new DateTime.now(),
+        state = Change.updated,
+        modifierUid = uid != null ? uid : model.User.noId;
 
-  Map toJson() => this.asMap;
-  String toString() => this.asMap.toString();
+  /**
+   *
+   */
+  ContactChange.delete(this.cid, [int uid])
+      : timestamp = new DateTime.now(),
+        state = Change.deleted,
+        modifierUid = uid != null ? uid : model.User.noId;
 
-  Map get asMap {
+  /**
+   * JSON serialization function.
+   */
+  Map toJson() {
     Map template = EventTemplate._rootElement(this);
 
-    Map body = {Key.contactID: this.contactID, Key.state: this.state};
+    Map body = {
+      Key.contactID: cid,
+      Key.state: state,
+      Key.modifierUid: modifierUid
+    };
 
     template[Key.calendarChange] = body;
 
     return template;
   }
 
+  /**
+   * String representation
+   */
+  String toString() => this.toJson().toString();
+
+  /**
+   * Deserializing constructor.
+   */
   ContactChange.fromMap(Map map)
-      : this.contactID = map[Key.calendarChange][Key.contactID],
-        this.state = map[Key.calendarChange][Key.state],
-        this.timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
+      : cid = map[Key.calendarChange][Key.contactID],
+        modifierUid = map[Key.calendarChange][Key.modifierUid],
+        state = map[Key.calendarChange][Key.state],
+        timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
 }

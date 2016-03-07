@@ -16,14 +16,27 @@ library openreception.event;
 import 'package:logging/logging.dart';
 
 import 'util.dart' as Util;
-import 'model.dart';
+import 'model.dart' as model;
 
+part 'event/call/event-call_assign.dart';
+part 'event/call/event-call_hangup.dart';
+part 'event/call/event-call_lock.dart';
+part 'event/call/event-call_offer.dart';
+part 'event/call/event-call_park.dart';
+part 'event/call/event-call_pickup.dart';
+part 'event/call/event-call_queue_enter.dart';
+part 'event/call/event-call_queue_leave.dart';
+part 'event/call/event-call_state_reload.dart';
+part 'event/call/event-call_statechange.dart';
+part 'event/call/event-call_transfer.dart';
+part 'event/call/event-call_unassign.dart';
+part 'event/call/event-call_unlock.dart';
+part 'event/call/event-call_unpark.dart';
+part 'event/call/event-call.dart';
 part 'event/event-calendar.dart';
-part 'event/event-call.dart';
 part 'event/event-channel.dart';
 part 'event/event-client_connection.dart';
 part 'event/event-contact.dart';
-part 'event/event-endpoint.dart';
 part 'event/event-message.dart';
 part 'event/event-organization.dart';
 part 'event/event-peer_state.dart';
@@ -55,7 +68,7 @@ abstract class Key {
   static const endpointChange = 'endpointChange';
   static const messageChange = 'messageChange';
   static const contactChange = 'contactChange';
-  static const receptionContactChange = 'receptionContactChange';
+  static const receptionData = 'receptionData';
   static const receptionChange = 'receptionChange';
   static const userChange = 'userChange';
   static const organizationChange = 'organizationChange';
@@ -72,7 +85,7 @@ abstract class Key {
   static const entryID = 'eid';
   static const id = 'id';
   static const timestamp = 'timestamp';
-  static const userID = 'userID';
+  static const modifierUid = 'modifier';
   static const changedBy = 'changedBy';
   static const connectionCount = 'connectionCount';
 
@@ -109,21 +122,22 @@ abstract class Key {
   static const receptionCalendarEntryDelete = 'receptionCalendarEntryDelete';
 }
 
+const String _libraryName = 'openreception.event';
+
 /**
  * Superclass for events. It's only real purpose is to provide a common
  * interface for [Event] objects, and a parsing factory constructor.
  */
 abstract class Event {
-  static final Logger log = new Logger('$libraryName.Event');
+  static final Logger _log = new Logger('$_libraryName.Event');
 
   DateTime get timestamp;
   String get eventName;
-  Map get asMap;
 
   /**
    * Every specialized class needs a toJson function.
    */
-  Map toJson() => this.asMap;
+  Map toJson();
 
   /**
    * Parse an an event that has already been deserialized from JSON string.
@@ -185,11 +199,8 @@ abstract class Event {
         case Key.receptionChange:
           return new ReceptionChange.fromMap(map);
 
-        case Key.receptionContactChange:
-          return new ReceptionContactChange.fromMap(map);
-
-        case Key.endpointChange:
-          return new EndpointChange.fromMap(map);
+        case Key.receptionData:
+          return new ReceptionData.fromMap(map);
 
         case Key.connectionState:
           return new ClientConnectionState.fromMap(map);
@@ -204,11 +215,11 @@ abstract class Event {
           return new CallStateReload.fromMap(map);
 
         default:
-          log.severe('Unsupported event type: ${map['event']}');
+          _log.severe('Unsupported event type: ${map['event']}');
       }
     } catch (error, stackTrace) {
-      log.severe('Failed to parse $map');
-      log.severe(error, stackTrace);
+      _log.severe('Failed to parse $map');
+      _log.severe(error, stackTrace);
     }
   }
 }

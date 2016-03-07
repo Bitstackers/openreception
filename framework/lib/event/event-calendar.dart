@@ -22,33 +22,41 @@ class CalendarChange implements Event {
 
   String get eventName => Key.calendarChange;
 
-  final int entryId;
+  final int eid;
   final int modifierUid;
-  final Owner owner;
+  final model.Owner owner;
   final String state;
 
-  CalendarChange.create(this.entryId, this.owner, this.modifierUid)
+  /**
+   *
+   */
+  CalendarChange.create(this.eid, this.owner, this.modifierUid)
       : timestamp = new DateTime.now(),
         state = Change.created;
 
-  CalendarChange.update(this.entryId, this.owner, this.modifierUid)
+  /**
+   *
+   */
+  CalendarChange.update(this.eid, this.owner, this.modifierUid)
       : timestamp = new DateTime.now(),
         state = Change.updated;
-
-  CalendarChange.delete(this.entryId, this.owner, this.modifierUid)
+  /**
+   *
+   */
+  CalendarChange.delete(this.eid, this.owner, this.modifierUid)
       : timestamp = new DateTime.now(),
         state = Change.deleted;
 
-  Map toJson() => this.asMap;
-  String toString() => this.asMap.toString();
-
-  Map get asMap {
+  /**
+   *
+   */
+  Map toJson() {
     Map template = EventTemplate._rootElement(this);
 
     Map body = {
-      Key.entryID: entryId,
+      Key.entryID: eid,
       Key.owner: owner.toJson(),
-      Key.changedBy: modifierUid,
+      Key.modifierUid: modifierUid,
       Key.state: state
     };
 
@@ -57,10 +65,18 @@ class CalendarChange implements Event {
     return template;
   }
 
+  /**
+   *
+   */
+  String toString() => this.toJson().toString();
+
+  /**
+   *
+   */
   CalendarChange.fromMap(Map map)
-      : entryId = map[Key.calendarChange][Key.entryID],
-        modifierUid = map[Key.calendarChange][Key.changedBy],
-        owner = new Owner.parse(map[Key.calendarChange][Key.owner]),
+      : eid = map[Key.calendarChange][Key.entryID],
+        modifierUid = map[Key.calendarChange][Key.modifierUid],
+        owner = new model.Owner.parse(map[Key.calendarChange][Key.owner]),
         state = map[Key.calendarChange][Key.state],
         timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
 }
