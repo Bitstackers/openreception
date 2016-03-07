@@ -24,7 +24,7 @@ class Change {
 class GitEngine {
   final Logger _log = new Logger('$libraryName.GitEngine');
   final String path;
-  bool logStdout = true;
+  bool logStdout = false;
 
   Future get initialized => _initialized.future;
   Completer _initialized;
