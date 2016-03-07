@@ -14,7 +14,7 @@
 part of openreception.filestore;
 
 class Message implements storage.Message {
-  final Logger _log = new Logger('$libraryName.Organization');
+  final Logger _log = new Logger('$libraryName.Message');
   final String path;
   GitEngine _git;
   Sequencer _sequencer;
@@ -22,7 +22,7 @@ class Message implements storage.Message {
   Future get initialized => _git.initialized;
   Future get ready => _git.whenReady;
 
-  String get _newUuid => _uuid.v4();
+  int get _nextId => _sequencer.nextInt();
   /**
    *
    */
@@ -35,27 +35,101 @@ class Message implements storage.Message {
     _sequencer = new Sequencer(path);
   }
 
-  Future enqueue(model.Message message) {
-    throw new UnimplementedError();
+  /**
+   *
+   */
+  Future<model.Message> get(int mid) async {
+    final File file = new File('$path/${mid}.json');
+
+    if (!file.existsSync()) {
+      throw new storage.NotFound('No file with name ${mid}');
+    }
+
+    try {
+      final String fileContents = file.readAsStringSync();
+      final model.Message msg = model.Message.decode(JSON.decode(fileContents));
+      return msg;
+    } catch (e, s) {
+      _log.shout('Failed to load file', e, s);
+      throw e;
+    }
   }
 
-  Future<model.Message> get(int messageID) {
-    throw new UnimplementedError();
+  /**
+   *
+   */
+  Future<Iterable<model.Message>> list({model.MessageFilter filter}) async =>
+      new Directory(path)
+          .listSync()
+          .where((fse) => fse is File && fse.path.endsWith('.json'))
+          .map((File fse) =>
+              model.Message.decode(JSON.decode(fse.readAsStringSync())))
+          .where((model.Message msg) =>
+              filter == null ? true : filter.appliesTo(msg));
+
+  /**
+   *
+   */
+  Future<model.Message> create(
+      model.Message message, model.User modifier) async {
+    message.id = _nextId;
+    final File file = new File('$path/${message.id}.json');
+
+    if (file.existsSync()) {
+      throw new storage.ClientError(
+          'File already exists, please update instead');
+    }
+
+    /// Set the user
+    if (modifier == null) {
+      modifier = _systemUser;
+    }
+
+    file.writeAsStringSync(_jsonpp.convert(message));
+
+    await _git.add(file, 'Added ${message.id}', _authorString(modifier));
+
+    return message;
   }
 
-  Future<Iterable<model.Message>> list({model.MessageFilter filter}) {
-    throw new UnimplementedError();
+  /**
+   *
+   */
+  Future<model.Message> update(
+      model.Message message, model.User modifier) async {
+    final File file = new File('$path/${message.id}.json');
+
+    if (!file.existsSync()) {
+      throw new storage.NotFound();
+    }
+
+    /// Set the user
+    if (modifier == null) {
+      modifier = _systemUser;
+    }
+
+    file.writeAsStringSync(_jsonpp.convert(message));
+
+    await _git.commit(file, 'Updated ${message.id}', _authorString(modifier));
+
+    return message;
   }
 
-  Future<model.Message> create(model.Message message, model.User modifier) {
-    throw new UnimplementedError();
-  }
+  /**
+   *
+   */
+  Future remove(int mid, model.User modifier) async {
+    final File file = new File('$path/${mid}.json');
 
-  Future<model.Message> update(model.Message message, model.User modifier) {
-    throw new UnimplementedError();
-  }
+    if (!file.existsSync()) {
+      throw new storage.NotFound();
+    }
 
-  Future remove(int mid, model.User modifier) {
-    throw new UnimplementedError();
+    /// Set the user
+    if (modifier == null) {
+      modifier = _systemUser;
+    }
+
+    await _git.remove(file, 'Removed $mid', _authorString(modifier));
   }
 }
