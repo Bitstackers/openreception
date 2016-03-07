@@ -72,13 +72,12 @@ abstract class ModelMessage {
     final Model.User sender = ModelUser.buildObject();
     final String callId = 'bad-ass-call';
 
-    Set<Model.MessageRecipient> rlist = new Set<Model.MessageRecipient>()
+    Set<Model.MessageEndpoint> rlist = new Set<Model.MessageEndpoint>()
       ..addAll([
-        new Model.MessageRecipient.empty()
+        new Model.MessageEndpoint.empty()
           ..address = 'somewhere'
-          ..contactName = 'someone'
-          ..receptionName = 'The Office'
-          ..role = Model.Role.TO
+          ..name = 'someone'
+          ..note = 'The Office'
           ..type = Model.MessageEndpointType.types.first
       ]);
 
