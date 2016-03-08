@@ -16,14 +16,16 @@ part of openreception.filestore;
 class MessageQueue implements storage.MessageQueue {
   final Logger _log = new Logger('$libraryName.MessageQueue');
   final String path;
+  final storage.Message _messageStore;
   Sequencer _sequencer;
 
-  int get _nextInt => _sequencer.nextInt();
+  int get _nextId => _sequencer.nextInt();
 
   /**
    *
    */
-  MessageQueue({String this.path: 'json-data/message_queue'}) {
+  MessageQueue(this._messageStore,
+      {String this.path: 'json-data/message_queue'}) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync(recursive: true);
     }
@@ -31,31 +33,63 @@ class MessageQueue implements storage.MessageQueue {
     _sequencer = new Sequencer(path);
   }
 
-  Future<model.MessageQueueItem> save(model.MessageQueueItem queueItem) {
-    throw new UnimplementedError();
+  /**
+   *
+   */
+  Future enqueue(int mid) async {
+    final int mqId = _nextId;
+
+    final model.Message msg = await _messageStore.get(mid);
+    final model.MessageQueueEntry queueEntry =
+        new model.MessageQueueEntry.empty()
+          ..id = mqId
+          ..unhandledRecipients = msg.recipients
+          ..message = msg;
+
+    final File file = new File('$path/$mqId.json');
+
+    if (file.existsSync()) {
+      throw new storage.ClientError(
+          'File already exists, please update instead');
+    }
+
+    file.writeAsStringSync(_jsonpp.convert(queueEntry));
   }
 
-  Future archive(model.MessageQueueItem queueItem) {
-    throw new UnimplementedError();
+  /**
+   *
+   */
+  Future update(model.MessageQueueEntry queueEntry) async {
+    final File file = new File('$path/${queueEntry.id}.json');
+
+    if (!file.existsSync()) {
+      throw new storage.NotFound();
+    }
+
+    file.writeAsStringSync(_jsonpp.convert(queueEntry));
+
+    return queueEntry;
   }
 
   /**
    *
    */
-  Future enqueue(int mid, model.User modifier) {}
+  Future remove(int mqid) async {
+    final File file = new File('$path/${mqid}.json');
+
+    if (!file.existsSync()) {
+      throw new storage.NotFound();
+    }
+
+    await file.delete();
+  }
 
   /**
    *
    */
-  Future update(model.MessageQueueItem queueItem) {}
-
-  /**
-   *
-   */
-  Future remove(int mqid) {}
-
-  /**
-   *
-   */
-  Future<Iterable<model.MessageQueueItem>> list() {}
+  Future<Iterable<model.MessageQueueEntry>> list() async => new Directory(path)
+      .listSync()
+      .where((fse) => fse is File && fse.path.endsWith('.json'))
+      .map((File fse) =>
+          model.MessageQueueEntry.decode(JSON.decode(fse.readAsStringSync())));
 }
