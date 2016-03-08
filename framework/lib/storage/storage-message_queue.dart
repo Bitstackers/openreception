@@ -17,12 +17,12 @@ abstract class MessageQueue {
   /**
    *
    */
-  Future enqueue(int mid, model.User modifier);
+  Future enqueue(int mid);
 
   /**
    *
    */
-  Future update(model.MessageQueueItem queueItem);
+  Future update(model.MessageQueueEntry queueItem);
 
   /**
    *
@@ -32,5 +32,5 @@ abstract class MessageQueue {
   /**
    *
    */
-  Future<Iterable<model.MessageQueueItem>> list();
+  Future<Iterable<model.MessageQueueEntry>> list();
 }
