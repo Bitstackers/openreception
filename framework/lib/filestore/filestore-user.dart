@@ -132,9 +132,7 @@ class User implements storage.User {
       modifier = _systemUser;
     }
 
-    _log.info(file.readAsStringSync());
     file.writeAsStringSync(_jsonpp.convert(user));
-    _log.info(file.readAsStringSync());
 
     await _git.commit(file, 'Updated ${user.id}', _authorString(modifier));
 
