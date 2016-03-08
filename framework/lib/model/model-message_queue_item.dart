@@ -15,6 +15,7 @@ part of openreception.model;
 
 class MessageQueueEntry {
   static const int noId = 0;
+  final DateTime createdAt;
   int id = noId;
   int tries = 0;
 
@@ -36,26 +37,25 @@ class MessageQueueEntry {
   }
 
   set unhandledRecipients(Iterable<MessageEndpoint> unhandled) {
-    _unhandledRecipients = new Set()..addAll(unhandled);
+    _unhandledRecipients = new Set()..addAll(unhandled.toSet());
   }
 
   /**
    * Default empty constructor.
    */
-  MessageQueueEntry.empty();
+  MessageQueueEntry.empty() : createdAt = new DateTime.now();
 
   /**
    * Creates a message from the information given in [map].
    */
   MessageQueueEntry.fromMap(Map map)
-      : id = map[Key.id],
+      : createdAt = Util.unixTimestampToDateTime(map[Key.createdAt]),
+        id = map[Key.id],
         message = Message.decode(map[Key.message]),
-        _handledRecipients = map[Key.handledRecipients]
-            .map(MessageEndpoint.decode)
-            .toList(growable: false),
-        _unhandledRecipients = map[Key.unhandledRecipients]
-            .map(MessageEndpoint.decode)
-            .toList(growable: false),
+        _handledRecipients =
+            map[Key.handledRecipients].map(MessageEndpoint.decode).toSet(),
+        _unhandledRecipients =
+            map[Key.unhandledRecipients].map(MessageEndpoint.decode).toSet(),
         tries = map[Key.tries];
 
   /**
@@ -64,10 +64,17 @@ class MessageQueueEntry {
   Map toJson() => {
         Key.id: id,
         Key.tries: tries,
+        Key.createdAt: Util.dateTimeToUnixTimestamp(createdAt),
         Key.message: message.toJson(),
         Key.handledRecipients:
             _handledRecipients.map((r) => r.asMap).toList(growable: false),
         Key.unhandledRecipients:
             _unhandledRecipients.map((r) => r.asMap).toList(growable: false)
       };
+
+  /**
+   *
+   */
+  static MessageQueueEntry decode(Map map) =>
+      new MessageQueueEntry.fromMap(map);
 }
