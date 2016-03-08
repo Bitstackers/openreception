@@ -83,6 +83,36 @@ class TestEnvironment {
   /**
    *
    */
+  filestore.Message _messageStore;
+  filestore.Message get messageStore {
+    if (_messageStore == null) {
+      final String path = '${runpath.path}/message';
+      _log.info('Creating message store from $path');
+
+      _messageStore = new filestore.Message(path: path);
+    }
+
+    return _messageStore;
+  }
+
+  /**
+   *
+   */
+  filestore.MessageQueue _messageQueue;
+  filestore.MessageQueue get messageQueue {
+    if (_messageQueue == null) {
+      final String path = '${runpath.path}/message_queue';
+      _log.info('Creating message queue store from $path');
+
+      _messageQueue = new filestore.MessageQueue(messageStore, path: path);
+    }
+
+    return _messageQueue;
+  }
+
+  /**
+   *
+   */
   filestore.Reception _receptionStore;
   filestore.Reception get receptionStore {
     if (_receptionStore == null) {
@@ -133,7 +163,7 @@ class TestEnvironment {
   Future<ServiceAgent> createsServiceAgent() async {
     await userStore.ready;
     model.User sa = Randomizer.randomUser()
-      ..groups = [model.UserGroups.serviceAgent];
+      ..groups = [model.UserGroups.serviceAgent].toSet();
 
     sa.id = (await _userStore.create(sa, _user)).id;
 

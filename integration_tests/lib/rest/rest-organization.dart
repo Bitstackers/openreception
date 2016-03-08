@@ -52,16 +52,25 @@ void _runOrganizationTests() {
 
     test('list', () => storeTest.Organization.list(sa));
 
-    test('Contact list',
+    test('contacts',
         () => storeTest.Organization.existingOrganizationContacts(sa));
 
-    test('Contact list (non-existing organization)',
+    test('contacts (not-found organization)',
         () => storeTest.Organization.nonExistingOrganizationContacts(sa));
 
-    test('Reception listing',
+    test('receptions',
         () => storeTest.Organization.existingOrganizationReceptions(sa));
 
-    test('Reception listing Non-existing organization',
+    test('receptions (not-found organization)',
         () => storeTest.Organization.nonExistingOrganizationReceptions(sa));
+
+    test('Organization creation (event presence)',
+        () => serviceTest.Organization.createEvent(sa));
+
+    test('Organization update (event presence)',
+        () => serviceTest.Organization.updateEvent(sa));
+
+    test('Organization removal (event presence)',
+        () => serviceTest.Organization.deleteEvent(sa));
   });
 }

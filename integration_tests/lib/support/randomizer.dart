@@ -545,8 +545,7 @@ abstract class Randomizer {
   static model.PhoneNumber randomPhone() => new model.PhoneNumber.empty()
     ..confidential = rand.nextBool()
     ..description = randomDialplanNote()
-    ..endpoint = randomPhoneNumber()
-    ..tags = new List.generate(rand.nextInt(3), (_) => randomDepartment());
+    ..destination = randomPhoneNumber();
 
   /**
    *
@@ -662,6 +661,7 @@ abstract class Randomizer {
       ..body = randomMessageBody()
       ..callId = 'call-id-${new DateTime.now().millisecondsSinceEpoch}'
       ..callerInfo = randomCaller()
+      ..manuallyClosed = rand.nextBool()
       ..createdAt = new DateTime.now()
       ..flag = new model.MessageFlag(randomMessageFlags());
 
@@ -674,9 +674,8 @@ abstract class Randomizer {
   static model.MessageEndpoint randomMessageEndpoint() =>
       new model.MessageEndpoint.empty()
         ..address = randomGmail()
-        ..confidential = rand.nextBool()
-        ..description = randomString(22)
-        ..enabled = rand.nextBool()
+        ..name = randomContactName()
+        ..note = randomDialplanNote()
         ..type = randomEndpointType();
 
   /**

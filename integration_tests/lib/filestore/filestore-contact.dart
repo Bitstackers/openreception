@@ -37,8 +37,8 @@ void _runContactTests() {
 
     test('BaseContact remove', () => storeTest.Contact.remove(sa));
 
-    test('Non-existing contact',
-        () => storeTest.Contact.nonExistingContact(env.contactStore));
+    test(
+        'Non-existing contact', () => storeTest.Contact.nonExistingContact(sa));
 
     test('List contacts by reception',
         () => storeTest.Contact.listByReception(sa));

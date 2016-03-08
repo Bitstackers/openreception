@@ -1,4 +1,4 @@
-library config;
+library openreception_tests.config;
 
 import 'package:phonio/phonio.dart';
 
@@ -16,6 +16,11 @@ abstract class Config {
   static String eslPassword = 'clueCon';
   static String eslHost = 'localhost';
   static int eslPort = 8021;
+
+  /**
+   *
+   */
+  static String serverStackPath = '../ServerStack';
 
   /**
    * Path to the pjsua sip agent binary.
@@ -52,7 +57,7 @@ abstract class Config {
    * REST interface magic token.
    */
   static String magicRESTToken = 'domagic';
-  
+
   /**
    * REST interface listen address.
    */
@@ -72,7 +77,7 @@ abstract class Config {
    * The URI of the calendar server.
    */
    static URI calendarStoreUri = Uri.parse('http://calendar.example.com');
-  
+
   /**
    * The URI of the config server.
    */
@@ -82,12 +87,12 @@ abstract class Config {
    * The URI of the contact store server.
    */
   static Uri contactStoreUri = Uri.parse('http://contact.example.com');
-  
+
   /**
    * The URI of the dialplan server.
    */
   static Uri dialplanStoreUri = Uri.parse('http://dialplan.example.com');
-  
+
   /**
    * The URI of the data management server.
    */
@@ -97,12 +102,12 @@ abstract class Config {
    * The URI of the message store server.
    */
   static Uri messageStoreUri = Uri.parse('http://message.example.com');
-    
+
   /**
    * The URI of the reception store server.
    */
   static Uri receptionStoreUri = Uri.parse('http://reception.example.com');
-  
+
   /**
    * The URI of the user store server.
    */
@@ -129,7 +134,7 @@ abstract class Config {
    * Uri of the Organization server. Currently located at the ReceptionServer.
    */
   static Uri organizationStoreUri = receptionStoreUri;
-  
+
   /**
    * Pool of SIP account used for testing. Must mirror accounts present on
    * local FreeSwitch server configured in [pbxHost] and be mapped to a User on

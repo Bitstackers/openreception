@@ -58,8 +58,8 @@ void _runCalendarTests() {
                 '?token=${authToken.tokenName}'),
             log));
 
-    test('get (non-existing)',
-        () => storeTest.Calendar.getNonExistingEntry(env.calendarStore));
+    test(
+        'get (non-existing)', () => storeTest.Calendar.getNonExistingEntry(sa));
 
     /**
      * Basic CRUD tests for contact owner.

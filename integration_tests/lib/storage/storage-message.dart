@@ -10,102 +10,158 @@ abstract class MessageStore {
    * The expected behaviour is that the server should return a list
    * of message objects.
    */
-  static Future list(storage.Message messageStore) {
+  static Future list(ServiceAgent sa) async {
     log.info('Listing messages non-filtered.');
 
-    return messageStore.list().then((Iterable<model.Message> messages) {
-      expect(messages.length, greaterThan(0));
-      expect(messages.every((msg) => msg is model.Message), isTrue);
-    });
+    final org = await sa.createsOrganization();
+    final rec = await sa.createsReception(org);
+    final con = await sa.createsContact();
+    await sa.addsContactToReception(con, rec);
+
+    final context = new model.MessageContext.empty()
+      ..cid = con.id
+      ..rid = rec.id
+      ..contactName = con.name
+      ..receptionName = rec.name;
+
+    final msg1 = await sa.createsMessage(context);
+
+    {
+      final lst = await sa.messageStore.list();
+      expect(lst.length, equals(1));
+
+      final fetchedMsg = lst.firstWhere((m) => m.id == msg1.id);
+
+      expect(msg1.toJson(), equals(fetchedMsg.toJson()));
+    }
+  }
+
+  /**
+   * Test server behaviour when trying to retrieve a filtered list of
+   * message objects.
+   *
+   * The expected behaviour is that the server should return a list
+   * of message objects - excluding the ones that does not apply to filter.
+   */
+  static Future listFiltered(ServiceAgent sa) async {
+    log.info('Listing messages filtered.');
+
+    final org = await sa.createsOrganization();
+    final rec1 = await sa.createsReception(org);
+    final rec2 = await sa.createsReception(org);
+    final con1 = await sa.createsContact();
+    final con2 = await sa.createsContact();
+    await sa.addsContactToReception(con1, rec1);
+    await sa.addsContactToReception(con2, rec2);
+
+    final context1 = new model.MessageContext.empty()
+      ..cid = con1.id
+      ..rid = rec1.id
+      ..contactName = con1.name
+      ..receptionName = rec1.name;
+
+    final context2 = new model.MessageContext.empty()
+      ..cid = con2.id
+      ..rid = rec2.id
+      ..contactName = con2.name
+      ..receptionName = rec2.name;
+
+    final msg1 = await sa.createsMessage(context1);
+    {
+      final lst = await sa.messageStore.list();
+      expect(lst.length, equals(1));
+
+      final fetchedMsg = lst.firstWhere((m) => m.id == msg1.id);
+
+      expect(msg1.toJson(), equals(fetchedMsg.toJson()));
+    }
+
+    {
+      final filter = new model.MessageFilter.empty()..contactId = con1.id;
+      log.info('Listing with contactFilter $filter');
+      final lst = await sa.messageStore.list(filter: filter);
+      expect(lst.length, equals(1));
+
+      final fetchedMsg = lst.firstWhere((m) => m.id == msg1.id);
+
+      expect(msg1.toJson(), equals(fetchedMsg.toJson()));
+    }
+
+    final msg2 = await sa.createsMessage(context2);
+
+    {
+      final filter = new model.MessageFilter.empty()..contactId = con2.id;
+      log.info('Listing with contactFilter $filter');
+      final lst = await sa.messageStore.list(filter: filter);
+      expect(lst.length, equals(1));
+      final fetchedMsg = lst.firstWhere((m) => m.id == msg2.id);
+
+      expect(msg2.toJson(), equals(fetchedMsg.toJson()));
+    }
+
+    {
+      final filter = new model.MessageFilter.empty()..receptionId = rec1.id;
+      log.info('Listing with filter $filter');
+      final lst = await sa.messageStore.list(filter: filter);
+      expect(lst.length, equals(1));
+      final fetchedMsg = lst.firstWhere((m) => m.id == msg1.id);
+
+      expect(msg1.toJson(), equals(fetchedMsg.toJson()));
+    }
+
+    {
+      final filter = new model.MessageFilter.empty()..receptionId = rec2.id;
+      log.info('Listing with filter $filter');
+      final lst = await sa.messageStore.list(filter: filter);
+      expect(lst.length, equals(1));
+      final fetchedMsg = lst.firstWhere((m) => m.id == msg2.id);
+
+      expect(msg2.toJson(), equals(fetchedMsg.toJson()));
+    }
   }
 
   /**
    *
    */
-  static Future<model.Message> _createMessage(
-      storage.Message messageStore,
-      storage.Contact contactStore,
-      storage.Reception receptionStore,
-      storage.Endpoint epStore,
-      Receptionist sender) async {
-    String receptionID = '1';
-    String contactID = '4';
-    model.ReceptionAttributes contact =
-        await contactStore.getByReception(contactID, receptionID);
-    model.Reception reception = await receptionStore.get(receptionID);
-    Set<model.MessageRecipient> recipients = new Set();
+  static Future create(ServiceAgent sa) async {
+    log.info('Creating message');
 
-    await Future.wait(
-        (await dlStore.list(contact.receptionID, contact.ID)).map((dle) async {
-      Iterable<model.MessageEndpoint> eps =
-          await epStore.list(contact.receptionID, contact.ID);
-      recipients.addAll(eps.map(
-          (model.MessageEndpoint mep) => new model.MessageRecipient(mep, dle)));
-    }));
+    final org = await sa.createsOrganization();
+    final rec = await sa.createsReception(org);
+    final con = await sa.createsContact();
+    await sa.addsContactToReception(con, rec);
 
-    model.Message newMessage = Randomizer.randomMessage()
-      ..context = new model.MessageContext.fromContact(contact, reception)
-      ..recipients = recipients
-      ..senderUuid = sender.user.ID;
+    final context = new model.MessageContext.empty()
+      ..cid = con.id
+      ..rid = rec.id
+      ..contactName = con.name
+      ..receptionName = rec.name;
 
-    return messageStore.create(newMessage);
+    final created = Randomizer.randomMessage();
+    final mRef = await sa.createsMessage(context, msg: created);
+    await sa.messageStore.get(mRef.id);
   }
 
   /**
    *
    */
-  static Future create(
-      storage.Message messageStore,
-      storage.Contact contactStore,
-      storage.Reception receptionStore,
-      Storage.DistributionList dlStore,
-      storage.Endpoint epStore,
-      Receptionist sender) async {
-    model.Message createdMessage = await _createMessage(
-        messageStore, contactStore, receptionStore, dlStore, epStore, sender);
+  static Future remove(ServiceAgent sa) async {
+    final org = await sa.createsOrganization();
+    final rec = await sa.createsReception(org);
+    final con = await sa.createsContact();
+    await sa.addsContactToReception(con, rec);
 
-    model.Message fetchedMessage = await messageStore.get(createdMessage.ID);
+    final context = new model.MessageContext.empty()
+      ..cid = con.id
+      ..rid = rec.id
+      ..contactName = con.name
+      ..receptionName = rec.name;
 
-    expect(createdMessage.asMap, equals(fetchedMessage.asMap));
+    final msg = await sa.createsMessage(context);
+    await sa.messageStore.remove(msg.id, sa.user);
 
-    expect(createdMessage.body, isNotEmpty);
-    expect(createdMessage.enqueued, isFalse);
-    expect(createdMessage.sent, isFalse);
-    expect(createdMessage.senderUuid, sender.user.id);
-
-    return messageStore.remove(createdMessage.ID);
-  }
-
-  /**
-   *
-   */
-  static Future remove(
-      storage.Message messageStore,
-      storage.Contact contactStore,
-      storage.Reception receptionStore,
-      Storage.DistributionList dlStore,
-      storage.Endpoint epStore,
-      Receptionist sender) async {
-    model.Message createdMessage = await _createMessage(
-        messageStore, contactStore, receptionStore, dlStore, epStore, sender);
-
-    await messageStore.remove(createdMessage.ID);
-
-    expect(messageStore.get(createdMessage.ID),
+    await expect(sa.messageStore.get(msg.id),
         throwsA(new isInstanceOf<storage.NotFound>()));
-  }
-
-  static Future enqueue(
-      storage.Message messageStore,
-      storage.Contact contactStore,
-      storage.Reception receptionStore,
-      Storage.DistributionList dlStore,
-      storage.Endpoint epStore,
-      Receptionist sender) async {
-    model.Message createdMessage = await _createMessage(
-        messageStore, contactStore, receptionStore, dlStore, epStore, sender);
-
-    return messageStore.enqueue(createdMessage);
   }
 
   /**
@@ -115,53 +171,98 @@ abstract class MessageStore {
    * The expected behaviour is that the server should return the
    * Reception object.
    */
-  static Future<model.Message> get(storage.Message messageStore) {
-    int existingMessageID = 1;
+  static Future get(ServiceAgent sa) async {
+    log.info('Getting single message');
 
-    log.info('Checking server behaviour on an existing message.');
+    final org = await sa.createsOrganization();
+    final rec = await sa.createsReception(org);
+    final con = await sa.createsContact();
+    await sa.addsContactToReception(con, rec);
 
-    return messageStore.get(existingMessageID).then((model.Message message) {
-      expect(message.ID, equals(existingMessageID));
-    });
+    final context = new model.MessageContext.empty()
+      ..cid = con.id
+      ..rid = rec.id
+      ..contactName = con.name
+      ..receptionName = rec.name;
+
+    final created = Randomizer.randomMessage();
+    final mRef = await sa.createsMessage(context, msg: created);
+    final fetched = await sa.messageStore.get(mRef.id);
+
+    expect(fetched.id, greaterThan(model.Message.noId));
+    expect(fetched.body, equals(created.body));
+    expect(fetched.callerInfo.toJson(), equals(created.callerInfo.toJson()));
+    expect(fetched.callId, equals(created.callId));
+    expect(fetched.manuallyClosed, equals(created.manuallyClosed));
+    expect(fetched.context.toJson(), equals(context.toJson()));
+    expect(fetched.createdAt.isBefore(new DateTime.now()), isTrue);
+    expect(fetched.createdAt.difference(new DateTime.now()),
+        greaterThan(new Duration(seconds: -1)));
+    expect(fetched.flag.toJson(), equals(created.flag.toJson()));
+
+    /// TODO: Elaborate this check.
+    expect(fetched.recipients, isNotEmpty);
+    expect(fetched.sender.toJson(), equals(sa.user.toJson()));
+  }
+
+  /**
+     * Test server behaviour when trying to aquire a message object that
+     * does not exist.
+     *
+     * The expected behaviour is that the server should return a Not Found error.
+     */
+  static Future getNotFound(ServiceAgent sa) async {
+    log.info('Checking server behaviour on a non-existing message.');
+
+    await expect(
+        sa.messageStore.get(-1), throwsA(new isInstanceOf<storage.NotFound>()));
   }
 
   /**
    *
    */
-  static Future update(
-      storage.Message messageStore,
-      storage.Contact contactStore,
-      storage.Reception receptionStore,
-      Storage.DistributionList dlStore,
-      storage.Endpoint epStore,
-      Receptionist sender) {
-    return _createMessage(messageStore, contactStore, receptionStore, dlStore,
-        epStore, sender).then((model.Message createdMessage) {
-      {
-        model.Message randMsg = Randomizer.randomMessage();
-        randMsg.ID = createdMessage.ID;
-        randMsg.context = createdMessage.context;
-        randMsg.senderUuid = createdMessage.senderUuid;
-        createdMessage = randMsg;
-      }
+  static Future update(ServiceAgent sa) async {
+    final org = await sa.createsOrganization();
+    final rec = await sa.createsReception(org);
+    final con = await sa.createsContact();
+    await sa.addsContactToReception(con, rec);
 
-      return messageStore
-          .update(createdMessage)
-          .then((model.Message updatedMessage) {
-        expect(createdMessage.ID, equals(updatedMessage.ID));
-        expect(createdMessage.asMap, equals(updatedMessage.asMap));
-        expect(createdMessage.body, equals(updatedMessage.body));
-        expect(createdMessage.callerInfo.asMap,
-            equals(updatedMessage.callerInfo.asMap));
-        expect(createdMessage.closed, equals(updatedMessage.closed));
-        expect(
-            createdMessage.flag.toJson(), equals(updatedMessage.flag.toJson()));
-        expect(
-            createdMessage.hasRecpients, equals(updatedMessage.hasRecpients));
-        expect(createdMessage.recipients, equals(updatedMessage.recipients));
-        expect(createdMessage.senderUuid, equals(updatedMessage.senderUuid));
-        expect(createdMessage.sent, equals(updatedMessage.sent));
-      });
-    });
+    final context = new model.MessageContext.empty()
+      ..cid = con.id
+      ..rid = rec.id
+      ..contactName = con.name
+      ..receptionName = rec.name;
+
+    final mRef = await sa.createsMessage(context);
+
+    final newRcps = [
+      Randomizer.randomMessageEndpoint(),
+      Randomizer.randomMessageEndpoint()
+    ].toSet();
+
+    final user = await sa.createsUser();
+    final updated = Randomizer.randomMessage()
+      ..id = mRef.id
+      ..context = context
+      ..sender = user
+      ..recipients = newRcps;
+    await sa.messageStore.update(updated, sa.user);
+
+    final fetched = await sa.messageStore.get(mRef.id);
+
+    expect(fetched.id, greaterThan(model.Message.noId));
+    expect(fetched.body, equals(updated.body));
+    expect(fetched.callerInfo.toJson(), equals(updated.callerInfo.toJson()));
+    expect(fetched.callId, equals(updated.callId));
+    expect(fetched.manuallyClosed, equals(updated.manuallyClosed));
+    expect(fetched.context.toJson(), equals(context.toJson()));
+    expect(fetched.createdAt.isBefore(new DateTime.now()), isTrue);
+    expect(fetched.createdAt.difference(new DateTime.now()),
+        greaterThan(new Duration(seconds: -1)));
+    expect(fetched.flag.toJson(), equals(updated.flag.toJson()));
+
+    /// TODO: Elaborate this check.
+    expect(fetched.recipients, equals(newRcps));
+    expect(fetched.sender.toJson(), equals(user.toJson()));
   }
 }

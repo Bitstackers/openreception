@@ -10,7 +10,7 @@ class Receptionist {
   static final Logger log = new Logger('Receptionist');
 
   final model.User user;
-  final Phonio.SIPPhone _phone;
+  final Phonio.SIPPhone phone;
   final String authToken;
 
   Service.NotificationSocket notificationSocket;
@@ -27,7 +27,7 @@ class Receptionist {
         'id': this.hashCode,
         'user': user,
         'auth_token': authToken,
-        'phone': _phone,
+        'phone': phone,
         'event_stack': eventStack.toList()
       };
 
@@ -39,7 +39,7 @@ class Receptionist {
   /**
    * Default constructor. Provides an _uninitialized_ [Receptionist] object.
    */
-  Receptionist(this._phone, this.authToken, this.user);
+  Receptionist(this.phone, this.authToken, this.user);
 
   /**
    * Perform object initialization.
@@ -67,11 +67,11 @@ class Receptionist {
     notificationSocket.eventStream.listen(_handleEvent,
         onDone: () => log.fine('$this closing notification listener.'));
 
-    await _phone.initialize();
-    _phone.eventStream.listen(this._onPhoneEvent,
+    await phone.initialize();
+    phone.eventStream.listen(this._onPhoneEvent,
         onDone: () => log.fine('$this closing event listener.'));
-    await _phone.autoAnswer(true);
-    await _phone.register();
+    await phone.autoAnswer(true);
+    await phone.register();
     await userStore.userStateReady(user.id);
     eventStack.clear();
     currentCall = null;
@@ -94,7 +94,7 @@ class Receptionist {
         : this.notificationSocket.close();
 
     this.callFlowControl = null;
-    Future phoneTeardown = this._phone.teardown();
+    Future phoneTeardown = this.phone.teardown();
 
     return Future.wait([
       notificationSocketTeardown,
@@ -107,9 +107,8 @@ class Receptionist {
     });
   }
 
-  Future finalize() => _phone.ready
-      ? teardown().then((_) => _phone.finalize())
-      : _phone.finalize();
+  Future finalize() =>
+      phone.ready ? teardown().then((_) => phone.finalize()) : phone.finalize();
 
   /**
    * Future that enables you the wait for the object to become ready.
@@ -134,20 +133,20 @@ class Receptionist {
   /**
    * Globally enable autoanswer on phone.
    */
-  Future autoAnswer(bool enabled) => this._phone.autoAnswer(enabled);
+  Future autoAnswer(bool enabled) => this.phone.autoAnswer(enabled);
 
   /**
    * Registers the phone in the PBX SIP registry.
    */
   Future registerAccount() {
-    if (this._phone is Phonio.PJSUAProcess) {
-      return (this._phone as Phonio.PJSUAProcess).registerAccount();
-    } else if (this._phone is Phonio.SNOMPhone) {
+    if (this.phone is Phonio.PJSUAProcess) {
+      return (this.phone as Phonio.PJSUAProcess).registerAccount();
+    } else if (this.phone is Phonio.SNOMPhone) {
       log.severe('Assuming that SNOM phone is already registered.');
       return new Future(() => null);
     } else {
       return new Future.error(new UnimplementedError(
-          'Unable to register phone type : ' '${this._phone.runtimeType}'));
+          'Unable to register phone type : ' '${this.phone.runtimeType}'));
     }
   }
 
@@ -219,7 +218,7 @@ class Receptionist {
     }
 
     log.finest('$this waits for incoming call from event stream.');
-    return this._phone.eventStream.firstWhere(match).then((_) {
+    return this.phone.eventStream.firstWhere(match).then((_) {
       log.finest('$this got expected event, returning current call.');
 
       return this.currentCall;
@@ -240,13 +239,27 @@ class Receptionist {
 
     log.finest('$this waits for call hangup from event stream.');
     return this
-        ._phone
+        .phone
         .eventStream
         .firstWhere((Phonio.Event event) => event is Phonio.CallDisconnected)
         .then((_) {
       log.finest('$this got expected event, returning current call.');
       return null;
     }).timeout(new Duration(seconds: 10));
+  }
+
+  /**
+   * Hangs up phone of receptionist directly from the phone.
+   */
+  Future phoneHangupAll() async {
+    log.finest('$this hangs up phone');
+
+    if (this.currentCall == null) {
+      log.finest('$this already has no call, returning.');
+      return;
+    }
+
+    await this.phone.hangupAll();
   }
 
   /**
@@ -270,7 +283,7 @@ class Receptionist {
   /**
    * Hangup all active calls currently connected to the phone.
    */
-  Future hangupAll() => this._phone.hangup();
+  Future hangupAll() => this.phone.hangup();
 
   /**
    * Waits for an arbitrary event identified either by [eventType], [callID],
@@ -451,7 +464,7 @@ class Receptionist {
    */
   @override
   String toString() => 'Receptionist:${this.user.name}, uid:${this.user.id}, '
-      'Phone:${this._phone}';
+      'Phone:${this.phone}';
 
   /**
    * Event handler for events coming from the phone. Updates the call state
@@ -461,14 +474,14 @@ class Receptionist {
     if (event is Phonio.CallOutgoing) {
       log.finest('$this received call outgoing event');
       Phonio.Call call = new Phonio.Call(
-          event.callID, event.callee, false, _phone.defaultAccount.username);
+          event.callID, event.callee, false, phone.defaultAccount.username);
       log.finest('$this sets call to $call');
 
       this.currentCall = call;
     } else if (event is Phonio.CallIncoming) {
       log.finest('$this received incoming call event');
       Phonio.Call call = new Phonio.Call(
-          event.callID, event.callee, false, _phone.defaultAccount.username);
+          event.callID, event.callee, false, phone.defaultAccount.username);
       log.finest('$this sets call to $call');
       this.currentCall = call;
     } else if (event is Phonio.CallDisconnected) {

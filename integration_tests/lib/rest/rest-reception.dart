@@ -63,5 +63,14 @@ void _runReceptionTests() {
     test('get', () => storeTest.Reception.existingReception(sa));
     test('get (not found)', () => storeTest.Reception.nonExistingReception(sa));
     test('list', () => storeTest.Reception.listReceptions(sa));
+
+    test('Reception creation (event presence)',
+        () => serviceTest.Reception.createEvent(sa));
+
+    test('Reception update (event presence)',
+        () => serviceTest.Reception.updateEvent(sa));
+
+    test('Reception removal (event presence)',
+        () => serviceTest.Reception.deleteEvent(sa));
   });
 }

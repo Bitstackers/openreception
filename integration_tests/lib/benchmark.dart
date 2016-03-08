@@ -12,7 +12,7 @@ part 'benchmark/benchmark-call.dart';
 
 const String _namespace = 'test.benchmark';
 
-void runBenchmarkTests() {
+void allTests() {
   group(_namespace + '.call', () {
     Set<Receptionist> receptionists;
     Set<Customer> customers;

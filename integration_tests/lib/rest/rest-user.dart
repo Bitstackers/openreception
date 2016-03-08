@@ -80,9 +80,9 @@ void _runUserTests() {
 
     test('get (by identity)', () => storeTest.User.getUserByIdentity(sa));
 
-    test('userState change', () => User.stateChange(sa, restStore));
+    test('userState change', () => serviceTest.User.stateChange(sa, restStore));
 
-    test(
-        'userState change (event)', () => User.stateChangeEvent(sa, restStore));
+    test('userState change (event)',
+        () => serviceTest.User.stateChangeEvent(sa, restStore));
   });
 }

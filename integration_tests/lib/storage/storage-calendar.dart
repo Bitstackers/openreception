@@ -70,9 +70,14 @@ abstract class Calendar {
    *
    * The expected behaviour is that the server should return "Not Found".
    */
-  static Future getNonExistingEntry(storage.Calendar calendarStore) async {
-    await expect(
-        calendarStore.get(-1), throwsA(new isInstanceOf<storage.NotFound>()));
+  static Future getNonExistingEntry(ServiceAgent sa) async {
+    try {
+      await sa.calendarStore.get(-1);
+      fail('Expected NotFound exception');
+    } on storage.NotFound {
+      // Successs
+      await new Future.delayed(new Duration(milliseconds: 10));
+    }
   }
 
   /**

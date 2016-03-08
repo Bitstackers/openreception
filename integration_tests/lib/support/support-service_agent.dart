@@ -5,12 +5,43 @@ class ServiceAgent {
   final TestEnvironment env;
   final model.User user;
   String authToken = '';
+  Transport.WebSocketClient _ws;
+
+  Stream<Event.Event> get notifications => notificationSocket.eventStream;
+
+  void cleanup() {
+    if (_ws != null) {
+      _ws.close();
+    }
+  }
+
+  void set notificationSocket(Service.NotificationSocket ns) {
+    _notificationSocket = ns;
+  }
+
+  Service.NotificationSocket get notificationSocket {
+    if (_notificationSocket == null) {
+      _ws = new Transport.WebSocketClient();
+      _ws.connect(
+          Uri.parse('${Config.NotificationSocketUri}/?token=${authToken}'));
+      _notificationSocket = new Service.NotificationSocket(_ws);
+    }
+
+    return _notificationSocket;
+  }
+
+  Service.NotificationSocket _notificationSocket;
 
   /**
    *
    */
-  filestore.User _userStore;
-  filestore.User get userStore {
+  storage.User _userStore;
+
+  void set userStore(storage.User uStore) {
+    _userStore = uStore;
+  }
+
+  storage.User get userStore {
     if (_userStore == null) {
       _userStore = env.userStore;
     }
@@ -45,8 +76,12 @@ class ServiceAgent {
   /**
    *
    */
-  filestore.Calendar _calendarStore;
-  filestore.Calendar get calendarStore {
+  storage.Calendar _calendarStore;
+  void set calendarStore(storage.Calendar cs) {
+    _calendarStore = cs;
+  }
+
+  storage.Calendar get calendarStore {
     if (_calendarStore == null) {
       _calendarStore = env.calendarStore;
     }
@@ -57,13 +92,51 @@ class ServiceAgent {
   /**
    *
    */
-  filestore.Contact _contactStore;
-  filestore.Contact get contactStore {
+  storage.Contact _contactStore;
+
+  void set contactStore(storage.Contact cStore) {
+    _contactStore = cStore;
+  }
+
+  storage.Contact get contactStore {
     if (_contactStore == null) {
       _contactStore = env.contactStore;
     }
 
     return _contactStore;
+  }
+
+  /**
+   *
+   */
+  storage.Message _messageStore;
+
+  void set messageStore(storage.Message mStore) {
+    _messageStore = mStore;
+  }
+
+  storage.Message get messageStore {
+    if (_messageStore == null) {
+      _messageStore = env.messageStore;
+    }
+
+    return _messageStore;
+  }
+
+  /**
+   *
+   */
+  storage.MessageQueue _messageQueue;
+  void set messageQueue(storage.MessageQueue mq) {
+    _messageQueue = mq;
+  }
+
+  storage.MessageQueue get messageQueue {
+    if (_messageQueue == null) {
+      _messageQueue = env.messageQueue;
+    }
+
+    return _messageQueue;
   }
 
   /**
@@ -109,7 +182,6 @@ class ServiceAgent {
    *
    */
   Future removesUser(model.User target) async {
-    await userStore.ready;
     await userStore.remove(target.id, user);
   }
 
@@ -120,7 +192,6 @@ class ServiceAgent {
     final newContact =
         contact != null ? contact : Randomizer.randomBaseContact();
 
-    await contactStore.ready;
     final bc = await contactStore.create(newContact, user);
 
     return contactStore.get(bc.id);
@@ -136,8 +207,8 @@ class ServiceAgent {
       ..contactId = contact.id
       ..receptionId = rec.id;
 
-    final rRef = await contactStore.addToReception(attributes, user);
-    return contactStore.getByReception(rRef.contact.id, rRef.reception.id);
+    final rRef = await contactStore.addData(attributes, user);
+    return contactStore.data(rRef.contact.id, rRef.reception.id);
   }
 
   /**
@@ -149,7 +220,7 @@ class ServiceAgent {
       ..contactId = attr.contactId
       ..receptionId = attr.receptionId;
 
-    return await contactStore.updateInReception(attributes, user);
+    return await contactStore.updateData(attributes, user);
   }
 
   /**
@@ -157,7 +228,7 @@ class ServiceAgent {
    */
   Future removesContactFromReception(
       model.BaseContact contact, model.Reception reception) async {
-    await contactStore.removeFromReception(contact.id, reception.id, user);
+    await contactStore.removeData(contact.id, reception.id, user);
   }
 
   /**
@@ -168,6 +239,19 @@ class ServiceAgent {
     final randRec = (rec != null ? rec : Randomizer.randomReception())
       ..organizationId = org.id;
     final bc = await receptionStore.create(randRec, user);
+
+    return receptionStore.get(bc.id);
+  }
+
+  /**
+   *
+   */
+  Future<model.Reception> updatesReception(model.Reception rec) async {
+    final randRec = Randomizer.randomReception()
+      ..organizationId = rec.organizationId
+      ..id = rec.id;
+
+    final bc = await receptionStore.update(randRec, user);
 
     return receptionStore.get(bc.id);
   }
@@ -219,11 +303,58 @@ class ServiceAgent {
    *
    */
   Future<model.User> createsUser() async {
-    await userStore.ready;
     final model.User newUser = Randomizer.randomUser();
 
     newUser.id = (await userStore.create(newUser, user)).id;
 
     return newUser;
+  }
+
+  /**
+   *
+   */
+  Future<model.User> updatesUser(model.User u) async {
+    final model.User updated = Randomizer.randomUser()..id = u.id;
+    final uRef = await userStore.update(updated, user);
+
+    return userStore.get(uRef.id);
+  }
+
+  /**
+   *
+   */
+  Future<model.Message> createsMessage(model.MessageContext context,
+      {model.Message msg}) async {
+    msg = msg == null ? Randomizer.randomMessage() : msg;
+
+    model.ReceptionAttributes contact =
+        await contactStore.data(context.cid, context.rid);
+
+    msg
+      ..context = context
+      ..recipients = contact.endpoints.toSet()
+      ..sender = user;
+
+    return messageStore.create(msg, user);
+  }
+
+  /**
+   *
+   */
+  Future<model.Message> updatesMessage(model.Message msg) async {
+    msg = Randomizer.randomMessage()
+      ..id = msg.id
+      ..context = msg.context
+      ..recipients = msg.recipients
+      ..sender = msg.sender;
+
+    return messageStore.create(msg, user);
+  }
+
+  /**
+   *
+   */
+  Future<model.Message> removesMessage(model.Message msg) async {
+    return messageStore.remove(msg.id, user);
   }
 }
