@@ -19,8 +19,8 @@ class CallAssign extends CallEvent {
 
   CallAssign(model.Call call, this.uid) : super(call);
   CallAssign.fromMap(Map map)
-      : super.fromMap(map),
-        uid = map[Key.modifierUid];
+      : uid = map[Key.modifierUid],
+        super.fromMap(map);
 
   Map toJson() => super.toJson()..addAll({Key.modifierUid: uid});
 }

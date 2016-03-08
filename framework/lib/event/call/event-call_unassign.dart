@@ -19,8 +19,8 @@ class CallUnassign extends CallEvent {
 
   CallUnassign(model.Call call, this.userId) : super(call);
   CallUnassign.fromMap(Map map)
-      : super.fromMap(map),
-        userId = map[Key.modifierUid];
+      : userId = map[Key.modifierUid],
+        super.fromMap(map);
 
   Map toJson() => super.toJson()..addAll({Key.modifierUid: userId});
 }
