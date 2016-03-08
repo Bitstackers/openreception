@@ -66,12 +66,12 @@ class RESTCalendarStore implements Storage.Calendar {
   /**
    *
    */
-  Future<Model.CalendarEntry> update(Model.CalendarEntry entry, [int userId]) {
+  Future<Model.CalendarEntry> update(
+      Model.CalendarEntry entry, Model.User modifier) {
     Uri url = Resource.Calendar.single(_calendarHost, entry.id);
     url = _appendToken(url, this._token);
 
-    return this
-        ._backend
+    return _backend
         .put(url, JSON.encode(entry))
         .then(JSON.decode)
         .then(Model.CalendarEntry.decode);
@@ -90,8 +90,8 @@ class RESTCalendarStore implements Storage.Calendar {
   /**
    *
    */
-  Future remove(int uuid, [int userId]) {
-    Uri url = Resource.Calendar.single(_calendarHost, uuid);
+  Future remove(int eid, Model.User user) {
+    Uri url = Resource.Calendar.single(_calendarHost, eid);
     url = _appendToken(url, this._token);
 
     return this._backend.delete(url);
@@ -113,13 +113,12 @@ class RESTCalendarStore implements Storage.Calendar {
   /**
    *
    */
-  Future<Model.CalendarEntryChange> latestChange(entryId) {
-    Uri url = Resource.Calendar.latestChange(_calendarHost, entryId);
+  Future<Model.CalendarEntryChange> latestChange(int eid) {
+    Uri url = Resource.Calendar.latestChange(_calendarHost, eid);
 
     url = _appendToken(url, this._token);
 
-    return this
-        ._backend
+    return _backend
         .get(url)
         .then(JSON.decode)
         .then(Model.CalendarEntryChange.decode);
