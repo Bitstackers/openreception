@@ -29,7 +29,7 @@ class RESTMessageStore implements Storage.Message {
       .then((String response) =>
           new Model.Message.fromMap(JSON.decode(response)));
 
-  Future<Model.MessageQueueItem> enqueue(Model.Message message) {
+  Future<Model.MessageQueueEntry> enqueue(Model.Message message) {
     Uri uri = Resource.Message.send(this._host, message.id);
     uri = _appendToken(uri, this._token);
 
@@ -38,7 +38,7 @@ class RESTMessageStore implements Storage.Message {
         .post(uri, JSON.encode(message.asMap))
         .then(JSON.decode)
         .then((Map queueItemMap) =>
-            new Model.MessageQueueItem.fromMap(queueItemMap));
+            new Model.MessageQueueEntry.fromMap(queueItemMap));
   }
 
   Future<Model.Message> create(Model.Message message, Model.User modifier) =>
