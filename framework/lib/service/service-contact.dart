@@ -93,8 +93,7 @@ class RESTContactStore implements Storage.Contact {
     url = _appendToken(url, _token);
 
     return _backend.get(url).then((String response) =>
-        (JSON.decode(response) as Iterable)
-            .map((Map map) => new Model.ReceptionAttributes.fromMap(map)));
+        (JSON.decode(response) as Iterable).map(Model.ContactReference.decode));
   }
 
   Future<Iterable<Model.BaseContact>> colleagues(int contactId) {
