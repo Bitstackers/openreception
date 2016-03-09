@@ -20,7 +20,6 @@ Iterable<Playback> playbackActions(ReceptionDialplan rdp) =>
  *
  */
 class ReceptionDialplan {
-
   String extension = 'empty';
 
   List<HourAction> open = [];
@@ -34,8 +33,8 @@ class ReceptionDialplan {
     ..addAll(defaultActions)
     ..addAll(
         open.fold([], (list, HourAction hour) => list..addAll(hour.actions)))
-    ..addAll(extraExtensions.fold(
-        [], (list, NamedExtension exten) => list..addAll(exten.actions)));
+    ..addAll(extraExtensions
+        .fold([], (list, NamedExtension exten) => list..addAll(exten.actions)));
 
   List<Action> defaultActions = [];
 

@@ -16,10 +16,11 @@ library openreception.model;
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
+import 'package:path/path.dart' as path;
 
 import 'bus.dart';
 import 'event.dart' as Event;
-import 'keys.dart' as Key;
+import 'keys.dart' as Key; // TODO: Get rid of this and namespace in the library
 import 'pbx-keys.dart';
 import 'util.dart' as Util;
 
@@ -35,6 +36,7 @@ part 'model/model-call.dart';
 part 'model/model-caller_info.dart';
 part 'model/model-cdr_checkpoint.dart';
 part 'model/model-cdr_entry.dart';
+part 'model/model-cdr_summary.dart';
 part 'model/model-channel.dart';
 part 'model/model-client_configuration.dart';
 part 'model/model-client_connection.dart';

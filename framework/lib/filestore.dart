@@ -18,7 +18,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:logging/logging.dart';
-import 'package:uuid/uuid.dart';
 import 'package:path/path.dart';
 
 import 'model.dart' as model;
@@ -40,7 +39,6 @@ const String libraryName = 'openreception.filestore';
 
 final JsonEncoder _jsonpp = new JsonEncoder.withIndent('  ');
 
-final Uuid _uuid = new Uuid();
 final model.User _systemUser = new model.User.empty()
   ..name = 'System'
   ..address = 'root@localhost';
