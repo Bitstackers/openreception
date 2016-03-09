@@ -8,6 +8,7 @@ void _runContactTests() {
     TestEnvironment env;
     process.ContactServer cProcess;
     process.AuthServer aProcess;
+    process.NotificationServer nProcess;
     transport.Client client;
     AuthToken authToken;
 
@@ -16,6 +17,10 @@ void _runContactTests() {
       sa = await env.createsServiceAgent();
       client = new transport.Client();
       authToken = new AuthToken(sa.user);
+      sa.authToken = authToken.tokenName;
+
+      nProcess = new process.NotificationServer(
+          Config.serverStackPath, env.runpath.path);
 
       aProcess = new process.AuthServer(
           Config.serverStackPath, env.runpath.path,
@@ -26,11 +31,13 @@ void _runContactTests() {
 
       sa.contactStore = new service.RESTContactStore(
           Config.contactStoreUri, authToken.tokenName, client);
-      await Future.wait([cProcess.whenReady, aProcess.whenReady]);
+      await Future
+          .wait([nProcess.whenReady, cProcess.whenReady, aProcess.whenReady]);
     });
 
     tearDown(() async {
-      await Future.wait([cProcess.terminate(), aProcess.terminate()]);
+      await Future.wait(
+          [cProcess.terminate(), aProcess.terminate(), nProcess.terminate()]);
       env.clear();
       client.client.close();
     });
@@ -93,5 +100,11 @@ void _runContactTests() {
 
     test('delete receptionAttributes',
         () => storeTest.Contact.deleteFromReception(sa));
+
+    test('create (event presence)', () => serviceTest.Contact.createEvent(sa));
+
+    test('update (event presence)', () => serviceTest.Contact.updateEvent(sa));
+
+    test('remove (event presence)', () => serviceTest.Contact.deleteEvent(sa));
   });
 }
