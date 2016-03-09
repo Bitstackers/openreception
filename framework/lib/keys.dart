@@ -160,3 +160,55 @@ const String manuallyClosed = 'manuallyClosed';
 ///Message filter keys
 const String upperMessageId = 'upper_message_id';
 const String limit = 'limit';
+
+/**
+ * Common String keys.
+ */
+class CdrKey {
+  static final String agentBeginEpoch = 'agentBeginEpoch';
+  static final String agentChannel = 'agentChannel';
+  static final String agentEndEpoch = 'agentEndEpoch';
+  static final String agentSummaries = 'agentSummaries';
+  static final String answered10 = 'answered10';
+  static final String answered10to20 = 'answered10to20';
+  static final String answered20to60 = 'answered20to60';
+  static final String answeredAfter60 = 'answeredAfter60';
+  static final String answerEpoch = 'answerEpoch';
+  static final String averageCallTime = 'averageCallTime';
+  static final String averageOutboundCost = 'averageOutboundCost';
+  static final String billSec = 'billSec';
+  static final String bridgeUuid = 'bridgeUuid';
+  static final String callChargeMultiplier = 'callChargeMultiplier';
+  static final String callNotify = 'callNotify';
+  static final String cdrFiles = 'cdrFiles';
+  static final String cid = 'cid';
+  static final String contextCallId = 'contextCallId';
+  static final String cost = 'cost';
+  static final String destination = 'destination';
+  static final String direction = 'direction';
+  static final String endEpoch = 'endEpoch';
+  static final String externalTransferEpoch = 'externalTransferEpoch';
+  static final String filename = 'filename';
+  static final String finalTransferAction = 'finalTransferAction';
+  static final String hangupCause = 'hangupCause';
+  static final String inboundBillSeconds = 'inboundBillSeconds';
+  static final String inboundNotNotified = 'inboundNotNotified';
+  static final String ivr = 'ivr';
+  static final String longCalls = 'longCalls';
+  static final String notifiedAnswered = 'notifiedAnswered';
+  static final String notifiedNotAnswered = 'notifiedNotAnswered';
+  static final String outbound = 'outbound';
+  static final String outboundBillSeconds = 'outboundBillSeconds';
+  static final String outboundByAgent = 'outboundByAgent';
+  static final String outboundCost = 'outboundCost';
+  static final String outboundByPbx = 'outboundByPbx';
+  static final String receptionOpen = 'receptionOpen';
+  static final String rid = 'rid';
+  static final String shortCalls = 'shortCalls';
+  static final String sipFromUserStripped = 'sipFromUserStripped';
+  static final String startEpoch = 'startEpoch';
+  static final String state = 'state';
+  static final String uid = 'uid';
+  static final String uuid = 'uuid';
+  static final String voicemail = 'voicemail';
+}
