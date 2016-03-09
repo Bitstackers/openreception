@@ -17,7 +17,7 @@ part of openreception.model;
  * A summary of agent stats, such as amount of outbound calls and amount of
  * calls answered within specific time limits.
  */
-class AgentSummary {
+class CdrAgentSummary {
   int answered10 = 0; // Calls answered <=10 seconds
   int answered10To20 = 0; // Calls answered >10 && <=20 seconds
   int answered20To60 = 0; // Calls answered >20 && <= 60 seconds
@@ -33,12 +33,12 @@ class AgentSummary {
   /**
    * Constructor.
    */
-  AgentSummary();
+  CdrAgentSummary();
 
   /**
    * JSON constructor
    */
-  AgentSummary.fromJson(Map json, {bool alsoCdrFiles: true}) {
+  CdrAgentSummary.fromJson(Map json, {bool alsoCdrFiles: true}) {
     answered10 = json[Key.CdrKey.answered10];
     answered10To20 = json[Key.CdrKey.answered10to20];
     answered20To60 = json[Key.CdrKey.answered20to60];
@@ -56,7 +56,7 @@ class AgentSummary {
   /**
    * Add [other] to this. Retains the [uid] of this.
    */
-  void add(AgentSummary other, {bool alsoCdrFiles: true}) {
+  void add(CdrAgentSummary other, {bool alsoCdrFiles: true}) {
     answered10 += other.answered10;
     answered10To20 += other.answered10To20;
     answered20To60 += other.answered20To60;
@@ -91,8 +91,8 @@ class AgentSummary {
  * A summary of how calls have been handled for a specific reception. Contains
  * info about cost, amount, fails and agents.
  */
-class Summary {
-  List<AgentSummary> agentSummaries = new List<AgentSummary>();
+class CdrSummary {
+  List<CdrAgentSummary> agentSummaries = new List<CdrAgentSummary>();
   List<String> cdrFiles = new List<String>();
   int inboundNotNotified = 0; // Amount of inbound calls not notified to agents
   int notifiedNotAnswered = 0; // Calls notified but not answered by an agent
@@ -104,15 +104,15 @@ class Summary {
   /**
    * Constructor.
    */
-  Summary();
+  CdrSummary();
 
   /**
    * JSON constructor.
    */
-  Summary.fromJson(Map json, {bool alsoCdrFiles: true}) {
+  CdrSummary.fromJson(Map json, {bool alsoCdrFiles: true}) {
     (json[Key.CdrKey.agentSummaries] as List).forEach((Map value) {
       agentSummaries
-          .add(new AgentSummary.fromJson(value, alsoCdrFiles: alsoCdrFiles));
+          .add(new CdrAgentSummary.fromJson(value, alsoCdrFiles: alsoCdrFiles));
     });
     if (alsoCdrFiles) {
       cdrFiles = json[Key.CdrKey.cdrFiles] as List<String>;
@@ -128,9 +128,9 @@ class Summary {
   /**
    * Add [other] to this. Retains the [rid] of this.
    */
-  void add(Summary other, {bool alsoCdrFiles: true}) {
-    for (AgentSummary agentSummary in other.agentSummaries) {
-      final AgentSummary found = getAgentSummary(agentSummary.uid);
+  void add(CdrSummary other, {bool alsoCdrFiles: true}) {
+    for (CdrAgentSummary agentSummary in other.agentSummaries) {
+      final CdrAgentSummary found = getAgentSummary(agentSummary.uid);
       found.add(agentSummary, alsoCdrFiles: alsoCdrFiles);
       setAgentSummary(found);
     }
@@ -145,30 +145,30 @@ class Summary {
   }
 
   /**
-   * Return the [uid] [AgentSummary]. If none exists, return a new
-   * [AgentSummary] object.
+   * Return the [uid] [CdrAgentSummary]. If none exists, return a new
+   * [CdrAgentSummary] object.
    */
-  AgentSummary getAgentSummary(int uid) =>
-      agentSummaries.firstWhere((AgentSummary as) => as.uid == uid,
-          orElse: () => new AgentSummary()..uid = uid);
+  CdrAgentSummary getAgentSummary(int uid) =>
+      agentSummaries.firstWhere((CdrAgentSummary as) => as.uid == uid,
+          orElse: () => new CdrAgentSummary()..uid = uid);
 
   /**
    * Return a list comprised of all the CDR files for this summary.
    */
   List<String> getAllCdrFiles() {
     final List<String> cdr = new List<String>()..addAll(cdrFiles);
-    for (AgentSummary a in agentSummaries) {
+    for (CdrAgentSummary a in agentSummaries) {
       cdr.addAll(a.cdrFiles);
     }
     return cdr;
   }
 
   /**
-   * Add the [agentSummary] object to the [Summary].
+   * Add the [agentSummary] object to the [CdrSummary].
    */
-  void setAgentSummary(AgentSummary agentSummary) {
+  void setAgentSummary(CdrAgentSummary agentSummary) {
     agentSummaries
-        .removeWhere((AgentSummary old) => old.uid == agentSummary.uid);
+        .removeWhere((CdrAgentSummary old) => old.uid == agentSummary.uid);
     agentSummaries.add(agentSummary);
   }
 
@@ -184,15 +184,15 @@ class Summary {
       };
 
   String toString() => '''rid: $rid
-Answered total: ${agentSummaries.fold(0, (int acc, AgentSummary a) => acc + a.answered)}
-Answered 0-10: ${agentSummaries.fold(0, (int acc, AgentSummary a) => acc + a.answered10)}
-Answered 10-20: ${agentSummaries.fold(0, (int acc, AgentSummary a) => acc + a.answered10To20)}
-Answered 20-60: ${agentSummaries.fold(0, (int acc, AgentSummary a) => acc + a.answered20To60)}
-Answered +60: ${agentSummaries.fold(0, (int acc, AgentSummary a) => acc + a.answeredAfter60)}
-inboundBillSeconds: ${agentSummaries.fold(0, (int acc, AgentSummary a) => acc + a.inboundBillSeconds)}
-longCalls: ${agentSummaries.fold(0, (int acc, AgentSummary a) => acc + a.longCalls)}
-outbound: ${agentSummaries.fold(0, (int acc, AgentSummary a) => acc + a.outbound)}
-shortCalls: ${agentSummaries.fold(0, (int acc, AgentSummary a) => acc + a.shortCalls)}
+Answered total: ${agentSummaries.fold(0, (int acc, CdrAgentSummary a) => acc + a.answered)}
+Answered 0-10: ${agentSummaries.fold(0, (int acc, CdrAgentSummary a) => acc + a.answered10)}
+Answered 10-20: ${agentSummaries.fold(0, (int acc, CdrAgentSummary a) => acc + a.answered10To20)}
+Answered 20-60: ${agentSummaries.fold(0, (int acc, CdrAgentSummary a) => acc + a.answered20To60)}
+Answered +60: ${agentSummaries.fold(0, (int acc, CdrAgentSummary a) => acc + a.answeredAfter60)}
+inboundBillSeconds: ${agentSummaries.fold(0, (int acc, CdrAgentSummary a) => acc + a.inboundBillSeconds)}
+longCalls: ${agentSummaries.fold(0, (int acc, CdrAgentSummary a) => acc + a.longCalls)}
+outbound: ${agentSummaries.fold(0, (int acc, CdrAgentSummary a) => acc + a.outbound)}
+shortCalls: ${agentSummaries.fold(0, (int acc, CdrAgentSummary a) => acc + a.shortCalls)}
 inboundNotNofified: $inboundNotNotified
 notifiedNotAnswered: $notifiedNotAnswered
 outboundBillSeconds: $outBoundBillSeconds
