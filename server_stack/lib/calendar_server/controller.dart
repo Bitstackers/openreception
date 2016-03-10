@@ -31,15 +31,3 @@ import 'package:openreception_framework/storage.dart' as storage;
 part 'controller/controller-calendar.dart';
 
 const String _libraryName = 'dialplan_server.controller';
-
-shelf.Response _okJson(body) => new shelf.Response.ok(JSON.encode(body));
-
-//shelf.Response _clientError(body) => new shelf.Response(400, body: body);
-
-shelf.Response _notFound(body) => new shelf.Response.notFound(body);
-
-//shelf.Response _serverError(body) =>
-//    new shelf.Response.internalServerError(body : body);
-
-String _tokenFrom(shelf.Request request) =>
-    request.requestedUri.queryParameters['token'];

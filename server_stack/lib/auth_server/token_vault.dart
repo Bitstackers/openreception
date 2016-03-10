@@ -95,7 +95,6 @@ class TokenVault {
         return Future.forEach(list, (FileSystemEntity item) {
           if (item is File) {
             load(item.path).then((String text) {
-              //TODO handle systems that do not seperate folders with "/"
               String token = item.path.split('/').last.split('.').first;
               Map data = JSON.decode(text);
               _serverTokens[token] = data;
