@@ -1,14 +1,14 @@
 part of usermon.view;
 
 class CallList {
-  final or_service.NotificationSocket _notificationSocket;
+  final service.NotificationSocket _notificationSocket;
   final Logger _log = new Logger('view.CallList');
   final Map<String, Call> _callMap = {};
 
   final UListElement element = new UListElement();
 
-  CallList(Iterable<or_model.Call> calls, this._notificationSocket) {
-    element.children = calls.where(_isUnassigned).map((or_model.Call call) {
+  CallList(Iterable<model.Call> calls, this._notificationSocket) {
+    element.children = calls.where(_isUnassigned).map((model.Call call) {
       _callMap[call.ID] = Call.build(call);
       return _callMap[call.ID].element;
     }).toList(growable: false);
@@ -17,11 +17,11 @@ class CallList {
   }
 
   void _registerListeners() {
-    _notificationSocket.eventStream.listen((or_event.Event event) {
-      if (event is or_event.CallEvent) {
-        if (event is or_event.CallOffer) {
+    _notificationSocket.eventStream.listen((event.Event event) {
+      if (event is event.CallEvent) {
+        if (event is event.CallOffer) {
           _insert(event.call);
-        } else if (event is or_event.CallHangup) {
+        } else if (event is event.CallHangup) {
           _remove(event.call);
         } else {
           _update(event.call);
@@ -30,7 +30,7 @@ class CallList {
     });
   }
 
-  void _insert(or_model.Call call) {
+  void _insert(model.Call call) {
     _log.info('inserting');
     if (!_callMap.containsKey(call.ID)) {
       _callMap[call.ID] = Call.build(call);
@@ -40,7 +40,7 @@ class CallList {
     }
   }
 
-  void _update(or_model.Call call) {
+  void _update(model.Call call) {
     _log.info('updating');
     if (!_isUnassigned(call)) {
       _remove(call);
@@ -49,7 +49,7 @@ class CallList {
     }
   }
 
-  void _remove(or_model.Call call) {
+  void _remove(model.Call call) {
     _log.info('removing');
     if (_callMap.containsKey(call.ID)) {
       _callMap[call.ID].element.remove();
@@ -57,6 +57,6 @@ class CallList {
     }
   }
 
-  bool _isUnassigned(or_model.Call call) =>
-      call.assignedTo == or_model.User.noID;
+  bool _isUnassigned(model.Call call) =>
+      call.assignedTo == model.User.noID;
 }

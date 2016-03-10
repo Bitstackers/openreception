@@ -1,7 +1,7 @@
 part of usermon.view;
 
 class AgentInfo {
-  final or_model.User _user;
+  final model.User _user;
 
   int _numMessage = 0;
 
@@ -13,15 +13,16 @@ class AgentInfo {
     currentCallCell.text = '$_numMessage';
   }
 
-  set agentStatistics(or_model.AgentStatistics stats) {
-    statsCell.text = '${stats.total} kald i dag (${stats.recent} for nyligt)';
+  set agentStatistics(model.AgentStatistics stats) {
+    _statsCell.text = '${stats.total} kald i dag (${stats.recent} for nyligt)';
   }
 
-  set call(or_model.Call c) {
+  set call(model.Call c) {
     _callshandled.add(c.ID);
-    if (c.state == or_model.CallState.Hungup ||
-        c.state == or_model.CallState.Transferred) {
+    if (c.state == model.CallState.Hungup ||
+        c.state == model.CallState.Transferred) {
       currentCallCell.text = '';
+
       _updateStats();
     } else {
       currentCallCell.text = c.callerID;
@@ -29,11 +30,11 @@ class AgentInfo {
   }
 
   _updateStats() {
-    statsCell.text = 'Håndterede kald: ${_callshandled.length}';
+    _statsCell.text = 'Håndterede kald: ${_callshandled.length}';
   }
 
-  set userStatus(or_model.UserStatus status) {
-    stateCell.text = '${status.paused ? 'paused' : 'active'}';
+  set userStatus(model.UserStatus status) {
+    _stateCell.text = '${status.paused ? 'paused' : 'active'}';
 
     lastSeenCell.text = '??';
 
@@ -47,22 +48,41 @@ class AgentInfo {
    */
   AgentInfo.fromModel(this._user) {
     ///Base data
-    element.id = 'uid_${_user.id}';
-    nameCell.text = _user.name;
+    _nameCell.text = _user.name;
 
     ///Setup visual model.
     element.children = [
-      nameCell,
-      stateCell,
-      currentCallCell,
-      statsCell,
-      lastSeenCell
+      new TableCellElement()
+        ..children = [
+          new DivElement()..classes.add('status'),
+          _nameCell,
+          _statsCell
+            ..children = [
+              new DivElement()
+                ..classes.add('stick')
+                ..children = [
+                  _messageElement,
+                  new ImageElement()
+                    ..src = 'img/stick_left.png'
+                    ..classes.add('stick_left'),
+                  new ImageElement()
+                    ..src = 'img/stick_right.png'
+                    ..classes.add('stick_right')
+                ]
+            ]
+        ]
     ];
   }
 
-  final TableCellElement nameCell = new TableCellElement();
-  final TableCellElement stateCell = new TableCellElement();
-  final TableCellElement statsCell = new TableCellElement();
+  final SpanElement _messageElement = new SpanElement()
+    ..classes.add('message')
+    ..text = '[0]'
+    ..style.textTransform = 'bold';
+
+  final TableCellElement _nameCell = new TableCellElement()
+    ..classes.add('name');
+  final TableCellElement _stateCell = new TableCellElement();
+  final TableCellElement _statsCell = new TableCellElement();
   final TableCellElement currentCallCell = new TableCellElement();
   final TableCellElement lastSeenCell = new TableCellElement();
 

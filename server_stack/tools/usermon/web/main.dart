@@ -59,13 +59,13 @@ Future main() async {
   notificationSocket = new ORService.NotificationSocket(webSocketClient);
 
   ///Prefetch data
-  Iterable<or_model.Call> calls = await callFlowControl.callList();
+  //Iterable<or_model.Call> calls = await callFlowControl.callList();
 
-  view.CallList callList = new view.CallList(calls, notificationSocket);
+  //view.CallList callList = new view.CallList(calls, notificationSocket);
 
-  await callFlowControl.callList().then((Iterable<or_model.Call> calls) {
-    querySelector('#call-list').replaceWith(callList.element);
-  });
+  //await callFlowControl.callList().then((Iterable<or_model.Call> calls) {
+  //    querySelector('#call-list').replaceWith(callList.element);
+  //  });
 
   Iterable<or_model.User> users = await userService.list();
   querySelector('#user-list').replaceWith(new view.AgentInfoList(

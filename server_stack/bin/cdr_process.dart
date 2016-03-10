@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 
-import 'package:openreception_framework/database.dart' as or_db;
+import 'package:openreception_framework/filestore.dart' as filestore;
 import 'package:openreception_framework/model.dart' as or_model;
 import 'package:openreception_framework/pbx-keys.dart';
 
@@ -11,10 +11,6 @@ import '../lib/configuration.dart';
  * Simple CDR processing script.
  */
 main(List<String> args) async {
-  final or_db.Connection connection =
-      await or_db.Connection.connect(config.database.dsn);
-  or_db.Cdr cdrStore = new or_db.Cdr(connection);
-
   List<FileSystemEntity> listing = new Directory('cdr-json').listSync();
 
   bool isJsonFile(FileSystemEntity fse) =>
@@ -43,7 +39,7 @@ main(List<String> args) async {
 
     try {
       if (entry.receptionId != 0) {
-        await cdrStore.create(entry);
+        //await cdrStore.create(entry);
       }
 
       // Long-term storage may be performed here.
@@ -84,11 +80,11 @@ class FsCdr {
 
   int get receptionId => variables.containsKey(ORPbxKey.receptionId)
       ? int.parse(variables[ORPbxKey.receptionId])
-      : or_model.Reception.noID;
+      : or_model.Reception.noId;
 
   int get contactId => variables.containsKey(ORPbxKey.contactId)
       ? int.parse(variables[ORPbxKey.contactId])
-      : or_model.Contact.noID;
+      : or_model.BaseContact.noId;
 
   Map get variables => data.containsKey('variables') ? data['variables'] : {};
 
@@ -105,7 +101,7 @@ class FsCdr {
 
   int get owner => variables.containsKey(ORPbxKey.userId)
       ? int.parse(variables[ORPbxKey.userId])
-      : or_model.User.noID;
+      : or_model.User.noId;
 }
 
 class AppEntry {

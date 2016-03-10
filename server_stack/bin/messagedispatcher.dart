@@ -43,6 +43,7 @@ void main(List<String> args) {
 
   ArgParser parser = new ArgParser()
     ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
+    ..addOption('filestore', abbr: 'f', help: 'Path to the filestore backend')
     ..addOption('httpport',
         help: 'The port the HTTP server listens on.',
         defaultsTo: config.messageDispatcher.httpPort.toString());
@@ -50,6 +51,12 @@ void main(List<String> args) {
   ArgResults parsedArgs = parser.parse(args);
 
   if (parsedArgs['help']) {
+    print(parser.usage);
+    exit(1);
+  }
+
+  if (parsedArgs['filestore'] == null) {
+    print('Filestore path is required');
     print(parser.usage);
     exit(1);
   }
@@ -63,14 +70,18 @@ void main(List<String> args) {
 /**
  *
  */
-Iterable<Model.MessageRecipient> emailRecipients(Iterable<Model.MessageRecipient> rcps) =>
-    rcps.where((Model.MessageRecipient rcp) => rcp.type == Model.MessageEndpointType.EMAIL);
+Iterable<Model.MessageRecipient> emailRecipients(
+        Iterable<Model.MessageRecipient> rcps) =>
+    rcps.where((Model.MessageRecipient rcp) =>
+        rcp.type == Model.MessageEndpointType.email);
 
 /**
  *
  */
-Iterable<Model.MessageRecipient> smsRecipients(Iterable<Model.MessageRecipient> rcps) =>
-    rcps.where((Model.MessageRecipient rcp) => rcp.type == Model.MessageEndpointType.SMS);
+Iterable<Model.MessageRecipient> smsRecipients(
+        Iterable<Model.MessageRecipient> rcps) =>
+    rcps.where((Model.MessageRecipient rcp) =>
+        rcp.type == Model.MessageEndpointType.sms);
 
 /**
  * The Periodic task that passes emails on to the SMTP server.
@@ -98,29 +109,29 @@ void periodicEmailSend() {
 /**
  *
  */
-Timer reSchedule() => new Timer(config.messageDispatcher.mailerPeriod, periodicEmailSend);
+Timer reSchedule() =>
+    new Timer(config.messageDispatcher.mailerPeriod, periodicEmailSend);
 
 /**
  *
  */
 Future tryDispatch(Model.MessageQueueItem queueItem) async {
-  Model.Message message = await router.messageStore.get(queueItem.messageID);
+  Model.Message message = await router.messageStore.get(queueItem.messageId);
   Model.User user = await router.userStore.get(message.senderId);
 
   if (queueItem.unhandledRecipients.isEmpty) {
-    _log.info("No recipients left detected on message with ID ${message.ID}!");
+    _log.info("No recipients left detected on message with ID ${message.id}!");
     return router.messageQueueStore.archive(queueItem);
   }
 
-  final String senderAddress = config.messageDispatcher.staticSenderAddress.isNotEmpty
-      ? config.messageDispatcher.staticSenderAddress
-      : user.address;
+  final String senderAddress = config.messageDispatcher.staticSenderAddress
+      .isNotEmpty ? config.messageDispatcher.staticSenderAddress : user.address;
 
   final String senderName = config.messageDispatcher.staticSenderName.isNotEmpty
       ? config.messageDispatcher.staticSenderName
       : user.name;
 
-  _log.fine('Dispatching messageID ${message.ID} - queueID: ${queueItem.ID}');
+  _log.fine('Dispatching messageID ${message.id} - queueID: ${queueItem.id}');
   queueItem.tries++;
 
   ///Dispatch email recipients.
@@ -144,14 +155,14 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
 
   if (currentRecipients.isNotEmpty) {
     Model.TemplateEmail templateEmail = new Model.TemplateEmail(message, user);
-    Email email =
-        new Email(new Address(senderAddress, senderName), config.messageDispatcher.smtp.hostname)
-          ..to = to
-          ..cc = cc
-          ..bcc = bcc
-          ..subject = templateEmail.subject
-          ..partText = templateEmail.bodyText
-          ..partHtml = templateEmail.bodyHtml;
+    Email email = new Email(new Address(senderAddress, senderName),
+        config.messageDispatcher.smtp.hostname)
+      ..to = to
+      ..cc = cc
+      ..bcc = bcc
+      ..subject = templateEmail.subject
+      ..partText = templateEmail.bodyText
+      ..partHtml = templateEmail.bodyHtml;
 
     await new SmtpClient(options).send(email).then((_) {
       /// Update the handled recipient set.
@@ -160,7 +171,7 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
       _log.shout(
           'Failed to dispatch to email recipients '
           '<${currentRecipients.join(';')}> '
-          '(messageID:${queueItem.messageID}, queueID:${queueItem.ID})',
+          '(messageID:${queueItem.messageId}, queueID:${queueItem.id})',
           error,
           stackTrace);
     });
@@ -171,11 +182,11 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
 
   if (currentRecipients.isNotEmpty) {
     Model.Template templateSMS = new Model.TemplateSMS(message);
-    Email sms =
-        new Email(new Address(senderAddress, senderName), config.messageDispatcher.smtp.hostname)
-          ..to = currentRecipients
-              .map((mrto) => new Address(mrto.address + config.messageDispatcher.smsKey, ''))
-          ..partText = templateSMS.bodyText;
+    Email sms = new Email(new Address(senderAddress, senderName),
+        config.messageDispatcher.smtp.hostname)
+      ..to = currentRecipients.map((mrto) =>
+          new Address(mrto.address + config.messageDispatcher.smsKey, ''))
+      ..partText = templateSMS.bodyText;
 
     await new SmtpClient(options).send(sms).then((_) {
       queueItem.handledRecipients = currentRecipients;
@@ -183,7 +194,7 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
       _log.shout(
           'Failed to dispatch to sms recipients '
           '<${currentRecipients.join(';')}> '
-          '(messageID:${queueItem.messageID}, queueID:${queueItem.ID})',
+          '(messageID:${queueItem.messageId}, queueID:${queueItem.id})',
           error,
           stackTrace);
     });

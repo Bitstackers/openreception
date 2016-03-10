@@ -41,7 +41,7 @@ void main(List<String> arguments) {
     },
     'CalendarServer': {'path': 'bin/calendarserver.dart', 'args': []},
     'CallFlow': {'path': 'bin/callflowcontrol.dart', 'args': []},
-    'DialplanServer': {'path': 'bin/dialplanserver.dart', 'args': []},
+      //    'DialplanServer': {'path': 'bin/dialplanserver.dart', 'args': []},
     'CDRServer': {'path': 'bin/cdrserver.dart', 'args': []},
     'ContactServer': {'path': 'bin/contactserver.dart', 'args': []},
     'MessageServer': {'path': 'bin/messageserver.dart', 'args': []},

@@ -15,14 +15,15 @@ library usermon.view;
 
 import 'dart:html';
 import 'package:logging/logging.dart';
-import 'package:openreception_framework/event.dart' as or_event;
-import 'package:openreception_framework/model.dart' as or_model;
-import 'package:openreception_framework/service.dart' as or_service;
+import 'package:openreception_framework/event.dart' as event;
+import 'package:openreception_framework/model.dart' as model;
+import 'package:openreception_framework/service.dart' as service;
 
 part 'view/agent_info.dart';
 part 'view/agent_info_list.dart';
 part 'view/call.dart';
+part 'view/call_stats.dart';
 part 'view/call_list.dart';
 
-String _remoteParty(or_model.Call call) =>
+String _remoteParty(model.Call call) =>
     call.inbound ? call.callerID : call.destination;

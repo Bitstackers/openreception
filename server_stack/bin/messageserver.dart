@@ -49,5 +49,7 @@ Future main(List<String> args) async {
   }
 
   await router.start(
-      port: config.messageServer.httpPort, filepath: parsedArgs['filestore']);
+      port: int.parse(parsedArgs['httpport']),
+      filepath: parsedArgs['filestore']);
+  log.info('Ready to handle requests');
 }

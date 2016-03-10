@@ -21,6 +21,7 @@ import 'dart:io';
 import 'dart:convert';
 
 import '../lib/configuration.dart';
+import 'package:intl/intl.dart' show DateFormat;
 
 import 'package:openreception_framework/event.dart' as event;
 
@@ -30,6 +31,7 @@ import 'package:openreception_framework/service.dart' as service;
 import 'package:openreception_framework/service-io.dart' as transport;
 
 final Map<int, String> _userNameCache = {};
+final DateFormat RFC3339 = new DateFormat('yyyy-MM-dd');
 
 class CallSummary {
   int totalCalls = 0;
@@ -73,7 +75,7 @@ class CallStat {
   bool done = false;
   DateTime arrived;
   DateTime answered;
-  int userId = model.User.noID;
+  int userId = model.User.noId;
 
   Map toJson() => {
         'arrived': arrived.toString(),
@@ -91,19 +93,18 @@ class CallHistory {
   }
 
   int get assignee => _events
-      .firstWhere((event.CallEvent ce) => ce.call.assignedTo != model.User.noID,
+      .firstWhere((event.CallEvent ce) => ce.call.assignedTo != model.User.noId,
           orElse: () => _events.first)
       .call
       .assignedTo;
 
-  bool get unAssigned => assignee == model.User.noID;
+  bool get unAssigned => assignee == model.User.noId;
 
   String eventString() =>
-      '  events:\n' +
-      _events
-          .map((e) =>
-              '  - ${e.timestamp.millisecondsSinceEpoch~/1000}: ${e.eventName}')
-          .join('\n');
+      '  events:\n' + _events.map((e) => '  - ${_eventToString(e)}').join('\n');
+
+  String _eventToString(event.Event e) =>
+      '${e.timestamp.millisecondsSinceEpoch~/1000}: ${e.eventName}';
 
   String toString() => 'done:$isDone\n'
       'owner: $assignee\n'
@@ -116,7 +117,13 @@ class CallHistory {
   bool get isAnswered =>
       _events.any((event.CallEvent ce) => ce is event.CallPickup);
 
+  DateTime get firstEventTime => _events.first.timestamp;
+
   Duration get answerLatency {
+    if (!inbound) {
+      return null;
+    }
+
     final offerEvent =
         _events.firstWhere((event.CallEvent ce) => ce is event.CallOffer);
 
@@ -126,14 +133,40 @@ class CallHistory {
     return pickupEvent.timestamp.difference(offerEvent.timestamp);
   }
 
+  Duration get lifeTime {
+    final offerEvent =
+        _events.firstWhere((event.CallEvent ce) => ce is event.CallOffer);
+
+    final hangupEvent =
+        _events.firstWhere((event.CallEvent ce) => ce is event.CallHangup);
+
+    return hangupEvent.timestamp.difference(offerEvent.timestamp);
+  }
+
+  Duration get handleTime {
+    final offerEvent =
+        _events.firstWhere((event.CallEvent ce) => ce is event.CallOffer);
+
+    final hangupEvent = _events.firstWhere((event.CallEvent ce) =>
+        ce is event.CallHangup || ce is event.CallTransfer);
+
+    return hangupEvent.timestamp.difference(offerEvent.timestamp);
+  }
+
   bool get isDone => _events.any((event.CallEvent ce) =>
       ce is event.CallHangup || ce is event.CallTransfer);
+
+  Map toJson() => {
+        'uid': assignee,
+        'inbound': inbound,
+        'events': []..addAll(_events.map(_eventToString))
+      };
 }
 
 CallSummary _summarize(Map<String, CallHistory> history) {
   final CallSummary summary = new CallSummary();
 
-  history.forEach((callId, call) {
+  history.forEach((_, call) {
     if (call.inbound) {
       summary.totalCalls++;
 
@@ -176,12 +209,12 @@ CallSummary _summarize(Map<String, CallHistory> history) {
 Future main(List<String> args) async {
   Map<String, CallHistory> _eventHistory = {};
 
-  transport.WebSocketClient client = new transport.WebSocketClient();
-  await client.connect(Uri.parse(
-      '${config.configserver.notificationSocketUri}?token=${config.authServer.serverToken}'));
-
-  service.NotificationSocket notificationSocket =
-      new service.NotificationSocket(client);
+  // transport.WebSocketClient client = new transport.WebSocketClient();
+  // await client.connect(Uri.parse(
+  //     '${config.configserver.notificationSocketUri}?token=${config.authServer.serverToken}'));
+  //
+  // service.NotificationSocket notificationSocket =
+  //     new service.NotificationSocket(client);
   service.RESTUserStore userStore = new service.RESTUserStore(
       config.configserver.userServerUri,
       config.authServer.serverToken,
@@ -199,42 +232,69 @@ Future main(List<String> args) async {
         _eventHistory[e.call.ID] = new CallHistory();
       }
       _eventHistory[e.call.ID].addEvent(e);
+
+      if (_eventHistory[e.call.ID].isDone) {
+        CallHistory ch = _eventHistory.remove(e.call.ID);
+        String dirPath = '${RFC3339.format(ch.firstEventTime)}';
+
+        if (!new Directory(dirPath).existsSync()) {
+          new Directory(dirPath).createSync();
+        }
+
+        try {
+          new File('$dirPath/' + e.call.ID).writeAsStringSync(JSON.encode(ch));
+        } catch (e) {
+          print('Could not save $ch');
+        }
+      }
     } else {
       return;
     }
   }
 
-  notificationSocket.eventStream.listen((event.Event e) {
-    try {
-      dispatchEvent(e);
-    } catch (e, s) {
-      print(e);
-      print(s);
-    }
-  });
+  // notificationSocket.eventStream.listen((event.Event e) {
+  //   try {
+  //     dispatchEvent(e);
+  //   } catch (e, s) {
+  //     print(e);
+  //     print(s);
+  //   }
+  // });
 
   if (args.isNotEmpty) {
-    List<String> lines = await new File(args.first).readAsLines();
+    args.forEach((arg) {
+      print('Loading data from file $arg');
+      List<String> lines = new File(arg).readAsLinesSync();
 
-    lines.forEach((String line) {
-      Map json = JSON.decode(line);
-      event.Event e = new event.Event.parse(json);
-      try {
-        dispatchEvent(e);
-      } catch (e, s) {
-        print(e);
-        print(s);
-      }
+      lines.forEach((String line) {
+        Map json = JSON.decode(line);
+        event.Event e = new event.Event.parse(json);
+        try {
+          dispatchEvent(e);
+        } catch (e, s) {
+          print(e);
+          print(s);
+        }
+      });
     });
   }
 
   String jsonCache = '';
-  new Timer.periodic(new Duration(seconds: 10), (_) {
-    final newCache = JSON.encode(_summarize(_eventHistory).toJson());
+  String keyOf(DateTime dt) => RFC3339.format(dt);
+
+  Map<String, CallHistory> dateSorted = {};
+
+  _eventHistory.values.forEach((CallHistory ch) {
+    dateSorted[keyOf(ch.firstEventTime)] = ch;
+  });
+
+  dateSorted.forEach((time, callHistory) {
+    final newCache = JSON.encode(_summarize({'': callHistory}).toJson());
 
     if (newCache.hashCode != jsonCache.hashCode) {
       jsonCache = newCache;
-      new File('/tmp/agentstats.json').writeAsStringSync(jsonCache);
+      new File('agentstats-${time}.json').writeAsStringSync(jsonCache);
+      print('Wrote statfile agentstats-${time}.json');
     }
   });
 }
