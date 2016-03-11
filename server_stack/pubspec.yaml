@@ -15,10 +15,6 @@ dependencies:
     version: '>0.0.15 <0.1.0'
   http: any
   intl: any
-  libdialplan:
-    git:
-      ref: master
-      url: https://github.com/AdaHeads/libdialplan.git
   logging: any
   oauth2: <1.0.0
   openreception_framework:
