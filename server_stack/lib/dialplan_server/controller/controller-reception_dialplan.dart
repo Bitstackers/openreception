@@ -20,6 +20,7 @@ class ReceptionDialplan {
   final database.ReceptionDialplan _receptionDialplanStore;
   final database.Reception _receptionStore;
   final dialplanTools.DialplanCompiler compiler;
+  final String fsConfPath;
   final Ivr _ivrController;
   final Logger _log = new Logger('$_libraryName.ReceptionDialplan');
   esl.Connection _eslClient;
@@ -28,7 +29,7 @@ class ReceptionDialplan {
    *
    */
   ReceptionDialplan(this._receptionDialplanStore, this._receptionStore,
-      this.compiler, this._ivrController) {
+      this.compiler, this._ivrController, this.fsConfPath) {
     _connectESLClient();
   }
 
@@ -78,8 +79,8 @@ class ReceptionDialplan {
     } on storage.NotFound {
       return notFound('No dialplan with extension $extension');
     }
-    final String xmlFilePath = '${config.dialplanserver.freeswitchConfPath}'
-        '/dialplan/receptions/$extension.xml';
+    final String xmlFilePath =
+        fsConfPath + '/dialplan/receptions/$extension.xml';
     final List<String> generatedFiles = new List<String>.from([xmlFilePath]);
 
     _log.fine('Deploying new dialplan to file $xmlFilePath');
@@ -89,8 +90,8 @@ class ReceptionDialplan {
     final Iterable<model.Voicemail> voicemailAccounts =
         rdp.allActions.where((a) => a is model.Voicemail);
 
-    generatedFiles.addAll(
-        (await _writeVoicemailfiles(voicemailAccounts, compiler, _log)));
+    generatedFiles.addAll((await _writeVoicemailfiles(
+        voicemailAccounts, compiler, _log, fsConfPath)));
 
     // /// Generate associated IVR menus.
     Iterable<model.Ivr> ivrMenus = rdp.allActions.where((a) => a is model.Ivr);

@@ -13,14 +13,20 @@
 
 part of openreception.dialplan_server.controller;
 
-Future<List<String>> _writeVoicemailfiles(Iterable<model.Voicemail> vms,
-        dialplanTools.DialplanCompiler compiler, Logger _log) async =>
-    await Future.wait(vms.map((vm) => _writeVoicemailfile(vm, compiler, _log)));
+Future<List<String>> _writeVoicemailfiles(
+        Iterable<model.Voicemail> vms,
+        dialplanTools.DialplanCompiler compiler,
+        Logger _log,
+        String confPath) async =>
+    await Future.wait(
+        vms.map((vm) => _writeVoicemailfile(vm, compiler, _log, confPath)));
 
-Future<String> _writeVoicemailfile(model.Voicemail vm,
-    dialplanTools.DialplanCompiler compiler, Logger _log) async {
-  final String vmFilePath = '${config.dialplanserver.freeswitchConfPath}'
-      '/directory/voicemail/${vm.vmBox}.xml';
+Future<String> _writeVoicemailfile(
+    model.Voicemail vm,
+    dialplanTools.DialplanCompiler compiler,
+    Logger _log,
+    String confPath) async {
+  final String vmFilePath = confPath + '/directory/voicemail/${vm.vmBox}.xml';
 
   _log.fine('Deploying voicemail account ${vm.vmBox} to file $vmFilePath');
   await new File(vmFilePath).writeAsString(compiler.voicemailToXml(vm));
@@ -35,12 +41,12 @@ class Ivr {
   final storage.Ivr _ivrStore;
   final dialplanTools.DialplanCompiler compiler;
   final service.Authentication _authService;
+  final String fsConfPath;
   final Logger _log = new Logger('$_libraryName.Ivr');
 
   Future<List<String>> _writeIvrfile(model.IvrMenu menu,
       dialplanTools.DialplanCompiler compiler, Logger _log) async {
-    final String xmlFilePath = '${config.dialplanserver.freeswitchConfPath}'
-        '/ivr_menus/${menu.name}.xml';
+    final String xmlFilePath = fsConfPath + '/ivr_menus/${menu.name}.xml';
 
     final List<String> generatedFiles = new List<String>.from([xmlFilePath]);
 
@@ -50,8 +56,8 @@ class Ivr {
     Iterable<model.Voicemail> voicemailAccounts =
         menu.allActions.where((a) => a is model.Voicemail);
 
-    generatedFiles.addAll(
-        (await _writeVoicemailfiles(voicemailAccounts, compiler, _log)));
+    generatedFiles.addAll((await _writeVoicemailfiles(
+        voicemailAccounts, compiler, _log, fsConfPath)));
 
     return generatedFiles;
   }
@@ -76,7 +82,7 @@ class Ivr {
   /**
    *
    */
-  Ivr(this._ivrStore, this.compiler, this._authService);
+  Ivr(this._ivrStore, this.compiler, this._authService, this.fsConfPath);
 
   /**
    *
@@ -89,7 +95,7 @@ class Ivr {
     try {
       user = await _authService.userOf(tokenFrom(request));
     } catch (e, s) {
-      _log.warning('Could not connect to auth server');
+      _log.warning('Could not connect to auth server', e, s);
       return authServerDown();
     }
 
@@ -136,7 +142,7 @@ class Ivr {
     try {
       user = await _authService.userOf(tokenFrom(request));
     } catch (e, s) {
-      _log.warning('Could not connect to auth server');
+      _log.warning('Could not connect to auth server', e, s);
       return authServerDown();
     }
     return okJson(await _ivrStore.remove(menuName, user));

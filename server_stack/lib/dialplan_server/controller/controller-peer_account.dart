@@ -20,11 +20,12 @@ class PeerAccount {
   final Logger _log = new Logger('$_libraryName.PeerAccount');
   final dialplanTools.DialplanCompiler _compiler;
   final storage.User _userStore;
+  final String fsConfPath;
 
   /**
    *
    */
-  PeerAccount(this._userStore, this._compiler);
+  PeerAccount(this._userStore, this._compiler, this.fsConfPath);
 
   /**
    *
@@ -38,8 +39,8 @@ class PeerAccount {
 
     final model.User user = await _userStore.get(uid);
 
-    final String xmlFilePath = '${config.dialplanserver.freeswitchConfPath}'
-        '/directory/receptionists/${account.username}.xml';
+    final String xmlFilePath =
+        fsConfPath + '/directory/receptionists/${account.username}.xml';
     final List<String> generatedFiles = new List<String>.from([xmlFilePath]);
 
     _log.fine('Deploying new peer account to file $xmlFilePath');
@@ -60,8 +61,7 @@ class PeerAccount {
    *
    */
   Future<shelf.Response> list(shelf.Request request) async {
-    final String xmlFilePath = '${config.dialplanserver.freeswitchConfPath}'
-        '/directory/receptionists';
+    final String xmlFilePath = fsConfPath + '/directory/receptionists';
 
     bool isXmlFile(FileSystemEntity fse) =>
         fse is File && fse.path.toLowerCase().endsWith('.xml');
@@ -81,8 +81,8 @@ class PeerAccount {
   Future<shelf.Response> remove(shelf.Request request) async {
     final String aid = shelf_route.getPathParameter(request, 'aid');
 
-    final String xmlFilePath = '${config.dialplanserver.freeswitchConfPath}'
-        '/directory/receptionists/${aid}.xml';
+    final String xmlFilePath =
+        fsConfPath + '/directory/receptionists/${aid}.xml';
 
     final File peerAccount = new File(xmlFilePath);
 

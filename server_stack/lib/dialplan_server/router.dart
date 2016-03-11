@@ -39,15 +39,18 @@ const Map<String, String> _corsHeaders = const {
 };
 
 Future<io.HttpServer> start(
-    {String hostname: '0.0.0.0', int port: 4030, String filepath: ''}) async {
+    {String hostname: '0.0.0.0',
+    int port: 4030,
+    String filepath: '',
+    String fsConfPath: ''}) async {
   final Service.Authentication _authService = new Service.Authentication(
       config.authServer.externalUri,
       config.userServer.serverToken,
       new Service_IO.Client());
 
   /**
-       * Validate a token by looking it up on the authentication server.
-       */
+   * Validate a token by looking it up on the authentication server.
+   */
   Future<shelf.Response> _lookupToken(shelf.Request request) async {
     var token = request.requestedUri.queryParameters['token'];
 
@@ -103,14 +106,15 @@ Future<io.HttpServer> start(
     'all calls to ${compiler.option.testNumber}'}');
 
   final controller.Ivr ivrHandler =
-      new controller.Ivr(_ivrStore, compiler, _authService);
+      new controller.Ivr(_ivrStore, compiler, _authService, fsConfPath);
   final controller.ReceptionDialplan receptionDialplanHandler =
-      new controller.ReceptionDialplan(_dpStore, _rStore, compiler, ivrHandler);
+      new controller.ReceptionDialplan(
+          _dpStore, _rStore, compiler, ivrHandler, fsConfPath);
 
   final controller.PeerAccount peerAccountHandler =
-      new controller.PeerAccount(_userStore, compiler);
+      new controller.PeerAccount(_userStore, compiler, fsConfPath);
 
-  var router = shelf_route.router()
+  final router = shelf_route.router()
     ..post('/peeraccount/user/{uid}/deploy', peerAccountHandler.deploy)
     ..get('/peeraccount', peerAccountHandler.list)
     ..get('/peeraccount/{aid}', peerAccountHandler.get)
@@ -133,14 +137,16 @@ Future<io.HttpServer> start(
     ..post('/receptiondialplan/{extension}/deploy/{rid}',
         receptionDialplanHandler.deploy);
 
-  var handler = const shelf.Pipeline()
+  final handler = const shelf.Pipeline()
       .addMiddleware(
           shelf_cors.createCorsHeadersMiddleware(corsHeaders: _corsHeaders))
       .addMiddleware(checkAuthentication)
       .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
       .addHandler(router.handler);
 
+  _log.fine('Deploying generated xml files to $fsConfPath subdirs');
   _log.fine('Serving interfaces on port $port:');
+
   shelf_route.printRoutes(router, printer: _log.fine);
 
   return await shelf_io.serve(handler, hostname, port);
