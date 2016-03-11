@@ -17,7 +17,7 @@ class CallFlowControl {
   Future _init() async {
     _log.fine('Starting new process');
     _process = await Process.start(
-        '/usr/bin/dart', ['$path/bin/callflowcontrol.dart', '-f', storePath],
+        '/usr/bin/dart', ['$path/bin/callflowcontrol.dart'],
         workingDirectory: path)
       ..stdout
           .transform(new Utf8Decoder())
