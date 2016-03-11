@@ -3,6 +3,7 @@ part of openreception_tests.process;
 class DialplanServer {
   final String path;
   final String storePath;
+  final String fsConfPath;
   final Logger _log = new Logger('$_namespace.DialplanServer');
   Process _process;
 
@@ -10,14 +11,21 @@ class DialplanServer {
   bool get ready => _ready.isCompleted;
   Future get whenReady => _ready.future;
 
-  DialplanServer(this.path, this.storePath) {
+  DialplanServer(this.path, this.storePath, this.fsConfPath) {
     _init();
   }
 
   Future _init() async {
     _log.fine('Starting new process');
     _process = await Process.start(
-        '/usr/bin/dart', ['$path/bin/dialplanserver.dart', '-f', storePath],
+        '/usr/bin/dart',
+        [
+          '$path/bin/dialplanserver.dart',
+          '-f',
+          storePath,
+          '--freeswitch-conf-path',
+          fsConfPath
+        ],
         workingDirectory: path)
       ..stdout
           .transform(new Utf8Decoder())
