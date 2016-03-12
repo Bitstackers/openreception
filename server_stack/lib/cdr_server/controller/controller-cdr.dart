@@ -14,88 +14,69 @@
 part of openreception.cdr_server.controller;
 
 class Cdr {
-  final database.Cdr _cdrStore;
   final Logger _log = new Logger('cdr_server.controller.cdr');
 
-  Cdr(this._cdrStore);
-
   /**
-   *
+   * Constructor.
    */
-  Future<shelf.Response> list(shelf.Request request) async {
-    if (!shelf_route.getPathParameters(request).containsKey('date_from')) {
-      return _clientError('Missing parameter: date_from');
-    }
+  Cdr();
 
-    if (!shelf_route.getPathParameters(request).containsKey('date_to')) {
-      return _clientError('Missing parameter: date_to');
-    }
-
-    DateTime start, end;
-    try {
-      start = util.unixTimestampToDateTime(
-          int.parse(shelf_route.getPathParameter(request, 'date_from')));
-      end = util.unixTimestampToDateTime(
-          int.parse(shelf_route.getPathParameter(request, 'date_to')));
-    } catch (error, stackTrace) {
-      _log.warning('Bad client request', error, stackTrace);
-      return _clientError('Bad parameter: ${error}');
-    }
-
-    final bool inbound = shelf_route
-            .getPathParameters(request)
-            .containsKey('inbound')
-        ? shelf_route.getPathParameter(request, 'inbound') == 'true'
-        : false;
-
-    return await _cdrStore.list(inbound, start, end).then(
-        (List orgs) => _okJson({'cdr_stats': orgs.toList(growable: false)}));
-  }
-
-  /**
-   *
-   */
-  Future<shelf.Response> createCheckpoint(shelf.Request request) async {
-    model.CDRCheckpoint checkpoint;
+  Future<shelf.Response> process(shelf.Request request) async {
+    String direction;
+    DateTime from;
+    String kind;
+    List<String> rids = new List<String>();
+    DateTime to;
+    List<String> uids = new List<String>();
 
     try {
-      checkpoint = await request
-          .readAsString()
-          .then(JSON.decode)
-          .then((map) => new model.CDRCheckpoint.fromMap(map));
-    } catch (error, stackTrace) {
-      _log.warning('Failed to process body', error, stackTrace);
-      return _clientError('Failed to process body');
+      from = DateTime.parse(shelf_route.getPathParameter(request, 'from'));
+      to = DateTime.parse(shelf_route.getPathParameter(request, 'to'));
+
+      if (from.isAtSameMomentAs(to) || from.isAfter(to)) {
+        throw new FormatException('Invalid timestamps. From must be before to');
+      }
+
+      kind = shelf_route
+          .getPathParameter(request, 'kind')
+          .toString()
+          .toLowerCase();
+      if (!['list', 'summary'].contains(kind)) {
+        throw new FormatException('Invalid kind value');
+      }
+
+      direction = shelf_route
+          .getPathParameter(request, 'direction')
+          .toString()
+          .toLowerCase();
+      if (!['both', 'inbound', 'outbound'].contains(direction)) {
+        throw new FormatException('Invalid direction value');
+      }
+
+      if (request.requestedUri.queryParameters.containsKey('rids')) {
+        rids = request.requestedUri.queryParameters['rids'].split(',');
+      }
+
+      if (request.requestedUri.queryParameters.containsKey('uids')) {
+        uids = request.requestedUri.queryParameters['uids'].split(',');
+      }
+    } on FormatException catch (error) {
+      _log.warning('Bad request string: ${request.requestedUri}');
+      _log.warning(error.message);
+      return new shelf.Response.internalServerError(
+          body: 'Cannot parse request string');
     }
 
-    return await _cdrStore
-        .createCheckpoint(checkpoint)
-        .then((_) => _okJson({}));
-  }
+    // final List<String> args = new List<String>();
 
-  /**
-   *
-   */
-  Future<shelf.Response> checkpoints(shelf.Request request) =>
-      _cdrStore.checkpointList().then((checkpoints) =>
-          _okJson({'checkpoints': checkpoints.toList(growable: false)}));
-
-  /**
-   *
-   */
-  Future<shelf.Response> addCdrEntry(shelf.Request request) async {
-    model.FreeSWITCHCDREntry entry;
-
-    try {
-      entry = await request
-          .readAsString()
-          .then(JSON.decode)
-          .then((map) => new model.FreeSWITCHCDREntry.fromJson(map));
-    } catch (error, stackTrace) {
-      _log.warning('Failed to process body', error, stackTrace);
-      return _clientError('Failed to process body');
-    }
-
-    return await _cdrStore.create(entry).then((_) => _okJson({}));
+    return io.Process.run('dart', [
+      '/home/thomas/projects/dart/cdrctl/bin/cdrctl.dart',
+      'report',
+      '-f',
+      '2016-02-01',
+      '--json'
+    ]).then((io.ProcessResult pr) {
+      return _okJson(JSON.decode(pr.stdout));
+    });
   }
 }
