@@ -33,6 +33,10 @@ class Cdr {
       from = DateTime.parse(shelf_route.getPathParameter(request, 'from'));
       to = DateTime.parse(shelf_route.getPathParameter(request, 'to'));
 
+      if (from.isAtSameMomentAs(to) || from.isAfter(to)) {
+        throw new FormatException('Invalid timestamps. From must be before to');
+      }
+
       kind = shelf_route
           .getPathParameter(request, 'kind')
           .toString()
