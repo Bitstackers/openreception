@@ -67,14 +67,15 @@ class Cdr {
           body: 'Cannot parse request string');
     }
 
+    // final List<String> args = new List<String>();
+
     return io.Process.run('dart', [
       '/home/thomas/projects/dart/cdrctl/bin/cdrctl.dart',
       'report',
       '-f',
       '2016-02-01',
       '--json'
-    ]).then((ProcessResult pr) {
-      // return _okJson('Got stuff!!');
+    ]).then((io.ProcessResult pr) {
       return _okJson(JSON.decode(pr.stdout));
     });
   }
