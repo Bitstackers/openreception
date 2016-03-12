@@ -128,7 +128,7 @@ abstract class Notification {
         ..connectionCount = clientRegistry[uid].length;
       Event.ClientConnectionState event = new Event.ClientConnectionState(conn);
 
-      _sendToAll(event.asMap);
+      _sendToAll(event.toJson());
     });
 
     Model.ClientConnection conn = new Model.ClientConnection.empty()
@@ -136,7 +136,7 @@ abstract class Notification {
       ..connectionCount = clientRegistry[uid].length;
     Event.ClientConnectionState event = new Event.ClientConnectionState(conn);
 
-    return _sendToAll(event.asMap);
+    return _sendToAll(event.toJson());
   }
 
   static Future<shelf.Response> _handleWsConnect(shelf.Request request) async {
