@@ -32,6 +32,10 @@ Future main(List<String> args) async {
   final ArgParser parser = new ArgParser()
     ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
     ..addOption('filestore', abbr: 'f', help: 'Path to the filestore backend')
+    ..addOption('freeswitch-conf-path',
+        help: 'Path to the FreeSWITCH conf directory. '
+            'Defaults to /etc/freeswitch',
+        defaultsTo: '/etc/freeswitch')
     ..addOption('httpport',
         defaultsTo: config.dialplanserver.httpPort.toString(),
         help: 'The port the HTTP server listens on.');
@@ -64,6 +68,9 @@ Future main(List<String> args) async {
     exit(1);
   }
 
-  await router.start(port: port, filepath: filepath);
+  await router.start(
+      port: port,
+      filepath: filepath,
+      fsConfPath: parsedArgs['freeswitch-conf-path']);
   log.info('Ready to handle requests');
 }

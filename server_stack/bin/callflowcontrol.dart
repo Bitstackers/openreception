@@ -25,7 +25,7 @@ import 'package:esl/esl.dart' as ESL;
 import 'package:logging/logging.dart';
 import '../lib/configuration.dart';
 
-Logger log = new Logger('CallFlowControl');
+Logger log = new Logger('callflow');
 ArgResults parsedArgs;
 ArgParser parser = new ArgParser();
 
@@ -39,7 +39,7 @@ class AuthenticationException implements Exception {
 /**
  * TODO: Recover from text/disconnect.
  */
-void main(List<String> args) {
+Future main(List<String> args) async {
   ///Init logging. Inherit standard values.
   Logger.root.level = config.callFlowControl.log.level;
   Logger.root.onRecord.listen(config.callFlowControl.log.onRecord);
@@ -51,7 +51,8 @@ void main(List<String> args) {
   } else {
     router.connectAuthService();
     connectESLClient();
-    router.start(port: config.callFlowControl.httpPort);
+    await router.start(port: config.callFlowControl.httpPort);
+    log.info('Ready to handle requests');
   }
 }
 
@@ -93,8 +94,8 @@ void connectESLClient() {
         authenticate(Controller.PBX.apiClient)
             .then((_) => Controller.PBX.loadPeers())
             .then((_) => Controller.PBX.loadChannels().then((_) => Model
-                .CallList
-                .instance.reloadFromChannels(Model.ChannelList.instance)));
+                .CallList.instance
+                .reloadFromChannels(Model.ChannelList.instance)));
 
         break;
 
@@ -109,7 +110,8 @@ void connectESLClient() {
       case (ESL.ContentType.Auth_Request):
         log.info('Connected to ${hostname}:${port}');
         authenticate(Controller.PBX.eventClient).then((_) => Controller
-            .PBX.eventClient.event(Model.PBXEvent.requiredSubscriptions,
+            .PBX.eventClient
+            .event(Model.PBXEvent.requiredSubscriptions,
                 format: ESL.EventFormat.Json)..catchError(log.shout));
 
         break;
