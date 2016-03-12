@@ -32,10 +32,10 @@ Future main(List<String> args) async {
   ArgParser parser = new ArgParser()
     ..addFlag('help', abbr: 'h', help: 'Output this help')
     ..addOption('filestore', abbr: 'f', help: 'Path to the filestore backend')
-    ..addOption('configfile',
-        help: 'The JSON configuration file. Defaults to config.json')
     ..addOption('httpport',
-        help: 'The port the HTTP server listens on.  Defaults to 4200');
+        help: 'The port the HTTP server listens on. '
+            'Defaults to ${config.notificationServer.httpPort}',
+        defaultsTo: config.notificationServer.httpPort.toString());
 
   final ArgResults parsedArgs = parser.parse(args);
 
@@ -52,6 +52,7 @@ Future main(List<String> args) async {
 
   await router.connectAuthService();
   await router.start(
-      hostname: config.notificationServer.externalHostName,
-      port: config.notificationServer.httpPort);
+      port: int.parse(parsedArgs['httpport']),
+      filepath: parsedArgs['filestore']);
+  log.info('Ready to handle requests');
 }

@@ -81,7 +81,8 @@ shelf.Response _handleHttpRequest(shelf.Request request) =>
 /**
  *
  */
-Future<io.HttpServer> start({String hostname: '0.0.0.0', int port: 4200}) {
+Future<io.HttpServer> start(
+    {String hostname: '0.0.0.0', int port: 4200, String filepath: ''}) {
   var router = (shelf_route.router()
     ..get('/notifications', Notification._handleWsConnect)
     ..post('/broadcast', Notification.broadcast)
