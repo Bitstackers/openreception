@@ -1,5 +1,5 @@
 /*                  This file is part of OpenReception
-                   Copyright (C) 2014-, BitStackers K/S
+                   Copyright (C) 2016-, BitStackers K/S
 
   This is free software;  you can redistribute it and/or modify it
   under terms of the  GNU General Public License  as published by the
@@ -11,16 +11,21 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.cdr_server.controller;
+library openreception.message_server.controller;
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io' as io;
 
-import 'package:logging/logging.dart';
+import '../response_utils.dart';
+
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
+import 'package:logging/logging.dart';
+import 'package:openreception_framework/event.dart' as event;
+import 'package:openreception_framework/service.dart' as service;
+import 'package:openreception_framework/storage.dart' as storage;
+import 'package:openreception_framework/model.dart' as model;
 
-part 'controller-cdr.dart';
+import '../configuration.dart';
 
-shelf.Response _okJson(body) => new shelf.Response.ok(JSON.encode(body));
+part 'controller/controller-message.dart';
