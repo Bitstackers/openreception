@@ -14,7 +14,6 @@
 part of openreception.reception_server.controller;
 
 class Reception {
-  final Logger _log = new Logger('$_libraryName.Reception');
   final filestore.Reception _rStore;
   final service.Authentication _authservice;
   final service.NotificationService _notification;

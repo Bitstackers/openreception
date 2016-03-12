@@ -19,7 +19,6 @@ void _validate(model.Organization org) {
 }
 
 class Organization {
-  final Logger _log = new Logger('$_libraryName.Organization');
   final filestore.Organization _orgStore;
   final service.Authentication _authservice;
   final service.NotificationService _notification;
