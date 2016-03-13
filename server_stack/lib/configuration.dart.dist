@@ -203,6 +203,7 @@ class ContactServer extends StandardConfig {
 class CDRServer extends StandardConfig {
   @override
   final int httpPort = 4090;
+  final String pathToCdrCtl = '/path/cdrctl.dart';
 
   const CDRServer();
 }
