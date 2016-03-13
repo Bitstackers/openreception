@@ -53,7 +53,7 @@ class RESTContactStore implements Storage.Contact {
     url = _appendToken(url, _token);
 
     return _backend.post(url, JSON.encode(contact)).then((String response) =>
-        new Model.BaseContact.fromMap(JSON.decode(response)));
+        Model.ContactReference.decode(JSON.decode(response)));
   }
 
   Future<Model.ContactReference> update(
@@ -94,15 +94,6 @@ class RESTContactStore implements Storage.Contact {
 
     return _backend.get(url).then((String response) =>
         (JSON.decode(response) as Iterable).map(Model.ContactReference.decode));
-  }
-
-  Future<Iterable<Model.BaseContact>> colleagues(int contactId) {
-    Uri url = Resource.Contact.colleagues(_host, contactId);
-    url = _appendToken(url, _token);
-
-    return _backend.get(url).then((String response) =>
-        (JSON.decode(response) as Iterable)
-            .map((Map map) => new Model.BaseContact.fromMap(map)));
   }
 
   Future<Model.ReceptionContactReference> addData(
