@@ -6,7 +6,10 @@ class Contact {
 
   Contact(this._service, this._appUser);
 
-  Future<Iterable<model.ReceptionAttributes>> receptionAttributes(int rid) =>
+  Future<Iterable<model.ContactReference>> receptionContacts(int rid) =>
+      _service.receptionContacts(rid);
+
+  Future<Iterable<model.ReceptionReference>> receptions(int rid) =>
       _service.receptions(rid);
 
   Future<Iterable<model.OrganizationReference>> contactOrganizations(int cid) =>
@@ -27,9 +30,6 @@ class Contact {
 
   Future remove(int cid) => _service.remove(cid, _appUser);
 
-  Future<Iterable<model.ReceptionReference>> receptions(int cid) =>
-      _service.receptions(cid);
-
   Future<model.ReceptionContactReference> addToReception(
           model.ReceptionAttributes attr) =>
       _service.addData(attr, _appUser);
@@ -41,15 +41,16 @@ class Contact {
           model.ReceptionAttributes attr) =>
       _service.updateData(attr, _appUser);
 
-  Future<Iterable<model.ReceptionAttributes>> colleagues(int cid) {
-    List<model.ReceptionAttributes> foundColleagues = [];
+  Future<Iterable<model.ContactReference>> colleagues(int cid) {
+    List<model.ContactReference> foundColleagues = [];
 
     return _service
         .receptions(cid)
         .then((Iterable<model.ReceptionReference> rRefs) => Future.forEach(
             rRefs,
-            (rRef) =>
-                _service.receptions(rRef.id).then(foundColleagues.addAll)))
+            (rRef) => _service
+                .receptionContacts(rRef.id)
+                .then(foundColleagues.addAll)))
         .then((_) => foundColleagues);
   }
 }

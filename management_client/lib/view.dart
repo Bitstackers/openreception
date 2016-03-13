@@ -36,6 +36,9 @@ controller.Popup notify = controller.popup;
 var _jsonpp = new JsonEncoder.withIndent('  ');
 final DateFormat rfc3339 = new DateFormat('yyyy-MM-dd HH:mm');
 
+int compareContactRefs(model.ContactReference c1, model.ContactReference c2) =>
+    c1.name.toLowerCase().compareTo(c2.name.toLowerCase());
+
 /**
  *
  */

@@ -176,29 +176,27 @@ class ReceptionView {
     }
   }
 
-  void _updateContactList(int receptionId) {
-    _contactController
-        .receptionAttributes(receptionId)
-        .then((Iterable<ORModel.ReceptionAttributes> attrs) {
-      int compareTo(
-              ORModel.ReceptionAttributes c1, ORModel.ReceptionAttributes c2) =>
-          c1.reference.reception.name.compareTo(c2.reference.reception.name);
+  /**
+   *
+   */
+  Future _updateContactList(int receptionId) async {
+    final Iterable<ORModel.ContactReference> cRefs =
+        await _contactController.receptionContacts(receptionId);
 
-      List<ORModel.ReceptionAttributes> sorted = attrs.toList()
-        ..sort(compareTo);
-      _ulContactList.children
-        ..clear()
-        ..addAll(sorted.map((ORModel.ReceptionAttributes attr) =>
-            makeContactNode(attr, receptionId)));
-    });
+    List<ORModel.ContactReference> sorted = cRefs.toList()
+      ..sort(view.compareContactRefs);
+    _ulContactList.children
+      ..clear()
+      ..addAll(sorted.map((ORModel.ContactReference cRef) =>
+          makeContactNode(cRef, receptionId)));
   }
 
-  LIElement makeContactNode(ORModel.ReceptionAttributes attr, int rid) {
+  LIElement makeContactNode(ORModel.ContactReference cRef, int rid) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
-      ..text = attr.reference.reception.name
+      ..text = cRef.name
       ..onClick.listen((_) {
-        Map data = {'contact_id': attr.contactId, 'reception_id': rid};
+        Map data = {'contact_id': cRef.id, 'reception_id': rid};
         bus.fire(new WindowChanged('contact', data));
       });
     return li;

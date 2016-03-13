@@ -89,7 +89,7 @@ class MessageFilter {
    */
   Future _reloadContactSelector() async {
     Iterable<model.ReceptionAttributes> contacts = _rid != model.Reception.noId
-        ? await _contactController.receptionAttributes(_rid)
+        ? await _contactController.receptions(_rid)
         : [];
 
     OptionElement contactToOption(model.ReceptionAttributes attr) =>

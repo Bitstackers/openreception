@@ -65,7 +65,7 @@ class Calendar {
           ' sletning af eid${entry.id}?';
 
       if (deleteButton.text == confirmText) {
-        await _calendarController.remove(entry, config.user);
+        await _calendarController.remove(entry);
         notify.success('Slettede kalenderpost', 'eid:${entry.id}');
 
         onDelete != null ? onDelete() : '';

@@ -36,8 +36,6 @@ Future main() async {
     final service.RESTUserStore userStore = new service.RESTUserStore(
         config.clientConfig.userServerUri, config.token, client);
 
-    final service.RESTEndpointStore epStore = new service.RESTEndpointStore(
-        config.clientConfig.contactServerUri, config.token, client);
     final service.RESTReceptionStore receptionStore =
         new service.RESTReceptionStore(
             config.clientConfig.receptionServerUri, config.token, client);
@@ -69,11 +67,11 @@ Future main() async {
     final controller.Contact contactController =
         new controller.Contact(contactStore, config.user);
     final controller.Calendar calendarController =
-        new controller.Calendar(calendarStore);
+        new controller.Calendar(calendarStore, config.user);
     final controller.Dialplan dialplanController =
         new controller.Dialplan(dialplanStore, receptionStore);
     final controller.Message messageController =
-        new controller.Message(messageStore);
+        new controller.Message(messageStore, config.user);
 
     final controller.Ivr ivrController =
         new controller.Ivr(ivrStore, dialplanStore);

@@ -61,7 +61,7 @@ class Messages {
       ..text = 'Slet'
       ..classes.add('delete');
     final deleteCell = new TableCellElement()
-      ..children = msg.sent || msg.enqueued ? [] : [deleteButton];
+      ..children = false ? [] : [deleteButton];
 
     deleteButton.onClick.listen((_) async {
       final confirmText = 'Bekræft sletning af mid${msg.id}?';
@@ -78,18 +78,18 @@ class Messages {
 
     List<String> status = [];
 
-    if (msg.closed) {
-      status.add('Lukket');
-    }
-    if (msg.enqueued) {
-      status.add('I kø');
-    }
-    if (msg.manuallyClosed) {
-      status.add('Manuelt lukket');
-    }
-    if (msg.sent) {
-      status.add('Afsendt');
-    }
+    // if (msg.closed) {
+    //   status.add('Lukket');
+    // }
+    // if (msg.enqueued) {
+    //   status.add('I kø');
+    // }
+    // if (msg.manuallyClosed) {
+    //   status.add('Manuelt lukket');
+    // }
+    // if (msg.sent) {
+    //   status.add('Afsendt');
+    // }
 
     SpanElement contextInfo(model.MessageContext mc) => new SpanElement()
       ..text = mc.contactName +

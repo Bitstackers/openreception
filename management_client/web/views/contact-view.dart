@@ -206,10 +206,11 @@ class ContactView {
     _calendarsContainer..hidden = true;
     _calendarToggle..text = 'Vis kalenderaftaler';
 
-    if (bc.id != model.ReceptionAttributes.noId) {
+    if (bc.id != model.BaseContact.noId) {
       _activateContact(bc.id);
       _saveButton.disabled = true;
-      _header.text = 'Retter basisinfo for ${bc.name} (cid: ${bc.id})';
+      _header.text =
+          'Retter basisinfo for ${bc.name} (cid: ${_bcidInput.value})';
     } else {
       _header.text = 'Opret ny basiskontakt';
 
@@ -255,13 +256,13 @@ class ContactView {
 
     _calendarView.onDelete = () async {
       _calendarController
-          .listContact(baseContact.id, deleted: false)
+          .listContact(baseContact.id)
           .then((Iterable<model.CalendarEntry> entries) {
         _calendarView.entries = entries;
       });
 
       _calendarController
-          .listContact(baseContact.id, deleted: true)
+          .listContact(baseContact.id)
           .then((Iterable<model.CalendarEntry> entries) {
         _deletedCalendarView.entries = entries;
       });
@@ -269,13 +270,13 @@ class ContactView {
 
     _deletedCalendarView.onDelete = () async {
       _calendarController
-          .listContact(baseContact.id, deleted: false)
+          .listContact(baseContact.id)
           .then((Iterable<model.CalendarEntry> entries) {
         _calendarView.entries = entries;
       });
 
       _calendarController
-          .listContact(baseContact.id, deleted: true)
+          .listContact(baseContact.id)
           .then((Iterable<model.CalendarEntry> entries) {
         _deletedCalendarView.entries = entries;
       });
@@ -283,7 +284,7 @@ class ContactView {
 
     _saveButton.onClick.listen((_) async {
       model.ContactReference updated;
-      if (baseContact.id == model.ReceptionAttributes.noId) {
+      if (baseContact.id == model.BaseContact.noId) {
         updated = await _contactController.create(baseContact);
         notify.success('Oprettede kontaktperson', '${updated.name}');
       } else {
@@ -348,7 +349,7 @@ class ContactView {
 
             _log.finest('Adding calendar entry ${ce.toJson()} to cid:$dcid');
 
-            await _calendarController.create(ce, config.user);
+            await _calendarController.create(ce);
           }));
 
           _log.finest('Deleting cid:$sourceCid');
@@ -448,13 +449,13 @@ class ContactView {
       _highlightContactInList(id);
 
       _calendarController
-          .listContact(contact.id, deleted: false)
+          .listContact(contact.id)
           .then((Iterable<model.CalendarEntry> entries) {
         _calendarView.entries = entries;
       });
 
       _calendarController
-          .listContact(contact.id, deleted: true)
+          .listContact(contact.id)
           .then((Iterable<model.CalendarEntry> entries) {
         _deletedCalendarView.entries = entries;
       });
@@ -480,6 +481,7 @@ class ContactView {
             .contactOrganizations(id)
             .then((Iterable<model.OrganizationReference> oRefs) {
           _ulOrganizationList.children..clear();
+          print(oRefs);
 
           Future.forEach(oRefs, (model.OrganizationReference oRef) {
             _createOrganizationNode(oRef);
@@ -492,14 +494,8 @@ class ContactView {
         //FIXME: Figure out how this should look.
         return _contactController
             .colleagues(id)
-            .then((Iterable<model.ReceptionAttributes> contacts) {
-          int compareTo(
-                  model.ReceptionAttributes c1, model.ReceptionAttributes c2) =>
-              c1.reference.reception.name
-                  .toLowerCase()
-                  .compareTo(c2.reference.reception.name.toLowerCase());
-
-          List list = contacts.toList()..sort(compareTo);
+            .then((Iterable<model.ContactReference> cRefs) {
+          List list = cRefs.toList()..sort(view.compareContactRefs);
 
           _ulReceptionList.children = list.map(_createColleagueNode).toList();
         });
@@ -607,10 +603,10 @@ class ContactView {
     UListElement contactsUl = new UListElement()..classes.add('zebra-odd');
 
     _contactController
-        .receptionAttributes(reception.id)
-        .then((Iterable<model.ReceptionAttributes> contacts) {
-      contactsUl.children = contacts
-          .map((model.ReceptionAttributes collegue) =>
+        .receptionContacts(reception.id)
+        .then((Iterable<model.ContactReference> cRefs) {
+      contactsUl.children = cRefs
+          .map((model.ContactReference collegue) =>
               _createColleagueNode(collegue))
           .toList();
     });
@@ -620,19 +616,15 @@ class ContactView {
   }
 
   /**
-   * TODO: Add reception Name.
+   * TODO: Add reception references
    */
-  LIElement _createColleagueNode(model.ReceptionAttributes collegue) {
+  LIElement _createColleagueNode(model.ContactReference collegue) {
     return new LIElement()
       ..classes.add('clickable')
       ..classes.add('colleague')
-      ..text =
-          '${collegue.reference.contact.name} (rid: ${collegue.receptionId})'
+      ..text = '${collegue.name}'
       ..onClick.listen((_) {
-        Map data = {
-          'contact_id': collegue.contactId,
-          'reception_id': collegue.receptionId
-        };
+        Map data = {'contact_id': collegue.id};
         bus.fire(new WindowChanged('contact', data));
       });
   }
