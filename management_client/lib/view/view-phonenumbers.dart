@@ -49,7 +49,7 @@ class Phonenumbers {
       final model.PhoneNumber pn = new model.PhoneNumber.empty()
         ..confidential = true
         ..description = 'Kort beskrivelse'
-        ..endpoint = '00000000'
+        ..destination = '00000000'
         ..tags = ['Kontor'];
 
       if (_unfoldJson.hidden) {
