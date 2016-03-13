@@ -14,7 +14,6 @@
 library openreception.cdr_server.controller;
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io' as io;
 
 import 'package:logging/logging.dart';
@@ -24,5 +23,3 @@ import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import '../../configuration.dart';
 
 part 'controller-cdr.dart';
-
-shelf.Response _okJson(body) => new shelf.Response.ok(JSON.encode(body));

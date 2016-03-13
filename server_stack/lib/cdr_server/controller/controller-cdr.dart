@@ -68,7 +68,6 @@ class Cdr {
     }
 
     final List<String> args = new List<String>()
-      ..add('dart')
       ..add(config.cdrServer.pathToCdrCtl)
       ..add('report')
       ..add('-k')
@@ -92,8 +91,8 @@ class Cdr {
     }
 
     return io.Process.run('dart', args).then((io.ProcessResult pr) {
-      _log.info('Executing ${args.join(' ')}');
-      return _okJson(JSON.decode(pr.stdout));
+      _log.info('Executing dart ${args.join(' ')}');
+      return new shelf.Response.ok(pr.stdout);
     });
   }
 }
