@@ -11,7 +11,8 @@ class Dialplan {
     ..classes.add('full-width')
     ..hidden = true
     ..value = '';
-  final DivElement element = new DivElement()..classes = ['dialplan-view-widget'];
+  final DivElement element = new DivElement()
+    ..classes = ['dialplan-view-widget'];
   final ButtonElement _foldJson = new ButtonElement()
     ..text = 'Fold sammen'
     ..classes.add('fold-unfold')
@@ -54,7 +55,8 @@ class Dialplan {
       try {
         rdp = model.ReceptionDialplan.decode(json);
       } on FormatException {
-        _inputErrorList.children.add(new LIElement()..text = 'Kaldplan-parser fejl.');
+        _inputErrorList.children
+            .add(new LIElement()..text = 'Kaldplan-parser fejl.');
         _dialplanInput.classes.toggle('error', true);
       }
     } on FormatException {
@@ -65,7 +67,8 @@ class Dialplan {
 
   Future _deleteDialplan() async {
     _log.finest('Deleting dialplan${dialplan.extension}');
-    final String confirmationText = 'Bekræft sletning af kaldplan: ${dialplan.extension}}?';
+    final String confirmationText =
+        'Bekræft sletning af kaldplan: ${dialplan.extension}}?';
 
     if (_deleteButton.text != confirmationText) {
       _deleteButton.text = confirmationText;
@@ -84,7 +87,8 @@ class Dialplan {
       _dialplanInput.value = '';
       element.hidden = true;
     } catch (error) {
-      notify.error('Der skete en fejl i forbindelse med sletningen af kaldplanen',
+      notify.error(
+          'Der skete en fejl i forbindelse med sletningen af kaldplanen',
           'Check at den ikke bruges af en reception.');
       _log.severe('Delete dialplan failed with: ${error}');
     }

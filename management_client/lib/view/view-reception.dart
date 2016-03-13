@@ -192,6 +192,7 @@ class Reception {
     if (reception.id != model.Reception.noId) {
       _heading.text =
           'Retter reception "${reception.name}" (rid:${reception.id})';
+
       _saveButton.disabled = true;
     } else {
       _heading.text = 'Opretter ny reception';
@@ -205,13 +206,14 @@ class Reception {
     _deployDialplanButton.disabled = _deleteButton.disabled;
 
     _calendarController
-        .listReception(reception.id, deleted: false)
+        .listReception(reception.id)
         .then((Iterable<model.CalendarEntry> entries) {
       _calendarView.entries = entries;
     });
 
+    ///FIXME: Retrieve changes.
     _calendarController
-        .listReception(reception.id, deleted: true)
+        .listReception(reception.id)
         .then((Iterable<model.CalendarEntry> entries) {
       _deletedCalendarView.entries = entries;
     });
@@ -294,11 +296,8 @@ class Reception {
           (model.OrganizationReference organization, String searchterm) {
         return '${organization.name}';
       }
-      ..searchFilter =
-          (model.OrganizationReference organization, String searchTerm) {
-        return organization.name
-            .toLowerCase()
-            .contains(searchTerm.toLowerCase());
+      ..searchFilter = (model.OrganizationReference ref, String searchTerm) {
+        return ref.name.toLowerCase().contains(searchTerm.toLowerCase());
       }
       ..searchPlaceholder = 'Søg...';
 
@@ -463,13 +462,13 @@ class Reception {
 
     _deletedCalendarView.onDelete = () async {
       _calendarController
-          .listReception(reception.id, deleted: false)
+          .listReception(reception.id)
           .then((Iterable<model.CalendarEntry> entries) {
         _calendarView.entries = entries;
       });
 
       _calendarController
-          .listReception(reception.id, deleted: true)
+          .listReception(reception.id)
           .then((Iterable<model.CalendarEntry> entries) {
         _deletedCalendarView.entries = entries;
       });
@@ -477,13 +476,13 @@ class Reception {
 
     _calendarView.onDelete = () async {
       _calendarController
-          .listReception(reception.id, deleted: false)
+          .listReception(reception.id)
           .then((Iterable<model.CalendarEntry> entries) {
         _calendarView.entries = entries;
       });
 
       _calendarController
-          .listReception(reception.id, deleted: true)
+          .listReception(reception.id)
           .then((Iterable<model.CalendarEntry> entries) {
         _deletedCalendarView.entries = entries;
       });

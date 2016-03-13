@@ -68,9 +68,7 @@ class Endpoints {
     _addNew.onClick.listen((_) {
       final model.MessageEndpoint template = new model.MessageEndpoint.empty()
         ..address = 'eksempel@domæne.dk'
-        ..confidential = false
-        ..description = 'Kort beskrivelse'
-        ..enabled = true
+        ..name = 'Navn'
         ..type = model.MessageEndpointType.email;
 
       if (_unfoldJson.hidden) {
@@ -115,23 +113,7 @@ class Endpoints {
     Set<EndpointChange> epcs = new Set();
 
     Map<int, model.MessageEndpoint> mepIdMap = {};
-    _originalList.forEach((model.MessageEndpoint ep) {
-      mepIdMap[ep.id] = ep;
-
-      if (!endpoints.any((model.MessageEndpoint chEp) => chEp.id == ep.id)) {
-        epcs.add(new EndpointChange.delete(ep));
-      }
-    });
-
-    endpoints.forEach((ep) {
-      if (ep.id == model.MessageEndpoint.noId) {
-        epcs.add(new EndpointChange.create(ep));
-      } else if (mepIdMap.containsKey(ep.id) && mepIdMap[ep.id] != ep) {
-        epcs.add(new EndpointChange.update(ep));
-      } else if (!mepIdMap.containsKey(ep.id)) {
-        epcs.add(new EndpointChange.delete(ep));
-      }
-    });
+    _originalList.forEach((model.MessageEndpoint ep) {});
 
     return epcs;
   }
