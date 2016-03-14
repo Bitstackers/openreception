@@ -1,1 +1,0 @@
-{"access_token":"none","token_type":"Bearer","expires_in":3600,"id_token":"none","expiresAt":"2042-12-31 00:00:00.000","identity":{"id":10, "address" : "noreply@bitstack.dk", "name":"Test agent 1100","extension":"1100","groups":[{"id":1,"name":"Receptionist"},{"id":2,"name":"Administrator"},{"id":3,"name":"Service agent"}],"remote_attributes":{}}}
