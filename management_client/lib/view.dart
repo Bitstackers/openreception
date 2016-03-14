@@ -5,15 +5,17 @@ import 'dart:convert';
 import 'dart:html';
 
 import 'package:intl/intl.dart' show DateFormat;
-import 'package:management_tool/configuration.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/bus.dart';
 import 'package:openreception_framework/model.dart' as model;
+import 'package:openreception_framework/storage.dart' as storage;
+
 import 'package:openreception_framework/util.dart' as util;
 import 'package:management_tool/searchcomponent.dart';
 import 'package:management_tool/controller.dart' as controller;
 
 part 'view/view-calendar.dart';
+part 'view/view-contact_base_info.dart';
 part 'view/view-dialplan_calendar_plot.dart';
 part 'view/view-dialplan.dart';
 part 'view/view-dialplan_list.dart';
@@ -38,6 +40,10 @@ final DateFormat rfc3339 = new DateFormat('yyyy-MM-dd HH:mm');
 
 int compareContactRefs(model.ContactReference c1, model.ContactReference c2) =>
     c1.name.toLowerCase().compareTo(c2.name.toLowerCase());
+
+int compareOrgRefs(
+        model.OrganizationReference o1, model.OrganizationReference o2) =>
+    o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
 
 /**
  *

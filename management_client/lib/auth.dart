@@ -1,4 +1,4 @@
-library auth;
+library management_tool.auth;
 
 import 'dart:html';
 

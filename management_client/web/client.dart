@@ -1,20 +1,21 @@
 import 'dart:async';
 import 'dart:html';
 
-import 'views/contact-view.dart' as conView;
+import 'package:logging/logging.dart';
 
+///Pages
+import 'package:management_tool/page/page-contact.dart' as page;
 import 'package:management_tool/page/page-dialplan.dart' as page;
 import 'package:management_tool/page/page-ivr.dart' as page;
 import 'package:management_tool/page/page-message.dart' as page;
+import 'package:management_tool/page/page-organization.dart' as page;
+import 'package:management_tool/page/page-reception.dart' as page;
+import 'package:management_tool/page/page-user.dart' as page;
 
-import 'package:management_tool/page/page-organization.dart' as orgView;
-import 'package:management_tool/page/page-reception.dart' as recepView;
-import 'package:management_tool/page/page-user.dart' as userView;
-import 'menu.dart';
 import 'package:management_tool/controller.dart' as controller;
-import 'lib/auth.dart';
+import 'package:management_tool/auth.dart';
 import 'package:management_tool/configuration.dart';
-import 'package:logging/logging.dart';
+import 'menu.dart';
 
 import 'package:openreception_framework/service.dart' as service;
 import 'package:openreception_framework/service-html.dart' as transport;
@@ -56,7 +57,21 @@ Future main() async {
     final service.RESTMessageStore messageStore = new service.RESTMessageStore(
         config.clientConfig.messageServerUri, config.token, client);
 
+    final transport.WebSocketClient _websocket =
+        new transport.WebSocketClient();
+
+    await _websocket.connect(Uri.parse(
+        config.clientConfig.notificationSocketUri.toString() +
+            '?token=' +
+            config.token));
+    final service.NotificationSocket notification =
+        new service.NotificationSocket(_websocket);
+
     /// Controllers
+
+    final controller.Notification notificationController =
+        new controller.Notification(notification, config.user);
+
     final controller.User userController =
         new controller.User(userStore, config.user);
 
@@ -76,12 +91,12 @@ Future main() async {
     final controller.Ivr ivrController =
         new controller.Ivr(ivrStore, dialplanStore);
 
-    final orgView.OrganizationView orgPage = new orgView.OrganizationView(
-        organizationController, receptionController);
+    final page.OrganizationView orgPage =
+        new page.OrganizationView(organizationController, receptionController);
 
     querySelector("#organization-page").replaceWith(orgPage.element);
 
-    querySelector("#reception-page").replaceWith(new recepView.ReceptionView(
+    querySelector("#reception-page").replaceWith(new page.ReceptionView(
             contactController,
             organizationController,
             receptionController,
@@ -89,8 +104,8 @@ Future main() async {
             calendarController)
         .element);
 
-    new conView.ContactView(querySelector('#contact-page'), contactController,
-        receptionController, calendarController);
+    new page.ContactView(querySelector('#contact-page'), contactController,
+        receptionController, calendarController, notificationController);
 
     final messagePage = new page.Message(contactController, messageController,
         receptionController, userController);
@@ -101,7 +116,7 @@ Future main() async {
 
     querySelector('#ivr-page').replaceWith(new page.Ivr(ivrController).element);
     querySelector("#user-page")
-        .replaceWith(new userView.UserPage(userController).element);
+        .replaceWith(new page.UserPage(userController).element);
 
     new Menu(querySelector('nav#navigation'));
 

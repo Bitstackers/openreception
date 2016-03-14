@@ -60,8 +60,7 @@ class Messages {
     final ButtonElement deleteButton = new ButtonElement()
       ..text = 'Slet'
       ..classes.add('delete');
-    final deleteCell = new TableCellElement()
-      ..children = false ? [] : [deleteButton];
+    final deleteCell = new TableCellElement()..children = [deleteButton];
 
     deleteButton.onClick.listen((_) async {
       final confirmText = 'Bekræft sletning af mid${msg.id}?';
