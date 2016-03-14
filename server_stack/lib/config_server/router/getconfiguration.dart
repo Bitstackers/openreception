@@ -14,24 +14,22 @@
 part of openreception.configuration_server.router;
 
 final ORModel.ClientConfiguration client_config =
-  new ORModel.ClientConfiguration.empty()
-    ..authServerUri = config.configserver.authServerUri
-    ..calendarServerUri = config.configserver.calendarServerUri
-    ..callFlowServerUri = config.configserver.callFlowControlUri
-    ..contactServerUri = config.configserver.contactServerUri
-    ..dialplanServerUri = config.configserver.dialplanServerUri
-    ..messageServerUri = config.configserver.messageServerUri
-    ..notificationServerUri = config.configserver.notificationServerUri
-    ..notificationSocketUri = config.configserver.notificationSocketUri
-    ..receptionServerUri = config.configserver.receptionServerUri
-    ..systemLanguage = config.systemLanguage
-    ..userServerUri = config.configserver.userServerUri;
+    new ORModel.ClientConfiguration.empty()
+      ..authServerUri = config.configserver.authServerUri
+      ..calendarServerUri = config.configserver.calendarServerUri
+      ..callFlowServerUri = config.configserver.callFlowControlUri
+      ..cdrServerUri = config.configserver.cdrServerUri
+      ..contactServerUri = config.configserver.contactServerUri
+      ..dialplanServerUri = config.configserver.dialplanServerUri
+      ..messageServerUri = config.configserver.messageServerUri
+      ..notificationServerUri = config.configserver.notificationServerUri
+      ..notificationSocketUri = config.configserver.notificationSocketUri
+      ..receptionServerUri = config.configserver.receptionServerUri
+      ..systemLanguage = config.systemLanguage
+      ..userServerUri = config.configserver.userServerUri;
 
 shelf.Response getClientConfig(shelf.Request request) =>
-  new shelf.Response.ok(JSON.encode(client_config));
+    new shelf.Response.ok(JSON.encode(client_config));
 
 shelf.Response send404(shelf.Request request) =>
-  new shelf.Response.notFound(JSON.encode({"error" : "Not Found"}));
-
-
-
+    new shelf.Response.notFound(JSON.encode({"error": "Not Found"}));
