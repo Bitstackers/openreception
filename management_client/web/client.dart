@@ -4,12 +4,12 @@ import 'dart:html';
 import 'views/contact-view.dart' as conView;
 
 import 'package:management_tool/page/page-dialplan.dart' as page;
+import 'package:management_tool/page/page-cdr.dart' as page;
 import 'package:management_tool/page/page-ivr.dart' as page;
 import 'package:management_tool/page/page-message.dart' as page;
-
-import 'package:management_tool/page/page-organization.dart' as orgView;
-import 'package:management_tool/page/page-reception.dart' as recepView;
-import 'package:management_tool/page/page-user.dart' as userView;
+import 'package:management_tool/page/page-organization.dart' as page;
+import 'package:management_tool/page/page-reception.dart' as page;
+import 'package:management_tool/page/page-user.dart' as page;
 import 'menu.dart';
 import 'package:management_tool/controller.dart' as controller;
 import 'lib/auth.dart';
@@ -61,7 +61,8 @@ Future main() async {
         config.clientConfig.messageServerUri, config.token, client);
 
     /// Controllers
-    final controller.User userController = new controller.User(userStore);
+    final controller.Cdr cdrController =
+        new controller.Cdr(config.clientConfig.cdrServerUri, config.token);
     final controller.DistributionList dlistController =
         new controller.DistributionList(dlistStore);
     final controller.Endpoint epController = new controller.Endpoint(epStore);
@@ -77,16 +78,22 @@ Future main() async {
         new controller.Dialplan(dialplanStore, receptionStore);
     final controller.Message messageController =
         new controller.Message(messageStore);
+    final controller.User userController = new controller.User(userStore);
 
     final controller.Ivr ivrController =
         new controller.Ivr(ivrStore, dialplanStore);
 
-    final orgView.OrganizationView orgPage = new orgView.OrganizationView(
-        organizationController, receptionController);
+    final page.Cdr cdrPage = new page.Cdr(
+        cdrController, organizationController, receptionController);
+
+    final page.OrganizationView orgPage =
+        new page.OrganizationView(organizationController, receptionController);
+
+    querySelector('#cdr-page').replaceWith(cdrPage.element);
 
     querySelector("#organization-page").replaceWith(orgPage.element);
 
-    querySelector("#reception-page").replaceWith(new recepView.ReceptionView(
+    querySelector("#reception-page").replaceWith(new page.ReceptionView(
             contactController,
             organizationController,
             receptionController,
@@ -112,7 +119,7 @@ Future main() async {
 
     querySelector('#ivr-page').replaceWith(new page.Ivr(ivrController).element);
     querySelector("#user-page")
-        .replaceWith(new userView.UserPage(userController).element);
+        .replaceWith(new page.UserPage(userController).element);
 
     new Menu(querySelector('nav#navigation'));
 

@@ -26,7 +26,7 @@ class Menu {
       'user': element.querySelector('#user-button') as ButtonElement,
       'ivr': element.querySelector('#ivr-button') as ButtonElement,
       'message': element.querySelector('#message-button') as ButtonElement,
-      'billing': element.querySelector('#billing-button') as ButtonElement,
+      'cdr': element.querySelector('#cdr-button') as ButtonElement,
       'music': element.querySelector('#music-button') as ButtonElement,
     };
 
