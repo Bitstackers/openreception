@@ -6,12 +6,12 @@ import 'package:logging/logging.dart';
 ///Pages
 import 'package:management_tool/page/page-contact.dart' as page;
 import 'package:management_tool/page/page-dialplan.dart' as page;
+import 'package:management_tool/page/page-cdr.dart' as page;
 import 'package:management_tool/page/page-ivr.dart' as page;
 import 'package:management_tool/page/page-message.dart' as page;
 import 'package:management_tool/page/page-organization.dart' as page;
 import 'package:management_tool/page/page-reception.dart' as page;
 import 'package:management_tool/page/page-user.dart' as page;
-
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/auth.dart';
 import 'package:management_tool/configuration.dart';
@@ -75,6 +75,8 @@ Future main() async {
     final controller.User userController =
         new controller.User(userStore, config.user);
 
+    final controller.Cdr cdrController =
+        new controller.Cdr(config.clientConfig.cdrServerUri, config.token);
     final controller.Reception receptionController =
         new controller.Reception(receptionStore, config.user);
     final controller.Organization organizationController =
@@ -91,8 +93,13 @@ Future main() async {
     final controller.Ivr ivrController =
         new controller.Ivr(ivrStore, dialplanStore);
 
+    final page.Cdr cdrPage = new page.Cdr(
+        cdrController, organizationController, receptionController);
+
     final page.OrganizationView orgPage =
         new page.OrganizationView(organizationController, receptionController);
+
+    querySelector('#cdr-page').replaceWith(cdrPage.element);
 
     querySelector("#organization-page").replaceWith(orgPage.element);
 

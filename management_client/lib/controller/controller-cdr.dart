@@ -1,15 +1,12 @@
 part of management_tool.controller;
 
-class CDR {
-  service.RESTCDRService _service;
+class Cdr {
+  final Uri _host;
+  final String _token;
 
-  CDR(service.RESTCDRService this._service);
+  Cdr(Uri this._host, String this._token);
 
-  Future<Iterable<model.CDREntry>> listEntries(DateTime from, DateTime to) =>
-      _service.listEntries(from, to);
+  Future<Map<String, dynamic>> entries(DateTime from, DateTime to) => null;
 
-  Future<model.CDRCheckpoint> createCheckpoint(
-          model.CDRCheckpoint checkpoint) =>
-      _service.createCheckpoint(checkpoint);
-  Future<Iterable<model.CDRCheckpoint>> checkpoints() => _service.checkpoints();
+  Future<Map<String, dynamic>> summaries(DateTime from, DateTime to) => null;
 }
