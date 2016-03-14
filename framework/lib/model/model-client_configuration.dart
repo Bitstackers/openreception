@@ -26,6 +26,7 @@ class ClientConfiguration {
   Uri authServerUri;
   Uri calendarServerUri;
   Uri callFlowServerUri;
+  Uri cdrServerUri;
   Uri contactServerUri;
   Uri dialplanServerUri;
   Uri messageServerUri;
@@ -41,6 +42,7 @@ class ClientConfiguration {
         Key.authServerURI: authServerUri.toString(),
         Key.calendarServerUri: calendarServerUri.toString(),
         Key.callFlowServerURI: callFlowServerUri.toString(),
+        Key.cdrServerURI: cdrServerUri.toString(),
         Key.contactServerURI: contactServerUri.toString(),
         Key.dialplanServerURI: dialplanServerUri.toString(),
         Key.messageServerURI: messageServerUri.toString(),
@@ -68,6 +70,7 @@ class ClientConfiguration {
       : authServerUri = Uri.parse(map[Key.authServerURI]),
         calendarServerUri = Uri.parse(map[Key.calendarServerUri]),
         callFlowServerUri = Uri.parse(map[Key.callFlowServerURI]),
+        cdrServerUri = Uri.parse(map[Key.cdrServerUri]),
         contactServerUri = Uri.parse(map[Key.contactServerURI]),
         dialplanServerUri = Uri.parse(map[Key.dialplanServerURI]),
         receptionServerUri = Uri.parse(map[Key.receptionServerURI]),

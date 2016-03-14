@@ -45,6 +45,7 @@ const String arrivalTime = 'arrival_time';
 const String answeredAt = 'answered_at';
 const String calendarServerUri = 'calendarServerUri';
 const String callFlowServerURI = 'callFlowServerURI';
+const String cdrServerUri = 'cdrServerUri';
 const String dialplanServerURI = 'dialplanServerURI';
 const String receptionServerURI = 'receptionServerURI';
 const String contactServerURI = 'contactServerURI';
