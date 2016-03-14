@@ -38,5 +38,5 @@ Future main(List<String> args) async {
     print(parser.usage);
     exit(1);
   }
-  await router.start();
+  await router.start(port: config.cdrServer.httpPort);
 }

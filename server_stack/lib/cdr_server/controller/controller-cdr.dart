@@ -67,16 +67,32 @@ class Cdr {
           body: 'Cannot parse request string');
     }
 
-    // final List<String> args = new List<String>();
+    final List<String> args = new List<String>()
+      ..add(config.cdrServer.pathToCdrCtl)
+      ..add('report')
+      ..add('-k')
+      ..add(kind)
+      ..add('-d')
+      ..add(direction)
+      ..add('-f')
+      ..add(from.toIso8601String())
+      ..add('-t')
+      ..add(to.toIso8601String())
+      ..add('--json');
 
-    return io.Process.run('dart', [
-      '/home/thomas/projects/dart/cdrctl/bin/cdrctl.dart',
-      'report',
-      '-f',
-      '2016-02-01',
-      '--json'
-    ]).then((io.ProcessResult pr) {
-      return _okJson(JSON.decode(pr.stdout));
+    if (rids.isNotEmpty) {
+      args.add('-r');
+      args.add(rids.join(','));
+    }
+
+    if (uids.isNotEmpty) {
+      args.add('-u');
+      args.add(uids.join(','));
+    }
+
+    return io.Process.run('dart', args).then((io.ProcessResult pr) {
+      _log.info('Executing dart ${args.join(' ')}');
+      return new shelf.Response.ok(pr.stdout);
     });
   }
 }

@@ -14,13 +14,12 @@
 library openreception.cdr_server.controller;
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io' as io;
 
 import 'package:logging/logging.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
-part 'controller-cdr.dart';
+import '../../configuration.dart';
 
-shelf.Response _okJson(body) => new shelf.Response.ok(JSON.encode(body));
+part 'controller-cdr.dart';
