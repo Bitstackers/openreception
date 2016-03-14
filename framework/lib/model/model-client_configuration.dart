@@ -42,7 +42,7 @@ class ClientConfiguration {
         Key.authServerURI: authServerUri.toString(),
         Key.calendarServerUri: calendarServerUri.toString(),
         Key.callFlowServerURI: callFlowServerUri.toString(),
-        Key.cdrServerURI: cdrServerUri.toString(),
+        Key.cdrServerUri: cdrServerUri.toString(),
         Key.contactServerURI: contactServerUri.toString(),
         Key.dialplanServerURI: dialplanServerUri.toString(),
         Key.messageServerURI: messageServerUri.toString(),
