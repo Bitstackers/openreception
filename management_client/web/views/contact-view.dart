@@ -9,7 +9,6 @@ import 'package:management_tool/eventbus.dart';
 import 'package:management_tool/view.dart' as view;
 
 import 'package:management_tool/searchcomponent.dart';
-import 'package:management_tool/configuration.dart';
 import 'package:openreception_framework/model.dart' as model;
 import 'package:openreception_framework/storage.dart' as storage;
 
@@ -26,7 +25,6 @@ class ContactView {
 
   final controller.Contact _contactController;
   final controller.Calendar _calendarController;
-  final controller.Organization _organizationController;
   final controller.Reception _receptionController;
 
   UListElement _ulContactList;
@@ -95,12 +93,8 @@ class ContactView {
 
   static const List<String> phonenumberTypes = const ['PSTN', 'SIP'];
 
-  ContactView(
-      DivElement this.element,
-      this._contactController,
-      this._organizationController,
-      this._receptionController,
-      this._calendarController) {
+  ContactView(DivElement this.element, this._contactController,
+      this._receptionController, this._calendarController) {
     _baseInfoContainer.children = [
       _deleteButton,
       _saveButton,

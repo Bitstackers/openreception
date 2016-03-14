@@ -90,7 +90,7 @@ Future main() async {
         .element);
 
     new conView.ContactView(querySelector('#contact-page'), contactController,
-        organizationController, receptionController, calendarController);
+        receptionController, calendarController);
 
     final messagePage = new page.Message(contactController, messageController,
         receptionController, userController);
