@@ -389,7 +389,7 @@ ${Key.CdrKey.externalTransferEpoch}: ${externalTransferEpoch > 0 ? new DateTime.
 ${Key.CdrKey.filename}: $filename
 ${Key.CdrKey.finalTransferAction}: $finalTransferAction
 ${Key.CdrKey.hangupCause}: $hangupCause
-${Key.CdrKey.ivr}: $ivr'
+${Key.CdrKey.ivr}: $ivr
 ${Key.CdrKey.receptionOpen}: $receptionOpen
 ${Key.CdrKey.rid}: $rid
 ${Key.CdrKey.sipFromUserStripped}: $sipFromUserStripped
