@@ -45,7 +45,7 @@ abstract class EventTests {
     final int uid = 3;
 
     Event.OrganizationChange testEvent =
-        new Event.OrganizationChange.created(oid, uid);
+        new Event.OrganizationChange.create(oid, uid);
 
     Event.OrganizationChange builtEvent =
         new Event.Event.parse(testEvent.asMap) as Event.OrganizationChange;
@@ -60,7 +60,7 @@ abstract class EventTests {
     final int uid = 3;
 
     Event.ReceptionChange testEvent =
-        new Event.ReceptionChange.created(rid, uid);
+        new Event.ReceptionChange.create(rid, uid);
 
     Event.ReceptionChange builtEvent =
         new Event.Event.parse(testEvent.toJson()) as Event.ReceptionChange;
@@ -123,11 +123,11 @@ abstract class EventTests {
     final int modifier = 4312;
 
     Event.UserChange createEvent =
-        new Event.UserChange.created(userId, modifier);
+        new Event.UserChange.create(userId, modifier);
     Event.UserChange updateEvent =
-        new Event.UserChange.updated(userId, modifier);
+        new Event.UserChange.update(userId, modifier);
     Event.UserChange removeEvent =
-        new Event.UserChange.deleted(userId, modifier);
+        new Event.UserChange.delete(userId, modifier);
 
     Event.UserChange builtEvent =
         new Event.Event.parse(createEvent.toJson()) as Event.UserChange;
