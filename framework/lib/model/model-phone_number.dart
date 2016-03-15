@@ -20,6 +20,14 @@ part of openreception.model;
 class PhoneNumber {
   String destination = '';
   String description = '';
+
+  Set<String> _tags = new Set<String>();
+  Iterable<String> get tags => _tags;
+
+  void set tags(Iterable<String> ts) {
+    _tags = new Set<String>.from(ts);
+  }
+
   bool confidential = false;
 
   /**
@@ -28,7 +36,8 @@ class PhoneNumber {
   PhoneNumber.fromMap(Map map)
       : description = map[Key.description],
         destination = map[Key.destination],
-        confidential = map[Key.confidential];
+        confidential = map[Key.confidential],
+        _tags = new Set<String>.from(map[Key.tags] as List<String>);
 
   /**
    *
@@ -54,6 +63,7 @@ class PhoneNumber {
   Map toJson() => {
         Key.destination: destination,
         Key.confidential: confidential,
-        Key.description: description
+        Key.description: description,
+        Key.tags: tags.toList(growable: false)
       };
 }

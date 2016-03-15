@@ -15,27 +15,61 @@ part of openreception.test;
 
 void testModelPhoneNumber() {
   group('Model.PhoneNumber', () {
+    test('serialization', ModelPhoneNumber.serialization);
+    test('deserialization', ModelPhoneNumber.deserialization);
     test('buildObject', ModelPhoneNumber.buildObject);
   });
 }
 
 abstract class ModelPhoneNumber {
-  static void buildObject() {
+  /**
+   * Merely asserts that no exceptions arise.
+   */
+  static void serialization() {
+    Model.PhoneNumber builtObject = buildObject();
+
+    expect(() => JSON.encode(builtObject), returnsNormally);
+  }
+
+  /**
+   * Merely asserts that no exceptions arise.
+   */
+  static void deserialization() {
+    Model.PhoneNumber built = buildObject();
+
+    Model.PhoneNumber decoded =
+        Model.PhoneNumber.decode(JSON.decode(JSON.encode(built)));
+
+    expect(built.confidential, equals(decoded.confidential));
+    expect(built.description, equals(decoded.description));
+    expect(built.tags, equals(decoded.tags));
+    expect(built.destination, equals(decoded.destination));
+
+    expect(built.toJson(), equals(decoded.toJson()));
+  }
+
+  /**
+   *
+   */
+  static Model.PhoneNumber buildObject() {
     final String description = 'Cell Phone - work';
     final String value = '+45 44 88 1231';
 
     final bool confidential = false;
 
-    final List<String> tags = ['work', 'official'];
+    final Iterable<String> tags = ['work', 'official'];
 
     Model.PhoneNumber phoneNumber = new Model.PhoneNumber.empty()
       ..confidential = confidential
       ..description = description
-      ..destination = value;
+      ..destination = value
+      ..tags = tags;
 
     expect(phoneNumber.confidential, equals(confidential));
     expect(phoneNumber.description, equals(description));
-
+    expect(phoneNumber.tags, equals(tags));
     expect(phoneNumber.destination, equals(value));
+
+    return phoneNumber;
   }
 }
