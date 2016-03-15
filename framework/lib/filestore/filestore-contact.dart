@@ -86,12 +86,15 @@ class Contact implements storage.Contact {
     if (contact.id == model.BaseContact.noId) {
       contact.id = _nextId;
     }
-    final File file = new File('$path/${contact.id}.json');
+    final Directory dir = new Directory('$path/${contact.id}');
 
-    if (file.existsSync()) {
+    if (dir.existsSync()) {
       throw new storage.ClientError(
           'File already exists, please update instead');
     }
+
+    dir.createSync();
+    final File file = new File('${dir.path}/contact.json');
 
     /// Set the user
     if (modifier == null) {
@@ -110,7 +113,7 @@ class Contact implements storage.Contact {
    *
    */
   Future<model.BaseContact> get(int id) async {
-    final File file = new File('$path/${id}.json');
+    final File file = new File('$path/${id}/contact.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound('No file ${file.path}');
@@ -148,9 +151,10 @@ class Contact implements storage.Contact {
 
     return new Directory(path)
         .listSync()
-        .where((fse) => fse is File && fse.path.endsWith('.json'))
-        .map((File fse) => model.BaseContact
-            .decode(JSON.decode(fse.readAsStringSync()))
+        .where((fse) => fse is Directory && !basename(fse.path).startsWith('.'))
+        .map((Directory fse) => model.BaseContact
+            .decode(JSON.decode(
+                new File(fse.path + '/contact.json').readAsStringSync()))
             .reference);
   }
 
@@ -229,9 +233,9 @@ class Contact implements storage.Contact {
    *
    */
   Future remove(int id, model.User user) async {
-    final File file = new File('$path/${id}.json');
+    final Directory dir = new Directory('$path/${id}');
 
-    if (!file.existsSync()) {
+    if (!dir.existsSync()) {
       throw new storage.NotFound();
     }
 
@@ -240,7 +244,7 @@ class Contact implements storage.Contact {
       user = _systemUser;
     }
 
-    await _git.remove(file, 'Removed $id', _authorString(user));
+    await _git.remove(dir, 'Removed $id', _authorString(user));
   }
 
   /**
@@ -273,7 +277,7 @@ class Contact implements storage.Contact {
    */
   Future<model.ContactReference> update(
       model.BaseContact contact, model.User modifier) async {
-    final File file = new File('$path/${contact.id}.json');
+    final File file = new File('$path/${contact.id}/contact.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
