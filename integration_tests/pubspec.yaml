@@ -6,7 +6,7 @@ dependencies:
   junitconfiguration: any
   logging: any
   esl:
-    path: ../../libesl-dart
+    url: https://github.com/rostgaard/libesl-dart.git
   openreception_framework:
 #    path: ../framework
     git:
