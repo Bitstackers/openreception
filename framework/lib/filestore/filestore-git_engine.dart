@@ -191,12 +191,12 @@ class GitEngine {
   /**
    *
    */
-  Future remove(File file, String commitMsg, String author) async {
+  Future remove(FileSystemEntity fse, String commitMsg, String author) async {
     await init();
     _lock();
 
     try {
-      await _remove(file);
+      await _remove(fse);
       await _commit(commitMsg, author);
       _unlock();
     } catch (e, s) {
@@ -284,9 +284,10 @@ class GitEngine {
   /**
    *
    */
-  Future _remove(File file) async {
-    final ProcessResult result = await Process
-        .run('/usr/bin/git', ['rm', file.path], workingDirectory: path);
+  Future _remove(FileSystemEntity fse) async {
+    final ProcessResult result = await Process.run(
+        '/usr/bin/git', ['rm', fse.path, '-r', '--force'],
+        workingDirectory: path);
     String stdout = result.stdout;
     if (stdout.isNotEmpty && logStdout) {
       _log.finest(stdout);
@@ -298,7 +299,7 @@ class GitEngine {
     }
 
     if (result.exitCode != 0) {
-      _log.shout('Failed to remove ${file.path}');
+      _log.shout('Failed to remove ${fse.path}');
       throw new storage.ServerError();
     }
   }
