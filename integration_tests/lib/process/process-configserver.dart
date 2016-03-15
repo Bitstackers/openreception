@@ -2,7 +2,7 @@ part of openreception_tests.process;
 
 class ConfigServer {
   final String path;
-  final String storePath;
+
   final Logger _log = new Logger('$_namespace.ConfigServer');
   Process _process;
 
@@ -10,14 +10,14 @@ class ConfigServer {
   bool get ready => _ready.isCompleted;
   Future get whenReady => _ready.future;
 
-  ConfigServer(this.path, this.storePath) {
+  ConfigServer(this.path) {
     _init();
   }
 
   Future _init() async {
     _log.fine('Starting new process');
     _process = await Process.start(
-        '/usr/bin/dart', ['$path/bin/configserver.dart', '-f', storePath],
+        '/usr/bin/dart', ['$path/bin/configserver.dart'],
         workingDirectory: path)
       ..stdout
           .transform(new Utf8Decoder())
