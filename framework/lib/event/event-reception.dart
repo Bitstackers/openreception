@@ -22,24 +22,28 @@ class ReceptionChange implements Event {
   int modifierUid;
   final String state;
 
+  bool get created => state == Change.created;
+  bool get updated => state == Change.updated;
+  bool get deleted => state == Change.deleted;
+
   /**
    *
    */
-  ReceptionChange.created(this.rid, this.modifierUid)
+  ReceptionChange.create(this.rid, this.modifierUid)
       : this.state = Change.created,
         this.timestamp = new DateTime.now();
 
   /**
    *
    */
-  ReceptionChange.updated(this.rid, this.modifierUid)
+  ReceptionChange.update(this.rid, this.modifierUid)
       : this.state = Change.updated,
         this.timestamp = new DateTime.now();
 
   /**
    *
    */
-  ReceptionChange.deleted(this.rid, this.modifierUid)
+  ReceptionChange.delete(this.rid, this.modifierUid)
       : this.state = Change.deleted,
         this.timestamp = new DateTime.now();
 

@@ -22,16 +22,20 @@ class UserChange implements Event {
   final int modifierUid;
   final String state;
 
+  bool get created => state == Change.created;
+  bool get updated => state == Change.updated;
+  bool get deleted => state == Change.deleted;
+
   UserChange._internal(this.uid, this.state, this.modifierUid)
       : timestamp = new DateTime.now();
 
-  factory UserChange.created(int userID, int changedBy) =>
+  factory UserChange.create(int userID, int changedBy) =>
       new UserChange._internal(userID, Change.created, changedBy);
 
-  factory UserChange.updated(int userID, int changedBy) =>
+  factory UserChange.update(int userID, int changedBy) =>
       new UserChange._internal(userID, Change.updated, changedBy);
 
-  factory UserChange.deleted(int userID, int changedBy) =>
+  factory UserChange.delete(int userID, int changedBy) =>
       new UserChange._internal(userID, Change.deleted, changedBy);
 
   Map toJson() {

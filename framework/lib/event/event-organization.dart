@@ -22,24 +22,27 @@ class OrganizationChange implements Event {
   final int modifierUid;
   final String state;
 
+  bool get created => state == Change.created;
+  bool get updated => state == Change.updated;
+  bool get deleted => state == Change.deleted;
   /**
    *
    */
-  OrganizationChange.created(this.oid, this.modifierUid)
+  OrganizationChange.create(this.oid, this.modifierUid)
       : this.state = Change.created,
         this.timestamp = new DateTime.now();
 
   /**
    *
    */
-  OrganizationChange.updated(this.oid, this.modifierUid)
+  OrganizationChange.update(this.oid, this.modifierUid)
       : this.state = Change.updated,
         this.timestamp = new DateTime.now();
 
   /**
    *
    */
-  OrganizationChange.deleted(this.oid, this.modifierUid)
+  OrganizationChange.delete(this.oid, this.modifierUid)
       : this.state = Change.deleted,
         this.timestamp = new DateTime.now();
 

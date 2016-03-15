@@ -23,6 +23,9 @@ class ReceptionData implements Event {
   final int modifierUid;
   final String state;
 
+  bool get created => state == Change.created;
+  bool get updated => state == Change.updated;
+  bool get deleted => state == Change.deleted;
   /**
    *
    */

@@ -21,6 +21,10 @@ class MessageChange implements Event {
 
   String get eventName => Key.messageChange;
 
+  bool get created => state == Change.created;
+  bool get updated => state == Change.updated;
+  bool get deleted => state == Change.deleted;
+
   final int mid;
   final int modifierUid;
   final String state;
