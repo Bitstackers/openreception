@@ -11,11 +11,13 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.authentication_server.router;
+part of openreception_servers.authentication.router;
 
 Future<shelf.Response> refresher(shelf.Request request) {
-  final String token = shelf_route.getPathParameters(request).containsKey(
-      'token') ? shelf_route.getPathParameter(request, 'token') : '';
+  final String token =
+      shelf_route.getPathParameters(request).containsKey('token')
+          ? shelf_route.getPathParameter(request, 'token')
+          : '';
 
   try {
     Map content = vault.getToken(token);
@@ -25,13 +27,13 @@ Future<shelf.Response> refresher(shelf.Request request) {
     Uri url = Uri.parse('https://www.googleapis.com/oauth2/v3/token');
     Map body = {
       'refresh_token': refreshToken,
-      'client_id':  config.authServer.clientId,
-      'client_secret':  config.authServer.clientSecret,
+      'client_id': config.authServer.clientId,
+      'client_secret': config.authServer.clientSecret,
       'grant_type': 'refresh_token'
     };
 
-    return httpClient.post(url, JSON.encode(body)).then(
-        (String response) => new shelf.Response.ok(
+    return httpClient.post(url, JSON.encode(body)).then((String response) =>
+        new shelf.Response.ok(
             'BODY \n ==== \n${JSON.encode(body)} \n\n RESPONSE '
             '\n ======== \n ${response}'));
   } catch (error, stackTrace) {

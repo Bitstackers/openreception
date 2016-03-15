@@ -11,21 +11,23 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.authentication_server.google_auth;
+library openreception_servers.authentication.google_auth;
 
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:crypto/crypto.dart';
 
-final Uri authorizationEndpoint = Uri.parse("https://accounts.google.com/o/oauth2/auth");
-final Uri tokenEndpoint = Uri.parse("https://accounts.google.com/o/oauth2/token");
+final Uri authorizationEndpoint =
+    Uri.parse("https://accounts.google.com/o/oauth2/auth");
+final Uri tokenEndpoint =
+    Uri.parse("https://accounts.google.com/o/oauth2/token");
 final List<String> _scopes = ['profile', 'email'];
 
 Uri _AuthorizationUrl;
 
 Uri googleAuthUrl(String identifier, String secret, Uri redirectUrl) {
   if (_AuthorizationUrl == null) {
-    oauth2.AuthorizationCodeGrant grant =
-        new oauth2.AuthorizationCodeGrant(identifier, secret, authorizationEndpoint, tokenEndpoint);
+    oauth2.AuthorizationCodeGrant grant = new oauth2.AuthorizationCodeGrant(
+        identifier, secret, authorizationEndpoint, tokenEndpoint);
     _AuthorizationUrl = grant.getAuthorizationUrl(redirectUrl, scopes: _scopes);
   }
 

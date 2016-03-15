@@ -11,14 +11,16 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.authentication_server.router;
+part of openreception_servers.authentication.router;
 
 shelf.Response validateToken(shelf.Request request) {
-  final String token = shelf_route.getPathParameters(request).containsKey(
-      'token') ? shelf_route.getPathParameter(request, 'token') : '';
+  final String token =
+      shelf_route.getPathParameters(request).containsKey('token')
+          ? shelf_route.getPathParameter(request, 'token')
+          : '';
 
   if (token.isNotEmpty) {
-    if(token == config.authServer.serverToken) {
+    if (token == config.authServer.serverToken) {
       return new shelf.Response.ok(JSON.encode(const {}));
     }
 

@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.authentication_server.router;
+part of openreception_servers.authentication.router;
 
 shelf.Response invalidateToken(shelf.Request request) {
   final String token = shelf_route.getPathParameter(request, 'token');
@@ -24,11 +24,11 @@ shelf.Response invalidateToken(shelf.Request request) {
       log.severe(error, stacktrace);
       return new shelf.Response.internalServerError(
           body: 'authenticationserver.router.invalidateToken: '
-          'Failed to remove token "$token" $error');
+              'Failed to remove token "$token" $error');
     }
   } else {
     return new shelf.Response.internalServerError(
         body: 'authenticationserver.router.invalidateToken: '
-        'No token parameter was specified');
+            'No token parameter was specified');
   }
 }

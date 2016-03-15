@@ -23,12 +23,10 @@ import 'package:args/args.dart';
 
 import 'package:logging/logging.dart';
 import '../lib/configuration.dart';
-import '../lib/auth_server/router.dart' as router;
-import '../lib/auth_server/token_vault.dart';
-import '../lib/auth_server/token_watcher.dart' as watcher;
-
-ArgResults parsedArgs;
-ArgParser parser = new ArgParser();
+import 'package:openreception_servers/auth_server/router.dart' as router;
+import 'package:openreception_servers/auth_server/token_vault.dart';
+import 'package:openreception_servers/auth_server/token_watcher.dart'
+    as watcher;
 
 Future main(List<String> args) async {
   ///Init logging.

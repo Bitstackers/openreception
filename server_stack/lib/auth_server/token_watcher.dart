@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.authentication_server.token_watcher;
+library openreception_servers.authentication.token_watcher;
 
 import 'dart:async';
 
@@ -31,7 +31,8 @@ void setup() {
 
 void seen(String token) {
   Map data = vault.getToken(token);
-  data['expiresAt'] = dateTimeToJson(new DateTime.now().add(config.authServer.tokenLifetime));
+  data['expiresAt'] =
+      dateTimeToJson(new DateTime.now().add(config.authServer.tokenLifetime));
   vault.updateToken(token, data);
 }
 

@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.authentication_server.router;
+library openreception_servers.authentication.router;
 
 import 'dart:async';
 import 'dart:convert';
