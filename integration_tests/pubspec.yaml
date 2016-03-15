@@ -1,15 +1,17 @@
 name: openreception_tests
-version: 0.1.9
+version: 0.2.0
 description: OpenReception Acceptance and integration tests
 dependencies:
   http: any
   junitconfiguration: any
   logging: any
-  esl: any
+  esl:
+    path: ../../libesl-dart
   openreception_framework:
+#    path: ../framework
     git:
       ref: master
-      url: https://github.com/BitStackers/OpenReceptionFramework.git
+      url: https://github.com/rostgaard/OpenReceptionFramework.git
     version: '>=0.0.25+3'
   phonio:
     git: https://github.com/Bitstackers/Phonio.git
