@@ -3,29 +3,25 @@ library openreception_tests.rest;
 import 'dart:io';
 import 'dart:async';
 
-import 'package:esl/esl.dart' as esl;
-import 'package:phonio/phonio.dart' as phonio;
-
 import 'package:logging/logging.dart';
 
 import 'package:openreception_tests/storage.dart' as storeTest;
 import 'package:openreception_tests/service.dart' as serviceTest;
-import 'package:openreception_tests/support.dart';
 import 'package:openreception_tests/process.dart' as process;
+import 'package:openreception_tests/support.dart';
 import 'package:openreception_tests/config.dart';
 
+import 'package:openreception_framework/event.dart' as event;
 import 'package:openreception_framework/resource.dart' as resource;
-import 'package:openreception_framework/pbx-keys.dart' as pbxKey;
 import 'package:openreception_framework/service.dart' as service;
 import 'package:openreception_framework/storage.dart' as storage;
 import 'package:openreception_framework/service-io.dart' as transport;
 import 'package:openreception_framework/model.dart' as model;
-import 'package:openreception_framework/model.dart' as Model;
-import 'package:openreception_framework/event.dart' as event;
 
 import 'package:unittest/unittest.dart';
 
 part 'rest/rest-calendar.dart';
+part 'rest/rest-call.dart';
 part 'rest/rest-contact.dart';
 part 'rest/rest-dialplan.dart';
 part 'rest/rest-ivr.dart';
@@ -39,12 +35,12 @@ const String _namespace = 'rest';
  * Run all filestore tests.
  */
 allTests() {
+  //_runCallTests();
   _runUserTests();
-  // _runOrganizationTests();
-  // _runReceptionTests();
-  //_runContactTests();
-  //_runCalendarTests();
-
+  _runOrganizationTests();
+  _runReceptionTests();
+  _runContactTests();
+  _runCalendarTests();
   // _runDialplanTests();
   // _runIvrTests();
 }

@@ -6,3 +6,18 @@ class CustomerPool extends Pool<Customer> {
 
   CustomerPool(Iterable<Customer> elements) : super(elements);
 }
+
+class PhonePool {
+  const PhonePool.empty();
+
+  Phonio.SIPPhone requestNext() {
+    final phone = new Phonio.PJSUAProcess(
+        Config.simpleClientBinaryPath, ConfigPool.requestPjsuaPort());
+
+    return phone;
+  }
+
+  void cleanup() {
+    ConfigPool.resetCounters();
+  }
+}

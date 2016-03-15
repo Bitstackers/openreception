@@ -19,6 +19,8 @@ abstract class Reception {
 
     expect(createEvent.rid, equals(created.id));
     expect(createEvent.modifierUid, equals(sa.user.id));
+    expect(createEvent.timestamp.difference(new DateTime.now()).inMilliseconds,
+        lessThan(0));
   }
 
   /**
@@ -40,6 +42,8 @@ abstract class Reception {
 
     expect(updateEvent.rid, equals(created.id));
     expect(updateEvent.modifierUid, equals(sa.user.id));
+    expect(updateEvent.timestamp.difference(new DateTime.now()).inMilliseconds,
+        lessThan(0));
   }
 
   /**
@@ -61,5 +65,7 @@ abstract class Reception {
 
     expect(deleteEvent.rid, equals(created.id));
     expect(deleteEvent.modifierUid, equals(sa.user.id));
+    expect(deleteEvent.timestamp.difference(new DateTime.now()).inMilliseconds,
+        lessThan(0));
   }
 }

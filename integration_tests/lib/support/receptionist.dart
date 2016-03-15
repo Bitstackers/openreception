@@ -39,7 +39,11 @@ class Receptionist {
   /**
    * Default constructor. Provides an _uninitialized_ [Receptionist] object.
    */
-  Receptionist(this.phone, this.authToken, this.user);
+  Receptionist(this.phone, this.authToken, this.user) {
+    log.finest('Creating new Receptionist with ${phone.runtimeType} phone'
+        'and account ${phone.defaultAccount.username}@'
+        '${phone.defaultAccount.server}');
+  }
 
   /**
    * Perform object initialization.
@@ -393,7 +397,7 @@ class Receptionist {
 
     log.info('$this goes hunting for a call.');
     return this
-        .waitForCall()
+        .waitForCallOffer()
         .then((model.Call offeredCall) => selectedCall = offeredCall)
         .then((_) => log.fine('$this attempts to pickup $selectedCall.'))
         .then((_) => this
@@ -441,7 +445,7 @@ class Receptionist {
    * Convenience function for waiting for the next call being offered to the
    * receptionist.
    */
-  Future<model.Call> waitForCall() => this
+  Future<model.Call> waitForCallOffer() => this
       .waitFor(eventType: Event.Key.callOffer)
       .then((Event.CallOffer offered) => offered.call);
 

@@ -1,28 +1,5 @@
 part of openreception_tests.service;
 
-/**
- * Converts a Dart DateTime WeekDay into a [model.Weekday].
- */
-model.WeekDay toWeekDay(int weekday) {
-  if (weekday == DateTime.MONDAY) {
-    return model.WeekDay.mon;
-  } else if (weekday == DateTime.TUESDAY) {
-    return model.WeekDay.tue;
-  } else if (weekday == DateTime.WEDNESDAY) {
-    return model.WeekDay.wed;
-  } else if (weekday == DateTime.THURSDAY) {
-    return model.WeekDay.thur;
-  } else if (weekday == DateTime.FRIDAY) {
-    return model.WeekDay.fri;
-  } else if (weekday == DateTime.SATURDAY) {
-    return model.WeekDay.sat;
-  } else if (weekday == DateTime.SUNDAY) {
-    return model.WeekDay.sun;
-  }
-
-  throw new RangeError('$weekday not in range');
-}
-
 abstract class DialplanDeployment {
   /**
    * TODO: Verify reception-id.

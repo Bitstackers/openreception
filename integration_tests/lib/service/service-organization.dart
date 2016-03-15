@@ -17,6 +17,8 @@ abstract class Organization {
 
     expect(createEvent.oid, equals(createdOrganization.id));
     expect(createEvent.modifierUid, equals(sa.user.id));
+    expect(createEvent.timestamp.difference(new DateTime.now()).inMilliseconds,
+        lessThan(0));
   }
 
   /**
@@ -36,6 +38,8 @@ abstract class Organization {
 
     expect(updateEvent.oid, equals(createdOrganization.id));
     expect(updateEvent.modifierUid, equals(sa.user.id));
+    expect(updateEvent.timestamp.difference(new DateTime.now()).inMilliseconds,
+        lessThan(0));
   }
 
   /**
@@ -55,5 +59,7 @@ abstract class Organization {
 
     expect(deleteEvent.oid, equals(createdOrganization.id));
     expect(deleteEvent.modifierUid, equals(sa.user.id));
+    expect(deleteEvent.timestamp.difference(new DateTime.now()).inMilliseconds,
+        lessThan(0));
   }
 }

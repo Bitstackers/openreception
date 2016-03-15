@@ -1,5 +1,7 @@
 library openreception_tests.service;
 
+export 'package:openreception_tests/service/service-call.dart';
+
 import 'dart:io';
 import 'dart:async';
 
@@ -12,7 +14,6 @@ import 'package:openreception_tests/support.dart';
 import 'package:openreception_tests/config.dart';
 
 import 'package:openreception_framework/resource.dart' as resource;
-import 'package:openreception_framework/pbx-keys.dart' as pbxKey;
 import 'package:openreception_framework/service.dart' as service;
 import 'package:openreception_framework/storage.dart' as storage;
 import 'package:openreception_framework/model.dart' as model;
@@ -21,15 +22,9 @@ import 'package:openreception_framework/event.dart' as event;
 
 import 'package:unittest/unittest.dart';
 
-part 'service/service-active_recording.dart';
 part 'service/service-auth.dart';
-part 'service/service-call_hangup.dart';
-part 'service/service-call_list.dart';
-part 'service/service-call_originate.dart';
-part 'service/service-call_park.dart';
-part 'service/service-call_pickup.dart';
-part 'service/service-call_transfer.dart';
 part 'service/service-config.dart';
+part 'service/service-contact.dart';
 part 'service/service-dialplan_deployment.dart';
 part 'service/service-dialplan.dart';
 part 'service/service-message_queue.dart';

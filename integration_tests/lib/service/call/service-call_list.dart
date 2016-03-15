@@ -1,4 +1,4 @@
-part of openreception_tests.service;
+part of openreception_tests.service.call;
 
 /**
  * Tests for the call listing interface.
@@ -41,7 +41,7 @@ abstract class CallList {
         .then((_) => customer.dial(reception))
         .then((_) =>
             log.info('Receptionist ${receptionist.user.name} waits for call.'))
-        .then((_) => receptionist.waitForCall().then((model.Call call) =>
+        .then((_) => receptionist.waitForCallOffer().then((model.Call call) =>
             _validateListContains(receptionist.callFlowControl, [call])))
         .then((_) =>
             log.info('Call is present in call list, asserting call list.'))
@@ -64,7 +64,7 @@ abstract class CallList {
         .then((_) => customer.dial(reception))
         .then((_) =>
             log.info('Receptionist ${receptionist.user.name} waits for call.'))
-        .then((_) => receptionist.waitForCall().then((model.Call call) {
+        .then((_) => receptionist.waitForCallOffer().then((model.Call call) {
               expect(call.receptionID, equals(4));
               //expect (call.destination, equals(reception));
               expect(call.assignedTo, equals(model.User.noId));

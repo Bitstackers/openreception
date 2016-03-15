@@ -1,4 +1,4 @@
-part of openreception_tests.service;
+part of openreception_tests.service.call;
 
 /**
  *

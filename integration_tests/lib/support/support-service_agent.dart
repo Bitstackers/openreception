@@ -4,8 +4,10 @@ class ServiceAgent {
   final Directory runpath;
   final TestEnvironment env;
   final model.User user;
+  final Logger _log = new Logger('ServiceAgent');
   String authToken = '';
   Transport.WebSocketClient _ws;
+  Service.CallFlowControl callflow;
 
   Stream<Event.Event> get notifications => notificationSocket.eventStream;
 
@@ -173,10 +175,95 @@ class ServiceAgent {
     return _organizationStore;
   }
 
+  Service.PeerAccount paService;
+  Service.RESTDialplanStore dpService;
+
   /**
    *
    */
   ServiceAgent(this.runpath, this.user, this.env) {}
+
+  /**
+   *
+   */
+  Future<Customer> spawnCustomer() async {
+    if (paService == null) {
+      throw new StateError('paService needs to be initialized.');
+    }
+
+    if (dpService == null) {
+      throw new StateError('dpService needs to be initialized.');
+    }
+
+    final model.PeerAccount account =
+        new model.PeerAccount(_nextExternalPeerName, '', 'public');
+
+    _log.fine('Deploying account ${account.toJson()}');
+    await paService.deployAccount(account, user.id);
+    _log.fine('Reloading config');
+    await dpService.reloadConfig();
+    Phonio.SIPAccount sipAccount = new Phonio.SIPAccount(
+        account.username, account.password, await detectExtIp());
+
+    Phonio.SIPPhone sipPhone = await env.phonePool.requestNext();
+    sipPhone.addAccount(sipAccount);
+
+    final Customer c = new Customer(sipPhone);
+
+    await c.initialize();
+    env.allocatedCustomers.add(c);
+    return c;
+  }
+
+  /**
+   *
+   */
+  Future<Receptionist> createsReceptionist() async {
+    if (paService == null) {
+      throw new StateError('paService needs to be initialized.');
+    }
+    if (dpService == null) {
+      throw new StateError('dpService needs to be initialized.');
+    }
+
+    if (callflow == null) {
+      throw new StateError('callflow needs to be initialized.');
+    }
+    final rUser = Randomizer.randomUser()
+      ..peer = _nextInternalPeerName
+      ..groups = new Set<String>.from([model.UserGroups.receptionist]);
+
+    await userStore.create(rUser, user);
+
+    AuthToken authToken = new AuthToken(rUser);
+
+    final model.PeerAccount account = new model.PeerAccount(
+        rUser.peer, rUser.name.hashCode.toString(), 'receptions');
+
+    _log.fine('Deploying account ${account.toJson()}');
+    await paService.deployAccount(account, user.id);
+    _log.fine('Reloading config');
+    await dpService.reloadConfig();
+
+    Phonio.SIPAccount sipAccount = new Phonio.SIPAccount(
+        account.username, account.password, await detectExtIp());
+
+    Phonio.SIPPhone sipPhone = await env.phonePool.requestNext();
+    sipPhone.addAccount(sipAccount);
+    final Receptionist r =
+        new Receptionist(sipPhone, authToken.tokenName, rUser);
+
+    final reloadEvent = notificationSocket.eventStream
+        .firstWhere((e) => e is Event.CallStateReload);
+
+    _log.finest('Reloading callflow state');
+    await callflow.stateReload();
+    _log.finest('Awaiting reload event');
+    await reloadEvent;
+
+    env.allocatedReceptionists.add(r);
+    return r;
+  }
 
   /**
    *
@@ -195,6 +282,67 @@ class ServiceAgent {
     final bc = await contactStore.create(newContact, user);
 
     return contactStore.get(bc.id);
+  }
+
+  /**
+   *
+   */
+  Future<model.ReceptionDialplan> createsDialplan() async {
+    final DateTime now = new DateTime.now();
+
+    model.OpeningHour justNow = new model.OpeningHour.empty()
+      ..fromDay = toWeekDay(now.weekday)
+      ..toDay = toWeekDay(now.weekday)
+      ..fromHour = now.hour
+      ..toHour = now.hour + 1
+      ..fromMinute = now.minute
+      ..toMinute = now.minute;
+
+    model.ReceptionDialplan rdp = new model.ReceptionDialplan()
+      ..open = [
+        new model.HourAction()
+          ..hours = [justNow]
+          ..actions = [
+            new model.Notify('call-offer'),
+            new model.Ringtone(1),
+            new model.Playback('test.wav'),
+            new model.Enqueue('waitqueue')
+          ]
+      ]
+      ..extension = 'test-${Randomizer.randomPhoneNumber()}'
+          '-${new DateTime.now().millisecondsSinceEpoch}'
+      ..defaultActions = [new model.Playback('sorry-dude-were-closed')]
+      ..active = true;
+
+    _log.info('Deploying dialplan ${rdp.toJson()}');
+    await dpService.create(rdp, user);
+
+    return rdp;
+  }
+
+  Future deploysDialplan(
+      model.ReceptionDialplan rdp, model.Reception rec) async {
+    await dpService.deployDialplan(rdp.extension, rec.id);
+    await dpService.reloadConfig();
+  }
+
+  /**
+   *
+   */
+  Future<model.BaseContact> updatesContact(model.BaseContact contact) async {
+    final updatedContact = Randomizer.randomBaseContact()..id = contact.id;
+    updatedContact.name = updatedContact.name + ' (updated)';
+
+    final bc = await contactStore.update(updatedContact, user);
+
+    return contactStore.get(bc.id);
+  }
+
+  /**
+   *
+   */
+  Future removesContact(model.BaseContact contact) async {
+    await contactStore.remove(contact.id, user);
   }
 
   /**
@@ -302,8 +450,8 @@ class ServiceAgent {
   /**
    *
    */
-  Future<model.User> createsUser() async {
-    final model.User newUser = Randomizer.randomUser();
+  Future<model.User> createsUser([model.User u]) async {
+    final model.User newUser = (u == null) ? Randomizer.randomUser() : u;
 
     newUser.id = (await userStore.create(newUser, user)).id;
 

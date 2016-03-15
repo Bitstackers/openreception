@@ -8,6 +8,7 @@ void _runReceptionTests() {
     TestEnvironment env;
     process.ReceptionServer rProcess;
     process.AuthServer aProcess;
+    process.NotificationServer nProcess;
     transport.Client client;
     AuthToken authToken;
 
@@ -16,6 +17,9 @@ void _runReceptionTests() {
       sa = await env.createsServiceAgent();
       client = new transport.Client();
       authToken = new AuthToken(sa.user);
+      sa.authToken = authToken.tokenName;
+      nProcess = new process.NotificationServer(
+          Config.serverStackPath, env.runpath.path);
 
       aProcess = new process.AuthServer(
           Config.serverStackPath, env.runpath.path,
@@ -26,11 +30,13 @@ void _runReceptionTests() {
 
       sa.receptionStore = new service.RESTReceptionStore(
           Config.receptionStoreUri, authToken.tokenName, client);
-      await Future.wait([rProcess.whenReady, aProcess.whenReady]);
+      await Future
+          .wait([nProcess.whenReady, rProcess.whenReady, aProcess.whenReady]);
     });
 
     tearDown(() async {
-      await Future.wait([rProcess.terminate(), aProcess.terminate()]);
+      await Future.wait(
+          [rProcess.terminate(), aProcess.terminate(), nProcess.terminate()]);
       env.clear();
       client.client.close();
     });

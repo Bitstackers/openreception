@@ -12,6 +12,7 @@ void _runUserTests() {
     AuthToken authToken;
     service.RESTUserStore restStore;
 
+    process.NotificationServer nServer;
     setUp(() async {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();
@@ -23,20 +24,26 @@ void _runUserTests() {
           Config.serverStackPath, env.runpath.path,
           intialTokens: [authToken]);
 
+      nServer = new process.NotificationServer(
+          Config.serverStackPath, env.runpath.path);
+
       uProcess =
           new process.UserServer(Config.serverStackPath, env.runpath.path);
       restStore = new service.RESTUserStore(
           Config.userStoreUri, authToken.tokenName, client);
       sa.userStore = restStore;
-      await Future.wait([uProcess.whenReady, aProcess.whenReady]);
+      await Future
+          .wait([uProcess.whenReady, aProcess.whenReady, nServer.whenReady]);
     });
 
     tearDown(() async {
-      await Future.wait([uProcess.terminate(), aProcess.terminate()]);
+      await Future.wait(
+          [uProcess.terminate(), aProcess.terminate(), nServer.terminate()]);
       env.clear();
       client.client.close();
       sa.cleanup();
     });
+
     test(
         'CORS headers present (existingUri)',
         () =>
@@ -80,9 +87,19 @@ void _runUserTests() {
 
     test('get (by identity)', () => storeTest.User.getUserByIdentity(sa));
 
+    /*
+     * Service-specific tests.
+     */
+
     test('userState change', () => serviceTest.User.stateChange(sa, restStore));
 
     test('userState change (event)',
         () => serviceTest.User.stateChangeEvent(sa, restStore));
+
+    test('create (event presence)', () => serviceTest.User.createEvent(sa));
+
+    test('update (event presence)', () => serviceTest.User.updateEvent(sa));
+
+    test('remove (event presence)', () => serviceTest.User.deleteEvent(sa));
   });
 }

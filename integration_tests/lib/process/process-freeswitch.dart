@@ -40,7 +40,7 @@ class FreeSwitch {
     confDir.deleteSync(recursive: true);
     confDir.createSync();
 
-    _log.info('Cleaning config');
+    _log.info('Cleaning config in directory ${confDir.absolute.path}');
     await Process.run('/bin/tar', ['xf', confTemplateArchive.absolute.path],
         workingDirectory: basePath);
   }
@@ -58,7 +58,7 @@ class FreeSwitch {
   Future _init() async {
     await _createDirs();
     await cleanConfig();
-    _log.fine('Starting new process $binPath');
+    _log.fine('Starting new process $binPath in path ${basePath}');
     _process = await Process.start('/usr/bin/freeswitch', [
       '-nonat',
       '-nonatmap',
@@ -91,6 +91,7 @@ class FreeSwitch {
     new Timer.periodic(new Duration(milliseconds: 100), (Timer t) {
       if (!ready) {
         _process.kill(ProcessSignal.SIGHUP);
+        _log.finest('Waiting for freeswitch to become ready');
       } else {
         _log.info('Canceling timer');
         t.cancel();

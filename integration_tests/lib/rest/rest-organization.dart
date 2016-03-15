@@ -6,6 +6,7 @@ void _runOrganizationTests() {
     TestEnvironment env;
     process.ReceptionServer rProcess;
     process.AuthServer aProcess;
+    process.NotificationServer nProcess;
     transport.Client client;
 
     setUp(() async {
@@ -13,24 +14,31 @@ void _runOrganizationTests() {
       sa = await env.createsServiceAgent();
       client = new transport.Client();
       AuthToken authToken = new AuthToken(sa.user);
+      sa.authToken = authToken.tokenName;
 
       aProcess = new process.AuthServer(
           Config.serverStackPath, env.runpath.path,
           intialTokens: [authToken]);
+
+      nProcess = new process.NotificationServer(
+          Config.serverStackPath, env.runpath.path);
 
       rProcess =
           new process.ReceptionServer(Config.serverStackPath, env.runpath.path);
 
       sa.receptionStore = new service.RESTReceptionStore(
           Config.receptionStoreUri, authToken.tokenName, client);
+
       sa.organizationStore = new service.RESTOrganizationStore(
           Config.receptionStoreUri, authToken.tokenName, client);
 
-      await Future.wait([rProcess.whenReady, aProcess.whenReady]);
+      await Future
+          .wait([nProcess.whenReady, rProcess.whenReady, aProcess.whenReady]);
     });
 
     tearDown(() async {
-      await Future.wait([rProcess.terminate(), aProcess.terminate()]);
+      await Future.wait(
+          [nProcess.terminate(), rProcess.terminate(), aProcess.terminate()]);
       env.clear();
       client.client.close();
     });
@@ -64,13 +72,13 @@ void _runOrganizationTests() {
     test('receptions (not-found organization)',
         () => storeTest.Organization.nonExistingOrganizationReceptions(sa));
 
-    test('Organization creation (event presence)',
+    test('create (event presence)',
         () => serviceTest.Organization.createEvent(sa));
 
-    test('Organization update (event presence)',
+    test('update (event presence)',
         () => serviceTest.Organization.updateEvent(sa));
 
-    test('Organization removal (event presence)',
+    test('remove (event presence)',
         () => serviceTest.Organization.deleteEvent(sa));
   });
 }

@@ -26,8 +26,6 @@ abstract class User {
       await sa.userStore.update(sa.user, sa.user);
     }
 
-    sa.notifications.listen(print);
-
     Future expectedEvent = sa.notifications.firstWhere((e) =>
         e is event.UserState &&
         e.status.userId == sa.user.id &&
@@ -35,13 +33,16 @@ abstract class User {
 
     await uService.userStatePaused(sa.user.id);
 
-    await expectedEvent;
+    final event.UserState changeEvent = await expectedEvent;
+
+    expect(changeEvent.timestamp.difference(new DateTime.now()).inMilliseconds,
+        lessThan(0));
   }
 
   /**
    *
    */
-  static Future createUserEvent(ServiceAgent sa) async {
+  static Future createEvent(ServiceAgent sa) async {
     final nextUserCreateEvent = sa.notifications.firstWhere(
         (e) => e is event.UserChange && e.state == event.Change.created);
     final createdUser = await sa.createsUser();
@@ -51,6 +52,8 @@ abstract class User {
 
     expect(createEvent.uid, equals(createdUser.id));
     expect(createEvent.modifierUid, equals(sa.user.id));
+    expect(createEvent.timestamp.difference(new DateTime.now()).inMilliseconds,
+        lessThan(0));
   }
 
   /**
@@ -67,6 +70,8 @@ abstract class User {
 
     expect(updateEvent.uid, equals(createdUser.id));
     expect(updateEvent.modifierUid, equals(sa.user.id));
+    expect(updateEvent.timestamp.difference(new DateTime.now()).inMilliseconds,
+        lessThan(0));
   }
 
   /**
@@ -83,5 +88,7 @@ abstract class User {
 
     expect(deleteEvent.uid, equals(created.id));
     expect(deleteEvent.modifierUid, equals(sa.user.id));
+    expect(deleteEvent.timestamp.difference(new DateTime.now()).inMilliseconds,
+        lessThan(0));
   }
 }

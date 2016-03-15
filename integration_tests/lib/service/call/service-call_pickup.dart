@@ -1,4 +1,4 @@
-part of openreception_tests.service;
+part of openreception_tests.service.call;
 
 abstract class Pickup {
   static Logger log = new Logger('$_namespace.CallFlowControl.Pickup');
@@ -84,7 +84,7 @@ abstract class Pickup {
         .then((_) => customer.dial(receptionNumber))
         .then((_) =>
             log.info('Receptionist ${receptionist.user.name} hunts call.'))
-        .then((_) => receptionist.waitForCall().then((model.Call offeredCall) {
+        .then((_) => receptionist.waitForCallOffer().then((model.Call offeredCall) {
               log.info('Receptionist 1 and 2 both tries to get the call');
               receptionist.pickup(offeredCall).then((model.Call call) {
                 log.info('Receptionist 1 got call $call');
@@ -163,7 +163,7 @@ abstract class Pickup {
         .then((_) =>
             log.info('Receptionist ${receptionist.user.name} waits for call.'))
         .then((_) => receptionist
-            .waitForCall()
+            .waitForCallOffer()
             .then((model.Call call) => inboundCall = call))
         .then((_) => receptionist.pickup(inboundCall, waitForEvent: false))
         .then((_) => receptionist

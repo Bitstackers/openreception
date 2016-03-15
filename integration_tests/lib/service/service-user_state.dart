@@ -54,7 +54,7 @@ abstract class UserState {
     await second_caller.dial(receptionNumber);
 
     log.info('Receptionist waits second call');
-    final model.Call secondCall = await receptionist.waitForCall();
+    final model.Call secondCall = await receptionist.waitForCallOffer();
 
     log.info('Receptionist tries to pick up second call $secondCall');
     expect(receptionist.pickup(secondCall),

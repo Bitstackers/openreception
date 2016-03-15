@@ -1,11 +1,49 @@
 part of openreception_tests.support;
 
+int _currentInternalPeerName = 1100;
+String get _nextInternalPeerName {
+  String peername = _currentInternalPeerName.toString();
+  _currentInternalPeerName++;
+  return peername;
+}
+
+int _currentExternalPeerName = 1200;
+String get _nextExternalPeerName {
+  String peername = _currentExternalPeerName.toString();
+  _currentExternalPeerName++;
+  return peername;
+}
+
+process.FreeSwitch _freeswitch;
+
 class TestEnvironment {
   Logger _log = new Logger('TestEnvironment');
   model.User _user = new model.User.empty()
     ..id = 0
     ..name = 'System User'
     ..address = 'openreception@localhost';
+
+  final PhonePool phonePool = new PhonePool.empty();
+  final Directory runpath;
+  final Directory fsDir;
+
+  List<Receptionist> allocatedReceptionists = [];
+  List<Customer> allocatedCustomers = [];
+
+  /**
+   *
+   */
+  Future<process.FreeSwitch> get freeswitchProcess async {
+    if (_freeswitch == null) {
+      _freeswitch = new process.FreeSwitch(
+          '/usr/bin/freeswitch',
+          fsDir.path,
+          new File(
+              '/home/krc/Projects/openreception-integration-tests/conf.tar.gz'));
+    }
+    await _freeswitch.whenReady;
+    return _freeswitch;
+  }
 
   /**
    *
@@ -141,20 +179,65 @@ class TestEnvironment {
     return _organizationStore;
   }
 
-  final Directory runpath;
-
-  TestEnvironment() : runpath = new Directory('/tmp').createTempSync() {
+  /**
+   *
+   */
+  TestEnvironment({String path: ''})
+      : fsDir = path.isEmpty
+            ? new Directory('/tmp').createTempSync('freeswitch-')
+            : new Directory(path + '/freeswitch-conf')..createSync(),
+        runpath = path.isEmpty
+            ? new Directory('/tmp').createTempSync('filestore')
+            : new Directory(path + '/filestore')..createSync() {
     _log.info('New test environment created in directory $runpath');
   }
 
   /**
    *
    */
-  void clear() {
-    _log.info('Clearing test environment created in directory $runpath');
-    runpath.deleteSync(recursive: true);
+  Future clear() async {
+    await _clearProcesses();
+
+    if (!runpath.existsSync()) {
+      _log.info('Clearing test environment created in directory $runpath');
+      runpath.deleteSync(recursive: true);
+    }
+
+    _userStore = null;
+    _dpStore = null;
+    _calendarStore = null;
     _userStore = null;
     _contactStore = null;
+    _messageStore = null;
+    _messageQueue = null;
+    _receptionStore = null;
+    _organizationStore = null;
+
+    if (_freeswitch != null) {
+      await _freeswitch.cleanConfig();
+    }
+  }
+
+/**
+ *
+ */
+  Future _clearProcesses() async {
+    await Future.wait(allocatedReceptionists.map((r) => r.finalize()));
+    allocatedReceptionists = [];
+    await Future.wait(allocatedCustomers.map((r) => r.finalize()));
+    allocatedCustomers = [];
+  }
+
+  /**
+   *
+   */
+  Future finalize() async {
+    await clear();
+    if (_freeswitch != null) {
+      await _freeswitch.terminate();
+    }
+    _log.info('Deleting directory ${fsDir.absolute.path}');
+    await fsDir.deleteSync(recursive: true);
   }
 
   /**

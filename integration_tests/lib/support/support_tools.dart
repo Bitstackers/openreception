@@ -1,5 +1,12 @@
 part of openreception_tests.support;
 
+Future<String> detectExtIp() async =>
+    (await NetworkInterface.list(type: InternetAddressType.IP_V4))
+        .first
+        .addresses
+        .first
+        .address;
+
 class SupportTools {
   List<Receptionist> receptionists = [];
   List<Customer> customers = [];
