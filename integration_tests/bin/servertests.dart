@@ -1,4 +1,5 @@
-import '../lib/or_test_fw.dart';
+import 'package:openreception_tests/support.dart';
+import 'package:openreception_tests/all_tests.dart';
 
 import 'package:logging/logging.dart';
 import 'package:unittest/unittest.dart';
@@ -12,51 +13,14 @@ void main(List<String> arguments) {
   if (!arguments.contains('--no-xml')) {
     JUnitConfiguration.install();
   }
-  SupportTools st;
 
-  /*
-   * We treat the test framework as a test itself. This gives us the
+  runFilestoreTests();
+  runRestStoreTests();
+
+  /* We treat the test framework as a test itself. This gives us the
    * possibility to output the test state, and to wait for setup and teardown.
    */
-  group('TestFramework', () {
-    setUp(() {
-      return SupportTools.instance.then((SupportTools init) => st = init);
-    });
-
-    test('Setup', () {
-      expect(st, isNotNull);
-      expect(st.customers, isNotEmpty);
-      expect(st.peerMap, isNotEmpty);
-      expect(st.receptionists, isNotEmpty);
-      expect(st.tokenMap, isNotEmpty);
-      expect(st.tokenMap, isNotEmpty);
-    });
-  });
-
-  runPeerAccountTests();
-  runAuthServerTests();
-  runBenchmarkTests();
-  runCalendarTests();
-  runConfigServerTests();
-  runContactTests();
-  runCallFlowTests();
-  runDialplanTests();
-  runDialplanDeploymentTests();
-  runUserTests();
-  runIvrTests();
-  runMessageTests();
-  runNotificationTests();
-  runOrganizationTests();
-  runDatabaseTests();
-
-  runReceptionTests();
-  //runUseCaseTests();
-
-  group('TestFramework', () {
-    tearDown(() {
-      return SupportTools.instance.then((SupportTools st) => st.tearDown());
-    });
-
-    test('Teardown', () => true);
+  group('post-test cleanup', () {
+    test('finalize test environment', () => new TestEnvironment().finalize());
   });
 }
