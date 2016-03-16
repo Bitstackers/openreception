@@ -83,8 +83,8 @@ Future main() async {
     final controller.Ivr ivrController =
         new controller.Ivr(ivrStore, dialplanStore);
 
-    final page.Cdr cdrPage = new page.Cdr(
-        cdrController, organizationController, receptionController);
+    final page.Cdr cdrPage =
+        new page.Cdr(cdrController, organizationController);
 
     final page.OrganizationView orgPage =
         new page.OrganizationView(organizationController, receptionController);

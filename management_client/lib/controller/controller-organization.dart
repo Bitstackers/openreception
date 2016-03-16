@@ -13,6 +13,9 @@ class Organization {
   Future<Iterable<model.BaseContact>> contacts(int organizationID) =>
       _service.contacts(organizationID);
 
+  Future<Map<String, Map<String, String>>> receptionMap() =>
+      _service.receptionMap();
+
   Future<Iterable<int>> receptions(int organizationID) =>
       _service.receptions(organizationID);
 
