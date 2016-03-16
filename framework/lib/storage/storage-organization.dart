@@ -22,6 +22,8 @@ abstract class Organization {
 
   Future<Iterable<Model.Organization>> list();
 
+  Future<Map<String, Map<String, String>>> receptionMap();
+
   Future remove(int organizationID);
 
   Future<Model.Organization> update(Model.Organization organization);

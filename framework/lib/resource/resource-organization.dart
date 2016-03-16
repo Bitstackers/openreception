@@ -18,11 +18,10 @@ part of openreception.resource;
  * resources across servers and clients.
  */
 abstract class Organization {
-
   static const String _organization = 'organization';
   static const String _contact = 'contact';
   static const String _reception = 'reception';
-
+  static const String _receptionMap = 'receptionmap';
 
   /**
    * Url for a single organization.
@@ -34,17 +33,19 @@ abstract class Organization {
    * Url for the organization namespace.
    */
   static Uri root(Uri host) =>
-    Uri.parse('${Util.removeTailingSlashes(host)}/${_organization}');
+      Uri.parse('${Util.removeTailingSlashes(host)}/${_organization}');
 
   /**
    * Url for list of organizations.
    */
-  static Uri list(Uri host, {String token}) =>
-    Uri.parse('${root(host)}');
+  static Uri list(Uri host, {String token}) => Uri.parse('${root(host)}');
 
   static Uri contacts(Uri host, int organizationID) =>
-    Uri.parse('${root(host)}/$organizationID/$_contact');
+      Uri.parse('${root(host)}/$organizationID/$_contact');
+
+  static Uri receptionMap(Uri host) =>
+      Uri.parse('${root(host)}/$_receptionMap');
 
   static Uri receptions(Uri host, int organizationID) =>
-    Uri.parse('${root(host)}/$organizationID/$_reception');
+      Uri.parse('${root(host)}/$organizationID/$_reception');
 }

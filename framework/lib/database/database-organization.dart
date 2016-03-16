@@ -56,6 +56,39 @@ WHERE
   }
 
   /**
+   * Returns a map with String rid keys and organization / reception names in a
+   * map as value.
+   * Example:
+   *  {"42": {'organization': "orgName", "reception": "recName"}}
+   */
+  Future<Map<String, Map<String, String>>> receptionMap() async {
+    final String sql = '''
+SELECT receptions.id AS rid,
+  organizations.full_name AS oname,
+  receptions.full_name AS rname
+FROM organizations
+JOIN receptions
+ON organizations.id = receptions.organization_id;
+    ''';
+    try {
+      final Map<String, Map<String, String>> map =
+          new Map<String, Map<String, String>>();
+      final List<PG.Row> rows = await _connection.query(sql);
+
+      for (PG.Row row in rows) {
+        map[row.rid.toString()] = {
+          'organization': row.oname,
+          'reception': row.rname
+        };
+      }
+
+      return map;
+    } on Storage.SqlError catch (error) {
+      throw new Storage.ServerError(error.toString());
+    }
+  }
+
+  /**
    *
    */
   Future<Iterable<int>> receptions(int organizationId) async {
