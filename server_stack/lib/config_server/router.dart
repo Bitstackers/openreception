@@ -11,47 +11,34 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.configuration_server.router;
+library openreception.server.router.config;
 
 import 'dart:async';
-import 'dart:io' as IO;
+import 'dart:io';
 import 'dart:convert';
 
-import '../configuration.dart';
 import 'package:logging/logging.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
-import 'package:openreception_framework/model.dart' as ORModel;
+import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
+
+import 'package:openreception_framework/model.dart' as model;
+
+import 'package:openreception.server/configuration.dart';
+import 'package:openreception.server/response_utils.dart';
 
 part 'router/getconfiguration.dart';
 
 final Logger log = new Logger('configserver.router');
 
-shelf.Middleware addCORSHeaders =
-    shelf.createMiddleware(requestHandler: _options, responseHandler: _cors);
-
-const Map<String, String> textHtmlHeader = const {
-  IO.HttpHeaders.CONTENT_TYPE: 'text/html'
-};
-const Map<String, String> CORSHeader = const {
-  'Access-Control-Allow-Origin': '*'
-};
-
-shelf.Response _options(shelf.Request request) => (request.method == 'OPTIONS')
-    ? new shelf.Response.ok(null, headers: CORSHeader)
-    : null;
-
-shelf.Response _cors(shelf.Response response) =>
-    response.change(headers: CORSHeader);
-
-Future<IO.HttpServer> start({String hostname: '0.0.0.0', int port: 4080}) {
-  var router = shelf_route.router(fallbackHandler: send404)
-    ..get('/configuration', getClientConfig);
+Future<HttpServer> start({String hostname: '0.0.0.0', int port: 4080}) {
+  var router = shelf_route.router()..get('/configuration', getClientConfig);
 
   var handler = const shelf.Pipeline()
       .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
-      .addMiddleware(addCORSHeaders)
+      .addMiddleware(
+          shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
       .addHandler(router.handler);
 
   log.fine('Serving interfaces on port $port:');

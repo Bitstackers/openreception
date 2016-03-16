@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.configuration_server;
+library openreception.server.configuration;
 
 import 'dart:async';
 import 'dart:io';
@@ -19,8 +19,8 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
 
-import '../lib/configuration.dart';
-import '../lib/config_server/router.dart' as router;
+import 'package:openreception.server/configuration.dart';
+import 'package:openreception.server/config_server/router.dart' as router;
 
 /**
  * The OR-Stack configuration server. Provides a REST configuration interface.
@@ -29,14 +29,20 @@ Future main(List<String> args) async {
   ///Init logging.
   Logger.root.level = config.configserver.log.level;
   Logger.root.onRecord.listen(config.configserver.log.onRecord);
+  Logger log = new Logger('configuration_server');
 
   ///Handle argument parsing.
   ArgParser parser = new ArgParser()
-    ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
+    ..addFlag('help', help: 'Output this help', negatable: false)
     ..addOption('httpport',
         abbr: 'p',
         defaultsTo: config.configserver.httpPort.toString(),
-        help: 'The port the HTTP server listens on.');
+        help: 'The port the HTTP server listens on.')
+    ..addOption('host',
+        abbr: 'h',
+        defaultsTo: config.configserver.externalHostName,
+        help: 'The hostname or IP listen-address for the HTTP server');
+  ;
 
   ArgResults parsedArgs = parser.parse(args);
 
@@ -45,5 +51,7 @@ Future main(List<String> args) async {
     exit(1);
   }
 
-  await router.start(port: int.parse(parsedArgs['httpport']));
+  await router.start(
+      hostname: parsedArgs['host'], port: int.parse(parsedArgs['httpport']));
+  log.info('Ready to handle requests');
 }
