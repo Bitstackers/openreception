@@ -23,7 +23,7 @@ class Cdr {
   Cdr();
 
   Future<shelf.Response> process(shelf.Request request) async {
-    String direction;
+    String direction = '';
     DateTime from;
     String kind;
     List<String> rids = new List<String>();
@@ -31,8 +31,10 @@ class Cdr {
     List<String> uids = new List<String>();
 
     try {
-      from = DateTime.parse(shelf_route.getPathParameter(request, 'from'));
-      to = DateTime.parse(shelf_route.getPathParameter(request, 'to'));
+      from = DateTime.parse(
+          Uri.decodeComponent(shelf_route.getPathParameter(request, 'from')));
+      to = DateTime.parse(
+          Uri.decodeComponent(shelf_route.getPathParameter(request, 'to')));
 
       if (from.isAtSameMomentAs(to) || from.isAfter(to)) {
         throw new FormatException('Invalid timestamps. From must be before to');
@@ -46,12 +48,12 @@ class Cdr {
         throw new FormatException('Invalid kind value');
       }
 
-      direction = shelf_route
-          .getPathParameter(request, 'direction')
-          .toString()
-          .toLowerCase();
-      if (!['both', 'inbound', 'outbound'].contains(direction)) {
-        throw new FormatException('Invalid direction value');
+      if (request.requestedUri.queryParameters.containsKey('direction')) {
+        direction =
+            request.requestedUri.queryParameters['direction'].toLowerCase();
+        if (!['both', 'inbound', 'outbound'].contains(direction)) {
+          throw new FormatException('Invalid direction value');
+        }
       }
 
       if (request.requestedUri.queryParameters.containsKey('rids')) {
@@ -73,13 +75,16 @@ class Cdr {
       ..add('report')
       ..add('-k')
       ..add(kind)
-      ..add('-d')
-      ..add(direction)
       ..add('-f')
       ..add(from.toIso8601String())
       ..add('-t')
       ..add(to.toIso8601String())
       ..add('--json');
+
+    if (direction.isNotEmpty) {
+      args.add('-d');
+      args.add(direction);
+    }
 
     if (rids.isNotEmpty) {
       args.add('-r');
