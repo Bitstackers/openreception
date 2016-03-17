@@ -29,11 +29,22 @@ Future main(List<String> args) async {
   Logger log = new Logger('MessageServer');
 
   final ArgParser parser = new ArgParser()
-    ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
+    ..addFlag('help', help: 'Output this help', negatable: false)
     ..addOption('filestore', abbr: 'f', help: 'Path to the filestore backend')
     ..addOption('httpport',
-        help: 'The port the HTTP server listens on.  Defaults to 8080')
-    ..addOption('servertoken', help: 'Server-Token');
+        abbr: 'p',
+        defaultsTo: config.messageServer.httpPort.toString(),
+        help: 'The port the HTTP server listens on.')
+    ..addOption('host',
+        abbr: 'h',
+        defaultsTo: config.messageServer.externalHostName,
+        help: 'The hostname or IP listen-address for the HTTP server')
+    ..addOption('auth-uri',
+        defaultsTo: config.authServer.externalUri.toString(),
+        help: 'The uri of the authentication server')
+    ..addOption('notification-uri',
+        defaultsTo: config.notificationServer.externalUri.toString(),
+        help: 'The uri of the notification server');
 
   final ArgResults parsedArgs = parser.parse(args);
 
@@ -49,6 +60,7 @@ Future main(List<String> args) async {
   }
 
   await router.start(
+      hostname: parsedArgs['host'],
       port: int.parse(parsedArgs['httpport']),
       filepath: parsedArgs['filestore']);
   log.info('Ready to handle requests');
