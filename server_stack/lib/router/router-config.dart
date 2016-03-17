@@ -27,22 +27,38 @@ import 'package:openreception_framework/model.dart' as model;
 
 import 'package:openreception.server/configuration.dart';
 import 'package:openreception.server/response_utils.dart';
+import 'package:openreception.server/controller/controller-config.dart'
+    as controller;
 
-part 'router/getconfiguration.dart';
+/**
+ * 
+ */
+class Config {
+  final Logger _log = new Logger('router.config');
+  final controller.Config _configController;
 
-final Logger log = new Logger('configserver.router');
+  /**
+   *
+   */
+  Config(this._configController);
 
-Future<HttpServer> start({String hostname: '0.0.0.0', int port: 4080}) {
-  var router = shelf_route.router()..get('/configuration', getClientConfig);
+  /**
+   *
+   */
+  Future<HttpServer> listen({String hostname: '0.0.0.0', int port: 4080}) {
+    final router = shelf_route.router()
+      ..get('/configuration', _configController.get)
+      ..post('/register', _configController.register);
 
-  var handler = const shelf.Pipeline()
-      .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
-      .addMiddleware(
-          shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
-      .addHandler(router.handler);
+    final handler = const shelf.Pipeline()
+        .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
+        .addMiddleware(
+            shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
+        .addHandler(router.handler);
 
-  log.fine('Serving interfaces on port $port:');
-  shelf_route.printRoutes(router, printer: (String item) => log.fine(item));
+    _log.fine('Serving interfaces on port $port:');
+    shelf_route.printRoutes(router, printer: (String item) => _log.fine(item));
 
-  return shelf_io.serve(handler, hostname, port);
+    return shelf_io.serve(handler, hostname, port);
+  }
 }
