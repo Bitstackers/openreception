@@ -70,17 +70,21 @@ void main(List<String> args) {
 /**
  *
  */
-Iterable<Model.MessageRecipient> emailRecipients(
-        Iterable<Model.MessageRecipient> rcps) =>
-    rcps.where((Model.MessageRecipient rcp) =>
-        rcp.type == Model.MessageEndpointType.email);
+Iterable<Model.MessageEndpoint> emailRecipients(
+        Iterable<Model.MessageEndpoint> rcps) =>
+    rcps.where((Model.MessageEndpoint rcp) => [
+          Model.MessageEndpointType.email,
+          Model.MessageEndpointType.emailTo,
+          Model.MessageEndpointType.emailCc,
+          Model.MessageEndpointType.emailBcc
+        ].contains(rcp.type));
 
 /**
  *
  */
-Iterable<Model.MessageRecipient> smsRecipients(
-        Iterable<Model.MessageRecipient> rcps) =>
-    rcps.where((Model.MessageRecipient rcp) =>
+Iterable<Model.MessageEndpoint> smsRecipients(
+        Iterable<Model.MessageEndpoint> rcps) =>
+    rcps.where((Model.MessageEndpoint rcp) =>
         rcp.type == Model.MessageEndpointType.sms);
 
 /**
@@ -91,8 +95,8 @@ void periodicEmailSend() {
   DateTime start = new DateTime.now();
 
   router.messageQueueStore
-      .list(maxTries: config.messageDispatcher.maxTries)
-      .then((Iterable<Model.MessageQueueItem> queuedMessages) {
+      .list()
+      .then((Iterable<Model.MessageQueueEntry> queuedMessages) {
     Future.forEach(queuedMessages, tryDispatch).whenComplete(() {
       _log.info('Processed ${queuedMessages.length} messages in '
           '${(new DateTime.now().difference(start)).inMilliseconds} milliseconds.'
@@ -115,46 +119,48 @@ Timer reSchedule() =>
 /**
  *
  */
-Future tryDispatch(Model.MessageQueueItem queueItem) async {
-  Model.Message message = await router.messageStore.get(queueItem.messageId);
-  Model.User user = await router.userStore.get(message.senderId);
+Future tryDispatch(Model.MessageQueueEntry queueItem) async {
+  Model.Message message = queueItem.message;
 
   if (queueItem.unhandledRecipients.isEmpty) {
     _log.info("No recipients left detected on message with ID ${message.id}!");
-    return router.messageQueueStore.archive(queueItem);
+    return router.messageQueueStore.remove(queueItem.id);
   }
 
-  final String senderAddress = config.messageDispatcher.staticSenderAddress
-      .isNotEmpty ? config.messageDispatcher.staticSenderAddress : user.address;
+  final String senderAddress =
+      config.messageDispatcher.staticSenderAddress.isNotEmpty
+          ? config.messageDispatcher.staticSenderAddress
+          : queueItem.message.sender.address;
 
   final String senderName = config.messageDispatcher.staticSenderName.isNotEmpty
       ? config.messageDispatcher.staticSenderName
-      : user.name;
+      : queueItem.message.sender.name;
 
   _log.fine('Dispatching messageID ${message.id} - queueID: ${queueItem.id}');
   queueItem.tries++;
 
   ///Dispatch email recipients.
-  Iterable<Model.MessageRecipient> currentRecipients =
+  Iterable<Model.MessageEndpoint> currentRecipients =
       emailRecipients(queueItem.unhandledRecipients);
 
   List<Address> to = currentRecipients
       .where((mr) => mr.role == Model.Role.TO)
-      .map((mrto) => new Address(mrto.address, mrto.contactName))
+      .map((mrto) => new Address(mrto.address, mrto.name))
       .toList(growable: false);
 
   List<Address> cc = currentRecipients
       .where((mr) => mr.role == Model.Role.CC)
-      .map((mrto) => new Address(mrto.address, mrto.contactName))
+      .map((mrto) => new Address(mrto.address, mrto.name))
       .toList(growable: false);
 
   List<Address> bcc = currentRecipients
       .where((mr) => mr.role == Model.Role.BCC)
-      .map((mrto) => new Address(mrto.address, mrto.contactName))
+      .map((mrto) => new Address(mrto.address, mrto.name))
       .toList(growable: false);
 
   if (currentRecipients.isNotEmpty) {
-    Model.TemplateEmail templateEmail = new Model.TemplateEmail(message, user);
+    Model.TemplateEmail templateEmail =
+        new Model.TemplateEmail(message, queueItem.message.sender);
     Email email = new Email(new Address(senderAddress, senderName),
         config.messageDispatcher.smtp.hostname)
       ..to = to
@@ -171,7 +177,7 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
       _log.shout(
           'Failed to dispatch to email recipients '
           '<${currentRecipients.join(';')}> '
-          '(messageID:${queueItem.messageId}, queueID:${queueItem.id})',
+          '(messageID:${queueItem.message.id}, queueID:${queueItem.id})',
           error,
           stackTrace);
     });
@@ -194,11 +200,11 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
       _log.shout(
           'Failed to dispatch to sms recipients '
           '<${currentRecipients.join(';')}> '
-          '(messageID:${queueItem.messageId}, queueID:${queueItem.id})',
+          '(messageID:${queueItem.message.id}, queueID:${queueItem.id})',
           error,
           stackTrace);
     });
   }
 
-  return router.messageQueueStore.save(queueItem);
+  return router.messageQueueStore.update(queueItem);
 }
