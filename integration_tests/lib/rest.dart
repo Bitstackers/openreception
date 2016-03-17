@@ -39,17 +39,16 @@ const String _namespace = 'rest';
  * Run all filestore tests.
  */
 allTests() {
-  //runDialplanDeploymentTests();
-
+  runDialplanDeploymentTests();
   runMessageTests();
-  //_runConfigTests();
-  //_runAuthServerTests();
-  //_runCallTests();
-  // _runUserTests();
-  // _runOrganizationTests();
-  // _runReceptionTests();
-  // _runContactTests();
-  // _runCalendarTests();
+  _runConfigTests();
+  _runAuthServerTests();
+  _runCallTests();
+  _runUserTests();
+  _runOrganizationTests();
+  _runReceptionTests();
+  _runContactTests();
+  _runCalendarTests();
   // _runDialplanTests();
   // _runIvrTests();
 }

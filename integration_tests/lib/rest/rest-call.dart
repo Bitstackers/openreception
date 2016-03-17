@@ -1,8 +1,8 @@
 part of openreception_tests.rest;
 
 void _runCallTests() {
-  //_runCallHangupTests();
-  //_callFlowControlList();
+  _runCallHangupTests();
+  _callFlowControlList();
   _callFlowControlPickup();
 }
 
