@@ -70,6 +70,22 @@ class RESTOrganizationStore implements Storage.Organization {
         Model.OrganizationReference.decode(JSON.decode(response)));
   }
 
+  /**
+   * 
+   */
+  Future<Map<String, Map<String, String>>> receptionMap() {
+    Uri url = Resource.Organization.receptionMap(this._host);
+    url = _appendToken(url, this._token);
+
+    return this
+        ._backend
+        .get(url)
+        .then((String response) => JSON.decode(response));
+  }
+
+  /**
+   *
+   */
   Future remove(int organizationID, Model.User modifier) {
     Uri url = Resource.Organization.single(this._host, organizationID);
     url = _appendToken(url, this._token);

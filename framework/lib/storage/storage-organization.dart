@@ -50,4 +50,9 @@ abstract class Organization {
    *
    */
   Future<Iterable<model.ReceptionReference>> receptions(int oid);
+
+  /**
+   *
+   */
+  Future<Map<String, Map<String, String>>> receptionMap();
 }

@@ -40,6 +40,11 @@ class Organization implements storage.Organization {
   }
 
   /**
+   * 
+   */
+  Future receptionMap() => throw new UnimplementedError();
+
+  /**
    *
    */
   Future<Iterable<model.ContactReference>> contacts(int id) async {
