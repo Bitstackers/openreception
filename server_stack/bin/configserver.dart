@@ -20,7 +20,9 @@ import 'package:args/args.dart';
 import 'package:logging/logging.dart';
 
 import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/config_server/router.dart' as router;
+import 'package:openreception.server/router/router-config.dart' as router;
+import 'package:openreception.server/controller/controller-config.dart'
+    as controller;
 
 /**
  * The OR-Stack configuration server. Provides a REST configuration interface.
@@ -50,7 +52,11 @@ Future main(List<String> args) async {
     exit(1);
   }
 
-  await router.start(
+  /// Initialize and start the HTTP service
+  controller.Config configController = new controller.Config();
+  router.Config configRouter = new router.Config(configController);
+
+  await configRouter.listen(
       hostname: parsedArgs['host'], port: int.parse(parsedArgs['httpport']));
   log.info('Ready to handle requests');
 }
