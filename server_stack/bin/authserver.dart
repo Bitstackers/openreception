@@ -35,15 +35,19 @@ Future main(List<String> args) async {
 
   ///Handle argument parsing.
   final ArgParser parser = new ArgParser()
-    ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
+    ..addFlag('help', help: 'Output this help', negatable: false)
     ..addOption('filestore', abbr: 'f', help: 'Path to the filestore backend')
     ..addOption('httpport',
         abbr: 'p',
-        help: 'The port the HTTP server listens on.',
-        defaultsTo: config.authServer.httpPort.toString())
+        defaultsTo: config.authServer.httpPort.toString(),
+        help: 'The port the HTTP server listens on.')
+    ..addOption('host',
+        abbr: 'h',
+        defaultsTo: config.authServer.externalHostName,
+        help: 'The hostname or IP listen-address for the HTTP server')
     ..addOption('servertokendir',
         abbr: 'd',
-        help: 'A location where some predefined tokens will be loaded from.',
+        help: 'Load predefined tokens from this path.',
         defaultsTo: config.authServer.serverTokendir);
 
   final ArgResults parsedArgs = parser.parse(args);
@@ -62,6 +66,7 @@ Future main(List<String> args) async {
   await watcher.setup();
   await vault.loadFromDirectory(parsedArgs['servertokendir']);
   await router.start(
+      hostname: parsedArgs['host'],
       port: int.parse(parsedArgs['httpport']),
       filepath: parsedArgs['filestore']);
   log.info('Ready to handle requests');
