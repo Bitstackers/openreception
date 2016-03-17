@@ -16,6 +16,45 @@ String get _nextExternalPeerName {
 
 process.FreeSwitch _freeswitch;
 
+class TestEnvironmentConfig {
+  String externalIp;
+
+  Future detectEnvironment() async {
+    final nics = await NetworkInterface.list();
+    externalIp = nics.first.addresses.first.address;
+  }
+
+  String toString() => '''
+Test environment:
+  External IP: $externalIp''';
+}
+
+TestEnvironmentConfig _envConfig = new TestEnvironmentConfig();
+
+class CircularCounter {
+  final int _start;
+  int _count;
+  final int _max;
+
+  int get nextInt {
+    final int count = _count;
+
+    if (_count == _max) {
+      _count = _start;
+    } else {
+      _count = _count + 1;
+    }
+
+    return count;
+  }
+
+  CircularCounter(this._start, this._max) {
+    _count = _start;
+  }
+}
+
+CircularCounter _networkPortCounter = new CircularCounter(4000, 6000);
+
 class TestEnvironment {
   Logger _log = new Logger('TestEnvironment');
   model.User _user = new model.User.empty()
@@ -23,9 +62,12 @@ class TestEnvironment {
     ..name = 'System User'
     ..address = 'openreception@localhost';
 
+  TestEnvironmentConfig get envConfig => _envConfig;
   final PhonePool phonePool = new PhonePool.empty();
   final Directory runpath;
   final Directory fsDir;
+
+  int get nextNetworkport => _networkPortCounter.nextInt;
 
   List<Receptionist> allocatedReceptionists = [];
   List<Customer> allocatedCustomers = [];
@@ -36,10 +78,7 @@ class TestEnvironment {
   Future<process.FreeSwitch> get freeswitchProcess async {
     if (_freeswitch == null) {
       _freeswitch = new process.FreeSwitch(
-          '/usr/bin/freeswitch',
-          fsDir.path,
-          new File(
-              '/home/krc/Projects/openreception-integration-tests/conf.tar.gz'));
+          '/usr/bin/freeswitch', fsDir.path, new File('conf.tar.gz'));
     }
     await _freeswitch.whenReady;
     return _freeswitch;

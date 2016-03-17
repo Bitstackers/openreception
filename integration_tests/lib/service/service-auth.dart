@@ -5,7 +5,6 @@ abstract class AuthService {
 
   /**
    * Test for the presence of CORS headers.
-   * TODO: Refactor this to use the library-level function.
    */
   static Future isCORSHeadersPresent(HttpClient client) {
     Uri uri = Uri.parse('${Config.authenticationServerUri}/nonexistingpath');
@@ -62,12 +61,12 @@ abstract class AuthService {
    *
    * The expected behaviour is that the server should return a Not Found error.
    */
-  static Future nonExistingToken(service.Authentication authService) async {
+  static Future nonExistingToken(ServiceAgent sa) async {
     const badToken = 'nocandosir';
 
     log.info('Checking server behaviour on a non-existing token.');
 
-    await expect(authService.userOf(badToken),
+    await expect(sa.authService.userOf(badToken),
         throwsA(new isInstanceOf<storage.NotFound>()));
   }
 
@@ -77,15 +76,18 @@ abstract class AuthService {
    *
    * The expected behaviour is that the server should return a User object.
    */
-  static Future existingToken(
-      service.Authentication authService, Receptionist receptionist) async {
+  static Future existingToken(ServiceAgent sa) async {
     log.info('Checking server behaviour on a non-existing token.');
 
-    final model.User user = await authService.userOf(receptionist.authToken);
-    expect(user.id, equals(receptionist.user.id));
-    expect(user.name, isNotEmpty);
-    expect(user.address, isNotNull);
-    expect(user.peer, isNotEmpty);
+    final model.User user = await sa.authService.userOf(sa.authToken);
+    expect(user.id, equals(sa.user.id));
+    expect(user.name, sa.user.name);
+    expect(user.address, sa.user.address);
+    expect(user.peer, sa.user.peer);
+    expect(user.enabled, sa.user.enabled);
+    expect(user.groups, sa.user.groups);
+    expect(user.identities, sa.user.identities);
+
     log.info('Test complete');
   }
 
@@ -94,13 +96,12 @@ abstract class AuthService {
    *
    * The expected behaviour is that the server should return a Not Found error.
    */
-  static Future validateNonExistingToken(
-      service.Authentication authService) async {
+  static Future validateNonExistingToken(ServiceAgent sa) async {
     const badToken = 'nocandosir';
 
     log.info('Checking server behaviour on a non-existing token.');
 
-    await expect(authService.userOf(badToken),
+    await expect(sa.authService.userOf(badToken),
         throwsA(new isInstanceOf<storage.NotFound>()));
   }
 
@@ -109,10 +110,9 @@ abstract class AuthService {
    *
    * The expected behaviour is that the server should normally.
    */
-  static Future validateExistingToken(
-      service.Authentication authService, Receptionist receptionist) async {
+  static Future validateExistingToken(ServiceAgent sa) async {
     log.info('Checking server behaviour on a non-existing token.');
 
-    await authService.userOf(receptionist.authToken);
+    await sa.authService.userOf(sa.authToken);
   }
 }

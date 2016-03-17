@@ -1,23 +1,24 @@
 part of openreception_tests.rest;
 
-void runConfigServerTests() {
+void _runConfigTests() {
   group('$_namespace.Config', () {
     Logger log = new Logger('$_namespace.Config');
 
     ServiceAgent sa;
     TestEnvironment env;
     process.ConfigServer cProcess;
-    transport.Client client;
+    service.Client client;
 
     setUp(() async {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();
-      client = new transport.Client();
+      client = new service.Client();
 
-      cProcess = new process.ConfigServer(Config.serverStackPath);
+      cProcess = new process.ConfigServer(Config.serverStackPath,
+          servicePort: env.nextNetworkport,
+          bindAddress: env.envConfig.externalIp);
 
-      sa.configService =
-          new service.RESTConfiguration(Config.configServerUri, client);
+      sa.configService = cProcess.createClient(client);
       await Future.wait([cProcess.whenReady]);
     });
 
@@ -26,20 +27,19 @@ void runConfigServerTests() {
       env.clear();
       client.client.close();
     });
-    test(
-        'CORS headers present (existingUri)',
-        () => isCORSHeadersPresent(
-            resource.Config.get(Config.configServerUri), log));
+
+    test('CORS headers present (existingUri)',
+        () => isCORSHeadersPresent(resource.Config.get(cProcess.uri), log));
 
     test(
         'CORS headers present (non-existingUri)',
         () => isCORSHeadersPresent(
-            Uri.parse('${Config.configServerUri}/nonexistingpath'), log));
+            Uri.parse('${cProcess.uri}/nonexistingpath'), log));
 
     test(
         'Non-existing path',
-        () => nonExistingPath(
-            Uri.parse('${Config.configServerUri}/nonexistingpath'), log));
+        () =>
+            nonExistingPath(Uri.parse('${cProcess.uri}/nonexistingpath'), log));
 
     test(
         'Get',

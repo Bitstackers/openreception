@@ -4,7 +4,7 @@ runIvrTests() {
   group('Service.Ivr', () {
     Logger log = new Logger('$_namespace.ivr');
 
-    transport.Client client = null;
+    service.Client client = null;
     service.RESTIvrStore ivrStore = null;
 
     test(
@@ -24,7 +24,7 @@ runIvrTests() {
                 '?token=${Config.serverToken}'),
             log));
     setUp(() {
-      client = new transport.Client();
+      client = new service.Client();
       ivrStore = new service.RESTIvrStore(
           Config.dialplanStoreUri, Config.serverToken, client);
     });

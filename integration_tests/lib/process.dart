@@ -5,6 +5,8 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:logging/logging.dart';
 import 'package:openreception_tests/support/support-auth.dart';
+import 'package:openreception_framework/service.dart' as service;
+import 'package:openreception_framework/service-io.dart' as service;
 
 part 'process/process-authserver.dart';
 part 'process/process-calendarserver.dart';

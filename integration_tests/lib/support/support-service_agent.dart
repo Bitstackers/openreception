@@ -8,6 +8,8 @@ class ServiceAgent {
   String authToken = '';
   Transport.WebSocketClient _ws;
   Service.CallFlowControl callflow;
+  Service.RESTConfiguration configService;
+  Service.Authentication authService;
 
   Stream<Event.Event> get notifications => notificationSocket.eventStream;
 

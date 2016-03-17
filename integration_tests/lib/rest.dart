@@ -3,6 +3,7 @@ library openreception_tests.rest;
 import 'dart:io';
 import 'dart:async';
 
+import 'package:esl/esl.dart' as esl;
 import 'package:logging/logging.dart';
 
 import 'package:openreception_tests/storage.dart' as storeTest;
@@ -14,17 +15,20 @@ import 'package:openreception_tests/config.dart';
 import 'package:openreception_framework/event.dart' as event;
 import 'package:openreception_framework/resource.dart' as resource;
 import 'package:openreception_framework/service.dart' as service;
-import 'package:openreception_framework/storage.dart' as storage;
-import 'package:openreception_framework/service-io.dart' as transport;
+import 'package:openreception_framework/service-io.dart' as service;
 import 'package:openreception_framework/model.dart' as model;
 
 import 'package:unittest/unittest.dart';
 
+part 'rest/rest-authentication.dart';
 part 'rest/rest-calendar.dart';
 part 'rest/rest-call.dart';
+part 'rest/rest-config.dart';
 part 'rest/rest-contact.dart';
 part 'rest/rest-dialplan.dart';
 part 'rest/rest-ivr.dart';
+part 'rest/rest-message.dart';
+part 'rest/rest-notification.dart';
 part 'rest/rest-organization.dart';
 part 'rest/rest-peeraccount.dart';
 part 'rest/rest-reception.dart';
@@ -35,12 +39,17 @@ const String _namespace = 'rest';
  * Run all filestore tests.
  */
 allTests() {
+  //runDialplanDeploymentTests();
+
+  runMessageTests();
+  //_runConfigTests();
+  //_runAuthServerTests();
   //_runCallTests();
-  _runUserTests();
-  _runOrganizationTests();
-  _runReceptionTests();
-  _runContactTests();
-  _runCalendarTests();
+  // _runUserTests();
+  // _runOrganizationTests();
+  // _runReceptionTests();
+  // _runContactTests();
+  // _runCalendarTests();
   // _runDialplanTests();
   // _runIvrTests();
 }
@@ -59,7 +68,7 @@ Future isCORSHeadersPresent(Uri uri, Logger log) async {
         log.warning('$name : ${values.join(', ')}');
       });
 
-      fail('No CORS headers on path existingUri');
+      fail('No CORS headers on path uri');
     }
   }
 

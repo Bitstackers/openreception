@@ -40,3 +40,5 @@ part 'service/service-user_state.dart';
 
 const String libraryName = 'test.service';
 const String _namespace = libraryName;
+
+final Duration threeSeconds = new Duration(seconds: 3);

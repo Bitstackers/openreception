@@ -8,7 +8,7 @@ void _runUserTests() {
     TestEnvironment env;
     process.UserServer uProcess;
     process.AuthServer aProcess;
-    transport.Client client;
+    service.Client client;
     AuthToken authToken;
     service.RESTUserStore restStore;
 
@@ -16,7 +16,7 @@ void _runUserTests() {
     setUp(() async {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();
-      client = new transport.Client();
+      client = new service.Client();
       authToken = new AuthToken(sa.user);
       sa.authToken = authToken.tokenName;
 

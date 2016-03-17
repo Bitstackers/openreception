@@ -9,13 +9,13 @@ void _runReceptionTests() {
     process.ReceptionServer rProcess;
     process.AuthServer aProcess;
     process.NotificationServer nProcess;
-    transport.Client client;
+    service.Client client;
     AuthToken authToken;
 
     setUp(() async {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();
-      client = new transport.Client();
+      client = new service.Client();
       authToken = new AuthToken(sa.user);
       sa.authToken = authToken.tokenName;
       nProcess = new process.NotificationServer(

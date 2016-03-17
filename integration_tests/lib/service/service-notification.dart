@@ -3,17 +3,32 @@ part of openreception_tests.service;
 abstract class NotificationService {
   static final Logger _log = new Logger('$_namespace.Notification');
 
-  static Future eventBroadcast(Iterable<Receptionist> receptionists) {
-    receptionists.forEach((Receptionist receptionist) {
-      receptionist.eventStack.clear();
-    });
+  /**
+   *
+   */
+  static Future eventBroadcast(Iterable<service.NotificationSocket> sockets,
+      service.NotificationService service) async {
+    final int uid = 99;
+    final int modUid = 88;
+    final event.UserChange testEvent = new event.UserChange.update(uid, modUid);
 
-    return receptionists.first.pause().then((_) => Future.forEach(
-        receptionists,
-        (Receptionist receptionist) =>
-            receptionist.waitFor(eventType: event.Key.userState)));
+    bool isExpectedEvent(event.Event e) =>
+        e is event.UserChange &&
+        e.updated &&
+        e.uid == uid &&
+        e.modifierUid == modUid;
+
+    Future<Iterable> eventSubScriptions = Future
+        .wait(sockets.map((ns) => ns.eventStream.firstWhere(isExpectedEvent)));
+
+    await service.broadcastEvent(testEvent);
+
+    await eventSubScriptions.timeout(threeSeconds);
   }
 
+  /**
+   *
+   */
   static Future connectionStateList(Iterable<Receptionist> receptionists,
       service.NotificationService notificationService) {
     receptionists.forEach((Receptionist receptionist) {

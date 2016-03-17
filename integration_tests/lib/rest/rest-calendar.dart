@@ -8,7 +8,7 @@ void _runCalendarTests() {
     TestEnvironment env;
     process.CalendarServer cProcess;
     process.AuthServer aProcess;
-    transport.Client client;
+    service.Client client;
     AuthToken authToken;
     model.BaseContact contact;
     model.Reception reception;
@@ -17,7 +17,7 @@ void _runCalendarTests() {
     setUp(() async {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();
-      client = new transport.Client();
+      client = new service.Client();
       authToken = new AuthToken(sa.user);
       contact = await sa.createsContact();
 

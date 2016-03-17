@@ -3,7 +3,7 @@ part of openreception_tests.rest;
 _runPeerAccountTests() {
   group('$_namespace.PeerAccount', () {
     Logger log = new Logger('$_namespace.PeerAccount');
-    transport.Client client;
+    service.Client client;
     service.PeerAccount paService;
     service.RESTUserStore userStore;
     service.CallFlowControl callFlow;
@@ -28,7 +28,7 @@ _runPeerAccountTests() {
             log));
 
     setUp(() async {
-      client = new transport.Client();
+      client = new service.Client();
       paService = new service.PeerAccount(
           Config.dialplanStoreUri, Config.serverToken, client);
     });
@@ -41,7 +41,7 @@ _runPeerAccountTests() {
     test('list', () => serviceTest.PeerAccountService.list(paService));
 
     setUp(() async {
-      client = new transport.Client();
+      client = new service.Client();
       userStore = new service.RESTUserStore(
           Config.userStoreUri, Config.serverToken, client);
       paService = new service.PeerAccount(
@@ -64,7 +64,7 @@ _runPeerAccountTests() {
         'deploy', () => serviceTest.PeerAccountService.deploy(user, paService));
 
     setUp(() async {
-      client = new transport.Client();
+      client = new service.Client();
       userStore = new service.RESTUserStore(
           Config.userStoreUri, Config.serverToken, client);
       paService = new service.PeerAccount(

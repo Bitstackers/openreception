@@ -11,26 +11,24 @@ import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 
 import '../lib/config.dart';
-import '../lib/or_test_fw.dart' as test_fw;
+import 'package:openreception_tests/support.dart' as support;
 import '../lib/on_demand_handlers.dart' as handler;
 
 const String libraryName = 'support_tools.on_demand_service';
-final Logger log = new Logger (libraryName);
+final Logger log = new Logger(libraryName);
 
 shelf.Middleware checkAuthentication =
-  shelf.createMiddleware(requestHandler: _lookupToken, responseHandler: null);
-
+    shelf.createMiddleware(requestHandler: _lookupToken, responseHandler: null);
 
 shelf.Response _lookupToken(shelf.Request request) {
   var token = request.requestedUri.queryParameters['token'];
 
   if (token != Config.magicRESTToken) {
-      return new shelf.Response.forbidden('Invalid token');
+    return new shelf.Response.forbidden('Invalid token');
   }
 
   return null;
 }
-
 
 /// Simple access logging.
 void _accessLogger(String msg, bool isError) {
@@ -41,11 +39,9 @@ void _accessLogger(String msg, bool isError) {
   }
 }
 
-
 Future<IO.HttpServer> start(
-    handler.Receptionist receptionistHandler,
-    handler.Customer customerHandler,
-    {String hostname : '0.0.0.0', int port : 4224}) {
+    handler.Receptionist receptionistHandler, handler.Customer customerHandler,
+    {String hostname: '0.0.0.0', int port: 4224}) {
   var router = shelf_route.router()
     ..post('/resource/receptionist/aquire', receptionistHandler.aquire)
     ..post('/resource/receptionist/{rid}/release', receptionistHandler.release)
@@ -60,36 +56,33 @@ Future<IO.HttpServer> start(
   var handler = const shelf.Pipeline()
       .addMiddleware(shelf_cors.createCorsHeadersMiddleware())
       .addMiddleware(checkAuthentication)
-      .addMiddleware(shelf.logRequests(logger : _accessLogger))
+      .addMiddleware(shelf.logRequests(logger: _accessLogger))
       .addHandler(router.handler);
 
   log.fine('Serving interfaces:');
-  shelf_route.printRoutes(router, printer : log.fine);
+  shelf_route.printRoutes(router, printer: log.fine);
 
   return shelf_io.serve(handler, hostname, port);
 }
 
-
-void main ()  {
-
+void main() {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen(print);
 
-  test_fw.SupportTools st;
+  support.SupportTools st;
   handler.Receptionist receptionistHandler;
   handler.Customer customerHandler;
 
   void setupHandlers() {
-    receptionistHandler = new handler.Receptionist(test_fw.ReceptionistPool.instance);
-    customerHandler = new handler.Customer(test_fw.CustomerPool.instance);
+    receptionistHandler =
+        new handler.Receptionist(support.ReceptionistPool.instance);
+    customerHandler = new handler.Customer(support.CustomerPool.instance);
   }
 
-  test_fw.SupportTools.instance
-    .then((test_fw.SupportTools init) => st = init)
-    .then((_) => print(st))
-    .then((_) => setupHandlers())
-    .then((_) => start
-      (receptionistHandler, customerHandler,
-       hostname: Config.listenRESTAddress,
-       port: Config.listenRESTport));
+  support.SupportTools.instance
+      .then((support.SupportTools init) => st = init)
+      .then((_) => print(st))
+      .then((_) => setupHandlers())
+      .then((_) => start(receptionistHandler, customerHandler,
+          hostname: Config.listenRESTAddress, port: Config.listenRESTport));
 }

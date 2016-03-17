@@ -3,6 +3,9 @@ part of openreception_tests.process;
 class AuthServer {
   final String path;
   final String storePath;
+  final int servicePort;
+  final String bindAddress;
+
   final Logger _log = new Logger('$_namespace.AuthServer');
   Process _process;
 
@@ -11,7 +14,9 @@ class AuthServer {
   Future get whenReady => _ready.future;
 
   AuthServer(this.path, this.storePath,
-      {Iterable<AuthToken> intialTokens: const []}) {
+      {Iterable<AuthToken> intialTokens: const [],
+      this.servicePort: 4050,
+      this.bindAddress: '0.0.0.0'}) {
     _init(intialTokens);
   }
 
@@ -31,7 +36,11 @@ class AuthServer {
           '-d',
           tokenDir.dir.absolute.path,
           '-f',
-          storePath
+          storePath,
+          '-p',
+          servicePort.toString(),
+          '-h',
+          bindAddress
         ],
         workingDirectory: path)
       ..stdout
@@ -54,6 +63,27 @@ class AuthServer {
     whenReady.then((_) => tokenDir.dir.delete(recursive: true));
   }
 
+  /**
+   * Constructs a new [service.Autentication] based on the launch parameters
+   * of the process.
+   */
+  service.Authentication bindClient(service.Client client, String token,
+      {Uri connectUri: null}) {
+    if (connectUri == null) {
+      connectUri = this.uri;
+    }
+
+    return new service.Authentication(connectUri, token, client);
+  }
+
+  /**
+   *
+   */
+  Uri get uri => Uri.parse('http://$bindAddress:$servicePort');
+
+  /**
+   *
+   */
   Future terminate() async {
     _process.kill();
     await _process.exitCode;

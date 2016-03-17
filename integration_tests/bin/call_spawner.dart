@@ -5,7 +5,7 @@ import 'package:logging/logging.dart';
 import 'package:phonio/phonio.dart' as Phonio;
 import 'dart:math' show Random;
 
-import '../lib/or_test_fw.dart' as test_fw;
+import 'package:openreception_tests/support.dart' as support;
 
 Logger log = new Logger('Call-Spawner');
 Logger _statusLog = new Logger('Status');
@@ -20,14 +20,10 @@ const List<String> _receptionNumbers = const [
 ];
 final Random rand = new Random(new DateTime.now().millisecondsSinceEpoch);
 
-enum CallDirection {
-  inbound,
-  outbound
-}
+enum CallDirection { inbound, outbound }
 
 Map<String, CallDirection> _calls = {};
-Set<test_fw.Customer> customers = new Set();
-
+Set<support.Customer> customers = new Set();
 
 Iterable _outboundCalls() =>
     _calls.values.where((CallDirection dir) => dir == CallDirection.outbound);
@@ -35,7 +31,8 @@ Iterable _outboundCalls() =>
 Iterable _inboundCalls() =>
     _calls.values.where((CallDirection dir) => dir == CallDirection.inbound);
 
-String status() => 'Outbound calls: ${_outboundCalls().length}, inbound calls: ${_inboundCalls().length}';
+String status() =>
+    'Outbound calls: ${_outboundCalls().length}, inbound calls: ${_inboundCalls().length}';
 
 void updateStatus() {
 //  stdout.writeCharCode(27);
@@ -63,7 +60,7 @@ void main() {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen(print);
 
-  test_fw.SupportTools st;
+  support.SupportTools st;
 
   ProcessSignal.SIGINT.watch().listen((_) {
     log.info('SIGINT caught, hanging up all calls.');
@@ -71,7 +68,7 @@ void main() {
 
     st.tearDownCustomers();
 
-    return new Future.delayed(new Duration(seconds : 3))
+    return new Future.delayed(new Duration(seconds: 3))
         .then((_) => updateStatus())
         .then((_) => exit(0));
   });
@@ -80,49 +77,47 @@ void main() {
     log.info('SIGTERM caught, hanging up all calls.');
     _stopping = true;
 
-    customers.forEach((test_fw.Customer customer) => customer.hangupAll());
+    customers.forEach((support.Customer customer) => customer.hangupAll());
 
-
-    return Future.wait(customers.map((test_fw.Customer customer) => customer.hangupAll()))
+    return Future
+        .wait(
+            customers.map((support.Customer customer) => customer.hangupAll()))
         .then((_) => log.info('Hung up all calls.'))
-        .then((_) => new Future.delayed(new Duration(seconds : 3)))
+        .then((_) => new Future.delayed(new Duration(seconds: 3)))
         .then((_) => st.tearDown())
-        .then((_) => new Future.delayed(new Duration(seconds : 3))
-        .then((_) => exit(0)));
+        .then((_) =>
+            new Future.delayed(new Duration(seconds: 3)).then((_) => exit(0)));
   });
 
-  test_fw.SupportTools.instance
-      .then((test_fw.SupportTools init) => st = init)
+  support.SupportTools.instance
+      .then((support.SupportTools init) => st = init)
       .then((_) => print(st))
       .then((_) => start_spawning());
 }
 
 Future start_spawning() async {
-  test_fw.CustomerPool.instance.available;
+  support.CustomerPool.instance.available;
 
-  Set<test_fw.Customer> customers = await getCustomers();
-  customers.forEach((test_fw.Customer c) {
+  Set<support.Customer> customers = await getCustomers();
+  customers.forEach((support.Customer c) {
     print(c.extension);
   });
 
-
   // Each customer spawns a call
-  return Future.forEach(customers, (test_fw.Customer customer) {
+  return Future.forEach(customers, (support.Customer customer) {
     customerAutoDialing(customer);
   });
 }
 
 Duration _randomWait() => new Duration(milliseconds: rand.nextInt(3000) + 500);
 
-String _id(test_fw.Customer customer, String id) =>
-    '${customer.hashCode}_$id';
+String _id(support.Customer customer, String id) => '${customer.hashCode}_$id';
 
-Future customerAutoDialing(test_fw.Customer customer) {
+Future customerAutoDialing(support.Customer customer) {
   StreamSubscription subscription;
   subscription = customer.phoneEvents.listen((Phonio.Event event) {
     // Spawn a new call as soon as the old call is disconnected.
     if (event is Phonio.CallDisconnected) {
-
       bool outbound =
           _calls[_id(customer, event.callID)] == CallDirection.outbound;
 
@@ -137,12 +132,9 @@ Future customerAutoDialing(test_fw.Customer customer) {
 
       if (outbound) {
         new Future.delayed(new Duration(milliseconds: 100))
-        .then((_) => customer
-          .dial(_randomChoice(_receptionNumbers)));
+            .then((_) => customer.dial(_randomChoice(_receptionNumbers)));
       }
-    }
-
-    else if (event is Phonio.CallIncoming) {
+    } else if (event is Phonio.CallIncoming) {
       _scheduleHangup(customer, event.callID);
 
       final List<int> actions = new List.generate(10, (int i) => i);
@@ -160,10 +152,9 @@ Future customerAutoDialing(test_fw.Customer customer) {
 
         if (call != null) {
           Duration randomWait = _randomWait();
-          log.info('Declining call to ${event.callee} in ${randomWait.inMilliseconds}ms');
-          new Future.delayed(randomWait).then((_) =>
-              customer.hangup(call));
-
+          log.info(
+              'Declining call to ${event.callee} in ${randomWait.inMilliseconds}ms');
+          new Future.delayed(randomWait).then((_) => customer.hangup(call));
         } else {
           log.warning('Failed to hangup call with ID ${call.ID}');
         }
@@ -174,17 +165,14 @@ Future customerAutoDialing(test_fw.Customer customer) {
         Duration randomWait = _randomWait();
 
         log.info('Waiting ${randomWait.inMilliseconds}ms to answer call '
-                 'to ${event.callee}');
+            'to ${event.callee}');
 
         Phonio.Call call = customer.phone.activeCalls
             .firstWhere((Phonio.Call call) => call.ID == event.callID);
 
-        new Future.delayed(randomWait).then((_) =>
-            customer.pickup(call));
+        new Future.delayed(randomWait).then((_) => customer.pickup(call));
       }
-    }
-
-    else if (event is Phonio.CallOutgoing) {
+    } else if (event is Phonio.CallOutgoing) {
       _scheduleHangup(customer, event.callID);
       _calls[_id(customer, event.callID)] = CallDirection.outbound;
       updateStatus();
@@ -194,37 +182,32 @@ Future customerAutoDialing(test_fw.Customer customer) {
   int outboundCallsPerAgent = 1;
   return Future.doWhile(() {
     outboundCallsPerAgent = outboundCallsPerAgent - 1;
-    return
-        new Future.delayed (new Duration (milliseconds : 50)).then((_) =>
-            customer.dial(_randomChoice(_receptionNumbers)).then((_) {
-      return outboundCallsPerAgent != 0 && !_stopping;
-    }));
+    return new Future.delayed(new Duration(milliseconds: 50))
+        .then((_) => customer.dial(_randomChoice(_receptionNumbers)).then((_) {
+              return outboundCallsPerAgent != 0 && !_stopping;
+            }));
   });
 }
 
 Future getCustomers() async {
-
-  while (test_fw.CustomerPool.instance.available.length > 0) {
-    customers.add(test_fw.CustomerPool.instance.aquire());
+  while (support.CustomerPool.instance.available.length > 0) {
+    customers.add(support.CustomerPool.instance.aquire());
   }
 
   return Future
-      .wait(customers.map((test_fw.Customer customer) => customer.initialize()))
+      .wait(customers.map((support.Customer customer) => customer.initialize()))
       .then((_) => customers);
 }
 
-Future _scheduleHangup(test_fw.Customer customer, String callId) {
+Future _scheduleHangup(support.Customer customer, String callId) {
   log.info('Scheduling hangup of call with id ${callId} '
-  'for agent ${customer.phone.defaultAccount.username}');
+      'for agent ${customer.phone.defaultAccount.username}');
 
-  return new Future.delayed(new Duration(seconds : 60)).then((_) {
-    Phonio.Call call = customer.phone.activeCalls
-        .firstWhere((Phonio.Call call) => call.ID == callId
-        , orElse : () => null);
+  return new Future.delayed(new Duration(seconds: 60)).then((_) {
+    Phonio.Call call = customer.phone.activeCalls.firstWhere(
+        (Phonio.Call call) => call.ID == callId,
+        orElse: () => null);
 
-    return call != null
-        ? customer.hangup(call)
-        : null;
+    return call != null ? customer.hangup(call) : null;
   });
-
 }
