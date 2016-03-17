@@ -65,6 +65,13 @@ Future main(List<String> args) async {
 
   await watcher.setup();
   await vault.loadFromDirectory(parsedArgs['servertokendir']);
+
+  /// Install "reload-token" mechanism.
+  ProcessSignal.SIGHUP.watch().listen((_) {
+    log.info('SIGHUP caught. Reloading tokens');
+    vault.loadFromDirectory(parsedArgs['servertokendir']);
+  });
+
   await router.start(
       hostname: parsedArgs['host'],
       port: int.parse(parsedArgs['httpport']),
