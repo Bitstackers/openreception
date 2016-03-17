@@ -14,13 +14,13 @@
 /**
  * The OR-Stack command-line event logger.
  */
-library openreception.user_socket_logger;
+library openreception.server.user_performance_logger;
 
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 
-import '../lib/configuration.dart';
+import 'package:openreception.server/configuration.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
 import 'package:openreception_framework/event.dart' as event;
@@ -220,7 +220,7 @@ Future main(List<String> args) async {
       config.authServer.serverToken,
       new transport.Client());
 
-  await userStore.list().then((Iterable<model.User> users) {
+  await userStore.list().then((Iterable<model.UserReference> users) {
     users.forEach((user) {
       _userNameCache[user.id] = user.name;
     });
