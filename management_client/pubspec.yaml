@@ -1,6 +1,7 @@
 name: management_tool
 version: 0.0.1
-author: Your Name <email@example.com>
+description:
+author: BitStackers
 environment:
   sdk: '>=1.0.0 <2.0.0'
 dependencies:
@@ -10,9 +11,12 @@ dependencies:
   intl: any
   logging: any
   okeyee: any
-  openreception_framework:
-    path: ../framework
   route_hierarchical: any
   stream_channel: any
+  openreception_framework:
+    git:
+      ref: master
+      url: https://github.com/rostgaard/OpenreceptionFramework.git
+    version: '>=0.0.30'
 transformers:
 - dart_to_js_script_rewriter

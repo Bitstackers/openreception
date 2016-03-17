@@ -34,10 +34,9 @@ class Cdr {
     ..style.overflow = 'auto';
   // final Logger _log = new Logger('$_libraryName');
   final controller.Organization _orgCtrl;
-  final controller.Reception _recCtrl;
   InputElement ridInput;
-  final Map<int, Map<String, String>> ridToNameMap =
-      new Map<int, Map<String, String>>();
+  Map<String, Map<String, String>> ridToNameMap =
+      new Map<String, Map<String, String>>();
   final TableElement table = new TableElement();
   InputElement toInput;
   final DivElement totals = new DivElement()
@@ -45,8 +44,7 @@ class Cdr {
   InputElement uidInput;
   static const String _viewName = 'cdr';
 
-  Cdr(controller.Cdr this._cdrCtrl, controller.Organization this._orgCtrl,
-      controller.Reception this._recCtrl) {
+  Cdr(controller.Cdr this._cdrCtrl, controller.Organization this._orgCtrl) {
     final DateTime now = new DateTime.now();
     final DateTime from = new DateTime(now.year, now.month, now.day);
     final DateTime to =
@@ -73,10 +71,7 @@ class Cdr {
     fetchButton = new ButtonElement()
       ..text = 'hent'
       ..classes.add('create')
-      ..hidden = true
       ..onClick.listen((_) => _fetch());
-
-    loadOrgsAndReceptions();
 
     filter
       ..children = [
@@ -124,12 +119,14 @@ class Cdr {
   /**
    *
    */
-  void _fetch() {
+  Future _fetch() async {
     final DateTime from = DateTime.parse(fromInput.value);
     final DateTime to = DateTime.parse(toInput.value);
 
     fetchButton.disabled = true;
     fetchButton.style.backgroundColor = 'grey';
+
+    ridToNameMap = (await _orgCtrl.receptionMap());
 
     _cdrCtrl
         .summaries(from, to, ridInput.value)
@@ -150,16 +147,16 @@ class Cdr {
 
       map['summaries'].forEach((Map m) {
         final model.CdrSummary summary = new model.CdrSummary.fromJson(m);
-        if (ridToNameMap.containsKey(summary.rid)) {
+        if (ridToNameMap.containsKey(summary.rid.toString())) {
           contexts.add(new Context()
-            ..name = ridToNameMap[summary.rid]['orgName'] +
-                ridToNameMap[summary.rid]['recName']
-            ..orgName = ridToNameMap[summary.rid]['orgName']
-            ..recName = ridToNameMap[summary.rid]['recName']
+            ..name = ridToNameMap[summary.rid.toString()]['organization'] +
+                ridToNameMap[summary.rid.toString()]['reception']
+            ..orgName = ridToNameMap[summary.rid.toString()]['organization']
+            ..recName = ridToNameMap[summary.rid.toString()]['reception']
             ..summary = summary);
         } else {
           contexts.add(new Context()
-            ..name = summary.rid.toString()
+            ..name = '.....${summary.rid.toString()}'
             ..orgName = ''
             ..recName = summary.rid.toString()
             ..summary = summary);
@@ -214,7 +211,9 @@ class Cdr {
           })
           ..children = [
             new TableCellElement()..text = c.orgName,
-            new TableCellElement()..text = c.recName,
+            new TableCellElement()
+              ..text = c.recName
+              ..title = c.summary.rid.toString(),
             new TableCellElement()
               ..style.textAlign = 'center'
               ..text = (answered +
@@ -268,58 +267,22 @@ class Cdr {
 
       table.createTBody()..children = rows;
 
-      totals.text = 'Total ind: $totalInbound'
-          ' / Svarede: $totalAnswered'
-          ' / Voicesvar: $totalInboundNotNotified'
-          ' / Mistede: $totalNotifiedNotAnswered'
-          ' / Korte kald: $totalShortCalls'
-          ' / Lange kald: $totalLongCalls'
-          ' / Teleomkostning: ${totalOutboundCost / 100}'
-          ' / Gns. samtaletid: ${averageString(totalInboundBillSec, totalAnswered)}'
-          ' / callChargeMultiplier: ${map['callChargeMultiplier']}'
-          ' / shortCallBoundary: ${map['shortCallBoundaryInSeconds']}'
-          ' / longCallBoundary: ${map['longCallBoundaryInSeconds']}';
+      setTotalsNode(
+          totalInbound,
+          totalAnswered,
+          totalInboundNotNotified,
+          totalNotifiedNotAnswered,
+          totalShortCalls,
+          totalLongCalls,
+          totalOutboundCost,
+          totalInboundBillSec,
+          map['callChargeMultiplier'],
+          map['shortCallBoundaryInSeconds'],
+          map['longCallBoundaryInSeconds']);
     }).whenComplete(() {
       fetchButton.disabled = false;
       fetchButton.style.backgroundColor = '';
     });
-  }
-
-  /**
-   *
-   */
-  Future loadOrgsAndReceptions() async {
-    List<model.Reception> receptions;
-
-    Future loadO() async {
-      return _orgCtrl.list().then((Iterable<model.Organization> orgs) {
-        return Future.forEach(orgs, (model.Organization org) {
-          return _orgCtrl.receptions(org.id).then((Iterable<int> rids) {
-            return Future.forEach(rids, (int rid) {
-              if (!ridToNameMap.containsKey(rid)) {
-                ridToNameMap[rid] = {'orgName': org.fullName, 'recName': ''};
-              }
-            });
-          });
-        });
-      });
-    }
-
-    Future loadR() async {
-      receptions = await _recCtrl.list();
-    }
-
-    await Future.wait([loadO(), loadR()]);
-
-    await Future.forEach(receptions, (model.Reception rec) {
-      if (ridToNameMap.containsKey(rec.ID)) {
-        ridToNameMap[rec.ID]['recName'] = rec.fullName;
-      } else {
-        ridToNameMap[rec.ID] = {'orgName': '', 'recName': rec.fullName};
-      }
-    });
-
-    fetchButton.hidden = false;
   }
 
   /**
@@ -337,5 +300,34 @@ class Cdr {
         element.style.flexDirection = '';
       }
     });
+  }
+
+  /**
+   * Populate the totals node.
+   */
+  void setTotalsNode(
+      int totalInbound,
+      int totalAnswered,
+      int totalInboundNotNotified,
+      int totalNotifiedNotAnswered,
+      int totalShortCalls,
+      int totalLongCalls,
+      double totalOutboundCost,
+      int totalInboundBillSec,
+      double callChargeMultiplier,
+      int shortCallBoundaryInSeconds,
+      int longCallBoundaryInSeconds) {
+    totals
+      ..text = 'Total ind: $totalInbound'
+          ' / Svarede: $totalAnswered'
+          ' / Voicesvar: $totalInboundNotNotified'
+          ' / Mistede: $totalNotifiedNotAnswered'
+          ' / Korte kald: $totalShortCalls'
+          ' / Lange kald: $totalLongCalls'
+          ' / Teleomkostning: ${totalOutboundCost / 100}'
+          ' / Gns. samtaletid: ${averageString(totalInboundBillSec, totalAnswered)}'
+          ' / callChargeMultiplier: $callChargeMultiplier}'
+          ' / shortCallBoundary: $shortCallBoundaryInSeconds'
+          ' / longCallBoundary: $longCallBoundaryInSeconds';
   }
 }

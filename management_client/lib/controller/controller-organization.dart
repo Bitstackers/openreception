@@ -16,6 +16,9 @@ class Organization {
   Future<Iterable<model.ReceptionReference>> receptions(int oid) =>
       _service.receptions(oid);
 
+  Future<Map<String, Map<String, String>>> receptionMap() =>
+      _service.receptionMap();
+
   Future remove(int oid) => _service.remove(oid, _appUser);
 
   Future<model.OrganizationReference> create(model.Organization org) =>
