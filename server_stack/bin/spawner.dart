@@ -25,10 +25,16 @@ const int MAX_RANDOM_INT = (1 << 32) - 1;
 
 void main(List<String> arguments) {
   String ServerTokenDir = '/tmp/tokens${rand.nextInt(MAX_RANDOM_INT)}';
+  String fileStoreDir = '/tmp/z5svC3';
 
   if (arguments.length > 0) {
     ServerTokenDir = arguments[0];
   }
+  if (arguments.length > 1) {
+    fileStoreDir = arguments[1];
+  }
+  //Directory tmpStore = new Directory('/tmp').createTempSync();
+  Directory tmpStore = new Directory(fileStoreDir);
 
   Directory dir = new Directory(ServerTokenDir);
   dir.createSync();
@@ -37,19 +43,50 @@ void main(List<String> arguments) {
   Map<String, Map> Servers = {
     'AuthServer': {
       'path': 'bin/authserver.dart',
-      'args': ['--servertokendir', '$serverTokenDirAbsolutPath']
+      'args': [
+        '--servertokendir',
+        '$serverTokenDirAbsolutPath',
+        '-f' + tmpStore.path
+      ]
     },
-    'CalendarServer': {'path': 'bin/calendarserver.dart', 'args': []},
+    'CalendarServer': {
+      'path': 'bin/calendarserver.dart',
+      'args': ['-f' + tmpStore.path]
+    },
     'CallFlow': {'path': 'bin/callflowcontrol.dart', 'args': []},
-      //    'DialplanServer': {'path': 'bin/dialplanserver.dart', 'args': []},
-    'CDRServer': {'path': 'bin/cdrserver.dart', 'args': []},
-    'ContactServer': {'path': 'bin/contactserver.dart', 'args': []},
-    'MessageServer': {'path': 'bin/messageserver.dart', 'args': []},
-    'MessageDispatcher': {'path': 'bin/messagedispatcher.dart', 'args': []},
+    'DialplanServer': {
+      'path': 'bin/dialplanserver.dart',
+      'args': ['-f' + tmpStore.path]
+    },
+    'CDRServer': {
+      'path': 'bin/cdrserver.dart',
+      'args': ['-f' + tmpStore.path]
+    },
+    'ContactServer': {
+      'path': 'bin/contactserver.dart',
+      'args': ['-f' + tmpStore.path]
+    },
+    'MessageServer': {
+      'path': 'bin/messageserver.dart',
+      'args': ['-f' + tmpStore.path]
+    },
+    'MessageDispatcher': {
+      'path': 'bin/messagedispatcher.dart',
+      'args': ['-f' + tmpStore.path]
+    },
     'ConfigServer': {'path': 'bin/configserver.dart', 'args': []},
-    'NotificationServer': {'path': 'bin/notificationserver.dart', 'args': []},
-    'ReceptionServer': {'path': 'bin/receptionserver.dart', 'args': []},
-    'UserServer': {'path': 'bin/userserver.dart', 'args': []}
+    'NotificationServer': {
+      'path': 'bin/notificationserver.dart',
+      'args': ['-f' + tmpStore.path]
+    },
+    'ReceptionServer': {
+      'path': 'bin/receptionserver.dart',
+      'args': ['-f' + tmpStore.path]
+    },
+    'UserServer': {
+      'path': 'bin/userserver.dart',
+      'args': ['-f' + tmpStore.path]
+    }
   };
 
   ProcessSignal.SIGINT.watch().listen((_) {
@@ -75,8 +112,9 @@ void main(List<String> arguments) {
 
     List<String> args = CHECKED ? ['--checked'] : [];
     if (USE_OBSERVATORY) {
-      args.add('--enable-vm-service=${opservatoryCount++}');
+      args.addAll(['--enable-vm-service=${opservatoryCount++}']);
     }
+
     args.add(server['path']);
     args.addAll(server['args'] as Iterable<String>);
 
