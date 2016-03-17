@@ -7,13 +7,9 @@ abstract class Originate {
   //TODO
   //static Future  originationToLookedUNumber()
 
-  static Future originationToHostedNumber(Receptionist receptionist) async {
-    final model.OriginationContext context = new model.OriginationContext()
-      ..contactId = 4
-      ..dialplan = '12340004'
-      ..receptionId = 4;
-
-    await receptionist.originate('12340005', context);
+  static Future originationToHostedNumber(
+      model.OriginationContext context, Receptionist receptionist) async {
+    await receptionist.originate(context.dialplan, context);
 
     final event.CallOffer e =
         await receptionist.waitFor(eventType: event.Key.callOffer);
@@ -28,13 +24,8 @@ abstract class Originate {
    * Expected behaviour is that the server should detect the reject and send
    * a [storage.ClientError].
    */
-  static Future originationOnAgentCallRejected(
+  static Future originationOnAgentCallRejected(model.OriginationContext context,
       Receptionist receptionist, Customer customer) async {
-    final model.OriginationContext context = new model.OriginationContext()
-      ..contactId = 4
-      ..dialplan = '12340001'
-      ..receptionId = 1;
-
     await receptionist.autoAnswer(false);
 
     /// Asynchronous origination.
@@ -54,12 +45,9 @@ abstract class Originate {
    * a [storage.ClientError].
    */
   static Future originationOnAgentAutoAnswerDisabled(
-      Receptionist receptionist, Customer customer) async {
-    final model.OriginationContext context = new model.OriginationContext()
-      ..contactId = 4
-      ..dialplan = '12340001'
-      ..receptionId = 1;
-
+      model.OriginationContext context,
+      Receptionist receptionist,
+      Customer customer) async {
     await receptionist.autoAnswer(false);
 
     /// Asynchronous origination.
@@ -75,12 +63,8 @@ abstract class Originate {
    * Origination to a number that is known (by the call-flow-control server) to
    * be forbidden.
    */
-  static void originationToForbiddenNumber(Receptionist receptionist) {
-    final model.OriginationContext context = new model.OriginationContext()
-      ..contactId = 4
-      ..dialplan = '12340001'
-      ..receptionId = 1;
-
+  static void originationToForbiddenNumber(
+      model.OriginationContext context, Receptionist receptionist) {
     return expect(receptionist.originate('X', context),
         throwsA(new isInstanceOf<storage.ClientError>()));
   }
@@ -88,13 +72,8 @@ abstract class Originate {
   /**
    * Test if the system is able to originate to another peer.
    */
-  static Future originationToPeer(
+  static Future originationToPeer(model.OriginationContext context,
       Receptionist receptionist, Customer customer) async {
-    final model.OriginationContext context = new model.OriginationContext()
-      ..contactId = 4
-      ..dialplan = '12340001'
-      ..receptionId = 1;
-
     await receptionist.originate(customer.extension, context);
     phonio.Call call = await customer.waitForInboundCall();
     expect(call.callerID, equals(customer.phone.defaultAccount.username));
@@ -103,18 +82,13 @@ abstract class Originate {
   /**
    * Test if the system tags the callId to the channel.
    */
-  static Future originationWithCallContext(
+  static Future originationWithCallContext(model.OriginationContext context,
       Receptionist receptionist, Customer customer) async {
     final String callId = new DateTime.now().millisecondsSinceEpoch.toString();
 
     await customer.autoAnswer(false);
-    model.Call call = await receptionist.callFlowControl.originate(
-        customer.extension,
-        new model.OriginationContext()
-          ..callId = callId
-          ..contactId = 4
-          ..receptionId = 1
-          ..dialplan = '12340001');
+    model.Call call = await receptionist.callFlowControl
+        .originate(customer.extension, context);
 
     await customer.waitForInboundCall();
     await customer.pickupCall();
@@ -129,15 +103,13 @@ abstract class Originate {
    * outbound dial.
    */
   static Future originationToPeerCheckforduplicate(
-      Receptionist receptionist, Customer customer) {
-    final model.OriginationContext context = new model.OriginationContext()
-      ..contactId = 4
-      ..dialplan = '12340001'
-      ..receptionId = 1;
-    return receptionist
-        .originate(customer.extension, context)
-        .then((_) => customer.waitForInboundCall())
-        .then((_) =>
-            CallList._validateListLength(receptionist.callFlowControl, 1));
+      model.OriginationContext context,
+      Receptionist receptionist,
+      Customer customer) async {
+    await receptionist.originate(customer.extension, context);
+    await customer.waitForInboundCall();
+
+    final Iterable calls = await receptionist.callFlowControl.callList();
+    expect(calls.length, equals(1));
   }
 }
