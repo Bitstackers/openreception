@@ -267,17 +267,18 @@ class Cdr {
 
       table.createTBody()..children = rows;
 
-      totals.text = 'Total ind: $totalInbound'
-          ' / Svarede: $totalAnswered'
-          ' / Voicesvar: $totalInboundNotNotified'
-          ' / Mistede: $totalNotifiedNotAnswered'
-          ' / Korte kald: $totalShortCalls'
-          ' / Lange kald: $totalLongCalls'
-          ' / Teleomkostning: ${totalOutboundCost / 100}'
-          ' / Gns. samtaletid: ${averageString(totalInboundBillSec, totalAnswered)}'
-          ' / callChargeMultiplier: ${map['callChargeMultiplier']}'
-          ' / shortCallBoundary: ${map['shortCallBoundaryInSeconds']}'
-          ' / longCallBoundary: ${map['longCallBoundaryInSeconds']}';
+      setTotalsNode(
+          totalInbound,
+          totalAnswered,
+          totalInboundNotNotified,
+          totalNotifiedNotAnswered,
+          totalShortCalls,
+          totalLongCalls,
+          totalOutboundCost,
+          totalInboundBillSec,
+          map['callChargeMultiplier'],
+          map['shortCallBoundaryInSeconds'],
+          map['longCallBoundaryInSeconds']);
     }).whenComplete(() {
       fetchButton.disabled = false;
       fetchButton.style.backgroundColor = '';
@@ -299,5 +300,34 @@ class Cdr {
         element.style.flexDirection = '';
       }
     });
+  }
+
+  /**
+   * Populate the totals node.
+   */
+  void setTotalsNode(
+      int totalInbound,
+      int totalAnswered,
+      int totalInboundNotNotified,
+      int totalNotifiedNotAnswered,
+      int totalShortCalls,
+      int totalLongCalls,
+      double totalOutboundCost,
+      int totalInboundBillSec,
+      double callChargeMultiplier,
+      int shortCallBoundaryInSeconds,
+      int longCallBoundaryInSeconds) {
+    totals
+      ..text = 'Total ind: $totalInbound'
+          ' / Svarede: $totalAnswered'
+          ' / Voicesvar: $totalInboundNotNotified'
+          ' / Mistede: $totalNotifiedNotAnswered'
+          ' / Korte kald: $totalShortCalls'
+          ' / Lange kald: $totalLongCalls'
+          ' / Teleomkostning: ${totalOutboundCost / 100}'
+          ' / Gns. samtaletid: ${averageString(totalInboundBillSec, totalAnswered)}'
+          ' / callChargeMultiplier: $callChargeMultiplier}'
+          ' / shortCallBoundary: $shortCallBoundaryInSeconds'
+          ' / longCallBoundary: $longCallBoundaryInSeconds';
   }
 }
