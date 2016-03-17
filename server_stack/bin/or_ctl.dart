@@ -67,7 +67,7 @@ Future main(List<String> args) async {
   final String ivrMenu = parsedArgs['deploy-ivr'];
   final int rid = int.parse(parsedArgs['deploy-to']);
 
-  if(extension != null) {
+  if (extension != null) {
     await rdpStore.deployDialplan(extension, rid);
   }
 
