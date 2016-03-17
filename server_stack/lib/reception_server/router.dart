@@ -94,6 +94,7 @@ Future<io.HttpServer> start(
 
   var router = shelf_route.router()
     ..get('/organization', organization.list)
+    ..get('/organization/receptionmap', organization.receptionMap)
     ..post('/organization', organization.create)
     ..get('/organization/{oid}', organization.get)
     ..put('/organization/{oid}', organization.update)

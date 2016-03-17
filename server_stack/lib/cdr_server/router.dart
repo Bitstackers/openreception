@@ -74,8 +74,7 @@ Future<io.HttpServer> start(
       requestHandler: _lookupToken, responseHandler: null);
 
   var router = shelf_route.router(fallbackHandler: send404)
-    ..get('/from/{from}/to/{to}/kind/{kind}/direction/{direction}',
-        cdrController.process);
+    ..get('/from/{from}/to/{to}/kind/{kind}', cdrController.process);
 
   var handler = const shelf.Pipeline()
       .addMiddleware(
