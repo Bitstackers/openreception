@@ -30,7 +30,17 @@ class RESTConfiguration {
   Future<Model.ClientConfiguration> clientConfig() {
     Uri uri = Resource.Config.get(this._host);
 
-    return this._backend.get(uri).then((String response) =>
+    return _backend.get(uri).then((String response) =>
         new Model.ClientConfiguration.fromMap(JSON.decode(response)));
+  }
+
+  /**
+   * Registers a server in the config server registry.
+   */
+  Future register(String type, Uri contactUri) {
+    Uri uri = Resource.Config.register(this._host);
+    final Map body = {'type': type, 'uri': uri.toString()};
+
+    return _backend.post(uri, JSON.encode(body));
   }
 }

@@ -18,11 +18,13 @@ part of openreception.resource;
  * resources across servers and clients.
  */
 abstract class Config {
-
   static String nameSpace = 'configuration';
 
   static Uri get(Uri host) => root(host);
 
   static Uri root(Uri host) =>
       Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}');
+
+  static Uri register(Uri host) =>
+      Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}/register');
 }
