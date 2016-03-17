@@ -405,7 +405,6 @@ abstract class Call {
 
   /**
    * Pickup a specific call.
-   * TODO: Check for locked call in dialplan.
    */
   static Future<shelf.Response> pickup(shelf.Request request) async {
     final String callID = shelf_route.getPathParameter(request, 'callid');

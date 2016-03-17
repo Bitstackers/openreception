@@ -14,7 +14,6 @@
 part of openreception.contact_server.controller;
 
 class Contact {
-  final Logger _log = new Logger('$_libraryName.Contact');
   final service.Authentication _authservice;
   final filestore.Contact _contactStore;
   final service.NotificationService _notification;
@@ -57,9 +56,9 @@ class Contact {
     }
 
     final rRef = await _contactStore.create(contact, creator);
+    final createEvent = new event.ContactChange.create(rRef.id, creator.id);
 
-    _notification.broadcastEvent(
-        new event.ContactChange(rRef.id, event.ContactState.CREATED));
+    _notification.broadcastEvent(createEvent);
 
     return okJson(rRef);
   }
@@ -89,7 +88,7 @@ class Contact {
     final int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
     try {
-      final attr = await _contactStore.getByReception(cid, rid);
+      final attr = await _contactStore.data(cid, rid);
       return okJson((attr));
     } on storage.NotFound catch (e) {
       return notFound(e.toString());
@@ -132,7 +131,7 @@ class Contact {
     try {
       await _contactStore.remove(cid, modifier);
       event.ContactChange changeEvent =
-          new event.ContactChange(cid, event.ContactState.DELETED);
+          new event.ContactChange.delete(cid, modifier.id);
 
       _notification.broadcastEvent(changeEvent);
       return okJson(const {});
@@ -174,7 +173,7 @@ class Contact {
     try {
       final ref = await _contactStore.update(contact, modifier);
       event.ContactChange changeEvent =
-          new event.ContactChange(cid, event.ContactState.UPDATED);
+          new event.ContactChange.update(cid, modifier.id);
 
       _notification.broadcastEvent(changeEvent);
 
@@ -188,12 +187,11 @@ class Contact {
    * Gives a lists of every contact in an reception.
    */
   Future<shelf.Response> listByReception(shelf.Request request) async {
-    final String rid = shelf_route.getPathParameter(request, 'rid');
-    final int receptionID = int.parse(rid);
+    final int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
     try {
-      Iterable<model.ReceptionAttributes> contacts =
-          await _contactStore.listByReception(receptionID);
+      Iterable<model.ContactReference> contacts =
+          await _contactStore.receptionContacts(rid);
 
       return okJson(contacts.toList());
     } on storage.SqlError catch (error) {
@@ -205,7 +203,7 @@ class Contact {
    *
    */
   Future<shelf.Response> addToReception(shelf.Request request) async {
-    final int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
+    //final int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
     model.ReceptionAttributes attr;
     model.User modifier;
@@ -229,10 +227,10 @@ class Contact {
       return authServerDown();
     }
 
-    final ref = await _contactStore.addToReception(attr, modifier);
+    final ref = await _contactStore.addData(attr, modifier);
 
     event.ContactChange changeEvent =
-        new event.ContactChange(attr.contactId, event.ContactState.UPDATED);
+        new event.ContactChange.create(attr.contactId, modifier.id);
 
     _notification.broadcastEvent(changeEvent);
 
@@ -243,7 +241,7 @@ class Contact {
    *
    */
   Future<shelf.Response> updateInReception(shelf.Request request) async {
-    final int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
+    //final int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
     model.User modifier;
     try {
@@ -270,9 +268,9 @@ class Contact {
     }
 
     try {
-      final ref = await _contactStore.updateInReception(attr, modifier);
+      final ref = await _contactStore.updateData(attr, modifier);
       event.ContactChange changeEvent =
-          new event.ContactChange(attr.contactId, event.ContactState.UPDATED);
+          new event.ContactChange.update(attr.contactId, modifier.id);
 
       _notification.broadcastEvent(changeEvent);
 
@@ -297,9 +295,9 @@ class Contact {
     }
 
     try {
-      await _contactStore.removeFromReception(cid, rid, modifier);
+      await _contactStore.removeData(cid, rid, modifier);
       event.ContactChange changeEvent =
-          new event.ContactChange(cid, event.ContactState.UPDATED);
+          new event.ContactChange.delete(cid, modifier.id);
       _notification.broadcastEvent(changeEvent);
 
       return okJson(const {});

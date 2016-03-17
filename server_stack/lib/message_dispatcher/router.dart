@@ -23,7 +23,7 @@ import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
 import 'package:openreception_framework/filestore.dart' as database;
 
-import '../configuration.dart';
+import 'package:openreception.server/configuration.dart';
 import 'controller.dart' as Controller;
 
 final Logger log = new Logger('message_dispatcher.router');

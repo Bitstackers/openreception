@@ -11,12 +11,12 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.calendar_server.controller;
+library openreception.server.controller.calendar;
 
 import 'dart:async';
 import 'dart:convert';
 
-import '../response_utils.dart';
+import 'package:openreception.server/response_utils.dart';
 
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;

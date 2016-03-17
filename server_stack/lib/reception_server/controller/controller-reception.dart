@@ -106,7 +106,7 @@ class Reception {
 
     final rRef = await _rStore.create(reception, creator);
     _notification
-        .broadcastEvent(new event.ReceptionChange.created(rRef.id, creator.id));
+        .broadcastEvent(new event.ReceptionChange.create(rRef.id, creator.id));
     return okJson(rRef);
   }
 
@@ -140,7 +140,7 @@ class Reception {
     try {
       final rRef = await _rStore.update(reception, modifier);
       _notification.broadcastEvent(
-          new event.ReceptionChange.updated(rRef.id, modifier.id));
+          new event.ReceptionChange.update(rRef.id, modifier.id));
       return okJson(rRef);
     } on storage.NotFound catch (e) {
       return notFound(e.toString());
@@ -165,7 +165,7 @@ class Reception {
     try {
       await _rStore.remove(rid, modifier);
       _notification
-          .broadcastEvent(new event.ReceptionChange.deleted(rid, modifier.id));
+          .broadcastEvent(new event.ReceptionChange.delete(rid, modifier.id));
 
       return okJson({'status': 'ok', 'description': 'Reception deleted'});
     } on storage.NotFound {

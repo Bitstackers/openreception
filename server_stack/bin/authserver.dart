@@ -14,7 +14,7 @@
 /**
  * The OR-Stack authentication server. Provides a REST authentication interface.
  */
-library openreception.authentication_server;
+library openreception.server.authentication;
 
 import 'dart:async';
 import 'dart:io';
@@ -22,11 +22,10 @@ import 'dart:io';
 import 'package:args/args.dart';
 
 import 'package:logging/logging.dart';
-import '../lib/configuration.dart';
-import 'package:openreception_servers/auth_server/router.dart' as router;
-import 'package:openreception_servers/auth_server/token_vault.dart';
-import 'package:openreception_servers/auth_server/token_watcher.dart'
-    as watcher;
+import 'package:openreception.server/configuration.dart';
+import 'package:openreception.server/auth_server/router.dart' as router;
+import 'package:openreception.server/auth_server/token_vault.dart';
+import 'package:openreception.server/auth_server/token_watcher.dart' as watcher;
 
 Future main(List<String> args) async {
   ///Init logging.

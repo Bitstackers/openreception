@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.call_flow_control_server.controller;
+part of openreception.server.controller.call_flow;
 
 class Peer {
   final Model.PeerList _peerlist;

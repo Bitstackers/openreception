@@ -98,7 +98,7 @@ class Organization {
 
     final oRef = await _orgStore.create(organization, creator);
     _notification.broadcastEvent(
-        new event.OrganizationChange.created(oRef.id, creator.id));
+        new event.OrganizationChange.create(oRef.id, creator.id));
 
     return okJson(oRef);
   }
@@ -134,7 +134,7 @@ class Organization {
     try {
       final rRef = await _orgStore.update(org, modifier);
       _notification.broadcastEvent(
-          new event.OrganizationChange.updated(rRef.id, modifier.id));
+          new event.OrganizationChange.update(rRef.id, modifier.id));
       return okJson(rRef);
     } on storage.NotFound catch (e) {
       return notFound(e.toString());
@@ -159,7 +159,7 @@ class Organization {
     try {
       await _orgStore.remove(oid, modifier);
       _notification.broadcastEvent(
-          new event.OrganizationChange.deleted(oid, modifier.id));
+          new event.OrganizationChange.delete(oid, modifier.id));
 
       return okJson({'status': 'ok', 'description': 'Organization deleted'});
     } on storage.NotFound {

@@ -20,6 +20,4 @@ import 'package:shelf/shelf.dart' as shelf;
 import 'package:openreception_framework/storage.dart' as Storage;
 import 'package:openreception_framework/model.dart' as Model;
 
-import '../configuration.dart';
-
 part 'controller/controller-message_queue.dart';

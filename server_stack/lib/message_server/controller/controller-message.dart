@@ -11,14 +11,14 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.message_server.controller;
+part of openreception.server.controller.message;
 
 /**
  * Response templates.
  */
 
 class Message {
-  final Logger log = new Logger('message_server.controller.Message');
+  final Logger log = new Logger('controller.message');
   final service.Authentication _authService;
   final service.NotificationService _notification;
 

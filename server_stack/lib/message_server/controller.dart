@@ -11,12 +11,12 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.message_server.controller;
+library openreception.server.controller.message;
 
 import 'dart:async';
 import 'dart:convert';
 
-import '../response_utils.dart';
+import 'package:openreception.server/response_utils.dart';
 
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
@@ -25,7 +25,5 @@ import 'package:openreception_framework/event.dart' as event;
 import 'package:openreception_framework/service.dart' as service;
 import 'package:openreception_framework/storage.dart' as storage;
 import 'package:openreception_framework/model.dart' as model;
-
-import '../configuration.dart';
 
 part 'controller/controller-message.dart';

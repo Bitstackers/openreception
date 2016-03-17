@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.response_utils;
+library openreception.server.router.response_utils;
 
 import 'dart:convert';
 import 'package:shelf/shelf.dart' as shelf;

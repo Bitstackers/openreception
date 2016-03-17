@@ -11,12 +11,12 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.contact_server.router;
+library openreception.server.router.contact;
 
 import 'dart:async';
 import 'dart:io' as io;
 
-import '../configuration.dart';
+import 'package:openreception.server/configuration.dart';
 import 'controller.dart' as controller;
 
 import 'package:logging/logging.dart';
@@ -39,7 +39,7 @@ const Map<String, String> corsHeaders = const {
 };
 
 /**
- * TODO: Add Contact (not just BaseContact) updates.
+ *
  */
 Future<io.HttpServer> start(
     {String hostname: '0.0.0.0', int port: 4010, String filepath: ''}) async {

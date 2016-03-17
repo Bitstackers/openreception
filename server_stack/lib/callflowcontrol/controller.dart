@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.call_flow_control_server.controller;
+library openreception.server.controller.call_flow;
 
 import 'dart:async';
 import 'dart:convert';
@@ -25,8 +25,9 @@ import 'package:openreception_framework/pbx-keys.dart';
 import 'package:openreception_framework/service.dart' as ORService;
 import 'package:openreception_framework/storage.dart' as ORStorage;
 
-import 'model/model.dart' as Model;
-import '../configuration.dart';
+import 'package:openreception.server/response_utils.dart';
+import 'package:openreception.server/callflowcontrol/model/model.dart' as Model;
+import 'package:openreception.server/configuration.dart';
 
 part 'controller/controller-active_recording.dart';
 part 'controller/controller-client_notifier.dart';
@@ -34,10 +35,4 @@ part 'controller/controller-pbx.dart';
 part 'controller/controller-peer.dart';
 part 'controller/controller-state.dart';
 
-const String libraryName = 'callflowcontrol.controller';
-
-shelf.Response _okJson(body) => new shelf.Response.ok(JSON.encode(body));
-
-shelf.Response _clientError(body) => new shelf.Response(400, body: body);
-
-shelf.Response _notFound(body) => new shelf.Response.notFound(body);
+const String libraryName = 'controller.call_flow';

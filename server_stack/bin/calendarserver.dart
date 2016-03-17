@@ -14,7 +14,7 @@
 /**
  * The OR-Stack calendar server. Provides a REST calendar interface.
  */
-library openreception.calendarserver;
+library openreception.server.calendar;
 
 import 'dart:async';
 import 'dart:io';

@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.user_server.controller;
+part of openreception.server.controller.user;
 
 class User {
   static final Logger log = new Logger('$_libraryName.User');
@@ -57,7 +57,7 @@ class User {
     try {
       await _userStore.remove(uid, modifier);
       _notification
-          .broadcastEvent(new event.UserChange.deleted(uid, modifier.id));
+          .broadcastEvent(new event.UserChange.delete(uid, modifier.id));
 
       return okJson({'status': 'ok', 'description': 'User deleted'});
     } on storage.NotFound {
@@ -94,7 +94,7 @@ class User {
 
     final uRef = await _userStore.create(user, creator);
     _notification
-        .broadcastEvent(new event.UserChange.created(uRef.id, creator.id));
+        .broadcastEvent(new event.UserChange.create(uRef.id, creator.id));
     return okJson(uRef);
   }
 
@@ -128,7 +128,7 @@ class User {
     try {
       final uRef = await _userStore.update(user, modifier);
       _notification
-          .broadcastEvent(new event.UserChange.updated(uRef.id, modifier.id));
+          .broadcastEvent(new event.UserChange.update(uRef.id, modifier.id));
       return okJson(uRef);
     } on storage.Unchanged {
       return clientError('Unchanged');

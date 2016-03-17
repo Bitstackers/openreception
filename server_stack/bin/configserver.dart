@@ -42,7 +42,6 @@ Future main(List<String> args) async {
         abbr: 'h',
         defaultsTo: config.configserver.externalHostName,
         help: 'The hostname or IP listen-address for the HTTP server');
-  ;
 
   ArgResults parsedArgs = parser.parse(args);
 

@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.spawner;
+library openreception.server.spawner;
 
 import 'dart:io';
 import 'dart:convert';

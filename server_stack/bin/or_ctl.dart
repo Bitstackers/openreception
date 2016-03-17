@@ -14,7 +14,7 @@
 /**
  * The OR-Stack command-line control interface.
  */
-library openreception.authentication_server;
+library openreception.server.or_ctl;
 
 import 'dart:async';
 import 'dart:io';
@@ -22,7 +22,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 
 import 'package:logging/logging.dart';
-import '../lib/configuration.dart';
+import 'package:openreception.server/configuration.dart';
 
 //import 'package:openreception_framework/model.dart' as model;
 import 'package:openreception_framework/service.dart' as service;

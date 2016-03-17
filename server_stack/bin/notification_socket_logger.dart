@@ -14,14 +14,12 @@
 /**
  * The OR-Stack command-line event logger.
  */
-library openreception.authentication_server;
+library openreception.server.event_logger;
 
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:args/args.dart';
-
-import '../lib/configuration.dart';
+import 'package:openreception.server/configuration.dart';
 
 import 'package:openreception_framework/service.dart' as service;
 import 'package:openreception_framework/service-io.dart' as transport;

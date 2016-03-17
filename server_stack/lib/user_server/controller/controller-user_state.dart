@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.user_server.controller;
+part of openreception.server.controller.user;
 
 class UserState {
   final Logger _log = new Logger('${_libraryName}.UserState');

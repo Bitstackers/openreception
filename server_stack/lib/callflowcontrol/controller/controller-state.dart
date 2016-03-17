@@ -11,17 +11,17 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.call_flow_control_server.controller;
+part of openreception.server.controller.call_flow;
 
 class State {
-
   final Logger log = new Logger('${libraryName}.State');
 
   /**
    * Performs a total reload of state.
    */
-  Future<shelf.Response> reloadAll (shelf.Request request) =>
-    Future.wait([PBX.loadPeers(), PBX.loadChannels()])
-      .then((_) => Model.CallList.instance.reloadFromChannels(Model.ChannelList.instance))
+  Future<shelf.Response> reloadAll(shelf.Request request) => Future
+      .wait([PBX.loadPeers(), PBX.loadChannels()])
+      .then((_) => Model.CallList.instance
+          .reloadFromChannels(Model.ChannelList.instance))
       .then((_) => new shelf.Response.ok('{}'));
 }

@@ -25,7 +25,7 @@ import 'package:openreception_framework/model.dart' as model;
 import 'package:openreception_framework/service.dart' as service;
 import 'package:openreception_framework/storage.dart' as storage;
 
-import '../response_utils.dart';
+import 'package:openreception.server/response_utils.dart';
 
 part 'controller/controller-organization.dart';
 part 'controller/controller-reception.dart';

@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.dialplan_server;
+library openreception.server.dialplan;
 
 import 'dart:async';
 import 'dart:io';
@@ -19,8 +19,8 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
 
-import '../lib/configuration.dart';
-import '../lib/dialplan_server/router.dart' as router;
+import 'package:openreception.server/configuration.dart';
+import 'package:openreception.server/dialplan_server/router.dart' as router;
 
 Future main(List<String> args) async {
   ///Init logging.

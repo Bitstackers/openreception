@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.dialplan_server.controller;
+library openreception.server.controller.dialplan;
 
 import 'dart:io';
 import 'dart:async';
@@ -28,8 +28,8 @@ import 'package:openreception_framework/storage.dart' as storage;
 import 'package:openreception_framework/service.dart' as service;
 import 'package:openreception_framework/dialplan_tools.dart' as dialplanTools;
 
-import '../configuration.dart';
-import '../response_utils.dart';
+import 'package:openreception.server/configuration.dart';
+import 'package:openreception.server/response_utils.dart';
 
 part 'controller/controller-ivr.dart';
 part 'controller/controller-peer_account.dart';

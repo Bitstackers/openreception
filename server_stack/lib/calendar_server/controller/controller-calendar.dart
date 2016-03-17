@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.calendar_server.controller;
+part of openreception.server.controller.calendar;
 
 /**
  * Ivr menu controller class.
@@ -31,27 +31,27 @@ class Calendar {
    *
    */
   Future<shelf.Response> create(shelf.Request request) async {
-    model.User user;
+    model.User modifier;
     try {
-      user = await _authService.userOf(tokenFrom(request));
+      modifier = await _authService.userOf(tokenFrom(request));
     } catch (e, s) {
-      _log.warning('Could not connect to auth server');
+      _log.warning('Could not connect to auth server', e, s);
       return authServerDown();
     }
     final model.CalendarEntry entry =
         model.CalendarEntry.decode(JSON.decode(await request.readAsString()));
 
     final model.CalendarEntry created =
-        await _calendarStore.create(entry, user);
+        await _calendarStore.create(entry, modifier);
 
-    event.CalendarChange changeEvent = new event.CalendarChange(created.id,
-        entry.contactId, entry.receptionId, event.CalendarEntryState.CREATED);
+    event.CalendarChange changeEvent =
+        new event.CalendarChange.create(created.id, entry.owner, modifier.id);
 
-    _log.finest('User id:${user.id} created entry for ${entry.owner}');
+    _log.finest('User id:${modifier.id} created entry for ${entry.owner}');
 
     _notification.broadcastEvent(changeEvent);
 
-    return _okJson(created);
+    return okJson(created);
   }
 
   /**
@@ -61,9 +61,9 @@ class Calendar {
     final int eid = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
     try {
-      return _okJson(await _calendarStore.get(eid));
+      return okJson(await _calendarStore.get(eid));
     } on storage.NotFound {
-      return _notFound('No event with id $eid');
+      return notFound('No event with id $eid');
     }
   }
 
@@ -74,9 +74,9 @@ class Calendar {
     final int eid = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
     try {
-      return _okJson(await _calendarStore.get(eid, deleted: true));
+      return okJson(await _calendarStore.get(eid));
     } on storage.NotFound {
-      return _notFound('No event with id $eid');
+      return notFound('No event with id $eid');
     }
   }
 
@@ -89,7 +89,7 @@ class Calendar {
 
     final model.Owner owner = new model.Owner.parse('$type:$oid');
 
-    return _okJson((await _calendarStore.list(owner)).toList(growable: false));
+    return okJson((await _calendarStore.list(owner)).toList(growable: false));
   }
 
   /**
@@ -101,7 +101,7 @@ class Calendar {
 
     final model.Owner owner = new model.Owner.parse('$type:$oid');
 
-    return _okJson((await _calendarStore.list(owner, deleted: true))
+    return okJson((await _calendarStore.list(owner, deleted: true))
         .toList(growable: false));
   }
 
@@ -109,10 +109,10 @@ class Calendar {
    *
    */
   Future<shelf.Response> remove(shelf.Request request) async {
-    model.User user;
+    model.User modifier;
     try {
-      user = await _authService.userOf(tokenFrom(request));
-    } catch (e, s) {
+      modifier = await _authService.userOf(tokenFrom(request));
+    } catch (e) {
       _log.warning('Could not connect to auth server');
       return authServerDown();
     }
@@ -122,34 +122,31 @@ class Calendar {
     model.CalendarEntry removed;
     try {
       removed = await _calendarStore.get(eid);
-      await _calendarStore.remove(eid, user);
+      await _calendarStore.remove(eid, modifier);
     } on storage.NotFound {
-      return _notFound('No entry with id $eid');
+      return notFound('No entry with id $eid');
     }
 
-    event.CalendarChange changeEvent = new event.CalendarChange(
-        removed.id,
-        removed.contactId,
-        removed.receptionId,
-        event.CalendarEntryState.DELETED);
+    event.CalendarChange changeEvent =
+        new event.CalendarChange.delete(removed.id, removed.owner, modifier.id);
 
-    _log.finest('User id:${user.id} removed entry for ${removed.owner}');
+    _log.finest('User id:${modifier.id} removed entry for ${removed.owner}');
 
     _notification.broadcastEvent(changeEvent);
 
-    return _okJson('{}');
+    return okJson('{}');
   }
 
   /**
    *
    */
   Future<shelf.Response> update(shelf.Request request) async {
-    model.User user;
+    model.User modifier;
 
     try {
-      user = await _authService.userOf(tokenFrom(request));
+      modifier = await _authService.userOf(tokenFrom(request));
     } catch (e, s) {
-      _log.warning('Could not connect to auth server');
+      _log.warning('Could not connect to auth server', e, s);
       return authServerDown();
     }
 
@@ -157,16 +154,16 @@ class Calendar {
         model.CalendarEntry.decode(JSON.decode(await request.readAsString()));
 
     final model.CalendarEntry updated =
-        await _calendarStore.update(entry, user);
+        await _calendarStore.update(entry, modifier);
 
-    event.CalendarChange changeEvent = new event.CalendarChange(updated.id,
-        entry.contactId, entry.receptionId, event.CalendarEntryState.UPDATED);
+    event.CalendarChange changeEvent =
+        new event.CalendarChange.update(updated.id, updated.owner, modifier.id);
 
-    _log.finest('User id:${user.id} updated entry for ${entry.owner}');
+    _log.finest('User id:${modifier.id} updated entry for ${entry.owner}');
 
     _notification.broadcastEvent(changeEvent);
 
-    return _okJson(updated);
+    return okJson(updated);
   }
 
   /**
@@ -175,7 +172,7 @@ class Calendar {
   Future<shelf.Response> changeLatest(shelf.Request request) async {
     final int eid = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
-    return _okJson(await _calendarStore.latestChange(eid));
+    return okJson(await _calendarStore.latestChange(eid));
   }
 
   /**
@@ -184,6 +181,6 @@ class Calendar {
   Future<shelf.Response> changes(shelf.Request request) async {
     final int eid = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
-    return _okJson((await _calendarStore.changes(eid)).toList(growable: false));
+    return okJson((await _calendarStore.changes(eid)).toList(growable: false));
   }
 }

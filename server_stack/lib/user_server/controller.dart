@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.user_server.controller;
+library openreception.server.controller.user;
 
 import 'dart:async';
 import 'dart:convert';
@@ -20,7 +20,7 @@ import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import 'package:logging/logging.dart';
 
-import '../response_utils.dart';
+import 'package:openreception.server/response_utils.dart';
 
 import 'package:openreception_framework/filestore.dart' as filestore;
 import 'package:openreception_framework/event.dart' as event;
@@ -34,20 +34,4 @@ part 'controller/controller-client_notifier.dart';
 part 'controller/controller-user.dart';
 part 'controller/controller-user_state.dart';
 
-const String _libraryName = 'user_server.controller';
-
-/**
- *
- */
-shelf.Response _okJson(body) => new shelf.Response.ok(JSON.encode(body));
-
-/**
- *
- */
-shelf.Response _notFound(body) => new shelf.Response.notFound(body);
-
-/**
- *
- */
-shelf.Response _serverError(String reason) =>
-    new shelf.Response(500, body: reason);
+const String _libraryName = 'controller.user';

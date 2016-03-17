@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.contact_server;
+library openreception.server.contact;
 
 import 'dart:async';
 import 'dart:io';
@@ -19,8 +19,8 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
 
-import '../lib/contact_server/router.dart' as router;
-import '../lib/configuration.dart';
+import 'package:openreception.server/contact_server/router.dart' as router;
+import 'package:openreception.server/configuration.dart';
 
 Logger log = new Logger('ContactServer');
 ArgResults parsedArgs;

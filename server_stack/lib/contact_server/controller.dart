@@ -20,10 +20,8 @@ import '../response_utils.dart';
 
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
-import 'package:logging/logging.dart';
 
 import 'package:openreception_framework/filestore.dart' as filestore;
-import 'package:openreception_framework/filestore.dart' as database;
 import 'package:openreception_framework/event.dart' as event;
 import 'package:openreception_framework/model.dart' as model;
 import 'package:openreception_framework/service.dart' as service;

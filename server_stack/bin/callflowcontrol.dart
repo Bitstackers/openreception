@@ -11,19 +11,20 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.call_flow_control_server;
+library openreception.server.call_flow;
 
 import 'dart:io';
 import 'dart:async';
 
 import 'package:args/args.dart';
 
-import '../lib/callflowcontrol/router.dart' as router;
-import '../lib/callflowcontrol/controller.dart' as Controller;
-import '../lib/callflowcontrol/model/model.dart' as Model;
-import 'package:esl/esl.dart' as ESL;
+import 'package:openreception.server/callflowcontrol/router.dart' as router;
+import 'package:openreception.server/callflowcontrol/controller.dart'
+    as Controller;
+import 'package:openreception.server/callflowcontrol/model/model.dart' as Model;
+import 'package:esl/esl.dart' as esl;
 import 'package:logging/logging.dart';
-import '../lib/configuration.dart';
+import 'package:openreception.server/configuration.dart';
 
 Logger log = new Logger('callflow');
 ArgResults parsedArgs;
@@ -64,8 +65,8 @@ void connectESLClient() {
 
   log.info('Connecting to ${hostname}:${port}');
 
-  Controller.PBX.apiClient = new ESL.Connection();
-  Controller.PBX.eventClient = new ESL.Connection();
+  Controller.PBX.apiClient = new esl.Connection();
+  Controller.PBX.eventClient = new esl.Connection();
 
   Model.CallList.instance.subscribe(Controller.PBX.eventClient.eventStream);
 
@@ -78,18 +79,18 @@ void connectESLClient() {
 
   Controller.PBX.eventClient.eventStream.listen(Model.peerlist.handlePacket);
 
-  Future authenticate(ESL.Connection client) =>
-      client.authenticate(password).then((ESL.Reply reply) {
-        if (reply.status != ESL.Reply.OK) {
+  Future authenticate(esl.Connection client) =>
+      client.authenticate(password).then((esl.Reply reply) {
+        if (reply.status != esl.Reply.OK) {
           log.shout('ESL Authentication failed - exiting');
           exit(1);
         }
       });
 
   /// Connect API client.
-  Controller.PBX.apiClient.requestStream.listen((ESL.Packet packet) async {
+  Controller.PBX.apiClient.requestStream.listen((esl.Packet packet) async {
     switch (packet.contentType) {
-      case (ESL.ContentType.Auth_Request):
+      case (esl.ContentType.Auth_Request):
         log.info('Connected to ${hostname}:${port}');
         authenticate(Controller.PBX.apiClient)
             .then((_) => Controller.PBX.loadPeers())
@@ -105,14 +106,14 @@ void connectESLClient() {
   });
 
   /// Connect event client.
-  Controller.PBX.eventClient.requestStream.listen((ESL.Packet packet) {
+  Controller.PBX.eventClient.requestStream.listen((esl.Packet packet) {
     switch (packet.contentType) {
-      case (ESL.ContentType.Auth_Request):
+      case (esl.ContentType.Auth_Request):
         log.info('Connected to ${hostname}:${port}');
         authenticate(Controller.PBX.eventClient).then((_) => Controller
             .PBX.eventClient
             .event(Model.PBXEvent.requiredSubscriptions,
-                format: ESL.EventFormat.Json)..catchError(log.shout));
+                format: esl.EventFormat.Json)..catchError(log.shout));
 
         break;
 
@@ -121,7 +122,7 @@ void connectESLClient() {
     }
   });
 
-  Future tryConnect(ESL.Connection client) async {
+  Future tryConnect(esl.Connection client) async {
     await client.connect(hostname, port).catchError((error, stackTrace) {
       if (error is SocketException) {
         log.severe(

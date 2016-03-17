@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.message_dispatcher;
+library openreception.server.message_dispatcher;
 
 import 'dart:io';
 import 'dart:core';
@@ -22,8 +22,8 @@ import 'package:emailer/emailer.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/model.dart' as Model;
 
-import '../lib/configuration.dart';
-import '../lib/message_dispatcher/router.dart' as router;
+import 'package:openreception.server/configuration.dart';
+import 'package:openreception.server/message_dispatcher/router.dart' as router;
 
 ///Logger
 final Logger _log = new Logger('MessageDispatcher');

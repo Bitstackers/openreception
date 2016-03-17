@@ -14,14 +14,13 @@
 part of openreception.message_dispatcher.controller;
 
 class MessageQueue {
-
   final Storage.MessageQueue _messageQueueStore;
 
   MessageQueue(this._messageQueueStore);
 
-  Future<shelf.Response> list(shelf.Request request) =>
-    _messageQueueStore.list(maxTries: config.messageDispatcher.maxTries)
-      .then((Iterable<Model.MessageQueueItem> queuedMessages) =>
-        new shelf.Response.ok
-          (JSON.encode(queuedMessages.toList(growable: false))));
+  Future<shelf.Response> list(shelf.Request request) => _messageQueueStore
+      .list()
+      .then((Iterable<Model.MessageQueueEntry> queuedMessages) =>
+          new shelf.Response.ok(
+              JSON.encode(queuedMessages.toList(growable: false))));
 }

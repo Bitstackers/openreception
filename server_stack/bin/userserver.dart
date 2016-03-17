@@ -11,17 +11,16 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.user_server;
+library openreception.server.user;
 
 import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:path/path.dart';
 
 import 'package:logging/logging.dart';
-import '../lib/configuration.dart';
-import '../lib/user_server/router.dart' as router;
+import 'package:openreception.server/configuration.dart';
+import 'package:openreception.server/user_server/router.dart' as router;
 
 Future main(List<String> args) async {
   ///Init logging. Inherit standard values.
