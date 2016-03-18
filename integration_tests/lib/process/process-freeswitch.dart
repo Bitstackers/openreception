@@ -1,6 +1,6 @@
 part of openreception_tests.process;
 
-class FreeSwitch {
+class FreeSwitch implements ServiceProcess {
   final String binPath;
   final String basePath;
   final File confTemplateArchive;

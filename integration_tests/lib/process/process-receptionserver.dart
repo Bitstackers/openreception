@@ -1,6 +1,6 @@
 part of openreception_tests.process;
 
-class ReceptionServer {
+class ReceptionServer implements ServiceProcess {
   final String path;
   final String storePath;
   final int servicePort;

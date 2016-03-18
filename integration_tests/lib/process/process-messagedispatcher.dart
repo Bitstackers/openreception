@@ -1,6 +1,6 @@
 part of openreception_tests.process;
 
-class MessageDispatcher {
+class MessageDispatcher implements ServiceProcess {
   final String path;
   final String storePath;
   final Logger _log = new Logger('$_namespace.MessageDispatcher');

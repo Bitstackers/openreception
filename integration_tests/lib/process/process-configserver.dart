@@ -1,6 +1,6 @@
 part of openreception_tests.process;
 
-class ConfigServer {
+class ConfigServer implements ServiceProcess {
   final String path;
   final int servicePort;
   final String bindAddress;

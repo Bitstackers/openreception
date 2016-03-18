@@ -1,6 +1,6 @@
 part of openreception_tests.process;
 
-class MessageServer {
+class MessageServer implements ServiceProcess {
   final String path;
   final String storePath;
   final int servicePort;
@@ -65,13 +65,13 @@ class MessageServer {
    * Constructs a new [service.RESTMessageStore] based on the launch parameters
    * of the process.
    */
-  service.RESTMessageStore bindClient(service.Client client, String token,
+  service.RESTMessageStore bindClient(service.Client client, AuthToken token,
       {Uri connectUri: null}) {
     if (connectUri == null) {
       connectUri = this.uri;
     }
 
-    return new service.RESTMessageStore(connectUri, token, client);
+    return new service.RESTMessageStore(connectUri, token.tokenName, client);
   }
 
   /**

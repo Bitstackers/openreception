@@ -1,15 +1,16 @@
 part of openreception_tests.process;
 
-class AuthServer {
+class AuthServer implements ServiceProcess {
   final String path;
   final String storePath;
   final int servicePort;
   final String bindAddress;
+  AuthTokenDir tokenDir;
 
   final Logger _log = new Logger('$_namespace.AuthServer');
   Process _process;
 
-  final Completer _ready = new Completer();
+  Completer _ready = new Completer();
   bool get ready => _ready.isCompleted;
   Future get whenReady => _ready.future;
 
@@ -21,13 +22,10 @@ class AuthServer {
   }
 
   Future _init(Iterable<AuthToken> intialTokens) async {
-    final AuthTokenDir tokenDir = new AuthTokenDir(
-        new Directory('/tmp').createTempSync(),
+    tokenDir = new AuthTokenDir(new Directory('/tmp').createTempSync(),
         intialTokens: intialTokens);
-    _log.finest('Writing ${intialTokens.length} tokens '
-        'to ${tokenDir.dir.path}');
-    await tokenDir.writeTokens();
 
+    await _writeTokens();
     _log.fine('Starting new process');
     _process = await Process.start(
         '/usr/bin/dart',
@@ -48,7 +46,8 @@ class AuthServer {
           .transform(new LineSplitter())
           .listen((String line) {
         _log.finest(line);
-        if (!ready && line.contains('Ready to handle requests')) {
+        if ((!ready && line.contains('Ready to handle requests')) ||
+            (!ready && line.contains('Reloaded tokens from disk'))) {
           _log.info('Ready');
           _ready.complete();
         }
@@ -57,23 +56,41 @@ class AuthServer {
           .transform(new Utf8Decoder())
           .transform(new LineSplitter())
           .listen(_log.warning);
-    _log.finest('Started process, cleaning temp auth dir');
+    _log.finest('Started process');
+  }
 
-    /// Clean out temporary tokens.
-    whenReady.then((_) => tokenDir.dir.delete(recursive: true));
+  /**
+   *
+   */
+  Future _writeTokens() async {
+    _log.finest('Writing ${tokenDir.tokens.length} tokens '
+        'to ${tokenDir.dir.path}');
+    await tokenDir.writeTokens();
+  }
+
+  /**
+   *
+   */
+  Future addTokens(Iterable<AuthToken> ts) async {
+    await whenReady;
+    _ready = new Completer();
+    tokenDir.tokens.addAll(ts);
+    await _writeTokens();
+    _process.kill(ProcessSignal.SIGHUP);
+    await whenReady;
   }
 
   /**
    * Constructs a new [service.Autentication] based on the launch parameters
    * of the process.
    */
-  service.Authentication bindClient(service.Client client, String token,
+  service.Authentication bindClient(service.Client client, AuthToken token,
       {Uri connectUri: null}) {
     if (connectUri == null) {
       connectUri = this.uri;
     }
 
-    return new service.Authentication(connectUri, token, client);
+    return new service.Authentication(connectUri, token.tokenName, client);
   }
 
   /**
