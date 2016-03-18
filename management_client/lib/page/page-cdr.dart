@@ -91,6 +91,7 @@ class Cdr {
         new TableCellElement()..text = 'Ind total',
         new TableCellElement()..text = 'Trafik',
         new TableCellElement()..text = 'Besvarede',
+        new TableCellElement()..text = 'Udgående',
         new TableCellElement()..text = 'Voicesvar',
         new TableCellElement()..text = 'Mistede',
         new TableCellElement()..text = 'Gns. samtaletid',
@@ -137,11 +138,15 @@ class Cdr {
       /// Reset total counters and tbody element.
       table.querySelector('tbody')?.remove();
       int totalAnswered = 0;
+      int totalAnsweredAfter60 = 0;
+      int totalAnsweredBefore20 = 0;
       int totalInbound = 0;
       int totalInboundBillSec = 0;
       int totalInboundNotNotified = 0;
       int totalLongCalls = 0;
       int totalNotifiedNotAnswered = 0;
+      int totalOutboundAgent = 0;
+      int totalOutboundPbx = 0;
       double totalOutboundCost = 0.0;
       int totalShortCalls = 0;
 
@@ -181,10 +186,14 @@ class Cdr {
             0, (acc, model.CdrAgentSummary a) => acc + a.inboundBillSeconds);
         final int longCalls = c.summary.agentSummaries
             .fold(0, (acc, model.CdrAgentSummary a) => acc + a.longCalls);
+        final int outboundAgent = c.summary.agentSummaries
+            .fold(0, (acc, model.CdrAgentSummary a) => acc + a.outbound);
         final int shortCalls = c.summary.agentSummaries
             .fold(0, (acc, model.CdrAgentSummary a) => acc + a.shortCalls);
 
         totalAnswered += answered;
+        totalAnsweredAfter60 += answeredAfter60;
+        totalAnsweredBefore20 += answered10 + answered10To20;
         totalInbound += (answered +
             c.summary.notifiedNotAnswered +
             c.summary.inboundNotNotified);
@@ -192,7 +201,9 @@ class Cdr {
         totalInboundNotNotified += c.summary.inboundNotNotified;
         totalLongCalls += longCalls;
         totalNotifiedNotAnswered += c.summary.notifiedNotAnswered;
+        totalOutboundAgent += outboundAgent;
         totalOutboundCost += c.summary.outboundCost;
+        totalOutboundPbx += c.summary.outboundByPbx;
         totalShortCalls += shortCalls;
 
         rows.add(new TableRowElement()
@@ -240,6 +251,10 @@ class Cdr {
               ],
             new TableCellElement()
               ..style.textAlign = 'center'
+              ..text = (c.summary.outboundByPbx + outboundAgent).toString()
+              ..title = 'Udgående',
+            new TableCellElement()
+              ..style.textAlign = 'center'
               ..text = c.summary.inboundNotNotified > 0
                   ? c.summary.inboundNotNotified
                   : ''
@@ -270,11 +285,15 @@ class Cdr {
       setTotalsNode(
           totalInbound,
           totalAnswered,
+          totalAnsweredAfter60,
+          totalAnsweredBefore20,
           totalInboundNotNotified,
           totalNotifiedNotAnswered,
           totalShortCalls,
           totalLongCalls,
+          totalOutboundAgent,
           totalOutboundCost,
+          totalOutboundPbx,
           totalInboundBillSec,
           map['callChargeMultiplier'],
           map['shortCallBoundaryInSeconds'],
@@ -308,26 +327,37 @@ class Cdr {
   void setTotalsNode(
       int totalInbound,
       int totalAnswered,
+      int totalAnsweredAfter60,
+      int totalAnsweredBefore20,
       int totalInboundNotNotified,
       int totalNotifiedNotAnswered,
       int totalShortCalls,
       int totalLongCalls,
+      int totalOutboundAgent,
       double totalOutboundCost,
+      int totalOutboundPbx,
       int totalInboundBillSec,
       double callChargeMultiplier,
       int shortCallBoundaryInSeconds,
       int longCallBoundaryInSeconds) {
-    totals
+    final DivElement inboundData = new DivElement()
       ..text = 'Total ind: $totalInbound'
           ' / Svarede: $totalAnswered'
-          ' / Voicesvar: $totalInboundNotNotified'
-          ' / Mistede: $totalNotifiedNotAnswered'
-          ' / Korte kald: $totalShortCalls'
-          ' / Lange kald: $totalLongCalls'
-          ' / Teleomkostning: ${totalOutboundCost / 100}'
+          ' / <=20: ${(totalAnsweredBefore20 / totalAnswered * 100).toStringAsPrecision(2)}%'
+          ' / +60: ${(totalAnsweredAfter60 / totalAnswered * 100).toStringAsPrecision(2)}%'
           ' / Gns. samtaletid: ${averageString(totalInboundBillSec, totalAnswered)}'
-          ' / callChargeMultiplier: $callChargeMultiplier}'
+          ' / Voicesvar: $totalInboundNotNotified'
+          ' / Mistede: $totalNotifiedNotAnswered';
+    final DivElement metadata = new DivElement()
+      ..text = 'Korte kald: $totalShortCalls'
+          ' / Lange kald: $totalLongCalls'
           ' / shortCallBoundary: $shortCallBoundaryInSeconds'
-          ' / longCallBoundary: $longCallBoundaryInSeconds';
+          ' / longCallBoundary: $longCallBoundaryInSeconds'
+          ' / callChargeMultiplier: $callChargeMultiplier';
+    final DivElement outboundData = new DivElement()
+      ..text = 'Udgående agent: $totalOutboundAgent'
+          ' / Udgående PBX: $totalOutboundPbx'
+          ' / Teleomkostning: ${totalOutboundCost / 100}';
+    totals..children = [inboundData, outboundData, metadata];
   }
 }
