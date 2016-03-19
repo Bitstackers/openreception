@@ -30,12 +30,22 @@ Future main(List<String> args) async {
   Logger log = new Logger('UserServer');
 
   final ArgParser parser = new ArgParser()
-    ..addFlag('help', abbr: 'h', help: 'Output this help')
+    ..addFlag('help', help: 'Output this help', negatable: false)
     ..addOption('filestore', abbr: 'f', help: 'Path to the filestore backend')
     ..addOption('httpport',
-        help: 'The port the HTTP server listens on. '
-            'Defaults to ${config.userServer.httpPort}',
-        defaultsTo: config.userServer.httpPort.toString());
+        abbr: 'p',
+        defaultsTo: config.userServer.httpPort.toString(),
+        help: 'The port the HTTP server listens on.')
+    ..addOption('host',
+        abbr: 'h',
+        defaultsTo: config.userServer.externalHostName,
+        help: 'The hostname or IP listen-address for the HTTP server')
+    ..addOption('auth-uri',
+        defaultsTo: config.authServer.externalUri.toString(),
+        help: 'The uri of the authentication server')
+    ..addOption('notification-uri',
+        defaultsTo: config.notificationServer.externalUri.toString(),
+        help: 'The uri of the notification server');
 
   final ArgResults parsedArgs = parser.parse(args);
 

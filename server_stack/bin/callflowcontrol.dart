@@ -50,9 +50,12 @@ Future main(List<String> args) async {
   if (showHelp()) {
     print(parser.usage);
   } else {
-    router.connectAuthService();
     connectESLClient();
-    await router.start(port: config.callFlowControl.httpPort);
+    await router.start(
+        hostname: parsedArgs['host'],
+        port: int.parse(parsedArgs['httpport']),
+        authUri: Uri.parse(parsedArgs['auth-uri']),
+        notificationUri: Uri.parse(parsedArgs['notification-uri']));
     log.info('Ready to handle requests');
   }
 }
@@ -140,11 +143,20 @@ void connectESLClient() {
 
 void registerAndParseCommandlineArguments(List<String> arguments) {
   parser
-    ..addFlag('help', abbr: 'h', help: 'Output this help')
-    ..addOption('configfile',
-        help: 'The JSON configuration file. Defaults to config.json')
-    ..addOption('httpport', help: 'The port the HTTP server listens on.')
-    ..addOption('servertoken', help: 'servertoken');
+    ..addFlag('help', help: 'Output this help')
+    ..addOption('httpport',
+        defaultsTo: config.callFlowControl.httpPort.toString(),
+        help: 'The port the HTTP server listens on.')
+    ..addOption('host',
+        abbr: 'h',
+        defaultsTo: config.configserver.externalHostName,
+        help: 'The hostname or IP listen-address for the HTTP server')
+    ..addOption('auth-uri',
+        defaultsTo: config.authServer.externalUri.toString(),
+        help: 'The uri of the authentication server')
+    ..addOption('notification-uri',
+        defaultsTo: config.notificationServer.externalUri.toString(),
+        help: 'The uri of the notification server');
 
   parsedArgs = parser.parse(arguments);
 }

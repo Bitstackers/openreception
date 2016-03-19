@@ -29,12 +29,19 @@ Future main(List<String> args) async {
 
   Logger log = new Logger('NotificationServer');
   ArgParser parser = new ArgParser()
-    ..addFlag('help', abbr: 'h', help: 'Output this help')
+    ..addFlag('help', help: 'Output this help')
     ..addOption('filestore', abbr: 'f', help: 'Path to the filestore backend')
     ..addOption('httpport',
-        help: 'The port the HTTP server listens on. '
-            'Defaults to ${config.notificationServer.httpPort}',
-        defaultsTo: config.notificationServer.httpPort.toString());
+        abbr: 'p',
+        defaultsTo: config.notificationServer.httpPort.toString(),
+        help: 'The port the HTTP server listens on.')
+    ..addOption('host',
+        abbr: 'h',
+        defaultsTo: config.notificationServer.externalHostName,
+        help: 'The hostname or IP listen-address for the HTTP server')
+    ..addOption('auth-uri',
+        defaultsTo: config.authServer.externalUri.toString(),
+        help: 'The uri of the authentication server');
 
   final ArgResults parsedArgs = parser.parse(args);
 
@@ -49,8 +56,9 @@ Future main(List<String> args) async {
     exit(1);
   }
 
-  await router.connectAuthService();
   await router.start(
+      authUri: Uri.parse(parsedArgs['auth-uri']),
+      hostname: parsedArgs['host'],
       port: int.parse(parsedArgs['httpport']),
       filepath: parsedArgs['filestore']);
   log.info('Ready to handle requests');

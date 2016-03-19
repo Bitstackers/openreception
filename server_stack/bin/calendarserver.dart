@@ -36,12 +36,21 @@ Future main(List<String> args) async {
 
   ///Handle argument parsing.
   ArgParser parser = new ArgParser()
-    ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
-    ..addOption('filestore', abbr: 'f', help: 'Path to the filestore backend')
+    ..addFlag('help', help: 'Output this help', negatable: false)
     ..addOption('httpport',
         abbr: 'p',
         defaultsTo: config.calendarServer.httpPort.toString(),
-        help: 'The port the HTTP server listens on.');
+        help: 'The port the HTTP server listens on.')
+    ..addOption('host',
+        abbr: 'h',
+        defaultsTo: config.calendarServer.externalHostName,
+        help: 'The hostname or IP listen-address for the HTTP server')
+    ..addOption('auth-uri',
+        defaultsTo: config.authServer.externalUri.toString(),
+        help: 'The uri of the authentication server')
+    ..addOption('notification-uri',
+        defaultsTo: config.notificationServer.externalUri.toString(),
+        help: 'The uri of the notification server');
 
   ArgResults parsedArgs = parser.parse(args);
 

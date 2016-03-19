@@ -30,21 +30,36 @@ Future main(List<String> args) async {
 
   ///Handle argument parsing.
   final ArgParser parser = new ArgParser()
-    ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
+    ..addFlag('help', help: 'Output this help', negatable: false)
     ..addOption('filestore', abbr: 'f', help: 'Path to the filestore backend')
     ..addOption('freeswitch-conf-path',
         help: 'Path to the FreeSWITCH conf directory. '
             'Defaults to /etc/freeswitch',
         defaultsTo: '/etc/freeswitch')
     ..addOption('httpport',
+        abbr: 'p',
         defaultsTo: config.dialplanserver.httpPort.toString(),
-        help: 'The port the HTTP server listens on.');
+        help: 'The port the HTTP server listens on.')
+    ..addOption('host',
+        abbr: 'h',
+        defaultsTo: config.configserver.externalHostName,
+        help: 'The hostname or IP listen-address for the HTTP server')
+    ..addOption('auth-uri',
+        defaultsTo: config.authServer.externalUri.toString(),
+        help: 'The uri of the authentication server');
 
   final ArgResults parsedArgs = parser.parse(args);
 
-  if (parsedArgs['help']) {
+  void exitWithError(String error) {
+    if (!error.isEmpty) {
+      stderr.writeln(error + '\n');
+    }
     print(parser.usage);
     exit(1);
+  }
+
+  if (parsedArgs['help']) {
+    exitWithError('');
   }
 
   final String filepath = parsedArgs['filestore'];
@@ -55,22 +70,35 @@ Future main(List<String> args) async {
     exit(1);
   }
 
+  /// Parse port argument;
   int port;
   try {
-    port = int.parse(parsedArgs['httpport']);
-    if (port < 1 || port > 65535) {
-      throw new FormatException();
-    }
+    port = parsePort(parsedArgs['httpport']);
   } on FormatException {
-    stderr.writeln('Bad port argument: ${parsedArgs['httpport']}');
-    print('');
-    print(parser.usage);
-    exit(1);
+    exitWithError('Bad port argument: ${parsedArgs['httpport']}');
+  }
+
+  /// Parse authserver argument;
+  Uri authUri;
+  try {
+    authUri = Uri.parse(parsedArgs['auth-uri']);
+  } on FormatException {
+    exitWithError('Bad auth-uri argument: ${parsedArgs['auth-uri']}');
   }
 
   await router.start(
+      hostname: parsedArgs['host'],
       port: port,
       filepath: filepath,
+      authUri: authUri,
       fsConfPath: parsedArgs['freeswitch-conf-path']);
   log.info('Ready to handle requests');
+}
+
+int parsePort(String value) {
+  int port = int.parse(value);
+  if (port < 1 || port > 65535) {
+    throw new FormatException();
+  }
+  return port;
 }
