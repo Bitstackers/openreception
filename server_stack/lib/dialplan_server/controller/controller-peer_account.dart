@@ -43,9 +43,9 @@ class PeerAccount {
         fsConfPath + '/directory/receptionists/${account.username}.xml';
     final List<String> generatedFiles = new List<String>.from([xmlFilePath]);
 
-    _log.fine('Deploying new peer account to file $xmlFilePath');
-    await new File(xmlFilePath)
-        .writeAsString(_compiler.userToXml(user, account));
+    _log.fine(
+        'Deploying new peer account to file ${new File(xmlFilePath).absolute.path}');
+    new File(xmlFilePath).writeAsStringSync(_compiler.userToXml(user, account));
 
     return okJson(generatedFiles);
   }

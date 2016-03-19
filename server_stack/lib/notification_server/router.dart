@@ -44,11 +44,6 @@ const Map<String, String> corsHeaders = const {
   'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE'
 };
 
-void connectAuthService() {
-  _authService = new Service.Authentication(config.authServer.externalUri,
-      config.userServer.serverToken, new Service_IO.Client());
-}
-
 /**
  * Validate a token by looking it up on the authentication server.
  */
@@ -82,7 +77,13 @@ shelf.Response _handleHttpRequest(shelf.Request request) =>
  *
  */
 Future<io.HttpServer> start(
-    {String hostname: '0.0.0.0', int port: 4200, String filepath: ''}) {
+    {String hostname: '0.0.0.0',
+    int port: 4200,
+    String filepath: '',
+    Uri authUri}) {
+  _authService = new Service.Authentication(
+      authUri, config.userServer.serverToken, new Service_IO.Client());
+
   var router = (shelf_route.router()
     ..get('/notifications', Notification._handleWsConnect)
     ..post('/broadcast', Notification.broadcast)
@@ -99,7 +100,9 @@ Future<io.HttpServer> start(
       .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
       .addHandler(router.handler);
 
-  _log.fine('Serving interfaces on port $port:');
+  _log.fine('Using server on $authUri as authentication backend');
+  _log.fine('Accepting incoming REST requests on http://$hostname:$port');
+  _log.fine('Serving routes:');
   shelf_route.printRoutes(router, printer: (String item) => _log.fine(item));
 
   return shelf_io.serve(handler, hostname, port);

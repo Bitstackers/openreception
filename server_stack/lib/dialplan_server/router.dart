@@ -11,42 +11,38 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.dialplan_server.router;
+library openreception.server.router.dialplan;
 
 import 'dart:async';
 import 'dart:io' as io;
 
-import '../configuration.dart';
-import 'controller.dart' as controller;
-
 import 'package:logging/logging.dart';
-import 'package:openreception_framework/filestore.dart' as filestore;
-import 'package:openreception_framework/storage.dart' as storage;
-import 'package:openreception_framework/service.dart' as Service;
-import 'package:openreception_framework/service-io.dart' as Service_IO;
-
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
+
+import 'package:openreception_framework/filestore.dart' as filestore;
+import 'package:openreception_framework/storage.dart' as storage;
+import 'package:openreception_framework/service.dart' as Service;
+import 'package:openreception_framework/service-io.dart' as Service_IO;
 import 'package:openreception_framework/dialplan_tools.dart' as dialplanTools;
+
+import 'package:openreception.server/configuration.dart';
+import 'package:openreception.server/response_utils.dart';
+
+import 'controller.dart' as controller;
 
 final Logger _log = new Logger('dialplanserver.router');
 
-const Map<String, String> _corsHeaders = const {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE'
-};
-
 Future<io.HttpServer> start(
     {String hostname: '0.0.0.0',
-    int port: 4030,
+    int port: 4060,
+    Uri authUri,
     String filepath: '',
     String fsConfPath: ''}) async {
   final Service.Authentication _authService = new Service.Authentication(
-      config.authServer.externalUri,
-      config.userServer.serverToken,
-      new Service_IO.Client());
+      authUri, config.userServer.serverToken, new Service_IO.Client());
 
   /**
    * Validate a token by looking it up on the authentication server.
@@ -139,13 +135,14 @@ Future<io.HttpServer> start(
 
   final handler = const shelf.Pipeline()
       .addMiddleware(
-          shelf_cors.createCorsHeadersMiddleware(corsHeaders: _corsHeaders))
+          shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
       .addMiddleware(checkAuthentication)
       .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
       .addHandler(router.handler);
 
   _log.fine('Deploying generated xml files to $fsConfPath subdirs');
-  _log.fine('Serving interfaces on port $port:');
+  _log.fine('Accepting incoming requests on $hostname:$port:');
+  _log.fine('Using server on $authUri as authentication backend');
 
   shelf_route.printRoutes(router, printer: _log.fine);
 

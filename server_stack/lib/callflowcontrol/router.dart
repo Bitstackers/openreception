@@ -58,11 +58,6 @@ Service.Authentication authService = null;
 Service.RESTUserStore _userService;
 Service.NotificationService Notification = null;
 
-void connectAuthService() {
-  authService = new Service.Authentication(config.authServer.externalUri,
-      config.callFlowControl.serverToken, new Service_IO.Client());
-}
-
 shelf.Middleware checkAuthentication =
     shelf.createMiddleware(requestHandler: _lookupToken, responseHandler: null);
 
@@ -89,17 +84,22 @@ Future<shelf.Response> _lookupToken(shelf.Request request) async {
   return null;
 }
 
-Future<io.HttpServer> start({String hostname: '0.0.0.0', int port: 4242}) {
+Future<io.HttpServer> start(
+    {String hostname: '0.0.0.0',
+    int port: 4242,
+    authUri: null,
+    notificationUri: null}) {
   _stateController = new Controller.State();
+  authService = new Service.Authentication(
+      authUri, config.callFlowControl.serverToken, new Service_IO.Client());
+
   Controller.ActiveRecording _activeRecordingController =
       new Controller.ActiveRecording();
 
   log.info('Starting client notifier');
 
-  Notification = new Service.NotificationService(
-      config.notificationServer.externalUri,
-      config.callFlowControl.serverToken,
-      new Service_IO.Client());
+  Notification = new Service.NotificationService(notificationUri,
+      config.callFlowControl.serverToken, new Service_IO.Client());
 
   _notififer = new Controller.ClientNotifier(Notification)
     ..listenForCallEvents(Model.CallList.instance);
@@ -152,7 +152,10 @@ Future<io.HttpServer> start({String hostname: '0.0.0.0', int port: 4242}) {
       .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
       .addHandler(router.handler);
 
-  log.fine('Serving interfaces on port $port:');
+  log.fine('Using server on $authUri as authentication backend');
+  log.fine('Using server on $notificationUri as notification backend');
+  log.fine('Accepting incoming REST requests on http://$hostname:$port');
+  log.fine('Serving routes:');
   shelf_route.printRoutes(router, printer: (String item) => log.fine(item));
 
   return shelf_io.serve(handler, hostname, port);

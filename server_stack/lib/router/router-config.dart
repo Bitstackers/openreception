@@ -31,7 +31,7 @@ import 'package:openreception.server/controller/controller-config.dart'
     as controller;
 
 /**
- * 
+ *
  */
 class Config {
   final Logger _log = new Logger('router.config');
@@ -56,7 +56,7 @@ class Config {
             shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
         .addHandler(router.handler);
 
-    _log.fine('Serving interfaces on port $port:');
+    _log.fine('Accepting incoming requests on $hostname:$port:');
     shelf_route.printRoutes(router, printer: (String item) => _log.fine(item));
 
     return shelf_io.serve(handler, hostname, port);
