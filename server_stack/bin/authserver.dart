@@ -67,9 +67,10 @@ Future main(List<String> args) async {
   await vault.loadFromDirectory(parsedArgs['servertokendir']);
 
   /// Install "reload-token" mechanism.
-  ProcessSignal.SIGHUP.watch().listen((_) {
+  ProcessSignal.SIGHUP.watch().listen((_) async {
     log.info('SIGHUP caught. Reloading tokens');
-    vault.loadFromDirectory(parsedArgs['servertokendir']);
+    await vault.loadFromDirectory(parsedArgs['servertokendir']);
+    log.info('Reloaded tokens from disk');
   });
 
   await router.start(

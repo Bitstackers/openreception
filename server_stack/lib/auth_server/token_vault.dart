@@ -89,29 +89,23 @@ class TokenVault {
     return _tokens.keys;
   }
 
-  Future loadFromDirectory(String directory) {
-    if (directory != null && directory.isNotEmpty) {
-      return list(directory).then((List<FileSystemEntity> list) {
-        return Future.forEach(list, (FileSystemEntity item) {
-          if (item is File) {
-            load(item.path).then((String text) {
-              String token = item.path.split('/').last.split('.').first;
-              Map data = JSON.decode(text);
-              _serverTokens[token] = data;
-              log.finest('Loaded ${_serverTokens[token]}');
-            }).catchError((error) {
-              log.severe('TokenVault.loadFromDirectory() ${error}');
-            });
-          }
-        });
+  Future loadFromDirectory(String path) async {
+    final Directory dir = new Directory(path);
+    if (dir.existsSync()) {
+      List<File> files = dir.listSync().where((fse) => fse is File);
+      files.forEach((item) {
+        try {
+          String text = load(item.path);
+          String token = item.path.split('/').last.split('.').first;
+          Map data = JSON.decode(text);
+          _serverTokens[token] = data;
+          log.finest('Loaded ${_serverTokens[token]}');
+        } catch (e, s) {
+          log.warning('Failed to load token $item', e, s);
+        }
       });
-    } else {
-      return new Future.value();
     }
   }
 
-  Future<List<FileSystemEntity>> list(String path) =>
-      new Directory(path).list().toList();
-
-  Future<String> load(String path) => new File(path).readAsString();
+  String load(String path) => new File(path).readAsStringSync();
 }
