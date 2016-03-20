@@ -15,7 +15,6 @@ class Receptionist {
 
   Service.NotificationSocket notificationSocket;
   Service.CallFlowControl callFlowControl;
-  Service.RESTUserStore userStore;
   Transport.Client _transport = null;
 
   Completer readyCompleter = new Completer();
@@ -40,9 +39,9 @@ class Receptionist {
    * Default constructor. Provides an _uninitialized_ [Receptionist] object.
    */
   Receptionist(this.phone, this.authToken, this.user) {
-    log.finest('Creating new Receptionist with ${phone.runtimeType} phone'
+    log.finest('Creating new Receptionist with ${phone.runtimeType} phone '
         'and account ${phone.defaultAccount.username}@'
-        '${phone.defaultAccount.server}');
+        '${phone.defaultAccount.server} - ${phone.defaultAccount.password}');
   }
 
   /**
@@ -51,13 +50,21 @@ class Receptionist {
    * This method should only be called by once, and other callers should
    * use the [whenReady] function to wait for the object to become ready.
    */
-  Future initialize() async {
+  Future initialize(
+      {Uri callFlowUri: null, Uri notificationSocketUri: null}) async {
     _transport = new Transport.Client();
-    callFlowControl = new Service.CallFlowControl(
-        Config.CallFlowControlUri, this.authToken, this._transport);
 
-    userStore =
-        new Service.RESTUserStore(Config.userStoreUri, authToken, _transport);
+    if (callFlowUri == null) {
+      callFlowUri = Config.CallFlowControlUri;
+    }
+
+    if (callFlowUri == null) {
+      notificationSocketUri = Config.NotificationSocketUri;
+    }
+
+    log.finest('Connecting to callflow on $callFlowUri');
+    callFlowControl = new Service.CallFlowControl(
+        callFlowUri, this.authToken, this._transport);
 
     if (this.readyCompleter.isCompleted) {
       this.readyCompleter = new Completer();
@@ -66,8 +73,11 @@ class Receptionist {
     Transport.WebSocketClient wsc = new Transport.WebSocketClient();
     this.notificationSocket = new Service.NotificationSocket(wsc);
 
-    await wsc.connect(
-        Uri.parse('${Config.NotificationSocketUri}?token=${this.authToken}'));
+    final notifyUri =
+        Uri.parse('${notificationSocketUri}?token=${this.authToken}');
+    log.finest('Connecting websocket to $notifyUri');
+
+    await wsc.connect(notifyUri);
     notificationSocket.eventStream.listen(_handleEvent,
         onDone: () => log.fine('$this closing notification listener.'));
 
@@ -76,7 +86,6 @@ class Receptionist {
         onDone: () => log.fine('$this closing event listener.'));
     await phone.autoAnswer(true);
     await phone.register();
-    await userStore.userStateReady(user.id);
     eventStack.clear();
     currentCall = null;
 
@@ -500,5 +509,6 @@ class Receptionist {
   /**
    * Pause the receptionist.
    */
-  Future pause() => userStore.userStatePaused(user.id);
+  Future pause(Service.RESTUserStore userStore) =>
+      userStore.userStatePaused(user.id);
 }

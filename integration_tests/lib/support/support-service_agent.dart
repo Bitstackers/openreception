@@ -5,36 +5,46 @@ class ServiceAgent {
   final TestEnvironment env;
   final model.User user;
   final Logger _log = new Logger('ServiceAgent');
-  String authToken = '';
+  AuthToken get authToken => new AuthToken(user);
   Transport.WebSocketClient _ws;
   Service.CallFlowControl callflow;
   Service.RESTConfiguration configService;
   Service.Authentication authService;
+  Service.NotificationService _notificationService;
+  Service.NotificationSocket _notificationSocket;
 
-  Stream<Event.Event> get notifications => notificationSocket.eventStream;
+  /**
+   *
+   */
+  Future<Stream<Event.Event>> get notifications async =>
+      (await notificationSocket).eventStream;
 
-  void cleanup() {
-    if (_ws != null) {
-      _ws.close();
+  /**
+   *
+   */
+  Future<Service.NotificationService> get notificationService async {
+    if (_notificationService == null) {
+      final client = env.httpClient;
+      _notificationService = (await env.requestNotificationserverProcess())
+          .bindClient(client, authToken);
     }
+
+    return _notificationService;
   }
 
-  void set notificationSocket(Service.NotificationSocket ns) {
-    _notificationSocket = ns;
-  }
-
-  Service.NotificationSocket get notificationSocket {
+  /**
+   *
+   */
+  Future<Service.NotificationSocket> get notificationSocket async {
     if (_notificationSocket == null) {
-      _ws = new Transport.WebSocketClient();
-      _ws.connect(
-          Uri.parse('${Config.NotificationSocketUri}/?token=${authToken}'));
-      _notificationSocket = new Service.NotificationSocket(_ws);
+      _ws = env.requestWebsocket();
+
+      _notificationSocket = await (await env.requestNotificationserverProcess())
+          .bindWebsocketClient(_ws, authToken);
     }
 
     return _notificationSocket;
   }
-
-  Service.NotificationSocket _notificationSocket;
 
   /**
    *
@@ -85,6 +95,9 @@ class ServiceAgent {
     _calendarStore = cs;
   }
 
+  /**
+   * 
+   */
   storage.Calendar get calendarStore {
     if (_calendarStore == null) {
       _calendarStore = env.calendarStore;
@@ -178,7 +191,7 @@ class ServiceAgent {
   }
 
   Service.PeerAccount paService;
-  Service.RESTDialplanStore dpService;
+  Service.RESTDialplanStore dialplanService;
 
   /**
    *
@@ -189,12 +202,18 @@ class ServiceAgent {
    *
    */
   Future<Customer> spawnCustomer() async {
+    final authProcess = await env.requestAuthserverProcess();
+
+    /// Ensure that the token is available in on the auth server.
+    authProcess.addTokens([authToken]);
     if (paService == null) {
-      throw new StateError('paService needs to be initialized.');
+      paService = (await env.requestDialplanProcess())
+          .bindPeerAccountClient(env.httpClient, authToken);
     }
 
-    if (dpService == null) {
-      throw new StateError('dpService needs to be initialized.');
+    if (dialplanService == null) {
+      dialplanService = (await env.requestDialplanProcess())
+          .bindDialplanClient(env.httpClient, authToken);
     }
 
     final model.PeerAccount account =
@@ -203,7 +222,8 @@ class ServiceAgent {
     _log.fine('Deploying account ${account.toJson()}');
     await paService.deployAccount(account, user.id);
     _log.fine('Reloading config');
-    await dpService.reloadConfig();
+    await dialplanService.reloadConfig();
+
     Phonio.SIPAccount sipAccount = new Phonio.SIPAccount(
         account.username, account.password, await detectExtIp());
 
@@ -221,31 +241,38 @@ class ServiceAgent {
    *
    */
   Future<Receptionist> createsReceptionist() async {
-    if (paService == null) {
-      throw new StateError('paService needs to be initialized.');
-    }
-    if (dpService == null) {
-      throw new StateError('dpService needs to be initialized.');
-    }
+    final authProcess = await env.requestAuthserverProcess();
+    final callflowProcess = await env.requestCallFlowProcess();
+    final notificationProcess = await env.requestNotificationserverProcess();
 
-    if (callflow == null) {
-      throw new StateError('callflow needs to be initialized.');
-    }
+    callflow = callflowProcess.bindClient(env.httpClient, authToken);
+
+    paService = (await env.requestDialplanProcess())
+        .bindPeerAccountClient(env.httpClient, authToken);
+
+    dialplanService = (await env.requestDialplanProcess())
+        .bindDialplanClient(env.httpClient, authToken);
+
+    /// Ensure that the token is available in on the auth server.
+    authProcess.addTokens([authToken]);
+
     final rUser = Randomizer.randomUser()
       ..peer = _nextInternalPeerName
       ..groups = new Set<String>.from([model.UserGroups.receptionist]);
-
     await userStore.create(rUser, user);
 
-    AuthToken authToken = new AuthToken(rUser);
+    final AuthToken userToken = new AuthToken(rUser);
+    _log.finest('Deploying receptionist token');
+    (await env.requestAuthserverProcess()).addTokens([userToken]);
 
     final model.PeerAccount account = new model.PeerAccount(
         rUser.peer, rUser.name.hashCode.toString(), 'receptions');
 
     _log.fine('Deploying account ${account.toJson()}');
     await paService.deployAccount(account, user.id);
+
     _log.fine('Reloading config');
-    await dpService.reloadConfig();
+    await dialplanService.reloadConfig();
 
     Phonio.SIPAccount sipAccount = new Phonio.SIPAccount(
         account.username, account.password, await detectExtIp());
@@ -253,9 +280,10 @@ class ServiceAgent {
     Phonio.SIPPhone sipPhone = await env.phonePool.requestNext();
     sipPhone.addAccount(sipAccount);
     final Receptionist r =
-        new Receptionist(sipPhone, authToken.tokenName, rUser);
+        new Receptionist(sipPhone, userToken.tokenName, rUser);
 
-    final reloadEvent = notificationSocket.eventStream
+    final reloadEvent = (await notificationSocket)
+        .eventStream
         .firstWhere((e) => e is Event.CallStateReload);
 
     _log.finest('Reloading callflow state');
@@ -264,6 +292,18 @@ class ServiceAgent {
     await reloadEvent;
 
     env.allocatedReceptionists.add(r);
+    final registerEvent = (await notificationSocket).eventStream.firstWhere(
+        (e) =>
+            e is event.PeerState &&
+            e.peer.name == r.user.peer &&
+            e.peer.registered);
+
+    await r.initialize(
+        callFlowUri: callflowProcess.uri,
+        notificationSocketUri: notificationProcess.notifyUri);
+
+    await registerEvent;
+
     return r;
   }
 
@@ -290,6 +330,11 @@ class ServiceAgent {
    *
    */
   Future<model.ReceptionDialplan> createsDialplan() async {
+    final authProcess = await env.requestAuthserverProcess();
+
+    /// Ensure that the token is available in on the auth server.
+    authProcess.addTokens([authToken]);
+
     final DateTime now = new DateTime.now();
 
     model.OpeningHour justNow = new model.OpeningHour.empty()
@@ -317,15 +362,15 @@ class ServiceAgent {
       ..active = true;
 
     _log.info('Deploying dialplan ${rdp.toJson()}');
-    await dpService.create(rdp, user);
+    await dialplanService.create(rdp, user);
 
     return rdp;
   }
 
   Future deploysDialplan(
       model.ReceptionDialplan rdp, model.Reception rec) async {
-    await dpService.deployDialplan(rdp.extension, rec.id);
-    await dpService.reloadConfig();
+    await dialplanService.deployDialplan(rdp.extension, rec.id);
+    await dialplanService.reloadConfig();
   }
 
   /**

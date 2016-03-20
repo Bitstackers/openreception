@@ -46,4 +46,6 @@ class AuthToken {
         "expiresAt": "2100-12-31 00:00:00.000",
         "identity": user.toJson()
       };
+
+  String toString() => tokenName;
 }

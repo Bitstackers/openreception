@@ -65,7 +65,22 @@ class TestEnvironment {
   TestEnvironmentConfig get envConfig => _envConfig;
   final PhonePool phonePool = new PhonePool.empty();
   final Directory runpath;
-  final Directory fsDir;
+
+  /// Processes
+  process.AuthServer _authProcess;
+  process.NotificationServer _notificationProcess;
+  process.DialplanServer _dialplanProcess;
+  process.CallFlowControl _callflowProcess;
+
+  service.Client _httpClient;
+
+  List<service.WebSocketClient> _allocatedWebSockets = [];
+
+  /**
+   *
+   */
+  service.Client get httpClient =>
+      _httpClient != null ? _httpClient : new service.Client();
 
   int get nextNetworkport => _networkPortCounter.nextInt;
 
@@ -75,13 +90,95 @@ class TestEnvironment {
   /**
    *
    */
-  Future<process.FreeSwitch> get freeswitchProcess async {
+  Future<process.FreeSwitch> requestFreeswitchProcess() async {
     if (_freeswitch == null) {
       _freeswitch = new process.FreeSwitch(
-          '/usr/bin/freeswitch', fsDir.path, new File('conf.tar.gz'));
+          '/usr/bin/freeswitch',
+          new Directory('/tmp').createTempSync('freeswitch-').path,
+          new File('conf.tar.gz'));
     }
     await _freeswitch.whenReady;
     return _freeswitch;
+  }
+
+  /**
+   *
+   */
+  service.WebSocketClient requestWebsocket() {
+    final ws = new service.WebSocketClient();
+    _allocatedWebSockets.add(ws);
+
+    return ws;
+  }
+
+  /**
+   *
+   */
+  Future<process.AuthServer> requestAuthserverProcess() async {
+    _log.shout((await userTokens).join(', '));
+    if (_authProcess == null) {
+      _authProcess = new process.AuthServer(
+          Config.serverStackPath, runpath.path,
+          intialTokens: [new AuthToken(_user)]..addAll(await userTokens),
+          bindAddress: envConfig.externalIp,
+          servicePort: nextNetworkport);
+    }
+
+    await _authProcess.whenReady;
+
+    return _authProcess;
+  }
+
+  /**
+   *
+   */
+  Future<process.DialplanServer> requestDialplanProcess() async {
+    if (_dialplanProcess == null) {
+      _dialplanProcess = new process.DialplanServer(Config.serverStackPath,
+          runpath.path, (await requestFreeswitchProcess()).confPath,
+          authUri: (await requestAuthserverProcess()).uri,
+          bindAddress: envConfig.externalIp,
+          servicePort: nextNetworkport);
+    }
+
+    await _dialplanProcess.whenReady;
+
+    return _dialplanProcess;
+  }
+
+  /**
+   *
+   */
+  Future<process.CallFlowControl> requestCallFlowProcess() async {
+    if (_callflowProcess == null) {
+      _callflowProcess = new process.CallFlowControl(
+          Config.serverStackPath, runpath.path,
+          bindAddress: envConfig.externalIp,
+          servicePort: nextNetworkport,
+          notificationUri: (await requestNotificationserverProcess()).uri,
+          authUri: (await requestAuthserverProcess()).uri);
+    }
+
+    await _callflowProcess.whenReady;
+
+    return _callflowProcess;
+  }
+
+  /**
+   *
+   */
+  Future<process.NotificationServer> requestNotificationserverProcess() async {
+    if (_notificationProcess == null) {
+      _notificationProcess = new process.NotificationServer(
+          Config.serverStackPath, runpath.path,
+          bindAddress: envConfig.externalIp,
+          servicePort: nextNetworkport,
+          authUri: (await requestAuthserverProcess()).uri);
+    }
+
+    await _notificationProcess.whenReady;
+
+    return _notificationProcess;
   }
 
   /**
@@ -222,10 +319,7 @@ class TestEnvironment {
    *
    */
   TestEnvironment({String path: ''})
-      : fsDir = path.isEmpty
-            ? new Directory('/tmp').createTempSync('freeswitch-')
-            : new Directory(path + '/freeswitch-conf')..createSync(),
-        runpath = path.isEmpty
+      : runpath = path.isEmpty
             ? new Directory('/tmp').createTempSync('filestore')
             : new Directory(path + '/filestore')..createSync() {
     _log.info('New test environment created in directory $runpath');
@@ -234,8 +328,27 @@ class TestEnvironment {
   /**
    *
    */
+  Future _clearWebsockets() async {
+    await Future.forEach(_allocatedWebSockets,
+        (service.WebSocketClient ws) async {
+      try {
+        await ws.close();
+      } catch (e, s) {
+        _log.warning('Failed to close websocket', e, s);
+      }
+    });
+  }
+
+  /**
+   *
+   */
   Future clear() async {
     await _clearProcesses();
+    await _clearWebsockets();
+
+    if (_httpClient != null) {
+      _httpClient.client.close(force: true);
+    }
 
     if (!runpath.existsSync()) {
       _log.info('Clearing test environment created in directory $runpath');
@@ -265,6 +378,26 @@ class TestEnvironment {
     allocatedReceptionists = [];
     await Future.wait(allocatedCustomers.map((r) => r.finalize()));
     allocatedCustomers = [];
+
+    if (_callflowProcess != null) {
+      _log.info('Shutting down callflow process');
+      await _callflowProcess.terminate();
+    }
+
+    if (_dialplanProcess != null) {
+      _log.info('Shutting down dialplan process');
+      await _dialplanProcess.terminate();
+    }
+
+    if (_notificationProcess != null) {
+      _log.info('Shutting down notification process');
+      await _notificationProcess.terminate();
+    }
+
+    if (_authProcess != null) {
+      _log.info('Shutting down authentication process');
+      await _authProcess.terminate();
+    }
   }
 
   /**
@@ -273,10 +406,15 @@ class TestEnvironment {
   Future finalize() async {
     await clear();
     if (_freeswitch != null) {
+      _log.info('Terminating FreeSWITCH');
       await _freeswitch.terminate();
+      _log.info('Deleting directory ${_freeswitch.basePath}');
+      await new Directory(_freeswitch.basePath).deleteSync(recursive: true);
     }
-    _log.info('Deleting directory ${fsDir.absolute.path}');
-    await fsDir.deleteSync(recursive: true);
+    if (_httpClient != null) {
+      _log.info('Terminating HttpClient');
+      await _httpClient.client.close(force: true);
+    }
   }
 
   /**
@@ -290,6 +428,16 @@ class TestEnvironment {
     sa.id = (await _userStore.create(sa, _user)).id;
 
     return new ServiceAgent(runpath, sa, this);
+  }
+
+  /**
+   *
+   */
+  Future<Iterable<AuthToken>> get userTokens async {
+    final uRefs = await userStore.list();
+
+    return Future.wait(
+        uRefs.map((uRef) async => new AuthToken(await userStore.get(uRef.id))));
   }
 
   /**
