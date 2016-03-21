@@ -1,16 +1,25 @@
 part of openreception_tests.process;
 
 class ContactServer implements ServiceProcess {
-  final String path;
-  final String storePath;
   final Logger _log = new Logger('$_namespace.ContactServer');
   Process _process;
+  final String path;
+  final String storePath;
+
+  final int servicePort;
+  final String bindAddress;
+  final Uri authUri;
+  final Uri notificationUri;
 
   final Completer _ready = new Completer();
   bool get ready => _ready.isCompleted;
   Future get whenReady => _ready.future;
 
-  ContactServer(this.path, this.storePath) {
+  ContactServer(this.path, this.storePath,
+      {this.servicePort: 4010,
+      this.bindAddress: '0.0.0.0',
+      this.authUri: null,
+      this.notificationUri}) {
     _init();
   }
 

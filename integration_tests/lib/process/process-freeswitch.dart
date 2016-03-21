@@ -1,5 +1,7 @@
 part of openreception_tests.process;
 
+class FreeSwitchConfig {}
+
 class FreeSwitch implements ServiceProcess {
   final String binPath;
   final String basePath;
