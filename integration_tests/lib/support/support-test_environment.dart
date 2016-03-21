@@ -68,9 +68,17 @@ class TestEnvironment {
 
   /// Processes
   process.AuthServer _authProcess;
-  process.NotificationServer _notificationProcess;
-  process.DialplanServer _dialplanProcess;
+  process.CalendarServer _calendarServer;
   process.CallFlowControl _callflowProcess;
+  process.ContactServer _contactServer;
+  process.DialplanServer _dialplanProcess;
+  process.ConfigServer _configProcess;
+  process.MessageDispatcher _messageDispatcher;
+  process.MessageServer _messageProcess;
+  process.NotificationServer _notificationProcess;
+
+  process.ReceptionServer _receptionServer;
+  process.UserServer _userServer;
 
   service.Client _httpClient;
 
@@ -114,8 +122,57 @@ class TestEnvironment {
   /**
    *
    */
+  Future<process.ConfigServer> requestConfigServerProcess() async {
+    if (_configProcess == null) {
+      _configProcess = new process.ConfigServer(Config.serverStackPath,
+          bindAddress: envConfig.externalIp, servicePort: nextNetworkport);
+    }
+
+    await _configProcess.whenReady;
+
+    return _configProcess;
+  }
+
+  /**
+   *
+   */
+  Future<process.MessageServer> requestMessageserverProcess() async {
+    if (_messageProcess == null) {
+      _messageProcess = new process.MessageServer(
+          Config.serverStackPath, runpath.path,
+          bindAddress: envConfig.externalIp,
+          servicePort: nextNetworkport,
+          authUri: (await requestAuthserverProcess()).uri,
+          notificationUri: (await requestNotificationserverProcess()).uri);
+    }
+
+    await _messageProcess.whenReady;
+
+    return _messageProcess;
+  }
+
+  /**
+   *
+   */
+  Future<process.CalendarServer> requestCalendarserverProcess() async {
+    if (_calendarServer == null) {
+      _calendarServer = new process.CalendarServer(
+          Config.serverStackPath, runpath.path,
+          bindAddress: envConfig.externalIp,
+          servicePort: nextNetworkport,
+          authUri: (await requestAuthserverProcess()).uri,
+          notificationUri: (await requestNotificationserverProcess()).uri);
+    }
+
+    await _calendarServer.whenReady;
+
+    return _calendarServer;
+  }
+
+  /**
+   *
+   */
   Future<process.AuthServer> requestAuthserverProcess() async {
-    _log.shout((await userTokens).join(', '));
     if (_authProcess == null) {
       _authProcess = new process.AuthServer(
           Config.serverStackPath, runpath.path,
@@ -392,6 +449,11 @@ class TestEnvironment {
     if (_notificationProcess != null) {
       _log.info('Shutting down notification process');
       await _notificationProcess.terminate();
+    }
+
+    if (_configProcess != null) {
+      _log.info('Shutting down config process');
+      await _configProcess.terminate();
     }
 
     if (_authProcess != null) {
