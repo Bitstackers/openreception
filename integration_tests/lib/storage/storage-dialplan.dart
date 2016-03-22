@@ -4,8 +4,8 @@ abstract class ReceptionDialplan {
   /**
    *
    */
-  static Future create(storage.ReceptionDialplan rdpStore,
-      [model.User user]) async {
+  static Future create(
+      storage.ReceptionDialplan rdpStore, model.User user) async {
     model.ReceptionDialplan rdp = Randomizer.randomDialplan();
 
     model.ReceptionDialplan createdDialplan = await rdpStore.create(rdp, user);
