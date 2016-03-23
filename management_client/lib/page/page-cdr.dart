@@ -177,12 +177,15 @@ class Cdr {
     table.createTHead()
       ..children = [
         new TableCellElement()..text = 'start',
-        new TableCellElement()..text = 'retning',
-        new TableCellElement()..text = 'aktør',
         new TableCellElement()..text = 'besvaret',
         new TableCellElement()..text = 'ventetid',
+        new TableCellElement()..text = 'retning',
+        new TableCellElement()..text = 'stop',
+        new TableCellElement()..text = 'længde',
         new TableCellElement()..text = 'reception',
-        new TableCellElement()..text = 'agent',
+        new TableCellElement()..text = 'opkalder',
+        new TableCellElement()..text = 'destination',
+        new TableCellElement()..text = 'aktør',
         new TableCellElement()..text = 'cdr fil'
       ]
       ..style.textAlign = 'center';
@@ -208,17 +211,27 @@ class Cdr {
 
     contexts.sort((a, b) => a.entry.startEpoch.compareTo(b.entry.startEpoch));
 
-    String answerTime(model.CdrEntry entry) {
-      return entry.agentBeginEpoch > 0
-          ? '${epochToString(entry.agentBeginEpoch, withDate: false)}'
-          : entry.answerEpoch > 0
-              ? '${epochToString(entry.answerEpoch, withDate: false)}'
-              : '';
-    }
+    String answerTime(model.CdrEntry entry) => entry.agentBeginEpoch > 0
+        ? '${epochToString(entry.agentBeginEpoch, withDate: false)}'
+        : entry.answerEpoch > 0
+            ? '${epochToString(entry.answerEpoch, withDate: false)}'
+            : '';
+
+    String durationToString(Duration d) => d.toString().split('.').first;
+
+    String callLength(model.CdrEntry entry) => entry.agentEndEpoch > 0
+        ? durationToString(
+            new Duration(seconds: entry.agentEndEpoch - entry.agentBeginEpoch))
+        : '';
+
+    String endTime(model.CdrEntry entry) => entry.agentEndEpoch > 0
+        ? '${epochToString(entry.agentEndEpoch, withDate: false)}'
+        : entry.endEpoch > 0
+            ? '${epochToString(entry.endEpoch, withDate: false)}'
+            : '';
 
     String waitDuration(model.CdrEntry entry) {
       Duration d;
-      String durationToString(Duration d) => d.toString().split('.').first;
 
       switch (entry.state) {
         case model.CdrEntryState.agentChannel:
@@ -247,29 +260,53 @@ class Cdr {
 
     for (Context c in contexts) {
       rows.add(new TableRowElement()
+        ..onClick.listen((MouseEvent event) {
+          final Element target = event.currentTarget;
+          final String weight = target.style.fontWeight;
+          if (weight == 'bold') {
+            target.style.fontWeight = '';
+          } else {
+            target.style.fontWeight = 'bold';
+          }
+        })
         ..children = [
           new TableCellElement()
             ..title = c.entry.state.toString().split('.').last
             ..text = epochToString(c.entry.startEpoch),
           new TableCellElement()
             ..style.textAlign = 'center'
+            ..text = answerTime(c.entry)
+            ..title = 'besvaret',
+          new TableCellElement()
+            ..style.textAlign = 'center'
+            ..text = waitDuration(c.entry).toString().split('.').first
+            ..title = 'ventetid',
+          new TableCellElement()
+            ..style.textAlign = 'center'
             ..text = directionMap[c.entry.state],
+          new TableCellElement()..text = endTime(c.entry),
           new TableCellElement()
             ..style.textAlign = 'center'
-            ..text = actorMap[c.entry.state],
-          new TableCellElement()
-            ..style.textAlign = 'center'
-            ..text = answerTime(c.entry),
-          new TableCellElement()
-            ..style.textAlign = 'center'
-            ..text = waitDuration(c.entry).toString().split('.').first,
+            ..text = callLength(c.entry)
+            ..title = 'længde',
           new TableCellElement()..text = c.recName,
-          new TableCellElement()..text = uidToNameMap[c.entry.uid],
+          new TableCellElement()
+            ..text = c.entry.sipFromUserStripped
+            ..title = 'opkalder',
+          new TableCellElement()
+            ..text = c.entry.destination
+            ..title = 'destination',
+          new TableCellElement()
+            ..text = actorMap[c.entry.state] == 'agent'
+                ? uidToNameMap[c.entry.uid]
+                : actorMap[c.entry.state],
           new TableCellElement()..text = c.entry.filename
         ]);
     }
 
     table.createTBody()..children = rows;
+
+    setListTotalsNode();
   }
 
   Future _fetchSummaries(
@@ -474,6 +511,15 @@ class Cdr {
         element.style.flexDirection = '';
       }
     });
+  }
+
+  /**
+   * Populate the list totals node.
+   */
+  void setListTotalsNode() {
+    final DivElement sums = new DivElement()..text = 'Some sums';
+    final DivElement averages = new DivElement()..text = 'Some averages';
+    totals..children = [sums, averages];
   }
 
   /**
