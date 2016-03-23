@@ -1,15 +1,15 @@
 part of openreception_tests.process;
 
 class MessageServer implements ServiceProcess {
+  final Logger _log = new Logger('$_namespace.MessageServer');
+  Process _process;
+
   final String path;
   final String storePath;
   final int servicePort;
   final String bindAddress;
-
   final Uri authUri;
   final Uri notificationUri;
-  final Logger _log = new Logger('$_namespace.MessageServer');
-  Process _process;
 
   final Completer _ready = new Completer();
   bool get ready => _ready.isCompleted;
@@ -26,11 +26,11 @@ class MessageServer implements ServiceProcess {
   Future _init() async {
     final arguments = [
       '$path/bin/messageserver.dart',
-      '-f',
+      '--filestore',
       storePath,
-      '-p',
+      '--httpport',
       servicePort.toString(),
-      '-h',
+      '--host',
       bindAddress
     ];
 

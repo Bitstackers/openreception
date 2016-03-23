@@ -19,7 +19,7 @@ class CallFlowControl implements ServiceProcess {
    *
    */
   CallFlowControl(this.path, this.storePath,
-      {this.servicePort: 4030,
+      {this.servicePort: 4242,
       this.bindAddress: '0.0.0.0',
       this.authUri: null,
       this.notificationUri: null}) {
@@ -47,7 +47,6 @@ class CallFlowControl implements ServiceProcess {
     }
 
     _log.fine('Starting process /usr/bin/dart ${arguments.join(' ')}');
-
     _process = await Process.start('/usr/bin/dart', arguments,
         workingDirectory: path)
       ..stdout

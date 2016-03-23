@@ -60,8 +60,7 @@ class FreeSwitch implements ServiceProcess {
   Future _init() async {
     await _createDirs();
     await cleanConfig();
-    _log.fine('Starting new process $binPath in path ${basePath}');
-    _process = await Process.start('/usr/bin/freeswitch', [
+    final arguments = [
       '-nonat',
       '-nonatmap',
       '-c',
@@ -73,7 +72,10 @@ class FreeSwitch implements ServiceProcess {
       runPath,
       '-db',
       dbPath
-    ])
+    ];
+    _log.fine(
+        'Starting new process $binPath in path ${basePath} arguments: ${arguments.join(' ')}');
+    _process = await Process.start('/usr/bin/freeswitch', arguments)
       ..stdout
           .transform(new Utf8Decoder())
           .transform(new LineSplitter())

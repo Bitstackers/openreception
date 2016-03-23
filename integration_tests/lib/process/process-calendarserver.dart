@@ -17,7 +17,7 @@ class CalendarServer implements ServiceProcess {
   Future get whenReady => _ready.future;
 
   /**
-   * 
+   *
    */
   CalendarServer(this.path, this.storePath,
       {this.servicePort: 4060,
@@ -37,7 +37,7 @@ class CalendarServer implements ServiceProcess {
       storePath,
       '--httpport',
       servicePort.toString(),
-      '-host',
+      '--host',
       bindAddress
     ];
 

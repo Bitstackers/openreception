@@ -1,26 +1,49 @@
 part of openreception_tests.process;
 
 class ReceptionServer implements ServiceProcess {
+  final Logger _log = new Logger('$_namespace.ReceptionServer');
+  Process _process;
+
   final String path;
   final String storePath;
   final int servicePort;
   final String bindAddress;
-  final Logger _log = new Logger('$_namespace.ReceptionServer');
-  Process _process;
+  final Uri authUri;
+  final Uri notificationUri;
 
   final Completer _ready = new Completer();
   bool get ready => _ready.isCompleted;
   Future get whenReady => _ready.future;
 
   ReceptionServer(this.path, this.storePath,
-      {this.servicePort: 4000, this.bindAddress: '0.0.0.0'}) {
+      {this.servicePort: 4000,
+      this.bindAddress: '0.0.0.0',
+      this.authUri: null,
+      this.notificationUri}) {
     _init();
   }
 
   Future _init() async {
-    _log.fine('Starting new process');
-    _process = await Process.start('/usr/bin/dart',
-        ['$path/bin/receptionserver.dart', '-f', storePath, '-p', servicePort],
+    final arguments = [
+      '$path/bin/receptionserver.dart',
+      '--filestore',
+      storePath,
+      '--httpport',
+      servicePort.toString(),
+      '--host',
+      bindAddress
+    ];
+
+    if (authUri != null) {
+      arguments.addAll(['--auth-uri', authUri.toString()]);
+    }
+
+    if (notificationUri != null) {
+      arguments.addAll(['--notification-uri', notificationUri.toString()]);
+    }
+
+    _log.fine('Starting process /usr/bin/dart ${arguments.join(' ')}');
+    _process = await Process.start('/usr/bin/dart', arguments,
         workingDirectory: path)
       ..stdout
           .transform(new Utf8Decoder())

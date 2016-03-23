@@ -24,16 +24,16 @@ class ConfigServer implements ServiceProcess {
    *
    */
   Future _init() async {
-    _log.fine('Starting new process');
-    _process = await Process.start(
-        '/usr/bin/dart',
-        [
-          '$path/bin/configserver.dart',
-          '-p',
-          servicePort.toString(),
-          '-h',
-          bindAddress
-        ],
+    final arguments = [
+      '$path/bin/configserver.dart',
+      '--httpport',
+      servicePort.toString(),
+      '--host',
+      bindAddress
+    ];
+
+    _log.fine('Starting process /usr/bin/dart ${arguments.join(' ')}');
+    _process = await Process.start('/usr/bin/dart', arguments,
         workingDirectory: path)
       ..stdout
           .transform(new Utf8Decoder())

@@ -24,9 +24,26 @@ class ContactServer implements ServiceProcess {
   }
 
   Future _init() async {
-    _log.fine('Starting new process');
-    _process = await Process.start(
-        '/usr/bin/dart', ['$path/bin/contactserver.dart', '-f', storePath],
+    final arguments = [
+      '$path/bin/contactserver.dart',
+      '--filestore',
+      storePath,
+      '--httpport',
+      servicePort.toString(),
+      '--host',
+      bindAddress
+    ];
+
+    if (authUri != null) {
+      arguments.addAll(['--auth-uri', authUri.toString()]);
+    }
+
+    if (notificationUri != null) {
+      arguments.addAll(['--notification-uri', notificationUri.toString()]);
+    }
+
+    _log.fine('Starting process /usr/bin/dart ${arguments.join(' ')}');
+    _process = await Process.start('/usr/bin/dart', arguments,
         workingDirectory: path)
       ..stdout
           .transform(new Utf8Decoder())

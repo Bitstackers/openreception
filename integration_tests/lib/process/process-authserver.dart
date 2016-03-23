@@ -14,6 +14,9 @@ class AuthServer implements ServiceProcess {
   bool get ready => _ready.isCompleted;
   Future get whenReady => _ready.future;
 
+  /**
+   *
+   */
   AuthServer(this.path, this.storePath,
       {Iterable<AuthToken> intialTokens: const [],
       this.servicePort: 4050,
@@ -21,25 +24,28 @@ class AuthServer implements ServiceProcess {
     _init(intialTokens);
   }
 
+  /**
+   *
+   */
   Future _init(Iterable<AuthToken> intialTokens) async {
     tokenDir = new AuthTokenDir(new Directory('/tmp').createTempSync(),
         intialTokens: intialTokens);
 
     await _writeTokens();
-    _log.fine('Starting new process');
-    _process = await Process.start(
-        '/usr/bin/dart',
-        [
-          '$path/bin/authserver.dart',
-          '-d',
-          tokenDir.dir.absolute.path,
-          '-f',
-          storePath,
-          '-p',
-          servicePort.toString(),
-          '-h',
-          bindAddress
-        ],
+    final arguments = [
+      '$path/bin/authserver.dart',
+      '-d',
+      tokenDir.dir.absolute.path,
+      '--filestore',
+      storePath,
+      '--httpport',
+      servicePort.toString(),
+      '--host',
+      bindAddress
+    ];
+    _log.fine('Starting process /usr/bin/dart ${arguments.join(' ')}');
+
+    _process = await Process.start('/usr/bin/dart', arguments,
         workingDirectory: path)
       ..stdout
           .transform(new Utf8Decoder())
