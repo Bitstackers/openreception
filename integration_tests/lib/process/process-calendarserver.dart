@@ -69,6 +69,24 @@ class CalendarServer implements ServiceProcess {
   }
 
   /**
+   * Constructs a new [service.RESTCalendarStore] based on the launch
+   * parameters of the process.
+   */
+  service.RESTCalendarStore bindClient(service.Client client, AuthToken token,
+      {Uri connectUri: null}) {
+    if (connectUri == null) {
+      connectUri = this.uri;
+    }
+
+    return new service.RESTCalendarStore(connectUri, token.tokenName, client);
+  }
+
+  /**
+   *
+   */
+  Uri get uri => Uri.parse('http://$bindAddress:$servicePort');
+
+  /**
    *
    */
   Future terminate() async {
