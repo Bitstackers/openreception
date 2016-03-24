@@ -22,3 +22,7 @@ part 'process/process-receptionserver.dart';
 part 'process/process-userserver.dart';
 
 const _namespace = 'test.support.process';
+
+abstract class ServiceProcess {
+  Future terminate();
+}
