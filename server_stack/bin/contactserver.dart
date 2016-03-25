@@ -69,6 +69,8 @@ Future main(List<String> args) async {
 
   await router.start(
       port: int.parse(parsedArgs['httpport']),
+      authUri: Uri.parse(parsedArgs['auth-uri']),
+      notificationUri: Uri.parse(parsedArgs['notification-uri']),
       filepath: parsedArgs['filestore']);
   log.info('Ready to handle requests');
 }

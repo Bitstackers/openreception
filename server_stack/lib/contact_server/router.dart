@@ -42,14 +42,16 @@ const Map<String, String> corsHeaders = const {
  *
  */
 Future<io.HttpServer> start(
-    {String hostname: '0.0.0.0', int port: 4010, String filepath: ''}) async {
+    {String hostname: '0.0.0.0',
+    int port: 4010,
+    String filepath: '',
+    Uri authUri,
+    Uri notificationUri}) async {
   final service.Authentication _authService = new service.Authentication(
-      config.authServer.externalUri,
-      config.userServer.serverToken,
-      new transport.Client());
+      authUri, config.userServer.serverToken, new transport.Client());
 
   final service.NotificationService _notification =
-      new service.NotificationService(config.notificationServer.externalUri,
+      new service.NotificationService(notificationUri,
           config.userServer.serverToken, new transport.Client());
 
   /**
@@ -115,7 +117,10 @@ Future<io.HttpServer> start(
       .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
       .addHandler(router.handler);
 
-  log.fine('Accepting incoming requests on $hostname:$port:');
+  log.fine('Using server on $authUri as authentication backend');
+  log.fine('Using server on $notificationUri as notification backend');
+  log.fine('Accepting incoming REST requests on http://$hostname:$port');
+  log.fine('Serving routes:');
   shelf_route.printRoutes(router, printer: (String item) => log.fine(item));
 
   return await shelf_io.serve(handler, hostname, port);
