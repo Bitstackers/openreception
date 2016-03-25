@@ -136,6 +136,21 @@ class TestEnvironment {
   /**
    *
    */
+  Future<process.ContactServer> requestContactserverProcess() async {
+    if (_contactServer == null) {
+      _contactServer = new process.ContactServer(
+          Config.serverStackPath, runpath.path,
+          bindAddress: envConfig.externalIp, servicePort: nextNetworkport);
+    }
+
+    await _contactServer.whenReady;
+
+    return _contactServer;
+  }
+
+  /**
+   *
+   */
   Future<process.MessageServer> requestMessageserverProcess() async {
     if (_messageProcess == null) {
       _messageProcess = new process.MessageServer(
@@ -442,22 +457,42 @@ class TestEnvironment {
     }
 
     if (_dialplanProcess != null) {
-      _log.info('Shutting down dialplan process');
+      _log.info('Shutting down dialplan server process');
       await _dialplanProcess.terminate();
     }
 
+    if (_contactServer != null) {
+      _log.info('Shutting down contact server process');
+      await _contactServer.terminate();
+    }
+
+    if (_calendarServer != null) {
+      _log.info('Shutting down calendar server process');
+      await _calendarServer.terminate();
+    }
+
+    if (_receptionServer != null) {
+      _log.info('Shutting down reception server process');
+      await _receptionServer.terminate();
+    }
+
+    if (_messageProcess != null) {
+      _log.info('Shutting down message server process');
+      await _messageProcess.terminate();
+    }
+
     if (_notificationProcess != null) {
-      _log.info('Shutting down notification process');
+      _log.info('Shutting down notification server process');
       await _notificationProcess.terminate();
     }
 
     if (_configProcess != null) {
-      _log.info('Shutting down config process');
+      _log.info('Shutting down config server process');
       await _configProcess.terminate();
     }
 
     if (_authProcess != null) {
-      _log.info('Shutting down authentication process');
+      _log.info('Shutting down authentication server process');
       await _authProcess.terminate();
     }
   }
