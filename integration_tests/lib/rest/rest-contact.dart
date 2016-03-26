@@ -7,56 +7,33 @@ void _runContactTests() {
     ServiceAgent sa;
     TestEnvironment env;
     process.ContactServer cProcess;
-    process.AuthServer aProcess;
-    process.NotificationServer nProcess;
-    service.Client client;
-    AuthToken authToken;
 
     setUp(() async {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();
-      client = new service.Client();
-      authToken = new AuthToken(sa.user);
-      sa.authToken = authToken.tokenName;
 
-      nProcess = new process.NotificationServer(
-          Config.serverStackPath, env.runpath.path);
+      cProcess = await env.requestContactserverProcess();
 
-      aProcess = new process.AuthServer(
-          Config.serverStackPath, env.runpath.path,
-          intialTokens: [authToken]);
-
-      cProcess =
-          new process.ContactServer(Config.serverStackPath, env.runpath.path);
-
-      sa.contactStore = new service.RESTContactStore(
-          Config.contactStoreUri, authToken.tokenName, client);
-      await Future
-          .wait([nProcess.whenReady, cProcess.whenReady, aProcess.whenReady]);
+      sa.contactStore = cProcess.bindClient(env.httpClient, sa.authToken);
     });
 
     tearDown(() async {
-      await Future.wait(
-          [cProcess.terminate(), aProcess.terminate(), nProcess.terminate()]);
       env.clear();
-      client.client.close();
     });
 
-    test(
-        'CORS headers present (existingUri)',
-        () => isCORSHeadersPresent(
-            resource.User.list(Config.contactStoreUri), log));
+    test('CORS headers present (existingUri)',
+        () => isCORSHeadersPresent(resource.User.list(cProcess.uri), log));
 
     test(
         'CORS headers present (non-existingUri)',
         () => isCORSHeadersPresent(
-            Uri.parse('${Config.contactStoreUri}/nonexistingpath'), log));
+            Uri.parse('${cProcess.uri}/nonexistingpath'), log));
 
     test(
         'Non-existing path',
         () => nonExistingPath(
-            Uri.parse('${Config.contactStoreUri}/nonexistingpath'
-                '?token=${authToken.tokenName}'),
+            Uri.parse('${cProcess.uri}/nonexistingpath'
+                '?token=${sa.authToken.tokenName}'),
             log));
 
     test('get contact receptionAttributes',
