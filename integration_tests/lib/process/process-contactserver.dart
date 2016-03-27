@@ -15,6 +15,9 @@ class ContactServer implements ServiceProcess {
   bool get ready => _ready.isCompleted;
   Future get whenReady => _ready.future;
 
+  /**
+   *
+   */
   ContactServer(this.path, this.storePath,
       {this.servicePort: 4010,
       this.bindAddress: '0.0.0.0',
@@ -23,6 +26,9 @@ class ContactServer implements ServiceProcess {
     _init();
   }
 
+  /**
+   *
+   */
   Future _init() async {
     final arguments = [
       '$path/bin/contactserver.dart',
@@ -59,8 +65,35 @@ class ContactServer implements ServiceProcess {
           .transform(new Utf8Decoder())
           .transform(new LineSplitter())
           .listen(_log.warning);
+    _process.exitCode.then((int exitCode) {
+      if (exitCode != 0 && !ready) {
+        _ready.completeError(new StateError('Failed to launch process. '
+            'Exit code: $exitCode'));
+      }
+    });
   }
 
+  /**
+   * Constructs a new [service.CallFlowControl] based on the launch
+   * parametersof the process.
+   */
+  service.RESTContactStore bindClient(service.Client client, AuthToken token,
+      {Uri connectUri: null}) {
+    if (connectUri == null) {
+      connectUri = this.uri;
+    }
+
+    return new service.RESTContactStore(connectUri, token.tokenName, client);
+  }
+
+  /**
+   *
+   */
+  Uri get uri => Uri.parse('http://$bindAddress:$servicePort');
+
+  /**
+   *
+   */
   Future terminate() async {
     _process.kill();
     await _process.exitCode;
