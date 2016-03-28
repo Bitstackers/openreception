@@ -26,7 +26,7 @@ abstract class User {
       await sa.userStore.update(sa.user, sa.user);
     }
 
-    Future expectedEvent = sa.notifications.firstWhere((e) =>
+    Future expectedEvent = (await sa.notifications).firstWhere((e) =>
         e is event.UserState &&
         e.status.userId == sa.user.id &&
         e.status.paused);
@@ -43,7 +43,7 @@ abstract class User {
    *
    */
   static Future createEvent(ServiceAgent sa) async {
-    final nextUserCreateEvent = sa.notifications.firstWhere(
+    final nextUserCreateEvent = (await sa.notifications).firstWhere(
         (e) => e is event.UserChange && e.state == event.Change.created);
     final createdUser = await sa.createsUser();
 
@@ -60,7 +60,7 @@ abstract class User {
    *
    */
   static Future updateEvent(ServiceAgent sa) async {
-    final nextUserUpdateEvent = sa.notifications.firstWhere(
+    final nextUserUpdateEvent = (await sa.notifications).firstWhere(
         (e) => e is event.UserChange && e.state == event.Change.updated);
     final createdUser = await sa.createsUser();
     await sa.updatesUser(createdUser);
@@ -78,7 +78,7 @@ abstract class User {
    *
    */
   static Future deleteEvent(ServiceAgent sa) async {
-    final nextUserDeleteEvent = sa.notifications.firstWhere(
+    final nextUserDeleteEvent = (await sa.notifications).firstWhere(
         (e) => e is event.UserChange && e.state == event.Change.deleted);
     final created = await sa.createsUser();
     await sa.removesUser(created);

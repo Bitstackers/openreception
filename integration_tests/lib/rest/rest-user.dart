@@ -17,8 +17,7 @@ void _runUserTests() {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();
       client = new service.Client();
-      authToken = new AuthToken(sa.user);
-      sa.authToken = authToken.tokenName;
+      authToken = sa.authToken;
 
       aProcess = new process.AuthServer(
           Config.serverStackPath, env.runpath.path,

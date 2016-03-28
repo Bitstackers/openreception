@@ -8,7 +8,7 @@ abstract class Organization {
    * Organization object and send out a OrganizationChange notification.
    */
   static Future createEvent(ServiceAgent sa) async {
-    final nextOrgCreateEvent = sa.notifications.firstWhere((e) =>
+    final nextOrgCreateEvent = (await sa.notifications).firstWhere((e) =>
         e is event.OrganizationChange && e.state == event.Change.created);
     final createdOrganization = await sa.createsOrganization();
 
@@ -28,7 +28,7 @@ abstract class Organization {
    * Organization object and send out a OrganizationChange notification.
    */
   static Future updateEvent(ServiceAgent sa) async {
-    final nextOrgUpdateEvent = sa.notifications.firstWhere((e) =>
+    final nextOrgUpdateEvent = (await sa.notifications).firstWhere((e) =>
         e is event.OrganizationChange && e.state == event.Change.updated);
     final createdOrganization = await sa.createsOrganization();
     await sa.updatesOrganization(createdOrganization);
@@ -49,7 +49,7 @@ abstract class Organization {
    * Organization object and send out a OrganizationChange notification.
    */
   static Future deleteEvent(ServiceAgent sa) async {
-    final nextOrgDeleteEvent = sa.notifications.firstWhere((e) =>
+    final nextOrgDeleteEvent = (await sa.notifications).firstWhere((e) =>
         e is event.OrganizationChange && e.state == event.Change.deleted);
     final createdOrganization = await sa.createsOrganization();
     await sa.deletesOrganization(createdOrganization);

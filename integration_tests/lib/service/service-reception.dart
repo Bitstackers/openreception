@@ -8,7 +8,7 @@ abstract class Reception {
    * Reception object and send out a ReceptionChange notification.
    */
   static Future createEvent(ServiceAgent sa) async {
-    final nextOrgCreateEvent = sa.notifications.firstWhere(
+    final nextOrgCreateEvent = (await sa.notifications).firstWhere(
         (e) => e is event.ReceptionChange && e.state == event.Change.created);
 
     final org = await sa.createsOrganization();
@@ -30,7 +30,7 @@ abstract class Reception {
      * Reception object and send out a ReceptionChange notification.
      */
   static Future updateEvent(ServiceAgent sa) async {
-    final nextOrgUpdateEvent = sa.notifications.firstWhere(
+    final nextOrgUpdateEvent = (await sa.notifications).firstWhere(
         (e) => e is event.ReceptionChange && e.state == event.Change.updated);
 
     final org = await sa.createsOrganization();
@@ -53,7 +53,7 @@ abstract class Reception {
      * Reception object and send out a ReceptionChange notification.
      */
   static Future deleteEvent(ServiceAgent sa) async {
-    final nextOrgDeleteEvent = sa.notifications.firstWhere(
+    final nextOrgDeleteEvent = (await sa.notifications).firstWhere(
         (e) => e is event.ReceptionChange && e.state == event.Change.deleted);
 
     final org = await sa.createsOrganization();

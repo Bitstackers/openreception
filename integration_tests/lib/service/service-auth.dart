@@ -79,7 +79,7 @@ abstract class AuthService {
   static Future existingToken(ServiceAgent sa) async {
     log.info('Checking server behaviour on a non-existing token.');
 
-    final model.User user = await sa.authService.userOf(sa.authToken);
+    final model.User user = await sa.authService.userOf(sa.authToken.tokenName);
     expect(user.id, equals(sa.user.id));
     expect(user.name, sa.user.name);
     expect(user.address, sa.user.address);
@@ -113,6 +113,6 @@ abstract class AuthService {
   static Future validateExistingToken(ServiceAgent sa) async {
     log.info('Checking server behaviour on a non-existing token.');
 
-    await sa.authService.userOf(sa.authToken);
+    await sa.authService.userOf(sa.authToken.tokenName);
   }
 }

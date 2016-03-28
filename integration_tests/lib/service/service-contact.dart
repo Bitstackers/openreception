@@ -7,7 +7,7 @@ abstract class Contact {
    *
    */
   static Future createEvent(ServiceAgent sa) async {
-    final nextContactCreateEvent = sa.notifications.firstWhere(
+    final nextContactCreateEvent = (await sa.notifications).firstWhere(
         (e) => e is event.ContactChange && e.state == event.Change.created);
     final created = await sa.createsContact();
 
@@ -24,7 +24,7 @@ abstract class Contact {
    *
    */
   static Future updateEvent(ServiceAgent sa) async {
-    final nextContactpdateEvent = sa.notifications.firstWhere(
+    final nextContactpdateEvent = (await sa.notifications).firstWhere(
         (e) => e is event.ContactChange && e.state == event.Change.updated);
     final created = await sa.createsContact();
     await sa.updatesContact(created);
@@ -42,7 +42,7 @@ abstract class Contact {
    *
    */
   static Future deleteEvent(ServiceAgent sa) async {
-    final nextContactDeleteEvent = sa.notifications.firstWhere(
+    final nextContactDeleteEvent = (await sa.notifications).firstWhere(
         (e) => e is event.ContactChange && e.state == event.Change.deleted);
     final created = await sa.createsContact();
     await sa.removesContact(created);

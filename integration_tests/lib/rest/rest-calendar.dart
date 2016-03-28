@@ -55,7 +55,7 @@ void _runCalendarTests() {
         'Non-existing path',
         () => nonExistingPath(
             Uri.parse('${Config.calendarStoreUri}/nonexistingpath'
-                '?token=${authToken.tokenName}'),
+                '?token=${sa.authToken.tokenName}'),
             log));
 
     test(

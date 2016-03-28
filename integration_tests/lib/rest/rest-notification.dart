@@ -23,8 +23,7 @@ void runNotificationTests() {
       sa2 = await env.createsServiceAgent();
       sa3 = await env.createsServiceAgent();
       client = new service.Client();
-      authToken = new AuthToken(sa1.user);
-      sa1.authToken = authToken.tokenName;
+      authToken = sa1.authToken;
       nProcess = new process.NotificationServer(
           Config.serverStackPath, env.runpath.path);
 

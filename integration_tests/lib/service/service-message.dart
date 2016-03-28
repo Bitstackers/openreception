@@ -11,7 +11,7 @@ abstract class RESTMessageStore {
   static Future createEvent(ServiceAgent sa) async {
     _log.info('Started createEvent test');
 
-    final nextMessageCreateEvent = sa.notifications.firstWhere(
+    final nextMessageCreateEvent = (await sa.notifications).firstWhere(
         (e) => e is event.MessageChange && e.state == event.Change.created);
     final org = await sa.createsOrganization();
     final rec = await sa.createsReception(org);
@@ -39,7 +39,7 @@ abstract class RESTMessageStore {
    *
    */
   static Future removeEvent(ServiceAgent sa) async {
-    final nextMessageRemoveEvent = sa.notifications.firstWhere(
+    final nextMessageRemoveEvent = (await sa.notifications).firstWhere(
         (e) => e is event.MessageChange && e.state == event.Change.deleted);
     final org = await sa.createsOrganization();
     final rec = await sa.createsReception(org);
@@ -67,7 +67,7 @@ abstract class RESTMessageStore {
    *
    */
   static Future updateEvent(ServiceAgent sa) async {
-    final nextMessageUpdateEvent = sa.notifications.firstWhere(
+    final nextMessageUpdateEvent = (await sa.notifications).firstWhere(
         (e) => e is event.MessageChange && e.state == event.Change.updated);
     final org = await sa.createsOrganization();
     final rec = await sa.createsReception(org);
