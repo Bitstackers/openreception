@@ -45,6 +45,14 @@ class FreeSwitch implements ServiceProcess {
     _log.info('Cleaning config in directory ${confDir.absolute.path}');
     await Process.run('/bin/tar', ['xf', confTemplateArchive.absolute.path],
         workingDirectory: basePath);
+    _log.info('Rerolling log');
+  }
+
+  /**
+   *
+   */
+  void reRollLog() {
+    _process.kill(ProcessSignal.SIGHUP);
   }
 
   /**
