@@ -262,11 +262,11 @@ class Cdr {
       rows.add(new TableRowElement()
         ..onClick.listen((MouseEvent event) {
           final Element target = event.currentTarget;
-          final String weight = target.style.fontWeight;
-          if (weight == 'bold') {
-            target.style.fontWeight = '';
+          final String bc = target.style.backgroundColor;
+          if (bc == '') {
+            target.style.backgroundColor = 'orange';
           } else {
-            target.style.fontWeight = 'bold';
+            target.style.backgroundColor = '';
           }
         })
         ..children = [
