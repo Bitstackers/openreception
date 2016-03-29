@@ -32,10 +32,14 @@ Future main(List<String> args) async {
   final ArgParser parser = new ArgParser()
     ..addFlag('help', help: 'Output this help', negatable: false)
     ..addOption('filestore', abbr: 'f', help: 'Path to the filestore backend')
+    ..addOption('playback-prefix',
+        help: ''
+            'Defaults to ${config.dialplanserver.playbackPrefix}',
+        defaultsTo: config.dialplanserver.playbackPrefix)
     ..addOption('freeswitch-conf-path',
-        help: 'Path to the FreeSWITCH conf directory. '
-            'Defaults to /etc/freeswitch',
-        defaultsTo: '/etc/freeswitch')
+        help: 'Path to the FreeSWITCH conf directory.'
+            'Defaults to ${config.dialplanserver.freeswitchConfPath}',
+        defaultsTo: config.dialplanserver.freeswitchConfPath)
     ..addOption('httpport',
         abbr: 'p',
         defaultsTo: config.dialplanserver.httpPort.toString(),
@@ -91,6 +95,7 @@ Future main(List<String> args) async {
       port: port,
       filepath: filepath,
       authUri: authUri,
+      playbackPrefix: parsedArgs['playback-prefix'],
       fsConfPath: parsedArgs['freeswitch-conf-path']);
   log.info('Ready to handle requests');
 }

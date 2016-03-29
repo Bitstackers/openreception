@@ -40,6 +40,7 @@ Future<io.HttpServer> start(
     int port: 4060,
     Uri authUri,
     String filepath: '',
+    String playbackPrefix: '',
     String fsConfPath: ''}) async {
   final Service.Authentication _authService = new Service.Authentication(
       authUri, config.userServer.serverToken, new Service_IO.Client());
@@ -91,7 +92,7 @@ Future<io.HttpServer> start(
   final dialplanTools.DialplanCompiler compiler =
       new dialplanTools.DialplanCompiler(new dialplanTools.DialplanCompilerOpts(
           goLive: config.dialplanserver.goLive,
-          greetingDir: config.dialplanserver.playbackPrefix,
+          greetingDir: playbackPrefix,
           testNumber: config.dialplanserver.testNumber,
           testEmail: config.dialplanserver.testEmail,
           callerIdName: config.callFlowControl.callerIdName,
