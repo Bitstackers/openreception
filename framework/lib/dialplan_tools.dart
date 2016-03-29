@@ -443,9 +443,19 @@ List<String> _actionToXmlDialplan(model.Action action,
       returnValue.addAll([_setVar(ORPbxKey.locked, true), _lock]);
     }
 
+    String greetingPath;
+
+    if (option.greetingDir.isEmpty) {
+      greetingPath = action.filename;
+    } else if (!option.greetingDir.endsWith('/')) {
+      greetingPath = option.greetingDir + '/' + action.filename;
+    } else {
+      greetingPath = option.greetingDir + action.filename;
+    }
+
     returnValue.addAll([
       '<action application="playback" '
-          'data="{loops=${action.repeat}}${option.greetingDir}/${action.filename}"/>',
+          'data="{loops=${action.repeat}}$greetingPath"/>',
       _setVar(ORPbxKey.greetingPlayed, true),
     ]);
 
