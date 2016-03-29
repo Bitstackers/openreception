@@ -10,6 +10,7 @@ class DialplanServer implements ServiceProcess {
   final int servicePort;
   final String bindAddress;
   final Uri authUri;
+  final String playbackPrefix;
 
   final Completer _ready = new Completer();
   bool get ready => _ready.isCompleted;
@@ -18,7 +19,8 @@ class DialplanServer implements ServiceProcess {
   DialplanServer(this.path, this.storePath, this.fsConfPath,
       {this.servicePort: 4060,
       this.bindAddress: '0.0.0.0',
-      this.authUri: null}) {
+      this.authUri: null,
+      this.playbackPrefix: ''}) {
     _init();
   }
 
@@ -35,7 +37,9 @@ class DialplanServer implements ServiceProcess {
       '--host',
       bindAddress,
       '--freeswitch-conf-path',
-      fsConfPath
+      fsConfPath,
+      '--playback-prefix',
+      playbackPrefix
     ];
 
     if (authUri != null) {
