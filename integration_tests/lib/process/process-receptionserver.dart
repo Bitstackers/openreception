@@ -74,12 +74,33 @@ class ReceptionServer implements ServiceProcess {
     await _process.exitCode;
   }
 
-  service.RESTReceptionStore createClient(service.Client client, String token,
+  /**
+   *
+   */
+  service.RESTReceptionStore bindClient(service.Client client, AuthToken token,
+      {Uri connectUri: null}) {
+    if (connectUri == null) {
+      connectUri = uri;
+    }
+
+    return new service.RESTReceptionStore(uri, token.tokenName, client);
+  }
+
+  /**
+   *
+   */
+  Uri get uri => Uri.parse('http://$bindAddress:$servicePort');
+
+  /**
+   *
+   */
+  service.RESTOrganizationStore bindOrgClient(
+      service.Client client, AuthToken token,
       {Uri uri: null}) {
     if (uri == null) {
       uri = Uri.parse('http://${bindAddress}:$servicePort');
     }
 
-    return new service.RESTReceptionStore(uri, token, client);
+    return new service.RESTOrganizationStore(uri, token.tokenName, client);
   }
 }
