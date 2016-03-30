@@ -37,6 +37,7 @@ Future main(List<String> args) async {
   ///Handle argument parsing.
   ArgParser parser = new ArgParser()
     ..addFlag('help', help: 'Output this help', negatable: false)
+    ..addOption('filestore', abbr: 'f', help: 'Path to the filestore backend')
     ..addOption('httpport',
         abbr: 'p',
         defaultsTo: config.calendarServer.httpPort.toString(),
@@ -80,6 +81,11 @@ Future main(List<String> args) async {
     exit(1);
   }
 
-  await router.start(port: port, filepath: filepath);
+  await router.start(
+      port: port,
+      filepath: filepath,
+      hostname: parsedArgs['host'],
+      authUri: Uri.parse(parsedArgs['auth-uri']),
+      notificationUri: Uri.parse(parsedArgs['notification-uri']));
   log.info('Ready to handle requests');
 }

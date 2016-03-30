@@ -35,11 +35,13 @@ import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 final Logger _log = new Logger('calendarserver.router');
 
 Future<io.HttpServer> start(
-    {String hostname: '0.0.0.0', int port: 4110, String filepath: ''}) async {
+    {String hostname: '0.0.0.0',
+    int port: 4110,
+    String filepath: '',
+    Uri authUri,
+    Uri notificationUri}) async {
   final Service.Authentication _authService = new Service.Authentication(
-      config.authServer.externalUri,
-      config.userServer.serverToken,
-      new Service_IO.Client());
+      authUri, config.userServer.serverToken, new Service_IO.Client());
 
   /**
        * Validate a token by looking it up on the authentication server.
@@ -79,7 +81,7 @@ Future<io.HttpServer> start(
       new filestore.Calendar(path: filepath + '/calender');
 
   Service.NotificationService _notification = new Service.NotificationService(
-      config.notificationServer.externalUri,
+      notificationUri,
       config.calendarServer.serverToken,
       new Service_IO.Client());
 
@@ -104,7 +106,10 @@ Future<io.HttpServer> start(
       .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
       .addHandler(router.handler);
 
-  _log.fine('Accepting incoming requests on $hostname:$port:');
+  _log.fine('Using server on $authUri as authentication backend');
+  _log.fine('Using server on $notificationUri as notification backend');
+  _log.fine('Accepting incoming REST requests on http://$hostname:$port');
+  _log.fine('Serving routes:');
   shelf_route.printRoutes(router, printer: (String item) => _log.fine(item));
 
   return await shelf_io.serve(handler, hostname, port);
