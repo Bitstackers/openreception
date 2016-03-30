@@ -39,7 +39,23 @@ class Context {
 
 class Cdr {
   final controller.Cdr _cdrCtrl;
-  InputElement directionInput;
+  final controller.Contact _contactCtrl;
+  SelectElement directionSelect = new SelectElement()
+    ..disabled = true
+    ..style.height = '28px'
+    ..style.marginLeft = '0.5em'
+    ..children = [
+      new OptionElement()
+        ..text = 'alt'
+        ..value = 'both'
+        ..selected = true,
+      new OptionElement()
+        ..text = 'ind'
+        ..value = 'inbound',
+      new OptionElement()
+        ..text = 'ud'
+        ..value = 'outbound'
+    ];
   final DivElement element = new DivElement()
     ..id = 'cdr-page'
     ..hidden = true
@@ -58,20 +74,32 @@ class Cdr {
         ..text = 'liste'
         ..value = 'list'
     ];
+
   final DivElement listing = new DivElement()
     ..style.margin = '0 0 0 1em'
     ..style.flexGrow = '1'
     ..style.overflow = 'auto';
   final controller.Organization _orgCtrl;
+  final controller.Reception _rcpCtrl;
+  final SelectElement receptionSelect = new SelectElement()
+    ..style.height = '28px'
+    ..style.marginLeft = '0.5em';
   InputElement ridInput;
   InputElement toInput;
   final DivElement totals = new DivElement()
     ..style.margin = '0.5em 0 1em 1.5em';
   InputElement uidInput;
   final controller.User _userCtrl;
+  final SelectElement userSelect = new SelectElement()
+    ..style.height = '28px'
+    ..disabled = true;
   static const String _viewName = 'cdr';
 
-  Cdr(controller.Cdr this._cdrCtrl, controller.Organization this._orgCtrl,
+  Cdr(
+      controller.Cdr this._cdrCtrl,
+      controller.Contact this._contactCtrl,
+      controller.Organization this._orgCtrl,
+      controller.Reception this._rcpCtrl,
       controller.User this._userCtrl) {
     final DateTime now = new DateTime.now();
     final DateTime from = new DateTime(now.year, now.month, now.day);
@@ -84,10 +112,7 @@ class Cdr {
     toInput = new InputElement()
       ..placeholder = 'ISO8601 til tidsstempel'
       ..value = to.toIso8601String().split('.').first;
-    directionInput = new InputElement()
-      ..placeholder = 'retning both | inbound | outbound'
-      ..value = 'both'
-      ..disabled = true;
+
     ridInput = new InputElement()..placeholder = 'reception id';
     uidInput = new InputElement()
       ..placeholder = 'agent id'
@@ -102,8 +127,10 @@ class Cdr {
         fromInput,
         toInput,
         kindSelect,
-        directionInput,
+        directionSelect,
+        receptionSelect,
         ridInput,
+        userSelect,
         uidInput,
         fetchButton,
       ];
@@ -113,12 +140,12 @@ class Cdr {
     _observers();
   }
 
-  String averageString(int dividend, int divisor) {
-    if (divisor == 0) {
-      return '';
+  Duration averageDuration(int seconds, int divisor) {
+    if (divisor == 0 || divisor == null) {
+      return new Duration(seconds: 0);
     }
 
-    return (dividend / divisor).ceilToDouble().toString();
+    return (new Duration(seconds: seconds) ~/ divisor);
   }
 
   String epochToString(int epoch, {bool withDate: true}) {
@@ -161,6 +188,9 @@ class Cdr {
       await _fetchList(from, to, ridToNameMap, uidToNameMap);
     }
 
+    receptionSelect.options.first.selected = true;
+    userSelect.options.first.selected = true;
+
     fetchButton.disabled = false;
     fetchButton.style.backgroundColor = '';
     fetchButton.text = 'Hent';
@@ -168,11 +198,16 @@ class Cdr {
 
   Future _fetchList(DateTime from, DateTime to,
       Map<String, dynamic> ridToNameMap, Map<int, String> uidToNameMap) async {
+    final List<model.CdrEntry> answeredEntries = new List<model.CdrEntry>();
     final List<Context> contexts = new List<Context>();
     final Map<String, dynamic> map = (await _cdrCtrl.list(
-        from, to, directionInput.value, ridInput.value, uidInput.value));
+        from, to, directionSelect.value, ridInput.value, uidInput.value));
     final List<TableRowElement> rows = new List<TableRowElement>();
     final TableElement table = new TableElement();
+    int totalMissed = 0;
+    int totalOutAgent = 0;
+    int totalOutPbx = 0;
+    int totalPbxAnswered = 0;
 
     table.createTHead()
       ..children = [
@@ -185,8 +220,9 @@ class Cdr {
         new TableCellElement()..text = 'reception',
         new TableCellElement()..text = 'opkalder',
         new TableCellElement()..text = 'destination',
+        new TableCellElement()..text = 'kontakt',
         new TableCellElement()..text = 'aktør',
-        new TableCellElement()..text = 'cdr fil'
+        new TableCellElement()..text = 'cdr uuid'
       ]
       ..style.textAlign = 'center';
     listing.children = [table];
@@ -222,19 +258,31 @@ class Cdr {
     String callLength(model.CdrEntry entry) => entry.agentEndEpoch > 0
         ? durationToString(
             new Duration(seconds: entry.agentEndEpoch - entry.agentBeginEpoch))
-        : '';
+        : entry.externalTransferEpoch > 0
+            ? durationToString(new Duration(
+                seconds: entry.externalTransferEpoch - entry.agentBeginEpoch))
+            : entry.answerEpoch > 0
+                ? durationToString(
+                    new Duration(seconds: entry.endEpoch - entry.answerEpoch))
+                : entry.endEpoch > 0
+                    ? durationToString(new Duration(
+                        seconds: entry.endEpoch - entry.startEpoch))
+                    : '';
 
     String endTime(model.CdrEntry entry) => entry.agentEndEpoch > 0
         ? '${epochToString(entry.agentEndEpoch, withDate: false)}'
-        : entry.endEpoch > 0
-            ? '${epochToString(entry.endEpoch, withDate: false)}'
-            : '';
+        : entry.externalTransferEpoch > 0
+            ? '${epochToString(entry.externalTransferEpoch, withDate: false)}'
+            : entry.endEpoch > 0
+                ? '${epochToString(entry.endEpoch, withDate: false)}'
+                : '';
 
     String waitDuration(model.CdrEntry entry) {
       Duration d;
 
       switch (entry.state) {
         case model.CdrEntryState.agentChannel:
+        case model.CdrEntryState.notifiedNotAnswered:
         case model.CdrEntryState.unknown:
           return '';
         case model.CdrEntryState.inboundNotNotified:
@@ -242,9 +290,6 @@ class Cdr {
           break;
         case model.CdrEntryState.notifiedAnsweredByAgent:
           d = new Duration(seconds: entry.agentBeginEpoch - entry.startEpoch);
-          break;
-        case model.CdrEntryState.notifiedNotAnswered:
-          d = new Duration(seconds: entry.endEpoch - entry.startEpoch);
           break;
         case model.CdrEntryState.outboundByAgent:
         case model.CdrEntryState.outboundByPbx:
@@ -259,6 +304,26 @@ class Cdr {
     }
 
     for (Context c in contexts) {
+      if (c.entry.state == model.CdrEntryState.notifiedAnsweredByAgent) {
+        answeredEntries.add(c.entry);
+      }
+
+      if (c.entry.state == model.CdrEntryState.inboundNotNotified) {
+        totalPbxAnswered += 1;
+      }
+
+      if (c.entry.state == model.CdrEntryState.notifiedNotAnswered) {
+        totalMissed += 1;
+      }
+
+      if (c.entry.state == model.CdrEntryState.outboundByAgent) {
+        totalOutAgent += 1;
+      }
+
+      if (c.entry.state == model.CdrEntryState.outboundByPbx) {
+        totalOutPbx += 1;
+      }
+
       rows.add(new TableRowElement()
         ..onClick.listen((MouseEvent event) {
           final Element target = event.currentTarget;
@@ -297,16 +362,41 @@ class Cdr {
             ..text = c.entry.destination
             ..title = 'destination',
           new TableCellElement()
+            ..children = c.entry.cid > 0
+                ? [
+                    new SpanElement()
+                      ..onClick.first.asStream().listen((MouseEvent event) {
+                        event.stopPropagation();
+                        _contactCtrl
+                            .get(c.entry.cid)
+                            .then((model.BaseContact contact) {
+                          (event.target as SpanElement)
+                            ..text = contact.fullName
+                            ..title = 'cid: ${c.entry.cid.toString()}'
+                            ..style.textDecoration = ''
+                            ..style.cursor = '';
+                        });
+                      })
+                      ..style.textDecoration = 'underline'
+                      ..style.cursor = 'pointer'
+                      ..text = c.entry.cid.toString()
+                  ]
+                : []
+            ..title = 'kontaktperson',
+          new TableCellElement()
             ..text = actorMap[c.entry.state] == 'agent'
                 ? uidToNameMap[c.entry.uid]
                 : actorMap[c.entry.state],
-          new TableCellElement()..text = c.entry.filename
+          new TableCellElement()
+            ..text = c.entry.uuid
+            ..title = c.entry.filename
         ]);
     }
 
     table.createTBody()..children = rows;
 
-    setListTotalsNode();
+    setListTotalsNode(answeredEntries, totalMissed, totalPbxAnswered,
+        totalOutAgent, totalOutPbx);
   }
 
   Future _fetchSummaries(
@@ -466,7 +556,10 @@ class Cdr {
             ..title = 'Mistede',
           new TableCellElement()
             ..style.textAlign = 'right'
-            ..text = averageString(inboundBillSeconds, answered)
+            ..text = averageDuration(inboundBillSeconds, answered)
+                .toString()
+                .split('.')
+                .first
             ..title = 'Gns. samtaletid',
           new TableCellElement()
             ..style.textAlign = 'center'
@@ -505,10 +598,86 @@ class Cdr {
         element.hidden = false;
         element.style.display = 'flex';
         element.style.flexDirection = 'column';
+
+        _rcpCtrl.list().then((Iterable<model.Reception> receptions) {
+          final List<model.Reception> list = receptions.toList();
+          list.sort((model.Reception a, b) =>
+              a.fullName.toLowerCase().compareTo(b.fullName.toLowerCase()));
+          final List<OptionElement> options = new List<OptionElement>();
+          receptionSelect.children.add(new OptionElement()
+            ..text = 'filtrer efter receptioner...'
+            ..disabled = true
+            ..selected = true);
+          for (model.Reception reception in list) {
+            options.add(new OptionElement()
+              ..text = reception.fullName
+              ..value = reception.ID.toString());
+          }
+          receptionSelect.children.addAll(options);
+        });
+
+        _userCtrl.list().then((Iterable<model.User> users) {
+          final List<model.User> list = users
+              .where(
+                  (model.User user) => user.address.isNotEmpty && user.id > 0)
+              .toList();
+          list.sort((model.User a, b) =>
+              a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+          final List<OptionElement> options = new List<OptionElement>();
+          userSelect.children.add(new OptionElement()
+            ..text = 'filtrer efter agent...'
+            ..disabled = true
+            ..selected = true);
+          userSelect.children.add(new OptionElement()
+            ..text = 'pbx'
+            ..value = '0');
+          for (model.User user in list) {
+            options.add(new OptionElement()
+              ..text = user.name
+              ..value = user.id.toString());
+          }
+          userSelect.children.addAll(options);
+        });
       } else {
         element.hidden = true;
         element.style.display = '';
         element.style.flexDirection = '';
+      }
+    });
+
+    kindSelect.onChange.listen((Event event) {
+      final SelectElement se = (event.target as SelectElement);
+      if (se.value == 'summary') {
+        directionSelect.options.first.selected = true;
+        directionSelect.disabled = true;
+        userSelect.options.first.selected = true;
+        userSelect.disabled = true;
+        uidInput.disabled = true;
+        uidInput.value = '';
+      } else if (se.value == 'list') {
+        directionSelect.disabled = false;
+        userSelect.disabled = false;
+        uidInput.disabled = false;
+      }
+    });
+
+    receptionSelect.onChange.listen((Event event) {
+      final SelectElement se = (event.target as SelectElement);
+      if (se.value.isNotEmpty) {
+        if (ridInput.value.trim().isNotEmpty) {
+          ridInput.value = ridInput.value + ',';
+        }
+        ridInput.value = ridInput.value + se.value;
+      }
+    });
+
+    userSelect.onChange.listen((Event event) {
+      final SelectElement se = (event.target as SelectElement);
+      if (se.value.isNotEmpty) {
+        if (uidInput.value.trim().isNotEmpty) {
+          uidInput.value = uidInput.value + ',';
+        }
+        uidInput.value = uidInput.value + se.value;
       }
     });
   }
@@ -516,10 +685,48 @@ class Cdr {
   /**
    * Populate the list totals node.
    */
-  void setListTotalsNode() {
-    final DivElement sums = new DivElement()..text = 'Some sums';
-    final DivElement averages = new DivElement()..text = 'Some averages';
-    totals..children = [sums, averages];
+  void setListTotalsNode(List<model.CdrEntry> answeredEntries, int totalMissed,
+      int totalPbxAnswered, int totalOutAgent, int totalOutPbx) {
+    final int above60 = answeredEntries
+        .where((model.CdrEntry entry) =>
+            entry.agentBeginEpoch - entry.startEpoch > 60)
+        .length;
+    final int less10 = answeredEntries
+        .where((model.CdrEntry entry) =>
+            entry.agentBeginEpoch - entry.startEpoch <= 10)
+        .length;
+    final int less20 = answeredEntries
+        .where((model.CdrEntry entry) =>
+            entry.agentBeginEpoch - entry.startEpoch <= 20)
+        .length;
+    final Duration totalSpeakTime = new Duration(seconds: answeredEntries.fold(
+        0, (acc, model.CdrEntry entry) => acc + entry.billSec));
+    final DivElement sumsIn = new DivElement()
+      ..text =
+          'Total ind: ${answeredEntries.length + totalPbxAnswered + totalMissed}'
+          ' / Agent: ${answeredEntries.length}'
+          ' / PBX: $totalPbxAnswered'
+          ' / Mistede: $totalMissed';
+    final DivElement sumsOut = new DivElement()
+      ..text = 'Total ud: ${totalOutAgent + totalOutPbx}'
+          ' / Agent: $totalOutAgent'
+          ' / PBX: $totalOutPbx';
+
+    totals..children = [sumsIn, sumsOut];
+
+    if (answeredEntries.isNotEmpty) {
+      final DivElement stats = new DivElement()
+        ..text =
+            '<= 10: $less10 (${((less10 / answeredEntries.length) * 100.0).toStringAsFixed(2)}%)'
+            ' / <= 20: $less20 (${((less20 / answeredEntries.length) * 100).toStringAsFixed(2)}%)'
+            ' / >60: $above60 (${((above60 / answeredEntries.length) * 100).toStringAsFixed(2)}%)';
+      final DivElement averages = new DivElement()
+        ..text =
+            'Total agent samtaletid: ${totalSpeakTime.toString().split('.').first}'
+            ' / Gns. agent samtaletid: ${(totalSpeakTime ~/ answeredEntries.length).toString().split('.').first}';
+
+      totals..children.addAll([stats, averages]);
+    }
   }
 
   /**
@@ -544,9 +751,9 @@ class Cdr {
     final DivElement inboundData = new DivElement()
       ..text = 'Total ind: $totalInbound'
           ' / Svarede: $totalAnswered'
-          ' / <=20: ${(totalAnsweredBefore20 / totalAnswered * 100).toStringAsPrecision(2)}%'
-          ' / +60: ${(totalAnsweredAfter60 / totalAnswered * 100).toStringAsPrecision(2)}%'
-          ' / Gns. samtaletid: ${averageString(totalInboundBillSec, totalAnswered)}'
+          ' / <=20: ${(totalAnsweredBefore20 / totalAnswered * 100).toStringAsFixed(2)}%'
+          ' / >60: ${(totalAnsweredAfter60 / totalAnswered * 100).toStringAsFixed(2)}%'
+          ' / Gns. samtaletid: ${averageDuration(totalInboundBillSec, totalAnswered).toString().split('.').first}'
           ' / Voicesvar: $totalInboundNotNotified'
           ' / Mistede: $totalNotifiedNotAnswered';
     final DivElement metadata = new DivElement()
