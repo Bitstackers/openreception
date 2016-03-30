@@ -62,7 +62,16 @@ class AuthServer implements ServiceProcess {
           .transform(new Utf8Decoder())
           .transform(new LineSplitter())
           .listen(_log.warning);
+
     _log.finest('Started process');
+
+    /// Protect from hangs caused by process crashes.
+    _process.exitCode.then((int exitCode) {
+      if (exitCode != 0 && !ready) {
+        _ready.completeError(new StateError('Failed to launch process. '
+            'Exit code: $exitCode'));
+      }
+    });
   }
 
   /**

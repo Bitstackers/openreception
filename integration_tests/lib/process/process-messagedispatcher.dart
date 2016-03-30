@@ -60,6 +60,14 @@ class MessageDispatcher implements ServiceProcess {
           .transform(new Utf8Decoder())
           .transform(new LineSplitter())
           .listen(_log.warning);
+
+    /// Protect from hangs caused by process crashes.
+    _process.exitCode.then((int exitCode) {
+      if (exitCode != 0 && !ready) {
+        _ready.completeError(new StateError('Failed to launch process. '
+            'Exit code: $exitCode'));
+      }
+    });
   }
 
   Future terminate() async {

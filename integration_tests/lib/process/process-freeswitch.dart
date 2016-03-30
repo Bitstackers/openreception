@@ -109,10 +109,24 @@ class FreeSwitch implements ServiceProcess {
         t.cancel();
       }
     });
+
+    /// Protect from hangs caused by process crashes.
+    _process.exitCode.then((int exitCode) {
+      if (exitCode != 0 && !ready) {
+        _ready.completeError(new StateError('Failed to launch process. '
+            'Exit code: $exitCode'));
+      }
+    });
   }
 
+  /**
+   *
+   */
   File get latestLog => new File('$logPath/freeswitch.log');
 
+  /**
+   *
+   */
   Future terminate() async {
     _log.info('terminating freeswitch');
     _process.kill();
