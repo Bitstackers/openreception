@@ -6,11 +6,13 @@ class FreeSwitch implements ServiceProcess {
   final String binPath;
   final String basePath;
   final File confTemplateArchive;
+  final Directory exampleSoundsArchive;
 
   String get logPath => basePath + '/log';
   String get confPath => basePath + '/conf';
   String get runPath => basePath + '/run';
   String get dbPath => basePath + '/db';
+  String get soundsPath => basePath + '/sounds';
   final Logger _log = new Logger('$_namespace.FreeSwitch');
   Process _process;
 
@@ -18,7 +20,8 @@ class FreeSwitch implements ServiceProcess {
   bool get ready => _ready.isCompleted;
   Future get whenReady => _ready.future;
 
-  FreeSwitch(this.binPath, this.basePath, this.confTemplateArchive) {
+  FreeSwitch(this.binPath, this.basePath, this.confTemplateArchive,
+      this.exampleSoundsArchive) {
     _init();
   }
 
@@ -26,7 +29,7 @@ class FreeSwitch implements ServiceProcess {
    *
    */
   Future _createDirs() async {
-    [logPath, confPath, runPath, dbPath].forEach((path) {
+    [logPath, confPath, runPath, dbPath, soundsPath].forEach((path) {
       Directory dir = new Directory(path);
       if (!dir.existsSync()) {
         dir.createSync();
@@ -45,13 +48,27 @@ class FreeSwitch implements ServiceProcess {
     _log.info('Cleaning config in directory ${confDir.absolute.path}');
     await Process.run('/bin/tar', ['xf', confTemplateArchive.absolute.path],
         workingDirectory: basePath);
-    _log.info('Rerolling log');
+
+    _log.info(
+        'Copying example sounds from ${exampleSoundsArchive.absolute.path}'
+        ' to $soundsPath');
+
+    Iterable<File> files =
+        exampleSoundsArchive.listSync().where((fse) => fse is File);
+
+    Future.wait(files.map((File f) async {
+      final String newPath = soundsPath + '/' + basename(f.path);
+
+      _log.finest('Copying "${f.path}" -> "${newPath}"');
+      await f.copy(newPath);
+    }));
   }
 
   /**
    *
    */
   void reRollLog() {
+    _log.info('Rerolling log');
     _process.kill(ProcessSignal.SIGHUP);
   }
 
