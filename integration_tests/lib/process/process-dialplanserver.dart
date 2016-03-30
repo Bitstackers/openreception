@@ -102,6 +102,19 @@ class DialplanServer implements ServiceProcess {
   }
 
   /**
+   * Constructs a new [service.RESTIvrStore] based on the launch
+   * parametersof the process.
+   */
+  service.RESTIvrStore bindIvrClient(service.Client client, AuthToken token,
+      {Uri connectUri: null}) {
+    if (connectUri == null) {
+      connectUri = this.uri;
+    }
+
+    return new service.RESTIvrStore(connectUri, token.tokenName, client);
+  }
+
+  /**
    *
    */
   Uri get uri => Uri.parse('http://$bindAddress:$servicePort');
