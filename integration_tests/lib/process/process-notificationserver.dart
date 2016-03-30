@@ -14,6 +14,9 @@ class NotificationServer implements ServiceProcess {
   bool get ready => _ready.isCompleted;
   Future get whenReady => _ready.future;
 
+  /**
+   *
+   */
   NotificationServer(this.path, this.storePath,
       {this.servicePort: 4200,
       this.bindAddress: '0.0.0.0',
@@ -21,6 +24,9 @@ class NotificationServer implements ServiceProcess {
     _init();
   }
 
+  /**
+   *
+   */
   Future _init() async {
     final arguments = [
       '$path/bin/notificationserver.dart',
