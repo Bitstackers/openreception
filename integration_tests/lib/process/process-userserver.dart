@@ -85,4 +85,22 @@ class UserServer implements ServiceProcess {
     _process.kill();
     await _process.exitCode;
   }
+
+  /**
+   * Constructs a new [service.RESTUserStore] based on the launch
+   * parameters of the process.
+   */
+  service.RESTUserStore bindClient(service.Client client, AuthToken token,
+      {Uri connectUri: null}) {
+    if (connectUri == null) {
+      connectUri = this.uri;
+    }
+
+    return new service.RESTUserStore(connectUri, token.tokenName, client);
+  }
+
+  /**
+   *
+   */
+  Uri get uri => Uri.parse('http://$bindAddress:$servicePort');
 }
