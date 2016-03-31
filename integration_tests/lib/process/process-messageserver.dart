@@ -60,6 +60,9 @@ class MessageServer implements ServiceProcess {
           .transform(new LineSplitter())
           .listen(_log.warning);
 
+    _log.finest('Started messageserver process (pid: ${_process.pid})');
+    _launchedProcesses.add(_process);
+
     /// Protect from hangs caused by process crashes.
     _process.exitCode.then((int exitCode) {
       if (exitCode != 0 && !ready) {
