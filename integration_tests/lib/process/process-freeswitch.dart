@@ -83,6 +83,13 @@ class FreeSwitch implements ServiceProcess {
    *
    */
   Future _init() async {
+    final Stopwatch initTimer = new Stopwatch()..start();
+    whenReady.whenComplete(() {
+      initTimer.stop();
+      _log.info('Process initialization time was: '
+          '${initTimer.elapsedMilliseconds}ms');
+    });
+
     await _createDirs();
     await cleanConfig();
     final arguments = [

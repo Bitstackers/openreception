@@ -28,6 +28,13 @@ class NotificationServer implements ServiceProcess {
    *
    */
   Future _init() async {
+    final Stopwatch initTimer = new Stopwatch()..start();
+    whenReady.whenComplete(() {
+      initTimer.stop();
+      _log.info('Process initialization time was: '
+          '${initTimer.elapsedMilliseconds}ms');
+    });
+
     final arguments = [
       '$path/bin/notificationserver.dart',
       '--filestore',

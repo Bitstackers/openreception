@@ -28,6 +28,13 @@ class AuthServer implements ServiceProcess {
    *
    */
   Future _init(Iterable<AuthToken> intialTokens) async {
+    final Stopwatch initTimer = new Stopwatch()..start();
+    whenReady.whenComplete(() {
+      initTimer.stop();
+      _log.info('Process initialization time was: '
+          '${initTimer.elapsedMilliseconds}ms');
+    });
+
     tokenDir = new AuthTokenDir(new Directory('/tmp').createTempSync(),
         intialTokens: intialTokens);
 
