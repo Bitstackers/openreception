@@ -13,43 +13,53 @@ part 'benchmark/benchmark-call.dart';
 const String _namespace = 'test.benchmark';
 
 void allTests() {
-  group(_namespace + '.call', () {
-    Set<Receptionist> receptionists;
-    Set<Customer> customers;
+  group(_namespace + '.Call', () {
+    Logger _log = new Logger(_namespace + '.Call');
+    ServiceAgent sa;
+    TestEnvironment env;
+    Set<Receptionist> receptionists = new Set<Receptionist>();
+    Set<Customer> customers = new Set<Customer>();
 
-    setUp(() {
-      receptionists = new Set();
-      customers = new Set();
+    /// Transient object
+    model.ReceptionDialplan rdp1;
+    model.ReceptionDialplan rdp2;
+    model.ReceptionDialplan rdp3;
+    model.ReceptionDialplan rdp4;
 
-      while (ReceptionistPool.instance.available.length > 0) {
-        receptionists.add(ReceptionistPool.instance.aquire());
-      }
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
 
-      while (CustomerPool.instance.available.length > 0) {
-        customers.add(CustomerPool.instance.aquire());
-      }
+      final org = await sa.createsOrganization();
 
-      return Future
-          .wait(receptionists
-              .map((Receptionist receptionist) => receptionist.initialize()))
-          .then((_) => Future.wait(
-              customers.map((Customer customer) => customer.initialize())));
+      rdp1 = await sa.createsDialplan();
+      rdp2 = await sa.createsDialplan();
+      rdp3 = await sa.createsDialplan();
+      rdp4 = await sa.createsDialplan();
+      await sa.deploysDialplan(rdp1, await sa.createsReception(org));
+      await sa.deploysDialplan(rdp2, await sa.createsReception(org));
+      await sa.deploysDialplan(rdp3, await sa.createsReception(org));
+      await sa.deploysDialplan(rdp4, await sa.createsReception(org));
+
+      _log.info('Generating receptionists');
+
+      await Future.forEach(new List.generate(5, (i) => i),
+          (_) async => receptionists.add(await sa.createsReceptionist()));
+
+      _log.info('Generating customers');
+      await Future.forEach(new List.generate(6, (i) => i),
+          (_) async => customers.add(await sa.spawnCustomer()));
     });
 
-    tearDown(() {
-      receptionists.forEach(((Receptionist receptionist) =>
-          ReceptionistPool.instance.release(receptionist)));
-
-      customers.forEach(
-          ((Customer customer) => CustomerPool.instance.release(customer)));
-
-      return Future
-          .wait(receptionists
-              .map((Receptionist receptionist) => receptionist.teardown()))
-          .then((_) => Future
-              .wait(customers.map((Customer customer) => customer.teardown())));
+    tearDown(() async {
+      // Logger.root.finest(
+      //     'FSLOG:\n ${(await env.requestFreeswitchProcess()).latestLog.readAsStringSync()}');
+      await env.clear();
     });
 
-    test('call-rush', () => Call.callRush(receptionists, customers));
+    test(
+        'call-rush',
+        () =>
+            Call.callRush([rdp1, rdp2, rdp3, rdp4], receptionists, customers));
   });
 }

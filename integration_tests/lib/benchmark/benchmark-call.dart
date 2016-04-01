@@ -57,7 +57,9 @@ abstract class Call {
    * call, and every available receptionist will race the others in trying to
    * aquire it.
    */
-  static Future callRush(Iterable<Receptionist> receptionists,
+  static Future callRush(
+      Iterable<model.ReceptionDialplan> rdps,
+      Iterable<Receptionist> receptionists,
       Iterable<Customer> customers) async {
     Receptionist callWaiter = receptionists.first;
 
@@ -73,24 +75,25 @@ abstract class Call {
     int spawned = 0;
     log.info('Waiting for call list to spawn');
     await Future.wait(customers.map((Customer customer) async {
-      await customer.dial('12340001');
-      spawned++;
-      await _sleep(500);
-      await customer.dial('12340002');
-      spawned++;
-      await _sleep(500);
-      await customer.dial('12340003');
-      spawned++;
-      await _sleep(500);
-      await customer.dial('12340004');
-      spawned++;
+      await Future.forEach(rdps, (rdp) async {
+        await customer.dial(rdp.extension);
+        spawned++;
+        await new Duration(milliseconds: 200);
+      });
+      await new Duration(milliseconds: 200);
     }));
 
     await Future.doWhile(() async {
       final Iterable<model.Call> calls =
           await callWaiter.callFlowControl.callList();
-      return calls.length <= (customers.length);
-    });
+      log.info('${calls.length} <= $spawned');
+
+      if (calls.length < spawned) {
+        await new Duration(seconds: 1);
+        return true;
+      }
+      return false;
+    }).timeout(new Duration(seconds: 10));
 
     handled = 0;
     log.info('$spawned calls spawned filled, starting to handle the calls');
