@@ -146,7 +146,7 @@ class UIReceptionSelector extends UIModel {
    * cached values.
    */
   set receptionsCache(List<ORModel.Reception> items) {
-    _receptionsCache = items.map(_buildReceptionElement).toList() as List<Element>;
+    _receptionsCache = items.map(_buildReceptionElement).toList();
   }
 
   /**

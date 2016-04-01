@@ -108,10 +108,9 @@ class UIMyCallQueue extends UIModel {
   /**
    * Return the list of calls found in my call queue.
    */
-  Iterable<ORModel.Call> get calls => _list
-          .querySelectorAll('li')
-          .map((Element li) => new ORModel.Call.fromMap(JSON.decode(li.dataset['object'])))
-      as Iterable<ORModel.Call>;
+  Iterable<ORModel.Call> get calls =>
+      _list.querySelectorAll('li').map((Element li) =>
+          new ORModel.Call.fromMap(JSON.decode(li.dataset['object'])));
 
   /**
    * Add [calls] to the calls list.
@@ -132,10 +131,8 @@ class UIMyCallQueue extends UIModel {
    * Return all calls that are marked for transfer.
    */
   Iterable<ORModel.Call> get markedForTransfer {
-    return _list
-            .querySelectorAll('[transfer]')
-            .map((Element li) => new ORModel.Call.fromMap(JSON.decode(li.dataset['object'])))
-        as Iterable<ORModel.Call>;
+    return _list.querySelectorAll('[transfer]').map((Element li) =>
+        new ORModel.Call.fromMap(JSON.decode(li.dataset['object'])));
   }
 
   /**
