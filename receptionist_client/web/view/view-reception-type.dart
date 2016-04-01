@@ -17,6 +17,7 @@ part of view;
  * The reception type/kind widget.
  */
 class ReceptionType extends ViewWidget {
+  final Map<String, String> _langMap;
   final Controller.Destination _myDestination;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIReceptionType _uiModel;
@@ -64,7 +65,9 @@ class ReceptionType extends ViewWidget {
       _ui.clear();
     } else {
       _ui.headerExtra = ': ${reception.name}';
-      _ui.type = reception.customerTypes;
+      _ui.type = []
+        ..addAll(reception.customerTypes)
+        ..add('${_langMap[Key.theirNumber]}: ${reception.dialplan}');
     }
   }
 }

@@ -175,6 +175,7 @@ abstract class Key {
   static const String status = 'status';
   static const String stop = 'stop';
 
+  static const String theirNumber = 'their-number';
   static const String today = 'today';
 
   static const String unknown = 'unknown';
@@ -318,7 +319,7 @@ Map<String, String> da = {
   Key.receptionSalesmenHeader: 'Sælgere',
   Key.receptionSelectorHeader: 'Receptioner',
   Key.receptionTelephoneNumbersHeader: 'Telefonnumre',
-  Key.receptionTypeHeader: 'Receptionstype',
+  Key.receptionTypeHeader: 'Receptionsinfo',
   Key.receptionVATNumbersHeader: 'CVR-numre',
   Key.receptionWebsitesHeader: 'WWW',
 
@@ -334,6 +335,7 @@ Map<String, String> da = {
   Key.status: 'Status',
   Key.stop: 'Stop',
 
+  Key.theirNumber: 'Deres nummer hos os',
   Key.today: 'i dag',
 
   Key.unknown: 'Ukendt',
@@ -477,7 +479,7 @@ Map<String, String> en = {
   Key.receptionSalesmenHeader: 'Salesmen',
   Key.receptionSelectorHeader: 'Receptions',
   Key.receptionTelephoneNumbersHeader: 'Telephone numbers',
-  Key.receptionTypeHeader: 'Reception type',
+  Key.receptionTypeHeader: 'Reception info',
   Key.receptionVATNumbersHeader: 'VAT numbers',
   Key.receptionWebsitesHeader: 'WWW',
 
@@ -494,6 +496,7 @@ Map<String, String> en = {
   Key.status: 'Status',
   Key.stop: 'Stop',
 
+  Key.theirNumber: 'Their number with us',
   Key.today: 'today',
 
   Key.unknown: 'Unknown',

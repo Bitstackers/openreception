@@ -325,7 +325,8 @@ class ORCReady {
         new Model.UIReceptionType(querySelector('#reception-type')),
         new Controller.Destination(
             Controller.Context.homePlus, Controller.Widget.receptionType),
-        _uiReceptionSelector);
+        _uiReceptionSelector,
+        _langMap);
 
     new ReceptionVATNumbers(
         new Model.UIReceptionVATNumbers(
