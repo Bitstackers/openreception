@@ -247,17 +247,25 @@ class UIContactData extends UIModel {
    */
   set tags(ContactWithFilterContext cwfc) {
     final List<String> filterParts = new List<String>()
-      ..addAll(cwfc.state == filterState.tag ? cwfc.filterValue.split(' ') : new List<String>());
+      ..addAll(cwfc.state == filterState.tag
+          ? cwfc.filterValue.split(' ')
+          : new List<String>());
     filterParts.removeWhere((String f) => f.trim().length < 2);
 
-    cwfc.contact.tags.forEach((String item) {
+    final List<LIElement> foundLis = new List<LIElement>();
+    final List<LIElement> lis = new List<LIElement>();
+
+    for (String item in cwfc.contact.tags) {
       final LIElement li = new LIElement()..text = item;
-      li.classes.toggle(
-          'found',
-          cwfc.state == filterState.tag &&
-              filterParts.any((String f) => item.toLowerCase().contains(f)));
-      _tagsList.append(li);
-    });
+      if (cwfc.state == filterState.tag &&
+          filterParts.any((String f) => item.toLowerCase().contains(f))) {
+        li.classes.add('found');
+        foundLis.add(li);
+      } else {
+        lis.add(li);
+      }
+    }
+    _tagsList.children = []..addAll(foundLis)..addAll(lis);
   }
 
   /**
