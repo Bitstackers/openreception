@@ -1662,8 +1662,6 @@
 
                   #contact-data .popup {
                     display: flex;
-                    align-items: center;
-                    justify-content: center;
                     position: absolute;
                     top: 1.5%;
                     left: 49%;
@@ -1687,6 +1685,8 @@
                     font-size: 1.2em;
                     padding: 0 0.3em;
                     display: none;
+                    align-self: center;
+                    margin: 0 auto;
                   }
 
                   #contact-data .popup .generic-widget-list {
@@ -1715,6 +1715,7 @@
                     <ol class="generic-widget-list"></ol>
                     <input type="text" class="pstn" placeholder="::pstn::" tabindex="-1" data-lang-placeholder="contact-data-pstn">
                   </div>
+
                   <div class="column">
                     <div class="cell">
                       <h5 data-lang-text="contact-data-commands">::commands::</h5>
