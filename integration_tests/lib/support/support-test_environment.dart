@@ -103,7 +103,8 @@ class TestEnvironment {
       _freeswitch = new process.FreeSwitch(
           '/usr/bin/freeswitch',
           new Directory('/tmp').createTempSync('freeswitch-').path,
-          new File('conf.tar.gz'));
+          new File('conf.tar.gz'),
+          new Directory('sounds'));
     }
     await _freeswitch.whenReady;
     return _freeswitch;
@@ -140,7 +141,10 @@ class TestEnvironment {
     if (_contactServer == null) {
       _contactServer = new process.ContactServer(
           Config.serverStackPath, runpath.path,
-          bindAddress: envConfig.externalIp, servicePort: nextNetworkport);
+          bindAddress: envConfig.externalIp,
+          servicePort: nextNetworkport,
+          authUri: (await requestAuthserverProcess()).uri,
+          notificationUri: (await requestNotificationserverProcess()).uri);
     }
 
     await _contactServer.whenReady;
@@ -251,6 +255,41 @@ class TestEnvironment {
     await _notificationProcess.whenReady;
 
     return _notificationProcess;
+  }
+
+  /**
+   *
+   */
+  Future<process.ReceptionServer> requestReceptionserverProcess() async {
+    if (_receptionServer == null) {
+      _receptionServer = new process.ReceptionServer(
+          Config.serverStackPath, runpath.path,
+          bindAddress: envConfig.externalIp,
+          servicePort: nextNetworkport,
+          authUri: (await requestAuthserverProcess()).uri,
+          notificationUri: (await requestNotificationserverProcess()).uri);
+    }
+
+    await _receptionServer.whenReady;
+
+    return _receptionServer;
+  }
+
+  /**
+   *
+   */
+  Future<process.UserServer> requestUserserverProcess() async {
+    if (_userServer == null) {
+      _userServer = new process.UserServer(Config.serverStackPath, runpath.path,
+          bindAddress: envConfig.externalIp,
+          servicePort: nextNetworkport,
+          authUri: (await requestAuthserverProcess()).uri,
+          notificationUri: (await requestNotificationserverProcess()).uri);
+    }
+
+    await _userServer.whenReady;
+
+    return _userServer;
   }
 
   /**
@@ -392,7 +431,7 @@ class TestEnvironment {
    */
   TestEnvironment({String path: ''})
       : runpath = path.isEmpty
-            ? new Directory('/tmp').createTempSync('filestore')
+            ? new Directory('/tmp').createTempSync('filestore-')
             : new Directory(path + '/filestore')..createSync() {
     _log.info('New test environment created in directory $runpath');
   }
@@ -439,6 +478,7 @@ class TestEnvironment {
 
     if (_freeswitch != null) {
       await _freeswitch.cleanConfig();
+      _freeswitch.reRollLog();
     }
   }
 
@@ -481,14 +521,19 @@ class TestEnvironment {
       await _messageProcess.terminate();
     }
 
-    if (_notificationProcess != null) {
-      _log.info('Shutting down notification server process');
-      await _notificationProcess.terminate();
-    }
-
     if (_configProcess != null) {
       _log.info('Shutting down config server process');
       await _configProcess.terminate();
+    }
+
+    if (_userServer != null) {
+      _log.info('Shutting down user server process');
+      await _userServer.terminate();
+    }
+
+    if (_notificationProcess != null) {
+      _log.info('Shutting down notification server process');
+      await _notificationProcess.terminate();
     }
 
     if (_authProcess != null) {
@@ -508,6 +553,15 @@ class TestEnvironment {
       _log.info('Deleting directory ${_freeswitch.basePath}');
       await new Directory(_freeswitch.basePath).deleteSync(recursive: true);
     }
+
+    await Future.forEach(process.launchedProcesses, (Process p) async {
+      if (p.kill()) {
+        _log.warning('Killing orphan process pid: ${p.pid}');
+
+        await p.exitCode;
+      }
+    });
+
     if (_httpClient != null) {
       _log.info('Terminating HttpClient');
       await _httpClient.client.close(force: true);

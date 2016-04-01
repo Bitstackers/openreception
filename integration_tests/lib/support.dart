@@ -29,7 +29,6 @@ part 'support/pool.dart';
 part 'support/randomizer.dart';
 part 'support/receptionist.dart';
 part 'support/receptionist_pool.dart';
-part 'support/support_tools.dart';
 part 'support/support-service_agent.dart';
 part 'support/support-test_environment.dart';
 

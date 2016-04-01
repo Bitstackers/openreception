@@ -50,17 +50,8 @@ class Receptionist {
    * This method should only be called by once, and other callers should
    * use the [whenReady] function to wait for the object to become ready.
    */
-  Future initialize(
-      {Uri callFlowUri: null, Uri notificationSocketUri: null}) async {
+  Future initialize(Uri callFlowUri, Uri notificationSocketUri) async {
     _transport = new Transport.Client();
-
-    if (callFlowUri == null) {
-      callFlowUri = Config.CallFlowControlUri;
-    }
-
-    if (callFlowUri == null) {
-      notificationSocketUri = Config.NotificationSocketUri;
-    }
 
     log.finest('Connecting to callflow on $callFlowUri');
     callFlowControl = new Service.CallFlowControl(

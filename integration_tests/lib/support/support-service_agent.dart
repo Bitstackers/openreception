@@ -96,7 +96,7 @@ class ServiceAgent {
   }
 
   /**
-   * 
+   *
    */
   storage.Calendar get calendarStore {
     if (_calendarStore == null) {
@@ -225,7 +225,7 @@ class ServiceAgent {
     await dialplanService.reloadConfig();
 
     Phonio.SIPAccount sipAccount = new Phonio.SIPAccount(
-        account.username, account.password, await detectExtIp());
+        account.username, account.password, env.envConfig.externalIp);
 
     Phonio.SIPPhone sipPhone = await env.phonePool.requestNext();
     sipPhone.addAccount(sipAccount);
@@ -254,7 +254,7 @@ class ServiceAgent {
         .bindDialplanClient(env.httpClient, authToken);
 
     /// Ensure that the token is available in on the auth server.
-    authProcess.addTokens([authToken]);
+    await authProcess.addTokens([authToken]);
 
     final rUser = Randomizer.randomUser()
       ..peer = _nextInternalPeerName
@@ -262,8 +262,8 @@ class ServiceAgent {
     await userStore.create(rUser, user);
 
     final AuthToken userToken = new AuthToken(rUser);
-    _log.finest('Deploying receptionist token');
-    (await env.requestAuthserverProcess()).addTokens([userToken]);
+    _log.finest('Deploying receptionist token to ${authProcess.uri}');
+    await authProcess.addTokens([userToken]);
 
     final model.PeerAccount account = new model.PeerAccount(
         rUser.peer, rUser.name.hashCode.toString(), 'receptions');
@@ -275,7 +275,7 @@ class ServiceAgent {
     await dialplanService.reloadConfig();
 
     Phonio.SIPAccount sipAccount = new Phonio.SIPAccount(
-        account.username, account.password, await detectExtIp());
+        account.username, account.password, env.envConfig.externalIp);
 
     Phonio.SIPPhone sipPhone = await env.phonePool.requestNext();
     sipPhone.addAccount(sipAccount);
@@ -298,9 +298,7 @@ class ServiceAgent {
             e.peer.name == r.user.peer &&
             e.peer.registered);
 
-    await r.initialize(
-        callFlowUri: callflowProcess.uri,
-        notificationSocketUri: notificationProcess.notifyUri);
+    await r.initialize(callflowProcess.uri, notificationProcess.notifyUri);
 
     await registerEvent;
 
@@ -330,10 +328,10 @@ class ServiceAgent {
    *
    */
   Future<model.ReceptionDialplan> createsDialplan() async {
-    final authProcess = await env.requestAuthserverProcess();
-
-    /// Ensure that the token is available in on the auth server.
-    authProcess.addTokens([authToken]);
+    if (dialplanService == null) {
+      dialplanService = (await env.requestDialplanProcess())
+          .bindDialplanClient(env.httpClient, authToken);
+    }
 
     final DateTime now = new DateTime.now();
 
@@ -352,7 +350,9 @@ class ServiceAgent {
           ..actions = [
             new model.Notify('call-offer'),
             new model.Ringtone(1),
-            new model.Playback('test.wav'),
+            new model.Playback(
+                (await env.requestFreeswitchProcess()).soundsPath +
+                    '/test.wav'),
             new model.Enqueue('waitqueue')
           ]
       ]
@@ -369,6 +369,11 @@ class ServiceAgent {
 
   Future deploysDialplan(
       model.ReceptionDialplan rdp, model.Reception rec) async {
+    if (dialplanService == null) {
+      dialplanService = (await env.requestDialplanProcess())
+          .bindDialplanClient(env.httpClient, authToken);
+    }
+
     await dialplanService.deployDialplan(rdp.extension, rec.id);
     await dialplanService.reloadConfig();
   }
@@ -543,7 +548,7 @@ class ServiceAgent {
       ..recipients = msg.recipients
       ..sender = msg.sender;
 
-    return messageStore.create(msg, user);
+    return messageStore.update(msg, user);
   }
 
   /**

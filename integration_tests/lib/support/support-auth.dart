@@ -19,11 +19,14 @@ class AuthTokenDir {
   }
 
   Future writeTokens() async {
-    await Future.wait((tokens.map((token) {
+    await Future.wait((tokens.map((token) async {
       final String tokenPath = '${dir.path}/${token.tokenName}.json';
-
-      _log.finest('Writing token to file ${tokenPath}');
-      return new File(tokenPath).writeAsString(JSON.encode(token.toJson()));
+      final File file = new File(tokenPath);
+      if (!file.existsSync()) {
+        _log.finest('Writing token to file ${tokenPath}');
+        await file.writeAsString(JSON.encode(token.toJson()));
+      }
+      return file;
     })));
     _log.finest('Writing ${tokens.length} to directory ${dir.path}');
   }
