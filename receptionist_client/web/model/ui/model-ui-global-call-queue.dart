@@ -54,12 +54,16 @@ class UIGlobalCallQueue extends UIModel {
 
     final SpanElement callDesc = new SpanElement()
       ..classes.add('call-description')
-      ..text = '${call.callerID}'
+      ..text = _langMap[Key.call]
       ..children.add(callState);
 
     final SpanElement callWaitTimer = new SpanElement()
       ..classes.add('call-wait-time')
-      ..text = new DateTime.now().difference(call.arrived).inSeconds.abs().toString();
+      ..text = new DateTime.now()
+          .difference(call.arrived)
+          .inSeconds
+          .abs()
+          .toString();
 
     return new LIElement()
       ..dataset['id'] = call.ID

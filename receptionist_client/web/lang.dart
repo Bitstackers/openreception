@@ -47,6 +47,7 @@ abstract class Key {
   static const String callStateUnparked = 'callstate-unparked';
 
   static const String cancel = 'cancel';
+  static const String call = 'call';
   static const String cellPhone = 'cell-phone';
   static const String close = 'close';
   static const String closed = 'closed';
@@ -197,6 +198,7 @@ Map<String, String> da = {
   Key.calendarEditorSaveErrorTitle: 'Kalenderaftalen blev ikke gemt',
   Key.calendarEditorSaveSuccessTitle: 'Kalenderaftalen blev gemt',
 
+  Key.call: 'Opkald',
   Key.callFailed: 'Opkald fejlede',
 
   /// NOTE: The callState... strings are special in that their usage cannot be
@@ -357,6 +359,7 @@ Map<String, String> en = {
   Key.calendarEditorSaveErrorTitle: 'Calendar entry not saved',
   Key.calendarEditorSaveSuccessTitle: 'Calendar entry saved',
 
+  Key.call: 'Call',
   Key.callFailed: 'Call failed',
 
   /// NOTE: The callState... strings are special in that their usage cannot be
