@@ -29,18 +29,25 @@ class UIReceptionSelector extends UIModel {
     _observers();
   }
 
-  @override HtmlElement get _firstTabElement => _filter;
-  @override HtmlElement get _focusElement => _filter;
-  @override HtmlElement get _lastTabElement => _filter;
-  @override HtmlElement get _listTarget => _list;
+  @override
+  HtmlElement get _firstTabElement => _filter;
+  @override
+  HtmlElement get _focusElement => _filter;
+  @override
+  HtmlElement get _lastTabElement => _filter;
+  @override
+  HtmlElement get _listTarget => _list;
   /**
    * Return the mousedown click event stream for this widget. We capture
    * mousedown instead of regular click to avoid the ugly focus/blur flicker
    * on the filter input whenever a reception li element is clicked.
    */
-  @override Stream<MouseEvent> get onClick => _myRoot.onMouseDown;
-  @override SelectCallback get _selectCallback => _receptionSelectCallback;
-  @override HtmlElement get _root => _myRoot;
+  @override
+  Stream<MouseEvent> get onClick => _myRoot.onMouseDown;
+  @override
+  SelectCallback get _selectCallback => _receptionSelectCallback;
+  @override
+  HtmlElement get _root => _myRoot;
 
   OListElement get _list => _root.querySelector('.generic-widget-list');
   InputElement get _filter => _root.querySelector('.filter');
@@ -48,11 +55,12 @@ class UIReceptionSelector extends UIModel {
   /**
    * Construct a [reception] <li> element.
    */
-  LIElement _buildReceptionElement(ORModel.Reception reception) => new LIElement()
-    ..dataset['id'] = reception.ID.toString()
-    ..dataset['name'] = reception.name.toLowerCase()
-    ..dataset['object'] = JSON.encode(reception)
-    ..text = reception.name;
+  LIElement _buildReceptionElement(ORModel.Reception reception) =>
+      new LIElement()
+        ..dataset['id'] = reception.ID.toString()
+        ..dataset['name'] = reception.name.toLowerCase()
+        ..dataset['object'] = JSON.encode(reception)
+        ..text = reception.name;
 
   /**
    * Mark the [receptionId] list item as selected.
@@ -103,7 +111,8 @@ class UIReceptionSelector extends UIModel {
    * enter will result in the remaining visible element being selected.
    */
   void _handleEnter(Event _) {
-    if (_filter.value.trim().isNotEmpty && _list.querySelectorAll(':not(.hide)').length == 1) {
+    if (_filter.value.trim().isNotEmpty &&
+        _list.querySelectorAll(':not(.hide)').length == 1) {
       _markSelected(_scanForwardForVisibleElement(_list.children.first));
     }
   }
@@ -213,7 +222,8 @@ class UIReceptionSelector extends UIModel {
       'Esc': (_) => resetFilter()
     };
 
-    _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
+    _hotKeys.registerKeysPreventDefault(
+        _keyboard, _defaultKeyMap(myKeys: bindings));
   }
 
   /**

@@ -29,18 +29,26 @@ class UIMyCallQueue extends UIModel {
   /**
    * Constructor.
    */
-  UIMyCallQueue(DivElement this._myRoot, Map<String, String> this._langMap,
-      Controller.Contact this._contactController, Controller.Reception this._receptionController) {
+  UIMyCallQueue(
+      DivElement this._myRoot,
+      Map<String, String> this._langMap,
+      Controller.Contact this._contactController,
+      Controller.Reception this._receptionController) {
     _setupLocalKeys();
     _observers();
   }
 
-  @override HtmlElement get _firstTabElement => _list;
-  @override HtmlElement get _focusElement => _list;
-  @override HtmlElement get _lastTabElement => _list;
-  @override HtmlElement get _root => _myRoot;
+  @override
+  HtmlElement get _firstTabElement => _list;
+  @override
+  HtmlElement get _focusElement => _list;
+  @override
+  HtmlElement get _lastTabElement => _list;
+  @override
+  HtmlElement get _root => _myRoot;
 
-  SpanElement get _queueLength => _root.querySelector('.generic-widget-headline span.queue-length');
+  SpanElement get _queueLength =>
+      _root.querySelector('.generic-widget-headline span.queue-length');
   OListElement get _list => _root.querySelector('.generic-widget-list');
 
   /**
@@ -56,7 +64,8 @@ class UIMyCallQueue extends UIModel {
    * Construct a call [LIElement] from [call]
    */
   LIElement _buildCallElement(ORModel.Call call) {
-    final DivElement numbersAndStateDiv = new DivElement()..style.pointerEvents = 'none';
+    final DivElement numbersAndStateDiv = new DivElement()
+      ..style.pointerEvents = 'none';
     final DivElement nameDiv = new DivElement()..style.pointerEvents = 'none';
 
     setName(call, nameDiv);
@@ -157,8 +166,8 @@ class UIMyCallQueue extends UIModel {
 
     _list.onDoubleClick.listen((Event event) {
       if ((event as MouseEvent).target is LIElement) {
-        _dblClickBus.fire(
-            new ORModel.Call.fromMap(JSON.decode((event.target as LIElement).dataset['object'])));
+        _dblClickBus.fire(new ORModel.Call.fromMap(
+            JSON.decode((event.target as LIElement).dataset['object'])));
       }
     });
 
@@ -214,7 +223,9 @@ class UIMyCallQueue extends UIModel {
    */
   void removeTransferMarks() {
     _transferUUIDs.clear();
-    _list.querySelectorAll('[transfer]').forEach((Element li) => li.attributes.remove('transfer'));
+    _list
+        .querySelectorAll('[transfer]')
+        .forEach((Element li) => li.attributes.remove('transfer'));
   }
 
   /**
@@ -228,7 +239,9 @@ class UIMyCallQueue extends UIModel {
       if (_receptionMap.containsKey(call.receptionID)) {
         nameDiv.text = _receptionMap[call.receptionID];
       } else {
-        _receptionController.get(call.receptionID).then((ORModel.Reception reception) {
+        _receptionController
+            .get(call.receptionID)
+            .then((ORModel.Reception reception) {
           nameDiv.text = reception.fullName;
           _receptionMap[call.receptionID] = reception.fullName;
         });
@@ -237,7 +250,9 @@ class UIMyCallQueue extends UIModel {
       if (_contactMap.containsKey(call.contactID)) {
         nameDiv.text = _contactMap[call.contactID];
       } else {
-        _contactController.get(call.contactID).then((ORModel.BaseContact contact) {
+        _contactController
+            .get(call.contactID)
+            .then((ORModel.BaseContact contact) {
           nameDiv.text = contact.fullName;
           _contactMap[call.contactID] = contact.fullName;
         });
@@ -250,7 +265,9 @@ class UIMyCallQueue extends UIModel {
    */
   void setTransferMark(ORModel.Call call) {
     if (_transferUUIDs.contains(call.ID)) {
-      _list.querySelector('[data-id="${call.ID}"]')?.setAttribute('transfer', '');
+      _list
+          .querySelector('[data-id="${call.ID}"]')
+          ?.setAttribute('transfer', '');
       _transferUUIDs.remove(call.ID);
     }
   }
