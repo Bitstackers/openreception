@@ -38,14 +38,16 @@ const String libraryName = 'userserver.router';
 final Logger _log = new Logger(libraryName);
 
 Future<io.HttpServer> start(
-    {String hostname: '0.0.0.0', int port: 4030, String filepath: ''}) {
+    {String hostname: '0.0.0.0',
+    int port: 4030,
+    String filepath: '',
+    Uri authUri,
+    Uri notificationUri}) {
   final model.AgentHistory agentHistory = new model.AgentHistory();
   final model.UserStatusList userStatus = new model.UserStatusList();
 
   final service.Authentication _authService = new service.Authentication(
-      config.authServer.externalUri,
-      config.userServer.serverToken,
-      new serviceIO.Client());
+      authUri, config.userServer.serverToken, new serviceIO.Client());
 
   Future<shelf.Response> _lookupToken(shelf.Request request) async {
     var token = request.requestedUri.queryParameters['token'];
@@ -72,7 +74,7 @@ Future<io.HttpServer> start(
       requestHandler: _lookupToken, responseHandler: null);
 
   final service.NotificationService _notification =
-      new service.NotificationService(config.notificationServer.externalUri,
+      new service.NotificationService(notificationUri,
           config.userServer.serverToken, new serviceIO.Client());
 
   final filestore.User _userStore =
@@ -114,9 +116,11 @@ Future<io.HttpServer> start(
       .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
       .addHandler(router.handler);
 
-  _log.fine('Accepting incoming requests on $hostname:$port:');
-  shelf_route.printRoutes(router,
-      printer: (String routes) => _log.fine(routes));
+  _log.fine('Using server on $authUri as authentication backend');
+  _log.fine('Using server on $notificationUri as notification backend');
+  _log.fine('Accepting incoming REST requests on http://$hostname:$port');
+  _log.fine('Serving routes:');
+  shelf_route.printRoutes(router, printer: (String item) => _log.fine(item));
 
   return shelf_io.serve(handler, hostname, port);
 }

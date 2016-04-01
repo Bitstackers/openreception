@@ -33,13 +33,16 @@ import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 
 const String libraryName = 'router.';
 
-final Logger log = new Logger(libraryName);
-
 Future<io.HttpServer> start(
-    {String hostname: '0.0.0.0', int port: 4010, String filepath: ''}) {
-  final _authService = new service.Authentication(config.authServer.externalUri,
-      config.messageServer.serverToken, new transport.Client());
+    {String hostname: 'localhost',
+    int port,
+    String filepath: '',
+    Uri authUri,
+    Uri notificationUri}) {
+  final _authService = new service.Authentication(
+      authUri, config.messageServer.serverToken, new transport.Client());
 
+  final Logger _log = new Logger(libraryName);
   /**
    * Validate a token by looking it up on the authentication server.
    */
@@ -54,7 +57,8 @@ Future<io.HttpServer> start(
       return new shelf.Response.internalServerError(
           body: 'Cannot reach authserver');
     } catch (error, stackTrace) {
-      log.severe('Authentication validation lookup failed: $error:$stackTrace');
+      _log.severe(
+          'Authentication validation lookup failed: $error:$stackTrace');
 
       return new shelf.Response.internalServerError(body: error.toString());
     }
@@ -66,10 +70,8 @@ Future<io.HttpServer> start(
   shelf.Middleware checkAuthentication = shelf.createMiddleware(
       requestHandler: _lookupToken, responseHandler: null);
 
-  final _notification = new service.NotificationService(
-      config.notificationServer.externalUri,
-      config.messageServer.serverToken,
-      new transport.Client());
+  final _notification = new service.NotificationService(notificationUri,
+      config.messageServer.serverToken, new transport.Client());
 
   final filestore.Message _messageStore =
       new filestore.Message(path: filepath + '/message_queue');
@@ -92,8 +94,11 @@ Future<io.HttpServer> start(
       .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
       .addHandler(router.handler);
 
-  log.fine('Accepting incoming requests on $hostname:$port:');
-  shelf_route.printRoutes(router, printer: (String item) => log.fine(item));
+  _log.fine('Using server on $authUri as authentication backend');
+  _log.fine('Using server on $notificationUri as notification backend');
+  _log.fine('Accepting incoming REST requests on http://$hostname:$port');
+  _log.fine('Serving routes:');
+  shelf_route.printRoutes(router, printer: (String item) => _log.fine(item));
 
   return shelf_io.serve(handler, hostname, port);
 }
