@@ -56,8 +56,13 @@ class User {
 
     try {
       await _userStore.remove(uid, modifier);
-      _notification
-          .broadcastEvent(new event.UserChange.delete(uid, modifier.id));
+
+      var e = new event.UserChange.delete(uid, modifier.id);
+      try {
+        await _notification.broadcastEvent(e);
+      } catch (error) {
+        log.severe('Failed to dispatch event $e', error);
+      }
 
       return okJson({'status': 'ok', 'description': 'User deleted'});
     } on storage.NotFound {
@@ -93,8 +98,13 @@ class User {
     }
 
     final uRef = await _userStore.create(user, creator);
-    _notification
-        .broadcastEvent(new event.UserChange.create(uRef.id, creator.id));
+
+    var e = new event.UserChange.create(uRef.id, creator.id);
+    try {
+      await _notification.broadcastEvent(e);
+    } catch (error) {
+      log.severe('Failed to dispatch event $e', error);
+    }
     return okJson(uRef);
   }
 
@@ -127,8 +137,14 @@ class User {
 
     try {
       final uRef = await _userStore.update(user, modifier);
-      _notification
-          .broadcastEvent(new event.UserChange.update(uRef.id, modifier.id));
+
+      var e = new event.UserChange.update(uRef.id, modifier.id);
+      try {
+        await _notification.broadcastEvent(e);
+      } catch (error) {
+        log.severe('Failed to dispatch event $e', error);
+      }
+
       return okJson(uRef);
     } on storage.Unchanged {
       return clientError('Unchanged');
@@ -151,9 +167,9 @@ class User {
     }
 
     try {
-      return _okJson(await _userStore.getByIdentity(identity));
+      return okJson(await _userStore.getByIdentity(identity));
     } on storage.NotFound catch (error) {
-      _notFound(error.toString());
+      notFound(error.toString());
     }
   }
 

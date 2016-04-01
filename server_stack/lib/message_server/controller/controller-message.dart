@@ -63,11 +63,11 @@ class Message {
    * HTTP Request handler for updating a single message resource.
    */
   Future<shelf.Response> update(shelf.Request request) async {
-    model.User user;
+    model.User modifier;
 
     /// User object fetching.
     try {
-      user = await _authService.userOf(tokenFrom(request));
+      modifier = await _authService.userOf(tokenFrom(request));
     } catch (error, stackTrace) {
       final String msg = 'Failed to contact authserver';
       log.severe(msg, error, stackTrace);
@@ -79,7 +79,8 @@ class Message {
     model.Message message;
     try {
       content = await request.readAsString();
-      message = new model.Message.fromMap(JSON.decode(content))..sender = user;
+      message = new model.Message.fromMap(JSON.decode(content))
+        ..sender = modifier;
       if (message.id == model.Message.noId) {
         return clientError('Refusing to update a non-existing message. '
             'set messageID or use the PUT method instead.');
@@ -91,10 +92,11 @@ class Message {
       return clientError(msg);
     }
 
-    model.Message createdMessage = await _messageStore.update(message, null);
+    model.Message createdMessage =
+        await _messageStore.update(message, modifier);
 
     _notification.broadcastEvent(
-        new event.MessageChange.update(createdMessage.id, user.id));
+        new event.MessageChange.update(createdMessage.id, modifier.id));
 
     return okJson(createdMessage);
   }
@@ -103,16 +105,30 @@ class Message {
    * HTTP Request handler for removing a single message resource.
    */
   Future<shelf.Response> remove(shelf.Request request) async {
-    final int messageID =
-        int.parse(shelf_route.getPathParameter(request, 'mid'));
+    model.User modifier;
 
     try {
-      await _messageStore.remove(messageID, null);
-    } on storage.NotFound {
-      return notFound('$messageID');
+      modifier = await _authService.userOf(tokenFrom(request));
+    } catch (e) {
+      return authServerDown();
     }
 
-    return ok('');
+    final int mid = int.parse(shelf_route.getPathParameter(request, 'mid'));
+
+    try {
+      await _messageStore.remove(mid, modifier);
+
+      var e = new event.MessageChange.delete(mid, modifier.id);
+      try {
+        await _notification.broadcastEvent(e);
+      } catch (error) {
+        log.severe('Failed to dispatch event $e', error);
+      }
+    } on storage.NotFound {
+      return notFound('$mid');
+    }
+
+    return okJson(const {});
   }
 
   /**
@@ -191,11 +207,11 @@ class Message {
    * message - and the it's contents - are replaced by the one passed by the client.
    */
   Future<shelf.Response> create(shelf.Request request) async {
-    model.User user;
+    model.User modifier;
 
     /// User object fetching.
     try {
-      user = await _authService.userOf(tokenFrom(request));
+      modifier = await _authService.userOf(tokenFrom(request));
     } catch (error, stackTrace) {
       final String msg = 'Failed to contact authserver';
       log.severe(msg, error, stackTrace);
@@ -207,7 +223,8 @@ class Message {
     model.Message message;
     try {
       content = await request.readAsString();
-      message = new model.Message.fromMap(JSON.decode(content))..sender = user;
+      message = new model.Message.fromMap(JSON.decode(content))
+        ..sender = modifier;
 
       if (message.id != model.Message.noId) {
         return clientError('Refusing to re-create existing message. '
@@ -221,10 +238,10 @@ class Message {
     }
 
     return await _messageStore
-        .create(message, null)
+        .create(message, modifier)
         .then((model.Message createdMessage) {
-      _notification
-          .broadcastEvent(new event.MessageChange.create(message.id, user.id));
+      _notification.broadcastEvent(
+          new event.MessageChange.create(message.id, modifier.id));
 
       return okJson(createdMessage);
     });
