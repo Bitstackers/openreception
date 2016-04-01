@@ -12,11 +12,12 @@ abstract class CallPark {
     log.info('$caller dials the reception at ${rdp.extension}');
     await caller.dial(rdp.extension);
 
-    model.Call targetedCall = await receptionist.huntNextCall();
+    final model.Call targetedCall = await receptionist.huntNextCall();
 
     log.info('Receptionist parks call $targetedCall');
     model.Call parkedCall =
         await receptionist.park(targetedCall, waitForEvent: true);
+    receptionist.waitForPhoneHangup();
     expect(parkedCall.assignedTo, equals(receptionist.user.id));
     expect(parkedCall.state, equals(model.CallState.Parked));
 
@@ -59,6 +60,7 @@ abstract class CallPark {
     log.info('Receptionist parks call $targetedCall');
     model.Call parkedCall =
         await receptionist.park(targetedCall, waitForEvent: true);
+    receptionist.waitForPhoneHangup();
 
     expect(parkedCall.assignedTo, equals(receptionist.user.id));
     expect(parkedCall.state, equals(model.CallState.Parked));
@@ -74,6 +76,7 @@ abstract class CallPark {
 
     log.info('Receptionist parks call $targetedCall once again');
     parkedCall = await receptionist.park(targetedCall, waitForEvent: true);
+    receptionist.waitForPhoneHangup();
 
     expect(parkedCall.assignedTo, equals(receptionist.user.id));
     expect(parkedCall.state, equals(model.CallState.Parked));
@@ -115,6 +118,7 @@ abstract class CallPark {
     log.info('Receptionist parks call $targetedCall');
     model.Call parkedCall =
         await receptionist.park(targetedCall, waitForEvent: true);
+    receptionist.waitForPhoneHangup();
     expect(parkedCall.assignedTo, equals(receptionist.user.id));
     expect(parkedCall.state, equals(model.CallState.Parked));
 

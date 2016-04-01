@@ -29,47 +29,35 @@ abstract class NotificationService {
   /**
    *
    */
-  static Future connectionStateList(Iterable<Receptionist> receptionists,
-      service.NotificationService notificationService) {
-    receptionists.forEach((Receptionist receptionist) {
-      receptionist.eventStack.clear();
-    });
-
-    bool receptionistHasConnection(Receptionist receptionist,
-            Iterable<model.ClientConnection> connections) =>
+  static Future connectionStateList(
+      Iterable<ServiceAgent> sas, service.NotificationService service) async {
+    bool userHasConnection(
+            ServiceAgent sa, Iterable<model.ClientConnection> connections) =>
         connections
             .where((model.ClientConnection connection) =>
-                connection.userID == receptionist.user.id &&
+                connection.userID == sa.user.id &&
                 connection.connectionCount > 0)
             .length >
         0;
 
-    return notificationService
-        .clientConnections()
-        .then((Iterable<model.ClientConnection> connections) {
-      expect(
-          receptionists.every(
-              (Receptionist r) => receptionistHasConnection(r, connections)),
-          isTrue);
-      expect(
-          connections.every((model.ClientConnection conn) => conn.userID > 0),
-          isTrue);
-    });
+    final Iterable<model.ClientConnection> connections =
+        await service.clientConnections();
+    expect(sas.every((s) => userHasConnection(s, connections)), isTrue);
+    expect(connections.every((model.ClientConnection conn) => conn.userID > 0),
+        isTrue);
   }
 
-  static Future connectionState(Iterable<Receptionist> receptionists,
-      service.NotificationService notificationService) {
-    receptionists.forEach((Receptionist receptionist) {
-      receptionist.eventStack.clear();
-    });
+  /**
+   *
+   */
+  static Future connectionState(Iterable<ServiceAgent> sas,
+      service.NotificationService notificationService) async {
+    await Future.forEach(sas, (ServiceAgent s) async {
+      final model.ClientConnection conn =
+          await notificationService.clientConnection(s.user.id);
 
-    return Future.forEach(receptionists, (Receptionist r) {
-      return notificationService
-          .clientConnection(r.user.id)
-          .then((model.ClientConnection conn) {
-        expect(conn.connectionCount, greaterThan(0));
-        expect(conn.userID, equals(r.user.id));
-      });
+      expect(conn.connectionCount, greaterThan(0));
+      expect(conn.userID, equals(s.user.id));
     });
   }
 
@@ -79,7 +67,7 @@ abstract class NotificationService {
    * The expected behaviour is that the server should return the created
    * CalendarEntry object and send out a CalendarEvent notification.
    */
-  static Future calendarEntryCreateEvent(model.Owner owner,
+  static Future _calendarEntryCreateEvent(model.Owner owner,
       storage.Calendar calendarStore, Receptionist receptionist) async {
     Future<event.CalendarChange> nextCreateEvent =
         receptionist.waitFor(eventType: event.Key.calendarChange);
@@ -99,7 +87,7 @@ abstract class NotificationService {
    * The expected behaviour is that the server should return the updated
    * CalendarEntry object and send out a CalendarEvent notification.
    */
-  static Future calendarEntryUpdateEvent(model.Owner owner,
+  static Future _calendarEntryUpdateEvent(model.Owner owner,
       storage.Calendar calendarStore, Receptionist receptionist) async {
     model.CalendarEntry createdEntry = await calendarStore.create(
         Randomizer.randomCalendarEntry()..owner = owner, receptionist.user);
@@ -130,7 +118,7 @@ abstract class NotificationService {
    * The expected behaviour is that the server should succeed and send out a
    * CalendarChange Notification.
    */
-  static Future calendarEntryDeleteEvent(model.Owner owner,
+  static Future _calendarEntryDeleteEvent(model.Owner owner,
       storage.Calendar calendarStore, Receptionist receptionist) async {
     model.CalendarEntry createdEntry = await calendarStore.create(
         Randomizer.randomCalendarEntry()..owner = owner, receptionist.user);
@@ -147,19 +135,8 @@ abstract class NotificationService {
   }
 
   /**
-     *
-     */
-
-//  static Future clientConnectionState(Iterable<Receptionist> receptionists) {
-//    receptionists.forEach((Receptionist receptionist) {
-//      receptionist.eventStack.clear();
-//    });
-//
-//    return receptionists.first.paused().then((_) =>
-//      Future.forEach(receptionists, (Receptionist receptionist) =>
-//        receptionist.waitFor(eventType : Event.Key.userState)));
-//  }
-
+   *
+   */
 //  static Future eventSend(Iterable<Receptionist> receptionists,
 //                              Service.NotificationService notificationService) {
 //    // This test make no sense with only two participants

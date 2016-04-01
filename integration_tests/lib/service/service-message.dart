@@ -1,6 +1,6 @@
 part of openreception_tests.service;
 
-abstract class RESTMessageStore {
+abstract class Message {
   static const int invalidMessageID = -1;
 
   static final Logger _log = new Logger('$libraryName.RESTMessageStore');
@@ -24,8 +24,7 @@ abstract class RESTMessageStore {
       ..contactName = con.name
       ..receptionName = rec.name;
 
-    final createdMessage =
-        await sa.updatesMessage(await sa.createsMessage(context));
+    final createdMessage = await sa.createsMessage(context);
 
     final event.MessageChange createEvent =
         await nextMessageCreateEvent.timeout(new Duration(seconds: 3));
@@ -80,8 +79,8 @@ abstract class RESTMessageStore {
       ..contactName = con.name
       ..receptionName = rec.name;
 
-    final updatedMessage =
-        await sa.updatesMessage(await sa.createsMessage(context));
+    final created = await sa.createsMessage(context);
+    final updatedMessage = await sa.updatesMessage(created);
 
     final event.MessageChange updateEvent =
         await nextMessageUpdateEvent.timeout(new Duration(seconds: 3));

@@ -7,9 +7,6 @@ void _runCalendarTests() {
     ServiceAgent sa;
     TestEnvironment env;
     process.CalendarServer cProcess;
-    process.AuthServer aProcess;
-    service.Client client;
-    AuthToken authToken;
     model.BaseContact contact;
     model.Reception reception;
     model.Owner owner;
@@ -17,44 +14,38 @@ void _runCalendarTests() {
     setUp(() async {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();
-      client = new service.Client();
-      authToken = new AuthToken(sa.user);
       contact = await sa.createsContact();
 
       owner = new model.OwningContact(contact.id);
 
-      aProcess = new process.AuthServer(
-          Config.serverStackPath, env.runpath.path,
-          intialTokens: [authToken]);
+      cProcess = await env.requestCalendarserverProcess();
 
-      cProcess =
-          new process.CalendarServer(Config.serverStackPath, env.runpath.path);
-
-      sa.calendarStore = new service.RESTCalendarStore(
-          Config.calendarStoreUri, authToken.tokenName, client);
-      await Future.wait([cProcess.whenReady, aProcess.whenReady]);
+      sa.calendarStore = cProcess.bindClient(env.httpClient, sa.authToken);
     });
 
     tearDown(() async {
-      await Future.wait([cProcess.terminate(), aProcess.terminate()]);
-      env.clear();
-      sa.cleanup();
-      client.client.close();
+      await env.clear();
     });
+
     test(
         'CORS headers present (existingUri)',
-        () => isCORSHeadersPresent(
-            resource.Calendar.list(Config.calendarStoreUri, owner), log));
+        () async => isCORSHeadersPresent(
+            resource.Calendar
+                .list((await env.requestCalendarserverProcess()).uri, owner),
+            log));
 
     test(
         'CORS headers present (non-existingUri)',
-        () => isCORSHeadersPresent(
-            Uri.parse('${Config.calendarStoreUri}/nonexistingpath'), log));
+        () async => isCORSHeadersPresent(
+            Uri.parse(
+                '${(await env.requestCalendarserverProcess()).uri}/nonexistingpath'),
+            log));
 
     test(
         'Non-existing path',
-        () => nonExistingPath(
-            Uri.parse('${Config.calendarStoreUri}/nonexistingpath'
+        () async => nonExistingPath(
+            Uri.parse(
+                '${(await env.requestCalendarserverProcess()).uri}/nonexistingpath'
                 '?token=${sa.authToken.tokenName}'),
             log));
 
@@ -104,8 +95,8 @@ void _runCalendarTests() {
     //         .latestChangeOnRemove(owner, calendarStore, r.user));
 
     /**
-                 * Setup/teardown Basic CRUD tests for contact owner.
-                 */
+     * Setup/teardown Basic CRUD tests for contact owner.
+     */
     setUp(() async {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();
@@ -114,15 +105,19 @@ void _runCalendarTests() {
       reception = await sa.createsReception(await sa.createsOrganization());
 
       owner = new model.OwningContact(reception.id);
+
+      cProcess = await env.requestCalendarserverProcess();
+
+      sa.calendarStore = cProcess.bindClient(env.httpClient, sa.authToken);
     });
 
     tearDown(() async {
-      env.clear();
+      await env.clear();
     });
 
     /**
-                 * Basic CRUD tests for reception owner.
-                 */
+     * Basic CRUD tests for reception owner.
+     */
     test('get (reception owner)',
         () => storeTest.Calendar.get(owner, sa.calendarStore, sa.user));
 

@@ -1,13 +1,388 @@
 part of openreception_tests.rest;
 
 void _runCallTests() {
-  //_runCallHangupTests();
-  //_callFlowControlList();
-  _callFlowControlPickup();
+  _runCallHangupTests();
+  _runCallListTests();
+  _runCallPickupTests();
+  _runCallActiveRecordingTests();
+  _runPeerRegistrationTests();
+  _runCallParkTests();
+  _runCallOriginateTests();
+  _runCallUserStateTests();
+  _runCallStateReloadTests();
+  _runCallTransferTests();
+}
+
+/**
+ * CallFlowControl Call transfer.
+ */
+void _runCallTransferTests() {
+  group('$_namespace.Call.Transfer', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    Receptionist r;
+    Customer c;
+    Customer c2;
+
+    /// Transient object
+    model.ReceptionDialplan rdp;
+    model.Reception rec;
+    model.OriginationContext context;
+
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+
+      final org = await sa.createsOrganization();
+      rec = await sa.createsReception(org);
+      rdp = await sa.createsDialplan();
+      await sa.deploysDialplan(rdp, rec);
+
+      context = new model.OriginationContext()
+        ..dialplan = rdp.extension
+        ..receptionId = rec.id;
+      r = await sa.createsReceptionist();
+      c = await sa.spawnCustomer();
+      c2 = await sa.spawnCustomer();
+    });
+
+    tearDown(() async {
+      Logger.root.finest(
+          'FSLOG:\n ${(await env.requestFreeswitchProcess()).latestLog.readAsStringSync()}');
+      await env.clear();
+    });
+
+    test('inboundCall Call list length checks',
+        () => serviceTest.Transfer.inboundCallListLength(r, c, c2, context));
+
+    test(
+        'Inbound Call',
+        () =>
+            serviceTest.Transfer.transferParkedInboundCall(r, c, c2, context));
+
+    test(
+        'Outbound Call',
+        () =>
+            serviceTest.Transfer.transferParkedOutboundCall(r, c, c2, context));
+  });
+}
+
+/**
+ * CallFlowControl state reload.
+ */
+void _runCallStateReloadTests() {
+  group('$_namespace.Call.StateReload', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    Receptionist r;
+    Customer c;
+    Customer c2;
+
+    /// Transient object
+    model.ReceptionDialplan rdp;
+    model.Reception rec;
+    model.OriginationContext context;
+
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+
+      final org = await sa.createsOrganization();
+      rec = await sa.createsReception(org);
+      rdp = await sa.createsDialplan();
+      await sa.deploysDialplan(rdp, rec);
+
+      context = new model.OriginationContext()
+        ..dialplan = rdp.extension
+        ..receptionId = rec.id;
+      r = await sa.createsReceptionist();
+      c = await sa.spawnCustomer();
+    });
+
+    tearDown(() async {
+      Logger.root.finest(
+          'FSLOG:\n ${(await env.requestFreeswitchProcess()).latestLog.readAsStringSync()}');
+      await env.clear();
+    });
+
+    test('inboundCallUnanswered',
+        () => serviceTest.StateReload.inboundUnansweredCall(context, r, c));
+
+    test('inboundAnsweredCall',
+        () => serviceTest.StateReload.inboundAnsweredCall(context, r, c));
+
+    test('inboundParkedCall',
+        () => serviceTest.StateReload.inboundParkedCall(context, r, c));
+
+    test('inboundUnparkedCall',
+        () => serviceTest.StateReload.inboundUnparkedCall(context, r, c));
+
+    test('outboundUnansweredCall',
+        () => serviceTest.StateReload.outboundUnansweredCall(context, r, c));
+
+    test('outboundAnsweredCall',
+        () => serviceTest.StateReload.outboundAnsweredCall(context, r, c));
+
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+
+      final org = await sa.createsOrganization();
+      rec = await sa.createsReception(org);
+      rdp = await sa.createsDialplan();
+      await sa.deploysDialplan(rdp, rec);
+
+      context = new model.OriginationContext()
+        ..dialplan = rdp.extension
+        ..receptionId = rec.id;
+      r = await sa.createsReceptionist();
+      c = await sa.spawnCustomer();
+      c2 = await sa.spawnCustomer();
+    });
+
+    tearDown(() async {
+      Logger.root.finest(
+          'FSLOG:\n ${(await env.requestFreeswitchProcess()).latestLog.readAsStringSync()}');
+      await env.clear();
+    });
+
+    test('transferredCalls',
+        () => serviceTest.StateReload.transferredCalls(context, r, c, c2));
+  });
+}
+
+/**
+ * CallFlowControl user state.
+ */
+void _runCallUserStateTests() {
+  group('$_namespace.Call.UserState', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    Receptionist r;
+    Customer c;
+    Customer c2;
+
+    /// Transient object
+    model.ReceptionDialplan rdp;
+    model.Reception rec;
+    model.OriginationContext context;
+
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+
+      final org = await sa.createsOrganization();
+      rec = await sa.createsReception(org);
+      rdp = await sa.createsDialplan();
+      await sa.deploysDialplan(rdp, rec);
+
+      context = new model.OriginationContext()
+        ..dialplan = rdp.extension
+        ..receptionId = rec.id;
+      r = await sa.createsReceptionist();
+      c = await sa.spawnCustomer();
+      c2 = await sa.spawnCustomer();
+    });
+
+    tearDown(() async {
+      Logger.root.finest(
+          'FSLOG:\n ${(await env.requestFreeswitchProcess()).latestLog.readAsStringSync()}');
+      await env.clear();
+    });
+
+    test('originateForbidden',
+        () => serviceTest.UserState.originateForbidden(context, r, c, c2));
+
+    test('pickupForbidden',
+        () => serviceTest.UserState.pickupForbidden(context, r, c, c2));
+  });
+}
+
+/**
+ * CallFlowControl Call originate.
+ */
+void _runCallOriginateTests() {
+  group('$_namespace.Call.Originate', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    Receptionist r;
+    Customer c;
+
+    /// Transient object
+    model.ReceptionDialplan rdp;
+    model.Reception rec;
+    model.OriginationContext context;
+
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+
+      final org = await sa.createsOrganization();
+      rec = await sa.createsReception(org);
+      rdp = await sa.createsDialplan();
+      await sa.deploysDialplan(rdp, rec);
+
+      context = new model.OriginationContext()
+        ..dialplan = rdp.extension
+        ..receptionId = rec.id;
+      r = await sa.createsReceptionist();
+      c = await sa.spawnCustomer();
+    });
+
+    tearDown(() async {
+      Logger.root.finest(
+          'FSLOG:\n ${(await env.requestFreeswitchProcess()).latestLog.readAsStringSync()}');
+      await env.clear();
+    });
+
+    // TODO: This one requires a dialplan change.
+    // test('originationToHostedNumber',
+    //     () => serviceTest.Originate.originationToHostedNumber(r));
+
+    test(
+        'originationOnAgentCallRejected',
+        () => serviceTest.Originate
+            .originationOnAgentCallRejected(context, r, c));
+
+    test(
+        'originationOnAgentAutoAnswer',
+        () => serviceTest.Originate
+            .originationOnAgentAutoAnswerDisabled(context, r, c));
+
+    test('originationToForbiddenNumber',
+        () => serviceTest.Originate.originationToForbiddenNumber(context, r));
+
+    test('originationToPeer',
+        () => serviceTest.Originate.originationToPeer(context, r, c));
+
+    test('originationWithCallContext',
+        () => serviceTest.Originate.originationWithCallContext(context, r, c));
+
+    test(
+        'originationToPeerCheckforduplicate',
+        () => serviceTest.Originate
+            .originationToPeerCheckforduplicate(context, r, c));
+  });
+}
+
+/**
+ * CallFlowControl Call Park.
+ */
+void _runCallParkTests() {
+  group('$_namespace.Call.Park', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    Receptionist r;
+    Customer c;
+
+    /// Transient object
+    model.ReceptionDialplan rdp;
+    model.Reception rec;
+
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+
+      final org = await sa.createsOrganization();
+      rec = await sa.createsReception(org);
+      rdp = await sa.createsDialplan();
+      await sa.deploysDialplan(rdp, rec);
+
+      r = await sa.createsReceptionist();
+      c = await sa.spawnCustomer();
+    });
+
+    tearDown(() async {
+      Logger.root.finest(
+          'FSLOG:\n ${(await env.requestFreeswitchProcess()).latestLog.readAsStringSync()}');
+      await env.clear();
+    });
+
+    test('parkCallListLength',
+        () => serviceTest.CallPark.parkCallListLength(rdp, r, c));
+
+    test('explicitParkPickup',
+        () => serviceTest.CallPark.explicitParkPickup(rdp, r, c));
+
+    test('unparkEventFromHangup',
+        () => serviceTest.CallPark.unparkEventFromHangup(rdp, r, c));
+
+    test('parkNonexistingCall',
+        () => serviceTest.CallPark.parkNonexistingCall(rdp, r));
+  });
+}
+
+/**
+ * CallFlowControl Peer tests.
+ */
+void _runPeerRegistrationTests() {
+  group('$_namespace.Call.Peer', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    Receptionist r;
+
+    /// Transient object
+    model.ReceptionDialplan rdp;
+    model.Reception rec;
+
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+
+      final org = await sa.createsOrganization();
+      rec = await sa.createsReception(org);
+      rdp = await sa.createsDialplan();
+      await sa.deploysDialplan(rdp, rec);
+
+      r = await sa.createsReceptionist();
+    });
+
+    tearDown(() async {
+      Logger.root.finest(
+          'FSLOG:\n ${(await env.requestFreeswitchProcess()).latestLog.readAsStringSync()}');
+      await env.clear();
+    });
+
+    test('Event presence', () => serviceTest.Peer.eventPresence(r));
+    test('Peer listing', () => serviceTest.Peer.list(r.callFlowControl));
+  });
+}
+
+/**
+ * CallFlowControl active recordings tests.
+ */
+void _runCallActiveRecordingTests() {
+  group('$_namespace.Call.Recording', () {
+    Logger log = new Logger('$_namespace.Call');
+
+    ServiceAgent sa;
+    TestEnvironment env;
+    service.CallFlowControl callflow;
+
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+
+      await env.requestFreeswitchProcess();
+      callflow = (await env.requestCallFlowProcess())
+          .bindClient(env.httpClient, sa.authToken);
+    });
+
+    tearDown(() async {
+      log.finest(
+          'FSLOG:\n ${(await env.requestFreeswitchProcess()).latestLog.readAsStringSync()}');
+      await env.clear();
+    });
+
+    test('empty list', () => serviceTest.ActiveRecording.listEmpty(callflow));
+
+    test('non-existing recording',
+        () => serviceTest.ActiveRecording.getNonExisting(callflow));
+  });
 }
 
 void _runCallHangupTests() {
-  group('$_namespace.Call', () {
+  group('$_namespace.Call.Hangup', () {
     Logger log = new Logger('$_namespace.Call');
 
     ServiceAgent sa;
@@ -32,7 +407,8 @@ void _runCallHangupTests() {
     });
 
     tearDown(() async {
-      //log.finest('FSLOG:\n ${fsProcess.latestLog.readAsStringSync()}');
+      log.finest(
+          'FSLOG:\n ${(await env.requestFreeswitchProcess()).latestLog.readAsStringSync()}');
       await env.clear();
     });
 
@@ -73,10 +449,8 @@ void _runCallHangupTests() {
 /**
  * CallFlowControl Call listing.
  */
-void _callFlowControlList() {
-  group('$_namespace.Call', () {
-    Logger log = new Logger('$_namespace.Call');
-
+void _runCallListTests() {
+  group('$_namespace.Call.List', () {
     ServiceAgent sa;
     TestEnvironment env;
     Receptionist r;
@@ -120,8 +494,8 @@ void _callFlowControlList() {
 /**
  * CallFlowControl Call pickup.
  */
-void _callFlowControlPickup() {
-  group('$_namespace.Call', () {
+void _runCallPickupTests() {
+  group('$_namespace.Call.Pickup', () {
     ServiceAgent sa;
     TestEnvironment env;
     Receptionist r;
@@ -147,7 +521,8 @@ void _callFlowControlPickup() {
     });
 
     tearDown(() async {
-      //log.finest('FSLOG:\n ${fsProcess.latestLog.readAsStringSync()}');
+      Logger.root.finest(
+          'FSLOG:\n ${(await env.requestFreeswitchProcess()).latestLog.readAsStringSync()}');
       await env.clear();
     });
 

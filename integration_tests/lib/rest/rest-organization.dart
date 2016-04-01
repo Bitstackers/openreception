@@ -5,42 +5,19 @@ void _runOrganizationTests() {
     ServiceAgent sa;
     TestEnvironment env;
     process.ReceptionServer rProcess;
-    process.AuthServer aProcess;
-    process.NotificationServer nProcess;
-    service.Client client;
 
     setUp(() async {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();
-      client = new service.Client();
-      AuthToken authToken = new AuthToken(sa.user);
-      sa.authToken = authToken.tokenName;
 
-      aProcess = new process.AuthServer(
-          Config.serverStackPath, env.runpath.path,
-          intialTokens: [authToken]);
-
-      nProcess = new process.NotificationServer(
-          Config.serverStackPath, env.runpath.path);
-
-      rProcess =
-          new process.ReceptionServer(Config.serverStackPath, env.runpath.path);
-
-      sa.receptionStore = new service.RESTReceptionStore(
-          Config.receptionStoreUri, authToken.tokenName, client);
-
-      sa.organizationStore = new service.RESTOrganizationStore(
-          Config.receptionStoreUri, authToken.tokenName, client);
-
-      await Future
-          .wait([nProcess.whenReady, rProcess.whenReady, aProcess.whenReady]);
+      rProcess = await env.requestReceptionserverProcess();
+      sa.receptionStore = rProcess.bindClient(env.httpClient, sa.authToken);
+      sa.organizationStore =
+          rProcess.bindOrgClient(env.httpClient, sa.authToken);
     });
 
     tearDown(() async {
-      await Future.wait(
-          [nProcess.terminate(), rProcess.terminate(), aProcess.terminate()]);
       env.clear();
-      client.client.close();
     });
 
     test('create', () => storeTest.Organization.create(sa));

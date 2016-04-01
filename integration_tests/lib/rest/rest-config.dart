@@ -7,25 +7,19 @@ void _runConfigTests() {
     ServiceAgent sa;
     TestEnvironment env;
     process.ConfigServer cProcess;
-    service.Client client;
 
     setUp(() async {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();
-      client = new service.Client();
 
-      cProcess = new process.ConfigServer(Config.serverStackPath,
-          servicePort: env.nextNetworkport,
-          bindAddress: env.envConfig.externalIp);
+      cProcess = await env.requestConfigServerProcess();
 
-      sa.configService = cProcess.createClient(client);
+      sa.configService = cProcess.createClient(env.httpClient);
       await Future.wait([cProcess.whenReady]);
     });
 
     tearDown(() async {
-      await Future.wait([cProcess.terminate()]);
       env.clear();
-      client.client.close();
     });
 
     test('CORS headers present (existingUri)',

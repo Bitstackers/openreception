@@ -1,6 +1,6 @@
 part of openreception_tests.storage;
 
-abstract class MessageStore {
+abstract class Message {
   static final Logger log = new Logger('$_libraryName.MessageStore');
 
   /**
@@ -240,11 +240,10 @@ abstract class MessageStore {
       Randomizer.randomMessageEndpoint()
     ].toSet();
 
-    final user = await sa.createsUser();
     final updated = Randomizer.randomMessage()
       ..id = mRef.id
       ..context = context
-      ..sender = user
+      ..sender = sa.user
       ..recipients = newRcps;
     await sa.messageStore.update(updated, sa.user);
 
@@ -263,6 +262,6 @@ abstract class MessageStore {
 
     /// TODO: Elaborate this check.
     expect(fetched.recipients, equals(newRcps));
-    expect(fetched.sender.toJson(), equals(user.toJson()));
+    expect(fetched.sender.toJson(), equals(sa.user.toJson()));
   }
 }

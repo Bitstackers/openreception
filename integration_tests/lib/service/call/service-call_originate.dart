@@ -85,6 +85,7 @@ abstract class Originate {
   static Future originationWithCallContext(model.OriginationContext context,
       Receptionist receptionist, Customer customer) async {
     final String callId = new DateTime.now().millisecondsSinceEpoch.toString();
+    context.callId = callId;
 
     await customer.autoAnswer(false);
     model.Call call = await receptionist.callFlowControl

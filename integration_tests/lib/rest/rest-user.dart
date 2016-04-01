@@ -7,57 +7,38 @@ void _runUserTests() {
     ServiceAgent sa;
     TestEnvironment env;
     process.UserServer uProcess;
-    process.AuthServer aProcess;
-    service.Client client;
-    AuthToken authToken;
-    service.RESTUserStore restStore;
 
-    process.NotificationServer nServer;
     setUp(() async {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();
-      client = new service.Client();
-      authToken = sa.authToken;
 
-      aProcess = new process.AuthServer(
-          Config.serverStackPath, env.runpath.path,
-          intialTokens: [authToken]);
-
-      nServer = new process.NotificationServer(
-          Config.serverStackPath, env.runpath.path);
-
-      uProcess =
-          new process.UserServer(Config.serverStackPath, env.runpath.path);
-      restStore = new service.RESTUserStore(
-          Config.userStoreUri, authToken.tokenName, client);
-      sa.userStore = restStore;
-      await Future
-          .wait([uProcess.whenReady, aProcess.whenReady, nServer.whenReady]);
+      uProcess = await env.requestUserserverProcess();
+      sa.userStore = uProcess.bindClient(env.httpClient, sa.authToken);
     });
 
     tearDown(() async {
-      await Future.wait(
-          [uProcess.terminate(), aProcess.terminate(), nServer.terminate()]);
       env.clear();
-      client.client.close();
-      sa.cleanup();
     });
 
     test(
         'CORS headers present (existingUri)',
-        () =>
-            isCORSHeadersPresent(resource.User.list(Config.userStoreUri), log));
+        () async => isCORSHeadersPresent(
+            resource.User.list((await env.requestUserserverProcess()).uri),
+            log));
 
     test(
         'CORS headers present (non-existingUri)',
-        () => isCORSHeadersPresent(
-            Uri.parse('${Config.userStoreUri}/nonexistingpath'), log));
+        () async => isCORSHeadersPresent(
+            Uri.parse(
+                '${(await env.requestUserserverProcess()).uri}/nonexistingpath'),
+            log));
 
     test(
         'Non-existing path',
-        () => nonExistingPath(
-            Uri.parse('${Config.userStoreUri}/nonexistingpath'
-                '?token=${authToken.tokenName}'),
+        () async => nonExistingPath(
+            Uri.parse(
+                '${(await env.requestUserserverProcess()).uri}/nonexistingpath'
+                '?token=${sa.authToken.tokenName}'),
             log));
 
     test('get', () => storeTest.User.existing(sa));
@@ -90,10 +71,11 @@ void _runUserTests() {
      * Service-specific tests.
      */
 
-    test('userState change', () => serviceTest.User.stateChange(sa, restStore));
+    test('userState change',
+        () => serviceTest.User.stateChange(sa, sa.userStore));
 
     test('userState change (event)',
-        () => serviceTest.User.stateChangeEvent(sa, restStore));
+        () => serviceTest.User.stateChangeEvent(sa, sa.userStore));
 
     test('create (event presence)', () => serviceTest.User.createEvent(sa));
 

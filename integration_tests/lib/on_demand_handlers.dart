@@ -44,7 +44,7 @@ class Receptionist {
     log.finest('Allocated receptionist $r');
     log.finest('Current usage: ${_availableCount} available of ${_totalCount}');
 
-    return r.initialize().then((_) => new shelf.Response.ok(JSON.encode(r)));
+    //return r.initialize().then((_) => new shelf.Response.ok(JSON.encode(r)));
   }
 
   /**

@@ -23,6 +23,12 @@ part 'process/process-receptionserver.dart';
 part 'process/process-userserver.dart';
 
 const _namespace = 'test.support.process';
+/**
+ * List for keeping track of launched processed. Used in environment
+ * finalization in order to kill rogue processes.
+ */
+Iterable<Process> get launchedProcesses => _launchedProcesses;
+final List<Process> _launchedProcesses = [];
 
 abstract class ServiceProcess {
   Future terminate();

@@ -7,30 +7,19 @@ void _runAuthServerTests() {
     ServiceAgent sa;
     TestEnvironment env;
     process.AuthServer aProcess;
-    service.Client client;
-    AuthToken authToken;
 
     setUp(() async {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();
-      client = new service.Client();
-      authToken = new AuthToken(sa.user);
-      sa.authToken = authToken.tokenName;
 
-      aProcess = new process.AuthServer(
-          Config.serverStackPath, env.runpath.path,
-          intialTokens: [authToken],
-          bindAddress: env.envConfig.externalIp,
-          servicePort: env.nextNetworkport);
+      aProcess = await env.requestAuthserverProcess();
 
-      sa.authService = aProcess.bindClient(client, sa.authToken);
+      sa.authService = aProcess.bindClient(env.httpClient, sa.authToken);
       await aProcess.whenReady;
     });
 
     tearDown(() async {
-      await aProcess.terminate();
       env.clear();
-      client.client.close();
     });
 
     test(

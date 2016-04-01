@@ -12,7 +12,6 @@ import 'package:openreception_tests/process.dart' as process;
 import 'package:openreception_tests/support.dart';
 import 'package:openreception_tests/config.dart';
 
-import 'package:openreception_framework/event.dart' as event;
 import 'package:openreception_framework/resource.dart' as resource;
 import 'package:openreception_framework/service.dart' as service;
 import 'package:openreception_framework/service-io.dart' as service;
@@ -39,8 +38,9 @@ const String _namespace = 'rest';
  * Run all filestore tests.
  */
 allTests() {
-  runDialplanDeploymentTests();
-  runMessageTests();
+  _runPeerAccountTests();
+  _runMessageTests();
+  _runDialplanDeploymentTests();
   _runConfigTests();
   _runAuthServerTests();
   _runCallTests();
@@ -49,8 +49,9 @@ allTests() {
   _runReceptionTests();
   _runContactTests();
   _runCalendarTests();
-  // _runDialplanTests();
-  // _runIvrTests();
+  _runDialplanTests();
+  _runIvrTests();
+  _runNotificationTests();
 }
 
 /**
@@ -93,7 +94,8 @@ Future nonExistingPath(Uri uri, Logger log) async {
 
   void checkResponseCode(HttpClientResponse response) {
     if (response.statusCode != 404) {
-      fail('Expected to received a 404 on path $uri');
+      fail('Expected to received a 404 on path $uri '
+          'but got ${response.statusCode}');
     }
   }
 

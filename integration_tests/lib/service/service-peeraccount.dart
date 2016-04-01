@@ -44,7 +44,8 @@ abstract class PeerAccountService {
       model.User user,
       service.PeerAccount paService,
       service.CallFlowControl callFlow,
-      service.RESTDialplanStore dpStore) async {
+      service.RESTDialplanStore dpStore,
+      String externalHostname) async {
     final model.PeerAccount pa = Randomizer.randomPeerAccount();
     _log.info('Deploying peer account ${pa.toJson()} for user'
         ' ${user.toJson()}');
@@ -53,8 +54,8 @@ abstract class PeerAccountService {
     await dpStore.reloadConfig();
     await callFlow.stateReload();
 
-    final phonio.SIPAccount account = new phonio.SIPAccount(
-        pa.username, pa.password, Config.externalHostname);
+    final phonio.SIPAccount account =
+        new phonio.SIPAccount(pa.username, pa.password, externalHostname);
 
     final phonio.PJSUAProcess phone = new phonio.PJSUAProcess(
         Config.simpleClientBinaryPath, Config.pjsuaPortAvailablePorts.last);

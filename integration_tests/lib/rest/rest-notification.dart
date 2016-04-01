@@ -3,65 +3,44 @@ part of openreception_tests.rest;
 /**
  * TODO: Add tests for both broadcast, send and FIFO message ordering.
  */
-void runNotificationTests() {
+void _runNotificationTests() {
   group('$_namespace.Notification', () {
     Logger log = new Logger('$_namespace.Notification');
 
-    ServiceAgent sa1;
-    ServiceAgent sa2;
-    ServiceAgent sa3;
+    List<ServiceAgent> sas = new List<ServiceAgent>();
     TestEnvironment env;
-    process.ReceptionServer rProcess;
-    process.AuthServer aProcess;
     process.NotificationServer nProcess;
-    service.Client client;
-    AuthToken authToken;
+    service.NotificationService nService;
 
     setUp(() async {
       env = new TestEnvironment();
-      sa1 = await env.createsServiceAgent();
-      sa2 = await env.createsServiceAgent();
-      sa3 = await env.createsServiceAgent();
-      client = new service.Client();
-      authToken = sa1.authToken;
-      nProcess = new process.NotificationServer(
-          Config.serverStackPath, env.runpath.path);
+      await Future.forEach(new List.generate(10, (i) => i),
+          (_) async => sas.add(await env.createsServiceAgent()));
 
-      aProcess = new process.AuthServer(
-          Config.serverStackPath, env.runpath.path,
-          intialTokens: [authToken]);
+      nProcess = await env.requestNotificationserverProcess();
 
-      rProcess =
-          new process.ReceptionServer(Config.serverStackPath, env.runpath.path);
+      nService = nProcess.bindClient(env.httpClient, sas.first.authToken);
 
-      sa1.receptionStore = rProcess.createClient(client, authToken.tokenName);
-
-      await Future
-          .wait([nProcess.whenReady, rProcess.whenReady, aProcess.whenReady]);
+      await Future.wait(sas.map((sa) => sa.notificationSocket));
     });
 
     tearDown(() async {
-      await Future.wait(
-          [rProcess.terminate(), aProcess.terminate(), nProcess.terminate()]);
-      env.clear();
-      client.client.close();
+      await env.clear();
     });
 
     test(
         'Event broadcast',
-        () => serviceTest.NotificationService.eventBroadcast([
-              sa1.notificationSocket,
-              sa2.notificationSocket,
-              sa2.notificationSocket
-            ], null));
+        () async => serviceTest.NotificationService.eventBroadcast(
+            await Future.wait(sas.map((sa) => sa.notificationSocket)),
+            nService));
 
     test(
         'ConnectionState listing',
-        () => serviceTest.NotificationService
-            .connectionStateList([sa1, sa2, sa3]));
+        () async =>
+            serviceTest.NotificationService.connectionStateList(sas, nService));
 
-    // test('ConnectionState get',
-    //     () => serviceTest.NotificationService.connectionState([sa1, sa2, sa3], sa1.no));
+    test('ConnectionState get',
+        () => serviceTest.NotificationService.connectionState(sas, nService));
 
     //TODO: Implement these tests.
 //    test('Event clientConnectionState', () =>

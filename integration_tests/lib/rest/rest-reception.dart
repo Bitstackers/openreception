@@ -2,59 +2,39 @@ part of openreception_tests.rest;
 
 void _runReceptionTests() {
   group('$_namespace.Reception', () {
-    Logger log = new Logger('$_namespace.Organization');
+    Logger log = new Logger('$_namespace.Reception');
 
     ServiceAgent sa;
     TestEnvironment env;
     process.ReceptionServer rProcess;
-    process.AuthServer aProcess;
-    process.NotificationServer nProcess;
-    service.Client client;
-    AuthToken authToken;
 
     setUp(() async {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();
-      client = new service.Client();
-      authToken = new AuthToken(sa.user);
-      sa.authToken = authToken.tokenName;
-      nProcess = new process.NotificationServer(
-          Config.serverStackPath, env.runpath.path);
 
-      aProcess = new process.AuthServer(
-          Config.serverStackPath, env.runpath.path,
-          intialTokens: [authToken]);
-
-      rProcess =
-          new process.ReceptionServer(Config.serverStackPath, env.runpath.path);
-
-      sa.receptionStore = new service.RESTReceptionStore(
-          Config.receptionStoreUri, authToken.tokenName, client);
-      await Future
-          .wait([nProcess.whenReady, rProcess.whenReady, aProcess.whenReady]);
+      rProcess = await env.requestReceptionserverProcess();
+      sa.receptionStore = rProcess.bindClient(env.httpClient, sa.authToken);
     });
 
     tearDown(() async {
-      await Future.wait(
-          [rProcess.terminate(), aProcess.terminate(), nProcess.terminate()]);
       env.clear();
-      client.client.close();
     });
+
     test(
         'CORS headers present (existingUri)',
         () => isCORSHeadersPresent(
-            resource.ReceptionDialplan.list(Config.receptionStoreUri), log));
+            resource.ReceptionDialplan.list(rProcess.uri), log));
 
     test(
         'CORS headers present (non-existingUri)',
         () => isCORSHeadersPresent(
-            Uri.parse('${Config.receptionStoreUri}/nonexistingpath'), log));
+            Uri.parse('${rProcess.uri}/nonexistingpath'), log));
 
     test(
         'Non-existing path',
         () => nonExistingPath(
-            Uri.parse('${Config.receptionStoreUri}/nonexistingpath'
-                '?token=${authToken.tokenName}'),
+            Uri.parse('${rProcess.uri}/nonexistingpath'
+                '?token=${sa.authToken.tokenName}'),
             log));
 
     test('create', () => storeTest.Reception.create(sa));

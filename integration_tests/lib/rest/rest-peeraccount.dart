@@ -3,89 +3,74 @@ part of openreception_tests.rest;
 _runPeerAccountTests() {
   group('$_namespace.PeerAccount', () {
     Logger log = new Logger('$_namespace.PeerAccount');
-    service.Client client;
+    TestEnvironment env;
+    ServiceAgent sa;
     service.PeerAccount paService;
-    service.RESTUserStore userStore;
-    service.CallFlowControl callFlow;
-    service.RESTDialplanStore dpStore;
-    model.User user;
+    process.DialplanServer dpServer;
+
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+
+      dpServer = await env.requestDialplanProcess();
+
+      paService = dpServer.bindPeerAccountClient(env.httpClient, sa.authToken);
+    });
+
+    tearDown(() async {
+      await env.clear();
+    });
 
     test(
         'CORS headers present (existingUri)',
-        () => isCORSHeadersPresent(
-            resource.PeerAccount.list(Config.dialplanStoreUri), log));
+        () async =>
+            isCORSHeadersPresent(resource.PeerAccount.list(dpServer.uri), log));
 
     test(
         'CORS headers present (non-existingUri)',
-        () => isCORSHeadersPresent(
-            Uri.parse('${Config.dialplanStoreUri}/nonexistingpath'), log));
+        () async => isCORSHeadersPresent(
+            Uri.parse('${dpServer.uri}/nonexistingpath'), log));
 
     test(
         'Non-existing path',
-        () => nonExistingPath(
-            Uri.parse('${Config.dialplanStoreUri}/nonexistingpath'
-                '?token=${Config.serverToken}'),
+        () async => nonExistingPath(
+            Uri.parse('${dpServer.uri}/nonexistingpath'
+                '?token=${sa.authToken.tokenName}'),
             log));
-
-    setUp(() async {
-      client = new service.Client();
-      paService = new service.PeerAccount(
-          Config.dialplanStoreUri, Config.serverToken, client);
-    });
-
-    tearDown(() async {
-      paService = null;
-      client.client.close(force: true);
-    });
 
     test('list', () => serviceTest.PeerAccountService.list(paService));
 
+    test('remove',
+        () => serviceTest.PeerAccountService.remove(sa.user, paService));
+
+    test('deploy',
+        () => serviceTest.PeerAccountService.deploy(sa.user, paService));
+
+    service.CallFlowControl callFlow;
+    service.RESTDialplanStore dpStore;
+
     setUp(() async {
-      client = new service.Client();
-      userStore = new service.RESTUserStore(
-          Config.userStoreUri, Config.serverToken, client);
-      paService = new service.PeerAccount(
-          Config.dialplanStoreUri, Config.serverToken, client);
-      user = await userStore
-          .create(Randomizer.randomUser(), null)
-          .then((uRef) => userStore.get(uRef.id));
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+
+      dpServer = await env.requestDialplanProcess();
+
+      paService = dpServer.bindPeerAccountClient(env.httpClient, sa.authToken);
+
+      callFlow = (await env.requestCallFlowProcess())
+          .bindClient(env.httpClient, sa.authToken);
+
+      dpStore = (await env.requestDialplanProcess())
+          .bindDialplanClient(env.httpClient, sa.authToken);
     });
 
     tearDown(() async {
-      paService = null;
-      client.client.close(force: true);
-      await userStore.remove(user.id, null);
-    });
-
-    test(
-        'remove', () => serviceTest.PeerAccountService.remove(user, paService));
-
-    test(
-        'deploy', () => serviceTest.PeerAccountService.deploy(user, paService));
-
-    setUp(() async {
-      client = new service.Client();
-      userStore = new service.RESTUserStore(
-          Config.userStoreUri, Config.serverToken, client);
-      paService = new service.PeerAccount(
-          Config.dialplanStoreUri, Config.serverToken, client);
-      callFlow = new service.CallFlowControl(
-          Config.CallFlowControlUri, Config.serverToken, client);
-      dpStore = new service.RESTDialplanStore(
-          Config.dialplanStoreUri, Config.serverToken, client);
-      user = await userStore
-          .create(Randomizer.randomUser(), null)
-          .then((uref) => userStore.get(uref.id));
-    });
-
-    tearDown(() async {
-      client.client.close(force: true);
-      await userStore.remove(user.id, null);
+      await env.clear();
     });
 
     test(
         'deployAndRegister',
-        () => serviceTest.PeerAccountService
-            .deployAndRegister(user, paService, callFlow, dpStore));
+        () => serviceTest.PeerAccountService.deployAndRegister(
+            sa.user, paService, callFlow, dpStore, env.envConfig.externalIp));
   });
 }

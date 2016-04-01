@@ -97,10 +97,16 @@ class AuthServer implements ServiceProcess {
   Future addTokens(Iterable<AuthToken> ts) async {
     await whenReady;
     _ready = new Completer();
-    tokenDir.tokens.addAll(ts);
-    await _writeTokens();
-    _process.kill(ProcessSignal.SIGHUP);
-    await whenReady;
+
+    try {
+      tokenDir.tokens.addAll(ts);
+      await _writeTokens();
+      _process.kill(ProcessSignal.SIGHUP);
+    } catch (e, s) {
+      _ready.completeError(e, s);
+    }
+
+    await whenReady.timeout(new Duration(seconds: 10));
   }
 
   /**

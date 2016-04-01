@@ -1,38 +1,46 @@
 part of openreception_tests.rest;
 
-runIvrTests() {
-  group('Service.Ivr', () {
+_runIvrTests() {
+  group('rest.Ivr', () {
     Logger log = new Logger('$_namespace.ivr');
 
-    service.Client client = null;
-    service.RESTIvrStore ivrStore = null;
+    service.RESTIvrStore ivrStore;
+    process.DialplanServer ivrServer;
+    ServiceAgent sa;
+    TestEnvironment env;
+
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+      ivrServer = await env.requestDialplanProcess();
+      ivrStore = ivrServer.bindIvrClient(env.httpClient, sa.authToken);
+    });
+
+    tearDown(() async {
+      await env.clear();
+    });
 
     test(
         'CORS headers present (existingUri)',
-        () => isCORSHeadersPresent(
-            resource.ReceptionDialplan.list(Config.dialplanStoreUri), log));
+        () async => isCORSHeadersPresent(
+            resource.ReceptionDialplan
+                .list((await env.requestDialplanProcess()).uri),
+            log));
 
     test(
         'CORS headers present (non-existingUri)',
-        () => isCORSHeadersPresent(
-            Uri.parse('${Config.dialplanStoreUri}/nonexistingpath'), log));
+        () async => isCORSHeadersPresent(
+            Uri.parse(
+                '${(await env.requestDialplanProcess()).uri}/nonexistingpath'),
+            log));
 
     test(
         'Non-existing path',
-        () => nonExistingPath(
-            Uri.parse('${Config.dialplanStoreUri}/nonexistingpath'
-                '?token=${Config.serverToken}'),
+        () async => nonExistingPath(
+            Uri.parse(
+                '${(await env.requestDialplanProcess()).uri}/nonexistingpath'
+                '?token=${sa.authToken.tokenName}'),
             log));
-    setUp(() {
-      client = new service.Client();
-      ivrStore = new service.RESTIvrStore(
-          Config.dialplanStoreUri, Config.serverToken, client);
-    });
-
-    tearDown(() {
-      ivrStore = null;
-      client.client.close(force: true);
-    });
 
     test('create', () => storeTest.Ivr.create(ivrStore));
 

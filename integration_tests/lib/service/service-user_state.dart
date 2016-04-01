@@ -7,17 +7,11 @@ abstract class UserState {
   * Tests if the receptionist receives an error when trying originate
   * a new call while in call.
    */
-  static Future originateForbidden(
+  static Future originateForbidden(model.OriginationContext context,
       Receptionist receptionist, Customer caller, Customer callee) async {
-    String receptionNumber = '12340005';
+    log.info('Caller dials the reception at ${context.dialplan}');
 
-    final model.OriginationContext context = new model.OriginationContext()
-      ..contactId = 4
-      ..dialplan = '12340001'
-      ..receptionId = 1;
-
-    log.info('Caller dials the reception at $receptionNumber');
-    await caller.dial(receptionNumber);
+    await caller.dial(context.dialplan);
     log.info('Receptionist tries to hunt down the next call');
     final model.Call firstCall = await receptionist.huntNextCall();
     expect(firstCall, isNotNull);
@@ -40,18 +34,19 @@ abstract class UserState {
    * Tests if the receptionist receives an error when trying to pick
    * up a second call while in call.
    */
-  static Future pickupForbidden(Receptionist receptionist, Customer caller,
+  static Future pickupForbidden(
+      model.OriginationContext context,
+      Receptionist receptionist,
+      Customer caller,
       Customer second_caller) async {
-    String receptionNumber = '12340005';
-
-    log.info('Caller dials the reception at $receptionNumber');
-    await caller.dial(receptionNumber);
+    log.info('Caller dials the reception at ${context.dialplan}');
+    await caller.dial(context.dialplan);
     log.info('Receptionist tries to hunt down the next call');
     final model.Call firstCall = await receptionist.huntNextCall();
     log.info('$receptionist got $firstCall');
     receptionist.eventStack.clear();
-    log.info('Second caller dials the reception at $receptionNumber');
-    await second_caller.dial(receptionNumber);
+    log.info('Second caller dials the reception at ${context.dialplan}');
+    await second_caller.dial(context.dialplan);
 
     log.info('Receptionist waits second call');
     final model.Call secondCall = await receptionist.waitForCallOffer();
