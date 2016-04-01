@@ -27,10 +27,14 @@ class UIReceptionType extends UIModel {
     _observers();
   }
 
-  @override HtmlElement get _firstTabElement => _list;
-  @override HtmlElement get _focusElement => _list;
-  @override HtmlElement get _lastTabElement => _list;
-  @override HtmlElement get _root => _myRoot;
+  @override
+  HtmlElement get _firstTabElement => _list;
+  @override
+  HtmlElement get _focusElement => _list;
+  @override
+  HtmlElement get _lastTabElement => _list;
+  @override
+  HtmlElement get _root => _myRoot;
 
   OListElement get _list => _root.querySelector('.generic-widget-list');
 

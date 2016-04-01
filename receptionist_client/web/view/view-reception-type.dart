@@ -28,15 +28,20 @@ class ReceptionType extends ViewWidget {
   ReceptionType(
       Model.UIReceptionType this._uiModel,
       Controller.Destination this._myDestination,
-      Model.UIReceptionSelector this._receptionSelector) {
+      Model.UIReceptionSelector this._receptionSelector,
+      Map<String, String> this._langMap) {
     _observers();
   }
 
-  @override Controller.Destination get _destination => _myDestination;
-  @override Model.UIReceptionType get _ui => _uiModel;
+  @override
+  Controller.Destination get _destination => _myDestination;
+  @override
+  Model.UIReceptionType get _ui => _uiModel;
 
-  @override void _onBlur(Controller.Destination _) {}
-  @override void _onFocus(Controller.Destination _) {}
+  @override
+  void _onBlur(Controller.Destination _) {}
+  @override
+  void _onFocus(Controller.Destination _) {}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already

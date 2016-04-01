@@ -188,7 +188,8 @@ class UIReceptionSelector extends UIModel {
   }
 
   /**
-   * Remove selections, scroll to top and empty filter input and fire an empty [Reception].
+   * Remove selections, scroll to top and empty filter input and fire an empty
+   * [Reception].
    */
   void resetFilter() {
     _filter.value = '';
