@@ -60,13 +60,13 @@ void main() {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen(print);
 
-  support.SupportTools st;
+  //support.SupportTools st;
 
   ProcessSignal.SIGINT.watch().listen((_) {
     log.info('SIGINT caught, hanging up all calls.');
     _stopping = true;
 
-    st.tearDownCustomers();
+    //st.tearDownCustomers();
 
     return new Future.delayed(new Duration(seconds: 3))
         .then((_) => updateStatus())
@@ -84,15 +84,15 @@ void main() {
             customers.map((support.Customer customer) => customer.hangupAll()))
         .then((_) => log.info('Hung up all calls.'))
         .then((_) => new Future.delayed(new Duration(seconds: 3)))
-        .then((_) => st.tearDown())
+//        .then((_) => st.tearDown())
         .then((_) =>
             new Future.delayed(new Duration(seconds: 3)).then((_) => exit(0)));
   });
 
-  support.SupportTools.instance
-      .then((support.SupportTools init) => st = init)
-      .then((_) => print(st))
-      .then((_) => start_spawning());
+//   support.SupportTools.instance
+//       .then((support.SupportTools init) => st = init)
+//       .then((_) => print(st))
+//       .then((_) => start_spawning());
 }
 
 Future start_spawning() async {

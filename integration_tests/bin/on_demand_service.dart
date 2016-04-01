@@ -69,7 +69,7 @@ void main() {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen(print);
 
-  support.SupportTools st;
+//  support.SupportTools st;
   handler.Receptionist receptionistHandler;
   handler.Customer customerHandler;
 
@@ -79,10 +79,10 @@ void main() {
     customerHandler = new handler.Customer(support.CustomerPool.instance);
   }
 
-  support.SupportTools.instance
-      .then((support.SupportTools init) => st = init)
-      .then((_) => print(st))
-      .then((_) => setupHandlers())
-      .then((_) => start(receptionistHandler, customerHandler,
-          hostname: Config.listenRESTAddress, port: Config.listenRESTport));
+  // support.SupportTools.instance
+  //     .then((support.SupportTools init) => st = init)
+  //     .then((_) => print(st))
+  //     .then((_) => setupHandlers())
+  //     .then((_) => start(receptionistHandler, customerHandler,
+  //         hostname: Config.listenRESTAddress, port: Config.listenRESTport));
 }
