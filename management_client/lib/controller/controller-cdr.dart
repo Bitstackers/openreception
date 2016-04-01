@@ -22,4 +22,25 @@ class Cdr {
       return JSON.decode(response);
     });
   }
+
+  Future<Map<String, dynamic>> list(
+      DateTime from, DateTime to, String direction, String rids, String uids) {
+    final String f = Uri.encodeComponent(from.toIso8601String());
+    final String t = Uri.encodeComponent(to.toIso8601String());
+    String url = '$_host/from/$f/to/$t/kind/list?token=$_token';
+
+    url += '&direction=$direction';
+
+    if (rids.trim().isNotEmpty) {
+      url += '&rids=${Uri.encodeComponent(rids.trim())}';
+    }
+
+    if (uids.trim().isNotEmpty) {
+      url += '&uids=${Uri.encodeComponent(uids.trim())}';
+    }
+
+    return html.HttpRequest.getString(url).then((String response) {
+      return JSON.decode(response);
+    });
+  }
 }
