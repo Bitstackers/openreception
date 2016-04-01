@@ -23,17 +23,23 @@ class UIGlobalCallQueue extends UIModel {
   /**
    * Constructor.
    */
-  UIGlobalCallQueue(DivElement this._myRoot, Map<String, String> this._langMap) {
+  UIGlobalCallQueue(
+      DivElement this._myRoot, Map<String, String> this._langMap) {
     _setupLocalKeys();
     _observers();
   }
 
-  @override HtmlElement get _firstTabElement => _list;
-  @override HtmlElement get _focusElement => _list;
-  @override HtmlElement get _lastTabElement => _list;
-  @override HtmlElement get _root => _myRoot;
+  @override
+  HtmlElement get _firstTabElement => _list;
+  @override
+  HtmlElement get _focusElement => _list;
+  @override
+  HtmlElement get _lastTabElement => _list;
+  @override
+  HtmlElement get _root => _myRoot;
 
-  SpanElement get _queueLength => _root.querySelector('.generic-widget-headline span.queue-length');
+  SpanElement get _queueLength =>
+      _root.querySelector('.generic-widget-headline span.queue-length');
   OListElement get _list => _root.querySelector('.generic-widget-list');
 
   /**
