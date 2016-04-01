@@ -14,8 +14,29 @@ void main(List<String> arguments) {
     JUnitConfiguration.install();
   }
 
+  /*
+   * We treat the test framework as a test itself. This gives us the
+   * possibility to output the test state, and to wait for setup and teardown.
+   */
+  group('pre-test setup', () {
+    TestEnvironmentConfig envConfig;
+    Logger _log = new Logger('test environment detection');
+
+    setUp(() async {
+      envConfig = new TestEnvironment().envConfig;
+      await envConfig.detectEnvironment();
+    });
+
+    test('Setup', () {
+      expect(envConfig, isNotNull);
+      expect(envConfig.externalIp, isNotEmpty);
+      _log.info(envConfig.toString());
+    });
+  });
+
   runFilestoreTests();
   runRestStoreTests();
+  runBenchmarkTests();
 
   /* We treat the test framework as a test itself. This gives us the
    * possibility to output the test state, and to wait for setup and teardown.
