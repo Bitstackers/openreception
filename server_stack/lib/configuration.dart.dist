@@ -48,12 +48,24 @@ class AccessLog {
  * ESL configuration values.
  */
 class EslConfig {
-  final String hostname = 'localhost';
-  final String password = 'ClueCon';
-  final int port = 8021;
+  final String hostname;
+  final String password;
+  final int port;
 
-  const EslConfig();
+  /**
+   *
+   */
+  const EslConfig(
+      {String this.hostname: 'localhost',
+      String this.password: 'ClueCon',
+      int this.port : 8021});
+
+  /**
+   *
+   */
+  String toDsn() => password + '@' + hostname + ':' + port.toString();
 }
+
 
 /**
  * SMTP configuration values
