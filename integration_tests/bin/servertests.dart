@@ -24,7 +24,7 @@ void main(List<String> arguments) {
 
     setUp(() async {
       envConfig = new TestEnvironment().envConfig;
-      await envConfig.detectEnvironment();
+      await envConfig.load();
     });
 
     test('Setup', () {
