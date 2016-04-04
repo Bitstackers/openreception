@@ -5,8 +5,8 @@ class FreeSwitchConfig {}
 class FreeSwitch implements ServiceProcess {
   final String binPath;
   final String basePath;
-  final File confTemplateArchive;
-  final Directory exampleSoundsArchive;
+  final Directory confTemplateDir;
+  final Directory exampleSoundsDir;
 
   String get logPath => basePath + '/log';
   String get confPath => basePath + '/conf';
@@ -20,8 +20,8 @@ class FreeSwitch implements ServiceProcess {
   bool get ready => _ready.isCompleted;
   Future get whenReady => _ready.future;
 
-  FreeSwitch(this.binPath, this.basePath, this.confTemplateArchive,
-      this.exampleSoundsArchive) {
+  FreeSwitch(this.binPath, this.basePath, this.confTemplateDir,
+      this.exampleSoundsDir) {
     _init();
   }
 
@@ -46,15 +46,26 @@ class FreeSwitch implements ServiceProcess {
     confDir.createSync();
 
     _log.info('Cleaning config in directory ${confDir.absolute.path}');
-    await Process.run('/bin/tar', ['xf', confTemplateArchive.absolute.path],
-        workingDirectory: basePath);
 
-    _log.info(
-        'Copying example sounds from ${exampleSoundsArchive.absolute.path}'
+    final args = ['-r', confTemplateDir.absolute.path, basePath];
+    _log.info('Running /bin/cp ${args.join(' ')}');
+    final copy = await Process.run('/bin/cp', args, workingDirectory: basePath);
+    if (copy.exitCode != 0) {
+      _log.shout('Failed to copy files to source dir');
+
+      if (copy.stderr.isNotEmpty) {
+        _log.shout(copy.stderr);
+      }
+      if (copy.stdout.isNotEmpty) {
+        _log.shout(copy.stdout);
+      }
+    }
+
+    _log.info('Copying example sounds from ${exampleSoundsDir.absolute.path}'
         ' to $soundsPath');
 
     Iterable<File> files =
-        exampleSoundsArchive.listSync().where((fse) => fse is File);
+        exampleSoundsDir.listSync().where((fse) => fse is File);
 
     Future.wait(files.map((File f) async {
       final String newPath = soundsPath + '/' + basename(f.path);
