@@ -1,0 +1,91 @@
+<include>
+  <context name="receptions">
+   <X-PRE-PROCESS cmd="set" data="default_trunk=trunk.openreception.org"/>
+
+    <extension name="pickup-call">
+      <condition field="destination_number" expression="^pickup-call-(.*)$">
+        <action application="log" data="INFO uid:${__or__uid} picked up call $1."/>
+        <action application="set" data="intercept_unbridged_only=true"/>
+        <action application="intercept" data="$1"/>
+        <action application="log" data="INFO uid:${__or__uid} picked up call $1."/>
+      </condition>
+    </extension>
+
+    <!--
+       Originate outbound calls. Default gateway should be stored in a variable.
+    -->
+    <extension name="originate-via-external-trunk">
+      <condition field="destination_number" expression="^(\d+)$">
+        <action application="set" data="ringback=${dk-ring}"/>
+        <action application="ring_ready" />
+        <action application="bridge" data="{originate_timeout=60}sofia/gateway/${default_trunk}/$1"/>
+        <action application="hangup"/>
+      </condition>
+    </extension>
+
+    <!--
+       Enables the call-flow-control server to transfer calls to SIP endpoints.
+    -->
+    <extension name="test-transfer-to-sip">
+      <condition field="destination_number" expression="^(\d\d\d\d@(.*))$">
+        <action application="event" data="Event-Subclass=__or__outbound-call,Event-Name=CUSTOM" />
+        <action application="set" data="ringback=${dk-ring}"/>
+        <action application="ring_ready" />
+        <action application="bridge" data="sofia/external/$1"/>
+        <action application="hangup"/>
+      </condition>
+    </extension>
+
+    <!--
+      Parking lot fifo
+    -->
+    <extension name="park_fifo">
+      <condition field="destination_number" expression="park$">
+        <action application="set" data="__or__state=parked"/>
+        <action application="event" data="Event-Subclass=__or__parking-lot-enter,Event-Name=CUSTOM" />
+        <action application="set" data="fifo_music=${hold_music}"/>
+        <action application="fifo" data="parking_lot@${domain_name} in"/>
+        <action application="hangup"/>
+      </condition>
+    </extension>
+
+    <!--
+      Dial the extension (1000-1019).
+    -->
+    <extension name="Local_Extension">
+      <condition field="destination_number" expression="^(1[01][01][0-9])$">
+        <action application="export" data="dialed_extension=$1"/>
+        <action application="set" data="ringback=${dk-ring}"/>
+        <action application="set" data="call_timeout=30"/>
+        <action application="set" data="hangup_after_bridge=true"/>
+        <action application="bridge" data="user/${dialed_extension}@${domain_name}"/>
+        <action application="hangup"/>
+      </condition>
+    </extension>
+
+    <!--
+      Transfers to an outbound number.
+    -->
+    <extension name="external_transfer">
+      <condition field="destination_number" expression="^external_transfer_(\d+)">
+        <action application="bridge" data="{originate_timeout=120,ignore_early_media=false}[leg_timeout=50]sofia/gateway/${default_trunk}/$1"/>
+        <action application="hangup"/>
+      </condition>
+    </extension>
+
+    <extension name="UNALLOCATED_NUMBER">
+      <condition field="destination_number" expression="^UNALLOCATED_NUMBER$" break="on-false">>
+        <action application="log" data="ERR ${__or__destination} was not recognized as a reception!"/>
+        <action application="event" data="Event-Subclass=__or__unallocated-number,Event-Name=CUSTOM" />
+        <action application="answer"/>
+	<action application="playback" data="tone_stream://L=1;%(200,0,425)"/>
+        <action application="sleep" data="500"/>
+        <action application="playback" data="$${sounds_dir}/converted-vox/A-nul-nummer.wav"/>
+        <action application="sleep" data="1000"/>
+        <action application="hangup" data="UNALLOCATED_NUMBER"/>
+      </condition>
+    </extension>
+  </context>
+
+  <X-PRE-PROCESS cmd="include" data="receptions/*.xml"/>
+</include>
