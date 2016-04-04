@@ -156,9 +156,9 @@ abstract class Notification {
   }
 
   /**
-   * Send primitive. Expects the request body to be a JSON string with a list of recipients
-   * in the 'recipients' field. The 'message' field is also mandatory for obvious reasons.
-   * TODO: Implement delivery status object in the framework.
+   * Send primitive. Expects the request body to be a JSON string with a
+   * list of recipients in the 'recipients' field.
+   * The 'message' field is also mandatory for obvious reasons.
    */
   static Future<shelf.Response> send(shelf.Request request) async {
     Map json;
@@ -169,29 +169,29 @@ abstract class Notification {
       return clientError('Malformed JSON body');
     }
 
-    List<int> recipients = new List<int>();
-
-    (json['recipients'] as List).forEach((int item) => recipients.add(item));
-
+    Map message;
     if (!json.containsKey("message")) {
       return clientError("Malformed JSON body");
     }
+    message = json['message'];
 
-    List delivery_status = new List();
-    recipients.forEach((int uid) {
+    List<WebSocketChannel> channels =
+        (json['recipients'] as Iterable).fold([], (list, int uid) {
       if (clientRegistry[uid] != null) {
-        int count = 0;
-        clientRegistry[uid].forEach((WebSocketChannel clientSocket) {
-          clientSocket.sink.add(json['message']);
-          count++;
-        });
-        delivery_status.add({'uid': uid, 'sent': count});
-      } else {
-        delivery_status.add({'uid': uid, 'sent': 0});
+        list.addAll(clientRegistry[uid]);
       }
+
+      return list;
+    }).toList()..shuffle();
+
+    _log.finest('Sending $message to ${channels.length} websocket clients');
+
+    channels.forEach((ws) {
+      ws.sink.add(JSON.encode(message));
+      _log.finest('Sending $message to ${ws}');
     });
 
-    return okJson({"status": "ok", "delivery_status": delivery_status});
+    return okJson({"status": "ok"});
   }
 
   /**

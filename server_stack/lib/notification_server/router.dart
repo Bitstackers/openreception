@@ -17,11 +17,13 @@ import 'dart:async';
 import 'dart:io' as io;
 import 'dart:convert';
 
-import 'package:http_parser/http_parser.dart';
-import '../response_utils.dart';
+import 'package:openreception.server/response_utils.dart';
+import 'package:openreception.server/configuration.dart';
 
-import '../configuration.dart';
 import 'package:logging/logging.dart';
+//import 'package:http_parser/http_parser.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+
 import 'package:openreception_framework/model.dart' as Model;
 import 'package:openreception_framework/event.dart' as Event;
 import 'package:openreception_framework/service.dart' as Service;
