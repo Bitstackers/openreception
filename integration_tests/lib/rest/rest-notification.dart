@@ -14,6 +14,7 @@ void _runNotificationTests() {
 
     setUp(() async {
       env = new TestEnvironment();
+      sas = [];
       await Future.forEach(new List.generate(10, (i) => i),
           (_) async => sas.add(await env.createsServiceAgent()));
 
@@ -34,6 +35,9 @@ void _runNotificationTests() {
             await Future.wait(sas.map((sa) => sa.notificationSocket)),
             nService));
 
+    test('Event send',
+        () => serviceTest.NotificationService.eventSend(sas, nService));
+
     test(
         'ConnectionState listing',
         () async =>
@@ -41,15 +45,5 @@ void _runNotificationTests() {
 
     test('ConnectionState get',
         () => serviceTest.NotificationService.connectionState(sas, nService));
-
-    //TODO: Implement these tests.
-//    test('Event clientConnectionState', () =>
-//      NotificationService.clientConnectionState
-//        ([receptionist1, receptionist2, receptionist3]));
-
-    //    test('Event send', () =>
-//      NotificationService.eventSend
-//        ([receptionist1, receptionist2, receptionist3],
-//            notificationService));
   });
 }

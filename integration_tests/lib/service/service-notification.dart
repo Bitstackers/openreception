@@ -62,96 +62,60 @@ abstract class NotificationService {
   }
 
   /**
-   * Test server behaviour when trying to create a new calendar event object.
    *
-   * The expected behaviour is that the server should return the created
-   * CalendarEntry object and send out a CalendarEvent notification.
    */
-  static Future _calendarEntryCreateEvent(model.Owner owner,
-      storage.Calendar calendarStore, Receptionist receptionist) async {
-    Future<event.CalendarChange> nextCreateEvent =
-        receptionist.waitFor(eventType: event.Key.calendarChange);
-    model.CalendarEntry createdEntry = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, receptionist.user);
+  static Future eventSend(Iterable<ServiceAgent> sas,
+      service.NotificationService notificationService) async {
+    // This test make no sense with only two participants
+    expect(sas.length, greaterThan(2));
 
-    event.CalendarChange createEvent = await nextCreateEvent;
+    Iterable recipients = sas.take(2);
 
-    expect(createEvent.eid, equals(createdEntry.id));
-    expect(createEvent.state, equals(event.Change.created));
+    Iterable<int> recipientUids = recipients.map((s) => s.user.id);
+
+    final event.Event sentEvent =
+        new event.UserChange.update(sas.first.user.id, sas.last.user.id);
+
+    int completed = 0;
+
+    Completer comp = new Completer();
+    List<Error> errors = [];
+    sas.forEach((sa) async {
+      Completer c = new Completer();
+
+      new Future.delayed(new Duration(milliseconds: 500), () {
+        if (!c.isCompleted) {
+          if (recipientUids.contains(sa.user.id)) {
+            errors.add(new StateError('user: ${sa.user.toJson()} expected to'
+                ' receive message, but did not'));
+          }
+          c.complete();
+        }
+      });
+
+      (await sa.notifications).listen((e) {
+        if (e is event.UserChange && e.updated) {
+          if (!recipientUids.contains(sa.user.id)) {
+            errors
+                .add(new StateError('user: ${sa.user.toJson()} not expected to'
+                    ' receive message, but did'));
+          }
+          c.complete();
+        }
+      });
+
+      await c.future;
+      completed++;
+      if (completed == sas.length) {
+        comp.complete();
+      }
+    });
+
+    await notificationService.send(recipientUids, sentEvent);
+
+    _log.info('Waiting for events');
+
+    await comp.future;
+    expect(errors, isEmpty);
   }
-
-  /**
-   * Test server behaviour when trying to update a calendar event object that
-   * exists.
-   *
-   * The expected behaviour is that the server should return the updated
-   * CalendarEntry object and send out a CalendarEvent notification.
-   */
-  static Future _calendarEntryUpdateEvent(model.Owner owner,
-      storage.Calendar calendarStore, Receptionist receptionist) async {
-    model.CalendarEntry createdEntry = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, receptionist.user);
-
-    {
-      model.CalendarEntry changes = Randomizer.randomCalendarEntry()
-        ..id = createdEntry.id
-        ..owner = createdEntry.owner;
-      createdEntry = changes;
-    }
-
-    Future<event.CalendarChange> nextUpdateEvent = receptionist
-        .notificationSocket.eventStream
-        .firstWhere((event) => (event is event.CalendarChange &&
-            event.eid == createdEntry.id &&
-            event.state == event.CalendarEntryState.UPDATED))
-        .timeout(new Duration(seconds: 10));
-
-    await calendarStore.update(createdEntry, receptionist.user);
-
-    await nextUpdateEvent;
-  }
-
-  /**
-   * Test server behaviour when trying to delete a calendar event object that
-   * exists.
-   *
-   * The expected behaviour is that the server should succeed and send out a
-   * CalendarChange Notification.
-   */
-  static Future _calendarEntryDeleteEvent(model.Owner owner,
-      storage.Calendar calendarStore, Receptionist receptionist) async {
-    model.CalendarEntry createdEntry = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, receptionist.user);
-
-    Future<event.CalendarChange> nextRemoveEvent = receptionist
-        .notificationSocket.eventStream
-        .firstWhere((e) => (e is event.CalendarChange &&
-            e.eid == createdEntry.id &&
-            e.state == event.Change.deleted))
-        .timeout(new Duration(seconds: 10));
-
-    await calendarStore.remove(createdEntry.id, receptionist.user);
-    await nextRemoveEvent;
-  }
-
-  /**
-   *
-   */
-//  static Future eventSend(Iterable<Receptionist> receptionists,
-//                              Service.NotificationService notificationService) {
-//    // This test make no sense with only two participants
-//    expect(receptionists.length, greaterThan(2));
-//
-//    receptionists.forEach((Receptionist receptionist) {
-//      receptionist.eventStack.clear();
-//    });
-//
-//    Iterable<int> recipientUids = receptionists.map((r) => r.user.ID);
-//
-//    return notificationService.send(recipientUids, new Event.UserState())
-//
-//    return receptionists.first.paused().then((_) =>
-//      Future.forEach(receptionists, (Receptionist receptionist) =>
-//        receptionist.waitFor(eventType : Event.Key.userState)));
-//  }
 }
