@@ -64,16 +64,6 @@ class ReceptionCalendar extends ViewWidget {
   }
 
   /**
-   * If a contact is selected in [_contactSelector], then navigate to the
-   * calendar editor with [cmd] set.
-   */
-  void _maybeNavigateToEditor(Controller.Cmd cmd) {
-    if (_receptionSelector.selectedReception.isNotEmpty) {
-      _navigate.goCalendarEdit(from: _myDestination..cmd = cmd);
-    }
-  }
-
-  /**
    * Observers.
    */
   void _observers() {
@@ -81,9 +71,6 @@ class ReceptionCalendar extends ViewWidget {
 
     _hotKeys.onAltA.listen((KeyboardEvent _) => _activateMe());
     _ui.onClick.listen((MouseEvent _) => _activateMe());
-
-    _ui.onEdit.listen((_) => _maybeNavigateToEditor(Controller.Cmd.edit));
-    _ui.onNew.listen((_) => _maybeNavigateToEditor(Controller.Cmd.create));
 
     _receptionSelector.onSelect.listen(_render);
 

@@ -17,8 +17,6 @@ part of model;
  * Provides methods for manipulating the reception calendar UI widget.
  */
 class UIReceptionCalendar extends UIModel {
-  final Bus<KeyboardEvent> _busEdit = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _busNew = new Bus<KeyboardEvent>();
   final Map<String, String> _langMap;
   final DivElement _myRoot;
   final ORUtil.WeekDays _weekDays;
@@ -109,11 +107,15 @@ class UIReceptionCalendar extends UIModel {
   }
 
   /**
-   * Fire the [onEdit] stream if an event is selected, else don't do anything.
+   * Return the first [ReceptionCalendarEntry]. Return empty entry if list is
+   * empty.
    */
-  void _maybeEdit(Event event) {
-    if (_list.querySelector('.selected') != null) {
-      _busEdit.fire(event);
+  ORModel.CalendarEntry get firstCalendarEntry {
+    try {
+      return new ORModel.CalendarEntry.fromMap(
+          JSON.decode(_list.children.first.dataset['object']));
+    } catch (_) {
+      return new ORModel.CalendarEntry.empty();
     }
   }
 
@@ -140,16 +142,6 @@ class UIReceptionCalendar extends UIModel {
   }
 
   /**
-   * Fires when a [ReceptionCalendarEntry] edit is requested from somewhere.
-   */
-  Stream<KeyboardEvent> get onEdit => _busEdit.stream;
-
-  /**
-   * Fires when a [ReceptionCalendarEntry] new is requested from somewhere.
-   */
-  Stream<KeyboardEvent> get onNew => _busNew.stream;
-
-  /**
    * Mark a [LIElement] in the calendar entry list selected, if one such is the
    * target of the [event].
    */
@@ -163,11 +155,6 @@ class UIReceptionCalendar extends UIModel {
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
-    final Map<String, EventListener> bindings = {
-      'Ctrl+e': _maybeEdit,
-      'Ctrl+k': (Event event) => _busNew.fire(event)
-    };
-
-    _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
+    _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: {}));
   }
 }

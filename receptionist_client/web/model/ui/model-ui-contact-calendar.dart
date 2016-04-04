@@ -17,8 +17,6 @@ part of model;
  * Provides methods for manipulating the contact calendar UI widget.
  */
 class UIContactCalendar extends UIModel {
-  final Bus<KeyboardEvent> _busEdit = new Bus<KeyboardEvent>();
-  final Bus<KeyboardEvent> _busNew = new Bus<KeyboardEvent>();
   final Map<String, String> _langMap;
   final DivElement _myRoot;
   final ORUtil.WeekDays _weekDays;
@@ -109,11 +107,15 @@ class UIContactCalendar extends UIModel {
   }
 
   /**
-   * Fire the [onEdit] stream if an event is selected, else don't do anything.
+   * Return the first [ContactCalendarEntry]. Return empty entry if list is
+   * empty.
    */
-  void _maybeEdit(Event event) {
-    if (_list.querySelector('.selected') != null) {
-      _busEdit.fire(event);
+  ORModel.CalendarEntry get firstCalendarEntry {
+    try {
+      return new ORModel.CalendarEntry.fromMap(
+          JSON.decode(_list.children.first.dataset['object']));
+    } catch (_) {
+      return new ORModel.CalendarEntry.empty();
     }
   }
 
@@ -140,16 +142,6 @@ class UIContactCalendar extends UIModel {
   }
 
   /**
-   * Fires when a [CalendarEntry] edit is requested from somewhere.
-   */
-  Stream<KeyboardEvent> get onEdit => _busEdit.stream;
-
-  /**
-   * Fires when a [CalendarEvent] new is requested from somewhere.
-   */
-  Stream<KeyboardEvent> get onNew => _busNew.stream;
-
-  /**
    * Mark a [LIElement] in the calendar entry list selected, if one such is the
    * target of the [event].
    */
@@ -163,11 +155,6 @@ class UIContactCalendar extends UIModel {
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
-    final Map<String, EventListener> bindings = {
-      'Ctrl+e': _maybeEdit,
-      'Ctrl+k': (Event event) => _busNew.fire(event)
-    };
-
-    _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: bindings));
+    _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap(myKeys: {}));
   }
 }

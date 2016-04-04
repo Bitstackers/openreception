@@ -47,25 +47,25 @@ class CalendarEditor extends ViewWidget {
     _observers();
   }
 
-  @override Controller.Destination get _destination => _myDestination;
-  @override Model.UICalendarEditor get _ui => _uiModel;
-
-  @override void _onBlur(Controller.Destination _) {
-    if (_ui.isFocused) {
-      _ui.reset();
-    }
-  }
+  @override
+  Controller.Destination get _destination => _myDestination;
+  @override
+  void _onBlur(Controller.Destination _) {}
+  @override
+  void _onFocus(Controller.Destination _) {}
+  @override
+  Model.UICalendarEditor get _ui => _uiModel;
 
   /**
-   * When we get focus, figure out where from we were called. If we weren't
-   * called from anywhere ie. the [destination].from.widget is null, then
-   * navigate to home.
+   * Activate this widget if it's not already activated.
    */
-  @override void _onFocus(Controller.Destination destination) {
-    if (destination.from != null) {
-      _setup(destination.from.widget, destination.cmd);
-    } else {
-      _navigate.goHome();
+  void _activateMe(Controller.Cmd cmd) {
+    if (_receptionSelector.selectedReception != ORModel.Reception.noReception) {
+      if (_receptionCalendar.isFocused) {
+        _setup(Controller.Widget.receptionCalendar, cmd);
+      } else {
+        _setup(Controller.Widget.contactCalendar, cmd);
+      }
     }
   }
 
@@ -103,6 +103,9 @@ class CalendarEditor extends ViewWidget {
    */
   void _observers() {
     _navigate.onGo.listen(_setWidgetState);
+
+    _hotKeys.onCtrlE.listen((_) => _activateMe(Controller.Cmd.edit));
+    _hotKeys.onCtrlK.listen((_) => _activateMe(Controller.Cmd.create));
 
     _ui.onCancel.listen((MouseEvent _) => _close());
     _ui.onDelete.listen((MouseEvent _) => _delete());
@@ -166,10 +169,19 @@ class CalendarEditor extends ViewWidget {
         if (cmd == Controller.Cmd.edit) {
           entry = _contactCalendar.selectedCalendarEntry;
 
-          _ui.headerExtra = '(${_langMap[Key.editDelete]})';
-          _setAuthorStamp(entry);
+          if (entry.ID == ORModel.CalendarEntry.noID) {
+            entry = _contactCalendar.firstCalendarEntry;
+          }
 
-          _render(entry);
+          if (entry.ID != ORModel.CalendarEntry.noID) {
+            _ui.headerExtra =
+                '(${_langMap[Key.editDelete]} ${_contactSelector.selectedContact.fullName})';
+            _setAuthorStamp(entry);
+
+            _render(entry);
+
+            _navigateToMyDestination();
+          }
         } else {
           entry = new ORModel.CalendarEntry.empty()
             ..owner =
@@ -178,20 +190,32 @@ class CalendarEditor extends ViewWidget {
             ..until = new DateTime.now().add(new Duration(hours: 1))
             ..content = '';
 
-          _ui.headerExtra = '(${_langMap[Key.editorNew]})';
+          _ui.headerExtra =
+              '(${_langMap[Key.editorNew]} ${_contactSelector.selectedContact.fullName})';
           _ui.authorStamp(null, null);
 
           _render(entry);
+
+          _navigateToMyDestination();
         }
         break;
       case Controller.Widget.receptionCalendar:
         if (cmd == Controller.Cmd.edit) {
           entry = _receptionCalendar.selectedCalendarEntry;
 
-          _ui.headerExtra = '(${_langMap[Key.editDelete]})';
-          _setAuthorStamp(entry);
+          if (entry.ID == ORModel.CalendarEntry.noID) {
+            entry = _receptionCalendar.firstCalendarEntry;
+          }
 
-          _render(entry);
+          if (entry.ID != ORModel.CalendarEntry.noID) {
+            _ui.headerExtra =
+                '(${_langMap[Key.editDelete]} ${_receptionSelector.selectedReception.name})';
+            _setAuthorStamp(entry);
+
+            _render(entry);
+
+            _navigateToMyDestination();
+          }
         } else {
           entry = new ORModel.CalendarEntry.empty()
             ..owner = new ORModel.OwningReception(
@@ -200,10 +224,13 @@ class CalendarEditor extends ViewWidget {
             ..until = new DateTime.now().add(new Duration(hours: 1))
             ..content = '';
 
-          _ui.headerExtra = '(${_langMap[Key.editorNew]})';
+          _ui.headerExtra =
+              '(${_langMap[Key.editorNew]} ${_receptionSelector.selectedReception.name})';
           _ui.authorStamp(null, null);
 
           _render(entry);
+
+          _navigateToMyDestination();
         }
         break;
       default:
