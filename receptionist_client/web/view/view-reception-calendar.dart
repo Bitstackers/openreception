@@ -37,11 +37,14 @@ class ReceptionCalendar extends ViewWidget {
     _observers();
   }
 
-  @override Controller.Destination get _destination => _myDestination;
-  @override Model.UIReceptionCalendar get _ui => _uiModel;
-
-  @override void _onBlur(Controller.Destination _) {}
-  @override void _onFocus(Controller.Destination _) {}
+  @override
+  Controller.Destination get _destination => _myDestination;
+  @override
+  void _onBlur(Controller.Destination _) {}
+  @override
+  void _onFocus(Controller.Destination _) {}
+  @override
+  Model.UIReceptionCalendar get _ui => _uiModel;
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already

@@ -24,17 +24,22 @@ class UIContactCalendar extends UIModel {
   /**
    * Constructor.
    */
-  UIContactCalendar(
-      DivElement this._myRoot, ORUtil.WeekDays this._weekDays, Map<String, String> this._langMap) {
+  UIContactCalendar(DivElement this._myRoot, ORUtil.WeekDays this._weekDays,
+      Map<String, String> this._langMap) {
     _setupLocalKeys();
     _observers();
   }
 
-  @override HtmlElement get _firstTabElement => _root;
-  @override HtmlElement get _focusElement => _root;
-  @override HtmlElement get _lastTabElement => _root;
-  @override HtmlElement get _listTarget => _list;
-  @override HtmlElement get _root => _myRoot;
+  @override
+  HtmlElement get _firstTabElement => _root;
+  @override
+  HtmlElement get _focusElement => _root;
+  @override
+  HtmlElement get _lastTabElement => _root;
+  @override
+  HtmlElement get _listTarget => _list;
+  @override
+  HtmlElement get _root => _myRoot;
 
   OListElement get _list => _root.querySelector('.generic-widget-list');
 
@@ -46,7 +51,9 @@ class UIContactCalendar extends UIModel {
     final DateTime now = new DateTime.now();
 
     bool isToday(DateTime stamp) =>
-        stamp.day == now.day && stamp.month == now.month && stamp.year == now.year;
+        stamp.day == now.day &&
+        stamp.month == now.month &&
+        stamp.year == now.year;
 
     SpanElement labelElement(ORModel.CalendarEntry item) {
       final SpanElement label = new SpanElement();
@@ -127,7 +134,8 @@ class UIContactCalendar extends UIModel {
     final LIElement selected = _list.querySelector('.selected');
 
     if (selected != null) {
-      return new ORModel.CalendarEntry.fromMap(JSON.decode(selected.dataset['object']));
+      return new ORModel.CalendarEntry.fromMap(
+          JSON.decode(selected.dataset['object']));
     } else {
       return new ORModel.CalendarEntry.empty();
     }

@@ -36,10 +36,14 @@ class UICalendarEditor extends UIModel {
     _observers();
   }
 
-  @override HtmlElement get _firstTabElement => _myFirstTabElement;
-  @override HtmlElement get _focusElement => _myFocusElement;
-  @override HtmlElement get _lastTabElement => _myLastTabElement;
-  @override HtmlElement get _root => _myRoot;
+  @override
+  HtmlElement get _firstTabElement => _myFirstTabElement;
+  @override
+  HtmlElement get _focusElement => _myFocusElement;
+  @override
+  HtmlElement get _lastTabElement => _myLastTabElement;
+  @override
+  HtmlElement get _root => _myRoot;
 
   SpanElement get _authorStamp => _root.querySelector('.author-stamp');
   ButtonElement get _cancelButton => _root.querySelector('.cancel');

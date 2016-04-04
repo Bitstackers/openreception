@@ -14,8 +14,8 @@
 part of view;
 
 /**
- * Provides methods for handling the contact data widget in terms of focus, navigation and rendering
- * via the UIContactData class.
+ * Provides methods for handling the contact data widget in terms of focus,
+ * navigation and rendering via the UIContactData class.
  */
 class ContactData extends ViewWidget {
   final Model.UIContactSelector _contactSelector;
@@ -40,14 +40,18 @@ class ContactData extends ViewWidget {
     _observers();
   }
 
-  @override Controller.Destination get _destination => _myDestination;
-  @override Model.UIContactData get _ui => _uiModel;
-
-  @override void _onBlur(Controller.Destination _) {}
-  @override void _onFocus(Controller.Destination _) {}
+  @override
+  Controller.Destination get _destination => _myDestination;
+  @override
+  void _onBlur(Controller.Destination _) {}
+  @override
+  void _onFocus(Controller.Destination _) {}
+  @override
+  Model.UIContactData get _ui => _uiModel;
 
   /**
-   * Simply navigate to my [_myDestination]. Matters not if this widget is already focused.
+   * Simply navigate to my [_myDestination]. Matters not if this widget is
+   * already focused.
    */
   void _activateMe() {
     _navigateToMyDestination();

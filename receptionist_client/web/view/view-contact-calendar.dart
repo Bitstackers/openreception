@@ -42,11 +42,14 @@ class ContactCalendar extends ViewWidget {
     _observers();
   }
 
-  @override Controller.Destination get _destination => _myDestination;
-  @override Model.UIContactCalendar get _ui => _uiModel;
-
-  @override void _onBlur(Controller.Destination _) {}
-  @override void _onFocus(Controller.Destination _) {}
+  @override
+  Controller.Destination get _destination => _myDestination;
+  @override
+  void _onBlur(Controller.Destination _) {}
+  @override
+  void _onFocus(Controller.Destination _) {}
+  @override
+  Model.UIContactCalendar get _ui => _uiModel;
 
   /**
    * Activate this widget if it's not already activated.
