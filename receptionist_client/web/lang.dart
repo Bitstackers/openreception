@@ -252,8 +252,8 @@ Map<String, String> da = {
   Key.delete: 'Slet',
   Key.duration: 'Varighed',
 
-  Key.editDelete: 'ret/slet',
-  Key.editorNew: 'ny',
+  Key.editDelete: 'ret/slet for',
+  Key.editorNew: 'ny for',
   Key.error: 'fejl',
   Key.errorCallControllerBusy: 'Kaldhåndtering midlertidigt optaget',
   Key.errorCallHangup: 'Kaldet kunne ikke afbrydes',
@@ -413,8 +413,8 @@ Map<String, String> en = {
   Key.delete: 'Delete',
   Key.duration: 'Duration',
 
-  Key.editDelete: 'edit/delete',
-  Key.editorNew: 'new',
+  Key.editDelete: 'edit/delete for',
+  Key.editorNew: 'new for',
   Key.error: 'error',
   Key.errorCallControllerBusy: 'Call handling temporarily busy',
   Key.errorCallHangup: 'Hangup failed',
