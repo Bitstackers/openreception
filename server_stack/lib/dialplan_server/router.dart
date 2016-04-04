@@ -41,7 +41,8 @@ Future<io.HttpServer> start(
     Uri authUri,
     String filepath: '',
     String playbackPrefix: '',
-    String fsConfPath: ''}) async {
+    String fsConfPath: '',
+    EslConfig eslConfig}) async {
   final Service.Authentication _authService = new Service.Authentication(
       authUri, config.userServer.serverToken, new Service_IO.Client());
 
@@ -106,7 +107,7 @@ Future<io.HttpServer> start(
       new controller.Ivr(_ivrStore, compiler, _authService, fsConfPath);
   final controller.ReceptionDialplan receptionDialplanHandler =
       new controller.ReceptionDialplan(
-          _dpStore, _rStore, compiler, ivrHandler, fsConfPath);
+          _dpStore, _rStore, compiler, ivrHandler, fsConfPath, eslConfig);
 
   final controller.PeerAccount peerAccountHandler =
       new controller.PeerAccount(_userStore, compiler, fsConfPath);

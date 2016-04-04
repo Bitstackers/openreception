@@ -48,6 +48,15 @@ Future main(List<String> args) async {
         abbr: 'h',
         defaultsTo: config.configserver.externalHostName,
         help: 'The hostname or IP listen-address for the HTTP server')
+    ..addOption('esl-hostname',
+        defaultsTo: config.callFlowControl.eslConfig.hostname,
+        help: 'The hostname of the ESL server')
+    ..addOption('esl-password',
+        defaultsTo: config.callFlowControl.eslConfig.password,
+        help: 'The password for the ESL server')
+    ..addOption('esl-port',
+        defaultsTo: config.callFlowControl.eslConfig.port.toString(),
+        help: 'The port of the ESL server')
     ..addOption('auth-uri',
         defaultsTo: config.authServer.externalUri.toString(),
         help: 'The uri of the authentication server');
@@ -90,13 +99,19 @@ Future main(List<String> args) async {
     exitWithError('Bad auth-uri argument: ${parsedArgs['auth-uri']}');
   }
 
+  final EslConfig eslConfig = new EslConfig(
+      hostname: parsedArgs['esl-hostname'],
+      password: parsedArgs['esl-password'],
+      port: int.parse(parsedArgs['esl-port']));
+
   await router.start(
       hostname: parsedArgs['host'],
       port: port,
       filepath: filepath,
       authUri: authUri,
       playbackPrefix: parsedArgs['playback-prefix'],
-      fsConfPath: parsedArgs['freeswitch-conf-path']);
+      fsConfPath: parsedArgs['freeswitch-conf-path'],
+      eslConfig: eslConfig);
   log.info('Ready to handle requests');
 }
 

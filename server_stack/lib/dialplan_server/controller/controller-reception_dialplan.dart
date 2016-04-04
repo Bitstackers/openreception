@@ -24,12 +24,13 @@ class ReceptionDialplan {
   final Ivr _ivrController;
   final Logger _log = new Logger('$_libraryName.ReceptionDialplan');
   esl.Connection _eslClient;
+  final EslConfig eslConfig;
 
   /**
    *
    */
   ReceptionDialplan(this._receptionDialplanStore, this._receptionStore,
-      this.compiler, this._ivrController, this.fsConfPath) {
+      this.compiler, this._ivrController, this.fsConfPath, this.eslConfig) {
     _connectESLClient();
   }
 
@@ -164,10 +165,10 @@ class ReceptionDialplan {
  */
   Future _connectESLClient() async {
     Duration period = new Duration(seconds: 3);
-    final String hostname = config.callFlowControl.eslConfig.hostname;
-    final String password = config.callFlowControl.eslConfig.password;
+    final String hostname = eslConfig.hostname;
+    final String password = eslConfig.password;
 
-    final int port = config.callFlowControl.eslConfig.port;
+    final int port = eslConfig.port;
 
     // Reconnect;
     _eslClient = new esl.Connection();
