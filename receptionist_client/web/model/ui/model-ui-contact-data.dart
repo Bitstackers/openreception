@@ -276,7 +276,7 @@ class UIContactData extends UIModel {
     final List<LIElement> foundLis = new List<LIElement>();
     final List<LIElement> lis = new List<LIElement>();
 
-    for (String item in cwfc.contact.tags) {
+    for (String item in cwfc.contact.tags.toSet()) {
       final LIElement li = new LIElement()..text = item;
       if (cwfc.state == filterState.tag &&
           filterParts.any((String f) => item.toLowerCase().contains(f))) {
