@@ -2,7 +2,7 @@ part of openreception_tests.service;
 
 abstract class DialplanDeployment {
   /**
-   * TODO: Verify reception-id.
+   *
    */
   static noHours(Customer customer, service.RESTDialplanStore rdpStore,
       storage.Reception rStore, esl.Connection eslClient) async {
@@ -10,7 +10,6 @@ abstract class DialplanDeployment {
     List<esl.Event> events = [];
     eslClient.eventStream.listen(events.add);
 
-    //TODO: event subscriptions.
     Model.ReceptionDialplan rdp = new Model.ReceptionDialplan()
       ..open = []
       ..extension = 'test-${Randomizer.randomPhoneNumber()}'
@@ -80,7 +79,6 @@ abstract class DialplanDeployment {
       ..fromMinute = now.minute
       ..toMinute = now.minute;
 
-    //TODO: event subscriptions.
     Model.ReceptionDialplan rdp = new Model.ReceptionDialplan()
       ..open = [
         new Model.HourAction()

@@ -2,7 +2,6 @@ library openreception_tests.service;
 
 export 'package:openreception_tests/service/service-call.dart';
 
-import 'dart:io';
 import 'dart:async';
 
 import 'package:esl/esl.dart' as esl;
@@ -13,7 +12,6 @@ import 'package:logging/logging.dart';
 import 'package:openreception_tests/support.dart';
 import 'package:openreception_tests/config.dart';
 
-import 'package:openreception_framework/resource.dart' as resource;
 import 'package:openreception_framework/service.dart' as service;
 import 'package:openreception_framework/storage.dart' as storage;
 import 'package:openreception_framework/model.dart' as model;

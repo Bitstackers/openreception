@@ -4,7 +4,7 @@ abstract class Originate {
   ///Internal logger.
   static Logger _log = new Logger('$_namespace.CallFlowControl.Originate');
 
-  //TODO
+  //TODO implement
   //static Future  originationToLookedUNumber()
 
   static Future originationToHostedNumber(
