@@ -16,8 +16,9 @@ import 'package:openreception_framework/service-io.dart' as service;
 import 'package:openreception_framework/filestore.dart' as filestore;
 import 'package:openreception_framework/service-io.dart' as Transport;
 import 'package:openreception_framework/storage.dart' as storage;
-import 'package:openreception_framework/event.dart' as Event;
 import 'package:openreception_framework/event.dart' as event;
+import 'package:openreception_framework/configuration.dart' as or_conf;
+
 import 'package:unittest/unittest.dart';
 
 import 'package:openreception_framework/model.dart' as model;

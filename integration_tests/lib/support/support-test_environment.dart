@@ -18,15 +18,22 @@ process.FreeSwitch _freeswitch;
 
 class TestEnvironmentConfig {
   String externalIp;
+  or_conf.EslConfig eslConf;
 
-  Future detectEnvironment() async {
+  Future load() async {
     final nics = await NetworkInterface.list();
     externalIp = nics.first.addresses.first.address;
+
+    eslConf = new or_conf.EslConfig(
+        hostname: Config.eslHost,
+        password: Config.eslPassword,
+        port: Config.eslPort);
   }
 
   String toString() => '''
 Test environment:
-  External IP: $externalIp''';
+  External IP: $externalIp
+  EslConfig: ${eslConf.toDsn()}''';
 }
 
 TestEnvironmentConfig _envConfig = new TestEnvironmentConfig();
@@ -63,7 +70,7 @@ class TestEnvironment {
     ..address = 'openreception@localhost';
 
   TestEnvironmentConfig get envConfig => _envConfig;
-  final PhonePool phonePool = new PhonePool.empty();
+  final PhonePool phonePool = new PhonePool.empty(_networkPortCounter);
   final Directory runpath;
 
   /// Processes
@@ -103,7 +110,7 @@ class TestEnvironment {
       _freeswitch = new process.FreeSwitch(
           '/usr/bin/freeswitch',
           new Directory('/tmp').createTempSync('freeswitch-').path,
-          new File('conf.tar.gz'),
+          new Directory('conf'),
           new Directory('sounds'));
     }
     await _freeswitch.whenReady;
@@ -214,7 +221,10 @@ class TestEnvironment {
           runpath.path, (await requestFreeswitchProcess()).confPath,
           authUri: (await requestAuthserverProcess()).uri,
           bindAddress: envConfig.externalIp,
-          servicePort: nextNetworkport);
+          servicePort: nextNetworkport,
+          eslHostname: envConfig.eslConf.hostname,
+          eslPassword: envConfig.eslConf.password,
+          eslPort: envConfig.eslConf.port);
     }
 
     await _dialplanProcess.whenReady;
@@ -232,7 +242,10 @@ class TestEnvironment {
           bindAddress: envConfig.externalIp,
           servicePort: nextNetworkport,
           notificationUri: (await requestNotificationserverProcess()).uri,
-          authUri: (await requestAuthserverProcess()).uri);
+          authUri: (await requestAuthserverProcess()).uri,
+          eslHostname: envConfig.eslConf.hostname,
+          eslPassword: envConfig.eslConf.password,
+          eslPort: envConfig.eslConf.port);
     }
 
     await _callflowProcess.whenReady;

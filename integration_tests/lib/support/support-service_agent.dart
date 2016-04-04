@@ -16,7 +16,7 @@ class ServiceAgent {
   /**
    *
    */
-  Future<Stream<Event.Event>> get notifications async =>
+  Future<Stream<event.Event>> get notifications async =>
       (await notificationSocket).eventStream;
 
   /**
@@ -284,7 +284,7 @@ class ServiceAgent {
 
     final reloadEvent = (await notificationSocket)
         .eventStream
-        .firstWhere((e) => e is Event.CallStateReload);
+        .firstWhere((e) => e is event.CallStateReload);
 
     _log.finest('Reloading callflow state');
     await callflow.stateReload();

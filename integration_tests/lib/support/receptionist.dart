@@ -18,7 +18,7 @@ class Receptionist {
   Transport.Client _transport = null;
 
   Completer readyCompleter = new Completer();
-  Queue<Event.Event> eventStack = new Queue<Event.Event>();
+  Queue<event.Event> eventStack = new Queue<event.Event>();
 
   Phonio.Call currentCall = null;
 
@@ -197,10 +197,10 @@ class Receptionist {
     if (waitForEvent) {
       return parkAction
           .then((_) => this.waitFor(
-              eventType: Event.Key.callPark,
+              eventType: event.Key.callPark,
               callID: call.ID,
               timeoutSeconds: 2))
-          .then((Event.CallPark parkEvent) => validateCall(parkEvent.call));
+          .then((event.CallPark parkEvent) => validateCall(parkEvent.call));
     } else {
       return parkAction;
     }
@@ -294,7 +294,7 @@ class Receptionist {
    * [extension], [receptionID], or a combination of them. The method will
    * wait for, at most, [timeoutSeconds] before returning a Future error.
    */
-  Future<Event.Event> waitFor(
+  Future<event.Event> waitFor(
       {String eventType: null,
       String callID: null,
       String extension: null,
@@ -308,27 +308,27 @@ class Receptionist {
           new ArgumentError('Specify at least one parameter to wait for'));
     }
 
-    bool matches(Event.Event event) {
+    bool matches(event.Event e) {
       bool result = false;
       if (eventType != null) {
-        result = event.eventName == eventType;
+        result = e.eventName == eventType;
       }
 
-      if (callID != null && event is Event.CallEvent) {
-        result = result && event.call.ID == callID;
+      if (callID != null && e is event.CallEvent) {
+        result = result && e.call.ID == callID;
       }
 
-      if (extension != null && event is Event.CallEvent) {
-        result = result && event.call.destination == extension;
+      if (extension != null && e is event.CallEvent) {
+        result = result && e.call.destination == extension;
       }
 
-      if (receptionID != null && event is Event.CallEvent) {
-        result = result && event.call.receptionID == receptionID;
+      if (receptionID != null && e is event.CallEvent) {
+        result = result && e.call.receptionID == receptionID;
       }
       return result;
     }
 
-    Event.Event lookup =
+    event.Event lookup =
         (this.eventStack.firstWhere(matches, orElse: () => null));
 
     if (lookup != null) {
@@ -363,8 +363,8 @@ class Receptionist {
     if (waitForEvent) {
       return pickupAction
           .then((_) =>
-              this.waitFor(eventType: Event.Key.callPickup, callID: call.ID))
-          .then((Event.CallPickup pickupEvent) => pickupEvent.call);
+              this.waitFor(eventType: event.Key.callPickup, callID: call.ID))
+          .then((event.CallPickup pickupEvent) => pickupEvent.call);
     } else {
       return pickupAction;
     }
@@ -383,13 +383,13 @@ class Receptionist {
 
       return this
           .waitFor(
-              eventType: Event.Key.callLock,
+              eventType: event.Key.callLock,
               callID: selectedCall.ID,
               timeoutSeconds: 10)
           .then((_) =>
               log.info('Call $selectedCall was locked, waiting for unlock.'))
           .then((_) => this.waitFor(
-              eventType: Event.Key.callUnlock, callID: selectedCall.ID))
+              eventType: event.Key.callUnlock, callID: selectedCall.ID))
           .then(
               (_) => log.info('Call $selectedCall got unlocked, picking it up'))
           .then((_) => this.pickup(selectedCall, waitForEvent: true));
@@ -412,18 +412,17 @@ class Receptionist {
               } else if (error is storage.NotFound) {
                 // Call is hungup
 
-                callEventsOnSelecteCall(Event.Event event) {
-                  if (event is Event.CallEvent)
-                    return event.call.ID == selectedCall.ID;
+                callEventsOnSelecteCall(event.Event e) {
+                  if (e is event.CallEvent) return e.call.ID == selectedCall.ID;
                 }
 
                 log.info('$this waits for $selectedCall to hangup');
                 this
                     .waitFor(
-                        eventType: Event.Key.callHangup,
+                        eventType: event.Key.callHangup,
                         callID: selectedCall.ID,
                         timeoutSeconds: 2)
-                    .then((Event.CallHangup hangupEvent) {
+                    .then((event.CallHangup hangupEvent) {
                   this.eventStack.removeWhere(callEventsOnSelecteCall);
 
                   // Reschedule the hunting.
@@ -446,14 +445,14 @@ class Receptionist {
    * receptionist.
    */
   Future<model.Call> waitForCallOffer() => this
-      .waitFor(eventType: Event.Key.callOffer)
-      .then((Event.CallOffer offered) => offered.call);
+      .waitFor(eventType: event.Key.callOffer)
+      .then((event.CallOffer offered) => offered.call);
 
   /**
    * Event handler for events coming from the notification server.
    * Merely pushes events onto a stack.
    */
-  void _handleEvent(Event.Event event) {
+  void _handleEvent(event.Event event) {
     // Only push actual events to the event stack.
     if (event == null) {
       log.warning('Null event received!');
