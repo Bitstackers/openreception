@@ -2,7 +2,6 @@ part of openreception_tests.filestore;
 
 void _runCalendarTests() {
   group('$_namespace.Calendar', () {
-    Logger log = new Logger('$_namespace.Calendar');
     ServiceAgent sa;
     TestEnvironment env;
     model.Owner owner;
