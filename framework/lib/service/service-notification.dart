@@ -89,7 +89,15 @@ class NotificationService {
     Uri uri = Resource.Notification.send(_host);
     uri = _appendToken(uri, _token);
 
-    return new Future.error(new UnimplementedError());
+    final payload = {
+      'recipients': recipients.toList(),
+      'message': event.toJson()
+    };
+
+    return _backend
+        .post(uri, JSON.encode(payload))
+        .then(JSON.decode)
+        .then((Map map) => new Model.ClientConnection.fromMap(map));
   }
 
   /**
