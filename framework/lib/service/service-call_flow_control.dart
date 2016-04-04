@@ -102,7 +102,6 @@ class CallFlowControl {
   /**
    * Retrives the a specific channel as a Map.
    */
-  @deprecated
   Future<Map> channelMap(String uuid) {
     Uri uri = Resource.CallFlowControl.channel(_host, uuid);
     uri = _appendToken(uri, _token);
