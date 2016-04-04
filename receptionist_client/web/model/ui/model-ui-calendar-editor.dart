@@ -269,8 +269,8 @@ class UICalendarEditor extends UIModel {
     try {
       _updateReadableAndDuration();
     } catch (_) {
-      /// NOTE (TL): Errors caught here of the NaN type due to bad input in the
-      /// start/stop fields.
+      /// NOTE (TL): Errors caught here are of the NaN type due to bad input in
+      /// the start/stop fields.
     }
   }
 

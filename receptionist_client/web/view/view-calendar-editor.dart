@@ -157,9 +157,7 @@ class CalendarEditor extends ViewWidget {
    * Setup the widget accordingly to where it was opened from. [from] MUST be
    * the [Controller.Widget] that activated CalendarEditor.
    *
-   * This widget is only ever opened from other widgets, and as such we need to
-   * know who activated us, in order to properly know how to find and deal
-   * with the calendar entry we're either deleting/editing or creating.
+   * [from] decides which calendar to create/edit entries for.
    */
   void _setup(Controller.Widget from, Controller.Cmd cmd) {
     ORModel.CalendarEntry entry;
