@@ -61,10 +61,10 @@ Future main(List<String> args) async {
 }
 
 void connectESLClient() {
-  Duration period = new Duration(seconds: 3);
-  final String hostname = config.callFlowControl.eslConfig.hostname;
-  final String password = config.callFlowControl.eslConfig.password;
-  final int port = config.callFlowControl.eslConfig.port;
+  final Duration period = new Duration(seconds: 3);
+  final String hostname = parsedArgs['esl-hostname'];
+  final String password = parsedArgs['esl-password'];
+  final int port = int.parse(parsedArgs['esl-port']);
 
   log.info('Connecting to ${hostname}:${port}');
 
@@ -151,6 +151,15 @@ void registerAndParseCommandlineArguments(List<String> arguments) {
         abbr: 'h',
         defaultsTo: config.configserver.externalHostName,
         help: 'The hostname or IP listen-address for the HTTP server')
+    ..addOption('esl-hostname',
+        defaultsTo: config.callFlowControl.eslConfig.hostname,
+        help: 'The hostname of the ESL server')
+    ..addOption('esl-password',
+        defaultsTo: config.callFlowControl.eslConfig.password,
+        help: 'The password for the ESL server')
+    ..addOption('esl-port',
+        defaultsTo: config.callFlowControl.eslConfig.port.toString(),
+        help: 'The port of the ESL server')
     ..addOption('auth-uri',
         defaultsTo: config.authServer.externalUri.toString(),
         help: 'The uri of the authentication server')
