@@ -129,29 +129,29 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
 
   List<Address> to = currentRecipients
       .where((mr) => mr.role == Model.Role.TO)
-      .map((mrto) => new Address(mrto.address, mrto.contactName))
+      .map((mrto) => new Address(mrto.address))
       .toList(growable: false);
 
   List<Address> cc = currentRecipients
       .where((mr) => mr.role == Model.Role.CC)
-      .map((mrto) => new Address(mrto.address, mrto.contactName))
+      .map((mrto) => new Address(mrto.address))
       .toList(growable: false);
 
   List<Address> bcc = currentRecipients
       .where((mr) => mr.role == Model.Role.BCC)
-      .map((mrto) => new Address(mrto.address, mrto.contactName))
+      .map((mrto) => new Address(mrto.address))
       .toList(growable: false);
 
   if (currentRecipients.isNotEmpty) {
     Model.TemplateEmail templateEmail = new Model.TemplateEmail(message, user);
-    Email email =
-        new Email(new Address(senderAddress, senderName), config.messageDispatcher.smtp.hostname)
-          ..to = to
-          ..cc = cc
-          ..bcc = bcc
-          ..subject = templateEmail.subject
-          ..partText = templateEmail.bodyText
-          ..partHtml = templateEmail.bodyHtml;
+    Email email = new Email(new Address(senderAddress, senderName),
+        config.messageDispatcher.smtp.hostname)
+      ..to = to
+      ..cc = cc
+      ..bcc = bcc
+      ..subject = templateEmail.subject
+      ..partText = templateEmail.bodyText
+      ..partHtml = templateEmail.bodyHtml;
 
     await new SmtpClient(options).send(email).then((_) {
       /// Update the handled recipient set.
@@ -171,11 +171,11 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
 
   if (currentRecipients.isNotEmpty) {
     Model.Template templateSMS = new Model.TemplateSMS(message);
-    Email sms =
-        new Email(new Address(senderAddress, senderName), config.messageDispatcher.smtp.hostname)
-          ..to = currentRecipients
-              .map((mrto) => new Address(mrto.address + config.messageDispatcher.smsKey, ''))
-          ..partText = templateSMS.bodyText;
+    Email sms = new Email(new Address(senderAddress, senderName),
+        config.messageDispatcher.smtp.hostname)
+      ..to = currentRecipients.map(
+          (mrto) => new Address(mrto.address + config.messageDispatcher.smsKey))
+      ..partText = templateSMS.bodyText;
 
     await new SmtpClient(options).send(sms).then((_) {
       queueItem.handledRecipients = currentRecipients;
