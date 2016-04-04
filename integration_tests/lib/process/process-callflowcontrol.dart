@@ -10,6 +10,9 @@ class CallFlowControl implements ServiceProcess {
   final String bindAddress;
   final Uri authUri;
   final Uri notificationUri;
+  final String eslHostname;
+  final String eslPassword;
+  final int eslPort;
 
   final Completer _ready = new Completer();
   bool get ready => _ready.isCompleted;
@@ -22,7 +25,10 @@ class CallFlowControl implements ServiceProcess {
       {this.servicePort: 4242,
       this.bindAddress: '0.0.0.0',
       this.authUri: null,
-      this.notificationUri: null}) {
+      this.notificationUri: null,
+      this.eslHostname: null,
+      this.eslPort: null,
+      this.eslPassword: null}) {
     _init();
   }
 
@@ -51,6 +57,18 @@ class CallFlowControl implements ServiceProcess {
 
     if (notificationUri != null) {
       arguments.addAll(['--notification-uri', notificationUri.toString()]);
+    }
+
+    if (eslHostname != null) {
+      arguments.addAll(['--esl-hostname', eslHostname.toString()]);
+    }
+
+    if (eslPassword != null) {
+      arguments.addAll(['--esl-password', eslPassword.toString()]);
+    }
+
+    if (eslPort != null) {
+      arguments.addAll(['--esl-port', eslPort.toString()]);
     }
 
     _log.fine('Starting process /usr/bin/dart ${arguments.join(' ')}');

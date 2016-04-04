@@ -11,6 +11,9 @@ class DialplanServer implements ServiceProcess {
   final String bindAddress;
   final Uri authUri;
   final String playbackPrefix;
+  final String eslHostname;
+  final String eslPassword;
+  final int eslPort;
 
   final Completer _ready = new Completer();
   bool get ready => _ready.isCompleted;
@@ -20,7 +23,10 @@ class DialplanServer implements ServiceProcess {
       {this.servicePort: 4060,
       this.bindAddress: '0.0.0.0',
       this.authUri: null,
-      this.playbackPrefix: ''}) {
+      this.playbackPrefix: '',
+      this.eslHostname: null,
+      this.eslPort: null,
+      this.eslPassword: null}) {
     _init();
   }
 
@@ -51,6 +57,18 @@ class DialplanServer implements ServiceProcess {
 
     if (authUri != null) {
       arguments.addAll(['--auth-uri', authUri.toString()]);
+    }
+
+    if (eslHostname != null) {
+      arguments.addAll(['--esl-hostname', eslHostname.toString()]);
+    }
+
+    if (eslPassword != null) {
+      arguments.addAll(['--esl-password', eslPassword.toString()]);
+    }
+
+    if (eslPort != null) {
+      arguments.addAll(['--esl-port', eslPort.toString()]);
     }
 
     _log.fine('Starting process /usr/bin/dart ${arguments.join(' ')}');
