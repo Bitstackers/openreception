@@ -85,6 +85,7 @@ abstract class CallPark {
 
     log.info('Receptionist pickup call $targetedCall last time');
     parkedCall = await receptionist.pickup(targetedCall, waitForEvent: true);
+    receptionist.eventStack.clear();
 
     expect(parkedCall.assignedTo, equals(receptionist.user.id));
     expect(parkedCall.state, equals(model.CallState.Speaking));
@@ -97,12 +98,12 @@ abstract class CallPark {
     await receptionist.waitFor(
         eventType: event.Key.callUnpark,
         callID: targetedCall.ID,
-        timeoutSeconds: 1);
+        timeoutSeconds: 3);
     log.info('Receptionist expects call to hang up');
     receptionist.waitFor(
         eventType: event.Key.callHangup,
         callID: targetedCall.ID,
-        timeoutSeconds: 1);
+        timeoutSeconds: 3);
   }
 
   /**
