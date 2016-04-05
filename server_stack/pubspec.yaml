@@ -23,6 +23,7 @@ dependencies:
        url: https://github.com/rostgaard/OpenReceptionFramework.git
     version: '>=0.0.26'
   route: any
+  web_socket_channel: any
   shelf: any
   shelf_auth: any
   shelf_cors: any
