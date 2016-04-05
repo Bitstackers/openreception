@@ -72,14 +72,11 @@
 #reception-rightbar>div {
   height: 100%;
   box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
-padding: 0px;
+  padding: 0px;
 }
 
 #reception-contact-list {
-  height: 100%;
-  height: -moz-calc(100% - 20px);
-  height: -webkit-calc(100% - 20px);
-
+  height: 98%;
   overflow: auto;
 }
 

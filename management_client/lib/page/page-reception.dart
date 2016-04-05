@@ -72,12 +72,10 @@ class ReceptionView {
         ..children = [
           new DivElement()
             ..id = 'reception-contact-container'
+            ..style.height = '99.5%'
             ..children = [
-              new DivElement()
-                ..children = [
-                  new HeadingElement.h4()..text = 'Kontakter',
-                  _ulContactList
-                ]
+              new HeadingElement.h4()..text = 'Kontakter',
+              _ulContactList
             ]
         ]
     ];
