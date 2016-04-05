@@ -261,7 +261,8 @@ class Cdr {
         : entry.externalTransferEpoch > 0
             ? durationToString(new Duration(
                 seconds: entry.externalTransferEpoch - entry.agentBeginEpoch))
-            : entry.answerEpoch > 0
+            : entry.answerEpoch > 0 &&
+                    entry.state != model.CdrEntryState.notifiedNotAnswered
                 ? durationToString(
                     new Duration(seconds: entry.endEpoch - entry.answerEpoch))
                 : entry.endEpoch > 0
