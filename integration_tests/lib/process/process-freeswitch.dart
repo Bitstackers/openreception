@@ -13,6 +13,14 @@ class FreeSwitch implements ServiceProcess {
   String get runPath => basePath + '/run';
   String get dbPath => basePath + '/db';
   String get soundsPath => basePath + '/sounds';
+  String get ivrPath => basePath + '/ivr_menus';
+  String get dialplanPath => basePath + '/dialplan';
+  String get receptionDialplanPath => dialplanPath + '/receptions';
+  String get userDirectoryPath => basePath + '/directory';
+  String get receptionistsPath => userDirectoryPath + '/receptionists';
+  String get testCallersPath => userDirectoryPath + '/test-callers';
+  String get voicemailPath => userDirectoryPath + '/voicemail';
+
   final Logger _log = new Logger('$_namespace.FreeSwitch');
   Process _process;
 
@@ -29,9 +37,23 @@ class FreeSwitch implements ServiceProcess {
    *
    */
   Future _createDirs() async {
-    [logPath, confPath, runPath, dbPath, soundsPath].forEach((path) {
+    [
+      logPath,
+      confPath,
+      runPath,
+      dbPath,
+      soundsPath,
+      ivrPath,
+      dialplanPath,
+      receptionDialplanPath,
+      userDirectoryPath,
+      receptionistsPath,
+      testCallersPath,
+      voicemailPath
+    ].forEach((path) {
       Directory dir = new Directory(path);
       if (!dir.existsSync()) {
+        _log.fine('Creating directory ${dir.absolute.path}');
         dir.createSync();
       }
     });
@@ -44,6 +66,7 @@ class FreeSwitch implements ServiceProcess {
     Directory confDir = new Directory(confPath);
     confDir.deleteSync(recursive: true);
     confDir.createSync();
+    await _createDirs();
 
     _log.info('Cleaning config in directory ${confDir.absolute.path}');
 
