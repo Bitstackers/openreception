@@ -13,10 +13,10 @@ class FreeSwitch implements ServiceProcess {
   String get runPath => basePath + '/run';
   String get dbPath => basePath + '/db';
   String get soundsPath => basePath + '/sounds';
-  String get ivrPath => basePath + '/ivr_menus';
-  String get dialplanPath => basePath + '/dialplan';
+  String get ivrPath => confPath + '/ivr_menus';
+  String get dialplanPath => confPath + '/dialplan';
   String get receptionDialplanPath => dialplanPath + '/receptions';
-  String get userDirectoryPath => basePath + '/directory';
+  String get userDirectoryPath => confPath + '/directory';
   String get receptionistsPath => userDirectoryPath + '/receptionists';
   String get testCallersPath => userDirectoryPath + '/test-callers';
   String get voicemailPath => userDirectoryPath + '/voicemail';
