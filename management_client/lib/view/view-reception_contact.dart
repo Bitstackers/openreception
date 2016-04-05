@@ -22,7 +22,8 @@ class ReceptionContact {
       _distributionsListView.validationError ||
       _phoneNumberView.validationError;
 
-  final HeadingElement _header = new HeadingElement.h2()..classes.add('reception-contact-header');
+  final HeadingElement _header = new HeadingElement.h2()
+    ..classes.add('reception-contact-header');
 
   final TextInputElement _ridInput = new TextInputElement()
     ..value = model.Reception.noID.toString()
@@ -77,7 +78,8 @@ class ReceptionContact {
   final TextAreaElement _workHoursInput = new TextAreaElement()
     ..classes.add('wide')
     ..value = '';
-  final CheckboxInputElement _statusEmailInput = new CheckboxInputElement()..checked = true;
+  final CheckboxInputElement _statusEmailInput = new CheckboxInputElement()
+    ..checked = true;
 
   Endpoints _endpointsView;
   DistributionList _distributionsListView;
@@ -86,8 +88,8 @@ class ReceptionContact {
   /**
    *
    */
-  ReceptionContact(this._receptionController, this._contactController, this._endpointController,
-      this._dlistController, bool this._single) {
+  ReceptionContact(this._receptionController, this._contactController,
+      this._endpointController, this._dlistController, bool this._single) {
     if (!_single) {
       element.style.height = '45px';
     }
@@ -105,7 +107,10 @@ class ReceptionContact {
       _ridInput,
 
       new DivElement()
-        ..children = [new LabelElement()..text = 'Ønsker statusmails', _statusEmailInput],
+        ..children = [
+          new LabelElement()..text = 'Ønsker statusmails',
+          _statusEmailInput
+        ],
 
       /// Left column.
       new DivElement()
@@ -224,7 +229,8 @@ class ReceptionContact {
         try {
           await Future.wait(_endpointsView.endpointChanges.map((epc) async {
             if (epc.type == Change.created) {
-              await _endpointController.create(contact.receptionID, contact.ID, epc.endpoint);
+              await _endpointController.create(
+                  contact.receptionID, contact.ID, epc.endpoint);
             } else if (epc.type == Change.deleted) {
               await _endpointController.remove(epc.endpoint.id);
             } else if (epc.type == Change.updated) {
@@ -238,9 +244,11 @@ class ReceptionContact {
         }
 
         try {
-          await Future.wait(_distributionsListView.distributionListChanges.map((dlc) async {
+          await Future.wait(
+              _distributionsListView.distributionListChanges.map((dlc) async {
             if (dlc.type == Change.created) {
-              await _dlistController.addRecipient(contact.receptionID, contact.ID, dlc.entry);
+              await _dlistController.addRecipient(
+                  contact.receptionID, contact.ID, dlc.entry);
             } else if (dlc.type == Change.deleted) {
               await _dlistController.removeRecipient(dlc.entry.id);
             } else {
@@ -257,7 +265,8 @@ class ReceptionContact {
       }
 
       /// Reload the contact.
-      contact = await _contactController.getByReception(contact.ID, contact.receptionID);
+      contact = await _contactController.getByReception(
+          contact.ID, contact.receptionID);
     });
 
     _deleteButton.onClick.listen((_) async {
@@ -270,8 +279,10 @@ class ReceptionContact {
       }
 
       try {
-        await _contactController.removeFromReception(contact.ID, contact.receptionID);
-        notify.success('Receptions-kontakt fjernet fra reception', '${_header.text}');
+        await _contactController.removeFromReception(
+            contact.ID, contact.receptionID);
+        notify.success(
+            'Receptions-kontakt fjernet fra reception', '${_header.text}');
         element.remove();
       } catch (error) {
         notify.error('Receptions-kontakten ikke fjernet', 'Fejl: $error');
