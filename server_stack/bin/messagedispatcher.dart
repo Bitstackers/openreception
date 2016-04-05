@@ -133,17 +133,17 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
 
   List<Address> to = currentRecipients
       .where((mr) => mr.role == Model.Role.TO)
-      .map((mrto) => new Address(mrto.address))
+      .map((mrto) => new Address(mrto.address.trim()))
       .toList(growable: false);
 
   List<Address> cc = currentRecipients
       .where((mr) => mr.role == Model.Role.CC)
-      .map((mrto) => new Address(mrto.address))
+      .map((mrto) => new Address(mrto.address.trim()))
       .toList(growable: false);
 
   List<Address> bcc = currentRecipients
       .where((mr) => mr.role == Model.Role.BCC)
-      .map((mrto) => new Address(mrto.address))
+      .map((mrto) => new Address(mrto.address.trim()))
       .toList(growable: false);
 
   if (currentRecipients.isNotEmpty) {
@@ -177,8 +177,8 @@ Future tryDispatch(Model.MessageQueueItem queueItem) async {
     Model.Template templateSMS = new Model.TemplateSMS(message);
     Email sms = new Email(new Address(senderAddress, senderName),
         config.messageDispatcher.smtp.hostname)
-      ..to = currentRecipients.map(
-          (mrto) => new Address(mrto.address + config.messageDispatcher.smsKey))
+      ..to = currentRecipients.map((mrto) =>
+          new Address((mrto.address + config.messageDispatcher.smsKey).trim()))
       ..partText = templateSMS.bodyText;
 
     await new SmtpClient(options).send(sms).then((_) {
