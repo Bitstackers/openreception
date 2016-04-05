@@ -253,21 +253,16 @@ class Cdr {
             ? '${epochToString(entry.answerEpoch, withDate: false)}'
             : '';
 
-    String durationToString(Duration d) => d.toString().split('.').first;
-
-    String callLength(model.CdrEntry entry) => entry.agentEndEpoch > 0
-        ? durationToString(
-            new Duration(seconds: entry.agentEndEpoch - entry.agentBeginEpoch))
+    Duration callLength(model.CdrEntry entry) => entry.agentEndEpoch > 0
+        ? new Duration(seconds: entry.agentEndEpoch - entry.agentBeginEpoch)
         : entry.externalTransferEpoch > 0
-            ? durationToString(new Duration(
-                seconds: entry.externalTransferEpoch - entry.agentBeginEpoch))
+            ? new Duration(
+                seconds: entry.externalTransferEpoch - entry.agentBeginEpoch)
             : entry.answerEpoch > 0 &&
                     entry.state != model.CdrEntryState.notifiedNotAnswered
-                ? durationToString(
-                    new Duration(seconds: entry.endEpoch - entry.answerEpoch))
+                ? new Duration(seconds: entry.endEpoch - entry.answerEpoch)
                 : entry.endEpoch > 0
-                    ? durationToString(new Duration(
-                        seconds: entry.endEpoch - entry.startEpoch))
+                    ? new Duration(seconds: entry.endEpoch - entry.startEpoch)
                     : '';
 
     String endTime(model.CdrEntry entry) => entry.agentEndEpoch > 0
@@ -301,10 +296,12 @@ class Cdr {
           }
       }
 
-      return durationToString(d);
+      return d.toString().split('.').first;
     }
 
     for (Context c in contexts) {
+      final Duration lengthOfCall = callLength(c.entry);
+
       if (c.entry.state == model.CdrEntryState.notifiedAnsweredByAgent) {
         answeredEntries.add(c.entry);
       }
@@ -353,7 +350,7 @@ class Cdr {
           new TableCellElement()..text = endTime(c.entry),
           new TableCellElement()
             ..style.textAlign = 'center'
-            ..text = callLength(c.entry)
+            ..text = lengthOfCall.toString().split('.').first
             ..title = 'længde',
           new TableCellElement()..text = c.recName,
           new TableCellElement()
