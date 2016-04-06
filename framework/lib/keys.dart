@@ -13,14 +13,37 @@
 
 library openreception.keys;
 
-const String uuid = 'uuid';
 const String id = 'id';
-const String contactId = 'cid';
-const String receptionId = 'rid';
-const String organizationId = 'oid';
-const String messageId = 'mid';
-const String userId = 'uid';
+const String cid = 'cid';
+const String eid = 'eid';
+const String mid = 'mid';
+const String oid = 'oid';
+const String rid = 'rid';
+const String uid = 'uid';
+const String uuid = 'uuid';
+
+const String authentication = 'auth';
+const String calendar = 'calendar';
+const String callflow = 'callflow';
+const String cdr = 'cdr';
+const String notification = 'notification';
+const String user = 'user';
+
+@deprecated
+const String contactId = cid;
+@deprecated
+const String receptionId = rid;
+@deprecated
+const String organizationId = oid;
+@deprecated
+const String messageId = mid;
+@deprecated
+const String userId = uid;
+
+const String change = 'change';
+const String changes = 'changes';
 const String callId = 'call_id';
+const String identity = 'identity';
 
 const String owner = 'owner';
 const String destination = 'destination';
@@ -31,7 +54,7 @@ const String total = 'total';
 const String agentChannel = 'agentChannel';
 const String path = 'path';
 const String started = 'started';
-const String parentRef = 'parentRef';
+const String commitHash = 'commitHash';
 const String contactName = 'contact_name';
 const String receptionName = 'reception_name';
 const String contactType = 'contact_type';
