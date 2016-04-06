@@ -86,6 +86,7 @@ class CallStat {
 
 class CallHistory {
   List<event.CallEvent> _events = [];
+  int availableAgents = 0;
 
   void addEvent(event.Event e) {
     _events.add(e);
