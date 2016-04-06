@@ -68,6 +68,8 @@ abstract class Notification {
         new List<WebSocketChannel>(),
         (combined, websockets) => combined..addAll(websockets));
 
+    recipientSockets.shuffle();
+
     recipientSockets.forEach(((WebSocketChannel ws) {
       try {
         String contentString = JSON.encode(content);
