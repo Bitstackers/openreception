@@ -253,17 +253,45 @@ class Cdr {
             ? '${epochToString(entry.answerEpoch, withDate: false)}'
             : '';
 
-    Duration callLength(model.CdrEntry entry) => entry.agentEndEpoch > 0
-        ? new Duration(seconds: entry.agentEndEpoch - entry.agentBeginEpoch)
-        : entry.externalTransferEpoch > 0
-            ? new Duration(
-                seconds: entry.externalTransferEpoch - entry.agentBeginEpoch)
-            : entry.answerEpoch > 0 &&
-                    entry.state != model.CdrEntryState.notifiedNotAnswered
-                ? new Duration(seconds: entry.endEpoch - entry.answerEpoch)
-                : entry.endEpoch > 0
-                    ? new Duration(seconds: entry.endEpoch - entry.startEpoch)
-                    : '';
+    Duration callLength(model.CdrEntry entry) {
+      Duration d;
+
+      switch (entry.state) {
+        case model.CdrEntryState.agentChannel:
+        case model.CdrEntryState.notifiedNotAnswered:
+        case model.CdrEntryState.unknown:
+          d = new Duration(seconds: entry.endEpoch - entry.startEpoch);
+          break;
+        case model.CdrEntryState.inboundNotNotified:
+          if (entry.externalTransferEpoch > 0) {
+            d = new Duration(
+                seconds: entry.externalTransferEpoch - entry.answerEpoch);
+          } else if (entry.answerEpoch > 0) {
+            d = new Duration(seconds: entry.endEpoch - entry.answerEpoch);
+          } else {
+            d = new Duration(seconds: entry.endEpoch - entry.startEpoch);
+          }
+          break;
+        case model.CdrEntryState.notifiedAnsweredByAgent:
+          if (entry.externalTransferEpoch > 0) {
+            d = new Duration(
+                seconds: entry.externalTransferEpoch - entry.agentBeginEpoch);
+          } else {
+            d = new Duration(
+                seconds: entry.agentEndEpoch - entry.agentBeginEpoch);
+          }
+          break;
+        case model.CdrEntryState.outboundByAgent:
+        case model.CdrEntryState.outboundByPbx:
+          if (entry.answerEpoch > 0) {
+            d = new Duration(seconds: entry.endEpoch - entry.answerEpoch);
+          } else {
+            d = new Duration(seconds: entry.endEpoch - entry.startEpoch);
+          }
+      }
+
+      return d;
+    }
 
     String endTime(model.CdrEntry entry) => entry.agentEndEpoch > 0
         ? '${epochToString(entry.agentEndEpoch, withDate: false)}'
