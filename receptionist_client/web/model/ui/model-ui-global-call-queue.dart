@@ -17,14 +17,16 @@ part of model;
  * Provides access to the global call queue widget.
  */
 class UIGlobalCallQueue extends UIModel {
+  final bool _hideInboundCallerId;
   final Map<String, String> _langMap;
+  final List<String> _myIdentities;
   final DivElement _myRoot;
 
   /**
    * Constructor.
    */
-  UIGlobalCallQueue(
-      DivElement this._myRoot, Map<String, String> this._langMap) {
+  UIGlobalCallQueue(DivElement this._myRoot, Map<String, String> this._langMap,
+      bool this._hideInboundCallerId, List<String> this._myIdentities) {
     _setupLocalKeys();
     _observers();
   }
@@ -60,7 +62,9 @@ class UIGlobalCallQueue extends UIModel {
 
     final SpanElement callDesc = new SpanElement()
       ..classes.add('call-description')
-      ..text = _langMap[Key.call]
+      ..text = (_myIdentities.contains(call.callerID) || !_hideInboundCallerId)
+          ? call.callerID
+          : _langMap[Key.call]
       ..children.add(callState);
 
     final SpanElement callWaitTimer = new SpanElement()

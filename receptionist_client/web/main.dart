@@ -315,6 +315,7 @@ Future registerReadyView(
         appState,
         uiReady,
         calendarController,
+        clientConfig,
         new Controller.Contact(contactStore),
         receptionController,
         sortedReceptions,

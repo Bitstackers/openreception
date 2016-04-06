@@ -21,6 +21,7 @@ class ORCReady {
   final Model.AppClientState _appState;
   final Controller.Calendar _calendarController;
   final Controller.Call _callController;
+  final ORModel.ClientConfiguration _clientConfig;
   ContactCalendar _contactCalendar;
   final Controller.Contact _contactController;
   ContactSelector _contactSelector;
@@ -47,6 +48,7 @@ class ORCReady {
       Model.AppClientState appState,
       Model.UIORCReady uiReady,
       Controller.Calendar calendarController,
+      ORModel.ClientConfiguration clientConfig,
       Controller.Contact contactController,
       Controller.Reception receptionController,
       List<ORModel.Reception> sortedReceptions,
@@ -64,6 +66,7 @@ class ORCReady {
           appState,
           uiReady,
           calendarController,
+          clientConfig,
           contactController,
           receptionController,
           sortedReceptions,
@@ -88,6 +91,7 @@ class ORCReady {
       Model.AppClientState this._appState,
       Model.UIORCReady this._ui,
       this._calendarController,
+      this._clientConfig,
       this._contactController,
       this._receptionController,
       this._sortedReceptions,
@@ -150,7 +154,10 @@ class ORCReady {
 
       new GlobalCallQueue(
           new Model.UIGlobalCallQueue(
-              querySelector('#global-call-queue'), _langMap),
+              querySelector('#global-call-queue'),
+              _langMap,
+              _clientConfig.hideInboundCallerId,
+              _clientConfig.myIdentifiers),
           _appState,
           new Controller.Destination(
               Controller.Context.home, Controller.Widget.globalCallQueue),
