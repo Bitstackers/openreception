@@ -45,15 +45,13 @@ void _runMessageTests() {
     test('remove', () => storeTest.Message.remove(sa));
 
     test('create', () => storeTest.Message.create(sa));
+
     test('update', () => storeTest.Message.update(sa));
 
-    test('message update (event presence)',
-        () => serviceTest.Message.updateEvent(sa));
+    test('update (event presence)', () => serviceTest.Message.updateEvent(sa));
 
-    test('message create (event presence)',
-        () => serviceTest.Message.createEvent(sa));
+    test('create (event presence)', () => serviceTest.Message.createEvent(sa));
 
-    test('message remove (event presence)',
-        () => serviceTest.Message.removeEvent(sa));
+    test('remove (event presence)', () => serviceTest.Message.removeEvent(sa));
   });
 }
