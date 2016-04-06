@@ -48,8 +48,6 @@ class OrganizationView {
   view.Organization _organizationView;
 
   List<ORModel.Organization> _organizations = new List<ORModel.Organization>();
-
-  List<ORModel.Contact> _currentContactList = new List<ORModel.Contact>();
   List<ORModel.Reception> _currentReceptionList = new List<ORModel.Reception>();
 
   /**
@@ -135,7 +133,6 @@ class OrganizationView {
   }
 
   void _clearRightBar() {
-    _currentContactList.clear();
     _currentReceptionList.clear();
     _ulContactList.children.clear();
     _ulReceptionList.children.clear();
@@ -247,19 +244,28 @@ class OrganizationView {
     _organizationController
         .contacts(organizationId)
         .then((Iterable<ORModel.BaseContact> contacts) {
-      int compareTo(ORModel.BaseContact c1, ORModel.BaseContact c2) =>
-          c1.fullName.toLowerCase().compareTo(c2.fullName.toLowerCase());
+      int nameSort(ORModel.BaseContact x, ORModel.BaseContact y) =>
+          x.fullName.toLowerCase().compareTo(y.fullName.toLowerCase());
+      final List<ORModel.BaseContact> functionContacts = contacts
+          .where((ORModel.BaseContact contact) =>
+              contact.enabled && contact.contactType == 'function')
+          .toList()..sort(nameSort);
+      final List<ORModel.BaseContact> humanContacts = contacts
+          .where((ORModel.BaseContact contact) =>
+              contact.enabled && contact.contactType == 'human')
+          .toList()..sort(nameSort);
+      final List<ORModel.BaseContact> disabledContacts = contacts
+          .where((ORModel.BaseContact contact) => !contact.enabled)
+          .toList()..sort(nameSort);
 
-      List list = contacts.toList()..sort(compareTo);
+      List<ORModel.BaseContact> sorted = new List<ORModel.BaseContact>()
+        ..addAll(functionContacts)
+        ..addAll(humanContacts)
+        ..addAll(disabledContacts);
 
-      _currentContactList = list
-          .map((c) => new ORModel.BaseContact.empty()
-            ..id = c.id
-            ..fullName = c.fullName)
-          .toList();
       _ulContactList.children
         ..clear()
-        ..addAll(list.map(_makeContactNode));
+        ..addAll(sorted.map(_makeContactNode));
     }).catchError((error) {
       notify.error('Kunne ikke hente organisationskontakter', 'Fejl: $error');
       _log.severe(
@@ -270,7 +276,9 @@ class OrganizationView {
   LIElement _makeContactNode(ORModel.BaseContact contact) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
-      ..text = '${contact.fullName}'
+      ..text = contact.contactType == 'function'
+          ? '⚙ ${contact.fullName}'
+          : contact.fullName
       ..onClick.listen((_) {
         Map data = {'contact_id': contact.id};
         bus.fire(new WindowChanged('contact', data));

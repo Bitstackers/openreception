@@ -177,10 +177,25 @@ class ReceptionView {
     _contactController
         .list(receptionId)
         .then((Iterable<ORModel.Contact> contacts) {
-      int compareTo(ORModel.Contact c1, ORModel.Contact c2) =>
-          c1.fullName.compareTo(c2.fullName);
+      int nameSort(ORModel.Contact x, ORModel.Contact y) =>
+          x.fullName.toLowerCase().compareTo(y.fullName.toLowerCase());
+      final List<ORModel.Contact> functionContacts = contacts
+          .where((ORModel.Contact contact) =>
+              contact.enabled && contact.contactType == 'function')
+          .toList()..sort(nameSort);
+      final List<ORModel.Contact> humanContacts = contacts
+          .where((ORModel.Contact contact) =>
+              contact.enabled && contact.contactType == 'human')
+          .toList()..sort(nameSort);
+      final List<ORModel.Contact> disabledContacts = contacts
+          .where((ORModel.Contact contact) => !contact.enabled)
+          .toList()..sort(nameSort);
 
-      List<ORModel.Contact> sorted = contacts.toList()..sort(compareTo);
+      List<ORModel.Contact> sorted = new List<ORModel.Contact>()
+        ..addAll(functionContacts)
+        ..addAll(humanContacts)
+        ..addAll(disabledContacts);
+
       _ulContactList.children
         ..clear()
         ..addAll(sorted.map((ORModel.Contact contact) =>
@@ -191,7 +206,9 @@ class ReceptionView {
   LIElement makeContactNode(ORModel.Contact contact, int receptionId) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
-      ..text = contact.fullName
+      ..text = contact.contactType == 'function'
+          ? '⚙ ${contact.fullName}'
+          : contact.fullName
       ..onClick.listen((_) {
         Map data = {'contact_id': contact.ID, 'reception_id': receptionId};
         bus.fire(new WindowChanged('contact', data));
