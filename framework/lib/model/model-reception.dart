@@ -145,7 +145,7 @@ class Reception {
       if (receptionMap[Key.attributes] != null) {
         attributes = receptionMap[Key.attributes];
       }
-    } catch (error, stacktrace) {
+    } catch (error) {
       throw new ArgumentError('Invalid data in map');
     }
   }
