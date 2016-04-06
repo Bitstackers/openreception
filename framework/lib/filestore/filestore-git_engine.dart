@@ -13,12 +13,36 @@
 
 part of openreception.filestore;
 
+class FileChange {
+  final model.ChangeType changeType;
+  final String filename;
+
+  const FileChange(this.changeType, this.filename);
+
+  /**
+   *
+   */
+  String toJson() => '$changeType $filename';
+}
+
 class Change {
   final DateTime changeTime;
   final String author;
   final String message;
+  final String commitHash;
+  List<FileChange> fileChanges = [];
 
-  const Change(this.changeTime, this.author, {this.message: ''});
+  Change(this.changeTime, this.author, this.commitHash, {this.message: ''});
+
+  /**
+   *
+   */
+  Map toJson() => {
+        'changed': changeTime.millisecondsSinceEpoch,
+        'author': author,
+        'message': message,
+        'changes': new List<String>.from(fileChanges.map((fc) => fc.toJson()))
+      };
 }
 
 class GitEngine {
@@ -207,15 +231,58 @@ class GitEngine {
   /**
    *
    */
-  Future changes(File file) async {
-    final ProcessResult result = await Process.run('/usr/bin/git',
-        ['log', '--pretty=format:"%ct%x09%aE%x09%s"', file.path],
-        workingDirectory: path);
+  Future<Iterable<Change>> changes(FileSystemEntity fse) async {
+    final String gitBin = '/usr/bin/git';
+    final List<String> arguments = [
+      'log',
+      '--name-status',
+      '--pretty=format:%ct%x09%aE%x09%H%x09%s',
+      '--follow',
+      '--',
+      fse.path
+    ];
 
-    List<String> lines = result.stdout.split('\n');
-    List<Change> changeList = [];
-    lines.forEach((line) {
-      List<String> parts = line.split(new String.fromCharCode(9));
+    _log.finest('Running command $gitBin ${arguments.join(' ')}');
+    final ProcessResult result =
+        await Process.run(gitBin, arguments, workingDirectory: path);
+
+    final List<String> lines = result.stdout.split('\n');
+    final List<Change> changeList = [];
+
+    void processBuffer(List<String> bufferLines) {
+      List<String> parts = bufferLines.first.split(new String.fromCharCode(9));
+      final int milliseconds = int.parse(parts[0]) * 1000;
+      final String authorIdentity = parts[1].trim();
+      final String commitHash = parts[2].trim();
+      final String message = parts[3].trim();
+      List<FileChange> fileChanges = [];
+
+      bufferLines.skip(1).forEach((line) {
+        model.ChangeType changeType =
+            model.changeTypeFromString(line.substring(0, 1));
+        String filename = line.substring(1).trim();
+        fileChanges.add(new FileChange(changeType, filename));
+      });
+
+      final Change change = new Change(
+          new DateTime.fromMillisecondsSinceEpoch(milliseconds),
+          authorIdentity,
+          commitHash,
+          message: message)..fileChanges = fileChanges;
+
+      changeList.add(change);
+    }
+
+    List<String> buffer = [];
+    lines.forEach((String line) {
+      line = line.trim();
+
+      if (line.isEmpty && buffer.isNotEmpty) {
+        processBuffer(buffer);
+        buffer.clear();
+      } else {
+        buffer.add(line);
+      }
     });
 
     String stderr = result.stderr;
@@ -224,9 +291,11 @@ class GitEngine {
     }
 
     if (result.exitCode != 0) {
-      _log.shout('Failed to add ${path}');
+      _log.shout('Failed to run $gitBin ${arguments.join(' ')}');
       throw new storage.ServerError();
     }
+
+    return changeList;
   }
 
   /**
