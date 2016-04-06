@@ -35,7 +35,7 @@ class Organization {
       okJson((await _orgStore.list()).toList(growable: false));
 
   Future<shelf.Response> receptionMap(shelf.Request request) =>
-      _organizationDB.receptionMap().then((Map map) {
+      _orgStore.receptionMap().then((Map map) {
         return new shelf.Response.ok(JSON.encode(map));
       });
 

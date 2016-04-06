@@ -95,19 +95,6 @@ class Calendar {
   /**
    *
    */
-  Future<shelf.Response> listDeleted(shelf.Request request) async {
-    final String type = shelf_route.getPathParameter(request, 'type');
-    final String oid = shelf_route.getPathParameter(request, 'oid');
-
-    final model.Owner owner = new model.Owner.parse('$type:$oid');
-
-    return okJson((await _calendarStore.list(owner, deleted: true))
-        .toList(growable: false));
-  }
-
-  /**
-   *
-   */
   Future<shelf.Response> remove(shelf.Request request) async {
     model.User modifier;
     try {
@@ -169,18 +156,16 @@ class Calendar {
   /**
    *
    */
-  Future<shelf.Response> changeLatest(shelf.Request request) async {
-    final int eid = int.parse(shelf_route.getPathParameter(request, 'eid'));
-
-    return okJson(await _calendarStore.latestChange(eid));
-  }
-
-  /**
-   *
-   */
   Future<shelf.Response> changes(shelf.Request request) async {
-    final int eid = int.parse(shelf_route.getPathParameter(request, 'eid'));
+    final int eid = shelf_route.getPathParameter(request, 'eid') != null
+        ? int.parse(shelf_route.getPathParameter(request, 'eid'))
+        : null;
+    final String type = shelf_route.getPathParameter(request, 'type');
+    final String oid = shelf_route.getPathParameter(request, 'oid');
 
-    return okJson((await _calendarStore.changes(eid)).toList(growable: false));
+    final model.Owner owner = new model.Owner.parse('$type:$oid');
+
+    return okJson(
+        (await _calendarStore.changes(owner, eid)).toList(growable: false));
   }
 }

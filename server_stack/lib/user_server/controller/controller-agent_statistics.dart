@@ -18,15 +18,15 @@ class AgentStatistics {
 
   AgentStatistics(this._agentHistory);
 
-  shelf.Response list(_) => _okJson(_agentHistory);
+  shelf.Response list(_) => okJson(_agentHistory);
 
   shelf.Response get(shelf.Request request) {
     final int uid = int.parse(shelf_route.getPathParameter(request, 'uid'));
 
     try {
-      return _okJson(_agentHistory.sumUp(uid));
+      return okJson(_agentHistory.sumUp(uid));
     } on storage.NotFound {
-      return _notFound('No stats for agent with uid $uid');
+      return notFound('No stats for agent with uid $uid');
     }
   }
 }

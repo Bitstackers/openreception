@@ -90,13 +90,14 @@ Future<io.HttpServer> start(
 
   var router = shelf_route.router()
     ..get('/calendar/{type}:{oid}', calendarController.list)
-    ..get('/calendar/{type}:{oid}/deleted', calendarController.listDeleted)
     ..get('/calendarentry/{eid}', calendarController.get)
+    ..get('/calendar/{type}:{oid}/change', calendarController.changes)
+    ..get('/calendarentry/{eid}/owner/{type}:{oid}/change',
+        calendarController.changes)
     ..get('/calendarentry/{eid}/deleted', calendarController.getDeleted)
     ..put('/calendarentry/{eid}', calendarController.update)
     ..delete('/calendarentry/{eid}', calendarController.remove)
     ..post('/calendarentry', calendarController.create)
-    ..get('/calendarentry/{eid}/change/latest', calendarController.changeLatest)
     ..get('/calendarentry/{eid}/change', calendarController.changes);
 
   var handler = const shelf.Pipeline()
