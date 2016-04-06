@@ -34,33 +34,48 @@ abstract class ModelClientConfiguration {
   static void serializationDeserialization() {
     Model.ClientConfiguration builtObject = buildObject();
     Model.ClientConfiguration deserializedObject =
-        new Model.ClientConfiguration.fromMap(JSON.decode(JSON.encode(builtObject)));
+        new Model.ClientConfiguration.fromMap(
+            JSON.decode(JSON.encode(builtObject)));
 
     expect(builtObject.authServerUri, equals(deserializedObject.authServerUri));
     expect(builtObject.userServerUri, equals(deserializedObject.userServerUri));
-    expect(builtObject.callFlowServerUri, equals(deserializedObject.callFlowServerUri));
-    expect(builtObject.contactServerUri, equals(deserializedObject.contactServerUri));
-    expect(builtObject.dialplanServerUri, equals(deserializedObject.dialplanServerUri));
-    expect(builtObject.messageServerUri, equals(deserializedObject.messageServerUri));
-    expect(builtObject.notificationServerUri, equals(deserializedObject.notificationServerUri));
-    expect(builtObject.notificationSocketUri, equals(deserializedObject.notificationSocketUri));
-    expect(builtObject.receptionServerUri, equals(deserializedObject.receptionServerUri));
-    expect(builtObject.systemLanguage, equals(deserializedObject.systemLanguage));
+    expect(builtObject.callFlowServerUri,
+        equals(deserializedObject.callFlowServerUri));
+    expect(builtObject.contactServerUri,
+        equals(deserializedObject.contactServerUri));
+    expect(builtObject.dialplanServerUri,
+        equals(deserializedObject.dialplanServerUri));
+    expect(builtObject.hideInboundCallerId,
+        equals(deserializedObject.hideInboundCallerId));
+    expect(builtObject.messageServerUri,
+        equals(deserializedObject.messageServerUri));
+    expect(builtObject.myIdentifiers, equals(deserializedObject.myIdentifiers));
+    expect(builtObject.notificationServerUri,
+        equals(deserializedObject.notificationServerUri));
+    expect(builtObject.notificationSocketUri,
+        equals(deserializedObject.notificationSocketUri));
+    expect(builtObject.receptionServerUri,
+        equals(deserializedObject.receptionServerUri));
+    expect(
+        builtObject.systemLanguage, equals(deserializedObject.systemLanguage));
   }
 
   /**
    * Build an object, and check that the expected values are present.
    */
-  static Model.ClientConfiguration buildObject () {
-
+  static Model.ClientConfiguration buildObject() {
     final Uri authServerUri = Uri.parse('http://authserver.example.com');
     final Uri userServerUri = Uri.parse('http://userserver.example.com');
     final Uri callFlowServerUri = Uri.parse('http://callFlow.example.com');
     final Uri contactServerUri = Uri.parse('http://contact.example.com');
+    final bool hideInboundCallerId = true;
     final Uri messageServerUri = Uri.parse('http://message.example.com');
+    final List<String> myIdentifiers = const ['123456789'];
     final Uri dialplanServerUri = Uri.parse('http://dialplan.example.com');
-    final Uri notificationServerUri = Uri.parse('http://notification.example.com');
-    final Uri notificationSocketUri = Uri.parse('ws://notification.example.com');
+    final Uri notificationServerUri =
+        Uri.parse('http://notification.example.com');
+    final Uri notificationSocketUri =
+        Uri.parse('ws://notification.example.com');
     final Uri receptionServerUri = Uri.parse('http://reception.example.com');
     final String systemLanguage = 'en';
 
@@ -69,7 +84,9 @@ abstract class ModelClientConfiguration {
       ..callFlowServerUri = callFlowServerUri
       ..contactServerUri = contactServerUri
       ..dialplanServerUri = dialplanServerUri
+      ..hideInboundCallerId = hideInboundCallerId
       ..messageServerUri = messageServerUri
+      ..myIdentifiers = myIdentifiers
       ..notificationServerUri = notificationServerUri
       ..notificationSocketUri = notificationSocketUri
       ..receptionServerUri = receptionServerUri
@@ -81,7 +98,9 @@ abstract class ModelClientConfiguration {
     expect(config.callFlowServerUri, equals(callFlowServerUri));
     expect(config.contactServerUri, equals(contactServerUri));
     expect(config.dialplanServerUri, equals(dialplanServerUri));
+    expect(config.hideInboundCallerId, equals(hideInboundCallerId));
     expect(config.messageServerUri, equals(messageServerUri));
+    expect(config.myIdentifiers, equals(myIdentifiers));
     expect(config.notificationServerUri, equals(notificationServerUri));
     expect(config.notificationSocketUri, equals(notificationSocketUri));
     expect(config.receptionServerUri, equals(receptionServerUri));

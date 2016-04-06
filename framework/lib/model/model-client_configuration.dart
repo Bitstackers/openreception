@@ -19,20 +19,19 @@ part of openreception.model;
  * server stack.
  */
 class ClientConfiguration {
-  /// Global system language.
-  String systemLanguage;
-
-  /// Server contact URI's
   Uri authServerUri;
   Uri calendarServerUri;
   Uri callFlowServerUri;
   Uri cdrServerUri;
   Uri contactServerUri;
   Uri dialplanServerUri;
+  bool hideInboundCallerId;
   Uri messageServerUri;
+  List<String> myIdentifiers;
   Uri notificationServerUri;
   Uri notificationSocketUri;
   Uri receptionServerUri;
+  String systemLanguage;
   Uri userServerUri;
 
   /**
@@ -45,7 +44,9 @@ class ClientConfiguration {
         Key.cdrServerUri: cdrServerUri.toString(),
         Key.contactServerURI: contactServerUri.toString(),
         Key.dialplanServerURI: dialplanServerUri.toString(),
+        Key.hideInboundCallerId: hideInboundCallerId,
         Key.messageServerURI: messageServerUri.toString(),
+        Key.myIdentifiers: myIdentifiers,
         Key.notificationServerUri: notificationServerUri.toString(),
         Key.notificationSocket: notificationSocketUri.toString(),
         Key.receptionServerURI: receptionServerUri.toString(),
@@ -73,10 +74,12 @@ class ClientConfiguration {
         cdrServerUri = Uri.parse(map[Key.cdrServerUri]),
         contactServerUri = Uri.parse(map[Key.contactServerURI]),
         dialplanServerUri = Uri.parse(map[Key.dialplanServerURI]),
-        receptionServerUri = Uri.parse(map[Key.receptionServerURI]),
+        hideInboundCallerId = map[Key.hideInboundCallerId],
         messageServerUri = Uri.parse(map[Key.messageServerURI]),
-        systemLanguage = map[Key.systemLanguage],
-        userServerUri = Uri.parse(map[Key.userServerURI]),
+        myIdentifiers = map[Key.myIdentifiers],
         notificationServerUri = Uri.parse(map[Key.notificationServerUri]),
-        notificationSocketUri = Uri.parse(map[Key.notificationSocket]);
+        notificationSocketUri = Uri.parse(map[Key.notificationSocket]),
+        receptionServerUri = Uri.parse(map[Key.receptionServerURI]),
+        systemLanguage = map[Key.systemLanguage],
+        userServerUri = Uri.parse(map[Key.userServerURI]);
 }
