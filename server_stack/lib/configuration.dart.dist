@@ -331,5 +331,11 @@ class Configuration {
   final UserServer userServer = const UserServer();
   final DialplanServer dialplanserver = const DialplanServer();
 
+  /// A list of telephone numbers that identify this system.
+  final List<String> myIdentifiers = const [];
+
+  /// Whether or not to hide the caller telephone number.
+  final bool hideInboundCallerId = true;
+
   const Configuration();
 }
