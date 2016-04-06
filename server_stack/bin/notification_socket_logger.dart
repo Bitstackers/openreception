@@ -19,8 +19,6 @@ library openreception.authentication_server;
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:args/args.dart';
-
 import '../lib/configuration.dart';
 
 import 'package:openreception_framework/service.dart' as service;
