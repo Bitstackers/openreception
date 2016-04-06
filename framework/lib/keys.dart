@@ -23,6 +23,11 @@ const String uid = 'uid';
 const String uuid = 'uuid';
 
 const String authentication = 'auth';
+const String calendar = 'calendar';
+const String callflow = 'callflow';
+const String cdr = 'cdr';
+const String notification = 'notification';
+const String user = 'user';
 
 @deprecated
 const String contactId = cid;
@@ -59,6 +64,7 @@ const String username = 'username';
 const String state = 'state';
 const String bLeg = 'b_leg';
 const String locked = 'locked';
+const String hideInboundCallerId = 'hideInboundCallerId';
 const String inbound = 'inbound';
 const String isCall = 'is_call';
 const String note = 'note';
@@ -75,6 +81,7 @@ const String dialplanServerURI = 'dialplanServerURI';
 const String receptionServerURI = 'receptionServerURI';
 const String contactServerURI = 'contactServerURI';
 const String messageServerURI = 'messageServerURI';
+const String myIdentifiers = 'myIdentifiers';
 const String authServerURI = 'authServerURI';
 const String userServerURI = 'userServerURI';
 const String notificationSocket = 'notificationSocket';
