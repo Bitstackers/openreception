@@ -90,7 +90,7 @@ abstract class CallPark {
     expect(parkedCall.state, equals(model.CallState.Speaking));
 
     log.info('Caller hangs up all calls');
-    await caller.waitForHangup();
+    await caller.hangupAll();
     log.info('Receptionist waits for the phone to hang up');
     await receptionist.waitForPhoneHangup();
     log.info('Receptionist expects call to hang up');
