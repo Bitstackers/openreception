@@ -30,19 +30,8 @@ class Playlist {
   Playlist.empty();
 
   /**
-   * TODO: Use the empty constructor instead and set the fields manually.
+   * 
    */
-  @deprecated
-  Playlist(int          this.id,
-           String       this.name,
-           String       this.path,
-           bool         this.shuffle,
-           int          this.channels,
-           int          this.interval,
-           List<String> this.chimelist,
-           int          this.chimefreq,
-           int          this.chimemax);
-
   Playlist.fromDb(int this.id, Map json) {
     name = json['name'];
     path = json['path'];
