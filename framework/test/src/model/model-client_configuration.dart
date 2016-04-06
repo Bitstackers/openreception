@@ -13,10 +13,10 @@
 
 part of openreception.test;
 
-
 void testModelClientConfiguration() {
   group('Model.ClientConfiguration', () {
-    test('serializationDeserialization', ModelClientConfiguration.serializationDeserialization);
+    test('serializationDeserialization',
+        ModelClientConfiguration.serializationDeserialization);
     test('serialization', ModelClientConfiguration.serialization);
     test('buildObject', ModelClientConfiguration.buildObject);
   });
@@ -108,6 +108,4 @@ abstract class ModelClientConfiguration {
 
     return config;
   }
-
-
 }
