@@ -3,7 +3,7 @@ part of openreception_tests.service;
 abstract class Message {
   static const int invalidMessageID = -1;
 
-  static final Logger _log = new Logger('$libraryName.RESTMessageStore');
+  static final Logger _log = new Logger('$_namespace.Message');
 
   /**
    *

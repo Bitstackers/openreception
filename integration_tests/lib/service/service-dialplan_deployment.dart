@@ -6,7 +6,7 @@ abstract class DialplanDeployment {
    */
   static noHours(Customer customer, service.RESTDialplanStore rdpStore,
       storage.Reception rStore, esl.Connection eslClient) async {
-    final Logger _log = new Logger('$libraryName.DialplanDeployment.noHours');
+    final Logger _log = new Logger('$_namespace.DialplanDeployment.noHours');
     List<esl.Event> events = [];
     eslClient.eventStream.listen(events.add);
 
@@ -66,7 +66,7 @@ abstract class DialplanDeployment {
   static openHoursOpen(Customer customer, service.RESTDialplanStore rdpStore,
       storage.Reception rStore, esl.Connection eslClient) async {
     final Logger _log =
-        new Logger('$libraryName.DialplanDeployment.openHoursOpen');
+        new Logger('$_namespace.DialplanDeployment.openHoursOpen');
     List<esl.Event> events = [];
     eslClient.eventStream.listen(events.add);
 
