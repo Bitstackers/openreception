@@ -34,5 +34,4 @@ Uri googleAuthUrl(String identifier, String secret, Uri redirectUrl) {
   return _AuthorizationUrl;
 }
 
-String Sha256Token(String token) =>
-    CryptoUtils.bytesToHex((new SHA256()..add(token.codeUnits)).close());
+String Sha256Token(String token) => sha256.convert(token.codeUnits).toString();

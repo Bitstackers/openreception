@@ -125,11 +125,17 @@ class CallHistory {
       return null;
     }
 
-    final offerEvent =
-        _events.firstWhere((event.CallEvent ce) => ce is event.CallOffer);
+    var offerEvent;
+    var pickupEvent;
+    try {
+      offerEvent =
+          _events.firstWhere((event.CallEvent ce) => ce is event.CallOffer);
 
-    final pickupEvent =
-        _events.firstWhere((event.CallEvent ce) => ce is event.CallPickup);
+      pickupEvent =
+          _events.firstWhere((event.CallEvent ce) => ce is event.CallPickup);
+    } on StateError {
+      return new Duration(seconds: 2);
+    }
 
     return pickupEvent.timestamp.difference(offerEvent.timestamp);
   }

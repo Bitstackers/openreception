@@ -40,7 +40,9 @@ class Config {
         ..cdrServerUri = config.configserver.cdrServerUri
         ..contactServerUri = config.configserver.contactServerUri
         ..dialplanServerUri = config.configserver.dialplanServerUri
+        ..hideInboundCallerId = config.hideInboundCallerId
         ..messageServerUri = config.configserver.messageServerUri
+        ..myIdentifiers = config.myIdentifiers
         ..notificationServerUri = config.configserver.notificationServerUri
         ..notificationSocketUri = config.configserver.notificationSocketUri
         ..receptionServerUri = config.configserver.receptionServerUri

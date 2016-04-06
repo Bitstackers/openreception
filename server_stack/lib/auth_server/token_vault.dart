@@ -20,6 +20,7 @@ import 'dart:io';
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/storage.dart' as storage;
 import 'package:openreception_framework/model.dart' as model;
+import 'package:path/path.dart' as path;
 
 TokenVault vault = new TokenVault();
 
@@ -96,7 +97,7 @@ class TokenVault {
       files.forEach((item) {
         try {
           String text = load(item.path);
-          String token = item.path.split('/').last.split('.').first;
+          String token = path.basenameWithoutExtension(item.path);
           Map data = JSON.decode(text);
           _serverTokens[token] = data;
           log.finest('Loaded ${_serverTokens[token]}');
