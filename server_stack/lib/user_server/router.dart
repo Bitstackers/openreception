@@ -16,8 +16,8 @@ library openreception.user_server.router;
 import 'dart:async';
 import 'dart:io' as io;
 
-import '../configuration.dart';
-import '../response_utils.dart';
+import 'package:openreception.server/configuration.dart';
+import 'package:openreception.server/response_utils.dart';
 
 import 'package:logging/logging.dart';
 import 'package:openreception_framework/storage.dart' as storage;
