@@ -8,10 +8,8 @@ abstract class Calendar {
    */
   static create(model.Owner owner, storage.Calendar calendarStore,
       model.User creator) async {
-    model.CalendarEntry createdEntry = await calendarStore.create(
+    await calendarStore.create(
         Randomizer.randomCalendarEntry()..owner = owner, creator);
-
-    await calendarStore.remove(createdEntry.id, creator);
   }
 
   /**
@@ -30,8 +28,6 @@ abstract class Calendar {
     }
 
     await calendarStore.update(createdEntry, creator);
-
-    await calendarStore.remove(createdEntry.id, creator);
   }
 
   /**
@@ -59,9 +55,6 @@ abstract class Calendar {
     expect(created.content, equals(fetched.content));
     expect(created.owner, equals(fetched.owner));
     expect(created.owner, equals(fetched.owner));
-
-    ///Cleanup
-    await calendarStore.remove(created.id, creator);
   }
 
   /**
@@ -100,10 +93,6 @@ abstract class Calendar {
     expect(created.stop.difference(fetched.stop), lessThan(oneMs));
     expect(created.content, equals(fetched.content));
     expect(created.owner, equals(fetched.owner));
-    expect(created.owner, equals(fetched.owner));
-
-    ///Cleanup
-    await calendarStore.remove(created.id, creator);
   }
 
   /**
@@ -133,17 +122,23 @@ abstract class Calendar {
 
     _log.info('Creating a calendar event for owner $owner.');
 
-    Iterable<model.CalendarEntryChange> changes =
-        await calendarStore.changes(created.id);
+    Iterable<model.CalendarEntryChange> commits =
+        await calendarStore.changes(owner);
 
     _log.info('Listing changes and validating.');
 
-    expect(changes.length, equals(1));
-    expect(changes.first.changedAt.millisecondsSinceEpoch,
+    expect(commits.length, equals(1));
+    expect(commits.first.changedAt.millisecondsSinceEpoch,
         lessThan(new DateTime.now().millisecondsSinceEpoch));
-    expect(changes.first.userId, equals(creator.id));
+    expect(commits.first.authorIdentity, equals(creator.address));
+    expect(commits.first.uid, equals(creator.id));
 
-    await calendarStore.remove(created.id, creator);
+    expect(commits.first.changes.length, equals(1));
+    final change = commits.first.changes.first;
+
+    expect(change.changeType, model.ChangeType.add);
+    expect(change.eid, created.id);
+    expect(change.owner, created.owner);
   }
 
   /**
@@ -156,16 +151,21 @@ abstract class Calendar {
 
     _log.info('Creating a calendar event for owner $owner.');
 
-    model.CalendarEntryChange latestChange =
-        await calendarStore.latestChange(created.id);
+    model.CalendarEntryChange latestCommit =
+        (await calendarStore.changes(created.owner, created.id)).first;
 
     _log.info('Listing changes and validating.');
 
-    // expect(latestChange.lastEntry.asMap,
-    //     equals(new model.CalendarEntry.empty().toJson()));
-    // expect(latestChange.changedAt.millisecondsSinceEpoch,
-    //     lessThan(new DateTime.now().millisecondsSinceEpoch));
-    // expect(latestChange.userID, equals(creator.uuid));
+    expect(latestCommit.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(latestCommit.authorIdentity, equals(creator.address));
+    expect(latestCommit.uid, equals(creator.id));
+
+    final change = latestCommit.changes.first;
+
+    expect(change.changeType, model.ChangeType.add);
+    expect(change.eid, created.id);
+    expect(change.owner, created.owner);
   }
 
   /**
@@ -184,18 +184,39 @@ abstract class Calendar {
       ..owner = created.owner;
 
     await calendarStore.update(changed, creator);
-    Iterable<model.CalendarEntryChange> changes =
-        await calendarStore.changes(created.id);
+    Iterable<model.CalendarEntryChange> commits =
+        await calendarStore.changes(owner);
 
     _log.info('Listing changes and validating.');
 
-    expect(changes.length, equals(2));
+    expect(commits.length, equals(2));
 
-    //expect(changes.first.lastEntry.asMap, equals(created.toJson()));
-
-    expect(changes.first.changedAt.millisecondsSinceEpoch,
+    expect(commits.first.changedAt.millisecondsSinceEpoch,
         lessThan(new DateTime.now().millisecondsSinceEpoch));
-//    expect(changes.first.userID, equals(creator.uuid));
+    expect(commits.first.authorIdentity, equals(creator.address));
+
+    expect(commits.last.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(commits.last.authorIdentity, equals(creator.address));
+
+    expect(commits.length, equals(2));
+    expect(commits.first.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(commits.first.authorIdentity, equals(creator.address));
+    expect(commits.first.uid, equals(creator.id));
+
+    expect(commits.first.changes.length, equals(1));
+    expect(commits.last.changes.length, equals(1));
+    final latestChange = commits.first.changes.first;
+    final oldestChange = commits.last.changes.first;
+
+    expect(latestChange.changeType, model.ChangeType.modify);
+    expect(latestChange.eid, created.id);
+    expect(latestChange.owner, created.owner);
+
+    expect(oldestChange.changeType, model.ChangeType.add);
+    expect(oldestChange.eid, created.id);
+    expect(oldestChange.owner, created.owner);
   }
 
   /**
@@ -213,22 +234,21 @@ abstract class Calendar {
       ..owner = created.owner;
 
     await calendarStore.update(changed, creator);
-    Iterable<model.CalendarEntryChange> changes =
-        await calendarStore.changes(created.id);
+    model.CalendarEntryChange latestCommit =
+        (await calendarStore.changes(created.owner, created.id)).first;
 
     _log.info('Listing changes and validating.');
 
-    expect(changes.length, equals(2));
+    expect(latestCommit.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(latestCommit.authorIdentity, equals(creator.address));
+    expect(latestCommit.uid, equals(creator.id));
 
-    model.CalendarEntryChange latestChange =
-        await calendarStore.latestChange(created.id);
+    final change = latestCommit.changes.first;
 
-    _log.info('Getting latests change and validating.');
-
-    // expect(latestChange.lastEntry.asMap, equals(created.asMap));
-    // expect(latestChange.changedAt.millisecondsSinceEpoch,
-    //     lessThan(new DateTime.now().millisecondsSinceEpoch));
-    // expect(latestChange.userID, equals(creator.uuid));
+    expect(change.changeType, model.ChangeType.modify);
+    expect(change.eid, created.id);
+    expect(change.owner, created.owner);
   }
 
   /**
@@ -243,22 +263,39 @@ abstract class Calendar {
     _log.info('Removing calendar event for owner $owner.');
 
     await calendarStore.remove(created.id, creator);
-    Iterable<model.CalendarEntryChange> changes =
-        await calendarStore.changes(created.id);
+    Iterable<model.CalendarEntryChange> commits =
+        await calendarStore.changes(owner);
 
     _log.info('Listing changes and validating.');
 
-    expect(changes.length, equals(2));
+    expect(commits.length, equals(2));
 
-    // expect(changes.first.lastEntry.asMap, equals(created.asMap));
-    //
-    // expect(changes.first.changedAt.millisecondsSinceEpoch,
-    //     lessThan(new DateTime.now().millisecondsSinceEpoch));
-    // expect(changes.first.userID, equals(creator.uuid));
-    //
-    // await calendarStore.purge(created.uuid);
-    //
-    expect(await calendarStore.changes(created.id), isEmpty);
+    expect(commits.first.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(commits.first.authorIdentity, equals(creator.address));
+
+    expect(commits.last.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(commits.last.authorIdentity, equals(creator.address));
+
+    expect(commits.length, equals(2));
+    expect(commits.first.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(commits.first.authorIdentity, equals(creator.address));
+    expect(commits.first.uid, equals(creator.id));
+
+    expect(commits.first.changes.length, equals(1));
+    expect(commits.last.changes.length, equals(1));
+    final latestChange = commits.first.changes.first;
+    final oldestChange = commits.last.changes.first;
+
+    expect(latestChange.changeType, model.ChangeType.delete);
+    expect(latestChange.eid, created.id);
+    expect(latestChange.owner, created.owner);
+
+    expect(oldestChange.changeType, model.ChangeType.add);
+    expect(oldestChange.eid, created.id);
+    expect(oldestChange.owner, created.owner);
   }
 
   /**
@@ -272,24 +309,20 @@ abstract class Calendar {
     _log.info('Removing calendar event for owner $owner.');
 
     await calendarStore.remove(created.id, creator);
-    Iterable<model.CalendarEntryChange> changes =
-        await calendarStore.changes(created.id);
+    model.CalendarEntryChange latestCommit =
+        (await calendarStore.changes(created.owner, created.id)).first;
 
     _log.info('Listing changes and validating.');
 
-    expect(changes.length, equals(2));
+    expect(latestCommit.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(latestCommit.authorIdentity, equals(creator.address));
+    expect(latestCommit.uid, equals(creator.id));
 
-    _log.info('Getting latests change and validating.');
-    model.CalendarEntryChange latestChange =
-        await calendarStore.latestChange(created.id);
+    final change = latestCommit.changes.first;
 
-    _log.info('Latests change: ${latestChange.toJson()}');
-
-    // expect(latestChange.lastEntry.asMap, equals(created.asMap));
-    // expect(latestChange.changedAt.millisecondsSinceEpoch,
-    //     lessThan(new DateTime.now().millisecondsSinceEpoch));
-    // expect(latestChange.userID, equals(creator.id));
-    //
-    // expect(await calendarStore.changes(created.uuid), isEmpty);
+    expect(change.changeType, model.ChangeType.delete);
+    expect(change.eid, created.id);
+    expect(change.owner, created.owner);
   }
 }

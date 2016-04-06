@@ -315,6 +315,37 @@ class ServiceAgent {
   /**
    *
    */
+  Future<model.CalendarEntry> createsCalendarEntry(model.Owner owner) async {
+    final entry = await calendarStore.create(
+        Randomizer.randomCalendarEntry()..owner = owner, user);
+
+    return calendarStore.get(entry.id);
+  }
+
+  /**
+   *
+   */
+  Future<model.CalendarEntry> updatesCalendarEntry(
+      model.CalendarEntry entry) async {
+    await calendarStore.update(
+        Randomizer.randomCalendarEntry()
+          ..id = entry.id
+          ..owner = entry.owner,
+        user);
+
+    return calendarStore.get(entry.id);
+  }
+
+  /**
+   *
+   */
+  Future removesCalendarEntry(model.CalendarEntry entry) async {
+    await calendarStore.remove(entry.id, user);
+  }
+
+  /**
+   *
+   */
   Future<model.BaseContact> createsContact({model.BaseContact contact}) async {
     final newContact =
         contact != null ? contact : Randomizer.randomBaseContact();

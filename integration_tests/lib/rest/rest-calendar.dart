@@ -70,29 +70,44 @@ void _runCalendarTests() {
     test('remove (contact owner)',
         () => storeTest.Calendar.remove(owner, sa.calendarStore, sa.user));
 
-    // test('change listing on create (contact owner)',
-    //     () => storeTest.Calendar.changeOnCreate(owner, calendarStore, r.user));
-    //
-    // test(
-    //     'latest change on create (contact owner)',
-    //     () => storeTest.Calendar
-    //         .latestChangeOnCreate(owner, calendarStore, r.user));
-    //
-    // test('change listing on update (contact owner)',
-    //     () => storeTest.Calendar.changeOnUpdate(owner, calendarStore, r.user));
-    //
-    // test(
-    //     'latest change on update (contact owner)',
-    //     () => storeTest.Calendar
-    //         .latestChangeOnUpdate(owner, calendarStore, r.user));
-    //
-    // test('change listing on remove (contact owner)',
-    //     () => storeTest.Calendar.changeOnRemove(owner, calendarStore, r.user));
-    //
-    // test(
-    //     'latest change on remove (contact owner)',
-    //     () => storeTest.Calendar
-    //         .latestChangeOnRemove(owner, calendarStore, r.user));
+    test(
+        'change listing on create (contact owner)',
+        () => storeTest.Calendar
+            .changeOnCreate(owner, sa.calendarStore, sa.user));
+
+    test(
+        'latest change on create (contact owner)',
+        () => storeTest.Calendar
+            .latestChangeOnCreate(owner, sa.calendarStore, sa.user));
+
+    test(
+        'change listing on update (contact owner)',
+        () => storeTest.Calendar
+            .changeOnUpdate(owner, sa.calendarStore, sa.user));
+
+    test(
+        'latest change on update (contact owner)',
+        () => storeTest.Calendar
+            .latestChangeOnUpdate(owner, sa.calendarStore, sa.user));
+
+    test(
+        'change listing on remove (contact owner)',
+        () => storeTest.Calendar
+            .changeOnRemove(owner, sa.calendarStore, sa.user));
+
+    test(
+        'latest change on remove (contact owner)',
+        () => storeTest.Calendar
+            .latestChangeOnRemove(owner, sa.calendarStore, sa.user));
+
+    test('create (event presence)',
+        () => serviceTest.Calendar.createEvent(sa, owner));
+
+    test('update (event presence)',
+        () => serviceTest.Calendar.updateEvent(sa, owner));
+
+    test('remove (event presence)',
+        () => serviceTest.Calendar.deleteEvent(sa, owner));
 
     /**
      * Setup/teardown Basic CRUD tests for contact owner.
@@ -131,32 +146,36 @@ void _runCalendarTests() {
         () => storeTest.Calendar.remove(owner, sa.calendarStore, sa.user));
 
     test('update (reception owner)',
-        () => storeTest.Calendar.update(owner, env.calendarStore, sa.user));
-    //
-    // test('change listing on create (reception owner)',
-    //     () => storeTest.Calendar.changeOnCreate(owner, calendarStore, r.user));
-    //
-    // test(
-    //     'latest change on create (reception owner)',
-    //     () => storeTest.Calendar
-    //         .latestChangeOnCreate(owner, calendarStore, r.user));
-    //
-    // test('change listing on update (reception owner)',
-    //     () => storeTest.Calendar.changeOnUpdate(owner, calendarStore, r.user));
-    //
-    // test(
-    //     'latest change on update (reception owner)',
-    //     () => storeTest.Calendar
-    //         .latestChangeOnUpdate(owner, sa.calendarStore, sa.user));
-    //
-    // test(
-    //     'change listing on remove (reception owner)',
-    //     () => storeTest.Calendar
-    //         .changeOnRemove(owner, sa.calendarStore, sa.user));
-    //
-    // test(
-    //     'latest change on remove (reception owner)',
-    //     () => storeTest.Calendar
-    //         .latestChangeOnRemove(owner, sa.calendarStore, sa.user));
+        () => storeTest.Calendar.update(owner, sa.calendarStore, sa.user));
+
+    test(
+        'change listing on create (reception owner)',
+        () => storeTest.Calendar
+            .changeOnCreate(owner, sa.calendarStore, sa.user));
+
+    test(
+        'latest change on create (reception owner)',
+        () => storeTest.Calendar
+            .latestChangeOnCreate(owner, sa.calendarStore, sa.user));
+
+    test(
+        'change listing on update (reception owner)',
+        () => storeTest.Calendar
+            .changeOnUpdate(owner, sa.calendarStore, sa.user));
+
+    test(
+        'latest change on update (reception owner)',
+        () => storeTest.Calendar
+            .latestChangeOnUpdate(owner, sa.calendarStore, sa.user));
+
+    test(
+        'change listing on remove (reception owner)',
+        () => storeTest.Calendar
+            .changeOnRemove(owner, sa.calendarStore, sa.user));
+
+    test(
+        'latest change on remove (reception owner)',
+        () => storeTest.Calendar
+            .latestChangeOnRemove(owner, sa.calendarStore, sa.user));
   });
 }
