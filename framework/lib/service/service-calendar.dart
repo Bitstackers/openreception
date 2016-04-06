@@ -23,8 +23,14 @@ class RESTCalendarStore implements Storage.Calendar {
   final Uri _calendarHost;
   String _token = '';
 
+  /**
+   *
+   */
   RESTCalendarStore(Uri this._calendarHost, String this._token, this._backend);
 
+  /**
+   *
+   */
   Future<Iterable<Model.CalendarEntry>> list(Model.Owner owner,
       {bool deleted: false}) {
     Uri url = Resource.Calendar.list(_calendarHost, owner, deleted: deleted);
@@ -37,6 +43,9 @@ class RESTCalendarStore implements Storage.Calendar {
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }
 
+  /**
+   *
+   */
   Future<Model.CalendarEntry> get(int id, {bool deleted: false}) {
     Uri url = Resource.Calendar.single(_calendarHost, id, deleted: deleted);
     url = _appendToken(url, this._token);
@@ -100,27 +109,13 @@ class RESTCalendarStore implements Storage.Calendar {
   /**
    *
    */
-  Future<Iterable<Model.CalendarEntryChange>> changes(entryId) {
-    Uri url = Resource.Calendar.changeList(_calendarHost, entryId);
+  Future<Iterable<Model.CalendarCommit>> changes(Model.Owner owner, [int eid]) {
+    Uri url = Resource.Calendar.changeList(_calendarHost, owner);
     url = _appendToken(url, this._token);
 
-    Iterable<Model.CalendarEntryChange> convertMaps(Iterable<Map> maps) =>
-        maps.map(Model.CalendarEntryChange.decode);
+    Iterable<Model.CalendarCommit> convertMaps(Iterable<Map> maps) =>
+        maps.map(Model.CalendarCommit.decode);
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
-  }
-
-  /**
-   *
-   */
-  Future<Model.CalendarEntryChange> latestChange(int eid) {
-    Uri url = Resource.Calendar.latestChange(_calendarHost, eid);
-
-    url = _appendToken(url, this._token);
-
-    return _backend
-        .get(url)
-        .then(JSON.decode)
-        .then(Model.CalendarEntryChange.decode);
   }
 }

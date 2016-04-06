@@ -20,7 +20,7 @@ abstract class Calendar {
   /**
    *
    */
-  Future<Iterable<model.CalendarEntryChange>> changes(int id);
+  Future<Iterable<model.CalendarCommit>> changes(model.Owner owner, [int eid]);
 
   /**
    *
@@ -32,11 +32,6 @@ abstract class Calendar {
    *
    */
   Future<model.CalendarEntry> get(int id);
-
-  /**
-   *
-   */
-  Future<model.CalendarEntryChange> latestChange(int id);
 
   /**
    *

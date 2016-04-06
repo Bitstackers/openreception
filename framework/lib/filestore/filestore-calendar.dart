@@ -28,9 +28,19 @@ class Calendar implements storage.Calendar {
    *
    */
   Calendar({String this.path: 'json-data/calendar'}) {
-    if (!new Directory(path).existsSync()) {
-      new Directory(path).createSync(recursive: true);
-    }
+    final List<String> pathsToCreate = [
+      path,
+      '$path/contact',
+      '$path/reception'
+    ];
+
+    pathsToCreate.forEach((String newPath) {
+      final Directory dir = new Directory(newPath);
+      if (!dir.existsSync()) {
+        dir.createSync(recursive: true);
+      }
+    });
+
     _git = new GitEngine(path);
     _git.init();
     _sequencer = new Sequencer(path);
@@ -39,36 +49,99 @@ class Calendar implements storage.Calendar {
   /**
    *
    */
-  Future<Iterable<model.CalendarEntryChange>> changes(entryId) async {
-    Iterable<Change> gitChanges =
-        await _git.changes(new File('$path/${entryId}.json'));
+  Future<Iterable<model.CalendarCommit>> changes(model.Owner owner,
+      [int eid]) async {
+    String ownerPath;
+    if (owner is model.OwningContact) {
+      ownerPath = 'contact/${owner.id}';
+    } else if (owner is model.OwningReception) {
+      ownerPath = 'reception/${owner.id}';
+    } else {
+      throw new ArgumentError.value(owner, 'owner', 'Not of known type');
+    }
 
-    return gitChanges.map((change) => new model.CalendarEntryChange()
-      ..changedAt = change.changeTime
-      ..author = change.author);
+    FileSystemEntity fse;
+
+    if (eid == null) {
+      fse = new Directory(ownerPath);
+    } else {
+      fse = new File(ownerPath + '/$eid.json');
+    }
+
+    Iterable<Change> gitChanges = await _git.changes(fse);
+
+    int extractUid(String message) => message.startsWith('uid:')
+        ? int.parse(message.split(' ').first.replaceFirst('uid:', ''))
+        : model.User.noId;
+
+    model.CalendarChange convertFilechange(FileChange fc) {
+      final parts = fc.filename.split('/');
+      model.Owner owner;
+
+      if (parts[0] == 'contact') {
+        owner = new model.OwningContact(int.parse(parts[1]));
+      } else if (parts[0] == 'reception') {
+        owner = new model.OwningReception(int.parse(parts[1]));
+      }
+
+      final int eid = int.parse(parts[2].split('.').first);
+
+      return new model.CalendarChange(fc.changeType, eid, owner);
+    }
+
+    Iterable<model.CalendarCommit> changes = gitChanges.map((change) =>
+        new model.CalendarCommit()
+          ..uid = extractUid(change.message)
+          ..changedAt = change.changeTime
+          ..commitHash = change.commitHash
+          ..authorIdentity = change.author
+          ..changes = new List<model.CalendarChange>.from(
+              change.fileChanges.map(convertFilechange)));
+
+    _log.info(changes.map((c) => c.toJson()));
+
+    return changes;
   }
 
   /**
    *
    */
   Future<model.CalendarEntry> create(
-      model.CalendarEntry entry, model.User user) async {
+      model.CalendarEntry entry, model.User modifier) async {
+    /// Validate the user
+    if (modifier == null) {
+      throw new ArgumentError.notNull('modifier');
+    }
+
     entry.id = _nextId;
-    final File file = new File('$path/${entry.id}.json');
+    String ownerPath;
+    if (entry.owner is model.OwningContact) {
+      ownerPath = '$path/contact/${entry.owner.id}';
+    } else if (entry.owner is model.OwningReception) {
+      ownerPath = '$path/reception/${entry.owner.id}';
+    }
+
+    final Directory ownerDir = new Directory(ownerPath);
+    if (!ownerDir.existsSync()) {
+      _log.finest('Creating new directory ${ownerDir.path}');
+      ownerDir.createSync();
+    }
+
+    final File file = new File('${ownerDir.path}/${entry.id}.json');
 
     if (file.existsSync()) {
       throw new storage.ClientError(
           'File already exists, please update instead');
     }
 
-    /// Set the user
-    if (user == null) {
-      user = _systemUser;
-    }
-
+    _log.finest('Creating new file ${file.path}');
     file.writeAsStringSync(_jsonpp.convert(entry));
 
-    await _git.add(file, 'Added ${entry.id}', _authorString(user));
+    await _git.add(
+        file,
+        'uid:${modifier.id} - ${modifier.name}'
+        'added ${entry.id} to ${entry.owner}',
+        _authorString(modifier));
 
     return entry;
   }
@@ -77,81 +150,121 @@ class Calendar implements storage.Calendar {
    *
    */
   Future<model.CalendarEntry> get(int eid) async {
-    final File file = new File('$path/${eid}.json');
+    final Iterable<Directory> subdirs =
+        new Directory(path).listSync().where(isDirectory);
 
-    if (!file.existsSync()) {
-      throw new storage.NotFound('No file ${file.path}');
+    for (Directory subdir in subdirs) {
+      Iterable<Directory> ownerDirs = subdir.listSync().where(isDirectory);
+
+      for (Directory dir in ownerDirs) {
+        File file = new File('${dir.path}/${eid}.json');
+
+        if (file.existsSync()) {
+          return model.CalendarEntry
+              .decode(JSON.decode(file.readAsStringSync()));
+        }
+      }
     }
 
-    try {
-      final model.CalendarEntry entry =
-          model.CalendarEntry.decode(JSON.decode(file.readAsStringSync()));
-      return entry;
-    } catch (e) {
-      throw e;
-    }
+    throw new storage.NotFound('No file with eid ${eid}');
   }
 
   /**
    *
    */
-  Future<model.CalendarEntryChange> latestChange(entryId) async =>
-      (await changes(entryId)).first;
+  Future<Iterable<model.CalendarEntry>> list(model.Owner owner) async {
+    String ownerPath;
+    if (owner is model.OwningContact) {
+      ownerPath = '$path/contact/${owner.id}';
+    } else if (owner is model.OwningReception) {
+      ownerPath = '$path/reception/${owner.id}';
+    }
+
+    if (!new Directory(ownerPath).existsSync()) {
+      return const [];
+    }
+
+    return _list(ownerPath);
+  }
 
   /**
    *
    */
-  Future<Iterable<model.CalendarEntry>> list(model.Owner owner,
-          {bool deleted: false}) async =>
-      (await _list()).where((entry) => entry.owner == owner);
-  /**
-   *
-   */
-  Future<Iterable<model.CalendarEntry>> _list() async => new Directory(path)
-      .listSync()
-      .where((fse) => fse is File && fse.path.endsWith('.json'))
-      .map((File fse) =>
-          model.CalendarEntry.decode(JSON.decode(fse.readAsStringSync())));
+  Future<Iterable<model.CalendarEntry>> _list(String basePath) async =>
+      new Directory(basePath)
+          .listSync()
+          .where((fse) => isFile(fse) && fse.path.endsWith('.json'))
+          .map((File fse) =>
+              model.CalendarEntry.decode(JSON.decode(fse.readAsStringSync())));
 
   /**
-   * Trashes the [Model.CalendarEntry] associated with [entryId] in the
-   * database, but keeps the object (in a hidden state) in the database.
-   * The action is logged to be performed by user with ID [userId].
+   * Deletes the [Model.CalendarEntry] associated with [eid] in the
+   * filestore.
+   * The action is logged as being performed by user [modifier].
    */
-  Future remove(entryId, model.User user) async {
-    final File file = new File('$path/${entryId}.json');
+  Future remove(int eid, model.User modifier) async {
+    /// Validate the user
+    if (modifier == null) {
+      throw new ArgumentError.notNull('modifier');
+    }
+
+    final model.CalendarEntry entry = await get(eid);
+
+    String ownerPath;
+    if (entry.owner is model.OwningContact) {
+      ownerPath = '$path/contact/${entry.owner.id}';
+    } else if (entry.owner is model.OwningReception) {
+      ownerPath = '$path/reception/${entry.owner.id}';
+    }
+
+    final Directory ownerDir = new Directory(ownerPath);
+
+    final File file = new File('${ownerDir.path}/${entry.id}.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
     }
 
-    /// Set the user
-    if (user == null) {
-      user = _systemUser;
-    }
-
-    await _git.remove(file, 'Removed $entryId', _authorString(user));
+    _log.finest('Deleting file ${file.path}');
+    await _git.remove(
+        file,
+        'uid:${modifier.id} - ${modifier.name}'
+        ' removed $eid',
+        _authorString(modifier));
   }
 
   /**
    *
    */
   Future<model.CalendarEntry> update(
-      model.CalendarEntry entry, model.User user) async {
-    final File file = new File('$path/${entry.id}.json');
+      model.CalendarEntry entry, model.User modifier) async {
+    /// Validate the user
+    if (modifier == null) {
+      throw new ArgumentError.notNull('modifier');
+    }
+
+    String ownerPath;
+    if (entry.owner is model.OwningContact) {
+      ownerPath = '$path/contact/${entry.owner.id}';
+    } else if (entry.owner is model.OwningReception) {
+      ownerPath = '$path/reception/${entry.owner.id}';
+    }
+
+    final Directory ownerDir = new Directory(ownerPath);
+
+    final File file = new File('${ownerDir.path}/${entry.id}.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
     }
 
-    /// Set the user
-    if (user == null) {
-      user = _systemUser;
-    }
-
+    _log.finest('Updating file ${file.path}');
     file.writeAsStringSync(_jsonpp.convert(entry));
 
-    await _git._commit('Updated ${entry.id}', _authorString(user));
+    await _git._commit(
+        'uid:${modifier.id} - ${modifier.name}'
+        ' updated ${entry.id}',
+        _authorString(modifier));
 
     return entry;
   }

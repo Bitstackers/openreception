@@ -122,7 +122,7 @@ void main(List<String> arguments) {
   testModelAgentStatistics();
   testModelBaseContact();
   testModelCalendarEntry();
-  testModelCalendarEntryChange();
+  testModelCalendarCommit();
   testModelCall();
   testModelClientConfiguration();
   testModelClientConnection();

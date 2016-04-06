@@ -72,7 +72,6 @@ abstract class ModelReceptionAttributes {
     final int receptionId = 2;
     final int contactId = 3;
     final bool statusEmail = false;
-    final String contactType = 'Goldfish';
     final List<Model.PhoneNumber> pn = [
       new Model.PhoneNumber.empty()
         ..confidential = true

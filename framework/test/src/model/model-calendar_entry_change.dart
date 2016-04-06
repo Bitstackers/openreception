@@ -13,8 +13,8 @@
 
 part of openreception.test;
 
-void testModelCalendarEntryChange() {
-  group('Model.CalendarEntryChange', () {
+void testModelCalendarCommit() {
+  group('Model.CalendarCommit', () {
     test('deserialization', ModelCalendarEntryChange.deserialization);
     test('serialization', ModelCalendarEntryChange.serialization);
     test('buildObject', ModelCalendarEntryChange.buildObject);
@@ -26,43 +26,43 @@ abstract class ModelCalendarEntryChange {
    *
    */
   static void deserialization() {
-    Model.CalendarEntryChange built = buildObject();
-    Model.CalendarEntryChange deserialized =
-        new Model.CalendarEntryChange.fromMap(JSON.decode(JSON.encode(built)));
+    Model.CalendarCommit built = buildObject();
+    Model.CalendarCommit deserialized =
+        new Model.CalendarCommit.fromMap(JSON.decode(JSON.encode(built)));
 
     expect(built.toJson(), equals(deserialized.toJson()));
 
-    expect(built.parentRef, equals(deserialized.parentRef));
+    expect(built.commitHash, equals(deserialized.commitHash));
     expect(
         built.changedAt.difference(deserialized.changedAt).abs().inMilliseconds,
         lessThan(1));
-    expect(built.userId, equals(deserialized.userId));
+    expect(built.authorIdentity, equals(deserialized.authorIdentity));
   }
 
   /**
    * Merely asserts that no exceptions arise.
    */
   static void serialization() {
-    Model.CalendarEntryChange builtObject = buildObject();
+    Model.CalendarCommit builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
     expect(serializedObject, isNotEmpty);
   }
 
-  static Model.CalendarEntryChange buildObject() {
+  static Model.CalendarCommit buildObject() {
     final DateTime changedAt = new DateTime.now();
     final String parentRef = 'asdm3mmf';
-    final int changedBy = 1;
+    final String changedBy = 'user@place';
 
-    Model.CalendarEntryChange builtObject = new Model.CalendarEntryChange()
+    Model.CalendarCommit builtObject = new Model.CalendarCommit()
       ..changedAt = changedAt
-      ..parentRef = parentRef
-      ..userId = changedBy;
+      ..commitHash = parentRef
+      ..authorIdentity = changedBy;
 
-    expect(builtObject.parentRef, equals(parentRef));
+    expect(builtObject.commitHash, equals(parentRef));
     expect(builtObject.changedAt, equals(changedAt));
-    expect(builtObject.userId, equals(changedBy));
+    expect(builtObject.authorIdentity, equals(changedBy));
 
     return builtObject;
   }

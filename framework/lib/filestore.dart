@@ -49,3 +49,11 @@ final model.User _systemUser = new model.User.empty()
 String _authorString(model.User user) =>
     new HtmlEscape(HtmlEscapeMode.ATTRIBUTE).convert('${user.name}') +
     ' <${user.address}>';
+
+/**
+ * Convenience functions
+ */
+bool isFile(FileSystemEntity fse) => fse is File && !fse.path.startsWith('.');
+
+bool isDirectory(FileSystemEntity fse) =>
+    fse is Directory && !fse.path.startsWith('.');

@@ -18,22 +18,26 @@ part of openreception.resource;
  * resources across servers and clients.
  */
 abstract class Calendar {
+  static Uri list(Uri host, Model.Owner owner, {bool deleted: false}) => Uri
+      .parse('$host/calendar/${owner.toJson()}${deleted ? '/deleted' : '' }');
 
-  static Uri list(Uri host, Model.Owner owner, {bool deleted : false}) =>
-    Uri.parse('$host/calendar/${owner.toJson()}${deleted ? '/deleted' : '' }');
-
-  static Uri base(Uri host) =>
-    Uri.parse('$host/calendarentry');
+  static Uri base(Uri host) => Uri.parse('$host/calendarentry');
 
   static Uri single(Uri host, int entryId, {bool deleted: false}) =>
-    Uri.parse('$host/calendarentry/${entryId}${deleted ? '/deleted' : '' }');
+      Uri.parse('$host/calendarentry/${entryId}${deleted ? '/deleted' : '' }');
 
   static Uri purge(Uri host, int entryId) =>
-    Uri.parse('$host/calendarentry/${entryId}/purge');
+      Uri.parse('$host/calendarentry/${entryId}/purge');
 
-  static Uri changeList(Uri host, int eventID) =>
-    Uri.parse('${host}/calendarentry/${eventID}/change');
-
-  static Uri latestChange(Uri host, int eventID) =>
-    Uri.parse('${host}/calendarentry/${eventID}/change/latest');
+  /**
+   *
+   */
+  static Uri changeList(Uri host, Model.Owner owner, [int eventID]) {
+    if (eventID == null) {
+      return Uri.parse('${host}/calendar/${owner.toJson()}/change');
+    } else {
+      return Uri.parse(
+          '${host}/calendarentry/$eventID/owner/${owner.toJson()}/change');
+    }
+  }
 }

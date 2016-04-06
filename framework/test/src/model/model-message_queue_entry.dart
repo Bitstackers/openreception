@@ -68,7 +68,7 @@ abstract class ModelMessageQueueEntry {
    */
   static Model.MessageQueueEntry buildObject() {
     final id = 666;
-    final lastTry = new DateTime.now();
+    //final lastTry = new DateTime.now();
     final message = ModelMessage.buildObject();
 
     final List<Model.MessageEndpoint> recipients = [
