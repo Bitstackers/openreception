@@ -94,11 +94,6 @@ abstract class CallPark {
     await caller.hangupAll();
     log.info('Receptionist waits for the phone to hang up');
     await receptionist.waitForPhoneHangup();
-    log.info('Receptionist expects call to unpark');
-    await receptionist.waitFor(
-        eventType: event.Key.callUnpark,
-        callID: targetedCall.ID,
-        timeoutSeconds: 3);
     log.info('Receptionist expects call to hang up');
     receptionist.waitFor(
         eventType: event.Key.callHangup,
