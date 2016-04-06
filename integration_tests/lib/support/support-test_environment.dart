@@ -474,7 +474,7 @@ class TestEnvironment {
       _httpClient.client.close(force: true);
     }
 
-    if (!runpath.existsSync()) {
+    if (runpath.existsSync()) {
       _log.info('Clearing test environment created in directory $runpath');
       runpath.deleteSync(recursive: true);
     }
