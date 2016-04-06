@@ -90,8 +90,8 @@ class TokenVault {
     return _tokens.keys;
   }
 
-  Future loadFromDirectory(String path) async {
-    final Directory dir = new Directory(path);
+  Future loadFromDirectory(String dirPath) async {
+    final Directory dir = new Directory(dirPath);
     if (dir.existsSync()) {
       List<File> files = dir.listSync().where((fse) => fse is File);
       files.forEach((item) {
