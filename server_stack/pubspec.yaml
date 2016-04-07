@@ -1,5 +1,5 @@
 name: openreception.server
-version: 0.1.15+beta
+version: 0.2.0+rc-1
 description: Server stack for the OpenReception application.
 dependencies:
   args: any
