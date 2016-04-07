@@ -73,12 +73,10 @@ class ReceptionView {
         ..children = [
           new DivElement()
             ..id = 'reception-contact-container'
+            ..style.height = '99.5%'
             ..children = [
-              new DivElement()
-                ..children = [
-                  new HeadingElement.h4()..text = 'Kontakter',
-                  _ulContactList
-                ]
+              new HeadingElement.h4()..text = 'Kontakter',
+              _ulContactList
             ]
         ]
     ];
@@ -191,6 +189,9 @@ class ReceptionView {
           makeContactNode(cRef, receptionId)));
   }
 
+  /**
+   * TODO: Add function gear ⚙
+   */
   LIElement makeContactNode(ORModel.ContactReference cRef, int rid) {
     LIElement li = new LIElement()
       ..classes.add('clickable')

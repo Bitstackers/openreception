@@ -74,6 +74,7 @@ class ReceptionContact {
   /**
    *
    */
+
   ReceptionContact(
       this._receptionController, this._contactController, bool this._single) {
     if (!_single) {
@@ -280,7 +281,8 @@ class ReceptionContact {
         ..relations = _valuesFromListTextArea(_relationsInput)
         ..responsibilities = _valuesFromListTextArea(_responsibilitiesInput)
         ..statusEmail = _statusEmailInput.checked
-        ..tags = _valuesFromListTextArea(_tagsInput)
+        ..tags =
+            _valuesFromListTextArea(_tagsInput).toSet().toList(growable: false)
         ..titles = _valuesFromListTextArea(_titlesInput)
         ..workhours = _valuesFromListTextArea(_workHoursInput)
         ..phones = _phoneNumberView.phoneNumbers.toList();

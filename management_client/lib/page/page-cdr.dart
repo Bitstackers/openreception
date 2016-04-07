@@ -253,21 +253,45 @@ class Cdr {
             ? '${epochToString(entry.answerEpoch, withDate: false)}'
             : '';
 
-    String durationToString(Duration d) => d.toString().split('.').first;
+    Duration callLength(model.CdrEntry entry) {
+      Duration d;
 
-    String callLength(model.CdrEntry entry) => entry.agentEndEpoch > 0
-        ? durationToString(
-            new Duration(seconds: entry.agentEndEpoch - entry.agentBeginEpoch))
-        : entry.externalTransferEpoch > 0
-            ? durationToString(new Duration(
-                seconds: entry.externalTransferEpoch - entry.agentBeginEpoch))
-            : entry.answerEpoch > 0
-                ? durationToString(
-                    new Duration(seconds: entry.endEpoch - entry.answerEpoch))
-                : entry.endEpoch > 0
-                    ? durationToString(new Duration(
-                        seconds: entry.endEpoch - entry.startEpoch))
-                    : '';
+      switch (entry.state) {
+        case model.CdrEntryState.agentChannel:
+        case model.CdrEntryState.notifiedNotAnswered:
+        case model.CdrEntryState.unknown:
+          d = new Duration(seconds: entry.endEpoch - entry.startEpoch);
+          break;
+        case model.CdrEntryState.inboundNotNotified:
+          if (entry.externalTransferEpoch > 0) {
+            d = new Duration(
+                seconds: entry.externalTransferEpoch - entry.answerEpoch);
+          } else if (entry.answerEpoch > 0) {
+            d = new Duration(seconds: entry.endEpoch - entry.answerEpoch);
+          } else {
+            d = new Duration(seconds: entry.endEpoch - entry.startEpoch);
+          }
+          break;
+        case model.CdrEntryState.notifiedAnsweredByAgent:
+          if (entry.externalTransferEpoch > 0) {
+            d = new Duration(
+                seconds: entry.externalTransferEpoch - entry.agentBeginEpoch);
+          } else {
+            d = new Duration(
+                seconds: entry.agentEndEpoch - entry.agentBeginEpoch);
+          }
+          break;
+        case model.CdrEntryState.outboundByAgent:
+        case model.CdrEntryState.outboundByPbx:
+          if (entry.answerEpoch > 0) {
+            d = new Duration(seconds: entry.endEpoch - entry.answerEpoch);
+          } else {
+            d = new Duration(seconds: entry.endEpoch - entry.startEpoch);
+          }
+      }
+
+      return d;
+    }
 
     String endTime(model.CdrEntry entry) => entry.agentEndEpoch > 0
         ? '${epochToString(entry.agentEndEpoch, withDate: false)}'
@@ -300,10 +324,12 @@ class Cdr {
           }
       }
 
-      return durationToString(d);
+      return d.toString().split('.').first;
     }
 
     for (Context c in contexts) {
+      final Duration lengthOfCall = callLength(c.entry);
+
       if (c.entry.state == model.CdrEntryState.notifiedAnsweredByAgent) {
         answeredEntries.add(c.entry);
       }
@@ -352,7 +378,7 @@ class Cdr {
           new TableCellElement()..text = endTime(c.entry),
           new TableCellElement()
             ..style.textAlign = 'center'
-            ..text = callLength(c.entry)
+            ..text = lengthOfCall.toString().split('.').first
             ..title = 'længde',
           new TableCellElement()..text = c.recName,
           new TableCellElement()
@@ -371,7 +397,7 @@ class Cdr {
                             .get(c.entry.cid)
                             .then((model.BaseContact contact) {
                           (event.target as SpanElement)
-                            ..text = contact.fullName
+                            ..text = contact.name
                             ..title = 'cid: ${c.entry.cid.toString()}'
                             ..style.textDecoration = ''
                             ..style.cursor = '';
@@ -599,10 +625,10 @@ class Cdr {
         element.style.display = 'flex';
         element.style.flexDirection = 'column';
 
-        _rcpCtrl.list().then((Iterable<model.Reception> receptions) {
-          final List<model.Reception> list = receptions.toList();
-          list.sort((model.Reception a, b) =>
-              a.fullName.toLowerCase().compareTo(b.fullName.toLowerCase()));
+        _rcpCtrl.list().then((Iterable<model.ReceptionReference> receptions) {
+          final List<model.ReceptionReference> list = receptions.toList();
+          list.sort((model.ReceptionReference a, b) =>
+              a.name.toLowerCase().compareTo(b.name.toLowerCase()));
           final List<OptionElement> options = new List<OptionElement>();
           receptionSelect.children.add(new OptionElement()
             ..text = 'filtrer efter receptioner...'
@@ -610,18 +636,16 @@ class Cdr {
             ..selected = true);
           for (model.Reception reception in list) {
             options.add(new OptionElement()
-              ..text = reception.fullName
-              ..value = reception.ID.toString());
+              ..text = reception.name
+              ..value = reception.id.toString());
           }
           receptionSelect.children.addAll(options);
         });
 
-        _userCtrl.list().then((Iterable<model.User> users) {
-          final List<model.User> list = users
-              .where(
-                  (model.User user) => user.address.isNotEmpty && user.id > 0)
-              .toList();
-          list.sort((model.User a, b) =>
+        _userCtrl.list().then((Iterable<model.UserReference> users) {
+          final List<model.UserReference> list =
+              users.where((model.UserReference user) => user.id > 0).toList();
+          list.sort((model.UserReference a, b) =>
               a.name.toLowerCase().compareTo(b.name.toLowerCase()));
           final List<OptionElement> options = new List<OptionElement>();
           userSelect.children.add(new OptionElement()

@@ -50,7 +50,6 @@ class Notification {
     //_observers();
   }
 
-  ///TODO: Move these to dedicated class.
   _observers() {
     receptionChange.listen((event.ReceptionChange rc) {
       if (rc.modifierUid == _appUser.id) {

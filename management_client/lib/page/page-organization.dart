@@ -138,7 +138,6 @@ class OrganizationView {
   }
 
   void _clearRightBar() {
-    //_currentContactList.clear();
     _currentReceptionList.clear();
     _ulContactList.children.clear();
     _ulReceptionList.children.clear();
@@ -245,16 +244,17 @@ class OrganizationView {
       int compareTo(ORModel.ContactReference c1, ORModel.ContactReference c2) =>
           c1.name.toLowerCase().compareTo(c2.name.toLowerCase());
 
-      List list = contacts.toList()..sort(compareTo);
+      List sorted = contacts.toList()..sort(compareTo);
 
-      _currentContactList = list
+      _currentContactList = sorted
           .map((c) => new ORModel.BaseContact.empty()
             ..id = c.id
             ..name = c.name)
           .toList();
+
       _ulContactList.children
         ..clear()
-        ..addAll(list.map(_makeContactNode));
+        ..addAll(sorted.map(_makeContactNode));
     }).catchError((error) {
       notify.error('Kunne ikke hente organisationskontakter', 'Fejl: $error');
       _log.severe(
