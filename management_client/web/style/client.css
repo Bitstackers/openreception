@@ -486,3 +486,7 @@ button.save:enabled {
    font-weight:bold;
    border: 1 px solid red;
  }
+
+ .changed {
+   background-color: yellow;
+ }
