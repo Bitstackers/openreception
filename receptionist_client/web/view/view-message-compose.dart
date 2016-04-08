@@ -59,11 +59,15 @@ class MessageCompose extends ViewWidget {
     _observers();
   }
 
-  @override Controller.Destination get _destination => _myDestination;
-  @override Model.UIMessageCompose get _ui => _uiModel;
+  @override
+  Controller.Destination get _destination => _myDestination;
+  @override
+  Model.UIMessageCompose get _ui => _uiModel;
 
-  @override void _onBlur(Controller.Destination _) {}
-  @override void _onFocus(Controller.Destination destination) {
+  @override
+  void _onBlur(Controller.Destination _) {}
+  @override
+  void _onFocus(Controller.Destination destination) {
     if (destination.cmd == Controller.Cmd.focusMessageArea) {
       _ui.focusMessageTextArea();
     }
