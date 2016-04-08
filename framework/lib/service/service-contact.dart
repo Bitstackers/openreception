@@ -133,4 +133,17 @@ class RESTContactStore implements Storage.Contact {
     return _backend.put(url, JSON.encode(attr)).then((String response) =>
         Model.ReceptionContactReference.decode(JSON.decode(response)));
   }
+
+  /**
+   *
+   */
+  Future<Iterable<Model.Commit>> changes([int cid, int rid]) {
+    Uri url = Resource.Contact.change(_host, cid, rid);
+    url = _appendToken(url, this._token);
+
+    Iterable<Model.UserCommit> convertMaps(Iterable<Map> maps) =>
+        maps.map(Model.UserCommit.decode);
+
+    return this._backend.get(url).then(JSON.decode).then(convertMaps);
+  }
 }

@@ -68,4 +68,9 @@ abstract class Contact {
    */
   Future<model.ReceptionContactReference> updateData(
       model.ReceptionAttributes attr, model.User modifier);
+
+  /**
+   *
+   */
+  Future changes([int uid, int rid]);
 }

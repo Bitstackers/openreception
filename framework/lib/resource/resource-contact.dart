@@ -18,55 +18,72 @@ part of openreception.resource;
  * resources across servers and clients.
  */
 abstract class Contact {
-
   static String nameSpace = 'contact';
 
-  static Uri single(Uri host, int ContactID) =>
-      Uri.parse('${root(host)}/${ContactID}');
+  /**
+   *
+   */
+  static Uri single(Uri host, int cid) => Uri.parse('${root(host)}/${cid}');
 
+  /**
+   *
+   */
   static Uri root(Uri host) =>
       Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}');
 
-  static Uri list(Uri host) =>
-      Uri.parse('${root(host)}');
+  /**
+   *
+   */
+  static Uri list(Uri host) => Uri.parse('${root(host)}');
 
-  static Uri singleByReception(Uri host, int contactID, int receptionID)
-    => Uri.parse('${root(host)}/${contactID}/reception/${receptionID}');
+  /**
+   *
+   */
+  static Uri singleByReception(Uri host, int cid, int rid) =>
+      Uri.parse('${root(host)}/${cid}/reception/${rid}');
 
-  static Uri listByReception(Uri host, int receptionID)
-    => Uri.parse('${root(host)}/list/reception/${receptionID}');
+  /**
+   *
+   */
+  static Uri listByReception(Uri host, int rid) =>
+      Uri.parse('${root(host)}/list/reception/${rid}');
 
-  static Uri receptions(Uri host, int contactID)
-    => Uri.parse('${root(host)}/${contactID}/reception');
+  /**
+   *
+   */
+  static Uri receptions(Uri host, int rid) =>
+      Uri.parse('${root(host)}/${rid}/reception');
 
-  static Uri organizations(Uri host, int contactID)
-    => Uri.parse('${root(host)}/${contactID}/organization');
+  /**
+   *
+   */
+  static Uri organizations(Uri host, int cid) =>
+      Uri.parse('${root(host)}/${cid}/organization');
 
-  static Uri managementServerList(Uri host, int receptionID)
-    => Uri.parse('$host/reception/${receptionID}/contact');
+  /**
+   *
+   */
+  static Uri colleagues(Uri host, int cid) =>
+      Uri.parse('${root(host)}/${cid}/colleagues');
 
-  static Uri calendar(Uri host, int contactID, int receptionID) =>
-    Uri.parse('${singleByReception(host, contactID, receptionID)}/calendar');
+  /**
+   *
+   */
+  static Uri organizationContacts(Uri host, int oid) =>
+      Uri.parse('$host/contact/organization/${oid}');
 
-  static Uri calendarEvent(Uri host, int contactID, int receptionID, int eventID) =>
-    Uri.parse('${singleByReception(host, contactID, receptionID)}/calendar/event/${eventID}');
-
-  static Uri calendarEventChanges(Uri host, int eventID) =>
-    Uri.parse('${Util.removeTailingSlashes(host)}/calendarentry/${eventID}/change');
-
-  static Uri calendarEventLatestChange(Uri host, int eventID) =>
-    Uri.parse('${Util.removeTailingSlashes(host)}/calendarentry/${eventID}/change/latest');
-
-  static Uri endpoints(Uri host, int contactID, int receptionID) =>
-    Uri.parse('${singleByReception(host, contactID, receptionID)}/endpoints');
-
-  static Uri phones(Uri host, int contactID, int receptionID) =>
-    Uri.parse('${singleByReception(host, contactID, receptionID)}/phones');
-
-  static Uri colleagues(Uri host, int contactID)
-    => Uri.parse('${root(host)}/${contactID}/colleagues');
-
-  static Uri organizationContacts(Uri host, int oid)
-    => Uri.parse('$host/contact/organization/${oid}');
-
+  /**
+   *
+   */
+  static Uri change(Uri host, [int cid, int rid]) {
+    if (cid == null) {
+      return Uri.parse('$host/contact/history');
+    } else {
+      if (rid == null) {
+        return Uri.parse('$host/contact/${cid}/history');
+      } else {
+        return Uri.parse('$host/contact/${cid}/reception/${rid}/history');
+      }
+    }
+  }
 }

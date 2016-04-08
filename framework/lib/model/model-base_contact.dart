@@ -46,6 +46,42 @@ class ContactReference implements ObjectReference {
   int get hashCode => id.hashCode;
 }
 
+/**
+ *
+ */
+class ContactChange implements ObjectChange {
+  final ChangeType changeType;
+  ObjectType get objectType => ObjectType.contact;
+  final int cid;
+
+  /**
+   *
+   */
+  ContactChange(this.changeType, this.cid);
+
+  /**
+   *
+   */
+  static ContactChange decode(Map map) =>
+      new ContactChange(changeTypeFromString(map[Key.change]), map[Key.cid]);
+
+  /**
+   *
+   */
+  ContactChange.fromJson(Map map)
+      : changeType = changeTypeFromString(map[Key.change]),
+        cid = map[Key.cid];
+
+  /**
+   *
+   */
+  Map toJson() => {
+        Key.change: changeTypeToString(changeType),
+        Key.type: objectTypeToString(objectType),
+        Key.cid: cid
+      };
+}
+
 class OrganizationReference implements ObjectReference {
   final int id;
   final String name;

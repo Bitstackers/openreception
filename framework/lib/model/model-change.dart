@@ -13,6 +13,9 @@
 
 part of openreception.model;
 
+/**
+ *
+ */
 enum ObjectType {
   user,
   calendar,

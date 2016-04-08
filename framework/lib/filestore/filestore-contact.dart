@@ -48,7 +48,7 @@ class Contact implements storage.Contact {
    *
    */
   Future<model.ReceptionContactReference> addData(
-      model.ReceptionAttributes attr, model.User user) async {
+      model.ReceptionAttributes attr, model.User modifier) async {
     if (attr.receptionId == model.Reception.noId) {
       throw new ArgumentError('attr.receptionUuid must be valid');
     }
@@ -65,15 +65,18 @@ class Contact implements storage.Contact {
     }
 
     /// Set the user
-    if (user == null) {
-      user = _systemUser;
+    if (modifier == null) {
+      modifier = _systemUser;
     }
 
     file.writeAsStringSync(_jsonpp.convert(attr));
     _log.finest('Created new file ${file.path}');
 
-    await _git.add(file, 'Added ${attr.contactId} to ${attr.receptionId}',
-        _authorString(user));
+    await _git.add(
+        file,
+        'uid:${modifier.id} - ${modifier.name} '
+        'added ${attr.contactId} to ${attr.receptionId}',
+        _authorString(modifier));
 
     return attr.reference;
   }
@@ -104,7 +107,11 @@ class Contact implements storage.Contact {
     _log.finest('Creating new file ${file.path}');
     file.writeAsStringSync(_jsonpp.convert(contact));
 
-    await _git.add(file, 'Added ${contact.id}', _authorString(modifier));
+    await _git.add(
+        file,
+        'uid:${modifier.id} - ${modifier.name} '
+        'added ${contact.id}',
+        _authorString(modifier));
 
     return contact.reference;
   }
@@ -232,7 +239,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future remove(int id, model.User user) async {
+  Future remove(int id, model.User modifier) async {
     final Directory dir = new Directory('$path/${id}');
 
     if (!dir.existsSync()) {
@@ -240,11 +247,15 @@ class Contact implements storage.Contact {
     }
 
     /// Set the user
-    if (user == null) {
-      user = _systemUser;
+    if (modifier == null) {
+      modifier = _systemUser;
     }
 
-    await _git.remove(dir, 'Removed $id', _authorString(user));
+    await _git.remove(
+        dir,
+        'uid:${modifier.id} - ${modifier.name} '
+        'removed $id',
+        _authorString(modifier));
   }
 
   /**
@@ -269,7 +280,10 @@ class Contact implements storage.Contact {
     _log.finest('Removing file ${file.path}');
 
     await _git.remove(
-        file, 'Removed ${id} from ${receptionId}', _authorString(modifier));
+        file,
+        'uid:${modifier.id} - ${modifier.name} '
+        'removed ${id} from ${receptionId}',
+        _authorString(modifier));
   }
 
   /**
@@ -290,7 +304,11 @@ class Contact implements storage.Contact {
 
     file.writeAsStringSync(_jsonpp.convert(contact));
 
-    await _git.add(file, 'Updated ${contact.name}', _authorString(modifier));
+    await _git.add(
+        file,
+        'uid:${modifier.id} - ${modifier.name} '
+        'updated ${contact.name}',
+        _authorString(modifier));
 
     return contact.reference;
   }
@@ -317,9 +335,62 @@ class Contact implements storage.Contact {
     _log.finest('Creating new file ${file.path}');
     file.writeAsStringSync(_jsonpp.convert(attr));
 
-    await _git.add(file, 'Updated ${attr.contactId} in ${attr.receptionId}',
+    await _git.add(
+        file,
+        'uid:${modifier.id} - ${modifier.name} '
+        'updated ${attr.contactId} in ${attr.receptionId}',
         _authorString(modifier));
 
     return attr.reference;
+  }
+
+  /**
+   *
+   */
+  Future<Iterable<model.Commit>> changes([int cid, int rid]) async {
+    FileSystemEntity fse;
+
+    if (cid == null) {
+      fse = new Directory('.');
+    } else {
+      if (rid == null) {
+        fse = new Directory('$cid');
+      } else {
+        fse = new Directory('$cid/receptions/$rid.json');
+      }
+    }
+
+    Iterable<Change> gitChanges = await _git.changes(fse);
+
+    int extractUid(String message) => message.startsWith('uid:')
+        ? int.parse(message.split(' ').first.replaceFirst('uid:', ''))
+        : model.User.noId;
+
+    model.ObjectChange convertFilechange(FileChange fc) {
+      final List<String> parts = fc.filename.split('/');
+      final int cid = int.parse(parts[0]);
+
+      if (parts.last == 'contact.json') {
+        return new model.ContactChange(fc.changeType, cid);
+      } else if (parts.length > 2 && parts[1] == 'receptions') {
+        final int rid = int.parse(parts[2].split('.').first);
+        return new model.ReceptionAttributeChange(fc.changeType, cid, rid);
+      } else {
+        throw new StateError('Could not parse filechange ${fc.toJson()}');
+      }
+    }
+
+    Iterable<model.Commit> changes = gitChanges.map((change) =>
+        new model.Commit()
+          ..uid = extractUid(change.message)
+          ..changedAt = change.changeTime
+          ..commitHash = change.commitHash
+          ..authorIdentity = change.author
+          ..changes = new List<model.ObjectChange>.from(
+              change.fileChanges.map(convertFilechange)));
+
+    _log.info(changes.map((c) => c.toJson()));
+
+    return changes;
   }
 }

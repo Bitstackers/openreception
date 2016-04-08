@@ -13,6 +13,43 @@
 
 part of openreception.model;
 
+class ReceptionAttributeChange implements ObjectChange {
+  final ChangeType changeType;
+  ObjectType get objectType => ObjectType.contact;
+  final int cid;
+  final int rid;
+
+  /**
+   *
+   */
+  ReceptionAttributeChange(this.changeType, this.cid, this.rid);
+
+  /**
+   *
+   */
+  static ReceptionAttributeChange decode(Map map) =>
+      new ReceptionAttributeChange(
+          changeTypeFromString(map[Key.change]), map[Key.cid], map[Key.rid]);
+
+  /**
+   *
+   */
+  ReceptionAttributeChange.fromJson(Map map)
+      : changeType = changeTypeFromString(map[Key.change]),
+        cid = map[Key.cid],
+        rid = map[Key.rid];
+
+  /**
+   *
+   */
+  Map toJson() => {
+        Key.change: changeTypeToString(changeType),
+        Key.type: objectTypeToString(objectType),
+        Key.cid: cid,
+        Key.rid: rid
+      };
+}
+
 class ReceptionAttributes {
   static const String noId = '';
 
