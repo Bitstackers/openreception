@@ -178,4 +178,25 @@ class User {
    */
   Future<shelf.Response> groups(shelf.Request request) async =>
       okJson((await _userStore.groups()).toList(growable: false));
+
+  /**
+   *
+   */
+  Future<shelf.Response> history(shelf.Request request) async =>
+      okJson((await _userStore.changes()).toList(growable: false));
+
+  /**
+   *
+   */
+  Future<shelf.Response> objectHistory(shelf.Request request) async {
+    final String uidParam = shelf_route.getPathParameter(request, 'uid');
+    int uid;
+    try {
+      uid = int.parse(uidParam);
+    } on FormatException {
+      return clientError('Bad uid: $uidParam');
+    }
+
+    return okJson((await _userStore.changes(uid)).toList(growable: false));
+  }
 }
