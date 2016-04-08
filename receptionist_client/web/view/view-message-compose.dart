@@ -164,7 +164,7 @@ class MessageCompose extends ViewWidget {
    * Render the widget with [Contact].
    */
   void _render(ORModel.Contact contact) {
-    if (_latestContact.ID != contact.ID) {
+    if (_latestContact.ID != contact.ID || contact.isEmpty) {
       _latestContact = contact;
 
       _ui.headerExtra = contact.fullName.isEmpty ? '' : ': ${contact.fullName}';
