@@ -60,7 +60,7 @@ class CircularCounter {
   }
 }
 
-CircularCounter _networkPortCounter = new CircularCounter(4000, 6000);
+CircularCounter _networkPortCounter = new CircularCounter(9000, 11000);
 
 class TestEnvironment {
   Logger _log = new Logger('TestEnvironment');
