@@ -13,34 +13,9 @@
 
 part of openreception.model;
 
-/**
- *
- */
-enum ChangeType { add, delete, modify }
-
-String changeTypeToString(ChangeType ct) => _changeTypeToString.containsKey(ct)
-    ? _changeTypeToString[ct]
-    : throw new ArgumentError('Unknown ChangeType $ct');
-
-ChangeType changeTypeFromString(String str) =>
-    _changeTypeFromString.containsKey(str)
-        ? _changeTypeFromString[str]
-        : throw new ArgumentError('Unknown ChangeType $str');
-
-const Map<ChangeType, String> _changeTypeToString = const {
-  ChangeType.add: 'A',
-  ChangeType.modify: 'M',
-  ChangeType.delete: 'D'
-};
-
-const Map<String, ChangeType> _changeTypeFromString = const {
-  'A': ChangeType.add,
-  'M': ChangeType.modify,
-  'D': ChangeType.delete
-};
-
-class CalendarChange {
+class CalendarChange implements ObjectChange {
   final ChangeType changeType;
+  ObjectType get objectType => ObjectType.calendar;
   final int eid;
   final Owner owner;
 

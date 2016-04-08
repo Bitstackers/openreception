@@ -111,9 +111,51 @@ class User implements storage.User {
 
     file.writeAsStringSync(_jsonpp.convert(user));
 
-    await _git.add(file, 'Added ${user.id}', _authorString(modifier));
+    await _git.add(
+        file,
+        'uid:${modifier.id} - ${modifier.name} '
+        'added ${user.id}',
+        _authorString(modifier));
 
     return user.reference;
+  }
+
+  /**
+   *
+   */
+  Future<Iterable<model.UserCommit>> changes([int uid]) async {
+    FileSystemEntity fse;
+
+    if (uid == null) {
+      fse = new Directory('.');
+    } else {
+      fse = new File('$uid.json');
+    }
+
+    Iterable<Change> gitChanges = await _git.changes(fse);
+
+    int extractUid(String message) => message.startsWith('uid:')
+        ? int.parse(message.split(' ').first.replaceFirst('uid:', ''))
+        : model.User.noId;
+
+    model.UserChange convertFilechange(FileChange fc) {
+      final int eid = int.parse(fc.filename.split('.').first);
+
+      return new model.UserChange(fc.changeType, eid);
+    }
+
+    Iterable<model.UserCommit> changes = gitChanges.map((change) =>
+        new model.UserCommit()
+          ..uid = extractUid(change.message)
+          ..changedAt = change.changeTime
+          ..commitHash = change.commitHash
+          ..authorIdentity = change.author
+          ..changes = new List<model.UserChange>.from(
+              change.fileChanges.map(convertFilechange)));
+
+    _log.info(changes.map((c) => c.toJson()));
+
+    return changes;
   }
 
   /**
@@ -134,7 +176,11 @@ class User implements storage.User {
 
     file.writeAsStringSync(_jsonpp.convert(user));
 
-    await _git.commit(file, 'Updated ${user.id}', _authorString(modifier));
+    await _git.commit(
+        file,
+        'uid:${modifier.id} - ${modifier.name} '
+        'updated ${user.id}',
+        _authorString(modifier));
 
     return user.reference;
   }
@@ -154,6 +200,10 @@ class User implements storage.User {
       modifier = _systemUser;
     }
 
-    await _git.remove(file, 'Removed $id', _authorString(modifier));
+    await _git.remove(
+        file,
+        'uid:${modifier.id} - ${modifier.name} '
+        'removed $id',
+        _authorString(modifier));
   }
 }

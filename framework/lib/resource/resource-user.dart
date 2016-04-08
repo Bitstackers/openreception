@@ -55,4 +55,12 @@ abstract class User {
 
   static Uri setUserState(Uri host, int uid, String newState) =>
       Uri.parse('$host/$_user/$uid/state/$newState');
+
+  static Uri change(Uri host, [int uid]) {
+    if (uid == null) {
+      return Uri.parse('$host/$_user/history');
+    } else {
+      return Uri.parse('$host/$_user/$uid/history');
+    }
+  }
 }

@@ -174,4 +174,17 @@ class RESTUserStore implements Storage.User {
         .then(JSON.decode)
         .then((Map map) => new Model.UserStatus.fromMap(map));
   }
+
+  /**
+     *
+     */
+  Future<Iterable<Model.UserCommit>> changes([int uid]) {
+    Uri url = Resource.User.change(_host, uid);
+    url = _appendToken(url, this._token);
+
+    Iterable<Model.UserCommit> convertMaps(Iterable<Map> maps) =>
+        maps.map(Model.UserCommit.decode);
+
+    return this._backend.get(url).then(JSON.decode).then(convertMaps);
+  }
 }

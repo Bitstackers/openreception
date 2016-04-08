@@ -48,4 +48,9 @@ abstract class User {
    *
    */
   Future remove(int uid, model.User modifier);
+
+  /**
+   *
+   */
+  Future changes([int uid]);
 }

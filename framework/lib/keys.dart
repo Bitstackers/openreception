@@ -29,6 +29,8 @@ const String cdr = 'cdr';
 const String notification = 'notification';
 const String user = 'user';
 
+const String receptionAttributes = 'receptionAttributes';
+
 @deprecated
 const String contactId = cid;
 @deprecated

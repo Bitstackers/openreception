@@ -13,12 +13,54 @@
 
 part of openreception.model;
 
+/**
+ *
+ */
 abstract class UserGroups {
   static const String receptionist = 'Receptionist';
   static const String administrator = 'Administrator';
   static const String serviceAgent = 'Service agent';
 }
 
+/**
+ *
+ */
+class UserChange implements ObjectChange {
+  final ChangeType changeType;
+  ObjectType get objectType => ObjectType.user;
+  final int uid;
+
+  /**
+   *
+   */
+  UserChange(this.changeType, this.uid);
+
+  /**
+   *
+   */
+  static UserChange decode(Map map) =>
+      new UserChange(changeTypeFromString(map[Key.change]), map[Key.uid]);
+
+  /**
+   *
+   */
+  UserChange.fromJson(Map map)
+      : changeType = changeTypeFromString(map[Key.change]),
+        uid = map[Key.uid];
+
+  /**
+   *
+   */
+  Map toJson() => {
+        Key.change: changeTypeToString(changeType),
+        Key.type: objectTypeToString(objectType),
+        Key.uid: uid
+      };
+}
+
+/**
+ *
+ */
 class UserReference implements ObjectReference {
   final int id;
   final String name;
