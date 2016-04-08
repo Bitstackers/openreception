@@ -122,8 +122,8 @@ class RESTUserStore implements Storage.User {
   }
 
   /**
-     * Returns the [Model.UserStatus] object associated with [userID].
-     */
+   * Returns the [Model.UserStatus] object associated with [userID].
+   */
   Future<Model.UserStatus> userStatus(int userID) {
     Uri uri = Resource.User.userState(_host, userID);
     uri = _appendToken(uri, _token);
@@ -132,11 +132,11 @@ class RESTUserStore implements Storage.User {
   }
 
   /**
-     * Updates the [Model.UserStatus] object associated
-     * with [userID] to state ready.
-     * The update is conditioned by the server and phone state and may throw
-     * [ClientError] exeptions.
-     */
+   * Updates the [Model.UserStatus] object associated
+   * with [userID] to state ready.
+   * The update is conditioned by the server and phone state and may throw
+   * [ClientError] exeptions.
+   */
   Future<Model.UserStatus> userStateReady(int userId) {
     Uri uri = Resource.User.setUserState(_host, userId, Model.UserState.Ready);
     uri = _appendToken(uri, _token);
@@ -148,9 +148,9 @@ class RESTUserStore implements Storage.User {
   }
 
   /**
-     * Returns an Iterable representation of the all the [Model.UserStatus]
-     * objects currently known to the CallFlowControl server.
-     */
+   * Returns an Iterable representation of the all the [Model.UserStatus]
+   * objects currently known to the CallFlowControl server.
+   */
   Future<Iterable<Model.UserStatus>> userStatusList() {
     Uri uri = Resource.User.userStateAll(_host);
     uri = _appendToken(uri, _token);
@@ -160,11 +160,11 @@ class RESTUserStore implements Storage.User {
   }
 
   /**
-     * Updates the [Model.UserStatus] object associated
-     * with [userID] to state paused.
-     * The update is conditioned by the server and phone state and may throw
-     * [ClientError] exeptions.
-     */
+   * Updates the [Model.UserStatus] object associated
+   * with [userID] to state paused.
+   * The update is conditioned by the server and phone state and may throw
+   * [ClientError] exeptions.
+   */
   Future<Model.UserStatus> userStatePaused(int userId) {
     Uri uri = Resource.User.setUserState(_host, userId, Model.UserState.Paused);
     uri = _appendToken(uri, _token);
@@ -176,8 +176,8 @@ class RESTUserStore implements Storage.User {
   }
 
   /**
-     *
-     */
+   *
+   */
   Future<Iterable<Model.UserCommit>> changes([int uid]) {
     Uri url = Resource.User.change(_host, uid);
     url = _appendToken(url, this._token);
