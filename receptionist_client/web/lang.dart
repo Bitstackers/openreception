@@ -135,6 +135,7 @@ abstract class Key {
   static const String myQueuedCallsHeader = 'my-queued-calls-header';
 
   static const String name = 'name';
+  static const String nameCopied = 'name-copied';
   static const String no = 'no';
   static const String now = 'now';
 
@@ -298,6 +299,7 @@ Map<String, String> da = {
   Key.myQueuedCallsHeader: 'Mine kald',
 
   Key.name: 'Navn',
+  Key.nameCopied: 'Navn kopieret',
   Key.no: 'Nej',
   Key.now: 'nu',
 
@@ -459,6 +461,7 @@ Map<String, String> en = {
   Key.myQueuedCallsHeader: 'My calls',
 
   Key.name: 'Name',
+  Key.nameCopied: 'Name copied',
   Key.no: 'Nej',
   Key.now: 'now',
 

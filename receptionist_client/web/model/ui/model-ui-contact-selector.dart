@@ -214,6 +214,15 @@ class UIContactSelector extends UIModel {
 
     _filterInput.onInput.listen((Event _) => _filter());
 
+    _list.onDoubleClick.listen((Event event) {
+      if (event.target is LIElement) {
+        _copyToClipboard((event.target as LIElement).text);
+        _popup.success(
+            _langMap[Key.nameCopied], '${(event.target as LIElement).text}',
+            closeAfter: new Duration(milliseconds: 1500));
+      }
+    });
+
     /// NOTE (TL): Don't switch this to _root.onClick. We need the mousedown
     /// event, not the mouseclick event. We want to keep focus on the filter at
     /// all times.

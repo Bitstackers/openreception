@@ -18,13 +18,16 @@ part of model;
  */
 class UIReceptionSelector extends UIModel {
   final Bus<ORModel.Reception> _bus = new Bus<ORModel.Reception>();
+  final Map<String, String> _langMap;
   final DivElement _myRoot;
+  final Controller.Popup _popup;
   List<LIElement> _receptionsCache = new List<LIElement>();
 
   /**
    * Constructor.
    */
-  UIReceptionSelector(DivElement this._myRoot) {
+  UIReceptionSelector(DivElement this._myRoot, Controller.Popup this._popup,
+      Map<String, String> this._langMap) {
     _setupLocalKeys();
     _observers();
   }
@@ -124,6 +127,15 @@ class UIReceptionSelector extends UIModel {
     _filter.onKeyDown.listen(_keyboard.press);
 
     _filter.onInput.listen((Event _) => _filterList());
+
+    _list.onDoubleClick.listen((Event event) {
+      if (event.target is LIElement) {
+        _copyToClipboard((event.target as LIElement).text);
+        _popup.success(
+            _langMap[Key.nameCopied], '${(event.target as LIElement).text}',
+            closeAfter: new Duration(milliseconds: 1500));
+      }
+    });
 
     /// NOTE (TL): Don't switch this to _root.onClick. We need the mousedown
     /// event, not the mouseclick event. We want to keep focus on the filter at

@@ -131,8 +131,8 @@ class ORCReady {
         querySelector('#contact-calendar'), _weekDays, _langMap);
     Model.UIContactData _uiContactData =
         new Model.UIContactData(querySelector('#contact-data'));
-    Model.UIContactSelector _uiContactSelector =
-        new Model.UIContactSelector(querySelector('#contact-selector'));
+    Model.UIContactSelector _uiContactSelector = new Model.UIContactSelector(
+        querySelector('#contact-selector'), _popup, _langMap);
     Model.UIMessageArchive _uiMessageArchive = new Model.UIMessageArchive(
         querySelector('#message-archive'), _weekDays, _langMap);
     Model.UIMessageCompose _uiMessageCompose =
@@ -141,7 +141,8 @@ class ORCReady {
         new Model.UIReceptionCalendar(
             querySelector('#reception-calendar'), _weekDays, _langMap);
     Model.UIReceptionSelector _uiReceptionSelector =
-        new Model.UIReceptionSelector(querySelector('#reception-selector'));
+        new Model.UIReceptionSelector(
+            querySelector('#reception-selector'), _popup, _langMap);
 
     new Contexts(new Model.UIContexts());
     new Hint(new Model.UIHint());

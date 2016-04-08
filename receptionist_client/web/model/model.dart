@@ -79,6 +79,10 @@ abstract class UIModel {
   HtmlElement get _focusElement;
   HtmlElement get _lastTabElement;
   HtmlElement get _root;
+  final TextAreaElement _copyTextArea = new TextAreaElement()
+    ..style.position = 'absolute'
+    ..style.left = '-5000'
+    ..style.zIndex = '-100';
 
   /**
    * Blur the widget and set tabindex to -1.
@@ -92,14 +96,30 @@ abstract class UIModel {
   }
 
   /**
+   * Copies [value] to the system clipboard.
+   */
+  void _copyToClipboard(String value) {
+    _copyTextArea.value = value;
+    document.body.children.add(_copyTextArea);
+    _copyTextArea.select();
+    document.execCommand('copy', null, "");
+    _focusElement.focus();
+    _copyTextArea.remove();
+  }
+
+  /**
    * The map returned from this method ALWAYS contains "Tab" and "Shift+Tab".
    * These two maps to [_handleTab] and [_handleShiftTab] respectively.
    *
    * It MAY contain "down" and "up", if [_listTarget] is not null. These two
    * are mapped to [_handleUpDown].
    */
-  Map<String, EventListener> _defaultKeyMap({Map<String, EventListener> myKeys}) {
-    Map<String, EventListener> map = {'Shift+Tab': _handleShiftTab, 'Tab': _handleTab};
+  Map<String, EventListener> _defaultKeyMap(
+      {Map<String, EventListener> myKeys}) {
+    Map<String, EventListener> map = {
+      'Shift+Tab': _handleShiftTab,
+      'Tab': _handleTab
+    };
     if (_listTarget != null) {
       map.addAll({'down': _handleUpDown, 'up': _handleUpDown});
     }
