@@ -82,5 +82,11 @@ void _runUserTests() {
     test('update (event presence)', () => serviceTest.User.updateEvent(sa));
 
     test('remove (event presence)', () => serviceTest.User.deleteEvent(sa));
+
+    test('change listing on create', () => storeTest.User.changeOnCreate(sa));
+
+    test('change listing on update', () => storeTest.User.changeOnUpdate(sa));
+
+    test('change listing on remove', () => storeTest.User.changeOnRemove(sa));
   });
 }

@@ -415,4 +415,105 @@ abstract class User {
       expect(fetched.identities.length, equals(1));
     }
   }
+
+  /**
+   *
+   */
+  static Future changeOnCreate(ServiceAgent sa) async {
+    final model.User created = await sa.createsUser();
+
+    Iterable<model.UserCommit> commits = await sa.userStore.changes(created.id);
+
+    _log.info('Listing changes and validating.');
+
+    expect(commits.length, equals(1));
+    expect(commits.first.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(commits.first.authorIdentity, equals(sa.user.address));
+    expect(commits.first.uid, equals(sa.user.id));
+
+    expect(commits.first.changes.length, equals(1));
+    final change = commits.first.changes.first;
+
+    expect(change.changeType, model.ChangeType.add);
+    expect(change.uid, created.id);
+  }
+
+  /**
+   *
+   */
+  static Future changeOnUpdate(ServiceAgent sa) async {
+    final model.User created = await sa.createsUser();
+
+    await sa.updatesUser(created);
+
+    Iterable<model.UserCommit> commits = await sa.userStore.changes(created.id);
+
+    expect(commits.length, equals(2));
+
+    expect(commits.first.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(commits.first.authorIdentity, equals(sa.user.address));
+
+    expect(commits.last.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(commits.last.authorIdentity, equals(sa.user.address));
+
+    expect(commits.length, equals(2));
+    expect(commits.first.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(commits.first.authorIdentity, equals(sa.user.address));
+    expect(commits.first.uid, equals(sa.user.id));
+
+    expect(commits.first.changes.length, equals(1));
+    expect(commits.last.changes.length, equals(1));
+    final latestChange = commits.first.changes.first;
+    final oldestChange = commits.last.changes.first;
+
+    expect(latestChange.changeType, model.ChangeType.modify);
+    expect(latestChange.uid, created.id);
+
+    expect(oldestChange.changeType, model.ChangeType.add);
+    expect(oldestChange.uid, created.id);
+  }
+
+  /**
+   *
+   */
+  static Future changeOnRemove(ServiceAgent sa) async {
+    final model.User created = await sa.createsUser();
+
+    await sa.removesUser(created);
+
+    Iterable<model.UserCommit> commits = await sa.userStore.changes(created.id);
+
+    _log.info('Listing changes and validating.');
+
+    expect(commits.length, equals(2));
+
+    expect(commits.first.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(commits.first.authorIdentity, equals(sa.user.address));
+
+    expect(commits.last.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(commits.last.authorIdentity, equals(sa.user.address));
+
+    expect(commits.length, equals(2));
+    expect(commits.first.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(commits.first.authorIdentity, equals(sa.user.address));
+    expect(commits.first.uid, equals(sa.user.id));
+
+    expect(commits.first.changes.length, equals(1));
+    expect(commits.last.changes.length, equals(1));
+    final latestChange = commits.first.changes.first;
+    final oldestChange = commits.last.changes.first;
+
+    expect(latestChange.changeType, model.ChangeType.delete);
+    expect(latestChange.uid, created.id);
+
+    expect(oldestChange.changeType, model.ChangeType.add);
+    expect(oldestChange.uid, created.id);
+  }
 }

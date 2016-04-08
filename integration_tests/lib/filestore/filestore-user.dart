@@ -43,5 +43,11 @@ _runUserTests() {
     test('identity remove', () => storeTest.User.removeUserIdentity(sa));
 
     test('get (by identity)', () => storeTest.User.getUserByIdentity(sa));
+
+    test('change listing on create', () => storeTest.User.changeOnCreate(sa));
+
+    test('change listing on update', () => storeTest.User.changeOnUpdate(sa));
+
+    test('change listing on remove', () => storeTest.User.changeOnRemove(sa));
   });
 }
