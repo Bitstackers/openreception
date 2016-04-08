@@ -178,6 +178,7 @@ class UIMessageCompose extends UIModel {
     _root.onKeyDown.listen(_keyboard.press);
 
     _root.onMouseDown.listen(_focusFromClick);
+
     _hotKeys.onCtrlEsc.listen((KeyboardEvent _) {
       reset(pristine: true);
       if (isFocused) {
@@ -186,6 +187,7 @@ class UIMessageCompose extends UIModel {
         _myFocusElement = _callerNameInput;
       }
     });
+
     _hotKeys.onCtrlSpace.listen((_) => _toggleRecipients());
 
     /// Enables focused element memory for this widget.
@@ -318,6 +320,8 @@ class UIMessageCompose extends UIModel {
     messagePrerequisites = [];
     _recipientsList.dataset['recipients-list'] = '';
     _recipientsList.children.clear();
+    _recipientsDiv.classes.toggle('recipients-hidden', true);
+    _showRecipientsSpan.classes.toggle('active', false);
     _showRecipientsText.hidden = true;
     _showNoRecipientsText.hidden = false;
 
