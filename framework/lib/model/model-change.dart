@@ -133,6 +133,42 @@ class Commit {
 }
 
 /**
+ *
+ */
+class IvrChange implements ObjectChange {
+  final ChangeType changeType;
+  ObjectType get objectType => ObjectType.user;
+  final String menuName;
+
+  /**
+   *
+   */
+  IvrChange(this.changeType, this.menuName);
+
+  /**
+   *
+   */
+  static IvrChange decode(Map map) =>
+      new IvrChange(changeTypeFromString(map[Key.change]), map[Key.name]);
+
+  /**
+   *
+   */
+  IvrChange.fromJson(Map map)
+      : changeType = changeTypeFromString(map[Key.change]),
+        menuName = map[Key.name];
+
+  /**
+   *
+   */
+  Map toJson() => {
+        Key.change: changeTypeToString(changeType),
+        Key.type: objectTypeToString(objectType),
+        Key.name: menuName
+      };
+}
+
+/**
  * Class representing a historic change of a user object, effectuated
  * by a [User].
  */

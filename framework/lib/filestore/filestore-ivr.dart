@@ -119,4 +119,43 @@ class Ivr implements storage.Ivr {
 
     await _git.remove(file, 'Removed $menuName', _authorString(user));
   }
+
+  /**
+   *
+   */
+  Future<Iterable<model.Commit>> changes([String menuName]) async {
+    FileSystemEntity fse;
+
+    if (menuName == null) {
+      fse = new Directory('.');
+    } else {
+      fse = new File('$menuName.json');
+    }
+
+    Iterable<Change> gitChanges = await _git.changes(fse);
+
+    int extractUid(String message) => message.startsWith('uid:')
+        ? int.parse(message.split(' ').first.replaceFirst('uid:', ''))
+        : model.User.noId;
+
+    model.ObjectChange convertFilechange(FileChange fc) {
+      final List<String> parts = fc.filename.split('.');
+      final String name = parts[0];
+
+      return new model.IvrChange(fc.changeType, name);
+    }
+
+    Iterable<model.Commit> changes = gitChanges.map((change) =>
+        new model.Commit()
+          ..uid = extractUid(change.message)
+          ..changedAt = change.changeTime
+          ..commitHash = change.commitHash
+          ..authorIdentity = change.author
+          ..changes = new List<model.ObjectChange>.from(
+              change.fileChanges.map(convertFilechange)));
+
+    _log.info(changes.map((c) => c.toJson()));
+
+    return changes;
+  }
 }
