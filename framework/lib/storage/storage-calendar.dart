@@ -20,7 +20,7 @@ abstract class Calendar {
   /**
    *
    */
-  Future<Iterable<model.CalendarCommit>> changes(model.Owner owner, [int eid]);
+  Future<Iterable<model.Commit>> changes(model.Owner owner, [int eid]);
 
   /**
    *

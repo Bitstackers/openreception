@@ -38,4 +38,9 @@ abstract class Message {
    *
    */
   Future remove(int mid, model.User modifier);
+
+  /**
+   *
+   */
+  Future<Iterable<model.Commit>> changes([int mid]);
 }

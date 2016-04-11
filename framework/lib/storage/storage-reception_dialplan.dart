@@ -43,4 +43,9 @@ abstract class ReceptionDialplan {
    *
    */
   Future remove(String extension, model.User modifier);
+
+  /**
+   *
+   */
+  Future<Iterable<model.Commit>> changes([String extension]);
 }

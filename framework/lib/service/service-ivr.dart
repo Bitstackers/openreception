@@ -96,4 +96,17 @@ class RESTIvrStore implements Storage.Ivr {
         .then(JSON.decode)
         .then(Model.IvrMenu.decode);
   }
+
+  /**
+   *
+   */
+  Future<Iterable<Model.Commit>> changes([String menuName]) {
+    Uri url = Resource.Ivr.changeList(_host, menuName);
+    url = _appendToken(url, this._token);
+
+    Iterable<Model.Commit> convertMaps(Iterable<Map> maps) =>
+        maps.map(Model.Commit.decode);
+
+    return this._backend.get(url).then(JSON.decode).then(convertMaps);
+  }
 }

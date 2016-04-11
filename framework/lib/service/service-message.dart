@@ -22,13 +22,18 @@ class RESTMessageStore implements Storage.Message {
 
   RESTMessageStore(Uri this._host, String this._token, this._backend);
 
-  Future<Model.Message> get(int messageID) => this
+  /**
+   *
+   */
+  Future<Model.Message> get(int mid) => this
       ._backend
-      .get(_appendToken(
-          Resource.Message.single(this._host, messageID), this._token))
+      .get(_appendToken(Resource.Message.single(this._host, mid), this._token))
       .then((String response) =>
           new Model.Message.fromMap(JSON.decode(response)));
 
+  /**
+   *
+   */
   Future<Model.MessageQueueEntry> enqueue(Model.Message message) {
     Uri uri = Resource.Message.send(this._host, message.id);
     uri = _appendToken(uri, this._token);
@@ -41,6 +46,9 @@ class RESTMessageStore implements Storage.Message {
             new Model.MessageQueueEntry.fromMap(queueItemMap));
   }
 
+  /**
+   *
+   */
   Future<Model.Message> create(Model.Message message, Model.User modifier) =>
       _backend
           .post(_appendToken(Resource.Message.root(this._host), this._token),
@@ -55,6 +63,9 @@ class RESTMessageStore implements Storage.Message {
     return _backend.delete(uri);
   }
 
+  /**
+   *
+   */
   Future<Model.Message> update(Model.Message message, Model.User modifier) =>
       _backend
           .put(
@@ -63,11 +74,26 @@ class RESTMessageStore implements Storage.Message {
               JSON.encode(message.asMap))
           .then((String response) =>
               new Model.Message.fromMap(JSON.decode(response)));
-
+  /**
+   *
+   */
   Future<Iterable<Model.Message>> list({Model.MessageFilter filter}) => this
       ._backend
       .get(_appendToken(
           Resource.Message.list(this._host, filter: filter), this._token))
       .then((String response) => (JSON.decode(response) as Iterable)
           .map((Map map) => new Model.Message.fromMap(map)));
+
+  /**
+   *
+   */
+  Future<Iterable<Model.Commit>> changes([int mid]) {
+    Uri url = Resource.Message.changeList(_host, mid);
+    url = _appendToken(url, this._token);
+
+    Iterable<Model.Commit> convertMaps(Iterable<Map> maps) =>
+        maps.map(Model.Commit.decode);
+
+    return this._backend.get(url).then(JSON.decode).then(convertMaps);
+  }
 }

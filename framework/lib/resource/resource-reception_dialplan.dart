@@ -18,37 +18,45 @@ part of openreception.resource;
  * resources across servers and clients.
  */
 abstract class ReceptionDialplan {
-
   static String nameSpace = 'receptiondialplan';
 
   /**
    *
    */
   static Uri analyze(Uri host, String extension) =>
-    Uri.parse('$host/$nameSpace/$extension/analyze');
+      Uri.parse('$host/$nameSpace/$extension/analyze');
 
   /**
    *
    */
   static Uri deploy(Uri host, String extension, int receptionId) =>
-    Uri.parse('$host/$nameSpace/$extension/deploy/$receptionId');
+      Uri.parse('$host/$nameSpace/$extension/deploy/$receptionId');
 
   /**
    *
    */
-  static Uri list(Uri host) =>
-    Uri.parse('$host/$nameSpace');
+  static Uri list(Uri host) => Uri.parse('$host/$nameSpace');
 
   /**
    *
    */
   static Uri reloadConfig(Uri host) =>
-    Uri.parse('$host/$nameSpace/reloadConfig');
+      Uri.parse('$host/$nameSpace/reloadConfig');
 
   /**
    *
    */
   static Uri single(Uri host, String extension) =>
-    Uri.parse('$host/$nameSpace/$extension');
+      Uri.parse('$host/$nameSpace/$extension');
 
+  /**
+   *
+   */
+  static Uri changeList(Uri host, [String extension]) {
+    if (extension == null) {
+      return Uri.parse('$host/$nameSpace/history');
+    } else {
+      return Uri.parse('$host/$nameSpace/$extension/history');
+    }
+  }
 }

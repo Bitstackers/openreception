@@ -49,8 +49,7 @@ class Calendar implements storage.Calendar {
   /**
    *
    */
-  Future<Iterable<model.CalendarCommit>> changes(model.Owner owner,
-      [int eid]) async {
+  Future<Iterable<model.Commit>> changes(model.Owner owner, [int eid]) async {
     String ownerPath;
     if (owner is model.OwningContact) {
       ownerPath = 'contact/${owner.id}';
@@ -89,13 +88,13 @@ class Calendar implements storage.Calendar {
       return new model.CalendarChange(fc.changeType, eid, owner);
     }
 
-    Iterable<model.CalendarCommit> changes = gitChanges.map((change) =>
-        new model.CalendarCommit()
+    Iterable<model.Commit> changes = gitChanges.map((change) =>
+        new model.Commit()
           ..uid = extractUid(change.message)
           ..changedAt = change.changeTime
           ..commitHash = change.commitHash
           ..authorIdentity = change.author
-          ..changes = new List<model.CalendarChange>.from(
+          ..changes = new List<model.ObjectChange>.from(
               change.fileChanges.map(convertFilechange)));
 
     _log.info(changes.map((c) => c.toJson()));

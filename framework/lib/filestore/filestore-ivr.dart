@@ -32,7 +32,7 @@ class Ivr implements storage.Ivr {
   /**
    *
    */
-  Future<model.IvrMenu> create(model.IvrMenu menu, [model.User user]) async {
+  Future<model.IvrMenu> create(model.IvrMenu menu, model.User modifier) async {
     final File file = new File('$path/${menu.name}.json');
 
     if (file.existsSync()) {
@@ -41,13 +41,17 @@ class Ivr implements storage.Ivr {
     }
 
     /// Set the user
-    if (user == null) {
-      user = _systemUser;
+    if (modifier == null) {
+      modifier = _systemUser;
     }
 
     file.writeAsStringSync(_jsonpp.convert(menu));
 
-    await _git.add(file, 'Added ${menu.name}', _authorString(user));
+    await _git.add(
+        file,
+        'uid:${modifier.id} - ${modifier.name} '
+        'added ${menu.name}',
+        _authorString(modifier));
 
     return menu;
   }
@@ -83,7 +87,7 @@ class Ivr implements storage.Ivr {
   /**
    *
    */
-  Future<model.IvrMenu> update(model.IvrMenu menu, model.User user) async {
+  Future<model.IvrMenu> update(model.IvrMenu menu, model.User modifier) async {
     final File file = new File('$path/${menu.name}.json');
 
     if (!file.existsSync()) {
@@ -91,13 +95,16 @@ class Ivr implements storage.Ivr {
     }
 
     /// Set the user
-    if (user == null) {
-      user = _systemUser;
+    if (modifier == null) {
+      modifier = _systemUser;
     }
 
     file.writeAsStringSync(_jsonpp.convert(menu));
 
-    await _git._commit('Updated ${menu.name}', _authorString(user));
+    await _git._commit(
+        'uid:${modifier.id} - ${modifier.name} '
+        'updated ${menu.name}',
+        _authorString(modifier));
 
     return menu;
   }
@@ -105,7 +112,7 @@ class Ivr implements storage.Ivr {
   /**
    *
    */
-  Future remove(String menuName, [model.User user]) async {
+  Future remove(String menuName, model.User modifier) async {
     final File file = new File('$path/${menuName}.json');
 
     if (!file.existsSync()) {
@@ -113,11 +120,15 @@ class Ivr implements storage.Ivr {
     }
 
     /// Set the user
-    if (user == null) {
-      user = _systemUser;
+    if (modifier == null) {
+      modifier = _systemUser;
     }
 
-    await _git.remove(file, 'Removed $menuName', _authorString(user));
+    await _git.remove(
+        file,
+        'uid:${modifier.id} - ${modifier.name} '
+        'removed $menuName',
+        _authorString(modifier));
   }
 
   /**

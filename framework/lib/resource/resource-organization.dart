@@ -48,4 +48,15 @@ abstract class Organization {
 
   static Uri receptions(Uri host, int organizationID) =>
       Uri.parse('${root(host)}/$organizationID/$_reception');
+
+  /**
+   *
+   */
+  static Uri changeList(Uri host, [int oid]) {
+    if (oid == null) {
+      return Uri.parse('$host/organization/history');
+    } else {
+      return Uri.parse('$host/organization/$oid/history');
+    }
+  }
 }

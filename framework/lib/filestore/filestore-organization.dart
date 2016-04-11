@@ -40,7 +40,7 @@ class Organization implements storage.Organization {
   }
 
   /**
-   * 
+   *
    */
   Future receptionMap() => throw new UnimplementedError();
 
@@ -62,7 +62,7 @@ class Organization implements storage.Organization {
    *
    */
   Future<model.OrganizationReference> create(
-      model.Organization org, model.User user) async {
+      model.Organization org, model.User modifier) async {
     if (org.id == null) {
       throw new storage.ClientError(
           new ArgumentError.notNull(org.id.toString()).toString());
@@ -79,13 +79,17 @@ class Organization implements storage.Organization {
     }
 
     /// Set the user
-    if (user == null) {
-      user = _systemUser;
+    if (modifier == null) {
+      modifier = _systemUser;
     }
 
     file.writeAsStringSync(_jsonpp.convert(org));
 
-    await _git.add(file, 'Added ${org.name}', _authorString(user));
+    await _git.add(
+        file,
+        'uid:${modifier.id} - ${modifier.name} '
+        'added ${org.name}',
+        _authorString(modifier));
 
     return org.reference;
   }
@@ -135,14 +139,18 @@ class Organization implements storage.Organization {
       modifier = _systemUser;
     }
 
-    await _git.remove(file, 'Removed $id', _authorString(modifier));
+    await _git.remove(
+        file,
+        'uid:${modifier.id} - ${modifier.name} '
+        'removed $id',
+        _authorString(modifier));
   }
 
   /**
    *
    */
   Future<model.OrganizationReference> update(
-      model.Organization org, model.User user) async {
+      model.Organization org, model.User modifier) async {
     final File file = new File('$path/${org.id}.json');
 
     if (org.id == model.Organization.noId) {
@@ -154,13 +162,16 @@ class Organization implements storage.Organization {
     }
 
     /// Set the user
-    if (user == null) {
-      user = _systemUser;
+    if (modifier == null) {
+      modifier = _systemUser;
     }
 
     file.writeAsStringSync(_jsonpp.convert(org));
 
-    await _git._commit('Updated ${org.name}', _authorString(user));
+    await _git._commit(
+        'uid:${modifier.id} - ${modifier.name} '
+        'updated ${org.name}',
+        _authorString(modifier));
 
     return org.reference;
   }
@@ -170,4 +181,42 @@ class Organization implements storage.Organization {
    */
   Future<Iterable<model.ReceptionReference>> receptions(int uuid) =>
       _receptionFileStore._receptionsOfOrg(uuid);
+
+  /**
+       *
+       */
+  Future<Iterable<model.Commit>> changes([int oid]) async {
+    FileSystemEntity fse;
+
+    if (oid == null) {
+      fse = new Directory('.');
+    } else {
+      fse = new File('$oid.json');
+    }
+
+    Iterable<Change> gitChanges = await _git.changes(fse);
+
+    int extractUid(String message) => message.startsWith('uid:')
+        ? int.parse(message.split(' ').first.replaceFirst('uid:', ''))
+        : model.User.noId;
+
+    model.OrganizationChange convertFilechange(FileChange fc) {
+      final int id = int.parse(fc.filename.split('.').first);
+
+      return new model.OrganizationChange(fc.changeType, id);
+    }
+
+    Iterable<model.Commit> changes = gitChanges.map((change) =>
+        new model.Commit()
+          ..uid = extractUid(change.message)
+          ..changedAt = change.changeTime
+          ..commitHash = change.commitHash
+          ..authorIdentity = change.author
+          ..changes = new List<model.ObjectChange>.from(
+              change.fileChanges.map(convertFilechange)));
+
+    _log.info(changes.map((c) => c.toJson()));
+
+    return changes;
+  }
 }

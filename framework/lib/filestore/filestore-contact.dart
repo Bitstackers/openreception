@@ -368,13 +368,13 @@ class Contact implements storage.Contact {
 
     model.ObjectChange convertFilechange(FileChange fc) {
       final List<String> parts = fc.filename.split('/');
-      final int cid = int.parse(parts[0]);
+      final int id = int.parse(parts[0]);
 
       if (parts.last == 'contact.json') {
-        return new model.ContactChange(fc.changeType, cid);
+        return new model.ContactChange(fc.changeType, id);
       } else if (parts.length > 2 && parts[1] == 'receptions') {
         final int rid = int.parse(parts[2].split('.').first);
-        return new model.ReceptionAttributeChange(fc.changeType, cid, rid);
+        return new model.ReceptionAttributeChange(fc.changeType, id, rid);
       } else {
         throw new StateError('Could not parse filechange ${fc.toJson()}');
       }

@@ -28,6 +28,8 @@ const String callflow = 'callflow';
 const String cdr = 'cdr';
 const String notification = 'notification';
 const String user = 'user';
+const String organization = 'organization';
+const String ivrMenu = 'ivrMenu';
 
 const String receptionAttributes = 'receptionAttributes';
 

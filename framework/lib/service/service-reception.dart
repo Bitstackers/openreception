@@ -103,4 +103,17 @@ class RESTReceptionStore implements Storage.Reception {
     return this._backend.put(url, data).then((String response) =>
         Model.ReceptionReference.decode(JSON.decode(response)));
   }
+
+  /**
+   *
+   */
+  Future<Iterable<Model.Commit>> changes([int rid]) {
+    Uri url = Resource.Reception.changeList(_host, rid);
+    url = _appendToken(url, this._token);
+
+    Iterable<Model.Commit> convertMaps(Iterable<Map> maps) =>
+        maps.map(Model.Commit.decode);
+
+    return this._backend.get(url).then(JSON.decode).then(convertMaps);
+  }
 }

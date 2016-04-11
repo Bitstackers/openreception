@@ -78,7 +78,11 @@ class Reception implements storage.Reception {
     _log.finest('Creating new file ${file.path}');
     file.writeAsStringSync(_jsonpp.convert(reception));
 
-    await _git.add(file, 'Added ${reception.id}', _authorString(modifier));
+    await _git.add(
+        file,
+        'uid:${modifier.id} - ${modifier.name} '
+        'added ${reception.id}',
+        _authorString(modifier));
 
     return reception.reference;
   }
@@ -152,7 +156,11 @@ class Reception implements storage.Reception {
       modifier = _systemUser;
     }
 
-    await _git.remove(file, 'Removed $id', _authorString(modifier));
+    await _git.remove(
+        file,
+        'uid:${modifier.id} - ${modifier.name} '
+        'removed $id',
+        _authorString(modifier));
   }
 
   /**
@@ -175,8 +183,49 @@ class Reception implements storage.Reception {
 
     file.writeAsStringSync(_jsonpp.convert(rec));
 
-    await _git._commit('Updated ${rec.name}', _authorString(modifier));
+    await _git._commit(
+        'uid:${modifier.id} - ${modifier.name} '
+        'updated ${rec.name}',
+        _authorString(modifier));
 
     return rec.reference;
+  }
+
+  /**
+   *
+   */
+  Future<Iterable<model.Commit>> changes([int rid]) async {
+    FileSystemEntity fse;
+
+    if (rid == null) {
+      fse = new Directory('.');
+    } else {
+      fse = new File('$rid.json');
+    }
+
+    Iterable<Change> gitChanges = await _git.changes(fse);
+
+    int extractUid(String message) => message.startsWith('uid:')
+        ? int.parse(message.split(' ').first.replaceFirst('uid:', ''))
+        : model.User.noId;
+
+    model.ReceptionChange convertFilechange(FileChange fc) {
+      final int id = int.parse(fc.filename.split('.').first);
+
+      return new model.ReceptionChange(fc.changeType, id);
+    }
+
+    Iterable<model.Commit> changes = gitChanges.map((change) =>
+        new model.Commit()
+          ..uid = extractUid(change.message)
+          ..changedAt = change.changeTime
+          ..commitHash = change.commitHash
+          ..authorIdentity = change.author
+          ..changes = new List<model.ObjectChange>.from(
+              change.fileChanges.map(convertFilechange)));
+
+    _log.info(changes.map((c) => c.toJson()));
+
+    return changes;
   }
 }

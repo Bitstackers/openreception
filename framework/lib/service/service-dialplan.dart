@@ -120,4 +120,17 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
 
     return _backend.post(url, '').then(JSON.decode);
   }
+
+  /**
+   *
+   */
+  Future<Iterable<Model.Commit>> changes([String extension]) {
+    Uri url = Resource.ReceptionDialplan.changeList(_host, extension);
+    url = _appendToken(url, this._token);
+
+    Iterable<Model.Commit> convertMaps(Iterable<Map> maps) =>
+        maps.map(Model.Commit.decode);
+
+    return this._backend.get(url).then(JSON.decode).then(convertMaps);
+  }
 }

@@ -18,16 +18,24 @@ part of openreception.resource;
  * resources across servers and clients.
  */
 abstract class Ivr {
-
   static String nameSpace = 'ivr';
 
-  static Uri list(Uri host) =>
-    Uri.parse('$host/$nameSpace');
+  static Uri list(Uri host) => Uri.parse('$host/$nameSpace');
 
   static Uri single(Uri host, String menuName) =>
-    Uri.parse('$host/$nameSpace/${menuName}');
+      Uri.parse('$host/$nameSpace/${menuName}');
 
   static Uri deploy(Uri host, String menuName) =>
-    Uri.parse('$host/$nameSpace/${menuName}/deploy');
+      Uri.parse('$host/$nameSpace/${menuName}/deploy');
 
+  /**
+   *
+   */
+  static Uri changeList(Uri host, [String menuName]) {
+    if (menuName == null) {
+      return Uri.parse('$host/$nameSpace/history');
+    } else {
+      return Uri.parse('$host/$nameSpace/$menuName/history');
+    }
+  }
 }

@@ -18,23 +18,33 @@ part of openreception.resource;
  * resources across servers and clients.
  */
 abstract class Message {
-
   static String nameSpace = 'message';
 
-  static Uri single(Uri host, int messageID)
-    => Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}/${messageID}');
+  static Uri single(Uri host, int messageID) =>
+      Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}/${messageID}');
 
-  static Uri send(Uri host, int messageID)
-    => Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}/${messageID}/send');
+  static Uri send(Uri host, int messageID) => Uri.parse(
+      '${Util.removeTailingSlashes(host)}/${nameSpace}/${messageID}/send');
 
-  static Uri root(Uri host)
-    => Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}');
+  static Uri root(Uri host) =>
+      Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}');
 
-  static Uri list(Uri host, {Model.MessageFilter filter : null}) {
-    String filterParameter = filter!=null
-                                     ? '?filter=${JSON.encode(filter)}'
-                                     : '';
+  static Uri list(Uri host, {Model.MessageFilter filter: null}) {
+    String filterParameter =
+        filter != null ? '?filter=${JSON.encode(filter)}' : '';
 
-    return Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}/list${filterParameter}');
+    return Uri.parse(
+        '${Util.removeTailingSlashes(host)}/${nameSpace}/list${filterParameter}');
+  }
+
+  /**
+   *
+   */
+  static Uri changeList(Uri host, [int mid]) {
+    if (mid == null) {
+      return Uri.parse('$host/$nameSpace/history');
+    } else {
+      return Uri.parse('$host/$nameSpace/$mid/history');
+    }
   }
 }

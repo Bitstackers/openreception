@@ -178,12 +178,12 @@ class RESTUserStore implements Storage.User {
   /**
    *
    */
-  Future<Iterable<Model.UserCommit>> changes([int uid]) {
+  Future<Iterable<Model.Commit>> changes([int uid]) {
     Uri url = Resource.User.change(_host, uid);
     url = _appendToken(url, this._token);
 
-    Iterable<Model.UserCommit> convertMaps(Iterable<Map> maps) =>
-        maps.map(Model.UserCommit.decode);
+    Iterable<Model.Commit> convertMaps(Iterable<Map> maps) =>
+        maps.map(Model.Commit.decode);
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }

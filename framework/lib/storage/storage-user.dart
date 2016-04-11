@@ -52,5 +52,5 @@ abstract class User {
   /**
    *
    */
-  Future changes([int uid]);
+  Future<Iterable<model.Commit>> changes([int uid]);
 }

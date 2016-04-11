@@ -77,9 +77,8 @@ class IvrMenu {
           list.add(entry.voicemail);
         } else if (entry is IvrReceptionTransfer) {
           list.add(entry.transfer);
-        } else if (entry is IvrSubmenu || entry is IvrTopmenu) {
-        } else throw new StateError(
-            'Unknown type in entries: ${entry.runtimeType}');
+        } else if (entry is IvrSubmenu || entry is IvrTopmenu) {} else
+          throw new StateError('Unknown type in entries: ${entry.runtimeType}');
 
         return list;
       });
@@ -87,11 +86,12 @@ class IvrMenu {
   /**
    * Decoding factory method.
    */
-  static IvrMenu decode(Map map) =>
-      (new IvrMenu(map[Key.name], Playback.parse(map[Key.greeting]))
-        .._greetingShort = Playback.parse(map[Key.greetingShort]))
-        ..entries = map[Key.ivrEntries].map(IvrEntry.parse).toList()
-        ..submenus = map[Key.submenus].map(IvrMenu.decode).toList();
+  static IvrMenu decode(Map map) => (new IvrMenu(
+      map[Key.name],
+      Playback.parse(map[Key
+          .greeting])).._greetingShort = Playback.parse(map[Key.greetingShort]))
+    ..entries = map[Key.ivrEntries].map(IvrEntry.parse).toList()
+    ..submenus = map[Key.submenus].map(IvrMenu.decode).toList();
 
   /**
    * An IVR menu equals another IVR menu if their names match.

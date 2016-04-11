@@ -87,7 +87,11 @@ class Message implements storage.Message {
 
     file.writeAsStringSync(_jsonpp.convert(message));
 
-    await _git.add(file, 'Added ${message.id}', _authorString(modifier));
+    await _git.add(
+        file,
+        'uid:${modifier.id} - ${modifier.name} '
+        'added ${message.id}',
+        _authorString(modifier));
 
     return message;
   }
@@ -110,7 +114,11 @@ class Message implements storage.Message {
 
     file.writeAsStringSync(_jsonpp.convert(message));
 
-    await _git.commit(file, 'Updated ${message.id}', _authorString(modifier));
+    await _git.commit(
+        file,
+        'uid:${modifier.id} - ${modifier.name} '
+        'updated ${message.id}',
+        _authorString(modifier));
 
     return message;
   }
@@ -130,6 +138,48 @@ class Message implements storage.Message {
       modifier = _systemUser;
     }
 
-    await _git.remove(file, 'Removed $mid', _authorString(modifier));
+    await _git.remove(
+        file,
+        'uid:${modifier.id} - ${modifier.name} '
+        'removed $mid',
+        _authorString(modifier));
+  }
+
+  /**
+   *
+   */
+  Future<Iterable<model.Commit>> changes([int mid]) async {
+    FileSystemEntity fse;
+
+    if (mid == null) {
+      fse = new Directory('.');
+    } else {
+      fse = new File('$mid.json');
+    }
+
+    Iterable<Change> gitChanges = await _git.changes(fse);
+
+    int extractUid(String message) => message.startsWith('uid:')
+        ? int.parse(message.split(' ').first.replaceFirst('uid:', ''))
+        : model.User.noId;
+
+    model.MessageChange convertFilechange(FileChange fc) {
+      final int id = int.parse(fc.filename.split('.').first);
+
+      return new model.MessageChange(fc.changeType, id);
+    }
+
+    Iterable<model.Commit> changes = gitChanges.map((change) =>
+        new model.Commit()
+          ..uid = extractUid(change.message)
+          ..changedAt = change.changeTime
+          ..commitHash = change.commitHash
+          ..authorIdentity = change.author
+          ..changes = new List<model.ObjectChange>.from(
+              change.fileChanges.map(convertFilechange)));
+
+    _log.info(changes.map((c) => c.toJson()));
+
+    return changes;
   }
 }

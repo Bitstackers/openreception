@@ -23,4 +23,9 @@ abstract class Ivr {
   Future<model.IvrMenu> update(model.IvrMenu menu, model.User user);
 
   Future remove(String menuName, model.User user);
+
+  /**
+   *
+   */
+  Future<Iterable<model.Commit>> changes([String menuName]);
 }

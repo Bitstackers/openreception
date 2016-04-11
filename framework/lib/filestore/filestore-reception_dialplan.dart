@@ -32,8 +32,8 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   /**
    *
    */
-  Future<model.ReceptionDialplan> create(model.ReceptionDialplan rdp,
-      [model.User user]) async {
+  Future<model.ReceptionDialplan> create(
+      model.ReceptionDialplan rdp, model.User modifier) async {
     final File file = new File('$path/${rdp.extension}.json');
 
     if (file.existsSync()) {
@@ -42,13 +42,17 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
     }
 
     /// Set the user
-    if (user == null) {
-      user = _systemUser;
+    if (modifier == null) {
+      modifier = _systemUser;
     }
 
     file.writeAsStringSync(_jsonpp.convert(rdp));
 
-    await _git.add(file, 'Added ${rdp.extension}', _authorString(user));
+    await _git.add(
+        file,
+        'uid:${modifier.id} - ${modifier.name} '
+        'added ${rdp.extension}',
+        _authorString(modifier));
 
     return rdp;
   }
@@ -84,8 +88,8 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   /**
    *
    */
-  Future<model.ReceptionDialplan> update(model.ReceptionDialplan rdp,
-      [model.User user]) async {
+  Future<model.ReceptionDialplan> update(
+      model.ReceptionDialplan rdp, model.User modifier) async {
     final File file = new File('$path/${rdp.extension}.json');
 
     if (!file.existsSync()) {
@@ -93,13 +97,16 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
     }
 
     /// Set the user
-    if (user == null) {
-      user = _systemUser;
+    if (modifier == null) {
+      modifier = _systemUser;
     }
 
     file.writeAsStringSync(_jsonpp.convert(rdp));
 
-    await _git._commit('Updated ${rdp.extension}', _authorString(user));
+    await _git._commit(
+        'uid:${modifier.id} - ${modifier.name} '
+        'updated ${rdp.extension}',
+        _authorString(modifier));
 
     return rdp;
   }
@@ -107,7 +114,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   /**
    *
    */
-  Future remove(String extension, [model.User user]) async {
+  Future remove(String extension, model.User modifier) async {
     final File file = new File('$path/${extension}.json');
 
     if (!file.existsSync()) {
@@ -115,10 +122,53 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
     }
 
     /// Set the user
-    if (user == null) {
-      user = _systemUser;
+    if (modifier == null) {
+      modifier = _systemUser;
     }
 
-    await _git.remove(file, 'Removed $extension', _authorString(user));
+    await _git.remove(
+        file,
+        'uid:${modifier.id} - ${modifier.name} '
+        'removed $extension',
+        _authorString(modifier));
+  }
+
+  /**
+   *
+   */
+  Future<Iterable<model.Commit>> changes([String extension]) async {
+    FileSystemEntity fse;
+
+    if (extension == null) {
+      fse = new Directory('.');
+    } else {
+      fse = new File('$extension.json');
+    }
+
+    Iterable<Change> gitChanges = await _git.changes(fse);
+
+    int extractUid(String message) => message.startsWith('uid:')
+        ? int.parse(message.split(' ').first.replaceFirst('uid:', ''))
+        : model.User.noId;
+
+    model.ObjectChange convertFilechange(FileChange fc) {
+      final List<String> parts = fc.filename.split('.');
+      final String name = parts[0];
+
+      return new model.ReceptionDialplanChange(fc.changeType, name);
+    }
+
+    Iterable<model.Commit> changes = gitChanges.map((change) =>
+        new model.Commit()
+          ..uid = extractUid(change.message)
+          ..changedAt = change.changeTime
+          ..commitHash = change.commitHash
+          ..authorIdentity = change.author
+          ..changes = new List<model.ObjectChange>.from(
+              change.fileChanges.map(convertFilechange)));
+
+    _log.info(changes.map((c) => c.toJson()));
+
+    return changes;
   }
 }

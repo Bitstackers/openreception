@@ -40,4 +40,9 @@ abstract class Reception {
    */
   Future<model.ReceptionReference> update(
       model.Reception reception, model.User modifier);
+
+  /**
+   *
+   */
+  Future<Iterable<model.Commit>> changes([int rid]);
 }

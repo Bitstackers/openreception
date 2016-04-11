@@ -18,36 +18,30 @@ part of openreception.resource;
  * resources across servers and clients.
  */
 abstract class Reception {
-
   static String nameSpace = 'reception';
 
   static Uri single(Uri host, int receptionID) =>
-    Uri.parse('${root(host)}/${receptionID}');
+      Uri.parse('${root(host)}/${receptionID}');
 
   static Uri extensionOf(Uri host, int receptionID) =>
-    Uri.parse('${root(host)}/${receptionID}/extension');
+      Uri.parse('${root(host)}/${receptionID}/extension');
 
   static Uri byExtension(Uri host, String extension) =>
-    Uri.parse('${root(host)}/extension/${extension}');
+      Uri.parse('${root(host)}/extension/${extension}');
 
   static Uri root(Uri host) =>
-    Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}');
+      Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}');
 
-  static Uri list(Uri host) =>
-    Uri.parse('${root(host)}');
+  static Uri list(Uri host) => Uri.parse('${root(host)}');
 
-  static Uri calendar(Uri host, int receptionID) =>
-    Uri.parse('${root(host)}/${receptionID}/calendar');
-
-  static Uri calendarEvent(Uri host, int receptionID, int eventID) =>
-    Uri.parse('${root(host)}/${receptionID}/calendar/event/${eventID}');
-
-  static Uri subset(Uri host, int upperReceptionID, int count) =>
-    Uri.parse('${list(host)}/${upperReceptionID}/limit/${count}');
-
-  static Uri calendarEventChanges(Uri host, int eventID) =>
-    Uri.parse('${Util.removeTailingSlashes(host)}/calendarentry/${eventID}/change');
-
-  static Uri calendarEventLatestChange(Uri host, int eventID) =>
-    Uri.parse('${Util.removeTailingSlashes(host)}/calendarentry/${eventID}/change/latest');
+  /**
+   *
+   */
+  static Uri changeList(Uri host, [int rid]) {
+    if (rid == null) {
+      return Uri.parse('$host/reception/history');
+    } else {
+      return Uri.parse('$host/reception/$rid/history');
+    }
+  }
 }

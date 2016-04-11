@@ -123,7 +123,7 @@ class User implements storage.User {
   /**
    *
    */
-  Future<Iterable<model.UserCommit>> changes([int uid]) async {
+  Future<Iterable<model.Commit>> changes([int uid]) async {
     FileSystemEntity fse;
 
     if (uid == null) {
@@ -139,18 +139,18 @@ class User implements storage.User {
         : model.User.noId;
 
     model.UserChange convertFilechange(FileChange fc) {
-      final int eid = int.parse(fc.filename.split('.').first);
+      final int id = int.parse(fc.filename.split('.').first);
 
-      return new model.UserChange(fc.changeType, eid);
+      return new model.UserChange(fc.changeType, id);
     }
 
-    Iterable<model.UserCommit> changes = gitChanges.map((change) =>
-        new model.UserCommit()
+    Iterable<model.Commit> changes = gitChanges.map((change) =>
+        new model.Commit()
           ..uid = extractUid(change.message)
           ..changedAt = change.changeTime
           ..commitHash = change.commitHash
           ..authorIdentity = change.author
-          ..changes = new List<model.UserChange>.from(
+          ..changes = new List<model.ObjectChange>.from(
               change.fileChanges.map(convertFilechange)));
 
     _log.info(changes.map((c) => c.toJson()));

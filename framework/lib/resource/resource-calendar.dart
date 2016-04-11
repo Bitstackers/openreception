@@ -18,13 +18,13 @@ part of openreception.resource;
  * resources across servers and clients.
  */
 abstract class Calendar {
-  static Uri list(Uri host, Model.Owner owner, {bool deleted: false}) => Uri
-      .parse('$host/calendar/${owner.toJson()}${deleted ? '/deleted' : '' }');
+  static Uri list(Uri host, Model.Owner owner) =>
+      Uri.parse('$host/calendar/${owner.toJson()}');
 
   static Uri base(Uri host) => Uri.parse('$host/calendarentry');
 
-  static Uri single(Uri host, int entryId, {bool deleted: false}) =>
-      Uri.parse('$host/calendarentry/${entryId}${deleted ? '/deleted' : '' }');
+  static Uri single(Uri host, int eid) =>
+      Uri.parse('$host/calendarentry/${eid}');
 
   static Uri purge(Uri host, int entryId) =>
       Uri.parse('$host/calendarentry/${entryId}/purge');
@@ -32,12 +32,12 @@ abstract class Calendar {
   /**
    *
    */
-  static Uri changeList(Uri host, Model.Owner owner, [int eventID]) {
-    if (eventID == null) {
+  static Uri changeList(Uri host, Model.Owner owner, [int eid]) {
+    if (eid == null) {
       return Uri.parse('${host}/calendar/${owner.toJson()}/change');
     } else {
-      return Uri.parse(
-          '${host}/calendarentry/$eventID/owner/${owner.toJson()}/change');
+      return Uri
+          .parse('${host}/calendarentry/$eid/owner/${owner.toJson()}/change');
     }
   }
 }
