@@ -122,7 +122,7 @@ abstract class Calendar {
 
     _log.info('Creating a calendar event for owner $owner.');
 
-    Iterable<model.CalendarCommit> commits = await calendarStore.changes(owner);
+    Iterable<model.Commit> commits = await calendarStore.changes(owner);
 
     _log.info('Listing changes and validating.');
 
@@ -150,7 +150,7 @@ abstract class Calendar {
 
     _log.info('Creating a calendar event for owner $owner.');
 
-    model.CalendarCommit latestCommit =
+    model.Commit latestCommit =
         (await calendarStore.changes(created.owner, created.id)).first;
 
     _log.info('Listing changes and validating.');
@@ -183,7 +183,7 @@ abstract class Calendar {
       ..owner = created.owner;
 
     await calendarStore.update(changed, creator);
-    Iterable<model.CalendarCommit> commits = await calendarStore.changes(owner);
+    Iterable<model.Commit> commits = await calendarStore.changes(owner);
 
     _log.info('Listing changes and validating.');
 
@@ -232,7 +232,7 @@ abstract class Calendar {
       ..owner = created.owner;
 
     await calendarStore.update(changed, creator);
-    model.CalendarCommit latestCommit =
+    model.Commit latestCommit =
         (await calendarStore.changes(created.owner, created.id)).first;
 
     _log.info('Listing changes and validating.');
@@ -261,7 +261,7 @@ abstract class Calendar {
     _log.info('Removing calendar event for owner $owner.');
 
     await calendarStore.remove(created.id, creator);
-    Iterable<model.CalendarCommit> commits = await calendarStore.changes(owner);
+    Iterable<model.Commit> commits = await calendarStore.changes(owner);
 
     _log.info('Listing changes and validating.');
 
@@ -306,7 +306,7 @@ abstract class Calendar {
     _log.info('Removing calendar event for owner $owner.');
 
     await calendarStore.remove(created.id, creator);
-    model.CalendarCommit latestCommit =
+    model.Commit latestCommit =
         (await calendarStore.changes(created.owner, created.id)).first;
 
     _log.info('Listing changes and validating.');

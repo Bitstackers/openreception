@@ -29,5 +29,14 @@ void _runDialplanTests() {
 
     test('update',
         () => storeTest.ReceptionDialplan.update(env.dialplanStore, sa.user));
+
+    test('change listing on create',
+        () => storeTest.ReceptionDialplan.changeOnCreate(sa));
+
+    test('change listing on update',
+        () => storeTest.ReceptionDialplan.changeOnUpdate(sa));
+
+    test('change listing on remove',
+        () => storeTest.ReceptionDialplan.changeOnRemove(sa));
   });
 }

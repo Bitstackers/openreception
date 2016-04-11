@@ -55,6 +55,32 @@ class ServiceAgent {
     _userStore = uStore;
   }
 
+  /**
+   *
+   */
+  Future<model.IvrMenu> createsIvrMenu() async {
+    final menu = await ivrStore.create(Randomizer.randomIvrMenu(), user);
+
+    return ivrStore.get(menu.name);
+  }
+
+  /**
+   *
+   */
+  Future<model.IvrMenu> updatesIvrMenu(model.IvrMenu menu) async {
+    final updated = await ivrStore.update(
+        Randomizer.randomIvrMenu()..name = menu.name, user);
+
+    return ivrStore.get(updated.name);
+  }
+
+  /**
+   *
+   */
+  Future deletesIvrMenu(model.IvrMenu menu) async {
+    await ivrStore.remove(menu.name, user);
+  }
+
   storage.User get userStore {
     if (_userStore == null) {
       _userStore = env.userStore;
@@ -67,6 +93,10 @@ class ServiceAgent {
    *
    */
   filestore.Ivr _ivrStore;
+  void set ivrStore(storage.Ivr ivrs) {
+    _ivrStore = ivrs;
+  }
+
   filestore.Ivr get ivrStore {
     if (_ivrStore == null) {
       _ivrStore = env.ivrStore;
@@ -79,6 +109,10 @@ class ServiceAgent {
    *
    */
   filestore.ReceptionDialplan _dialplanStore;
+  void set dialplanStore(storage.ReceptionDialplan dps) {
+    _dialplanStore = dps;
+  }
+
   filestore.ReceptionDialplan get dialplanStore {
     if (_dialplanStore == null) {
       _dialplanStore = env.dialplanStore;
@@ -358,12 +392,7 @@ class ServiceAgent {
   /**
    *
    */
-  Future<model.ReceptionDialplan> createsDialplan() async {
-    if (dialplanService == null) {
-      dialplanService = (await env.requestDialplanProcess())
-          .bindDialplanClient(env.httpClient, authToken);
-    }
-
+  Future<model.ReceptionDialplan> createsDialplan({mustBeValid: true}) async {
     final DateTime now = new DateTime.now();
 
     model.OpeningHour justNow = new model.OpeningHour.empty()
@@ -381,9 +410,11 @@ class ServiceAgent {
           ..actions = [
             new model.Notify('call-offer'),
             new model.Ringtone(1),
-            new model.Playback(
-                (await env.requestFreeswitchProcess()).soundsPath +
-                    '/test.wav'),
+            mustBeValid
+                ? new model.Playback(
+                    (await env.requestFreeswitchProcess()).soundsPath +
+                        '/test.wav')
+                : new model.Playback('non-existing-file.wav'),
             new model.Enqueue('waitqueue')
           ]
       ]
@@ -392,12 +423,62 @@ class ServiceAgent {
       ..defaultActions = [new model.Playback('sorry-dude-were-closed')]
       ..active = true;
 
-    _log.info('Deploying dialplan ${rdp.toJson()}');
-    await dialplanService.create(rdp, user);
+    _log.info('Creating dialplan ${rdp.toJson()}');
+    await dialplanStore.create(rdp, user);
 
     return rdp;
   }
 
+  /**
+   *
+   */
+  Future<model.ReceptionDialplan> updatesDialplan(model.ReceptionDialplan rdp,
+      {mustBeValid: true}) async {
+    final DateTime now = new DateTime.now();
+
+    model.OpeningHour justNow = new model.OpeningHour.empty()
+      ..fromDay = toWeekDay(now.weekday)
+      ..toDay = toWeekDay(now.weekday)
+      ..fromHour = now.hour
+      ..toHour = now.hour + 2
+      ..fromMinute = now.minute
+      ..toMinute = now.minute;
+
+    rdp = new model.ReceptionDialplan()
+      ..open = [
+        new model.HourAction()
+          ..hours = [justNow]
+          ..actions = [
+            new model.Notify('call-offer'),
+            new model.Ringtone(1),
+            mustBeValid
+                ? new model.Playback(
+                    (await env.requestFreeswitchProcess()).soundsPath +
+                        '/test.wav')
+                : new model.Playback('non-existing-file.wav'),
+            new model.Enqueue('waitqueue')
+          ]
+      ]
+      ..extension = rdp.extension
+      ..defaultActions = [new model.Playback('sorry-dude-were-closed')]
+      ..active = true;
+
+    _log.info('Updating dialplan ${rdp.toJson()}');
+    await dialplanStore.update(rdp, user);
+
+    return rdp;
+  }
+
+  /**
+   *
+   */
+  Future removesDialplan(model.ReceptionDialplan rdp) async {
+    await dialplanStore.remove(rdp.extension, user);
+  }
+
+  /**
+   *
+   */
   Future deploysDialplan(
       model.ReceptionDialplan rdp, model.Reception rec) async {
     if (dialplanService == null) {

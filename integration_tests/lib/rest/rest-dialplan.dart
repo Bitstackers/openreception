@@ -63,25 +63,34 @@ _runDialplanTests() {
 
     test('update', () => storeTest.ReceptionDialplan.update(rdpStore, sa.user));
 
-    // /**
-    //  * Deploy test.
-    //  */
-    // service.RESTReceptionStore rStore;
-    // setUp(() async {
-    //   env = new TestEnvironment();
-    //   sa = await env.createsServiceAgent();
-    //   rdpStore = (await env.requestDialplanProcess())
-    //       .bindDialplanClient(env.httpClient, sa.authToken);
-    //   rdpStore = (await env.requestReceptionProcess())
-    //       .bindClient(env.httpClient, sa.authToken);
-    // });
-    //
-    // tearDown(() {
-    //   env.clear();
-    // });
-    //
-    // test('deploy',
-    //     () => serviceTest.ReceptionDialplanStore.deploy(rdpStore, rStore));
+    test('change listing on create',
+        () => storeTest.ReceptionDialplan.changeOnCreate(sa));
+
+    test('change listing on update',
+        () => storeTest.ReceptionDialplan.changeOnUpdate(sa));
+
+    test('change listing on remove',
+        () => storeTest.ReceptionDialplan.changeOnRemove(sa));
+
+    /**
+     * Deploy test.
+     */
+    service.RESTReceptionStore rStore;
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+      rdpStore = (await env.requestDialplanProcess())
+          .bindDialplanClient(env.httpClient, sa.authToken);
+      rStore = (await env.requestReceptionserverProcess())
+          .bindClient(env.httpClient, sa.authToken);
+    });
+
+    tearDown(() {
+      env.clear();
+    });
+
+    test('deploy',
+        () => serviceTest.ReceptionDialplanStore.deploy(rdpStore, rStore));
   });
 }
 

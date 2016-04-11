@@ -14,6 +14,7 @@ _runIvrTests() {
       sa = await env.createsServiceAgent();
       ivrServer = await env.requestDialplanProcess();
       ivrStore = ivrServer.bindIvrClient(env.httpClient, sa.authToken);
+      sa.ivrStore = ivrStore;
     });
 
     tearDown(() async {
@@ -51,5 +52,11 @@ _runIvrTests() {
     test('remove', () => storeTest.Ivr.remove(ivrStore));
 
     test('update', () => storeTest.Ivr.update(ivrStore));
+
+    test('change listing on create', () => storeTest.Ivr.changeOnCreate(sa));
+
+    test('change listing on update', () => storeTest.Ivr.changeOnUpdate(sa));
+
+    test('change listing on remove', () => storeTest.Ivr.changeOnRemove(sa));
   });
 }

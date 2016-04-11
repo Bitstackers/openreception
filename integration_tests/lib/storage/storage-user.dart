@@ -422,7 +422,7 @@ abstract class User {
   static Future changeOnCreate(ServiceAgent sa) async {
     final model.User created = await sa.createsUser();
 
-    Iterable<model.UserCommit> commits = await sa.userStore.changes(created.id);
+    Iterable<model.Commit> commits = await sa.userStore.changes(created.id);
 
     _log.info('Listing changes and validating.');
 
@@ -447,7 +447,7 @@ abstract class User {
 
     await sa.updatesUser(created);
 
-    Iterable<model.UserCommit> commits = await sa.userStore.changes(created.id);
+    Iterable<model.Commit> commits = await sa.userStore.changes(created.id);
 
     expect(commits.length, equals(2));
 
@@ -485,7 +485,7 @@ abstract class User {
 
     await sa.removesUser(created);
 
-    Iterable<model.UserCommit> commits = await sa.userStore.changes(created.id);
+    Iterable<model.Commit> commits = await sa.userStore.changes(created.id);
 
     _log.info('Listing changes and validating.');
 

@@ -53,5 +53,14 @@ void _runMessageTests() {
     test('create (event presence)', () => serviceTest.Message.createEvent(sa));
 
     test('remove (event presence)', () => serviceTest.Message.removeEvent(sa));
+
+    test(
+        'change listing on create', () => storeTest.Message.changeOnCreate(sa));
+
+    test(
+        'change listing on update', () => storeTest.Message.changeOnUpdate(sa));
+
+    test(
+        'change listing on remove', () => storeTest.Message.changeOnRemove(sa));
   });
 }

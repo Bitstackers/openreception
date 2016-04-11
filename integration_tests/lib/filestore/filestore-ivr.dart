@@ -24,5 +24,11 @@ void _runIvrTests() {
     test('remove', () => storeTest.Ivr.remove(env.ivrStore, sa.user));
 
     test('update', () => storeTest.Ivr.update(env.ivrStore, sa.user));
+
+    test('change listing on create', () => storeTest.Ivr.changeOnCreate(sa));
+
+    test('change listing on update', () => storeTest.Ivr.changeOnUpdate(sa));
+
+    test('change listing on remove', () => storeTest.Ivr.changeOnRemove(sa));
   });
 }

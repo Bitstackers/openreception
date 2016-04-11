@@ -264,4 +264,134 @@ abstract class Message {
     expect(fetched.recipients, equals(newRcps));
     expect(fetched.sender.toJson(), equals(sa.user.toJson()));
   }
+
+  /**
+     *
+     */
+  static Future changeOnCreate(ServiceAgent sa) async {
+    final org = await sa.createsOrganization();
+    final rec = await sa.createsReception(org);
+    final con = await sa.createsContact();
+    await sa.addsContactToReception(con, rec);
+
+    final model.MessageContext context = new model.MessageContext.empty()
+      ..cid = con.id
+      ..rid = rec.id
+      ..contactName = con.name
+      ..receptionName = rec.name;
+
+    final model.Message created = await sa.createsMessage(context);
+
+    Iterable<model.Commit> commits = await sa.messageStore.changes(created.id);
+
+    expect(commits.length, equals(1));
+    expect(commits.first.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(commits.first.authorIdentity, equals(sa.user.address));
+    expect(commits.first.uid, equals(sa.user.id));
+
+    expect(commits.first.changes.length, equals(1));
+    final change = commits.first.changes.first;
+
+    expect(change.changeType, model.ChangeType.add);
+    expect(change.mid, created.id);
+  }
+
+  /**
+     *
+     */
+  static Future changeOnUpdate(ServiceAgent sa) async {
+    final org = await sa.createsOrganization();
+    final rec = await sa.createsReception(org);
+    final con = await sa.createsContact();
+    await sa.addsContactToReception(con, rec);
+
+    final model.MessageContext context = new model.MessageContext.empty()
+      ..cid = con.id
+      ..rid = rec.id
+      ..contactName = con.name
+      ..receptionName = rec.name;
+
+    final model.Message created = await sa.createsMessage(context);
+
+    await sa.updatesMessage(created);
+
+    Iterable<model.Commit> commits = await sa.messageStore.changes(created.id);
+
+    expect(commits.length, equals(2));
+
+    expect(commits.first.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(commits.first.authorIdentity, equals(sa.user.address));
+
+    expect(commits.last.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(commits.last.authorIdentity, equals(sa.user.address));
+
+    expect(commits.length, equals(2));
+    expect(commits.first.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(commits.first.authorIdentity, equals(sa.user.address));
+    expect(commits.first.uid, equals(sa.user.id));
+
+    expect(commits.first.changes.length, equals(1));
+    expect(commits.last.changes.length, equals(1));
+    final latestChange = commits.first.changes.first;
+    final oldestChange = commits.last.changes.first;
+
+    expect(latestChange.changeType, model.ChangeType.modify);
+    expect(latestChange.mid, created.id);
+
+    expect(oldestChange.changeType, model.ChangeType.add);
+    expect(oldestChange.mid, created.id);
+  }
+
+  /**
+     *
+     */
+  static Future changeOnRemove(ServiceAgent sa) async {
+    final org = await sa.createsOrganization();
+    final rec = await sa.createsReception(org);
+    final con = await sa.createsContact();
+    await sa.addsContactToReception(con, rec);
+
+    final model.MessageContext context = new model.MessageContext.empty()
+      ..cid = con.id
+      ..rid = rec.id
+      ..contactName = con.name
+      ..receptionName = rec.name;
+
+    final model.Message created = await sa.createsMessage(context);
+
+    await sa.removesMessage(created);
+
+    Iterable<model.Commit> commits = await sa.messageStore.changes(created.id);
+
+    expect(commits.length, equals(2));
+
+    expect(commits.first.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(commits.first.authorIdentity, equals(sa.user.address));
+
+    expect(commits.last.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(commits.last.authorIdentity, equals(sa.user.address));
+
+    expect(commits.length, equals(2));
+    expect(commits.first.changedAt.millisecondsSinceEpoch,
+        lessThan(new DateTime.now().millisecondsSinceEpoch));
+    expect(commits.first.authorIdentity, equals(sa.user.address));
+    expect(commits.first.uid, equals(sa.user.id));
+
+    expect(commits.first.changes.length, equals(1));
+    expect(commits.last.changes.length, equals(1));
+    final latestChange = commits.first.changes.first;
+    final oldestChange = commits.last.changes.first;
+
+    expect(latestChange.changeType, model.ChangeType.delete);
+    expect(latestChange.mid, created.id);
+
+    expect(oldestChange.changeType, model.ChangeType.add);
+    expect(oldestChange.mid, created.id);
+  }
 }

@@ -35,7 +35,7 @@ part 'rest/rest-user.dart';
 
 const String _namespace = 'rest';
 /**
- * Run all filestore tests.
+ * Run all rest-service tests.
  */
 allTests() {
   _runPeerAccountTests();

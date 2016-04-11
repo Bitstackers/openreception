@@ -58,5 +58,14 @@ void _runReceptionTests() {
 
     test('Reception removal (event presence)',
         () => serviceTest.Reception.deleteEvent(sa));
+
+    test('change listing on create',
+        () => storeTest.Reception.changeOnCreate(sa));
+
+    test('change listing on update',
+        () => storeTest.Reception.changeOnUpdate(sa));
+
+    test('change listing on remove',
+        () => storeTest.Reception.changeOnRemove(sa));
   });
 }

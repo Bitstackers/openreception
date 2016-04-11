@@ -23,5 +23,14 @@ _runMessageTests() {
     test('create', () => storeTest.Message.create(sa));
     test('update', () => storeTest.Message.update(sa));
     test('remove', () => storeTest.Message.remove(sa));
+
+    test(
+        'change listing on create', () => storeTest.Message.changeOnCreate(sa));
+
+    test(
+        'change listing on update', () => storeTest.Message.changeOnUpdate(sa));
+
+    test(
+        'change listing on remove', () => storeTest.Message.changeOnRemove(sa));
   });
 }

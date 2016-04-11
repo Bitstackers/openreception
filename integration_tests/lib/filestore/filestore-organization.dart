@@ -43,5 +43,14 @@ void _runOrganizationTests() {
 
     test('Reception listing Non-existing organization',
         () => storeTest.Organization.nonExistingOrganizationReceptions(sa));
+
+    test('change listing on create',
+        () => storeTest.Organization.changeOnCreate(sa));
+
+    test('change listing on update',
+        () => storeTest.Organization.changeOnUpdate(sa));
+
+    test('change listing on remove',
+        () => storeTest.Organization.changeOnRemove(sa));
   });
 }

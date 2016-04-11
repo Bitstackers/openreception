@@ -27,5 +27,14 @@ void _runReceptionTests() {
     test('get', () => storeTest.Reception.existingReception(sa));
     test('get (not found)', () => storeTest.Reception.nonExistingReception(sa));
     test('list', () => storeTest.Reception.listReceptions(sa));
+
+    test('change listing on create',
+        () => storeTest.Reception.changeOnCreate(sa));
+
+    test('change listing on update',
+        () => storeTest.Reception.changeOnUpdate(sa));
+
+    test('change listing on remove',
+        () => storeTest.Reception.changeOnRemove(sa));
   });
 }
