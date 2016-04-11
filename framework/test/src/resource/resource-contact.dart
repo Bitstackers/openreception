@@ -18,9 +18,6 @@ void testResourceContact() {
     test('list', ResourceContact.list);
     test('single', ResourceContact.single);
     test('singleByReception', ResourceContact.singleByReception);
-    test('calendarEntryChanges', ResourceReception.calendarEntryChanges);
-    test('calendarEntryLatestChange',
-        ResourceReception.calendarEntryLatestChange);
     test('receptions', ResourceContact.receptions);
     test('organizations', ResourceContact.organizations);
     test('listByReception', ResourceContact.listByReception);

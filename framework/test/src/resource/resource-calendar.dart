@@ -19,9 +19,7 @@ void testResourceCalendar() {
     test('changeListAll', ResourceCalendar.changeListAll);
     test('single', ResourceCalendar.single);
     test('listReception', ResourceCalendar.listReception);
-    test('listReceptionDeleted', ResourceCalendar.listReceptionDeleted);
     test('listContact', ResourceCalendar.listContact);
-    test('listContactDeleted', ResourceCalendar.listContactDeleted);
     test('purge', ResourceCalendar.purge);
   });
 }
@@ -42,22 +40,12 @@ abstract class ResourceCalendar {
       equals(Uri.parse('${_host}/calendarentry/3')));
 
   static void listReception() => expect(
-      Resource.Calendar
-          .list(_host, new Model.OwningReception(2), deleted: false),
+      Resource.Calendar.list(_host, new Model.OwningReception(2)),
       equals(Uri.parse('${_host}/calendar/r:2')));
 
-  static void listReceptionDeleted() => expect(
-      Resource.Calendar
-          .list(_host, new Model.OwningReception(2), deleted: true),
-      equals(Uri.parse('${_host}/calendar/r:2/deleted')));
-
   static void listContact() => expect(
-      Resource.Calendar.list(_host, new Model.OwningContact(4), deleted: false),
+      Resource.Calendar.list(_host, new Model.OwningContact(4)),
       equals(Uri.parse('${_host}/calendar/c:4')));
-
-  static void listContactDeleted() => expect(
-      Resource.Calendar.list(_host, new Model.OwningContact(4), deleted: true),
-      equals(Uri.parse('${_host}/calendar/c:4/deleted')));
 
   static void purge() => expect(Resource.Calendar.purge(_host, 3),
       equals(Uri.parse('${_host}/calendarentry/3/purge')));
