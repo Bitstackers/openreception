@@ -36,6 +36,7 @@ class CalendarChange implements ObjectChange {
    *
    */
   Map toJson() => {
+        Key.type: objectTypeToString(objectType),
         Key.change: changeTypeToString(changeType),
         Key.eid: eid,
         Key.owner: owner.toJson()
