@@ -22,6 +22,8 @@ class ReceptionDialplan {
   final dialplanTools.DialplanCompiler compiler;
   final String fsConfPath;
   final Ivr _ivrController;
+  final service.Authentication _authService;
+
   final Logger _log = new Logger('$_libraryName.ReceptionDialplan');
   esl.Connection _eslClient;
   final EslConfig eslConfig;
@@ -29,8 +31,14 @@ class ReceptionDialplan {
   /**
    *
    */
-  ReceptionDialplan(this._receptionDialplanStore, this._receptionStore,
-      this.compiler, this._ivrController, this.fsConfPath, this.eslConfig) {
+  ReceptionDialplan(
+      this._receptionDialplanStore,
+      this._receptionStore,
+      this._authService,
+      this.compiler,
+      this._ivrController,
+      this.fsConfPath,
+      this.eslConfig) {
     _connectESLClient();
   }
 
@@ -62,7 +70,15 @@ class ReceptionDialplan {
     final model.ReceptionDialplan rdp = model.ReceptionDialplan
         .decode(JSON.decode(await request.readAsString()));
 
-    return okJson(await _receptionDialplanStore.create(rdp));
+    model.User user;
+    try {
+      user = await _authService.userOf(tokenFrom(request));
+    } catch (e, s) {
+      _log.warning('Could not connect to auth server', e, s);
+      return authServerDown();
+    }
+
+    return okJson(await _receptionDialplanStore.create(rdp, user));
   }
 
   /**
@@ -143,9 +159,17 @@ class ReceptionDialplan {
    */
   Future<shelf.Response> remove(shelf.Request request) async {
     final String extension = shelf_route.getPathParameter(request, 'extension');
+    model.User user;
 
     try {
-      return okJson(await _receptionDialplanStore.remove(extension));
+      user = await _authService.userOf(tokenFrom(request));
+    } catch (e, s) {
+      _log.warning('Could not connect to auth server', e, s);
+      return authServerDown();
+    }
+
+    try {
+      return okJson(await _receptionDialplanStore.remove(extension, user));
     } on storage.NotFound {
       return notFound('No dialplan with extension $extension');
     }
@@ -157,7 +181,16 @@ class ReceptionDialplan {
   Future<shelf.Response> update(shelf.Request request) async {
     final model.ReceptionDialplan rdp = model.ReceptionDialplan
         .decode(JSON.decode(await request.readAsString()));
-    return okJson(await _receptionDialplanStore.update(rdp));
+
+    model.User user;
+    try {
+      user = await _authService.userOf(tokenFrom(request));
+    } catch (e, s) {
+      _log.warning('Could not connect to auth server', e, s);
+      return authServerDown();
+    }
+
+    return okJson(await _receptionDialplanStore.update(rdp, user));
   }
 
 /**
@@ -208,5 +241,25 @@ class ReceptionDialplan {
     }
 
     await tryConnect();
+  }
+
+  /**
+   *
+   */
+  Future<shelf.Response> history(shelf.Request request) async =>
+      okJson((await _receptionDialplanStore.changes()).toList(growable: false));
+
+  /**
+   *
+   */
+  Future<shelf.Response> objectHistory(shelf.Request request) async {
+    final String extension = shelf_route.getPathParameter(request, 'extension');
+
+    if (extension == null || extension.isEmpty) {
+      return clientError('Bad extension: $extension');
+    }
+
+    return okJson((await _receptionDialplanStore.changes(extension))
+        .toList(growable: false));
   }
 }

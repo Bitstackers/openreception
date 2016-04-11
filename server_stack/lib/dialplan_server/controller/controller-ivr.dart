@@ -164,4 +164,23 @@ class Ivr {
     }
     return okJson(await _ivrStore.update(ivrMenu, user));
   }
+
+  /**
+   *
+   */
+  Future<shelf.Response> history(shelf.Request request) async =>
+      okJson((await _ivrStore.changes()).toList(growable: false));
+
+  /**
+   *
+   */
+  Future<shelf.Response> objectHistory(shelf.Request request) async {
+    final String name = shelf_route.getPathParameter(request, 'name');
+
+    if (name == null || name.isEmpty) {
+      return clientError('Bad menu name: $name');
+    }
+
+    return okJson((await _ivrStore.changes(name)).toList(growable: false));
+  }
 }

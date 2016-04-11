@@ -106,8 +106,8 @@ Future<io.HttpServer> start(
   final controller.Ivr ivrHandler =
       new controller.Ivr(_ivrStore, compiler, _authService, fsConfPath);
   final controller.ReceptionDialplan receptionDialplanHandler =
-      new controller.ReceptionDialplan(
-          _dpStore, _rStore, compiler, ivrHandler, fsConfPath, eslConfig);
+      new controller.ReceptionDialplan(_dpStore, _rStore, _authService,
+          compiler, ivrHandler, fsConfPath, eslConfig);
 
   final controller.PeerAccount peerAccountHandler =
       new controller.PeerAccount(_userStore, compiler, fsConfPath);
@@ -122,14 +122,19 @@ Future<io.HttpServer> start(
     ..put('/ivr/{name}', ivrHandler.update)
     ..post('/ivr/{name}/deploy', ivrHandler.deploy)
     ..delete('/ivr/{name}', ivrHandler.remove)
+    ..get('/ivr/{name}/history', ivrHandler.objectHistory)
     ..post('/ivr', ivrHandler.create)
+    ..get('/ivr/history', ivrHandler.history)
     ..get('/receptiondialplan', receptionDialplanHandler.list)
     ..get('/receptiondialplan/{extension}', receptionDialplanHandler.get)
     ..put('/receptiondialplan/{extension}', receptionDialplanHandler.update)
     ..post('/receptiondialplan/reloadConfig',
         receptionDialplanHandler.reloadConfig)
+    ..get('/receptiondialplan/{extension}/history',
+        receptionDialplanHandler.objectHistory)
     ..delete('/receptiondialplan/{extension}', receptionDialplanHandler.remove)
     ..post('/receptiondialplan', receptionDialplanHandler.create)
+    ..get('/receptiondialplan/history', receptionDialplanHandler.history)
     ..post('/receptiondialplan/{extension}/analyze',
         receptionDialplanHandler.analyze)
     ..post('/receptiondialplan/{extension}/deploy/{rid}',
