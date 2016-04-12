@@ -84,5 +84,23 @@ void _runContactTests() {
     test('update (event presence)', () => serviceTest.Contact.updateEvent(sa));
 
     test('remove (event presence)', () => serviceTest.Contact.deleteEvent(sa));
+
+    test(
+        'change listing on create', () => storeTest.Contact.changeOnCreate(sa));
+
+    test(
+        'change listing on update', () => storeTest.Contact.changeOnUpdate(sa));
+
+    test(
+        'change listing on remove', () => storeTest.Contact.changeOnRemove(sa));
+
+    test('change listing on reception add',
+        () => storeTest.Contact.addToReceptionChange(sa));
+
+    test('change listing on reception update',
+        () => storeTest.Contact.updateInReceptionChange(sa));
+
+    test('change listing on reception delete',
+        () => storeTest.Contact.deleteFromReceptionChange(sa));
   });
 }
