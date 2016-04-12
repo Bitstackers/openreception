@@ -38,6 +38,11 @@ class Organization {
     ..text = 'Slet'
     ..classes.add('delete');
 
+  ObjectHistory _historyView;
+  final AnchorElement _historyToggle = new AnchorElement()
+    ..href = '#history'
+    ..text = 'Vis historik';
+
   final HeadingElement _heading = new HeadingElement.h2();
 
   final InputElement _billingTypeInput = new InputElement()..value = '';
@@ -78,6 +83,10 @@ class Organization {
    *
    */
   Organization(this._orgController) {
+    _historyView = new ObjectHistory();
+    _historyView.element.hidden = true;
+    _historyToggle..text = 'Vis historik';
+
     element.children = [
       _saveButton,
       _deleteButton,
@@ -104,6 +113,8 @@ class Organization {
             ..htmlFor = _flagInput.id,
           _flagInput
         ],
+      _historyToggle,
+      _historyView.element
     ];
 
     _observers();
@@ -113,6 +124,17 @@ class Organization {
    *
    */
   void _observers() {
+    _historyToggle.onClick.listen((_) async {
+      await _orgController.changes(organization.id).then((c) {
+        _historyView.commits = c;
+      });
+
+      _historyView.element.hidden = !_historyView.element.hidden;
+
+      _historyToggle.text =
+          _historyView.element.hidden ? 'Vis historik' : 'Skjul historik';
+    });
+
     Iterable<InputElement> inputs =
         element.querySelectorAll('input') as Iterable<InputElement>;
 

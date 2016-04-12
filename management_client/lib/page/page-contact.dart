@@ -15,7 +15,7 @@ import 'package:management_tool/controller.dart' as controller;
 
 const String _libraryName = 'contact.view';
 
-controller.Popup notify = controller.popup;
+controller.Popup _notify = controller.popup;
 
 class ContactView {
   static const String _viewName = 'contact';
@@ -194,9 +194,9 @@ class ContactView {
 
   Future _receptionContactUpdate(model.ReceptionAttributes ca) {
     return _contactController.updateInReception(ca).then((_) {
-      notify.success('Oplysningerne blev gemt', '');
+      _notify.success('Oplysningerne blev gemt', '');
     }).catchError((error, stack) {
-      notify.error('Ændringerne blev ikke gemt', 'Fejl: $error');
+      _notify.error('Ændringerne blev ikke gemt', 'Fejl: $error');
       _log.severe('Tried to update a Reception Contact, '
           'but failed with "${error}", ${stack}');
     });
@@ -204,12 +204,12 @@ class ContactView {
 
   Future _receptionContactCreate(model.ReceptionAttributes attr) {
     return _contactController.addToReception(attr).then((_) {
-      notify.success('Tilføjet til reception',
+      _notify.success('Tilføjet til reception',
           '${attr.reference.reception.name} til (rid: ${attr.receptionId})');
       bus.fire(
           new ReceptionContactAddedEvent(attr.receptionId, attr.contactId));
     }).catchError((error, stack) {
-      notify.error(
+      _notify.error(
           'Kunne ikke tilføje kontakt til reception', 'Fejl: ${error}');
       _log.severe(
           'Tried to update a Reception Contact, but failed with "$error" ${stack}');

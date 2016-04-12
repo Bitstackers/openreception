@@ -5,6 +5,8 @@ import 'dart:html';
 
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/eventbus.dart';
+import 'package:management_tool/page.dart';
+
 import 'package:openreception_framework/model.dart' as model;
 
 const String _libraryName = 'management_tool.page.cdr';

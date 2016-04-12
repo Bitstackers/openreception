@@ -2,6 +2,8 @@ library management_tool.page.organization;
 
 import 'dart:async';
 import 'dart:html';
+import 'package:route_hierarchical/client.dart';
+import 'package:management_tool/page.dart';
 
 import 'package:logging/logging.dart';
 import 'package:management_tool/eventbus.dart';
@@ -10,17 +12,18 @@ import 'package:management_tool/view.dart' as view;
 
 import 'package:openreception_framework/model.dart' as ORModel;
 
-controller.Popup notify = controller.popup;
+controller.Popup _notify = controller.popup;
 
 const String _libraryName = 'management_tool.page.organization';
 
-class OrganizationView {
+class OrganizationView implements Page {
   static const String viewName = 'organization';
 
   Logger _log = new Logger('$_libraryName.Organization');
 
   final controller.Organization _organizationController;
   final controller.Reception _receptionController;
+  Router _router;
 
   final DivElement element = new DivElement()
     ..id = "organization-page"
@@ -108,8 +111,8 @@ class OrganizationView {
    */
   void _observers() {
     _createButton.onClick.listen((_) {
-      _clearRightBar();
-      _organizationView.organization = new ORModel.Organization.empty();
+      // _clearRightBar();
+      // _organizationView.organization = new ORModel.Organization.empty();
     });
 
     bus.on(WindowChanged).listen((WindowChanged event) async {
@@ -170,7 +173,7 @@ class OrganizationView {
       this._organizations = list;
       _renderOrganizationList(list);
     }).catchError((error) {
-      notify.error('Organisationsliste kunne ikke hentes', 'Fejl: $error');
+      _notify.error('Organisationsliste kunne ikke hentes', 'Fejl: $error');
       _log.severe('Tried to fetch organization list, got error: $error');
     });
   }
@@ -188,7 +191,8 @@ class OrganizationView {
       ..dataset['organizationid'] = '${organization.id}'
       ..text = '${organization.name}'
       ..onClick.listen((_) {
-        _activateOrganization(organization.id);
+        _router.go('org.edit.id', {'oid': organization.id});
+        //_activateOrganization(organization.id);
       });
   }
 
@@ -197,22 +201,20 @@ class OrganizationView {
         .toggle('highlightListItem', li.dataset['organizationid'] == '$id'));
   }
 
-  Future _activateOrganization(int organizationId) async {
+  Future _activateOrganization(int oid) async {
     try {
-      _organizationView.organization =
-          await _organizationController.get(organizationId);
+      _organizationView.organization = await _organizationController.get(oid);
     } catch (error) {
-      notify.error(
-          'Kunne ikke hente stamdata for organisation oid:$organizationId',
+      _notify.error('Kunne ikke hente stamdata for organisation oid:$oid',
           'Fejl: $error');
       _log.severe(
-          'Tried to activate organization "$organizationId" but gave error: $error');
+          'Tried to activate organization "$oid" but gave error: $error');
     }
 
-    _highlightOrganizationInList(organizationId);
+    _highlightOrganizationInList(oid);
 
-    _updateReceptionList(organizationId);
-    _updateContactList(organizationId);
+    _updateReceptionList(oid);
+    _updateContactList(oid);
   }
 
   void _updateReceptionList(int organizationId) {
@@ -256,7 +258,7 @@ class OrganizationView {
         ..clear()
         ..addAll(sorted.map(_makeContactNode));
     }).catchError((error) {
-      notify.error('Kunne ikke hente organisationskontakter', 'Fejl: $error');
+      _notify.error('Kunne ikke hente organisationskontakter', 'Fejl: $error');
       _log.severe(
           'Tried to fetch the contactlist from an organization Error: $error');
     });
@@ -271,5 +273,88 @@ class OrganizationView {
         bus.fire(new WindowChanged('contact', data));
       });
     return li;
+  }
+
+  /**
+   *
+   */
+  Future activate(RouteEvent e) async {
+    element.hidden = false;
+    await _refreshList();
+    print('activating $path');
+  }
+
+  /**
+   *
+   */
+  void deactivate(RouteEvent e) {
+    element.hidden = true;
+    print('deactivating $path');
+  }
+
+  Future activateCreate(RouteEvent e) async {
+    await activate(e);
+    _clearRightBar();
+    _organizationView.organization = new ORModel.Organization.empty();
+    _organizationView.element.hidden = false;
+    print('activating $path');
+  }
+
+  /**
+   *
+   */
+  void deactivateCreate(RouteEvent e) {
+    _clearRightBar();
+    _organizationView.organization = new ORModel.Organization.empty();
+    _organizationView.element.hidden = true;
+
+    print('deactivating $path');
+  }
+
+  Future activateEdit(RouteEvent e) async {
+    final int oid = int.parse(e.parameters['oid']);
+    await activate(e);
+    await _activateOrganization(oid);
+  }
+
+  /**
+   *
+   */
+  Pattern get path => '/organization';
+
+  /**
+   *
+   */
+  String get name => 'Organization';
+
+  void setupRouter(Router router) {
+    print('setting up router');
+    router.root
+      ..addRoute(
+          name: 'org',
+          enter: activate,
+          path: '/organization',
+          leave: deactivate,
+          mount: (router) => router
+            ..addRoute(
+                name: 'create',
+                path: '/create',
+                enter: activateCreate,
+                leave: deactivateCreate)
+            ..addRoute(
+                name: 'edit',
+                path: '/edit',
+                mount: (router) => router
+                  ..addRoute(
+                      name: 'id',
+                      path: '/:oid',
+                      enter: activateEdit,
+                      leave: deactivateCreate)));
+
+    _createButton.onClick.listen((_) {
+      router.go('org.create', {});
+    });
+
+    _router = router;
   }
 }

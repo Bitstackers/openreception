@@ -26,4 +26,6 @@ class Organization {
 
   Future<model.OrganizationReference> update(model.Organization org) =>
       _service.update(org, _appUser);
+
+  Future<Iterable<model.Commit>> changes([int oid]) => _service.changes(oid);
 }

@@ -108,14 +108,15 @@ class Messages {
       ];
   }
 
-  LIElement _changeToLI(model.CalendarEntryChange change, String prefix) {
+  LIElement _changeToLI(model.Commit change, String prefix) {
     LIElement li = new LIElement()
       ..children = [
         new SpanElement()
           ..text = '$prefix '
           ..style.fontWeight = 'bold',
         new SpanElement()
-          ..text = rfc3339.format(change.changedAt) + ' - ${change.author}'
+          ..text =
+              rfc3339.format(change.changedAt) + ' - ${change.authorIdentity}'
       ];
 
     return li;

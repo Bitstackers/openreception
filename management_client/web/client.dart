@@ -4,14 +4,14 @@ import 'dart:html';
 import 'package:logging/logging.dart';
 
 ///Pages
-import 'package:management_tool/page/page-contact.dart' as page;
+import 'package:management_tool/page.dart' as page;
 import 'package:management_tool/page/page-dialplan.dart' as page;
-import 'package:management_tool/page/page-cdr.dart' as page;
 import 'package:management_tool/page/page-ivr.dart' as page;
 import 'package:management_tool/page/page-message.dart' as page;
-import 'package:management_tool/page/page-organization.dart' as page;
 import 'package:management_tool/page/page-reception.dart' as page;
 import 'package:management_tool/page/page-user.dart' as page;
+
+import 'package:management_tool/router.dart' as nav;
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/auth.dart';
 import 'package:management_tool/configuration.dart';
@@ -135,5 +135,7 @@ Future main() async {
     } else {
       _log.shout('HTML5 notifications not supported.');
     }
+
+    final nav.PageRouter router = new nav.PageRouter([orgPage]);
   }
 }

@@ -19,4 +19,6 @@ class User {
       _service.update(user, _appUser);
 
   Future<Iterable<String>> groups() => _service.groups();
+
+  Future<Iterable<model.Commit>> changes([int uid]) => _service.changes(uid);
 }

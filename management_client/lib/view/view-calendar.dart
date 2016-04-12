@@ -76,7 +76,7 @@ class Calendar {
 
     _calendarController
         .changes(entry.id)
-        .then((Iterable<model.CalendarEntryChange> changes) {
+        .then((Iterable<model.Commit> changes) {
       UListElement changeUl = new UListElement();
       List changeList = changes.toList();
       LIElement creation;
@@ -120,14 +120,15 @@ class Calendar {
       ];
   }
 
-  LIElement _changeToLI(model.CalendarEntryChange change, String prefix) {
+  LIElement _changeToLI(model.Commit change, String prefix) {
     LIElement li = new LIElement()
       ..children = [
         new SpanElement()
           ..text = '$prefix '
           ..style.fontWeight = 'bold',
         new SpanElement()
-          ..text = rfc3339.format(change.changedAt) + ' - ${change.author}'
+          ..text =
+              rfc3339.format(change.changedAt) + ' - ${change.authorIdentity}'
       ];
 
     return li;

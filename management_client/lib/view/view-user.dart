@@ -31,6 +31,10 @@ class User {
 
   UserGroups _groupsView;
   UserIdentities _identitiesView;
+  ObjectHistory _historyView;
+  final AnchorElement _historyToggle = new AnchorElement()
+    ..href = '#history'
+    ..text = 'Vis historik';
 
   final LabelElement _uidLabel = new LabelElement()..text = 'uid:??';
   final HiddenInputElement _userIdInput = new HiddenInputElement()
@@ -66,6 +70,10 @@ class User {
    *
    */
   User(this._userController) {
+    _historyView = new ObjectHistory();
+    _historyView.element.hidden = true;
+    _historyToggle..text = 'Vis historik';
+
     _groupsView = new UserGroups(_userController);
     _identitiesView = new UserIdentities(_userController);
     element.children = [
@@ -97,7 +105,9 @@ class User {
       new LabelElement()..text = 'Grupper',
       _groupsView.element,
       new LabelElement()..text = 'Identitieter',
-      _identitiesView.element
+      _identitiesView.element,
+      _historyToggle,
+      _historyView.element
     ];
     _observers();
   }
@@ -108,6 +118,17 @@ class User {
   void _observers() {
     Iterable<InputElement> inputs =
         element.querySelectorAll('input') as Iterable<InputElement>;
+
+    _historyToggle.onClick.listen((_) async {
+      await _userController.changes(user.id).then((c) {
+        _historyView.commits = c;
+      });
+
+      _historyView.element.hidden = !_historyView.element.hidden;
+
+      _historyToggle.text =
+          _historyView.element.hidden ? 'Vis historik' : 'Skjul historik';
+    });
 
     _groupsView.onChange = () {
       _saveButton.disabled = false;
@@ -137,6 +158,11 @@ class User {
 
   ///
   void set user(model.User u) {
+    /// Reset labels.
+    _deleteButton.text = 'Slet';
+    _historyView.element.hidden = true;
+    _historyToggle..text = 'Vis historik';
+
     _uidLabel.text = 'uid:${u.id}${!u.enabled ? ' (inaktiv)': ''}';
     _deleteButton.disabled = u.id == model.User.noId;
     _saveButton.disabled = u.id != model.User.noId;
@@ -148,9 +174,6 @@ class User {
 
     _groupsView.groups = u.groups;
     _identitiesView.identities = u.identities;
-
-    /// Reset labels.
-    _deleteButton.text = 'Slet';
     show();
   }
 
