@@ -65,7 +65,7 @@ Future<IO.HttpServer> start(
   return shelf_io.serve(handler, hostname, port);
 }
 
-void main() {
+Future main() async {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen(print);
 
@@ -79,10 +79,7 @@ void main() {
     customerHandler = new handler.Customer(support.CustomerPool.instance);
   }
 
-  // support.SupportTools.instance
-  //     .then((support.SupportTools init) => st = init)
-  //     .then((_) => print(st))
-  //     .then((_) => setupHandlers())
-  //     .then((_) => start(receptionistHandler, customerHandler,
-  //         hostname: Config.listenRESTAddress, port: Config.listenRESTport));
+  await setupHandlers();
+  await start(receptionistHandler, customerHandler,
+      hostname: Config.listenRESTAddress, port: Config.listenRESTport);
 }

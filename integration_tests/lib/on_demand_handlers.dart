@@ -26,7 +26,7 @@ class Receptionist {
   /**
    *
    */
-  Future<shelf.Response> aquire(shelf.Request request) {
+  Future<shelf.Response> aquire(shelf.Request request) async {
     test_fw.Receptionist r;
 
     try {
@@ -44,7 +44,9 @@ class Receptionist {
     log.finest('Allocated receptionist $r');
     log.finest('Current usage: ${_availableCount} available of ${_totalCount}');
 
-    //return r.initialize().then((_) => new shelf.Response.ok(JSON.encode(r)));
+    //await r.initialize();
+
+    return new shelf.Response.ok(JSON.encode(r));
   }
 
   /**
