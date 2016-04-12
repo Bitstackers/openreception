@@ -386,27 +386,30 @@ abstract class Randomizer {
   /**
    * Generates a random [model.ReceptionDialplan].
    */
-  static model
-      .ReceptionDialplan randomDialplan() => new model.ReceptionDialplan()
-    ..open = randomDialplanHourActions()
-    ..extension =
-        '${randomPhoneNumber()}-${new DateTime.now().millisecondsSinceEpoch}'
-    ..defaultActions = randomDialplanActions()
-    ..note = randomDialplanNote()
-    ..active = rand.nextBool();
+  static model.ReceptionDialplan randomDialplan({bool excludeMenus: false}) =>
+      new model.ReceptionDialplan()
+        ..open = randomDialplanHourActions(excludeMenus: excludeMenus)
+        ..extension =
+            '${randomPhoneNumber()}-${new DateTime.now().millisecondsSinceEpoch}'
+        ..defaultActions = randomDialplanActions(excludeMenus: excludeMenus)
+        ..note = randomDialplanNote()
+        ..active = rand.nextBool();
 
   /**
    *
    */
-  static List<model.HourAction> randomDialplanHourActions() =>
-      new List.generate(rand.nextInt(4) + 1, (_) => randomHourAction());
+  static List<model.HourAction> randomDialplanHourActions(
+          {bool excludeMenus: false}) =>
+      new List.generate(rand.nextInt(4) + 1,
+          (_) => randomHourAction(excludeMenus: excludeMenus));
 
   /**
    *
    */
-  static model.HourAction randomHourAction() => new model.HourAction()
-    ..actions = randomDialplanActions()
-    ..hours = randomOpeningHours();
+  static model.HourAction randomHourAction({bool excludeMenus: false}) =>
+      new model.HourAction()
+        ..actions = randomDialplanActions(excludeMenus: excludeMenus)
+        ..hours = randomOpeningHours();
 
   /**
    *
@@ -433,11 +436,12 @@ abstract class Randomizer {
   /**
    * Generates a random-sized list of random [model.Action] objects.
    */
-  static List<model.Action> randomDialplanActions() {
+  static List<model.Action> randomDialplanActions({bool excludeMenus: false}) {
     //Number of actions to generate.
     final int numActions = rand.nextInt(5) + 2;
 
-    return new List.generate(numActions, (_) => randomAction());
+    return new List.generate(
+        numActions, (_) => randomAction(excludeMenus: excludeMenus));
   }
 
   /**
@@ -487,15 +491,14 @@ abstract class Randomizer {
   /**
    * Generates a random [model.Action] action.
    */
-  static model.Action randomAction() => randomChoice([
+  static model.Action randomAction({bool excludeMenus: false}) => randomChoice([
         randomVoicemail,
         randomEnqueue,
         randomNotify,
         randomRingtone,
-        randomIvr,
         randomTransfer,
         randomPlayback
-      ])();
+      ]..addAll(excludeMenus ? [] : randomIvr))();
 
   /**
    * Generates a random 8-digit phone number.
