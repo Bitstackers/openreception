@@ -112,7 +112,7 @@ abstract class ObjectChange {
       case ObjectType.user:
         return UserChange.decode(map);
       case ObjectType.organization:
-        return UserChange.decode(map);
+        return OrganizationChange.decode(map);
     }
   }
 
