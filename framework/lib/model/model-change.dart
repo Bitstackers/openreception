@@ -141,7 +141,7 @@ class Commit {
    * Deserializing constructor.
    */
   Commit.fromMap(Map map)
-      : changes = new List<CalendarChange>.from(
+      : changes = new List<ObjectChange>.from(
             (map[Key.changes] as Iterable).map(ObjectChange.decode)),
         authorIdentity = map[Key.identity],
         changedAt = Util.unixTimestampToDateTime(map[Key.updatedAt]),
