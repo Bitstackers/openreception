@@ -22,7 +22,7 @@ abstract class ReceptionDialplanStore {
   static Future deploy(service.RESTDialplanStore rdpStore,
       service.RESTReceptionStore receptionStore,
       [model.User user]) async {
-    Model.ReceptionDialplan rdp = Randomizer.randomDialplan();
+    Model.ReceptionDialplan rdp = Randomizer.randomDialplan(excludeMenus: true);
 
     Model.ReceptionDialplan createdDialplan = await rdpStore.create(rdp, user);
     model.ReceptionReference rRef = await receptionStore.create(
