@@ -15,7 +15,7 @@ part of openreception.model;
 
 class ReceptionAttributeChange implements ObjectChange {
   final ChangeType changeType;
-  ObjectType get objectType => ObjectType.contact;
+  ObjectType get objectType => ObjectType.receptionAttribute;
   final int cid;
   final int rid;
 
