@@ -37,9 +37,9 @@ class RESTConfiguration {
   /**
    * Registers a server in the config server registry.
    */
-  Future register(String type, Uri contactUri) {
+  Future register(String type, Uri registerUri) {
     Uri uri = Resource.Config.register(this._host);
-    final Map body = {'type': type, 'uri': uri.toString()};
+    final Map body = {'type': type, 'uri': registerUri.toString()};
 
     return _backend.post(uri, JSON.encode(body));
   }
