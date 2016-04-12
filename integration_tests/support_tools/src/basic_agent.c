@@ -12,7 +12,7 @@
  * Asynchronous events are delivered in JSON format, and are easily parseable.
  */
 
-// Remove usleep warnings. 
+// Remove usleep warnings.
 #define _BSD_SOURCE
 
 #include <stdio.h>
@@ -23,7 +23,6 @@
 #include <json-c/json.h>
 
 #define THIS_FILE	 "BASIC_AGENT"
-#define JSON_NULL_STRING "null";
 
 typedef enum {OR_ERROR,
               OR_OK,
@@ -97,7 +96,7 @@ void or_status(or_reply_t status, char* message) {
            "{"
            "\"reply\":\"%s\","
            "\"message\": \"%s\""
-           "}\n", 
+           "}\n",
            or_reply_to_string(status), message);
   fflush(stdout);
 }
@@ -117,10 +116,10 @@ void or_event_call_state(int call_id, int call_state) {
   fprintf (stdout,
            "{"
            "\"event\":\"%s\","
-           "\"call\":{" 
+           "\"call\":{"
               "\"id\":%d,"
               "\"state\" : %d}"
-           "}\n", 
+           "}\n",
            or_event_to_string(OR_CALL_STATE), call_id, call_state);
 
   fflush(stdout);
@@ -130,10 +129,10 @@ void or_event_call_media_state (int call_id, int media_state) {
   fprintf (stdout,
            "{"
            "\"event\":\"%s\","
-           "\"call\":{" 
+           "\"call\":{"
               "\"id\":%d,"
               "\"media_state\" : %d}"
-           "}\n", 
+           "}\n",
            or_event_to_string(OR_CALL_MEDIA_STATE), call_id, media_state);
 
   fflush(stdout);
@@ -144,10 +143,10 @@ void or_event_call_tsx_state (int call_id, int tsx_status) {
   fprintf (stdout,
            "{"
            "\"event\":\"%s\","
-           "\"call\":{" 
+           "\"call\":{"
               "\"id\":%d,"
               "\"tsx_status\" : %d}"
-           "}\n", 
+           "}\n",
            or_event_to_string(OR_CALL_TSX_STATE), call_id, tsx_status);
 
   fflush(stdout);
@@ -210,7 +209,7 @@ static void on_call_state(pjsua_call_id call_id, pjsip_event *e) {
   if (ci.state == PJSIP_INV_STATE_CALLING) {
     or_event_outgoing_call(buf, call_id, ci.state);
   }
-    
+
   else if (ci.state == PJSIP_INV_STATE_DISCONNECTED) {
     //TODO: or_event (OR_HANGUP, "Either you or the other party hung up.");
   }
@@ -492,7 +491,7 @@ int main(int argc, char *argv[]) {
   pjsua_set_no_snd_dev();
   pjsua_set_null_snd_dev();
   fflush(stdout);
-  
+
   /* Main loop. Wait until user press "q" to quit. */
   for (;;) {
     char option[256];
@@ -633,15 +632,15 @@ void or_event_incoming_call(char* extension, int call_id, int call_state) {
   json_object *jobj        = json_object_new_object();
   json_object *jcall       = json_object_new_object();
 
-  json_object_object_add(jobj,"event", 
+  json_object_object_add(jobj,"event",
                          json_object_new_string(or_event_to_string(OR_CALL_INCOMING)));
   // Build call object.
   json_object_object_add(jcall,"extension", json_object_new_string(extension));
   json_object_object_add(jcall,"id", json_object_new_int(call_id));
   json_object_object_add(jcall,"state", json_object_new_int(call_state));
- 
+
   // Add call object.
-  json_object_object_add(jobj,"call", jcall); 
+  json_object_object_add(jobj,"call", jcall);
 
   fprintf (stdout, "%s\n",json_object_to_json_string(jobj));
   fflush(stdout);
@@ -652,7 +651,7 @@ void or_event_outgoing_call(char* extension, int call_id, int call_state) {
   json_object *jobj        = json_object_new_object();
   json_object *jcall       = json_object_new_object();
 
-  json_object_object_add(jobj,"event", 
+  json_object_object_add(jobj,"event",
                          json_object_new_string(or_event_to_string(OR_CALL_OUTGOING)));
   // Build call object.
   json_object_object_add(jcall,"extension", json_object_new_string(extension));
@@ -660,7 +659,7 @@ void or_event_outgoing_call(char* extension, int call_id, int call_state) {
   json_object_object_add(jcall,"state", json_object_new_int(call_state));
 
   // Add call object.
-  json_object_object_add(jobj,"call", jcall); 
+  json_object_object_add(jobj,"call", jcall);
 
   fprintf (stdout,"%s\n",json_object_to_json_string(jobj));
   fflush(stdout);
@@ -670,16 +669,15 @@ void or_event_account_state(int account_id, bool registered ) {
   json_object *jobj     = json_object_new_object();
   json_object *jaccount = json_object_new_object();
 
-  json_object_object_add(jobj,"event", 
+  json_object_object_add(jobj,"event",
                          json_object_new_string(or_event_to_string(OR_ACCOUNT_STATE)));
   // Build call object.
   json_object_object_add(jaccount,"id", json_object_new_int(account_id));
   json_object_object_add(jaccount,"registered", json_object_new_boolean(registered));
 
   // Add call object.
-  json_object_object_add(jobj,"account", jaccount); 
+  json_object_object_add(jobj,"account", jaccount);
 
   fprintf (stdout,"%s\n",json_object_to_json_string(jobj));
   fflush(stdout);
 }
-
