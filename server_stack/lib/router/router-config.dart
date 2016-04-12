@@ -48,7 +48,7 @@ class Config {
   Future<HttpServer> listen({String hostname: '0.0.0.0', int port: 4080}) {
     final router = shelf_route.router()
       ..get('/configuration', _configController.get)
-      ..post('/register', _configController.register);
+      ..post('/configuration/register', _configController.register);
 
     final handler = const shelf.Pipeline()
         .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
