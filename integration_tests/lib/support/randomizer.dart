@@ -498,7 +498,7 @@ abstract class Randomizer {
         randomRingtone,
         randomTransfer,
         randomPlayback
-      ]..addAll(excludeMenus ? [] : randomIvr))();
+      ]..addAll(excludeMenus ? [] : [randomIvr]))();
 
   /**
    * Generates a random 8-digit phone number.
