@@ -104,6 +104,9 @@ class Config {
       case key.notificationSocket:
         client_config.notificationSocketUri = uri;
         break;
+      case key.reception:
+        client_config.receptionServerUri = uri;
+        break;
       case key.user:
         client_config.userServerUri = uri;
         break;
