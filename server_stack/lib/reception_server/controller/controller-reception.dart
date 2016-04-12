@@ -172,4 +172,25 @@ class Reception {
       return notFoundJson({'description': 'No reception found with ID $rid'});
     }
   }
+
+  /**
+   *
+   */
+  Future<shelf.Response> history(shelf.Request request) async =>
+      okJson((await _rStore.changes()).toList(growable: false));
+
+  /**
+   *
+   */
+  Future<shelf.Response> objectHistory(shelf.Request request) async {
+    final String ridParam = shelf_route.getPathParameter(request, 'rid');
+    int rid;
+    try {
+      rid = int.parse(ridParam);
+    } on FormatException {
+      return clientError('Bad rid: $ridParam');
+    }
+
+    return okJson((await _rStore.changes(rid)).toList(growable: false));
+  }
 }

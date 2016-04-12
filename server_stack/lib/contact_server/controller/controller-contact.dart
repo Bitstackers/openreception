@@ -305,4 +305,48 @@ class Contact {
       return notFound(e.toString());
     }
   }
+
+  /**
+   *
+   */
+  Future<shelf.Response> history(shelf.Request request) async =>
+      okJson((await _contactStore.changes()).toList(growable: false));
+
+  /**
+   *
+   */
+  Future<shelf.Response> objectHistory(shelf.Request request) async {
+    final String cidParam = shelf_route.getPathParameter(request, 'cid');
+    int cid;
+    try {
+      cid = int.parse(cidParam);
+    } on FormatException {
+      return clientError('Bad cid: $cidParam');
+    }
+
+    return okJson((await _contactStore.changes(cid)).toList(growable: false));
+  }
+
+  /**
+   *
+   */
+  Future<shelf.Response> receptionHistory(shelf.Request request) async {
+    final String cidParam = shelf_route.getPathParameter(request, 'cid');
+    final String ridParam = shelf_route.getPathParameter(request, 'rid');
+    int cid;
+    int rid;
+    try {
+      cid = int.parse(cidParam);
+    } on FormatException {
+      return clientError('Bad cid: $cidParam');
+    }
+    try {
+      rid = int.parse(ridParam);
+    } on FormatException {
+      return clientError('Bad rid: $cidParam');
+    }
+
+    return okJson(
+        (await _contactStore.changes(cid, rid)).toList(growable: false));
+  }
 }

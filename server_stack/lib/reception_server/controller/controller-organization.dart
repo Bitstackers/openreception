@@ -172,4 +172,25 @@ class Organization {
           {'description': 'No Organization found with ID $oid'});
     }
   }
+
+  /**
+   *
+   */
+  Future<shelf.Response> history(shelf.Request request) async =>
+      okJson((await _orgStore.changes()).toList(growable: false));
+
+  /**
+   *
+   */
+  Future<shelf.Response> objectHistory(shelf.Request request) async {
+    final String oidParam = shelf_route.getPathParameter(request, 'oid');
+    int oid;
+    try {
+      oid = int.parse(oidParam);
+    } on FormatException {
+      return clientError('Bad oid: $oidParam');
+    }
+
+    return okJson((await _orgStore.changes(oid)).toList(growable: false));
+  }
 }

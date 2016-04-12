@@ -246,4 +246,25 @@ class Message {
       return okJson(createdMessage);
     });
   }
+
+  /**
+   *
+   */
+  Future<shelf.Response> history(shelf.Request request) async =>
+      okJson((await _messageStore.changes()).toList(growable: false));
+
+  /**
+   *
+   */
+  Future<shelf.Response> objectHistory(shelf.Request request) async {
+    final String midParam = shelf_route.getPathParameter(request, 'mid');
+    int mid;
+    try {
+      mid = int.parse(midParam);
+    } on FormatException {
+      return clientError('Bad mid: $midParam');
+    }
+
+    return okJson((await _messageStore.changes(mid)).toList(growable: false));
+  }
 }

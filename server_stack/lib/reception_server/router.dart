@@ -100,18 +100,22 @@ Future<io.HttpServer> start(
     ..get('/organization', organization.list)
     ..get('/organization/receptionmap', organization.receptionMap)
     ..post('/organization', organization.create)
+    ..get('/organization/history', organization.history)
     ..get('/organization/{oid}', organization.get)
     ..put('/organization/{oid}', organization.update)
     ..delete('/organization/{oid}', organization.remove)
+    ..get('/organization/{oid}/history', organization.objectHistory)
     ..get('/organization/{oid}/contact', organization.contacts)
     ..get('/organization/{oid}/reception', organization.receptions)
     ..get('/reception', reception.list)
     ..post('/reception', reception.create)
+    ..get('/reception/history', reception.history)
     ..get('/reception/{rid}', reception.get)
     ..get('/reception/extension/{exten}', reception.getByExtension)
     ..get('/reception/{rid}/extension', reception.extensionOf)
     ..put('/reception/{rid}', reception.update)
-    ..delete('/reception/{rid}', reception.remove);
+    ..delete('/reception/{rid}', reception.remove)
+    ..get('/reception/{rid}/history', reception.objectHistory);
   var handler = const shelf.Pipeline()
       .addMiddleware(
           shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))

@@ -81,10 +81,13 @@ Future<io.HttpServer> start(
 
   final router = shelf_route.router()
     ..get('/message/list', msgController.list)
+    ..get('/message', msgController.list)
+    ..get('/message/history', msgController.history)
     ..get('/message/{mid}', msgController.get)
     ..put('/message/{mid}', msgController.update)
     ..delete('/message/{mid}', msgController.remove)
     ..post('/message/{mid}/send', msgController.send)
+    ..get('/message/{mid}/history', msgController.history)
     ..post('/message', msgController.create);
 
   final handler = const shelf.Pipeline()

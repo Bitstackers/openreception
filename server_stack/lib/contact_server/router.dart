@@ -99,14 +99,17 @@ Future<io.HttpServer> start(
     ..post('/contact/{cid}/reception/{rid}', contact.addToReception)
     ..put('/contact/{cid}/reception/{rid}', contact.updateInReception)
     ..delete('/contact/{cid}/reception/{rid}', contact.removeFromReception)
+    ..get('/contact/{cid}/reception/{rid}/history', contact.receptionHistory)
     ..get('/contact/{cid}/reception/{rid}', contact.get)
     ..get('/contact/{cid}/reception', contact.receptions)
     ..get('/contact/{cid}/organization', contact.organizations)
     ..get('/contact/{cid}', contact.base)
     ..put('/contact/{cid}', contact.update)
     ..delete('/contact/{cid}', contact.remove)
+    ..get('/contact/{cid}/history', contact.objectHistory)
     ..get('/contact', contact.listBase)
     ..post('/contact', contact.create)
+    ..get('/contact/history', contact.history)
     ..get('/contact/organization/{oid}', contact.listByOrganization)
     ..get('/contact/reception/{rid}', contact.listByReception);
 
