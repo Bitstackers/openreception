@@ -6,7 +6,7 @@ Configuration config = new Configuration._internal();
 
 class Configuration {
   String _token = '';
-  final Uri configUri = Uri.parse('http://192.168.1.132:9009');
+  final Uri configUri = Uri.parse('http://10.10.1.118:9009');
   model.ClientConfiguration clientConfig =
       new model.ClientConfiguration.empty();
 

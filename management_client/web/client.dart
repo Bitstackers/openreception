@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:html';
 
 import 'package:logging/logging.dart';
+import 'package:route_hierarchical/client.dart';
 
 ///Pages
 import 'package:management_tool/page.dart' as page;
@@ -11,11 +12,9 @@ import 'package:management_tool/page/page-message.dart' as page;
 import 'package:management_tool/page/page-reception.dart' as page;
 import 'package:management_tool/page/page-user.dart' as page;
 
-import 'package:management_tool/router.dart' as nav;
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/auth.dart';
 import 'package:management_tool/configuration.dart';
-import 'menu.dart';
 
 import 'package:openreception_framework/service.dart' as service;
 import 'package:openreception_framework/service-html.dart' as transport;
@@ -93,11 +92,15 @@ Future main() async {
     final controller.Ivr ivrController =
         new controller.Ivr(ivrStore, dialplanStore);
 
+    /**
+     * Initialize pages
+     */
+    final Router router = new Router();
     final page.Cdr cdrPage = new page.Cdr(cdrController, contactController,
-        organizationController, receptionController, userController);
+        organizationController, receptionController, userController, router);
 
-    final page.OrganizationView orgPage =
-        new page.OrganizationView(organizationController, receptionController);
+    final page.OrganizationView orgPage = new page.OrganizationView(
+        organizationController, receptionController, router);
 
     querySelector('#cdr-page').replaceWith(cdrPage.element);
 
@@ -108,24 +111,31 @@ Future main() async {
             organizationController,
             receptionController,
             dialplanController,
-            calendarController)
+            calendarController,
+            router)
         .element);
 
-    new page.ContactView(querySelector('#contact-page'), contactController,
-        receptionController, calendarController, notificationController);
+    new page.ContactView(
+        querySelector('#contact-page'),
+        contactController,
+        receptionController,
+        calendarController,
+        notificationController,
+        router);
 
     final messagePage = new page.Message(contactController, messageController,
-        receptionController, userController);
-    final dialplanPage = new page.Dialplan(dialplanController);
+        receptionController, userController, router);
+    final dialplanPage = new page.Dialplan(dialplanController, router);
 
     querySelector('#message-page').replaceWith(messagePage.element);
     querySelector('#dialplan-page').replaceWith(dialplanPage.element);
 
-    querySelector('#ivr-page').replaceWith(new page.Ivr(ivrController).element);
+    querySelector('#ivr-page')
+        .replaceWith(new page.Ivr(ivrController, router).element);
     querySelector("#user-page")
-        .replaceWith(new page.UserPage(userController).element);
+        .replaceWith(new page.UserPage(userController, router).element);
 
-    new Menu(querySelector('nav#navigation'));
+    //new Menu(querySelector('nav#navigation'));
 
     /// Verify that we support HTMl5 notifications
     if (Notification.supported) {
@@ -136,6 +146,6 @@ Future main() async {
       _log.shout('HTML5 notifications not supported.');
     }
 
-    final nav.PageRouter router = new nav.PageRouter([orgPage]);
+    router.listen();
   }
 }

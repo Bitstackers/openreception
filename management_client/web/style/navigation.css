@@ -15,6 +15,21 @@ nav button {
 }
 
 
+nav a {
+  background: rgba(158,158,158,.2);
+  background-color: B3E5FC!important;
+}
+
+nav a.faded {
+  opacity: 0.3;
+  background-color: white!important;
+}
+
+nav a.faded:hover {
+  opacity: 0.9;
+  background-color: white!important;
+}
+
 
 nav button.faded {
   opacity: 0.3;

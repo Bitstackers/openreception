@@ -3,7 +3,8 @@ library management_tool.page.reception;
 import 'dart:async';
 import 'dart:html';
 
-import 'package:management_tool/eventbus.dart';
+import 'package:route_hierarchical/client.dart';
+
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/view.dart' as view;
 
@@ -17,6 +18,7 @@ class ReceptionView {
   final controller.Reception _receptionController;
   final controller.Dialplan _dpController;
   final controller.Calendar _calendarController;
+  final Router _router;
 
   final DivElement element = new DivElement()
     ..id = 'reception-page'
@@ -50,7 +52,10 @@ class ReceptionView {
       controller.Organization this._organizationController,
       controller.Reception this._receptionController,
       controller.Dialplan this._dpController,
-      controller.Calendar this._calendarController) {
+      controller.Calendar this._calendarController,
+      Router this._router) {
+    _setupRouter();
+
     _receptionView = new view.Reception(_receptionController,
         _organizationController, _dpController, _calendarController);
 
@@ -86,21 +91,7 @@ class ReceptionView {
 
   void _observers() {
     _createButton.onClick.listen((_) {
-      //_clearRightBar();
-      _receptionView.reception = new ORModel.Reception.empty();
-    });
-
-    bus.on(WindowChanged).listen((WindowChanged event) async {
-      element.hidden = false;
-      if (event.window == viewName) {
-        await _refreshList();
-        if (event.data.containsKey('organization_id') &&
-            event.data.containsKey('reception_id')) {
-          await _activateReception(event.data['reception_id']);
-        }
-      } else {
-        element.hidden = true;
-      }
+      _router.gotoUrl('reception/create');
     });
 
     _receptionView.changes.listen((view.ReceptionChange rc) async {
@@ -151,16 +142,14 @@ class ReceptionView {
   LIElement _makeReceptionNode(ORModel.ReceptionReference rRef) {
     return new LIElement()
       ..classes.add('clickable')
-      ..dataset['receptionid'] = '${rRef.id}'
+      ..dataset['rid'] = '${rRef.id}'
       ..text = rRef.name
-      ..onClick.listen((_) {
-        _activateReception(rRef.id);
-      });
+      ..onClick.listen((_) => _router.gotoUrl('/reception/edit/${rRef.id}'));
   }
 
   void _highlightContactInList(int id) {
-    _uiReceptionList.children.forEach((LIElement li) => li.classes
-        .toggle('highlightListItem', li.dataset['receptionid'] == '$id'));
+    _uiReceptionList.children.forEach((LIElement li) =>
+        li.classes.toggle('highlightListItem', li.dataset['rid'] == '$id'));
   }
 
   Future _activateReception(int receptionId) async {
@@ -186,20 +175,65 @@ class ReceptionView {
     _ulContactList.children
       ..clear()
       ..addAll(sorted.map((ORModel.ContactReference cRef) =>
-          makeContactNode(cRef, receptionId)));
+          _makeContactNode(cRef, receptionId)));
   }
 
   /**
    * TODO: Add function gear ⚙
    */
-  LIElement makeContactNode(ORModel.ContactReference cRef, int rid) {
+  LIElement _makeContactNode(ORModel.ContactReference cRef, int rid) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
       ..text = cRef.name
-      ..onClick.listen((_) {
-        Map data = {'contact_id': cRef.id, 'reception_id': rid};
-        bus.fire(new WindowChanged('contact', data));
-      });
+      ..onClick.listen((_) => _router.gotoUrl('/contact/edit/${cRef.id}'));
     return li;
+  }
+
+  /**
+   *
+   */
+  Future activate(RouteEvent e) async {
+    element.hidden = false;
+    await _refreshList();
+  }
+
+  /**
+   *
+   */
+  void deactivate(RouteEvent e) {
+    element.hidden = true;
+  }
+
+  Future activateCreate(RouteEvent e) async {
+    _receptionView.reception = new ORModel.Reception.empty();
+    _receptionView.element.hidden = false;
+  }
+
+  /**
+   *
+   */
+  Future activateEdit(RouteEvent e) async {
+    final int rid = int.parse(e.parameters['rid']);
+    await _activateReception(rid);
+  }
+
+  /**
+   *
+   */
+  void _setupRouter() {
+    print('setting up reception router');
+    _router.root
+      ..addRoute(
+          name: 'reception',
+          enter: activate,
+          path: '/reception',
+          leave: deactivate,
+          mount: (router) => router
+            ..addRoute(name: 'create', path: '/create', enter: activateCreate)
+            ..addRoute(
+                name: 'edit',
+                path: '/edit',
+                mount: (router) => router
+                  ..addRoute(name: 'id', path: '/:rid', enter: activateEdit)));
   }
 }

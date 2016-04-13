@@ -4,8 +4,8 @@ import 'dart:async';
 import 'dart:html';
 
 import 'package:logging/logging.dart';
+import 'package:route_hierarchical/client.dart';
 
-import 'package:management_tool/eventbus.dart';
 import 'package:management_tool/view.dart' as view;
 
 import 'package:openreception_framework/event.dart' as event;
@@ -18,7 +18,6 @@ const String _libraryName = 'contact.view';
 controller.Popup _notify = controller.popup;
 
 class ContactView {
-  static const String _viewName = 'contact';
   final Logger _log = new Logger('$_libraryName.Contact');
   DivElement element;
 
@@ -28,6 +27,7 @@ class ContactView {
   final controller.Calendar _calendarController;
   final controller.Reception _receptionController;
   final controller.Notification _notificationController;
+  final Router _router;
 
   UListElement _ulContactList;
   UListElement _ulReceptionData;
@@ -44,14 +44,17 @@ class ContactView {
   view.Contact _contactData;
   static const List<String> phonenumberTypes = const ['PSTN', 'SIP'];
 
-  bool get isHidden => element.classes.contains('hidden');
+  bool get isHidden => element.hidden;
 
   ContactView(
       DivElement this.element,
       this._contactController,
       this._receptionController,
       this._calendarController,
-      this._notificationController) {
+      this._notificationController,
+      this._router) {
+    _setupRouter();
+
     _searchBox = element.querySelector('#contact-search-box');
 
     _contactData = new view.Contact(
@@ -77,14 +80,6 @@ class ContactView {
    *
    */
   void _observers() {
-    bus.on(WindowChanged).listen((WindowChanged event) async {
-      element.classes.toggle('hidden', event.window != _viewName);
-      if (event.data.containsKey('contact_id')) {
-        _contactData.contact =
-            await _contactController.get(event.data['contact_id']);
-      }
-    });
-
     _notificationController.contactChange.listen((event.ContactChange e) async {
       if (isHidden) {
         return;
@@ -106,9 +101,7 @@ class ContactView {
       }
     });
 
-    _createButton.onClick.listen((_) {
-      _contactData.contact = new model.BaseContact.empty();
-    });
+    _createButton.onClick.listen((_) => _router.gotoUrl('/contact/create'));
 
     _searchBox.onInput.listen((_) => _performSearch());
   }
@@ -136,14 +129,11 @@ class ContactView {
     });
   }
 
-  LIElement _makeContactNode(model.ContactReference contact) {
+  LIElement _makeContactNode(model.ContactReference cRef) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
-      ..text = '${contact.name}'
-      ..dataset['contactid'] = '${contact.id}'
-      ..onClick.listen((_) async {
-        await _activateContact(contact.id);
-      });
+      ..text = '${cRef.name}'
+      ..onClick.listen((_) => _router.gotoUrl('/contact/edit/${cRef.id}'));
 
     return li;
   }
@@ -192,30 +182,6 @@ class ContactView {
     _ulReceptionList.children = collRefs.map(_createColleagueNode).toList();
   }
 
-  Future _receptionContactUpdate(model.ReceptionAttributes ca) {
-    return _contactController.updateInReception(ca).then((_) {
-      _notify.success('Oplysningerne blev gemt', '');
-    }).catchError((error, stack) {
-      _notify.error('Ændringerne blev ikke gemt', 'Fejl: $error');
-      _log.severe('Tried to update a Reception Contact, '
-          'but failed with "${error}", ${stack}');
-    });
-  }
-
-  Future _receptionContactCreate(model.ReceptionAttributes attr) {
-    return _contactController.addToReception(attr).then((_) {
-      _notify.success('Tilføjet til reception',
-          '${attr.reference.reception.name} til (rid: ${attr.receptionId})');
-      bus.fire(
-          new ReceptionContactAddedEvent(attr.receptionId, attr.contactId));
-    }).catchError((error, stack) {
-      _notify.error(
-          'Kunne ikke tilføje kontakt til reception', 'Fejl: ${error}');
-      _log.severe(
-          'Tried to update a Reception Contact, but failed with "$error" ${stack}');
-    });
-  }
-
   /**
    * Clear our the fields of the view and hide the relevant DOM nodes.
    */
@@ -228,63 +194,74 @@ class ContactView {
   }
 
   /**
-   *
-   */
-  LIElement _createReceptionNode(model.Reception reception) {
-    // First node is the receptionname. Clickable to the reception
-    //   Second node is a list of contacts in that reception. Could make it lazy loading with a little plus, that "expands" (Fetches the data) the list
-    LIElement rootNode = new LIElement();
-    HeadingElement receptionNode = new HeadingElement.h4()
-      ..classes.add('clickable')
-      ..text = reception.name
-      ..onClick.listen((_) {
-        Map data = {
-          'organization_id': reception.organizationId,
-          'reception_id': reception.id
-        };
-        bus.fire(new WindowChanged('reception', data));
-      });
-
-    UListElement contactsUl = new UListElement()..classes.add('zebra-odd');
-
-    _contactController
-        .receptionContacts(reception.id)
-        .then((Iterable<model.ContactReference> cRefs) {
-      contactsUl.children = cRefs
-          .map((model.ContactReference collegue) =>
-              _createColleagueNode(collegue))
-          .toList();
-    });
-
-    rootNode.children.addAll([receptionNode, contactsUl]);
-    return rootNode;
-  }
-
-  /**
    * TODO: Add reception references
    */
-  LIElement _createColleagueNode(model.ContactReference collegue) {
+  LIElement _createColleagueNode(model.ContactReference cRef) {
     return new LIElement()
       ..classes.add('clickable')
       ..classes.add('colleague')
-      ..text = '${collegue.name}'
-      ..onClick.listen((_) {
-        Map data = {'contact_id': collegue.id};
-        bus.fire(new WindowChanged('contact', data));
-      });
+      ..text = '${cRef.name}'
+      ..onClick.listen((_) => _router.gotoUrl('/contact/edit/${cRef.id}'));
   }
 
   /**
    *
    */
-  LIElement _createOrganizationNode(model.OrganizationReference oref) {
+  LIElement _createOrganizationNode(model.OrganizationReference oRef) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
-      ..text = '${oref.name}'
-      ..onClick.listen((_) {
-        Map data = {'organization_id': oref.id,};
-        bus.fire(new WindowChanged('organization', data));
-      });
+      ..text = '${oRef.name}'
+      ..onClick.listen((_) => _router.gotoUrl('/organization/edit/${oRef.id}'));
+
     return li;
+  }
+
+  /**
+     *
+     */
+  Future activate(RouteEvent e) async {
+    element.hidden = false;
+    await _refreshList();
+  }
+
+  /**
+     *
+     */
+  void deactivate(RouteEvent e) {
+    element.hidden = true;
+  }
+
+  /**
+   *
+   */
+  Future _createContact(RouteEvent e) async {
+    _clearContent();
+    _contactData.contact = new model.BaseContact.empty();
+  }
+
+  Future _contactEdit(RouteEvent e) async {
+    final int cid = int.parse(e.parameters['cid']);
+
+    await _activateContact(cid);
+  }
+
+  /**
+   *
+   */
+  void _setupRouter() {
+    print('Setting up contact routes');
+    _router.root
+      ..addRoute(
+          name: 'contact',
+          enter: activate,
+          path: '/contact',
+          leave: deactivate,
+          mount: (router) => router
+            ..addRoute(name: 'create', path: '/create', enter: _createContact)
+            ..addRoute(
+                name: 'edit',
+                path: '/edit',
+                mount: (router) => router
+                  ..addRoute(name: 'id', path: '/:cid', enter: _contactEdit)));
   }
 }

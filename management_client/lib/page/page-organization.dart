@@ -2,11 +2,10 @@ library management_tool.page.organization;
 
 import 'dart:async';
 import 'dart:html';
-import 'package:route_hierarchical/client.dart';
-import 'package:management_tool/page.dart';
 
 import 'package:logging/logging.dart';
-import 'package:management_tool/eventbus.dart';
+import 'package:route_hierarchical/client.dart';
+
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/view.dart' as view;
 
@@ -16,14 +15,14 @@ controller.Popup _notify = controller.popup;
 
 const String _libraryName = 'management_tool.page.organization';
 
-class OrganizationView implements Page {
+class OrganizationView {
   static const String viewName = 'organization';
 
   Logger _log = new Logger('$_libraryName.Organization');
 
   final controller.Organization _organizationController;
   final controller.Reception _receptionController;
-  Router _router;
+  final Router _router;
 
   final DivElement element = new DivElement()
     ..id = "organization-page"
@@ -62,7 +61,8 @@ class OrganizationView implements Page {
    *
    */
   OrganizationView(controller.Organization this._organizationController,
-      controller.Reception this._receptionController) {
+      controller.Reception this._receptionController, Router this._router) {
+    _setupRouter();
     _organizationView = new view.Organization(_organizationController);
 
     element.children = [
@@ -111,20 +111,7 @@ class OrganizationView implements Page {
    */
   void _observers() {
     _createButton.onClick.listen((_) {
-      // _clearRightBar();
-      // _organizationView.organization = new ORModel.Organization.empty();
-    });
-
-    bus.on(WindowChanged).listen((WindowChanged event) async {
-      if (event.window == viewName) {
-        element.hidden = false;
-        await _refreshList();
-        if (event.data.containsKey('organization_id')) {
-          _activateOrganization(event.data['organization_id']);
-        }
-      } else {
-        element.hidden = true;
-      }
+      _router.go('organization.create', {});
     });
 
     _searchBox.onInput.listen((_) => _performSearch());
@@ -191,7 +178,7 @@ class OrganizationView implements Page {
       ..dataset['organizationid'] = '${organization.id}'
       ..text = '${organization.name}'
       ..onClick.listen((_) {
-        _router.go('org.edit.id', {'oid': organization.id});
+        _router.go('organization.edit.id', {'oid': organization.id});
         //_activateOrganization(organization.id);
       });
   }
@@ -233,8 +220,7 @@ class OrganizationView implements Page {
       ..classes.add('clickable')
       ..text = '${rRef.name}'
       ..onClick.listen((_) {
-        Map data = {'reception_id': rRef.id};
-        bus.fire(new WindowChanged('reception', data));
+        _router.go('reception.edit.id', {'rid': rRef.id});
       });
     return li;
   }
@@ -269,8 +255,8 @@ class OrganizationView implements Page {
       ..classes.add('clickable')
       ..text = '${cRef.name}'
       ..onClick.listen((_) {
-        Map data = {'contact_id': cRef.id};
-        bus.fire(new WindowChanged('contact', data));
+        print('contact.edit.id');
+        _router.go('contact.edit.id', {'cid': cRef.id});
       });
     return li;
   }
@@ -281,7 +267,6 @@ class OrganizationView implements Page {
   Future activate(RouteEvent e) async {
     element.hidden = false;
     await _refreshList();
-    print('activating $path');
   }
 
   /**
@@ -289,7 +274,6 @@ class OrganizationView implements Page {
    */
   void deactivate(RouteEvent e) {
     element.hidden = true;
-    print('deactivating $path');
   }
 
   Future activateCreate(RouteEvent e) async {
@@ -297,7 +281,6 @@ class OrganizationView implements Page {
     _clearRightBar();
     _organizationView.organization = new ORModel.Organization.empty();
     _organizationView.element.hidden = false;
-    print('activating $path');
   }
 
   /**
@@ -307,8 +290,6 @@ class OrganizationView implements Page {
     _clearRightBar();
     _organizationView.organization = new ORModel.Organization.empty();
     _organizationView.element.hidden = true;
-
-    print('deactivating $path');
   }
 
   Future activateEdit(RouteEvent e) async {
@@ -320,18 +301,11 @@ class OrganizationView implements Page {
   /**
    *
    */
-  Pattern get path => '/organization';
-
-  /**
-   *
-   */
-  String get name => 'Organization';
-
-  void setupRouter(Router router) {
-    print('setting up router');
-    router.root
+  void _setupRouter() {
+    print('setting up organization router');
+    _router.root
       ..addRoute(
-          name: 'org',
+          name: 'organization',
           enter: activate,
           path: '/organization',
           leave: deactivate,
@@ -350,11 +324,5 @@ class OrganizationView implements Page {
                       path: '/:oid',
                       enter: activateEdit,
                       leave: deactivateCreate)));
-
-    _createButton.onClick.listen((_) {
-      router.go('org.create', {});
-    });
-
-    _router = router;
   }
 }

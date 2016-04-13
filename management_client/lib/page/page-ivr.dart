@@ -4,8 +4,9 @@ import 'dart:async';
 import 'dart:html';
 
 import 'package:logging/logging.dart';
+import 'package:route_hierarchical/client.dart';
+
 import 'package:management_tool/controller.dart' as controller;
-import 'package:management_tool/eventbus.dart';
 import 'package:management_tool/view.dart' as view;
 import 'package:openreception_framework/model.dart' as model;
 
@@ -24,6 +25,8 @@ class Ivr {
     ..classes.addAll(['page']);
 
   final controller.Ivr _menuController;
+  final Router _router;
+
   view.IvrMenu _ivrView;
 
   final ButtonElement _createButton = new ButtonElement()
@@ -38,7 +41,9 @@ class Ivr {
   /**
    *
    */
-  Ivr(this._menuController) {
+  Ivr(this._menuController, this._router) {
+    _setupRouter();
+
     _ivrView = new view.IvrMenu(_menuController);
 
     element.children = [
@@ -67,16 +72,7 @@ class Ivr {
    * Observers.
    */
   void _observers() {
-    bus.on(WindowChanged).listen((WindowChanged event) async {
-      if (event.window == _viewName) {
-        element.hidden = false;
-        await _refreshList();
-      } else {
-        element.hidden = true;
-      }
-    });
-
-    _createButton.onClick.listen((_) => _createIvrMenu());
+    _createButton.onClick.listen((_) => _router.gotoUrl('/ivr/create'));
 
     _ivrView.onDelete = ((_) async {
       await _refreshList();
@@ -106,10 +102,8 @@ class Ivr {
     LIElement li = new LIElement()
       ..classes.add('clickable')
       ..text = '${rdp.extension}'
-      ..onClick.listen((_) {
-        Map data = {'extension': rdp.extension};
-        bus.fire(new WindowChanged('dialplan', data));
-      });
+      ..onClick
+          .listen((_) => _router.gotoUrl('/dialplan/edit/${rdp.extension}'));
     return li;
   }
 
@@ -167,10 +161,53 @@ class Ivr {
   /**
    *
    */
-  void _createIvrMenu() {
+  void _createIvrMenu(RouteEvent e) {
     _ivrView.menu =
         new model.IvrMenu('ny-menu', new model.Playback('velkomst.wav'));
     _ivrView.create = true;
+
+    _renderDialplanList([]);
     _highlightIvrmenuInList('ny-menu');
+  }
+
+  /**
+   *
+   */
+  Future activate(RouteEvent e) async {
+    element.hidden = false;
+    await _refreshList();
+  }
+
+  /**
+   *
+   */
+  void deactivate(RouteEvent e) {
+    element.hidden = true;
+  }
+
+  Future _editIvrMenu(RouteEvent e) async {
+    final menu = e.parameters['menu'];
+    await _activateIvrmenu(menu);
+  }
+
+  /**
+   *
+   */
+  void _setupRouter() {
+    print('setting up ivr router');
+    _router.root
+      ..addRoute(
+          name: 'ivr',
+          enter: activate,
+          path: '/ivr',
+          leave: deactivate,
+          mount: (router) => router
+            ..addRoute(name: 'create', path: '/create', enter: _createIvrMenu)
+            ..addRoute(
+                name: 'edit',
+                path: '/edit',
+                mount: (router) => router
+                  ..addRoute(
+                      name: 'menu', path: '/:menu', enter: _editIvrMenu)));
   }
 }

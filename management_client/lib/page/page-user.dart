@@ -4,8 +4,9 @@ import 'dart:async';
 import 'dart:html';
 
 import 'package:logging/logging.dart';
+import 'package:route_hierarchical/client.dart';
+
 import 'package:management_tool/controller.dart' as controller;
-import 'package:management_tool/eventbus.dart';
 import 'package:management_tool/view.dart' as view;
 import 'package:openreception_framework/model.dart' as model;
 
@@ -15,7 +16,6 @@ const String _libraryName = 'management_tool.page.user';
  *
  */
 class UserPage {
-  static const String _viewName = 'user';
   final Logger _log = new Logger('$_libraryName.UserPage');
 
   final DivElement element = new DivElement()
@@ -24,6 +24,8 @@ class UserPage {
     ..classes.addAll(['page']);
 
   final controller.User _userController;
+  final Router _router;
+
   view.User _userView;
 
   final ButtonElement _createButton = new ButtonElement()
@@ -40,7 +42,8 @@ class UserPage {
   /**
    *
    */
-  UserPage(this._userController) {
+  UserPage(this._userController, this._router) {
+    _setupRouter();
     _userView = new view.User(_userController);
 
     element.children = [
@@ -63,16 +66,7 @@ class UserPage {
    * Observers.
    */
   void _observers() {
-    bus.on(WindowChanged).listen((WindowChanged event) async {
-      if (event.window == _viewName) {
-        element.hidden = false;
-        await _refreshList();
-      } else {
-        element.hidden = true;
-      }
-    });
-
-    _createButton.onClick.listen((_) => _createUser());
+    _createButton.onClick.listen((_) => _router.gotoUrl('/user/create'));
 
     _userView.changes.listen((view.UserChange uc) async {
       await _refreshList();
@@ -137,8 +131,53 @@ class UserPage {
   /**
    *
    */
-  void _createUser() {
+  void _createUser(RouteEvent e) {
+    element.hidden = false;
     _userView.user = new model.User.empty()..id = model.User.noId;
     highlightUserInList(model.User.noId);
+  }
+
+  /**
+   *
+   */
+  Future activate(RouteEvent e) async {
+    element.hidden = false;
+    await _refreshList();
+  }
+
+  /**
+   *
+   */
+  void deactivate(RouteEvent e) {
+    element.hidden = true;
+  }
+
+  /**
+   *
+   */
+  Future activateEdit(RouteEvent e) async {
+    final int uid = int.parse(e.parameters['uid']);
+    element.hidden = false;
+    await _activateUser(uid);
+  }
+
+  /**
+   *
+   */
+  void _setupRouter() {
+    print('setting up user router');
+    _router.root
+      ..addRoute(
+          name: 'user',
+          enter: activate,
+          path: '/user',
+          leave: deactivate,
+          mount: (router) => router
+            ..addRoute(name: 'create', path: '/create', enter: _createUser)
+            ..addRoute(
+                name: 'edit',
+                path: '/edit',
+                mount: (router) => router
+                  ..addRoute(name: 'id', path: '/:uid', enter: activateEdit)));
   }
 }

@@ -4,8 +4,8 @@ import 'dart:async';
 import 'dart:html';
 
 import 'package:logging/logging.dart';
+import 'package:route_hierarchical/client.dart';
 
-import 'package:management_tool/eventbus.dart';
 import 'package:management_tool/view.dart' as view;
 
 import 'package:management_tool/searchcomponent.dart';
@@ -27,6 +27,7 @@ class ContactView {
   final controller.Calendar _calendarController;
   final controller.Organization _organizationController;
   final controller.Reception _receptionController;
+  final Router _router;
 
   UListElement _ulContactList;
   UListElement _ulReceptionContacts;
@@ -99,7 +100,8 @@ class ContactView {
       this._contactController,
       this._organizationController,
       this._receptionController,
-      this._calendarController) {
+      this._calendarController,
+      this._router) {
     _baseInfoContainer.children = [
       _deleteButton,
       _saveButton,
@@ -367,21 +369,6 @@ class ContactView {
       }
     });
 
-    bus.on(WindowChanged).listen((WindowChanged event) async {
-      element.classes.toggle('hidden', event.window != _viewName);
-      if (event.data.containsKey('contact_id')) {
-        baseContact = await _contactController.get(event.data['contact_id']);
-      }
-    });
-
-    bus.on(ReceptionAddedEvent).listen((_) {
-      _fillSearchComponent();
-    });
-
-    bus.on(ReceptionRemovedEvent).listen((_) {
-      _fillSearchComponent();
-    });
-
     _createButton.onClick.listen((_) {
       baseContact = new model.BaseContact.empty();
     });
@@ -544,32 +531,6 @@ class ContactView {
     });
   }
 
-  Future _receptionContactUpdate(model.ReceptionAttributes ca) {
-    return _contactController.updateInReception(ca).then((_) {
-      notify.success('Oplysningerne blev gemt', '');
-    }).catchError((error, stack) {
-      notify.error('Ændringerne blev ikke gemt', 'Fejl: $error');
-      _log.severe('Tried to update a Reception Contact, '
-          'but failed with "${error}", ${stack}');
-    });
-  }
-
-  Future _receptionContactCreate(model.ReceptionAttributes attr) {
-    return _contactController.addToReception(attr).then((_) {
-      notify.success(
-          'Tilføjet til reception',
-          '${attr.reference.reception.name} '
-          '(rid: ${attr.reference.reception.id})');
-      bus.fire(
-          new ReceptionContactAddedEvent(attr.receptionId, attr.contactId));
-    }).catchError((error, stack) {
-      notify.error(
-          'Kunne ikke tilføje kontakt til reception', 'Fejl: ${error}');
-      _log.severe(
-          'Tried to update a Reception Contact, but failed with "$error" ${stack}');
-    });
-  }
-
   /**
    *
    */
@@ -616,10 +577,7 @@ class ContactView {
       ..classes.add('clickable')
       ..classes.add('colleague')
       ..text = '${cRef.name} (rid: ${cRef.id})'
-      ..onClick.listen((_) {
-        Map data = {'contact_id': cRef.id};
-        bus.fire(new WindowChanged('contact', data));
-      });
+      ..onClick.listen((_) => _router.gotoUrl('/contact/edit/${cRef.id}'));
   }
 
   /**
@@ -629,10 +587,8 @@ class ContactView {
     LIElement li = new LIElement()
       ..classes.add('clickable')
       ..text = '${organization.name}'
-      ..onClick.listen((_) {
-        Map data = {'organization_id': organization.id,};
-        bus.fire(new WindowChanged('organization', data));
-      });
+      ..onClick.listen(
+          (_) => _router.gotoUrl('/organization/edit/${organization.id}'));
     return li;
   }
 

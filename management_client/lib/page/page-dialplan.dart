@@ -4,8 +4,9 @@ import 'dart:async';
 import 'dart:html';
 
 import 'package:logging/logging.dart';
+import 'package:route_hierarchical/client.dart';
+
 import 'package:management_tool/controller.dart' as controller;
-import 'package:management_tool/eventbus.dart';
 import 'package:management_tool/view.dart' as view;
 import 'package:openreception_framework/model.dart' as model;
 
@@ -24,6 +25,8 @@ class Dialplan {
     ..classes.addAll(['page']);
 
   final controller.Dialplan _dialplanController;
+  final Router _router;
+
   view.Dialplan _dpView;
   view.DialplanCalenderPlot _dpPlot;
 
@@ -39,7 +42,8 @@ class Dialplan {
   /**
    *
    */
-  Dialplan(this._dialplanController) {
+  Dialplan(this._dialplanController, this._router) {
+    _setupRouter();
     _dpView = new view.Dialplan(_dialplanController);
     _dpPlot = new view.DialplanCalenderPlot();
 
@@ -69,20 +73,7 @@ class Dialplan {
    * Observers.
    */
   void _observers() {
-    bus.on(WindowChanged).listen((WindowChanged event) async {
-      if (event.window == _viewName) {
-        element.hidden = false;
-        await _refreshList();
-
-        if (event.data.containsKey('extension')) {
-          _activateDialplan(event.data['extension']);
-        }
-      } else {
-        element.hidden = true;
-      }
-    });
-
-    _createButton.onClick.listen((_) => _createDialplan());
+    _createButton.onClick.listen((_) => _router.gotoUrl('/dialplan/create'));
 
     _dpView.onDelete = (_) async {
       await _refreshList();
@@ -106,26 +97,20 @@ class Dialplan {
   /**
    *
    */
-  void _renderReceptionList(Iterable<model.Reception> receptions) {
+  void _renderReceptionList(Iterable<model.ReceptionReference> rRefs) {
     _receptionsList.children
       ..clear()
-      ..addAll(receptions.map(_makeReceptionNode));
+      ..addAll(rRefs.map(_makeReceptionNode));
   }
 
   /**
    *
    */
-  LIElement _makeReceptionNode(model.Reception reception) {
+  LIElement _makeReceptionNode(model.ReceptionReference rRef) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
-      ..text = '${reception.name}'
-      ..onClick.listen((_) {
-        Map data = {
-          'organization_id': reception.organizationId,
-          'reception_id': reception.id
-        };
-        bus.fire(new WindowChanged('reception', data));
-      });
+      ..text = '${rRef.name}'
+      ..onClick.listen((_) => _router.gotoUrl('/reception/edit/${rRef.id}'));
     return li;
   }
 
@@ -157,7 +142,8 @@ class Dialplan {
       ..text = rdp.extension
       ..classes.add('clickable')
       ..dataset['extension'] = '${rdp.extension}'
-      ..onClick.listen((_) => _activateDialplan(rdp.extension));
+      ..onClick
+          .listen((_) => _router.gotoUrl('/dialplan/edit/${rdp.extension}'));
   }
 
   /**
@@ -170,7 +156,7 @@ class Dialplan {
     _dpView.create = false;
     _highlightDialplanInList(extension);
     _renderReceptionList(
-        [await _dialplanController.getByExtensions(extension)]);
+        [(await _dialplanController.getByExtensions(extension)).reference]);
   }
 
   /**
@@ -184,9 +170,54 @@ class Dialplan {
   /**
    *
    */
-  void _createDialplan() {
+  Future _createDialplan(RouteEvent e) async {
     _dpView.dialplan = new model.ReceptionDialplan();
     _dpView.create = true;
+    _renderReceptionList([]);
     _highlightDialplanInList('');
+  }
+
+  /**
+   *
+   */
+  Future activate(RouteEvent e) async {
+    element.hidden = false;
+    await _refreshList();
+  }
+
+  /**
+   *
+   */
+  void deactivate(RouteEvent e) {
+    element.hidden = true;
+  }
+
+  Future _activateEdit(RouteEvent e) async {
+    final extension = e.parameters['extension'];
+
+    await _activateDialplan(extension);
+  }
+
+  /**
+   *
+   */
+  void _setupRouter() {
+    print('setting up dialplan router');
+    _router.root
+      ..addRoute(
+          name: 'dialplan',
+          enter: activate,
+          path: '/dialplan',
+          leave: deactivate,
+          mount: (router) => router
+            ..addRoute(name: 'create', path: '/create', enter: _createDialplan)
+            ..addRoute(
+                name: 'edit',
+                path: '/edit',
+                mount: (router) => router
+                  ..addRoute(
+                      name: 'extension',
+                      path: '/:extension',
+                      enter: _activateEdit)));
   }
 }

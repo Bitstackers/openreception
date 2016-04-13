@@ -3,9 +3,9 @@ library management_tool.page.cdr;
 import 'dart:async';
 import 'dart:html';
 
+import 'package:route_hierarchical/client.dart';
+
 import 'package:management_tool/controller.dart' as controller;
-import 'package:management_tool/eventbus.dart';
-import 'package:management_tool/page.dart';
 
 import 'package:openreception_framework/model.dart' as model;
 
@@ -42,6 +42,8 @@ class Context {
 class Cdr {
   final controller.Cdr _cdrCtrl;
   final controller.Contact _contactCtrl;
+  final Router _router;
+
   SelectElement directionSelect = new SelectElement()
     ..disabled = true
     ..style.height = '28px'
@@ -62,6 +64,7 @@ class Cdr {
     ..id = 'cdr-page'
     ..hidden = true
     ..classes.addAll(['page']);
+
   ButtonElement fetchButton;
   final DivElement filter = new DivElement()..style.marginLeft = '0.5em';
   InputElement fromInput;
@@ -95,14 +98,15 @@ class Cdr {
   final SelectElement userSelect = new SelectElement()
     ..style.height = '28px'
     ..disabled = true;
-  static const String _viewName = 'cdr';
 
   Cdr(
       controller.Cdr this._cdrCtrl,
       controller.Contact this._contactCtrl,
       controller.Organization this._orgCtrl,
       controller.Reception this._rcpCtrl,
-      controller.User this._userCtrl) {
+      controller.User this._userCtrl,
+      this._router) {
+    _setupRouter();
     final DateTime now = new DateTime.now();
     final DateTime from = new DateTime(now.year, now.month, now.day);
     final DateTime to =
@@ -620,57 +624,10 @@ class Cdr {
         map['longCallBoundaryInSeconds']);
   }
 
+  /**
+   *
+   */
   void _observers() {
-    bus.on(WindowChanged).listen((WindowChanged event) async {
-      if (event.window == _viewName) {
-        element.hidden = false;
-        element.style.display = 'flex';
-        element.style.flexDirection = 'column';
-
-        _rcpCtrl.list().then((Iterable<model.ReceptionReference> receptions) {
-          final List<model.ReceptionReference> list = receptions.toList();
-          list.sort((model.ReceptionReference a, b) =>
-              a.name.toLowerCase().compareTo(b.name.toLowerCase()));
-          final List<OptionElement> options = new List<OptionElement>();
-          receptionSelect.children.add(new OptionElement()
-            ..text = 'filtrer efter receptioner...'
-            ..disabled = true
-            ..selected = true);
-          for (model.Reception reception in list) {
-            options.add(new OptionElement()
-              ..text = reception.name
-              ..value = reception.id.toString());
-          }
-          receptionSelect.children.addAll(options);
-        });
-
-        _userCtrl.list().then((Iterable<model.UserReference> users) {
-          final List<model.UserReference> list =
-              users.where((model.UserReference user) => user.id > 0).toList();
-          list.sort((model.UserReference a, b) =>
-              a.name.toLowerCase().compareTo(b.name.toLowerCase()));
-          final List<OptionElement> options = new List<OptionElement>();
-          userSelect.children.add(new OptionElement()
-            ..text = 'filtrer efter agent...'
-            ..disabled = true
-            ..selected = true);
-          userSelect.children.add(new OptionElement()
-            ..text = 'pbx'
-            ..value = '0');
-          for (model.User user in list) {
-            options.add(new OptionElement()
-              ..text = user.name
-              ..value = user.id.toString());
-          }
-          userSelect.children.addAll(options);
-        });
-      } else {
-        element.hidden = true;
-        element.style.display = '';
-        element.style.flexDirection = '';
-      }
-    });
-
     kindSelect.onChange.listen((Event event) {
       final SelectElement se = (event.target as SelectElement);
       if (se.value == 'summary') {
@@ -793,5 +750,70 @@ class Cdr {
           ' / Udgående PBX: $totalOutboundPbx'
           ' / Teleomkostning: ${totalOutboundCost / 100}';
     totals..children = [inboundData, outboundData, metadata];
+  }
+
+  /**
+   *
+   */
+  Future activate(RouteEvent e) async {
+    element.hidden = false;
+    element.style.display = 'flex';
+    element.style.flexDirection = 'column';
+
+    _rcpCtrl.list().then((Iterable<model.ReceptionReference> receptions) {
+      final List<model.ReceptionReference> list = receptions.toList();
+      list.sort((model.ReceptionReference a, b) =>
+          a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      final List<OptionElement> options = new List<OptionElement>();
+      receptionSelect.children.add(new OptionElement()
+        ..text = 'filtrer efter receptioner...'
+        ..disabled = true
+        ..selected = true);
+      for (model.Reception reception in list) {
+        options.add(new OptionElement()
+          ..text = reception.name
+          ..value = reception.id.toString());
+      }
+      receptionSelect.children.addAll(options);
+    });
+
+    _userCtrl.list().then((Iterable<model.UserReference> users) {
+      final List<model.UserReference> list =
+          users.where((model.UserReference user) => user.id > 0).toList();
+      list.sort((model.UserReference a, b) =>
+          a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      final List<OptionElement> options = new List<OptionElement>();
+      userSelect.children.add(new OptionElement()
+        ..text = 'filtrer efter agent...'
+        ..disabled = true
+        ..selected = true);
+      userSelect.children.add(new OptionElement()
+        ..text = 'pbx'
+        ..value = '0');
+      for (model.User user in list) {
+        options.add(new OptionElement()
+          ..text = user.name
+          ..value = user.id.toString());
+      }
+      userSelect.children.addAll(options);
+    });
+  }
+
+  /**
+   *
+   */
+  void deactivate(RouteEvent e) {
+    element.hidden = true;
+    element.style.display = '';
+    element.style.flexDirection = '';
+  }
+
+  /**
+   *
+   */
+  void _setupRouter() {
+    print('setting up cdr router');
+    _router.root
+      ..addRoute(name: 'cdr', enter: activate, path: '/cdr', leave: deactivate);
   }
 }
