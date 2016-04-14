@@ -8,7 +8,6 @@ dependencies:
   route_hierarchical: any
   browser: '>=0.10.0 <0.11.0'
   dart_to_js_script_rewriter: ^0.1.0
-  event_bus: any
   intl: any
   logging: any
   okeyee: any
