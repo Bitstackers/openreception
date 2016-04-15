@@ -2,8 +2,6 @@ library menu;
 
 import 'dart:html';
 
-import 'package:management_tool/eventbus.dart';
-
 /**
  * Widget to control the menu on the left side of the screen.
  * It lets the user switch between windows.
@@ -29,19 +27,6 @@ class Menu {
       'cdr': element.querySelector('#cdr-button') as ButtonElement,
       'music': element.querySelector('#music-button') as ButtonElement,
     };
-
-    //Register onClicker handler on the image, and emit an event about window change.
-    // for the other windows to know when to hide/show.
-    menus.forEach((String windowName, ButtonElement button) {
-      button.onClick.listen((_) {
-        bus.fire(new WindowChanged(windowName));
-      });
-    });
-
-    //When there comes an windowChange event, highlight the right button.
-    bus.on(WindowChanged).listen((WindowChanged event) {
-      _highlightItem(event.window);
-    });
   }
 
   //Highlights the right button.
