@@ -135,8 +135,10 @@ class ContactView {
         ..children = [_calendarToggle]
     ];
 
-    _calendarView = new view.Calendar(_calendarController, false);
-    _deletedCalendarView = new view.Calendar(_calendarController, true);
+    _calendarView = new view.Calendar(
+        _calendarController, new model.OwningContact(model.BaseContact.noId));
+    _deletedCalendarView = new view.Calendar(
+        _calendarController, new model.OwningContact(model.BaseContact.noId));
 
     element.querySelector('#contact-create').replaceWith(_createButton);
 

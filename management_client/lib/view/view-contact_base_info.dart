@@ -115,8 +115,9 @@ class Contact {
    */
   Contact(this._contactController, this._calendarController,
       this._receptionController) {
-    _calendarView = new Calendar(_calendarController, false);
-    _deletedCalendarView = new Calendar(_calendarController, true);
+    _calendarView =
+        new Calendar(_calendarController, new model.OwningContact(contact.id));
+    //TODO add deletions.
 
     element.children = [
       _deleteButton,

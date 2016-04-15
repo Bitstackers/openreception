@@ -3,7 +3,7 @@ part of management_tool.view;
 class Calendar {
   final Logger _log = new Logger('$_libraryName.Calendar');
 
-  final bool _containsDeleted;
+  final model.Owner _owner;
   final controller.Calendar _calendarController;
   final DivElement element = new DivElement()..classes.add('full-width');
 
@@ -11,7 +11,7 @@ class Calendar {
 
   final TableElement _table = new TableElement()..style.width = '100%';
 
-  Calendar(controller.Calendar this._calendarController, this._containsDeleted);
+  Calendar(controller.Calendar this._calendarController, this._owner);
 
   void set entries(Iterable<model.CalendarEntry> es) {
     _table.children.clear();
@@ -56,13 +56,12 @@ class Calendar {
   TableRowElement _entryToRow(model.CalendarEntry entry) {
     final changeCell = new TableCellElement();
     final ButtonElement deleteButton = new ButtonElement()
-      ..text = _containsDeleted ? 'Ryd' : 'Slet'
+      ..text = 'Slet'
       ..classes.add('delete');
     final deleteCell = new TableCellElement()..children = [deleteButton];
 
     deleteButton.onClick.listen((_) async {
-      final confirmText = 'Bekræft ${_containsDeleted ? 'fuldstændig' :''}'
-          ' sletning af eid${entry.id}?';
+      final confirmText = 'Bekræft sletning af eid${entry.id}?';
 
       if (deleteButton.text == confirmText) {
         await _calendarController.remove(entry);
@@ -75,37 +74,13 @@ class Calendar {
     });
 
     _calendarController
-        .changes(entry.id)
+        .changes(_owner, entry.id)
         .then((Iterable<model.Commit> changes) {
       UListElement changeUl = new UListElement();
       List changeList = changes.toList();
       LIElement creation;
 
-      try {
-        creation = _changeToLI(changeList.removeLast(), 'Oprettet');
-      } catch (e) {
-        creation = new LIElement()
-          ..classes.add('error')
-          ..text = 'Oprettelse ikke fundet';
-      }
-
-      if (_containsDeleted) {
-        LIElement deletion;
-
-        try {
-          deletion = _changeToLI(changeList.removeAt(0), 'Slettet');
-        } catch (e) {
-          creation = new LIElement()
-            ..classes.add('error')
-            ..text = 'Sletning ikke fundet';
-        }
-
-        changeUl.children.add(deletion);
-      }
-
-      changeUl.children
-        ..addAll(changeList.map((change) => _changeToLI(change, 'Ændret')));
-      changeUl.children.add(creation);
+      changeUl.children.addAll(changeList.map(_changeToLI));
 
       changeCell.children = [changeUl];
     });
@@ -120,11 +95,11 @@ class Calendar {
       ];
   }
 
-  LIElement _changeToLI(model.Commit change, String prefix) {
+  LIElement _changeToLI(model.Commit change) {
     LIElement li = new LIElement()
       ..children = [
         new SpanElement()
-          ..text = '$prefix '
+          ..text = '${change.changes.join('\n')}'
           ..style.fontWeight = 'bold',
         new SpanElement()
           ..text =

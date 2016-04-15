@@ -6,8 +6,8 @@ class Calendar {
 
   Calendar(this._calendarService, this._appUser);
 
-  Future<Iterable<model.Commit>> changes(model.Owner owner, [int oid]) =>
-      _calendarService.changes(owner, oid);
+  Future<Iterable<model.Commit>> changes(model.Owner owner, [int eid]) =>
+      _calendarService.changes(owner, eid);
 
   Future get(model.CalendarEntry entry) =>
       _calendarService.remove(entry.id, _appUser);

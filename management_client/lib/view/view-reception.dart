@@ -268,8 +268,10 @@ class Reception {
   Reception(this._recController, this._orgController, this._dpController,
       this._calendarController) {
     _phoneNumberView = new Phonenumbers();
-    _calendarView = new Calendar(_calendarController, false);
-    _deletedCalendarView = new Calendar(_calendarController, true);
+    _calendarView = new Calendar(
+        _calendarController, new model.OwningReception(reception.id));
+    _deletedCalendarView = new Calendar(
+        _calendarController, new model.OwningReception(reception.id));
 
     _calendarsContainer
       ..children = [
