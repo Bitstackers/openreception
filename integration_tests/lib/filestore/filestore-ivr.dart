@@ -12,7 +12,7 @@ void _runIvrTests() {
     });
 
     tearDown(() async {
-      env.clear();
+      await env.clear();
     });
 
     test('create', () => storeTest.Ivr.create(env.ivrStore, sa.user));

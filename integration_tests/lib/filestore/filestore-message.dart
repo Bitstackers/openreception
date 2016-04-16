@@ -13,7 +13,7 @@ _runMessageTests() {
     });
 
     tearDown(() async {
-      env.clear();
+      await env.clear();
     });
 
     test('get (not found)', () => storeTest.Message.getNotFound(sa));

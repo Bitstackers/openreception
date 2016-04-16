@@ -12,8 +12,8 @@ _runDialplanTests() {
       sa = await env.createsServiceAgent();
     });
 
-    tearDown(() {
-      env.clear();
+    tearDown(() async {
+      await env.clear();
     });
 
     test(
@@ -49,8 +49,8 @@ _runDialplanTests() {
           .bindDialplanClient(env.httpClient, sa.authToken);
     });
 
-    tearDown(() {
-      env.clear();
+    tearDown(() async {
+      await env.clear();
     });
 
     test('create', () => storeTest.ReceptionDialplan.create(rdpStore, sa.user));
@@ -85,8 +85,8 @@ _runDialplanTests() {
           .bindClient(env.httpClient, sa.authToken);
     });
 
-    tearDown(() {
-      env.clear();
+    tearDown(() async {
+      await env.clear();
     });
 
     test('deploy',

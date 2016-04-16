@@ -18,7 +18,7 @@ void _runContactTests() {
     });
 
     tearDown(() async {
-      env.clear();
+      await env.clear();
     });
 
     test('CORS headers present (existingUri)',

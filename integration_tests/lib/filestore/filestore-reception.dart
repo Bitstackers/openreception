@@ -12,7 +12,7 @@ void _runReceptionTests() {
     });
 
     tearDown(() async {
-      env.clear();
+      await env.clear();
     });
 
     test('create', () => storeTest.Reception.create(sa));

@@ -12,7 +12,7 @@ void _runDialplanTests() {
     });
 
     tearDown(() async {
-      env.clear();
+      await env.clear();
     });
 
     test('create',

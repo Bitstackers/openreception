@@ -15,7 +15,7 @@ _runUserTests() {
     });
 
     tearDown(() async {
-      env.clear();
+      await env.clear();
     });
 
     test('get', () => storeTest.User.existing(sa));

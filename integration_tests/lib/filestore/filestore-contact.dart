@@ -15,7 +15,7 @@ void _runContactTests() {
     });
 
     tearDown(() async {
-      env.clear();
+      await env.clear();
     });
 
     test('getByReception', () => storeTest.Contact.getByReception(sa));

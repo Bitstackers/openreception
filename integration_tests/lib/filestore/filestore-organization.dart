@@ -12,7 +12,7 @@ void _runOrganizationTests() {
     });
 
     tearDown(() async {
-      env.clear();
+      await env.clear();
     });
 
     test('create', () => storeTest.Organization.create(sa));

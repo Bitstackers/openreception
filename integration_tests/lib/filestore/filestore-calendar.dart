@@ -14,7 +14,7 @@ void _runCalendarTests() {
     });
 
     tearDown(() async {
-      env.clear();
+      await env.clear();
     });
 
     test(

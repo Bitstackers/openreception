@@ -13,7 +13,7 @@ _runMessageQueueTests() {
     });
 
     tearDown(() async {
-      env.clear();
+      await env.clear();
     });
 
     test('list', () => storeTest.MessageQueue.list(sa));
