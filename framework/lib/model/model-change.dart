@@ -14,7 +14,8 @@
 part of openreception.model;
 
 /**
- *
+ * Diffent object types available for storage, Matches model classes that
+ * needs persistent storage.
  */
 enum ObjectType {
   user,
@@ -28,6 +29,7 @@ enum ObjectType {
   message
 }
 
+/// Map with serialization keys and values
 const Map<ObjectType, String> _objectTypeToString = const {
   ObjectType.user: Key.user,
   ObjectType.calendar: Key.calendar,
@@ -40,6 +42,7 @@ const Map<ObjectType, String> _objectTypeToString = const {
   ObjectType.ivrMenu: Key.ivrMenu
 };
 
+/// Map with deserialization keys and values
 const Map<String, ObjectType> _objectTypeFromString = const {
   Key.user: ObjectType.user,
   Key.calendar: ObjectType.calendar,
@@ -52,10 +55,16 @@ const Map<String, ObjectType> _objectTypeFromString = const {
   Key.ivrMenu: ObjectType.ivrMenu
 };
 
+/**
+ * Convert an [ObjectType] to a [String]. Suitable for serialization.
+ */
 String objectTypeToString(ObjectType ct) => _objectTypeToString.containsKey(ct)
     ? _objectTypeToString[ct]
     : throw new ArgumentError('Unknown ObjectType $ct');
 
+/**
+ * Convert a [String] to an [ObjectType]. Suitable for deserialization.
+ */
 ObjectType objectTypeFromString(String str) =>
     _objectTypeFromString.containsKey(str)
         ? _objectTypeFromString[str]
