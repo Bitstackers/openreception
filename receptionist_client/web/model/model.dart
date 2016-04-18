@@ -76,6 +76,8 @@ final Controller.HotKeys _hotKeys = new Controller.HotKeys();
 abstract class UIModel {
   final Okeyee.Keyboard _keyboard = new Okeyee.Keyboard();
 
+  ElementList<Element> get _ctrlAElements =>
+      _root.querySelectorAll('[ctrl-a-enabled]');
   HtmlElement get _firstTabElement;
   HtmlElement get _focusElement;
   HtmlElement get _lastTabElement;
@@ -84,6 +86,16 @@ abstract class UIModel {
     ..style.position = 'absolute'
     ..style.left = '-5000'
     ..style.zIndex = '-100';
+
+  UIModel() {
+    _ctrlAElements.onFocus.listen((Event event) {
+      _hotKeys.activateCtrlA();
+    });
+
+    _ctrlAElements.onBlur.listen((_) {
+      _hotKeys.deactivateCtrlA();
+    });
+  }
 
   /**
    * Blur the widget and set tabindex to -1.

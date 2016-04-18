@@ -94,6 +94,7 @@ class HotKeys {
    * Internal constructor.
    */
   HotKeys._internal() {
+    deactivateCtrlA();
     Html.window.document.onKeyDown.listen(_keyDown.press);
 
     final Map<dynamic, Html.EventListener> preventDefaultBindings = {
@@ -116,7 +117,6 @@ class HotKeys {
       'Alt+w': (event) => _altW.fire(event),
       'Alt+x': (event) => _altX.fire(event),
       'Ctrl+Alt+Enter': (event) => _ctrlAltEnter.fire(event),
-      'Ctrl+a': _null, // Blackhole this
       'Ctrl+d': _null, // Blackhole this
       'Ctrl+e': (event) => _ctrlE.fire(event),
       'Ctrl+Esc': (event) => _ctrlEsc.fire(event),
@@ -140,6 +140,20 @@ class HotKeys {
     };
 
     registerKeysPreventDefault(_keyDown, preventDefaultBindings);
+  }
+
+  /**
+   * Activates Ctrl+a functionality.
+   */
+  void activateCtrlA() {
+    _keyDown.unregister('Ctrl+a');
+  }
+
+  /**
+   * Deactivates Crtl+a functionality.
+   */
+  deactivateCtrlA() {
+    _keyDown.register('Ctrl+a', (Html.Event event) => event.preventDefault());
   }
 
   /**
