@@ -390,7 +390,12 @@ class ServiceAgent {
   }
 
   /**
-   *
+   * Creates a new dialplan with opening hours right now  (based on
+   * current time and until one hour in the future). If [mustBeValid] flag
+   * is set, then a FreeSWITCH process is spawned in order to aquire the
+   * current sound directory path. If all that is needed is a mock dialplan
+   * object, then set [mustBeValid] to false. If the dialplan needs to be
+   * dialable, then set [mustBeValid] to true.
    */
   Future<model.ReceptionDialplan> createsDialplan({mustBeValid: true}) async {
     final DateTime now = new DateTime.now();
