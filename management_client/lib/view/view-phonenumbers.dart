@@ -31,7 +31,8 @@ class Phonenumbers {
     ..style.padding = '0px 0px 4px 0px';
 
   final TextAreaElement _phonenumberInput = new TextAreaElement()
-    ..classes.add('wide');
+    ..classes.add('wide')
+    ..text = '[]';
 
   final ButtonElement _unfoldJson = new ButtonElement()
     ..text = 'Fold ud'
