@@ -11,7 +11,6 @@ class Contact {
   final controller.Reception _receptionController;
 
   Calendar _calendarView;
-  Calendar _deletedCalendarView;
 
   final TextInputElement _nameInput = new TextInputElement()
     ..id = 'contact-input-name'
@@ -158,7 +157,6 @@ class Contact {
         new HeadingElement.h4()..text = 'Kalender',
         _calendarView.element,
         new HeadingElement.h4()..text = 'Slettede KalenderPoster',
-        _deletedCalendarView.element
       ];
 
     _calendarToggle.onClick.listen((_) {
@@ -230,23 +228,7 @@ class Contact {
 
       _calendarController
           .listContact(contact.id)
-          .then((Iterable<model.CalendarEntry> entries) {
-        _deletedCalendarView.entries = entries;
-      });
-    };
-
-    _deletedCalendarView.onDelete = () async {
-      _calendarController
-          .listContact(contact.id)
-          .then((Iterable<model.CalendarEntry> entries) {
-        _calendarView.entries = entries;
-      });
-
-      _calendarController
-          .listContact(contact.id)
-          .then((Iterable<model.CalendarEntry> entries) {
-        _deletedCalendarView.entries = entries;
-      });
+          .then((Iterable<model.CalendarEntry> entries) {});
     };
 
     _saveButton.onClick.listen((_) async {
