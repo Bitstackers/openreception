@@ -84,9 +84,7 @@ class CalendarEditor extends ViewWidget {
    *
    * Clear the form and navigate one step back in history.
    */
-  void _delete() {
-    final ORModel.CalendarEntry loadedEntry = _ui.loadedEntry;
-
+  void _delete(ORModel.CalendarEntry loadedEntry) {
     _calendarController.deleteCalendarEvent(_ui.loadedEntry).then((_) {
       _log.info('${loadedEntry} successfully deleted from database');
       _popup.success(
@@ -108,8 +106,8 @@ class CalendarEditor extends ViewWidget {
     _hotKeys.onCtrlK.listen((_) => _activateMe(Controller.Cmd.create));
 
     _ui.onCancel.listen((MouseEvent _) => _close());
-    _ui.onDelete.listen((MouseEvent _) => _delete());
-    _ui.onSave.listen((MouseEvent _) => _save());
+    _ui.onDelete.listen((MouseEvent _) async => await _delete(_ui.loadedEntry));
+    _ui.onSave.listen((MouseEvent _) async => await _save(_ui.harvestedEntry));
   }
 
   /**
@@ -117,9 +115,7 @@ class CalendarEditor extends ViewWidget {
    *
    * Clear the form when done, and then navigate one step back in history.
    */
-  void _save() {
-    final ORModel.CalendarEntry entry = _ui.harvestedEntry;
-
+  void _save(ORModel.CalendarEntry entry) {
     _calendarController
         .saveCalendarEvent(entry)
         .then((ORModel.CalendarEntry savedEntry) {

@@ -135,12 +135,13 @@ class MessageCompose extends ViewWidget {
           !_pickedUpCalls.any((ORModel.Call c) => c.ID == newCall.ID)) {
         _pickedUpCalls.add(newCall);
 
-        /// This is somewhat nasty. We're assuming that this fires _before_ the _contactSelector
-        /// fires a newly selected contact.
+        /// This is somewhat nasty. We're assuming that this fires _before_ the
+        /// _contactSelector fires a newly selected contact.
         _ui.reset(pristine: true);
 
         if (_ui.isFocused) {
-          /// Will focus whichever element that has been registered by the _ui.reset() call.
+          /// Will focus whichever element that has been registered by the
+          /// _ui.reset() call.
           _ui.focusOnCurrentFocusElement();
         }
       }
@@ -152,8 +153,8 @@ class MessageCompose extends ViewWidget {
     _uiMessageArchive.onMessageCopy.listen((ORModel.Message msg) {
       /**
        * Hack alert!
-       * For some odd reason we're forced to wrap the _activateMe() call in a Future, else the
-       * HTML textarea will not focus. I've no idea why.
+       * For some odd reason we're forced to wrap the _activateMe() call in a
+       * Future, else the HTML textarea will not focus. I've no idea why.
        */
       new Future(() {
         _activateMe();
