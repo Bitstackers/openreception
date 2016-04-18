@@ -41,18 +41,15 @@ class AppClientState {
   ORModel.Call get activeCall => _activeCall;
 
   /**
-   * Set the currently active call. A hangup is when [newCall] is [ORModel.Call.noCall].
+   * Set the currently active call. A hangup is when [newCall] is
+   * [ORModel.Call.noCall].
    */
   set activeCall(ORModel.Call newCall) {
-    ORModel.Call previousCall = _activeCall;
-
     _activeCall = newCall;
 
-    if (_activeCall.ID != previousCall.ID) {
-      _activeCallChangeBus.fire(_activeCall);
-      _log.finest(
-          'Changing active call to ${_activeCall == ORModel.Call.noCall ? 'noCall' : _activeCall}');
-    }
+    _activeCallChangeBus.fire(_activeCall);
+    _log.finest(
+        'Setting active call to ${_activeCall == ORModel.Call.noCall ? 'noCall' : _activeCall}');
   }
 
   /**
