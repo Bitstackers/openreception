@@ -110,11 +110,11 @@ Future main(args) async {
   print('Stack startup time: ${timer.elapsedMilliseconds}ms');
 
   ProcessSignal.SIGINT.watch().listen((_) async {
-    final teardown = new Stopwatch()..start();
+    final teardownTimer = new Stopwatch()..start();
     await env.clear();
     await env.finalize();
-    teardown.stop();
-    print('Stack shutdown time: ${teardown.elapsedMilliseconds}ms');
+    teardownTimer.stop();
+    print('Stack shutdown time: ${teardownTimer.elapsedMilliseconds}ms');
     exit(0);
   });
 }
