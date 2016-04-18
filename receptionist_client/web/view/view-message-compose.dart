@@ -147,8 +147,8 @@ class MessageCompose extends ViewWidget {
       }
     });
 
-    _ui.onSave.listen((MouseEvent _) => _save());
-    _ui.onSend.listen((MouseEvent _) => _send());
+    _ui.onSave.listen((MouseEvent _) async => await _save(_message));
+    _ui.onSend.listen((MouseEvent _) async => await _send(_message));
 
     _uiMessageArchive.onMessageCopy.listen((ORModel.Message msg) {
       /**
@@ -208,9 +208,7 @@ class MessageCompose extends ViewWidget {
   /**
    * Save message in the message archive.
    */
-  dynamic _save() async {
-    final ORModel.Message message = _message;
-
+  Future _save(ORModel.Message message) async {
     try {
       ORModel.Message savedMessage = await _messageController.save(message);
 
@@ -229,9 +227,7 @@ class MessageCompose extends ViewWidget {
   /**
    * Send message. This entails first saving and then enqueueing the message.
    */
-  dynamic _send() async {
-    final ORModel.Message message = _message;
-
+  Future _send(ORModel.Message message) async {
     try {
       ORModel.Message savedMessage = await _messageController.save(message);
       ORModel.MessageQueueItem response =
