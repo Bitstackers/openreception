@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:openreception_tests/support.dart';
 import 'package:openreception_framework/keys.dart' as key;
 
-import 'package:args/args.dart';
+//import 'package:args/args.dart';
 
 import 'package:logging/logging.dart';
 
@@ -31,13 +31,12 @@ Future main(args) async {
   Stopwatch timer = new Stopwatch()..start();
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen(logEntryDispatch);
-  Logger log = new Logger('generated_test_filestore');
 
-  final ArgParser parser = new ArgParser()
-    ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
-    ..addOption('filestore', abbr: 'f', help: 'Path to the filestore')
-    ..addFlag('reuse-store', negatable: false);
-  final ArgResults parsedArgs = parser.parse(args);
+  // final ArgParser parser = new ArgParser()
+  //   ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
+  //   ..addOption('filestore', abbr: 'f', help: 'Path to the filestore')
+  //   ..addFlag('reuse-store', negatable: false);
+  // final ArgResults parsedArgs = parser.parse(args);
 
   // final Directory fsDir = new Directory(parsedArgs['filestore']);
   // if (fsDir.existsSync() && !parsedArgs['reuse-store']) {
@@ -74,7 +73,7 @@ Future main(args) async {
 
   final authserver = await env.requestAuthserverProcess();
   final notificationserver = await env.requestNotificationserverProcess();
-  final freeswitch = await env.requestFreeswitchProcess();
+  await env.requestFreeswitchProcess();
   final callflow = await env.requestCallFlowProcess();
   final dialplanserver = await env.requestDialplanProcess();
   final calendarserver = await env.requestCalendarserverProcess();
