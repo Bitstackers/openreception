@@ -8,8 +8,9 @@ import 'package:logging/logging.dart';
 
 import 'package:openreception_framework/bus.dart';
 import 'package:openreception_framework/event.dart' as event;
-import 'package:openreception_framework/service.dart' as service;
 import 'package:openreception_framework/model.dart' as model;
+import 'package:openreception_framework/service.dart' as service;
+import 'package:openreception_framework/storage.dart' as storage;
 
 part 'controller/controller-calendar.dart';
 part 'controller/controller-cdr.dart';
@@ -29,3 +30,13 @@ final Popup popup = new Popup(
     new Uri.file('/image/popup_error.png'),
     new Uri.file('/image/popup_info.png'),
     new Uri.file('/image/popup_success.png'));
+
+Function onForbidden = () => null;
+
+void _handleError(e) {
+  if (e is storage.Forbidden) {
+    onForbidden();
+  } else {
+    throw e;
+  }
+}

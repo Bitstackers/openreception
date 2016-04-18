@@ -1,20 +1,22 @@
 library management_tool.configuration;
 
+import 'dart:html';
 import 'package:openreception_framework/model.dart' as model;
 
 Configuration config = new Configuration._internal();
 
 class Configuration {
-  String _token = '';
-  final Uri configUri = Uri.parse('http://10.10.1.118:9009');
+  final Uri configUri = Uri.parse('http://192.168.1.132:9009');
   model.ClientConfiguration clientConfig =
       new model.ClientConfiguration.empty();
+  Storage _localStorage = window.localStorage;
 
   model.User user = new model.User.empty();
 
-  String get token => _token;
+  String get token =>
+      _localStorage.containsKey('authtoken') ? _localStorage['authtoken'] : '';
   void set token(String value) {
-    _token = value;
+    _localStorage['authtoken'] = value;
   }
 
   Configuration._internal();

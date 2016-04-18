@@ -7,7 +7,8 @@ class Message {
   Message(this._messageStore, this._appUser);
 
   Future<Iterable<model.Message>> list(model.MessageFilter filter) =>
-      _messageStore.list(filter: filter);
+      _messageStore.list(filter: filter).catchError(_handleError);
 
-  Future remove(int messageId) => _messageStore.remove(messageId, _appUser);
+  Future remove(int messageId) =>
+      _messageStore.remove(messageId, _appUser).catchError(_handleError);
 }
