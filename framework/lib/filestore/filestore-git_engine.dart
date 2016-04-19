@@ -156,9 +156,8 @@ class GitEngine {
     try {
       await _add(file);
       await _commit(commitMsg, author);
+    } finally {
       _unlock();
-    } catch (e, s) {
-      _unlockError(e, s);
     }
   }
 
@@ -174,9 +173,8 @@ class GitEngine {
     _lock();
     try {
       await _commit(commitMsg, author);
+    } finally {
       _unlock();
-    } catch (e, s) {
-      _unlockError(e, s);
     }
   }
 
@@ -222,9 +220,8 @@ class GitEngine {
     try {
       await _remove(fse);
       await _commit(commitMsg, author);
+    } finally {
       _unlock();
-    } catch (e, s) {
-      _unlockError(e, s);
     }
   }
 
@@ -391,18 +388,8 @@ class GitEngine {
     if (ready) {
       _log.shout('Unlocking not previously locked process');
     } else {
-      _busy.complete();
-    }
-  }
 
-  /**
-   *
-   */
-  void _unlockError(error, stackTrace) {
-    if (ready) {
-      _log.shout('Unlocking not previously locked process');
-    } else {
-      _busy.completeError(error, stackTrace);
+      _busy.complete();
     }
   }
 }
