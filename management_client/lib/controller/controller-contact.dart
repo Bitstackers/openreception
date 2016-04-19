@@ -44,17 +44,17 @@ class Contact {
           model.ReceptionAttributes attr) =>
       _service.updateData(attr, _appUser).catchError(_handleError);
 
-  Future<Iterable<model.ContactReference>> colleagues(int cid) {
+  Future<Map<model.ReceptionReference, Iterable<model.ContactReference>>>
+      colleagues(int cid) async {
+    Map map = {};
     List<model.ContactReference> foundColleagues = [];
+    final Iterable<model.ReceptionReference> receptions =
+        await _service.receptions(cid);
 
-    return _service
-        .receptions(cid)
-        .then((Iterable<model.ReceptionReference> rRefs) => Future.forEach(
-            rRefs,
-            (rRef) => _service
-                .receptionContacts(rRef.id)
-                .then(foundColleagues.addAll)))
-        .then((_) => foundColleagues)
-        .catchError(_handleError);
+    await Future.wait(receptions.map((rRef) async {
+      map[rRef] = await _service.receptionContacts(rRef.id);
+    }));
+
+    return map;
   }
 }
