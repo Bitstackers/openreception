@@ -1,0 +1,37 @@
+# Don't track .packages and .pub-cache/
+**/packages
+packages/**
+.packages
+.pub-cache/**
+.pub/**
+
+# Don't track pubspec.lock
+pubspec.lock
+
+# Don't track local config file.
+web/configuration_url.dart
+
+# Don't track .settings and .buildlog
+.settings
+.buildlog
+build/
+
+# Don't track out/
+out/
+
+# Don't track docs, generate them.
+web/classes/docs
+
+# Don't track deploy and build files
+deploy
+lib/dart-sdk
+lib/dist
+
+# Do not track emacs temporary and backup files
+\#*#
+*~
+
+# Do not track Nano temporary files
+.#*#
+.DS_Store
+.idea
