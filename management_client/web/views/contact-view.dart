@@ -426,97 +426,68 @@ class ContactView {
    *
    */
   Future _activateContact(int id, [int receptionId]) async {
-    await _contactController.get(id).then((model.BaseContact contact) async {
-      _joinReceptionbutton.disabled = false;
-      createNew = false;
+    final model.BaseContact contact = await _contactController.get(id);
+    _joinReceptionbutton.disabled = false;
+    createNew = false;
 
-      _nameInput.value = contact.name;
-      _typeInput.options.forEach((OptionElement option) =>
-          option.selected = option.value == contact.contactType);
-      _enabledInput.checked = contact.enabled;
-      _header.text = 'Basisinfo for ${contact.name} (cid: ${contact.id})';
+    _nameInput.value = contact.name;
+    _typeInput.options.forEach((OptionElement option) =>
+        option.selected = option.value == contact.contactType);
+    _enabledInput.checked = contact.enabled;
+    _header.text = 'Basisinfo for ${contact.name} (cid: ${contact.id})';
 
-      _highlightContactInList(id);
+    _highlightContactInList(id);
 
-      await _calendarController
-          .listContact(contact.id)
-          .then((Iterable<model.CalendarEntry> entries) {
-        _calendarView.entries = entries;
-      });
+    _calendarView.entries = await _calendarController.listContact(contact.id);
 
-      ///TODO: change to show history
-      await _calendarController
-          .listContact(contact.id)
-          .then((Iterable<model.CalendarEntry> entries) {
-        _deletedCalendarView.entries = entries;
-      });
+    //TODO: change to show history
+    // await _calendarController
+    //     .listContact(contact.id)
+    //     .then((Iterable<model.CalendarEntry> entries) {
+    //   _deletedCalendarView.entries = entries;
+    // });
 
-      return _contactController
-          .receptions(id)
-          .then((Iterable<model.ReceptionReference> rRefs) {
-        _ulReceptionContacts.children = [];
-        Future.forEach(rRefs, (int receptionID) {
-          _contactController
-              .getByReception(id, receptionID)
-              .then((model.ReceptionAttributes attr) {
-            view.ReceptionContact rcView = new view.ReceptionContact(
-                _receptionController, _contactController, rRefs.length == 1)
-              ..attributes = attr;
+    final Iterable<model.ReceptionReference> rRefs =
+        await _contactController.receptions(id);
 
-            _ulReceptionContacts.children.add(rcView.element);
-          });
-        });
+    _ulReceptionContacts.children = [];
+    await Future.forEach(rRefs, (model.ReceptionReference rRef) async {
+      view.ReceptionContact rcView = new view.ReceptionContact(
+          _receptionController, _contactController, rRefs.length == 1)
+        ..attributes = await _contactController.getByReception(id, rRef.id);
 
-        //Rightbar
-        _contactController
-            .contactOrganizations(id)
-            .then((Iterable<model.OrganizationReference> oRefs) {
-          _ulOrganizationList.children..clear();
-
-          Future.forEach(oRefs, (model.OrganizationReference oRef) {
-            _organizationController.get(oRef.id).then((model.Organization org) {
-              _ulOrganizationList.children.add(_createOrganizationNode(org));
-            });
-          });
-        }).catchError((error, stack) {
-          _log.severe(
-              'Tried to update contact "${id}"s rightbar but got "${error}" \n${stack}');
-        });
-
-        //FIXME: Re-enable this somehow.
-        return _contactController
-            .colleagues(id)
-            .then((Iterable<model.ContactReference> contacts) {
-          int nameSort(model.ContactReference x, model.ContactReference y) =>
-              x.name.toLowerCase().compareTo(y.name.toLowerCase());
-          // final List<model.ContactReference> functionContacts = contacts
-          //     .where((model.ContactReference contact) =>
-          //         contact.enabled && contact.contactType == 'function')
-          //     .toList()..sort(nameSort);
-          // final List<model.Contact> humanContacts = contacts
-          //     .where((model.Contact contact) =>
-          //         contact.enabled && contact.contactType == 'human')
-          //     .toList()..sort(nameSort);
-          // final List<model.Contact> disabledContacts = contacts
-          //     .where((model.Contact contact) => !contact.enabled)
-          //     .toList()..sort(nameSort);
-          //
-          // List<model.ContactReference> sorted =
-          //     new List<model.ContactReference>()
-          //       ..addAll(functionContacts)
-          //       ..addAll(humanContacts)
-          //       ..addAll(disabledContacts);
-
-          List<model.ContactReference> sorted = contacts.toList(growable: false)
-            ..sort(nameSort);
-
-          _ulReceptionList.children = sorted.map(_createColleagueNode).toList();
-        });
-      });
-    }).catchError((error, stack) {
-      _log.severe(
-          'Tried to activate contact "${id}" but gave "${error}" \n${stack}');
+      _ulReceptionContacts.children.add(rcView.element);
     });
+
+    //FIXME: Re-enable this somehow.
+    // await _contactController
+    //     .colleagues(id)
+    //     .then((Iterable<model.ContactReference> contacts) {
+    //   int nameSort(model.ContactReference x, model.ContactReference y) =>
+    //       x.name.toLowerCase().compareTo(y.name.toLowerCase());
+    //   final List<model.ContactReference> functionContacts = contacts
+    //       .where((model.ContactReference contact) =>
+    //           contact.enabled && contact.contactType == 'function')
+    //       .toList()..sort(nameSort);
+    //   final List<model.Contact> humanContacts = contacts
+    //       .where((model.Contact contact) =>
+    //           contact.enabled && contact.contactType == 'human')
+    //       .toList()..sort(nameSort);
+    //   final List<model.Contact> disabledContacts = contacts
+    //       .where((model.Contact contact) => !contact.enabled)
+    //       .toList()..sort(nameSort);
+    //
+    //   List<model.ContactReference> sorted =
+    //       new List<model.ContactReference>()
+    //         ..addAll(functionContacts)
+    //         ..addAll(humanContacts)
+    //         ..addAll(disabledContacts);
+    //
+    //   List<model.ContactReference> sorted = contacts.toList(growable: false)
+    //     ..sort(nameSort);
+    //
+    //   _ulReceptionList.children = sorted.map(_createColleagueNode).toList();
+    // });
   }
 
   void _fillSearchComponent() {

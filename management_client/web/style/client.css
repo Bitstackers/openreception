@@ -9,6 +9,11 @@
   box-sizing: border-box;
 }
 
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
 h2 {
   margin: 0.8em 0.2em;
 }
@@ -231,6 +236,14 @@ nav#navigation img {
 
 .zebra-odd>tr:nth-of-type(odd) {
   background-color: #eee;
+}
+
+.zebra-even>li:hover {
+  background-color: #B3E5FC;
+}
+
+.zebra-odd>li:hover {
+  background-color: #B3E5FC;
 }
 
 .content-table {
@@ -485,6 +498,14 @@ button.save:enabled {
    min-width: 50px;
    font-weight:bold;
    border: 1 px solid red;
+ }
+
+ li.reception {
+   font-weight: bolder;
+ }
+
+ li.colleague {
+   font-weight: normal;
  }
 
  .changed {

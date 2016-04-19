@@ -131,7 +131,7 @@ class ContactView {
 
   LIElement _makeContactNode(model.ContactReference cRef) {
     LIElement li = new LIElement()
-      ..classes.add('clickable')
+      ..dataset['cid'] = cRef.id.toString()
       ..text = '${cRef.name}'
       ..onClick.listen((_) => _router.gotoUrl('/contact/edit/${cRef.id}'));
 
@@ -139,8 +139,8 @@ class ContactView {
   }
 
   void _highlightContactInList(int id) {
-    _ulContactList.children.forEach((LIElement li) => li.classes
-        .toggle('highlightListItem', li.dataset['contactid'] == '$id'));
+    _ulContactList.children.forEach((LIElement li) =>
+        li.classes.toggle('highlightListItem', li.dataset['cid'] == '$id'));
   }
 
   /**
@@ -155,16 +155,14 @@ class ContactView {
         await _contactController.receptions(cid);
 
     _ulReceptionData.children = new List.from(
-        await Future.wait(rRefs.map((model.ReceptionReference rRef) {
-      return _contactController
-          .getByReception(cid, rRef.id)
-          .then((model.ReceptionAttributes attr) {
-        view.ReceptionContact rcView = new view.ReceptionContact(
-            _receptionController, _contactController, rRefs.length == 1)
-          ..attributes = attr;
+        await Future.wait(rRefs.map((model.ReceptionReference rRef) async {
+      final model.ReceptionAttributes attr =
+          await _contactController.getByReception(cid, rRef.id);
+      view.ReceptionContact rcView = new view.ReceptionContact(
+          _receptionController, _contactController, rRefs.length == 1)
+        ..attributes = attr;
 
-        return rcView.element;
-      });
+      return rcView.element;
     })));
 
     //Rightbar
@@ -175,11 +173,21 @@ class ContactView {
     _ulOrganizationList.children =
         new List.from(oRefs.map(_createOrganizationNode));
 
-    final List<model.ContactReference> collRefs =
-        (await _contactController.colleagues(cid)).toList(growable: false)
-          ..sort(view.compareContactRefs);
+    final Map<model.ReceptionReference, Iterable<model.ContactReference>>
+        collRefs = (await _contactController.colleagues(cid));
+    print(oRefs);
 
-    _ulReceptionList.children = collRefs.map(_createColleagueNode).toList();
+    _ulReceptionList.children.clear();
+    collRefs.forEach((model.ReceptionReference rRef,
+        Iterable<model.ContactReference> crefs) {
+      final li = _createReceptionNode(rRef);
+      List colls = crefs.toList(growable: false)..sort(view.compareContactRefs);
+
+      li.children.add(new UListElement()..classes.add('zebra-odd')
+        ..children = new List<LIElement>.from(colls.map(_createColleagueNode)));
+
+      _ulReceptionList.children.add(li);
+    });
   }
 
   /**
@@ -194,24 +202,40 @@ class ContactView {
   }
 
   /**
-   * TODO: Add reception references
+   *
+   */
+  LIElement _createReceptionNode(model.ReceptionReference rRef) {
+    return new LIElement()
+      ..classes.add('clickable')
+      ..classes.add('reception')
+      ..children = [
+        new AnchorElement(href : '/reception/edit/${rRef.id}')..text = '${rRef.name}'
+      ];
+
+  }
+
+  /**
+   *
    */
   LIElement _createColleagueNode(model.ContactReference cRef) {
     return new LIElement()
       ..classes.add('clickable')
       ..classes.add('colleague')
-      ..text = '${cRef.name}'
-      ..onClick.listen((_) => _router.gotoUrl('/contact/edit/${cRef.id}'));
+      ..children = [
+        new AnchorElement(href : '/contact/edit/${cRef.id}')..text = '${cRef.name}'
+      ];
   }
 
   /**
    *
    */
   LIElement _createOrganizationNode(model.OrganizationReference oRef) {
+    final String name = oRef.name.isEmpty ? '(uden navn)' : oRef.name;
+
     LIElement li = new LIElement()
-      ..classes.add('clickable')
-      ..text = '${oRef.name}'
-      ..onClick.listen((_) => _router.gotoUrl('/organization/edit/${oRef.id}'));
+      ..children = [
+        new AnchorElement(href : '/organization/edit/${oRef.id}')..text = '${name} (oid:${oRef.id})'
+      ];
 
     return li;
   }
