@@ -201,7 +201,7 @@ class GitEngine {
       throw new storage.ServerError();
     }
 
-    final List<String> lines = result.stdout.split('\n');
+    final List<String> lines = (result.stdout as String).split('\n');
 
     if (!lines.any((line) => line.contains(filePath))) {
       return false;
@@ -242,7 +242,7 @@ class GitEngine {
     final ProcessResult result =
         await Process.run(gitBin, arguments, workingDirectory: path);
 
-    final List<String> lines = result.stdout.split('\n');
+    final List<String> lines = (result.stdout as String).split('\n');
     final List<Change> changeList = [];
 
     void processBuffer(List<String> bufferLines) {
