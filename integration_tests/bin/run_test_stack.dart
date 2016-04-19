@@ -68,7 +68,15 @@ Future main(args) async {
 
   await Future.forEach(new List(40), (_) async {
     recs.shuffle();
-    sa.addsContactToReception(await sa.createsContact(), recs.first);
+    await sa.addsContactToReception(await sa.createsContact(), recs.first);
+  });
+
+  await Future.forEach(new List(10), (_) async {
+    await sa.createsDialplan(mustBeValid: true);
+  });
+
+  await Future.forEach(new List(10), (_) async {
+    await sa.createsIvrMenu();
   });
 
   final authserver = await env.requestAuthserverProcess();
