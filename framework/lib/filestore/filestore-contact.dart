@@ -50,7 +50,7 @@ class Contact implements storage.Contact {
   Future<model.ReceptionContactReference> addData(
       model.ReceptionAttributes attr, model.User modifier) async {
     if (attr.receptionId == model.Reception.noId) {
-      throw new ArgumentError('attr.receptionUuid must be valid');
+      throw new ArgumentError('attr.receptionId must be valid');
     }
     final recDir = new Directory('$path/${attr.contactId}/receptions');
     if (!recDir.existsSync()) {
