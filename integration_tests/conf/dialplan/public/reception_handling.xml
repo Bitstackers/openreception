@@ -1,0 +1,27 @@
+<!--
+  Global variables for organizations, and including
+  the orgs.
+-->
+
+<include>
+  <!-- Reception Business opening hours -->
+
+
+  <X-PRE-PROCESS cmd="include" data="openhours/openhours.xml"/>
+
+  <extension name="transfer-to-reception-context">
+  <condition regex="any">
+    <regex field="destination_number" expression="^test-(.*)$"/>
+      <!-- Music on hold -->
+      <action application="set" data="fifo_music=local_stream://default"/>
+      <action application="log" data="INFO Receptions are globally open: ${__or__reception-open}"/>
+      <action application="log" data="INFO Holiday is: ${__or__reception-holiday}"/>
+      <!-- Skip mod_voicemail greeting, as we do a manual playback before sending to voicemail -->
+      <action application="set" data="skip_greeting=true"/>
+      <action application="transfer" data="${destination_number} XML reception-${destination_number}"/>
+
+      <anti-action application="transfer" data="UNALLOCATED_NUMBER xml receptions"/>
+    </condition>
+  </extension>
+
+</include>

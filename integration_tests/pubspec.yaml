@@ -1,0 +1,23 @@
+name: openreception_tests
+version: 0.2.0
+description: OpenReception Acceptance and integration tests
+dependencies:
+  http: any
+  junitconfiguration: any
+  logging: any
+  esl:
+    git:
+      ref: master
+      url: https://github.com/rostgaard/libesl-dart.git
+  openreception_framework:
+    path: ../framework
+    version: '>=0.0.30'
+  phonio:
+    git: https://github.com/Bitstackers/Phonio.git
+  route: any
+  shelf: any
+  shelf_cors: any
+  shelf_route: any
+  postgresql: any
+dev_dependencies:
+  unittest: '>=0.11.5 <0.12.0'

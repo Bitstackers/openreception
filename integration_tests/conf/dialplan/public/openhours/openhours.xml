@@ -1,0 +1,13 @@
+ <!--
+    We initially set the reception-id to invalid,
+    and leave it up to the individual reception to
+    update it with a real id.
+  -->
+  <extension name="always_open" continue="true">
+    <condition>
+      <action application="set" data="__or__rid=0"/>
+      <action application="set" data="ringback=${dk-ring}"/>
+      <action application="set" data="__or__reception-open=true"/>
+      <action application="set" data="__or__destination=${destination_number}"/>
+   </condition>
+  </extension>

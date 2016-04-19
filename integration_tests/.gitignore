@@ -1,0 +1,23 @@
+# Local stuff in bin/
+bin/local_*
+
+# Local config.
+lib/config.dart
+lib/config.*.dart
+
+# Dart-specific files.
+.pub/
+build/
+packages
+.packages
+pubspec.lock
+
+# Support tools.
+bin/basic_agent
+support_tools/deps_install
+support_tools/pjlibs
+support_tools/pjproject-*
+
+# emacs
+\#*#
+*~
