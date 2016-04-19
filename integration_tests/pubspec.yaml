@@ -10,11 +10,8 @@ dependencies:
       ref: master
       url: https://github.com/rostgaard/libesl-dart.git
   openreception_framework:
-#    path: ../framework
-    git:
-      ref: master
-      url: https://github.com/rostgaard/OpenReceptionFramework.git
-    version: '>=0.0.25+3'
+    path: ../framework
+    version: '>=0.0.30'
   phonio:
     git: https://github.com/Bitstackers/Phonio.git
   route: any
