@@ -1,0 +1,186 @@
+#contact-page {
+  height: 100%;
+}
+
+#contact-page ul {
+  list-style-type: none;
+}
+
+/**
+  Left side panel.
+*/
+#contact-listing {
+  float: left;
+  width: 20%;
+  height: 100%;
+  padding-left: 5px;
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
+}
+
+#contact-search-box {
+  width: 100%;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+
+#contact-list {
+  height: 100%;
+  height: -moz-calc(100% - 100px);
+  height: -webkit-calc(100% - 100px);
+  overflow: auto;
+  padding: 0;
+}
+
+#contact-list>li {
+  border-left: 2px solid transparent;
+  padding: 5px 0 5px 5px;
+}
+
+#contact-list>li.highlightListItem {
+  border-left: 2px solid red;
+    background-color: #B3E5FC;
+  font-weight: bold;
+}
+
+.content-list>li>span {
+  padding-left: 5px;
+}
+
+/**
+  Content panel.
+*/
+#contact-content {
+  float: left;
+  width: 60%;
+  width: -moz-calc(60% - 5px);
+  width: -webkit-calc(60% - 5px);
+  height: 100%;
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
+  padding: 0px;
+  margin-left: 9px;
+  overflow: auto;
+}
+
+#contact-base-info {
+  padding: 0px;
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
+
+}
+
+#reception-contacts {
+  margin-top: 0px;
+  height: 85%;
+  height: -moz-calc(100% - 250px);
+  height: -webkit-calc(100% - 250px);
+  overflow: auto;
+}
+
+.contact-reception {
+  overflow:hidden;
+  display: block;
+  border-top: 1px solid #aaa;
+  margin-top: 9px;
+  padding: 6px;
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
+}
+
+.reception-contact-header {
+  font-size: larger;
+}
+
+#contact-reception-selector {
+  width: 400px;
+  padding: 5px 0;
+  display: inline-block;
+}
+
+.distributionlist select {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+/** UNDER CONSTRUCTION!
+  Calendar Stuff
+*/
+
+.contact-calendar-event {
+  width: 99%;
+  margin: 0.5%;
+  padding: 0.5%;
+}
+
+.contact-calendar-event-text {
+  width: 100%;
+  height: 4em;
+}
+
+.contact-calendar-timebox {
+  width:8em;
+  float:left;
+  padding: 0.5em;
+}
+
+.contact-calendar-list {
+  max-height: 310px;
+  overflow: auto;
+}
+
+.contact-calendar-event-start-hour,
+.contact-calendar-event-start-minute,
+
+.contact-calendar-event-stop-hour,
+.contact-calendar-event-stop-minute {
+  width:3em;
+}
+
+.contact-calendar-seperator {
+  width: 1em;
+}
+
+/**
+  Right side panel.
+*/
+#contact-rightbar {
+  float: right;
+  width: 20%;
+  width: -moz-calc(20% - 10px);
+  width: -webkit-calc(20% - 10px);
+  height: 100%;
+  padding: 5px 10px 5px 0px;
+}
+
+#contact-organization-container {
+  height: 15%;
+}
+
+#contact-reception-container {
+  height: 85%;
+  padding-top: 15px;
+}
+
+#contact-rightbar>div>div {
+  height: 100%;
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
+  padding: 5px;
+}
+
+#contact-reception-list {
+  height: 100%;
+  overflow: auto;
+}
+
+.receptioncolleague {
+  font-weight: bold;
+}
+
+.colleague {
+  padding-left: 10px;
+}
+
+#contact-organization-list li {
+  margin-left: 10px;
+}
+
+#contact-reception-list > li:not(:first-child) {
+  margin-top: 5px;
+}

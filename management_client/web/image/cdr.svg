@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   width="48"
+   height="48"
+   id="svg3840">
+  <defs
+     id="defs3842" />
+  <metadata
+     id="metadata3845">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1">
+    <g
+       transform="matrix(1.3714286,0,0,1.3714286,-625.62451,-824.6466)"
+       id="g4255">
+      <g
+         transform="translate(-134.5,0)"
+         id="g4120">
+        <path
+           d="m 604.13207,618.95781 c 0.23516,7.25584 5.98697,14.20199 15.63788,10.74952 0.44748,2.12848 0.7894,3.74141 1.03844,5.56032 -6.72576,2.24711 -13.97946,0.55842 -17.67838,-3.32353 -3.20465,-3.36326 -5.10034,-7.58965 -5.10034,-13.19534 0,-5.65415 1.80885,-9.62215 5.36916,-13.12293 2.47281,-2.43145 6.9085,-4.28434 10.32855,-4.28434 1.5434,0 4.53373,-0.14093 6.61861,0.86952 -0.26985,1.08441 -0.75059,2.82887 -1.42318,5.33493 -12.10426,-2.39572 -14.9618,6.13396 -14.79074,11.41185 z"
+           id="path4112"
+           style="fill:#4d4d4d;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+        <path
+           d="m 595.56072,612.83607 22.49719,0 -0.94065,4.49422 -21.55654,0 z"
+           id="rect4115"
+           style="fill:#4d4d4d;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+        <path
+           d="m 595.56072,619.83868 21.13848,0 -0.94066,4.49422 -19.77337,0 -0.42445,0 z"
+           id="path4118"
+           style="fill:#4d4d4d;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+      </g>
+      <rect
+         width="35"
+         height="35"
+         x="456.18454"
+         y="601.30481"
+         id="rect4213"
+         style="fill:none;stroke:none" />
+      <rect
+         width="35"
+         height="35"
+         x="456.18454"
+         y="601.30481"
+         id="rect4215"
+         style="fill:none;stroke:none" />
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,70 @@
+#record-page {
+  height: 100%;
+}
+
+#record-reception-listing {
+  float: left;
+  width: 20%;
+  height: 100%;
+  padding: 0 5px;
+}
+
+#record-reception-search-box {
+  width: 100%;
+  margin: 5px 0;
+  border: 1px solid grey;
+  border-radius: 5px;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+#record-reception-list {
+  height: 100%;
+  height: -moz-calc(100% - 43px);
+  height: -webkit-calc(100% - 43px);
+  overflow: auto;
+  border: 1px solid grey;
+  border-radius: 5px;
+  padding-right: 5px;
+  padding-left: 0;
+  list-style-type: none;
+}
+
+#record-reception-list > li {
+  border-left: 2px solid transparent;
+  padding: 5px 0 5px 3px;
+}
+
+#record-reception-list > li.highlightListItem {
+  border-left: 2px solid red;
+}
+
+/****************
+      FILES
+*****************/
+#record-file-listing {
+  float: left;
+  width: 80%;
+  width: -moz-calc(80% - 5px);
+  width: -webkit-calc(80% - 5px);
+
+  height: 100%;
+  height: -moz-calc(100% - 10px);
+  height: -webkit-calc(100% - 10px);
+  padding: 0 5px;
+  margin: 5px 0;
+}
+
+#record-file-list {
+  height: 100%;
+  height: -moz-calc(100% - 20px);
+  height: -webkit-calc(100% - 20px);
+  overflow: auto;
+  border: 1px solid grey;
+  border-radius: 5px;
+}
+
+#record-file-list > li {
+  padding: 5px 5px;
+}
+

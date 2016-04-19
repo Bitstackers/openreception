@@ -1,0 +1,59 @@
+#music-page {
+  height: 100%;
+}
+
+#music-leftbar {
+  height: 99%;
+  height: -moz-calc(100% - 5px);
+  height: -webkit-calc(100% - 5px);
+  width: 20%;
+  float: left;
+
+  margin-top: 5px;
+}
+
+#music-listing {
+  height: 95%;
+  height: -moz-calc(100% - 40px);
+  height: -webkit-calc(100% - 40px);
+
+  border: 1px solid grey;
+  border-radius: 10px;
+}
+
+#music-playlists {
+  height: 100%;
+  overflow: auto;
+}
+
+#music-playlists > li {
+  border-left: 2px solid transparent;
+  padding: 5px 0 5px 5px;
+}
+
+#music-playlists > li.highlightListItem {
+  border-left: 2px solid red;
+}
+
+#music-content {
+  float: left;
+
+  height: 98%;
+  height: -moz-calc(100% - 10px);
+  height: -webkit-calc(100% - 10px);
+
+  width: 78%;
+  width: -moz-calc(80% - 10px);
+  width: -webkit-calc(80% - 10px);
+
+  padding: 5px;
+
+  border: 1px solid grey;
+  border-radius: 10px;
+
+  margin: 5px;
+}
+
+#music-content ul {
+  list-style-type: none;
+}

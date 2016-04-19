@@ -1,0 +1,50 @@
+nav>ul {
+  list-style-type: none;
+  padding: 0;
+
+  overflow: auto;
+  height: 100%;
+  overflow: hidden;
+}
+
+
+nav button {
+  background: rgba(158,158,158,.2);
+
+  background-color: B3E5FC!important;
+}
+
+
+nav a {
+  background: rgba(158,158,158,.2);
+  background-color: B3E5FC!important;
+}
+
+nav a.faded {
+  opacity: 0.3;
+  background-color: white!important;
+}
+
+nav a.faded:hover {
+  opacity: 0.9;
+  background-color: white!important;
+}
+
+
+nav button.faded {
+  opacity: 0.3;
+  background-color: white!important;
+
+}
+
+nav>img {
+  /*0
+  width: 32px;
+  height: 32px;
+  */
+}
+
+#navigation ul {
+  margin: 0;
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
+}

@@ -1,0 +1,85 @@
+#reception-page {
+  height: 100%;
+}
+
+#reception-page ul {
+  list-style-type: none;
+}
+
+#reception-listing {
+  float: left;
+  width: 20%;
+  height: 100%;
+  padding-left: 5px;
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
+}
+
+#reception-search-box {
+  width: 100%;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+
+#reception-list {
+  height: 100%;
+  height: -moz-calc(100% - 82px);
+  height: -webkit-calc(100% - 82px);
+  overflow: auto;
+  padding: 0;
+}
+
+#reception-list>li {
+  border-left: 2px solid transparent;
+  padding: 5px 0 5px 5px;
+}
+
+#reception-list>li:hover {
+  border-left: 2px solid red;
+}
+
+#reception-list>li.highlightListItem {
+  border-left: 2px solid red;
+    background-color: #B3E5FC;
+  font-weight: bold;
+}
+
+#reception-content {
+  float: left;
+  width: 60%;
+  width: -moz-calc(60% - 5px);
+  width: -webkit-calc(60% - 5px);
+  height: 100%;
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
+  padding: 5px;
+  margin-left: 9px;
+  overflow: auto;
+}
+
+#reception-organization-selector {
+  width: 400px;
+}
+
+#reception-rightbar {
+  float: right;
+  width: 20%;
+  width: -moz-calc(20% -   10px);
+  width: -webkit-calc(20% -   10px);
+  height: 100%;
+    box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
+
+}
+
+#reception-rightbar>div {
+  height: 100%;
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
+  padding: 0px;
+}
+
+#reception-contact-list {
+  height: 98%;
+  overflow: auto;
+}
+
+#reception-contact-list li {
+  margin-left: 10px;
+}

@@ -1,0 +1,88 @@
+#ivr-page {
+  height: 100%;
+  width: calc(97% - 5px);
+  width: -moz-calc(97% - 5px);
+  width: -webkit-calc(97% - 5px);
+
+  margin-left:5px;
+  position: absolute;
+  z-index: 100;
+  background-color: rgba(175, 175, 175, 0.9);
+}
+
+#ivr-page-content {
+  position: relative;
+  height: 90%;
+  width: 90%;
+  top: 5%;
+  left: 5%;
+}
+
+#ivr-page.hidden {
+  left: -99999px;
+}
+
+#ivr-controlbar {
+  float: left;
+
+  border: solid 2px grey;
+  border-radius: 10px;
+
+  width: calc(20% - 10px);
+  width: -moz-calc(20% - 10px);
+  width: -webkit-calc(20% - 10px);
+
+  height: 100%;
+  margin-right: 5px;
+
+  overflow: auto;
+  background-color: white;
+}
+
+#ivr-content-container {
+  float: left;
+
+  width: 80%;
+
+  height: 100%;
+
+  border: solid 2px grey;
+  border-radius: 10px;
+  margin-left: 5px;
+  overflow: auto;
+  background-color: white;
+}
+
+#ivr-action-table {
+  width: 100%;
+}
+
+.ivr-dial-field {
+  width: 10px;
+
+  text-align: center;
+}
+
+.ivr-action-field {
+  width: 10%;
+}
+
+#ivr-menu-list {
+  height: 98%;
+  overflow: auto;
+}
+
+#ivr-menu-list li {
+  padding: 5px 0;
+}
+
+#ivr-menu-list>li.highlightListItem {
+  border-left: 2px solid red;
+}
+
+.ivr-small-button {
+  width: 16px;
+  height: 16px;
+
+  float: right;
+}
