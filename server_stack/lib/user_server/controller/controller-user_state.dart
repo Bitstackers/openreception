@@ -49,7 +49,7 @@ class UserState {
     } else if (newState == model.UserState.Ready) {
       return new shelf.Response.ok(JSON.encode(_userStateList.ready(userID)));
     } else {
-      return _serverError('Unknown state $newState');
+      return serverError('Unknown state $newState');
     }
   }
 }
