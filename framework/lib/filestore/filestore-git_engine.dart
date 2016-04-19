@@ -239,7 +239,6 @@ class GitEngine {
       fse.path
     ];
 
-    _log.finest('Running command $gitBin ${arguments.join(' ')}');
     final ProcessResult result =
         await Process.run(gitBin, arguments, workingDirectory: path);
 
@@ -327,9 +326,10 @@ class GitEngine {
    *
    */
   Future _commit(String commitMsg, String author) async {
-    final ProcessResult result = await Process.run(
-        '/usr/bin/git', ['commit', path, '--author="$author"', '-m', commitMsg],
-        workingDirectory: path);
+    final String gitBin = '/usr/bin/git';
+    final List<String> arguments = ['commit', path, '--author="$author"', '-m', commitMsg];
+    final ProcessResult result =
+        await Process.run('/usr/bin/git', arguments, workingDirectory: path);
 
     String stdout = result.stdout;
     if (stdout.isNotEmpty && logStdout) {
@@ -342,7 +342,7 @@ class GitEngine {
     }
 
     if (result.exitCode != 0) {
-      _log.shout('Failed to commit ${path}');
+      _log.shout('Failed to run $gitBin ${arguments.join(' ')}');
       throw new storage.ServerError();
     }
   }
