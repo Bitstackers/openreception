@@ -14,9 +14,7 @@ dependencies:
   route_hierarchical: any
   stream_channel: any
   openreception_framework:
-    git:
-      ref: master
-      url: https://github.com/rostgaard/OpenreceptionFramework.git
+    path: ../framework
     version: '>=0.0.30'
 transformers:
 - dart_to_js_script_rewriter
