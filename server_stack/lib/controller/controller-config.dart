@@ -14,14 +14,10 @@
 library openreception.server.controller.config;
 
 import 'dart:async';
-import 'dart:io';
 import 'dart:convert';
 
 import 'package:logging/logging.dart';
 import 'package:shelf/shelf.dart' as shelf;
-import 'package:shelf/shelf_io.dart' as shelf_io;
-import 'package:shelf_route/shelf_route.dart' as shelf_route;
-import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 
 import 'package:openreception_framework/keys.dart' as key;
 import 'package:openreception_framework/model.dart' as model;
