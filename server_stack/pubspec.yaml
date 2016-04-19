@@ -18,10 +18,8 @@ dependencies:
   logging: any
   oauth2: <1.0.0
   openreception_framework:
-    git:
-       ref: master
-       url: https://github.com/rostgaard/OpenReceptionFramework.git
-    version: '>=0.0.26'
+    path: ../framework
+    version: '>=0.0.30'
   route: any
   web_socket_channel: any
   shelf: any
