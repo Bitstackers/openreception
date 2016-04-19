@@ -176,4 +176,5 @@ Future main() async {
   }
 
   router.listen();
+  router.gotoUrl(window.location.toString());
 }
