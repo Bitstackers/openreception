@@ -41,6 +41,8 @@ class ContactReference implements ObjectReference {
   static ContactReference decode(Map map) =>
       new ContactReference(map[Key.id], map[Key.name]);
 
+  bool get isEmpty  => id == BaseContact.noId;
+
   Map toJson() => {Key.id: id, Key.name: name};
 
   int get hashCode => id.hashCode;
@@ -96,18 +98,23 @@ class OrganizationReference implements ObjectReference {
   int get hashCode => id.hashCode;
 }
 
-class ReceptionContactReference {
-  final ContactReference contact;
-  final ReceptionReference reception;
+class ReceptionContact {
+  final BaseContact contact;
+  final ReceptionAttributes attr;
 
-  const ReceptionContactReference(this.contact, this.reception);
+  ReceptionContact.empty()
+      : contact = new BaseContact.empty(),
+        attr = new ReceptionAttributes.empty();
 
-  static ReceptionContactReference decode(Map map) =>
-      new ReceptionContactReference(ContactReference.decode(map[Key.contact]),
-          ReceptionReference.decode(map[Key.reception]));
+  ReceptionContact(this.contact, this.attr);
 
-  Map toJson() =>
-      {Key.contact: contact.toJson(), Key.reception: reception.toJson()};
+  static ReceptionContact decode(Map map) => new ReceptionContact(
+      BaseContact.decode(map[Key.contact]),
+      ReceptionAttributes.decode(map[Key.reception]));
+
+  Map toJson() => {Key.contact: contact.toJson(), Key.reception: attr.toJson()};
+
+  ContactReference get contactReference => new ContactReference(contact.id, contact.name);
 }
 
 class ReceptionReference implements ObjectReference {
@@ -115,6 +122,13 @@ class ReceptionReference implements ObjectReference {
   final String name;
 
   const ReceptionReference(this.id, this.name);
+
+  const ReceptionReference.none()
+      : id = Reception.noId,
+        name = '';
+
+  bool get isEmpty => id == Reception.noId;
+  bool get isNotEmpty => !isEmpty;
 
   static ReceptionReference decode(Map map) =>
       new ReceptionReference(map[Key.id], map[Key.name]);
@@ -128,10 +142,11 @@ class ReceptionReference implements ObjectReference {
  * A base contact represents a contact outside the context of a reception.
  */
 class BaseContact {
-  static int noId = 0;
+  static const int noId = 0;
 
   int id = noId;
   String name = '';
+  ///TODO: Rename to type and turn into enum.
   String contactType = '';
   bool enabled = true;
 
@@ -168,4 +183,11 @@ class BaseContact {
    *
    */
   ContactReference get reference => new ContactReference(id, name);
+
+  /**
+   *
+   */
+  bool get isEmpty => id == BaseContact.noId;
+
+  bool get isNotEmpty => !isEmpty;
 }

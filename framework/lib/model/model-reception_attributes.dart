@@ -85,8 +85,8 @@ class ReceptionAttributes {
         Key.contactId: contactId,
         Key.receptionId: receptionId,
         Key.departments: departments,
-        Key.phones: new List<String>.from(phones.map((p) => p.toJson())),
-        Key.endpoints: new List<String>.from(endpoints.map((e) => e.toJson())),
+        Key.phones: new List<Map>.from(phones.map((p) => p.toJson())),
+        Key.endpoints: new List<Map>.from(endpoints.map((e) => e.toJson())),
         Key.backup: backupContacts,
         Key.emailaddresses: emailaddresses,
         Key.handling: handling,
@@ -131,10 +131,4 @@ class ReceptionAttributes {
   bool get isEmpty => contactId == BaseContact.noId;
   bool get isNotEmpty => !isEmpty;
 
-  /**
-   *
-   */
-  ReceptionContactReference get reference => new ReceptionContactReference(
-      new ContactReference(contactId, ''),
-      new ReceptionReference(receptionId, ''));
 }
