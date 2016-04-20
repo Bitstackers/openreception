@@ -88,14 +88,14 @@ class MessageFilter {
    *
    */
   Future _reloadContactSelector() async {
-    Iterable<model.ReceptionAttributes> contacts = _rid != model.Reception.noId
-        ? await _contactController.receptions(_rid)
+    Iterable<model.ContactReference> contacts = _rid != model.Reception.noId
+        ? await _contactController.receptionContacts(_rid)
         : [];
 
-    OptionElement contactToOption(model.ReceptionAttributes attr) =>
+    OptionElement contactToOption(model.ContactReference cRef) =>
         new OptionElement()
-          ..label = attr.reference.contact.name
-          ..value = attr.contactId.toString();
+          ..label = cRef.name
+          ..value = cRef.id.toString();
 
     _contactSelector.children = [
       new OptionElement()

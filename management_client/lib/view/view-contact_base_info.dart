@@ -333,7 +333,7 @@ class Contact {
 
       await _contactController
           .addToReception(template)
-          .then((model.ReceptionContactReference ref) {
+          .then((model.ReceptionContact ref) {
         notify.success('Tilføjede kontaktperson til reception',
             '${contact.name} til ${rRef.name}');
       }).catchError((e) {

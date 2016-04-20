@@ -527,7 +527,7 @@ class ContactView {
 
       _contactController
           .addToReception(template)
-          .then((model.ReceptionContactReference rcRef) {
+          .then((model.ReceptionContact rcRef) {
         view.ReceptionContact rcView = new view.ReceptionContact(
             _receptionController, _contactController, true)
           ..attributes = template;
@@ -540,29 +540,6 @@ class ContactView {
             'Kunne ikke tilføje kontaktperson til reception', 'Fejl: ${e}');
       });
     }
-  }
-
-  /**
-   * TODO: Re-add ⚙.
-   */
-  LIElement _createColleagueNode(model.ContactReference cRef) {
-    return new LIElement()
-      ..classes.add('clickable')
-      ..classes.add('colleague')
-      ..text = '${cRef.name} (rid: ${cRef.id})'
-      ..onClick.listen((_) => _router.gotoUrl('/contact/edit/${cRef.id}'));
-  }
-
-  /**
-   *
-   */
-  LIElement _createOrganizationNode(model.Organization organization) {
-    LIElement li = new LIElement()
-      ..classes.add('clickable')
-      ..text = '${organization.name}'
-      ..onClick.listen(
-          (_) => _router.gotoUrl('/organization/edit/${organization.id}'));
-    return li;
   }
 
   /**

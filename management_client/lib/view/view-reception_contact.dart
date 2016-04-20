@@ -211,7 +211,7 @@ class ReceptionContact {
         _deleteButton.disabled = inputHasErrors || !_saveButton.disabled;
 
         notify.success('Receptions-kontakten blev opdateret',
-            attributes.reference.contact.name);
+            '');
       } catch (error) {
         notify.error('Receptions-kontakten blev ikke opdateret', 'Fejl:$error');
       }
@@ -223,8 +223,7 @@ class ReceptionContact {
 
     _deleteButton.onClick.listen((_) async {
       final String confirmText =
-          'Bekræft fjernelse af ${attributes.reference.contact.name} fra '
-          'receptionen ${_header.text}';
+          'Bekræft fjernelse fra receptionen ${_header.text}';
 
       if (_deleteButton.text != confirmText) {
         _deleteButton.text = confirmText;

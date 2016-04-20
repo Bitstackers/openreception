@@ -33,14 +33,14 @@ class Contact {
   Future remove(int cid) =>
       _service.remove(cid, _appUser).catchError(_handleError);
 
-  Future<model.ReceptionContactReference> addToReception(
+  Future<model.ReceptionContact> addToReception(
           model.ReceptionAttributes attr) =>
       _service.addData(attr, _appUser).catchError(_handleError);
 
   Future removeFromReception(int cid, int rid) =>
       _service.removeData(cid, rid, _appUser).catchError(_handleError);
 
-  Future<model.ReceptionContactReference> updateInReception(
+  Future<model.ReceptionContact> updateInReception(
           model.ReceptionAttributes attr) =>
       _service.updateData(attr, _appUser).catchError(_handleError);
 
