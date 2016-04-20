@@ -66,7 +66,7 @@ abstract class Contact {
   /**
    *
    */
-  Future<model.ReceptionContactReference> updateData(
+  Future<model.ReceptionContact> updateData(
       model.ReceptionAttributes attr, model.User modifier);
 
   /**

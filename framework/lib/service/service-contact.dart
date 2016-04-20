@@ -96,14 +96,13 @@ class RESTContactStore implements Storage.Contact {
         (JSON.decode(response) as Iterable).map(Model.ContactReference.decode));
   }
 
-  Future<Model.ReceptionContactReference> addData(
+  Future addData(
       Model.ReceptionAttributes attr, Model.User user) {
     Uri url = Resource.Contact
         .singleByReception(_host, attr.contactId, attr.receptionId);
     url = _appendToken(url, _token);
 
-    return _backend.post(url, JSON.encode(attr)).then((String response) =>
-        Model.ReceptionContactReference.decode(JSON.decode(response)));
+    return _backend.post(url, JSON.encode(attr));
   }
 
   Future<Iterable<Model.ContactReference>> organizationContacts(int oid) {
@@ -124,14 +123,13 @@ class RESTContactStore implements Storage.Contact {
     return _backend.delete(url);
   }
 
-  Future<Model.ReceptionContactReference> updateData(
+  Future updateData(
       Model.ReceptionAttributes attr, Model.User user) {
     Uri url = Resource.Contact
         .singleByReception(_host, attr.contactId, attr.receptionId);
     url = _appendToken(url, _token);
 
-    return _backend.put(url, JSON.encode(attr)).then((String response) =>
-        Model.ReceptionContactReference.decode(JSON.decode(response)));
+    return _backend.put(url, JSON.encode(attr));
   }
 
   /**

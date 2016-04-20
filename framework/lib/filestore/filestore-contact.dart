@@ -47,7 +47,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<model.ReceptionContactReference> addData(
+  Future addData(
       model.ReceptionAttributes attr, model.User modifier) async {
     if (attr.receptionId == model.Reception.noId) {
       throw new ArgumentError('attr.receptionId must be valid');
@@ -77,8 +77,6 @@ class Contact implements storage.Contact {
         'uid:${modifier.id} - ${modifier.name} '
         'added ${attr.contactId} to ${attr.receptionId}',
         _authorString(modifier));
-
-    return attr.reference;
   }
 
   /**
@@ -316,7 +314,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<model.ReceptionContactReference> updateData(
+  Future updateData(
       model.ReceptionAttributes attr, model.User modifier) async {
     if (attr.contactId == model.BaseContact.noId) {
       throw new storage.ClientError('Empty id');
@@ -340,8 +338,6 @@ class Contact implements storage.Contact {
         'uid:${modifier.id} - ${modifier.name} '
         'updated ${attr.contactId} in ${attr.receptionId}',
         _authorString(modifier));
-
-    return attr.reference;
   }
 
   /**
