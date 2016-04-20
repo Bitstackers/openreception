@@ -4,7 +4,6 @@ import 'dart:async';
 import 'model.dart' as model;
 
 part 'storage/storage-calendar.dart';
-part 'storage/storage-cdr.dart';
 part 'storage/storage-contact.dart';
 part 'storage/storage-ivr.dart';
 part 'storage/storage-message.dart';
