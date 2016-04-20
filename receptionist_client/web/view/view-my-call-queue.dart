@@ -90,15 +90,13 @@ class MyCallQueue extends ViewWidget {
     try {
       ORModel.Call newCall = await _callController.dial(
           phoneNumber,
-          _receptionSelector.selectedReception,
-          _contactSelector.selectedContact,
-          contextCallId: contextCallId);
+          _appState.originationContext);
       if (markTransfer || parkAndMarkTransfer) {
         _ui.markForTransfer(newCall);
         _log.info('marked ${newCall.ID} for transfer');
       }
     } catch (error) {
-      _error(error, _langMap[Key.callFailed], phoneNumber.endpoint);
+      _error(error, _langMap[Key.callFailed], phoneNumber.destination);
       _log.warning('dialing failed with ${error}');
     }
 

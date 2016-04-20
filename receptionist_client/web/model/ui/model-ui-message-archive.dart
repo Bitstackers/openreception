@@ -102,7 +102,7 @@ class UIMessageArchive extends UIModel {
    */
   TableRowElement _buildRow(ORModel.Message message, bool saved) {
     final TableRowElement row = new TableRowElement()
-      ..dataset['message-id'] = message.ID.toString()
+      ..dataset['message-id'] = message.id.toString()
       ..dataset['contact-string'] = message.context.contactString;
 
     row.children.add(
@@ -116,7 +116,7 @@ class UIMessageArchive extends UIModel {
     }
 
     row.children.addAll([
-      new TableCellElement()..text = _users[message.senderId] ?? message.senderId.toString(),
+      new TableCellElement()..text = _users[message.sender.id] ?? message.sender.id.toString(),
       new TableCellElement()..text = message.callerInfo.name,
       new TableCellElement()..text = message.callerInfo.company,
       new TableCellElement()..text = message.callerInfo.phone,
@@ -212,7 +212,7 @@ class UIMessageArchive extends UIModel {
    * NOTE: This is a visual only action. It does not perform any actions on the server.
    */
   void moveMessage(ORModel.Message message) {
-    final TableRowElement tr = _savedTbody.querySelector('[data-message-id="${message.ID}"]');
+    final TableRowElement tr = _savedTbody.querySelector('[data-message-id="${message.id}"]');
 
     if (tr != null) {
       tr.classes.add('fade-out');
@@ -285,7 +285,7 @@ class UIMessageArchive extends UIModel {
    * NOTE: This is a visual only action. It does not perform any actions on the server.
    */
   void removeMessage(ORModel.Message message) {
-    final TableRowElement tr = _savedTbody.querySelector('[data-message-id="${message.ID}"]');
+    final TableRowElement tr = _savedTbody.querySelector('[data-message-id="${message.id}"]');
 
     if (tr != null) {
       tr.classes.add('fade-out');
@@ -330,8 +330,8 @@ class UIMessageArchive extends UIModel {
    * Set the list of users. This is used to map the users id of a message to
    * the users name.
    */
-  set users(Iterable<ORModel.User> list) {
-    list.forEach((ORModel.User user) {
+  set users(Iterable<ORModel.UserReference> list) {
+    list.forEach((ORModel.UserReference user) {
       _users[user.id] = user.name;
     });
   }

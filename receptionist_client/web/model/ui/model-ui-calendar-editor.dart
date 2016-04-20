@@ -123,8 +123,8 @@ class UICalendarEditor extends UIModel {
    * Harvest a [ORModel.CalendarEntry] from the form.
    */
   ORModel.CalendarEntry get harvestedEntry => _loadedEntry
-    ..beginsAt = _harvestStartDateTime
-    ..until = _harvestStopDateTime
+    ..start = _harvestStartDateTime
+    ..stop = _harvestStopDateTime
     ..content = _textArea.value;
 
   /**
@@ -245,7 +245,7 @@ class UICalendarEditor extends UIModel {
         _harvestStartDateTime.isBefore(_harvestStopDateTime);
 
     _deleteButton.disabled = !toggle ||
-        (_loadedEntry != null && _loadedEntry.ID == ORModel.CalendarEntry.noID);
+        (_loadedEntry != null && _loadedEntry.id == ORModel.CalendarEntry.noId);
     _saveButton.disabled = !toggle;
 
     _myLastTabElement = toggle ? _saveButton : _cancelButton;

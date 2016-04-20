@@ -24,7 +24,7 @@ class ReceptionSelector extends ViewWidget {
   final List<ORModel.Call> _pickedUpCalls = new List<ORModel.Call>();
   final Controller.Popup _popup;
   final Controller.Reception _receptionController;
-  final List<ORModel.Reception> _receptions;
+  final List<ORModel.ReceptionReference> _receptions;
   bool _refreshReceptionsCache = false;
   Timer refreshReceptionsCacheTimer;
   final Model.UIReceptionSelector _uiModel;
@@ -37,7 +37,7 @@ class ReceptionSelector extends ViewWidget {
       Model.AppClientState this._appState,
       Controller.Destination this._myDestination,
       Controller.Notification this._notification,
-      List<ORModel.Reception> this._receptions,
+      List<ORModel.ReceptionReference> this._receptions,
       Controller.Reception this._receptionController,
       Controller.Popup this._popup,
       Map<String, String> this._langMap) {
@@ -76,9 +76,11 @@ class ReceptionSelector extends ViewWidget {
     _ui.onClick.listen((MouseEvent _) => _activateMe());
 
     _hotKeys.onCtrlAltR.listen((KeyboardEvent _) {
-      final ORModel.Reception selected = _ui.selectedReception;
-      if (selected.ID != ORModel.Reception.noID) {
-        _receptionController.get(selected.ID).then(_ui.refreshReception);
+      final ORModel.ReceptionReference selected = _ui.selectedReception;
+      if (selected.id != ORModel.Reception.noId) {
+        _receptionController.get(selected.id).then(
+            (ORModel.Reception reception) =>
+                _ui.refreshReception(reception.reference));
       }
     });
 
@@ -102,8 +104,8 @@ class ReceptionSelector extends ViewWidget {
             closeAfter: new Duration(seconds: 3));
         _receptionController
             .list()
-            .then((Iterable<ORModel.Reception> receptions) {
-          _ui.receptionsCache = receptions.toList()
+            .then((Iterable<ORModel.ReceptionReference> receptions) {
+          _ui.receptionsShadow = receptions.toList()
             ..sort(
                 (x, y) => x.name.toLowerCase().compareTo(y.name.toLowerCase()));
         });
@@ -113,7 +115,7 @@ class ReceptionSelector extends ViewWidget {
     _appState.activeCallChanged.listen((ORModel.Call newCall) {
       if (newCall != ORModel.Call.noCall &&
           newCall.inbound &&
-          _ui.selectedReception.ID != newCall.receptionID) {
+          _ui.selectedReception.id != newCall.receptionID) {
         if (!_pickedUpCalls.any((ORModel.Call c) => c.ID == newCall.ID)) {
           _pickedUpCalls.add(newCall);
 

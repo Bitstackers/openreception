@@ -349,10 +349,14 @@ abstract class UIModel {
 enum filterState { empty, firstInitial, initials, otherInitials, tag }
 
 class ContactWithFilterContext {
-  final ORModel.Contact contact;
+  final ORModel.BaseContact contact;
+  final ORModel.ReceptionAttributes attr;
   final filterState state;
   final String filterValue;
 
-  ContactWithFilterContext(ORModel.Contact this.contact, filterState this.state,
+  ContactWithFilterContext(
+      ORModel.BaseContact this.contact,
+      ORModel.ReceptionAttributes this.attr,
+      filterState this.state,
       String this.filterValue);
 }

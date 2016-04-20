@@ -68,27 +68,28 @@ class ContactSelector extends ViewWidget {
       _ui.clear();
     } else {
       _contactController
-          .list(reception)
-          .then((Iterable<ORModel.Contact> contacts) {
-        int nameSort(ORModel.Contact x, ORModel.Contact y) =>
-            x.fullName.toLowerCase().compareTo(y.fullName.toLowerCase());
+          .list(reception.reference)
+          .then((Iterable<ORModel.ReceptionContact> contacts) {
+        int nameSort(ORModel.ReceptionContact x, ORModel.ReceptionContact y) =>
+            x.contact.name.toLowerCase().compareTo(y.contact.name.toLowerCase());
 
-        final List<ORModel.Contact> functionContacts = contacts
-            .where((ORModel.Contact contact) =>
-                contact.enabled && contact.contactType == 'function')
+        final List<ORModel.ReceptionContact> functionContacts = contacts
+            .where((ORModel.ReceptionContact rc) =>
+                rc.contact.enabled && rc.contact.contactType == 'function')
             .toList()..sort(nameSort);
-        final List<ORModel.Contact> humanContacts = contacts
-            .where((ORModel.Contact contact) =>
-                contact.enabled && contact.contactType == 'human')
+        final List<ORModel.ReceptionContact> humanContacts = contacts
+            .where((ORModel.ReceptionContact rc) =>
+                rc.contact.enabled && rc.contact.contactType == 'human')
             .toList()..sort(nameSort);
-        final List<ORModel.Contact> disabledContacts = contacts
-            .where((ORModel.Contact contact) => !contact.enabled)
+        final List<ORModel.ReceptionContact> disabledContacts = contacts
+            .where((ORModel.ReceptionContact rc) => !rc.contact.enabled)
             .toList()..sort(nameSort);
 
-        _ui.contacts = new List<ORModel.Contact>()
+        _ui.contacts = new List<ORModel.ReceptionContact>()
           ..addAll(functionContacts)
           ..addAll(humanContacts)
           ..addAll(disabledContacts);
+
 
         _ui.selectFirstContact();
       });

@@ -21,12 +21,13 @@ class UIReceptionSelector extends UIModel {
   final Map<String, String> _langMap;
   final DivElement _myRoot;
   final Controller.Popup _popup;
+  final Controller.Reception _receptionController;
   List<LIElement> _receptionsCache = new List<LIElement>();
 
   /**
    * Constructor.
    */
-  UIReceptionSelector(DivElement this._myRoot, Controller.Popup this._popup,
+  UIReceptionSelector(DivElement this._myRoot, Controller.Popup this._popup, this._receptionController,
       Map<String, String> this._langMap) {
     _setupLocalKeys();
     _observers();
@@ -58,9 +59,9 @@ class UIReceptionSelector extends UIModel {
   /**
    * Construct a [reception] <li> element.
    */
-  LIElement _buildReceptionElement(ORModel.Reception reception) =>
+  LIElement _buildReceptionElement(ORModel.ReceptionReference reception) =>
       new LIElement()
-        ..dataset['id'] = reception.ID.toString()
+        ..dataset['id'] = reception.id.toString()
         ..dataset['name'] = reception.name.toLowerCase()
         ..dataset['object'] = JSON.encode(reception)
         ..text = reception.name;
@@ -151,10 +152,10 @@ class UIReceptionSelector extends UIModel {
   /**
    * Add [items] to the receptions list.
    */
-  set receptions(List<ORModel.Reception> items) {
+  set receptions(List<ORModel.ReceptionReference> items) {
     final List<LIElement> list = new List<LIElement>();
 
-    items.forEach((ORModel.Reception item) {
+    items.forEach((ORModel.ReceptionReference item) {
       list.add(_buildReceptionElement(item));
     });
 
@@ -166,7 +167,7 @@ class UIReceptionSelector extends UIModel {
    * receptions list. Call [refreshReceptions] to update the list using the
    * cached values.
    */
-  set receptionsCache(List<ORModel.Reception> items) {
+  set receptionsShadow(List<ORModel.ReceptionReference> items) {
     _receptionsCache = items.map(_buildReceptionElement).toList();
   }
 
@@ -174,16 +175,18 @@ class UIReceptionSelector extends UIModel {
    * Fire a [Reception] on [_bus]. The [Reception] is constructed from JSON
    * fonud in the data-object attribute of [li].
    */
-  void _receptionSelectCallback(LIElement li) {
-    _bus.fire(new ORModel.Reception.fromMap(JSON.decode(li.dataset['object'])));
+  Future _receptionSelectCallback(LIElement li) async {
+    final int rid = int.parse(li.dataset['id']);
+
+    _bus.fire(await _receptionController.get(rid));
   }
 
   /**
    * Refresh [reception] in the reception list, and mark it selected.
    */
-  void refreshReception(ORModel.Reception reception) {
+  void refreshReception(ORModel.ReceptionReference reception) {
     final LIElement newLi = _buildReceptionElement(reception);
-    final LIElement oldLi = _list.querySelector('[data-id="${reception.ID}"]');
+    final LIElement oldLi = _list.querySelector('[data-id="${reception.id}"]');
     oldLi.replaceWith(newLi);
     _markSelected(newLi);
   }
@@ -244,13 +247,13 @@ class UIReceptionSelector extends UIModel {
    *
    * Return [Reception.empty] if no [Reception] is selected.
    */
-  ORModel.Reception get selectedReception {
+  ORModel.ReceptionReference get selectedReception {
     LIElement li = _list.querySelector('.selected');
 
     if (li != null) {
-      return new ORModel.Reception.fromMap(JSON.decode(li.dataset['object']));
+      return ORModel.ReceptionReference.decode(JSON.decode(li.dataset['object']));
     } else {
-      return new ORModel.Reception.empty();
+      return const ORModel.ReceptionReference.none();
     }
   }
 }

@@ -57,7 +57,7 @@ class User {
   /**
    * Return the users list.
    */
-  Future<Iterable<ORModel.User>> list() => _user.list();
+  Future<Iterable<ORModel.UserReference>> list() => _user.list();
 
   /**
    * Set the user idle.

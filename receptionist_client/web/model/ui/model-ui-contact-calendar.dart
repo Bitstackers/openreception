@@ -97,7 +97,7 @@ class UIContactCalendar extends UIModel {
 
       list.add(new LIElement()
         ..children.addAll([content, labelAndTimestamp])
-        ..title = 'Id: ${item.ID.toString()}'
+        ..title = 'Id: ${item.id.toString()}'
         ..dataset['object'] = JSON.encode(item)
         ..classes.toggle('active', item.active));
     });

@@ -242,8 +242,8 @@ class UIMyCallQueue extends UIModel {
         _receptionController
             .get(call.receptionID)
             .then((ORModel.Reception reception) {
-          nameDiv.text = reception.fullName;
-          _receptionMap[call.receptionID] = reception.fullName;
+          nameDiv.text = reception.name;
+          _receptionMap[call.receptionID] = reception.name;
         });
       }
     } else {
@@ -253,8 +253,8 @@ class UIMyCallQueue extends UIModel {
         _contactController
             .get(call.contactID)
             .then((ORModel.BaseContact contact) {
-          nameDiv.text = contact.fullName;
-          _contactMap[call.contactID] = contact.fullName;
+          nameDiv.text = contact.name;
+          _contactMap[call.contactID] = contact.name;
         });
       }
     }

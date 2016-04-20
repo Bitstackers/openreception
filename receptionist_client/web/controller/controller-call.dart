@@ -71,25 +71,19 @@ class Call {
   Stream<CallCommand> get commandStream => _command.stream;
 
   /**
-   * Tries to dial [phoneNumber] in the context of [reception] and [contact].
+   * Tries to dial [phoneNumber] in the context of [reception] and [cRef].
    *
    * Setting [contextCallId] creates a reference between the newly created call and the given id.
    */
   Future<ORModel.Call> dial(
-      ORModel.PhoneNumber phoneNumber, ORModel.Reception reception, ORModel.Contact contact,
-      {String contextCallId: ''}) async {
-    _log.info('Dialing ${phoneNumber.endpoint}.');
-    final ORModel.OriginationContext context = new ORModel.OriginationContext()
-      ..contactId = contact.ID
-      ..receptionId = reception.ID
-      ..callId = contextCallId
-      ..dialplan = reception.dialplan;
+      ORModel.PhoneNumber phoneNumber, ORModel.OriginationContext context) async {
+    _log.info('Dialing ${phoneNumber.destination}.');
 
     _busy = true;
 
     _command.fire(CallCommand.dial);
 
-    return await _service.originate(phoneNumber.endpoint, context).then((ORModel.Call call) {
+    return await _service.originate(phoneNumber.destination, context).then((ORModel.Call call) {
       _command.fire(CallCommand.dialSuccess);
 
       return call;
@@ -217,7 +211,7 @@ class Call {
   Future<ORModel.Call> pickupNext() async {
     _busy = true;
     bool availableForPickup(ORModel.Call call) =>
-        call.assignedTo == ORModel.User.noID && !call.locked;
+        call.assignedTo == ORModel.User.noId && !call.locked;
 
     Iterable<ORModel.Call> calls = await _service.callList();
     ORModel.Call foundCall = calls.firstWhere(availableForPickup, orElse: () => null);

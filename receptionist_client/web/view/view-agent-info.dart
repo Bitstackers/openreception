@@ -64,15 +64,15 @@ class AgentInfo extends ViewWidget {
    * Update the users state in the UI.
    */
   Future _reloadUserState() async {
-    await _user.list().then((users) {
-      users.forEach((user) {
-        _userPeer[user.id] = user.peer;
-      });
+    await _user.list().then((users) async {
+      await Future.forEach (users, ((user) async {
+        _userPeer[user.id] = (await _user.get(user.id)).peer;
+      }));
     });
 
     await _user.stateList().then((status) {
       status.forEach((s) {
-        _userPaused[s.userID] = s.paused;
+        _userPaused[s.userId] = s.paused;
       });
     });
 
@@ -96,10 +96,10 @@ class AgentInfo extends ViewWidget {
     _hotKeys.onCtrlAltP.listen((KeyboardEvent _) => _toggleAgentState());
 
     _notification.onAgentStateChange.listen((ORModel.UserStatus userStatus) {
-      _userPaused[userStatus.userID] = userStatus.paused;
+      _userPaused[userStatus.userId] = userStatus.paused;
       _updateCounters();
 
-      if (userStatus.userID == _appState.currentUser.id &&
+      if (userStatus.userId == _appState.currentUser.id &&
           _appState.activeCall == ORModel.Call.noCall) {
         if (_userPaused.containsKey(_appState.currentUser.id) &&
             _userPaused[_appState.currentUser.id]) {

@@ -23,6 +23,9 @@ class AppClientState {
   final Controller.Notification _notification;
   final Bus<AppState> _stateChange = new Bus<AppState>();
 
+  ORModel.OriginationContext _originationContext;
+  ORModel.OriginationContext get originationContext => _originationContext;
+
   /**
    * Constructor.
    */

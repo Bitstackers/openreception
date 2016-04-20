@@ -68,7 +68,7 @@ class GlobalCallQueue extends ViewWidget {
       _ui.appendCall(call);
       _pling();
     } else if (event is OREvent.CallHangup ||
-        call.assignedTo != ORModel.User.noID) {
+        call.assignedTo != ORModel.User.noId) {
       _ui.removeCall(call);
     } else if (call.inbound) {
       _ui.updateCall(call);
@@ -79,7 +79,7 @@ class GlobalCallQueue extends ViewWidget {
    * Load the list of calls not currently assigned to anybody.
    */
   void _loadCallList() {
-    bool unassigned(ORModel.Call call) => call.assignedTo == ORModel.User.noID;
+    bool unassigned(ORModel.Call call) => call.assignedTo == ORModel.User.noId;
 
     _callController.listCalls().then((Iterable<ORModel.Call> calls) {
       _ui.calls = calls.where(unassigned).toList(growable: false);
@@ -100,7 +100,7 @@ class GlobalCallQueue extends ViewWidget {
      * Change the user/agent state for the currently logged in user.
      */
     _notification.onAgentStateChange.listen((ORModel.UserStatus userStatus) {
-      if (userStatus.userID == _appState.currentUser.id) {
+      if (userStatus.userId == _appState.currentUser.id) {
         _userState = userStatus;
       }
     });

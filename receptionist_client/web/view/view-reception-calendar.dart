@@ -57,7 +57,7 @@ class ReceptionCalendar extends ViewWidget {
   /**
    * Fetch all calendar entries for [reception].
    */
-  void _fetchCalendar(ORModel.Reception reception) {
+  void _fetchCalendar(ORModel.ReceptionReference reception) {
     _calendarController
         .receptionCalendar(reception)
         .then((Iterable<ORModel.CalendarEntry> entries) {
@@ -88,7 +88,7 @@ class ReceptionCalendar extends ViewWidget {
       _ui.clear();
     } else {
       _ui.headerExtra = ': ${reception.name}';
-      _fetchCalendar(reception);
+      _fetchCalendar(reception.reference);
     }
   }
 
@@ -97,10 +97,10 @@ class ReceptionCalendar extends ViewWidget {
    * reception, and update accordingly if so.
    */
   void _updateOnChange(OREvent.CalendarChange calendarChange) {
-    final ORModel.Reception currentReception =
+    final ORModel.ReceptionReference currentReception =
         _receptionSelector.selectedReception;
 
-    if (calendarChange.receptionID == currentReception.ID) {
+    if (calendarChange.owner.id == currentReception.id) {
       _fetchCalendar(currentReception);
     }
   }

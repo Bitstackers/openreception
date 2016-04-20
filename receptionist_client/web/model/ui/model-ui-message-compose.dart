@@ -215,52 +215,55 @@ class UIMessageCompose extends UIModel {
   /**
    * Return the Set of [ORModel.MessageRecipient]. May return the empty set.
    */
-  Set<ORModel.MessageRecipient> get recipients {
+  Set<ORModel.MessageEndpoint> get recipients {
     final String recipientsList = _recipientsList.dataset['recipients-list'];
 
     if (recipientsList != null && recipientsList.isNotEmpty) {
-      return new Set<ORModel.MessageRecipient>.from(
-          JSON.decode(recipientsList).map(ORModel.MessageRecipient.decode));
+      return new Set<ORModel.MessageEndpoint>.from(
+          JSON.decode(recipientsList).map(ORModel.MessageEndpoint.decode));
     } else {
-      return new Set<ORModel.MessageRecipient>();
+      return new Set<ORModel.MessageEndpoint>();
     }
   }
 
   /**
    * Add [recipients] to the recipients list.
    */
-  void set recipients(Set<ORModel.MessageRecipient> recipients) {
+  void set recipients(Set<ORModel.MessageEndpoint> recipients) {
     _showRecipientsText.hidden = true;
     _showNoRecipientsText.hidden = true;
 
-    String contactString(ORModel.MessageRecipient recipient) =>
-        '${recipient.contactName} @ ${recipient.receptionName} (${recipient.address})';
+    String contactString(ORModel.MessageEndpoint recipient) =>
+        '${recipient.name} (${recipient.address})';
 
-    Iterable<ORModel.MessageRecipient> toRecipients() => recipients
-        .where((ORModel.MessageRecipient r) => r.role == ORModel.Role.TO);
+    Iterable<ORModel.MessageEndpoint> toRecipients() =>
+        recipients.where((ORModel.MessageEndpoint r) =>
+            r.role == ORModel.MessageEndpointType.emailTo);
 
-    Iterable<ORModel.MessageRecipient> ccRecipients() => recipients
-        .where((ORModel.MessageRecipient r) => r.role == ORModel.Role.CC);
+    Iterable<ORModel.MessageEndpoint> ccRecipients() =>
+        recipients.where((ORModel.MessageEndpoint r) =>
+            r.role == ORModel.MessageEndpointType.emailCc);
 
-    Iterable<ORModel.MessageRecipient> bccRecipients() => recipients
-        .where((ORModel.MessageRecipient r) => r.role == ORModel.Role.BCC);
+    Iterable<ORModel.MessageEndpoint> bccRecipients() =>
+        recipients.where((ORModel.MessageEndpoint r) =>
+            r.role == ORModel.MessageEndpointType.emailBcc);
 
     List<LIElement> list = new List<LIElement>();
 
-    Iterable maps = recipients.map((ORModel.MessageRecipient r) => r.toJson());
+    Iterable maps = recipients.map((ORModel.MessageEndpoint r) => r.toJson());
     _recipientsList.dataset['recipients-list'] = JSON.encode(maps.toList());
 
-    toRecipients().forEach((ORModel.MessageRecipient recipient) {
+    toRecipients().forEach((ORModel.MessageEndpoint recipient) {
       list.add(new LIElement()..text = contactString(recipient));
     });
 
-    ccRecipients().forEach((ORModel.MessageRecipient recipient) {
+    ccRecipients().forEach((ORModel.MessageEndpoint recipient) {
       list.add(new LIElement()
         ..text = contactString(recipient)
         ..classes.add('cc'));
     });
 
-    bccRecipients().forEach((ORModel.MessageRecipient recipient) {
+    bccRecipients().forEach((ORModel.MessageEndpoint recipient) {
       list.add(new LIElement()
         ..text = contactString(recipient)
         ..classes.add('bcc'));

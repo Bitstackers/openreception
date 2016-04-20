@@ -26,13 +26,11 @@ class MessageArchive extends ViewWidget {
   final Controller.Destination _myDestination;
   final ORModel.MessageFilter _notSavedFilter =
       new ORModel.MessageFilter.empty()
-        ..limitCount = 100
-        ..messageState = ORModel.MessageState.NotSaved;
+        ..limitCount = 100;
   final Controller.Popup _popup;
   final Model.UIReceptionSelector _receptionSelector;
   final ORModel.MessageFilter _savedFilter = new ORModel.MessageFilter.empty()
-    ..limitCount = 1000
-    ..messageState = ORModel.MessageState.Saved;
+    ..limitCount = 1000;
   final Model.UIMessageArchive _uiModel;
   final Controller.User _user;
 
@@ -61,11 +59,13 @@ class MessageArchive extends ViewWidget {
 
   @override void _onFocus(Controller.Destination _) {
     _ui.context = new ORModel.MessageContext.empty()
-      ..contactID = _contactSelector.selectedContact.ID
-      ..receptionID = _receptionSelector.selectedReception.ID;
+      ..cid = _contactSelector.selectedContact.contact.id
+      ..contactName = _contactSelector.selectedContact.contact.name
+      ..rid = _receptionSelector.selectedReception.id
+      ..receptionName = _receptionSelector.selectedReception.name;
 
     String header =
-        '(${_contactSelector.selectedContact.fullName} @ ${_receptionSelector.selectedReception.name})';
+        '(${_contactSelector.selectedContact.contact.name} @ ${_receptionSelector.selectedReception.name})';
 
     if (_receptionSelector.selectedReception == ORModel.Reception.noReception) {
       header = '';
@@ -73,7 +73,7 @@ class MessageArchive extends ViewWidget {
       _ui.clearNotSavedList();
     }
 
-    _user.list().then((Iterable<ORModel.User> users) {
+    _user.list().then((Iterable<ORModel.UserReference> users) {
       _ui.users = users;
 
       _messageController.list(_savedFilter).then(
@@ -83,9 +83,9 @@ class MessageArchive extends ViewWidget {
         _ui.headerExtra = header;
         _ui.clearNotSavedList();
         if (_receptionSelector.selectedReception.isNotEmpty &&
-            _contactSelector.selectedContact.isNotEmpty) {
-          _notSavedFilter.contactID = _contactSelector.selectedContact.ID;
-          _notSavedFilter.receptionID = _receptionSelector.selectedReception.ID;
+            _contactSelector.selectedContact.contact.isNotEmpty) {
+          _notSavedFilter.contactId = _contactSelector.selectedContact.contact.id;
+          _notSavedFilter.receptionId = _receptionSelector.selectedReception.id;
 
           _messageController.list(_notSavedFilter).then(
               (Iterable<ORModel.Message> messages) =>
@@ -113,19 +113,19 @@ class MessageArchive extends ViewWidget {
       message.recipients = new Set();
 
       ORModel.Message savedMessage = await _messageController.save(message);
-      ORModel.MessageQueueItem response =
+      ORModel.MessageQueueEntry response =
           await _messageController.enqueue(savedMessage);
 
       message.flag.manuallyClosed = true;
 
       _ui.moveMessage(savedMessage);
 
-      _log.info('Message id ${response.messageID} successfully enqueued');
+      _log.info('Message id ${response.message.id} successfully enqueued');
       _popup.success(
-          _langMap[Key.messageCloseSuccessTitle], 'ID ${response.messageID}');
+          _langMap[Key.messageCloseSuccessTitle], 'ID ${response.message.id}');
     } catch (error) {
       _log.shout('Could not close ${message.asMap} $error');
-      _popup.error(_langMap[Key.messageCloseErrorTitle], 'ID ${message.ID}');
+      _popup.error(_langMap[Key.messageCloseErrorTitle], 'ID ${message.id}');
     }
   }
 
@@ -134,16 +134,16 @@ class MessageArchive extends ViewWidget {
    */
   dynamic _deleteMessage(ORModel.Message message) async {
     try {
-      await _messageController.remove(message.ID);
+      await _messageController.remove(message.id);
 
       _ui.removeMessage(message);
 
-      _log.info('Message id ${message.ID} successfully deleted');
+      _log.info('Message id ${message.id} successfully deleted');
       _popup.success(
-          _langMap[Key.messageDeleteSuccessTitle], 'ID ${message.ID}');
+          _langMap[Key.messageDeleteSuccessTitle], 'ID ${message.id}');
     } catch (error) {
       _log.shout('Could not delete ${message.asMap} $error');
-      _popup.error(_langMap[Key.messageDeleteErrorTitle], 'ID ${message.ID}');
+      _popup.error(_langMap[Key.messageDeleteErrorTitle], 'ID ${message.id}');
     }
   }
 
@@ -160,10 +160,10 @@ class MessageArchive extends ViewWidget {
 
       final ORModel.MessageFilter filter = new ORModel.MessageFilter.empty()
         ..limitCount = 100
-        ..messageState = ORModel.MessageState.NotSaved
-        ..upperMessageID = messageId - 1
-        ..contactID = _contactSelector.selectedContact.ID
-        ..receptionID = _receptionSelector.selectedReception.ID;
+        // ..messageState = ORModel.MessageState.NotSaved
+        // ..upperMessageID = messageId - 1
+        ..contactId = _contactSelector.selectedContact.contact.id
+        ..receptionId = _receptionSelector.selectedReception.id;
 
       _messageController
           .list(filter)
@@ -202,19 +202,19 @@ class MessageArchive extends ViewWidget {
   dynamic _sendMessage(ORModel.Message message) async {
     try {
       ORModel.Message savedMessage = await _messageController.save(message);
-      ORModel.MessageQueueItem response =
+      ORModel.MessageQueueEntry response =
           await _messageController.enqueue(savedMessage);
 
-      savedMessage.enqueued = true;
+      //savedMessage.enqueued = true;
 
       _ui.moveMessage(savedMessage);
 
-      _log.info('Message id ${response.messageID} successfully enqueued');
+      _log.info('Message id ${response.message.id} successfully enqueued');
       _popup.success(_langMap[Key.messageSaveSendSuccessTitle],
-          'ID ${response.messageID}');
+          'ID ${response.message.id}');
     } catch (error) {
       _log.shout('Could not save/enqueue ${message.asMap} $error');
-      _popup.error(_langMap[Key.messageSaveSendErrorTitle], 'ID ${message.ID}');
+      _popup.error(_langMap[Key.messageSaveSendErrorTitle], 'ID ${message.id}');
     }
   }
 }

@@ -25,8 +25,6 @@ class ORCReady {
   ContactCalendar _contactCalendar;
   final Controller.Contact _contactController;
   ContactSelector _contactSelector;
-  final Controller.DistributionList _distributionListController;
-  final Controller.Endpoint _endpointController;
   Map<String, String> _langMap;
   MessageCompose _messageCompose;
   Controller.Message _messageController;
@@ -36,7 +34,7 @@ class ORCReady {
   final Controller.Reception _receptionController;
   ReceptionSelector _receptionSelector;
   static ORCReady _singleton;
-  List<ORModel.Reception> _sortedReceptions;
+  List<ORModel.ReceptionReference> _sortedReceptions;
   final Controller.Sound _sound;
   final Controller.User _userController;
   final Model.UIORCReady _ui;
@@ -51,13 +49,11 @@ class ORCReady {
       ORModel.ClientConfiguration clientConfig,
       Controller.Contact contactController,
       Controller.Reception receptionController,
-      List<ORModel.Reception> sortedReceptions,
+      List<ORModel.ReceptionReference> sortedReceptions,
       Controller.User userController,
       Controller.Call callController,
       Controller.Notification notification,
       Controller.Message message,
-      Controller.DistributionList distributionListController,
-      Controller.Endpoint endpointController,
       Controller.Popup popup,
       Controller.Sound sound,
       Map<String, String> langMap) {
@@ -74,8 +70,6 @@ class ORCReady {
           callController,
           notification,
           message,
-          distributionListController,
-          endpointController,
           popup,
           sound,
           langMap);
@@ -99,8 +93,6 @@ class ORCReady {
       this._callController,
       this._notification,
       this._messageController,
-      this._distributionListController,
-      this._endpointController,
       this._popup,
       this._sound,
       this._langMap) {
@@ -141,8 +133,8 @@ class ORCReady {
         new Model.UIReceptionCalendar(
             querySelector('#reception-calendar'), _weekDays, _langMap);
     Model.UIReceptionSelector _uiReceptionSelector =
-        new Model.UIReceptionSelector(
-            querySelector('#reception-selector'), _popup, _langMap);
+        new Model.UIReceptionSelector(querySelector('#reception-selector'),
+            _popup, _receptionController, _langMap);
 
     new Contexts(new Model.UIContexts());
     new Hint(new Model.UIHint());
@@ -229,8 +221,6 @@ class ORCReady {
         _uiReceptionSelector,
         _messageController,
         _notification,
-        _distributionListController,
-        _endpointController,
         _popup,
         _langMap);
 

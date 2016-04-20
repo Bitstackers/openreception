@@ -15,16 +15,17 @@ part of controller;
 
 class Message {
   final ORService.RESTMessageStore _store;
+  final ORModel.User _user;
 
   /**
    * Constructor.
    */
-  Message(this._store);
+  Message(this._store, this._user);
 
   /**
    * Enqueues a [ORModel.Message] object.
    */
-  Future<ORModel.MessageQueueItem> enqueue(ORModel.Message message) =>
+  Future<ORModel.MessageQueueEntry> enqueue(ORModel.Message message) =>
       _store.enqueue(message);
 
   /**
@@ -43,11 +44,11 @@ class Message {
    * Delete [messageId] from the database. Throws Storage.NotFound if the
    * message does not exist or if the action did not succeed.
    */
-  Future remove(int messageId) => _store.remove(messageId);
+  Future remove(int messageId) => _store.remove(messageId, _user);
 
   /**
    * Saves a [ORModel.Message] object.
    */
-  Future<ORModel.Message> save(ORModel.Message message) => message.ID ==
-      ORModel.Message.noID ? _store.create(message) : _store.update(message);
+  Future<ORModel.Message> save(ORModel.Message message) => message.id ==
+      ORModel.Message.noId ? _store.create(message, _user) : _store.update(message, _user);
 }

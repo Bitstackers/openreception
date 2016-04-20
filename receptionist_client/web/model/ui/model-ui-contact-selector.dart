@@ -63,21 +63,21 @@ class UIContactSelector extends UIModel {
   void clear() {
     _list.children.clear();
     _filterInput.value = '';
-    _bus.fire(new ContactWithFilterContext(
-        new ORModel.Contact.empty(), state, filterInputValue));
+    _bus.fire(new ContactWithFilterContext(new ORModel.BaseContact.empty(),
+        new ORModel.ReceptionAttributes.empty(), state, filterInputValue));
   }
 
   /**
    * Add [contacts] to the [Contact] list. Always resets the filter input to
    * empty string.
    */
-  set contacts(Iterable<ORModel.Contact> contacts) {
+  set contacts(Iterable<ORModel.ReceptionContact> contacts) {
     _filterInput.value = '';
 
     final List<LIElement> list = new List<LIElement>();
 
-    contacts.forEach((ORModel.Contact item) {
-      String initials = item.fullName
+    contacts.forEach((ORModel.ReceptionContact item) {
+      String initials = item.contact.name
           .split(' ')
           .where((value) => value.trim().isNotEmpty)
           .map((value) => value.substring(0, 1))
@@ -87,8 +87,8 @@ class UIContactSelector extends UIModel {
       /// Add contact name to tags. We simply treat the name as just another tag
       /// when searching for contacts.
       final List<String> tags = new List<String>()
-        ..addAll(item.tags)
-        ..addAll(item.fullName.split(' '));
+        ..addAll(item.attr.tags)
+        ..addAll(item.contact.name.split(' '));
 
       list.add(new LIElement()
         ..dataset['initials'] = initials
@@ -96,9 +96,9 @@ class UIContactSelector extends UIModel {
         ..dataset['otherinitials'] = initials.substring(1)
         ..dataset['tags'] = tags.join(',').toLowerCase()
         ..dataset['object'] = JSON.encode(item)
-        ..classes.addAll(item.enabled ? [] : ['disabled'])
-        ..classes.addAll(item.contactType == 'function' ? ['function'] : [])
-        ..text = item.fullName);
+        ..classes.addAll(item.contact.enabled ? [] : ['disabled'])
+        ..classes.addAll(item.contact.contactType == 'function' ? ['function'] : [])
+        ..text = item.contact.name);
     });
 
     _list.children = list;
@@ -109,10 +109,10 @@ class UIContactSelector extends UIModel {
    * constructed from JSON found in the data-object attribute of [li].
    */
   void _contactSelectCallback(LIElement li) {
+    ORModel.ReceptionContact rc =
+        ORModel.ReceptionContact.decode(JSON.decode(li.dataset['object']));
     _bus.fire(new ContactWithFilterContext(
-        new ORModel.Contact.fromMap(JSON.decode(li.dataset['object'])),
-        state,
-        filterInputValue));
+        rc.contact, rc.attr, state, filterInputValue));
   }
 
   /**
@@ -180,8 +180,8 @@ class UIContactSelector extends UIModel {
     }
 
     if (_list.querySelectorAll('.hide').length == _list.children.length) {
-      _bus.fire(new ContactWithFilterContext(
-          new ORModel.Contact.empty(), state, filterInputValue));
+      _bus.fire(new ContactWithFilterContext(new ORModel.BaseContact.empty(),
+          new ORModel.ReceptionAttributes.empty(), state, filterInputValue));
     } else if (_list.children.isNotEmpty) {
       final LIElement selected = _list.querySelector('.selected');
       if (selected != null && selected.classes.contains('hide')) {
@@ -269,13 +269,13 @@ class UIContactSelector extends UIModel {
    *
    * Return [Contact.none] if no [Contact] is selected.
    */
-  ORModel.Contact get selectedContact {
+  ORModel.ReceptionContact get selectedContact {
     LIElement li = _list.querySelector('.selected');
 
     if (li != null) {
-      return new ORModel.Contact.fromMap(JSON.decode(li.dataset['object']));
+      return ORModel.ReceptionContact.decode(JSON.decode(li.dataset['object']));
     } else {
-      return new ORModel.Contact.empty();
+      return new ORModel.ReceptionContact.empty();
     }
   }
 
@@ -286,8 +286,8 @@ class UIContactSelector extends UIModel {
     if (_list.children.isNotEmpty) {
       _markSelected(_scanForwardForVisibleElement(_list.children.first));
     } else {
-      _bus.fire(new ContactWithFilterContext(
-          new ORModel.Contact.empty(), state, filterInputValue));
+      _bus.fire(new ContactWithFilterContext(new ORModel.BaseContact.empty(),
+          new ORModel.ReceptionAttributes.empty(), state, filterInputValue));
     }
   }
 

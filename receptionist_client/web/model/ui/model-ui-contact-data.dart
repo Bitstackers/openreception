@@ -109,17 +109,17 @@ class UIContactData extends UIModel {
     if (cwfc.contact.isNotEmpty) {
       clear();
 
-      headerExtra = ': ${cwfc.contact.fullName}';
-      additionalInfo = cwfc.contact.infos;
-      backups = cwfc.contact.backupContacts;
-      commands = cwfc.contact.handling;
-      departments = cwfc.contact.departments;
-      emailAddresses = cwfc.contact.emailaddresses;
-      relations = cwfc.contact.relations;
-      responsibility = cwfc.contact.responsibilities;
-      telephoneNumbers = cwfc.contact.phones;
-      titles = cwfc.contact.titles;
-      workHours = cwfc.contact.workhours;
+      headerExtra = ': ${cwfc.contact.name}';
+      additionalInfo = cwfc.attr.infos;
+      backups = cwfc.attr.backupContacts;
+      commands = cwfc.attr.handling;
+      departments = cwfc.attr.departments;
+      emailAddresses = cwfc.attr.emailaddresses;
+      relations = cwfc.attr.relations;
+      responsibility = cwfc.attr.responsibilities;
+      telephoneNumbers = cwfc.attr.phones;
+      titles = cwfc.attr.titles;
+      workHours = cwfc.attr.workhours;
 
       if (_showPSTNSpan.classes.contains('active')) {
         _showPSTNSpan.classes.toggle('active', false);
@@ -228,7 +228,7 @@ class UIContactData extends UIModel {
         !_pstnInput.value.trim().startsWith('0') &&
         noRinging) {
       ORModel.PhoneNumber phoneNumber = new ORModel.PhoneNumber.empty()
-        ..endpoint = _pstnInput.value.trim();
+        ..destination = _pstnInput.value.trim();
       _pstnInput.classes.toggle('ringing', true);
       _busRinging.fire(phoneNumber);
     } else if (!_showPSTNSpan.classes.contains('active') && noRinging) {
@@ -276,7 +276,7 @@ class UIContactData extends UIModel {
     final List<LIElement> foundLis = new List<LIElement>();
     final List<LIElement> lis = new List<LIElement>();
 
-    for (String item in cwfc.contact.tags.toSet()) {
+    for (String item in cwfc.attr.tags.toSet()) {
       final LIElement li = new LIElement()..text = item;
       if (cwfc.state == filterState.tag &&
           filterParts.any((String f) => item.toLowerCase().contains(f))) {
@@ -301,7 +301,7 @@ class UIContactData extends UIModel {
 
       spanNumber.classes.toggle('secret', item.confidential);
       spanNumber.classes.add('number');
-      spanNumber.text = item.endpoint;
+      spanNumber.text = item.destination;
 
       spanLabel.classes.add('label');
       spanLabel.text = item.description;

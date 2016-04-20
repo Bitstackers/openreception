@@ -18,38 +18,39 @@ part of controller;
  */
 class Calendar {
   final ORService.RESTCalendarStore _calendarStore;
+  final ORModel.User _user;
 
   /**
    * Constructor.
    */
-  Calendar(this._calendarStore);
+  Calendar(this._calendarStore, this._user);
 
   /**
    * Return the latest entry change information for the [entryId] calendar entry.
    */
-  Future<Iterable<ORModel.CalendarEntryChange>> calendarEntryChanges(
+  Future<Iterable<ORModel.Commit>> calendarEntryChanges(
           ORModel.CalendarEntry entry) =>
-      _calendarStore.changes(entry.ID);
+      _calendarStore.changes(entry.owner);
 
   /**
    * Return the latest entry change information for the [entryId] calendar entry.
    */
-  Future<ORModel.CalendarEntryChange> calendarEntryLatestChange(
-          ORModel.CalendarEntry entry) =>
-      _calendarStore.latestChange(entry.ID);
+  Future<ORModel.Commit> calendarEntryLatestChange(
+          ORModel.CalendarEntry entry) async =>
+      (await _calendarStore.changes(entry.owner)).first;
 
   /**
    * Save [entry] to the database.
    */
   Future createCalendarEvent(ORModel.CalendarEntry entry) =>
-      _calendarStore.create(entry);
+      _calendarStore.create(entry, _user);
 
   /**
    * Return all the [contact] [ORModel.CalendarEntry]s.
    */
   Future<Iterable<ORModel.CalendarEntry>> contactCalendar(
-          ORModel.Contact contact) =>
-      _calendarStore.list(new ORModel.OwningContact(contact.ID));
+          ORModel.ContactReference cRef) =>
+      _calendarStore.list(new ORModel.OwningContact(cRef.id));
 
   /**
    * Delete [entry] from the database.
@@ -61,14 +62,14 @@ class Calendar {
    * Return all the [ORModel.CalendarEntry]s of a [reception].
    */
   Future<Iterable<ORModel.CalendarEntry>> receptionCalendar(
-          ORModel.Reception reception) =>
-      _calendarStore.list(new ORModel.OwningReception(reception.ID));
+          ORModel.ReceptionReference reception) =>
+      _calendarStore.list(new ORModel.OwningReception(reception.id));
 
   /**
    * Save [entry] to the database.
    */
   Future saveCalendarEvent(ORModel.CalendarEntry entry) =>
-      entry.ID == ORModel.CalendarEntry.noID
+      entry.id == ORModel.CalendarEntry.noId
           ? createCalendarEvent(entry)
-          : _calendarStore.update(entry);
+          : _calendarStore.update(entry, _user);
 }

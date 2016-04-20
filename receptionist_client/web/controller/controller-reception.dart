@@ -32,5 +32,5 @@ class Reception {
   /**
    * List [ORModel.Reception]'s
    */
-  Future<Iterable<ORModel.Reception>> list() => _store.list();
+  Future<Iterable<ORModel.ReceptionReference>> list() => _store.list();
 }
