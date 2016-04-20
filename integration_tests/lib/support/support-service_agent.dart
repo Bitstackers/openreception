@@ -524,14 +524,14 @@ class ServiceAgent {
       ..contactId = contact.id
       ..receptionId = rec.id;
 
-    final rRef = await contactStore.addData(attributes, user);
-    return contactStore.data(rRef.contact.id, rRef.reception.id);
+    await contactStore.addData(attributes, user);
+    return contactStore.data(contact.id, rec.id);
   }
 
   /**
    *
    */
-  Future<model.ReceptionContactReference> updatesReceptionAttributes(
+  Future<model.ReceptionContact> updatesReceptionAttributes(
       model.ReceptionAttributes attr) async {
     final attributes = Randomizer.randomAttributes()
       ..contactId = attr.contactId

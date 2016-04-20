@@ -21,13 +21,13 @@ const String _namespace = 'filestore';
  * Run all filestore tests.
  */
 allTests() {
-  _runReceptionTests();
-  _runCalendarTests();
-  _runContactTests();
-  _runDialplanTests();
-  _runIvrTests();
-  _runOrganizationTests();
-  _runUserTests();
-  _runMessageTests();
-  _runMessageQueueTests();
+   _runReceptionTests();
+   _runCalendarTests();
+   _runContactTests();
+   _runDialplanTests();
+   _runIvrTests();
+   _runOrganizationTests();
+   _runUserTests();
+   _runMessageTests();
+   _runMessageQueueTests();
 }

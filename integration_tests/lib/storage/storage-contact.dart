@@ -478,9 +478,7 @@ abstract class Contact {
       ..contactId = con.id
       ..receptionId = rec.id;
 
-    final ref = await sa.contactStore.addData(attr, sa.user);
-    expect(ref.contact.id, equals(con.id));
-    expect(ref.reception.id, equals(rec.id));
+    await sa.contactStore.addData(attr, sa.user);
     final fetched = await sa.contactStore.data(con.id, rec.id);
 
     expect(attr.toJson(), equals(fetched.toJson()));
@@ -505,9 +503,7 @@ abstract class Contact {
       ..receptionId = rec.id;
 
     {
-      final ref = await sa.contactStore.addData(attr, sa.user);
-      expect(ref.contact.id, equals(con.id));
-      expect(ref.reception.id, equals(rec.id));
+      await sa.contactStore.addData(attr, sa.user);
       final fetched = await sa.contactStore.data(con.id, rec.id);
 
       expect(attr.toJson(), equals(fetched.toJson()));
@@ -518,9 +514,7 @@ abstract class Contact {
       ..receptionId = rec.id;
 
     {
-      final ref = await sa.contactStore.updateData(updated, sa.user);
-      expect(ref.contact.id, equals(con.id));
-      expect(ref.reception.id, equals(rec.id));
+      await sa.contactStore.updateData(updated, sa.user);
       final fetched = await sa.contactStore.data(con.id, rec.id);
 
       expect(updated.toJson(), equals(fetched.toJson()));
