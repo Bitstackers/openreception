@@ -94,6 +94,5 @@ remove-symlinks:
 	-rm ${PREFIX}/userserver.dart
 
 default-config:
-	@install --directory ${PREFIX}
 	@install lib/configuration.dart.dist lib/configuration.dart
 
