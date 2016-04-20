@@ -17,12 +17,7 @@ class Sequencer {
   final Logger _log = new Logger('$libraryName.GitEngine');
   final String path;
 
-  bool get ready => _busy.isCompleted;
   File _sequencerFile;
-
-  Future get whenReady => _busy.future;
-
-  Completer _busy = new Completer();
 
   void set _currentId(int id) => _sequencerFile.writeAsStringSync('$id');
 
@@ -50,8 +45,10 @@ class Sequencer {
    *
    */
   _checkForInconsistencies() {
-    if (_currentId > _findHighestId()) {
+    final int highestId = _findHighestId();
+    if (highestId > _currentId) {
       _log.shout('Index sequence out of sync - resyncing!');
+      _currentId = highestId;
     }
   }
 
@@ -59,9 +56,9 @@ class Sequencer {
    *
    */
   int _findHighestId() {
-    int fseToId(File f) {
+    int fseToId(FileSystemEntity fse) {
       try {
-        return int.parse(basenameWithoutExtension(f.path));
+        return int.parse(basenameWithoutExtension(fse.path));
       } on FormatException {
         return -1;
       }
@@ -79,38 +76,5 @@ class Sequencer {
     });
 
     return maximum;
-  }
-
-  /**
-   *
-   */
-  void _lock() {
-    if (!ready) {
-      throw new storage.Busy();
-    }
-
-    _busy = new Completer();
-  }
-
-  /**
-   *
-   */
-  void _unlock() {
-    if (ready) {
-      _log.shout('Unlocking not previously locked process');
-    } else {
-      _busy.complete();
-    }
-  }
-
-  /**
-   *
-   */
-  void _unlockError(error, stackTrace) {
-    if (ready) {
-      _log.shout('Unlocking not previously locked process');
-    } else {
-      _busy.completeError(error, stackTrace);
-    }
   }
 }
