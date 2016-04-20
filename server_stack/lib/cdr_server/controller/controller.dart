@@ -20,6 +20,6 @@ import 'package:logging/logging.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
-import '../../configuration.dart';
+import 'package:openreception.server/configuration.dart';
 
 part 'controller-cdr.dart';

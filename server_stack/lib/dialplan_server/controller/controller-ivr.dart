@@ -158,7 +158,7 @@ class Ivr {
     model.User user;
     try {
       user = await _authService.userOf(tokenFrom(request));
-    } catch (e, s) {
+    } catch (e) {
       _log.warning('Could not connect to auth server');
       return authServerDown();
     }
