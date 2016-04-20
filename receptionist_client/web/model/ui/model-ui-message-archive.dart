@@ -65,17 +65,20 @@ class UIMessageArchive extends UIModel {
       new ImageElement()
         ..src = 'images/send.svg'
         ..title = _langMap['send'].toLowerCase()
-        ..style.visibility = message.closed ? 'hidden' : 'visible'
+        //TODO: aquire status from queue-store
+        //..style.visibility = message.closed ? 'hidden' : 'visible'
         ..onClick.listen((_) => _yesNo(buttonBox, yesNoBox, message, _messageSendBus)),
       new ImageElement()
         ..src = 'images/bin.svg'
         ..title = _langMap['delete'].toLowerCase()
-        ..style.visibility = message.closed ? 'hidden' : 'visible'
+        //TODO: aquire status from queue-store
+        //..style.visibility = message.closed ? 'hidden' : 'visible'
         ..onClick.listen((_) => _yesNo(buttonBox, yesNoBox, message, _messageDeleteBus)),
       new ImageElement()
         ..src = 'images/close.svg'
         ..title = _langMap['close'].toLowerCase()
-        ..style.visibility = message.closed ? 'hidden' : 'visible'
+        //TODO: aquire status from queue-store
+        //..style.visibility = message.closed ? 'hidden' : 'visible'
         ..onClick.listen((_) => _yesNo(buttonBox, yesNoBox, message, _messageCloseBus))
     ]);
 
@@ -189,17 +192,18 @@ class UIMessageArchive extends UIModel {
       return _langMap[Key.closed].toUpperCase();
     }
 
-    if (msg.sent) {
-      return _langMap[Key.sent].toUpperCase();
-    }
-
-    if (msg.enqueued) {
-      return _langMap[Key.queued].toUpperCase();
-    }
-
-    if (!msg.sent && !msg.enqueued) {
-      return _langMap[Key.saved].toUpperCase();
-    }
+    //TODO: aquire status from queue-store
+    // if (msg.sent) {
+    //   return _langMap[Key.sent].toUpperCase();
+    // }
+    //
+    // if (msg.enqueued) {
+    //   return _langMap[Key.queued].toUpperCase();
+    // }
+    //
+    // if (!msg.sent && !msg.enqueued) {
+    //   return _langMap[Key.saved].toUpperCase();
+    // }
 
     return _langMap[Key.unknown].toUpperCase();
   }
