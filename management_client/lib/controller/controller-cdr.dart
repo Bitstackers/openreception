@@ -6,8 +6,6 @@ class Cdr {
 
   Cdr(Uri this._host, String this._token);
 
-  Future<Map<String, dynamic>> entries(DateTime from, DateTime to) => null;
-
   Future<Map<String, dynamic>> summaries(
       DateTime from, DateTime to, String rids) {
     final String f = Uri.encodeComponent(from.toIso8601String());
