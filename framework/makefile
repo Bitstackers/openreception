@@ -1,5 +1,8 @@
-all: fetch-dependencies upgrade-dependencies
+all: pubspec.lock
 	@echo Nothing to do for a library, how about 'make tests' instead?
+
+upgrade-packages:
+	@pub upgrade
 
 tests: pubspec.lock
 	@dart test/tests.dart
