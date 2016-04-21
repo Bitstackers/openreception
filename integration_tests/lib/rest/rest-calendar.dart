@@ -119,7 +119,7 @@ void _runCalendarTests() {
 
       reception = await sa.createsReception(await sa.createsOrganization());
 
-      owner = new model.OwningContact(reception.id);
+      owner = new model.OwningReception(reception.id);
 
       cProcess = await env.requestCalendarserverProcess();
 
