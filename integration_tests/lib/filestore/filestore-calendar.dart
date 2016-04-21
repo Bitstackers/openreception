@@ -79,7 +79,7 @@ void _runCalendarTests() {
       final reception =
           await sa.createsReception(await sa.createsOrganization());
 
-      owner = new model.OwningContact(reception.id);
+      owner = new model.OwningReception(reception.id);
     });
 
     tearDown(() async {
