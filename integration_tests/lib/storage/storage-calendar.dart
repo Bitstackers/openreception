@@ -15,6 +15,20 @@ abstract class Calendar {
   /**
    *
    */
+  static createAfterLastRemove(model.Owner owner, storage.Calendar calendarStore,
+      model.User creator) async {
+    final entry = await calendarStore.create(
+        Randomizer.randomCalendarEntry()..owner = owner, creator);
+
+    await calendarStore.remove(entry.id, creator);
+    await calendarStore.create(
+        Randomizer.randomCalendarEntry()..owner = owner, creator);
+
+  }
+
+  /**
+   *
+   */
   static update(model.Owner owner, storage.Calendar calendarStore,
       model.User creator) async {
     model.CalendarEntry createdEntry = await calendarStore.create(
@@ -296,7 +310,12 @@ abstract class Calendar {
   }
 
   /**
-   *
+   * Test what happens when the last object of a kind is removed.
+   * The motivation for this test is that the git-tracked filestore will
+   * clean out empty folders, potentially leaving the filestore in an
+   * inconsistent state that will make every subsequent creation fail.
+   * This test asserts that subsequent creates do not fail after removal of
+   * the last object.
    */
   static Future latestChangeOnRemove(model.Owner owner,
       storage.Calendar calendarStore, model.User creator) async {
