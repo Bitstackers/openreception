@@ -29,9 +29,7 @@ class Calendar implements storage.Calendar {
    */
   Calendar({String this.path: 'json-data/calendar'}) {
     final List<String> pathsToCreate = [
-      path,
-      '$path/contact',
-      '$path/reception'
+      path
     ];
 
     pathsToCreate.forEach((String newPath) {
@@ -123,7 +121,7 @@ class Calendar implements storage.Calendar {
     final Directory ownerDir = new Directory(ownerPath);
     if (!ownerDir.existsSync()) {
       _log.finest('Creating new directory ${ownerDir.path}');
-      ownerDir.createSync();
+      ownerDir.createSync(recursive: true);
     }
 
     final File file = new File('${ownerDir.path}/${entry.id}.json');
