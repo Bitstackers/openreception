@@ -58,6 +58,11 @@ void _runCalendarTests() {
     test('create (contact owner)',
         () => storeTest.Calendar.create(owner, sa.calendarStore, sa.user));
 
+    test(
+        'create after last is removed (contact owner)',
+        () => storeTest.Calendar
+            .createAfterLastRemove(owner, sa.calendarStore, sa.user));
+
     test('get (contact owner)',
         () => storeTest.Calendar.get(owner, sa.calendarStore, sa.user));
 
@@ -138,6 +143,11 @@ void _runCalendarTests() {
 
     test('create (reception owner)',
         () => storeTest.Calendar.create(owner, sa.calendarStore, sa.user));
+
+    test(
+        'create after last is removed (reception owner)',
+        () => storeTest.Calendar
+            .createAfterLastRemove(owner, sa.calendarStore, sa.user));
 
     test('list (reception owner)',
         () => storeTest.Calendar.list(owner, sa.calendarStore, sa.user));
