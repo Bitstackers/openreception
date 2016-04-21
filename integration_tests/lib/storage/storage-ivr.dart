@@ -18,6 +18,16 @@ abstract class Ivr {
   /**
    *
    */
+  static Future createAfterLastRemove(ServiceAgent sa) async {
+    final menu = await sa.createsIvrMenu();
+
+    await sa.deletesIvrMenu(menu);
+    await sa.createsIvrMenu();
+  }
+
+  /**
+   *
+   */
   static Future get(storage.Ivr ivrStore, [model.User user]) async {
     model.IvrMenu menu = Randomizer.randomIvrMenu();
 

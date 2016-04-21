@@ -145,6 +145,27 @@ abstract class Message {
   /**
    *
    */
+  static Future createAfterLastRemove(ServiceAgent sa) async {
+    final org = await sa.createsOrganization();
+    final rec = await sa.createsReception(org);
+    final con = await sa.createsContact();
+    await sa.addsContactToReception(con, rec);
+
+    final context = new model.MessageContext.empty()
+      ..cid = con.id
+      ..rid = rec.id
+      ..contactName = con.name
+      ..receptionName = rec.name;
+
+    final created = Randomizer.randomMessage();
+    final msg = await sa.createsMessage(context, msg: created);
+    await sa.removesMessage(msg);
+    await await sa.createsMessage(context, msg: created);
+  }
+
+  /**
+   *
+   */
   static Future remove(ServiceAgent sa) async {
     final org = await sa.createsOrganization();
     final rec = await sa.createsReception(org);

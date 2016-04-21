@@ -31,11 +31,14 @@ void _runContactTests() {
 
     test('get', () => storeTest.Contact.get(sa));
 
-    test('BaseContact create', () => storeTest.Contact.create(sa));
+    test('create', () => storeTest.Contact.create(sa));
 
-    test('BaseContact update', () => storeTest.Contact.update(sa));
+    test('create after last is removed',
+        () => storeTest.Contact.createAfterLastRemove(sa));
 
-    test('BaseContact remove', () => storeTest.Contact.remove(sa));
+    test('update', () => storeTest.Contact.update(sa));
+
+    test('remove', () => storeTest.Contact.remove(sa));
 
     test(
         'Non-existing contact', () => storeTest.Contact.nonExistingContact(sa));

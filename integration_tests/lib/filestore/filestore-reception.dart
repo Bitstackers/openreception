@@ -16,6 +16,10 @@ void _runReceptionTests() {
     });
 
     test('create', () => storeTest.Reception.create(sa));
+
+    test('create after last is removed',
+        () => storeTest.Reception.createAfterLastRemove(sa));
+
     test('update', () => storeTest.Reception.update(sa));
     test('update (not found)', () => storeTest.Reception.updateNonExisting(sa));
     test('update (invalid)', () => storeTest.Reception.updateInvalid(sa));

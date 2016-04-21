@@ -18,6 +18,9 @@ void _runDialplanTests() {
     test('create',
         () => storeTest.ReceptionDialplan.create(env.dialplanStore, sa.user));
 
+    test('create after last is removed',
+        () => storeTest.ReceptionDialplan.createAfterLastRemove(sa));
+
     test('get',
         () => storeTest.ReceptionDialplan.get(env.dialplanStore, sa.user));
 

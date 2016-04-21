@@ -62,6 +62,16 @@ abstract class User {
   /**
    *
    */
+  static Future createAfterLastRemove(ServiceAgent sa) async {
+    final model.User user = await sa.createsUser();
+
+    await sa.removesUser(user);
+    await await sa.createsUser();
+  }
+
+  /**
+   *
+   */
   static Future update(ServiceAgent sa) async {
     _log.info('Checking server behaviour on an user updating.');
 

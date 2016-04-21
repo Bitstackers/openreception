@@ -253,6 +253,16 @@ abstract class Contact {
   }
 
   /**
+   * 
+   */
+  static Future createAfterLastRemove(ServiceAgent sa) async {
+    final contact = await sa.createsContact();
+
+    await sa.removesContact(contact);
+    await sa.createsContact();
+  }
+
+  /**
    * Test server behaviour when trying to delete a base contact object that
    * exists.
    *

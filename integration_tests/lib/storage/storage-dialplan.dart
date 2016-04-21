@@ -19,6 +19,16 @@ abstract class ReceptionDialplan {
   /**
    *
    */
+  static Future createAfterLastRemove(ServiceAgent sa) async {
+    final rdp = await sa.createsDialplan(mustBeValid: false);
+
+    await sa.removesDialplan(rdp);
+    await sa.createsDialplan(mustBeValid: false);
+  }
+
+  /**
+   *
+   */
   static Future get(storage.ReceptionDialplan rdpStore,
       [model.User user]) async {
     model.ReceptionDialplan rdp = Randomizer.randomDialplan();

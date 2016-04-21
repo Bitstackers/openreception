@@ -216,6 +216,16 @@ class Organization {
   }
 
   /**
+   *
+   */
+  static Future createAfterLastRemove(ServiceAgent sa) async {
+    final org = await sa.createsOrganization();
+
+    await sa.deletesOrganization(org);
+    await sa.createsOrganization();
+  }
+
+  /**
    * Test server behaviour when trying to create a new organization.
    *
    * The expected behaviour is that the server should return the created

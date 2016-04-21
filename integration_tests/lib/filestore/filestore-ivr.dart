@@ -17,6 +17,9 @@ void _runIvrTests() {
 
     test('create', () => storeTest.Ivr.create(env.ivrStore, sa.user));
 
+    test('create after last is removed',
+        () => storeTest.Ivr.createAfterLastRemove(sa));
+
     test('get', () => storeTest.Ivr.get(env.ivrStore, sa.user));
 
     test('list', () => storeTest.Ivr.list(env.ivrStore, sa.user));

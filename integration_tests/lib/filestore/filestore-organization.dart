@@ -18,6 +18,9 @@ void _runOrganizationTests() {
     test('create', () => storeTest.Organization.create(sa));
     test('create (empty)', () => storeTest.Organization.createEmpty(sa));
 
+    test('create after last is removed',
+        () => storeTest.Organization.createAfterLastRemove(sa));
+
     test('update', () => storeTest.Organization.update(sa));
     test('update (invalid)', () => storeTest.Organization.updateInvalid(sa));
 

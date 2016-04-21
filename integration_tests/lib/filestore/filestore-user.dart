@@ -24,6 +24,10 @@ _runUserTests() {
 
     test('create', () => storeTest.User.create(sa));
 
+    test('create after last is removed',
+        () => storeTest.User.createAfterLastRemove(sa));
+
+
     test('update', () => storeTest.User.update(sa));
 
     test('remove', () => storeTest.User.update(sa));

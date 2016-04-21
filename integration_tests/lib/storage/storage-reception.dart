@@ -114,6 +114,18 @@ class Reception {
   }
 
   /**
+   *
+   */
+  static Future createAfterLastRemove(ServiceAgent sa) async {
+    final org = await sa.createsOrganization();
+    final rec = await sa.createsReception(org);
+
+    await sa.removesReception(rec);
+    await sa.createsReception(org);
+  }
+
+
+  /**
    * Test server behaviour when trying to update a reception object that
    * do not exists.
    *

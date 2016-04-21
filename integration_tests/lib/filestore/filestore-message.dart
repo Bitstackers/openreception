@@ -21,6 +21,10 @@ _runMessageTests() {
     test('list', () => storeTest.Message.list(sa));
     test('list (filtered)', () => storeTest.Message.listFiltered(sa));
     test('create', () => storeTest.Message.create(sa));
+
+    test('create after last is removed',
+        () => storeTest.Message.createAfterLastRemove(sa));
+
     test('update', () => storeTest.Message.update(sa));
     test('remove', () => storeTest.Message.remove(sa));
 
