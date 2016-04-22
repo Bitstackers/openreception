@@ -177,4 +177,9 @@ Future main() async {
 
   router.listen();
   router.gotoUrl(window.location.toString());
+
+  /// Show the main UI
+  querySelector('#loading-screen').hidden = true;
+  querySelector('#navigation').hidden = false;
+  querySelector('#page-main-screen').hidden = false;
 }

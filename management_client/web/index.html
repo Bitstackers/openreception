@@ -19,7 +19,33 @@
   <link rel="stylesheet" href="/style/music.css">
 </head>
 <body>
-  <nav id="navigation">
+  <div IgnoreClickFocus id="loading-screen">
+    <style scoped>
+      #orc-loading {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        width: 100vw;
+        padding: 5em;
+      }
+
+      #orc-loading h1 {
+        margin: 0 auto;
+      }
+
+      #orc-loading img {
+        display: block;
+        width: 300px;
+        height: 300px;
+        margin: 5em auto;
+      }
+    </style>
+
+    <h1 data-lang-text="state-loading-header"></h1>
+    <img src="images/animated-bitstack.gif">
+  </div>
+
+  <nav id="navigation" hidden="true">
     <ul>
       <li>
         <button id="organization-button" hidden="true">
@@ -104,7 +130,7 @@
     </ul>
   </nav>
 
-  <div id="page-main-screen">
+  <div id="page-main-screen" hidden="true">
     <!-- - - - - - - - - - - - - - - - -
       - - - - - - ORGANIZATION - - - - -
       - - - - - - - - - - - - - - - - -->
