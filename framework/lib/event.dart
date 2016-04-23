@@ -45,6 +45,8 @@ part 'event/event-reception_contact.dart';
 part 'event/event-template.dart';
 part 'event/event-user.dart';
 part 'event/event-user_state.dart';
+part 'event/event-widget_select.dart';
+
 
 /**
  * 'Enum' representing different outcomes of an change.
@@ -77,6 +79,8 @@ abstract class Key {
   static const messageID = 'mid';
   static const organizationID = 'oid';
   static const hangupCause = 'hangupCause';
+  static const widgetSelect = 'widgetSelect';
+  static const widget = 'widget';
 
   static const address = 'address';
   static const addressType = 'addressType';
