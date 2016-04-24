@@ -48,3 +48,39 @@ class WidgetSelect implements Event {
         widgetName = map[Key.widget],
         timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
 }
+
+class FocusChange implements Event {
+  final DateTime timestamp;
+
+  String get eventName => Key.widgetSelect;
+
+  final int uid;
+  final bool inFocus;
+
+  FocusChange._internal(this.uid, this.inFocus)
+      : timestamp = new DateTime.now();
+
+  factory FocusChange(int uid, bool inFocus) =>
+      new FocusChange._internal(uid, inFocus);
+
+  Map toJson() => {
+        Key.event: eventName,
+        Key.timestamp: Util.dateTimeToUnixTimestamp(timestamp),
+        Key.changedBy: uid,
+        Key.inFocus: inFocus
+      };
+
+  /**
+   *
+   */
+  @override
+  String toString() => toJson().toString();
+
+  /**
+  *
+  */
+  FocusChange.fromMap(Map map)
+      : uid = map[Key.changedBy],
+        inFocus = map[Key.inFocus],
+        timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
+}
