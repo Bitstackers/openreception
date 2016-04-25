@@ -168,7 +168,8 @@ class Organization implements storage.Organization {
 
     file.writeAsStringSync(_jsonpp.convert(org));
 
-    await _git._commit(
+    await _git.commit(
+        file,
         'uid:${modifier.id} - ${modifier.name} '
         'updated ${org.name}',
         _authorString(modifier));

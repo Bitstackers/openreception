@@ -183,7 +183,7 @@ class Reception implements storage.Reception {
 
     file.writeAsStringSync(_jsonpp.convert(rec));
 
-    await _git._commit(
+    await _git.commit(file,
         'uid:${modifier.id} - ${modifier.name} '
         'updated ${rec.name}',
         _authorString(modifier));

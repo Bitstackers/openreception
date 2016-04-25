@@ -258,7 +258,8 @@ class Calendar implements storage.Calendar {
     _log.finest('Updating file ${file.path}');
     file.writeAsStringSync(_jsonpp.convert(entry));
 
-    await _git._commit(
+    await _git.commit(
+      file,
         'uid:${modifier.id} - ${modifier.name}'
         ' updated ${entry.id}',
         _authorString(modifier));

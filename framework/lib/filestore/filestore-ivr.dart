@@ -101,7 +101,8 @@ class Ivr implements storage.Ivr {
 
     file.writeAsStringSync(_jsonpp.convert(menu));
 
-    await _git._commit(
+    await _git.commit(
+      file,
         'uid:${modifier.id} - ${modifier.name} '
         'updated ${menu.name}',
         _authorString(modifier));

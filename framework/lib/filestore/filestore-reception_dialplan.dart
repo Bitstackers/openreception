@@ -103,7 +103,8 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
 
     file.writeAsStringSync(_jsonpp.convert(rdp));
 
-    await _git._commit(
+    await _git.commit(
+      file,
         'uid:${modifier.id} - ${modifier.name} '
         'updated ${rdp.extension}',
         _authorString(modifier));
