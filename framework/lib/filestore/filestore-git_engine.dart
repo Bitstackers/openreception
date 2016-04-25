@@ -45,10 +45,18 @@ class Change {
       };
 }
 
+class _Job {
+  final Completer completionTicket = new Completer();
+  final Function work;
+
+  _Job(this.work);
+}
+
 class GitEngine {
   final Logger _log = new Logger('$libraryName.GitEngine');
   final String path;
   bool logStdout = false;
+  final Queue<_Job> _workQueue = new Queue<_Job>();
 
   Future get initialized => _initialized.future;
   Completer _initialized;
@@ -149,15 +157,29 @@ class GitEngine {
   /**
    *
    */
+  _Job _enqueue(Function f) {
+    _Job job = new _Job(f);
+    _workQueue.add(job);
+    return job;
+  }
+
+  /**
+   *
+   */
   Future add(File file, String commitMsg, String author) async {
     await init();
-    _lock();
+    final bool locked = _lock();
+    if (!locked) {
+      return _enqueue(() => add(file, commitMsg, author))
+          .completionTicket
+          .future;
+    }
 
     try {
       await _add(file);
       await _commit(commitMsg, author);
     } finally {
-      _unlock();
+      await _unlock();
     }
   }
 
@@ -170,11 +192,17 @@ class GitEngine {
       throw new storage.Unchanged('No new content');
     }
 
-    _lock();
+    final bool locked = _lock();
+    if (!locked) {
+      return _enqueue(() => commit(file, commitMsg, author))
+          .completionTicket
+          .future;
+    }
+
     try {
       await _commit(commitMsg, author);
     } finally {
-      _unlock();
+      await _unlock();
     }
   }
 
@@ -215,13 +243,17 @@ class GitEngine {
    */
   Future remove(FileSystemEntity fse, String commitMsg, String author) async {
     await init();
-    _lock();
-
+    final bool locked = _lock();
+    if(!locked) {
+      return _enqueue(
+        () => remove(fse,commitMsg,author)
+      ).completionTicket.future;
+    }
     try {
       await _remove(fse);
       await _commit(commitMsg, author);
     } finally {
-      _unlock();
+      await _unlock();
     }
   }
 
@@ -327,7 +359,13 @@ class GitEngine {
    */
   Future _commit(String commitMsg, String author) async {
     final String gitBin = '/usr/bin/git';
-    final List<String> arguments = ['commit', path, '--author="$author"', '-m', commitMsg];
+    final List<String> arguments = [
+      'commit',
+      path,
+      '--author="$author"',
+      '-m',
+      commitMsg
+    ];
     final ProcessResult result =
         await Process.run('/usr/bin/git', arguments, workingDirectory: path);
 
@@ -373,23 +411,41 @@ class GitEngine {
   /**
    *
    */
-  void _lock() {
+  bool _lock() {
     if (!ready) {
-      throw new storage.Busy();
+      return false;
     }
 
     _busy = new Completer();
+    return true;
   }
 
   /**
    *
    */
-  void _unlock() {
+  Future _unlock() async {
     if (ready) {
       _log.shout('Unlocking not previously locked process');
     } else {
-
       _busy.complete();
+    }
+
+    await _processWorkQueue();
+  }
+
+  /**
+   *
+   */
+  Future _processWorkQueue() async {
+    if (_workQueue.isNotEmpty) {
+      _Job job = _workQueue.removeFirst();
+
+      try {
+        await job.work();
+        job.completionTicket.complete();
+      } catch (e, s) {
+        job.completionTicket.completeError(e, s);
+      }
     }
   }
 }

@@ -15,6 +15,7 @@ library openreception.filestore;
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:logging/logging.dart';
