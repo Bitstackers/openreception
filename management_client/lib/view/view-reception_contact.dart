@@ -268,6 +268,7 @@ class ReceptionContact {
 
   model.ReceptionAttributes get attributes =>
       new model.ReceptionAttributes.empty()
+        ..endpoints = _endpointsView.endpoints.toList(growable: false)
         ..contactId = int.parse(_cidInput.value)
         ..receptionId = int.parse(_ridInput.value)
         ..backupContacts = _valuesFromListTextArea(_backupContactsInput)
