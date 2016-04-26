@@ -225,7 +225,8 @@ class Message {
     try {
       content = await request.readAsString();
       message = new model.Message.fromMap(JSON.decode(content))
-        ..sender = modifier;
+        ..sender = modifier
+        ..createdAt = new DateTime.now();
 
       if (message.id != model.Message.noId) {
         return clientError('Refusing to re-create existing message. '
