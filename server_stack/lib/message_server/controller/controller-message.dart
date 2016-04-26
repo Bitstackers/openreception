@@ -203,8 +203,9 @@ class Message {
   }
 
   /**
-   * Persistently stores a messages. If the message already exists, the
-   * message - and the it's contents - are replaced by the one passed by the client.
+   * Persistently stores a messages. If the message already exists, a
+   * [ClientError] is returned to the client.
+   * the client.
    */
   Future<shelf.Response> create(shelf.Request request) async {
     model.User modifier;
@@ -248,13 +249,13 @@ class Message {
   }
 
   /**
-   *
+   * Retrieves the history of the message store.
    */
   Future<shelf.Response> history(shelf.Request request) async =>
       okJson((await _messageStore.changes()).toList(growable: false));
 
   /**
-   *
+  * Retrieves the history of a single message object.
    */
   Future<shelf.Response> objectHistory(shelf.Request request) async {
     final String midParam = shelf_route.getPathParameter(request, 'mid');
