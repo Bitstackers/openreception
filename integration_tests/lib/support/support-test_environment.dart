@@ -402,7 +402,7 @@ class TestEnvironment {
       final String path = '${runpath.path}/message_queue';
       _log.info('Creating message queue store from $path');
 
-      _messageQueue = new filestore.MessageQueue(messageStore, path: path);
+      _messageQueue = new filestore.MessageQueue(path: path);
     }
 
     return _messageQueue;
