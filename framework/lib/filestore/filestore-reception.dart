@@ -113,8 +113,8 @@ class Reception implements storage.Reception {
       new Directory(path)
           .listSync()
           .where((fse) => fse is File && fse.path.endsWith('.json'))
-          .map((File fse) =>
-              model.Reception.decode(JSON.decode(fse.readAsStringSync())))
+          .map((FileSystemEntity fse) => model.Reception
+              .decode(JSON.decode((fse as File).readAsStringSync())))
           .firstWhere((rec) => rec.dialplan == extension,
               orElse: () => throw new storage.NotFound(
                   'No reception with dialplan $extension'));
@@ -137,8 +137,8 @@ class Reception implements storage.Reception {
   Future<Iterable<model.ReceptionReference>> list() async => new Directory(path)
       .listSync()
       .where((fse) => fse is File && fse.path.endsWith('.json'))
-      .map((File fse) => model.Reception
-          .decode(JSON.decode(fse.readAsStringSync()))
+      .map((FileSystemEntity fse) => model.Reception
+          .decode(JSON.decode((fse as File).readAsStringSync()))
           .reference);
 
   /**
@@ -183,7 +183,8 @@ class Reception implements storage.Reception {
 
     file.writeAsStringSync(_jsonpp.convert(rec));
 
-    await _git.commit(file,
+    await _git.commit(
+        file,
         'uid:${modifier.id} - ${modifier.name} '
         'updated ${rec.name}',
         _authorString(modifier));

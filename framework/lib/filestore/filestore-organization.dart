@@ -42,7 +42,8 @@ class Organization implements storage.Organization {
   /**
    *
    */
-  Future receptionMap() => throw new UnimplementedError();
+  Future<Map<String, Map<String, String>>> receptionMap() =>
+      throw new UnimplementedError();
 
   /**
    *
@@ -120,8 +121,8 @@ class Organization implements storage.Organization {
       new Directory(path)
           .listSync()
           .where((fse) => fse is File && fse.path.endsWith('.json'))
-          .map((File fse) => model.Organization
-              .decode(JSON.decode(fse.readAsStringSync()))
+          .map((FileSystemEntity fse) => model.Organization
+              .decode(JSON.decode((fse as File).readAsStringSync()))
               .reference);
 
   /**

@@ -24,8 +24,7 @@ class MessageQueue implements storage.MessageQueue {
   /**
    *
    */
-  MessageQueue(
-      {String this.path: 'json-data/message_queue'}) {
+  MessageQueue({String this.path: 'json-data/message_queue'}) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync(recursive: true);
     }
@@ -89,6 +88,6 @@ class MessageQueue implements storage.MessageQueue {
   Future<Iterable<model.MessageQueueEntry>> list() async => new Directory(path)
       .listSync()
       .where((fse) => fse is File && fse.path.endsWith('.json'))
-      .map((File fse) =>
-          model.MessageQueueEntry.decode(JSON.decode(fse.readAsStringSync())));
+      .map((FileSystemEntity fse) => model.MessageQueueEntry
+          .decode(JSON.decode((fse as File).readAsStringSync())));
 }

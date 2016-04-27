@@ -47,8 +47,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future addData(
-      model.ReceptionAttributes attr, model.User modifier) async {
+  Future addData(model.ReceptionAttributes attr, model.User modifier) async {
     if (attr.receptionId == model.Reception.noId) {
       throw new ArgumentError('attr.receptionId must be valid');
     }
@@ -157,7 +156,7 @@ class Contact implements storage.Contact {
     return new Directory(path)
         .listSync()
         .where((fse) => fse is Directory && !basename(fse.path).startsWith('.'))
-        .map((Directory fse) => model.BaseContact
+        .map((FileSystemEntity fse) => model.BaseContact
             .decode(JSON.decode(
                 new File(fse.path + '/contact.json').readAsStringSync()))
             .reference);
@@ -176,7 +175,7 @@ class Contact implements storage.Contact {
         .listSync()
         .where((fse) => fse is File && fse.path.endsWith('.json'));
 
-    return await Future.wait(rFiles.map((File f) async {
+    return await Future.wait(rFiles.map((FileSystemEntity f) async {
       final int rid = int.parse(basenameWithoutExtension(f.path));
 
       return (await _receptionStore.get(rid)).reference;
@@ -221,12 +220,12 @@ class Contact implements storage.Contact {
     final subDirs =
         new Directory(path).listSync().where((fse) => fse is Directory);
 
-    List refs = [];
+    List<model.ContactReference> refs = [];
     await Future.forEach((subDirs), (dir) async {
       if (new File(dir.path + '/receptions/$rid.json').existsSync()) {
         final String bn = basename(dir.path);
         if (!bn.startsWith('.')) {
-          refs.add(await get(int.parse(bn)));
+          refs.add((await get(int.parse(bn))).reference);
         }
       }
     });
@@ -314,8 +313,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future updateData(
-      model.ReceptionAttributes attr, model.User modifier) async {
+  Future updateData(model.ReceptionAttributes attr, model.User modifier) async {
     if (attr.contactId == model.BaseContact.noId) {
       throw new storage.ClientError('Empty id');
     }

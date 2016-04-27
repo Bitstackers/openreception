@@ -88,8 +88,9 @@ class User implements storage.User {
   Future<Iterable<model.UserReference>> list() async => new Directory(path)
       .listSync()
       .where((fse) => fse is File && fse.path.endsWith('.json'))
-      .map((File fse) =>
-          model.User.decode(JSON.decode(fse.readAsStringSync())).reference);
+      .map((FileSystemEntity fse) => model.User
+          .decode(JSON.decode((fse as File).readAsStringSync()))
+          .reference);
 
   /**
    *

@@ -81,8 +81,8 @@ class Ivr implements storage.Ivr {
   Future<Iterable<model.IvrMenu>> list() async => new Directory(path)
       .listSync()
       .where((fse) => fse is File && fse.path.endsWith('.json'))
-      .map((File fse) =>
-          model.IvrMenu.decode(JSON.decode(fse.readAsStringSync())));
+      .map((FileSystemEntity fse) =>
+          model.IvrMenu.decode(JSON.decode((fse as File).readAsStringSync())));
 
   /**
    *
@@ -102,7 +102,7 @@ class Ivr implements storage.Ivr {
     file.writeAsStringSync(_jsonpp.convert(menu));
 
     await _git.commit(
-      file,
+        file,
         'uid:${modifier.id} - ${modifier.name} '
         'updated ${menu.name}',
         _authorString(modifier));

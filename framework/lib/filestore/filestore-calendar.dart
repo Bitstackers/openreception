@@ -28,9 +28,7 @@ class Calendar implements storage.Calendar {
    *
    */
   Calendar({String this.path: 'json-data/calendar'}) {
-    final List<String> pathsToCreate = [
-      path
-    ];
+    final List<String> pathsToCreate = [path];
 
     pathsToCreate.forEach((String newPath) {
       final Directory dir = new Directory(newPath);
@@ -191,8 +189,8 @@ class Calendar implements storage.Calendar {
       new Directory(basePath)
           .listSync()
           .where((fse) => isFile(fse) && fse.path.endsWith('.json'))
-          .map((File fse) =>
-              model.CalendarEntry.decode(JSON.decode(fse.readAsStringSync())));
+          .map((FileSystemEntity fse) => model.CalendarEntry
+              .decode(JSON.decode((fse as File).readAsStringSync())));
 
   /**
    * Deletes the [Model.CalendarEntry] associated with [eid] in the
@@ -259,7 +257,7 @@ class Calendar implements storage.Calendar {
     file.writeAsStringSync(_jsonpp.convert(entry));
 
     await _git.commit(
-      file,
+        file,
         'uid:${modifier.id} - ${modifier.name}'
         ' updated ${entry.id}',
         _authorString(modifier));

@@ -82,8 +82,8 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   Future<Iterable<model.ReceptionDialplan>> list() async => new Directory(path)
       .listSync()
       .where((fse) => fse is File && fse.path.endsWith('.json'))
-      .map((File fse) =>
-          model.ReceptionDialplan.decode(JSON.decode(fse.readAsStringSync())));
+      .map((FileSystemEntity fse) => model.ReceptionDialplan
+          .decode(JSON.decode((fse as File).readAsStringSync())));
 
   /**
    *
@@ -104,7 +104,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
     file.writeAsStringSync(_jsonpp.convert(rdp));
 
     await _git.commit(
-      file,
+        file,
         'uid:${modifier.id} - ${modifier.name} '
         'updated ${rdp.extension}',
         _authorString(modifier));

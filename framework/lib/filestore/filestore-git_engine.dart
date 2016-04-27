@@ -244,10 +244,10 @@ class GitEngine {
   Future remove(FileSystemEntity fse, String commitMsg, String author) async {
     await init();
     final bool locked = _lock();
-    if(!locked) {
-      return _enqueue(
-        () => remove(fse,commitMsg,author)
-      ).completionTicket.future;
+    if (!locked) {
+      return _enqueue(() => remove(fse, commitMsg, author))
+          .completionTicket
+          .future;
     }
     try {
       await _remove(fse);

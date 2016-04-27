@@ -62,8 +62,8 @@ class Message implements storage.Message {
       new Directory(path)
           .listSync()
           .where((fse) => fse is File && fse.path.endsWith('.json'))
-          .map((File fse) =>
-              model.Message.decode(JSON.decode(fse.readAsStringSync())))
+          .map((FileSystemEntity fse) => model.Message
+              .decode(JSON.decode((fse as File).readAsStringSync())))
           .where((model.Message msg) =>
               filter == null ? true : filter.appliesTo(msg));
 
