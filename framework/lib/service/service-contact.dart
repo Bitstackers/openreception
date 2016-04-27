@@ -27,16 +27,22 @@ class RESTContactStore implements Storage.Contact {
     Uri url = Resource.Contact.receptions(_host, id);
     url = _appendToken(url, _token);
 
-    return (await _backend.get(url).then(JSON.decode))
-        .map(Model.ReceptionReference.decode);
+    final Iterable<Map> maps = await _backend
+        .get(url)
+        .then((String response) => JSON.decode(response) as Iterable<Map>);
+
+    return maps.map(Model.ReceptionReference.decode);
   }
 
   Future<Iterable<Model.OrganizationReference>> organizations(int id) async {
     Uri url = Resource.Contact.organizations(_host, id);
     url = _appendToken(url, _token);
 
-    return (await _backend.get(url).then(JSON.decode))
-        .map(Model.OrganizationReference.decode);
+    final Iterable<Map> maps = await _backend
+        .get(url)
+        .then((String response) => JSON.decode(response) as Iterable<Map>);
+
+    return maps.map(Model.OrganizationReference.decode);
   }
 
   Future<Model.BaseContact> get(int id) {
@@ -96,8 +102,7 @@ class RESTContactStore implements Storage.Contact {
         (JSON.decode(response) as Iterable).map(Model.ContactReference.decode));
   }
 
-  Future addData(
-      Model.ReceptionAttributes attr, Model.User user) {
+  Future addData(Model.ReceptionAttributes attr, Model.User user) {
     Uri url = Resource.Contact
         .singleByReception(_host, attr.contactId, attr.receptionId);
     url = _appendToken(url, _token);
@@ -123,8 +128,7 @@ class RESTContactStore implements Storage.Contact {
     return _backend.delete(url);
   }
 
-  Future updateData(
-      Model.ReceptionAttributes attr, Model.User user) {
+  Future updateData(Model.ReceptionAttributes attr, Model.User modifier) {
     Uri url = Resource.Contact
         .singleByReception(_host, attr.contactId, attr.receptionId);
     url = _appendToken(url, _token);

@@ -43,11 +43,11 @@ class RESTIvrStore implements Storage.Ivr {
   /**
    *
    */
-  Future<Iterable<String>> deploy(String menuName) {
+  Future<Iterable<String>> deploy(String menuName) async {
     Uri url = Resource.Ivr.deploy(_host, menuName);
     url = _appendToken(url, this._token);
 
-    return _backend.post(url, '').then(JSON.decode);
+    return JSON.decode(await _backend.post(url, '')) as Iterable<String>;
   }
 
   /**

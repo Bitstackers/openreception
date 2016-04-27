@@ -43,7 +43,7 @@ class RESTOrganizationStore implements Storage.Organization {
     Uri url = Resource.Organization.receptions(_host, oid);
     url = _appendToken(url, this._token);
 
-    return (await _backend.get(url).then(JSON.decode))
+    return (JSON.decode(await _backend.get(url)) as Iterable<Map>)
         .map(Model.ReceptionReference.decode);
   }
 
@@ -91,10 +91,8 @@ class RESTOrganizationStore implements Storage.Organization {
     Uri url = Resource.Organization.receptionMap(this._host);
     url = _appendToken(url, this._token);
 
-    return this
-        ._backend
-        .get(url)
-        .then((String response) => JSON.decode(response));
+    return this._backend.get(url).then((String response) =>
+        JSON.decode(response) as Map<String, Map<String, String>>);
   }
 
   /**

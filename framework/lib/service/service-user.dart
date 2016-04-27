@@ -80,7 +80,7 @@ class RESTUserStore implements Storage.User {
     return this
         ._backend
         .get(url)
-        .then((String reponse) => JSON.decode(reponse));
+        .then((String reponse) => JSON.decode(reponse) as Iterable<String>);
   }
 
   /**

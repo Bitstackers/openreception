@@ -60,14 +60,12 @@ abstract class Contact {
   /**
    *
    */
-  Future<model.ContactReference> update(
-      model.BaseContact contact, model.User modifier);
+  Future update(model.BaseContact contact, model.User modifier);
 
   /**
    *
    */
-  Future<model.ReceptionContact> updateData(
-      model.ReceptionAttributes attr, model.User modifier);
+  Future updateData(model.ReceptionAttributes attr, model.User modifier);
 
   /**
    *
