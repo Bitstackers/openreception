@@ -21,7 +21,7 @@ abstract class MessageQueue {
       ..receptionName = rec.name;
 
     final msg1 = await sa.createsMessage(context);
-    await sa.messageQueue.enqueue(msg1.id);
+    await sa.messageQueue.enqueue(msg1);
 
     {
       final listing = await sa.messageQueue.list();
@@ -30,7 +30,7 @@ abstract class MessageQueue {
       expect(listing.any((mqe) => mqe.message.id == msg1.id), isTrue);
     }
     final msg2 = await sa.createsMessage(context);
-    await sa.messageQueue.enqueue(msg2.id);
+    await sa.messageQueue.enqueue(msg2);
 
     {
       final listing = await sa.messageQueue.list();
@@ -56,7 +56,7 @@ abstract class MessageQueue {
       ..receptionName = rec.name;
 
     final msg1 = await sa.createsMessage(context);
-    await sa.messageQueue.enqueue(msg1.id);
+    await sa.messageQueue.enqueue(msg1);
 
     {
       final listing = await sa.messageQueue.list();
@@ -89,7 +89,7 @@ abstract class MessageQueue {
       ..receptionName = rec.name;
 
     final msg1 = await sa.createsMessage(context);
-    await sa.messageQueue.enqueue(msg1.id);
+    await sa.messageQueue.enqueue(msg1);
     int mqid;
     {
       final listing = await sa.messageQueue.list();
@@ -120,7 +120,7 @@ abstract class MessageQueue {
       ..receptionName = rec.name;
 
     final msg1 = await sa.createsMessage(context);
-    await sa.messageQueue.enqueue(msg1.id);
+    await sa.messageQueue.enqueue(msg1);
 
     {
       final listing = await sa.messageQueue.list();
