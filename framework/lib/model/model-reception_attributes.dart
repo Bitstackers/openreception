@@ -82,8 +82,8 @@ class ReceptionAttributes {
       new ReceptionAttributes.fromMap(map);
 
   Map toJson() => {
-        Key.contactId: contactId,
-        Key.receptionId: receptionId,
+        Key.cid: contactId,
+        Key.rid: receptionId,
         Key.departments: departments,
         Key.phones: new List<Map>.from(phones.map((p) => p.toJson())),
         Key.endpoints: new List<Map>.from(endpoints.map((e) => e.toJson())),
@@ -108,8 +108,8 @@ class ReceptionAttributes {
             new List<PhoneNumber>.from(map[Key.phones].map(PhoneNumber.decode)),
         endpoints = new List<MessageEndpoint>.from(
             map[Key.endpoints].map(MessageEndpoint.decode)),
-        receptionId = map[Key.receptionId],
-        contactId = map[Key.contactId],
+        receptionId = map[Key.rid],
+        contactId = map[Key.cid],
         departments = map[Key.departments] as List<String>,
         messagePrerequisites = map[Key.messagePrerequisites] as List<String>,
         backupContacts = map[Key.backup] as List<String>,
@@ -130,5 +130,4 @@ class ReceptionAttributes {
 
   bool get isEmpty => contactId == BaseContact.noId;
   bool get isNotEmpty => !isEmpty;
-
 }
