@@ -16,7 +16,7 @@ part of openreception.filestore;
 class MessageQueue implements storage.MessageQueue {
   final Logger _log = new Logger('$libraryName.MessageQueue');
   final String path;
-  final storage.Message _messageStore;
+
   Sequencer _sequencer;
 
   int get _nextId => _sequencer.nextInt();
@@ -24,7 +24,7 @@ class MessageQueue implements storage.MessageQueue {
   /**
    *
    */
-  MessageQueue(this._messageStore,
+  MessageQueue(
       {String this.path: 'json-data/message_queue'}) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync(recursive: true);
@@ -36,15 +36,14 @@ class MessageQueue implements storage.MessageQueue {
   /**
    *
    */
-  Future enqueue(int mid) async {
+  Future enqueue(model.Message message) async {
     final int mqId = _nextId;
 
-    final model.Message msg = await _messageStore.get(mid);
     final model.MessageQueueEntry queueEntry =
         new model.MessageQueueEntry.empty()
           ..id = mqId
-          ..unhandledRecipients = msg.recipients
-          ..message = msg;
+          ..unhandledRecipients = message.recipients
+          ..message = message;
 
     final File file = new File('$path/$mqId.json');
 
