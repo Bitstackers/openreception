@@ -21,11 +21,6 @@ part of openreception.service;
  *   or 'error' field from the server.
  */
 abstract class WebService {
-  static const String GET = 'GET';
-  static const String PUT = 'PUT';
-  static const String POST = 'POST';
-  static const String DELETE = 'DELETE';
-
   Future<String> get(Uri path);
   Future<String> put(Uri path, String payload);
   Future<String> post(Uri path, String payload);
