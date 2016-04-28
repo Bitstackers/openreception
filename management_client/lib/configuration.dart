@@ -6,7 +6,13 @@ import 'package:openreception.framework/model.dart' as model;
 Configuration config = new Configuration._internal();
 
 class Configuration {
-  final Uri configUri = Uri.parse('');
+  Uri get configUri => _localStorage.containsKey('configUri')
+      ? Uri.parse(_localStorage['configUri'])
+      : Uri.parse('');
+  void set configUri(Uri value) {
+    _localStorage['configUri'] = value.toString();
+  }
+
   model.ClientConfiguration clientConfig =
       new model.ClientConfiguration.empty();
   Storage _localStorage = window.localStorage;
