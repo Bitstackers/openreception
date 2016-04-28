@@ -45,13 +45,22 @@ Future main() async {
   Logger.root.onRecord.listen(print);
   Logger _log = Logger.root;
 
+  PreElement loadingLog = querySelector('#loading-log');
+
+  ProgressElement loadingProgress = querySelector('#loading-progress');
+
+  loadingProgress.max = 10;
+  loadingProgress.value = 0;
   final transport.Client client = new transport.Client();
+  loadingLog.text += 'Henter konfiguration fra ${config.configUri}\n';
   config.clientConfig =
       await (new service.RESTConfiguration(config.configUri, client))
           .clientConfig();
 
   /// Check token.
   if (config.token.isNotEmpty) {
+    loadingLog.text += 'Validerer eksistende token\n';
+    loadingProgress.value++;
     try {
       config.user = await new service.Authentication(
               config.clientConfig.authServerUri, config.token, client)
@@ -72,6 +81,9 @@ Future main() async {
     controller.popup.info('Token udløbet', 'Logger ind igen');
     loginRedirect();
   };
+
+  loadingLog.text += 'Initialiserer lagring\n';
+  loadingProgress.value++;
 
   /// Initialize the stores.
   final service.RESTUserStore userStore = new service.RESTUserStore(
@@ -96,6 +108,9 @@ Future main() async {
       config.clientConfig.messageServerUri, config.token, client);
 
   final transport.WebSocketClient _websocket = new transport.WebSocketClient();
+
+  loadingLog.text += 'Forbinder websocket\n';
+  loadingProgress.value++;
 
   await _websocket.connect(Uri.parse(
       config.clientConfig.notificationSocketUri.toString() +
@@ -130,9 +145,12 @@ Future main() async {
   final controller.Ivr ivrController =
       new controller.Ivr(ivrStore, dialplanStore);
 
+  loadingLog.text += 'Indlæser sider\n';
+  loadingProgress.value++;
+
   /**
-     * Initialize pages
-     */
+   * Initialize pages
+   */
   final Router router = new Router();
   final page.Cdr cdrPage = new page.Cdr(cdrController, contactController,
       organizationController, receptionController, userController, router);
@@ -170,6 +188,9 @@ Future main() async {
 
   //new Menu(querySelector('nav#navigation'));
 
+  loadingLog.text += 'Undersøger HTML5 understøttelse\n';
+  loadingProgress.value++;
+
   /// Verify that we support HTMl5 notifications
   if (Notification.supported) {
     Notification
@@ -179,8 +200,17 @@ Future main() async {
     _log.shout('HTML5 notifications not supported.');
   }
 
+  loadingLog.text += 'Starter router\n';
+  loadingProgress.value++;
+
   router.listen();
+
+  loadingLog.text += 'Navigerer til startside\n';
+  loadingProgress.value = loadingProgress.max;
+
   router.gotoUrl(window.location.toString());
+
+  await new Future.delayed(new Duration(seconds: 1));
 
   /// Show the main UI
   querySelector('#loading-screen').hidden = true;
