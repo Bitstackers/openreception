@@ -12,12 +12,14 @@ dependencies:
   openreception.framework:
     path: ../framework
     version: '>=0.0.30'
+  openreception.client_app_server:
+    path: ../tools/client_app_server
   phonio:
     git: https://github.com/Bitstackers/Phonio.git
   route: any
-  shelf: any
+  shelf: '>=0.6.0 <0.7.0'
+  shelf_static: any
   shelf_cors: any
   shelf_route: any
-  postgresql: any
 dev_dependencies:
   unittest: '>=0.11.5 <0.12.0'
