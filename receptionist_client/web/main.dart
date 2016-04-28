@@ -23,9 +23,9 @@ import 'view/view.dart' as View;
 //import 'simulation.dart';
 
 import 'package:logging/logging.dart';
-import 'package:openreception_framework/model.dart' as ORModel;
-import 'package:openreception_framework/service.dart' as ORService;
-import 'package:openreception_framework/service-html.dart' as ORTransport;
+import 'package:openreception.framework/model.dart' as ORModel;
+import 'package:openreception.framework/service.dart' as ORService;
+import 'package:openreception.framework/service-html.dart' as ORTransport;
 
 part 'configuration_url.dart';
 
