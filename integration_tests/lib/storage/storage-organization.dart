@@ -26,9 +26,7 @@ class Organization {
     expect(org, isNotNull);
     expect(org.id, isNotNull);
     expect(org.id, isNot(equals(model.Organization.noId)));
-    expect(org.billingType, isNotEmpty);
     expect(org.name, isNotEmpty);
-    expect(org.billingType, newOrg.billingType);
     expect(org.name, newOrg.name);
     expect(org.notes, newOrg.notes);
 
@@ -247,10 +245,8 @@ class Organization {
     expect(org, isNotNull);
     expect(org.id, isNotNull);
     expect(org.id, isNot(equals(model.Organization.noId)));
-    expect(org.billingType, isNotEmpty);
     expect(org.name, isNotEmpty);
     expect(org.notes, isNotNull);
-    expect(org.billingType, newOrg.billingType);
     expect(org.name, newOrg.name);
     expect(org.notes, newOrg.notes);
 
@@ -280,10 +276,8 @@ class Organization {
     expect(org, isNotNull);
     expect(org.id, isNotNull);
     expect(org.id, isNot(equals(model.Organization.noId)));
-    expect(org.billingType, isNotEmpty);
     expect(org.name, isNotEmpty);
     expect(org.notes, isNotNull);
-    expect(org.billingType, newOrg.billingType);
     expect(org.name, newOrg.name);
     expect(org.notes, newOrg.notes);
 
@@ -304,8 +298,6 @@ class Organization {
     expect(updated.id, equals(fetched.id));
 
     expect(fetched.id == model.Organization.noId, isFalse);
-    expect(fetched.billingType, isNotEmpty);
-    expect(updated.billingType, equals(fetched.billingType));
     expect(fetched.name, isNotEmpty);
     expect(updated.name, equals(fetched.name));
     expect(updated.notes, equals(fetched.notes));
