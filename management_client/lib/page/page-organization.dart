@@ -21,7 +21,7 @@ class OrganizationView {
   Logger _log = new Logger('$_libraryName.Organization');
 
   final controller.Organization _organizationController;
-  final controller.Reception _receptionController;
+
   final Router _router;
 
   final DivElement element = new DivElement()
@@ -61,7 +61,7 @@ class OrganizationView {
    *
    */
   OrganizationView(controller.Organization this._organizationController,
-      controller.Reception this._receptionController, Router this._router) {
+      Router this._router) {
     _setupRouter();
     _organizationView = new view.Organization(_organizationController);
 

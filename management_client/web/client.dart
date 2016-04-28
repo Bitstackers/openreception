@@ -155,8 +155,8 @@ Future main() async {
   final page.Cdr cdrPage = new page.Cdr(cdrController, contactController,
       organizationController, receptionController, userController, router);
 
-  final page.OrganizationView orgPage = new page.OrganizationView(
-      organizationController, receptionController, router);
+  final page.OrganizationView orgPage =
+      new page.OrganizationView(organizationController, router);
 
   querySelector('#cdr-page').replaceWith(cdrPage.element);
 
