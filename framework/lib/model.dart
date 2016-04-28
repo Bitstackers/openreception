@@ -40,7 +40,6 @@ part 'model/model-change.dart';
 part 'model/model-channel.dart';
 part 'model/model-client_configuration.dart';
 part 'model/model-client_connection.dart';
-part 'model/model-freeswitch_cdr_entry.dart';
 part 'model/model-message.dart';
 part 'model/model-message_context.dart';
 part 'model/model-message_flag.dart';
