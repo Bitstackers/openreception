@@ -73,10 +73,13 @@ Future<io.HttpServer> start(
       config.messageServer.serverToken, new transport.Client());
 
   final filestore.Message _messageStore =
-      new filestore.Message(path: filepath + '/message_queue');
+      new filestore.Message(path: filepath + '/message');
 
-  final controller.Message msgController =
-      new controller.Message(_messageStore, _authService, _notification);
+  final filestore.MessageQueue _messageQueue =
+      new filestore.MessageQueue(path: filepath + '/message_queue');
+
+  final controller.Message msgController = new controller.Message(
+      _messageStore, _messageQueue, _authService, _notification);
 
   final router = shelf_route.router()
     ..get('/message/list', msgController.list)

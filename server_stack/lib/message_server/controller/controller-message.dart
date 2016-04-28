@@ -23,8 +23,9 @@ class Message {
   final service.NotificationService _notification;
 
   final storage.Message _messageStore;
+  final storage.MessageQueue _messageQueue;
 
-  Message(this._messageStore, this._authService, this._notification);
+  Message(this._messageStore, this._messageQueue, this._authService, this._notification);
 
   String _filterFrom(shelf.Request request) =>
       request.requestedUri.queryParameters['filter'];
@@ -192,7 +193,7 @@ class Message {
       return clientError(msg);
     }
 
-    return await _messageStore
+    return await _messageQueue
         .enqueue(message)
         .then((model.MessageQueueEntry queueItem) {
       _notification
