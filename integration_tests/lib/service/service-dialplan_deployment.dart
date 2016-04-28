@@ -10,17 +10,17 @@ abstract class DialplanDeployment {
     List<esl.Event> events = [];
     eslClient.eventStream.listen(events.add);
 
-    Model.ReceptionDialplan rdp = new Model.ReceptionDialplan()
+    model.ReceptionDialplan rdp = new model.ReceptionDialplan()
       ..open = []
       ..extension = 'test-${Randomizer.randomPhoneNumber()}'
           '-${new DateTime.now().millisecondsSinceEpoch}'
       ..defaultActions = [
-        new Model.Playback('sorry-dude-were-closed'),
-        new Model.Playback('sorry-dude-were-really-closed')
+        new model.Playback('sorry-dude-were-closed'),
+        new model.Playback('sorry-dude-were-really-closed')
       ]
       ..active = true;
 
-    Model.ReceptionDialplan createdDialplan = await rdpStore.create(rdp);
+    model.ReceptionDialplan createdDialplan = await rdpStore.create(rdp);
     _log.info('Created dialplan: ${createdDialplan.toJson()}');
     model.ReceptionReference r = await rStore.create(
         Randomizer.randomReception()
@@ -71,7 +71,7 @@ abstract class DialplanDeployment {
     eslClient.eventStream.listen(events.add);
 
     final DateTime now = new DateTime.now();
-    Model.OpeningHour justNow = new Model.OpeningHour.empty()
+    model.OpeningHour justNow = new model.OpeningHour.empty()
       ..fromDay = toWeekDay(now.weekday)
       ..toDay = toWeekDay(now.weekday)
       ..fromHour = now.hour
@@ -79,21 +79,21 @@ abstract class DialplanDeployment {
       ..fromMinute = now.minute
       ..toMinute = now.minute;
 
-    Model.ReceptionDialplan rdp = new Model.ReceptionDialplan()
+    model.ReceptionDialplan rdp = new model.ReceptionDialplan()
       ..open = [
-        new Model.HourAction()
+        new model.HourAction()
           ..hours = [justNow]
           ..actions = [
-            new Model.Playback('sorry-dude-were-open'),
-            new Model.Playback('sorry-dude-were-really-open')
+            new model.Playback('sorry-dude-were-open'),
+            new model.Playback('sorry-dude-were-really-open')
           ]
       ]
       ..extension = 'test-${Randomizer.randomPhoneNumber()}'
           '-${new DateTime.now().millisecondsSinceEpoch}'
-      ..defaultActions = [new Model.Playback('sorry-dude-were-closed')]
+      ..defaultActions = [new model.Playback('sorry-dude-were-closed')]
       ..active = true;
 
-    Model.ReceptionDialplan createdDialplan = await rdpStore.create(rdp);
+    model.ReceptionDialplan createdDialplan = await rdpStore.create(rdp);
     model.ReceptionReference r = await rStore.create(
         Randomizer.randomReception()
           ..enabled = true
@@ -144,7 +144,7 @@ abstract class DialplanDeployment {
     eslClient.eventStream.listen(events.add);
 
     final DateTime now = new DateTime.now();
-    Model.OpeningHour justNow = new Model.OpeningHour.empty()
+    model.OpeningHour justNow = new model.OpeningHour.empty()
       ..fromDay = toWeekDay(now.weekday)
       ..toDay = toWeekDay(now.weekday)
       ..fromHour = now.hour
@@ -162,27 +162,27 @@ abstract class DialplanDeployment {
         'test-${Randomizer.randomPhoneNumber()}'
         '-${new DateTime.now().millisecondsSinceEpoch}-2';
 
-    final Model.ReceptionDialplan firstDialplan =
-        await rdpStore.create(new Model.ReceptionDialplan()
+    final model.ReceptionDialplan firstDialplan =
+        await rdpStore.create(new model.ReceptionDialplan()
           ..extension = firstDialplanExtension
           ..open = [
-            new Model.HourAction()
+            new model.HourAction()
               ..hours = [justNow]
               ..actions = [
-                new Model.Playback(firstDialplanGreeting),
-                new Model.ReceptionTransfer(secondDialplanExtension)
+                new model.Playback(firstDialplanGreeting),
+                new model.ReceptionTransfer(secondDialplanExtension)
               ],
           ]
           ..active = true);
     _log.info('Created dialplan: ${firstDialplan.toJson()}');
 
-    final Model.ReceptionDialplan secondDialplan =
-        await rdpStore.create(new Model.ReceptionDialplan()
+    final model.ReceptionDialplan secondDialplan =
+        await rdpStore.create(new model.ReceptionDialplan()
           ..extension = secondDialplanExtension
           ..open = [
-            new Model.HourAction()
+            new model.HourAction()
               ..hours = [justNow]
-              ..actions = [new Model.Playback(secondDialplanGreeting)],
+              ..actions = [new model.Playback(secondDialplanGreeting)],
           ]
           ..active = true);
 
