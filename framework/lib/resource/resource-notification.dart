@@ -11,27 +11,24 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.resource;
+part of openreception.framework.resource;
 
 abstract class Notification {
-
   static Uri notifications(Uri host) {
     if (!['ws', 'wss'].contains(host.scheme)) {
-      throw new ArgumentError.value(host.scheme, 'Resource.Notification', 'expected "ws" or "wss" scheme');
+      throw new ArgumentError.value(host.scheme, 'Resource.Notification',
+          'expected "ws" or "wss" scheme');
     }
 
     return Uri.parse('${host}/notifications');
   }
 
-  static Uri send(Uri host)
-      => Uri.parse('${host}/send');
+  static Uri send(Uri host) => Uri.parse('${host}/send');
 
-  static Uri broadcast(Uri host)
-      => Uri.parse('${host}/broadcast');
-  
-  static Uri clientConnections(Uri host)
-      => Uri.parse('${host}/connection');
-  
-  static Uri clientConnection(Uri host, int uid)
-      => Uri.parse('${host}/connection/${uid}');
+  static Uri broadcast(Uri host) => Uri.parse('${host}/broadcast');
+
+  static Uri clientConnections(Uri host) => Uri.parse('${host}/connection');
+
+  static Uri clientConnection(Uri host, int uid) =>
+      Uri.parse('${host}/connection/${uid}');
 }

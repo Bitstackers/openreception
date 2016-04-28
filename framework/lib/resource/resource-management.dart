@@ -11,47 +11,44 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.resource;
+part of openreception.framework.resource;
 
 /**
  * Protocol wrapper class for building homogenic REST
  * resources across servers and clients.
  */
 abstract class Management {
-
   static const _reception = 'reception';
   static const _contact = 'contact';
   static const _organization = 'organization';
 
-  static Uri receptions(Uri host) =>
-    Uri.parse('$host/$_reception');
+  static Uri receptions(Uri host) => Uri.parse('$host/$_reception');
 
   static Uri receptionContacts(Uri host, int receptionID) =>
-    Uri.parse('$host/$_reception/$receptionID/$_contact');
+      Uri.parse('$host/$_reception/$receptionID/$_contact');
 
   static Uri reception(Uri host, int receptionID) =>
-    Uri.parse('$host/$_reception/$receptionID');
+      Uri.parse('$host/$_reception/$receptionID');
 
   static Uri create(Uri host, int organizationID) =>
-    Uri.parse('$host/$_organization/$organizationID');
+      Uri.parse('$host/$_organization/$organizationID');
 
   static Uri organization(Uri host, int organizationID) =>
-    Uri.parse('$host/$_organization/$organizationID');
+      Uri.parse('$host/$_organization/$organizationID');
 
-  static Uri organizations(Uri host) =>
-    Uri.parse('$host/$_organization');
+  static Uri organizations(Uri host) => Uri.parse('$host/$_organization');
 
   static Uri organizationContacts(Uri host, int organizationID) =>
-    Uri.parse('${organization}/$_contact');
+      Uri.parse('${organization}/$_contact');
 
   static Uri organizationContact(Uri host, int organizationID, int contactID) =>
-    Uri.parse('${organization}/$_contact');
+      Uri.parse('${organization}/$_contact');
 
-  static Uri organizationReception(Uri host, int organizationID, int receptionID) =>
-    Uri.parse('${organization}/$_reception/$receptionID');
+  static Uri organizationReception(
+          Uri host, int organizationID, int receptionID) =>
+      Uri.parse('${organization}/$_reception/$receptionID');
 
   static Uri contactTypes(Uri host) => Uri.parse('$host/contacttypes');
-
 
 //  final Pattern receptionUrl           = new UrlPattern(r'/reception(/?)');
 //  final Pattern receptionIdUrl         = new UrlPattern(r'/reception/(\d+)');
@@ -89,4 +86,3 @@ abstract class Management {
 //  final Pattern UserIdIdentityUrl   = new UrlPattern(r'/user/(\d+)/identity');
 //  final Pattern UserIdIdentityIdUrl = new UrlPattern(r'/user/(\d+)/identity/(.+)');
 }
-

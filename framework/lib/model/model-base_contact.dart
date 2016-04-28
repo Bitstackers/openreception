@@ -41,7 +41,7 @@ class ContactReference implements ObjectReference {
   static ContactReference decode(Map map) =>
       new ContactReference(map[Key.id], map[Key.name]);
 
-  bool get isEmpty  => id == BaseContact.noId;
+  bool get isEmpty => id == BaseContact.noId;
 
   Map toJson() => {Key.id: id, Key.name: name};
 
@@ -114,7 +114,8 @@ class ReceptionContact {
 
   Map toJson() => {Key.contact: contact.toJson(), Key.reception: attr.toJson()};
 
-  ContactReference get contactReference => new ContactReference(contact.id, contact.name);
+  ContactReference get contactReference =>
+      new ContactReference(contact.id, contact.name);
 }
 
 class ReceptionReference implements ObjectReference {
@@ -146,6 +147,7 @@ class BaseContact {
 
   int id = noId;
   String name = '';
+
   ///TODO: Rename to type and turn into enum.
   String contactType = '';
   bool enabled = true;

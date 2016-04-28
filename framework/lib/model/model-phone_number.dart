@@ -19,6 +19,7 @@ part of openreception.framework.model;
  */
 class PhoneNumber {
   String destination = '';
+
   ///TODO: Rename to note.
   String description = '';
 

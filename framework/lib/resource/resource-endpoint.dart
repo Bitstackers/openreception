@@ -11,19 +11,17 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.resource;
+part of openreception.framework.resource;
 
 /**
  * Protocol wrapper class for building homogenic REST
  * resources across servers and clients.
  */
 abstract class Endpoint {
-
   static String nameSpace = 'endpoint';
 
   static Uri ofContact(Uri host, int rid, int cid) =>
       Uri.parse('${host}/contact/${cid}/reception/${rid}/endpoint');
 
-  static Uri single(Uri host, int eid) =>
-      Uri.parse('${host}/endpoint/${eid}');
+  static Uri single(Uri host, int eid) => Uri.parse('${host}/endpoint/${eid}');
 }

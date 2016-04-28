@@ -52,8 +52,9 @@ class MessageQueueEntry {
       : createdAt = Util.unixTimestampToDateTime(map[Key.createdAt]),
         id = map[Key.id],
         message = Message.decode(map[Key.message]),
-        _handledRecipients =
-            map[Key.handledRecipients].map(MessageEndpoint.decode).toSet(),
+        _handledRecipients = (map[Key.handledRecipients] as Iterable)
+            .map(MessageEndpoint.decode)
+            .toSet(),
         _unhandledRecipients =
             map[Key.unhandledRecipients].map(MessageEndpoint.decode).toSet(),
         tries = map[Key.tries];

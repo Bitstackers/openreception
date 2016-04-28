@@ -30,15 +30,15 @@ class CallerInfo {
     localExtension = map[Key.localExtension];
   }
 
-  static CallerInfo decode (Map map) => new CallerInfo.fromMap(map);
+  static CallerInfo decode(Map map) => new CallerInfo.fromMap(map);
 
   Map get asMap => {
-    Key.name : name,
-    Key.company : company,
-    Key.phone : phone,
-    Key.cellPhone : cellPhone,
-    Key.localExtension : localExtension
-  };
+        Key.name: name,
+        Key.company: company,
+        Key.phone: phone,
+        Key.cellPhone: cellPhone,
+        Key.localExtension: localExtension
+      };
 
   Map toJson() => this.asMap;
 }

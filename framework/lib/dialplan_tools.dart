@@ -219,7 +219,7 @@ Iterable<String> _hourActionsToXmlDialplan(
         model.Reception reception) =>
     hourActions.map((ha) =>
         _hourActionToXmlDialplan(extension, ha, option, reception)
-            .fold([], (combined, current) => combined..addAll(current)));
+            .fold([], (List combined, current) => combined..addAll(current)));
 
 /**
  * Turns a [NamedExtension] into a dialplan document fragment.
@@ -241,7 +241,7 @@ Iterable<String> _namedExtensionToDialPlan(
           .map((action) => _actionToXmlDialplan(action, option, env, reception))
           .fold(
               [],
-              (combined, current) =>
+              (List combined, current) =>
                   combined..addAll(current.map(_indent).map(_indent))))
       ..add('    <action application="hangup"/>')
       ..add('  </condition>')
@@ -254,7 +254,7 @@ Iterable<String> _extraExtensionsToDialplan(
     extensions
         .map((ne) =>
             _namedExtensionToDialPlan(ne, option, new Environment(), reception))
-        .fold([], (combined, current) => combined..addAll(current));
+        .fold([], (List combined, current) => combined..addAll(current));
 
 /**
  *

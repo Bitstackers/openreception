@@ -11,13 +11,12 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.service.html;
+part of openreception.framework.service.html;
 
 /**
  * HTTP Client for use with dart:html.
  */
 class Client extends Service.WebService {
-
   static final String className = '${libraryName}.Client';
 
   Logger log = new Logger(Client.className);
@@ -33,21 +32,18 @@ class Client extends Service.WebService {
 
     HTML.HttpRequest request;
     request = new HTML.HttpRequest()
-        ..open('GET', resource.toString())
-        ..onLoad.listen((_) {
-          try {
-            Service.WebService.checkResponse(
-                request.status,
-                'GET',
-                resource,
-                request.responseText);
-            completer.complete(request.responseText);
-          } catch (error) {
-            completer.completeError(error);
-          }
-        })
-        ..onError.listen((e) => completer.completeError(e))
-        ..send();
+      ..open('GET', resource.toString())
+      ..onLoad.listen((_) {
+        try {
+          Service.WebService.checkResponse(
+              request.status, 'GET', resource, request.responseText);
+          completer.complete(request.responseText);
+        } catch (error) {
+          completer.completeError(error);
+        }
+      })
+      ..onError.listen((e) => completer.completeError(e))
+      ..send();
 
     return completer.future;
   }
@@ -63,21 +59,18 @@ class Client extends Service.WebService {
 
     HTML.HttpRequest request;
     request = new HTML.HttpRequest()
-        ..open('PUT', resource.toString())
-        ..onLoad.listen((_) {
-          try {
-            Service.WebService.checkResponse(
-                request.status,
-                'PUT',
-                resource,
-                request.responseText);
-            completer.complete(request.responseText);
-          } catch (error) {
-            completer.completeError(error);
-          }
-        })
-        ..onError.listen((e) => completer.completeError(e))
-        ..send(payload);
+      ..open('PUT', resource.toString())
+      ..onLoad.listen((_) {
+        try {
+          Service.WebService.checkResponse(
+              request.status, 'PUT', resource, request.responseText);
+          completer.complete(request.responseText);
+        } catch (error) {
+          completer.completeError(error);
+        }
+      })
+      ..onError.listen((e) => completer.completeError(e))
+      ..send(payload);
 
     return completer.future;
   }
@@ -93,21 +86,18 @@ class Client extends Service.WebService {
 
     HTML.HttpRequest request;
     request = new HTML.HttpRequest()
-        ..open('POST', resource.toString())
-        ..onLoad.listen((_) {
-          try {
-            Service.WebService.checkResponse(
-                request.status,
-                'GET',
-                resource,
-                request.responseText);
-            completer.complete(request.responseText);
-          } catch (error) {
-            completer.completeError(error);
-          }
-        })
-        ..onError.listen((e) => completer.completeError(e))
-        ..send(payload);
+      ..open('POST', resource.toString())
+      ..onLoad.listen((_) {
+        try {
+          Service.WebService.checkResponse(
+              request.status, 'GET', resource, request.responseText);
+          completer.complete(request.responseText);
+        } catch (error) {
+          completer.completeError(error);
+        }
+      })
+      ..onError.listen((e) => completer.completeError(e))
+      ..send(payload);
 
     return completer.future;
   }
@@ -123,21 +113,18 @@ class Client extends Service.WebService {
 
     HTML.HttpRequest request;
     request = new HTML.HttpRequest()
-        ..open('DELETE', resource.toString())
-        ..onLoad.listen((_) {
-          try {
-            Service.WebService.checkResponse(
-                request.status,
-                'DELETE',
-                resource,
-                request.responseText);
-            completer.complete(request.responseText);
-          } catch (error) {
-            completer.completeError(error);
-          }
-        })
-        ..onError.listen((e) => completer.completeError(e))
-        ..send();
+      ..open('DELETE', resource.toString())
+      ..onLoad.listen((_) {
+        try {
+          Service.WebService.checkResponse(
+              request.status, 'DELETE', resource, request.responseText);
+          completer.complete(request.responseText);
+        } catch (error) {
+          completer.completeError(error);
+        }
+      })
+      ..onError.listen((e) => completer.completeError(e))
+      ..send();
 
     return completer.future;
   }

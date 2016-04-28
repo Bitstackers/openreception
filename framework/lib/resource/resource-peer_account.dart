@@ -11,23 +11,20 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.resource;
+part of openreception.framework.resource;
 
 /**
  * Protocol wrapper class for building homogenic REST
  * resources across servers and clients.
  */
 abstract class PeerAccount {
-
   static String nameSpace = 'peeraccount';
 
-  static Uri list(Uri host) =>
-    Uri.parse('$host/$nameSpace');
+  static Uri list(Uri host) => Uri.parse('$host/$nameSpace');
 
   static Uri single(Uri host, String accountName) =>
-    Uri.parse('$host/$nameSpace/${accountName}');
+      Uri.parse('$host/$nameSpace/${accountName}');
 
   static Uri deploy(Uri host, int uid) =>
-    Uri.parse('$host/$nameSpace/user/$uid/deploy');
-
+      Uri.parse('$host/$nameSpace/user/$uid/deploy');
 }

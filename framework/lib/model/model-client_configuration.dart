@@ -76,7 +76,7 @@ class ClientConfiguration {
         dialplanServerUri = Uri.parse(map[Key.dialplanServerURI]),
         hideInboundCallerId = map[Key.hideInboundCallerId],
         messageServerUri = Uri.parse(map[Key.messageServerURI]),
-        myIdentifiers = map[Key.myIdentifiers],
+        myIdentifiers = map[Key.myIdentifiers] as List<String>,
         notificationServerUri = Uri.parse(map[Key.notificationServerUri]),
         notificationSocketUri = Uri.parse(map[Key.notificationSocket]),
         receptionServerUri = Uri.parse(map[Key.receptionServerURI]),

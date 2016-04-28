@@ -30,7 +30,7 @@ class Playlist {
   Playlist.empty();
 
   /**
-   * 
+   *
    */
   Playlist.fromDb(int this.id, Map json) {
     name = json['name'];
@@ -38,7 +38,7 @@ class Playlist {
     shuffle = json['shuffle'];
     channels = json['channels'];
     interval = json['interval'];
-    chimelist = json['chimelist'];
+    chimelist = json['chimelist'] as List<String>;
     chimefreq = json['chimefreq'];
     chimemax = json['chimemax'];
   }

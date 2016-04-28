@@ -22,7 +22,6 @@ class ClientConnection {
   int userID;
   int connectionCount;
 
-
   @deprecated
   factory ClientConnection() => new ClientConnection.empty();
 
@@ -47,8 +46,5 @@ class ClientConnection {
   /**
    * Returns a map representation of this object.
    */
-  Map get asMap => {
-    Key.userId : userID,
-    Key.connectionCount : connectionCount
-  };
+  Map get asMap => {Key.userId: userID, Key.connectionCount: connectionCount};
 }

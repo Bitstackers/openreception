@@ -31,7 +31,8 @@ abstract class Template {
   /**
    * Return the activated boolean [Message] fields as text.
    */
-  String get _booleanFieldsText => '${_message.flag.called ? '(X) Har ringet\n' : ''}'
+  String get _booleanFieldsText =>
+      '${_message.flag.called ? '(X) Har ringet\n' : ''}'
       '${_message.flag.pleaseCall ? '(X) Ring venligst\n' : ''}'
       '${_message.flag.willCallBack ? '(X) Kunden ringer selv igen\n' : ''}'
       '${_message.flag.urgent ? '(X) Haster\n' : ''}';

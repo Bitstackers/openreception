@@ -41,8 +41,7 @@ abstract class ModelOrganization {
     Model.Organization decodedObject =
         new Model.Organization.fromMap(JSON.decode(serializedObject));
 
-    expect(builtObject.billingType, equals(decodedObject.billingType));
-    expect(builtObject.flags, equals(decodedObject.flags));
+    expect(builtObject.notes, equals(decodedObject.notes));
     expect(builtObject.id, equals(decodedObject.id));
     expect(builtObject.name, equals(decodedObject.name));
 
@@ -50,18 +49,15 @@ abstract class ModelOrganization {
   }
 
   static Model.Organization buildObject() {
-    final String billingType = 'GOOOOLD';
-    final List<String> flags = ['Goldmember'];
+    final List<String> notes = ['Goldmember'];
     final int id = 42;
     final String name = 'Hey Goldmember!';
 
     Model.Organization testOrganization = new Model.Organization.empty()
-      ..billingType = billingType
-      ..flags = flags
+      ..notes = notes
       ..id = id
       ..name = name;
-    expect(testOrganization.billingType, equals(billingType));
-    expect(testOrganization.flags, equals(flags));
+    expect(testOrganization.notes, equals(notes));
     expect(testOrganization.id, equals(id));
     expect(testOrganization.name, equals(name));
 

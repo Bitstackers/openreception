@@ -29,7 +29,7 @@ class PeerAccount {
   /**
    * Deserializing factory.
    */
-  static PeerAccount decode (Map map) =>
+  static PeerAccount decode(Map map) =>
       new PeerAccount(map[Key.username], map[Key.password], map[Key.context]);
 
   /**

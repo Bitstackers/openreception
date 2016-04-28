@@ -14,10 +14,9 @@
 part of openreception.framework.model.dialplan;
 
 class Notify extends Action {
-
   final String eventName;
 
-  const Notify (this.eventName);
+  const Notify(this.eventName);
 
   static Notify parse(String buffer) {
     var buf = consumeKey(buffer.trimLeft(), Key.notify).trimLeft();
@@ -25,12 +24,11 @@ class Notify extends Action {
     var consumed = consumeWord(buf);
 
     String eventName = consumed.iden;
-    if(eventName.isEmpty) {
+    if (eventName.isEmpty) {
       throw new FormatException('${consumed.iden} is empty', buffer);
     }
 
     return new Notify(eventName);
-
   }
 
   String toJson() => '${Key.notify} $eventName';

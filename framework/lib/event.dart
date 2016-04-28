@@ -47,7 +47,6 @@ part 'event/event-user.dart';
 part 'event/event-user_state.dart';
 part 'event/event-widget_select.dart';
 
-
 /**
  * 'Enum' representing different outcomes of an change.
  */

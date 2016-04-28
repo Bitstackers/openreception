@@ -24,5 +24,5 @@ class RESTCDRService {
   String _token = '';
 
   RESTCDRService(Uri this._host, String this._token, this._backend);
-  
+
 }
