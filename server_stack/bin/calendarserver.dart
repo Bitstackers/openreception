@@ -22,8 +22,8 @@ import 'dart:io';
 import 'package:args/args.dart';
 
 import 'package:logging/logging.dart';
-import '../lib/configuration.dart';
-import '../lib/calendar_server/router.dart' as router;
+import 'package:openreception.server/configuration.dart';
+import 'package:openreception.server/calendar_server/router.dart' as router;
 
 ArgResults parsedArgs;
 ArgParser parser = new ArgParser();

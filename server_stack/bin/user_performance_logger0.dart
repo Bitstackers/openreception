@@ -27,8 +27,8 @@ import 'package:openreception.framework/event.dart' as event;
 
 import 'package:openreception.framework/model.dart' as model;
 
-// import 'package:openreception_framework/service.dart' as service;
-// import 'package:openreception_framework/service-io.dart' as transport;
+// import 'package:openreception.framework/service.dart' as service;
+// import 'package:openreception.framework/service-io.dart' as transport;
 
 final Map<int, String> _userNameCache = {};
 final DateFormat RFC3339 = new DateFormat('yyyy-MM-dd');
