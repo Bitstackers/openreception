@@ -31,6 +31,16 @@ void loginRedirect() {
 }
 
 Future main() async {
+  /// Read token from GET parameters
+  Uri clientUri = Uri.parse(window.location.href);
+  if (clientUri.queryParameters.containsKey('settoken')) {
+    config.token = clientUri.queryParameters['settoken'];
+  }
+
+  if (clientUri.queryParameters.containsKey('config_server')) {
+    config.configUri = Uri.parse(clientUri.queryParameters['config_server']);
+  }
+
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen(print);
   Logger _log = Logger.root;
@@ -39,12 +49,6 @@ Future main() async {
   config.clientConfig =
       await (new service.RESTConfiguration(config.configUri, client))
           .clientConfig();
-
-  /// Read token from GET parameters
-  Uri clientUri = Uri.parse(window.location.href);
-  if (clientUri.queryParameters.containsKey('settoken')) {
-    config.token = clientUri.queryParameters['settoken'];
-  }
 
   /// Check token.
   if (config.token.isNotEmpty) {
