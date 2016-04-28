@@ -18,19 +18,21 @@ part of openreception.framework.model;
  */
 class Owner {
   static final Owner none = const Owner();
-  static String type = 'none';
-  final int id = 0;
+  static const String _type = 'none';
+  String get type => _type;
+
+  int get id => 0;
 
   /**
    *
    */
   factory Owner.parse(String buffer) {
     final key = buffer.split(':').first;
-    if (key == OwningReception.type) {
+    if (key == OwningReception._type) {
       return new OwningReception(int.parse(buffer.split(':').last));
-    } else if (key == OwningContact.type) {
+    } else if (key == OwningContact._type) {
       return new OwningContact(int.parse(buffer.split(':').last));
-    } else if (key == Owner.type) {
+    } else if (key == Owner._type) {
       return none;
     }
   }
@@ -38,7 +40,7 @@ class Owner {
   /**
    *
    */
-  bool operator ==(Owner other) => id == other.id;
+  bool operator ==(Owner other) => id == other.id && type == other.type;
 
   /**
    *
@@ -62,13 +64,10 @@ class Owner {
  */
 class OwningReception extends Owner {
   final int id;
-
-  static final String type = 'r';
+  static const String _type = 'r';
+  String get type => _type;
 
   const OwningReception(this.id);
-
-  @override
-  bool operator ==(OwningReception other) => this.id == other.id;
 
   /**
    *
@@ -87,7 +86,8 @@ class OwningReception extends Owner {
  */
 class OwningContact extends Owner {
   final int id;
-  static final String type = 'c';
+  static final String _type = 'c';
+  String get type => _type;
 
   const OwningContact(this.id);
 
