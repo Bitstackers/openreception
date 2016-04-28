@@ -57,6 +57,5 @@ class CallList {
     }
   }
 
-  bool _isUnassigned(model.Call call) =>
-      call.assignedTo == model.User.noID;
+  bool _isUnassigned(model.Call call) => call.assignedTo == model.User.noId;
 }

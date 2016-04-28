@@ -67,7 +67,7 @@ Future main() async {
   //    querySelector('#call-list').replaceWith(callList.element);
   //  });
 
-  Iterable<or_model.User> users = await userService.list();
+  Iterable<or_model.UserReference> users = await userService.list();
   querySelector('#user-list').replaceWith(new view.AgentInfoList(
           users, callFlowControl, userService, notificationSocket, messageStore)
       .element);

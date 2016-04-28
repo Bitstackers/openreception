@@ -42,8 +42,8 @@ class CallSummary {
   Map<int, int> callsByAgent = {};
   Map<int, int> obCallsByAgent = {};
 
-  List<Map<int, int>> agentSummay() {
-    List<Map<int, int>> ret = [];
+  List<Map<String, dynamic>> agentSummay() {
+    List<Map<String, dynamic>> ret = [];
     callsByAgent.forEach((k, v) {
       ret.add({
         'uid': k,

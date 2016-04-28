@@ -20,7 +20,7 @@ class AgentInfoList {
     /// Fetch initial user status
     userStore.userStatusList().then((Iterable<model.UserStatus> statuses) {
       statuses.forEach((status) {
-        _info[status.userID].userStatus = status;
+        _info[status.userId].userStatus = status;
       });
     });
 
@@ -37,25 +37,25 @@ class AgentInfoList {
         DateTime now = new DateTime.now();
         DateTime midnight = new DateTime(now.year, now.month, now.day);
         if (message.createdAt.isAfter(midnight)) {
-          _info[message.senderId].numMessage++;
+          _info[message.sender.id].numMessage++;
         }
       });
     });
 
     dispatchEvent(event.Event e) async {
       if (e is event.UserState) {
-        _info[e.status.userID].userStatus = e.status;
-      } else if (e is event.CallEvent && e.call.assignedTo != model.User.noID) {
+        _info[e.status.userId].userStatus = e.status;
+      } else if (e is event.CallEvent && e.call.assignedTo != model.User.noId) {
         _info[e.call.assignedTo].call = e.call;
       } else if (e is event.MessageChange) {
         if (e.state == event.MessageChangeState.CREATED) {
-          model.Message msg = await messageStore.get(e.messageID);
+          model.Message msg = await messageStore.get(e.mid);
 
-          _info[msg.senderId].numMessage++;
+          _info[msg.sender.id].numMessage++;
         } else if (e.state == event.MessageChangeState.DELETED) {
-          model.Message msg = await messageStore.get(e.messageID);
+          model.Message msg = await messageStore.get(e.mid);
 
-          _info[msg.senderId].numMessage--;
+          _info[msg.sender.id].numMessage--;
         }
       }
     }

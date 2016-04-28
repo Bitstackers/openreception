@@ -1,6 +1,5 @@
 /*                  This file is part of OpenReception
                    Copyright (C) 2014-, BitStackers K/S
-
   This is free software;  you can redistribute it and/or modify it
   under terms of the  GNU General Public License  as published by the
   Free Software  Foundation;  either version 3,  or (at your  option) any
@@ -19,7 +18,6 @@ class Cdr {
   /**
    * Constructor.
    */
-
   Cdr();
 
   Future<shelf.Response> process(shelf.Request request) async {

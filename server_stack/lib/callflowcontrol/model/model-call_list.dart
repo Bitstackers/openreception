@@ -268,7 +268,7 @@ class CallList extends IterableBase<ORModel.Call> {
 
       case (ORPbxKey.callLock):
         if (_map.containsKey(event.uniqueID)) {
-          ESL.Channel channel = new ESL.Channel.fromPacket(event);
+          //ESL.Channel channel = new ESL.Channel.fromPacket(event);
           final int assignedTo = get(event.uniqueID).assignedTo;
 
           if (assignedTo == ORModel.User.noId) {

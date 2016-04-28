@@ -77,12 +77,10 @@ abstract class Notification {
         ws.sink.add(contentString);
         _sendCountBuffer += contentString.codeUnits.length;
         success++;
-        return true;
       } catch (error, stackTrace) {
         failure++;
         _log.severe("Failed to send message to client");
         _log.severe(error, stackTrace);
-        return false;
       }
     }));
 
