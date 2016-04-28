@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' show Random;
 
 import 'package:logging/logging.dart';
 import 'package:openreception.client_app_server/router.dart' as app_router;
@@ -27,6 +28,20 @@ void logEntryDispatch(LogRecord record) {
 }
 
 Future main(args) async {
+  Random rand = new Random(new DateTime.now().millisecondsSinceEpoch);
+  /**
+   * Returns a random element from [pool].
+   */
+  dynamic randomChoice(List pool) {
+    if (pool.isEmpty) {
+      throw new ArgumentError('Cannot find a random value in an empty list');
+    }
+
+    int index = rand.nextInt(pool.length);
+
+    return pool[index];
+  }
+
   Stopwatch timer = new Stopwatch()..start();
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen(logEntryDispatch);
@@ -50,70 +65,83 @@ Future main(args) async {
   TestEnvironment env = new TestEnvironment();
   ServiceAgent sa = await env.createsServiceAgent();
 
-  List orgs = [];
-  await Future.forEach(new List(10), (_) async {
-    orgs.add(await sa.createsOrganization());
-  });
+  List orgs = new List(10).map((_) async => sa.createsOrganization()).toList();
 
-  List recs = [];
-  await Future.forEach(new List(20), (_) async {
-    orgs.shuffle();
-    recs.add(await sa.createsReception(orgs.first));
-  });
+  List recs = new List(20)
+      .map((_) async => sa.createsReception(await randomChoice(orgs)))
+      .toList();
 
-  await Future.forEach(new List(40), (_) async {
-    await sa.createsContact();
-  });
+  List rCons = new List(40)
+      .map((_) async => sa.addsContactToReception(
+          await sa.createsContact(), await randomChoice(recs)))
+      .toList();
 
-  await Future.forEach(new List(40), (_) async {
-    recs.shuffle();
-    await sa.addsContactToReception(await sa.createsContact(), recs.first);
-  });
+  List rdps = new List(10)
+      .map((_) async => await sa.createsDialplan(mustBeValid: true));
 
-  await Future.forEach(new List(10), (_) async {
-    await sa.createsDialplan(mustBeValid: true);
-  });
+  List ivrs = new List(10).map((_) async => await sa.createsIvrMenu());
 
-  await Future.forEach(new List(10), (_) async {
-    await sa.createsIvrMenu();
-  });
-
-  final authserver = await env.requestAuthserverProcess();
-  final notificationserver = await env.requestNotificationserverProcess();
+  final authserver = env.requestAuthserverProcess();
+  final notificationserver = env.requestNotificationserverProcess();
   await env.requestFreeswitchProcess();
-  final callflow = await env.requestCallFlowProcess();
-  final dialplanserver = await env.requestDialplanProcess();
-  final calendarserver = await env.requestCalendarserverProcess();
-  final contactserver = await env.requestContactserverProcess();
-  final messageserver = await env.requestMessageserverProcess();
-  final receptionserver = await env.requestReceptionserverProcess();
-  final userserver = await env.requestUserserverProcess();
-  final configserver = await env.requestConfigServerProcess();
-  final configClient = configserver.createClient(env.httpClient);
+  final callflow = env.requestCallFlowProcess();
+  final dialplanserver = env.requestDialplanProcess();
+  final calendarserver = env.requestCalendarserverProcess();
+  final contactserver = env.requestContactserverProcess();
+  final messageserver = env.requestMessageserverProcess();
+  final receptionserver = env.requestReceptionserverProcess();
+  final userserver = env.requestUserserverProcess();
+  final configserver = env.requestConfigServerProcess();
+  final configClient = (await configserver).createClient(env.httpClient);
 
-  configClient.register(key.authentication, authserver.uri);
-  configClient.register(key.calendar, calendarserver.uri);
-  configClient.register(key.callflow, callflow.uri);
+  configClient.register(key.authentication, (await authserver).uri);
+  configClient.register(key.calendar, (await calendarserver).uri);
+  configClient.register(key.callflow, (await callflow).uri);
   //configClient.register(key.cdr, cdrserver.uri);
-  configClient.register(key.contact, contactserver.uri);
-  configClient.register(key.dialplan, dialplanserver.uri);
-  configClient.register(key.message, messageserver.uri);
-  configClient.register(key.notification, notificationserver.uri);
-  configClient.register(key.notificationSocket, notificationserver.notifyUri);
-  configClient.register(key.user, userserver.uri);
-  configClient.register(key.reception, receptionserver.uri);
+  configClient.register(key.contact, (await contactserver).uri);
+  configClient.register(key.dialplan, (await dialplanserver).uri);
+  configClient.register(key.message, (await messageserver).uri);
+  configClient.register(key.notification, (await notificationserver).uri);
+  configClient.register(
+      key.notificationSocket, (await notificationserver).notifyUri);
+  configClient.register(key.user, (await userserver).uri);
+  configClient.register(key.reception, (await receptionserver).uri);
 
   final clientConfig = await configClient.clientConfig();
   final JsonEncoder jsonpp = new JsonEncoder.withIndent('  ');
 
   print("Client config:");
   print(jsonpp.convert(clientConfig));
-  print("Config server is reachable on ${configserver.uri}");
+  print("Config server is reachable on ${(await configserver).uri}");
   print("Stack is accessible by using tokens:");
-  print('  ' + authserver.tokenDir.tokens.join('\n  '));
+  print('  ' + (await authserver).tokenDir.tokens.join('\n  '));
 
   timer.stop();
   print('Stack startup time: ${timer.elapsedMilliseconds}ms');
+
+  app_router.FileRouter appRouter = new app_router.FileRouter();
+
+  {
+    final int port = env.nextNetworkport;
+    final String host = env.envConfig.externalIp;
+
+    appRouter.start(
+        host: host, port: port, webroot: '../management_client/web');
+    print('Management client (Dartium only) is reachable on '
+        'http://$host:$port?config_server=${(await configserver).uri}'
+        '&settoken=${(await authserver).tokenDir.tokens.last}');
+  }
+
+  {
+    final int port = env.nextNetworkport;
+    final String host = env.envConfig.externalIp;
+
+    appRouter.start(
+        host: host, port: port, webroot: '../receptionist_client/web');
+    print('Receptionist client (Dartium only) is reachable on '
+        'http://$host:$port?config_server=${(await configserver).uri}'
+        '&settoken=${(await authserver).tokenDir.tokens.last}');
+  }
 
   ProcessSignal.SIGINT.watch().listen((_) async {
     final teardownTimer = new Stopwatch()..start();
