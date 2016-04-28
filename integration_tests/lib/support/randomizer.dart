@@ -276,13 +276,9 @@ abstract class Randomizer {
 
   static List<String> organizationFlags = [
     'VIP',
-    '',
     'Charity',
     'Pro bono',
-    'Bad credit'
-  ];
-
-  static List<String> billingTypes = [
+    'Bad credit',
     'Cash',
     'Invoice',
     'Account',
@@ -566,18 +562,12 @@ abstract class Randomizer {
   static String randomOrganizationFlag() => randomChoice(organizationFlags);
 
   /**
-   *
-   */
-  static String randomBillingType() => randomChoice(billingTypes);
-
-  /**
    * Constructs and returns a [Organization] object with random content.
    *
    * The returned object is does not have a valid ID.
    */
   static model.Organization randomOrganization() =>
       new model.Organization.empty()
-        ..billingType = randomBillingType()
         ..notes =
             new List.generate(rand.nextInt(3), (_) => randomOrganizationFlag())
         ..name = randomCompany();
