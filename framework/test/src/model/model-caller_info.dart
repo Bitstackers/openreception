@@ -22,8 +22,6 @@ void testModelCallerInfo() {
 }
 
 abstract class ModelCallerInfo {
-
-
   static void deserialization() {
     Model.CallerInfo obj = buildObject();
     Model.CallerInfo deserializedObj =
@@ -50,8 +48,7 @@ abstract class ModelCallerInfo {
   /**
    * Build an object, and check that the expected values are present.
    */
-  static Model.CallerInfo buildObject () {
-
+  static Model.CallerInfo buildObject() {
     final String cellPhone = '666';
     final String company = 'Inferno Ltd.';
     final String localExtension = '313';
@@ -72,6 +69,4 @@ abstract class ModelCallerInfo {
     expect(info.phone, equals(phone));
     return info;
   }
-
-
 }

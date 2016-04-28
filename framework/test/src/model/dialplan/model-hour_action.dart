@@ -60,7 +60,6 @@ abstract class HourAction {
    *
    */
   static Model.HourAction buildObject() {
-
     final List<Model.OpeningHour> openHours = [
       new Model.OpeningHour.empty()
         ..fromDay = Model.WeekDay.mon
@@ -91,6 +90,5 @@ abstract class HourAction {
   /**
    *
    */
-  static void parse() {
-  }
+  static void parse() {}
 }

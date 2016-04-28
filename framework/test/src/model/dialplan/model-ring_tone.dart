@@ -60,7 +60,6 @@ abstract class ModelRingtone {
 
     final Model.Ringtone builtObject = new Model.Ringtone(count);
 
-
     expect(builtObject.count, equals(count));
 
     return builtObject;

@@ -60,10 +60,9 @@ abstract class ModelNamedExtension {
   static Model.NamedExtension buildObject() {
     final name = 'extension-1';
     final List<Model.Action> actions = [
-      new Model.Playback ('filename.wav'),
-      new Model.Enqueue('queue-1')];
-
-
+      new Model.Playback('filename.wav'),
+      new Model.Enqueue('queue-1')
+    ];
 
     Model.NamedExtension builtObject = new Model.NamedExtension(name, actions);
 

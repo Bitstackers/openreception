@@ -60,7 +60,7 @@ abstract class ModelTransfer {
     final String extension = '322114455';
     final String note = 'Just an extension';
 
-    Model.Transfer builtObject = new Model.Transfer(extension, note : note);
+    Model.Transfer builtObject = new Model.Transfer(extension, note: note);
 
     expect(builtObject.extension, equals(extension));
     expect(builtObject.note, equals(note));

@@ -39,10 +39,12 @@ abstract class ResourceNotification {
   static void send() => expect(Resource.Notification.send(_notificationService),
       equals(Uri.parse('${_notificationService}/send')));
 
-  static void clientConnection() => expect(Resource.Notification.clientConnection(_notificationService, 123),
+  static void clientConnection() => expect(
+      Resource.Notification.clientConnection(_notificationService, 123),
       equals(Uri.parse('${_notificationService}/connection/123')));
 
-  static void clientConnections() => expect(Resource.Notification.clientConnections(_notificationService),
+  static void clientConnections() => expect(
+      Resource.Notification.clientConnections(_notificationService),
       equals(Uri.parse('${_notificationService}/connection')));
 
   static void broadcast() => expect(

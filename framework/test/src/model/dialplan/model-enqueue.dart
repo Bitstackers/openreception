@@ -32,7 +32,6 @@ void testModelEnqueue() {
  *
  */
 abstract class ModelEnqueue {
-
   /**
    *
    */
@@ -56,7 +55,6 @@ abstract class ModelEnqueue {
     expect(builtObject.queueName, equals(deserializedObject.queueName));
     expect(builtObject.holdMusic, equals(deserializedObject.holdMusic));
     expect(builtObject.toString(), isNotEmpty);
-
   }
 
   /**
@@ -67,7 +65,7 @@ abstract class ModelEnqueue {
     final String music = 'playlist_1';
     //final String note = 'Nice music';
 
-    Model.Enqueue builtObject = new Model.Enqueue(queueName, holdMusic : music);
+    Model.Enqueue builtObject = new Model.Enqueue(queueName, holdMusic: music);
 
     expect(builtObject.queueName, equals(queueName));
     expect(builtObject.holdMusic, equals(music));
@@ -84,7 +82,8 @@ abstract class ModelEnqueue {
     final String music = 'playlist_1';
     final String note = 'Nice music';
 
-    Model.Enqueue builtObject = Model.Enqueue.parse('enqueue $queueName music $music');
+    Model.Enqueue builtObject =
+        Model.Enqueue.parse('enqueue $queueName music $music');
 
     expect(builtObject.queueName, equals(queueName));
     expect(builtObject.holdMusic, equals(music));
@@ -97,14 +96,13 @@ abstract class ModelEnqueue {
     expect(builtObject.holdMusic, equals('default'));
     expect(builtObject.toString(), isNotEmpty);
 
-
     /// Adding lots of spaces.
-    builtObject = Model.Enqueue.parse('   enqueue     $queueName   music $music');
+    builtObject =
+        Model.Enqueue.parse('   enqueue     $queueName   music $music');
 
     expect(builtObject.queueName, equals(queueName));
     expect(builtObject.holdMusic, equals(music));
     expect(builtObject.toString(), isNotEmpty);
-
 
     builtObject = Model.Enqueue.parse('enqueue $queueName ($note)');
 
@@ -112,14 +110,11 @@ abstract class ModelEnqueue {
     expect(builtObject.holdMusic, equals('default'));
     expect(builtObject.toString(), isNotEmpty);
 
-
-    builtObject =
-        Model.Enqueue.parse('  enqueue   $queueName   ($note)   ');
+    builtObject = Model.Enqueue.parse('  enqueue   $queueName   ($note)   ');
 
     expect(builtObject.queueName, equals(queueName));
     expect(builtObject.holdMusic, equals('default'));
     expect(builtObject.toString(), isNotEmpty);
-
 
     ///TODO check exceptions.
     expect(() => Model.Enqueue.parse('equeue $queueName music $music'),

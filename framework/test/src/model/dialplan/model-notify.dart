@@ -56,7 +56,6 @@ abstract class ModelNotify {
 
     expect(builtObject.eventName, equals(deserializedObject.eventName));
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
-
   }
 
   /**
@@ -64,8 +63,7 @@ abstract class ModelNotify {
    */
   static Model.Notify buildObject() {
     final String eventName = 'call-offer';
-    final Model.Notify builtObject =
-        new Model.Notify(eventName);
+    final Model.Notify builtObject = new Model.Notify(eventName);
 
     expect(builtObject.eventName, equals(eventName));
 
@@ -86,7 +84,6 @@ abstract class ModelNotify {
     builtObject = Model.Notify.parse('   notify     $eventName');
 
     expect(builtObject.eventName, equals(eventName));
-
 
     ///TODO check exceptions.
     expect(() => Model.Notify.parse('notif $eventName'),

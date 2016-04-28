@@ -22,18 +22,16 @@ void testModelClientConnection() {
 }
 
 abstract class ModelClientConnection {
-
   static void deserialization() {
     Model.ClientConnection builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
     Model.ClientConnection decodedCall =
-        new Model.ClientConnection.fromMap (JSON.decode(serializedObject));
+        new Model.ClientConnection.fromMap(JSON.decode(serializedObject));
 
     expect(builtObject.connectionCount, equals(decodedCall.connectionCount));
     expect(builtObject.userID, equals(decodedCall.userID));
 
     expect(builtObject.toJson(), equals(decodedCall.toJson()));
-
   }
 
   /**
@@ -45,16 +43,16 @@ abstract class ModelClientConnection {
     expect(() => JSON.encode(builtObject), returnsNormally);
   }
 
-  static Model.ClientConnection buildObject () {
+  static Model.ClientConnection buildObject() {
     final int userId = 2;
     final int connectionCount = 1;
 
-    Model.ClientConnection builtObject =
-      new Model.ClientConnection.empty()..connectionCount = connectionCount
+    Model.ClientConnection builtObject = new Model.ClientConnection.empty()
+      ..connectionCount = connectionCount
       ..userID = userId;
 
-    expect (builtObject.connectionCount, equals(connectionCount));
-    expect (builtObject.userID, equals(userId));
+    expect(builtObject.connectionCount, equals(connectionCount));
+    expect(builtObject.userID, equals(userId));
 
     return builtObject;
   }
