@@ -210,8 +210,7 @@ class ReceptionContact {
         _saveButton.disabled = inputHasErrors;
         _deleteButton.disabled = inputHasErrors || !_saveButton.disabled;
 
-        notify.success('Receptions-kontakten blev opdateret',
-            '');
+        notify.success('Receptions-kontakten blev opdateret', '');
       } catch (error) {
         notify.error('Receptions-kontakten blev ikke opdateret', 'Fejl:$error');
       }

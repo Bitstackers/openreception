@@ -183,7 +183,8 @@ class ContactView {
       final li = _createReceptionNode(rRef);
       List colls = crefs.toList(growable: false)..sort(view.compareContactRefs);
 
-      li.children.add(new UListElement()..classes.add('zebra-odd')
+      li.children.add(new UListElement()
+        ..classes.add('zebra-odd')
         ..children = new List<LIElement>.from(colls.map(_createColleagueNode)));
 
       _ulReceptionList.children.add(li);
@@ -209,9 +210,9 @@ class ContactView {
       ..classes.add('clickable')
       ..classes.add('reception')
       ..children = [
-        new AnchorElement(href : '/reception/edit/${rRef.id}')..text = '${rRef.name}'
+        new AnchorElement(href: '/reception/edit/${rRef.id}')
+          ..text = '${rRef.name}'
       ];
-
   }
 
   /**
@@ -222,7 +223,8 @@ class ContactView {
       ..classes.add('clickable')
       ..classes.add('colleague')
       ..children = [
-        new AnchorElement(href : '/contact/edit/${cRef.id}')..text = '${cRef.name}'
+        new AnchorElement(href: '/contact/edit/${cRef.id}')
+          ..text = '${cRef.name}'
       ];
   }
 
@@ -234,7 +236,8 @@ class ContactView {
 
     LIElement li = new LIElement()
       ..children = [
-        new AnchorElement(href : '/organization/edit/${oRef.id}')..text = '${name} (oid:${oRef.id})'
+        new AnchorElement(href: '/organization/edit/${oRef.id}')
+          ..text = '${name} (oid:${oRef.id})'
       ];
 
     return li;
