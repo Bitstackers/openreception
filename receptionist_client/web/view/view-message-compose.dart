@@ -165,8 +165,7 @@ class MessageCompose extends ViewWidget {
   /**
    * Render the widget with [Contact].
    */
-  void _render(
-      ORModel.BaseContact contact, ORModel.ReceptionAttributes attr) {
+  void _render(ORModel.BaseContact contact, ORModel.ReceptionAttributes attr) {
     _ui.headerExtra = contact.name.isEmpty ? '' : ': ${contact.name}';
 
     if (attr.isEmpty) {
