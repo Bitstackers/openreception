@@ -578,7 +578,7 @@ abstract class Randomizer {
   static model.Organization randomOrganization() =>
       new model.Organization.empty()
         ..billingType = randomBillingType()
-        ..flags =
+        ..notes =
             new List.generate(rand.nextInt(3), (_) => randomOrganizationFlag())
         ..name = randomCompany();
 

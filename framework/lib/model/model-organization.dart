@@ -32,11 +32,7 @@ List<FormatException> validateOrganization(Organization org) {
     errors.add(new FormatException('name is empty'));
   }
 
-  if (org.billingType == null) {
-    errors.add(new FormatException('billingType is null'));
-  }
-
-  if (org.flags == null) {
+  if (org.notes == null) {
     errors.add(new FormatException('flags is null'));
   }
 
@@ -51,8 +47,7 @@ class Organization {
 
   int id = noId;
   String name = '';
-  String billingType = '';
-  List<String> flags = [];
+  List<String> notes = [];
 
   /**
    * Default empty constructor.
@@ -65,8 +60,7 @@ class Organization {
   Organization.fromMap(Map map)
       : id = map[Key.id],
         name = map[Key.name],
-        billingType = map[Key.billingType],
-        flags = map[Key.flags];
+        notes = map[Key.notes] as List<String>;
 
   /**
    * Deserializing factor.
@@ -79,10 +73,5 @@ class Organization {
    * Returns a Map representation of the Organization.
    * Serialization function.
    */
-  Map toJson() => {
-        Key.id: id,
-        Key.billingType: billingType,
-        Key.flags: flags,
-        Key.name: name
-      };
+  Map toJson() => {Key.id: id, Key.name: name, Key.notes: notes};
 }

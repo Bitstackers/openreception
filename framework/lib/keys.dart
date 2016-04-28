@@ -121,8 +121,7 @@ const String relations = 'relations';
 const String responsibilities = 'responsibilities';
 
 const String messagePrerequisites = 'messagePrerequisites';
-const String billingType = 'billing_type';
-const String flag = 'flag';
+const String notes = 'notes';
 const String registered = 'registered';
 const String activeChannels = 'activeChannels';
 const String description = 'description';

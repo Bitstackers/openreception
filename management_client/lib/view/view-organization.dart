@@ -45,14 +45,12 @@ class Organization {
 
   final HeadingElement _heading = new HeadingElement.h2();
 
-  final InputElement _billingTypeInput = new InputElement()..value = '';
-  final InputElement _flagInput = new InputElement()..value = '';
+  final InputElement _notesInput = new InputElement()..value = '';
   final InputElement _nameInput = new InputElement()..value = '';
 
   void set organization(model.Organization org) {
     _id = org.id;
-    _billingTypeInput.value = org.billingType;
-    _flagInput.value = org.flags.join(', ');
+    _notesInput.value = org.notes.join(', ');
     _nameInput.value = org.name;
 
     element.hidden = false;
@@ -74,9 +72,8 @@ class Organization {
    */
   model.Organization get organization => new model.Organization.empty()
     ..id = _id
-    ..billingType = _billingTypeInput.value
-    ..flags = new List<String>.from(
-        _flagInput.value.split(',').map((str) => str.trim()))
+    ..notes = new List<String>.from(
+        _notesInput.value.split(',').map((str) => str.trim()))
     ..name = _nameInput.value;
 
   /**
@@ -102,16 +99,9 @@ class Organization {
       new DivElement()
         ..children = [
           new LabelElement()
-            ..text = 'Regnings Type'
-            ..htmlFor = _billingTypeInput.id,
-          _billingTypeInput
-        ],
-      new DivElement()
-        ..children = [
-          new LabelElement()
-            ..text = 'Flag'
-            ..htmlFor = _flagInput.id,
-          _flagInput
+            ..text = 'Noter'
+            ..htmlFor = _notesInput.id,
+          _notesInput
         ],
       _historyToggle,
       _historyView.element

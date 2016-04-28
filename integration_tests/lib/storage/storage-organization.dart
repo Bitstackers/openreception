@@ -30,7 +30,7 @@ class Organization {
     expect(org.name, isNotEmpty);
     expect(org.billingType, newOrg.billingType);
     expect(org.name, newOrg.name);
-    expect(org.flags, newOrg.flags);
+    expect(org.notes, newOrg.notes);
 
     _log.info('Test OK. Cleaning up');
     await sa.organizationStore.remove(newOrgRef.id, sa.user);
@@ -249,10 +249,10 @@ class Organization {
     expect(org.id, isNot(equals(model.Organization.noId)));
     expect(org.billingType, isNotEmpty);
     expect(org.name, isNotEmpty);
-    expect(org.flags, isNotNull);
+    expect(org.notes, isNotNull);
     expect(org.billingType, newOrg.billingType);
     expect(org.name, newOrg.name);
-    expect(org.flags, newOrg.flags);
+    expect(org.notes, newOrg.notes);
 
     _log.info('Test OK. Cleaning up');
   }
@@ -282,10 +282,10 @@ class Organization {
     expect(org.id, isNot(equals(model.Organization.noId)));
     expect(org.billingType, isNotEmpty);
     expect(org.name, isNotEmpty);
-    expect(org.flags, isNotNull);
+    expect(org.notes, isNotNull);
     expect(org.billingType, newOrg.billingType);
     expect(org.name, newOrg.name);
-    expect(org.flags, newOrg.flags);
+    expect(org.notes, newOrg.notes);
 
     final model.Organization updated = Randomizer.randomOrganization()
       ..id = newOrgRef.id;
@@ -300,7 +300,7 @@ class Organization {
     expect(fetched, isNotNull);
     expect(fetched.id, isNotNull);
     expect(org.id, isNot(equals(model.Organization.noId)));
-    expect(fetched.flags, isNotNull);
+    expect(fetched.notes, isNotNull);
     expect(updated.id, equals(fetched.id));
 
     expect(fetched.id == model.Organization.noId, isFalse);
@@ -308,7 +308,7 @@ class Organization {
     expect(updated.billingType, equals(fetched.billingType));
     expect(fetched.name, isNotEmpty);
     expect(updated.name, equals(fetched.name));
-    expect(updated.flags, equals(fetched.flags));
+    expect(updated.notes, equals(fetched.notes));
   }
 
   /**
