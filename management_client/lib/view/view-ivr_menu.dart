@@ -53,6 +53,15 @@ class IvrMenu {
 
       try {
         menu = model.IvrMenu.decode(json);
+        final List<FormatException> errors = model.validateIvrMenu(menu);
+
+        if(errors.isNotEmpty) {
+          //TODO: Map and build more informational LI-elements.
+          _inputErrorList.children
+              .add(new LIElement()..text = 'Kaldplan-parser fejl.');
+          _menuInput.classes.toggle('error', true);
+        }
+
       } on FormatException {
         _inputErrorList.children
             .add(new LIElement()..text = 'Kaldplan-parser fejl.');
