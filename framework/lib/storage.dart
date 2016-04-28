@@ -1,4 +1,4 @@
-library openreception.storage;
+library openreception.framework.storage;
 
 import 'dart:async';
 import 'model.dart' as model;

@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.filestore;
+part of openreception.framework.filestore;
 
 class Message implements storage.Message {
   final Logger _log = new Logger('$libraryName.Message');

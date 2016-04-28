@@ -8,7 +8,7 @@ import 'package:route_hierarchical/client.dart';
 
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/view.dart' as view;
-import 'package:openreception_framework/model.dart' as model;
+import 'package:openreception.framework/model.dart' as model;
 
 const String _libraryName = 'management_tool.page.ivr';
 

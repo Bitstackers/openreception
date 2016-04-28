@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.pbx_keys;
+library openreception.framework.pbx_keys;
 
 /**
  * This class contains '__or__' namespaced call related String constants.

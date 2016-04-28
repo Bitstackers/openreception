@@ -10,7 +10,7 @@
   You should have received a copy of the GNU General Public License along with
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
-part of openreception.model;
+part of openreception.framework.model;
 
 /**
  * Model super-class representing an owner. Direct instances of this class

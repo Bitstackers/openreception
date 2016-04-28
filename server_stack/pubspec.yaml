@@ -17,7 +17,7 @@ dependencies:
   intl: any
   logging: any
   oauth2: <1.0.0
-  openreception_framework:
+  openreception.framework:
     path: ../framework
     version: '>=0.0.30'
   route: any

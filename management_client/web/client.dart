@@ -15,9 +15,9 @@ import 'package:management_tool/page/page-user.dart' as page;
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/configuration.dart';
 
-import 'package:openreception_framework/service.dart' as service;
-import 'package:openreception_framework/storage.dart' as storage;
-import 'package:openreception_framework/service-html.dart' as transport;
+import 'package:openreception.framework/service.dart' as service;
+import 'package:openreception.framework/storage.dart' as storage;
+import 'package:openreception.framework/service-html.dart' as transport;
 
 controller.Popup notify = controller.popup;
 

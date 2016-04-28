@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.service.io;
+library openreception.framework.service.io;
 
 import 'dart:async';
 import 'dart:convert';

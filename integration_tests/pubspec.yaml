@@ -9,7 +9,7 @@ dependencies:
     git:
       ref: master
       url: https://github.com/rostgaard/libesl-dart.git
-  openreception_framework:
+  openreception.framework:
     path: ../framework
     version: '>=0.0.30'
   phonio:

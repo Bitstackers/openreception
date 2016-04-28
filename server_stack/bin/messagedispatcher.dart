@@ -20,7 +20,7 @@ import 'dart:async';
 import 'package:args/args.dart';
 import 'package:emailer/emailer.dart';
 import 'package:logging/logging.dart';
-import 'package:openreception_framework/model.dart' as Model;
+import 'package:openreception.framework/model.dart' as Model;
 
 import 'package:openreception.server/configuration.dart';
 import 'package:openreception.server/message_dispatcher/router.dart' as router;

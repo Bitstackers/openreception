@@ -13,7 +13,7 @@ dependencies:
   okeyee: any
   route_hierarchical: any
   stream_channel: any
-  openreception_framework:
+  openreception.framework:
     path: ../framework
     version: '>=0.0.30'
 transformers:

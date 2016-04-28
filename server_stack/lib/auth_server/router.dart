@@ -19,10 +19,10 @@ import 'dart:io' as IO;
 
 import 'package:logging/logging.dart';
 
-import 'package:openreception_framework/filestore.dart' as filestore;
-import 'package:openreception_framework/service-io.dart' as _transport;
-import 'package:openreception_framework/storage.dart' as storage;
-import 'package:openreception_framework/model.dart' as model;
+import 'package:openreception.framework/filestore.dart' as filestore;
+import 'package:openreception.framework/service-io.dart' as _transport;
+import 'package:openreception.framework/storage.dart' as storage;
+import 'package:openreception.framework/model.dart' as model;
 
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;

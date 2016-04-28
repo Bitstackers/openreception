@@ -8,8 +8,8 @@ import 'package:route_hierarchical/client.dart';
 
 import 'package:management_tool/view.dart' as view;
 
-import 'package:openreception_framework/event.dart' as event;
-import 'package:openreception_framework/model.dart' as model;
+import 'package:openreception.framework/event.dart' as event;
+import 'package:openreception.framework/model.dart' as model;
 
 import 'package:management_tool/controller.dart' as controller;
 

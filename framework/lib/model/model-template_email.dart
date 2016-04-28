@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.model;
+part of openreception.framework.model;
 
 class TemplateEmail extends Template {
   final User _sender;

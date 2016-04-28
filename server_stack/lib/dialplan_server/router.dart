@@ -22,11 +22,11 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 
-import 'package:openreception_framework/filestore.dart' as filestore;
-import 'package:openreception_framework/storage.dart' as storage;
-import 'package:openreception_framework/service.dart' as Service;
-import 'package:openreception_framework/service-io.dart' as Service_IO;
-import 'package:openreception_framework/dialplan_tools.dart' as dialplanTools;
+import 'package:openreception.framework/filestore.dart' as filestore;
+import 'package:openreception.framework/storage.dart' as storage;
+import 'package:openreception.framework/service.dart' as Service;
+import 'package:openreception.framework/service-io.dart' as Service_IO;
+import 'package:openreception.framework/dialplan_tools.dart' as dialplanTools;
 
 import 'package:openreception.server/configuration.dart';
 import 'package:openreception.server/response_utils.dart';

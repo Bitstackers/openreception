@@ -20,7 +20,7 @@ import 'dart:math' show Random;
 import 'controller/controller.dart' as Controller;
 import 'model/model.dart' as Model;
 import 'package:logging/logging.dart';
-import 'package:openreception_framework/model.dart' as ORModel;
+import 'package:openreception.framework/model.dart' as ORModel;
 
 _Simulation simulation = new _Simulation();
 

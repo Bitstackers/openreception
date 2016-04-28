@@ -11,12 +11,12 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.event;
+library openreception.framework.event;
 
 import 'package:logging/logging.dart';
 
-import 'util.dart' as Util;
-import 'model.dart' as model;
+import 'package:openreception.framework/util.dart' as Util;
+import 'package:openreception.framework/model.dart' as model;
 
 part 'event/call/event-call_assign.dart';
 part 'event/call/event-call_hangup.dart';

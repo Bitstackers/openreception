@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.utilities;
+library openreception.framework.utilities;
 
 import 'package:intl/intl.dart';
 

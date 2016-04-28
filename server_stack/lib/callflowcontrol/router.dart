@@ -23,13 +23,13 @@ import '../response_utils.dart';
 import 'controller.dart' as Controller;
 import 'model/model.dart' as Model;
 
-import 'package:openreception_framework/pbx-keys.dart';
-import 'package:openreception_framework/storage.dart' as ORStorage;
-import 'package:openreception_framework/storage.dart' as storage;
-import 'package:openreception_framework/service.dart' as Service;
-import 'package:openreception_framework/service-io.dart' as Service_IO;
-import 'package:openreception_framework/model.dart' as ORModel;
-import 'package:openreception_framework/event.dart' as OREvent;
+import 'package:openreception.framework/pbx-keys.dart';
+import 'package:openreception.framework/storage.dart' as ORStorage;
+import 'package:openreception.framework/storage.dart' as storage;
+import 'package:openreception.framework/service.dart' as Service;
+import 'package:openreception.framework/service-io.dart' as Service_IO;
+import 'package:openreception.framework/model.dart' as ORModel;
+import 'package:openreception.framework/event.dart' as OREvent;
 
 import 'package:logging/logging.dart';
 import 'package:esl/esl.dart' as ESL;

@@ -10,7 +10,7 @@ dependencies:
   logging: any
   markdown: any
   okeyee: any
-  openreception_framework:
+  openreception.framework:
     path: ../framework
     version: '>=0.0.30'
 transformers:

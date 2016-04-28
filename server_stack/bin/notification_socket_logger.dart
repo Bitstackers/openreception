@@ -21,8 +21,8 @@ import 'dart:convert';
 
 import 'package:openreception.server/configuration.dart';
 
-import 'package:openreception_framework/service.dart' as service;
-import 'package:openreception_framework/service-io.dart' as transport;
+import 'package:openreception.framework/service.dart' as service;
+import 'package:openreception.framework/service-io.dart' as transport;
 
 Future main(List<String> args) async {
   transport.WebSocketClient client = new transport.WebSocketClient();

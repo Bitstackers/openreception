@@ -17,7 +17,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:shelf/shelf.dart' as shelf;
-import 'package:openreception_framework/storage.dart' as Storage;
-import 'package:openreception_framework/model.dart' as Model;
+import 'package:openreception.framework/storage.dart' as Storage;
+import 'package:openreception.framework/model.dart' as Model;
 
 part 'controller/controller-message_queue.dart';

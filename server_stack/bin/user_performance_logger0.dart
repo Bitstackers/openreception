@@ -20,15 +20,15 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 
-import 'package:openreception.server/configuration.dart';
+//import 'package:openreception.server/configuration.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
-import 'package:openreception_framework/event.dart' as event;
+import 'package:openreception.framework/event.dart' as event;
 
-import 'package:openreception_framework/model.dart' as model;
+import 'package:openreception.framework/model.dart' as model;
 
-import 'package:openreception_framework/service.dart' as service;
-import 'package:openreception_framework/service-io.dart' as transport;
+// import 'package:openreception_framework/service.dart' as service;
+// import 'package:openreception_framework/service-io.dart' as transport;
 
 final Map<int, String> _userNameCache = {};
 final DateFormat RFC3339 = new DateFormat('yyyy-MM-dd');

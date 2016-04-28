@@ -12,10 +12,10 @@ import 'package:openreception_tests/process.dart' as process;
 import 'package:openreception_tests/support.dart';
 import 'package:openreception_tests/config.dart';
 
-import 'package:openreception_framework/resource.dart' as resource;
-import 'package:openreception_framework/service.dart' as service;
-import 'package:openreception_framework/service-io.dart' as service;
-import 'package:openreception_framework/model.dart' as model;
+import 'package:openreception.framework/resource.dart' as resource;
+import 'package:openreception.framework/service.dart' as service;
+import 'package:openreception.framework/service-io.dart' as service;
+import 'package:openreception.framework/model.dart' as model;
 
 import 'package:unittest/unittest.dart';
 

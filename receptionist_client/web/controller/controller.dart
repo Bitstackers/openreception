@@ -20,11 +20,11 @@ import '../model/model.dart' as Model;
 
 import 'package:okeyee/okeyee.dart';
 import 'package:logging/logging.dart';
-import 'package:openreception_framework/bus.dart';
-import 'package:openreception_framework/event.dart' as OREvent;
-import 'package:openreception_framework/model.dart' as ORModel;
-import 'package:openreception_framework/service.dart' as ORService;
-import 'package:openreception_framework/storage.dart' as ORStorage;
+import 'package:openreception.framework/bus.dart';
+import 'package:openreception.framework/event.dart' as OREvent;
+import 'package:openreception.framework/model.dart' as ORModel;
+import 'package:openreception.framework/service.dart' as ORService;
+import 'package:openreception.framework/storage.dart' as ORStorage;
 
 part 'controller-calendar.dart';
 part 'controller-call.dart';

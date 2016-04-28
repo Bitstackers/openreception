@@ -16,9 +16,9 @@ library usermon;
 import 'dart:async';
 import 'dart:html';
 import 'package:logging/logging.dart';
-import 'package:openreception_framework/model.dart' as or_model;
-import 'package:openreception_framework/service.dart' as ORService;
-import 'package:openreception_framework/service-html.dart' as ORTransport;
+import 'package:openreception.framework/model.dart' as or_model;
+import 'package:openreception.framework/service.dart' as ORService;
+import 'package:openreception.framework/service-html.dart' as ORTransport;
 
 import 'package:usermon/view.dart' as view;
 import 'package:usermon/config.dart' as config;

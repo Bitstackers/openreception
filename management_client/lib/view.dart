@@ -6,11 +6,11 @@ import 'dart:html';
 
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:logging/logging.dart';
-import 'package:openreception_framework/bus.dart';
-import 'package:openreception_framework/model.dart' as model;
-import 'package:openreception_framework/storage.dart' as storage;
+import 'package:openreception.framework/bus.dart';
+import 'package:openreception.framework/model.dart' as model;
+import 'package:openreception.framework/storage.dart' as storage;
 
-import 'package:openreception_framework/util.dart' as util;
+import 'package:openreception.framework/util.dart' as util;
 import 'package:management_tool/searchcomponent.dart';
 import 'package:management_tool/controller.dart' as controller;
 

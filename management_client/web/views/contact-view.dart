@@ -9,8 +9,8 @@ import 'package:route_hierarchical/client.dart';
 import 'package:management_tool/view.dart' as view;
 
 import 'package:management_tool/searchcomponent.dart';
-import 'package:openreception_framework/model.dart' as model;
-import 'package:openreception_framework/storage.dart' as storage;
+import 'package:openreception.framework/model.dart' as model;
+import 'package:openreception.framework/storage.dart' as storage;
 
 import 'package:management_tool/controller.dart' as controller;
 

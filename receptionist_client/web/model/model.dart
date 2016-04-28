@@ -23,10 +23,10 @@ import '../lang.dart';
 import 'package:markdown/markdown.dart' as Markdown;
 import 'package:okeyee/okeyee.dart' as Okeyee;
 import 'package:logging/logging.dart';
-import 'package:openreception_framework/bus.dart';
-import 'package:openreception_framework/event.dart' as OREvent;
-import 'package:openreception_framework/model.dart' as ORModel;
-import 'package:openreception_framework/util.dart' as ORUtil;
+import 'package:openreception.framework/bus.dart';
+import 'package:openreception.framework/event.dart' as OREvent;
+import 'package:openreception.framework/model.dart' as ORModel;
+import 'package:openreception.framework/util.dart' as ORUtil;
 
 part 'model-app-state.dart';
 part 'model-client-connection-state.dart';

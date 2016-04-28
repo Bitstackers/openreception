@@ -19,8 +19,8 @@ import 'dart:convert';
 import 'package:logging/logging.dart';
 import 'package:shelf/shelf.dart' as shelf;
 
-import 'package:openreception_framework/keys.dart' as key;
-import 'package:openreception_framework/model.dart' as model;
+import 'package:openreception.framework/keys.dart' as key;
+import 'package:openreception.framework/model.dart' as model;
 
 import 'package:openreception.server/configuration.dart';
 import 'package:openreception.server/response_utils.dart';

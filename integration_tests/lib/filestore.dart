@@ -3,7 +3,7 @@ library openreception_tests.filestore;
 import 'package:openreception_tests/storage.dart' as storeTest;
 import 'package:openreception_tests/support.dart';
 
-import 'package:openreception_framework/model.dart' as model;
+import 'package:openreception.framework/model.dart' as model;
 import 'package:unittest/unittest.dart';
 
 part 'filestore/filestore-calendar.dart';

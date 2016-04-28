@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.model;
+library openreception.framework.model;
 
 import 'dart:async';
 import 'package:intl/intl.dart';

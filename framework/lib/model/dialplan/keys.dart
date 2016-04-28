@@ -14,7 +14,7 @@
 /**
  * Serialization keys used by dialplan model classes.
  */
-library openreception.model.dialplan.keys;
+library openreception.framework.model.dialplan.keys;
 
 const String fromDay = 'fromDay';
 const String fromHour = 'fromHour';

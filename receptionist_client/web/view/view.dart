@@ -21,9 +21,9 @@ import '../lang.dart';
 import '../model/model.dart' as Model;
 
 import 'package:logging/logging.dart';
-import 'package:openreception_framework/event.dart' as OREvent;
-import 'package:openreception_framework/model.dart' as ORModel;
-import 'package:openreception_framework/util.dart' as ORUtil;
+import 'package:openreception.framework/event.dart' as OREvent;
+import 'package:openreception.framework/model.dart' as ORModel;
+import 'package:openreception.framework/util.dart' as ORUtil;
 
 part 'view-agent-info.dart';
 part 'view-calendar-editor.dart';

@@ -21,7 +21,7 @@ import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
-import 'package:openreception_framework/filestore.dart' as database;
+import 'package:openreception.framework/filestore.dart' as database;
 
 import 'package:openreception.server/configuration.dart';
 import 'controller.dart' as Controller;

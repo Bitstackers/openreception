@@ -11,28 +11,27 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.filestore;
+library openreception.framework.filestore;
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:collection';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:logging/logging.dart';
+import 'package:openreception.framework/model.dart' as model;
+import 'package:openreception.framework/storage.dart' as storage;
 import 'package:path/path.dart';
-
-import 'model.dart' as model;
-import 'storage.dart' as storage;
 
 part 'filestore/filestore-calendar.dart';
 part 'filestore/filestore-contact.dart';
 part 'filestore/filestore-git_engine.dart';
 part 'filestore/filestore-ivr.dart';
-part 'filestore/filestore-message_queue.dart';
 part 'filestore/filestore-message.dart';
+part 'filestore/filestore-message_queue.dart';
 part 'filestore/filestore-organization.dart';
-part 'filestore/filestore-reception_dialplan.dart';
 part 'filestore/filestore-reception.dart';
+part 'filestore/filestore-reception_dialplan.dart';
 part 'filestore/filestore-sequencer.dart';
 part 'filestore/filestore-user.dart';
 

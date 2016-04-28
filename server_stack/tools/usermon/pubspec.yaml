@@ -8,10 +8,8 @@ environment:
 dependencies:
   browser: '>=0.10.0 <0.11.0'
   dart_to_js_script_rewriter: '^0.1.0'
-  openreception_framework:
-    git:
-      ref: master
-      url: https://github.com/Bitstackers/OpenreceptionFramework.git
+  openreception.framework:
+    path: ../../../framework
     version: '>=0.0.26'
 
 transformers:

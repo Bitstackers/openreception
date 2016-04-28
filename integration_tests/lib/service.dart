@@ -10,11 +10,10 @@ import 'package:unittest/unittest.dart';
 import 'package:esl/esl.dart' as esl;
 import 'package:phonio/phonio.dart' as phonio;
 
-import 'package:openreception_framework/service.dart' as service;
-import 'package:openreception_framework/storage.dart' as storage;
-import 'package:openreception_framework/model.dart' as model;
-import 'package:openreception_framework/model.dart' as Model;
-import 'package:openreception_framework/event.dart' as event;
+import 'package:openreception.framework/service.dart' as service;
+import 'package:openreception.framework/storage.dart' as storage;
+import 'package:openreception.framework/model.dart' as model;
+import 'package:openreception.framework/event.dart' as event;
 
 import 'package:openreception_tests/support.dart';
 import 'package:openreception_tests/config.dart';
