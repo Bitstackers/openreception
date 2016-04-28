@@ -47,7 +47,6 @@ class Contact {
   Future<Map<model.ReceptionReference, Iterable<model.ContactReference>>>
       colleagues(int cid) async {
     Map map = {};
-    List<model.ContactReference> foundColleagues = [];
     final Iterable<model.ReceptionReference> receptions =
         await _service.receptions(cid);
 
