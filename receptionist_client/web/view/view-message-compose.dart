@@ -82,6 +82,7 @@ class MessageCompose extends ViewWidget {
    */
   ORModel.Message get _message {
     final ORModel.Message message = _ui.message;
+    message.sender = _appState.currentUser;
     final ORModel.MessageContext messageContext =
         new ORModel.MessageContext.fromContact(
             _contactSelector.selectedContact.contactReference,
