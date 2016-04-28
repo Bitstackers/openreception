@@ -18,6 +18,8 @@ part of model;
  */
 class UIORCLoading {
   DivElement _myRoot;
+  PreElement get _loadingProgressElement =>
+      _myRoot.querySelector('pre.loading-progress');
 
   /**
    * Constructor.
@@ -31,5 +33,19 @@ class UIORCLoading {
    */
   set visible(bool value) {
     _myRoot.style.display = value ? 'flex' : 'none';
+  }
+
+  /**
+   *
+   */
+  void addLoadingMessage(String message) {
+    _loadingProgressElement.text += (message + '\n');
+  }
+
+  /**
+   *
+   */
+  void clearLoadingMessages() {
+    _loadingProgressElement.text = '';
   }
 }

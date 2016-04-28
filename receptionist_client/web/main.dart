@@ -31,6 +31,9 @@ part 'configuration_url.dart';
 
 const String libraryName = 'orc';
 
+Model.UIORCDisaster uiDisaster = new Model.UIORCDisaster('orc-disaster');
+Model.UIORCLoading uiLoading = new Model.UIORCLoading('orc-loading');
+
 View.ORCDisaster appDisaster;
 View.ORCLoading appLoading;
 View.ORCReady appReady;
@@ -38,16 +41,24 @@ final Logger log = new Logger(libraryName);
 StreamSubscription<Event> windowOnBeforeUnload;
 StreamSubscription<Event> windowOnUnload;
 
+Uri get _appUri => Uri.parse(window.location.href);
+
 main() async {
-  final Uri appUri = Uri.parse(window.location.href);
+  Uri configUri;
+  if (_appUri.queryParameters.containsKey('config_server')) {
+    configUri = Uri.parse(_appUri.queryParameters['config_server']);
+  } else {
+    configUri = configurationUrl;
+  }
 
   /// Hang here until the client configuration has been loaded from the server.
+  uiLoading.addLoadingMessage('Fetching config');
   final ORModel.ClientConfiguration clientConfig =
-      await getClientConfiguration();
+      await getClientConfiguration(configUri);
   Map<String, String> language;
 
   /// This is the 'settoken' URL path parameter.
-  final String token = getToken(appUri);
+  final String token = getToken(_appUri);
 
   final ORTransport.WebSocketClient webSocketClient =
       new ORTransport.WebSocketClient();
@@ -65,6 +76,8 @@ main() async {
   try {
     Logger.root.level = Level.ALL;
     Logger.root.onRecord.listen(print);
+
+    uiLoading.addLoadingMessage('Checking HTMl5 notification support');
 
     /// Verify that we support HTMl5 notifications
     if (Notification.supported) {
@@ -98,18 +111,20 @@ main() async {
     });
 
     if (token != null) {
+      uiLoading.addLoadingMessage('Validating token');
       appState.currentUser = await getUser(clientConfig.authServerUri, token);
 
       webSocketClient.onClose = () {
         log.shout('Websocket connection died. Trying reload in 10 seconds');
         appState.changeState(Model.AppState.error);
-        restartAppInTenSeconds(appUri);
+        restartAppInTenSeconds(_appUri);
       };
 
       Uri uri =
           Uri.parse('${clientConfig.notificationSocketUri}?token=${token}');
 
-      webSocketClient.connect(uri).then((_) {
+      uiLoading.addLoadingMessage('Connecting websocket');
+      await webSocketClient.connect(uri).then((_) {
         log.info('WebSocketClient connect succeeded - NotificationSocket up');
 
         final ORService.CallFlowControl callFlowControl =
@@ -133,7 +148,8 @@ main() async {
 
         Future lCS = loadCallState(callFlowControl, appState);
 
-        Future.wait([rRV, lCS]).then((_) {
+        Future.wait([rRV, lCS]).then((_) async {
+          await new Future.delayed(new Duration(seconds: 1));
           appState.changeState(Model.AppState.ready);
         }).catchError((error) {
           log.shout('Loading of app failed with ${error}');
@@ -151,23 +167,34 @@ main() async {
         'Could not fully initialize application. Trying again in 10 seconds');
     log.shout(error, stackTrace);
     appState.changeState(Model.AppState.error);
-    restartAppInTenSeconds(appUri);
+    restartAppInTenSeconds(_appUri);
   }
 }
 
 /**
  * Return the configuration object for the client.
  */
-Future<ORModel.ClientConfiguration> getClientConfiguration() async {
-  ORService.RESTConfiguration configService = new ORService.RESTConfiguration(
-      configurationUrl, new ORTransport.Client());
+Future<ORModel.ClientConfiguration> getClientConfiguration(
+    Uri configUri) async {
+  ORService.RESTConfiguration configService =
+      new ORService.RESTConfiguration(configUri, new ORTransport.Client());
 
-  return await configService
-      .clientConfig()
-      .then((ORModel.ClientConfiguration config) {
-    log.info('Loaded client config: ${config.asMap}');
-    return config;
-  });
+  try {
+    return await configService
+        .clientConfig()
+        .then((ORModel.ClientConfiguration config) {
+      log.info('Loaded client config: ${config.asMap}');
+      return config;
+    });
+  } catch (error, stackTrace) {
+    log.shout(
+        'Could not fully initialize application. Trying again in 10 seconds');
+    uiLoading.addLoadingMessage(
+        'Could not fully initialize application. Trying again in 10 seconds');
+    uiLoading.addLoadingMessage('Error: $error');
+    log.shout(error, stackTrace);
+    await restartAppInTenSeconds(_appUri);
+  }
 }
 
 /**
@@ -250,9 +277,6 @@ void observers(Controller.User userController, Model.AppClientState appState,
  * NOTE: This depends on [clientConfig] being set.
  */
 void registerDisasterAndLoadingViews(Model.AppClientState appState) {
-  Model.UIORCDisaster uiDisaster = new Model.UIORCDisaster('orc-disaster');
-  Model.UIORCLoading uiLoading = new Model.UIORCLoading('orc-loading');
-
   appDisaster = new View.ORCDisaster(appState, uiDisaster);
   appLoading = new View.ORCLoading(appState, uiLoading);
 }
@@ -326,7 +350,7 @@ Future registerReadyView(
 /**
  * Tries to reload the application at [appUri] in 10 seconds.
  */
-void restartAppInTenSeconds(Uri appUri) {
+Future restartAppInTenSeconds(Uri appUri) async {
   if (windowOnBeforeUnload != null) {
     windowOnBeforeUnload.cancel();
   }
@@ -335,7 +359,7 @@ void restartAppInTenSeconds(Uri appUri) {
     windowOnUnload.cancel();
   }
 
-  new Future.delayed(new Duration(seconds: 10)).then((_) {
+  await new Future.delayed(new Duration(seconds: 10)).then((_) {
     appUri = Uri.parse(window.location.href);
     window.location.replace('${appUri.origin}${appUri.path}');
   });

@@ -48,4 +48,9 @@ class ORCLoading {
     _appState.onStateChange.listen((Model.AppState appState) => appState ==
         Model.AppState.loading ? _ui.visible = true : _ui.visible = false);
   }
+
+  /**
+   *
+   */
+  void addLoadingMessage(String message) => _ui.addLoadingMessage(message);
 }
