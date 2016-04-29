@@ -21,11 +21,11 @@ class AgentStatistics {
   const AgentStatistics(this.uid, this.recent, this.total);
 
   AgentStatistics.fromMap(Map map)
-      : uid = map[Key.userId],
+      : uid = map[Key.uid],
         recent = map[Key.recent],
         total = map[Key.total];
 
   static AgentStatistics decode(Map map) => new AgentStatistics.fromMap(map);
 
-  Map toJson() => {Key.userId: uid, Key.recent: recent, Key.total: total};
+  Map toJson() => {Key.uid: uid, Key.recent: recent, Key.total: total};
 }
