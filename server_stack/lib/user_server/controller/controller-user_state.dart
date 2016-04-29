@@ -44,9 +44,9 @@ class UserState {
     final int userID = int.parse(shelf_route.getPathParameter(request, 'uid'));
     final String newState = shelf_route.getPathParameter(request, 'state');
 
-    if (newState == model.UserState.Paused) {
+    if (newState == model.UserState.paused) {
       return new shelf.Response.ok(JSON.encode(_userStateList.pause(userID)));
-    } else if (newState == model.UserState.Ready) {
+    } else if (newState == model.UserState.ready) {
       return new shelf.Response.ok(JSON.encode(_userStateList.ready(userID)));
     } else {
       return serverError('Unknown state $newState');

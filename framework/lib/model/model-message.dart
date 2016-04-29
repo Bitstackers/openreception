@@ -13,14 +13,6 @@
 
 part of openreception.framework.model;
 
-abstract class Role {
-  static const String TO = 'to';
-  static const String CC = 'cc';
-  static const String BCC = 'bcc';
-
-  static final List<String> RECIPIENT_ROLES = [TO, CC, BCC];
-}
-
 class Message {
   static const int noId = 0;
 
@@ -44,14 +36,19 @@ class Message {
 
   Message.empty();
 
-  Iterable<MessageEndpoint> get to =>
-      recipients.where((MessageEndpoint ep) => ep.role == Role.TO);
+  Iterable<MessageEndpoint> get emailTo =>
+      recipients.where((MessageEndpoint ep) =>
+          ep.type == MessageEndpointType.emailTo ||
+          ep.type == MessageEndpointType.email);
 
-  Iterable<MessageEndpoint> get cc =>
-      recipients.where((MessageEndpoint ep) => ep.role == Role.CC);
+  Iterable<MessageEndpoint> get emailCc => recipients
+      .where((MessageEndpoint ep) => ep.type == MessageEndpointType.emailCc);
 
-  Iterable<MessageEndpoint> get bcc =>
-      recipients.where((MessageEndpoint ep) => ep.role == Role.BCC);
+  Iterable<MessageEndpoint> get emailBcc => recipients
+      .where((MessageEndpoint ep) => ep.type == MessageEndpointType.emailBcc);
+
+  Iterable<MessageEndpoint> get sms => recipients
+      .where((MessageEndpoint ep) => ep.type == MessageEndpointType.sms);
 
   bool get hasRecpients => recipients.isNotEmpty;
 

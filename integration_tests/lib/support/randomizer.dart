@@ -307,8 +307,8 @@ abstract class Randomizer {
   static List<String> randomMessageFlags() => randomChoice(flagsLists);
   static String randomEndpointType() =>
       randomChoice(model.MessageEndpointType.types);
-  static String randomRecipientRole() =>
-      randomChoice(model.Role.RECIPIENT_ROLES);
+  static String randomRecipientType() =>
+      randomChoice(model.MessageEndpointType.types);
   static String randomContactType() => randomChoice(model.ContactType.types);
   static String randomDialplanNote() => randomChoice(dialplanNote);
 

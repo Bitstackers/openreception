@@ -14,10 +14,10 @@
 part of openreception.framework.model;
 
 abstract class Template {
-  final String CALLED = 'Har ringet';
-  final String PLEASECALL = 'Ring venligst';
-  final String URGENT = 'Haster';
-  final String WILLCALLBACK = 'Kunden ringer selv igen';
+  final String called = 'Har ringet';
+  final String pleaseCall = 'Ring venligst';
+  final String urgent = 'Haster';
+  final String willCallBack = 'Kunden ringer selv igen';
   final DateFormat _dateFormat = new DateFormat("dd-MM-yyyy' kl. 'HH:mm:ss");
   final Message _message;
 

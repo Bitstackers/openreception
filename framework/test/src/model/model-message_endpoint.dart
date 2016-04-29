@@ -27,7 +27,6 @@ abstract class ModelMessageEndpoint {
     Model.MessageEndpoint deserializedObj =
         new Model.MessageEndpoint.fromMap(JSON.decode(JSON.encode(obj)));
 
-    expect(obj.role, equals(deserializedObj.role));
     expect(obj.address, equals(deserializedObj.address));
     expect(obj.name, equals(deserializedObj.name));
     expect(obj.type, equals(deserializedObj.type));
@@ -57,7 +56,6 @@ abstract class ModelMessageEndpoint {
       ..note = note
       ..type = type;
 
-    expect(obj.role, equals(Model.Role.TO));
     expect(obj.address, equals(address));
     expect(obj.name, equals(name));
     expect(obj.note, equals(note));

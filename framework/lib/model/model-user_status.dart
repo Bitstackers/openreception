@@ -22,8 +22,8 @@ part of openreception.framework.model;
  * a user is connectable or not.
  */
 abstract class UserState {
-  static const Ready = 'ready';
-  static const Paused = 'paused';
+  static const ready = 'ready';
+  static const paused = 'paused';
 }
 
 class UserStatus {

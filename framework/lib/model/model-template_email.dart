@@ -95,7 +95,7 @@ class TemplateEmail extends Template {
    * Return the [Message] subject line.
    */
   String get subject =>
-      '${_message.flag.urgent ? '[${URGENT.toUpperCase()}]' : ''} '
+      '${_message.flag.urgent ? '[${urgent.toUpperCase()}]' : ''} '
       'Besked fra ${_message.callerInfo.name}'
       '${_message.callerInfo.company.isEmpty ? '' : ', ${_message.callerInfo.company}'}'
       '${_message.callerInfo.phone.isEmpty ? '' : ', ${_message.callerInfo.phone}'}';

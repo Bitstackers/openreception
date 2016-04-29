@@ -138,7 +138,7 @@ class RESTUserStore implements Storage.User {
    * [ClientError] exeptions.
    */
   Future<Model.UserStatus> userStateReady(int userId) {
-    Uri uri = Resource.User.setUserState(_host, userId, Model.UserState.Ready);
+    Uri uri = Resource.User.setUserState(_host, userId, Model.UserState.ready);
     uri = _appendToken(uri, _token);
 
     return _backend
@@ -166,7 +166,7 @@ class RESTUserStore implements Storage.User {
    * [ClientError] exeptions.
    */
   Future<Model.UserStatus> userStatePaused(int userId) {
-    Uri uri = Resource.User.setUserState(_host, userId, Model.UserState.Paused);
+    Uri uri = Resource.User.setUserState(_host, userId, Model.UserState.paused);
     uri = _appendToken(uri, _token);
 
     return _backend

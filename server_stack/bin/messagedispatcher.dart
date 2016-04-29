@@ -145,17 +145,19 @@ Future tryDispatch(Model.MessageQueueEntry queueItem) async {
       emailRecipients(queueItem.unhandledRecipients);
 
   List<Address> to = currentRecipients
-      .where((mr) => mr.role == Model.Role.TO)
+      .where((mr) =>
+          mr.type == Model.MessageEndpointType.emailTo ||
+          mr.type == Model.MessageEndpointType.email)
       .map((mrto) => new Address(mrto.address.trim(), mrto.name))
       .toList(growable: false);
 
   List<Address> cc = currentRecipients
-      .where((mr) => mr.role == Model.Role.CC)
+      .where((mr) => mr.type == Model.MessageEndpointType.emailCc)
       .map((mrto) => new Address(mrto.address.trim(), mrto.name))
       .toList(growable: false);
 
   List<Address> bcc = currentRecipients
-      .where((mr) => mr.role == Model.Role.BCC)
+      .where((mr) => mr.type == Model.MessageEndpointType.emailBcc)
       .map((mrto) => new Address(mrto.address.trim(), mrto.name))
       .toList(growable: false);
 

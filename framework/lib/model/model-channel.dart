@@ -14,9 +14,9 @@
 part of openreception.framework.model;
 
 class Channel {
-  static const String NoID = '';
+  static const String noId = '';
 
-  String ID = NoID;
+  String id = noId;
   int ownerUserUuid = User.noId;
   String name = '';
   String state = '';
