@@ -365,7 +365,7 @@ class _Simulation {
         return false;
       }
 
-      if (_activeCall.state == ORModel.CallState.Speaking) {
+      if (_activeCall.state == ORModel.CallState.speaking) {
         _log.info('Call answered!');
 
         return false;
@@ -374,7 +374,7 @@ class _Simulation {
       return deadline.isAfter(new DateTime.now());
     });
 
-    if (_activeCall.state == ORModel.CallState.Ringing) {
+    if (_activeCall.state == ORModel.CallState.ringing) {
       _log.info('Call was not answered within 6s. Hanging it up');
       await _hangupCall();
     }

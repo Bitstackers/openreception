@@ -94,7 +94,7 @@ class UIMyCallQueue extends UIModel {
       ..children.addAll([numbersAndStateDiv, nameDiv])
       ..classes.add(call.inbound ? 'inbound' : 'outbound')
       ..classes.toggle('locked', call.locked)
-      ..classes.toggle('speaking', call.state == ORModel.CallState.Speaking)
+      ..classes.toggle('speaking', call.state == ORModel.CallState.speaking)
       ..title =
           '${call.inbound ? _langMap[Key.callStateInbound] : _langMap[Key.callStateOutbound]}';
   }

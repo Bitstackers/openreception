@@ -128,7 +128,7 @@ abstract class Pickup {
     final model.Call fetched = await receptionist.callFlowControl.get(call.ID);
 
     expect(fetched.assignedTo, equals(receptionist.user.id));
-    expect(fetched.state, equals(model.CallState.Speaking));
+    expect(fetched.state, equals(model.CallState.speaking));
   }
 
   /**
@@ -147,7 +147,7 @@ abstract class Pickup {
         eventType: event.Key.callPickup, callID: inboundCall.ID);
 
     expect(pickupEvent.call.assignedTo, equals(receptionist.user.id));
-    expect(pickupEvent.call.state, equals(model.CallState.Speaking));
+    expect(pickupEvent.call.state, equals(model.CallState.speaking));
   }
 
   /**

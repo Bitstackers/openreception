@@ -243,7 +243,7 @@ Future loadCallState(
     ORModel.Call myActiveCall = calls.firstWhere(
         (ORModel.Call call) =>
             call.assignedTo == appState.currentUser.id &&
-            call.state == ORModel.CallState.Speaking,
+            call.state == ORModel.CallState.speaking,
         orElse: () => null);
 
     if (myActiveCall != null) {

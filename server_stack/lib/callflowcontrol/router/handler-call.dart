@@ -61,7 +61,7 @@ abstract class Call {
     ORModel.Call call = Model.CallList.instance.firstWhere(
         (ORModel.Call call) =>
             call.assignedTo == user.id &&
-            call.state == ORModel.CallState.Speaking,
+            call.state == ORModel.CallState.speaking,
         orElse: () => ORModel.Call.noCall);
 
     /// The agent currently has no call assigned.
@@ -241,7 +241,7 @@ abstract class Call {
     peer.inTransition = true;
 
     bool isSpeaking(ORModel.Call call) =>
-        call.state == ORModel.CallState.Speaking;
+        call.state == ORModel.CallState.speaking;
 
     Future parkIt(ORModel.Call call) => Controller.PBX.park(call, user);
 
@@ -315,7 +315,7 @@ abstract class Call {
       ..b_Leg = agentChannel;
 
     /// Update call and peer state information.
-    call.changeState(ORModel.CallState.Ringing);
+    call.changeState(ORModel.CallState.ringing);
 
     try {
       await Controller.PBX
@@ -564,7 +564,7 @@ abstract class Call {
 
     /// Sanity check - are any of the calls already bridged?
     if ([sourceCall, destinationCall]
-        .every((ORModel.Call call) => call.state != ORModel.CallState.Parked)) {
+        .every((ORModel.Call call) => call.state != ORModel.CallState.parked)) {
       log.warning('Potential invalid state detected; trying to bridge a '
           'non-parked call in an attended transfer. uuids:'
           '($sourceCall => $destinationCall)');

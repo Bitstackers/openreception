@@ -143,7 +143,7 @@ abstract class StateReload {
         await receptionist.callFlowControl.callList();
     expect(orignalCallQueue.length, equals(1));
     expect(orignalCallQueue.first.assignedTo, equals(receptionist.user.id));
-    expect(orignalCallQueue.first.state, equals(model.CallState.Speaking));
+    expect(orignalCallQueue.first.state, equals(model.CallState.speaking));
 
     log.info('Performing state reload');
     await receptionist.callFlowControl.stateReload();

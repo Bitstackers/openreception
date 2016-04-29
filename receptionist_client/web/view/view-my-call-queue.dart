@@ -52,11 +52,15 @@ class MyCallQueue extends ViewWidget {
     _observers();
   }
 
-  @override Controller.Destination get _destination => _myDestination;
-  @override Model.UIMyCallQueue get _ui => _uiModel;
+  @override
+  Controller.Destination get _destination => _myDestination;
+  @override
+  Model.UIMyCallQueue get _ui => _uiModel;
 
-  @override void _onBlur(Controller.Destination _) {}
-  @override void _onFocus(Controller.Destination _) {}
+  @override
+  void _onBlur(Controller.Destination _) {}
+  @override
+  void _onFocus(Controller.Destination _) {}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
@@ -88,9 +92,8 @@ class MyCallQueue extends ViewWidget {
 
     _busyCallController();
     try {
-      ORModel.Call newCall = await _callController.dial(
-          phoneNumber,
-          _appState.originationContext);
+      ORModel.Call newCall =
+          await _callController.dial(phoneNumber, _appState.originationContext);
       if (markTransfer || parkAndMarkTransfer) {
         _ui.markForTransfer(newCall);
         _log.info('marked ${newCall.ID} for transfer');
@@ -120,7 +123,7 @@ class MyCallQueue extends ViewWidget {
     _ui.calls.forEach((ORModel.Call call) {
       _callController.get(call.ID).then((ORModel.Call c) {
         if (c == ORModel.Call.noCall ||
-            c.callState == ORModel.CallState.Transferred) {
+            c.callState == ORModel.CallState.transferred) {
           if (c.ID == contextCallId) {
             contextCallId = '';
           }
@@ -174,15 +177,15 @@ class MyCallQueue extends ViewWidget {
     }
 
     switch (event.call.state) {
-      case ORModel.CallState.Created:
+      case ORModel.CallState.created:
         if (!event.call.inbound) {
           /// My outbound call.
           _ui.appendCall(event.call);
         }
         break;
 
-      case ORModel.CallState.Hungup:
-      case ORModel.CallState.Transferred:
+      case ORModel.CallState.hungup:
+      case ORModel.CallState.transferred:
         if (event.call.ID == contextCallId) {
           contextCallId = '';
         }
@@ -203,15 +206,15 @@ class MyCallQueue extends ViewWidget {
   void _loadCallList() {
     bool isMine(ORModel.Call call) =>
         call.assignedTo == _appState.currentUser.id &&
-        call.state != ORModel.CallState.Transferred;
+        call.state != ORModel.CallState.transferred;
 
     _callController.listCalls().then((Iterable<ORModel.Call> calls) {
       Iterable<ORModel.Call> myCalls = calls.where(isMine);
       _ui.calls = myCalls.toList(growable: false);
       _appState.activeCall = myCalls.firstWhere(
           (ORModel.Call call) =>
-              call.state == ORModel.CallState.Speaking ||
-              call.state == ORModel.CallState.Ringing,
+              call.state == ORModel.CallState.speaking ||
+              call.state == ORModel.CallState.ringing,
           orElse: () => ORModel.Call.noCall);
     });
   }
@@ -346,7 +349,7 @@ class MyCallQueue extends ViewWidget {
     if (!_callControllerBusy &&
         _appState.activeCall == ORModel.Call.noCall &&
         _ui.calls.any(
-            (ORModel.Call call) => call.state == ORModel.CallState.Parked)) {
+            (ORModel.Call call) => call.state == ORModel.CallState.parked)) {
       _busyCallController();
       final Future<ORModel.Call> unparkCall = call != null
           ? _callController.pickup(call)

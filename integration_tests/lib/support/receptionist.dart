@@ -189,7 +189,7 @@ class Receptionist {
       expect(call.inbound, parkedCall.inbound);
       //expect(call.locked, parkedCall.locked);
       expect(call.receptionID, parkedCall.receptionID);
-      expect(parkedCall.state, equals(model.CallState.Parked));
+      expect(parkedCall.state, equals(model.CallState.parked));
 
       return parkedCall;
     }

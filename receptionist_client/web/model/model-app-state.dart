@@ -85,8 +85,8 @@ class AppClientState {
         return;
       }
 
-      if (call.state == ORModel.CallState.Ringing ||
-          call.state == ORModel.CallState.Speaking) {
+      if (call.state == ORModel.CallState.ringing ||
+          call.state == ORModel.CallState.speaking) {
         activeCall = call;
       } else if (activeCall == call) {
         activeCall = ORModel.Call.noCall;

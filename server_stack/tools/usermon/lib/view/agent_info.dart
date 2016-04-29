@@ -19,8 +19,8 @@ class AgentInfo {
 
   set call(model.Call c) {
     _callshandled.add(c.ID);
-    if (c.state == model.CallState.Hungup ||
-        c.state == model.CallState.Transferred) {
+    if (c.state == model.CallState.hungup ||
+        c.state == model.CallState.transferred) {
       currentCallCell.text = '';
 
       _updateStats();

@@ -50,7 +50,7 @@ abstract class ModelCall {
 
     int initialStateChangeCount = stateChanges.length;
 
-    builtObject.changeState(Model.CallState.Created);
+    builtObject.changeState(Model.CallState.created);
 
     return new Future.delayed(new Duration(milliseconds: 20), () {
       expect(stateChanges.length, equals(initialStateChangeCount + 1));
@@ -65,12 +65,12 @@ abstract class ModelCall {
     List<Event.Event> stateChanges = [];
 
     Model.Call builtObject = buildObject()
-      ..state = Model.CallState.Parked
+      ..state = Model.CallState.parked
       ..event.listen(stateChanges.add);
 
     int initialStateChangeCount = stateChanges.length;
-    expect(builtObject.state, equals(Model.CallState.Parked));
-    builtObject.changeState(Model.CallState.Hungup);
+    expect(builtObject.state, equals(Model.CallState.parked));
+    builtObject.changeState(Model.CallState.hungup);
 
     return new Future.delayed(new Duration(milliseconds: 20), () {
       expect(stateChanges.length, equals(initialStateChangeCount + 2));
@@ -88,12 +88,12 @@ abstract class ModelCall {
     List<Event.Event> stateChanges = [];
 
     Model.Call builtObject = buildObject()
-      ..state = Model.CallState.Queued
+      ..state = Model.CallState.queued
       ..event.listen(stateChanges.add);
 
     int initialStateChangeCount = stateChanges.length;
-    expect(builtObject.state, equals(Model.CallState.Queued));
-    builtObject.changeState(Model.CallState.Hungup);
+    expect(builtObject.state, equals(Model.CallState.queued));
+    builtObject.changeState(Model.CallState.hungup);
 
     return new Future.delayed(new Duration(milliseconds: 20), () {
       expect(stateChanges.length, equals(initialStateChangeCount + 2));
@@ -113,7 +113,7 @@ abstract class ModelCall {
 
     int initialStateChangeCount = stateChanges.length;
 
-    builtObject.state = Model.CallState.Transferring;
+    builtObject.state = Model.CallState.transferring;
 
     return new Future.delayed(new Duration(milliseconds: 20), () {
       expect(stateChanges.length, equals(initialStateChangeCount + 1));
@@ -130,12 +130,12 @@ abstract class ModelCall {
 
     int initialStateChangeCount = stateChanges.length;
 
-    builtObject.state = Model.CallState.Unknown;
-    builtObject.state = Model.CallState.Created;
+    builtObject.state = Model.CallState.unknown;
+    builtObject.state = Model.CallState.created;
 
     return new Future.delayed(new Duration(milliseconds: 20), () {
       expect(stateChanges.length, equals(initialStateChangeCount + 2));
-      expect(stateChanges.last, equals(Model.CallState.Created));
+      expect(stateChanges.last, equals(Model.CallState.created));
     });
   }
 
@@ -149,14 +149,14 @@ abstract class ModelCall {
 
     int initialStateChangeCount = stateChanges.length;
 
-    builtObject.state = Model.CallState.Parked;
-    builtObject.state = Model.CallState.Hungup;
+    builtObject.state = Model.CallState.parked;
+    builtObject.state = Model.CallState.hungup;
 
     return new Future.delayed(new Duration(milliseconds: 20), () {
       expect(stateChanges.length, equals(initialStateChangeCount + 2));
       expect(stateChanges[stateChanges.length - 2],
-          equals(Model.CallState.Parked));
-      expect(stateChanges.last, equals(Model.CallState.Hungup));
+          equals(Model.CallState.parked));
+      expect(stateChanges.last, equals(Model.CallState.hungup));
     });
   }
 
@@ -170,12 +170,12 @@ abstract class ModelCall {
 
     int initialStateChangeCount = stateChanges.length;
 
-    builtObject.state = Model.CallState.Created;
-    builtObject.state = Model.CallState.Ringing;
+    builtObject.state = Model.CallState.created;
+    builtObject.state = Model.CallState.ringing;
 
     return new Future.delayed(new Duration(milliseconds: 20), () {
       expect(stateChanges.length, equals(initialStateChangeCount + 2));
-      expect(stateChanges.last, equals(Model.CallState.Ringing));
+      expect(stateChanges.last, equals(Model.CallState.ringing));
     });
   }
 
@@ -221,7 +221,7 @@ abstract class ModelCall {
     final bool greetingPlayed = false;
     final bool inbound = true;
     final bool locked = false;
-    final String state = Model.CallState.Created;
+    final String state = Model.CallState.created;
 
     Model.Call builtCall = new Model.Call.empty(testId)
       ..arrived = arrived
@@ -235,7 +235,7 @@ abstract class ModelCall {
       ..inbound = inbound
       ..locked = locked
       ..receptionID = receptionId
-      ..state = Model.CallState.Created;
+      ..state = Model.CallState.created;
 
     expect(builtCall.ID, equals(testId));
     expect(builtCall.arrived, equals(arrived));

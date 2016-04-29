@@ -92,11 +92,11 @@ class CallList extends IterableBase<ORModel.Call> {
         final ESL.Channel bLeg = ChannelList.instance.get(call.b_Leg);
 
         if (isCall(aLeg) && isCall(bLeg)) {
-          call.state = ORModel.CallState.Transferred;
+          call.state = ORModel.CallState.transferred;
         } else {
           call.state = aLeg.fields['Answer-State'] == 'ringing'
-              ? ORModel.CallState.Ringing
-              : ORModel.CallState.Speaking;
+              ? ORModel.CallState.ringing
+              : ORModel.CallState.speaking;
         }
       } else {
         log.info('$call is not bridged.');
@@ -104,11 +104,11 @@ class CallList extends IterableBase<ORModel.Call> {
             ChannelList.instance.get(call.channel).variables[ORPbxKey.state];
 
         if (orState == 'queued') {
-          call.state = ORModel.CallState.Queued;
+          call.state = ORModel.CallState.queued;
         } else if (orState == 'parked') {
-          call.state = ORModel.CallState.Parked;
+          call.state = ORModel.CallState.parked;
         } else if (orState == 'ringing') {
-          call.state = ORModel.CallState.Ringing;
+          call.state = ORModel.CallState.ringing;
         } else {
           log.severe('state of $call not updated!');
         }
@@ -201,17 +201,17 @@ class CallList extends IterableBase<ORModel.Call> {
 
       CallList.instance
           .get(uuid.UUID)
-          .changeState(ORModel.CallState.Transferred);
+          .changeState(ORModel.CallState.transferred);
       CallList.instance
           .get(otherLeg.UUID)
-          .changeState(ORModel.CallState.Transferred);
+          .changeState(ORModel.CallState.transferred);
     } else if (isCall(uuid)) {
       ORModel.Call call = CallList.instance.get(uuid.UUID);
       log.finest('Channel ${uuid.UUID} is a call');
 
       call
         ..b_Leg = otherLeg.UUID
-        ..changeState(ORModel.CallState.Speaking);
+        ..changeState(ORModel.CallState.speaking);
 
       _startRecording(call);
     } else if (isCall(otherLeg)) {
@@ -219,7 +219,7 @@ class CallList extends IterableBase<ORModel.Call> {
       log.finest('Channel ${otherLeg.UUID} is a call');
       call
         ..b_Leg = uuid.UUID
-        ..changeState(ORModel.CallState.Speaking);
+        ..changeState(ORModel.CallState.speaking);
 
       _startRecording(call);
     }
@@ -236,7 +236,7 @@ class CallList extends IterableBase<ORModel.Call> {
       call.hangupCause = event.field('Hangup-Cause') != null
           ? event.field('Hangup-Cause')
           : '';
-      call.changeState(ORModel.CallState.Hungup);
+      call.changeState(ORModel.CallState.hungup);
       log.finest('Hanging up ${event.uniqueID}');
       this.remove(event.uniqueID);
     }
@@ -254,16 +254,16 @@ class CallList extends IterableBase<ORModel.Call> {
               event.contentAsMap.containsKey('variable_${ORPbxKey.receptionId}')
                   ? int.parse(event.field('variable_${ORPbxKey.receptionId}'))
                   : 0
-          ..changeState(ORModel.CallState.Created);
+          ..changeState(ORModel.CallState.created);
 
         break;
 
       case (ORPbxKey.ringingStart):
-        this.get(event.uniqueID).changeState(ORModel.CallState.Ringing);
+        this.get(event.uniqueID).changeState(ORModel.CallState.ringing);
         break;
 
       case (ORPbxKey.ringingStop):
-        this.get(event.uniqueID).changeState(ORModel.CallState.Transferring);
+        this.get(event.uniqueID).changeState(ORModel.CallState.transferring);
         break;
 
       case (ORPbxKey.callLock):
@@ -296,20 +296,20 @@ class CallList extends IterableBase<ORModel.Call> {
         CallList.instance.get(event.uniqueID)
           ..greetingPlayed =
               true //TODO: Change this into a packet.variable.get ('greetingPlayed')
-          ..changeState(ORModel.CallState.Queued);
+          ..changeState(ORModel.CallState.queued);
         break;
 
       /// Call is parked
       case (ORPbxKey.parkingLotEnter):
         CallList.instance.get(event.uniqueID)
           ..b_Leg = null
-          ..changeState(ORModel.CallState.Parked);
+          ..changeState(ORModel.CallState.parked);
         break;
 
       /// Call is unparked
       case (ORPbxKey.parkingLotLeave):
         CallList.instance.get(event.uniqueID)
-          ..changeState(ORModel.CallState.Transferring);
+          ..changeState(ORModel.CallState.transferring);
         break;
     }
   }

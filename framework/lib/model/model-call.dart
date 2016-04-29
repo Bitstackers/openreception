@@ -17,16 +17,16 @@ part of openreception.framework.model;
  * Enumeration type for call states.
  */
 abstract class CallState {
-  static const String Unknown = 'UNKNOWN';
-  static const String Created = 'CREATED';
-  static const String Ringing = 'RINGING';
-  static const String Queued = 'QUEUED';
-  static const String Unparked = 'UNPARKED';
-  static const String Hungup = 'HUNGUP';
-  static const String Transferring = 'TRANSFERRING';
-  static const String Transferred = 'TRANSFERRED';
-  static const String Speaking = 'SPEAKING';
-  static const String Parked = 'PARKED';
+  static const String unknown = 'UNKNOWN';
+  static const String created = 'CREATED';
+  static const String ringing = 'RINGING';
+  static const String queued = 'QUEUED';
+  static const String unparked = 'UNPARKED';
+  static const String hungup = 'HUNGUP';
+  static const String transferring = 'TRANSFERRING';
+  static const String transferred = 'TRANSFERRED';
+  static const String speaking = 'SPEAKING';
+  static const String parked = 'PARKED';
 }
 
 /**
@@ -55,7 +55,7 @@ class Call {
   bool inbound = null;
   bool _locked = false;
   int receptionID = Reception.noId;
-  String _state = CallState.Unknown;
+  String _state = CallState.unknown;
   String hangupCause = '';
 
   /**
@@ -108,46 +108,46 @@ class Call {
 
     _log.finest('UUID: ${_ID}: ${lastState} => ${newState}');
 
-    if (lastState == CallState.Queued) {
+    if (lastState == CallState.queued) {
       notifyEvent(new Event.QueueLeave(this));
-    } else if (lastState == CallState.Parked) {
+    } else if (lastState == CallState.parked) {
       notifyEvent(new Event.CallUnpark(this));
     }
 
     switch (newState) {
-      case (CallState.Created):
+      case (CallState.created):
         notifyEvent(new Event.CallOffer(this));
         break;
 
-      case (CallState.Parked):
+      case (CallState.parked):
         notifyEvent(new Event.CallPark(this));
         break;
 
-      case (CallState.Unparked):
+      case (CallState.unparked):
         notifyEvent(new Event.CallUnpark(this));
         break;
 
-      case (CallState.Queued):
+      case (CallState.queued):
         notifyEvent(new Event.QueueJoin(this));
         break;
 
-      case (CallState.Hungup):
+      case (CallState.hungup):
         notifyEvent(new Event.CallHangup(this, hangupCause: hangupCause));
         break;
 
-      case (CallState.Speaking):
+      case (CallState.speaking):
         notifyEvent(new Event.CallPickup(this));
         break;
 
-      case (CallState.Transferred):
+      case (CallState.transferred):
         notifyEvent(new Event.CallTransfer(this));
         break;
 
-      case (CallState.Ringing):
+      case (CallState.ringing):
         notifyEvent(new Event.CallStateChanged(this));
         break;
 
-      case (CallState.Transferring):
+      case (CallState.transferring):
         break;
 
       default:

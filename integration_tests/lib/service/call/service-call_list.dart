@@ -120,13 +120,13 @@ abstract class CallList {
     {
       Iterable<model.Call> calls =
           await receptionist.callFlowControl.callList();
-      expect(calls.first.state, equals(model.CallState.Queued));
+      expect(calls.first.state, equals(model.CallState.queued));
     }
     await receptionist.pickup(inboundCall, waitForEvent: true);
     {
       Iterable<model.Call> calls =
           await receptionist.callFlowControl.callList();
-      expect(calls.first.state, isNot(model.CallState.Queued));
+      expect(calls.first.state, isNot(model.CallState.queued));
     }
 
     log.info('Waiting for ${event.Key.queueLeave} event.');
@@ -166,7 +166,7 @@ abstract class CallList {
     {
       final Iterable<model.Call> calls =
           await receptionist.callFlowControl.callList();
-      expect(calls.first.state, equals(model.CallState.Queued));
+      expect(calls.first.state, equals(model.CallState.queued));
     }
 
     log.info('Caller hangs up call $inboundCall');
