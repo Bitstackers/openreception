@@ -132,7 +132,7 @@ class Reception {
     try {
       this
         ..id = receptionMap[Key.id]
-        ..organizationId = receptionMap[Key.organizationId]
+        ..organizationId = receptionMap[Key.oid]
         ..name = receptionMap[Key.name]
         ..enabled = receptionMap[Key.enabled]
         ..dialplan = receptionMap[Key.dialplan]
@@ -156,7 +156,7 @@ class Reception {
   Map toJson() => {
         Key.id: id,
         Key.enabled: enabled,
-        Key.organizationId: organizationId,
+        Key.oid: organizationId,
         Key.dialplan: dialplan,
         Key.name: name,
         Key.extradataUri: extraData == null ? null : extraData.toString(),

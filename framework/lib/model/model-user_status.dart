@@ -30,13 +30,13 @@ class UserStatus {
   bool paused = true;
   int userId = User.noId;
 
-  Map toJson() => {Key.userId: userId, Key.paused: paused};
+  Map toJson() => {Key.oid: userId, Key.paused: paused};
 
   UserStatus();
 
   static UserStatus decode(Map map) => new UserStatus.fromMap(map);
 
   UserStatus.fromMap(Map map)
-      : userId = map[Key.userId],
+      : userId = map[Key.uid],
         paused = map[Key.paused];
 }
