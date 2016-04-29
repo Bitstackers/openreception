@@ -37,8 +37,8 @@ class Call {
   static const String className = '${libraryName}.Call';
   static final Logger _log = new Logger(Call.className);
 
-  static final Call noCall = new Call.empty(noID);
-  static final String noID = '';
+  static final Call noCall = new Call.empty(noId);
+  static final String noId = '';
 
   final Bus<String> _callState = new Bus<String>();
   final Bus<Event.CallEvent> _eventBus = new Bus<Event.CallEvent>();
@@ -46,22 +46,22 @@ class Call {
   DateTime arrived = new DateTime.now();
   DateTime answeredAt = Util.never;
   int assignedTo = User.noId;
-  String b_Leg = null;
-  String callerID = '';
-  int contactID = BaseContact.noId;
+  String bLeg = null;
+  String callerId = '';
+  int cid = BaseContact.noId;
   String destination = '';
   bool greetingPlayed = false;
-  String _ID = noID;
+  String _id = noId;
   bool inbound = null;
   bool _locked = false;
-  int receptionID = Reception.noId;
+  int rid = Reception.noId;
   String _state = CallState.unknown;
   String hangupCause = '';
 
   /**
    * Constructor.
    */
-  Call.empty(this._ID);
+  Call.empty(this._id);
 
   /**
    * Constructor.
@@ -69,14 +69,14 @@ class Call {
   factory Call.fromMap(Map map) => new Call.empty(map[Key.id])
     .._state = map[PbxKey.state]
     ..answeredAt = Util.unixTimestampToDateTime(map[Key.answeredAt])
-    ..b_Leg = map[Key.bLeg]
+    ..bLeg = map[Key.bLeg]
     .._locked = map[Key.locked]
     ..inbound = map[Key.inbound]
     ..destination = map[Key.destination]
-    ..callerID = map[Key.callerId]
+    ..callerId = map[Key.callerId]
     ..greetingPlayed = map[Key.greetingPlayed]
-    ..receptionID = map[ORPbxKey.receptionId]
-    ..contactID = map[ORPbxKey.contactId]
+    ..rid = map[ORPbxKey.receptionId]
+    ..cid = map[ORPbxKey.contactId]
     ..assignedTo = map[Key.assignedTo]
     ..arrived = Util.unixTimestampToDateTime(map[Key.arrivalTime]);
 
@@ -84,7 +84,7 @@ class Call {
    *
    */
   @override
-  bool operator ==(Call other) => _ID == other._ID;
+  bool operator ==(Call other) => _id == other._id;
 
   /**
    *
@@ -106,7 +106,7 @@ class Call {
 
     _state = newState;
 
-    _log.finest('UUID: ${_ID}: ${lastState} => ${newState}');
+    _log.finest('UUID: ${_id}: ${lastState} => ${newState}');
 
     if (lastState == CallState.queued) {
       notifyEvent(new Event.QueueLeave(this));
@@ -160,12 +160,12 @@ class Call {
    * Note: The channel is a unique identifier.
    *   Remember to change, if ID changes.
    */
-  String get channel => _ID;
+  String get channel => _id;
 
   /**
    * The Unique identification of the call
    */
-  String get ID => _ID;
+  String get id => _id;
 
   /**
    *
@@ -189,7 +189,7 @@ class Call {
    *
    */
   @override
-  int get hashCode => _ID.hashCode;
+  int get hashCode => _id.hashCode;
 
   /**
    *
@@ -202,8 +202,8 @@ class Call {
   void link(Call other) {
     if (locked) locked = false;
 
-    b_Leg = other._ID;
-    other.b_Leg = _ID;
+    bLeg = other._id;
+    other.bLeg = _id;
   }
 
   /**
@@ -242,22 +242,22 @@ class Call {
   @override
   String toString() => this == noCall
       ? 'no Call'
-      : 'Call ID: ${_ID}, state: ${_state}, destination: ${destination}';
+      : 'CallId: ${_id}, state: ${_state}, destination: ${destination}';
 
   /**
    *
    */
   Map toJson() => {
-        Key.id: _ID,
+        Key.id: _id,
         PbxKey.state: _state,
-        Key.bLeg: b_Leg,
+        Key.bLeg: bLeg,
         Key.locked: locked,
         Key.inbound: inbound,
         Key.destination: destination,
-        Key.callerId: callerID,
+        Key.callerId: callerId,
         Key.greetingPlayed: greetingPlayed,
-        ORPbxKey.receptionId: receptionID,
-        ORPbxKey.contactId: contactID,
+        ORPbxKey.receptionId: rid,
+        ORPbxKey.contactId: cid,
         Key.assignedTo: assignedTo,
         Key.channel: channel,
         Key.arrivalTime: Util.dateTimeToUnixTimestamp(arrived),
@@ -267,9 +267,9 @@ class Call {
   /**
    *
    */
-  static void validateID(String callID) {
-    if (callID == null || callID.isEmpty) {
-      throw new FormatException('Invalid Call ID: ${callID}');
+  static void validateID(String callId) {
+    if (callId == null || callId.isEmpty) {
+      throw new FormatException('Invalid CallId: ${callId}');
     }
   }
 }

@@ -188,20 +188,20 @@ abstract class ModelCall {
     Model.Call decodedCall =
         new Model.Call.fromMap(JSON.decode(serializedObject));
 
-    expect(builtCall.ID, equals(decodedCall.ID));
+    expect(builtCall.id, equals(decodedCall.id));
     expect(builtCall.arrived.difference(decodedCall.arrived).abs(),
         lessThan(new Duration(seconds: 1)));
     expect(builtCall.answeredAt.difference(decodedCall.answeredAt).abs(),
         lessThan(new Duration(seconds: 1)));
     expect(builtCall.assignedTo, equals(decodedCall.assignedTo));
-    expect(builtCall.b_Leg, equals(decodedCall.b_Leg));
-    expect(builtCall.callerID, equals(decodedCall.callerID));
-    expect(builtCall.contactID, equals(decodedCall.contactID));
+    expect(builtCall.bLeg, equals(decodedCall.bLeg));
+    expect(builtCall.callerId, equals(decodedCall.callerId));
+    expect(builtCall.cid, equals(decodedCall.cid));
     expect(builtCall.destination, equals(decodedCall.destination));
     expect(builtCall.greetingPlayed, equals(decodedCall.greetingPlayed));
     expect(builtCall.inbound, equals(decodedCall.inbound));
     expect(builtCall.locked, equals(decodedCall.locked));
-    expect(builtCall.receptionID, equals(decodedCall.receptionID));
+    expect(builtCall.rid, equals(decodedCall.rid));
     expect(builtCall.state, equals(decodedCall.state));
 
     expect(builtCall.toJson(), equals(decodedCall.toJson()));
@@ -227,28 +227,28 @@ abstract class ModelCall {
       ..arrived = arrived
       ..answeredAt = answeredAt
       ..assignedTo = assignedTo
-      ..b_Leg = blegTestId
-      ..callerID = callerId
-      ..contactID = contactId
+      ..bLeg = blegTestId
+      ..callerId = callerId
+      ..cid = contactId
       ..destination = destination
       ..greetingPlayed = greetingPlayed
       ..inbound = inbound
       ..locked = locked
-      ..receptionID = receptionId
+      ..rid = receptionId
       ..state = Model.CallState.created;
 
-    expect(builtCall.ID, equals(testId));
+    expect(builtCall.id, equals(testId));
     expect(builtCall.arrived, equals(arrived));
     expect(builtCall.answeredAt, equals(answeredAt));
     expect(builtCall.assignedTo, equals(assignedTo));
-    expect(builtCall.b_Leg, equals(blegTestId));
-    expect(builtCall.callerID, equals(callerId));
-    expect(builtCall.contactID, equals(contactId));
+    expect(builtCall.bLeg, equals(blegTestId));
+    expect(builtCall.callerId, equals(callerId));
+    expect(builtCall.cid, equals(contactId));
     expect(builtCall.destination, equals(destination));
     expect(builtCall.greetingPlayed, equals(greetingPlayed));
     expect(builtCall.inbound, equals(inbound));
     expect(builtCall.locked, equals(locked));
-    expect(builtCall.receptionID, equals(receptionId));
+    expect(builtCall.rid, equals(receptionId));
     expect(builtCall.state, equals(state));
 
     return builtCall;

@@ -87,7 +87,7 @@ class MyCallQueue extends ViewWidget {
       _ui.removeTransferMarks();
       parkedCall = await park(_appState.activeCall);
       _ui.markForTransfer(parkedCall);
-      _log.info('marked ${parkedCall.ID} for transfer');
+      _log.info('marked ${parkedCall.id} for transfer');
     }
 
     _busyCallController();
@@ -96,7 +96,7 @@ class MyCallQueue extends ViewWidget {
           await _callController.dial(phoneNumber, _appState.originationContext);
       if (markTransfer || parkAndMarkTransfer) {
         _ui.markForTransfer(newCall);
-        _log.info('marked ${newCall.ID} for transfer');
+        _log.info('marked ${newCall.id} for transfer');
       }
     } catch (error) {
       _error(error, _langMap[Key.callFailed], phoneNumber.destination);
@@ -121,14 +121,14 @@ class MyCallQueue extends ViewWidget {
    */
   void clearStaleCalls() {
     _ui.calls.forEach((ORModel.Call call) {
-      _callController.get(call.ID).then((ORModel.Call c) {
+      _callController.get(call.id).then((ORModel.Call c) {
         if (c == ORModel.Call.noCall ||
             c.callState == ORModel.CallState.transferred) {
-          if (c.ID == contextCallId) {
+          if (c.id == contextCallId) {
             contextCallId = '';
           }
           _ui.removeCall(c);
-          _log.info('removing stale call ${c.ID} from queue');
+          _log.info('removing stale call ${c.id} from queue');
         }
       });
     });
@@ -186,7 +186,7 @@ class MyCallQueue extends ViewWidget {
 
       case ORModel.CallState.hungup:
       case ORModel.CallState.transferred:
-        if (event.call.ID == contextCallId) {
+        if (event.call.id == contextCallId) {
           contextCallId = '';
         }
 
@@ -245,20 +245,20 @@ class MyCallQueue extends ViewWidget {
           calls.length == 2 &&
           calls.any((ORModel.Call call) => _appState.activeCall == call)) {
         final ORModel.Call source = calls.firstWhere(
-            (ORModel.Call call) => call.ID == _appState.activeCall.ID);
+            (ORModel.Call call) => call.id == _appState.activeCall.id);
         final ORModel.Call destination = calls.firstWhere(
-            (ORModel.Call call) => call.ID != _appState.activeCall.ID);
+            (ORModel.Call call) => call.id != _appState.activeCall.id);
 
         _busyCallController();
 
         _callController.transfer(source, destination).then((_) {
-          if (source.ID == contextCallId || destination.ID == contextCallId) {
+          if (source.id == contextCallId || destination.id == contextCallId) {
             contextCallId = '';
           }
           clearStaleCalls();
         }).catchError((error) {
           _error(error, _langMap[Key.errorCallTransfer],
-              'ID ${_appState.activeCall.ID}');
+              'ID ${_appState.activeCall.id}');
           _log.warning('transfer failed with ${error}');
         }).whenComplete(() => _readyCallController());
       }
@@ -274,7 +274,7 @@ class MyCallQueue extends ViewWidget {
     _hotKeys.onNumDiv.listen((_) {
       if (!_callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
         _callControllerBusy = true;
-        final hangupCallId = _appState.activeCall.ID;
+        final hangupCallId = _appState.activeCall.id;
         _callController.hangup(_appState.activeCall).then((_) {
           if (hangupCallId == contextCallId) {
             contextCallId = '';
@@ -282,7 +282,7 @@ class MyCallQueue extends ViewWidget {
           clearStaleCalls();
         }).catchError((error) {
           _error(error, _langMap[Key.errorCallHangup],
-              'ID ${_appState.activeCall.ID}');
+              'ID ${_appState.activeCall.id}');
           _log.warning('hangup failed with ${error}');
         }).whenComplete(() => _readyCallController());
       }
@@ -295,7 +295,7 @@ class MyCallQueue extends ViewWidget {
         _receptionSelector.refreshReceptions();
 
         _callController.pickupNext().then((ORModel.Call call) {
-          contextCallId = call.ID;
+          contextCallId = call.id;
           _ui.removeTransferMarks();
           clearStaleCalls();
         }).catchError((error) {
@@ -325,7 +325,7 @@ class MyCallQueue extends ViewWidget {
         parkedCall = await _callController.park(call);
       } catch (error) {
         _error(error, _langMap[Key.errorCallPark],
-            'ID ${_appState.activeCall.ID}');
+            'ID ${_appState.activeCall.id}');
         _log.warning('parking failed with ${error}');
       }
     }
@@ -357,7 +357,7 @@ class MyCallQueue extends ViewWidget {
 
       unparkCall.then((ORModel.Call call) {
         if (call.inbound) {
-          contextCallId = call.ID;
+          contextCallId = call.id;
         }
         clearStaleCalls();
       }).catchError((error) {

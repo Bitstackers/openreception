@@ -18,7 +18,7 @@ class CallHistory {
   CallHistory(service.NotificationSocket notificationSocket) {
     dispatchEvent(event.Event e) async {
       if (e is event.CallEvent && e.call.assignedTo != model.User.noId) {
-        _history[e.call.ID] = e.call;
+        _history[e.call.id] = e.call;
         _update();
       }
     }

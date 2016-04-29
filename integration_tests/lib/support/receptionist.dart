@@ -159,7 +159,7 @@ class Receptionist {
    * [CallFlowControl] service.
    */
   Future transferCall(model.Call callA, model.Call callB) =>
-      this.callFlowControl.transfer(callA.ID, callB.ID);
+      this.callFlowControl.transfer(callA.id, callB.id);
 
   /**
    * Parks [call] in the parking lot associated with the user via the
@@ -168,10 +168,10 @@ class Receptionist {
    * socket confirms the the call was sucessfully parked.
    */
   Future park(model.Call call, {bool waitForEvent: false}) {
-    Future parkAction = this.callFlowControl.park(call.ID);
+    Future parkAction = this.callFlowControl.park(call.id);
 
     model.Call validateCall(model.Call parkedCall) {
-      expect(call.ID, parkedCall.ID);
+      expect(call.id, parkedCall.id);
       expect(
           call.answeredAt
               .difference(parkedCall.answeredAt)
@@ -181,14 +181,14 @@ class Receptionist {
       expect(call.arrived.difference(parkedCall.arrived).inMilliseconds.abs(),
           lessThan(500));
       expect(call.assignedTo, parkedCall.assignedTo);
-      expect(call.callerID, parkedCall.callerID);
+      expect(call.callerId, parkedCall.callerId);
       expect(call.channel, parkedCall.channel);
-      expect(call.contactID, parkedCall.contactID);
+      expect(call.cid, parkedCall.cid);
       expect(call.destination, parkedCall.destination);
       expect(call.greetingPlayed, parkedCall.greetingPlayed);
       expect(call.inbound, parkedCall.inbound);
       //expect(call.locked, parkedCall.locked);
-      expect(call.receptionID, parkedCall.receptionID);
+      expect(call.rid, parkedCall.rid);
       expect(parkedCall.state, equals(model.CallState.parked));
 
       return parkedCall;
@@ -198,7 +198,7 @@ class Receptionist {
       return parkAction
           .then((_) => this.waitFor(
               eventType: event.Key.callPark,
-              callID: call.ID,
+              callID: call.id,
               timeoutSeconds: 2))
           .then((event.CallPark parkEvent) => validateCall(parkEvent.call));
     } else {
@@ -277,7 +277,7 @@ class Receptionist {
    * Hangup [call]  via the [CallFlowControl] service.
    */
   Future hangUp(model.Call call) =>
-      this.callFlowControl.hangup(call.ID).catchError((error, stackTrace) {
+      this.callFlowControl.hangup(call.id).catchError((error, stackTrace) {
         log.severe(
             'Tried to hang up call with info ${call.toJson()}. Receptionist info ${toJson()}',
             error,
@@ -315,7 +315,7 @@ class Receptionist {
       }
 
       if (callID != null && e is event.CallEvent) {
-        result = result && e.call.ID == callID;
+        result = result && e.call.id == callID;
       }
 
       if (extension != null && e is event.CallEvent) {
@@ -323,7 +323,7 @@ class Receptionist {
       }
 
       if (receptionID != null && e is event.CallEvent) {
-        result = result && e.call.receptionID == receptionID;
+        result = result && e.call.rid == receptionID;
       }
       return result;
     }
@@ -358,12 +358,12 @@ class Receptionist {
    * This method picks up a specific call.
    */
   Future pickup(model.Call call, {waitForEvent: false}) {
-    Future pickupAction = this.callFlowControl.pickup(call.ID);
+    Future pickupAction = this.callFlowControl.pickup(call.id);
 
     if (waitForEvent) {
       return pickupAction
           .then((_) =>
-              this.waitFor(eventType: event.Key.callPickup, callID: call.ID))
+              this.waitFor(eventType: event.Key.callPickup, callID: call.id))
           .then((event.CallPickup pickupEvent) => pickupEvent.call);
     } else {
       return pickupAction;
@@ -384,12 +384,12 @@ class Receptionist {
       return this
           .waitFor(
               eventType: event.Key.callLock,
-              callID: selectedCall.ID,
+              callID: selectedCall.id,
               timeoutSeconds: 10)
           .then((_) =>
               log.info('Call $selectedCall was locked, waiting for unlock.'))
           .then((_) => this.waitFor(
-              eventType: event.Key.callUnlock, callID: selectedCall.ID))
+              eventType: event.Key.callUnlock, callID: selectedCall.id))
           .then(
               (_) => log.info('Call $selectedCall got unlocked, picking it up'))
           .then((_) => this.pickup(selectedCall, waitForEvent: true));
@@ -413,14 +413,14 @@ class Receptionist {
                 // Call is hungup
 
                 callEventsOnSelecteCall(event.Event e) {
-                  if (e is event.CallEvent) return e.call.ID == selectedCall.ID;
+                  if (e is event.CallEvent) return e.call.id == selectedCall.id;
                 }
 
                 log.info('$this waits for $selectedCall to hangup');
                 this
                     .waitFor(
                         eventType: event.Key.callHangup,
-                        callID: selectedCall.ID,
+                        callID: selectedCall.id,
                         timeoutSeconds: 2)
                     .then((event.CallHangup hangupEvent) {
                   this.eventStack.removeWhere(callEventsOnSelecteCall);

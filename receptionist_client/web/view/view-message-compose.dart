@@ -123,14 +123,14 @@ class MessageCompose extends ViewWidget {
     _notification.onAnyCallStateChange.listen((OREvent.CallEvent event) {
       if (event.call.assignedTo == _appState.currentUser.id &&
           event.call.state == ORModel.CallState.hungup) {
-        _pickedUpCalls.removeWhere((ORModel.Call c) => c.ID == event.call.ID);
+        _pickedUpCalls.removeWhere((ORModel.Call c) => c.id == event.call.id);
       }
     });
 
     _appState.activeCallChanged.listen((ORModel.Call newCall) {
       if (newCall != ORModel.Call.noCall &&
           newCall.inbound &&
-          !_pickedUpCalls.any((ORModel.Call c) => c.ID == newCall.ID)) {
+          !_pickedUpCalls.any((ORModel.Call c) => c.id == newCall.id)) {
         _pickedUpCalls.add(newCall);
 
         /// This is somewhat nasty. We're assuming that this fires _before_ the

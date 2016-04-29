@@ -31,7 +31,7 @@ abstract class Transfer {
     await callee.waitForInboundCall();
     await callee.pickupCall();
     log.info('$receptionist picked up outbound call: $outboundCall');
-    expect(outboundCall.receptionID, equals(context.receptionId));
+    expect(outboundCall.rid, equals(context.receptionId));
     expect(outboundCall.assignedTo, equals(receptionist.user.id));
 
     log.info('$receptionist transfers call $outboundCall to $inboundCall.');
@@ -78,7 +78,7 @@ abstract class Transfer {
     final model.Call outboundCall =
         await receptionist.originate(callee.extension, context);
     log.info('Outbound call: $outboundCall');
-    expect(outboundCall.receptionID, equals(context.receptionId));
+    expect(outboundCall.rid, equals(context.receptionId));
     expect(outboundCall.assignedTo, equals(receptionist.user.id));
     await callee.waitForInboundCall();
     await callee.pickupCall();
@@ -91,7 +91,7 @@ abstract class Transfer {
     receptionist.eventStack.clear();
     log.info('$receptionist pickup the inbound call $inboundCall again');
     await receptionist.pickup(inboundCall).then((model.Call receivedCall) {
-      expect(inboundCall.ID, equals(receivedCall.ID));
+      expect(inboundCall.id, equals(receivedCall.id));
       log.info('Receptionist ${receptionist} got call $receivedCall');
       return;
     });
@@ -176,7 +176,7 @@ abstract class Transfer {
 
     log.info('${receptionist} pickup the inbound call $inboundCall again');
     await receptionist.pickup(inboundCall).then((model.Call receivedCall) {
-      expect(inboundCall.ID, equals(receivedCall.ID));
+      expect(inboundCall.id, equals(receivedCall.id));
       log.info('${receptionist} got call $receivedCall');
     });
     await receptionist.waitForInboundCall();

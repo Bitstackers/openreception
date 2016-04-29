@@ -15,7 +15,7 @@ abstract class StateReload {
 
     list2.forEach((model.Call updatedCall) {
       model.Call originalCall =
-          list1.firstWhere((model.Call c) => c.ID == updatedCall.ID);
+          list1.firstWhere((model.Call c) => c.id == updatedCall.id);
 
       expect(originalCall.toJson(), equals(updatedCall.toJson()));
       expect(
@@ -25,17 +25,17 @@ abstract class StateReload {
               .abs(),
           lessThan(1000));
       expect(originalCall.assignedTo, equals(updatedCall.assignedTo));
-      expect(originalCall.b_Leg, equals(updatedCall.b_Leg));
-      expect(originalCall.callerID, equals(updatedCall.callerID));
+      expect(originalCall.bLeg, equals(updatedCall.bLeg));
+      expect(originalCall.callerId, equals(updatedCall.callerId));
       expect(originalCall.channel, equals(updatedCall.channel));
-      expect(originalCall.contactID, equals(updatedCall.contactID));
+      expect(originalCall.cid, equals(updatedCall.cid));
       expect(originalCall.destination, equals(updatedCall.destination));
       expect(originalCall.greetingPlayed, equals(updatedCall.greetingPlayed));
-      expect(originalCall.ID, equals(updatedCall.ID));
+      expect(originalCall.id, equals(updatedCall.id));
       expect(originalCall.inbound, equals(updatedCall.inbound));
       expect(originalCall.isActive, equals(updatedCall.isActive));
       expect(originalCall.locked, equals(updatedCall.locked));
-      expect(originalCall.receptionID, equals(updatedCall.receptionID));
+      expect(originalCall.rid, equals(updatedCall.rid));
       expect(originalCall.state, equals(updatedCall.state));
     });
   }
@@ -229,7 +229,7 @@ abstract class StateReload {
     await callee.waitForInboundCall();
     await callee.pickupCall();
     await receptionist.waitFor(
-        eventType: event.Key.callPickup, callID: outboundCall.ID);
+        eventType: event.Key.callPickup, callID: outboundCall.id);
     log.info('Fetching original call list');
     Iterable<model.Call> orignalCallQueue =
         await receptionist.callFlowControl.callList();

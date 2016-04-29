@@ -23,7 +23,7 @@ abstract class CallList {
       service.CallFlowControl callFlow, Iterable<model.Call> calls) async {
     Iterable<model.Call> queuedCalls = await callFlow.callList();
     bool existsInQueue(model.Call call) =>
-        queuedCalls.any((model.Call queuedCall) => queuedCall.ID == call.ID);
+        queuedCalls.any((model.Call queuedCall) => queuedCall.id == call.id);
 
     bool intersection() => calls.every(existsInQueue);
 
@@ -63,16 +63,16 @@ abstract class CallList {
 
     log.info('Receptionist ${receptionist.user.name} waits for call.');
     final model.Call call = await receptionist.waitForCallOffer();
-    expect(call.receptionID, equals(rec.id));
+    expect(call.rid, equals(rec.id));
     //expect (call.destination, equals(reception));
     expect(call.assignedTo, equals(model.User.noId));
-    expect(call.b_Leg, isNull);
+    expect(call.bLeg, isNull);
     expect(call.channel, isNotNull);
     expect(call.channel, isNotEmpty);
-    expect(call.contactID, equals(model.BaseContact.noId));
+    expect(call.cid, equals(model.BaseContact.noId));
     expect(call.greetingPlayed, equals(false));
-    expect(call.ID, isNotNull);
-    expect(call.ID, isNotEmpty);
+    expect(call.id, isNotNull);
+    expect(call.id, isNotEmpty);
     expect(call.inbound, equals(true));
     expect(call.locked, equals(false));
     expect(call.arrived.difference(new DateTime.now()).inMilliseconds.abs(),
@@ -107,7 +107,7 @@ abstract class CallList {
 
     log.info('Wating for the call $inboundCall to be queued.');
     await receptionist.waitFor(
-        eventType: event.Key.queueJoin, callID: inboundCall.ID);
+        eventType: event.Key.queueJoin, callID: inboundCall.id);
     log.info('Got ${event.Key.queueJoin} event, checking queue interface.');
 
     {
@@ -135,7 +135,7 @@ abstract class CallList {
     await caller.hangupAll();
     log.info('Waiting for ${event.Key.callHangup} event.');
     await receptionist.waitFor(
-        eventType: event.Key.callHangup, callID: inboundCall.ID);
+        eventType: event.Key.callHangup, callID: inboundCall.id);
     await _validateListEmpty(receptionist.callFlowControl);
     log.info('Test success.');
   }
@@ -153,7 +153,7 @@ abstract class CallList {
     final model.Call inboundCall = await receptionist.waitForCallOffer();
     log.info('Wating for the call $inboundCall to be queued.');
     await receptionist.waitFor(
-        eventType: event.Key.queueJoin, callID: inboundCall.ID);
+        eventType: event.Key.queueJoin, callID: inboundCall.id);
     log.info('Got ${event.Key.queueJoin} event, checking queue interface.');
     {
       Iterable<model.Call> calls =
@@ -176,7 +176,7 @@ abstract class CallList {
     log.info('Checking if the call is now absent from the call list.');
     log.info('Waiting for ${event.Key.callHangup} event.');
     await receptionist.waitFor(
-        eventType: event.Key.callHangup, callID: inboundCall.ID);
+        eventType: event.Key.callHangup, callID: inboundCall.id);
     await _validateListEmpty(receptionist.callFlowControl);
     log.info('Test success. Cleaning up.');
   }

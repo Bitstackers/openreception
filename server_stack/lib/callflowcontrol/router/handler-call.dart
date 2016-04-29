@@ -141,7 +141,7 @@ abstract class Call {
 
     Model.CallList.instance.onEvent
         .firstWhere((OREvent.Event event) =>
-            event is OREvent.CallHangup && event.call.ID == callID)
+            event is OREvent.CallHangup && event.call.id == callID)
         .then((OREvent.CallHangup hangupEvent) =>
             completer.complete(hangupEvent.call));
 
@@ -308,11 +308,11 @@ abstract class Call {
     /// Update the call with the info from the originate request.
     call
       ..assignedTo = user.id
-      ..callerID = config.callFlowControl.callerIdNumber
+      ..callerId = config.callFlowControl.callerIdNumber
       ..destination = extension
-      ..receptionID = receptionID
-      ..contactID = contactID
-      ..b_Leg = agentChannel;
+      ..rid = receptionID
+      ..cid = contactID
+      ..bLeg = agentChannel;
 
     /// Update call and peer state information.
     call.changeState(ORModel.CallState.ringing);
@@ -387,7 +387,7 @@ abstract class Call {
 
     try {
       await Controller.PBX.park(call, user);
-      log.finest('Parked call ${call.ID}');
+      log.finest('Parked call ${call.id}');
 
       return okJson(call);
     } catch (error, stackTrace) {
@@ -467,7 +467,7 @@ abstract class Call {
     originallyAssignedTo = assignedCall.assignedTo;
     assignedCall.assignedTo = user.id;
 
-    log.finest('Assigned call ${assignedCall.ID} to user with ID ${user.id}');
+    log.finest('Assigned call ${assignedCall.id} to user with ID ${user.id}');
 
     /// Create an agent channel
     try {

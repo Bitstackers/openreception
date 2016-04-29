@@ -92,7 +92,7 @@ class ReceptionSelector extends ViewWidget {
     _notification.onAnyCallStateChange.listen((OREvent.CallEvent event) {
       if (event.call.assignedTo == _appState.currentUser.id &&
           event.call.state == ORModel.CallState.hungup) {
-        _pickedUpCalls.removeWhere((ORModel.Call c) => c.ID == event.call.ID);
+        _pickedUpCalls.removeWhere((ORModel.Call c) => c.id == event.call.id);
       }
     });
 
@@ -115,12 +115,12 @@ class ReceptionSelector extends ViewWidget {
     _appState.activeCallChanged.listen((ORModel.Call newCall) {
       if (newCall != ORModel.Call.noCall &&
           newCall.inbound &&
-          _ui.selectedReception.id != newCall.receptionID) {
-        if (!_pickedUpCalls.any((ORModel.Call c) => c.ID == newCall.ID)) {
+          _ui.selectedReception.id != newCall.rid) {
+        if (!_pickedUpCalls.any((ORModel.Call c) => c.id == newCall.id)) {
           _pickedUpCalls.add(newCall);
 
           _ui.resetFilter();
-          _ui.changeActiveReception(newCall.receptionID);
+          _ui.changeActiveReception(newCall.rid);
         }
       }
     });

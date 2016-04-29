@@ -62,8 +62,8 @@ class UIGlobalCallQueue extends UIModel {
 
     final SpanElement callDesc = new SpanElement()
       ..classes.add('call-description')
-      ..text = (_myIdentities.contains(call.callerID) || !_hideInboundCallerId)
-          ? call.callerID
+      ..text = (_myIdentities.contains(call.callerId) || !_hideInboundCallerId)
+          ? call.callerId
           : _langMap[Key.call]
       ..children.add(callState);
 
@@ -76,7 +76,7 @@ class UIGlobalCallQueue extends UIModel {
           .toString();
 
     return new LIElement()
-      ..dataset['id'] = call.ID
+      ..dataset['id'] = call.id
       ..dataset['object'] = JSON.encode(call)
       ..children.addAll([callDesc, callWaitTimer])
       ..classes.add(call.inbound ? 'inbound' : 'outbound')
@@ -150,7 +150,7 @@ class UIGlobalCallQueue extends UIModel {
    * in the call list.
    */
   void removeCall(ORModel.Call call) {
-    final LIElement li = _list.querySelector('[data-id="${call.ID}"]');
+    final LIElement li = _list.querySelector('[data-id="${call.id}"]');
 
     if (li != null) {
       li.remove();
@@ -170,7 +170,7 @@ class UIGlobalCallQueue extends UIModel {
    * the call list.
    */
   void updateCall(ORModel.Call call) {
-    final LIElement li = _list.querySelector('[data-id="${call.ID}"]');
+    final LIElement li = _list.querySelector('[data-id="${call.id}"]');
 
     if (li != null) {
       li.replaceWith(_buildCallElement(call));

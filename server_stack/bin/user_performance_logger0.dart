@@ -70,7 +70,7 @@ class AgentTimeline {
     if (e is event.CallEvent) {
       String dir = e.call.inbound ? ' inbound ' : ' outbound ';
 
-      return e.eventName + dir + e.call.ID;
+      return e.eventName + dir + e.call.id;
     } else if (e is event.UserState) {
       String state = e.status.paused ? ' pause ' : ' unpause ';
       return e.eventName + state;

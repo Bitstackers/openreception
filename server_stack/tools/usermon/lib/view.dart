@@ -26,4 +26,4 @@ part 'view/call_stats.dart';
 part 'view/call_list.dart';
 
 String _remoteParty(model.Call call) =>
-    call.inbound ? call.callerID : call.destination;
+    call.inbound ? call.callerId : call.destination;

@@ -286,7 +286,7 @@ abstract class PBX {
    * Bridges two active calls.
    */
   static Future bridge(ORModel.Call source, ORModel.Call destination) {
-    return api('uuid_bridge ${source.ID} ${destination.ID}')
+    return api('uuid_bridge ${source.id} ${destination.id}')
         .then((ESL.Response response) {
       if (response.status != ESL.Response.OK) {
         throw new StateError('ESL returned ${response.rawBody}');
@@ -376,7 +376,7 @@ abstract class PBX {
    * Kills the active channel for a call.
    */
   static Future hangup(ORModel.Call call) =>
-      killChannel(call.channel).then((_) => _checkAgentChannel(call.b_Leg));
+      killChannel(call.channel).then((_) => _checkAgentChannel(call.bLeg));
 
   /**
    * Kills the active channel for a call.

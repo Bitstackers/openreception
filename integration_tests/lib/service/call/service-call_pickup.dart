@@ -13,7 +13,7 @@ abstract class Pickup {
 
     log.info('Receptionist $receptionist waits for call.');
     final model.Call call = await receptionist.waitForCallOffer();
-    await receptionist.waitFor(eventType: event.Key.callLock, callID: call.ID);
+    await receptionist.waitFor(eventType: event.Key.callLock, callID: call.id);
 
     await expect(receptionist.pickup(call),
         throwsA(new isInstanceOf<storage.Conflict>()));
@@ -102,7 +102,7 @@ abstract class Pickup {
     await Future.wait([c1.future, c2.future]);
 
     final model.Call pickedUpCall =
-        await receptionist.callFlowControl.get(offeredCall.ID);
+        await receptionist.callFlowControl.get(offeredCall.id);
 
     expect(
         [receptionist.user.id, receptionist2.user.id]
@@ -125,7 +125,7 @@ abstract class Pickup {
     final model.Call call = await receptionist.huntNextCall();
     log.info('$receptionist got call $call.');
     log.info('$receptionist retrieves the call information from the server.');
-    final model.Call fetched = await receptionist.callFlowControl.get(call.ID);
+    final model.Call fetched = await receptionist.callFlowControl.get(call.id);
 
     expect(fetched.assignedTo, equals(receptionist.user.id));
     expect(fetched.state, equals(model.CallState.speaking));
@@ -144,7 +144,7 @@ abstract class Pickup {
     await receptionist.pickup(inboundCall, waitForEvent: false);
     ;
     final event.CallPickup pickupEvent = await receptionist.waitFor(
-        eventType: event.Key.callPickup, callID: inboundCall.ID);
+        eventType: event.Key.callPickup, callID: inboundCall.id);
 
     expect(pickupEvent.call.assignedTo, equals(receptionist.user.id));
     expect(pickupEvent.call.state, equals(model.CallState.speaking));
@@ -169,7 +169,7 @@ abstract class Pickup {
     log.info('Receptionist ${receptionist.user.name} hunts call.');
     final model.Call call = await receptionist.huntNextCall();
     await receptionist.waitFor(
-        callID: call.ID, eventType: event.Key.callPickup);
+        callID: call.id, eventType: event.Key.callPickup);
     log.info('Test done');
   }
 
@@ -188,7 +188,7 @@ abstract class Pickup {
     await receptionist.waitFor(
         eventType: event.Key.callPickup,
         timeoutSeconds: 2,
-        callID: outboundCall.ID);
+        callID: outboundCall.id);
     log.info('Test done');
   }
 }

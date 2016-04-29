@@ -135,7 +135,7 @@ class Call {
     _log.info('Hanging up $call.');
 
     return _service
-        .hangup(call.ID)
+        .hangup(call.id)
         .then((_) => _command.fire(CallCommand.hangupSuccess))
         .catchError((error, stackTrace) {
       _log.severe(error, stackTrace);
@@ -161,7 +161,7 @@ class Call {
     _busy = true;
     _command.fire(CallCommand.park);
 
-    return await _service.park(call.ID).then((ORModel.Call parkedCall) {
+    return await _service.park(call.id).then((ORModel.Call parkedCall) {
       _command.fire(CallCommand.parkSuccess);
 
       _log.info('Parking ${parkedCall}');
@@ -190,7 +190,7 @@ class Call {
 
     _log.info('Picking up $call.');
 
-    return await _service.pickup(call.ID).then((ORModel.Call call) {
+    return await _service.pickup(call.id).then((ORModel.Call call) {
       _command.fire(CallCommand.pickupSuccess);
 
       return call;
@@ -244,7 +244,7 @@ class Call {
     _command.fire(CallCommand.transfer);
 
     return await _service
-        .transfer(source.ID, destination.ID)
+        .transfer(source.id, destination.id)
         .then((_) => _command.fire(CallCommand.transferSuccess))
         .catchError((error, stackTrace) {
       _log.severe(error, stackTrace);

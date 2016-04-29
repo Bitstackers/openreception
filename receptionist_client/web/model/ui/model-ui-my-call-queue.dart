@@ -78,7 +78,7 @@ class UIMyCallQueue extends UIModel {
     final SpanElement callDesc = new SpanElement()
       ..style.pointerEvents = 'none'
       ..classes.add('call-description')
-      ..text = call.inbound ? '${call.callerID}' : '${call.destination}'
+      ..text = call.inbound ? '${call.callerId}' : '${call.destination}'
       ..children.add(callState);
 
     final SpanElement callWaitTimer = new SpanElement()
@@ -89,7 +89,7 @@ class UIMyCallQueue extends UIModel {
     numbersAndStateDiv.children.addAll([callDesc, callWaitTimer]);
 
     return new LIElement()
-      ..dataset['id'] = call.ID
+      ..dataset['id'] = call.id
       ..dataset['object'] = JSON.encode(call)
       ..children.addAll([numbersAndStateDiv, nameDiv])
       ..classes.add(call.inbound ? 'inbound' : 'outbound')
@@ -148,9 +148,9 @@ class UIMyCallQueue extends UIModel {
    * Mark [call] ready for transfer. Does nothing if [call] is not found in the list.
    */
   void markForTransfer(ORModel.Call call) {
-    final LIElement li = _list.querySelector('[data-id="${call.ID}"]');
+    final LIElement li = _list.querySelector('[data-id="${call.id}"]');
 
-    _transferUUIDs.add(call.ID);
+    _transferUUIDs.add(call.id);
 
     if (li != null) {
       li.setAttribute('transfer', '');
@@ -194,11 +194,11 @@ class UIMyCallQueue extends UIModel {
    * call list.
    */
   void removeCall(ORModel.Call call) {
-    final LIElement li = _list.querySelector('[data-id="${call.ID}"]');
+    final LIElement li = _list.querySelector('[data-id="${call.id}"]');
 
     if (li != null) {
       li.remove();
-      if (_transferUUIDs.contains(call.ID)) {
+      if (_transferUUIDs.contains(call.id)) {
         removeTransferMark(call);
       }
       _queueLengthUpdate();
@@ -209,13 +209,13 @@ class UIMyCallQueue extends UIModel {
    * Removes the transfer attribute from the [call] li element.
    */
   void removeTransferMark(ORModel.Call call) {
-    final LIElement li = _list.querySelector('[data-id="${call.ID}"]');
+    final LIElement li = _list.querySelector('[data-id="${call.id}"]');
 
     if (li != null) {
       li.attributes.remove('transfer');
     }
 
-    _transferUUIDs.remove(call.ID);
+    _transferUUIDs.remove(call.id);
   }
 
   /**
@@ -236,25 +236,21 @@ class UIMyCallQueue extends UIModel {
    */
   void setName(ORModel.Call call, DivElement nameDiv) {
     if (call.inbound) {
-      if (_receptionMap.containsKey(call.receptionID)) {
-        nameDiv.text = _receptionMap[call.receptionID];
+      if (_receptionMap.containsKey(call.rid)) {
+        nameDiv.text = _receptionMap[call.rid];
       } else {
-        _receptionController
-            .get(call.receptionID)
-            .then((ORModel.Reception reception) {
+        _receptionController.get(call.rid).then((ORModel.Reception reception) {
           nameDiv.text = reception.name;
-          _receptionMap[call.receptionID] = reception.name;
+          _receptionMap[call.rid] = reception.name;
         });
       }
     } else {
-      if (_contactMap.containsKey(call.contactID)) {
-        nameDiv.text = _contactMap[call.contactID];
+      if (_contactMap.containsKey(call.cid)) {
+        nameDiv.text = _contactMap[call.cid];
       } else {
-        _contactController
-            .get(call.contactID)
-            .then((ORModel.BaseContact contact) {
+        _contactController.get(call.cid).then((ORModel.BaseContact contact) {
           nameDiv.text = contact.name;
-          _contactMap[call.contactID] = contact.name;
+          _contactMap[call.cid] = contact.name;
         });
       }
     }
@@ -264,11 +260,11 @@ class UIMyCallQueue extends UIModel {
    * Find [call] in queue list and set the transfer attribute.
    */
   void setTransferMark(ORModel.Call call) {
-    if (_transferUUIDs.contains(call.ID)) {
+    if (_transferUUIDs.contains(call.id)) {
       _list
-          .querySelector('[data-id="${call.ID}"]')
+          .querySelector('[data-id="${call.id}"]')
           ?.setAttribute('transfer', '');
-      _transferUUIDs.remove(call.ID);
+      _transferUUIDs.remove(call.id);
     }
   }
 
@@ -284,7 +280,7 @@ class UIMyCallQueue extends UIModel {
    * the list.
    */
   void updateCall(ORModel.Call call) {
-    final LIElement li = _list.querySelector('[data-id="${call.ID}"]');
+    final LIElement li = _list.querySelector('[data-id="${call.id}"]');
 
     if (li != null) {
       final LIElement newLI = _buildCallElement(call);

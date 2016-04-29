@@ -235,13 +235,13 @@ Future main(List<String> args) async {
 
   dispatchEvent(event.Event e) async {
     if (e is event.CallEvent) {
-      if (!_eventHistory.containsKey(e.call.ID)) {
-        _eventHistory[e.call.ID] = new CallHistory();
+      if (!_eventHistory.containsKey(e.call.id)) {
+        _eventHistory[e.call.id] = new CallHistory();
       }
-      _eventHistory[e.call.ID].addEvent(e);
+      _eventHistory[e.call.id].addEvent(e);
 
-      if (_eventHistory[e.call.ID].isDone) {
-        CallHistory ch = _eventHistory.remove(e.call.ID);
+      if (_eventHistory[e.call.id].isDone) {
+        CallHistory ch = _eventHistory.remove(e.call.id);
         String dirPath = '${RFC3339.format(ch.firstEventTime)}';
 
         if (!new Directory(dirPath).existsSync()) {
@@ -249,7 +249,7 @@ Future main(List<String> args) async {
         }
 
         try {
-          new File('$dirPath/' + e.call.ID).writeAsStringSync(JSON.encode(ch));
+          new File('$dirPath/' + e.call.id).writeAsStringSync(JSON.encode(ch));
         } catch (e) {
           print('Could not save $ch');
         }

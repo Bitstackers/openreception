@@ -18,14 +18,14 @@ class AgentInfo {
   }
 
   set call(model.Call c) {
-    _callshandled.add(c.ID);
+    _callshandled.add(c.id);
     if (c.state == model.CallState.hungup ||
         c.state == model.CallState.transferred) {
       currentCallCell.text = '';
 
       _updateStats();
     } else {
-      currentCallCell.text = c.callerID;
+      currentCallCell.text = c.callerId;
     }
   }
 

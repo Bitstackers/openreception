@@ -9,8 +9,8 @@ class CallList {
 
   CallList(Iterable<model.Call> calls, this._notificationSocket) {
     element.children = calls.where(_isUnassigned).map((model.Call call) {
-      _callMap[call.ID] = Call.build(call);
-      return _callMap[call.ID].element;
+      _callMap[call.id] = Call.build(call);
+      return _callMap[call.id].element;
     }).toList(growable: false);
 
     _registerListeners();
@@ -32,9 +32,9 @@ class CallList {
 
   void _insert(model.Call call) {
     _log.info('inserting');
-    if (!_callMap.containsKey(call.ID)) {
-      _callMap[call.ID] = Call.build(call);
-      element.children.add(_callMap[call.ID].element);
+    if (!_callMap.containsKey(call.id)) {
+      _callMap[call.id] = Call.build(call);
+      element.children.add(_callMap[call.id].element);
     } else {
       _update(call);
     }
@@ -45,15 +45,15 @@ class CallList {
     if (!_isUnassigned(call)) {
       _remove(call);
     } else {
-      _callMap[call.ID].call = call;
+      _callMap[call.id].call = call;
     }
   }
 
   void _remove(model.Call call) {
     _log.info('removing');
-    if (_callMap.containsKey(call.ID)) {
-      _callMap[call.ID].element.remove();
-      _callMap.remove(call.ID);
+    if (_callMap.containsKey(call.id)) {
+      _callMap[call.id].element.remove();
+      _callMap.remove(call.id);
     }
   }
 
