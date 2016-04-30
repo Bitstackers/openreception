@@ -132,7 +132,7 @@ button::-moz-focus-inner {
 }
 
 .hint.hidden {
-  display: none;
+  visibility: hidden
 }
 
 input {

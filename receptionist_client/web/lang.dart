@@ -234,7 +234,7 @@ Map<String, String> da = {
   Key.contactDataRelations: 'Relationer',
   Key.contactDataResponsibility: 'Ansvarsområde',
   Key.contactDataShowPSTN: 'PSTN',
-  Key.contactDataShowTags: 'Tags',
+  Key.contactDataShowTags: 'Stikord',
   Key.contactDataTelephoneNumbers: 'Telefonnumre',
   Key.contactDataTitle: 'Titel',
   Key.contactDataWorkHours: 'Arbejdstider',
