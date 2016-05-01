@@ -31,10 +31,12 @@ class ReceptionDialplan {
 
   Iterable<Action> get allActions => []
     ..addAll(defaultActions)
-    ..addAll(
-        open.fold([], (list, HourAction hour) => list..addAll(hour.actions)))
-    ..addAll(extraExtensions
-        .fold([], (list, NamedExtension exten) => list..addAll(exten.actions)));
+    ..addAll(open.fold(
+        [], (List<Action> list, HourAction hour) => list..addAll(hour.actions)))
+    ..addAll(extraExtensions.fold(
+        [],
+        (List<Action> list, NamedExtension exten) =>
+            list..addAll(exten.actions)));
 
   List<Action> defaultActions = [];
 

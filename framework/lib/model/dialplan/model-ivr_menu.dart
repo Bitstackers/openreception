@@ -14,7 +14,7 @@
 part of openreception.framework.model.dialplan;
 
 List<FormatException> validateIvrMenu(IvrMenu menu) {
-  List errors = [];
+  List<FormatException> errors = [];
 
   if (menu.name.isEmpty) {
     errors.add(new FormatException('Menu name should not be empty'));
@@ -34,9 +34,9 @@ List<FormatException> validateIvrMenu(IvrMenu menu) {
     }
   });
 
-  errors.addAll(menu.submenus
-      .map(validateIvrMenu)
-      .fold([], (list, e) => list..addAll(e)));
+  errors.addAll(menu.submenus.map(validateIvrMenu).fold(
+      new List<FormatException>(),
+      (List<FormatException> list, e) => list..addAll(e)));
 
   return errors;
 }
@@ -70,7 +70,8 @@ class IvrMenu {
   /**
    * Extracts the contained [Action] objects from the menu.
    */
-  Iterable<Action> get allActions => entries.fold([], (list, entry) {
+  Iterable<Action> get allActions =>
+      entries.fold(new List<Action>(), (List<Action> list, entry) {
         if (entry is IvrTransfer) {
           list.add(entry.transfer);
         } else if (entry is IvrVoicemail) {
