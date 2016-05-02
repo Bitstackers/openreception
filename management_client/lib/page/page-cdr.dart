@@ -424,18 +424,29 @@ class Cdr {
           new TableCellElement()
             ..text = c.entry.uuid
             ..title = c.entry.filename
-            ..style.cursor = 'pointer'
-            ..style.textDecoration = 'underline'
+            ..style.cursor = c.entry.answerEpoch > 0 &&
+                actorMap[c.entry.state] == 'agent' ? 'pointer' : ''
+            ..style.textDecoration = c.entry.answerEpoch > 0 &&
+                actorMap[c.entry.state] == 'agent' ? 'underline' : ''
             ..onMouseOver.listen((MouseEvent event) {
-              (event.target as Element).style.color = 'blue';
+              if (c.entry.answerEpoch > 0 &&
+                  actorMap[c.entry.state] == 'agent') {
+                (event.target as Element).style.color = 'blue';
+              }
             })
             ..onMouseOut.listen((MouseEvent event) {
-              (event.target as Element).style.color = '';
+              if (c.entry.answerEpoch > 0 &&
+                  actorMap[c.entry.state] == 'agent') {
+                (event.target as Element).style.color = '';
+              }
             })
             ..onClick.listen((_) {
-              window.open(
-                  'https://drive.google.com/drive/search?q=${c.entry.uuid}',
-                  '');
+              if (c.entry.answerEpoch > 0 &&
+                  actorMap[c.entry.state] == 'agent') {
+                window.open(
+                    'https://drive.google.com/drive/search?q=${c.entry.uuid}',
+                    '');
+              }
             })
         ]);
     }
