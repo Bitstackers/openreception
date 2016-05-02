@@ -42,10 +42,10 @@ class ReceptionDialplan {
 
   static ReceptionDialplan decode(Map map) => new ReceptionDialplan()
     ..extension = map['extension']
-    ..open = map['open'].map(HourAction.parse).toList()
+    ..open = new List.from(map['open'].map(HourAction.parse))
     ..extraExtensions =
-        map['extraExtensions'].map(NamedExtension.decode).toList()
-    ..defaultActions = map['closed'].map(Action.parse).toList()
+        new List.from(map['extraExtensions'].map(NamedExtension.decode))
+    ..defaultActions = new List.from(map['closed'].map(Action.parse))
     ..note = map['note']
     ..active = map['active'];
 

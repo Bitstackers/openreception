@@ -55,8 +55,8 @@ class MessageQueueEntry {
         _handledRecipients = (map[Key.handledRecipients] as Iterable)
             .map(MessageEndpoint.decode)
             .toSet(),
-        _unhandledRecipients =
-            map[Key.unhandledRecipients].map(MessageEndpoint.decode).toSet(),
+        _unhandledRecipients = new Set.from(
+            map[Key.unhandledRecipients].map(MessageEndpoint.decode)),
         tries = map[Key.tries];
 
   /**

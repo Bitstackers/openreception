@@ -70,19 +70,24 @@ class IvrMenu {
   /**
    * Extracts the contained [Action] objects from the menu.
    */
-  Iterable<Action> get allActions =>
-      entries.fold(new List<Action>(), (List<Action> list, entry) {
-        if (entry is IvrTransfer) {
-          list.add(entry.transfer);
-        } else if (entry is IvrVoicemail) {
-          list.add(entry.voicemail);
-        } else if (entry is IvrReceptionTransfer) {
-          list.add(entry.transfer);
-        } else if (entry is IvrSubmenu || entry is IvrTopmenu) {} else
-          throw new StateError('Unknown type in entries: ${entry.runtimeType}');
+  Iterable<Action> get allActions {
+    final actions = new List<Action>();
 
-        return list;
-      });
+    entries.fold(actions, (List<Action> list, entry) {
+      if (entry is IvrTransfer) {
+        list.add(entry.transfer);
+      } else if (entry is IvrVoicemail) {
+        list.add(entry.voicemail);
+      } else if (entry is IvrReceptionTransfer) {
+        list.add(entry.transfer);
+      } else if (entry is IvrSubmenu || entry is IvrTopmenu) {} else
+        throw new StateError('Unknown type in entries: ${entry.runtimeType}');
+
+      return list;
+    });
+
+    return actions;
+  }
 
   /**
    * Decoding factory method.
@@ -91,8 +96,8 @@ class IvrMenu {
       map[Key.name],
       Playback.parse(map[Key
           .greeting])).._greetingShort = Playback.parse(map[Key.greetingShort]))
-    ..entries = map[Key.ivrEntries].map(IvrEntry.parse).toList()
-    ..submenus = map[Key.submenus].map(IvrMenu.decode).toList();
+    ..entries = new List.from(map[Key.ivrEntries].map(IvrEntry.parse))
+    ..submenus = new List.from(map[Key.submenus].map(IvrMenu.decode));
 
   /**
    * An IVR menu equals another IVR menu if their names match.

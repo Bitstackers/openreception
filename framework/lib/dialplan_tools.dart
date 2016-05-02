@@ -240,8 +240,8 @@ Iterable<String> _namedExtensionToDialPlan(
       ..addAll(extension.actions
           .map((action) => _actionToXmlDialplan(action, option, env, reception))
           .fold(
-              [],
-              (List combined, current) =>
+              new List<String>(),
+              (List<String> combined, current) =>
                   combined..addAll(current.map(_indent).map(_indent))))
       ..add('    <action application="hangup"/>')
       ..add('  </condition>')
@@ -254,7 +254,8 @@ Iterable<String> _extraExtensionsToDialplan(
     extensions
         .map((ne) =>
             _namedExtensionToDialPlan(ne, option, new Environment(), reception))
-        .fold([], (List combined, current) => combined..addAll(current));
+        .fold(new List<String>(),
+            (List<String> combined, current) => combined..addAll(current));
 
 /**
  *
