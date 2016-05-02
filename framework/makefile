@@ -5,7 +5,7 @@ upgrade-packages:
 	@pub upgrade
 
 tests: pubspec.lock
-	@dart test/tests.dart
+	@dart test/tests.dart > results.xml
 
 tests-text-output:
 	@dart test/tests.dart text-output
