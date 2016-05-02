@@ -282,9 +282,11 @@ class Cdr {
           if (entry.externalTransferEpoch > 0) {
             d = new Duration(
                 seconds: entry.externalTransferEpoch - entry.agentBeginEpoch);
-          } else {
+          } else if (entry.agentEndEpoch > 0) {
             d = new Duration(
                 seconds: entry.agentEndEpoch - entry.agentBeginEpoch);
+          } else {
+            d = new Duration(seconds: entry.endEpoch - entry.agentBeginEpoch);
           }
           break;
         case model.CdrEntryState.outboundByAgent:
@@ -422,6 +424,19 @@ class Cdr {
           new TableCellElement()
             ..text = c.entry.uuid
             ..title = c.entry.filename
+            ..style.cursor = 'pointer'
+            ..style.textDecoration = 'underline'
+            ..onMouseOver.listen((MouseEvent event) {
+              (event.target as Element).style.color = 'blue';
+            })
+            ..onMouseOut.listen((MouseEvent event) {
+              (event.target as Element).style.color = '';
+            })
+            ..onClick.listen((_) {
+              window.open(
+                  'https://drive.google.com/drive/search?q=${c.entry.uuid}',
+                  '');
+            })
         ]);
     }
 
