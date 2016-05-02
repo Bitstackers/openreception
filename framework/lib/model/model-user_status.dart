@@ -30,7 +30,7 @@ class UserStatus {
   bool paused = true;
   int userId = User.noId;
 
-  Map toJson() => {Key.oid: userId, Key.paused: paused};
+  Map toJson() => {Key.uid: userId, Key.paused: paused};
 
   UserStatus();
 
