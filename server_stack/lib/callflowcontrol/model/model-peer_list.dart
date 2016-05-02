@@ -47,21 +47,21 @@ class PeerList {
     ORModel.Peer peer = get(peerName);
 
     peer.registered = true;
-    Notification.broadcastEvent(new OREvent.PeerState(peer));
+    notification.broadcastEvent(new OREvent.PeerState(peer));
   }
 
   unregisterPeer(String peerName) {
     ORModel.Peer peer = get(peerName);
 
     peer.registered = false;
-    Notification.broadcastEvent(new OREvent.PeerState(peer));
+    notification.broadcastEvent(new OREvent.PeerState(peer));
   }
 
   void handlePacket(ESL.Event event) {
     switch (event.eventName) {
-      case (PBXEvent.CUSTOM):
+      case (PBXEvent.custom):
         switch (event.eventSubclass) {
-          case (PBXEvent.SOFIA_REGISTER):
+          case (PBXEvent.sofiaRegister):
             final String peerName = event.field('username');
 
             if (this.contains(peerName)) {
@@ -73,7 +73,7 @@ class PeerList {
 
             break;
 
-          case (PBXEvent.SOFIA_UNREGISTER):
+          case (PBXEvent.sofiaUnregister):
             final String peerName = event.field('username');
 
             if (this.contains(peerName)) {

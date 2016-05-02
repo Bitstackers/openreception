@@ -22,16 +22,16 @@ final Uri tokenEndpoint =
     Uri.parse("https://accounts.google.com/o/oauth2/token");
 final List<String> _scopes = ['profile', 'email'];
 
-Uri _AuthorizationUrl;
+Uri _authorizationUrl;
 
 Uri googleAuthUrl(String identifier, String secret, Uri redirectUrl) {
-  if (_AuthorizationUrl == null) {
+  if (_authorizationUrl == null) {
     oauth2.AuthorizationCodeGrant grant = new oauth2.AuthorizationCodeGrant(
         identifier, secret, authorizationEndpoint, tokenEndpoint);
-    _AuthorizationUrl = grant.getAuthorizationUrl(redirectUrl, scopes: _scopes);
+    _authorizationUrl = grant.getAuthorizationUrl(redirectUrl, scopes: _scopes);
   }
 
-  return _AuthorizationUrl;
+  return _authorizationUrl;
 }
 
-String Sha256Token(String token) => sha256.convert(token.codeUnits).toString();
+String sha256Token(String token) => sha256.convert(token.codeUnits).toString();

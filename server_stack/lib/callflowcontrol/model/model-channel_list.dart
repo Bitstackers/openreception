@@ -46,7 +46,8 @@ String channelUUIDOfPeer(ESL.Channel channel, String peerName) {
 
   if (channelOwnedByPeer(channelName) == peerName) {
     return channel.fields['Channel-UUID'];
-  } else if (otherChannelName != null) if (channelOwnedByPeer(otherChannelName) == peerName) {
+  } else if (otherChannelName !=
+      null) if (channelOwnedByPeer(otherChannelName) == peerName) {
     return channel.fields['Other-Leg-Channel-UUID'];
   }
 
@@ -56,46 +57,47 @@ String channelUUIDOfPeer(ESL.Channel channel, String peerName) {
 /**
  * Strips the sip: and domain part from a sip contact string.
  */
-String simplePeerName(String peerName) => peerName.split('@')[0].replaceAll('sip:', '');
+String simplePeerName(String peerName) =>
+    peerName.split('@')[0].replaceAll('sip:', '');
 
 /**
  * Channel event name string constants.
  */
 abstract class ChannelEventName {
-  static const String CREATE = 'chan_create';
-  static const String UPDATE = 'chan_update';
-  static const String DESTROY = 'chan_destroy';
+  static const String create = 'chan_create';
+  static const String update = 'chan_update';
+  static const String destroy = 'chan_destroy';
 }
 
 /**
  * Event name constants
  */
 abstract class PBXEvent {
-  static const String CUSTOM = 'CUSTOM';
-  static const String CHANNEL_ANSWER = 'CHANNEL_ANSWER';
-  static const String CHANNEL_BRIDGE = 'CHANNEL_BRIDGE';
-  static const String CHANNEL_STATE = 'CHANNEL_STATE';
-  static const String CHANNEL_CREATE = 'CHANNEL_CREATE';
-  static const String CHANNEL_DESTROY = 'CHANNEL_DESTROY';
-  static const String CHANNEL_ORIGINATE = 'CHANNEL_ORIGINATE';
-  static const String RECORD_START = 'RECORD_START';
-  static const String RECORD_STOP = 'RECORD_STOP';
+  static const String custom = 'CUSTOM';
+  static const String channelAnswer = 'CHANNEL_ANSWER';
+  static const String channelBridge = 'CHANNEL_BRIDGE';
+  static const String channelState = 'CHANNEL_STATE';
+  static const String channelCreate = 'CHANNEL_CREATE';
+  static const String channelDestroy = 'CHANNEL_DESTROY';
+  static const String channelOriginate = 'CHANNEL_ORIGINATE';
+  static const String recordStart = 'RECORD_START';
+  static const String recordStop = 'RECORD_STOP';
 
-  static const String SOFIA_REGISTER = 'sofia::register';
-  static const String SOFIA_UNREGISTER = 'sofia::unregister';
+  static const String sofiaRegister = 'sofia::register';
+  static const String sofiaUnregister = 'sofia::unregister';
 
   static const List<String> requiredSubscriptions = const [
-    CHANNEL_BRIDGE,
-    CHANNEL_CREATE,
-    CHANNEL_DESTROY,
-    CHANNEL_STATE,
-    CHANNEL_ORIGINATE,
-    CHANNEL_ANSWER,
-    RECORD_START,
-    RECORD_STOP,
-    CUSTOM,
-    SOFIA_REGISTER,
-    SOFIA_UNREGISTER,
+    channelBridge,
+    channelCreate,
+    channelDestroy,
+    channelState,
+    channelOriginate,
+    channelAnswer,
+    recordStart,
+    recordStop,
+    custom,
+    sofiaRegister,
+    sofiaUnregister,
     ORPbxKey.ringingStart,
     ORPbxKey.ringingStop,
     ORPbxKey.parkingLotEnter,
@@ -159,14 +161,16 @@ class ChannelList extends ESL.ChannelList {
   /**
    * Determine if a peer has any active channels.
    */
-  bool hasActiveChannels(String peerID) =>
-      this.any((ESL.Channel channel) => simplePeerName(ownedByPeer(channel)) == peerID);
+  bool hasActiveChannels(String peerID) => this.any(
+      (ESL.Channel channel) => simplePeerName(ownedByPeer(channel)) == peerID);
 
   /**
    * Determine the number of active channels a peer has.
    */
-  int activeChannelCount(String peerID) =>
-      this.where((ESL.Channel channel) => simplePeerName(ownedByPeer(channel)) == peerID).length;
+  int activeChannelCount(String peerID) => this
+      .where((ESL.Channel channel) =>
+          simplePeerName(ownedByPeer(channel)) == peerID)
+      .length;
 
   /**
    * Updates, removes or adds a channel, based on the state of [channel].
@@ -190,11 +194,11 @@ class ChannelList extends ESL.ChannelList {
 
     /// If the UUID has been removed, send remove notification.
     if (!this.contains(channel)) {
-      _eventController.add(new ChannelEvent(ChannelEventName.DESTROY, channel));
+      _eventController.add(new ChannelEvent(ChannelEventName.destroy, channel));
     } else if (newChannel) {
-      _eventController.add(new ChannelEvent(ChannelEventName.CREATE, channel));
+      _eventController.add(new ChannelEvent(ChannelEventName.create, channel));
     } else {
-      _eventController.add(new ChannelEvent(ChannelEventName.UPDATE, channel));
+      _eventController.add(new ChannelEvent(ChannelEventName.update, channel));
     }
 
     ///FIXME Disabled channel notifications for now. Should probably go into a
@@ -208,11 +212,11 @@ class ChannelList extends ESL.ChannelList {
   void handleEvent(ESL.Event packet) {
     void dispatch() {
       switch (packet.eventName) {
-        case (PBXEvent.CHANNEL_BRIDGE):
-        case (PBXEvent.CHANNEL_STATE):
-        case (PBXEvent.CHANNEL_ANSWER):
-        case (PBXEvent.CHANNEL_CREATE):
-        case (PBXEvent.CHANNEL_DESTROY):
+        case (PBXEvent.channelBridge):
+        case (PBXEvent.channelState):
+        case (PBXEvent.channelAnswer):
+        case (PBXEvent.channelCreate):
+        case (PBXEvent.channelDestroy):
           this.update(new ESL.Channel.fromPacket(packet));
           break;
       }

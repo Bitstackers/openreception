@@ -56,7 +56,7 @@ const Map<String, String> corsHeaders = const {
 
 Service.Authentication authService = null;
 Service.RESTUserStore _userService;
-Service.NotificationService Notification = null;
+Service.NotificationService notification = null;
 
 shelf.Middleware checkAuthentication =
     shelf.createMiddleware(requestHandler: _lookupToken, responseHandler: null);
@@ -98,10 +98,10 @@ Future<io.HttpServer> start(
 
   log.info('Starting client notifier');
 
-  Notification = new Service.NotificationService(notificationUri,
+  notification = new Service.NotificationService(notificationUri,
       config.callFlowControl.serverToken, new Service_IO.Client());
 
-  _notififer = new Controller.ClientNotifier(Notification)
+  _notififer = new Controller.ClientNotifier(notification)
     ..listenForCallEvents(Model.CallList.instance);
 
   _userService = new Service.RESTUserStore(config.userServer.externalUri,

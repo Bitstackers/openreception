@@ -28,27 +28,26 @@ import 'package:openreception.server/response_utils.dart';
 class Config {
   final Logger _log = new Logger('controller.config');
 
-  model.ClientConfiguration client_config =
-      new model.ClientConfiguration.empty()
-        ..authServerUri = config.configserver.authServerUri
-        ..calendarServerUri = config.configserver.calendarServerUri
-        ..callFlowServerUri = config.configserver.callFlowControlUri
-        ..cdrServerUri = config.configserver.cdrServerUri
-        ..contactServerUri = config.configserver.contactServerUri
-        ..dialplanServerUri = config.configserver.dialplanServerUri
-        ..hideInboundCallerId = config.hideInboundCallerId
-        ..messageServerUri = config.configserver.messageServerUri
-        ..myIdentifiers = config.myIdentifiers
-        ..notificationServerUri = config.configserver.notificationServerUri
-        ..notificationSocketUri = config.configserver.notificationSocketUri
-        ..receptionServerUri = config.configserver.receptionServerUri
-        ..systemLanguage = config.systemLanguage
-        ..userServerUri = config.configserver.userServerUri;
+  model.ClientConfiguration clientConfig = new model.ClientConfiguration.empty()
+    ..authServerUri = config.configserver.authServerUri
+    ..calendarServerUri = config.configserver.calendarServerUri
+    ..callFlowServerUri = config.configserver.callFlowControlUri
+    ..cdrServerUri = config.configserver.cdrServerUri
+    ..contactServerUri = config.configserver.contactServerUri
+    ..dialplanServerUri = config.configserver.dialplanServerUri
+    ..hideInboundCallerId = config.hideInboundCallerId
+    ..messageServerUri = config.configserver.messageServerUri
+    ..myIdentifiers = config.myIdentifiers
+    ..notificationServerUri = config.configserver.notificationServerUri
+    ..notificationSocketUri = config.configserver.notificationSocketUri
+    ..receptionServerUri = config.configserver.receptionServerUri
+    ..systemLanguage = config.systemLanguage
+    ..userServerUri = config.configserver.userServerUri;
 
   /**
    *
    */
-  shelf.Response get(shelf.Request request) => okJson(client_config);
+  shelf.Response get(shelf.Request request) => okJson(clientConfig);
 
   /**
    *
@@ -74,37 +73,37 @@ class Config {
 
     switch (type) {
       case key.authentication:
-        client_config.authServerUri = uri;
+        clientConfig.authServerUri = uri;
         break;
       case key.calendar:
-        client_config.calendarServerUri = uri;
+        clientConfig.calendarServerUri = uri;
         break;
       case key.callflow:
-        client_config.callFlowServerUri = uri;
+        clientConfig.callFlowServerUri = uri;
         break;
       case key.cdr:
-        client_config.cdrServerUri = uri;
+        clientConfig.cdrServerUri = uri;
         break;
       case key.contact:
-        client_config.contactServerUri = uri;
+        clientConfig.contactServerUri = uri;
         break;
       case key.dialplan:
-        client_config.dialplanServerUri = uri;
+        clientConfig.dialplanServerUri = uri;
         break;
       case key.message:
-        client_config.messageServerUri = uri;
+        clientConfig.messageServerUri = uri;
         break;
       case key.notification:
-        client_config.notificationServerUri = uri;
+        clientConfig.notificationServerUri = uri;
         break;
       case key.notificationSocket:
-        client_config.notificationSocketUri = uri;
+        clientConfig.notificationSocketUri = uri;
         break;
       case key.reception:
-        client_config.receptionServerUri = uri;
+        clientConfig.receptionServerUri = uri;
         break;
       case key.user:
-        client_config.userServerUri = uri;
+        clientConfig.userServerUri = uri;
         break;
       default:
         _log.warning('Uknown type of registration: $type');

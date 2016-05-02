@@ -75,9 +75,9 @@ abstract class PBX {
   static Future<String> originate(
       String extension, int contactID, int receptionID, ORModel.User user) {
     /// Tag the A-leg as a primitive origination channel.
-    List<String> a_legvariables = ['${ORPbxKey.agentChannel}=true'];
+    List<String> aLegvariables = ['${ORPbxKey.agentChannel}=true'];
 
-    List<String> b_legvariables = [
+    List<String> bLegvariables = [
       '${ORPbxKey.receptionId}=${receptionID}',
       '${ORPbxKey.userId}=${user.id}',
       '${ORPbxKey.contactId}=${contactID}'
@@ -87,8 +87,8 @@ abstract class PBX {
     final String callerIdNumber = config.callFlowControl.callerIdNumber;
     final int timeout = config.callFlowControl.originateTimeout;
 
-    return api('originate {${a_legvariables.join(',')}}user/${user.peer} '
-            '&bridge([${b_legvariables.join(',')}]sofia/external/${extension}) '
+    return api('originate {${aLegvariables.join(',')}}user/${user.peer} '
+            '&bridge([${bLegvariables.join(',')}]sofia/external/${extension}) '
             '${_dialplan} $callerIdName $callerIdNumber $timeout')
         .then((ESL.Response response) {
       if (response.status != ESL.Response.OK) {
@@ -113,10 +113,10 @@ abstract class PBX {
   static Future<String> createAgentChannel(ORModel.User user,
       {Map<String, String> extravars: const {}}) {
     final int msecs = new DateTime.now().millisecondsSinceEpoch;
-    final String new_call_uuid = 'agent-${user.id}-${msecs}';
+    final String newCallUuid = 'agent-${user.id}-${msecs}';
     final String destination = 'user/${user.peer}';
 
-    _log.finest('New uuid: $new_call_uuid');
+    _log.finest('New uuid: $newCallUuid');
     _log.finest('Dialing receptionist at user/${user.peer}');
 
     final String callerIdNumber = config.callFlowControl.callerIdNumber;
@@ -126,7 +126,7 @@ abstract class PBX {
       ORPbxKey.agentChannel: true,
       'park_timeout': config.callFlowControl.agentChantimeOut,
       'hangup_after_bridge': true,
-      'origination_uuid': new_call_uuid,
+      'origination_uuid': newCallUuid,
       'originate_timeout': config.callFlowControl.agentChantimeOut,
       'origination_caller_id_name': 'Connecting...',
       'origination_caller_id_number': callerIdNumber
@@ -140,7 +140,7 @@ abstract class PBX {
       var error;
 
       if (response.status == ESL.Response.OK) {
-        return new_call_uuid;
+        return newCallUuid;
       } else if (response.rawBody.contains('CALL_REJECTED')) {
         error = new CallRejected('destination: $destination');
       } else if (response.rawBody.contains('NO_ANSWER')) {
@@ -166,10 +166,10 @@ abstract class PBX {
    */
   static Future<String> createAgentChannelBg(ORModel.User user) async {
     final int msecs = new DateTime.now().millisecondsSinceEpoch;
-    final String new_call_uuid = 'agent-${user.id}-${msecs}';
+    final String newCallUuid = 'agent-${user.id}-${msecs}';
     final String destination = 'user/${user.peer}';
 
-    _log.finest('New uuid: $new_call_uuid');
+    _log.finest('New uuid: $newCallUuid');
     _log.finest('Dialing receptionist at user/${user.peer}');
 
     final String callerIdNumber = config.callFlowControl.callerIdNumber;
@@ -179,7 +179,7 @@ abstract class PBX {
       ORPbxKey.agentChannel: true,
       'park_timeout': config.callFlowControl.agentChantimeOut,
       'hangup_after_bridge': true,
-      'origination_uuid': new_call_uuid,
+      'origination_uuid': newCallUuid,
       'originate_timeout': config.callFlowControl.agentChantimeOut,
       'origination_caller_id_name': 'Connecting...',
       'origination_caller_id_number': callerIdNumber
@@ -200,13 +200,13 @@ abstract class PBX {
     /// Create a subscription that looks for the outbound channel.
     bool outboundCallWithUuid(ESL.Event event) =>
         event.eventName == 'CHANNEL_ORIGINATE' &&
-        event.channel.fields['Unique-ID'] == new_call_uuid;
+        event.channel.fields['Unique-ID'] == newCallUuid;
 
     await eventClient.eventStream
         .firstWhere(outboundCallWithUuid, defaultValue: () => null);
 
     bool inviteClosed(ESL.Event event) =>
-        event.channel.fields['Unique-ID'] == new_call_uuid &&
+        event.channel.fields['Unique-ID'] == newCallUuid &&
         (event.eventName == 'CHANNEL_ANSWER' ||
             event.eventName == 'CHANNEL_HANGUP');
 
@@ -225,7 +225,7 @@ abstract class PBX {
     if (event.eventName == 'CHANNEL_HANGUP') {
       throw new CallRejected('destination: $destination');
     } else if (event.eventName == 'CHANNEL_ANSWER') {
-      return new_call_uuid;
+      return newCallUuid;
     } else {
       throw new PBXException('Creation of agent channel for '
           'uid:${user.id} failed. Destination:$destination. '

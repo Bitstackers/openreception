@@ -17,17 +17,16 @@ part of openreception.call_flow_control_server.model;
  * Holds a list of currently active recordings based on events from FreeSWITCH.
  */
 class ActiveRecordings extends IterableBase<ORModel.ActiveRecording> {
-
   /// Singleton instance.
   static final instance = new ActiveRecordings();
 
   ///Internal logger.
-  Logger _log = new Logger ('$libraryName.ActiveRecordings');
+  Logger _log = new Logger('$libraryName.ActiveRecordings');
 
   /**
    * Active recordings are, internally, stored as maps to enable easy lookup.
    */
-  Map<String,ORModel.ActiveRecording> _recordings = {};
+  Map<String, ORModel.ActiveRecording> _recordings = {};
 
   /// Interator simply forwards the values of the map in no particular order.
   Iterator<ORModel.ActiveRecording> get iterator => _recordings.values.iterator;
@@ -35,8 +34,7 @@ class ActiveRecordings extends IterableBase<ORModel.ActiveRecording> {
   /**
    * Retrive a specific recording identified by its channel [uuid].
    */
-  ORModel.ActiveRecording get(String uuid) =>
-      _recordings.containsKey(uuid)
+  ORModel.ActiveRecording get(String uuid) => _recordings.containsKey(uuid)
       ? _recordings[uuid]
       : throw new ORStorage.NotFound('No active recordings on uuid');
 
@@ -46,7 +44,7 @@ class ActiveRecordings extends IterableBase<ORModel.ActiveRecording> {
   void handleEvent(ESL.Event packet) {
     void dispatch() {
       switch (packet.eventName) {
-        case (PBXEvent.RECORD_START):
+        case (PBXEvent.recordStart):
           final String uuid = packet.field('Unique-ID');
           final String path = packet.field('Record-File-Path');
 
@@ -55,7 +53,7 @@ class ActiveRecordings extends IterableBase<ORModel.ActiveRecording> {
 
           break;
 
-        case (PBXEvent.RECORD_STOP):
+        case (PBXEvent.recordStop):
           final String uuid = packet.field('Unique-ID');
           final String path = packet.field('Record-File-Path');
 
@@ -77,6 +75,5 @@ class ActiveRecordings extends IterableBase<ORModel.ActiveRecording> {
   /**
    * JSON serialization function.
    */
-  List toJson() => this.toList(growable : false);
-
+  List toJson() => this.toList(growable: false);
 }

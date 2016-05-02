@@ -31,7 +31,7 @@ import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.framework/service-io.dart' as transport;
 
 final Map<int, String> _userNameCache = {};
-final DateFormat RFC3339 = new DateFormat('yyyy-MM-dd');
+final DateFormat rfc3339 = new DateFormat('yyyy-MM-dd');
 
 class CallSummary {
   int totalCalls = 0;
@@ -242,7 +242,7 @@ Future main(List<String> args) async {
 
       if (_eventHistory[e.call.id].isDone) {
         CallHistory ch = _eventHistory.remove(e.call.id);
-        String dirPath = '${RFC3339.format(ch.firstEventTime)}';
+        String dirPath = '${rfc3339.format(ch.firstEventTime)}';
 
         if (!new Directory(dirPath).existsSync()) {
           new Directory(dirPath).createSync();
@@ -287,7 +287,7 @@ Future main(List<String> args) async {
   }
 
   String jsonCache = '';
-  String keyOf(DateTime dt) => RFC3339.format(dt);
+  String keyOf(DateTime dt) => rfc3339.format(dt);
 
   Map<String, CallHistory> dateSorted = {};
 

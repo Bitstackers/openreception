@@ -317,7 +317,7 @@ class CallList extends IterableBase<ORModel.Call> {
   void _handleEvent(ESL.Event event) {
     void dispatch() {
       switch (event.eventName) {
-        case (PBXEvent.CHANNEL_BRIDGE):
+        case (PBXEvent.channelBridge):
           this._handleBridge(event);
           break;
 
@@ -330,11 +330,11 @@ class CallList extends IterableBase<ORModel.Call> {
 //          this._createCall(event);
 //          break;
 
-        case (PBXEvent.CHANNEL_DESTROY):
+        case (PBXEvent.channelDestroy):
           this._handleChannelDestroy(event);
           break;
 
-        case (PBXEvent.CUSTOM):
+        case (PBXEvent.custom):
           this._handleCustom(event);
           break;
       }

@@ -17,18 +17,18 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:math';
 
-const bool CHECKED = false;
-const bool USE_OBSERVATORY = false;
+const bool checked = false;
+const bool useObservatory = false;
 
 Random rand = new Random();
-const int MAX_RANDOM_INT = (1 << 32) - 1;
+const int maxRandomInt = (1 << 32) - 1;
 
 void main(List<String> arguments) {
-  String ServerTokenDir = '/tmp/tokens${rand.nextInt(MAX_RANDOM_INT)}';
+  String serverTokenDir = '/tmp/tokens${rand.nextInt(maxRandomInt)}';
   String fileStoreDir = '/tmp/z5svC3';
 
   if (arguments.length > 0) {
-    ServerTokenDir = arguments[0];
+    serverTokenDir = arguments[0];
   }
   if (arguments.length > 1) {
     fileStoreDir = arguments[1];
@@ -36,11 +36,11 @@ void main(List<String> arguments) {
   //Directory tmpStore = new Directory('/tmp').createTempSync();
   Directory tmpStore = new Directory(fileStoreDir);
 
-  Directory dir = new Directory(ServerTokenDir);
+  Directory dir = new Directory(serverTokenDir);
   dir.createSync();
   String serverTokenDirAbsolutPath = dir.absolute.path;
 
-  Map<String, Map> Servers = {
+  Map<String, Map> servers = {
     'AuthServer': {
       'path': 'bin/authserver.dart',
       'args': [
@@ -90,7 +90,7 @@ void main(List<String> arguments) {
   };
 
   ProcessSignal.SIGINT.watch().listen((_) {
-    Servers.forEach((String serverName, Map server) {
+    servers.forEach((String serverName, Map server) {
       print('Sending SIGINT to instance of ${serverName}');
       (server['process'] as Process).kill(ProcessSignal.SIGINT);
     });
@@ -98,7 +98,7 @@ void main(List<String> arguments) {
   });
 
   ProcessSignal.SIGTERM.watch().listen((_) {
-    Servers.forEach((String serverName, Map server) {
+    servers.forEach((String serverName, Map server) {
       print('Sending SIGTERM to instance of ${serverName}');
       (server['process'] as Process).kill(ProcessSignal.SIGTERM);
     });
@@ -107,11 +107,11 @@ void main(List<String> arguments) {
 
   int opservatoryCount = 8182;
 
-  Servers.forEach((String serverName, Map server) {
+  servers.forEach((String serverName, Map server) {
     print('Starting ${serverName}..');
 
-    List<String> args = CHECKED ? ['--checked'] : [];
-    if (USE_OBSERVATORY) {
+    List<String> args = checked ? ['--checked'] : [];
+    if (useObservatory) {
       args.addAll(['--enable-vm-service=${opservatoryCount++}']);
     }
 

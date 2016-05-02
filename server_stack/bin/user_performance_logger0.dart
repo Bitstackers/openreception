@@ -31,7 +31,7 @@ import 'package:openreception.framework/model.dart' as model;
 // import 'package:openreception.framework/service-io.dart' as transport;
 
 final Map<int, String> _userNameCache = {};
-final DateFormat RFC3339 = new DateFormat('yyyy-MM-dd');
+final DateFormat rfc3339 = new DateFormat('yyyy-MM-dd');
 
 class AgentPause {
   final DateTime start;

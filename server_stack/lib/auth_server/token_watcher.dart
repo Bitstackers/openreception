@@ -40,7 +40,7 @@ void _timerTick(Timer timer) {
   Iterable<String> tokens = vault.listUserTokens().toList();
   for (String token in tokens) {
     Map data = vault.getToken(token);
-    DateTime expiresAt = JsonToDateTime(data['expiresAt']);
+    DateTime expiresAt = jsonToDateTime(data['expiresAt']);
 
     int now = new DateTime.now().millisecondsSinceEpoch;
     if (now > expiresAt.millisecondsSinceEpoch) {
@@ -50,5 +50,5 @@ void _timerTick(Timer timer) {
   }
 }
 
-DateTime JsonToDateTime(String timeString) => DateTime.parse(timeString);
+DateTime jsonToDateTime(String timeString) => DateTime.parse(timeString);
 String dateTimeToJson(DateTime time) => time.toString();

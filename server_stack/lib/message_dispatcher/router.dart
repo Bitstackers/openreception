@@ -34,16 +34,16 @@ shelf.Middleware addCORSHeaders =
 const Map<String, String> textHtmlHeader = const {
   IO.HttpHeaders.CONTENT_TYPE: 'text/html'
 };
-const Map<String, String> CORSHeader = const {
+const Map<String, String> corsHeader = const {
   'Access-Control-Allow-Origin': '*'
 };
 
 shelf.Response _options(shelf.Request request) => (request.method == 'OPTIONS')
-    ? new shelf.Response.ok(null, headers: CORSHeader)
+    ? new shelf.Response.ok(null, headers: corsHeader)
     : null;
 
 shelf.Response _cors(shelf.Response response) =>
-    response.change(headers: CORSHeader);
+    response.change(headers: corsHeader);
 
 database.MessageQueue messageQueueStore;
 database.Message messageStore;

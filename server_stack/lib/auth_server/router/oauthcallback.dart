@@ -60,7 +60,7 @@ Future<shelf.Response> oauthCallback(shelf.Request request) {
           json['identity'] = userData;
 
           String cacheObject = JSON.encode(json);
-          String hash = Sha256Token(cacheObject);
+          String hash = sha256Token(cacheObject);
 
           try {
             vault.insertToken(hash, json);
@@ -99,9 +99,9 @@ Future<shelf.Response> oauthCallback(shelf.Request request) {
 /**
  * Asks google for the user data, for the user bound to the [access_token].
  */
-Future<Map> getUserInfo(String access_token) async {
+Future<Map> getUserInfo(String accessToken) async {
   Uri url = Uri.parse('https://www.googleapis.com/oauth2/'
-      'v1/userinfo?alt=json&access_token=${access_token}');
+      'v1/userinfo?alt=json&access_token=${accessToken}');
 
   final Map googleProfile =
       await new _transport.Client().get(url).then(JSON.decode);
