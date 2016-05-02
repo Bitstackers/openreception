@@ -66,11 +66,10 @@ class PeerAccount {
     bool isXmlFile(FileSystemEntity fse) =>
         fse is File && fse.path.toLowerCase().endsWith('.xml');
 
-    final List<String> listing = await new Directory(xmlFilePath)
-        .list()
+    final List<String> listing = new List.from(new Directory(xmlFilePath)
+        .listSync()
         .where(isXmlFile)
-        .map((fse) => fse.uri.pathSegments.last.split('.xml').first)
-        .toList();
+        .map((fse) => fse.uri.pathSegments.last.split('.xml').first));
 
     return okJson(listing);
   }

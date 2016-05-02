@@ -94,9 +94,8 @@ class Cdr {
       args.add(uids.join(','));
     }
 
-    return io.Process.run('dart', args).then((io.ProcessResult pr) {
-      _log.info('Executing dart ${args.join(' ')}');
-      return new shelf.Response.ok(pr.stdout);
-    });
+    final io.ProcessResult pr = await io.Process.run('dart', args);
+    _log.info('Executing dart ${args.join(' ')}');
+    return new shelf.Response.ok(pr.stdout);
   }
 }

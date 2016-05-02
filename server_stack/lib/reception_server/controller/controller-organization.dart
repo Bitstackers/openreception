@@ -34,10 +34,11 @@ class Organization {
   Future<shelf.Response> list(shelf.Request request) async =>
       okJson((await _orgStore.list()).toList(growable: false));
 
-  Future<shelf.Response> receptionMap(shelf.Request request) =>
-      _orgStore.receptionMap().then((Map map) {
-        return new shelf.Response.ok(JSON.encode(map));
-      });
+  /**
+   *
+   */
+  Future<shelf.Response> receptionMap(shelf.Request request) async =>
+      okJson(await _orgStore.receptionMap());
 
   /**
    *

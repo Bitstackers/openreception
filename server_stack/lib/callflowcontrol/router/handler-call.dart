@@ -285,8 +285,10 @@ abstract class Call {
         event.channel.fields['Other-Leg-Unique-ID'] == agentChannel;
 
     Future<ORModel.Call> outboundCall = Controller.PBX.eventClient.eventStream
-        .firstWhere(outboundCallWithUuid, defaultValue: () => null)
-        .then((ESL.Event event) => Model.CallList.instance.createCall(event));
+            .firstWhere(outboundCallWithUuid, defaultValue: () => null)
+            .then(
+                (ESL.Event event) => Model.CallList.instance.createCall(event))
+        as Future<ORModel.Call>;
 
     /// At this point, we have an active agent channel and may perform
     /// the origination through the PBX by transferring our active agent

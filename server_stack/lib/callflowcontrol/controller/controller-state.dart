@@ -19,9 +19,10 @@ class State {
   /**
    * Performs a total reload of state.
    */
-  Future<shelf.Response> reloadAll(shelf.Request request) => Future
-      .wait([PBX.loadPeers(), PBX.loadChannels()])
-      .then((_) => Model.CallList.instance
-          .reloadFromChannels(Model.ChannelList.instance))
-      .then((_) => new shelf.Response.ok('{}'));
+  Future<shelf.Response> reloadAll(shelf.Request request) async {
+    await Future.wait([PBX.loadPeers(), PBX.loadChannels()]);
+    await Model.CallList.instance
+        .reloadFromChannels(Model.ChannelList.instance);
+    return okJson(const {});
+  }
 }

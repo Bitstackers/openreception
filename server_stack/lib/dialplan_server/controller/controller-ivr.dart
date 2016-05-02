@@ -19,7 +19,8 @@ Future<List<String>> _writeVoicemailfiles(
         Logger _log,
         String confPath) async =>
     await Future.wait(
-        vms.map((vm) => _writeVoicemailfile(vm, compiler, _log, confPath)));
+        vms.map((vm) => _writeVoicemailfile(vm, compiler, _log, confPath)))
+    as Iterable<String>;
 
 Future<String> _writeVoicemailfile(
     model.Voicemail vm,

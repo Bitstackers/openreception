@@ -13,7 +13,7 @@
 
 part of openreception_servers.authentication.router;
 
-Future<shelf.Response> refresher(shelf.Request request) {
+Future<shelf.Response> refresher(shelf.Request request) async {
   final String token =
       shelf_route.getPathParameters(request).containsKey('token')
           ? shelf_route.getPathParameter(request, 'token')
@@ -32,14 +32,14 @@ Future<shelf.Response> refresher(shelf.Request request) {
       'grant_type': 'refresh_token'
     };
 
-    return httpClient.post(url, JSON.encode(body)).then((String response) =>
-        new shelf.Response.ok(
-            'BODY \n ==== \n${JSON.encode(body)} \n\n RESPONSE '
-            '\n ======== \n ${response}'));
+    final String response = await httpClient.post(url, JSON.encode(body));
+
+    return new shelf.Response.ok(
+        'BODY \n ==== \n${JSON.encode(body)} \n\n RESPONSE '
+        '\n ======== \n ${response}');
   } catch (error, stackTrace) {
     log.severe(error, stackTrace);
 
-    return new Future.value(
-        new shelf.Response.internalServerError(body: '$error'));
+    return new shelf.Response.internalServerError(body: '$error');
   }
 }

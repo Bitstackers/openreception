@@ -88,7 +88,8 @@ class AgentHistory {
   /**
    * Sums up agent statistics and returns an iterable of [AgentStatistics].
    */
-  Iterable<model.AgentStatistics> sumUpAll() => _recentCalls.keys.map(sumUp);
+  Iterable<model.AgentStatistics> sumUpAll() =>
+      _recentCalls.keys.map(sumUp) as Iterable<model.AgentStatistics>;
 
   /**
    * Sum up the statistics of a single user and return an [AgentStatistics]

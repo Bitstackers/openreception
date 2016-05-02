@@ -144,22 +144,19 @@ Future tryDispatch(Model.MessageQueueEntry queueItem) async {
   Iterable<Model.MessageEndpoint> currentRecipients =
       emailRecipients(queueItem.unhandledRecipients);
 
-  List<Address> to = currentRecipients
+  List<Address> to = new List<Address>.from(currentRecipients
       .where((mr) =>
           mr.type == Model.MessageEndpointType.emailTo ||
           mr.type == Model.MessageEndpointType.email)
-      .map((mrto) => new Address(mrto.address.trim(), mrto.name))
-      .toList(growable: false);
+      .map((mrto) => new Address(mrto.address.trim(), mrto.name)));
 
-  List<Address> cc = currentRecipients
+  List<Address> cc = new List<Address>.from(currentRecipients
       .where((mr) => mr.type == Model.MessageEndpointType.emailCc)
-      .map((mrto) => new Address(mrto.address.trim(), mrto.name))
-      .toList(growable: false);
+      .map((mrto) => new Address(mrto.address.trim(), mrto.name)));
 
-  List<Address> bcc = currentRecipients
+  List<Address> bcc = new List<Address>.from(currentRecipients
       .where((mr) => mr.type == Model.MessageEndpointType.emailBcc)
-      .map((mrto) => new Address(mrto.address.trim(), mrto.name))
-      .toList(growable: false);
+      .map((mrto) => new Address(mrto.address.trim(), mrto.name)));
 
   if (currentRecipients.isNotEmpty) {
     Model.TemplateEmail templateEmail =
@@ -193,8 +190,8 @@ Future tryDispatch(Model.MessageQueueEntry queueItem) async {
     Model.Template templateSMS = new Model.TemplateSMS(message);
     Email sms = new Email(new Address(senderAddress, senderName),
         config.messageDispatcher.smtp.hostname)
-      ..to = currentRecipients.map((mrto) => new Address(
-          mrto.address + config.messageDispatcher.smsKey.trim(), ''))
+      ..to = new List<Address>.from(currentRecipients.map((mrto) => new Address(
+          mrto.address + config.messageDispatcher.smsKey.trim(), '')))
       ..partText = templateSMS.bodyText;
 
     await new SmtpClient(options).send(sms).then((_) {

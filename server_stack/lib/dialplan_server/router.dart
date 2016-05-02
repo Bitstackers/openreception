@@ -151,7 +151,7 @@ Future<io.HttpServer> start(
   _log.fine('Accepting incoming requests on $hostname:$port:');
   _log.fine('Using server on $authUri as authentication backend');
 
-  shelf_route.printRoutes(router, printer: _log.fine);
+  shelf_route.printRoutes(router, printer: (String item) => _log.fine(item));
 
   return await shelf_io.serve(handler, hostname, port);
 }

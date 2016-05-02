@@ -44,25 +44,23 @@ abstract class PBX {
   static ESL.Connection apiClient;
   static ESL.Connection eventClient;
 
-  static Future<ESL.Response> api(String command) {
-    return apiClient
-        .api(command, timeoutSeconds: 30)
-        .then((ESL.Response response) {
-      final int maxLen = 200;
-      final truncated = response.rawBody.length > maxLen
-          ? '${response.rawBody.substring(0, maxLen)}...'
-          : response.rawBody;
+  static Future<ESL.Response> api(String command) async {
+    final ESL.Response response =
+        await apiClient.api(command, timeoutSeconds: 30);
 
-      log.finest('api $command => $truncated');
-      return response;
-    });
+    final int maxLen = 200;
+    final truncated = response.rawBody.length > maxLen
+        ? '${response.rawBody.substring(0, maxLen)}...'
+        : response.rawBody;
+
+    log.finest('api $command => $truncated');
+    return response;
   }
 
-  static Future<ESL.Reply> bgapi(String command) {
-    return apiClient.bgapi(command).then((ESL.Reply reply) {
-      log.finest('bgapi $command => ${reply.content}');
-      return reply;
-    });
+  static Future<ESL.Reply> bgapi(String command) async {
+    final ESL.Reply reply = await apiClient.bgapi(command);
+    log.finest('bgapi $command => ${reply.content}');
+    return reply;
   }
 
   /**
@@ -72,8 +70,8 @@ abstract class PBX {
    *
    * Returns the UUID of the call.
    */
-  static Future<String> originate(
-      String extension, int contactID, int receptionID, ORModel.User user) {
+  static Future<String> originate(String extension, int contactID,
+      int receptionID, ORModel.User user) async {
     /// Tag the A-leg as a primitive origination channel.
     List<String> aLegvariables = ['${ORPbxKey.agentChannel}=true'];
 
@@ -87,16 +85,16 @@ abstract class PBX {
     final String callerIdNumber = config.callFlowControl.callerIdNumber;
     final int timeout = config.callFlowControl.originateTimeout;
 
-    return api('originate {${aLegvariables.join(',')}}user/${user.peer} '
+    ESL.Response response =
+        await api('originate {${aLegvariables.join(',')}}user/${user.peer} '
             '&bridge([${bLegvariables.join(',')}]sofia/external/${extension}) '
-            '${_dialplan} $callerIdName $callerIdNumber $timeout')
-        .then((ESL.Response response) {
-      if (response.status != ESL.Response.OK) {
-        throw new StateError('ESL returned ${response.rawBody}');
-      }
+            '${_dialplan} $callerIdName $callerIdNumber $timeout');
 
-      return response.channelUUID;
-    });
+    if (response.status != ESL.Response.OK) {
+      throw new StateError('ESL returned ${response.rawBody}');
+    }
+
+    return response.channelUUID;
   }
 
   static Future _cleanupChannel(String uuid) =>
@@ -111,7 +109,7 @@ abstract class PBX {
    * Returns the UUID of the new channel.
    */
   static Future<String> createAgentChannel(ORModel.User user,
-      {Map<String, String> extravars: const {}}) {
+      {Map<String, String> extravars: const {}}) async {
     final int msecs = new DateTime.now().millisecondsSinceEpoch;
     final String newCallUuid = 'agent-${user.id}-${msecs}';
     final String destination = 'user/${user.peer}';
@@ -135,26 +133,29 @@ abstract class PBX {
     String variableString =
         variables.keys.map((String key) => '$key=${variables[key]}').join(',');
 
-    return api('originate {$variableString}${destination} &park()')
-        .then((ESL.Response response) {
-      var error;
+    ESL.Response response =
+        await api('originate {$variableString}${destination} &park()');
 
-      if (response.status == ESL.Response.OK) {
-        return newCallUuid;
-      } else if (response.rawBody.contains('CALL_REJECTED')) {
-        error = new CallRejected('destination: $destination');
+    if (response.status == ESL.Response.OK) {
+      return newCallUuid;
+    } else {
+      _log.warning('Bad reply from PBX: ${response.status}');
+
+      /// Call is rejected by peer
+      if (response.rawBody.contains('CALL_REJECTED')) {
+        throw new CallRejected('destination: $destination');
+
+        /// Call is not answered by peer.
       } else if (response.rawBody.contains('NO_ANSWER')) {
-        error = new NoAnswer('destination: $destination');
+        throw new NoAnswer('destination: $destination');
+
+        /// Call did not succeed for reasons beyond our comprehension.
       } else {
-        error = new PBXException('Creation of agent channel for '
+        throw new PBXException('Creation of agent channel for '
             'uid:${user.id} failed. Destination:$destination. '
             'PBX responded: ${response.rawBody}');
       }
-
-      _log.warning('Bad reply from PBX', error);
-
-      return new Future.error(error);
-    });
+    }
   }
 
   /**
@@ -309,10 +310,19 @@ abstract class PBX {
    * for errors and throw a [PBXException] if that is the case. The command
    * failure will be logged prior.
    */
-  static Future<ESL.Response> _runAndCheck(String command) =>
-      api(command).then((response) => response.status != ESL.Response.OK
-          ? _logAndFail('"$command" failed with response ${response.rawBody}')
-          : response);
+  static Future<ESL.Response> _runAndCheck(String command) async {
+    ESL.Response response;
+    try {
+      response = await api(command);
+    } catch (error, stackTrace) {
+      log.shout('Failed to send command $command', error, stackTrace);
+    }
+
+    if (response.status != ESL.Response.OK) {
+      _logAndFail('"$command" failed with response ${response.rawBody}');
+    }
+    return response;
+  }
 
   /**
    *
@@ -430,7 +440,8 @@ abstract class PBX {
   static Future _loadChannelListFromPacket(ESL.Response response) {
     Map responseBody = JSON.decode(response.rawBody);
     Iterable<String> channelUUIDs = responseBody.containsKey('rows')
-        ? JSON.decode(response.rawBody)['rows'].map((Map m) => m['uuid'])
+        ? new List.from(
+            JSON.decode(response.rawBody)['rows'].map((Map m) => m['uuid']))
         : [];
 
     return Future.forEach(channelUUIDs, (String channelUUID) {

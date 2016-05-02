@@ -114,7 +114,9 @@ class ReceptionDialplan {
     Iterable<model.Ivr> ivrMenus = rdp.allActions.where((a) => a is model.Ivr);
 
     generatedFiles.addAll(await _ivrController._writeIvrfiles(
-        ivrMenus.map((menuAction) => menuAction.menuName), compiler, _log));
+        ivrMenus.map((menuAction) => menuAction.menuName) as Iterable<String>,
+        compiler,
+        _log));
 
     return okJson(generatedFiles);
   }

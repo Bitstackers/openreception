@@ -64,10 +64,14 @@ abstract class Notification {
     int success = 0;
     int failure = 0;
 
-    List<WebSocketChannel> recipientSockets = clientRegistry.values.fold(
-        new List<WebSocketChannel>(),
-        (combined, websockets) => combined..addAll(websockets));
+    final List<WebSocketChannel> recipientSockets = [];
 
+    clientRegistry.values.fold(
+        recipientSockets,
+        (List<WebSocketChannel> combined, websockets) =>
+            combined..addAll(websockets));
+
+    /// Prevent clients from being notified in the same order always.
     recipientSockets.shuffle();
 
     recipientSockets.forEach(((WebSocketChannel ws) {
@@ -175,8 +179,9 @@ abstract class Notification {
     }
     message = json['message'];
 
-    List<WebSocketChannel> channels =
-        (json['recipients'] as Iterable).fold([], (list, int uid) {
+    List<WebSocketChannel> channels = [];
+
+    (json['recipients'] as Iterable).fold(channels, (list, int uid) {
       if (clientRegistry[uid] != null) {
         list.addAll(clientRegistry[uid]);
       }
@@ -201,7 +206,8 @@ abstract class Notification {
     Iterable<Model.ClientConnection> connections =
         clientRegistry.keys.map((int uid) => new Model.ClientConnection.empty()
           ..userID = uid
-          ..connectionCount = clientRegistry[uid].length);
+          ..connectionCount = clientRegistry[uid].length)
+        as Iterable<Model.ClientConnection>;
 
     return okJson(connections.toList(growable: false));
   }
