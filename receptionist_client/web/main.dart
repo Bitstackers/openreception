@@ -48,7 +48,7 @@ main() async {
   if (_appUri.queryParameters.containsKey('config_server')) {
     configUri = Uri.parse(_appUri.queryParameters['config_server']);
   } else {
-    configUri = configurationUrl;
+    configUri = defaultConfigUri;
   }
 
   /// Hang here until the client configuration has been loaded from the server.
