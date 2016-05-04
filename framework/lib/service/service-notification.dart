@@ -33,18 +33,19 @@ class NotificationService {
   static bool _busy = false;
   static Logger log = new Logger(className);
 
-  WebService _backend = null;
-  Uri _host;
-  String _token = '';
+  final WebService _httpClient;
+  final Uri host;
+  final String _clientToken;
 
-  NotificationService(Uri this._host, String this._token, this._backend);
+  NotificationService(
+      Uri this.host, String this._clientToken, this._httpClient);
 
   /**
    * Performs a broadcast via the notification server.
    */
   Future broadcastEvent(Event.Event event) {
-    Uri uri = Resource.Notification.broadcast(_host);
-    uri = _appendToken(uri, _token);
+    Uri uri = Resource.Notification.broadcast(host);
+    uri = _appendToken(uri, _clientToken);
 
     log.finest('Broadcasting ${event.runtimeType}');
 
@@ -57,12 +58,12 @@ class NotificationService {
    * Retrieves the [ClientConnection]'s currently active on the server.
    */
   Future<Iterable<Model.ClientConnection>> clientConnections() async {
-    Uri uri = Resource.Notification.clientConnections(_host);
-    uri = _appendToken(uri, _token);
+    Uri uri = Resource.Notification.clientConnections(host);
+    uri = _appendToken(uri, _clientToken);
 
     log.finest('GET $uri');
 
-    return await _backend.get(uri).then(JSON.decode).then(
+    return await _httpClient.get(uri).then(JSON.decode).then(
         (Iterable<Map> maps) =>
             maps.map((Map map) => new Model.ClientConnection.fromMap(map)));
   }
@@ -71,12 +72,12 @@ class NotificationService {
    * Retrieves the [ClientConnection] currently associated with [uid].
    */
   Future<Model.ClientConnection> clientConnection(int uid) {
-    Uri uri = Resource.Notification.clientConnection(_host, uid);
-    uri = _appendToken(uri, _token);
+    Uri uri = Resource.Notification.clientConnection(host, uid);
+    uri = _appendToken(uri, _clientToken);
 
     log.finest('GET $uri');
 
-    return _backend
+    return _httpClient
         .get(uri)
         .then(JSON.decode)
         .then((Map map) => new Model.ClientConnection.fromMap(map));
@@ -86,15 +87,15 @@ class NotificationService {
    * Sends an event via the notification server to [recipients]
    */
   Future send(Iterable<int> recipients, Event.Event event) {
-    Uri uri = Resource.Notification.send(_host);
-    uri = _appendToken(uri, _token);
+    Uri uri = Resource.Notification.send(host);
+    uri = _appendToken(uri, _clientToken);
 
     final payload = {
       'recipients': recipients.toList(),
       'message': event.toJson()
     };
 
-    return _backend
+    return _httpClient
         .post(uri, JSON.encode(payload))
         .then(JSON.decode)
         .then((Map map) => new Model.ClientConnection.fromMap(map));
@@ -133,7 +134,7 @@ class NotificationService {
     }
 
     try {
-      return await _backend
+      return await _httpClient
           .post(request.resource, JSON.encode(request.body))
           .whenComplete(dispatchNext);
     } catch (error, StackTrace) {

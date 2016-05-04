@@ -19,24 +19,24 @@ part of openreception.framework.service;
 class Authentication {
   static final String className = '${libraryName}.Authentication';
 
-  WebService _backend = null;
-  Uri _host;
-  String _token = '';
+  final WebService _httpClient;
+  final Uri host;
+  final String clientToken;
 
   /**
    * Default constructor. Needs a host for backend uri, a user token and a
    * webclient for handling the transport.
    */
-  Authentication(Uri this._host, String this._token, this._backend);
+  Authentication(Uri this.host, String this.clientToken, this._httpClient);
 
   /**
    * Performs a lookup of the user on the notification server from the
    * supplied token.
    */
   Future<Model.User> userOf(String token) {
-    Uri uri = Resource.Authentication.tokenToUser(this._host, token);
+    Uri uri = Resource.Authentication.tokenToUser(this.host, token);
 
-    return this._backend.get(uri).then(
+    return this._httpClient.get(uri).then(
         (String response) => new Model.User.fromMap(JSON.decode(response)));
   }
 
@@ -44,8 +44,8 @@ class Authentication {
    * Validate [token]. Throws [NotFound] exception if the token is not valid.
    */
   Future validate(String token) {
-    Uri uri = Resource.Authentication.validate(this._host, token);
+    Uri uri = Resource.Authentication.validate(this.host, token);
 
-    return this._backend.get(uri);
+    return this._httpClient.get(uri);
   }
 }
