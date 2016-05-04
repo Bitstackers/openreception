@@ -55,7 +55,7 @@ class _Job {
 class GitEngine {
   final Logger _log = new Logger('$libraryName.GitEngine');
   final String path;
-  bool logStdout = false;
+  final bool logStdout;
   final Queue<_Job> _workQueue = new Queue<_Job>();
 
   Future get initialized => _initialized.future;
@@ -66,7 +66,7 @@ class GitEngine {
 
   Completer _busy = new Completer();
 
-  GitEngine(String this.path);
+  GitEngine(String this.path, {bool this.logStdout: false});
 
   /**
    *
