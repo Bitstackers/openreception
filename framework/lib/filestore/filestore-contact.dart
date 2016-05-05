@@ -28,11 +28,14 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Contact(this._receptionStore, {String this.path: 'json-data/contact'}) {
+  Contact(this._receptionStore, String this.path, [GitEngine this._git]) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync(recursive: true);
     }
-    _git = new GitEngine(path);
+
+    if (this._git == null) {
+      _git = new GitEngine(path);
+    }
     _git.init();
     _sequencer = new Sequencer(path);
   }

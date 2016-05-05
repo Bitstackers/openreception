@@ -27,7 +27,7 @@ class Calendar implements storage.Calendar {
   /**
    *
    */
-  Calendar({String this.path: 'json-data/calendar'}) {
+  Calendar(String this.path, [GitEngine this._git]) {
     final List<String> pathsToCreate = [path];
 
     pathsToCreate.forEach((String newPath) {
@@ -37,7 +37,10 @@ class Calendar implements storage.Calendar {
       }
     });
 
-    _git = new GitEngine(path);
+    if (this._git == null) {
+      _git = new GitEngine(path);
+    }
+
     _git.init();
     _sequencer = new Sequencer(path);
   }

@@ -29,12 +29,16 @@ class Organization implements storage.Organization {
   /**
    *
    */
-  Organization(this._contactFileStore, this._receptionFileStore,
-      {String this.path: 'json-data/organization'}) {
+  Organization(
+      this._contactFileStore, this._receptionFileStore, String this.path,
+      [GitEngine this._git]) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync(recursive: true);
     }
-    _git = new GitEngine(path);
+
+    if (this._git == null) {
+      _git = new GitEngine(path);
+    }
     _git.init();
     _sequencer = new Sequencer(path);
   }

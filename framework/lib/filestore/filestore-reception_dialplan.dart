@@ -24,8 +24,10 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   /**
    *
    */
-  ReceptionDialplan({String this.path: 'json-data/dialplan'}) {
-    _git = new GitEngine(path);
+  ReceptionDialplan(String this.path, [GitEngine this._git]) {
+    if (this._git == null) {
+      _git = new GitEngine(path);
+    }
     _git.init();
   }
 

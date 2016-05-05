@@ -24,8 +24,10 @@ class Ivr implements storage.Ivr {
   /**
    *
    */
-  Ivr({String this.path: 'json-data/ivr'}) {
-    _git = new GitEngine(path);
+  Ivr(String this.path, [GitEngine this._git]) {
+    if (this._git == null) {
+      _git = new GitEngine(path);
+    }
     _git.init();
   }
 

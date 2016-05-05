@@ -27,11 +27,14 @@ class Reception implements storage.Reception {
   /**
    *
    */
-  Reception({String this.path: 'json-data/reception'}) {
+  Reception(String this.path, [GitEngine this._git]) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync(recursive: true);
     }
-    _git = new GitEngine(path);
+
+    if (this._git == null) {
+      _git = new GitEngine(path);
+    }
     _git.init();
     _sequencer = new Sequencer(path);
   }
