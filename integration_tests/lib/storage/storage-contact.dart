@@ -253,7 +253,7 @@ abstract class Contact {
   }
 
   /**
-   * 
+   *
    */
   static Future createAfterLastRemove(ServiceAgent sa) async {
     final contact = await sa.createsContact();
@@ -298,7 +298,8 @@ abstract class Contact {
     _log.info('Got event ${contact.toJson()}. Updating local info');
 
     final model.BaseContact updated = Randomizer.randomBaseContact()
-      ..id = ref.id;
+      ..id = ref.id
+      ..name = ref.name + ' (updated)';
 
     _log.info('Updating local info to ${contact.toJson()}');
 
