@@ -57,3 +57,38 @@ bool isFile(FileSystemEntity fse) => fse is File && !fse.path.startsWith('.');
 
 bool isDirectory(FileSystemEntity fse) =>
     fse is Directory && !fse.path.startsWith('.');
+
+class DataStore {
+  final Calendar calendarStore;
+  final Contact contactStore;
+  final Ivr ivrStore;
+  final Organization organizationStore;
+  final Reception receptionStore;
+  final ReceptionDialplan receptionDialplanStore;
+  final User userStore;
+
+  factory DataStore(String path) {
+    GitEngine ge = new GitEngine(path);
+    Calendar calendarStore = new Calendar(path + '/calendar', ge);
+    Reception receptionStore = new Reception(path + '/reception', ge);
+    Contact contactStore = new Contact(receptionStore, path + '/contact', ge);
+    Ivr ivrStore = new Ivr(path + '/ivr', ge);
+    Organization orgStore = new Organization(
+        contactStore, receptionStore, path + '/organization', ge);
+    ReceptionDialplan receptionDialplanStore =
+        new ReceptionDialplan(path + '/dialplan', ge);
+    User userStore = new User(path + '/user', ge);
+
+    return new DataStore._internal(calendarStore, contactStore, ivrStore,
+        orgStore, receptionStore, receptionDialplanStore, userStore);
+  }
+
+  DataStore._internal(
+      Calendar this.calendarStore,
+      Contact this.contactStore,
+      Ivr this.ivrStore,
+      Organization this.organizationStore,
+      Reception this.receptionStore,
+      ReceptionDialplan this.receptionDialplanStore,
+      User this.userStore);
+}
