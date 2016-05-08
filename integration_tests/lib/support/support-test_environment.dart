@@ -313,7 +313,8 @@ class TestEnvironment {
     if (_userStore == null) {
       final String path = '${runpath.path}/user';
       _log.info('Creating user store from $path');
-      _userStore = new filestore.User(path: path);
+      _userStore = new filestore.User(
+          path, new filestore.GitEngine(path, logStdout: true));
     }
 
     return _userStore;
@@ -327,7 +328,8 @@ class TestEnvironment {
     if (_ivrStore == null) {
       final String path = '${runpath.path}/ivr';
       _log.info('Creating ivr store from $path');
-      _ivrStore = new filestore.Ivr(path: path);
+      _ivrStore = new filestore.Ivr(
+          path, new filestore.GitEngine(path, logStdout: true));
     }
 
     return _ivrStore;
@@ -342,7 +344,8 @@ class TestEnvironment {
       final String path = '${runpath.path}/dialplan';
       _log.info('Creating dialplan store from $path');
 
-      _dpStore = new filestore.ReceptionDialplan(path: path);
+      _dpStore = new filestore.ReceptionDialplan(
+          path, new filestore.GitEngine(path, logStdout: true));
     }
 
     return _dpStore;
@@ -357,7 +360,8 @@ class TestEnvironment {
       final String path = '${runpath.path}/calendar';
       _log.info('Creating calendar store from $path');
 
-      _calendarStore = new filestore.Calendar(path: path);
+      _calendarStore = new filestore.Calendar(
+          path, new filestore.GitEngine(path, logStdout: true));
     }
 
     return _calendarStore;
@@ -372,7 +376,8 @@ class TestEnvironment {
       final String path = '${runpath.path}/contact';
       _log.info('Creating calendar store from $path');
 
-      _contactStore = new filestore.Contact(receptionStore, path: path);
+      _contactStore = new filestore.Contact(
+          receptionStore, path, new filestore.GitEngine(path, logStdout: true));
     }
 
     return _contactStore;
@@ -387,7 +392,8 @@ class TestEnvironment {
       final String path = '${runpath.path}/message';
       _log.info('Creating message store from $path');
 
-      _messageStore = new filestore.Message(path: path);
+      _messageStore = new filestore.Message(
+          path, new filestore.GitEngine(path, logStdout: true));
     }
 
     return _messageStore;
@@ -402,7 +408,7 @@ class TestEnvironment {
       final String path = '${runpath.path}/message_queue';
       _log.info('Creating message queue store from $path');
 
-      _messageQueue = new filestore.MessageQueue(path: path);
+      _messageQueue = new filestore.MessageQueue(path);
     }
 
     return _messageQueue;
@@ -417,7 +423,8 @@ class TestEnvironment {
       final String path = '${runpath.path}/reception';
       _log.info('Creating reception store from $path');
 
-      _receptionStore = new filestore.Reception(path: path);
+      _receptionStore = new filestore.Reception(
+          path, new filestore.GitEngine(path, logStdout: true));
     }
 
     return _receptionStore;
@@ -432,8 +439,8 @@ class TestEnvironment {
       final String path = '${runpath.path}/organization';
       _log.info('Creating organization store from $path');
 
-      _organizationStore =
-          new filestore.Organization(contactStore, receptionStore, path: path);
+      _organizationStore = new filestore.Organization(contactStore,
+          receptionStore, path, new filestore.GitEngine(path, logStdout: true));
     }
 
     return _organizationStore;
