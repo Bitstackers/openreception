@@ -11,31 +11,17 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.cdr;
+library openreception.server.model;
 
 import 'dart:async';
-import 'dart:io';
 
-import 'package:args/args.dart';
 import 'package:logging/logging.dart';
-import 'package:openreception.server/cdr_server/router.dart' as router;
-import 'package:openreception.server/configuration.dart';
+import 'package:openreception.framework/bus.dart';
+import 'package:openreception.framework/event.dart' as event;
+import 'package:openreception.framework/model.dart' as model;
+import 'package:openreception.framework/storage.dart' as storage;
 
-/**
- * CDR server.
- */
-Future main(List<String> args) async {
-  ///Init logging.
-  Logger.root.level = config.cdrServer.log.level;
-  Logger.root.onRecord.listen(config.cdrServer.log.onRecord);
+part 'model/model-agent_history.dart';
+part 'model/model-user_status_list.dart';
 
-  final ArgParser parser = new ArgParser()
-    ..addFlag('help', abbr: 'h', negatable: false, help: 'Output this help');
-  final ArgResults parsedArgs = parser.parse(args);
-
-  if (parsedArgs['help']) {
-    print(parser.usage);
-    exit(1);
-  }
-  await router.start(port: config.cdrServer.httpPort);
-}
+const String _libraryName = 'callflowcontrol.model';

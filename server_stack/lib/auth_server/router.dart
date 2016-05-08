@@ -54,7 +54,7 @@ Future<IO.HttpServer> start(
     {String hostname: '0.0.0.0',
     int port: 4050,
     String filepath: 'json-data'}) async {
-  _userStore = new filestore.User(path: filepath + '/user');
+  _userStore = new filestore.User(filepath + '/user');
 
   var router = shelf_route.router()
     ..get('/token/create', login)

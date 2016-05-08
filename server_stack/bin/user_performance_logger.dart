@@ -17,18 +17,15 @@
 library openreception.server.user_performance_logger;
 
 import 'dart:async';
-import 'dart:io';
 import 'dart:convert';
+import 'dart:io';
 
-import 'package:openreception.server/configuration.dart';
 import 'package:intl/intl.dart' show DateFormat;
-
 import 'package:openreception.framework/event.dart' as event;
-
 import 'package:openreception.framework/model.dart' as model;
-
-import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.framework/service-io.dart' as transport;
+import 'package:openreception.framework/service.dart' as service;
+import 'package:openreception.server/configuration.dart';
 
 final Map<int, String> _userNameCache = {};
 final DateFormat rfc3339 = new DateFormat('yyyy-MM-dd');

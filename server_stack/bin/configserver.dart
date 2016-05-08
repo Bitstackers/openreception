@@ -18,11 +18,10 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
-
 import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/router/router-config.dart' as router;
 import 'package:openreception.server/controller/controller-config.dart'
     as controller;
+import 'package:openreception.server/router/router-config.dart' as router;
 
 /**
  * The OR-Stack configuration server. Provides a REST configuration interface.

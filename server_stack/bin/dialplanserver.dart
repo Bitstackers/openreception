@@ -18,15 +18,24 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
-
+import 'package:openreception.framework/dialplan_tools.dart' as dialplanTools;
+import 'package:openreception.framework/filestore.dart' as filestore;
+import 'package:openreception.framework/service-io.dart' as service;
+import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/dialplan_server/router.dart' as router;
+import 'package:openreception.server'
+    '/controller/controller-ivr.dart' as controller;
+import 'package:openreception.server'
+    '/controller/controller-peer_account.dart' as controller;
+import 'package:openreception.server'
+    '/controller/controller-reception_dialplan.dart' as controller;
+import 'package:openreception.server/router/router-dialplan.dart' as router;
 
 Future main(List<String> args) async {
   ///Init logging.
   Logger.root.level = config.dialplanserver.log.level;
   Logger.root.onRecord.listen(config.dialplanserver.log.onRecord);
-  Logger log = new Logger('dialplan_server');
+  Logger _log = new Logger('dialplan_server');
 
   ///Handle argument parsing.
   final ArgParser parser = new ArgParser()
@@ -75,6 +84,9 @@ Future main(List<String> args) async {
     exitWithError('');
   }
 
+  final String playbackPrefix = parsedArgs['playback-prefix'];
+  final String fsConfPath = parsedArgs['freeswitch-conf-path'];
+
   final String filepath = parsedArgs['filestore'];
   if (filepath == null || filepath.isEmpty) {
     stderr.writeln('Filestore path is required');
@@ -104,15 +116,49 @@ Future main(List<String> args) async {
       password: parsedArgs['esl-password'],
       port: int.parse(parsedArgs['esl-port']));
 
-  await router.start(
-      hostname: parsedArgs['host'],
-      port: port,
-      filepath: filepath,
-      authUri: authUri,
-      playbackPrefix: parsedArgs['playback-prefix'],
-      fsConfPath: parsedArgs['freeswitch-conf-path'],
-      eslConfig: eslConfig);
-  log.info('Ready to handle requests');
+  final service.Authentication _authentication = new service.Authentication(
+      authUri, config.userServer.serverToken, new service.Client());
+
+  /**
+   * Controllers.
+   */
+
+  final filestore.Ivr _ivrStore = new filestore.Ivr(filepath + '/ivr');
+  final filestore.ReceptionDialplan _dpStore =
+      new filestore.ReceptionDialplan(filepath + '/dialplan');
+
+  final filestore.Reception _rStore =
+      new filestore.Reception(filepath + '/reception');
+  final filestore.User _userStore = new filestore.User(filepath + '/user');
+
+  /// Setup dialplan tools.
+  final dialplanTools.DialplanCompiler compiler =
+      new dialplanTools.DialplanCompiler(new dialplanTools.DialplanCompilerOpts(
+          goLive: config.dialplanserver.goLive,
+          greetingDir: playbackPrefix,
+          testNumber: config.dialplanserver.testNumber,
+          testEmail: config.dialplanserver.testEmail,
+          callerIdName: config.callFlowControl.callerIdName,
+          callerIdNumber: config.callFlowControl.callerIdNumber));
+
+  _log.info('Dialplan tools are ${compiler.option.goLive ? 'live ' : 'NOT live '
+          'diverting all voicemails to ${compiler.option.testEmail} and directing '
+          'all calls to ${compiler.option.testNumber}'}');
+  _log.fine('Deploying generated xml files to $fsConfPath subdirs');
+
+  final controller.Ivr ivrHandler =
+      new controller.Ivr(_ivrStore, compiler, _authentication, fsConfPath);
+  final controller.ReceptionDialplan receptionDialplanHandler =
+      new controller.ReceptionDialplan(_dpStore, _rStore, _authentication,
+          compiler, ivrHandler, fsConfPath, eslConfig);
+
+  final controller.PeerAccount peerAccountHandler =
+      new controller.PeerAccount(_userStore, compiler, fsConfPath);
+
+  await (new router.Dialplan(_authentication, ivrHandler, peerAccountHandler,
+          receptionDialplanHandler))
+      .listen(hostname: parsedArgs['host'], port: port);
+  _log.info('Ready to handle requests');
 }
 
 int parsePort(String value) {

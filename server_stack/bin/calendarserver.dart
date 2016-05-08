@@ -20,10 +20,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
-
 import 'package:logging/logging.dart';
+import 'package:openreception.framework/filestore.dart' as filestore;
+import 'package:openreception.framework/service-io.dart' as service;
+import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/calendar_server/router.dart' as router;
+import 'package:openreception.server/controller/controller-calendar.dart'
+    as controller;
+import 'package:openreception.server/router/router-calendar.dart' as router;
 
 ArgResults parsedArgs;
 ArgParser parser = new ArgParser();
@@ -80,12 +84,24 @@ Future main(List<String> args) async {
     print(parser.usage);
     exit(1);
   }
+  final service.Authentication _authentication = new service.Authentication(
+      Uri.parse(parsedArgs['auth-uri']),
+      config.userServer.serverToken,
+      new service.Client());
 
-  await router.start(
-      port: port,
-      filepath: filepath,
-      hostname: parsedArgs['host'],
-      authUri: Uri.parse(parsedArgs['auth-uri']),
-      notificationUri: Uri.parse(parsedArgs['notification-uri']));
+  final service.NotificationService _notification =
+      new service.NotificationService(Uri.parse(parsedArgs['notification-uri']),
+          config.userServer.serverToken, new service.Client());
+
+  final controller.Calendar _calendarController = new controller.Calendar(
+      new filestore.Calendar(parsedArgs['filestore'] + '/calendar'),
+      _authentication,
+      _notification);
+
+  final router.Calendar calendarRouter =
+      new router.Calendar(_authentication, _notification, _calendarController);
+
+  await calendarRouter.listen(port: port, hostname: parsedArgs['host']);
+
   log.info('Ready to handle requests');
 }

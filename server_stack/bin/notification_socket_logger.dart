@@ -19,10 +19,9 @@ library openreception.server.event_logger;
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:openreception.server/configuration.dart';
-
-import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.framework/service-io.dart' as transport;
+import 'package:openreception.framework/service.dart' as service;
+import 'package:openreception.server/configuration.dart';
 
 Future main(List<String> args) async {
   transport.WebSocketClient client = new transport.WebSocketClient();

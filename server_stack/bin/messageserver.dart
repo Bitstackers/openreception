@@ -17,10 +17,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
-
 import 'package:logging/logging.dart';
+import 'package:openreception.framework/filestore.dart' as filestore;
+import 'package:openreception.framework/service-io.dart' as service;
+import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/message_server/router.dart' as router;
+import 'package:openreception.server/controller/controller-message.dart'
+    as controller;
+import 'package:openreception.server/router/router-message.dart' as router;
 
 Future main(List<String> args) async {
   ///Init logging. Inherit standard values.
@@ -53,17 +57,33 @@ Future main(List<String> args) async {
     exit(1);
   }
 
-  if (parsedArgs['filestore'] == null) {
-    print('Filestore path is required');
+  final String filepath = parsedArgs['filestore'];
+  if (filepath == null || filepath.isEmpty) {
+    stderr.writeln('Filestore path is required');
+    print('');
     print(parser.usage);
     exit(1);
   }
 
-  await router.start(
-      hostname: parsedArgs['host'],
-      port: int.parse(parsedArgs['httpport']),
-      filepath: parsedArgs['filestore'],
-      authUri: Uri.parse(parsedArgs['auth-uri']),
-      notificationUri: Uri.parse(parsedArgs['notification-uri']));
+  final service.Authentication _authService = new service.Authentication(
+      Uri.parse(parsedArgs['auth-uri']),
+      config.userServer.serverToken,
+      new service.Client());
+
+  final service.NotificationService _notification =
+      new service.NotificationService(Uri.parse(parsedArgs['notification-uri']),
+          config.userServer.serverToken, new service.Client());
+
+  final filestore.Message _messageStore =
+      new filestore.Message(filepath + '/message');
+
+  final filestore.MessageQueue _messageQueue =
+      new filestore.MessageQueue(filepath + '/message_queue');
+
+  final controller.Message msgController = new controller.Message(
+      _messageStore, _messageQueue, _authService, _notification);
+
+  await (new router.Message(_authService, _notification, msgController)).listen(
+      hostname: parsedArgs['host'], port: int.parse(parsedArgs['httpport']));
   log.info('Ready to handle requests');
 }

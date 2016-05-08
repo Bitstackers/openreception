@@ -17,15 +17,13 @@
 library openreception.user_socket_logger;
 
 import 'dart:async';
-import 'dart:io';
 import 'dart:convert';
+import 'dart:io';
 
-//import 'package:openreception.server/configuration.dart';
 import 'package:intl/intl.dart' show DateFormat;
-
 import 'package:openreception.framework/event.dart' as event;
-
 import 'package:openreception.framework/model.dart' as model;
+//import 'package:openreception.server/configuration.dart';
 
 // import 'package:openreception.framework/service.dart' as service;
 // import 'package:openreception.framework/service-io.dart' as transport;

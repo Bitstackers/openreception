@@ -13,18 +13,24 @@
 
 library openreception.server.reception;
 
-import 'dart:io';
 import 'dart:async';
+import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
-
+import 'package:openreception.framework/filestore.dart' as filestore;
+import 'package:openreception.framework/service-io.dart' as service;
+import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/reception_server/router.dart' as router;
+import 'package:openreception.server/controller/controller-organization.dart'
+    as controller;
+import 'package:openreception.server/controller/controller-reception.dart'
+    as controller;
+import 'package:openreception.server/router/router-reception.dart' as router;
 
 Future main(List<String> args) async {
   ///Init logging.
-  final Logger log = new Logger('reception_server');
+  final Logger log = new Logger('server.message');
   Logger.root.level = config.receptionServer.log.level;
   Logger.root.onRecord.listen(config.receptionServer.log.onRecord);
 
@@ -54,17 +60,40 @@ Future main(List<String> args) async {
     exit(1);
   }
 
-  if (parsedArgs['filestore'] == null) {
-    print('Filestore path is required');
+  final String filepath = parsedArgs['filestore'];
+  if (filepath == null || filepath.isEmpty) {
+    stderr.writeln('Filestore path is required');
+    print('');
     print(parser.usage);
     exit(1);
   }
 
-  await router.start(
-      hostname: parsedArgs['host'],
-      port: int.parse(parsedArgs['httpport']),
-      filepath: parsedArgs['filestore'],
-      authUri: Uri.parse(parsedArgs['auth-uri']),
-      notificationUri: Uri.parse(parsedArgs['notification-uri']));
+  final service.Authentication _authService = new service.Authentication(
+      Uri.parse(parsedArgs['auth-uri']),
+      config.userServer.serverToken,
+      new service.Client());
+
+  final service.NotificationService _notification =
+      new service.NotificationService(Uri.parse(parsedArgs['notification-uri']),
+          config.userServer.serverToken, new service.Client());
+
+  final filestore.Reception rStore =
+      new filestore.Reception(filepath + '/reception');
+  final filestore.Contact cStore =
+      new filestore.Contact(rStore, filepath + '/contact');
+  final filestore.Organization oStore =
+      new filestore.Organization(cStore, rStore, filepath + '/organization');
+
+  final controller.Organization organization =
+      new controller.Organization(oStore, _notification, _authService);
+
+  controller.Reception reception =
+      new controller.Reception(rStore, _notification, _authService);
+
+  await (new router.Reception(
+          _authService, _notification, reception, organization)
+      .listen(
+          hostname: parsedArgs['host'],
+          port: int.parse(parsedArgs['httpport'])));
   log.info('Ready to handle requests');
 }

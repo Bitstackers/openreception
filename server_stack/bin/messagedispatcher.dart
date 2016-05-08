@@ -13,15 +13,14 @@
 
 library openreception.server.message_dispatcher;
 
-import 'dart:io';
-import 'dart:core';
 import 'dart:async';
+import 'dart:core';
+import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:emailer/emailer.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/model.dart' as Model;
-
 import 'package:openreception.server/configuration.dart';
 import 'package:openreception.server/message_dispatcher/router.dart' as router;
 

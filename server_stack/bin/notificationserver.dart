@@ -18,9 +18,10 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
-
+import 'package:openreception.framework/service-io.dart' as service;
+import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/notification_server/router.dart' as router;
+import 'package:openreception.server/router/router-notification.dart' as router;
 
 Future main(List<String> args) async {
   ///Init logging. Inherit standard values.
@@ -56,10 +57,12 @@ Future main(List<String> args) async {
     exit(1);
   }
 
-  await router.start(
-      authUri: Uri.parse(parsedArgs['auth-uri']),
-      hostname: parsedArgs['host'],
-      port: int.parse(parsedArgs['httpport']),
-      filepath: parsedArgs['filestore']);
+  final service.Authentication _authServer = new service.Authentication(
+      Uri.parse(parsedArgs['auth-uri']),
+      config.notificationServer.serverToken,
+      new service.Client());
+
+  await new router.Notification(_authServer).start(
+      hostname: parsedArgs['host'], port: int.parse(parsedArgs['httpport']));
   log.info('Ready to handle requests');
 }

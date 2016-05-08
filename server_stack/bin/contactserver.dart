@@ -18,9 +18,13 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
-
-import 'package:openreception.server/contact_server/router.dart' as router;
+import 'package:openreception.framework/filestore.dart' as filestore;
+import 'package:openreception.framework/service-io.dart' as service;
+import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.server/configuration.dart';
+import 'package:openreception.server/controller/controller-contact.dart'
+    as controller;
+import 'package:openreception.server/router/router-contact.dart' as router;
 
 Logger log = new Logger('ContactServer');
 ArgResults parsedArgs;
@@ -61,16 +65,48 @@ Future main(List<String> args) async {
     exit(1);
   }
 
-  if (parsedArgs['filestore'] == null) {
-    print('Filestore path is required');
+  final String filepath = parsedArgs['filestore'];
+  if (filepath == null || filepath.isEmpty) {
+    stderr.writeln('Filestore path is required');
+    print('');
     print(parser.usage);
     exit(1);
   }
 
-  await router.start(
-      port: int.parse(parsedArgs['httpport']),
-      authUri: Uri.parse(parsedArgs['auth-uri']),
-      notificationUri: Uri.parse(parsedArgs['notification-uri']),
-      filepath: parsedArgs['filestore']);
+  int port;
+  try {
+    port = int.parse(parsedArgs['httpport']);
+    if (port < 1 || port > 65535) {
+      throw new FormatException();
+    }
+  } on FormatException {
+    stderr.writeln('Bad port argument: ${parsedArgs['httpport']}');
+    print('');
+    print(parser.usage);
+    exit(1);
+  }
+
+  final service.Authentication _authentication = new service.Authentication(
+      Uri.parse(parsedArgs['auth-uri']),
+      config.userServer.serverToken,
+      new service.Client());
+
+  final service.NotificationService _notification =
+      new service.NotificationService(Uri.parse(parsedArgs['notification-uri']),
+          config.userServer.serverToken, new service.Client());
+
+  final filestore.Reception rStore =
+      new filestore.Reception(filepath + '/reception');
+  final filestore.Contact cStore =
+      new filestore.Contact(rStore, filepath + '/contact');
+
+  controller.Contact contactController =
+      new controller.Contact(cStore, _notification, _authentication);
+
+  final router.Contact contactRouter =
+      new router.Contact(_authentication, _notification, contactController);
+
+  await contactRouter.listen(port: port, hostname: parsedArgs['host']);
+
   log.info('Ready to handle requests');
 }

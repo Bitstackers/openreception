@@ -51,9 +51,10 @@ database.User userStore;
 
 Future<IO.HttpServer> start(
     {String hostname: '0.0.0.0', int port: 4060, String filepath: ''}) async {
-  final database.MessageQueue mqdb = new database.MessageQueue();
-  messageStore = new database.Message();
-  userStore = new database.User();
+  final database.MessageQueue mqdb =
+      new database.MessageQueue(filepath + '/message_queue');
+  messageStore = new database.Message(filepath + '/message');
+  userStore = new database.User(filepath + '/user');
   messageQueueStore = mqdb;
   final Controller.MessageQueue mq = new Controller.MessageQueue(mqdb);
 

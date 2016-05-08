@@ -17,10 +17,21 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
-
 import 'package:logging/logging.dart';
+import 'package:openreception.framework/filestore.dart' as filestore;
+import 'package:openreception.framework/service-io.dart' as service;
+import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/user_server/router.dart' as router;
+import 'package:openreception.server/controller/controller-agent_statistics.dart'
+    as controller;
+import 'package:openreception.server/controller/controller-client_notifier.dart'
+    as controller;
+import 'package:openreception.server/controller/controller-user.dart'
+    as controller;
+import 'package:openreception.server/controller/controller-user_state.dart'
+    as controller;
+import 'package:openreception.server/model.dart' as model;
+import 'package:openreception.server/router/router-user.dart' as router;
 
 Future main(List<String> args) async {
   ///Init logging. Inherit standard values.
@@ -60,10 +71,36 @@ Future main(List<String> args) async {
     exit(1);
   }
 
-  await router.start(
-      port: int.parse(parsedArgs['httpport']),
-      filepath: parsedArgs['filestore'],
-      authUri: Uri.parse(parsedArgs['auth-uri']),
-      notificationUri: Uri.parse(parsedArgs['notification-uri']));
+  final service.Authentication _authService = new service.Authentication(
+      Uri.parse(parsedArgs['auth-uri']),
+      config.userServer.serverToken,
+      new service.Client());
+
+  final service.NotificationService _notification =
+      new service.NotificationService(Uri.parse(parsedArgs['notification-uri']),
+          config.userServer.serverToken, new service.Client());
+
+  final filestore.User _userStore =
+      new filestore.User(parsedArgs['filestore'] + '/user');
+
+  final model.AgentHistory agentHistory = new model.AgentHistory();
+  final model.UserStatusList userStatus = new model.UserStatusList();
+
+  final _userController =
+      new controller.User(_userStore, _notification, _authService);
+  final _statsController = new controller.AgentStatistics(agentHistory);
+  final _userStateController =
+      new controller.UserState(agentHistory, userStatus);
+
+  /// Client notification controller.
+  final controller.ClientNotifier notifier =
+      new controller.ClientNotifier(_notification);
+  notifier.userStateSubscribe(userStatus);
+
+  await (new router.User(_authService, _notification, _userController,
+          _statsController, _userStateController))
+      .listen(
+          hostname: parsedArgs['host'],
+          port: int.parse(parsedArgs['httpport']));
   log.info('Ready to handle requests');
 }

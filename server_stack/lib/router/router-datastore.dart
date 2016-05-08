@@ -11,56 +11,55 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.router.config;
+library openreception.server.router.datastore;
 
 import 'dart:async';
-import 'dart:io';
+import 'dart:io' as io;
 
 import 'package:logging/logging.dart';
+import 'package:openreception.framework/service.dart' as service;
+import 'package:openreception.framework/storage.dart' as storage;
 import 'package:openreception.server/configuration.dart';
 import 'package:openreception.server/controller/controller-config.dart'
     as controller;
+import 'package:openreception.server/controller/controller-user.dart'
+    as controller;
 import 'package:openreception.server/response_utils.dart';
+import 'package:openreception.server/router/router-config.dart' as routing;
+import 'package:openreception.server/router/router-user.dart' as routing;
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
-/**
- *
- */
-class Config {
-  final Logger _log = new Logger('server.router.config');
-  final controller.Config _configController;
+class Datastore {
+  final Logger _log = new Logger('server.router.datastore');
+
+  final service.Authentication _authService;
+  final service.NotificationService _notification;
+
+  Datastore(this._authService, this._notification);
 
   /**
-   *
+   * Start the router.
    */
-  Config(this._configController);
+  Future<io.HttpServer> listen(Iterable routers,
+      {String hostname: '0.0.0.0', int port: 4030}) {
+    var router = shelf_route.router();
+    for (var r in routers) {
+      r.bindRoutes(router);
+    }
 
-  /**
-   *
-   */
-  void bindRoutes(router) {
-    router
-      ..get('/configuration', _configController.get)
-      ..post('/configuration/register', _configController.register);
-  }
-
-  /**
-   *
-   */
-  Future<HttpServer> listen({String hostname: '0.0.0.0', int port: 4080}) {
-    final router = shelf_route.router();
-    bindRoutes(router);
-
-    final handler = const shelf.Pipeline()
-        .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
+    var handler = const shelf.Pipeline()
         .addMiddleware(
             shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
+        .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
         .addHandler(router.handler);
 
-    _log.fine('Accepting incoming requests on $hostname:$port:');
+    _log.fine('Using server on ${_authService.host} as authentication backend');
+    _log.fine('Using server on ${_notification.host} as notification backend');
+    _log.fine('Accepting incoming REST requests on http://$hostname:$port');
+    _log.fine('Serving routes:');
     shelf_route.printRoutes(router, printer: (String item) => _log.fine(item));
 
     return shelf_io.serve(handler, hostname, port);

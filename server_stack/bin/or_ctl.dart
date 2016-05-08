@@ -20,14 +20,12 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
-
 import 'package:logging/logging.dart';
-import 'package:openreception.server/configuration.dart';
-
-//import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/service.dart' as service;
-//import 'package:openreception.framework/storage.dart' as storage;
 import 'package:openreception.framework/service-io.dart' as transport;
+import 'package:openreception.framework/service.dart' as service;
+import 'package:openreception.server/configuration.dart';
+//import 'package:openreception.framework/model.dart' as model;
+//import 'package:openreception.framework/storage.dart' as storage;
 
 ArgResults parsedArgs;
 ArgParser parser = new ArgParser();
