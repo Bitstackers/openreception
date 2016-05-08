@@ -69,7 +69,7 @@ class ServiceAgent {
    */
   Future<model.IvrMenu> updatesIvrMenu(model.IvrMenu menu) async {
     final updated = await ivrStore.update(
-        Randomizer.randomIvrMenu()..name = menu.name, user);
+        Randomizer.randomIvrMenu()..name = menu.name + ' (updated)', user);
 
     return ivrStore.get(updated.name);
   }
@@ -364,7 +364,8 @@ class ServiceAgent {
     await calendarStore.update(
         Randomizer.randomCalendarEntry()
           ..id = entry.id
-          ..owner = entry.owner,
+          ..owner = entry.owner
+          ..content = entry.content + ' (updated)',
         user);
 
     return calendarStore.get(entry.id);
@@ -464,6 +465,7 @@ class ServiceAgent {
             new model.Enqueue('waitqueue')
           ]
       ]
+      ..note = rdp.note + ' (updated)'
       ..extension = rdp.extension
       ..defaultActions = [new model.Playback('sorry-dude-were-closed')]
       ..active = true;
