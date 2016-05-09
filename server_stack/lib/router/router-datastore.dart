@@ -38,7 +38,11 @@ class Datastore {
   final service.Authentication _authService;
   final service.NotificationService _notification;
 
-  Datastore(this._authService, this._notification);
+  factory Datastore(_authService, _notification) {
+    return new Datastore._internal(_authService, _notification);
+  }
+
+  Datastore._internal(this._authService, this._notification);
 
   /**
    * Start the router.
