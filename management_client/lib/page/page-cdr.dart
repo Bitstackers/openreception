@@ -184,7 +184,7 @@ class Cdr {
     fetchButton.text = 'Henter...';
 
     ridToNameMap = (await _orgCtrl.receptionMap());
-    for (model.User user in (await _userCtrl.list())) {
+    for (model.UserReference user in (await _userCtrl.list())) {
       uidToNameMap[user.id] = user.name;
     }
 
@@ -795,7 +795,7 @@ class Cdr {
         ..text = 'filtrer efter receptioner...'
         ..disabled = true
         ..selected = true);
-      for (model.Reception reception in list) {
+      for (model.ReceptionReference reception in list) {
         options.add(new OptionElement()
           ..text = reception.name
           ..value = reception.id.toString());
@@ -816,7 +816,7 @@ class Cdr {
       userSelect.children.add(new OptionElement()
         ..text = 'pbx'
         ..value = '0');
-      for (model.User user in list) {
+      for (model.UserReference user in list) {
         options.add(new OptionElement()
           ..text = user.name
           ..value = user.id.toString());
