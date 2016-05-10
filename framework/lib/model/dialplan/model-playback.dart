@@ -92,7 +92,7 @@ class Playback extends Action {
    *
    */
   @override
-  String toString() => '${Key.playback}${wrapInLock? ' ${Key.lock}' :''}'
+  String toString() => '${Key.playback}'
       ' $filename'
       '${repeat != 1? ' ${Key.repeat}:$repeat' :''}'
       '${note.isNotEmpty ? ' ($note)': ''}';
