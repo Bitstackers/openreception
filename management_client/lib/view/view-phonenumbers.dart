@@ -50,8 +50,7 @@ class Phonenumbers {
       final model.PhoneNumber pn = new model.PhoneNumber.empty()
         ..confidential = true
         ..note = 'Kort beskrivelse'
-        ..destination = '00000000'
-        ..tags = ['Kontor'];
+        ..destination = '00000000';
 
       if (_unfoldJson.hidden) {
         _phonenumberInput.value =

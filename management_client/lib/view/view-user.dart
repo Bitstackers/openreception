@@ -163,7 +163,6 @@ class User {
     _historyView.element.hidden = true;
     _historyToggle..text = 'Vis historik';
 
-    _uidLabel.text = 'uid:${u.id}${!u.enabled ? ' (inaktiv)': ''}';
     _deleteButton.disabled = u.id == model.User.noId;
     _saveButton.disabled = u.id != model.User.noId;
     _deleteButton.disabled = !_saveButton.disabled;

@@ -599,7 +599,6 @@ abstract class Randomizer {
             new List.generate(rand.nextInt(3) + 1, (_) => randomCallerName())
         ..responsibilities =
             new List.generate(rand.nextInt(3) + 1, (_) => randomDepartment())
-        ..statusEmail = rand.nextBool()
         ..tags = new List.generate(rand.nextInt(3), (_) => randomDepartment())
         ..titles = new List.generate(rand.nextInt(3), (_) => randomDepartment())
         ..workhours = new List.generate(
@@ -623,7 +622,6 @@ abstract class Randomizer {
     ..emailAddresses =
         new List.generate(rand.nextInt(3) + 1, (_) => randomEmail())
     ..enabled = rand.nextBool()
-    ..extraData = Uri.parse('http://localhost/page-${rand.nextInt(1000)}')
     ..name = randomCompany()
     ..greeting = randomString(10)
     ..handlingInstructions =

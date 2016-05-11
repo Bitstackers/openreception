@@ -279,7 +279,6 @@ class ReceptionContact {
             _valuesFromListTextArea(_messagePrerequisiteInput)
         ..relations = _valuesFromListTextArea(_relationsInput)
         ..responsibilities = _valuesFromListTextArea(_responsibilitiesInput)
-        ..statusEmail = _statusEmailInput.checked
         ..tags =
             _valuesFromListTextArea(_tagsInput).toSet().toList(growable: false)
         ..titles = _valuesFromListTextArea(_titlesInput)
@@ -291,7 +290,6 @@ class ReceptionContact {
     _cidInput.value = contact.cid.toString();
 
     _tagsInput.value = contact.tags.join('\n');
-    _statusEmailInput.checked = contact.statusEmail;
     _backupContactsInput.value = contact.backupContacts.join('\n');
     _handlingInput.value = contact.handling.join('\n');
     _departmentsInput.value = contact.departments.join('\n');

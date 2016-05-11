@@ -69,7 +69,7 @@ class Endpoints {
       final model.MessageEndpoint template = new model.MessageEndpoint.empty()
         ..address = 'eksempel@domæne.dk'
         ..name = 'Navn'
-        ..type = model.MessageEndpointType.email;
+        ..type = model.MessageEndpointType.emailTo;
 
       if (_unfoldJson.hidden) {
         _endpointsInput.value =

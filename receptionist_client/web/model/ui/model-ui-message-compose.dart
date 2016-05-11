@@ -238,8 +238,7 @@ class UIMessageCompose extends UIModel {
 
     Iterable<ORModel.MessageEndpoint> toRecipients() =>
         recipients.where((ORModel.MessageEndpoint r) =>
-            r.type == ORModel.MessageEndpointType.emailTo ||
-            r.type == ORModel.MessageEndpointType.email);
+            r.type == ORModel.MessageEndpointType.emailTo);
 
     Iterable<ORModel.MessageEndpoint> ccRecipients() =>
         recipients.where((ORModel.MessageEndpoint r) =>

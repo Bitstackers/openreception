@@ -43,7 +43,6 @@ class Reception {
     ..classes.add('deploy');
 
   final HeadingElement _heading = new HeadingElement.h2();
-  final DivElement _lastChecked = new DivElement();
 
   final InputElement _nameInput = new InputElement()
     ..classes.add('wide')
@@ -147,12 +146,7 @@ class Reception {
     _shortGreetingInput.value = r.shortGreeting;
     _dialplanInput.value = r.dialplan != null ? r.dialplan : 'empty';
 
-    _lastChecked.text = r.lastModified.isAtSameMomentAs(util.never)
-        ? 'Sidst checket: Aldrig'
-        : 'Sidst checket: ${r.lastModified}';
-
     _activeInput.checked = r.enabled;
-    _extraDataInput.value = r.extraData != null ? r.extraData.toString() : '';
 
     _phoneNumberView.phoneNumbers = r.phoneNumbers;
 
@@ -247,7 +241,6 @@ class Reception {
     ..dialplan = _dialplanInput.value
     ..emailAddresses = _valuesFromListTextArea(_emailAddressesInput)
     ..enabled = _activeInput.checked
-    ..extraData = _validUri(_extraDataInput.value)
     ..greeting = _greetingInput.value
     ..shortGreeting = _shortGreetingInput.value
     ..handlingInstructions = _valuesFromListTextArea(_instructionsInput)
@@ -310,7 +303,6 @@ class Reception {
           _saveButton,
           _deleteButton,
           _heading,
-          _lastChecked,
           new SpanElement()..text = 'Organization: ',
           _organizationSelector,
           new SpanElement()..text = 'Aktiv: ',

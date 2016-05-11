@@ -317,7 +317,6 @@ abstract class User {
 
     final fetched = await sa.userStore.getByIdentity(identity);
     expect(created.address, equals(fetched.address));
-    expect(created.enabled, equals(fetched.enabled));
     expect(created.id, equals(fetched.id));
     expect(created.name, equals(fetched.name));
     expect(created.extension, equals(fetched.extension));
