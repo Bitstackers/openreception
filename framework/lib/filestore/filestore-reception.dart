@@ -64,7 +64,9 @@ class Reception implements storage.Reception {
     if (reception.id == model.Reception.noId) {
       reception.id = _nextId;
     }
-    final File file = new File('$path/${reception.id}.json');
+
+    final Directory dir = new Directory('$path/${reception.id}/');
+    final File file = new File('${dir.path}/reception.json');
 
     if (file.existsSync()) {
       throw new storage.ClientError(
@@ -92,7 +94,7 @@ class Reception implements storage.Reception {
    *
    */
   Future<model.Reception> get(int id) async {
-    final File file = new File('$path/${id}.json');
+    final File file = new File('$path/${id}/reception.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound('No file with name ${id}');
@@ -146,7 +148,7 @@ class Reception implements storage.Reception {
    *
    */
   Future remove(int id, model.User modifier) async {
-    final File file = new File('$path/${id}.json');
+    final File file = new File('$path/${id}/reception.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
@@ -172,7 +174,7 @@ class Reception implements storage.Reception {
     if (rec.id == model.Reception.noId) {
       throw new storage.ClientError('id may not be "noId"');
     }
-    final File file = new File('$path/${rec.id}.json');
+    final File file = new File('$path/${rec.id}/reception.json');
     if (!file.existsSync()) {
       throw new storage.NotFound();
     }
@@ -202,7 +204,7 @@ class Reception implements storage.Reception {
     if (rid == null) {
       fse = new Directory('.');
     } else {
-      fse = new File('$rid.json');
+      fse = new File('$rid/reception.json');
     }
 
     Iterable<Change> gitChanges = await _git.changes(fse);
