@@ -82,12 +82,9 @@ class User {
   static const int noId = 0;
 
   String address;
-
-  bool enabled = true;
-
   int id = noId;
   String name = '';
-  String peer = '';
+  String extension = '';
   String portrait = '';
   Set<String> groups = new Set<String>();
   Set<String> identities = new Set<String>();
@@ -109,7 +106,7 @@ class User {
       : id = map[Key.id],
         address = map[Key.address],
         name = map[Key.name],
-        peer = map[Key.extension],
+        extension = map[Key.extension],
         groups = new Set<String>.from(map[Key.groups]),
         identities = new Set<String>.from(map[Key.identites]),
         portrait = map.containsKey('remote_attributes') &&
@@ -125,7 +122,7 @@ class User {
         Key.name: name,
         Key.identites: identities.toList(growable: false),
         Key.address: address,
-        Key.extension: peer,
+        Key.extension: extension,
         Key.groups: groups.toList(growable: false)
       };
 

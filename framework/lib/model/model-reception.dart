@@ -19,10 +19,8 @@ class Reception {
   int id = Reception.noId;
   String name = '';
 
-  int organizationId = Organization.noId;
-  Uri extraData = null;
-  DateTime lastChecked =
-      new DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
+  int oid = Organization.noId;
+
   List<String> addresses = [];
   List<String> alternateNames = [];
   List<String> bankingInformation = [];
@@ -33,7 +31,7 @@ class Reception {
   List<String> vatNumbers = [];
   List<String> websites = [];
   List<String> customerTypes = [];
-  List<PhoneNumber> telephoneNumbers = [];
+  List<PhoneNumber> phoneNumbers = [];
   String miniWiki = '';
 
   String get shortGreeting =>
@@ -64,7 +62,7 @@ class Reception {
         Key.shortGreeting: _shortGreeting,
         Key.vatNumbers: vatNumbers,
         Key.phoneNumbers: new List<Map>.from(
-            telephoneNumbers.map((PhoneNumber number) => number.toJson())),
+            phoneNumbers.map((PhoneNumber number) => number.toJson())),
         Key.websites: websites,
         Key.miniWiki: miniWiki
       };
@@ -86,7 +84,7 @@ class Reception {
             .toList();
       }
 
-      telephoneNumbers.addAll(pns);
+      phoneNumbers.addAll(pns);
     }
 
     this
@@ -132,15 +130,10 @@ class Reception {
     try {
       this
         ..id = receptionMap[Key.id]
-        ..organizationId = receptionMap[Key.oid]
+        ..oid = receptionMap[Key.oid]
         ..name = receptionMap[Key.name]
         ..enabled = receptionMap[Key.enabled]
-        ..dialplan = receptionMap[Key.dialplan]
-        ..extraData = receptionMap[Key.extradataUri] != null
-            ? Uri.parse(receptionMap[Key.extradataUri])
-            : null
-        ..lastChecked =
-            Util.unixTimestampToDateTime(receptionMap[Key.lastCheck]);
+        ..dialplan = receptionMap[Key.dialplan];
 
       if (receptionMap[Key.attributes] != null) {
         attributes = receptionMap[Key.attributes];
@@ -156,11 +149,9 @@ class Reception {
   Map toJson() => {
         Key.id: id,
         Key.enabled: enabled,
-        Key.oid: organizationId,
+        Key.oid: oid,
         Key.dialplan: dialplan,
         Key.name: name,
-        Key.extradataUri: extraData == null ? null : extraData.toString(),
-        Key.lastCheck: Util.dateTimeToUnixTimestamp(lastChecked),
         Key.attributes: attributes
       };
 

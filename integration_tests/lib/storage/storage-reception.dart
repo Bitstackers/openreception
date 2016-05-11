@@ -25,7 +25,7 @@ class Reception {
    */
   static Future existingReception(ServiceAgent sa) async {
     final org = await sa.createsOrganization();
-    final rec = Randomizer.randomReception()..organizationId = org.id;
+    final rec = Randomizer.randomReception()..oid = org.id;
     final created = await sa.createsReception(org, rec);
 
     expect(created.id != model.Reception.noId, isTrue);
@@ -45,7 +45,7 @@ class Reception {
     expect(rec.product, equals(created.product));
     expect(rec.salesMarketingHandling, equals(created.salesMarketingHandling));
     expect(rec.shortGreeting, equals(created.shortGreeting));
-    expect(rec.telephoneNumbers, equals(created.telephoneNumbers));
+    expect(rec.phoneNumbers, equals(created.phoneNumbers));
     expect(rec.vatNumbers, equals(created.vatNumbers));
     expect(rec.websites, equals(created.websites));
     expect(rec.name, equals(created.name));
@@ -109,7 +109,7 @@ class Reception {
    */
   static Future create(ServiceAgent sa) async {
     final org = await sa.createsOrganization();
-    final rec = Randomizer.randomReception()..organizationId = org.id;
+    final rec = Randomizer.randomReception()..oid = org.id;
     await sa.createsReception(org, rec);
   }
 
@@ -123,7 +123,6 @@ class Reception {
     await sa.removesReception(rec);
     await sa.createsReception(org);
   }
-
 
   /**
    * Test server behaviour when trying to update a reception object that
@@ -162,7 +161,7 @@ class Reception {
 
     final updated = Randomizer.randomReception()
       ..id = created.id
-      ..organizationId = created.organizationId;
+      ..oid = created.oid;
 
     final fetched = await sa.updateReception(updated);
 
@@ -184,7 +183,7 @@ class Reception {
     expect(
         updated.salesMarketingHandling, equals(fetched.salesMarketingHandling));
     expect(updated.shortGreeting, equals(fetched.shortGreeting));
-    expect(updated.telephoneNumbers, equals(fetched.telephoneNumbers));
+    expect(updated.phoneNumbers, equals(fetched.phoneNumbers));
     expect(updated.vatNumbers, equals(fetched.vatNumbers));
     expect(updated.websites, equals(fetched.websites));
     expect(updated.name, equals(fetched.name));
@@ -240,7 +239,7 @@ class Reception {
     expect(rec.product, equals(fetched.product));
     expect(rec.salesMarketingHandling, equals(fetched.salesMarketingHandling));
     expect(rec.shortGreeting, equals(fetched.shortGreeting));
-    expect(rec.telephoneNumbers, equals(fetched.telephoneNumbers));
+    expect(rec.phoneNumbers, equals(fetched.phoneNumbers));
     expect(rec.vatNumbers, equals(fetched.vatNumbers));
     expect(rec.websites, equals(fetched.websites));
     expect(rec.name, equals(fetched.name));

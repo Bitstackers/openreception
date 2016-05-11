@@ -39,13 +39,13 @@ abstract class ModelReceptionAttributes {
             JSON.decode(JSON.encode(builtObject)));
 
     expect(builtObject.receptionId, equals(deserializedObject.receptionId));
-    expect(builtObject.contactId, equals(deserializedObject.contactId));
+    expect(builtObject.cid, equals(deserializedObject.cid));
 
     {
       Iterable<Map> lhsPn =
-          builtObject.phones.map((Model.PhoneNumber pn) => pn.toJson());
+          builtObject.phoneNumbers.map((Model.PhoneNumber pn) => pn.toJson());
       Iterable<Map> rhsPn =
-          deserializedObject.phones.map((Model.PhoneNumber pn) => pn.toJson());
+          deserializedObject.phoneNumbers.map((Model.PhoneNumber pn) => pn.toJson());
 
       expect(lhsPn, equals(rhsPn));
     }
@@ -57,7 +57,7 @@ abstract class ModelReceptionAttributes {
         builtObject.emailaddresses, equals(deserializedObject.emailaddresses));
     expect(builtObject.handling, equals(deserializedObject.handling));
     expect(builtObject.infos, equals(deserializedObject.infos));
-    expect(builtObject.statusEmail, equals(deserializedObject.statusEmail));
+
     expect(builtObject.titles, equals(deserializedObject.titles));
     expect(builtObject.relations, equals(deserializedObject.relations));
     expect(builtObject.responsibilities,
@@ -71,11 +71,11 @@ abstract class ModelReceptionAttributes {
   static Model.ReceptionAttributes buildObject() {
     final int receptionId = 2;
     final int contactId = 3;
-    final bool statusEmail = false;
+
     final List<Model.PhoneNumber> pn = [
       new Model.PhoneNumber.empty()
         ..confidential = true
-        ..description = 'Fluid connection'
+        ..note = 'Fluid connection'
         ..destination = '-0045 32112345'
     ];
 
@@ -94,9 +94,8 @@ abstract class ModelReceptionAttributes {
     Model.ReceptionAttributes builtObject =
         new Model.ReceptionAttributes.empty()
           ..receptionId = receptionId
-          ..contactId = contactId
-          ..statusEmail = statusEmail
-          ..phones.addAll(pn)
+          ..cid = contactId
+          ..phoneNumbers.addAll(pn)
           ..backupContacts = backupContacts
           ..departments = departments
           ..emailaddresses = emailaddresses
@@ -110,9 +109,9 @@ abstract class ModelReceptionAttributes {
           ..messagePrerequisites = messagePrerequisites;
 
     expect(builtObject.receptionId, equals(receptionId));
-    expect(builtObject.contactId, equals(contactId));
-    expect(builtObject.statusEmail, equals(statusEmail));
-    expect(builtObject.phones, equals(pn));
+    expect(builtObject.cid, equals(contactId));
+
+    expect(builtObject.phoneNumbers, equals(pn));
     expect(builtObject.backupContacts, equals(backupContacts));
     expect(builtObject.departments, equals(departments));
     expect(builtObject.emailaddresses, equals(emailaddresses));

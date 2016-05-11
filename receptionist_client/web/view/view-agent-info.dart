@@ -54,20 +54,26 @@ class AgentInfo extends ViewWidget {
     });
   }
 
-  @override Controller.Destination get _destination => null;
-  @override Model.UIAgentInfo get _ui => _uiModel;
+  @override
+  Controller.Destination get _destination => null;
+  @override
+  Model.UIAgentInfo get _ui => _uiModel;
 
-  @override void _onBlur(Controller.Destination _) {}
-  @override void _onFocus(Controller.Destination _) {}
+  @override
+  void _onBlur(Controller.Destination _) {}
+  @override
+  void _onFocus(Controller.Destination _) {}
 
   /**
    * Update the users state in the UI.
    */
   Future _reloadUserState() async {
     await _user.list().then((users) async {
-      await Future.forEach (users, ((user) async {
-        _userPeer[user.id] = (await _user.get(user.id)).peer;
-      }));
+      await Future.forEach(
+          users,
+          ((user) async {
+            _userPeer[user.id] = (await _user.get(user.id)).extension;
+          }));
     });
 
     await _user.stateList().then((status) {

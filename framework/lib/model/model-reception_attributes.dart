@@ -53,16 +53,10 @@ class ReceptionAttributeChange implements ObjectChange {
 class ReceptionAttributes {
   static const String noId = '';
 
-  int contactId = BaseContact.noId;
+  int cid = BaseContact.noId;
   int receptionId = Reception.noId;
 
-  /**
-   * Imported flag from old system. Signifies that a user wishes to recieve
-   * status emails from us.
-   */
-  bool statusEmail = true;
-
-  List<PhoneNumber> phones = [];
+  List<PhoneNumber> phoneNumbers = [];
   List<MessageEndpoint> endpoints = [];
 
   List<String> backupContacts = [];
@@ -82,10 +76,10 @@ class ReceptionAttributes {
       new ReceptionAttributes.fromMap(map);
 
   Map toJson() => {
-        Key.cid: contactId,
+        Key.cid: cid,
         Key.rid: receptionId,
         Key.departments: departments,
-        Key.phones: new List<Map>.from(phones.map((p) => p.toJson())),
+        Key.phones: new List<Map>.from(phoneNumbers.map((p) => p.toJson())),
         Key.endpoints: new List<Map>.from(endpoints.map((e) => e.toJson())),
         Key.backup: backupContacts,
         Key.emailaddresses: emailaddresses,
@@ -96,20 +90,19 @@ class ReceptionAttributes {
         Key.titles: titles,
         Key.relations: relations,
         Key.responsibilities: responsibilities,
-        Key.messagePrerequisites: messagePrerequisites,
-        Key.statusEmail: statusEmail
+        Key.messagePrerequisites: messagePrerequisites
       };
 
   /**
    *
    */
   ReceptionAttributes.fromMap(Map map)
-      : phones =
+      : phoneNumbers =
             new List<PhoneNumber>.from(map[Key.phones].map(PhoneNumber.decode)),
         endpoints = new List<MessageEndpoint>.from(
             map[Key.endpoints].map(MessageEndpoint.decode)),
         receptionId = map[Key.rid],
-        contactId = map[Key.cid],
+        cid = map[Key.cid],
         departments = map[Key.departments] as List<String>,
         messagePrerequisites = map[Key.messagePrerequisites] as List<String>,
         backupContacts = map[Key.backup] as List<String>,
@@ -120,14 +113,13 @@ class ReceptionAttributes {
         infos = map[Key.infos] as List<String>,
         titles = map[Key.titles] as List<String>,
         relations = map[Key.relations] as List<String>,
-        responsibilities = map[Key.responsibilities] as List<String>,
-        statusEmail = map[Key.statusEmail];
+        responsibilities = map[Key.responsibilities] as List<String>;
 
   /**
    * [Contact] empty constructor.
    */
   ReceptionAttributes.empty();
 
-  bool get isEmpty => contactId == BaseContact.noId;
+  bool get isEmpty => cid == BaseContact.noId;
   bool get isNotEmpty => !isEmpty;
 }

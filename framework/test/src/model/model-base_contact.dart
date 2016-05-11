@@ -41,7 +41,7 @@ abstract class ModelBaseContact {
     expect(builtObject.id, equals(deserializedObject.id));
     expect(builtObject.enabled, equals(deserializedObject.enabled));
     expect(builtObject.name, equals(deserializedObject.name));
-    expect(builtObject.contactType, equals(deserializedObject.contactType));
+    expect(builtObject.type, equals(deserializedObject.type));
   }
 
   static Model.BaseContact buildObject() {
@@ -54,12 +54,12 @@ abstract class ModelBaseContact {
       ..id = id
       ..enabled = enabled
       ..name = fullName
-      ..contactType = contactType;
+      ..type = contactType;
 
     expect(builtObject.id, equals(id));
     expect(builtObject.enabled, equals(enabled));
     expect(builtObject.name, equals(fullName));
-    expect(builtObject.contactType, equals(contactType));
+    expect(builtObject.type, equals(contactType));
 
     return builtObject;
   }

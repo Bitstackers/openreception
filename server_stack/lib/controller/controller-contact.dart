@@ -244,7 +244,7 @@ class Contact {
     final ref = await _contactStore.addData(attr, modifier);
 
     event.ContactChange changeEvent =
-        new event.ContactChange.create(attr.contactId, modifier.id);
+        new event.ContactChange.create(attr.cid, modifier.id);
 
     _notification.broadcastEvent(changeEvent);
 
@@ -284,7 +284,7 @@ class Contact {
     try {
       final ref = await _contactStore.updateData(attr, modifier);
       event.ContactChange changeEvent =
-          new event.ContactChange.update(attr.contactId, modifier.id);
+          new event.ContactChange.update(attr.cid, modifier.id);
 
       _notification.broadcastEvent(changeEvent);
 

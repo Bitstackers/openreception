@@ -31,7 +31,7 @@ abstract class User {
     expect(created.address, equals(fetched.address));
     expect(created.id, equals(fetched.id));
     expect(created.name, equals(fetched.name));
-    expect(created.peer, equals(fetched.peer));
+    expect(created.extension, equals(fetched.extension));
     expect(created.portrait, equals(fetched.portrait));
     expect(created.groups, equals(fetched.groups));
     expect(created.identities, equals(fetched.identities));
@@ -53,7 +53,7 @@ abstract class User {
     expect(created.id, isNotNull);
     expect(created.id, greaterThan(model.User.noId));
     expect(created.name, equals(newUser.name));
-    expect(created.peer, equals(newUser.peer));
+    expect(created.extension, equals(newUser.extension));
     expect(created.portrait, equals(newUser.portrait));
     expect(created.groups, equals(newUser.groups));
     expect(created.identities, equals(newUser.identities));
@@ -84,7 +84,7 @@ abstract class User {
     expect(changed.address, equals(fetched.address));
     expect(changed.id, equals(fetched.id));
     expect(changed.name, equals(fetched.name));
-    expect(changed.peer, equals(fetched.peer));
+    expect(changed.extension, equals(fetched.extension));
     expect(changed.portrait, equals(fetched.portrait));
     expect(changed.groups, equals(fetched.groups));
     expect(changed.identities, equals(fetched.identities));
@@ -320,7 +320,7 @@ abstract class User {
     expect(created.enabled, equals(fetched.enabled));
     expect(created.id, equals(fetched.id));
     expect(created.name, equals(fetched.name));
-    expect(created.peer, equals(fetched.peer));
+    expect(created.extension, equals(fetched.extension));
     expect(created.portrait, equals(fetched.portrait));
     expect(created.groups, equals(fetched.groups));
     expect(created.identities, equals(fetched.identities));

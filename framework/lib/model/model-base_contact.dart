@@ -148,8 +148,8 @@ class BaseContact {
   int id = noId;
   String name = '';
 
-  ///TODO: Rename to type and turn into enum.
-  String contactType = '';
+  ///TODO: Turn into enum.
+  String type = '';
   bool enabled = true;
 
   /**
@@ -168,18 +168,14 @@ class BaseContact {
   BaseContact.fromMap(Map map)
       : id = map[Key.id],
         name = map[Key.name],
-        contactType = map[Key.contactType],
+        type = map[Key.contactType],
         enabled = map[Key.enabled];
 
   /**
    *
    */
-  Map toJson() => {
-        Key.id: id,
-        Key.name: name,
-        Key.contactType: contactType,
-        Key.enabled: enabled
-      };
+  Map toJson() =>
+      {Key.id: id, Key.name: name, Key.contactType: type, Key.enabled: enabled};
 
   /**
    *

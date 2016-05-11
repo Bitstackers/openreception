@@ -70,12 +70,12 @@ abstract class Call {
     }
 
     ///There is an active call, update the peer state.
-    Model.peerlist.get(user.peer).inTransition = true;
+    Model.peerlist.get(user.extension).inTransition = true;
 
     ///Perfrom the hangup
     try {
       await Controller.PBX.killChannel(call.channel);
-      Model.peerlist.get(user.peer).inTransition = false;
+      Model.peerlist.get(user.extension).inTransition = false;
 
       return new shelf.Response.ok('{}');
     } catch (error, stackTrace) {
@@ -83,7 +83,7 @@ abstract class Call {
       log.severe(msg, error, stackTrace);
 
       /// We can no longer assume anything about the users' state.
-      Model.peerlist.get(user.peer).inTransition = false;
+      Model.peerlist.get(user.extension).inTransition = false;
 
       return serverError(msg);
     }
@@ -131,7 +131,7 @@ abstract class Call {
       return new shelf.Response.notFound(JSON.encode({'call_id': callID}));
     }
 
-    ORModel.Peer peer = Model.peerlist.get(user.peer);
+    ORModel.Peer peer = Model.peerlist.get(user.extension);
 
     /// Update peer state.
     peer.inTransition = true;
@@ -224,12 +224,12 @@ abstract class Call {
     }
 
     /// Retrieve peer information.
-    peer = Model.peerlist.get(user.peer);
+    peer = Model.peerlist.get(user.extension);
 
     /// The user has not registered its peer to transfer the call to. Abort.
     if (peer == null || !peer.registered) {
       return clientError('User with id ${user.id} has no peer '
-          '(peer: ${user.peer}) available');
+          '(peer: ${user.extension}) available');
     }
 
     /// The user has no reachable phone to transfer the call to. Abort.
@@ -430,7 +430,7 @@ abstract class Call {
     }
 
     /// Retrieve peer information.
-    peer = Model.peerlist.get(user.peer);
+    peer = Model.peerlist.get(user.extension);
 
     /// The user has not registered its peer to transfer the call to. Abort.
     if (peer == null) {
@@ -582,7 +582,7 @@ abstract class Call {
       return serverError(msg);
     }
 
-    ORModel.Peer peer = Model.peerlist.get(user.peer);
+    ORModel.Peer peer = Model.peerlist.get(user.extension);
 
     /// Update peer state.
     peer.inTransition = true;

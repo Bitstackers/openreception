@@ -543,7 +543,7 @@ abstract class Randomizer {
 
   static model.PhoneNumber randomPhone() => new model.PhoneNumber.empty()
     ..confidential = rand.nextBool()
-    ..description = randomDialplanNote()
+    ..note = randomDialplanNote()
     ..destination = randomPhoneNumber();
 
   /**
@@ -552,7 +552,7 @@ abstract class Randomizer {
   static model.User randomUser() => new model.User.empty()
     ..address = randomUserEmail()
     ..name = randomUsername()
-    ..peer = randomPeer();
+    ..extension = randomPeer();
 
   static String randomLocalExtension() => rand.nextInt(501).toString();
 
@@ -573,7 +573,7 @@ abstract class Randomizer {
         ..name = randomCompany();
 
   static model.BaseContact randomBaseContact() => new model.BaseContact.empty()
-    ..contactType = randomContactType()
+    ..type = randomContactType()
     ..name = randomContactName()
     ..enabled = rand.nextBool();
 
@@ -593,7 +593,8 @@ abstract class Randomizer {
             new List.generate(rand.nextInt(3) + 1, (_) => randomDialplanNote())
         ..messagePrerequisites =
             new List.generate(rand.nextInt(3) + 1, (_) => randomHandling())
-        ..phones = new List.generate(rand.nextInt(3) + 1, (_) => randomPhone())
+        ..phoneNumbers =
+            new List.generate(rand.nextInt(3) + 1, (_) => randomPhone())
         ..relations =
             new List.generate(rand.nextInt(3) + 1, (_) => randomCallerName())
         ..responsibilities =
@@ -627,7 +628,6 @@ abstract class Randomizer {
     ..greeting = randomString(10)
     ..handlingInstructions =
         new List.generate(rand.nextInt(3) + 1, (_) => randomHandling())
-    ..lastChecked = new DateTime.now()
     ..openingHours = new List.generate(
         rand.nextInt(3), (_) => randomOpeningHour().toString())
     ..otherData = randomString(10)
@@ -635,12 +635,12 @@ abstract class Randomizer {
     ..salesMarketingHandling =
         new List.generate(rand.nextInt(3) + 1, (_) => randomHandling())
     ..shortGreeting = randomString(10)
-    ..telephoneNumbers =
+    ..phoneNumbers =
         new List.generate(rand.nextInt(3) + 1, (_) => randomPhone())
     ..vatNumbers =
         new List.generate(rand.nextInt(3) + 1, (_) => randomHandling())
     ..websites = new List.generate(rand.nextInt(3) + 1, (_) => randomHandling())
-    ..organizationId = model.Organization.noId;
+    ..oid = model.Organization.noId;
 
   /**
    * Constructs and returns a [Message] object with random content.

@@ -18,18 +18,11 @@ part of openreception.framework.model;
  */
 abstract class MessageEndpointType {
   static const String sms = 'sms';
-  static const String email = 'email';
   static const String emailTo = 'email-to';
   static const String emailCc = 'email-cc';
   static const String emailBcc = 'email-bcc';
 
-  static const List<String> types = const [
-    sms,
-    email,
-    emailTo,
-    emailCc,
-    emailBcc
-  ];
+  static const List<String> types = const [sms, emailTo, emailCc, emailBcc];
 }
 
 /**

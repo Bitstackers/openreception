@@ -97,7 +97,7 @@ class UIContactSelector extends UIModel {
         ..dataset['tags'] = tags.join(',').toLowerCase()
         ..dataset['object'] = JSON.encode(item)
         ..classes.addAll(item.contact.enabled ? [] : ['disabled'])
-        ..classes.addAll(item.contact.contactType == 'function' ? ['function'] : [])
+        ..classes.addAll(item.contact.type == 'function' ? ['function'] : [])
         ..text = item.contact.name);
     });
 

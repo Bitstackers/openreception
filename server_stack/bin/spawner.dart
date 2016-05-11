@@ -25,7 +25,7 @@ const int maxRandomInt = (1 << 32) - 1;
 
 void main(List<String> arguments) {
   String serverTokenDir = '/tmp/tokens${rand.nextInt(maxRandomInt)}';
-  String fileStoreDir = '/tmp/z5svC3';
+  String fileStoreDir = '/tmp/9JtQNs';
 
   if (arguments.length > 0) {
     serverTokenDir = arguments[0];

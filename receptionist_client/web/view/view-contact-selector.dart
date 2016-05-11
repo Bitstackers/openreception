@@ -35,11 +35,15 @@ class ContactSelector extends ViewWidget {
     _observers();
   }
 
-  @override Controller.Destination get _destination => _myDestination;
-  @override Model.UIContactSelector get _ui => _uiModel;
+  @override
+  Controller.Destination get _destination => _myDestination;
+  @override
+  Model.UIContactSelector get _ui => _uiModel;
 
-  @override void _onBlur(Controller.Destination _) {}
-  @override void _onFocus(Controller.Destination _) {}
+  @override
+  void _onBlur(Controller.Destination _) {}
+  @override
+  void _onFocus(Controller.Destination _) {}
 
   /**
    * Activate this widget if it's not already activated.
@@ -71,15 +75,17 @@ class ContactSelector extends ViewWidget {
           .list(reception.reference)
           .then((Iterable<ORModel.ReceptionContact> contacts) {
         int nameSort(ORModel.ReceptionContact x, ORModel.ReceptionContact y) =>
-            x.contact.name.toLowerCase().compareTo(y.contact.name.toLowerCase());
+            x.contact.name
+                .toLowerCase()
+                .compareTo(y.contact.name.toLowerCase());
 
         final List<ORModel.ReceptionContact> functionContacts = contacts
             .where((ORModel.ReceptionContact rc) =>
-                rc.contact.enabled && rc.contact.contactType == 'function')
+                rc.contact.enabled && rc.contact.type == 'function')
             .toList()..sort(nameSort);
         final List<ORModel.ReceptionContact> humanContacts = contacts
             .where((ORModel.ReceptionContact rc) =>
-                rc.contact.enabled && rc.contact.contactType == 'human')
+                rc.contact.enabled && rc.contact.type == 'human')
             .toList()..sort(nameSort);
         final List<ORModel.ReceptionContact> disabledContacts = contacts
             .where((ORModel.ReceptionContact rc) => !rc.contact.enabled)
@@ -89,7 +95,6 @@ class ContactSelector extends ViewWidget {
           ..addAll(functionContacts)
           ..addAll(humanContacts)
           ..addAll(disabledContacts);
-
 
         _ui.selectFirstContact();
       });

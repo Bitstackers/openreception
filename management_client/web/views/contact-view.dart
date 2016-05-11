@@ -197,8 +197,8 @@ class ContactView {
 
   void set baseContact(model.BaseContact bc) {
     _nameInput.value = bc.name;
-    _typeInput.options.forEach((OptionElement option) =>
-        option.selected = option.value == bc.contactType);
+    _typeInput.options.forEach(
+        (OptionElement option) => option.selected = option.value == bc.type);
     _enabledInput.checked = bc.enabled;
 
     _importButton.text = 'Importer';
@@ -229,7 +229,7 @@ class ContactView {
   model.BaseContact get baseContact => new model.BaseContact.empty()
     ..id = int.parse(_bcidInput.value)
     ..enabled = _enabledInput.checked
-    ..contactType = _typeInput.value
+    ..type = _typeInput.value
     ..name = _nameInput.value;
 
   /**
@@ -333,7 +333,7 @@ class ContactView {
           await Future.wait(rRefs.map((model.ReceptionReference rRef) async {
             final model.ReceptionAttributes contactData =
                 await _contactController.getByReception(sourceCid, rRef.id);
-            contactData.contactId = dcid;
+            contactData.cid = dcid;
             contactData.receptionId = rRef.id;
             await _contactController.addToReception(contactData);
           }));
@@ -432,7 +432,7 @@ class ContactView {
 
     _nameInput.value = contact.name;
     _typeInput.options.forEach((OptionElement option) =>
-        option.selected = option.value == contact.contactType);
+        option.selected = option.value == contact.type);
     _enabledInput.checked = contact.enabled;
     _header.text = 'Basisinfo for ${contact.name} (cid: ${contact.id})';
 
@@ -523,7 +523,7 @@ class ContactView {
 
       model.ReceptionAttributes template = new model.ReceptionAttributes.empty()
         ..receptionId = rRef.id
-        ..contactId = int.parse(_bcidInput.value);
+        ..cid = int.parse(_bcidInput.value);
 
       _contactController
           .addToReception(template)

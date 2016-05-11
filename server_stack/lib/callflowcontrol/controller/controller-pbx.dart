@@ -85,10 +85,10 @@ abstract class PBX {
     final String callerIdNumber = config.callFlowControl.callerIdNumber;
     final int timeout = config.callFlowControl.originateTimeout;
 
-    ESL.Response response =
-        await api('originate {${aLegvariables.join(',')}}user/${user.peer} '
-            '&bridge([${bLegvariables.join(',')}]sofia/external/${extension}) '
-            '${_dialplan} $callerIdName $callerIdNumber $timeout');
+    ESL.Response response = await api(
+        'originate {${aLegvariables.join(',')}}user/${user.extension} '
+        '&bridge([${bLegvariables.join(',')}]sofia/external/${extension}) '
+        '${_dialplan} $callerIdName $callerIdNumber $timeout');
 
     if (response.status != ESL.Response.OK) {
       throw new StateError('ESL returned ${response.rawBody}');
@@ -112,10 +112,10 @@ abstract class PBX {
       {Map<String, String> extravars: const {}}) async {
     final int msecs = new DateTime.now().millisecondsSinceEpoch;
     final String newCallUuid = 'agent-${user.id}-${msecs}';
-    final String destination = 'user/${user.peer}';
+    final String destination = 'user/${user.extension}';
 
     _log.finest('New uuid: $newCallUuid');
-    _log.finest('Dialing receptionist at user/${user.peer}');
+    _log.finest('Dialing receptionist at user/${user.extension}');
 
     final String callerIdNumber = config.callFlowControl.callerIdNumber;
 
@@ -168,10 +168,10 @@ abstract class PBX {
   static Future<String> createAgentChannelBg(ORModel.User user) async {
     final int msecs = new DateTime.now().millisecondsSinceEpoch;
     final String newCallUuid = 'agent-${user.id}-${msecs}';
-    final String destination = 'user/${user.peer}';
+    final String destination = 'user/${user.extension}';
 
     _log.finest('New uuid: $newCallUuid');
-    _log.finest('Dialing receptionist at user/${user.peer}');
+    _log.finest('Dialing receptionist at user/${user.extension}');
 
     final String callerIdNumber = config.callFlowControl.callerIdNumber;
 
@@ -236,7 +236,7 @@ abstract class PBX {
 
   static Future transferUUIDToExtension(
       String uuid, String extension, ORModel.User user, String context) async {
-    await api('uuid_setvar $uuid effective_caller_id_number ${user.peer}');
+    await api('uuid_setvar $uuid effective_caller_id_number ${user.extension}');
     await api('uuid_setvar $uuid effective_caller_id_name ${user.address}');
     final ESL.Reply reply = await bgapi(
         'uuid_transfer $uuid external_transfer_$extension xml reception-$context');
@@ -273,7 +273,7 @@ abstract class PBX {
     final int timeout = config.callFlowControl.originateTimeout;
 
     final String command =
-        'originate {${variables.join(',')}}user/${user.peer} ${recordExtension} ${_dialplan} $callerIdName $callerIdNumber $timeout';
+        'originate {${variables.join(',')}}user/${user.extension} ${recordExtension} ${_dialplan} $callerIdName $callerIdNumber $timeout';
     return api(command).then((ESL.Response response) {
       if (response.status != ESL.Response.OK) {
         throw new StateError('ESL returned ${response.rawBody}');

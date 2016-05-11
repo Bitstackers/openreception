@@ -206,7 +206,7 @@ abstract class Contact {
     final fetched = await sa.contactStore.get(contact.id);
 
     expect(contact.id, equals(fetched.id));
-    expect(contact.contactType, equals(fetched.contactType));
+    expect(contact.type, equals(fetched.type));
     expect(contact.enabled, equals(fetched.enabled));
     expect(contact.name, equals(fetched.name));
     expect(contact.reference.toJson(), equals(fetched.reference.toJson()));
@@ -245,7 +245,7 @@ abstract class Contact {
     final fetched = await sa.contactStore.get(ref.id);
 
     expect(contact.id, equals(fetched.id));
-    expect(contact.contactType, equals(fetched.contactType));
+    expect(contact.type, equals(fetched.type));
     expect(contact.enabled, equals(fetched.enabled));
     expect(contact.name, equals(fetched.name));
     expect(contact.reference.toJson(), equals(fetched.reference.toJson()));
@@ -309,7 +309,7 @@ abstract class Contact {
 
     expect(ref.id, equals(fetched.id));
     expect(updated.id, equals(fetched.id));
-    expect(updated.contactType, equals(fetched.contactType));
+    expect(updated.type, equals(fetched.type));
     expect(updated.enabled, equals(fetched.enabled));
     expect(updated.name, equals(fetched.name));
     expect(updated.reference.toJson(), equals(fetched.reference.toJson()));
@@ -461,14 +461,14 @@ abstract class Contact {
 
     final phones = [Randomizer.randomPhone(), Randomizer.randomPhone()];
 
-    attr.phones = phones;
+    attr.phoneNumbers = phones;
 
     await sa.contactStore.updateData(attr, sa.user);
 
     final model.ReceptionAttributes attrUpdated =
         await sa.contactStore.data(con.id, rec.id);
 
-    expect(attrUpdated.phones.toList(), equals(phones.toList()));
+    expect(attrUpdated.phoneNumbers.toList(), equals(phones.toList()));
   }
 
   /**
@@ -486,7 +486,7 @@ abstract class Contact {
     expect(rRefs.length, equals(0));
 
     final attr = Randomizer.randomAttributes()
-      ..contactId = con.id
+      ..cid = con.id
       ..receptionId = rec.id;
 
     await sa.contactStore.addData(attr, sa.user);
@@ -510,7 +510,7 @@ abstract class Contact {
     expect(cRefs.length, equals(0));
 
     final attr = Randomizer.randomAttributes()
-      ..contactId = con.id
+      ..cid = con.id
       ..receptionId = rec.id;
 
     {
@@ -521,7 +521,7 @@ abstract class Contact {
     }
 
     final updated = Randomizer.randomAttributes()
-      ..contactId = con.id
+      ..cid = con.id
       ..receptionId = rec.id;
 
     {
@@ -687,7 +687,7 @@ abstract class Contact {
     expect(rRefs.length, equals(0));
 
     final attr = Randomizer.randomAttributes()
-      ..contactId = con.id
+      ..cid = con.id
       ..receptionId = rec.id;
 
     await sa.contactStore.addData(attr, sa.user);
@@ -742,7 +742,7 @@ abstract class Contact {
     expect(rRefs.length, equals(0));
 
     final attr = Randomizer.randomAttributes()
-      ..contactId = con.id
+      ..cid = con.id
       ..receptionId = rec.id;
 
     await sa.contactStore.addData(attr, sa.user);
@@ -798,7 +798,7 @@ abstract class Contact {
     expect(rRefs.length, equals(0));
 
     final attr = Randomizer.randomAttributes()
-      ..contactId = con.id
+      ..cid = con.id
       ..receptionId = rec.id;
 
     await sa.contactStore.addData(attr, sa.user);

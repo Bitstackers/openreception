@@ -18,15 +18,8 @@ import 'dart:io' as io;
 
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.framework/storage.dart' as storage;
 import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/controller/controller-config.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-user.dart'
-    as controller;
 import 'package:openreception.server/response_utils.dart';
-import 'package:openreception.server/router/router-config.dart' as routing;
-import 'package:openreception.server/router/router-user.dart' as routing;
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;

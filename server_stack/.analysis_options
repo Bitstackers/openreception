@@ -1,7 +1,7 @@
 analyzer:
   exclude:
     - .pub-cache/
-#  strong-mode: true
+  strong-mode: true
 linter:
   rules:
     - camel_case_types

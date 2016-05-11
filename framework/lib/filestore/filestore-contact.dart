@@ -54,7 +54,7 @@ class Contact implements storage.Contact {
     if (attr.receptionId == model.Reception.noId) {
       throw new ArgumentError('attr.receptionId must be valid');
     }
-    final recDir = new Directory('$path/${attr.contactId}/receptions');
+    final recDir = new Directory('$path/${attr.cid}/receptions');
     if (!recDir.existsSync()) {
       recDir.createSync(recursive: true);
     }
@@ -77,7 +77,7 @@ class Contact implements storage.Contact {
     await _git.add(
         file,
         'uid:${modifier.id} - ${modifier.name} '
-        'added ${attr.contactId} to ${attr.receptionId}',
+        'added ${attr.cid} to ${attr.receptionId}',
         _authorString(modifier));
   }
 
@@ -210,7 +210,7 @@ class Contact implements storage.Contact {
     Set<model.OrganizationReference> orgs = new Set();
     await Future.wait(rRefs.map((rid) async {
       orgs.add(new model.OrganizationReference(
-          (await _receptionStore.get(rid.id)).organizationId, ''));
+          (await _receptionStore.get(rid.id)).oid, ''));
     }));
 
     return orgs;
@@ -317,10 +317,10 @@ class Contact implements storage.Contact {
    *
    */
   Future updateData(model.ReceptionAttributes attr, model.User modifier) async {
-    if (attr.contactId == model.BaseContact.noId) {
+    if (attr.cid == model.BaseContact.noId) {
       throw new storage.ClientError('Empty id');
     }
-    final recDir = new Directory('$path/${attr.contactId}/receptions');
+    final recDir = new Directory('$path/${attr.cid}/receptions');
     final File file = new File('${recDir.path}/${attr.receptionId}.json');
     if (!file.existsSync()) {
       throw new storage.NotFound('No file ${file}');
@@ -337,7 +337,7 @@ class Contact implements storage.Contact {
     await _git.add(
         file,
         'uid:${modifier.id} - ${modifier.name} '
-        'updated ${attr.contactId} in ${attr.receptionId}',
+        'updated ${attr.cid} in ${attr.receptionId}',
         _authorString(modifier));
   }
 

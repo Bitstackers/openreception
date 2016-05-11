@@ -53,9 +53,7 @@ class Reception implements storage.Reception {
             .then(JSON.decode)
             .then(model.Reception.decode))));
 
-    return receptions
-        .where((r) => r.organizationId == id)
-        .map((r) => r.reference);
+    return receptions.where((r) => r.oid == id).map((r) => r.reference);
   }
 
   /**

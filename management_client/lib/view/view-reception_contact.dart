@@ -217,7 +217,7 @@ class ReceptionContact {
 
       /// Reload the contact.
       attributes = await _contactController.getByReception(
-          attributes.contactId, attributes.receptionId);
+          attributes.cid, attributes.receptionId);
     });
 
     _deleteButton.onClick.listen((_) async {
@@ -231,7 +231,7 @@ class ReceptionContact {
 
       try {
         await _contactController.removeFromReception(
-            attributes.contactId, attributes.receptionId);
+            attributes.cid, attributes.receptionId);
         notify.success(
             'Receptions-kontakt fjernet fra reception', '${_header.text}');
         element.remove();
@@ -268,7 +268,7 @@ class ReceptionContact {
   model.ReceptionAttributes get attributes =>
       new model.ReceptionAttributes.empty()
         ..endpoints = _endpointsView.endpoints.toList(growable: false)
-        ..contactId = int.parse(_cidInput.value)
+        ..cid = int.parse(_cidInput.value)
         ..receptionId = int.parse(_ridInput.value)
         ..backupContacts = _valuesFromListTextArea(_backupContactsInput)
         ..departments = _valuesFromListTextArea(_departmentsInput)
@@ -284,11 +284,11 @@ class ReceptionContact {
             _valuesFromListTextArea(_tagsInput).toSet().toList(growable: false)
         ..titles = _valuesFromListTextArea(_titlesInput)
         ..workhours = _valuesFromListTextArea(_workHoursInput)
-        ..phones = _phoneNumberView.phoneNumbers.toList();
+        ..phoneNumbers = _phoneNumberView.phoneNumbers.toList();
 
   void set attributes(model.ReceptionAttributes contact) {
     _ridInput.value = contact.receptionId.toString();
-    _cidInput.value = contact.contactId.toString();
+    _cidInput.value = contact.cid.toString();
 
     _tagsInput.value = contact.tags.join('\n');
     _statusEmailInput.checked = contact.statusEmail;
@@ -302,7 +302,7 @@ class ReceptionContact {
     _emailAddessesInput.value = contact.emailaddresses.join('\n');
     _messagePrerequisiteInput.value = contact.messagePrerequisites.join('\n');
 
-    _phoneNumberView.phoneNumbers = contact.phones;
+    _phoneNumberView.phoneNumbers = contact.phoneNumbers;
     _workHoursInput.value = contact.workhours.join('\n');
 
     _endpointsView.endpoints = contact.endpoints;

@@ -137,7 +137,7 @@ class Reception {
   void set reception(model.Reception r) {
     _calendarsContainer..hidden = true;
     _calendarToggle..text = 'Vis kalenderaftaler';
-    _organizationId = r.organizationId;
+    _organizationId = r.oid;
     _heading.text = r.name;
     _idInput.value = r.id.toString();
 
@@ -147,14 +147,14 @@ class Reception {
     _shortGreetingInput.value = r.shortGreeting;
     _dialplanInput.value = r.dialplan != null ? r.dialplan : 'empty';
 
-    _lastChecked.text = r.lastChecked.isAtSameMomentAs(util.never)
+    _lastChecked.text = r.lastModified.isAtSameMomentAs(util.never)
         ? 'Sidst checket: Aldrig'
-        : 'Sidst checket: ${r.lastChecked}';
+        : 'Sidst checket: ${r.lastModified}';
 
     _activeInput.checked = r.enabled;
     _extraDataInput.value = r.extraData != null ? r.extraData.toString() : '';
 
-    _phoneNumberView.phoneNumbers = r.telephoneNumbers;
+    _phoneNumberView.phoneNumbers = r.phoneNumbers;
 
     _addressesInput.value = r.addresses != null ? r.addresses.join('\n') : '';
 
@@ -227,7 +227,7 @@ class Reception {
       _search.updateSourceList(list);
 
       _search.selectElement(null, (model.OrganizationReference listItem, _) {
-        return listItem.id == r.organizationId;
+        return listItem.id == r.oid;
       });
 
       element.hidden = false;
@@ -253,12 +253,12 @@ class Reception {
     ..handlingInstructions = _valuesFromListTextArea(_instructionsInput)
     ..miniWiki = _miniWikiInput.value
     ..openingHours = _valuesFromListTextArea(_openingHoursInput)
-    ..organizationId = _organizationId
+    ..oid = _organizationId
     ..otherData = _otherDataInput.value
     ..product = _productInput.value
     ..salesMarketingHandling =
         _valuesFromListTextArea(_salesMarketingHandlingInput)
-    ..telephoneNumbers = _phoneNumberView.phoneNumbers.toList()
+    ..phoneNumbers = _phoneNumberView.phoneNumbers.toList()
     ..vatNumbers = _valuesFromListTextArea(_vatNumbersInput)
     ..websites = _valuesFromListTextArea(_websitesInput);
 

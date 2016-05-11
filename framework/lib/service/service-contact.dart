@@ -103,8 +103,8 @@ class RESTContactStore implements Storage.Contact {
   }
 
   Future addData(Model.ReceptionAttributes attr, Model.User user) {
-    Uri url = Resource.Contact
-        .singleByReception(_host, attr.contactId, attr.receptionId);
+    Uri url =
+        Resource.Contact.singleByReception(_host, attr.cid, attr.receptionId);
     url = _appendToken(url, _token);
 
     return _backend.post(url, JSON.encode(attr));
@@ -129,8 +129,8 @@ class RESTContactStore implements Storage.Contact {
   }
 
   Future updateData(Model.ReceptionAttributes attr, Model.User modifier) {
-    Uri url = Resource.Contact
-        .singleByReception(_host, attr.contactId, attr.receptionId);
+    Uri url =
+        Resource.Contact.singleByReception(_host, attr.cid, attr.receptionId);
     url = _appendToken(url, _token);
 
     return _backend.put(url, JSON.encode(attr));

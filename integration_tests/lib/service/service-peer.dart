@@ -8,7 +8,7 @@ abstract class Peer {
    * changes registration status.
    */
   static Future eventPresence(Receptionist receptionist) async {
-    String peerName = receptionist.user.peer;
+    String peerName = receptionist.user.extension;
 
     log.info('Unregistering peer $peerName to assert state');
 

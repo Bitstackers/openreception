@@ -291,7 +291,7 @@ class ServiceAgent {
     await authProcess.addTokens([authToken]);
 
     final rUser = Randomizer.randomUser()
-      ..peer = _nextInternalPeerName
+      ..extension = _nextInternalPeerName
       ..groups = new Set<String>.from([model.UserGroups.receptionist]);
     await userStore.create(rUser, user);
 
@@ -300,7 +300,7 @@ class ServiceAgent {
     await authProcess.addTokens([userToken]);
 
     final model.PeerAccount account = new model.PeerAccount(
-        rUser.peer, rUser.name.hashCode.toString(), 'receptions');
+        rUser.extension, rUser.name.hashCode.toString(), 'receptions');
 
     _log.fine('Deploying account ${account.toJson()}');
     await paService.deployAccount(account, user.id);
@@ -329,7 +329,7 @@ class ServiceAgent {
     final registerEvent = (await notificationSocket).eventStream.firstWhere(
         (e) =>
             e is event.PeerState &&
-            e.peer.name == r.user.peer &&
+            e.peer.name == r.user.extension &&
             e.peer.registered);
 
     await r.initialize(callflowProcess.uri, notificationProcess.notifyUri);
@@ -523,7 +523,7 @@ class ServiceAgent {
       model.BaseContact contact, model.Reception rec) async {
     final attributes = Randomizer.randomAttributes();
     attributes
-      ..contactId = contact.id
+      ..cid = contact.id
       ..receptionId = rec.id;
 
     await contactStore.addData(attributes, user);
@@ -536,7 +536,7 @@ class ServiceAgent {
   Future<model.ReceptionContact> updatesReceptionAttributes(
       model.ReceptionAttributes attr) async {
     final attributes = Randomizer.randomAttributes()
-      ..contactId = attr.contactId
+      ..cid = attr.cid
       ..receptionId = attr.receptionId;
 
     return await contactStore.updateData(attributes, user);
@@ -556,7 +556,7 @@ class ServiceAgent {
   Future<model.Reception> createsReception(model.Organization org,
       [model.Reception rec]) async {
     final randRec = (rec != null ? rec : Randomizer.randomReception())
-      ..organizationId = org.id;
+      ..oid = org.id;
     final bc = await receptionStore.create(randRec, user);
 
     return receptionStore.get(bc.id);
@@ -567,7 +567,7 @@ class ServiceAgent {
    */
   Future<model.Reception> updatesReception(model.Reception rec) async {
     final randRec = Randomizer.randomReception()
-      ..organizationId = rec.organizationId
+      ..oid = rec.oid
       ..id = rec.id;
 
     final bc = await receptionStore.update(randRec, user);

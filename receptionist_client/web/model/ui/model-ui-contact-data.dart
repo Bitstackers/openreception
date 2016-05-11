@@ -117,7 +117,7 @@ class UIContactData extends UIModel {
       emailAddresses = cwfc.attr.emailaddresses;
       relations = cwfc.attr.relations;
       responsibility = cwfc.attr.responsibilities;
-      telephoneNumbers = cwfc.attr.phones;
+      telephoneNumbers = cwfc.attr.phoneNumbers;
       titles = cwfc.attr.titles;
       workHours = cwfc.attr.workhours;
 
@@ -304,7 +304,7 @@ class UIContactData extends UIModel {
       spanNumber.text = item.destination;
 
       spanLabel.classes.add('label');
-      spanLabel.text = item.description;
+      spanLabel.text = item.note;
 
       list.add(new LIElement()
         ..children.addAll([spanNumber, spanLabel])

@@ -2,10 +2,11 @@ part of openreception_tests.rest;
 
 /**
  * TODO: Add tests for both broadcast, send and FIFO message ordering.
+ * Add CORS tests
  */
 void _runNotificationTests() {
   group('$_namespace.Notification', () {
-    Logger log = new Logger('$_namespace.Notification');
+    //Logger log = new Logger('$_namespace.Notification');
 
     List<ServiceAgent> sas = new List<ServiceAgent>();
     TestEnvironment env;

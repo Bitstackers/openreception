@@ -18,28 +18,33 @@ part of openreception.framework.model;
  * contact.
  */
 class PhoneNumber {
-  String destination = '';
+  String get destination => _destination;
+  String _destination = '';
+  bool confidential = false;
+  String note = '';
 
-  ///TODO: Rename to note.
-  String description = '';
+  void set destination(String newDestination) {
+    try {
+      int.parse(_normalize(newDestination));
+    } on FormatException {
+      throw new ArgumentError.value(
+          newDestination, 'newDestination', 'Contains invalid characters');
+    }
 
-  Set<String> _tags = new Set<String>();
-  Iterable<String> get tags => _tags;
-
-  void set tags(Iterable<String> ts) {
-    _tags = new Set<String>.from(ts);
+    _destination = newDestination;
   }
 
-  bool confidential = false;
+  String get normalizedDestination => _normalize(destination);
+
+  String _normalize(String str) => str.replaceAll(' ', '').replaceAll('+', '');
 
   /**
    * Deserializing constructor.
    */
   PhoneNumber.fromMap(Map map)
-      : description = map[Key.description],
-        destination = map[Key.destination],
-        confidential = map[Key.confidential],
-        _tags = new Set<String>.from(map[Key.tags] as List<String>);
+      : note = map[Key.note],
+        _destination = map[Key.destination],
+        confidential = map[Key.confidential];
 
   /**
    *
@@ -65,7 +70,6 @@ class PhoneNumber {
   Map toJson() => {
         Key.destination: destination,
         Key.confidential: confidential,
-        Key.description: description,
-        Key.tags: tags.toList(growable: false)
+        Key.note: note
       };
 }

@@ -69,8 +69,8 @@ class Contact {
    */
   void set contact(model.BaseContact c) {
     _nameInput.value = c.name;
-    _typeInput.options.forEach((OptionElement option) =>
-        option.selected = option.value == c.contactType);
+    _typeInput.options.forEach(
+        (OptionElement option) => option.selected = option.value == c.type);
     _enabledInput.checked = c.enabled;
 
     _importButton.text = 'Importer';
@@ -96,8 +96,8 @@ class Contact {
         c.id == model.BaseContact.noId || _saveButton.disabled;
     element.hidden = false;
 
-    _typeInput.options.forEach((OptionElement option) =>
-        option.selected = option.value == c.contactType);
+    _typeInput.options.forEach(
+        (OptionElement option) => option.selected = option.value == c.type);
   }
 
   /**
@@ -106,7 +106,7 @@ class Contact {
   model.BaseContact get contact => new model.BaseContact.empty()
     ..id = int.parse(_bcidInput.value)
     ..enabled = _enabledInput.checked
-    ..contactType = _typeInput.value
+    ..type = _typeInput.value
     ..name = _nameInput.value;
 
   /**
@@ -279,7 +279,7 @@ class Contact {
           await Future.wait(rRefs.map((model.ReceptionReference rRef) async {
             final model.ReceptionAttributes contactData =
                 await _contactController.getByReception(sourceCid, rRef.id);
-            contactData.contactId = dcid;
+            contactData.cid = dcid;
             contactData.receptionId = rRef.id;
             await _contactController.addToReception(contactData);
           }));
@@ -329,7 +329,7 @@ class Contact {
       final model.ReceptionAttributes template =
           new model.ReceptionAttributes.empty()
             ..receptionId = rRef.id
-            ..contactId = contact.id;
+            ..cid = contact.id;
 
       await _contactController
           .addToReception(template)

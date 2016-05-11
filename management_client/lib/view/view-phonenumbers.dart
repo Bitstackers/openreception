@@ -49,7 +49,7 @@ class Phonenumbers {
     _addNew.onClick.listen((_) {
       final model.PhoneNumber pn = new model.PhoneNumber.empty()
         ..confidential = true
-        ..description = 'Kort beskrivelse'
+        ..note = 'Kort beskrivelse'
         ..destination = '00000000'
         ..tags = ['Kontor'];
 

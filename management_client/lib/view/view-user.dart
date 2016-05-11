@@ -170,7 +170,7 @@ class User {
     _userIdInput.value = u.id.toString();
     _userNameInput.value = u.name;
     _userSendFromInput.value = u.address;
-    _userExtensionInput.value = u.peer;
+    _userExtensionInput.value = u.extension;
 
     _groupsView.groups = u.groups;
     _identitiesView.identities = u.identities;
@@ -186,7 +186,7 @@ class User {
     ..address = _userSendFromInput.value
     ..groups = _groupsView.groups.toSet()
     ..identities = _identitiesView.identities.toSet()
-    ..peer = _userExtensionInput.value;
+    ..extension = _userExtensionInput.value;
 
   /**
    *

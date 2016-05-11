@@ -27,10 +27,14 @@ class UIReceptionTelephoneNumbers extends UIModel {
     _observers();
   }
 
-  @override HtmlElement get _firstTabElement => _list;
-  @override HtmlElement get _focusElement => _list;
-  @override HtmlElement get _lastTabElement => _list;
-  @override HtmlElement get _root => _myRoot;
+  @override
+  HtmlElement get _firstTabElement => _list;
+  @override
+  HtmlElement get _focusElement => _list;
+  @override
+  HtmlElement get _lastTabElement => _list;
+  @override
+  HtmlElement get _root => _myRoot;
 
   OListElement get _list => _root.querySelector('.generic-widget-list');
 
@@ -54,7 +58,10 @@ class UIReceptionTelephoneNumbers extends UIModel {
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
-    final Map<String, EventListener> bindings = {'Shift+Tab': _handleShiftTab, 'Tab': _handleTab};
+    final Map<String, EventListener> bindings = {
+      'Shift+Tab': _handleShiftTab,
+      'Tab': _handleTab
+    };
 
     _hotKeys.registerKeysPreventDefault(_keyboard, bindings);
   }
@@ -74,7 +81,7 @@ class UIReceptionTelephoneNumbers extends UIModel {
       spanNumber.text = item.destination;
 
       spanLabel.classes.add('label');
-      spanLabel.text = item.description;
+      spanLabel.text = item.note;
 
       list.add(new LIElement()
         ..children.addAll([spanNumber, spanLabel])

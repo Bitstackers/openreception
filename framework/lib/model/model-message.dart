@@ -36,10 +36,8 @@ class Message {
 
   Message.empty();
 
-  Iterable<MessageEndpoint> get emailTo =>
-      recipients.where((MessageEndpoint ep) =>
-          ep.type == MessageEndpointType.emailTo ||
-          ep.type == MessageEndpointType.email);
+  Iterable<MessageEndpoint> get emailTo => recipients
+      .where((MessageEndpoint ep) => ep.type == MessageEndpointType.emailTo);
 
   Iterable<MessageEndpoint> get emailCc => recipients
       .where((MessageEndpoint ep) => ep.type == MessageEndpointType.emailCc);

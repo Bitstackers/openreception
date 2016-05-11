@@ -107,7 +107,7 @@ class Contact {
     shelf.Middleware checkAuthentication = shelf.createMiddleware(
         requestHandler: _lookupToken, responseHandler: null);
 
-    var router = shelf_route.router();
+    final router = shelf_route.router();
     bindRoutes(router);
 
     var handler = const shelf.Pipeline()

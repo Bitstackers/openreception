@@ -55,7 +55,8 @@ class CallSummary {
     ..callsAnsweredWithin20s = map['below20s']
     ..callWaitingMoreThanOneMinute = map['oneminuteplus']
     ..callsUnAnswered = map['unanswered']
-    ..agentSummary = map['agentSummary'].map(AgentStat.decode).toList();
+    ..agentSummary =
+        new List<AgentStat>.from(map['agentSummary'].map(AgentStat.decode));
 }
 
 TableRowElement _userRow(AgentStat summary, int callCount) {

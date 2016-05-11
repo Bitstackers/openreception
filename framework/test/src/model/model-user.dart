@@ -42,7 +42,7 @@ abstract class ModelUser {
     expect(builtObject.address, equals(deserializedObject.address));
     expect(builtObject.groups, equals(deserializedObject.groups));
     expect(builtObject.name, equals(deserializedObject.name));
-    expect(builtObject.peer, equals(deserializedObject.peer));
+    expect(builtObject.extension, equals(deserializedObject.extension));
   }
 
   static Model.User buildObject() {
@@ -61,14 +61,14 @@ abstract class ModelUser {
       ..address = address
       ..groups = groups.toSet()
       ..name = name
-      ..peer = peer
+      ..extension = peer
       ..portrait = picture;
 
     expect(builtObject.id, equals(id));
     expect(builtObject.address, equals(address));
     expect(builtObject.groups, equals(groups));
     expect(builtObject.name, equals(name));
-    expect(builtObject.peer, equals(peer));
+    expect(builtObject.extension, equals(peer));
     expect(builtObject.portrait, equals(picture));
 
     return builtObject;

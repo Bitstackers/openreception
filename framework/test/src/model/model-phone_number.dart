@@ -41,8 +41,7 @@ abstract class ModelPhoneNumber {
         Model.PhoneNumber.decode(JSON.decode(JSON.encode(built)));
 
     expect(built.confidential, equals(decoded.confidential));
-    expect(built.description, equals(decoded.description));
-    expect(built.tags, equals(decoded.tags));
+    expect(built.note, equals(decoded.note));
     expect(built.destination, equals(decoded.destination));
 
     expect(built.toJson(), equals(decoded.toJson()));
@@ -57,17 +56,13 @@ abstract class ModelPhoneNumber {
 
     final bool confidential = false;
 
-    final Iterable<String> tags = ['work', 'official'];
-
     Model.PhoneNumber phoneNumber = new Model.PhoneNumber.empty()
       ..confidential = confidential
-      ..description = description
-      ..destination = value
-      ..tags = tags;
+      ..note = description
+      ..destination = value;
 
     expect(phoneNumber.confidential, equals(confidential));
-    expect(phoneNumber.description, equals(description));
-    expect(phoneNumber.tags, equals(tags));
+    expect(phoneNumber.note, equals(description));
     expect(phoneNumber.destination, equals(value));
 
     return phoneNumber;
