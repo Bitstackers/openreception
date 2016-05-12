@@ -73,7 +73,6 @@ void main(List<String> args) {
 Iterable<Model.MessageEndpoint> emailRecipients(
         Iterable<Model.MessageEndpoint> rcps) =>
     rcps.where((Model.MessageEndpoint rcp) => [
-          Model.MessageEndpointType.email,
           Model.MessageEndpointType.emailTo,
           Model.MessageEndpointType.emailCc,
           Model.MessageEndpointType.emailBcc
@@ -144,9 +143,7 @@ Future tryDispatch(Model.MessageQueueEntry queueItem) async {
       emailRecipients(queueItem.unhandledRecipients);
 
   List<Address> to = new List<Address>.from(currentRecipients
-      .where((mr) =>
-          mr.type == Model.MessageEndpointType.emailTo ||
-          mr.type == Model.MessageEndpointType.email)
+      .where((mr) => mr.type == Model.MessageEndpointType.emailTo)
       .map((mrto) => new Address(mrto.address.trim(), mrto.name)));
 
   List<Address> cc = new List<Address>.from(currentRecipients
