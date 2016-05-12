@@ -29,11 +29,11 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 
-import '../configuration.dart';
-import '../response_utils.dart';
-import 'googleauth.dart';
-import 'token_watcher.dart' as watcher;
-import 'token_vault.dart';
+import 'package:openreception.server/configuration.dart';
+import 'package:openreception.server/response_utils.dart';
+import 'package:openreception.server/googleauth.dart';
+import 'package:openreception.server/token_watcher.dart' as watcher;
+import 'package:openreception.server/token_vault.dart';
 
 part 'router/invalidate.dart';
 part 'router/login.dart';

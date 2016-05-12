@@ -22,8 +22,8 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception.server/auth_server/router.dart' as router;
-import 'package:openreception.server/auth_server/token_vault.dart';
-import 'package:openreception.server/auth_server/token_watcher.dart' as watcher;
+import 'package:openreception.server/token_watcher.dart' as watcher;
+import 'package:openreception.server/token_vault.dart';
 import 'package:openreception.server/configuration.dart';
 
 Future main(List<String> args) async {
