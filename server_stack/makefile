@@ -68,6 +68,7 @@ install: build
 	   $(BUILD_DIR)/calendarserver-$(GIT_REV).dart \
 	   $(BUILD_DIR)/callflowcontrol-$(GIT_REV).dart \
 	   $(BUILD_DIR)/cdrserver-$(GIT_REV).dart \
+	   $(BUILD_DIR)/datastore-$(GIT_REV).dart \
 	   $(BUILD_DIR)/configserver-$(GIT_REV).dart \
 	   $(BUILD_DIR)/contactserver-$(GIT_REV).dart \
 	   $(BUILD_DIR)/dialplanserver-$(GIT_REV).dart \
@@ -82,6 +83,7 @@ install-symlinks: install
 	ln -s ${PREFIX}/calendarserver-$(GIT_REV).dart ${PREFIX}/calendarserver.dart
 	ln -s ${PREFIX}/callflowcontrol-$(GIT_REV).dart ${PREFIX}/callflowcontrol.dart
 	ln -s ${PREFIX}/cdrserver-$(GIT_REV).dart ${PREFIX}/cdrserver.dart
+	ln -s ${PREFIX}/datastore-$(GIT_REV).dart ${PREFIX}/cdrserver.dart
 	ln -s ${PREFIX}/configserver-$(GIT_REV).dart ${PREFIX}/configserver.dart
 	ln -s ${PREFIX}/contactserver-$(GIT_REV).dart ${PREFIX}/contactserver.dart
 	ln -s ${PREFIX}/dialplanserver-$(GIT_REV).dart ${PREFIX}/dialplanserver.dart
@@ -96,6 +98,7 @@ remove-symlinks:
 	-rm ${PREFIX}/calendarserver.dart
 	-rm ${PREFIX}/callflowcontrol.dart
 	-rm ${PREFIX}/cdrserver.dart
+	-rm ${PREFIX}/datastore.dart
 	-rm ${PREFIX}/configserver.dart
 	-rm ${PREFIX}/contactserver.dart
 	-rm ${PREFIX}/dialplanserver.dart
