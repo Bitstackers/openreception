@@ -91,7 +91,8 @@ class ReceptionSelector extends ViewWidget {
 
     _notification.onAnyCallStateChange.listen((OREvent.CallEvent event) {
       if (event.call.assignedTo == _appState.currentUser.id &&
-          event.call.state == ORModel.CallState.hungup) {
+          (event.call.state == ORModel.CallState.hungup ||
+              event.call.state == ORModel.CallState.parked)) {
         _pickedUpCalls.removeWhere((ORModel.Call c) => c.id == event.call.id);
       }
     });
