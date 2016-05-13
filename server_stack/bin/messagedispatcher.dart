@@ -21,8 +21,9 @@ import 'package:args/args.dart';
 import 'package:emailer/emailer.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/model.dart' as Model;
+import 'package:openreception.framework/storage.dart' as storage;
+import 'package:openreception.framework/filestore.dart' as filestore;
 import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/message_dispatcher/router.dart' as router;
 
 ///Logger
 final Logger _log = new Logger('MessageDispatcher');
@@ -34,6 +35,8 @@ SmtpOptions options = new SmtpOptions()
   ..password = config.messageDispatcher.smtp.password
   ..username = config.messageDispatcher.smtp.username
   ..name = config.messageDispatcher.smtp.name;
+
+storage.MessageQueue messageQueue;
 
 void main(List<String> args) {
   ///Init logging. Inherit standard values.
@@ -60,10 +63,8 @@ void main(List<String> args) {
     exit(1);
   }
 
-  router
-      .start(port: int.parse(parsedArgs['httpport']))
-      .then((_) => periodicEmailSend())
-      .catchError(_log.shout);
+  messageQueue =
+      new filestore.MessageQueue(parsedArgs['filestore'] + '/message_queue');
 }
 
 /**
@@ -93,9 +94,7 @@ Iterable<Model.MessageEndpoint> smsRecipients(
 void periodicEmailSend() {
   DateTime start = new DateTime.now();
 
-  router.messageQueueStore
-      .list()
-      .then((Iterable<Model.MessageQueueEntry> queuedMessages) {
+  messageQueue.list().then((Iterable<Model.MessageQueueEntry> queuedMessages) {
     Future.forEach(queuedMessages, tryDispatch).whenComplete(() {
       _log.info('Processed ${queuedMessages.length} messages in '
           '${(new DateTime.now().difference(start)).inMilliseconds} milliseconds.'
@@ -123,7 +122,7 @@ Future tryDispatch(Model.MessageQueueEntry queueItem) async {
 
   if (queueItem.unhandledRecipients.isEmpty) {
     _log.info("No recipients left detected on message with ID ${message.id}!");
-    return router.messageQueueStore.remove(queueItem.id);
+    return messageQueue.remove(queueItem.id);
   }
 
   final String senderAddress =
@@ -202,5 +201,5 @@ Future tryDispatch(Model.MessageQueueEntry queueItem) async {
     });
   }
 
-  return router.messageQueueStore.update(queueItem);
+  return messageQueue.update(queueItem);
 }
