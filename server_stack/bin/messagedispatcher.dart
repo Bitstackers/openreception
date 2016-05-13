@@ -20,9 +20,9 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:emailer/emailer.dart';
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/model.dart' as Model;
-import 'package:openreception.framework/storage.dart' as storage;
 import 'package:openreception.framework/filestore.dart' as filestore;
+import 'package:openreception.framework/model.dart' as model;
+import 'package:openreception.framework/storage.dart' as storage;
 import 'package:openreception.server/configuration.dart';
 
 ///Logger
@@ -71,21 +71,21 @@ void main(List<String> args) {
  *
  */
 
-Iterable<Model.MessageEndpoint> emailRecipients(
-        Iterable<Model.MessageEndpoint> rcps) =>
-    rcps.where((Model.MessageEndpoint rcp) => [
-          Model.MessageEndpointType.emailTo,
-          Model.MessageEndpointType.emailCc,
-          Model.MessageEndpointType.emailBcc
+Iterable<model.MessageEndpoint> emailRecipients(
+        Iterable<model.MessageEndpoint> rcps) =>
+    rcps.where((model.MessageEndpoint rcp) => [
+          model.MessageEndpointType.emailTo,
+          model.MessageEndpointType.emailCc,
+          model.MessageEndpointType.emailBcc
         ].contains(rcp.type));
 
 /**
  *
  */
-Iterable<Model.MessageEndpoint> smsRecipients(
-        Iterable<Model.MessageEndpoint> rcps) =>
-    rcps.where((Model.MessageEndpoint rcp) =>
-        rcp.type == Model.MessageEndpointType.sms);
+Iterable<model.MessageEndpoint> smsRecipients(
+        Iterable<model.MessageEndpoint> rcps) =>
+    rcps.where((model.MessageEndpoint rcp) =>
+        rcp.type == model.MessageEndpointType.sms);
 
 /**
  * The Periodic task that passes emails on to the SMTP server.
@@ -94,7 +94,7 @@ Iterable<Model.MessageEndpoint> smsRecipients(
 void periodicEmailSend() {
   DateTime start = new DateTime.now();
 
-  messageQueue.list().then((Iterable<Model.MessageQueueEntry> queuedMessages) {
+  messageQueue.list().then((Iterable<model.MessageQueueEntry> queuedMessages) {
     Future.forEach(queuedMessages, tryDispatch).whenComplete(() {
       _log.info('Processed ${queuedMessages.length} messages in '
           '${(new DateTime.now().difference(start)).inMilliseconds} milliseconds.'
@@ -117,8 +117,8 @@ Timer reSchedule() =>
 /**
  *
  */
-Future tryDispatch(Model.MessageQueueEntry queueItem) async {
-  Model.Message message = queueItem.message;
+Future tryDispatch(model.MessageQueueEntry queueItem) async {
+  model.Message message = queueItem.message;
 
   if (queueItem.unhandledRecipients.isEmpty) {
     _log.info("No recipients left detected on message with ID ${message.id}!");
@@ -138,24 +138,24 @@ Future tryDispatch(Model.MessageQueueEntry queueItem) async {
   queueItem.tries++;
 
   ///Dispatch email recipients.
-  Iterable<Model.MessageEndpoint> currentRecipients =
+  Iterable<model.MessageEndpoint> currentRecipients =
       emailRecipients(queueItem.unhandledRecipients);
 
   List<Address> to = new List<Address>.from(currentRecipients
-      .where((mr) => mr.type == Model.MessageEndpointType.emailTo)
+      .where((mr) => mr.type == model.MessageEndpointType.emailTo)
       .map((mrto) => new Address(mrto.address.trim(), mrto.name)));
 
   List<Address> cc = new List<Address>.from(currentRecipients
-      .where((mr) => mr.type == Model.MessageEndpointType.emailCc)
+      .where((mr) => mr.type == model.MessageEndpointType.emailCc)
       .map((mrto) => new Address(mrto.address.trim(), mrto.name)));
 
   List<Address> bcc = new List<Address>.from(currentRecipients
-      .where((mr) => mr.type == Model.MessageEndpointType.emailBcc)
+      .where((mr) => mr.type == model.MessageEndpointType.emailBcc)
       .map((mrto) => new Address(mrto.address.trim(), mrto.name)));
 
   if (currentRecipients.isNotEmpty) {
-    Model.TemplateEmail templateEmail =
-        new Model.TemplateEmail(message, queueItem.message.sender);
+    model.TemplateEmail templateEmail =
+        new model.TemplateEmail(message, queueItem.message.sender);
     Email email = new Email(new Address(senderAddress, senderName),
         config.messageDispatcher.smtp.hostname)
       ..to = to
@@ -182,7 +182,7 @@ Future tryDispatch(Model.MessageQueueEntry queueItem) async {
   currentRecipients = smsRecipients(queueItem.unhandledRecipients);
 
   if (currentRecipients.isNotEmpty) {
-    Model.Template templateSMS = new Model.TemplateSMS(message);
+    model.Template templateSMS = new model.TemplateSMS(message);
     Email sms = new Email(new Address(senderAddress, senderName),
         config.messageDispatcher.smtp.hostname)
       ..to = new List<Address>.from(currentRecipients.map((mrto) => new Address(
