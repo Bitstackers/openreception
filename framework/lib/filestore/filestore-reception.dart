@@ -43,17 +43,18 @@ class Reception implements storage.Reception {
    *
    */
   Future<Iterable<model.ReceptionReference>> _receptionsOfOrg(int id) async {
-    Iterable files = new Directory('$path')
+    List<FileSystemEntity> dirs = new Directory(path)
         .listSync()
-        .where((fse) => fse is File && fse.path.endsWith('.json'));
+        .where((fse) => !fse.path.endsWith('.git') && fse is Directory);
 
-    Iterable<model.Reception> receptions = await Future.wait((files.map(
-        (File file) async => await file
-            .readAsString()
-            .then(JSON.decode)
-            .then(model.Reception.decode))));
-
-    return receptions.where((r) => r.oid == id).map((r) => r.reference);
+    return dirs
+        .map((FileSystemEntity fse) {
+          final reception = model.Reception.decode(JSON.decode(
+              (new File(fse.path + '/reception.json')).readAsStringSync()));
+          return reception;
+        })
+        .where((r) => r.oid == id)
+        .map((r) => r.reference);
   }
 
   /**
@@ -78,7 +79,7 @@ class Reception implements storage.Reception {
       modifier = _systemUser;
     }
 
-    _log.finest('Creating new file ${file.path}');
+    _log.finest('Creating new reception file ${file.path}');
     dir.createSync();
     file.writeAsStringSync(_jsonpp.convert(reception));
 
@@ -113,15 +114,19 @@ class Reception implements storage.Reception {
   /**
    *
    */
-  Future<model.Reception> getByExtension(String extension) async =>
-      new Directory(path)
-          .listSync()
-          .where((fse) => fse is File && fse.path.endsWith('.json'))
-          .map((FileSystemEntity fse) => model.Reception
-              .decode(JSON.decode((fse as File).readAsStringSync())))
-          .firstWhere((rec) => rec.dialplan == extension,
-              orElse: () => throw new storage.NotFound(
-                  'No reception with dialplan $extension'));
+  Future<model.Reception> getByExtension(String extension) async {
+    List<FileSystemEntity> dirs = new Directory(path)
+        .listSync()
+        .where((fse) => !fse.path.endsWith('.git') && fse is Directory);
+
+    return dirs.map((FileSystemEntity fse) {
+      final reception = model.Reception.decode(JSON
+          .decode((new File(fse.path + '/reception.json')).readAsStringSync()));
+      return reception;
+    }).firstWhere((rec) => rec.dialplan == extension,
+        orElse: () => throw new storage.NotFound(
+            'No reception with dialplan $extension'));
+  }
 
   /**
    *
@@ -138,12 +143,17 @@ class Reception implements storage.Reception {
   /**
    *
    */
-  Future<Iterable<model.ReceptionReference>> list() async => new Directory(path)
-      .listSync()
-      .where((fse) => fse is File && fse.path.endsWith('.json'))
-      .map((FileSystemEntity fse) => model.Reception
-          .decode(JSON.decode((fse as File).readAsStringSync()))
-          .reference);
+  Future<Iterable<model.ReceptionReference>> list() async {
+    List<FileSystemEntity> dirs = new Directory(path)
+        .listSync()
+        .where((fse) => !fse.path.endsWith('.git') && fse is Directory);
+
+    return dirs.map((FileSystemEntity fse) {
+      final reception = model.Reception.decode(JSON
+          .decode((new File(fse.path + '/reception.json')).readAsStringSync()));
+      return reception.reference;
+    });
+  }
 
   /**
    *
@@ -215,7 +225,7 @@ class Reception implements storage.Reception {
         : model.User.noId;
 
     model.ReceptionChange convertFilechange(FileChange fc) {
-      final int id = int.parse(fc.filename.split('.').first);
+      final int id = int.parse(fc.filename.split('/').first);
 
       return new model.ReceptionChange(fc.changeType, id);
     }
