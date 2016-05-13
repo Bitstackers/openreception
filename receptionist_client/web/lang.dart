@@ -273,7 +273,7 @@ Map<String, String> da = {
 
   Key.message: 'Besked',
   Key.messageArchiveContact: 'Modtager',
-  Key.messageArchiveHeader: 'Besked arkiv',
+  Key.messageArchiveHeader: 'Beskedarkiv',
   Key.messageCloseErrorTitle: 'Beskeden blev ikke lukket',
   Key.messageCloseSuccessTitle: 'Beskeden blev lukket',
   Key.messageComposeCallerName: 'Fuldt navn',
