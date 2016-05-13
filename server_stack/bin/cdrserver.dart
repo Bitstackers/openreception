@@ -18,7 +18,7 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
-import 'package:openreception.server/cdr_server/router.dart' as router;
+import 'package:openreception.server/router/router-cdr.dart' as router;
 import 'package:openreception.server/configuration.dart';
 
 /**
