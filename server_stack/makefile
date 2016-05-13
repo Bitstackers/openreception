@@ -9,6 +9,18 @@ RELEASE=$(shell git tag | tail -n1)
 GIT_REV=$(shell git rev-parse --short HEAD)
 
 BUILD_DIR=build
+RUNNABLES=bin/authserver.dart \
+          bin/calendarserver.dart \
+					bin/callflowcontrol.dart \
+					bin/cdrserver.dart \
+					bin/configserver.dart \
+					bin/contactserver.dart \
+					bin/dialplanserver.dart \
+					bin/messagedispatcher.dart \
+					bin/messageserver.dart \
+					bin/notificationserver.dart \
+					bin/receptionserver.dart \
+					bin/userserver.dart
 
 all: $(BUILD_DIR) snapshots
 
@@ -35,10 +47,10 @@ build/%-$(GIT_REV).dart: bin/%.dart
 analyze-all: analyze analyze-hints
 
 analyze:
-	@(dartanalyzer --no-hints --fatal-warnings bin/*.dart)
+	@(dartanalyzer --no-hints --fatal-warnings $(RUNNABLES))
 
 analyze-hints:
-	@echo "! (dartanalyzer bin/*.dart | grep '^\[')" | bash
+	@echo "! (dartanalyzer $(RUNNABLES) | grep '^\[')" | bash
 
 dependency:
 	pub get
@@ -46,7 +58,7 @@ dependency:
 upgrade-dependency:
 	pub upgrade
 
-clean: 
+clean:
 	-rm -rf $(BUILD_DIR)
 
 install: build
@@ -79,7 +91,7 @@ install-symlinks: install
 	ln -s ${PREFIX}/receptionserver-$(GIT_REV).dart ${PREFIX}/receptionserver.dart
 	ln -s ${PREFIX}/userserver-$(GIT_REV).dart ${PREFIX}/userserver.dart
 
-remove-symlinks: 
+remove-symlinks:
 	-rm ${PREFIX}/authserver.dart
 	-rm ${PREFIX}/calendarserver.dart
 	-rm ${PREFIX}/callflowcontrol.dart
@@ -95,4 +107,3 @@ remove-symlinks:
 
 default-config:
 	@install lib/configuration.dart.dist lib/configuration.dart
-
