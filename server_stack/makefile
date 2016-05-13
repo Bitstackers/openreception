@@ -10,17 +10,17 @@ GIT_REV=$(shell git rev-parse --short HEAD)
 
 BUILD_DIR=build
 RUNNABLES=bin/authserver.dart \
-          bin/calendarserver.dart \
-					bin/callflowcontrol.dart \
-					bin/cdrserver.dart \
-					bin/configserver.dart \
-					bin/contactserver.dart \
-					bin/dialplanserver.dart \
-					bin/messagedispatcher.dart \
-					bin/messageserver.dart \
-					bin/notificationserver.dart \
-					bin/receptionserver.dart \
-					bin/userserver.dart
+	  bin/calendarserver.dart \
+	  bin/callflowcontrol.dart \
+	  bin/cdrserver.dart \
+	  bin/configserver.dart \
+	  bin/contactserver.dart \
+	  bin/dialplanserver.dart \
+	  bin/messagedispatcher.dart \
+	  bin/messageserver.dart \
+	  bin/notificationserver.dart \
+	  bin/receptionserver.dart \
+	  bin/userserver.dart
 
 all: $(BUILD_DIR) snapshots
 
@@ -28,18 +28,18 @@ $(BUILD_DIR):
 	-@mkdir $(BUILD_DIR)
 
 snapshots: $(BUILD_DIR) \
-           $(BUILD_DIR)/authserver-$(GIT_REV).dart \
-           $(BUILD_DIR)/calendarserver-$(GIT_REV).dart \
-           $(BUILD_DIR)/callflowcontrol-$(GIT_REV).dart \
-           $(BUILD_DIR)/cdrserver-$(GIT_REV).dart \
-           $(BUILD_DIR)/configserver-$(GIT_REV).dart \
-           $(BUILD_DIR)/contactserver-$(GIT_REV).dart \
-           $(BUILD_DIR)/dialplanserver-$(GIT_REV).dart \
-           $(BUILD_DIR)/messagedispatcher-$(GIT_REV).dart \
-           $(BUILD_DIR)/messageserver-$(GIT_REV).dart \
-           $(BUILD_DIR)/notificationserver-$(GIT_REV).dart \
-           $(BUILD_DIR)/receptionserver-$(GIT_REV).dart \
-           $(BUILD_DIR)/userserver-$(GIT_REV).dart
+	   $(BUILD_DIR)/authserver-$(GIT_REV).dart \
+	   $(BUILD_DIR)/calendarserver-$(GIT_REV).dart \
+	   $(BUILD_DIR)/callflowcontrol-$(GIT_REV).dart \
+	   $(BUILD_DIR)/cdrserver-$(GIT_REV).dart \
+	   $(BUILD_DIR)/configserver-$(GIT_REV).dart \
+	   $(BUILD_DIR)/contactserver-$(GIT_REV).dart \
+	   $(BUILD_DIR)/dialplanserver-$(GIT_REV).dart \
+	   $(BUILD_DIR)/messagedispatcher-$(GIT_REV).dart \
+	   $(BUILD_DIR)/messageserver-$(GIT_REV).dart \
+	   $(BUILD_DIR)/notificationserver-$(GIT_REV).dart \
+	   $(BUILD_DIR)/receptionserver-$(GIT_REV).dart \
+	   $(BUILD_DIR)/userserver-$(GIT_REV).dart
 
 build/%-$(GIT_REV).dart: bin/%.dart
 	dart --snapshot=$@ $<
@@ -50,7 +50,7 @@ analyze:
 	@(dartanalyzer --no-hints --fatal-warnings $(RUNNABLES))
 
 analyze-hints:
-	@echo "! (dartanalyzer $(RUNNABLES) | grep '^\[')" | bash
+	@echo "! (dartanalyzer $(RUNNABLES | grep '^\[')" | bash
 
 dependency:
 	pub get
@@ -64,18 +64,18 @@ clean:
 install: build
 	install --directory ${PREFIX}
 	install --target-directory=${PREFIX} \
-           $(BUILD_DIR)/authserver-$(GIT_REV).dart \
-           $(BUILD_DIR)/calendarserver-$(GIT_REV).dart \
-           $(BUILD_DIR)/callflowcontrol-$(GIT_REV).dart \
-           $(BUILD_DIR)/cdrserver-$(GIT_REV).dart \
-           $(BUILD_DIR)/configserver-$(GIT_REV).dart \
-           $(BUILD_DIR)/contactserver-$(GIT_REV).dart \
-           $(BUILD_DIR)/dialplanserver-$(GIT_REV).dart \
-           $(BUILD_DIR)/messagedispatcher-$(GIT_REV).dart \
-           $(BUILD_DIR)/messageserver-$(GIT_REV).dart \
-           $(BUILD_DIR)/notificationserver-$(GIT_REV).dart \
-           $(BUILD_DIR)/receptionserver-$(GIT_REV).dart \
-           $(BUILD_DIR)/userserver-$(GIT_REV).dart
+	   $(BUILD_DIR)/authserver-$(GIT_REV).dart \
+	   $(BUILD_DIR)/calendarserver-$(GIT_REV).dart \
+	   $(BUILD_DIR)/callflowcontrol-$(GIT_REV).dart \
+	   $(BUILD_DIR)/cdrserver-$(GIT_REV).dart \
+	   $(BUILD_DIR)/configserver-$(GIT_REV).dart \
+	   $(BUILD_DIR)/contactserver-$(GIT_REV).dart \
+	   $(BUILD_DIR)/dialplanserver-$(GIT_REV).dart \
+	   $(BUILD_DIR)/messagedispatcher-$(GIT_REV).dart \
+	   $(BUILD_DIR)/messageserver-$(GIT_REV).dart \
+	   $(BUILD_DIR)/notificationserver-$(GIT_REV).dart \
+	   $(BUILD_DIR)/receptionserver-$(GIT_REV).dart \
+	   $(BUILD_DIR)/userserver-$(GIT_REV).dart
 
 install-symlinks: install
 	ln -s ${PREFIX}/authserver-$(GIT_REV).dart ${PREFIX}/authserver.dart
