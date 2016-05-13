@@ -96,7 +96,7 @@ class UIMyCallQueue extends UIModel {
       ..classes.toggle('locked', call.locked)
       ..classes.toggle('speaking', call.state == ORModel.CallState.speaking)
       ..title =
-          '${call.inbound ? _langMap[Key.callStateInbound] : _langMap[Key.callStateOutbound]}';
+          '${call.inbound ? _langMap[Key.callStateInbound] : _langMap[Key.callStateOutbound]} (${call.id})';
   }
 
   /**
