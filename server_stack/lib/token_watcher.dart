@@ -16,7 +16,7 @@ library openreception_servers.authentication.token_watcher;
 import 'dart:async';
 
 import 'package:logging/logging.dart';
-import '../configuration.dart';
+import 'package:openreception.server/configuration.dart';
 import 'token_vault.dart';
 
 const String libraryName = 'AuthServer.tokenWatch';
