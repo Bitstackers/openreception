@@ -65,7 +65,7 @@ class Reception implements storage.Reception {
       reception.id = _nextId;
     }
 
-    final Directory dir = new Directory('$path/${reception.id}/');
+    final Directory dir = new Directory('$path/${reception.id}');
     final File file = new File('${dir.path}/reception.json');
 
     if (file.existsSync()) {
@@ -79,6 +79,7 @@ class Reception implements storage.Reception {
     }
 
     _log.finest('Creating new file ${file.path}');
+    dir.createSync();
     file.writeAsStringSync(_jsonpp.convert(reception));
 
     await _git.add(
