@@ -36,7 +36,6 @@ class Reception {
     expect(rec.customerTypes, equals(created.customerTypes));
     expect(rec.emailAddresses, equals(created.emailAddresses));
     expect(rec.dialplan, equals(created.dialplan));
-    expect(rec.extraData, equals(created.extraData));
 
     expect(rec.greeting, equals(created.greeting));
     expect(rec.handlingInstructions, equals(created.handlingInstructions));
@@ -173,7 +172,6 @@ class Reception {
     expect(updated.customerTypes, equals(fetched.customerTypes));
     expect(updated.emailAddresses, equals(fetched.emailAddresses));
     expect(updated.dialplan, equals(fetched.dialplan));
-    expect(updated.extraData, equals(fetched.extraData));
 
     expect(updated.greeting, equals(fetched.greeting));
     expect(updated.handlingInstructions, equals(fetched.handlingInstructions));
@@ -230,7 +228,6 @@ class Reception {
     expect(rec.customerTypes, equals(fetched.customerTypes));
     expect(rec.emailAddresses, equals(fetched.emailAddresses));
     expect(rec.dialplan, equals(fetched.dialplan));
-    expect(rec.extraData, equals(fetched.extraData));
 
     expect(rec.greeting, equals(fetched.greeting));
     expect(rec.handlingInstructions, equals(fetched.handlingInstructions));
