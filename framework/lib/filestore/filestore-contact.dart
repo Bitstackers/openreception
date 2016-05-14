@@ -20,8 +20,9 @@ class Contact implements storage.Contact {
   GitEngine _git;
   Sequencer _sequencer;
 
-  Future get initialized => _git.initialized;
-  Future get ready => _git.whenReady;
+  Future get initialized =>
+      _git != null ? _git.initialized : new Future.value(true);
+  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
   int get _nextId => _sequencer.nextInt();
 
@@ -33,10 +34,10 @@ class Contact implements storage.Contact {
       new Directory(path).createSync(recursive: true);
     }
 
-    if (this._git == null) {
-      _git = new GitEngine(path);
+    if (this._git != null) {
+      _git.init();
     }
-    _git.init();
+
     _sequencer = new Sequencer(path);
   }
 
@@ -74,11 +75,13 @@ class Contact implements storage.Contact {
     file.writeAsStringSync(_jsonpp.convert(attr));
     _log.finest('Created new file ${file.path}');
 
-    await _git.add(
-        file,
-        'uid:${modifier.id} - ${modifier.name} '
-        'added ${attr.cid} to ${attr.receptionId}',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.add(
+          file,
+          'uid:${modifier.id} - ${modifier.name} '
+          'added ${attr.cid} to ${attr.receptionId}',
+          _authorString(modifier));
+    }
   }
 
   /**
@@ -107,11 +110,13 @@ class Contact implements storage.Contact {
     _log.finest('Creating new file ${file.path}');
     file.writeAsStringSync(_jsonpp.convert(contact));
 
-    await _git.add(
-        file,
-        'uid:${modifier.id} - ${modifier.name} '
-        'added ${contact.id}',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.add(
+          file,
+          'uid:${modifier.id} - ${modifier.name} '
+          'added ${contact.id}',
+          _authorString(modifier));
+    }
 
     return contact.reference;
   }
@@ -251,11 +256,13 @@ class Contact implements storage.Contact {
       modifier = _systemUser;
     }
 
-    await _git.remove(
-        dir,
-        'uid:${modifier.id} - ${modifier.name} '
-        'removed $id',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.remove(
+          dir,
+          'uid:${modifier.id} - ${modifier.name} '
+          'removed $id',
+          _authorString(modifier));
+    }
   }
 
   /**
@@ -279,11 +286,13 @@ class Contact implements storage.Contact {
 
     _log.finest('Removing file ${file.path}');
 
-    await _git.remove(
-        file,
-        'uid:${modifier.id} - ${modifier.name} '
-        'removed ${id} from ${receptionId}',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.remove(
+          file,
+          'uid:${modifier.id} - ${modifier.name} '
+          'removed ${id} from ${receptionId}',
+          _authorString(modifier));
+    }
   }
 
   /**
@@ -304,11 +313,13 @@ class Contact implements storage.Contact {
 
     file.writeAsStringSync(_jsonpp.convert(contact));
 
-    await _git.add(
-        file,
-        'uid:${modifier.id} - ${modifier.name} '
-        'updated ${contact.name}',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.add(
+          file,
+          'uid:${modifier.id} - ${modifier.name} '
+          'updated ${contact.name}',
+          _authorString(modifier));
+    }
 
     return contact.reference;
   }
@@ -334,17 +345,24 @@ class Contact implements storage.Contact {
     _log.finest('Creating new file ${file.path}');
     file.writeAsStringSync(_jsonpp.convert(attr));
 
-    await _git.add(
-        file,
-        'uid:${modifier.id} - ${modifier.name} '
-        'updated ${attr.cid} in ${attr.receptionId}',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.add(
+          file,
+          'uid:${modifier.id} - ${modifier.name} '
+          'updated ${attr.cid} in ${attr.receptionId}',
+          _authorString(modifier));
+    }
   }
 
   /**
    *
    */
   Future<Iterable<model.Commit>> changes([int cid, int rid]) async {
+    if (this._git != null) {
+      throw new UnsupportedError(
+          'Filestore is instantiated without git support');
+    }
+
     FileSystemEntity fse;
 
     if (cid == null) {
