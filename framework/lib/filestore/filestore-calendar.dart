@@ -22,6 +22,9 @@ class Calendar implements storage.Calendar {
   Future get initialized => _git.initialized;
   Future get ready => _git.whenReady;
 
+  Bus<event.CalendarChange> _changeBus = new Bus<event.CalendarChange>();
+  Stream<event.CalendarChange> get changeStream => _changeBus.stream;
+
   int get _nextId => _sequencer.nextInt();
 
   /**
@@ -141,6 +144,9 @@ class Calendar implements storage.Calendar {
         'added ${entry.id} to ${entry.owner}',
         _authorString(modifier));
 
+    _changeBus.fire(
+        new event.CalendarChange.create(entry.id, entry.owner, modifier.id));
+
     return entry;
   }
 
@@ -229,6 +235,9 @@ class Calendar implements storage.Calendar {
         'uid:${modifier.id} - ${modifier.name}'
         ' removed $eid',
         _authorString(modifier));
+
+    _changeBus.fire(
+        new event.CalendarChange.delete(entry.id, entry.owner, modifier.id));
   }
 
   /**
@@ -264,6 +273,9 @@ class Calendar implements storage.Calendar {
         'uid:${modifier.id} - ${modifier.name}'
         ' updated ${entry.id}',
         _authorString(modifier));
+
+    _changeBus.fire(
+        new event.CalendarChange.update(entry.id, entry.owner, modifier.id));
 
     return entry;
   }
