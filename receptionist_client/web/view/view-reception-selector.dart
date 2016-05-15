@@ -67,6 +67,14 @@ class ReceptionSelector extends ViewWidget {
   }
 
   /**
+   * Return true if [call.receptionID] is not equal to the currently selected
+   * reception.
+   */
+  bool _receptionMismatch(ORModel.Call call) =>
+      _pickedUpCalls.any((ORModel.Call c) => c.id == call.id) &&
+      call.rid != _ui.selectedReception.id;
+
+  /**
    * Observers.
    */
   void _observers() {
@@ -91,8 +99,7 @@ class ReceptionSelector extends ViewWidget {
 
     _notification.onAnyCallStateChange.listen((OREvent.CallEvent event) {
       if (event.call.assignedTo == _appState.currentUser.id &&
-          (event.call.state == ORModel.CallState.hungup ||
-              event.call.state == ORModel.CallState.parked)) {
+          event.call.state == ORModel.CallState.hungup) {
         _pickedUpCalls.removeWhere((ORModel.Call c) => c.id == event.call.id);
       }
     });
@@ -117,7 +124,8 @@ class ReceptionSelector extends ViewWidget {
       if (newCall != ORModel.Call.noCall &&
           newCall.inbound &&
           newCall.assignedTo == _appState.currentUser.id &&
-          !_pickedUpCalls.any((ORModel.Call c) => c.id == newCall.id)) {
+          (!_pickedUpCalls.any((ORModel.Call c) => c.id == newCall.id) ||
+              _receptionMismatch(newCall))) {
         _pickedUpCalls.add(newCall);
         _ui.resetFilter();
         _ui.changeActiveReception(newCall.rid);
