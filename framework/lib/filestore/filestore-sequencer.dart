@@ -64,8 +64,7 @@ class Sequencer {
       }
     }
 
-    Iterable<int> listing =
-        new Directory(path).listSync().where((fse) => fse is File).map(fseToId);
+    Iterable<int> listing = new Directory(path).listSync().map(fseToId);
 
     int maximum = 0;
 
