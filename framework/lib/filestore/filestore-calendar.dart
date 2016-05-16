@@ -36,7 +36,7 @@ class Calendar implements storage.Calendar {
     pathsToCreate.forEach((String newPath) {
       final Directory dir = new Directory(newPath);
       if (!dir.existsSync()) {
-        dir.createSync(recursive: true);
+        dir.createSync();
       }
     });
 
@@ -125,7 +125,7 @@ class Calendar implements storage.Calendar {
     final Directory ownerDir = new Directory(ownerPath);
     if (!ownerDir.existsSync()) {
       _log.finest('Creating new directory ${ownerDir.path}');
-      ownerDir.createSync(recursive: true);
+      ownerDir.createSync();
     }
 
     final File file = new File('${ownerDir.path}/${entry.id}.json');

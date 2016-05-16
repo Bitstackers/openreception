@@ -31,7 +31,7 @@ class Contact implements storage.Contact {
    */
   Contact(this._receptionStore, String this.path, [GitEngine this._git]) {
     if (!new Directory(path).existsSync()) {
-      new Directory(path).createSync(recursive: true);
+      new Directory(path).createSync();
     }
 
     if (this._git != null) {

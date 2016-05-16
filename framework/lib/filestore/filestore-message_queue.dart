@@ -26,7 +26,7 @@ class MessageQueue implements storage.MessageQueue {
    */
   MessageQueue(String this.path) {
     if (!new Directory(path).existsSync()) {
-      new Directory(path).createSync(recursive: true);
+      new Directory(path).createSync();
     }
 
     _sequencer = new Sequencer(path);

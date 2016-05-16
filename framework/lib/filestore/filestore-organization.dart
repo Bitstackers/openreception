@@ -33,7 +33,7 @@ class Organization implements storage.Organization {
       this._contactFileStore, this._receptionFileStore, String this.path,
       [GitEngine this._git]) {
     if (!new Directory(path).existsSync()) {
-      new Directory(path).createSync(recursive: true);
+      new Directory(path).createSync();
     }
 
     if (this._git == null) {

@@ -29,7 +29,7 @@ class User implements storage.User {
    */
   User(String this.path, [GitEngine this._git]) {
     if (!new Directory(path).existsSync()) {
-      new Directory(path).createSync(recursive: true);
+      new Directory(path).createSync();
     }
 
     if (this._git == null) {

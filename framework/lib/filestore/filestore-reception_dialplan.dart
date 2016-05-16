@@ -25,6 +25,9 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
    *
    */
   ReceptionDialplan(String this.path, [GitEngine this._git]) {
+    if (!new Directory(path).existsSync()) {
+      new Directory(path).createSync();
+    }
     if (this._git == null) {
       _git = new GitEngine(path);
     }
