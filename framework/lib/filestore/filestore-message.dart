@@ -19,22 +19,23 @@ class Message implements storage.Message {
   GitEngine _git;
   Sequencer _sequencer;
 
-  Future get initialized => _git.initialized;
-  Future get ready => _git.whenReady;
+  Future get initialized =>
+      _git != null ? _git.initialized : new Future.value(true);
+  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
   int get _nextId => _sequencer.nextInt();
   /**
-   *
+   * TODO: Add bus for notifying other filestores about changes.
    */
   Message(String this.path, [GitEngine this._git]) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
     }
 
-    if (this._git == null) {
-      _git = new GitEngine(path);
+    if (this._git != null) {
+      _git.init().catchError((error, stackTrace) => Logger.root
+          .shout('Failed to initialize git engine', error, stackTrace));
     }
-    _git.init();
     _sequencer = new Sequencer(path);
   }
 
@@ -71,10 +72,14 @@ class Message implements storage.Message {
               filter == null ? true : filter.appliesTo(msg));
 
   /**
-   *
+   * TODO: Store in date-dir.
    */
   Future<model.Message> create(
       model.Message message, model.User modifier) async {
+    // Directory dateDir = new Directory(
+    //     '${msgDir.path}/${msg.createdAt.toIso8601String().split('T').first}')
+    //   ..createSync();
+
     message.id = _nextId;
     final File file = new File('$path/${message.id}.json');
 
@@ -90,11 +95,13 @@ class Message implements storage.Message {
 
     file.writeAsStringSync(_jsonpp.convert(message));
 
-    await _git.add(
-        file,
-        'uid:${modifier.id} - ${modifier.name} '
-        'added ${message.id}',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.add(
+          file,
+          'uid:${modifier.id} - ${modifier.name} '
+          'added ${message.id}',
+          _authorString(modifier));
+    }
 
     return message;
   }
@@ -117,11 +124,13 @@ class Message implements storage.Message {
 
     file.writeAsStringSync(_jsonpp.convert(message));
 
-    await _git.commit(
-        file,
-        'uid:${modifier.id} - ${modifier.name} '
-        'updated ${message.id}',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.commit(
+          file,
+          'uid:${modifier.id} - ${modifier.name} '
+          'updated ${message.id}',
+          _authorString(modifier));
+    }
 
     return message;
   }
@@ -141,17 +150,26 @@ class Message implements storage.Message {
       modifier = _systemUser;
     }
 
-    await _git.remove(
-        file,
-        'uid:${modifier.id} - ${modifier.name} '
-        'removed $mid',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.remove(
+          file,
+          'uid:${modifier.id} - ${modifier.name} '
+          'removed $mid',
+          _authorString(modifier));
+    } else {
+      file.deleteSync();
+    }
   }
 
   /**
    *
    */
   Future<Iterable<model.Commit>> changes([int mid]) async {
+    if (this._git == null) {
+      throw new UnsupportedError(
+          'Filestore is instantiated without git support');
+    }
+
     FileSystemEntity fse;
 
     if (mid == null) {

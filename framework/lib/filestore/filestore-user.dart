@@ -19,23 +19,25 @@ class User implements storage.User {
   GitEngine _git;
   Sequencer _sequencer;
 
-  Future get initialized => _git.initialized;
-  Future get ready => _git.whenReady;
+  Future get initialized =>
+      _git != null ? _git.initialized : new Future.value(true);
+  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
   int get _nextId => _sequencer.nextInt();
 
   /**
-   *
-   */
+  * TODO:
+  *  - Add "link" operations for linking messages to this datastore.
+  */
   User(String this.path, [GitEngine this._git]) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
     }
 
-    if (this._git == null) {
-      _git = new GitEngine(path);
+    if (this._git != null) {
+      _git.init().catchError((error, stackTrace) => Logger.root
+          .shout('Failed to initialize git engine', error, stackTrace));
     }
-    _git.init();
     _sequencer = new Sequencer(path);
   }
 
@@ -115,11 +117,13 @@ class User implements storage.User {
 
     file.writeAsStringSync(_jsonpp.convert(user));
 
-    await _git.add(
-        file,
-        'uid:${modifier.id} - ${modifier.name} '
-        'added ${user.id}',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.add(
+          file,
+          'uid:${modifier.id} - ${modifier.name} '
+          'added ${user.id}',
+          _authorString(modifier));
+    }
 
     return user.reference;
   }
@@ -128,6 +132,11 @@ class User implements storage.User {
    *
    */
   Future<Iterable<model.Commit>> changes([int uid]) async {
+    if (this._git == null) {
+      throw new UnsupportedError(
+          'Filestore is instantiated without git support');
+    }
+
     FileSystemEntity fse;
 
     if (uid == null) {
@@ -180,11 +189,13 @@ class User implements storage.User {
 
     file.writeAsStringSync(_jsonpp.convert(user));
 
-    await _git.commit(
-        file,
-        'uid:${modifier.id} - ${modifier.name} '
-        'updated ${user.id}',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.commit(
+          file,
+          'uid:${modifier.id} - ${modifier.name} '
+          'updated ${user.id}',
+          _authorString(modifier));
+    }
 
     return user.reference;
   }
@@ -204,10 +215,14 @@ class User implements storage.User {
       modifier = _systemUser;
     }
 
-    await _git.remove(
-        file,
-        'uid:${modifier.id} - ${modifier.name} '
-        'removed $id',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.remove(
+          file,
+          'uid:${modifier.id} - ${modifier.name} '
+          'removed $id',
+          _authorString(modifier));
+    } else {
+      file.deleteSync();
+    }
   }
 }

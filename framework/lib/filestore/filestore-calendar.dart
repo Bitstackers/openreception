@@ -19,8 +19,9 @@ class Calendar implements storage.Calendar {
   Sequencer _sequencer;
   GitEngine _git;
 
-  Future get initialized => _git.initialized;
-  Future get ready => _git.whenReady;
+  Future get initialized =>
+      _git != null ? _git.initialized : new Future.value(true);
+  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
   Bus<event.CalendarChange> _changeBus = new Bus<event.CalendarChange>();
   Stream<event.CalendarChange> get changeStream => _changeBus.stream;
@@ -40,11 +41,11 @@ class Calendar implements storage.Calendar {
       }
     });
 
-    if (this._git == null) {
-      _git = new GitEngine(path);
+    if (this._git != null) {
+      _git.init().catchError((error, stackTrace) => Logger.root
+          .shout('Failed to initialize git engine', error, stackTrace));
     }
 
-    _git.init();
     _sequencer = new Sequencer(path);
   }
 
@@ -52,14 +53,12 @@ class Calendar implements storage.Calendar {
    *
    */
   Future<Iterable<model.Commit>> changes(model.Owner owner, [int eid]) async {
-    String ownerPath;
-    if (owner is model.OwningContact) {
-      ownerPath = 'contact/${owner.id}';
-    } else if (owner is model.OwningReception) {
-      ownerPath = 'reception/${owner.id}';
-    } else {
-      throw new ArgumentError.value(owner, 'owner', 'Not of known type');
+    if (this._git == null) {
+      throw new UnsupportedError(
+          'Filestore is instantiated without git support');
     }
+
+    final String ownerPath = '${owner.id}/calendar';
 
     FileSystemEntity fse;
 
@@ -77,17 +76,9 @@ class Calendar implements storage.Calendar {
 
     model.CalendarChange convertFilechange(FileChange fc) {
       final parts = fc.filename.split('/');
-      model.Owner owner;
-
-      if (parts[0] == 'contact') {
-        owner = new model.OwningContact(int.parse(parts[1]));
-      } else if (parts[0] == 'reception') {
-        owner = new model.OwningReception(int.parse(parts[1]));
-      }
-
       final int eid = int.parse(parts[2].split('.').first);
 
-      return new model.CalendarChange(fc.changeType, eid, owner);
+      return new model.CalendarChange(fc.changeType, eid);
     }
 
     Iterable<model.Commit> changes = gitChanges.map((change) =>
@@ -108,24 +99,21 @@ class Calendar implements storage.Calendar {
    *
    */
   Future<model.CalendarEntry> create(
-      model.CalendarEntry entry, model.User modifier) async {
+      model.CalendarEntry entry, model.Owner owner, model.User modifier) async {
     /// Validate the user
     if (modifier == null) {
       throw new ArgumentError.notNull('modifier');
     }
 
     entry.id = _nextId;
-    String ownerPath;
-    if (entry.owner is model.OwningContact) {
-      ownerPath = '$path/contact/${entry.owner.id}';
-    } else if (entry.owner is model.OwningReception) {
-      ownerPath = '$path/reception/${entry.owner.id}';
-    }
+    final String ownerPath = '$path/${owner.id}/calendar';
 
     final Directory ownerDir = new Directory(ownerPath);
-    if (!ownerDir.existsSync()) {
-      _log.finest('Creating new directory ${ownerDir.path}');
+    try {
       ownerDir.createSync();
+    } catch (e) {
+      _log.warning('Creating new directory ${ownerDir.path}');
+      throw new storage.NotFound('Owner not found: ${owner.id}');
     }
 
     final File file = new File('${ownerDir.path}/${entry.id}.json');
@@ -138,14 +126,16 @@ class Calendar implements storage.Calendar {
     _log.finest('Creating new file ${file.path}');
     file.writeAsStringSync(_jsonpp.convert(entry));
 
-    await _git.add(
-        file,
-        'uid:${modifier.id} - ${modifier.name}'
-        'added ${entry.id} to ${entry.owner}',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.add(
+          file,
+          'uid:${modifier.id} - ${modifier.name}'
+          'added ${entry.id} to ${owner}',
+          _authorString(modifier));
+    }
 
-    _changeBus.fire(
-        new event.CalendarChange.create(entry.id, entry.owner, modifier.id));
+    _changeBus
+        .fire(new event.CalendarChange.create(entry.id, owner, modifier.id));
 
     return entry;
   }
@@ -153,7 +143,7 @@ class Calendar implements storage.Calendar {
   /**
    *
    */
-  Future<model.CalendarEntry> get(int eid) async {
+  Future<model.CalendarEntry> get(int eid, model.Owner owner) async {
     final Iterable<Directory> subdirs =
         new Directory(path).listSync().where(isDirectory);
 
@@ -177,12 +167,7 @@ class Calendar implements storage.Calendar {
    *
    */
   Future<Iterable<model.CalendarEntry>> list(model.Owner owner) async {
-    String ownerPath;
-    if (owner is model.OwningContact) {
-      ownerPath = '$path/contact/${owner.id}';
-    } else if (owner is model.OwningReception) {
-      ownerPath = '$path/reception/${owner.id}';
-    }
+    String ownerPath = '$path/${owner.id}/calendar';
 
     if (!new Directory(ownerPath).existsSync()) {
       return const [];
@@ -206,58 +191,45 @@ class Calendar implements storage.Calendar {
    * filestore.
    * The action is logged as being performed by user [modifier].
    */
-  Future remove(int eid, model.User modifier) async {
+  Future remove(int eid, model.Owner owner, model.User modifier) async {
     /// Validate the user
     if (modifier == null) {
       throw new ArgumentError.notNull('modifier');
     }
 
-    final model.CalendarEntry entry = await get(eid);
-
-    String ownerPath;
-    if (entry.owner is model.OwningContact) {
-      ownerPath = '$path/contact/${entry.owner.id}';
-    } else if (entry.owner is model.OwningReception) {
-      ownerPath = '$path/reception/${entry.owner.id}';
-    }
-
-    final Directory ownerDir = new Directory(ownerPath);
-
-    final File file = new File('${ownerDir.path}/${entry.id}.json');
+    final Directory ownerDir = new Directory('$path/${owner.id}/calendar');
+    final File file = new File('${ownerDir.path}/${eid}.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
     }
 
     _log.finest('Deleting file ${file.path}');
-    await _git.remove(
-        file,
-        'uid:${modifier.id} - ${modifier.name}'
-        ' removed $eid',
-        _authorString(modifier));
 
-    _changeBus.fire(
-        new event.CalendarChange.delete(entry.id, entry.owner, modifier.id));
+    if (this._git != null) {
+      await _git.remove(
+          file,
+          'uid:${modifier.id} - ${modifier.name}'
+          ' removed $eid',
+          _authorString(modifier));
+    } else {
+      file.deleteSync();
+    }
+
+    _changeBus.fire(new event.CalendarChange.delete(eid, owner, modifier.id));
   }
 
   /**
    *
    */
   Future<model.CalendarEntry> update(
-      model.CalendarEntry entry, model.User modifier) async {
+      model.CalendarEntry entry, model.Owner owner, model.User modifier) async {
     /// Validate the user
     if (modifier == null) {
       throw new ArgumentError.notNull('modifier');
     }
 
-    String ownerPath;
-    if (entry.owner is model.OwningContact) {
-      ownerPath = '$path/contact/${entry.owner.id}';
-    } else if (entry.owner is model.OwningReception) {
-      ownerPath = '$path/reception/${entry.owner.id}';
-    }
-
-    final Directory ownerDir = new Directory(ownerPath);
+    final Directory ownerDir = new Directory('$path/${owner.id}/calendar');
 
     final File file = new File('${ownerDir.path}/${entry.id}.json');
 
@@ -268,14 +240,16 @@ class Calendar implements storage.Calendar {
     _log.finest('Updating file ${file.path}');
     file.writeAsStringSync(_jsonpp.convert(entry));
 
-    await _git.commit(
-        file,
-        'uid:${modifier.id} - ${modifier.name}'
-        ' updated ${entry.id}',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.commit(
+          file,
+          'uid:${modifier.id} - ${modifier.name}'
+          ' updated ${entry.id}',
+          _authorString(modifier));
+    }
 
-    _changeBus.fire(
-        new event.CalendarChange.update(entry.id, entry.owner, modifier.id));
+    _changeBus
+        .fire(new event.CalendarChange.update(entry.id, owner, modifier.id));
 
     return entry;
   }

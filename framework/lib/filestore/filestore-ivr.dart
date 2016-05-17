@@ -18,8 +18,9 @@ class Ivr implements storage.Ivr {
   final String path;
   GitEngine _git;
 
-  Future get initialized => _git.initialized;
-  Future get ready => _git.whenReady;
+  Future get initialized =>
+      _git != null ? _git.initialized : new Future.value(true);
+  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
   /**
    *
@@ -29,10 +30,10 @@ class Ivr implements storage.Ivr {
       new Directory(path).createSync();
     }
 
-    if (this._git == null) {
-      _git = new GitEngine(path);
+    if (this._git != null) {
+      _git.init().catchError((error, stackTrace) => Logger.root
+          .shout('Failed to initialize git engine', error, stackTrace));
     }
-    _git.init();
   }
 
   /**
@@ -53,11 +54,13 @@ class Ivr implements storage.Ivr {
 
     file.writeAsStringSync(_jsonpp.convert(menu));
 
-    await _git.add(
-        file,
-        'uid:${modifier.id} - ${modifier.name} '
-        'added ${menu.name}',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.add(
+          file,
+          'uid:${modifier.id} - ${modifier.name} '
+          'added ${menu.name}',
+          _authorString(modifier));
+    }
 
     return menu;
   }
@@ -107,11 +110,13 @@ class Ivr implements storage.Ivr {
 
     file.writeAsStringSync(_jsonpp.convert(menu));
 
-    await _git.commit(
-        file,
-        'uid:${modifier.id} - ${modifier.name} '
-        'updated ${menu.name}',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.commit(
+          file,
+          'uid:${modifier.id} - ${modifier.name} '
+          'updated ${menu.name}',
+          _authorString(modifier));
+    }
 
     return menu;
   }
@@ -131,17 +136,26 @@ class Ivr implements storage.Ivr {
       modifier = _systemUser;
     }
 
-    await _git.remove(
-        file,
-        'uid:${modifier.id} - ${modifier.name} '
-        'removed $menuName',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.remove(
+          file,
+          'uid:${modifier.id} - ${modifier.name} '
+          'removed $menuName',
+          _authorString(modifier));
+    } else {
+      file.deleteSync();
+    }
   }
 
   /**
    *
    */
   Future<Iterable<model.Commit>> changes([String menuName]) async {
+    if (this._git == null) {
+      throw new UnsupportedError(
+          'Filestore is instantiated without git support');
+    }
+
     FileSystemEntity fse;
 
     if (menuName == null) {

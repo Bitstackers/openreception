@@ -18,8 +18,9 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   final String path;
   GitEngine _git;
 
-  Future get initialized => _git.initialized;
-  Future get ready => _git.whenReady;
+  Future get initialized =>
+      _git != null ? _git.initialized : new Future.value(true);
+  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
   /**
    *
@@ -28,10 +29,10 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
     }
-    if (this._git == null) {
-      _git = new GitEngine(path);
+    if (this._git != null) {
+      _git.init().catchError((error, stackTrace) => Logger.root
+          .shout('Failed to initialize git engine', error, stackTrace));
     }
-    _git.init();
   }
 
   /**
@@ -53,11 +54,13 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
 
     file.writeAsStringSync(_jsonpp.convert(rdp));
 
-    await _git.add(
-        file,
-        'uid:${modifier.id} - ${modifier.name} '
-        'added ${rdp.extension}',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.add(
+          file,
+          'uid:${modifier.id} - ${modifier.name} '
+          'added ${rdp.extension}',
+          _authorString(modifier));
+    }
 
     return rdp;
   }
@@ -108,11 +111,13 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
 
     file.writeAsStringSync(_jsonpp.convert(rdp));
 
-    await _git.commit(
-        file,
-        'uid:${modifier.id} - ${modifier.name} '
-        'updated ${rdp.extension}',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.commit(
+          file,
+          'uid:${modifier.id} - ${modifier.name} '
+          'updated ${rdp.extension}',
+          _authorString(modifier));
+    }
 
     return rdp;
   }
@@ -132,17 +137,26 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
       modifier = _systemUser;
     }
 
-    await _git.remove(
-        file,
-        'uid:${modifier.id} - ${modifier.name} '
-        'removed $extension',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.remove(
+          file,
+          'uid:${modifier.id} - ${modifier.name} '
+          'removed $extension',
+          _authorString(modifier));
+    } else {
+      file.deleteSync();
+    }
   }
 
   /**
    *
    */
   Future<Iterable<model.Commit>> changes([String extension]) async {
+    if (this._git == null) {
+      throw new UnsupportedError(
+          'Filestore is instantiated without git support');
+    }
+
     FileSystemEntity fse;
 
     if (extension == null) {

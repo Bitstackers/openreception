@@ -16,28 +16,39 @@ part of openreception.framework.filestore;
 class Reception implements storage.Reception {
   final Logger _log = new Logger('$libraryName.Reception');
   final String path;
-  Sequencer _sequencer;
-  GitEngine _git;
+  final Sequencer _sequencer;
+  final GitEngine _git;
+  final Calendar calendarStore;
 
-  Future get initialized => _git.initialized;
-  Future get ready => _git.whenReady;
+  Future get initialized =>
+      _git != null ? _git.initialized : new Future.value(true);
+  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
   int get _nextId => _sequencer.nextInt();
 
   /**
-   *
+  * TODO:
+  *  - Add "link" operations for linking messages to this datastore.
    */
-  Reception(String this.path, [GitEngine this._git]) {
+  factory Reception(String path, [GitEngine _git]) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
     }
 
-    if (this._git == null) {
-      _git = new GitEngine(path);
+    if (_git != null) {
+      _git.init().catchError((error, stackTrace) => Logger.root
+          .shout('Failed to initialize git engine', error, stackTrace));
     }
-    _git.init();
-    _sequencer = new Sequencer(path);
+
+    return new Reception._internal(
+        path, new Calendar(path, _git), new Sequencer(path), _git);
   }
+
+  /**
+   *
+   */
+  Reception._internal(String this.path, this.calendarStore, this._sequencer,
+      GitEngine this._git);
 
   /**
    *
@@ -83,11 +94,13 @@ class Reception implements storage.Reception {
     dir.createSync();
     file.writeAsStringSync(_jsonpp.convert(reception));
 
-    await _git.add(
-        file,
-        'uid:${modifier.id} - ${modifier.name} '
-        'added ${reception.id}',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.add(
+          file,
+          'uid:${modifier.id} - ${modifier.name} '
+          'added ${reception.id}',
+          _authorString(modifier));
+    }
 
     return reception.reference;
   }
@@ -156,12 +169,12 @@ class Reception implements storage.Reception {
   }
 
   /**
-   *
+   * TODO: Delete directory non-recursively.
    */
   Future remove(int id, model.User modifier) async {
-    final File file = new File('$path/${id}/reception.json');
+    final Directory dir = new Directory('$path/${id}');
 
-    if (!file.existsSync()) {
+    if (!dir.existsSync()) {
       throw new storage.NotFound();
     }
 
@@ -170,11 +183,16 @@ class Reception implements storage.Reception {
       modifier = _systemUser;
     }
 
-    await _git.remove(
-        file,
-        'uid:${modifier.id} - ${modifier.name} '
-        'removed $id',
-        _authorString(modifier));
+    _log.finest('Deleting file ${dir.path}');
+    if (this._git != null) {
+      await _git.remove(
+          dir,
+          'uid:${modifier.id} - ${modifier.name} '
+          'removed $id',
+          _authorString(modifier));
+    } else {
+      dir.deleteSync(recursive: true);
+    }
   }
 
   /**
@@ -197,11 +215,13 @@ class Reception implements storage.Reception {
 
     file.writeAsStringSync(_jsonpp.convert(rec));
 
-    await _git.commit(
-        file,
-        'uid:${modifier.id} - ${modifier.name} '
-        'updated ${rec.name}',
-        _authorString(modifier));
+    if (this._git != null) {
+      await _git.commit(
+          file,
+          'uid:${modifier.id} - ${modifier.name} '
+          'updated ${rec.name}',
+          _authorString(modifier));
+    }
 
     return rec.reference;
   }
@@ -210,6 +230,11 @@ class Reception implements storage.Reception {
    *
    */
   Future<Iterable<model.Commit>> changes([int rid]) async {
+    if (this._git == null) {
+      throw new UnsupportedError(
+          'Filestore is instantiated without git support');
+    }
+
     FileSystemEntity fse;
 
     if (rid == null) {

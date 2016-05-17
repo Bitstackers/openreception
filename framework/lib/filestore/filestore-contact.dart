@@ -16,9 +16,10 @@ part of openreception.framework.filestore;
 class Contact implements storage.Contact {
   final Logger _log = new Logger('$libraryName.Contact');
   final String path;
-  final Reception _receptionStore;
-  GitEngine _git;
-  Sequencer _sequencer;
+  final Reception receptionStore;
+  final GitEngine _git;
+  final Sequencer _sequencer;
+  final Calendar calendarStore;
 
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
@@ -27,19 +28,29 @@ class Contact implements storage.Contact {
   int get _nextId => _sequencer.nextInt();
 
   /**
-   *
+   * TODO:
+   *  - Add "link" operations for linking messages to contact datastore.
+   *  - Add Calender filestore member.
    */
-  Contact(this._receptionStore, String this.path, [GitEngine this._git]) {
+  factory Contact(Reception receptionStore, String path, [GitEngine ge]) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
     }
 
-    if (this._git != null) {
-      _git.init();
+    if (ge != null) {
+      ge.init().catchError((error, stackTrace) => Logger.root
+          .shout('Failed to initialize git engine', error, stackTrace));
     }
 
-    _sequencer = new Sequencer(path);
+    return new Contact._internal(
+        path, receptionStore, new Calendar(path, ge), new Sequencer(path), ge);
   }
+
+  /**
+   *
+   */
+  Contact._internal(String this.path, this.receptionStore, this.calendarStore,
+      this._sequencer, GitEngine this._git);
 
   /**
    *
@@ -186,7 +197,7 @@ class Contact implements storage.Contact {
     return await Future.wait(rFiles.map((FileSystemEntity f) async {
       final int rid = int.parse(basenameWithoutExtension(f.path));
 
-      return (await _receptionStore.get(rid)).reference;
+      return (await receptionStore.get(rid)).reference;
     }));
   }
 
@@ -195,7 +206,7 @@ class Contact implements storage.Contact {
    */
   Future<Iterable<model.ContactReference>> organizationContacts(
       int organizationId) async {
-    Iterable rRefs = await _receptionStore._receptionsOfOrg(organizationId);
+    Iterable rRefs = await receptionStore._receptionsOfOrg(organizationId);
 
     Set<model.ContactReference> contacts = new Set();
 
@@ -215,7 +226,7 @@ class Contact implements storage.Contact {
     Set<model.OrganizationReference> orgs = new Set();
     await Future.wait(rRefs.map((rid) async {
       orgs.add(new model.OrganizationReference(
-          (await _receptionStore.get(rid.id)).oid, ''));
+          (await receptionStore.get(rid.id)).oid, ''));
     }));
 
     return orgs;
@@ -242,7 +253,8 @@ class Contact implements storage.Contact {
   }
 
   /**
-   *
+   * TODO: Perform a "real" file cleanup instead of just deleting the entire
+   * directory recursively, which is basically asking for trouble.
    */
   Future remove(int id, model.User modifier) async {
     final Directory dir = new Directory('$path/${id}');
@@ -262,6 +274,8 @@ class Contact implements storage.Contact {
           'uid:${modifier.id} - ${modifier.name} '
           'removed $id',
           _authorString(modifier));
+    } else {
+      dir.deleteSync(recursive: true);
     }
   }
 
@@ -292,6 +306,8 @@ class Contact implements storage.Contact {
           'uid:${modifier.id} - ${modifier.name} '
           'removed ${id} from ${receptionId}',
           _authorString(modifier));
+    } else {
+      file.deleteSync();
     }
   }
 
@@ -358,7 +374,7 @@ class Contact implements storage.Contact {
    *
    */
   Future<Iterable<model.Commit>> changes([int cid, int rid]) async {
-    if (this._git != null) {
+    if (this._git == null) {
       throw new UnsupportedError(
           'Filestore is instantiated without git support');
     }

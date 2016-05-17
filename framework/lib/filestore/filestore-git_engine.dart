@@ -80,11 +80,12 @@ class GitEngine {
     _initialized = new Completer();
 
     if (!_storeDir.existsSync()) {
+      final args = ['init', path];
       _log.info('Directory "$path" not found - creating it');
       _storeDir.createSync();
 
-      ProcessResult result = await Process.run('/usr/bin/git', ['init', path],
-          workingDirectory: path);
+      final ProcessResult result =
+          await Process.run('/usr/bin/git', args, workingDirectory: path);
 
       if (result.stdout.isNotEmpty && logStdout) {
         _log.finest(result.stdout);
@@ -95,7 +96,7 @@ class GitEngine {
       }
 
       if (result.exitCode != 0) {
-        _log.shout('Failed to init git repository!');
+        _log.shout('Failed to init git repository. Args: $args!');
         _initialized.completeError('Failed to init git repository!');
       } else {
         _initialized.complete();
@@ -109,7 +110,7 @@ class GitEngine {
       final tmpDir = _storeDir.createTempSync();
       tmpDir.delete();
 
-      ProcessResult status =
+      final ProcessResult status =
           await Process.run('/usr/bin/git', ['status'], workingDirectory: path);
 
       if (!(_containsDotGit(path)) && status.exitCode == 0) {
