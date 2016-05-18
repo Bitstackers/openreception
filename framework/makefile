@@ -5,6 +5,8 @@ upgrade-packages:
 	@pub upgrade
 
 tests: pubspec.lock
+	@echo Test output will be written to results.xml
+	@echo
 	@dart test/tests.dart > results.xml
 
 tests-text-output:
