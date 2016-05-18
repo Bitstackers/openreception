@@ -103,11 +103,10 @@ abstract class Ivr {
    *
    */
   static Future changeOnUpdate(ServiceAgent sa) async {
-    final model.BaseContact created = await sa.createsContact();
+    final model.IvrMenu created = await sa.createsIvrMenu();
+    await sa.updatesIvrMenu(created);
 
-    await sa.updatesContact(created);
-
-    Iterable<model.Commit> commits = await sa.contactStore.changes(created.id);
+    Iterable<model.Commit> commits = await sa.ivrStore.changes(created.name);
 
     expect(commits.length, equals(2));
 
@@ -131,21 +130,20 @@ abstract class Ivr {
     final oldestChange = commits.last.changes.first;
 
     expect(latestChange.changeType, model.ChangeType.modify);
-    expect(latestChange.cid, created.id);
+    expect(latestChange.menuName, created.name);
 
     expect(oldestChange.changeType, model.ChangeType.add);
-    expect(oldestChange.cid, created.id);
+    expect(oldestChange.menuName, created.name);
   }
 
   /**
    *
    */
   static Future changeOnRemove(ServiceAgent sa) async {
-    final model.BaseContact created = await sa.createsContact();
+    final model.IvrMenu created = await sa.createsIvrMenu();
+    await sa.deletesIvrMenu(created);
 
-    await sa.removesContact(created);
-
-    Iterable<model.Commit> commits = await sa.contactStore.changes(created.id);
+    Iterable<model.Commit> commits = await sa.ivrStore.changes(created.name);
 
     expect(commits.length, equals(2));
 
@@ -169,9 +167,9 @@ abstract class Ivr {
     final oldestChange = commits.last.changes.first;
 
     expect(latestChange.changeType, model.ChangeType.delete);
-    expect(latestChange.cid, created.id);
+    expect(latestChange.menuName, created.name);
 
     expect(oldestChange.changeType, model.ChangeType.add);
-    expect(oldestChange.cid, created.id);
+    expect(oldestChange.menuName, created.name);
   }
 }
