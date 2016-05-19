@@ -28,7 +28,6 @@ abstract class ModelCalendarEntry {
         new Model.CalendarEntry.fromMap(JSON.decode(JSON.encode(builtObject)));
 
     expect(builtObject.id, equals(deserialized.id));
-    expect(builtObject.owner, equals(deserialized.owner));
     expect(builtObject.content, equals(deserialized.content));
     expect(
         builtObject.start.difference(deserialized.start).abs().inMilliseconds,
@@ -50,20 +49,17 @@ abstract class ModelCalendarEntry {
    */
   static Model.CalendarEntry buildObject() {
     final int id = 123;
-    final Model.Owner owner = new Model.OwningReception(321);
     final String body = 'test test test';
     final DateTime begin = new DateTime.now().add(new Duration(hours: 1));
     final DateTime end = new DateTime.now().add(new Duration(hours: 2));
 
     Model.CalendarEntry builtObject = new Model.CalendarEntry.empty()
-      ..owner = owner
       ..id = id
       ..content = body
       ..start = begin
       ..stop = end;
 
     expect(builtObject.id, equals(id));
-    expect(builtObject.owner, equals(owner));
     expect(builtObject.content, equals(body));
     expect(builtObject.start, equals(begin));
     expect(builtObject.stop, equals(end));

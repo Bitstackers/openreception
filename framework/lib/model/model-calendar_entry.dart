@@ -26,10 +26,6 @@ class CalendarEntry {
   DateTime start;
   DateTime stop;
 
-  Owner owner = Owner.none;
-
-  bool get isOwnedByContact => owner is OwningContact;
-
   /**
    * Constructor.
    */
@@ -43,7 +39,6 @@ class CalendarEntry {
    */
   CalendarEntry.fromMap(Map map)
       : id = map[Key.id],
-        owner = new Owner.parse(map[Key.owner]),
         start = Util.unixTimestampToDateTime(map[Key.start]),
         stop = Util.unixTimestampToDateTime(map[Key.stop]),
         content = map[Key.body];
@@ -64,23 +59,10 @@ class CalendarEntry {
   }
 
   /**
-   * Return the contact id for this calendar entry. MAY be [ReceptionAttributes.noID] if
-   * this is a reception only entry.
-   */
-  int get contactId =>
-      owner is OwningContact ? owner.id : ReceptionAttributes.noId;
-
-  /**
-   * ID of owning reception.
-   */
-  int get receptionId => owner is OwningReception ? owner.id : Reception.noId;
-
-  /**
    * Serialization function.
    */
   Map toJson() => {
         Key.id: id,
-        Key.owner: owner.toJson(),
         Key.body: content,
         Key.start: Util.dateTimeToUnixTimestamp(start),
         Key.stop: Util.dateTimeToUnixTimestamp(stop)

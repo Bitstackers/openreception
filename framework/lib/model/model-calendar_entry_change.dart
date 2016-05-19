@@ -17,20 +17,17 @@ class CalendarChange implements ObjectChange {
   final ChangeType changeType;
   ObjectType get objectType => ObjectType.calendar;
   final int eid;
-  final Owner owner;
 
   /**
    *
    */
-  CalendarChange(this.changeType, this.eid, this.owner);
+  CalendarChange(this.changeType, this.eid);
 
   /**
    *
    */
-  static CalendarChange decode(Map map) => new CalendarChange(
-      changeTypeFromString(map[Key.change]),
-      map[Key.eid],
-      new Owner.parse(map[Key.owner]));
+  static CalendarChange decode(Map map) =>
+      new CalendarChange(changeTypeFromString(map[Key.change]), map[Key.eid]);
 
   /**
    *
@@ -38,7 +35,6 @@ class CalendarChange implements ObjectChange {
   Map toJson() => {
         Key.type: objectTypeToString(objectType),
         Key.change: changeTypeToString(changeType),
-        Key.eid: eid,
-        Key.owner: owner.toJson()
+        Key.eid: eid
       };
 }
