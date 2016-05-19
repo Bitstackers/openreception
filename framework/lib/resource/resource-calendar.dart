@@ -18,16 +18,17 @@ part of openreception.framework.resource;
  * resources across servers and clients.
  */
 abstract class Calendar {
-  static Uri list(Uri host, Model.Owner owner) =>
+  /**
+   *
+   */
+  static Uri ownerBase(Uri host, Model.Owner owner) =>
       Uri.parse('$host/calendar/${owner.toJson()}');
 
-  static Uri base(Uri host) => Uri.parse('$host/calendarentry');
-
-  static Uri single(Uri host, int eid) =>
-      Uri.parse('$host/calendarentry/${eid}');
-
-  static Uri purge(Uri host, int entryId) =>
-      Uri.parse('$host/calendarentry/${entryId}/purge');
+  /**
+   *
+   */
+  static Uri single(Uri host, int eid, Model.Owner owner) =>
+      Uri.parse('$host/calendar/${owner.toJson()}/${eid}');
 
   /**
    *
@@ -36,8 +37,7 @@ abstract class Calendar {
     if (eid == null) {
       return Uri.parse('${host}/calendar/${owner.toJson()}/change');
     } else {
-      return Uri
-          .parse('${host}/calendarentry/$eid/owner/${owner.toJson()}/change');
+      return Uri.parse('${host}/calendar/${owner.toJson()}/${eid}/change');
     }
   }
 }

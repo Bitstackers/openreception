@@ -32,7 +32,7 @@ class RESTCalendarStore implements Storage.Calendar {
    *
    */
   Future<Iterable<Model.CalendarEntry>> list(Model.Owner owner) {
-    Uri url = Resource.Calendar.list(_host, owner);
+    Uri url = Resource.Calendar.ownerBase(_host, owner);
 
     url = _appendToken(url, this._token);
 
@@ -45,8 +45,8 @@ class RESTCalendarStore implements Storage.Calendar {
   /**
    *
    */
-  Future<Model.CalendarEntry> get(int id) {
-    Uri url = Resource.Calendar.single(_host, id);
+  Future<Model.CalendarEntry> get(int id, Model.Owner owner) {
+    Uri url = Resource.Calendar.single(_host, id, owner);
     url = _appendToken(url, this._token);
 
     return this
@@ -60,8 +60,8 @@ class RESTCalendarStore implements Storage.Calendar {
    *
    */
   Future<Model.CalendarEntry> create(
-      Model.CalendarEntry entry, Model.User user) {
-    Uri url = Resource.Calendar.base(_host);
+      Model.CalendarEntry entry, Model.Owner owner, Model.User user) {
+    Uri url = Resource.Calendar.ownerBase(_host, owner);
     url = _appendToken(url, this._token);
 
     return this
@@ -75,8 +75,8 @@ class RESTCalendarStore implements Storage.Calendar {
    *
    */
   Future<Model.CalendarEntry> update(
-      Model.CalendarEntry entry, Model.User modifier) {
-    Uri url = Resource.Calendar.single(_host, entry.id);
+      Model.CalendarEntry entry, Model.Owner owner, Model.User modifier) {
+    Uri url = Resource.Calendar.single(_host, entry.id, owner);
     url = _appendToken(url, this._token);
 
     return _backend
@@ -88,18 +88,8 @@ class RESTCalendarStore implements Storage.Calendar {
   /**
    *
    */
-  Future removeEntry(Model.CalendarEntry entry) {
-    Uri url = Resource.Calendar.single(_host, entry.id);
-    url = _appendToken(url, this._token);
-
-    return this._backend.delete(url);
-  }
-
-  /**
-   *
-   */
-  Future remove(int eid, Model.User user) {
-    Uri url = Resource.Calendar.single(_host, eid);
+  Future remove(int eid, Model.Owner owner, Model.User user) {
+    Uri url = Resource.Calendar.single(_host, eid, owner);
     url = _appendToken(url, this._token);
 
     return this._backend.delete(url);

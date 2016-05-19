@@ -26,12 +26,12 @@ abstract class Calendar {
    *
    */
   Future<model.CalendarEntry> create(
-      model.CalendarEntry entry, model.User modifier);
+      model.CalendarEntry entry, model.Owner owner, model.User modifier);
 
   /**
    *
    */
-  Future<model.CalendarEntry> get(int id);
+  Future<model.CalendarEntry> get(int id, model.Owner owner);
 
   /**
    *
@@ -41,11 +41,11 @@ abstract class Calendar {
   /**
    *
    */
-  Future remove(int id, model.User modifier);
+  Future remove(int id, model.Owner owner, model.User modifier);
 
   /**
    *
    */
   Future<model.CalendarEntry> update(
-      model.CalendarEntry entry, model.User modifier);
+      model.CalendarEntry entry, model.Owner owner, model.User modifier);
 }
