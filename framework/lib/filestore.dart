@@ -70,8 +70,7 @@ class DataStore {
   final ReceptionDialplan receptionDialplanStore;
   final User userStore;
 
-  factory DataStore(String path) {
-    GitEngine ge = new GitEngine(path);
+  factory DataStore(String path, [GitEngine ge]) {
     Calendar calendarStore = new Calendar(path + '/calendar', ge);
     Reception receptionStore = new Reception(path + '/reception', ge);
     Contact contactStore = new Contact(receptionStore, path + '/contact', ge);
