@@ -83,11 +83,6 @@ class Organization implements storage.Organization {
           'File already exists, please update instead');
     }
 
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
-    }
-
     file.writeAsStringSync(_jsonpp.convert(org));
 
     if (this._git != null) {
@@ -141,11 +136,6 @@ class Organization implements storage.Organization {
       throw new storage.NotFound();
     }
 
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
-    }
-
     if (this._git != null) {
       await _git.remove(
           file,
@@ -170,11 +160,6 @@ class Organization implements storage.Organization {
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
-    }
-
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
     }
 
     file.writeAsStringSync(_jsonpp.convert(org));

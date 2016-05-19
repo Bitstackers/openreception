@@ -86,11 +86,6 @@ class Reception implements storage.Reception {
           'File ${file.path} already exists, please update instead');
     }
 
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
-    }
-
     _log.finest('Creating new reception file ${file.path}');
     dir.createSync();
     file.writeAsStringSync(_jsonpp.convert(reception));
@@ -179,11 +174,6 @@ class Reception implements storage.Reception {
       throw new storage.NotFound();
     }
 
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
-    }
-
     _log.finest('Deleting file ${dir.path}');
     if (this._git != null) {
       await _git.remove(
@@ -207,11 +197,6 @@ class Reception implements storage.Reception {
     final File file = new File('$path/${rec.id}/reception.json');
     if (!file.existsSync()) {
       throw new storage.NotFound();
-    }
-
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
     }
 
     file.writeAsStringSync(_jsonpp.convert(rec));

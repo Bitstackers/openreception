@@ -47,11 +47,6 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
           'File already exists, please update instead');
     }
 
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
-    }
-
     file.writeAsStringSync(_jsonpp.convert(rdp));
 
     if (this._git != null) {
@@ -104,11 +99,6 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
       throw new storage.NotFound();
     }
 
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
-    }
-
     file.writeAsStringSync(_jsonpp.convert(rdp));
 
     if (this._git != null) {
@@ -130,11 +120,6 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
-    }
-
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
     }
 
     if (this._git != null) {

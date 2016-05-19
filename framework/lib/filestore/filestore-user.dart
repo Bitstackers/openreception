@@ -102,11 +102,6 @@ class User implements storage.User {
    */
   Future<model.UserReference> create(model.User user, model.User modifier,
       {bool enforceId: false}) async {
-    /// Validate the user
-    if (modifier == null) {
-      throw new ArgumentError.notNull('modifier');
-    }
-
     user.id = user.id != model.User.noId && enforceId ? user.id : _nextId;
 
     final File file = new File('$path/${user.id}.json');
@@ -114,11 +109,6 @@ class User implements storage.User {
     if (file.existsSync()) {
       throw new storage.ClientError(
           'File already exists, please update instead');
-    }
-
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
     }
 
     file.writeAsStringSync(_jsonpp.convert(user));
@@ -188,11 +178,6 @@ class User implements storage.User {
       throw new storage.NotFound();
     }
 
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
-    }
-
     file.writeAsStringSync(_jsonpp.convert(user));
 
     if (this._git != null) {
@@ -214,11 +199,6 @@ class User implements storage.User {
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
-    }
-
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
     }
 
     if (this._git != null) {

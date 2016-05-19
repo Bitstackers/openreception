@@ -76,10 +76,6 @@ class Message implements storage.Message {
    */
   Future<model.Message> create(model.Message message, model.User modifier,
       {bool enforceId: false}) async {
-    /// Validate the user
-    if (modifier == null) {
-      throw new ArgumentError.notNull('modifier');
-    }
     // Directory dateDir = new Directory(
     //     '${msgDir.path}/${msg.createdAt.toIso8601String().split('T').first}')
     //   ..createSync();
@@ -91,11 +87,6 @@ class Message implements storage.Message {
     if (file.existsSync()) {
       throw new storage.ClientError(
           'File already exists, please update instead');
-    }
-
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
     }
 
     file.writeAsStringSync(_jsonpp.convert(message));
@@ -122,11 +113,6 @@ class Message implements storage.Message {
       throw new storage.NotFound();
     }
 
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
-    }
-
     file.writeAsStringSync(_jsonpp.convert(message));
 
     if (this._git != null) {
@@ -148,11 +134,6 @@ class Message implements storage.Message {
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
-    }
-
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
     }
 
     if (this._git != null) {

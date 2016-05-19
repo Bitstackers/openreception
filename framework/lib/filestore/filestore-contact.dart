@@ -78,11 +78,6 @@ class Contact implements storage.Contact {
           'File already exists, please update instead');
     }
 
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
-    }
-
     file.writeAsStringSync(_jsonpp.convert(attr));
     _log.finest('Created new file ${file.path}');
 
@@ -114,11 +109,6 @@ class Contact implements storage.Contact {
 
     dir.createSync();
     final File file = new File('${dir.path}/contact.json');
-
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
-    }
 
     _log.finest('Creating new file ${file.path}');
     file.writeAsStringSync(_jsonpp.convert(contact));
@@ -265,11 +255,6 @@ class Contact implements storage.Contact {
       throw new storage.NotFound();
     }
 
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
-    }
-
     if (this._git != null) {
       await _git.remove(
           dir,
@@ -293,11 +278,6 @@ class Contact implements storage.Contact {
     final File file = new File('${recDir.path}/${receptionId}.json');
     if (!file.existsSync()) {
       throw new storage.NotFound('No file ${file}');
-    }
-
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
     }
 
     _log.finest('Removing file ${file.path}');
@@ -324,11 +304,6 @@ class Contact implements storage.Contact {
       throw new storage.NotFound();
     }
 
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
-    }
-
     file.writeAsStringSync(_jsonpp.convert(contact));
 
     if (this._git != null) {
@@ -353,11 +328,6 @@ class Contact implements storage.Contact {
     final File file = new File('${recDir.path}/${attr.receptionId}.json');
     if (!file.existsSync()) {
       throw new storage.NotFound('No file ${file}');
-    }
-
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
     }
 
     _log.finest('Creating new file ${file.path}');

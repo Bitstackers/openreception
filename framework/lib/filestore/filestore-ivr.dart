@@ -47,11 +47,6 @@ class Ivr implements storage.Ivr {
           'File already exists, please update instead');
     }
 
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
-    }
-
     file.writeAsStringSync(_jsonpp.convert(menu));
 
     if (this._git != null) {
@@ -103,11 +98,6 @@ class Ivr implements storage.Ivr {
       throw new storage.NotFound();
     }
 
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
-    }
-
     file.writeAsStringSync(_jsonpp.convert(menu));
 
     if (this._git != null) {
@@ -129,11 +119,6 @@ class Ivr implements storage.Ivr {
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
-    }
-
-    /// Set the user
-    if (modifier == null) {
-      modifier = _systemUser;
     }
 
     if (this._git != null) {

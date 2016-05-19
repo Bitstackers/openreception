@@ -101,11 +101,6 @@ class Calendar implements storage.Calendar {
   Future<model.CalendarEntry> create(
       model.CalendarEntry entry, model.Owner owner, model.User modifier,
       {bool enforceId: false}) async {
-    /// Validate the user
-    if (modifier == null) {
-      throw new ArgumentError.notNull('modifier');
-    }
-
     entry.id =
         entry.id != model.CalendarEntry.noId && enforceId ? entry.id : _nextId;
 
@@ -196,11 +191,6 @@ class Calendar implements storage.Calendar {
    * The action is logged as being performed by user [modifier].
    */
   Future remove(int eid, model.Owner owner, model.User modifier) async {
-    /// Validate the user
-    if (modifier == null) {
-      throw new ArgumentError.notNull('modifier');
-    }
-
     final Directory ownerDir = new Directory('$path/${owner.id}/calendar');
     final File file = new File('${ownerDir.path}/${eid}.json');
 
@@ -228,11 +218,6 @@ class Calendar implements storage.Calendar {
    */
   Future<model.CalendarEntry> update(
       model.CalendarEntry entry, model.Owner owner, model.User modifier) async {
-    /// Validate the user
-    if (modifier == null) {
-      throw new ArgumentError.notNull('modifier');
-    }
-
     final Directory ownerDir = new Directory('$path/${owner.id}/calendar');
 
     final File file = new File('${ownerDir.path}/${entry.id}.json');
