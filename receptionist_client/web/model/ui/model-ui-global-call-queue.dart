@@ -82,7 +82,7 @@ class UIGlobalCallQueue extends UIModel {
       ..classes.add(call.inbound ? 'inbound' : 'outbound')
       ..classes.toggle('locked', call.locked)
       ..title =
-          '${call.inbound ? _langMap[Key.callStateInbound] : _langMap[Key.callStateOutbound]}';
+          '${call.inbound ? _langMap[Key.callStateInbound] : _langMap[Key.callStateOutbound]} (${call.id})';
   }
 
   /**
