@@ -23,6 +23,9 @@ class Message implements storage.Message {
       _git != null ? _git.initialized : new Future.value(true);
   Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
+  Bus<event.MessageChange> _changeBus = new Bus<event.MessageChange>();
+  Stream<event.MessageChange> get changeStream => _changeBus.stream;
+
   int get _nextId => _sequencer.nextInt();
   /**
    * TODO: Add bus for notifying other filestores about changes.
@@ -99,6 +102,8 @@ class Message implements storage.Message {
           _authorString(modifier));
     }
 
+    _changeBus.fire(new event.MessageChange.create(message.id, modifier.id));
+
     return message;
   }
 
@@ -123,6 +128,7 @@ class Message implements storage.Message {
           _authorString(modifier));
     }
 
+    _changeBus.fire(new event.MessageChange.update(message.id, modifier.id));
     return message;
   }
 
@@ -145,6 +151,8 @@ class Message implements storage.Message {
     } else {
       file.deleteSync();
     }
+
+    _changeBus.fire(new event.MessageChange.delete(mid, modifier.id));
   }
 
   /**
