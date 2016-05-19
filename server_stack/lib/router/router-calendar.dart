@@ -67,15 +67,14 @@ class Calendar {
   void bindRoutes(router) {
     router
       ..get('/calendar/{type}:{oid}', _calendarController.list)
-      ..get('/calendarentry/{eid}', _calendarController.get)
       ..get('/calendar/{type}:{oid}/change', _calendarController.changes)
-      ..get('/calendarentry/{eid}/owner/{type}:{oid}/change',
-          _calendarController.changes)
-      ..get('/calendarentry/{eid}/deleted', _calendarController.getDeleted)
-      ..put('/calendarentry/{eid}', _calendarController.update)
-      ..delete('/calendarentry/{eid}', _calendarController.remove)
-      ..post('/calendarentry', _calendarController.create)
-      ..get('/calendarentry/{eid}/change', _calendarController.changes);
+      ..get('/calendar/{type}:{oid}/{eid}', _calendarController.get)
+      ..get('/calendar/{type}:{oid}/{eid}/change', _calendarController.changes)
+      ..get('/calendar/{type}:{oid}/{eid}/deleted',
+          _calendarController.getDeleted)
+      ..put('/calendar/{type}:{oid}/{eid}', _calendarController.update)
+      ..post('/calendar/{type}:{oid}', _calendarController.create)
+      ..delete('/calendar/{type}:{oid}/{eid}', _calendarController.remove);
   }
 
   /**

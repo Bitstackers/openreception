@@ -22,7 +22,7 @@ import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import 'package:logging/logging.dart';
 
-import 'package:openreception.framework/filestore.dart' as database;
+import 'package:openreception.framework/filestore.dart' as filestore;
 import 'package:openreception.framework/event.dart' as event;
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/service.dart' as service;
@@ -34,7 +34,8 @@ const String _libraryName = 'dialplan_server.controller';
  * Ivr menu controller class.
  */
 class Calendar {
-  final database.Calendar _calendarStore;
+  final filestore.Contact _contactStore;
+  final filestore.Reception _receptionStore;
   final service.Authentication _authService;
   final service.NotificationService _notification;
   final Logger _log = new Logger('$_libraryName.Calendar');
@@ -42,7 +43,8 @@ class Calendar {
   /**
    *
    */
-  Calendar(this._calendarStore, this._authService, this._notification);
+  Calendar(this._contactStore, this._receptionStore, this._authService,
+      this._notification);
 
   /**
    *
@@ -55,16 +57,41 @@ class Calendar {
       _log.warning('Could not connect to auth server', e, s);
       return authServerDown();
     }
+
+    model.Owner owner;
+    final String type = shelf_route.getPathParameter(request, 'type');
+    final String oid = shelf_route.getPathParameter(request, 'oid');
+    try {
+      owner = new model.Owner.parse('$type:$oid');
+    } catch (e) {
+      final String msg = 'Could parse owner: $type:$oid';
+      _log.warning(msg, e);
+      return clientError(e.toString(msg));
+    }
+
     final model.CalendarEntry entry =
         model.CalendarEntry.decode(JSON.decode(await request.readAsString()));
 
-    final model.CalendarEntry created =
-        await _calendarStore.create(entry, modifier);
+    model.CalendarEntry created;
+
+    try {
+      if (owner is model.OwningContact) {
+        created =
+            await _contactStore.calendarStore.create(entry, owner, modifier);
+      } else if (owner is model.OwningReception) {
+        created =
+            await _receptionStore.calendarStore.create(entry, owner, modifier);
+      } else {
+        return clientError('Could not find suitable for store '
+            'for owner type: ${owner.runtimeType}');
+      }
+    } on storage.ClientError {
+      return clientError('Could not create new object.');
+    }
 
     event.CalendarChange changeEvent =
-        new event.CalendarChange.create(created.id, entry.owner, modifier.id);
-
-    _log.finest('User id:${modifier.id} created entry for ${entry.owner}');
+        new event.CalendarChange.create(created.id, owner, modifier.id);
+    _log.finest('User id:${modifier.id} created entry for ${owner}');
 
     _notification.broadcastEvent(changeEvent);
 
@@ -77,8 +104,26 @@ class Calendar {
   Future<shelf.Response> get(shelf.Request request) async {
     final int eid = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
+    model.Owner owner;
+    final String type = shelf_route.getPathParameter(request, 'type');
+    final String oid = shelf_route.getPathParameter(request, 'oid');
     try {
-      return okJson(await _calendarStore.get(eid));
+      owner = new model.Owner.parse('$type:$oid');
+    } catch (e) {
+      final String msg = 'Could parse owner: $type:$oid';
+      _log.warning(msg, e);
+      return clientError(e.toString(msg));
+    }
+
+    try {
+      if (owner is model.OwningContact) {
+        return okJson(await _contactStore.calendarStore.get(eid, owner));
+      } else if (owner is model.OwningReception) {
+        return okJson(await _receptionStore.calendarStore.get(eid, owner));
+      } else {
+        return clientError('Could not find suitable for store '
+            'for owner type: ${owner.runtimeType}');
+      }
     } on storage.NotFound {
       return notFound('No event with id $eid');
     }
@@ -91,7 +136,8 @@ class Calendar {
     final int eid = int.parse(shelf_route.getPathParameter(request, 'eid'));
 
     try {
-      return okJson(await _calendarStore.get(eid));
+      //return okJson(await _calendarStore.get(eid));
+      return serverError('Not supported');
     } on storage.NotFound {
       return notFound('No event with id $eid');
     }
@@ -101,12 +147,30 @@ class Calendar {
    *
    */
   Future<shelf.Response> list(shelf.Request request) async {
+    model.Owner owner;
     final String type = shelf_route.getPathParameter(request, 'type');
     final String oid = shelf_route.getPathParameter(request, 'oid');
-
-    final model.Owner owner = new model.Owner.parse('$type:$oid');
-
-    return okJson((await _calendarStore.list(owner)).toList(growable: false));
+    try {
+      owner = new model.Owner.parse('$type:$oid');
+    } catch (e) {
+      final String msg = 'Could parse owner: $type:$oid';
+      _log.warning(msg, e);
+      return clientError(e.toString(msg));
+    }
+    try {
+      if (owner is model.OwningContact) {
+        return okJson((await _contactStore.calendarStore.list(owner))
+            .toList(growable: false));
+      } else if (owner is model.OwningReception) {
+        return okJson((await _receptionStore.calendarStore.list(owner))
+            .toList(growable: false));
+      } else {
+        return clientError('Could not find suitable for store '
+            'for owner type: ${owner.runtimeType}');
+      }
+    } on storage.NotFound {
+      return notFound('Non-existing owner $owner');
+    }
   }
 
   /**
@@ -122,19 +186,34 @@ class Calendar {
     }
 
     final int eid = int.parse(shelf_route.getPathParameter(request, 'eid'));
-
-    model.CalendarEntry removed;
+    final String type = shelf_route.getPathParameter(request, 'type');
+    final String oid = shelf_route.getPathParameter(request, 'oid');
+    model.Owner owner;
     try {
-      removed = await _calendarStore.get(eid);
-      await _calendarStore.remove(eid, modifier);
-    } on storage.NotFound {
-      return notFound('No entry with id $eid');
+      owner = new model.Owner.parse('$type:$oid');
+    } catch (e) {
+      final String msg = 'Could parse owner: $type:$oid';
+      _log.warning(msg, e);
+      return clientError(e.toString(msg));
     }
 
-    event.CalendarChange changeEvent =
-        new event.CalendarChange.delete(removed.id, removed.owner, modifier.id);
+    try {
+      if (owner is model.OwningContact) {
+        await _contactStore.calendarStore.remove(eid, owner, modifier);
+      } else if (owner is model.OwningReception) {
+        await _receptionStore.calendarStore.remove(eid, owner, modifier);
+      } else {
+        return clientError('Could not find suitable for store '
+            'for owner type: ${owner.runtimeType}');
+      }
+    } on storage.NotFound {
+      return notFound('Non-existing owner $owner');
+    }
 
-    _log.finest('User id:${modifier.id} removed entry for ${removed.owner}');
+    final event.CalendarChange changeEvent =
+        new event.CalendarChange.delete(eid, owner, modifier.id);
+
+    _log.finest('User id:${modifier.id} removed entry for ${owner}');
 
     _notification.broadcastEvent(changeEvent);
 
@@ -154,16 +233,40 @@ class Calendar {
       return authServerDown();
     }
 
+    final String type = shelf_route.getPathParameter(request, 'type');
+    final String oid = shelf_route.getPathParameter(request, 'oid');
+    model.Owner owner;
+    try {
+      owner = new model.Owner.parse('$type:$oid');
+    } catch (e) {
+      final String msg = 'Could parse owner: $type:$oid';
+      _log.warning(msg, e);
+      return clientError(e.toString(msg));
+    }
+
     final model.CalendarEntry entry =
         model.CalendarEntry.decode(JSON.decode(await request.readAsString()));
 
-    final model.CalendarEntry updated =
-        await _calendarStore.update(entry, modifier);
+    model.CalendarEntry updated;
+    try {
+      if (owner is model.OwningContact) {
+        updated =
+            await _contactStore.calendarStore.update(entry, owner, modifier);
+      } else if (owner is model.OwningReception) {
+        updated =
+            await _receptionStore.calendarStore.update(entry, owner, modifier);
+      } else {
+        return clientError('Could not find suitable for store '
+            'for owner type: ${owner.runtimeType}');
+      }
+    } on storage.NotFound {
+      return notFound('Non-existing owner $owner');
+    }
 
-    event.CalendarChange changeEvent =
-        new event.CalendarChange.update(updated.id, updated.owner, modifier.id);
+    final event.CalendarChange changeEvent =
+        new event.CalendarChange.update(updated.id, owner, modifier.id);
 
-    _log.finest('User id:${modifier.id} updated entry for ${entry.owner}');
+    _log.finest('User id:${modifier.id} updated entry for ${owner}');
 
     _notification.broadcastEvent(changeEvent);
 
@@ -177,12 +280,31 @@ class Calendar {
     final int eid = shelf_route.getPathParameter(request, 'eid') != null
         ? int.parse(shelf_route.getPathParameter(request, 'eid'))
         : null;
+
     final String type = shelf_route.getPathParameter(request, 'type');
     final String oid = shelf_route.getPathParameter(request, 'oid');
+    model.Owner owner;
+    try {
+      owner = new model.Owner.parse('$type:$oid');
+    } catch (e) {
+      final String msg = 'Could parse owner: $type:$oid';
+      _log.warning(msg, e);
+      return clientError(e.toString(msg));
+    }
 
-    final model.Owner owner = new model.Owner.parse('$type:$oid');
-
-    return okJson(
-        (await _calendarStore.changes(owner, eid)).toList(growable: false));
+    try {
+      if (owner is model.OwningContact) {
+        return okJson((await _contactStore.calendarStore.changes(owner, eid))
+            .toList(growable: false));
+      } else if (owner is model.OwningReception) {
+        return okJson((await _receptionStore.calendarStore.changes(owner, eid))
+            .toList(growable: false));
+      } else {
+        return clientError('Could not find suitable for store '
+            'for owner type: ${owner.runtimeType}');
+      }
+    } on storage.NotFound {
+      return notFound('No event with id $eid');
+    }
   }
 }

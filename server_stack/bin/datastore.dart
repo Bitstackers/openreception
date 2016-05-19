@@ -195,10 +195,8 @@ Future main(List<String> args) async {
   final userStateController =
       new controller.UserState(agentHistory, userStatus);
 
-  final controller.Calendar calendarController = new controller.Calendar(
-      new filestore.Calendar(parsedArgs['filestore'] + '/calendar'),
-      authService,
-      notificationService);
+  final controller.Calendar calendarController =
+      new controller.Calendar(cStore, rStore, authService, notificationService);
   controller.Contact contactController =
       new controller.Contact(cStore, notificationService, authService);
 

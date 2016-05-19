@@ -93,10 +93,16 @@ Future main(List<String> args) async {
       new service.NotificationService(Uri.parse(parsedArgs['notification-uri']),
           config.userServer.serverToken, new service.Client());
 
-  final controller.Calendar _calendarController = new controller.Calendar(
-      new filestore.Calendar(parsedArgs['filestore'] + '/calendar'),
-      _authentication,
-      _notification);
+  final filestore.Reception rStore = new filestore.Reception(
+      parsedArgs['filestore'] + '/reception',
+      new filestore.GitEngine(parsedArgs['filestore'] + '/reception'));
+  final filestore.Contact cStore = new filestore.Contact(
+      rStore,
+      parsedArgs['filestore'] + '/contact',
+      new filestore.GitEngine(parsedArgs['filestore'] + '/contact'));
+
+  final controller.Calendar _calendarController =
+      new controller.Calendar(cStore, rStore, _authentication, _notification);
 
   final router.Calendar calendarRouter =
       new router.Calendar(_authentication, _notification, _calendarController);

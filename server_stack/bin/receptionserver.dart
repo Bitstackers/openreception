@@ -77,12 +77,16 @@ Future main(List<String> args) async {
       new service.NotificationService(Uri.parse(parsedArgs['notification-uri']),
           config.userServer.serverToken, new service.Client());
 
-  final filestore.Reception rStore =
-      new filestore.Reception(filepath + '/reception');
-  final filestore.Contact cStore =
-      new filestore.Contact(rStore, filepath + '/contact');
-  final filestore.Organization oStore =
-      new filestore.Organization(cStore, rStore, filepath + '/organization');
+  final filestore.Reception rStore = new filestore.Reception(
+      filepath + '/reception',
+      new filestore.GitEngine(filepath + '/reception'));
+  final filestore.Contact cStore = new filestore.Contact(rStore,
+      filepath + '/contact', new filestore.GitEngine(filepath + '/contact'));
+  final filestore.Organization oStore = new filestore.Organization(
+      cStore,
+      rStore,
+      filepath + '/organization',
+      new filestore.GitEngine(filepath + '/organization'));
 
   final controller.Organization organization =
       new controller.Organization(oStore, _notification, _authService);

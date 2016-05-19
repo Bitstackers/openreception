@@ -80,8 +80,9 @@ Future main(List<String> args) async {
       new service.NotificationService(Uri.parse(parsedArgs['notification-uri']),
           config.userServer.serverToken, new service.Client());
 
-  final filestore.User _userStore =
-      new filestore.User(parsedArgs['filestore'] + '/user');
+  final filestore.User _userStore = new filestore.User(
+      parsedArgs['filestore'] + '/user',
+      new filestore.GitEngine(parsedArgs['filestore'] + '/user'));
 
   final model.AgentHistory agentHistory = new model.AgentHistory();
   final model.UserStatusList userStatus = new model.UserStatusList();

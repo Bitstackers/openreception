@@ -74,8 +74,8 @@ Future main(List<String> args) async {
       new service.NotificationService(Uri.parse(parsedArgs['notification-uri']),
           config.userServer.serverToken, new service.Client());
 
-  final filestore.Message _messageStore =
-      new filestore.Message(filepath + '/message');
+  final filestore.Message _messageStore = new filestore.Message(
+      filepath + '/message', new filestore.GitEngine(filepath + '/message'));
 
   final filestore.MessageQueue _messageQueue =
       new filestore.MessageQueue(filepath + '/message_queue');

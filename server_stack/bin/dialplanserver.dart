@@ -123,13 +123,16 @@ Future main(List<String> args) async {
    * Controllers.
    */
 
-  final filestore.Ivr _ivrStore = new filestore.Ivr(filepath + '/ivr');
-  final filestore.ReceptionDialplan _dpStore =
-      new filestore.ReceptionDialplan(filepath + '/dialplan');
+  final filestore.Ivr _ivrStore = new filestore.Ivr(
+      filepath + '/ivr', new filestore.GitEngine(filepath + '/ivr'));
+  final filestore.ReceptionDialplan _dpStore = new filestore.ReceptionDialplan(
+      filepath + '/dialplan', new filestore.GitEngine(filepath + '/dialplan'));
 
-  final filestore.Reception _rStore =
-      new filestore.Reception(filepath + '/reception');
-  final filestore.User _userStore = new filestore.User(filepath + '/user');
+  final filestore.Reception _rStore = new filestore.Reception(
+      filepath + '/reception',
+      new filestore.GitEngine(filepath + '/reception'));
+  final filestore.User _userStore = new filestore.User(
+      filepath + '/user', new filestore.GitEngine(filepath + '/user'));
 
   /// Setup dialplan tools.
   final dialplanTools.DialplanCompiler compiler =
