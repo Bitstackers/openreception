@@ -64,6 +64,7 @@ class DataStore {
   final Calendar calendarStore;
   final Contact contactStore;
   final Ivr ivrStore;
+  final Message messageStore;
   final Organization organizationStore;
   final Reception receptionStore;
   final ReceptionDialplan receptionDialplanStore;
@@ -75,20 +76,29 @@ class DataStore {
     Reception receptionStore = new Reception(path + '/reception', ge);
     Contact contactStore = new Contact(receptionStore, path + '/contact', ge);
     Ivr ivrStore = new Ivr(path + '/ivr', ge);
+    Message messageStore = new Message(path + '/message');
     Organization orgStore = new Organization(
         contactStore, receptionStore, path + '/organization', ge);
     ReceptionDialplan receptionDialplanStore =
         new ReceptionDialplan(path + '/dialplan', ge);
     User userStore = new User(path + '/user', ge);
 
-    return new DataStore._internal(calendarStore, contactStore, ivrStore,
-        orgStore, receptionStore, receptionDialplanStore, userStore);
+    return new DataStore._internal(
+        calendarStore,
+        contactStore,
+        ivrStore,
+        messageStore,
+        orgStore,
+        receptionStore,
+        receptionDialplanStore,
+        userStore);
   }
 
   DataStore._internal(
       Calendar this.calendarStore,
       Contact this.contactStore,
       Ivr this.ivrStore,
+      Message this.messageStore,
       Organization this.organizationStore,
       Reception this.receptionStore,
       ReceptionDialplan this.receptionDialplanStore,
