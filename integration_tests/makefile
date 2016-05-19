@@ -16,9 +16,13 @@ bin/basic_agent: support_tools/src/basic_agent.c
 	-mkdir -p bin
 	mv support_tools/basic_agent bin/
 
+default-config:
+	install lib/config.dart.dist lib/config.dart
+
 install_dummy_tokens:
 	install --directory         ${AUTH_CACHE_STORAGE}
 	install magic_tokens/*.json ${AUTH_CACHE_STORAGE}
+
 
 analyze-all: analyze analyze-hints
 

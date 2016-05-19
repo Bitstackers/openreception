@@ -9,35 +9,35 @@ part 'support/config_pool.dart';
  * Configuration parameter of the OpenReception test framework.
  */
 abstract class Config {
-
   /**
    * ESl configuration parameters
    */
-  static String eslPassword = 'clueCon';
+  static String eslPassword = 'openreception-tests';
   static String eslHost = 'localhost';
   static int eslPort = 8021;
 
   /**
    *
    */
-  static String serverStackPath = '../ServerStack';
+  static String serverStackPath = '../server_stack';
 
   /**
    * Path to the pjsua sip agent binary.
    */
-  static String simpleClientBinaryPath = './basic_agent';
+  static String simpleClientBinaryPath = './bin/basic_agent';
 
   /**
    * The hostname or IP of the external network interface used for tests.
    */
-  static String externalHostname = 'myhost.example.com';
+  static String externalHostname = 'external.hostname';
+
 
   /**
    * The hostname or IP of the FreeSwitch server which the SIP agents register.
    * Should be an external IP. Use [externalHostname] if FreeSWITCH is running
    * on the same machine as the tests.
    */
-  static String pbxHost = 'pbx.example.com';
+  static String pbxHost = externalHostname;
 
   /**
    * The hostname or IP of the interface where the SNOM agents should post
@@ -51,12 +51,12 @@ abstract class Config {
    * tests. Could be replaced by [authTokens.last] if there is no need to
    * distingush the framework from the users.
    */
-  static String serverToken = 'secretStuff';
+  static String serverToken = 'magicstuff';
 
   /**
    * REST interface magic token.
    */
-  static String magicRESTToken = 'domagic';
+  static String magicRESTToken = 'makemagic';
 
   /**
    * REST interface listen address.
@@ -69,81 +69,11 @@ abstract class Config {
   static int listenRESTport = 4224;
 
   /**
-   * The URI of the authentication server.
-   */
-  static Uri authenticationServerUri = Uri.parse('http://auth.example.com');
-
-  /**
-   * The URI of the calendar server.
-   */
-   static URI calendarStoreUri = Uri.parse('http://calendar.example.com');
-
-  /**
-   * The URI of the config server.
-   */
-  static Uri configServerUri = Uri.parse('http://config.example.com');
-
-  /**
-   * The URI of the contact store server.
-   */
-  static Uri contactStoreUri = Uri.parse('http://contact.example.com');
-
-  /**
-   * The URI of the dialplan server.
-   */
-  static Uri dialplanStoreUri = Uri.parse('http://dialplan.example.com');
-
-  /**
-   * The URI of the data management server.
-   */
-  static Uri managementServerUri = Uri.parse('http://management.example.com');
-
-  /**
-   * The URI of the message store server.
-   */
-  static Uri messageStoreUri = Uri.parse('http://message.example.com');
-
-  /**
-   * The URI of the reception store server.
-   */
-  static Uri receptionStoreUri = Uri.parse('http://reception.example.com');
-
-  /**
-   * The URI of the user store server.
-   */
-  static Uri userStoreUri = Uri.parse('http://user.example.com');
-
-  /**
-   * The URI of the callFlowControl server, which is also bound to [pbxHost].
-   */
-  static Uri CallFlowControlUri = Uri.parse('http://callflow.example.com');
-
-  /**
-   * Uri of the Notification server, where general events about the state of the
-   * system is broadcast.
-   */
-  static Uri NotificationSocketUri = Uri.parse('ws://notification.example.com');
-
-  /**
-   * Uri of the Notification server, where general events about the state of the
-   * system is broadcasted from.
-   */
-  static Uri notificationServiceUri = Uri.parse('http://localhost:4200');
-
-  /**
-   * Uri of the Organization server. Currently located at the ReceptionServer.
-   */
-  static Uri organizationStoreUri = receptionStoreUri;
-
-  /**
    * Pool of SIP account used for testing. Must mirror accounts present on
    * local FreeSwitch server configured in [pbxHost] and be mapped to a User on
    * the server stack.
    */
-  static List<SIPAccount> localSipAccounts = [
-      new SIPAccount('1100', '1234', pbxHost),
-      new SIPAccount('1101', '1234', pbxHost),
-      new SIPAccount('1102', '1234', pbxHost)];
+  static List<SIPAccount> localSipAccounts = [];
 
   /**
    * SIP accounts that serve as external peers. Can be accounts that are
@@ -152,20 +82,14 @@ abstract class Config {
    * Alternatively, it is entirely external accounts - such as a PSTN numbers
    * at an external trunk.
    */
-  static List<SIPAccount> externalSipAccounts = [
-      new SIPAccount('1200', '', externalHostname),
-      new SIPAccount('1201', '', externalHostname),
-      new SIPAccount('pstn', 'secret', 'externalprovider')];
+  static List<SIPAccount> externalSipAccounts = [];
 
   /**
    * A pool of hostnames that resolve to SNOM phones on the network. Note that
    * these phones _will_ have parts of their configuration overwritten, so
    * please perform a config backup before adding to this list.
    */
-  static List<String> snomHosts = [
-      'snom1.example.com',
-      'snom2.example.com',
-      'snom3.example.com'];
+  static List<String> snomHosts = [];
 
   /**
    * The pjsua agents needs to bind to a local UDP port. By default, we
@@ -174,16 +98,11 @@ abstract class Config {
    * manually.
    */
   static List<int> pjsuaPortAvailablePorts =
-      new List.generate(30, (int index) => 5100 + index);
+      new List.generate(300, (int index) => 5100 + index);
 
   /**
    * A pool of available authentication tokens pre-allocated on the
    * authentication server. Each token should map to different user.
    */
-  static List authTokens = ['secret1', 'secret2', 'secret3'];
-
-  /**
-   * Database DSN. Used for testing database storage layer.
-   */
-  static String dbDSN = 'postgres://user:password@host:port/database';
+  static List authTokens = [];
 }
