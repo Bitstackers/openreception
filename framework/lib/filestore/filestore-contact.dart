@@ -68,7 +68,7 @@ class Contact implements storage.Contact {
     }
     final recDir = new Directory('$path/${attr.cid}/receptions');
     if (!recDir.existsSync()) {
-      recDir.createSync(recursive: true);
+      recDir.createSync();
     }
 
     final File file = new File('${recDir.path}/${attr.receptionId}.json');
