@@ -99,11 +99,15 @@ class Calendar implements storage.Calendar {
    *
    */
   Future<model.CalendarEntry> create(
-      model.CalendarEntry entry, model.Owner owner, model.User modifier) async {
+      model.CalendarEntry entry, model.Owner owner, model.User modifier,
+      {bool enforceId: false}) async {
     /// Validate the user
     if (modifier == null) {
       throw new ArgumentError.notNull('modifier');
     }
+
+    entry.id =
+        entry.id != model.CalendarEntry.noId && enforceId ? entry.id : _nextId;
 
     entry.id = _nextId;
     final String ownerPath = '$path/${owner.id}/calendar';

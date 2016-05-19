@@ -74,13 +74,18 @@ class Message implements storage.Message {
   /**
    * TODO: Store in date-dir.
    */
-  Future<model.Message> create(
-      model.Message message, model.User modifier) async {
+  Future<model.Message> create(model.Message message, model.User modifier,
+      {bool enforceId: false}) async {
+    /// Validate the user
+    if (modifier == null) {
+      throw new ArgumentError.notNull('modifier');
+    }
     // Directory dateDir = new Directory(
     //     '${msgDir.path}/${msg.createdAt.toIso8601String().split('T').first}')
     //   ..createSync();
 
-    message.id = _nextId;
+    message.id =
+        message.id != model.Message.noId && enforceId ? message.id : _nextId;
     final File file = new File('$path/${message.id}.json');
 
     if (file.existsSync()) {

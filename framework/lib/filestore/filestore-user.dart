@@ -100,9 +100,15 @@ class User implements storage.User {
   /**
    *
    */
-  Future<model.UserReference> create(
-      model.User user, model.User modifier) async {
-    user.id = _nextId;
+  Future<model.UserReference> create(model.User user, model.User modifier,
+      {bool enforceId: false}) async {
+    /// Validate the user
+    if (modifier == null) {
+      throw new ArgumentError.notNull('modifier');
+    }
+
+    user.id = user.id != model.User.noId && enforceId ? user.id : _nextId;
+
     final File file = new File('$path/${user.id}.json');
 
     if (file.existsSync()) {

@@ -99,10 +99,12 @@ class Contact implements storage.Contact {
    *
    */
   Future<model.ContactReference> create(
-      model.BaseContact contact, model.User modifier) async {
-    if (contact.id == model.BaseContact.noId) {
-      contact.id = _nextId;
-    }
+      model.BaseContact contact, model.User modifier,
+      {bool enforceId: false}) async {
+    contact.id = contact.id != model.BaseContact.noId && enforceId
+        ? contact.id
+        : _nextId;
+
     final Directory dir = new Directory('$path/${contact.id}');
 
     if (dir.existsSync()) {

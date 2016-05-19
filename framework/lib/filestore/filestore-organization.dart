@@ -68,15 +68,14 @@ class Organization implements storage.Organization {
    *
    */
   Future<model.OrganizationReference> create(
-      model.Organization org, model.User modifier) async {
+      model.Organization org, model.User modifier,
+      {bool enforceId: false}) async {
     if (org.id == null) {
       throw new storage.ClientError(
           new ArgumentError.notNull(org.id.toString()).toString());
     }
+    org.id = org.id != model.Organization.noId && enforceId ? org.id : _nextId;
 
-    if (org.id == model.Organization.noId) {
-      org.id = _nextId;
-    }
     final File file = new File('$path/${org.id}.json');
 
     if (file.existsSync()) {

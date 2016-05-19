@@ -72,10 +72,11 @@ class Reception implements storage.Reception {
    *
    */
   Future<model.ReceptionReference> create(
-      model.Reception reception, model.User modifier) async {
-    if (reception.id == model.Reception.noId) {
-      reception.id = _nextId;
-    }
+      model.Reception reception, model.User modifier,
+      {bool enforceId: false}) async {
+    reception.id = reception.id != model.Reception.noId && enforceId
+        ? reception.id
+        : _nextId;
 
     final Directory dir = new Directory('$path/${reception.id}');
     final File file = new File('${dir.path}/reception.json');
