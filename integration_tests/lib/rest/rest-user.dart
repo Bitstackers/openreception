@@ -70,6 +70,17 @@ void _runUserTests() {
     /*
      * Service-specific tests.
      */
+    setUp(() async {
+      env = new TestEnvironment(enableRevisions: true);
+      sa = await env.createsServiceAgent();
+
+      uProcess = await env.requestUserserverProcess();
+      sa.userStore = uProcess.bindClient(env.httpClient, sa.authToken);
+    });
+
+    tearDown(() async {
+      await env.clear();
+    });
 
     test('userState change',
         () => serviceTest.User.stateChange(sa, sa.userStore));

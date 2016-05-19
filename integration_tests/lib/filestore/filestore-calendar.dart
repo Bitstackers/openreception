@@ -5,76 +5,88 @@ void _runCalendarTests() {
     ServiceAgent sa;
     TestEnvironment env;
     model.Owner owner;
+    filestore.Calendar calendarStore;
 
     setUp(() async {
       env = new TestEnvironment();
 
       sa = await env.createsServiceAgent();
       owner = new model.OwningContact((await sa.createsContact()).id);
+
+      calendarStore = env.contactStore.calendarStore;
+      await calendarStore.ready;
     });
 
     tearDown(() async {
       await env.clear();
     });
 
-    test(
-        'get (non-existing)', () => storeTest.Calendar.getNonExistingEntry(sa));
+    test('get (non-existing)',
+        () => storeTest.Calendar.getNonExistingEntry(calendarStore));
 
     /**
      * Basic CRUD tests for contact owner.
      */
     test('create (contact owner)',
-        () => storeTest.Calendar.create(owner, sa.calendarStore, sa.user));
+        () => storeTest.Calendar.create(owner, calendarStore, sa.user));
 
     test(
         'create after last is removed (contact owner)',
         () => storeTest.Calendar
-            .createAfterLastRemove(owner, sa.calendarStore, sa.user));
+            .createAfterLastRemove(owner, calendarStore, sa.user));
 
     test('get (contact owner)',
-        () => storeTest.Calendar.get(owner, sa.calendarStore, sa.user));
+        () => storeTest.Calendar.get(owner, calendarStore, sa.user));
 
     test('update (contact owner)',
-        () => storeTest.Calendar.update(owner, sa.calendarStore, sa.user));
+        () => storeTest.Calendar.update(owner, calendarStore, sa.user));
 
     test('list (contact owner)',
-        () => storeTest.Calendar.list(owner, sa.calendarStore, sa.user));
+        () => storeTest.Calendar.list(owner, calendarStore, sa.user));
 
     test('remove (contact owner)',
-        () => storeTest.Calendar.remove(owner, sa.calendarStore, sa.user));
+        () => storeTest.Calendar.remove(owner, calendarStore, sa.user));
 
-    test(
-        'change listing on create (contact owner)',
-        () => storeTest.Calendar
-            .changeOnCreate(owner, sa.calendarStore, sa.user));
+    setUp(() async {
+      env = new TestEnvironment(enableRevisions: true);
+
+      sa = await env.createsServiceAgent();
+      owner = new model.OwningContact((await sa.createsContact()).id);
+
+      calendarStore = env.contactStore.calendarStore;
+      await calendarStore.ready;
+    });
+
+    tearDown(() async {
+      await env.clear();
+    });
+
+    test('change listing on create (contact owner)',
+        () => storeTest.Calendar.changeOnCreate(owner, calendarStore, sa.user));
 
     test(
         'latest change on create (contact owner)',
         () => storeTest.Calendar
-            .latestChangeOnCreate(owner, sa.calendarStore, sa.user));
+            .latestChangeOnCreate(owner, calendarStore, sa.user));
 
-    test(
-        'change listing on update (contact owner)',
-        () => storeTest.Calendar
-            .changeOnUpdate(owner, sa.calendarStore, sa.user));
+    test('change listing on update (contact owner)',
+        () => storeTest.Calendar.changeOnUpdate(owner, calendarStore, sa.user));
 
     test(
         'latest change on update (contact owner)',
         () => storeTest.Calendar
-            .latestChangeOnUpdate(owner, sa.calendarStore, sa.user));
+            .latestChangeOnUpdate(owner, calendarStore, sa.user));
 
-    test(
-        'change listing on remove (contact owner)',
-        () => storeTest.Calendar
-            .changeOnRemove(owner, sa.calendarStore, sa.user));
+    test('change listing on remove (contact owner)',
+        () => storeTest.Calendar.changeOnRemove(owner, calendarStore, sa.user));
 
     test(
         'latest change on remove (contact owner)',
         () => storeTest.Calendar
-            .latestChangeOnRemove(owner, sa.calendarStore, sa.user));
+            .latestChangeOnRemove(owner, calendarStore, sa.user));
 
     /**
-     * Setup/teardown Basic CRUD tests for contact owner.
+     * Setup/teardown Basic CRUD tests for reception owner.
      */
     setUp(() async {
       env = new TestEnvironment();
@@ -85,6 +97,9 @@ void _runCalendarTests() {
           await sa.createsReception(await sa.createsOrganization());
 
       owner = new model.OwningReception(reception.id);
+
+      calendarStore = env.receptionStore.calendarStore;
+      await calendarStore.ready;
     });
 
     tearDown(() async {
@@ -95,53 +110,68 @@ void _runCalendarTests() {
      * Basic CRUD tests for reception owner.
      */
     test('get (reception owner)',
-        () => storeTest.Calendar.get(owner, sa.calendarStore, sa.user));
+        () => storeTest.Calendar.get(owner, calendarStore, sa.user));
 
     test('create (reception owner)',
-        () => storeTest.Calendar.create(owner, sa.calendarStore, sa.user));
+        () => storeTest.Calendar.create(owner, calendarStore, sa.user));
 
     test(
         'create after last is removed (reception owner)',
         () => storeTest.Calendar
-            .createAfterLastRemove(owner, sa.calendarStore, sa.user));
+            .createAfterLastRemove(owner, calendarStore, sa.user));
 
     test('list (reception owner)',
-        () => storeTest.Calendar.list(owner, sa.calendarStore, sa.user));
+        () => storeTest.Calendar.list(owner, calendarStore, sa.user));
 
     test('remove (reception owner)',
-        () => storeTest.Calendar.remove(owner, sa.calendarStore, sa.user));
+        () => storeTest.Calendar.remove(owner, calendarStore, sa.user));
 
     test('update (reception owner)',
-        () => storeTest.Calendar.update(owner, sa.calendarStore, sa.user));
+        () => storeTest.Calendar.update(owner, calendarStore, sa.user));
 
-    test(
-        'change listing on create (reception owner)',
-        () => storeTest.Calendar
-            .changeOnCreate(owner, sa.calendarStore, sa.user));
+    /**
+     * Setup/teardown Basic CRUD tests for contact owner.
+     */
+    setUp(() async {
+      env = new TestEnvironment(enableRevisions: true);
+      sa = await env.createsServiceAgent();
+      await env.receptionStore.ready;
+
+      final reception =
+          await sa.createsReception(await sa.createsOrganization());
+
+      owner = new model.OwningReception(reception.id);
+
+      calendarStore = env.receptionStore.calendarStore;
+      await calendarStore.ready;
+    });
+
+    tearDown(() async {
+      env.clear();
+    });
+
+    test('change listing on create (reception owner)',
+        () => storeTest.Calendar.changeOnCreate(owner, calendarStore, sa.user));
 
     test(
         'latest change on create (reception owner)',
         () => storeTest.Calendar
-            .latestChangeOnCreate(owner, sa.calendarStore, sa.user));
+            .latestChangeOnCreate(owner, calendarStore, sa.user));
 
-    test(
-        'change listing on update (reception owner)',
-        () => storeTest.Calendar
-            .changeOnUpdate(owner, sa.calendarStore, sa.user));
+    test('change listing on update (reception owner)',
+        () => storeTest.Calendar.changeOnUpdate(owner, calendarStore, sa.user));
 
     test(
         'latest change on update (reception owner)',
         () => storeTest.Calendar
-            .latestChangeOnUpdate(owner, sa.calendarStore, sa.user));
+            .latestChangeOnUpdate(owner, calendarStore, sa.user));
 
-    test(
-        'change listing on remove (reception owner)',
-        () => storeTest.Calendar
-            .changeOnRemove(owner, sa.calendarStore, sa.user));
+    test('change listing on remove (reception owner)',
+        () => storeTest.Calendar.changeOnRemove(owner, calendarStore, sa.user));
 
     test(
         'latest change on remove (reception owner)',
         () => storeTest.Calendar
-            .latestChangeOnRemove(owner, sa.calendarStore, sa.user));
+            .latestChangeOnRemove(owner, calendarStore, sa.user));
   });
 }

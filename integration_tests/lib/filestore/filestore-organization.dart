@@ -47,6 +47,16 @@ void _runOrganizationTests() {
     test('Reception listing Non-existing organization',
         () => storeTest.Organization.nonExistingOrganizationReceptions(sa));
 
+    setUp(() async {
+      env = new TestEnvironment(enableRevisions: true);
+      sa = await env.createsServiceAgent();
+      await env.organizationStore.ready;
+    });
+
+    tearDown(() async {
+      await env.clear();
+    });
+
     test('change listing on create',
         () => storeTest.Organization.changeOnCreate(sa));
 

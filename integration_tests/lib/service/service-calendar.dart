@@ -10,13 +10,15 @@ abstract class Calendar {
    * CalendarEntry object and send out a CalendarEvent notification.
    */
 
-  static Future createEvent(ServiceAgent sa, model.Owner owner) async {
+  static Future createEvent(ServiceAgent sa, model.Owner owner,
+      storage.Calendar calendarStore) async {
     _log.info('Started createEvent test');
 
     final nextCalendarCreateEvent = (await sa.notifications)
         .firstWhere((e) => e is event.CalendarChange && e.created);
 
-    final createdEntry = await sa.createsCalendarEntry(owner);
+    final createdEntry = await calendarStore.create(
+        Randomizer.randomCalendarEntry(), owner, sa.user);
 
     final event.CalendarChange createEvent =
         await nextCalendarCreateEvent.timeout(new Duration(seconds: 3));
@@ -33,14 +35,18 @@ abstract class Calendar {
    * The expected behaviour is that the server should return the updated
    * CalendarEntry object and send out a CalendarEvent notification.
    */
-  static Future updateEvent(ServiceAgent sa, model.Owner owner) async {
+  static Future updateEvent(ServiceAgent sa, model.Owner owner,
+      storage.Calendar calendarStore) async {
     _log.info('Started createEvent test');
 
     final nextCalendarCreateEvent = (await sa.notifications)
         .firstWhere((e) => e is event.CalendarChange && e.updated);
 
-    final createdEntry = await sa.createsCalendarEntry(owner);
-    await sa.updatesCalendarEntry(createdEntry);
+    final createdEntry = await calendarStore.create(
+        Randomizer.randomCalendarEntry(), owner, sa.user);
+
+    await calendarStore.update(
+        createdEntry..content += 'Updated', owner, sa.user);
 
     final event.CalendarChange createEvent =
         await nextCalendarCreateEvent.timeout(new Duration(seconds: 3));
@@ -57,14 +63,16 @@ abstract class Calendar {
    * The expected behaviour is that the server should succeed and send out a
    * CalendarChange Notification.
    */
-  static Future deleteEvent(ServiceAgent sa, model.Owner owner) async {
+  static Future deleteEvent(ServiceAgent sa, model.Owner owner,
+      storage.Calendar calendarStore) async {
     _log.info('Started createEvent test');
 
     final nextCalendarCreateEvent = (await sa.notifications)
         .firstWhere((e) => e is event.CalendarChange && e.deleted);
 
-    final createdEntry = await sa.createsCalendarEntry(owner);
-    await sa.removesCalendarEntry(createdEntry);
+    final createdEntry = await calendarStore.create(
+        Randomizer.randomCalendarEntry(), owner, sa.user);
+    await calendarStore.remove(createdEntry.id, owner, sa.user);
 
     final event.CalendarChange createEvent =
         await nextCalendarCreateEvent.timeout(new Duration(seconds: 3));

@@ -47,6 +47,7 @@ _runDialplanTests() {
       sa = await env.createsServiceAgent();
       rdpStore = (await env.requestDialplanProcess())
           .bindDialplanClient(env.httpClient, sa.authToken);
+      sa.dialplanStore = rdpStore;
     });
 
     tearDown(() async {

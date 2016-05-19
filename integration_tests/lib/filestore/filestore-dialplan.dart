@@ -33,6 +33,16 @@ void _runDialplanTests() {
     test('update',
         () => storeTest.ReceptionDialplan.update(env.dialplanStore, sa.user));
 
+    setUp(() async {
+      env = new TestEnvironment(enableRevisions: true);
+      sa = await env.createsServiceAgent();
+      await env.dialplanStore.ready;
+    });
+
+    tearDown(() async {
+      await env.clear();
+    });
+
     test('change listing on create',
         () => storeTest.ReceptionDialplan.changeOnCreate(sa));
 

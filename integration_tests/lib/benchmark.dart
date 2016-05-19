@@ -12,6 +12,11 @@ part 'benchmark/benchmark-call.dart';
 
 const String _namespace = 'test.benchmark';
 
+/**
+ * TODO: Add filestore stress-tests.
+ *
+ */
+
 void allTests() {
   group(_namespace + '.Call', () {
     Logger _log = new Logger(_namespace + '.Call');

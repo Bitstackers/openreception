@@ -9,7 +9,6 @@ void _runContactTests() {
       env = new TestEnvironment();
       await env.contactStore.ready;
       await env.receptionStore.ready;
-      await env.calendarStore.ready;
 
       sa = await env.createsServiceAgent();
     });
@@ -61,6 +60,18 @@ void _runContactTests() {
 
     test(
         'deleteFromReception', () => storeTest.Contact.deleteFromReception(sa));
+
+    setUp(() async {
+      env = new TestEnvironment(enableRevisions: true);
+      await env.contactStore.ready;
+      await env.receptionStore.ready;
+
+      sa = await env.createsServiceAgent();
+    });
+
+    tearDown(() async {
+      await env.clear();
+    });
 
     test(
         'change listing on create', () => storeTest.Contact.changeOnCreate(sa));

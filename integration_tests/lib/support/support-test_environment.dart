@@ -73,6 +73,8 @@ class TestEnvironment {
   final PhonePool phonePool = new PhonePool.empty(_networkPortCounter);
   final Directory runpath;
 
+  final bool enableRevisions;
+
   /// Processes
   process.AuthServer _authProcess;
   process.CalendarServer _calendarServer;
@@ -202,7 +204,7 @@ class TestEnvironment {
     if (_authProcess == null) {
       _authProcess = new process.AuthServer(
           Config.serverStackPath, runpath.path,
-          intialTokens: [new AuthToken(_user)]..addAll(await userTokens),
+          initialTokens: [new AuthToken(_user)]..addAll(await userTokens),
           bindAddress: envConfig.externalIp,
           servicePort: nextNetworkport);
     }
@@ -314,7 +316,10 @@ class TestEnvironment {
       final String path = '${runpath.path}/user';
       _log.info('Creating user store from $path');
       _userStore = new filestore.User(
-          path, new filestore.GitEngine(path, logStdout: true));
+          path,
+          enableRevisions
+              ? new filestore.GitEngine(path, logStdout: true)
+              : null);
     }
 
     return _userStore;
@@ -329,7 +334,10 @@ class TestEnvironment {
       final String path = '${runpath.path}/ivr';
       _log.info('Creating ivr store from $path');
       _ivrStore = new filestore.Ivr(
-          path, new filestore.GitEngine(path, logStdout: true));
+          path,
+          enableRevisions
+              ? new filestore.GitEngine(path, logStdout: true)
+              : null);
     }
 
     return _ivrStore;
@@ -345,26 +353,13 @@ class TestEnvironment {
       _log.info('Creating dialplan store from $path');
 
       _dpStore = new filestore.ReceptionDialplan(
-          path, new filestore.GitEngine(path, logStdout: true));
+          path,
+          enableRevisions
+              ? new filestore.GitEngine(path, logStdout: true)
+              : null);
     }
 
     return _dpStore;
-  }
-
-  /**
-   *
-   */
-  filestore.Calendar _calendarStore;
-  filestore.Calendar get calendarStore {
-    if (_calendarStore == null) {
-      final String path = '${runpath.path}/calendar';
-      _log.info('Creating calendar store from $path');
-
-      _calendarStore = new filestore.Calendar(
-          path, new filestore.GitEngine(path, logStdout: true));
-    }
-
-    return _calendarStore;
   }
 
   /**
@@ -377,7 +372,11 @@ class TestEnvironment {
       _log.info('Creating calendar store from $path');
 
       _contactStore = new filestore.Contact(
-          receptionStore, path, new filestore.GitEngine(path, logStdout: true));
+          receptionStore,
+          path,
+          enableRevisions
+              ? new filestore.GitEngine(path, logStdout: true)
+              : null);
     }
 
     return _contactStore;
@@ -393,7 +392,10 @@ class TestEnvironment {
       _log.info('Creating message store from $path');
 
       _messageStore = new filestore.Message(
-          path, new filestore.GitEngine(path, logStdout: true));
+          path,
+          enableRevisions
+              ? new filestore.GitEngine(path, logStdout: true)
+              : null);
     }
 
     return _messageStore;
@@ -424,7 +426,10 @@ class TestEnvironment {
       _log.info('Creating reception store from $path');
 
       _receptionStore = new filestore.Reception(
-          path, new filestore.GitEngine(path, logStdout: true));
+          path,
+          enableRevisions
+              ? new filestore.GitEngine(path, logStdout: true)
+              : null);
     }
 
     return _receptionStore;
@@ -439,8 +444,13 @@ class TestEnvironment {
       final String path = '${runpath.path}/organization';
       _log.info('Creating organization store from $path');
 
-      _organizationStore = new filestore.Organization(contactStore,
-          receptionStore, path, new filestore.GitEngine(path, logStdout: true));
+      _organizationStore = new filestore.Organization(
+          contactStore,
+          receptionStore,
+          path,
+          enableRevisions
+              ? new filestore.GitEngine(path, logStdout: true)
+              : null);
     }
 
     return _organizationStore;
@@ -449,10 +459,10 @@ class TestEnvironment {
   /**
    *
    */
-  TestEnvironment({String path: ''})
+  TestEnvironment({String path: '', this.enableRevisions: false})
       : runpath = path.isEmpty
             ? new Directory('/tmp').createTempSync('filestore-')
-            : new Directory(path + '/filestore')..createSync() {
+            : new Directory(path) {
     _log.info('New test environment created in directory $runpath');
   }
 
@@ -488,7 +498,6 @@ class TestEnvironment {
 
     _userStore = null;
     _dpStore = null;
-    _calendarStore = null;
     _userStore = null;
     _contactStore = null;
     _messageStore = null;

@@ -18,16 +18,16 @@ class AuthServer implements ServiceProcess {
    *
    */
   AuthServer(this.path, this.storePath,
-      {Iterable<AuthToken> intialTokens: const [],
+      {Iterable<AuthToken> initialTokens: const [],
       this.servicePort: 4050,
       this.bindAddress: '0.0.0.0'}) {
-    _init(intialTokens);
+    _init(initialTokens);
   }
 
   /**
    *
    */
-  Future _init(Iterable<AuthToken> intialTokens) async {
+  Future _init(Iterable<AuthToken> initialTokens) async {
     final Stopwatch initTimer = new Stopwatch()..start();
     whenReady.whenComplete(() {
       initTimer.stop();
@@ -36,7 +36,7 @@ class AuthServer implements ServiceProcess {
     });
 
     tokenDir = new AuthTokenDir(new Directory('/tmp').createTempSync(),
-        intialTokens: intialTokens);
+        intialTokens: initialTokens);
 
     await _writeTokens();
     final arguments = [

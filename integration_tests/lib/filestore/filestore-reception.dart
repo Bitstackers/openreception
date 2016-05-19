@@ -8,7 +8,6 @@ void _runReceptionTests() {
     setUp(() async {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();
-      await env.receptionStore.ready;
     });
 
     tearDown(() async {
@@ -32,6 +31,14 @@ void _runReceptionTests() {
     test('get (not found)', () => storeTest.Reception.nonExistingReception(sa));
     test('list', () => storeTest.Reception.listReceptions(sa));
 
+    setUp(() async {
+      env = new TestEnvironment(enableRevisions: true);
+      sa = await env.createsServiceAgent();
+    });
+
+    tearDown(() async {
+      await env.clear();
+    });
     test('change listing on create',
         () => storeTest.Reception.changeOnCreate(sa));
 

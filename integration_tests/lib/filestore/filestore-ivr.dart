@@ -28,6 +28,16 @@ void _runIvrTests() {
 
     test('update', () => storeTest.Ivr.update(env.ivrStore, sa.user));
 
+    setUp(() async {
+      env = new TestEnvironment(enableRevisions: true);
+      sa = await env.createsServiceAgent();
+      await env.ivrStore.ready;
+    });
+
+    tearDown(() async {
+      await env.clear();
+    });
+
     test('change listing on create', () => storeTest.Ivr.changeOnCreate(sa));
 
     test('change listing on update', () => storeTest.Ivr.changeOnUpdate(sa));

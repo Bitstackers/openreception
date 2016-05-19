@@ -69,7 +69,7 @@ class ServiceAgent {
    */
   Future<model.IvrMenu> updatesIvrMenu(model.IvrMenu menu) async {
     final updated = await ivrStore.update(
-        Randomizer.randomIvrMenu()..name = menu.name + ' (updated)', user);
+        Randomizer.randomIvrMenu()..name = menu.name, user);
 
     return ivrStore.get(updated.name);
   }
@@ -127,17 +127,6 @@ class ServiceAgent {
   storage.Calendar _calendarStore;
   void set calendarStore(storage.Calendar cs) {
     _calendarStore = cs;
-  }
-
-  /**
-   *
-   */
-  storage.Calendar get calendarStore {
-    if (_calendarStore == null) {
-      _calendarStore = env.calendarStore;
-    }
-
-    return _calendarStore;
   }
 
   /**
@@ -344,38 +333,6 @@ class ServiceAgent {
    */
   Future removesUser(model.User target) async {
     await userStore.remove(target.id, user);
-  }
-
-  /**
-   *
-   */
-  Future<model.CalendarEntry> createsCalendarEntry(model.Owner owner) async {
-    final entry = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, user);
-
-    return calendarStore.get(entry.id);
-  }
-
-  /**
-   *
-   */
-  Future<model.CalendarEntry> updatesCalendarEntry(
-      model.CalendarEntry entry) async {
-    await calendarStore.update(
-        Randomizer.randomCalendarEntry()
-          ..id = entry.id
-          ..owner = entry.owner
-          ..content = entry.content + ' (updated)',
-        user);
-
-    return calendarStore.get(entry.id);
-  }
-
-  /**
-   *
-   */
-  Future removesCalendarEntry(model.CalendarEntry entry) async {
-    await calendarStore.remove(entry.id, user);
   }
 
   /**

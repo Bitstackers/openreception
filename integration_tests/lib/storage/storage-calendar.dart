@@ -9,21 +9,20 @@ abstract class Calendar {
   static create(model.Owner owner, storage.Calendar calendarStore,
       model.User creator) async {
     await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator);
+        Randomizer.randomCalendarEntry(), owner, creator);
   }
 
   /**
    *
    */
-  static createAfterLastRemove(model.Owner owner, storage.Calendar calendarStore,
-      model.User creator) async {
+  static createAfterLastRemove(model.Owner owner,
+      storage.Calendar calendarStore, model.User creator) async {
     final entry = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator);
+        Randomizer.randomCalendarEntry(), owner, creator);
 
-    await calendarStore.remove(entry.id, creator);
+    await calendarStore.remove(entry.id, owner, creator);
     await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator);
-
+        Randomizer.randomCalendarEntry(), owner, creator);
   }
 
   /**
@@ -32,16 +31,15 @@ abstract class Calendar {
   static update(model.Owner owner, storage.Calendar calendarStore,
       model.User creator) async {
     model.CalendarEntry createdEntry = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator);
+        Randomizer.randomCalendarEntry(), owner, creator);
 
     {
       model.CalendarEntry changes = Randomizer.randomCalendarEntry()
-        ..id = createdEntry.id
-        ..owner = createdEntry.owner;
+        ..id = createdEntry.id;
       createdEntry = changes;
     }
 
-    await calendarStore.update(createdEntry, creator);
+    await calendarStore.update(createdEntry, owner, creator);
   }
 
   /**
@@ -54,9 +52,9 @@ abstract class Calendar {
   static Future get(model.Owner owner, storage.Calendar calendarStore,
       model.User creator) async {
     model.CalendarEntry created = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator);
+        Randomizer.randomCalendarEntry(), owner, creator);
 
-    model.CalendarEntry fetched = await calendarStore.get(created.id);
+    model.CalendarEntry fetched = await calendarStore.get(created.id, owner);
     _log.finest('Created:');
     _log.finest(created.toJson());
     _log.finest('Fetched:');
@@ -67,8 +65,6 @@ abstract class Calendar {
     expect(created.start.difference(fetched.start), lessThan(oneMs));
     expect(created.stop.difference(fetched.stop), lessThan(oneMs));
     expect(created.content, equals(fetched.content));
-    expect(created.owner, equals(fetched.owner));
-    expect(created.owner, equals(fetched.owner));
   }
 
   /**
@@ -77,9 +73,9 @@ abstract class Calendar {
    *
    * The expected behaviour is that the server should return "Not Found".
    */
-  static Future getNonExistingEntry(ServiceAgent sa) async {
+  static Future getNonExistingEntry(storage.Calendar calendarStore) async {
     try {
-      await sa.calendarStore.get(-1);
+      await calendarStore.get(-1, new model.OwningReception(1));
       fail('Expected NotFound exception');
     } on storage.NotFound {
       // Successs
@@ -93,7 +89,7 @@ abstract class Calendar {
   static list(model.Owner owner, storage.Calendar calendarStore,
       model.User creator) async {
     model.CalendarEntry created = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator);
+        Randomizer.randomCalendarEntry(), owner, creator);
 
     Iterable<model.CalendarEntry> listing = await calendarStore.list(owner);
 
@@ -106,7 +102,6 @@ abstract class Calendar {
     expect(created.start.difference(fetched.start), lessThan(oneMs));
     expect(created.stop.difference(fetched.stop), lessThan(oneMs));
     expect(created.content, equals(fetched.content));
-    expect(created.owner, equals(fetched.owner));
   }
 
   /**
@@ -115,13 +110,13 @@ abstract class Calendar {
   static remove(model.Owner owner, storage.Calendar calendarStore,
       model.User creator) async {
     model.CalendarEntry created = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator);
+        Randomizer.randomCalendarEntry(), owner, creator);
 
     _log.info('Removing calendar entry');
-    await calendarStore.remove(created.id, creator);
+    await calendarStore.remove(created.id, owner, creator);
 
     _log.info('Asserting that the created entry is no longer found');
-    expect(calendarStore.get(created.id),
+    expect(calendarStore.get(created.id, owner),
         throwsA(new isInstanceOf<storage.NotFound>()));
   }
 
@@ -132,7 +127,7 @@ abstract class Calendar {
   static Future changeOnCreate(model.Owner owner,
       storage.Calendar calendarStore, model.User creator) async {
     model.CalendarEntry created = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator);
+        Randomizer.randomCalendarEntry(), owner, creator);
 
     _log.info('Creating a calendar event for owner $owner.');
 
@@ -151,7 +146,6 @@ abstract class Calendar {
 
     expect(change.changeType, model.ChangeType.add);
     expect(change.eid, created.id);
-    expect(change.owner, created.owner);
   }
 
   /**
@@ -160,12 +154,12 @@ abstract class Calendar {
   static Future latestChangeOnCreate(model.Owner owner,
       storage.Calendar calendarStore, model.User creator) async {
     model.CalendarEntry created = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator);
+        Randomizer.randomCalendarEntry(), owner, creator);
 
     _log.info('Creating a calendar event for owner $owner.');
 
     model.Commit latestCommit =
-        (await calendarStore.changes(created.owner, created.id)).first;
+        (await calendarStore.changes(owner, created.id)).first;
 
     _log.info('Listing changes and validating.');
 
@@ -178,7 +172,6 @@ abstract class Calendar {
 
     expect(change.changeType, model.ChangeType.add);
     expect(change.eid, created.id);
-    expect(change.owner, created.owner);
   }
 
   /**
@@ -188,15 +181,14 @@ abstract class Calendar {
   static Future changeOnUpdate(model.Owner owner,
       storage.Calendar calendarStore, model.User creator) async {
     model.CalendarEntry created = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator);
+        Randomizer.randomCalendarEntry(), owner, creator);
 
     _log.info('Creating a calendar event for owner $owner.');
 
     model.CalendarEntry changed = Randomizer.randomCalendarEntry()
-      ..id = created.id
-      ..owner = created.owner;
+      ..id = created.id;
 
-    await calendarStore.update(changed, creator);
+    await calendarStore.update(changed, owner, creator);
     Iterable<model.Commit> commits = await calendarStore.changes(owner);
 
     _log.info('Listing changes and validating.');
@@ -224,11 +216,9 @@ abstract class Calendar {
 
     expect(latestChange.changeType, model.ChangeType.modify);
     expect(latestChange.eid, created.id);
-    expect(latestChange.owner, created.owner);
 
     expect(oldestChange.changeType, model.ChangeType.add);
     expect(oldestChange.eid, created.id);
-    expect(oldestChange.owner, created.owner);
   }
 
   /**
@@ -237,17 +227,16 @@ abstract class Calendar {
   static Future latestChangeOnUpdate(model.Owner owner,
       storage.Calendar calendarStore, model.User creator) async {
     model.CalendarEntry created = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator);
+        Randomizer.randomCalendarEntry(), owner, creator);
 
     _log.info('Creating a calendar event for owner $owner.');
 
     model.CalendarEntry changed = Randomizer.randomCalendarEntry()
-      ..id = created.id
-      ..owner = created.owner;
+      ..id = created.id;
 
-    await calendarStore.update(changed, creator);
+    await calendarStore.update(changed, owner, creator);
     model.Commit latestCommit =
-        (await calendarStore.changes(created.owner, created.id)).first;
+        (await calendarStore.changes(owner, created.id)).first;
 
     _log.info('Listing changes and validating.');
 
@@ -260,7 +249,6 @@ abstract class Calendar {
 
     expect(change.changeType, model.ChangeType.modify);
     expect(change.eid, created.id);
-    expect(change.owner, created.owner);
   }
 
   /**
@@ -270,11 +258,11 @@ abstract class Calendar {
   static Future changeOnRemove(model.Owner owner,
       storage.Calendar calendarStore, model.User creator) async {
     model.CalendarEntry created = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator);
+        Randomizer.randomCalendarEntry(), owner, creator);
 
     _log.info('Removing calendar event for owner $owner.');
 
-    await calendarStore.remove(created.id, creator);
+    await calendarStore.remove(created.id, owner, creator);
     Iterable<model.Commit> commits = await calendarStore.changes(owner);
 
     _log.info('Listing changes and validating.');
@@ -302,11 +290,9 @@ abstract class Calendar {
 
     expect(latestChange.changeType, model.ChangeType.delete);
     expect(latestChange.eid, created.id);
-    expect(latestChange.owner, created.owner);
 
     expect(oldestChange.changeType, model.ChangeType.add);
     expect(oldestChange.eid, created.id);
-    expect(oldestChange.owner, created.owner);
   }
 
   /**
@@ -320,13 +306,13 @@ abstract class Calendar {
   static Future latestChangeOnRemove(model.Owner owner,
       storage.Calendar calendarStore, model.User creator) async {
     model.CalendarEntry created = await calendarStore.create(
-        Randomizer.randomCalendarEntry()..owner = owner, creator);
+        Randomizer.randomCalendarEntry(), owner, creator);
 
     _log.info('Removing calendar event for owner $owner.');
 
-    await calendarStore.remove(created.id, creator);
+    await calendarStore.remove(created.id, owner, creator);
     model.Commit latestCommit =
-        (await calendarStore.changes(created.owner, created.id)).first;
+        (await calendarStore.changes(owner, created.id)).first;
 
     _log.info('Listing changes and validating.');
 
@@ -339,6 +325,5 @@ abstract class Calendar {
 
     expect(change.changeType, model.ChangeType.delete);
     expect(change.eid, created.id);
-    expect(change.owner, created.owner);
   }
 }

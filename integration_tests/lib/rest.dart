@@ -38,20 +38,20 @@ const String _namespace = 'rest';
  * Run all rest-service tests.
  */
 allTests() {
-    _runPeerAccountTests();
-    _runMessageTests();
-    _runDialplanDeploymentTests();
-    _runConfigTests();
-    _runAuthServerTests();
-  //  _runCallTests();
-    _runUserTests();
-    _runOrganizationTests();
-    _runReceptionTests();
-    _runContactTests();
-    _runCalendarTests();
-    _runDialplanTests();
-    _runIvrTests();
-    _runNotificationTests();
+  _runPeerAccountTests();
+  _runMessageTests();
+  _runDialplanDeploymentTests();
+  _runConfigTests();
+  _runAuthServerTests();
+  _runCallTests();
+  _runUserTests();
+  _runOrganizationTests();
+  _runReceptionTests();
+  _runContactTests();
+  _runCalendarTests();
+  _runDialplanTests();
+  _runIvrTests();
+  _runNotificationTests();
 }
 
 /**

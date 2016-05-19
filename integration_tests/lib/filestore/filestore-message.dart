@@ -28,6 +28,17 @@ _runMessageTests() {
     test('update', () => storeTest.Message.update(sa));
     test('remove', () => storeTest.Message.remove(sa));
 
+    setUp(() async {
+      env = new TestEnvironment(enableRevisions: true);
+      await env.messageStore.ready;
+
+      sa = await env.createsServiceAgent();
+    });
+
+    tearDown(() async {
+      await env.clear();
+    });
+
     test(
         'change listing on create', () => storeTest.Message.changeOnCreate(sa));
 
