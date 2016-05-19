@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math' show Random;
 
 import 'package:logging/logging.dart';
+import 'package:args/args.dart';
 import 'package:openreception.client_app_server/router.dart' as app_router;
 import 'package:openreception.framework/keys.dart' as key;
 import 'package:openreception_tests/support.dart';
@@ -46,40 +47,45 @@ Future main(args) async {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen(logEntryDispatch);
 
-  // final ArgParser parser = new ArgParser()
-  //   ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
-  //   ..addOption('filestore', abbr: 'f', help: 'Path to the filestore')
-  //   ..addFlag('reuse-store', negatable: false);
-  // final ArgResults parsedArgs = parser.parse(args);
+  final ArgParser parser = new ArgParser()
+    ..addFlag('help', abbr: 'h', help: 'Output this help', negatable: false)
+    ..addOption('filestore',
+        abbr: 'f', help: 'Path to the filestore', defaultsTo: '')
+    ..addFlag('reuse-store', negatable: false);
+  final ArgResults parsedArgs = parser.parse(args);
 
-  // final Directory fsDir = new Directory(parsedArgs['filestore']);
-  // if (fsDir.existsSync() && !parsedArgs['reuse-store']) {
-  //   print(
-  //       'Filestore path already exist. Please supply a non-existing path or use the --reuse-store flag.');
-  //   print(parser.usage);
-  //   exit(1);
-  // }
+  final Directory fsDir = new Directory(parsedArgs['filestore']);
+  if (fsDir.existsSync() && !parsedArgs['reuse-store']) {
+    print(
+        'Filestore path already exist. Please supply a non-existing path or use the --reuse-store flag.');
+    print(parser.usage);
+    exit(1);
+  }
 
   final TestEnvironmentConfig envConfig = new TestEnvironment().envConfig;
   await envConfig.load();
-  TestEnvironment env = new TestEnvironment();
-  ServiceAgent sa = await env.createsServiceAgent();
+  TestEnvironment env = new TestEnvironment(path: parsedArgs['filestore']);
 
-  List orgs = new List(10).map((_) async => sa.createsOrganization()).toList();
+  if (parsedArgs['filestore'].isEmpty) {
+    ServiceAgent sa = await env.createsServiceAgent();
 
-  List recs = new List(20)
-      .map((_) async => sa.createsReception(await randomChoice(orgs)))
-      .toList();
+    List orgs =
+        new List(10).map((_) async => sa.createsOrganization()).toList();
 
-  List rCons = new List(40)
-      .map((_) async => sa.addsContactToReception(
-          await sa.createsContact(), await randomChoice(recs)))
-      .toList();
+    List recs = new List(20)
+        .map((_) async => sa.createsReception(await randomChoice(orgs)))
+        .toList();
 
-  List rdps = new List(10)
-      .map((_) async => await sa.createsDialplan(mustBeValid: true));
+    List rCons = new List(40)
+        .map((_) async => sa.addsContactToReception(
+            await sa.createsContact(), await randomChoice(recs)))
+        .toList();
 
-  List ivrs = new List(10).map((_) async => await sa.createsIvrMenu());
+    List rdps = new List(10)
+        .map((_) async => await sa.createsDialplan(mustBeValid: true));
+
+    List ivrs = new List(10).map((_) async => await sa.createsIvrMenu());
+  }
 
   final authserver = env.requestAuthserverProcess();
   final notificationserver = env.requestNotificationserverProcess();
@@ -145,7 +151,9 @@ Future main(args) async {
 
   ProcessSignal.SIGINT.watch().listen((_) async {
     final teardownTimer = new Stopwatch()..start();
-    await env.clear();
+    if (!parsedArgs['reuse-store']) {
+      await env.clear();
+    }
     await env.finalize();
     teardownTimer.stop();
     print('Stack shutdown time: ${teardownTimer.elapsedMilliseconds}ms');
