@@ -19,6 +19,7 @@ _runMessageTests() {
     test('get (not found)', () => storeTest.Message.getNotFound(sa));
     test('get', () => storeTest.Message.get(sa));
     test('list', () => storeTest.Message.list(sa));
+    test('listDay', () => storeTest.Message.listDay(sa));
     test('list (filtered)', () => storeTest.Message.listFiltered(sa));
     test('create', () => storeTest.Message.create(sa));
 

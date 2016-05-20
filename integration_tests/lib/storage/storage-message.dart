@@ -37,6 +37,39 @@ abstract class Message {
   }
 
   /**
+   * Test server behaviour when trying to retrieve a daily list of
+   * message objects.
+   *
+   * The expected behaviour is that the server should return a list
+   * of message objects.
+   */
+  static Future listDay(ServiceAgent sa) async {
+    log.info('Listing messages non-filtered.');
+
+    final org = await sa.createsOrganization();
+    final rec = await sa.createsReception(org);
+    final con = await sa.createsContact();
+    await sa.addsContactToReception(con, rec);
+
+    final context = new model.MessageContext.empty()
+      ..cid = con.id
+      ..rid = rec.id
+      ..contactName = con.name
+      ..receptionName = rec.name;
+
+    final msg1 = await sa.createsMessage(context);
+
+    {
+      final lst = await sa.messageStore.listDay(new DateTime.now());
+      expect(lst.length, equals(1));
+
+      final fetchedMsg = lst.firstWhere((m) => m.id == msg1.id);
+
+      expect(msg1.toJson(), equals(fetchedMsg.toJson()));
+    }
+  }
+
+  /**
    * Test server behaviour when trying to retrieve a filtered list of
    * message objects.
    *
@@ -386,7 +419,7 @@ abstract class Message {
 
     await sa.removesMessage(created);
 
-    Iterable<model.Commit> commits = await sa.messageStore.changes(created.id);
+    Iterable<model.Commit> commits = await sa.messageStore.changes();
 
     expect(commits.length, equals(2));
 

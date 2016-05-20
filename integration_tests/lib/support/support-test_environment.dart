@@ -72,6 +72,7 @@ class TestEnvironment {
   TestEnvironmentConfig get envConfig => _envConfig;
   final PhonePool phonePool = new PhonePool.empty(_networkPortCounter);
   final Directory runpath;
+  bool _isTmpDir = true;
 
   final bool enableRevisions;
 
@@ -463,6 +464,7 @@ class TestEnvironment {
       : runpath = path.isEmpty
             ? new Directory('/tmp').createTempSync('filestore-')
             : new Directory(path) {
+    _isTmpDir = path.isEmpty;
     _log.info('New test environment created in directory $runpath');
   }
 
@@ -491,7 +493,7 @@ class TestEnvironment {
       _httpClient.client.close(force: true);
     }
 
-    if (runpath.existsSync()) {
+    if (runpath.existsSync() && _isTmpDir) {
       _log.info('Clearing test environment created in directory $runpath');
       runpath.deleteSync(recursive: true);
     }
