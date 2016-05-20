@@ -22,6 +22,7 @@ class Sequencer {
   void set _currentId(int id) => _sequencerFile.writeAsStringSync('$id');
 
   int get _currentId => int.parse(_sequencerFile.readAsStringSync());
+  int get currentId => _currentId;
 
   int nextInt() {
     final int newId = _currentId + 1;
