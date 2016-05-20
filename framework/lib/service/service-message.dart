@@ -16,18 +16,18 @@ part of openreception.framework.service;
 class RESTMessageStore implements Storage.Message {
   static final String className = '${libraryName}.RESTMessageStore';
 
-  WebService _backend = null;
-  Uri _host;
-  String _token = '';
+  final WebService _backend;
+  final Uri host;
+  final String token;
 
-  RESTMessageStore(Uri this._host, String this._token, this._backend);
+  const RESTMessageStore(Uri this.host, String this.token, this._backend);
 
   /**
    *
    */
   Future<Model.Message> get(int mid) => this
       ._backend
-      .get(_appendToken(Resource.Message.single(this._host, mid), this._token))
+      .get(_appendToken(Resource.Message.single(this.host, mid), this.token))
       .then((String response) =>
           new Model.Message.fromMap(JSON.decode(response)));
 
@@ -35,8 +35,8 @@ class RESTMessageStore implements Storage.Message {
    *
    */
   Future<Model.MessageQueueEntry> enqueue(Model.Message message) {
-    Uri uri = Resource.Message.send(this._host, message.id);
-    uri = _appendToken(uri, this._token);
+    Uri uri = Resource.Message.send(this.host, message.id);
+    uri = _appendToken(uri, this.token);
 
     return this
         ._backend
@@ -51,14 +51,14 @@ class RESTMessageStore implements Storage.Message {
    */
   Future<Model.Message> create(Model.Message message, Model.User modifier) =>
       _backend
-          .post(_appendToken(Resource.Message.root(this._host), this._token),
+          .post(_appendToken(Resource.Message.root(this.host), this.token),
               JSON.encode(message.asMap))
           .then((String response) =>
               new Model.Message.fromMap(JSON.decode(response)));
 
   Future remove(int mid, Model.User modifier) {
-    Uri uri = Resource.Message.single(_host, mid);
-    uri = _appendToken(uri, _token);
+    Uri uri = Resource.Message.single(host, mid);
+    uri = _appendToken(uri, token);
 
     return _backend.delete(uri);
   }
@@ -70,7 +70,7 @@ class RESTMessageStore implements Storage.Message {
       _backend
           .put(
               _appendToken(
-                  Resource.Message.single(this._host, message.id), this._token),
+                  Resource.Message.single(this.host, message.id), this.token),
               JSON.encode(message.asMap))
           .then((String response) =>
               new Model.Message.fromMap(JSON.decode(response)));
@@ -80,16 +80,28 @@ class RESTMessageStore implements Storage.Message {
   Future<Iterable<Model.Message>> list({Model.MessageFilter filter}) => this
       ._backend
       .get(_appendToken(
-          Resource.Message.list(this._host, filter: filter), this._token))
+          Resource.Message.list(this.host, filter: filter), this.token))
       .then((String response) => (JSON.decode(response) as Iterable)
           .map((Map map) => new Model.Message.fromMap(map)));
 
   /**
    *
    */
+  Future<Iterable<Model.Message>> listDay(DateTime day) async {
+    Uri uri = Resource.Message.listDay(host, day);
+    uri = _appendToken(uri, token);
+
+    return _backend.get(uri).then((String response) =>
+        (JSON.decode(response) as Iterable)
+            .map((Map map) => new Model.Message.fromMap(map)));
+  }
+
+  /**
+   *
+   */
   Future<Iterable<Model.Commit>> changes([int mid]) {
-    Uri url = Resource.Message.changeList(_host, mid);
-    url = _appendToken(url, this._token);
+    Uri url = Resource.Message.changeList(host, mid);
+    url = _appendToken(url, this.token);
 
     Iterable<Model.Commit> convertMaps(Iterable<Map> maps) =>
         maps.map(Model.Commit.decode);

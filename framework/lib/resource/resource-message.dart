@@ -37,6 +37,12 @@ abstract class Message {
         '${Util.removeTailingSlashes(host)}/${nameSpace}/list${filterParameter}');
   }
 
+  static Uri listDay(Uri host, DateTime day) {
+    final String dateString = day.toIso8601String().split('T').first;
+
+    return Uri.parse('$host/message/list/$dateString');
+  }
+
   /**
    *
    */
