@@ -18,17 +18,18 @@ class Message implements storage.Message {
   final String path;
   GitEngine _git;
   Sequencer _sequencer;
+  final Map<int, String> _index = {};
 
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
   Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
-  Bus<event.MessageChange> _changeBus = new Bus<event.MessageChange>();
+  final Bus<event.MessageChange> _changeBus = new Bus<event.MessageChange>();
   Stream<event.MessageChange> get changeStream => _changeBus.stream;
 
   int get _nextId => _sequencer.nextInt();
   /**
-   * TODO: Add bus for notifying other filestores about changes.
+   * TODO: Remove git support.
    */
   Message(String this.path, [GitEngine this._git]) {
     if (!new Directory(path).existsSync()) {
@@ -39,17 +40,59 @@ class Message implements storage.Message {
       _git.init().catchError((error, stackTrace) => Logger.root
           .shout('Failed to initialize git engine', error, stackTrace));
     }
-    _sequencer = new Sequencer(path);
+
+    _buildIndex();
+  }
+
+  /**
+   *
+   */
+  Directory _dateDir(DateTime day) =>
+      new Directory('$path/${day.toIso8601String().split('T').first}');
+
+  /**
+   * Rebuilds the entire index.
+   */
+  void _buildIndex() {
+    int highestId = 0;
+    Stopwatch timer = new Stopwatch()..start();
+    _log.info('Building index');
+    Iterable<Directory> dateDirs =
+        new Directory(path).listSync().where(isDirectory);
+
+    dateDirs.forEach((fse) {
+      Iterable<File> files = fse.listSync().where(isFile);
+      files.forEach((file) {
+        try {
+          final id = int.parse(basenameWithoutExtension(file.path));
+          _index[id] = file.path;
+
+          if (id > highestId) {
+            highestId = id;
+          }
+        } catch (e) {
+          _log.shout('Failed load index from file ${file.path}');
+        }
+      });
+    });
+
+    _log.info('Built index of ${_index.keys.length} elements in'
+        ' ${timer.elapsedMilliseconds}ms');
+    _sequencer = new Sequencer(path, explicitId: highestId);
   }
 
   /**
    *
    */
   Future<model.Message> get(int mid) async {
-    final File file = new File('$path/${mid}.json');
+    if (!_index.containsKey(mid)) {
+      throw new storage.NotFound('No index key with mid ${mid}');
+    }
+
+    final File file = new File(_index[mid]);
 
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file with name ${mid}');
+      throw new storage.NotFound('No file with mid ${mid}');
     }
 
     try {
@@ -65,27 +108,46 @@ class Message implements storage.Message {
   /**
    *
    */
-  Future<Iterable<model.Message>> list({model.MessageFilter filter}) async =>
-      new Directory(path)
-          .listSync()
-          .where((fse) => fse is File && fse.path.endsWith('.json'))
-          .map((FileSystemEntity fse) => model.Message
-              .decode(JSON.decode((fse as File).readAsStringSync())))
-          .where((model.Message msg) =>
-              filter == null ? true : filter.appliesTo(msg));
+  Future<Iterable<model.Message>> listDay(DateTime day) async {
+    Directory dateDir = _dateDir(day);
+
+    if (!await dateDir.exists()) {
+      return [];
+    }
+
+    return dateDir.listSync().where((fse) => isFile(fse)).map(
+        (FileSystemEntity fse) => model.Message
+            .decode(JSON.decode((fse as File).readAsStringSync())));
+  }
+
+  /**
+   *
+   */
+  Future<Iterable<model.Message>> list({model.MessageFilter filter}) async {
+    Iterable<model.Message> messages = await Future.wait(_index.values.map(
+        (String filePath) async => model.Message
+            .decode(JSON.decode(await (new File(filePath)).readAsString()))));
+
+    if (filter != null) {
+      return messages.where(filter.appliesTo);
+    } else {
+      return messages;
+    }
+  }
 
   /**
    * TODO: Store in date-dir.
    */
   Future<model.Message> create(model.Message message, model.User modifier,
       {bool enforceId: false}) async {
-    // Directory dateDir = new Directory(
-    //     '${msgDir.path}/${msg.createdAt.toIso8601String().split('T').first}')
-    //   ..createSync();
+    Directory dateDir = _dateDir(message.createdAt)..createSync();
 
-    message.id =
-        message.id != model.Message.noId && enforceId ? message.id : _nextId;
-    final File file = new File('$path/${message.id}.json');
+    message
+      ..id =
+          message.id != model.Message.noId && enforceId ? message.id : _nextId
+      ..createdAt = new DateTime.now();
+
+    final File file = new File('${dateDir.path}/${message.id}.json');
 
     if (file.existsSync()) {
       throw new storage.ClientError(
@@ -93,6 +155,7 @@ class Message implements storage.Message {
     }
 
     file.writeAsStringSync(_jsonpp.convert(message));
+    _index[message.id] = file.path;
 
     if (this._git != null) {
       await _git.add(
@@ -112,7 +175,7 @@ class Message implements storage.Message {
    */
   Future<model.Message> update(
       model.Message message, model.User modifier) async {
-    final File file = new File('$path/${message.id}.json');
+    final File file = new File(_index[message.id]);
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
@@ -136,10 +199,10 @@ class Message implements storage.Message {
    *
    */
   Future remove(int mid, model.User modifier) async {
-    final File file = new File('$path/${mid}.json');
+    final File file = new File(_index[mid]);
 
     if (!file.existsSync()) {
-      throw new storage.NotFound();
+      throw new storage.NotFound(file.path);
     }
 
     if (this._git != null) {
@@ -151,6 +214,8 @@ class Message implements storage.Message {
     } else {
       file.deleteSync();
     }
+
+    _index.remove(mid);
 
     _changeBus.fire(new event.MessageChange.delete(mid, modifier.id));
   }
@@ -169,7 +234,50 @@ class Message implements storage.Message {
     if (mid == null) {
       fse = new Directory('.');
     } else {
-      fse = new File('$mid.json');
+      fse = new File(_index[mid]);
+    }
+
+    Iterable<Change> gitChanges = await _git.changes(fse);
+
+    int extractUid(String message) => message.startsWith('uid:')
+        ? int.parse(message.split(' ').first.replaceFirst('uid:', ''))
+        : model.User.noId;
+
+    model.MessageChange convertFilechange(FileChange fc) {
+      final int id = int.parse(fc.filename.split('/').last.split('.').first);
+
+      return new model.MessageChange(fc.changeType, id);
+    }
+
+    Iterable<model.Commit> changes = gitChanges.map((change) =>
+        new model.Commit()
+          ..uid = extractUid(change.message)
+          ..changedAt = change.changeTime
+          ..commitHash = change.commitHash
+          ..authorIdentity = change.author
+          ..changes = new List<model.ObjectChange>.from(
+              change.fileChanges.map(convertFilechange)));
+
+    _log.info(changes.map((c) => c.toJson()));
+
+    return changes;
+  }
+
+  /**
+   *
+   */
+  Future<Iterable<model.Commit>> changesByDay(DateTime day, [int mid]) async {
+    if (this._git == null) {
+      throw new UnsupportedError(
+          'Filestore is instantiated without git support');
+    }
+
+    FileSystemEntity fse;
+
+    if (mid == null) {
+      fse = _dateDir(day);
+    } else {
+      fse = new File(_index[mid]);
     }
 
     Iterable<Change> gitChanges = await _git.changes(fse);
