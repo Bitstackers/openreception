@@ -32,6 +32,18 @@ class Change {
   final String commitHash;
   List<FileChange> fileChanges = [];
 
+  List<String> ignoredPaths(String path) =>
+      new File('$path/.gitignore').readAsStringSync().split('\n');
+
+  void addIgnoredPath(String path) {
+    final File ignoreFile = new File('$path/.gitignore');
+    Set<String> paths = ignoreFile.readAsStringSync().split('\n').toSet();
+
+    paths.add(path);
+
+    ignoreFile.writeAsStringSync(paths.join('\n'));
+  }
+
   Change(this.changeTime, this.author, this.commitHash, {this.message: ''});
 
   /**
