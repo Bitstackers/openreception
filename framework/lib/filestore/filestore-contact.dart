@@ -30,7 +30,6 @@ class Contact implements storage.Contact {
   /**
    * TODO:
    *  - Add "link" operations for linking messages to contact datastore.
-   *  - Add Calender filestore member.
    */
   factory Contact(Reception receptionStore, String path, [GitEngine ge]) {
     if (!new Directory(path).existsSync()) {
