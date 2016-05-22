@@ -18,8 +18,9 @@ class Contact implements storage.Contact {
   final String path;
   final Reception receptionStore;
   final GitEngine _git;
-  final Sequencer _sequencer;
+  Sequencer _sequencer;
   final Calendar calendarStore;
+  final Map<int, String> _index = {};
 
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
@@ -42,14 +43,44 @@ class Contact implements storage.Contact {
     }
 
     return new Contact._internal(
-        path, receptionStore, new Calendar(path, ge), new Sequencer(path), ge);
+        path, receptionStore, new Calendar(path, ge), ge);
   }
 
   /**
    *
    */
   Contact._internal(String this.path, this.receptionStore, this.calendarStore,
-      this._sequencer, GitEngine this._git);
+      GitEngine this._git) {
+    _buildIndex();
+  }
+
+  /**
+   * Rebuilds the entire index.
+   */
+  void _buildIndex() {
+    int highestId = 0;
+    Stopwatch timer = new Stopwatch()..start();
+    _log.info('Building index');
+    Iterable<Directory> idDirs =
+        new Directory(path).listSync().where(isDirectory);
+
+    idDirs.forEach((dir) {
+      try {
+        final id = int.parse(basenameWithoutExtension(dir.path));
+        _index[id] = dir.path;
+
+        if (id > highestId) {
+          highestId = id;
+        }
+      } catch (e) {
+        _log.shout('Failed load index from file ${dir.path}');
+      }
+    });
+
+    _log.info('Built index of ${_index.keys.length} elements in'
+        ' ${timer.elapsedMilliseconds}ms');
+    _sequencer = new Sequencer(path, explicitId: highestId);
+  }
 
   /**
    *
