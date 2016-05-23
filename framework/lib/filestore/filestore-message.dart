@@ -199,6 +199,10 @@ class Message implements storage.Message {
    *
    */
   Future remove(int mid, model.User modifier) async {
+    if (!_index.containsKey(mid)) {
+      throw new storage.NotFound('No index key with mid ${mid}');
+    }
+
     final File file = new File(_index[mid]);
 
     if (!file.existsSync()) {
