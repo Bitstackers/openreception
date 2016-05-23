@@ -19,6 +19,9 @@ class Message implements storage.Message {
   GitEngine _git;
   Sequencer _sequencer;
   final Map<int, String> _index = {};
+  final Map<int, List<int>> _cidIndex = {};
+  final Map<int, List<int>> _uidIndex = {};
+  final Map<int, List<int>> _ridIndex = {};
 
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
@@ -56,7 +59,7 @@ class Message implements storage.Message {
   void _buildIndex() {
     int highestId = 0;
     Stopwatch timer = new Stopwatch()..start();
-    _log.info('Building index');
+    _log.info('Building primary index');
     Iterable<Directory> dateDirs =
         new Directory(path).listSync().where(isDirectory);
 
@@ -76,9 +79,40 @@ class Message implements storage.Message {
       });
     });
 
-    _log.info('Built index of ${_index.keys.length} elements in'
+    _log.info('Built primary index of ${_index.keys.length} elements in'
         ' ${timer.elapsedMilliseconds}ms');
     _sequencer = new Sequencer(path, explicitId: highestId);
+  }
+
+  /**
+   *
+   */
+  Future rebuildSecondaryIndexes() async {
+    Stopwatch timer = new Stopwatch()..start();
+    _log.info('Building secondary indexes');
+    await Future.forEach(_index.keys, (int id) async {
+      final model.Message msg = await get(id);
+      final cidList = _cidIndex.containsKey(msg.context.cid)
+          ? _cidIndex[msg.context.cid]
+          : _cidIndex[msg.context.cid] = new List<int>();
+
+      final uidList = _uidIndex.containsKey(msg.sender.id)
+          ? _uidIndex[msg.sender.id]
+          : _uidIndex[msg.sender.id] = new List<int>();
+
+      final ridList = _ridIndex.containsKey(msg.context.rid)
+          ? _ridIndex[msg.context.rid]
+          : _ridIndex[msg.context.rid] = new List<int>();
+
+      cidList.add(msg.id);
+      uidList.add(msg.id);
+      ridList.add(msg.id);
+    });
+    _log.info('Built secondary indexes of '
+        '${_cidIndex.keys.length} contact id\'s, '
+        '${_uidIndex.keys.length} user id\'s and '
+        '${_ridIndex.keys.length} reception id\'s in'
+        ' ${timer.elapsedMilliseconds}ms');
   }
 
   /**
@@ -103,6 +137,22 @@ class Message implements storage.Message {
       _log.shout('Failed to load file', e, s);
       throw e;
     }
+  }
+
+  Future<Iterable<model.Message>> getByIds(Iterable<int> ids) async {
+    List<model.Message> list = new List<model.Message>();
+
+    await Future.forEach(ids, (id) async {
+      try {
+        list.add(await get(id));
+      } on storage.NotFound {
+        // Ignore the non-found element.
+      } catch (e, s) {
+        _log.shout('Failed to retrieve element with id $id', e, s);
+      }
+    });
+
+    return list;
   }
 
   /**
@@ -138,36 +188,52 @@ class Message implements storage.Message {
   /**
    * TODO: Store in date-dir.
    */
-  Future<model.Message> create(model.Message message, model.User modifier,
+  Future<model.Message> create(model.Message msg, model.User modifier,
       {bool enforceId: false}) async {
-    Directory dateDir = _dateDir(message.createdAt)..createSync();
+    Directory dateDir = _dateDir(msg.createdAt)..createSync();
 
-    message
-      ..id =
-          message.id != model.Message.noId && enforceId ? message.id : _nextId
+    msg
+      ..id = msg.id != model.Message.noId && enforceId ? msg.id : _nextId
       ..createdAt = new DateTime.now();
 
-    final File file = new File('${dateDir.path}/${message.id}.json');
+    final File file = new File('${dateDir.path}/${msg.id}.json');
 
     if (file.existsSync()) {
       throw new storage.ClientError(
           'File already exists, please update instead');
     }
 
-    file.writeAsStringSync(_jsonpp.convert(message));
-    _index[message.id] = file.path;
+    file.writeAsStringSync(_jsonpp.convert(msg));
+
+    /// Update indexes.
+    _index[msg.id] = file.path;
+    final cidList = _cidIndex.containsKey(msg.context.cid)
+        ? _cidIndex[msg.context.cid]
+        : _cidIndex[msg.context.cid] = new List<int>();
+
+    final uidList = _uidIndex.containsKey(msg.sender.id)
+        ? _uidIndex[msg.sender.id]
+        : _uidIndex[msg.sender.id] = new List<int>();
+
+    final ridList = _ridIndex.containsKey(msg.context.rid)
+        ? _ridIndex[msg.context.rid]
+        : _ridIndex[msg.context.rid] = new List<int>();
+
+    cidList.add(msg.id);
+    uidList.add(msg.id);
+    ridList.add(msg.id);
 
     if (this._git != null) {
       await _git.add(
           file,
           'uid:${modifier.id} - ${modifier.name} '
-          'added ${message.id}',
+          'added ${msg.id}',
           _authorString(modifier));
     }
 
-    _changeBus.fire(new event.MessageChange.create(message.id, modifier.id));
+    _changeBus.fire(new event.MessageChange.create(msg.id, modifier.id));
 
-    return message;
+    return msg;
   }
 
   /**
