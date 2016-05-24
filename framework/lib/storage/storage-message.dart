@@ -22,6 +22,11 @@ abstract class Message {
   /**
    *
    */
+  Future<Iterable<model.Message>> getByIds(Iterable<int> ids);
+
+  /**
+   *
+   */
   @deprecated
   Future<Iterable<model.Message>> list({model.MessageFilter filter});
 
