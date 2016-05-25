@@ -159,16 +159,56 @@ class Message implements storage.Message {
   /**
    *
    */
-  Future<Iterable<model.Message>> listDay(DateTime day) async {
-    Directory dateDir = _dateDir(day);
+  Iterable<int> _idsOfDir(Directory dir) {
+    Iterable<File> files = dir.listSync().where(isFile);
+    List<int> list = [];
+    files.forEach((file) {
+      try {
+        list.add(int.parse(basenameWithoutExtension(file.path)));
+      } catch (e) {
+        _log.shout('Failed load index from file ${file.path}');
+      }
+    });
+    return list;
+  }
+
+  /**
+   *
+   */
+  Future<Iterable<model.Message>> listDay(DateTime day,
+      {model.MessageFilter filter}) async {
+    final Directory dateDir = _dateDir(day);
 
     if (!await dateDir.exists()) {
       return [];
     }
 
-    return dateDir.listSync().where((fse) => isFile(fse)).map(
-        (FileSystemEntity fse) => model.Message
-            .decode(JSON.decode((fse as File).readAsStringSync())));
+    Set<int> ids = _idsOfDir(dateDir).toSet();
+
+    if (filter.receptionId != model.Reception.noId) {
+      final ridSet = _ridIndex.containsKey(filter.receptionId)
+          ? _ridIndex[filter.receptionId]
+          : _ridIndex[filter.receptionId] = new Set<int>();
+
+      ids = ids.intersection(ridSet);
+    }
+
+    if (filter.userId != model.User.noId) {
+      final uidSet = _uidIndex.containsKey(filter.userId)
+          ? _uidIndex[filter.userId]
+          : _uidIndex[filter.userId] = new Set<int>();
+
+      ids = ids.intersection(uidSet);
+    }
+
+    if (filter.contactId != model.BaseContact.noId) {
+      final cidSet = _cidIndex.containsKey(filter.contactId)
+          ? _cidIndex[filter.contactId]
+          : _cidIndex[filter.contactId] = new Set<int>();
+      ids = ids.intersection(cidSet);
+    }
+
+    return getByIds(ids);
   }
 
   /**
@@ -187,7 +227,40 @@ class Message implements storage.Message {
   }
 
   /**
-   * TODO: Store in date-dir.
+   *
+   */
+  Future<Iterable<int>> midsOfUid(int uid) async {
+    if (_uidIndex.containsKey(uid)) {
+      return _uidIndex[uid];
+    } else {
+      return [];
+    }
+  }
+
+  /**
+   *
+   */
+  Future<Iterable<int>> midsOfCid(int cid) async {
+    if (_cidIndex.containsKey(cid)) {
+      return _cidIndex[cid];
+    } else {
+      return [];
+    }
+  }
+
+  /**
+   *
+   */
+  Future<Iterable<int>> midsOfRid(int rid) async {
+    if (_ridIndex.containsKey(rid)) {
+      return _ridIndex[rid];
+    } else {
+      return [];
+    }
+  }
+
+  /**
+   *
    */
   Future<model.Message> create(model.Message msg, model.User modifier,
       {bool enforceId: false}) async {
