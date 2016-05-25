@@ -19,9 +19,9 @@ class Message implements storage.Message {
   GitEngine _git;
   Sequencer _sequencer;
   final Map<int, String> _index = {};
-  final Map<int, List<int>> _cidIndex = {};
-  final Map<int, List<int>> _uidIndex = {};
-  final Map<int, List<int>> _ridIndex = {};
+  final Map<int, Set<int>> _cidIndex = {};
+  final Map<int, Set<int>> _uidIndex = {};
+  final Map<int, Set<int>> _ridIndex = {};
 
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
@@ -94,20 +94,21 @@ class Message implements storage.Message {
       final model.Message msg = await get(id);
       final cidList = _cidIndex.containsKey(msg.context.cid)
           ? _cidIndex[msg.context.cid]
-          : _cidIndex[msg.context.cid] = new List<int>();
+          : _cidIndex[msg.context.cid] = new Set<int>();
 
       final uidList = _uidIndex.containsKey(msg.sender.id)
           ? _uidIndex[msg.sender.id]
-          : _uidIndex[msg.sender.id] = new List<int>();
+          : _uidIndex[msg.sender.id] = new Set<int>();
 
       final ridList = _ridIndex.containsKey(msg.context.rid)
           ? _ridIndex[msg.context.rid]
-          : _ridIndex[msg.context.rid] = new List<int>();
+          : _ridIndex[msg.context.rid] = new Set<int>();
 
       cidList.add(msg.id);
       uidList.add(msg.id);
       ridList.add(msg.id);
     });
+
     _log.info('Built secondary indexes of '
         '${_cidIndex.keys.length} contact id\'s, '
         '${_uidIndex.keys.length} user id\'s and '
@@ -209,15 +210,15 @@ class Message implements storage.Message {
     _index[msg.id] = file.path;
     final cidList = _cidIndex.containsKey(msg.context.cid)
         ? _cidIndex[msg.context.cid]
-        : _cidIndex[msg.context.cid] = new List<int>();
+        : _cidIndex[msg.context.cid] = new Set<int>();
 
     final uidList = _uidIndex.containsKey(msg.sender.id)
         ? _uidIndex[msg.sender.id]
-        : _uidIndex[msg.sender.id] = new List<int>();
+        : _uidIndex[msg.sender.id] = new Set<int>();
 
     final ridList = _ridIndex.containsKey(msg.context.rid)
         ? _ridIndex[msg.context.rid]
-        : _ridIndex[msg.context.rid] = new List<int>();
+        : _ridIndex[msg.context.rid] = new Set<int>();
 
     cidList.add(msg.id);
     uidList.add(msg.id);
