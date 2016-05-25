@@ -131,7 +131,7 @@ class Message implements storage.Message {
     }
 
     try {
-      final String fileContents = file.readAsStringSync();
+      final String fileContents = await file.readAsString();
       final model.Message msg = model.Message.decode(JSON.decode(fileContents));
       return msg;
     } catch (e, s) {
