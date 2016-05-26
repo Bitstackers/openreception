@@ -57,8 +57,11 @@ String _authorString(model.User user) =>
  */
 bool isFile(FileSystemEntity fse) => fse is File && !fse.path.startsWith('.');
 
+bool isJsonFile(FileSystemEntity fse) =>
+    fse is File && !fse.path.startsWith('.') && fse.path.endsWith('.json');
+
 bool isDirectory(FileSystemEntity fse) =>
-    fse is Directory && !fse.path.startsWith('.');
+    fse is Directory && !basename(fse.path).startsWith('.');
 
 class DataStore {
   final Calendar calendarStore;

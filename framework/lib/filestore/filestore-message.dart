@@ -64,7 +64,7 @@ class Message implements storage.Message {
         new Directory(path).listSync().where(isDirectory);
 
     dateDirs.forEach((fse) {
-      Iterable<File> files = fse.listSync().where(isFile);
+      Iterable<File> files = fse.listSync().where(isJsonFile);
       files.forEach((file) {
         try {
           final id = int.parse(basenameWithoutExtension(file.path));
