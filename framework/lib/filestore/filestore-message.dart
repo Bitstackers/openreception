@@ -22,6 +22,7 @@ class Message implements storage.Message {
   final Map<int, Set<int>> _cidIndex = {};
   final Map<int, Set<int>> _uidIndex = {};
   final Map<int, Set<int>> _ridIndex = {};
+  final Set<int> _savedIndex = new Set<int>();
 
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
@@ -90,7 +91,7 @@ class Message implements storage.Message {
   Future rebuildSecondaryIndexes() async {
     Stopwatch timer = new Stopwatch()..start();
     _log.info('Building secondary indexes');
-    await Future.forEach(_index.keys, (int id) async {
+    await Future.wait(_index.keys.map((int id) async {
       final model.Message msg = await get(id);
       final cidList = _cidIndex.containsKey(msg.context.cid)
           ? _cidIndex[msg.context.cid]
@@ -107,13 +108,18 @@ class Message implements storage.Message {
       cidList.add(msg.id);
       uidList.add(msg.id);
       ridList.add(msg.id);
-    });
+
+      if (msg.state == model.MessageState.saved) {
+        _savedIndex.add(msg.id);
+      }
+    }));
 
     _log.info('Built secondary indexes of '
         '${_cidIndex.keys.length} contact id\'s, '
         '${_uidIndex.keys.length} user id\'s and '
-        '${_ridIndex.keys.length} reception id\'s in'
-        ' ${timer.elapsedMilliseconds}ms');
+        '${_ridIndex.keys.length} reception id\'s in '
+        '${timer.elapsedMilliseconds}ms. '
+        'Found ${_savedIndex.length} saved messages');
   }
 
   /**
@@ -184,6 +190,39 @@ class Message implements storage.Message {
     }
 
     Set<int> ids = _idsOfDir(dateDir).toSet();
+
+    if (filter.receptionId != model.Reception.noId) {
+      final ridSet = _ridIndex.containsKey(filter.receptionId)
+          ? _ridIndex[filter.receptionId]
+          : _ridIndex[filter.receptionId] = new Set<int>();
+
+      ids = ids.intersection(ridSet);
+    }
+
+    if (filter.userId != model.User.noId) {
+      final uidSet = _uidIndex.containsKey(filter.userId)
+          ? _uidIndex[filter.userId]
+          : _uidIndex[filter.userId] = new Set<int>();
+
+      ids = ids.intersection(uidSet);
+    }
+
+    if (filter.contactId != model.BaseContact.noId) {
+      final cidSet = _cidIndex.containsKey(filter.contactId)
+          ? _cidIndex[filter.contactId]
+          : _cidIndex[filter.contactId] = new Set<int>();
+      ids = ids.intersection(cidSet);
+    }
+
+    return getByIds(ids);
+  }
+
+  /**
+   *
+   */
+  Future<Iterable<model.Message>> listSaved(
+      {model.MessageFilter filter}) async {
+    Set<int> ids = new Set()..addAll(_savedIndex);
 
     if (filter.receptionId != model.Reception.noId) {
       final ridSet = _ridIndex.containsKey(filter.receptionId)
@@ -297,6 +336,10 @@ class Message implements storage.Message {
     uidList.add(msg.id);
     ridList.add(msg.id);
 
+    if (msg.state == model.MessageState.saved) {
+      _savedIndex.add(msg.id);
+    }
+
     if (this._git != null) {
       await _git.add(
           file,
@@ -329,6 +372,12 @@ class Message implements storage.Message {
           'uid:${modifier.id} - ${modifier.name} '
           'updated ${message.id}',
           _authorString(modifier));
+    }
+
+    if (message.state == model.MessageState.saved) {
+      _savedIndex.add(message.id);
+    } else if (_savedIndex.contains(message.id)) {
+      _savedIndex.remove(message.id);
     }
 
     _changeBus.fire(new event.MessageChange.update(message.id, modifier.id));
