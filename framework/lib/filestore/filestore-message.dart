@@ -191,27 +191,29 @@ class Message implements storage.Message {
 
     Set<int> ids = _idsOfDir(dateDir).toSet();
 
-    if (filter.receptionId != model.Reception.noId) {
-      final ridSet = _ridIndex.containsKey(filter.receptionId)
-          ? _ridIndex[filter.receptionId]
-          : _ridIndex[filter.receptionId] = new Set<int>();
+    if (filter != null) {
+      if (filter.receptionId != model.Reception.noId) {
+        final ridSet = _ridIndex.containsKey(filter.receptionId)
+            ? _ridIndex[filter.receptionId]
+            : _ridIndex[filter.receptionId] = new Set<int>();
 
-      ids = ids.intersection(ridSet);
-    }
+        ids = ids.intersection(ridSet);
+      }
 
-    if (filter.userId != model.User.noId) {
-      final uidSet = _uidIndex.containsKey(filter.userId)
-          ? _uidIndex[filter.userId]
-          : _uidIndex[filter.userId] = new Set<int>();
+      if (filter.userId != model.User.noId) {
+        final uidSet = _uidIndex.containsKey(filter.userId)
+            ? _uidIndex[filter.userId]
+            : _uidIndex[filter.userId] = new Set<int>();
 
-      ids = ids.intersection(uidSet);
-    }
+        ids = ids.intersection(uidSet);
+      }
 
-    if (filter.contactId != model.BaseContact.noId) {
-      final cidSet = _cidIndex.containsKey(filter.contactId)
-          ? _cidIndex[filter.contactId]
-          : _cidIndex[filter.contactId] = new Set<int>();
-      ids = ids.intersection(cidSet);
+      if (filter.contactId != model.BaseContact.noId) {
+        final cidSet = _cidIndex.containsKey(filter.contactId)
+            ? _cidIndex[filter.contactId]
+            : _cidIndex[filter.contactId] = new Set<int>();
+        ids = ids.intersection(cidSet);
+      }
     }
 
     return getByIds(ids);
