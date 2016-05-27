@@ -1,0 +1,17 @@
+# Do not track emacs/nano temporary and backup files
+\#*#
+*~
+.#*#
+
+# Do not track makefile.setup
+makefile.setup
+
+# Files and directories created by pub
+.packages
+.pub/
+build/
+packages
+pubspec.lock
+
+# Directory created by dartdoc
+doc/api/
