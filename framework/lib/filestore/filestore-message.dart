@@ -141,7 +141,7 @@ class Message implements storage.Message {
       final model.Message msg = model.Message.decode(JSON.decode(fileContents));
       return msg;
     } catch (e, s) {
-      _log.shout('Failed to load file', e, s);
+      _log.shout('Failed to load file ${file.path}', e, s);
       throw e;
     }
   }
