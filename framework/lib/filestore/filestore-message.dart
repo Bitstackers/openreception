@@ -307,9 +307,11 @@ class Message implements storage.Message {
       {bool enforceId: false}) async {
     Directory dateDir = _dateDir(msg.createdAt)..createSync();
 
-    msg
-      ..id = msg.id != model.Message.noId && enforceId ? msg.id : _nextId
-      ..createdAt = new DateTime.now();
+    if (!(msg.id != model.Message.noId && enforceId)) {
+      msg
+        ..id = _nextId
+        ..createdAt = new DateTime.now();
+    }
 
     final File file = new File('${dateDir.path}/${msg.id}.json');
 
