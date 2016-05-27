@@ -73,6 +73,9 @@ class DataStore {
   final ReceptionDialplan receptionDialplanStore;
   final User userStore;
 
+  /**
+   *
+   */
   factory DataStore(String path, [GitEngine ge]) {
     Calendar calendarStore = new Calendar(path + '/calendar', ge);
     Reception receptionStore = new Reception(path + '/reception', ge);
@@ -96,6 +99,9 @@ class DataStore {
         userStore);
   }
 
+  /**
+   *
+   */
   DataStore._internal(
       Calendar this.calendarStore,
       Contact this.contactStore,
