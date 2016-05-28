@@ -91,6 +91,8 @@ abstract class ModelMessage {
       ..rid = 4
       ..receptionName = 'Nowhere';
 
+    final state = Model.MessageState.values.last;
+
     final Model.Message obj = new Model.Message.empty()
       ..body = messageBody
       ..callId = callId
@@ -104,7 +106,8 @@ abstract class ModelMessage {
       ..id = id
       ..context = context
       ..recipients = rlist
-      ..sender = sender;
+      ..sender = sender
+      ..state = state;
 
     expect(obj.body, equals(messageBody));
     expect(obj.callerInfo.toJson(), equals(info.toJson()));
@@ -119,6 +122,7 @@ abstract class ModelMessage {
     expect(obj.context.toJson(), equals(context.toJson()));
     expect(obj.recipients.toList(), equals(rlist.toList()));
     expect(obj.sender.toJson(), equals(sender.toJson()));
+    expect(obj.state, equals(state));
 
     return obj;
   }

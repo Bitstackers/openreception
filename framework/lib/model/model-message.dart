@@ -13,6 +13,8 @@
 
 part of openreception.framework.model;
 
+enum MessageState { saved, enqueued, sent, unknown }
+
 class Message {
   static const int noId = 0;
 
@@ -21,6 +23,8 @@ class Message {
   int id = noId;
   MessageContext context = new MessageContext.empty();
   MessageFlag flag = new MessageFlag.empty();
+  MessageState state = MessageState.unknown;
+
   CallerInfo callerInfo;
   DateTime createdAt;
   String body = '';
@@ -28,6 +32,10 @@ class Message {
 
   /// The user of the sender.
   User sender;
+
+  bool get enqueued => state == MessageState.enqueued;
+  bool get sent => state == MessageState.sent;
+  bool get closed => enqueued || sent || flag.manuallyClosed;
 
   bool get manuallyClosed => flag.manuallyClosed;
   set manuallyClosed(bool closed) {
@@ -70,6 +78,9 @@ class Message {
     callId = map[Key.callId];
     sender = User.decode(map[Key.takenByAgent]);
     createdAt = Util.unixTimestampToDateTime(map[Key.createdAt]);
+    state = map[Key.state] != null
+        ? MessageState.values[map[Key.state]]
+        : MessageState.unknown;
   }
 
   Map get asMap => {
@@ -83,6 +94,7 @@ class Message {
         Key.createdAt: Util.dateTimeToUnixTimestamp(createdAt),
         Key.recipients: recipients
             .map((MessageEndpoint ep) => ep.toJson())
-            .toList(growable: false)
+            .toList(growable: false),
+        Key.state: state.index
       };
 }
