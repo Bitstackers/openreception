@@ -174,6 +174,76 @@ class Message {
   }
 
   /**
+   * Builds a list of previously stored messages, filtering by the
+   * parameters passed in the [queryParameters] of the request.
+   */
+  Future<shelf.Response> listByDay(shelf.Request request) async {
+    final String dayStr = shelf_route.getPathParameter(request, 'day');
+
+    model.MessageFilter filter = new model.MessageFilter.empty();
+    DateTime day;
+
+    try {
+      final List<String> part = dayStr.split('-');
+
+      day = new DateTime(
+          int.parse(part[0]), int.parse(part[1]), int.parse(part[2]));
+    } catch (e) {
+      final String msg = 'Day parsing failed: $dayStr';
+      log.warning(msg, e);
+      return clientError(msg);
+    }
+
+    if (_filterFrom(request) != null) {
+      try {
+        Map map = JSON.decode(_filterFrom(request));
+        filter = new model.MessageFilter.fromMap(map);
+      } catch (error, stackTrace) {
+        log.warning('Bad filter', error, stackTrace);
+
+        return clientError('Bad filter');
+      }
+    }
+
+    return await _messageStore
+        .listDay(day, filter: filter)
+        .then((Iterable<model.Message> messages) =>
+            okJson(messages.toList(growable: false)))
+        .catchError((error, stackTrace) {
+      log.severe(error, stackTrace);
+      return serverError(error.toString);
+    });
+  }
+
+  /**
+   * Builds a list of previously stored messages, filtering by the
+   * parameters passed in the [queryParameters] of the request.
+   */
+  Future<shelf.Response> listSaved(shelf.Request request) async {
+    model.MessageFilter filter = new model.MessageFilter.empty();
+
+    if (_filterFrom(request) != null) {
+      try {
+        Map map = JSON.decode(_filterFrom(request));
+        filter = new model.MessageFilter.fromMap(map);
+      } catch (error, stackTrace) {
+        log.warning('Bad filter', error, stackTrace);
+
+        return clientError('Bad filter');
+      }
+    }
+
+    return await _messageStore
+        .listSaved(filter: filter)
+        .then((Iterable<model.Message> messages) =>
+            okJson(messages.toList(growable: false)))
+        .catchError((error, stackTrace) {
+      log.severe(error, stackTrace);
+      return serverError(error.toString);
+    });
+  }
+
+  /**
    * Enqueues a messages for dispathing via the transport layer specified in
    * the endpoints belonging to the message recipients.
    */
@@ -270,7 +340,7 @@ class Message {
       okJson((await _messageStore.changes()).toList(growable: false));
 
   /**
-  * Retrieves the history of a single message object.
+   * Retrieves the history of a single message object.
    */
   Future<shelf.Response> objectHistory(shelf.Request request) async {
     final String midParam = shelf_route.getPathParameter(request, 'mid');
@@ -282,5 +352,21 @@ class Message {
     }
 
     return okJson((await _messageStore.changes(mid)).toList(growable: false));
+  }
+
+  /**
+   *
+   */
+  Future<shelf.Response> queryById(shelf.Request request) async {
+    final String body = await request.readAsString();
+
+    List<int> ids;
+    try {
+      ids = JSON.decode(body) as List<int>;
+    } on FormatException {
+      return clientError('Bad list: $body');
+    }
+
+    return okJson((await _messageStore.getByIds(ids)).toList(growable: false));
   }
 }

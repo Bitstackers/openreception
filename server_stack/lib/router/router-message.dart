@@ -38,35 +38,14 @@ class Message {
   Message(this._authService, this._notification, this._msgController);
 
   /**
-   * Validate a token by looking it up on the authentication server.
-   */
-  Future<shelf.Response> _lookupToken(shelf.Request request) async {
-    var token = request.requestedUri.queryParameters['token'];
-
-    try {
-      await _authService.validate(token);
-    } on storage.NotFound {
-      return new shelf.Response.forbidden('Invalid token');
-    } on io.SocketException {
-      return new shelf.Response.internalServerError(
-          body: 'Cannot reach authserver');
-    } catch (error, stackTrace) {
-      _log.severe(
-          'Authentication validation lookup failed: $error:$stackTrace');
-
-      return new shelf.Response.internalServerError(body: error.toString());
-    }
-
-    /// Do not intercept the request, but let the next handler take care of it.
-    return null;
-  }
-
-  /**
    *
    */
   void bindRoutes(router) {
     router
       ..get('/message/list', _msgController.list)
+      ..get('/message/list/saved', _msgController.listSaved)
+      ..get('/message/list/{day}', _msgController.listByDay)
+      ..post('/message/list', _msgController.queryById)
       ..get('/message', _msgController.list)
       ..get('/message/history', _msgController.history)
       ..get('/message/{mid}', _msgController.get)
@@ -81,16 +60,12 @@ class Message {
    *
    */
   Future<io.HttpServer> listen({String hostname: 'localhost', int port: 4040}) {
-    shelf.Middleware checkAuthentication = shelf.createMiddleware(
-        requestHandler: _lookupToken, responseHandler: null);
-
     final router = shelf_route.router();
     bindRoutes(router);
 
     final handler = const shelf.Pipeline()
         .addMiddleware(
             shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
-        .addMiddleware(checkAuthentication)
         .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
         .addHandler(router.handler);
 

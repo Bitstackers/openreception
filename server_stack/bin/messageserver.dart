@@ -77,6 +77,8 @@ Future main(List<String> args) async {
   final filestore.Message _messageStore = new filestore.Message(
       filepath + '/message', new filestore.GitEngine(filepath + '/message'));
 
+  await _messageStore.rebuildSecondaryIndexes();
+
   final filestore.MessageQueue _messageQueue =
       new filestore.MessageQueue(filepath + '/message_queue');
 
