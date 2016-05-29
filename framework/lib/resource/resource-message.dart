@@ -37,10 +37,33 @@ abstract class Message {
         '${Util.removeTailingSlashes(host)}/${nameSpace}/list${filterParameter}');
   }
 
-  static Uri listDay(Uri host, DateTime day) {
+  static Uri midOfUid(Uri host, int uid) {
+    return Uri.parse('$host/message/list/by-uid/$uid');
+  }
+
+  static Uri midOfCid(Uri host, int cid) {
+    return Uri.parse('$host/message/list/by-cid/$cid');
+  }
+
+  static Uri midOfRid(Uri host, int rid) {
+    return Uri.parse('$host/message/list/by-rid/$rid');
+  }
+
+  static Uri listDay(Uri host, DateTime day,
+      {Model.MessageFilter filter: null}) {
+    final String filterParameter =
+        filter != null ? '?filter=${JSON.encode(filter)}' : '';
+
     final String dateString = day.toIso8601String().split('T').first;
 
-    return Uri.parse('$host/message/list/$dateString');
+    return Uri.parse('$host/message/list/$dateString${filterParameter}');
+  }
+
+  static Uri listSaved(Uri host, {Model.MessageFilter filter: null}) {
+    final String filterParameter =
+        filter != null ? '?filter=${JSON.encode(filter)}' : '';
+
+    return Uri.parse('$host/message/list/saved${filterParameter}');
   }
 
   /**

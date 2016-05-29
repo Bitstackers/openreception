@@ -34,6 +34,20 @@ class RESTMessageStore implements Storage.Message {
   /**
    *
    */
+  Future<Iterable<Model.Message>> getByIds(Iterable<int> ids) async {
+    Uri uri = Resource.Message.list(host);
+    uri = _appendToken(uri, token);
+
+    final Iterable maps = await _backend
+        .post(uri, JSON.encode(ids))
+        .then((String response) => JSON.decode(response));
+
+    return maps.map(Model.Message.decode);
+  }
+
+  /**
+   *
+   */
   Future<Model.MessageQueueEntry> enqueue(Model.Message message) {
     Uri uri = Resource.Message.send(this.host, message.id);
     uri = _appendToken(uri, this.token);
@@ -66,6 +80,48 @@ class RESTMessageStore implements Storage.Message {
   /**
    *
    */
+  Future<Iterable<int>> midsOfUid(int uid) async {
+    Uri uri = Resource.Message.midOfUid(host, uid);
+    uri = _appendToken(uri, token);
+
+    final ints = await _backend
+        .get(uri)
+        .then((String response) => JSON.decode(response));
+
+    return ints as Iterable<int>;
+  }
+
+  /**
+   *
+   */
+  Future<Iterable<int>> midsOfCid(int cid) async {
+    Uri uri = Resource.Message.midOfCid(host, cid);
+    uri = _appendToken(uri, token);
+
+    final ints = await _backend
+        .get(uri)
+        .then((String response) => JSON.decode(response));
+
+    return ints as Iterable<int>;
+  }
+
+  /**
+   *
+   */
+  Future<Iterable<int>> midsOfRid(int rid) async {
+    Uri uri = Resource.Message.midOfRid(host, rid);
+    uri = _appendToken(uri, token);
+
+    final ints = await _backend
+        .get(uri)
+        .then((String response) => JSON.decode(response));
+
+    return ints as Iterable<int>;
+  }
+
+  /**
+   *
+   */
   Future<Model.Message> update(Model.Message message, Model.User modifier) =>
       _backend
           .put(
@@ -87,8 +143,21 @@ class RESTMessageStore implements Storage.Message {
   /**
    *
    */
-  Future<Iterable<Model.Message>> listDay(DateTime day) async {
-    Uri uri = Resource.Message.listDay(host, day);
+  Future<Iterable<Model.Message>> listDay(DateTime day,
+      {Model.MessageFilter filter}) async {
+    Uri uri = Resource.Message.listDay(host, day, filter: filter);
+    uri = _appendToken(uri, token);
+
+    return _backend.get(uri).then((String response) =>
+        (JSON.decode(response) as Iterable)
+            .map((Map map) => new Model.Message.fromMap(map)));
+  }
+
+  /**
+   *
+   */
+  Future<Iterable<Model.Message>> listSaved({Model.MessageFilter filter}) {
+    Uri uri = Resource.Message.listSaved(host, filter: filter);
     uri = _appendToken(uri, token);
 
     return _backend.get(uri).then((String response) =>
