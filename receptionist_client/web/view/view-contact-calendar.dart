@@ -67,11 +67,11 @@ class ContactCalendar extends ViewWidget {
   }
 
   /**
-   * Fetch all calendar entries for [cRef].
+   * Fetch all calendar entries for [contact].
    */
-  void _fetchCalendar(ORModel.ContactReference cRef) {
+  void _fetchCalendar(ORModel.BaseContact contact) {
     _calendarController
-        .contactCalendar(cRef)
+        .contactCalendar(contact)
         .then((Iterable<ORModel.CalendarEntry> entries) {
       _ui.calendarEntries = entries.toList()
         ..sort((a, b) => a.start.compareTo(b.start));
@@ -89,21 +89,21 @@ class ContactCalendar extends ViewWidget {
 
     _notification.onCalendarChange.listen(_updateOnChange);
 
-    _contactSelector.onSelect.listen(
-        (Model.ContactWithFilterContext c) => _render(c.contact.reference));
+    _contactSelector.onSelect
+        .listen((Model.ContactWithFilterContext c) => _render(c.contact));
 
     _receptionSelector.onSelect.listen(_clear);
   }
 
   /**
-   * Render the widget with [cRef].
+   * Render the widget with [contact].
    */
-  void _render(ORModel.ContactReference cRef) {
-    if (cRef.isEmpty) {
+  void _render(ORModel.BaseContact contact) {
+    if (contact.isEmpty) {
       _ui.clear();
     } else {
-      _ui.headerExtra = ': ${cRef.name}';
-      _fetchCalendar(cRef);
+      _ui.headerExtra = ': ${contact.name}';
+      _fetchCalendar(contact);
     }
   }
 
@@ -117,7 +117,7 @@ class ContactCalendar extends ViewWidget {
 
     if (calendarChange.owner is ORModel.OwningContact &&
         calendarChange.owner.id == currentContact.id) {
-      _fetchCalendar(currentContact.reference);
+      _fetchCalendar(currentContact);
     }
   }
 }

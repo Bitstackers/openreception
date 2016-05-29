@@ -84,8 +84,8 @@ class CalendarEditor extends ViewWidget {
    *
    * Clear the form and navigate one step back in history.
    */
-  void _delete(ORModel.CalendarEntry loadedEntry) {
-    _calendarController.deleteCalendarEvent(_ui.loadedEntry).then((_) {
+  void _delete(ORModel.CalendarEntry loadedEntry, ORModel.Owner owner) {
+    _calendarController.deleteCalendarEvent(_ui.loadedEntry, owner).then((_) {
       _log.info('${loadedEntry} successfully deleted from database');
       _popup.success(
           _langMap[Key.calendarEditorDelSuccessTitle], 'ID ${loadedEntry.id}');
@@ -178,8 +178,6 @@ class CalendarEditor extends ViewWidget {
           }
         } else {
           entry = new ORModel.CalendarEntry.empty()
-            ..owner =
-                new ORModel.OwningContact(_contactSelector.selectedContact.contact.id)
             ..start = new DateTime.now()
             ..stop = new DateTime.now().add(new Duration(hours: 1))
             ..content = '';
@@ -212,8 +210,6 @@ class CalendarEditor extends ViewWidget {
           }
         } else {
           entry = new ORModel.CalendarEntry.empty()
-            ..owner = new ORModel.OwningReception(
-                _receptionSelector.selectedReception.id)
             ..start = new DateTime.now()
             ..stop = new DateTime.now().add(new Duration(hours: 1))
             ..content = '';

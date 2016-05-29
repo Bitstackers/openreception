@@ -15,11 +15,23 @@ part of controller;
 
 class Contact {
   final ORService.RESTContactStore _store;
+  final Notification _notification;
+  final Map<int, Iterable<ORModel.ReceptionContact>> _rcCache = {};
 
   /**
    * Constructor.
    */
-  Contact(this._store);
+  Contact(this._store, this._notification) {
+    _notification.onReceptionDataChange.listen((OREvent.ReceptionData e) {
+      _rcCache.remove(e.rid);
+    });
+
+    _notification.onContactChange.listen((OREvent.ContactChange e) {
+      if (e.updated) {
+        _rcCache.clear();
+      }
+    });
+  }
 
   /**
    * Fetch the [contactId] [ORModel.Contact].
@@ -31,15 +43,10 @@ class Contact {
    */
   Future<Iterable<ORModel.ReceptionContact>> list(
       ORModel.ReceptionReference rRef) async {
-    final crefs = await _store.receptionContacts(rRef.id);
+    if (!_rcCache.containsKey(rRef.id)) {
+      _rcCache[rRef.id] = await _store.receptionContacts(rRef.id);
+    }
 
-    List<ORModel.ReceptionContact> contacts = [];
-    await Future.forEach(crefs, (cRef) async {
-      contacts.add(new ORModel.ReceptionContact(
-          await _store.get(cRef.id), await _store.data(cRef.id, rRef.id)));
-    });
-
-
-    return contacts;
+    return _rcCache[rRef.id];
   }
 }
