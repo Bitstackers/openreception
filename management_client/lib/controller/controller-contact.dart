@@ -6,7 +6,7 @@ class Contact {
 
   Contact(this._service, this._appUser);
 
-  Future<Iterable<model.ContactReference>> receptionContacts(int rid) =>
+  Future<Iterable<model.BaseContact>> receptionContacts(int rid) =>
       _service.receptionContacts(rid).catchError(_handleError);
 
   Future<Iterable<model.ReceptionReference>> receptions(int rid) =>
@@ -18,16 +18,16 @@ class Contact {
   Future<model.ReceptionAttributes> getByReception(int cid, int rid) =>
       _service.data(cid, rid).catchError(_handleError);
 
-  Future<Iterable<model.ContactReference>> list() =>
+  Future<Iterable<model.BaseContact>> list() =>
       _service.list().catchError(_handleError);
 
   Future<model.BaseContact> get(int cid) =>
       _service.get(cid).catchError(_handleError);
 
-  Future<model.ContactReference> update(model.BaseContact contact) =>
+  Future<model.BaseContact> update(model.BaseContact contact) =>
       _service.update(contact, _appUser).catchError(_handleError);
 
-  Future<model.ContactReference> create(model.BaseContact contact) =>
+  Future<model.BaseContact> create(model.BaseContact contact) =>
       _service.create(contact, _appUser).catchError(_handleError);
 
   Future remove(int cid) =>
@@ -44,8 +44,8 @@ class Contact {
           model.ReceptionAttributes attr) =>
       _service.updateData(attr, _appUser).catchError(_handleError);
 
-  Future<Map<model.ReceptionReference, Iterable<model.ContactReference>>>
-      colleagues(int cid) async {
+  Future<Map<model.ReceptionReference, Iterable<model.BaseContact>>> colleagues(
+      int cid) async {
     Map map = {};
     final Iterable<model.ReceptionReference> receptions =
         await _service.receptions(cid);

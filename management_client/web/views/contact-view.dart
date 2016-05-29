@@ -33,8 +33,7 @@ class ContactView {
   UListElement _ulReceptionContacts;
   UListElement _ulReceptionList;
   UListElement _ulOrganizationList;
-  List<model.ContactReference> _contactList =
-      new List<model.ContactReference>();
+  List<model.BaseContact> _contactList = new List<model.BaseContact>();
   SearchInputElement _searchBox;
 
   view.Calendar _calendarView;
@@ -285,7 +284,7 @@ class ContactView {
     };
 
     _saveButton.onClick.listen((_) async {
-      model.ContactReference updated;
+      model.BaseContact updated;
       if (baseContact.id == model.BaseContact.noId) {
         updated = await _contactController.create(baseContact);
         notify.success('Oprettede kontaktperson', '${updated.name}');
@@ -380,11 +379,11 @@ class ContactView {
   }
 
   void _refreshList() {
-    _contactController.list().then((Iterable<model.ContactReference> contacts) {
-      int compareTo(model.ContactReference c1, model.ContactReference c2) =>
+    _contactController.list().then((Iterable<model.BaseContact> contacts) {
+      int compareTo(model.BaseContact c1, model.BaseContact c2) =>
           c1.name.compareTo(c2.name);
 
-      List<model.ContactReference> list = contacts.toList()..sort(compareTo);
+      List<model.BaseContact> list = contacts.toList()..sort(compareTo);
       this._contactList = list;
       _performSearch();
     }).catchError((error) {
@@ -397,7 +396,7 @@ class ContactView {
     _ulContactList.children
       ..clear()
       ..addAll(_contactList
-          .where((model.ContactReference contact) =>
+          .where((model.BaseContact contact) =>
               contact.name.toLowerCase().contains(searchTerm.toLowerCase()))
           .map(_makeContactNode));
   }
@@ -405,7 +404,7 @@ class ContactView {
   /**
    * TODO: Add ⚙ for function persons.
    */
-  LIElement _makeContactNode(model.ContactReference cRef) {
+  LIElement _makeContactNode(model.BaseContact cRef) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
       ..text = cRef.name

@@ -33,8 +33,7 @@ class ContactView {
   UListElement _ulReceptionData;
   UListElement _ulReceptionList;
   UListElement _ulOrganizationList;
-  List<model.ContactReference> _contactList =
-      new List<model.ContactReference>();
+  List<model.BaseContact> _contactList = new List<model.BaseContact>();
 
   final ButtonElement _createButton = new ButtonElement()
     ..id = 'contact-create'
@@ -111,17 +110,17 @@ class ContactView {
     _ulContactList.children
       ..clear()
       ..addAll(_contactList
-          .where((model.ContactReference contact) =>
+          .where((model.BaseContact contact) =>
               contact.name.toLowerCase().contains(searchTerm.toLowerCase()))
           .map(_makeContactNode));
   }
 
   void _refreshList() {
-    _contactController.list().then((Iterable<model.ContactReference> cRefs) {
-      int compareTo(model.ContactReference c1, model.ContactReference c2) =>
+    _contactController.list().then((Iterable<model.BaseContact> cRefs) {
+      int compareTo(model.BaseContact c1, model.BaseContact c2) =>
           c1.name.compareTo(c2.name);
 
-      List<model.ContactReference> list = cRefs.toList()..sort(compareTo);
+      List<model.BaseContact> list = cRefs.toList()..sort(compareTo);
       this._contactList = list;
       _performSearch();
     }).catchError((error) {
@@ -129,7 +128,7 @@ class ContactView {
     });
   }
 
-  LIElement _makeContactNode(model.ContactReference cRef) {
+  LIElement _makeContactNode(model.BaseContact cRef) {
     LIElement li = new LIElement()
       ..dataset['cid'] = cRef.id.toString()
       ..text = '${cRef.name}'
@@ -173,15 +172,15 @@ class ContactView {
     _ulOrganizationList.children =
         new List.from(oRefs.map(_createOrganizationNode));
 
-    final Map<model.ReceptionReference, Iterable<model.ContactReference>>
-        collRefs = (await _contactController.colleagues(cid));
+    final Map<model.ReceptionReference, Iterable<model.BaseContact>> collRefs =
+        (await _contactController.colleagues(cid));
     print(oRefs);
 
     _ulReceptionList.children.clear();
-    collRefs.forEach((model.ReceptionReference rRef,
-        Iterable<model.ContactReference> crefs) {
+    collRefs.forEach(
+        (model.ReceptionReference rRef, Iterable<model.BaseContact> crefs) {
       final li = _createReceptionNode(rRef);
-      List colls = crefs.toList(growable: false)..sort(view.compareContactRefs);
+      List colls = crefs.toList(growable: false)..sort(view.compareContacts);
 
       li.children.add(new UListElement()
         ..classes.add('zebra-odd')
@@ -218,7 +217,7 @@ class ContactView {
   /**
    *
    */
-  LIElement _createColleagueNode(model.ContactReference cRef) {
+  LIElement _createColleagueNode(model.BaseContact cRef) {
     return new LIElement()
       ..classes.add('clickable')
       ..classes.add('colleague')

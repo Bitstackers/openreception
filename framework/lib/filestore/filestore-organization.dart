@@ -53,8 +53,8 @@ class Organization implements storage.Organization {
   /**
    *
    */
-  Future<Iterable<model.ContactReference>> contacts(int id) async {
-    List<model.ContactReference> cRefs = [];
+  Future<Iterable<model.BaseContact>> contacts(int id) async {
+    List<model.BaseContact> cRefs = [];
     List<model.ReceptionReference> rRefs = await receptions(id);
 
     await Future.forEach(rRefs, (rRef) async {

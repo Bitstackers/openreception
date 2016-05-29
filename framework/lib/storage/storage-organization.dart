@@ -17,7 +17,7 @@ abstract class Organization {
   /**
    *
    */
-  Future<Iterable<model.ContactReference>> contacts(int oid);
+  Future<Iterable<model.BaseContact>> contacts(int oid);
 
   /**
    *

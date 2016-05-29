@@ -204,7 +204,7 @@ class Contact {
     final int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
     try {
-      Iterable<model.ContactReference> contacts =
+      Iterable<model.ReceptionContact> contacts =
           await _contactStore.receptionContacts(rid);
 
       return okJson(contacts.toList());

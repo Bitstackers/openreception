@@ -167,25 +167,25 @@ class ReceptionView {
    *
    */
   Future _updateContactList(int receptionId) async {
-    final Iterable<ORModel.ContactReference> cRefs =
+    final Iterable<ORModel.BaseContact> cRefs =
         await _contactController.receptionContacts(receptionId);
 
-    List<ORModel.ContactReference> sorted = cRefs.toList()
-      ..sort(view.compareContactRefs);
+    List<ORModel.BaseContact> sorted = cRefs.toList()
+      ..sort(view.compareContacts);
     _ulContactList.children
       ..clear()
-      ..addAll(sorted.map((ORModel.ContactReference cRef) =>
-          _makeContactNode(cRef, receptionId)));
+      ..addAll(sorted.map(
+          (ORModel.BaseContact cRef) => _makeContactNode(cRef, receptionId)));
   }
 
   /**
    * TODO: Add function gear ⚙
    */
-  LIElement _makeContactNode(ORModel.ContactReference cRef, int rid) {
+  LIElement _makeContactNode(ORModel.BaseContact contact, int rid) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
-      ..text = cRef.name
-      ..onClick.listen((_) => _router.gotoUrl('/contact/edit/${cRef.id}'));
+      ..text = contact.name
+      ..onClick.listen((_) => _router.gotoUrl('/contact/edit/${contact.id}'));
     return li;
   }
 

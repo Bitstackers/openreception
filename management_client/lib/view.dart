@@ -39,13 +39,18 @@ controller.Popup notify = controller.popup;
 var _jsonpp = new JsonEncoder.withIndent('  ');
 final DateFormat rfc3339 = new DateFormat('yyyy-MM-dd HH:mm');
 
-int compareContactRefs(model.ContactReference c1, model.ContactReference c2) =>
+int compareContacts(model.BaseContact c1, model.BaseContact c2) =>
     c1.name.toLowerCase().compareTo(c2.name.toLowerCase());
 
 int compareOrgRefs(
         model.OrganizationReference o1, model.OrganizationReference o2) =>
     o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
 
+int compareUserRefs(model.UserReference u1, model.UserReference u2) =>
+    u1.name.toLowerCase().compareTo(u2.name.toLowerCase());
+
+int compareRecRefs(model.ReceptionReference r1, model.ReceptionReference r2) =>
+    r1.name.toLowerCase().compareTo(r2.name.toLowerCase());
 /**
  *
  */

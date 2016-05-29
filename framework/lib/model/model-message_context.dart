@@ -36,9 +36,9 @@ class MessageContext {
   /**
    * Creates a messagContext from a [ReceptionAttributes] object
    */
-  MessageContext.fromContact(ContactReference cRef, ReceptionReference rRef) {
-    cid = cRef.id;
-    contactName = cRef.name;
+  MessageContext.fromContact(BaseContact contact, ReceptionReference rRef) {
+    cid = contact.id;
+    contactName = contact.name;
     rid = rRef.id;
     receptionName = rRef.name;
   }

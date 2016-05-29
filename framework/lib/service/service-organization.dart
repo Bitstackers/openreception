@@ -28,12 +28,12 @@ class RESTOrganizationStore implements Storage.Organization {
   /**
    *
    */
-  Future<Iterable<Model.ContactReference>> contacts(int organizationID) {
-    Uri url = Resource.Organization.contacts(this._host, organizationID);
+  Future<Iterable<Model.BaseContact>> contacts(int oid) {
+    Uri url = Resource.Organization.contacts(this._host, oid);
     url = _appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
-        (JSON.decode(response) as Iterable).map(Model.ContactReference.decode));
+        (JSON.decode(response) as Iterable).map(Model.BaseContact.decode));
   }
 
   /**

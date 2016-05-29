@@ -88,14 +88,16 @@ class MessageFilter {
    *
    */
   Future _reloadContactSelector() async {
-    Iterable<model.ContactReference> contacts = _rid != model.Reception.noId
-        ? await _contactController.receptionContacts(_rid)
-        : [];
+    List<model.BaseContact> contacts = [];
 
-    OptionElement contactToOption(model.ContactReference cRef) =>
-        new OptionElement()
-          ..label = cRef.name
-          ..value = cRef.id.toString();
+    if (_rid != model.Reception.noId) {
+      contacts = (await _contactController.list()).toList(growable: false)
+        ..sort(compareContacts);
+    }
+
+    OptionElement contactToOption(model.BaseContact cRef) => new OptionElement()
+      ..label = cRef.name
+      ..value = cRef.id.toString();
 
     _contactSelector.children = [
       new OptionElement()
@@ -108,7 +110,8 @@ class MessageFilter {
    *
    */
   Future _reloadUserSelector() async {
-    Iterable<model.UserReference> users = await _userController.list();
+    List<model.UserReference> users = (await _userController.list())
+        .toList(growable: false)..sort(compareUserRefs);
 
     OptionElement userToOption(model.UserReference user) => new OptionElement()
       ..label = user.name

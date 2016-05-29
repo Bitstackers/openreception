@@ -22,7 +22,7 @@ abstract class Contact {
   /**
    *
    */
-  Future<model.ContactReference> create(
+  Future<model.BaseContact> create(
       model.BaseContact contact, model.User modifier);
 
   /**
@@ -38,17 +38,17 @@ abstract class Contact {
   /**
    *
    */
-  Future<Iterable<model.ContactReference>> list();
+  Future<Iterable<model.BaseContact>> list();
 
   /**
    *
    */
-  Future<Iterable<model.ContactReference>> receptionContacts(int rid);
+  Future<Iterable<model.ReceptionContact>> receptionContacts(int rid);
 
   /**
    *
    */
-  Future<Iterable<model.ContactReference>> organizationContacts(int oid);
+  Future<Iterable<model.BaseContact>> organizationContacts(int oid);
 
   /**
    *

@@ -40,26 +40,28 @@ abstract class Contact {
     await sa.addsContactToReception(con3, rec1);
     await sa.addsContactToReception(con4, rec2);
 
-    final Iterable<model.ContactReference> cRefs1 =
+    final Iterable<model.ReceptionContact> cRefs1 =
         await sa.contactStore.receptionContacts(rec1.id);
 
-    final Iterable<model.ContactReference> cRefs2 =
+    final Iterable<model.ReceptionContact> cRefs2 =
         await sa.contactStore.receptionContacts(rec2.id);
 
-    _log.finest('Fetched 1: ' + cRefs1.map((cref) => cref.id).join(', '));
-    _log.finest('Fetched 2: ' + cRefs2.map((cref) => cref.id).join(', '));
+    _log.finest(
+        'Fetched 1: ' + cRefs1.map((cref) => cref.contact.id).join(', '));
+    _log.finest(
+        'Fetched 2: ' + cRefs2.map((cref) => cref.contact.id).join(', '));
 
     expect(cRefs1.length, equals(3));
     expect(cRefs2.length, equals(1));
 
-    expect(cRefs1.any((ref) => ref.id == con1.id), isTrue);
-    expect(cRefs1.any((ref) => ref.id == con2.id), isTrue);
-    expect(cRefs1.any((ref) => ref.id == con3.id), isTrue);
-    expect(cRefs1.any((ref) => ref.id == con4.id), isFalse);
-    expect(cRefs2.any((ref) => ref.id == con1.id), isFalse);
-    expect(cRefs2.any((ref) => ref.id == con2.id), isFalse);
-    expect(cRefs2.any((ref) => ref.id == con3.id), isFalse);
-    expect(cRefs2.any((ref) => ref.id == con4.id), isTrue);
+    expect(cRefs1.any((ref) => ref.contact.id == con1.id), isTrue);
+    expect(cRefs1.any((ref) => ref.contact.id == con2.id), isTrue);
+    expect(cRefs1.any((ref) => ref.contact.id == con3.id), isTrue);
+    expect(cRefs1.any((ref) => ref.contact.id == con4.id), isFalse);
+    expect(cRefs2.any((ref) => ref.contact.id == con1.id), isFalse);
+    expect(cRefs2.any((ref) => ref.contact.id == con2.id), isFalse);
+    expect(cRefs2.any((ref) => ref.contact.id == con3.id), isFalse);
+    expect(cRefs2.any((ref) => ref.contact.id == con4.id), isTrue);
   }
 
   /**
@@ -76,7 +78,7 @@ abstract class Contact {
     final con3 = await sa.createsContact();
     final con4 = await sa.createsContact();
 
-    final Iterable<model.ContactReference> crefs = await sa.contactStore.list();
+    final Iterable<model.BaseContact> crefs = await sa.contactStore.list();
 
     _log.finest('Contact 1: ${con1.id}');
     _log.finest('Contact 2: ${con2.id}');
@@ -163,7 +165,7 @@ abstract class Contact {
     await sa.addsContactToReception(con1, rec1);
     await sa.addsContactToReception(con2, rec2);
 
-    Iterable<model.ContactReference> cRefs =
+    Iterable<model.BaseContact> cRefs =
         await sa.contactStore.organizationContacts(org.id);
 
     _log.finest('Contact 1: ${con1.id}');
@@ -209,7 +211,6 @@ abstract class Contact {
     expect(contact.type, equals(fetched.type));
     expect(contact.enabled, equals(fetched.enabled));
     expect(contact.name, equals(fetched.name));
-    expect(contact.reference.toJson(), equals(fetched.reference.toJson()));
     expect(contact.toJson(), equals(fetched.toJson()));
   }
 
@@ -224,7 +225,7 @@ abstract class Contact {
     _log.info(
         'Checking server behaviour on list of contacts in reception $receptionId.');
 
-    final Iterable<model.ContactReference> contacts =
+    final Iterable<model.ReceptionContact> contacts =
         await sa.contactStore.receptionContacts(receptionId);
 
     expect(contacts, isEmpty);
@@ -248,7 +249,6 @@ abstract class Contact {
     expect(contact.type, equals(fetched.type));
     expect(contact.enabled, equals(fetched.enabled));
     expect(contact.name, equals(fetched.name));
-    expect(contact.reference.toJson(), equals(fetched.reference.toJson()));
     expect(contact.toJson(), equals(fetched.toJson()));
   }
 
@@ -312,7 +312,6 @@ abstract class Contact {
     expect(updated.type, equals(fetched.type));
     expect(updated.enabled, equals(fetched.enabled));
     expect(updated.name, equals(fetched.name));
-    expect(updated.reference.toJson(), equals(fetched.reference.toJson()));
     expect(updated.toJson(), equals(fetched.toJson()));
   }
 
@@ -480,7 +479,7 @@ abstract class Contact {
     final org = await sa.createsOrganization();
     final rec = await sa.createsReception(org);
 
-    Iterable<model.ContactReference> rRefs =
+    Iterable<model.ReceptionContact> rRefs =
         await sa.contactStore.receptionContacts(rec.id);
 
     expect(rRefs.length, equals(0));
@@ -504,7 +503,7 @@ abstract class Contact {
     final org = await sa.createsOrganization();
     final rec = await sa.createsReception(org);
 
-    Iterable<model.ContactReference> cRefs =
+    Iterable<model.ReceptionContact> cRefs =
         await sa.contactStore.receptionContacts(rec.id);
 
     expect(cRefs.length, equals(0));
@@ -545,30 +544,30 @@ abstract class Contact {
     await sa.addsContactToReception(con1, rec);
     await sa.addsContactToReception(con2, rec);
 
-    Iterable<model.ContactReference> cRefs =
+    Iterable<model.ReceptionContact> cRefs =
         await sa.contactStore.receptionContacts(rec.id);
 
     _log.finest('Fetched: ' + cRefs.map((cref) => cref.toJson()).join(', '));
     expect(cRefs.length, equals(2));
 
-    expect(cRefs.any((ref) => ref.id == con1.id), isTrue);
-    expect(cRefs.any((ref) => ref.id == con2.id), isTrue);
+    expect(cRefs.any((ref) => ref.contact.id == con1.id), isTrue);
+    expect(cRefs.any((ref) => ref.contact.id == con2.id), isTrue);
 
     await sa.removesContactFromReception(con1, rec);
     cRefs = await sa.contactStore.receptionContacts(rec.id);
     _log.finest('Fetched: ' + cRefs.map((cref) => cref.toJson()).join(', '));
     expect(cRefs.length, equals(1));
 
-    expect(cRefs.any((ref) => ref.id == con1.id), isFalse);
-    expect(cRefs.any((ref) => ref.id == con2.id), isTrue);
+    expect(cRefs.any((ref) => ref.contact.id == con1.id), isFalse);
+    expect(cRefs.any((ref) => ref.contact.id == con2.id), isTrue);
 
     await sa.removesContactFromReception(con2, rec);
     cRefs = await sa.contactStore.receptionContacts(rec.id);
     _log.finest('Fetched: ' + cRefs.map((cref) => cref.toJson()).join(', '));
     expect(cRefs.length, equals(0));
 
-    expect(cRefs.any((ref) => ref.id == con1.id), isFalse);
-    expect(cRefs.any((ref) => ref.id == con2.id), isFalse);
+    expect(cRefs.any((ref) => ref.contact.id == con1.id), isFalse);
+    expect(cRefs.any((ref) => ref.contact.id == con2.id), isFalse);
   }
 
   /**
@@ -681,7 +680,7 @@ abstract class Contact {
     final org = await sa.createsOrganization();
     final rec = await sa.createsReception(org);
 
-    Iterable<model.ContactReference> rRefs =
+    Iterable<model.ReceptionContact> rRefs =
         await sa.contactStore.receptionContacts(rec.id);
 
     expect(rRefs.length, equals(0));
@@ -736,7 +735,7 @@ abstract class Contact {
     final org = await sa.createsOrganization();
     final rec = await sa.createsReception(org);
 
-    Iterable<model.ContactReference> rRefs =
+    Iterable<model.ReceptionContact> rRefs =
         await sa.contactStore.receptionContacts(rec.id);
 
     expect(rRefs.length, equals(0));
@@ -792,7 +791,7 @@ abstract class Contact {
     final org = await sa.createsOrganization();
     final rec = await sa.createsReception(org);
 
-    Iterable<model.ContactReference> rRefs =
+    Iterable<model.ReceptionContact> rRefs =
         await sa.contactStore.receptionContacts(rec.id);
 
     expect(rRefs.length, equals(0));

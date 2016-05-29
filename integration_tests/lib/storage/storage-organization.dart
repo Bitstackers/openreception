@@ -131,7 +131,7 @@ class Organization {
 
     return sa.organizationStore
         .contacts(organizationId)
-        .then((Iterable<model.ContactReference> contacts) {
+        .then((Iterable<model.BaseContact> contacts) {
       expect(contacts, isEmpty);
       expect(contacts, isNotNull);
     });

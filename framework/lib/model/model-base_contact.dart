@@ -32,6 +32,7 @@ abstract class ObjectReference {
   Map toJson();
 }
 
+@deprecated
 class ContactReference implements ObjectReference {
   final int id;
   final String name;
@@ -114,6 +115,7 @@ class ReceptionContact {
 
   Map toJson() => {Key.contact: contact.toJson(), Key.reception: attr.toJson()};
 
+  @deprecated
   ContactReference get contactReference =>
       new ContactReference(contact.id, contact.name);
 }
@@ -176,11 +178,6 @@ class BaseContact {
    */
   Map toJson() =>
       {Key.id: id, Key.name: name, Key.contactType: type, Key.enabled: enabled};
-
-  /**
-   *
-   */
-  ContactReference get reference => new ContactReference(id, name);
 
   /**
    *

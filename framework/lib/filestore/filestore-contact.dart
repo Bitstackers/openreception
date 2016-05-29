@@ -85,9 +85,9 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<Iterable<model.ContactReference>> _contactsOfReception(int id) async =>
-      (await list()).where((model.ContactReference cRef) =>
-          new File('$path/${cRef.id}/receptions/${id}.json').existsSync());
+  Future<Iterable<model.BaseContact>> _contactsOfReception(int id) async =>
+      (await list()).where((model.BaseContact c) =>
+          new File('$path/${c.id}/receptions/${id}.json').existsSync());
 
   /**
    *
@@ -123,7 +123,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<model.ContactReference> create(
+  Future<model.BaseContact> create(
       model.BaseContact contact, model.User modifier,
       {bool enforceId: false}) async {
     contact.id = contact.id != model.BaseContact.noId && enforceId
@@ -151,7 +151,7 @@ class Contact implements storage.Contact {
           _authorString(modifier));
     }
 
-    return contact.reference;
+    return contact;
   }
 
   /**
@@ -189,7 +189,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<Iterable<model.ContactReference>> list() async {
+  Future<Iterable<model.BaseContact>> list() async {
     if (!new Directory(path).existsSync()) {
       return [];
     }
@@ -197,10 +197,8 @@ class Contact implements storage.Contact {
     return new Directory(path)
         .listSync()
         .where((fse) => fse is Directory && !basename(fse.path).startsWith('.'))
-        .map((FileSystemEntity fse) => model.BaseContact
-            .decode(JSON.decode(
-                new File(fse.path + '/contact.json').readAsStringSync()))
-            .reference);
+        .map((FileSystemEntity fse) => model.BaseContact.decode(JSON
+            .decode(new File(fse.path + '/contact.json').readAsStringSync())));
   }
 
   /**
@@ -226,11 +224,11 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<Iterable<model.ContactReference>> organizationContacts(
+  Future<Iterable<model.BaseContact>> organizationContacts(
       int organizationId) async {
     Iterable rRefs = await receptionStore._receptionsOfOrg(organizationId);
 
-    Set<model.ContactReference> contacts = new Set();
+    Set<model.BaseContact> contacts = new Set();
 
     await Future.wait(rRefs.map((rRef) async {
       contacts.addAll(await _contactsOfReception(rRef.id));
@@ -257,21 +255,35 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<Iterable<model.ContactReference>> receptionContacts(int rid) async {
+  Future<Iterable<model.ReceptionContact>> receptionContacts(int rid) async {
     final subDirs =
         new Directory(path).listSync().where((fse) => fse is Directory);
 
-    List<model.ContactReference> refs = [];
-    await Future.forEach((subDirs), (dir) async {
-      if (new File(dir.path + '/receptions/$rid.json').existsSync()) {
+    List<model.ReceptionContact> rcs = [];
+    await Future.wait(subDirs.map((dir) async {
+      final ridFile = new File(dir.path + '/receptions/$rid.json');
+
+      if (ridFile.existsSync()) {
         final String bn = basename(dir.path);
+
         if (!bn.startsWith('.')) {
-          refs.add((await get(int.parse(bn))).reference);
+          final File contactFile = new File('${dir.path}/contact.json');
+          final Future<model.BaseContact> bc = contactFile
+              .readAsString()
+              .then(JSON.decode)
+              .then(model.BaseContact.decode);
+
+          final Future<model.ReceptionAttributes> attr = ridFile
+              .readAsString()
+              .then(JSON.decode)
+              .then(model.ReceptionAttributes.decode);
+
+          rcs.add(new model.ReceptionContact(await bc, await attr));
         }
       }
-    });
+    }));
 
-    return refs;
+    return rcs;
   }
 
   /**
@@ -326,7 +338,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<model.ContactReference> update(
+  Future<model.BaseContact> update(
       model.BaseContact contact, model.User modifier) async {
     final File file = new File('$path/${contact.id}/contact.json');
 
@@ -344,7 +356,7 @@ class Contact implements storage.Contact {
           _authorString(modifier));
     }
 
-    return contact.reference;
+    return contact;
   }
 
   /**

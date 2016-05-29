@@ -52,8 +52,8 @@ class OrganizationView {
   List<ORModel.OrganizationReference> _organizations =
       new List<ORModel.OrganizationReference>();
 
-  List<ORModel.ContactReference> _currentContactList =
-      new List<ORModel.ContactReference>();
+  List<ORModel.BaseContact> _currentContactList =
+      new List<ORModel.BaseContact>();
   List<ORModel.ReceptionReference> _currentReceptionList =
       new List<ORModel.ReceptionReference>();
 
@@ -228,8 +228,8 @@ class OrganizationView {
   void _updateContactList(int organizationId) {
     _organizationController
         .contacts(organizationId)
-        .then((Iterable<ORModel.ContactReference> contacts) {
-      int compareTo(ORModel.ContactReference c1, ORModel.ContactReference c2) =>
+        .then((Iterable<ORModel.BaseContact> contacts) {
+      int compareTo(ORModel.BaseContact c1, ORModel.BaseContact c2) =>
           c1.name.toLowerCase().compareTo(c2.name.toLowerCase());
 
       List sorted = contacts.toList()..sort(compareTo);
@@ -250,7 +250,7 @@ class OrganizationView {
     });
   }
 
-  LIElement _makeContactNode(ORModel.ContactReference cRef) {
+  LIElement _makeContactNode(ORModel.BaseContact cRef) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
       ..text = '${cRef.name}'

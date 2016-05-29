@@ -232,7 +232,7 @@ class Contact {
     };
 
     _saveButton.onClick.listen((_) async {
-      model.ContactReference updated;
+      model.BaseContact updated;
       if (contact.id == model.BaseContact.noId) {
         updated = await _contactController.create(contact);
         notify.success('Oprettede kontaktperson', '${updated.name}');

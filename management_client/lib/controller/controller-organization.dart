@@ -12,7 +12,7 @@ class Organization {
   Future<Iterable<model.OrganizationReference>> list() =>
       _service.list().catchError(_handleError);
 
-  Future<Iterable<model.ContactReference>> contacts(int oid) =>
+  Future<Iterable<model.BaseContact>> contacts(int oid) =>
       _service.contacts(oid).catchError(_handleError);
 
   Future<Iterable<model.ReceptionReference>> receptions(int oid) =>

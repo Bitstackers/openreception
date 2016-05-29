@@ -29,34 +29,36 @@ class Calendar {
    * Return the latest entry change information for the [entryId] calendar entry.
    */
   Future<Iterable<ORModel.Commit>> calendarEntryChanges(
-          ORModel.CalendarEntry entry) =>
-      _calendarStore.changes(entry.owner);
+          ORModel.CalendarEntry entry, ORModel.Owner owner) =>
+      _calendarStore.changes(owner, entry.id);
 
   /**
    * Return the latest entry change information for the [entryId] calendar entry.
    */
   Future<ORModel.Commit> calendarEntryLatestChange(
-          ORModel.CalendarEntry entry) async =>
-      (await _calendarStore.changes(entry.owner)).first;
+          ORModel.CalendarEntry entry, ORModel.Owner owner) async =>
+      (await _calendarStore.changes(owner, entry.id)).first;
 
   /**
    * Save [entry] to the database.
    */
-  Future createCalendarEvent(ORModel.CalendarEntry entry) =>
-      _calendarStore.create(entry, _user);
+  Future createCalendarEvent(
+          ORModel.CalendarEntry entry, ORModel.Owner owner) =>
+      _calendarStore.create(entry, owner, _user);
 
   /**
    * Return all the [contact] [ORModel.CalendarEntry]s.
    */
   Future<Iterable<ORModel.CalendarEntry>> contactCalendar(
-          ORModel.ContactReference cRef) =>
-      _calendarStore.list(new ORModel.OwningContact(cRef.id));
+          ORModel.BaseContact contact) =>
+      _calendarStore.list(new ORModel.OwningContact(contact.id));
 
   /**
    * Delete [entry] from the database.
    */
-  Future deleteCalendarEvent(ORModel.CalendarEntry entry) =>
-      _calendarStore.removeEntry(entry);
+  Future deleteCalendarEvent(
+          ORModel.CalendarEntry entry, ORModel.Owner owner) =>
+      _calendarStore.remove(entry.id, owner, _user);
 
   /**
    * Return all the [ORModel.CalendarEntry]s of a [reception].
@@ -68,8 +70,8 @@ class Calendar {
   /**
    * Save [entry] to the database.
    */
-  Future saveCalendarEvent(ORModel.CalendarEntry entry) =>
+  Future saveCalendarEvent(ORModel.CalendarEntry entry, ORModel.Owner owner) =>
       entry.id == ORModel.CalendarEntry.noId
-          ? createCalendarEvent(entry)
-          : _calendarStore.update(entry, _user);
+          ? createCalendarEvent(entry, owner)
+          : _calendarStore.update(entry, owner, _user);
 }
