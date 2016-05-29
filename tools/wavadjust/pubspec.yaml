@@ -1,0 +1,8 @@
+name: wavadjust
+version: 0.0.1
+description: Adjust WAV files frequency (8k), channels (mono) and volume (half of "max")
+environment:
+  sdk: '>=1.0.0 <2.0.0'
+dependencies:
+  args: any
+  path: any
