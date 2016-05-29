@@ -10,8 +10,33 @@ class Messages {
 
   final TableElement _table = new TableElement()..style.width = '100%';
 
-  Messages(controller.Message this._msgController);
+  void set loading(bool isLoading) {
+    if (isLoading) {
+      _table.children.clear();
 
+      element.children = [
+        new SpanElement()
+          ..text = 'Henter beskeder...'
+          ..classes.add('centered-info')
+      ];
+      _observers();
+    }
+  }
+
+  Messages(controller.Message this._msgController) {
+    _table.children.clear();
+
+    element.children = [
+      new SpanElement()
+        ..text = 'Ingen beskeder fundet'
+        ..classes.add('centered-info')
+    ];
+    _observers();
+  }
+
+  /**
+   *
+   */
   void set messages(Iterable<model.Message> msgs) {
     _table.children.clear();
 
@@ -55,6 +80,11 @@ class Messages {
     element.children = [_table];
   }
 
+  /**
+   *
+   */
+  void _observers() {}
+
   TableRowElement _entryToRow(model.Message msg) {
     //final changeCell = new TableCellElement();
     final ButtonElement deleteButton = new ButtonElement()
@@ -77,18 +107,26 @@ class Messages {
 
     List<String> status = [];
 
-    // if (msg.closed) {
-    //   status.add('Lukket');
-    // }
-    // if (msg.enqueued) {
-    //   status.add('I kø');
-    // }
-    // if (msg.manuallyClosed) {
-    //   status.add('Manuelt lukket');
-    // }
-    // if (msg.sent) {
-    //   status.add('Afsendt');
-    // }
+    if (msg.closed) {
+      status.add('Lukket');
+    }
+    if (msg.enqueued) {
+      status.add('I kø');
+    }
+    if (msg.manuallyClosed) {
+      status.add('Manuelt lukket');
+    }
+    if (msg.sent) {
+      status.add('Afsendt');
+    }
+
+    if (msg.state == model.MessageState.saved) {
+      status.add('Gemt');
+    }
+
+    if (msg.state == model.MessageState.unknown) {
+      status.add('Ukendt');
+    }
 
     SpanElement contextInfo(model.MessageContext mc) => new SpanElement()
       ..text = mc.contactName +

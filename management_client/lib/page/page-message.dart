@@ -59,9 +59,9 @@ class Message {
    * Observers.
    */
   void _observers() {
-    _messageListingView.onDelete = (() async {
+    _messageListingView.onDelete = () async {
       await _refresh();
-    });
+    };
 
     _messageFilterView.onChange = () async {
       await _refresh();
@@ -73,8 +73,30 @@ class Message {
    */
   Future _refresh() async {
     _log.finest('Loading new message list');
-    _messageListingView.messages =
-        await _messageController.list(_messageFilterView.filter);
+
+    _messageListingView.loading = true;
+
+    try {
+      if (_messageFilterView.showSaved) {
+        _messageListingView.messages =
+            await _messageController.listSaved(_messageFilterView.filter);
+      } else {
+        List<DateTime> days = new List.generate(
+            _messageFilterView.numDays,
+            (int n) =>
+                _messageFilterView.lastDate.subtract(new Duration(days: n)));
+
+        List messages = [];
+        await Future.wait(days.map((DateTime day) async {
+          messages.addAll(
+              await _messageController.list(day, _messageFilterView.filter));
+        }));
+
+        _messageListingView.messages = messages;
+      }
+    } finally {
+      _messageListingView.loading = false;
+    }
   }
 
   /**

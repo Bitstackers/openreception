@@ -7,6 +7,19 @@ class MessageFilter {
   final controller.User _userController;
 
   final DivElement element = new DivElement()..classes.add('full-width');
+  final InputElement _lastDateInput = new InputElement(type: 'date')
+    ..valueAsDate = new DateTime.now();
+  final InputElement _numdaysInput = new InputElement(type: 'number')
+    ..min = '1'
+    ..max = '31'
+    ..valueAsNumber = 1;
+
+  DateTime get lastDate => _lastDateInput.valueAsDate;
+  void set lastDate(DateTime date) {
+    _lastDateInput.valueAsDate = date;
+  }
+
+  int get numDays => _numdaysInput.valueAsNumber;
 
   Function onChange;
 
@@ -25,7 +38,25 @@ class MessageFilter {
     ]
     ..disabled = true;
 
-  int get _uid => int.parse(_userSelector.selectedOptions.first.value);
+  final RadioButtonInputElement _showSavedInput = new RadioButtonInputElement()
+    ..text = 'Vis gemte'
+    ..name = 'saved-toggle'
+    ..checked = true
+    ..value = 'saved';
+
+  final RadioButtonInputElement _showByDateInput = new RadioButtonInputElement()
+    ..text = 'Vis fra dato'
+    ..name = 'saved-toggle'
+    ..value = 'archive';
+
+  RadioButtonInputElement get _selectedRadioButton =>
+      [_showSavedInput, _showByDateInput].firstWhere((e) => e.checked);
+
+  bool get showSaved => _selectedRadioButton.value == 'saved';
+
+  int get _uid => _userSelector.children.isEmpty
+      ? model.User.noId
+      : int.parse(_userSelector.selectedOptions.first.value);
 
   int get _cid {
     if (_contactSelector.selectedOptions.length < 1 ||
@@ -36,11 +67,29 @@ class MessageFilter {
     return int.parse(_contactSelector.selectedOptions.first.value);
   }
 
-  int get _rid => int.parse(_receptionSelector.selectedOptions.first.value);
+  int get _rid => _receptionSelector.children.isEmpty
+      ? model.Reception.noId
+      : int.parse(_receptionSelector.selectedOptions.first.value);
 
   MessageFilter(this._contactController, this._receptionController,
       this._userController) {
     element.children = [
+      new DivElement()
+        ..children = [
+          new DivElement()
+            ..children = [
+              new LabelElement()..text = 'Vis gemte',
+              _showSavedInput,
+            ],
+          new DivElement()
+            ..children = [
+              new LabelElement()..text = 'Vis fra dato',
+              _showByDateInput,
+              _lastDateInput,
+              new LabelElement()..text = 'Antal dage tilbage',
+              _numdaysInput
+            ]
+        ],
       new DivElement()
         ..children = [
           new HeadingElement.h3()..text = 'Taget af bruger',
@@ -68,8 +117,27 @@ class MessageFilter {
    *
    */
   void _observers() {
+    _showSavedInput.onChange.listen((_) {
+      onChange != null ? onChange() : '';
+    });
+    _showByDateInput.onChange.listen((_) {
+      onChange != null ? onChange() : '';
+    });
+
     _userSelector.onInput.listen((_) {
       onChange != null ? onChange() : '';
+    });
+
+    _numdaysInput.onInput.listen((_) {
+      if (!showSaved) {
+        onChange != null ? onChange() : '';
+      }
+    });
+
+    _lastDateInput.onInput.listen((_) {
+      if (!showSaved) {
+        onChange != null ? onChange() : '';
+      }
     });
 
     _receptionSelector.onInput.listen((_) {
@@ -129,7 +197,8 @@ class MessageFilter {
    */
 
   Future _reloadReceptionSelector() async {
-    Iterable<model.ReceptionReference> rcps = await _receptionController.list();
+    List<model.ReceptionReference> rcps = (await _receptionController.list())
+        .toList(growable: false)..sort(compareRecRefs);
 
     OptionElement receptionToOption(model.ReceptionReference r) =>
         new OptionElement()
@@ -142,8 +211,6 @@ class MessageFilter {
         ..value = '0'
     ]..addAll(rcps.map(receptionToOption));
   }
-
-  void set filter(model.MessageFilter filter) {}
 
   model.MessageFilter get filter => new model.MessageFilter.empty()
     ..contactId = _cid
