@@ -332,7 +332,7 @@ Future registerReadyView(
         uiReady,
         calendarController,
         clientConfig,
-        new Controller.Contact(contactStore),
+        new Controller.Contact(contactStore, notification),
         receptionController,
         sortedReceptions,
         controllerUser,

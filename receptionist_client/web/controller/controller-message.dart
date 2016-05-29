@@ -37,8 +37,15 @@ class Message {
    * Return an iterable containing [ORModel.Message] according to the supplied
    * [filter].
    */
-  Future<Iterable<ORModel.Message>> list(ORModel.MessageFilter filter) =>
-      _store.list(filter: filter);
+  Future<Iterable<ORModel.Message>> list(
+          DateTime day, ORModel.MessageFilter filter) =>
+      _store.listDay(day, filter: filter);
+
+  /**
+   * Return an iterable containing [ORModel.Message] according to the supplied
+   * [filter].
+   */
+  Future<Iterable<ORModel.Message>> listSaved() => _store.listSaved();
 
   /**
    * Delete [messageId] from the database. Throws Storage.NotFound if the
@@ -49,6 +56,8 @@ class Message {
   /**
    * Saves a [ORModel.Message] object.
    */
-  Future<ORModel.Message> save(ORModel.Message message) => message.id ==
-      ORModel.Message.noId ? _store.create(message, _user) : _store.update(message, _user);
+  Future<ORModel.Message> save(ORModel.Message message) =>
+      message.id == ORModel.Message.noId
+          ? _store.create(message, _user)
+          : _store.update(message, _user);
 }

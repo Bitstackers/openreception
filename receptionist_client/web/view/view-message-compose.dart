@@ -180,6 +180,7 @@ class MessageCompose extends ViewWidget {
    * Save message in the message archive.
    */
   Future _save(ORModel.Message message) async {
+    message.state = ORModel.MessageState.saved;
     try {
       ORModel.Message savedMessage = await _messageController.save(message);
 

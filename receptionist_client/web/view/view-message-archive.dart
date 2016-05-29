@@ -18,21 +18,20 @@ part of view;
  */
 class MessageArchive extends ViewWidget {
   final Model.UIContactSelector _contactSelector;
-  bool _getMessagesOnScroll = true;
   final Map<String, String> _langMap;
   final Logger _log = new Logger('$libraryName.MessageArchive');
   final Controller.Message _messageController;
   final Model.UIMessageCompose _messageCompose;
   final Controller.Destination _myDestination;
   final ORModel.MessageFilter _notSavedFilter =
-      new ORModel.MessageFilter.empty()
-        ..limitCount = 100;
+      new ORModel.MessageFilter.empty()..limitCount = 100;
   final Controller.Popup _popup;
   final Model.UIReceptionSelector _receptionSelector;
-  final ORModel.MessageFilter _savedFilter = new ORModel.MessageFilter.empty()
-    ..limitCount = 1000;
   final Model.UIMessageArchive _uiModel;
   final Controller.User _user;
+
+  DateTime _lastFetched;
+  bool get _loadingMessages => _ui.loading;
 
   /**
    * Constructor.
@@ -50,14 +49,18 @@ class MessageArchive extends ViewWidget {
     _observers();
   }
 
-  @override Controller.Destination get _destination => _myDestination;
-  @override Model.UIMessageArchive get _ui => _uiModel;
+  @override
+  Controller.Destination get _destination => _myDestination;
+  @override
+  Model.UIMessageArchive get _ui => _uiModel;
 
-  @override void _onBlur(Controller.Destination _) {
+  @override
+  void _onBlur(Controller.Destination _) {
     _ui.hideYesNoBoxes();
   }
 
-  @override void _onFocus(Controller.Destination _) {
+  @override
+  void _onFocus(Controller.Destination _) {
     _ui.context = new ORModel.MessageContext.empty()
       ..cid = _contactSelector.selectedContact.contact.id
       ..contactName = _contactSelector.selectedContact.contact.name
@@ -76,7 +79,8 @@ class MessageArchive extends ViewWidget {
     _user.list().then((Iterable<ORModel.UserReference> users) {
       _ui.users = users;
 
-      _messageController.list(_savedFilter).then(
+      _lastFetched = new DateTime.now();
+      _messageController.listSaved().then(
           (Iterable<ORModel.Message> messages) => _ui.savedMessages = messages);
 
       if (header != _ui.header) {
@@ -84,10 +88,11 @@ class MessageArchive extends ViewWidget {
         _ui.clearNotSavedList();
         if (_receptionSelector.selectedReception.isNotEmpty &&
             _contactSelector.selectedContact.contact.isNotEmpty) {
-          _notSavedFilter.contactId = _contactSelector.selectedContact.contact.id;
+          _notSavedFilter.contactId =
+              _contactSelector.selectedContact.contact.id;
           _notSavedFilter.receptionId = _receptionSelector.selectedReception.id;
 
-          _messageController.list(_notSavedFilter).then(
+          _messageController.list(_lastFetched, _notSavedFilter).then(
               (Iterable<ORModel.Message> messages) =>
                   _ui.notSavedMessages = messages);
         }
@@ -154,27 +159,15 @@ class MessageArchive extends ViewWidget {
    * NOTE: No matter how frantically the user spams his/her scroll wheel, this
    * method caps the load on the server to one hit per 1 second.
    */
-  void _handleScrolling(int messageId) {
-    if (messageId > 1 && _getMessagesOnScroll) {
-      _getMessagesOnScroll = false;
+  Future _fetchMessages(DateTime day) async {
+    final ORModel.MessageFilter filter = new ORModel.MessageFilter.empty()
+      ..contactId = _contactSelector.selectedContact.contact.id
+      ..receptionId = _receptionSelector.selectedReception.id;
 
-      final ORModel.MessageFilter filter = new ORModel.MessageFilter.empty()
-        ..limitCount = 100
-        // ..messageState = ORModel.MessageState.NotSaved
-        // ..upperMessageID = messageId - 1
-        ..contactId = _contactSelector.selectedContact.contact.id
-        ..receptionId = _receptionSelector.selectedReception.id;
-
-      _messageController
-          .list(filter)
-          .then((Iterable<ORModel.Message> messages) =>
-              _ui.notSavedMessages = messages)
-          .whenComplete(() {
-        new Timer(new Duration(seconds: 1), () {
-          _getMessagesOnScroll = true;
-        });
-      });
-    }
+    await _messageController
+        .list(day.subtract(new Duration(days: 1)), filter)
+        .then((Iterable<ORModel.Message> messages) =>
+            _ui.notSavedMessages = messages);
   }
 
   /**
@@ -188,7 +181,28 @@ class MessageArchive extends ViewWidget {
 
     _ui.onClick.listen(_activateMe);
 
-    _ui.scrolledToBottom.listen(_handleScrolling);
+    _ui.loadMoreClick = () async {
+      if (_loadingMessages) {
+        return;
+      }
+
+      _ui.loading = true;
+
+      final Timer t = new Timer.periodic(
+          new Duration(milliseconds: 200),
+          ((_) async {
+            if (_ui.loading) {
+              await _fetchMessages(_lastFetched);
+              print(_lastFetched.toIso8601String());
+
+              _lastFetched = _lastFetched.subtract(new Duration(days: 1));
+            }
+          }));
+
+      await new Future.delayed(new Duration(seconds: 2));
+      t.cancel();
+      _ui.loading = false;
+    };
 
     /* We don't need to listen on the onMessageCopy stream here. It is handled in MessageCompose. */
     _ui.onMessageClose.listen(_closeMessage);
@@ -204,8 +218,6 @@ class MessageArchive extends ViewWidget {
       ORModel.Message savedMessage = await _messageController.save(message);
       ORModel.MessageQueueEntry response =
           await _messageController.enqueue(savedMessage);
-
-      //savedMessage.enqueued = true;
 
       _ui.moveMessage(savedMessage);
 
