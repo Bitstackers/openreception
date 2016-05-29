@@ -344,13 +344,11 @@ class ContactView {
           _log.finest('Found calendar list : ${entries.join(', ')}');
 
           await Future.wait(entries.map((ce) async {
-            ce
-              ..id = model.CalendarEntry.noId
-              ..owner = new model.OwningContact(dcid);
+            ce..id = model.CalendarEntry.noId;
 
             _log.finest('Adding calendar entry ${ce.toJson()} to cid:$dcid');
 
-            await _calendarController.create(ce);
+            await _calendarController.create(ce, new model.OwningContact(dcid));
           }));
 
           _log.finest('Deleting cid:$sourceCid');

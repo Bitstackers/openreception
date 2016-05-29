@@ -9,8 +9,9 @@ class Calendar {
   Future<Iterable<model.Commit>> changes(model.Owner owner, [int eid]) =>
       _calendarService.changes(owner, eid).catchError(_handleError);
 
-  Future get(model.CalendarEntry entry) =>
-      _calendarService.remove(entry.id, _appUser).catchError(_handleError);
+  Future get(model.CalendarEntry entry, model.Owner owner) => _calendarService
+      .remove(entry.id, owner, _appUser)
+      .catchError(_handleError);
 
   Future<Iterable<model.CalendarEntry>> listContact(int contactId) =>
       _calendarService
@@ -22,12 +23,16 @@ class Calendar {
           .list(new model.OwningReception(receptionId))
           .catchError(_handleError);
 
-  Future<model.CalendarEntry> create(model.CalendarEntry entry) =>
-      _calendarService.create(entry, _appUser).catchError(_handleError);
+  Future<model.CalendarEntry> create(
+          model.CalendarEntry entry, model.Owner owner) =>
+      _calendarService.create(entry, owner, _appUser).catchError(_handleError);
 
-  Future<model.CalendarEntry> update(model.CalendarEntry entry) =>
-      _calendarService.update(entry, _appUser).catchError(_handleError);
+  Future<model.CalendarEntry> update(
+          model.CalendarEntry entry, model.Owner owner) =>
+      _calendarService.update(entry, owner, _appUser).catchError(_handleError);
 
-  Future remove(model.CalendarEntry entry) =>
-      _calendarService.remove(entry.id, _appUser).catchError(_handleError);
+  Future remove(model.CalendarEntry entry, model.Owner owner) =>
+      _calendarService
+          .remove(entry.id, owner, _appUser)
+          .catchError(_handleError);
 }
