@@ -8,6 +8,7 @@ config.dart
 makefile.setup
 
 # Do not track key files
+tools/drvupld/bin/*json
 key/*json
 
 # Files and directories created by pub

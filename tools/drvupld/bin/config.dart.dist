@@ -1,0 +1,58 @@
+/*                 Copyright (C) 2015-, BitStackers K/S
+
+  This is free software;  you can redistribute it and/or modify it
+  under terms of the  GNU General Public License  as published by the
+  Free Software  Foundation;  either version 3,  or (at your  option) any
+  later version. This software is distributed in the hope that it will be
+  useful, but WITHOUT ANY WARRANTY;  without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  You should have received a copy of the GNU General Public License along with
+  this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
+*/
+
+import 'dart:io';
+
+import 'package:googleapis/drive/v2.dart' as drive;
+
+class Config {
+  /// The Google Oauth2 service account JSON file.
+  /// Note that this key must have domain-wide delegations.
+  /// Remember to store this file somewhere safe.
+  final File serviceAccountFile = new File('service-account.json.dist');
+
+  /// The user to impersonate.
+  final String impersonatedUser = 'some-user@google';
+
+  /// The Google Drive folder ID for the 'all' folder. All uploaded files will
+  /// have this parent reference added to them.
+  final drive.ParentReference allFolder = new drive.ParentReference()
+    ..id = 'folder-id';
+
+  /// The Google Drive folder ID for the folder where the agent folders are
+  /// located.
+  final drive.ParentReference agentsFolder = new drive.ParentReference()
+    ..id = 'folder-id';
+
+  /// The Google Drive folder ID for the folder where the reception folders are
+  /// located.
+  final drive.ParentReference receptionsFolder = new drive.ParentReference()
+    ..id = 'folder-id';
+
+  /// The directory where the files waiting for upload are located.
+  final Directory localDirectory = new Directory('/tmp/recordings');
+
+  /// The OpenReceptionFramework configuration Url. This must point to the
+  /// host:port of a running ServerStack/config_server.
+  final Uri orfConfigUrl = Uri.parse('http://localhost:4080');
+
+  /// The OpenReceptionFramework token for gaining access to the ServerStack
+  /// servers.
+  final String orfToken = 'somet-token';
+
+  /// The list of scopes we need to get stuff done on Google Drive.
+  final List<String> scopes = [drive.DriveApi.DriveScope];
+
+  /// The interval between searching localDirectory for new files and uploading
+  /// them to Google Drive.
+  final Duration uploadInterval = new Duration(seconds: 10);
+}

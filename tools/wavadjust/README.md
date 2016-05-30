@@ -8,7 +8,7 @@ You need two things:
 * [sox and soxi](http://sox.sourceforge.net/) version >= v14.4.1 and < v15
 
 ### Installing
-Follow these few simple steps to get `cdrctl` up and running:
+Follow these few simple steps to get `wavadjust` up and running:
 
 * `git clone https://github.com/Bitstackers/openreception.git`
 * `cd tools/wavadjust/`
@@ -19,7 +19,7 @@ Follow these few simple steps to get `cdrctl` up and running:
 `PREFIX` value found in `makefile.setup`
 
 ### usage
-To adjust stereo, 48K WAV files to mono 8K files do this:
+To adjust stereo 48K WAV files to mono 8K files do this:
 
 `dart wavadjust.dart -i infile1.wav,infile2.wav -o /tmp/somefolder`
 
