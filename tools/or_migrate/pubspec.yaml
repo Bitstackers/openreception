@@ -1,0 +1,17 @@
+name: or_migrate
+version: 0.0.1
+description: A command-line based migration application.
+
+environment:
+  sdk: '>=1.0.0 <2.0.0'
+
+dependencies:
+  args: any
+  openreception.framework:
+    path: ../../framework
+    version: '>=0.0.30'
+  openreception_framework:
+    git: https://github.com/Bitstackers/OpenReceptionFramework.git
+
+dev_dependencies:
+  test: '>=0.12.0 <0.13.0'
