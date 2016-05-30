@@ -3,8 +3,12 @@
 *~
 .#*#
 
-# Do not track makefile.setup
+# Do not track makefile.setup and config.dart
+config.dart
 makefile.setup
+
+# Do not track key files
+key/*json
 
 # Files and directories created by pub
 .packages

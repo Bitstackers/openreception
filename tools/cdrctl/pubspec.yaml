@@ -1,0 +1,11 @@
+name: cdrctl
+version: 0.2.0
+description: Command-line application to manage FreeSWITCH CDR files.
+dependencies:
+  args: any
+  googleapis: any
+  googleapis_auth: any
+  path: any
+  openreception.framework:
+    path: ../../framework
+    version: '>=0.0.30'

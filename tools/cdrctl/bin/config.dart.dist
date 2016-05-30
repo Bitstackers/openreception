@@ -1,0 +1,35 @@
+/*                 Copyright (C) 2016-, BitStackers K/S
+
+  This is free software;  you can redistribute it and/or modify it
+  under terms of the  GNU General Public License  as published by the
+  Free Software  Foundation;  either version 3,  or (at your  option) any
+  later version. This software is distributed in the hope that it will be
+  useful, but WITHOUT ANY WARRANTY;  without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  You should have received a copy of the GNU General Public License along with
+  this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
+*/
+
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:googleapis_auth/auth_io.dart' as auth;
+import 'package:googleapis/storage/v1.dart' as blob;
+
+import '../src/configuration.dart';
+
+String key = new File('/path/key.json').readAsStringSync();
+
+Configuration config = new Configuration(key)
+  ..bucket = 'bucket'
+  ..callChargeMultiplier = 1.0
+  ..cdrDirectory = new Directory('/tmp/cdr/cdr-json')
+  ..cdrEntryStore = new Directory('/tmp/cdr/cdr-entry-store')
+  ..cdrErrorsDirectory = new Directory('/tmp/cdr/cdr-errors')
+  ..cdrPartiallyStoredDirectory = new Directory('/tmp/cdr/cdr-partially-stored')
+  ..cdrSummaryDirectory = new Directory('/tmp/cdr/cdr-summaries')
+  ..longCallBoundaryInSeconds = 300
+  ..saveAgentChannelEntries = false
+  ..scopes = [blob.StorageApi.DevstorageReadWriteScope]
+  ..shortCallBoundaryInSeconds = 5
+  ..uploadIntervalInSeconds = 10;
