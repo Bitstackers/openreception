@@ -11,8 +11,8 @@ Other than that, all you need is [Dart](https://www.dartlang.org/).
 ### Installing and starting
 Follow these few simple steps to get `cdrctl` up and running:
 
-* `git clone https://github.com/Bitstackers/cdrctl.git`
-* `cd cdrctl/`
+* `git clone https://github.com/Bitstackers/openreception.git`
+* `cd tools/cdrctl/`
 * `cp bin/config.dart.dist bin/config.dart`
 * Adjust `bin/config.dart`
 * `cp makefile.setup.dist makefile.setup`
