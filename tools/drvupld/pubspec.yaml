@@ -1,0 +1,11 @@
+name: drvupld
+version: 0.5.1
+description: Push files to Google Drive.
+dependencies:
+  googleapis: any
+  googleapis_auth: any
+  logging: any
+  path: any
+  openreception.framework:
+    path: ../../framework
+    version: '>=0.0.30'

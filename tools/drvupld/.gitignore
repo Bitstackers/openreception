@@ -1,0 +1,22 @@
+# Do not track emacs/nano temporary and backup files
+\#*#
+*~
+.#*#
+
+# Do not track credentials, config and makefile.setup
+*.json
+config.dart
+makefile.setup
+
+# Do not track various Dart/build related files
+pubspec.lock
+.buildlog
+.pub/
+build/
+.packages
+packages
+*.dart.js
+*.js_
+*.js.deps
+*.js.map
+
