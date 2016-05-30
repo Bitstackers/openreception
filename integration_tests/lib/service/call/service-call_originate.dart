@@ -60,6 +60,38 @@ abstract class Originate {
   }
 
   /**
+     * Tests the system behaviour whenever a channel being established to an
+     * agent that has disabled autoanswer and never accepts the call _and_
+     * another agent tries to establish a channel to the PBX.
+     * Expected behaviour is that the second receptionist should be able
+     * to get the channel before the timeout.
+     */
+  static Future agentAutoAnswerDisabledNonBlock(
+      model.OriginationContext context,
+      Receptionist receptionist,
+      Receptionist receptionist2,
+      Customer customer) async {
+    await receptionist.autoAnswer(false);
+
+    /// Asynchronous origination.
+    Future origination = receptionist
+        .originate(customer.extension, context)
+        .timeout(new Duration(seconds: 30));
+
+    /// Ignore errors
+    origination.catchError((_) => null);
+
+    await receptionist.waitForInboundCall();
+    _log.info('Receptionist $receptionist ignores the incoming channel');
+
+    Future secondOrigination = receptionist2
+        .originate(customer.extension, context)
+        .timeout(new Duration(seconds: 10));
+
+    await secondOrigination;
+  }
+
+  /**
    * Origination to a number that is known (by the call-flow-control server) to
    * be forbidden.
    */
