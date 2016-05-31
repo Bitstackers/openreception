@@ -112,7 +112,7 @@ class Message implements storage.Message {
       if (msg.state == model.MessageState.saved) {
         _savedIndex.add(msg.id);
       }
-    }))
+    })
   ;
 
     _log.info('Built secondary indexes of '
