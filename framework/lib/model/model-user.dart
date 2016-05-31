@@ -20,6 +20,12 @@ abstract class UserGroups {
   static const String receptionist = 'Receptionist';
   static const String administrator = 'Administrator';
   static const String serviceAgent = 'Service agent';
+
+  static const Iterable<String> validGroups = const [
+    receptionist,
+    administrator,
+    serviceAgent
+  ];
 }
 
 /**
