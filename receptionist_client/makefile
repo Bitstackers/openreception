@@ -22,7 +22,3 @@ web/configuration_url.dart: web/configuration_url.dart.dist
 .PHONY: build
 
 dependencies: pubspec.lock
-
-pubspec.lock: pubspec.yaml
-	@pub upgrade
-

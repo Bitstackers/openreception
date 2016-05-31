@@ -109,5 +109,5 @@ remove-symlinks:
 
 default-config: lib/configuration.dart
 
-lib/configuration.dart
+lib/configuration.dart:
 	@install lib/configuration.dart.dist lib/configuration.dart
