@@ -462,7 +462,7 @@ Map<String, String> en = {
 
   Key.name: 'Name',
   Key.nameCopied: 'Name copied',
-  Key.no: 'Nej',
+  Key.no: 'No',
   Key.now: 'now',
 
   Key.past: 'past',
