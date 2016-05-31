@@ -91,7 +91,7 @@ class Message implements storage.Message {
   Future rebuildSecondaryIndexes() async {
     Stopwatch timer = new Stopwatch()..start();
     _log.info('Building secondary indexes');
-    await Future.wait(_index.keys.map((int id) async {
+    await Future.forEach(_index.keys, (int id) async {
       final model.Message msg = await get(id);
       final cidList = _cidIndex.containsKey(msg.context.cid)
           ? _cidIndex[msg.context.cid]
@@ -112,7 +112,8 @@ class Message implements storage.Message {
       if (msg.state == model.MessageState.saved) {
         _savedIndex.add(msg.id);
       }
-    }));
+    }))
+  ;
 
     _log.info('Built secondary indexes of '
         '${_cidIndex.keys.length} contact id\'s, '
