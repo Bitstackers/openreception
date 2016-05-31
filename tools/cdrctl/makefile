@@ -1,9 +1,14 @@
-include makefile.setup
+-include makefile.setup
 
 GIT_REV=$(shell git rev-parse --short HEAD)
 SNAPSHOT=${PREFIX}/cdrctl-${GIT_REV}.dart.snapshot
 
 all: cdrctl
+
+default-config: makefile.setup
+
+makefile.setup:
+	install makefile.setup.dist makefile.setup
 
 cdrctl:
 	-@mkdir -p ${PREFIX}
@@ -13,3 +18,9 @@ cdrctl:
 
 remove-symlink:
 	-rm ${PREFIX}/cdrctl.dart
+
+dependencies: pubspec.lock
+
+pubspec.lock: pubspec.yaml
+	@pub upgrade
+

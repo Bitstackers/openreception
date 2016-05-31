@@ -1,8 +1,9 @@
 AUTH_CACHE_STORAGE=/tmp/tokens
 
-dependencies:
-	pub get
-	pub upgrade
+dependencies: pubspec.lock
+
+pubspec.lock: pubspec.yaml
+	@pub upgrade
 
 tests:
 	@dart bin/servertests.dart > results.xml
@@ -16,7 +17,9 @@ bin/basic_agent: support_tools/src/basic_agent.c
 	-mkdir -p bin
 	mv support_tools/basic_agent bin/
 
-default-config:
+default-config: lib/config.dart
+
+lib/config.dart:
 	install lib/config.dart.dist lib/config.dart
 
 install_dummy_tokens:
@@ -33,3 +36,4 @@ analyze-hints:
 	@echo "! (dartanalyzer bin/*.dart lib/*.dart | grep '^\[')" | bash
 
 .PHONY: bin/basic_agent
+

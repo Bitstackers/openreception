@@ -52,11 +52,10 @@ analyze:
 analyze-hints:
 	@echo "! (dartanalyzer $(RUNNABLES | grep '^\[')" | bash
 
-dependency:
-	pub get
+dependencies: pubspec.lock
 
-upgrade-dependency:
-	pub upgrade
+pubspec.lock: pubspec.yaml
+	@pub upgrade
 
 clean:
 	-rm -rf $(BUILD_DIR)
@@ -108,5 +107,7 @@ remove-symlinks:
 	-rm ${PREFIX}/receptionserver.dart
 	-rm ${PREFIX}/userserver.dart
 
-default-config:
+default-config: lib/configuration.dart
+
+lib/configuration.dart
 	@install lib/configuration.dart.dist lib/configuration.dart

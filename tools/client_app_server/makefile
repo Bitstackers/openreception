@@ -1,7 +1,4 @@
-all: js-build
-
-js-build:
-	@pub build
+all: dependencies
 
 dependencies: pubspec.lock
 

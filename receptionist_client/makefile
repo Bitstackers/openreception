@@ -14,8 +14,15 @@ pub_upgrade:
 pubspec.lock: pubspec.yaml
 	pub upgrade
 
+default-config: web/configuration_url.dart
 
 web/configuration_url.dart: web/configuration_url.dart.dist
 	install web/configuration_url.dart.dist web/configuration_url.dart
 
 .PHONY: build
+
+dependencies: pubspec.lock
+
+pubspec.lock: pubspec.yaml
+	@pub upgrade
+

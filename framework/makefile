@@ -1,6 +1,8 @@
 all: pubspec.lock
 	@echo Nothing to do for a library, how about 'make tests' instead?
 
+dependencies: pubspec.lock
+
 upgrade-packages:
 	@pub upgrade
 
