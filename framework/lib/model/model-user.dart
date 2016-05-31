@@ -16,6 +16,39 @@ part of openreception.framework.model;
 /**
  *
  */
+List<FormatException> validateUser(User user) {
+  List<FormatException> errors = [];
+
+  if (user.name.isEmpty) {
+    errors.add(new FormatException('User name should not be empty'));
+  }
+
+  if (user.address) {
+    errors.add(new FormatException('User address should not be empty'));
+  }
+
+  if (user.id < User.noId) {
+    errors.add(new FormatException('User id must not be a negative number'));
+  }
+
+  user.groups.forEach((String group) {
+    if (UserGroups.isValid(group)) {
+      errors.add(new FormatException('Invalid group: ${group}'));
+    }
+  });
+
+  user.identities.forEach((String identity) {
+    if (identity.isEmpty) {
+      errors.add(new FormatException('Empty identity detected'));
+    }
+  });
+
+  return errors;
+}
+
+/**
+ *
+ */
 abstract class UserGroups {
   static const String receptionist = 'Receptionist';
   static const String administrator = 'Administrator';
