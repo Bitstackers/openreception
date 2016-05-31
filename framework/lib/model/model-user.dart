@@ -23,7 +23,7 @@ List<FormatException> validateUser(User user) {
     errors.add(new FormatException('User name should not be empty'));
   }
 
-  if (user.address) {
+  if (user.address.isEmpty) {
     errors.add(new FormatException('User address should not be empty'));
   }
 
