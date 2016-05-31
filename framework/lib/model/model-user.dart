@@ -26,6 +26,8 @@ abstract class UserGroups {
     administrator,
     serviceAgent
   ];
+
+  static bool isValid(String group) => validGroups.toSet().contains(group);
 }
 
 /**
