@@ -57,6 +57,9 @@ dependencies: pubspec.lock
 pubspec.lock: pubspec.yaml
 	@pub upgrade
 
+upgrade-dependency:
+	@pub upgrade
+
 clean:
 	-rm -rf $(BUILD_DIR)
 
@@ -109,5 +112,8 @@ remove-symlinks:
 
 default-config: lib/configuration.dart
 
+clean-config:
+	-rm lib/configuration.dart
+
 lib/configuration.dart:
-	@install lib/configuration.dart.dist lib/configuration.dart
+	install lib/configuration.dart.dist lib/configuration.dart
