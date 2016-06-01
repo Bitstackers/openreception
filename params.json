@@ -1,0 +1,6 @@
+{
+  "name": "Openreception",
+  "tagline": "OpenReception public repository",
+  "body": "### Welcome to the OpenReception Project\r\nThe OpenReception Project is a telephony-oriented software stack that provides a front desk reception user interface, along with a set of management tools that, among other things, provides a complete revision history of objects changed in the system.\r\n\r\nOpenReception can be informally described as web-oriented glue around the software-PBX FreeSWITCH, is written in Dart and is currently in a version 2-rewrite Alpha state.\r\n\r\nUpdates can be followed on GitHub.\r\n\r\n### Installation\r\nWill be presented here - very soon.\r\n\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
