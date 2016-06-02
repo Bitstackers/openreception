@@ -18,7 +18,6 @@ part of model;
  */
 class UICalendarEditor extends UIModel {
   ORModel.CalendarEntry _loadedEntry;
-  ORModel.Owner owner;
   HtmlElement _myFirstTabElement;
   HtmlElement _myFocusElement;
   HtmlElement _myLastTabElement;
