@@ -115,7 +115,8 @@ Future main(List<String> arguments) async {
 
   //TODO: Perform consistency check against old service.
   //TODO: Update all sequencers
-  //TODO: Perform a git commit.
+  filestore.GitEngine ge = new filestore.GitEngine(outputPath);
+  ge.add(new File('.'), 'Data import', 'System <system@localhost>');
 }
 
 /**
