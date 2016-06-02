@@ -56,7 +56,7 @@ class Message {
       final msg = 'Bad message id: $midStr';
       log.warning(msg);
 
-      clientError(msg);
+      return clientError(msg);
     }
 
     try {
