@@ -19,7 +19,7 @@ part of openreception.framework.model;
 enum MessageState { unknown, saved, sent }
 
 /**
- * 
+ *
  */
 class Message {
   static const int noId = 0;
@@ -83,9 +83,14 @@ class Message {
     callId = map[Key.callId];
     sender = User.decode(map[Key.takenByAgent]);
     createdAt = Util.unixTimestampToDateTime(map[Key.createdAt]);
-    state = map[Key.state] != null
-        ? MessageState.values[map[Key.state]]
-        : MessageState.unknown;
+
+    if (map[Key.state] == null) {
+      state = MessageState.unknown;
+    } else if (map[Key.state] == MessageState.values.length) {
+      state = MessageState.unknown;
+    } else {
+      state = MessageState.values[map[Key.state]];
+    }
   }
 
   Map get asMap => {
