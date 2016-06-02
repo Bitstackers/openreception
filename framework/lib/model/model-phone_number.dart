@@ -57,7 +57,8 @@ class PhoneNumber {
    */
   @override
   bool operator ==(PhoneNumber other) =>
-      destination.toLowerCase() == other.destination.toLowerCase();
+      normalizedDestination.toLowerCase() ==
+      other.normalizedDestination.toLowerCase();
 
   /**
    * Default empty constructor.
