@@ -13,8 +13,14 @@
 
 part of openreception.framework.model;
 
-enum MessageState { saved, enqueued, sent, unknown }
+/**
+ * Valid states for a message.
+ */
+enum MessageState { unknown, saved, sent }
 
+/**
+ * 
+ */
 class Message {
   static const int noId = 0;
 
@@ -33,9 +39,8 @@ class Message {
   /// The user of the sender.
   User sender;
 
-  bool get enqueued => state == MessageState.enqueued;
   bool get sent => state == MessageState.sent;
-  bool get closed => enqueued || sent || flag.manuallyClosed;
+  bool get closed => sent || flag.manuallyClosed;
 
   bool get manuallyClosed => flag.manuallyClosed;
   set manuallyClosed(bool closed) {
