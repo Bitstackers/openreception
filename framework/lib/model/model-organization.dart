@@ -14,32 +14,6 @@
 part of openreception.framework.model;
 
 /**
- * Validate an organization before and after serializing and deserializing.
- * Put any constraints that must hold at these times in this function.
- */
-List<FormatException> validateOrganization(Organization org) {
-  List<FormatException> errors = [];
-
-  if (org.id == null) {
-    errors.add(new FormatException('uuid is null'));
-  }
-
-  if (org.name == null) {
-    errors.add(new FormatException('name is null'));
-  }
-
-  if (org.name.isEmpty) {
-    errors.add(new FormatException('name is empty'));
-  }
-
-  if (org.notes == null) {
-    errors.add(new FormatException('flags is null'));
-  }
-
-  return errors;
-}
-
-/**
  * Class representing an organization.
  */
 class Organization {
