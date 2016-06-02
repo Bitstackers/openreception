@@ -53,7 +53,7 @@ class Message {
     try {
       mid = int.parse(midStr);
     } on FormatException {
-      final msg = 'Bad message id :$midStr';
+      final msg = 'Bad message id: $midStr';
       log.warning(msg);
 
       clientError(msg);
