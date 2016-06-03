@@ -145,7 +145,7 @@ class CallFlowControl extends StandardConfig {
   final int originateTimeout = 120;
 
   /// Timeout (in seconds) of vaiting for an agent channel to establish.
-  final int agentChantimeOut = 20;
+  final int agentChantimeOut = 5;
 
   final EslConfig eslConfig = const EslConfig();
 
