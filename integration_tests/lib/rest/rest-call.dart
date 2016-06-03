@@ -206,6 +206,7 @@ void _runCallOriginateTests() {
     ServiceAgent sa;
     TestEnvironment env;
     Receptionist r;
+    Receptionist r2;
     Customer c;
 
     /// Transient object
@@ -262,6 +263,35 @@ void _runCallOriginateTests() {
         'originationToPeerCheckforduplicate',
         () => serviceTest.Originate
             .originationToPeerCheckforduplicate(context, r, c));
+
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+
+      final org = await sa.createsOrganization();
+      rec = await sa.createsReception(org);
+      rdp = await sa.createsDialplan();
+      await sa.deploysDialplan(rdp, rec);
+
+      context = new model.OriginationContext()
+        ..dialplan = rdp.extension
+        ..receptionId = rec.id;
+      r = await sa.createsReceptionist();
+      r2 = await sa.createsReceptionist();
+
+      c = await sa.spawnCustomer();
+    });
+
+    tearDown(() async {
+      Logger.root.finest(
+          'FSLOG:\n ${(await env.requestFreeswitchProcess()).latestLog.readAsStringSync()}');
+      await env.clear();
+    });
+
+    test(
+        'multipleOriginationsOnAgentAutoAnswerDisabled',
+        () => serviceTest.Originate
+            .agentAutoAnswerDisabledNonBlock(context, r, r2, c));
   });
 }
 
