@@ -73,10 +73,11 @@ Future main(List<String> arguments) async {
       (await new old_or_service.RESTConfiguration(
               Uri.parse(configUriString), transport)
           .clientConfig());
+  final datastore = new filestore.DataStore(storeDir.path);
 
   final or_migrate.MigrationEnvironment migrationEnvironment =
       new or_migrate.MigrationEnvironment(
-          new filestore.DataStore(storeDir.path),
+          datastore,
           new old_or_service.RESTOrganizationStore(
               clientConfig.receptionServerUri, token, transport),
           new old_or_service.RESTReceptionStore(
@@ -115,8 +116,45 @@ Future main(List<String> arguments) async {
 
   //TODO: Perform consistency check against old service.
   //TODO: Update all sequencers
-  filestore.GitEngine ge = new filestore.GitEngine(outputPath);
-  ge.add(new File('.'), 'Data import', 'System <system@localhost>');
+  {
+    filestore.GitEngine ge =
+        new filestore.GitEngine(datastore.calendarStore.path);
+    ge.add(new File('.'), 'Data import', 'System <system@localhost>');
+  }
+
+  {
+    filestore.GitEngine ge =
+        new filestore.GitEngine(datastore.contactStore.path);
+    ge.add(new File('.'), 'Data import', 'System <system@localhost>');
+  }
+
+  {
+    filestore.GitEngine ge = new filestore.GitEngine(datastore.ivrStore.path);
+    ge.add(new File('.'), 'Data import', 'System <system@localhost>');
+  }
+
+  {
+    filestore.GitEngine ge =
+        new filestore.GitEngine(datastore.organizationStore.path);
+    ge.add(new File('.'), 'Data import', 'System <system@localhost>');
+  }
+
+  {
+    filestore.GitEngine ge =
+        new filestore.GitEngine(datastore.receptionStore.path);
+    ge.add(new File('.'), 'Data import', 'System <system@localhost>');
+  }
+
+  {
+    filestore.GitEngine ge =
+        new filestore.GitEngine(datastore.receptionDialplanStore.path);
+    ge.add(new File('.'), 'Data import', 'System <system@localhost>');
+  }
+
+  {
+    filestore.GitEngine ge = new filestore.GitEngine(datastore.userStore.path);
+    ge.add(new File('.'), 'Data import', 'System <system@localhost>');
+  }
 }
 
 /**
