@@ -51,7 +51,6 @@ class Reception {
 
     try {
       final r = await _rStore.getByExtension(exten);
-      print(r.toJson());
       return okJson(r);
     } on storage.NotFound {
       return notFoundJson({
