@@ -18,6 +18,7 @@ class Sequencer {
   final String path;
 
   File _sequencerFile;
+  String get sequencerFilePath => _sequencerFile.path;
 
   void set _currentId(int id) => _sequencerFile.writeAsStringSync('$id');
 

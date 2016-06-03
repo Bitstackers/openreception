@@ -60,9 +60,11 @@ class GitEngine {
   List<String> ignoredPaths(String path) =>
       new File('$path/.gitignore').readAsStringSync().split('\n');
 
-  void addIgnoredPath(String path) {
+  void addIgnoredPath(String ignorePath) {
     final File ignoreFile = new File('$path/.gitignore');
-    Set<String> paths = ignoreFile.readAsStringSync().split('\n').toSet();
+    Set<String> paths = ignoreFile.existsSync()
+        ? ignoreFile.readAsStringSync().split('\n').toSet()
+        : new Set<String>();
 
     paths.add(path);
 

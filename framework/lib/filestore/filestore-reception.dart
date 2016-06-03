@@ -49,7 +49,9 @@ class Reception implements storage.Reception {
    */
   Reception._internal(String this.path, this.calendarStore, this._sequencer,
       GitEngine this._git) {
-    _git.addIgnoredPath(_sequencer._sequencerFile.path);
+    if (_git != null) {
+      _git.addIgnoredPath(_sequencer.sequencerFilePath);
+    }
   }
 
   /**

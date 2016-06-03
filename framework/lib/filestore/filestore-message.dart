@@ -83,6 +83,10 @@ class Message implements storage.Message {
     _log.info('Built primary index of ${_index.keys.length} elements in'
         ' ${timer.elapsedMilliseconds}ms');
     _sequencer = new Sequencer(path, explicitId: highestId);
+
+    if (_git != null) {
+      _git.addIgnoredPath(_sequencer.sequencerFilePath);
+    }
   }
 
   /**
@@ -112,8 +116,7 @@ class Message implements storage.Message {
       if (msg.state == model.MessageState.saved) {
         _savedIndex.add(msg.id);
       }
-    })
-  ;
+    });
 
     _log.info('Built secondary indexes of '
         '${_cidIndex.keys.length} contact id\'s, '
