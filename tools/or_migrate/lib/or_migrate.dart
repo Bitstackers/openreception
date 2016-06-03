@@ -317,8 +317,6 @@ class MigrationEnvironment {
 
     if (oldMsg.sent) {
       state = or_model.MessageState.sent;
-    } else if (oldMsg.enqueued) {
-      state = or_model.MessageState.enqueued;
     } else {
       state = or_model.MessageState.saved;
     }
