@@ -37,11 +37,12 @@ class Organization implements storage.Organization {
       new Directory(path).createSync();
     }
 
+    _sequencer = new Sequencer(path);
     if (this._git != null) {
       _git.init().catchError((error, stackTrace) => Logger.root
           .shout('Failed to initialize git engine', error, stackTrace));
+      _git.addIgnoredPath(_sequencer._sequencerFile.path);
     }
-    _sequencer = new Sequencer(path);
   }
 
   /**

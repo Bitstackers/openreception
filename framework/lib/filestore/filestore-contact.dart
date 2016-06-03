@@ -52,6 +52,7 @@ class Contact implements storage.Contact {
   Contact._internal(String this.path, this.receptionStore, this.calendarStore,
       GitEngine this._git) {
     _buildIndex();
+    _git.addIgnoredPath(_sequencer._sequencerFile.path);
   }
 
   /**

@@ -32,18 +32,6 @@ class Change {
   final String commitHash;
   List<FileChange> fileChanges = [];
 
-  List<String> ignoredPaths(String path) =>
-      new File('$path/.gitignore').readAsStringSync().split('\n');
-
-  void addIgnoredPath(String path) {
-    final File ignoreFile = new File('$path/.gitignore');
-    Set<String> paths = ignoreFile.readAsStringSync().split('\n').toSet();
-
-    paths.add(path);
-
-    ignoreFile.writeAsStringSync(paths.join('\n'));
-  }
-
   Change(this.changeTime, this.author, this.commitHash, {this.message: ''});
 
   /**
@@ -68,6 +56,19 @@ class GitEngine {
   final Logger _log = new Logger('$libraryName.GitEngine');
   final String path;
   final bool logStdout;
+
+  List<String> ignoredPaths(String path) =>
+      new File('$path/.gitignore').readAsStringSync().split('\n');
+
+  void addIgnoredPath(String path) {
+    final File ignoreFile = new File('$path/.gitignore');
+    Set<String> paths = ignoreFile.readAsStringSync().split('\n').toSet();
+
+    paths.add(path);
+
+    ignoreFile.writeAsStringSync(paths.join('\n'));
+  }
+
   final Queue<_Job> _workQueue = new Queue<_Job>();
 
   Future get initialized => _initialized.future;
