@@ -12,7 +12,7 @@ dependencies:
     git:
       ref: master
       url: https://github.com/rostgaard/libesl-dart.git
-    version: '>0.0.15 <0.1.0'
+    version: '>=0.0.17 <0.1.0'
   http: any
   intl: any
   logging: any

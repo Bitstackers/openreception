@@ -57,8 +57,8 @@ abstract class PBX {
     return response;
   }
 
-  static Future<ESL.Reply> bgapi(String command) async {
-    final ESL.Reply reply = await apiClient.bgapi(command);
+  static Future<ESL.Reply> bgapi(String command, {String jobUuid: ''}) async {
+    final ESL.Reply reply = await apiClient.bgapi(command, jobUuid: jobUuid);
     log.finest('bgapi $command => ${reply.content}');
     return reply;
   }
@@ -130,11 +130,25 @@ abstract class PBX {
       'origination_caller_id_number': callerIdNumber
     }..addAll(extravars);
 
-    String variableString =
+    final String variableString =
         variables.keys.map((String key) => '$key=${variables[key]}').join(',');
 
-    ESL.Response response =
-        await api('originate {$variableString}${destination} &park()');
+    /// Create a subscription
+    bool jobUuidMatches(ESL.Event event) =>
+        event.eventName == Model.PBXEvent.backgroundJob &&
+        event.field('Job-UUID') == newCallUuid;
+
+    final Future<ESL.Event> subscription = eventClient.eventStream
+            .firstWhere(jobUuidMatches)
+            .timeout(
+                new Duration(seconds: config.callFlowControl.agentChantimeOut))
+        as Future<ESL.Event>;
+
+    await bgapi('originate {$variableString}${destination} &park()',
+        jobUuid: newCallUuid);
+
+    final ESL.Response response = new ESL.Response.fromPacketBody(
+        (await subscription).field('_body').trim());
 
     if (response.status == ESL.Response.OK) {
       return newCallUuid;
@@ -189,8 +203,9 @@ abstract class PBX {
     String variableString =
         variables.keys.map((String key) => '$key=${variables[key]}').join(',');
 
-    ESL.Reply reply =
-        await bgapi('originate {$variableString}${destination} &park()');
+    ESL.Reply reply = await bgapi(
+        'originate {$variableString}${destination} &park()',
+        jobUuid: newCallUuid);
 
     if (reply.status != ESL.Response.OK) {
       throw new PBXException('Creation of agent channel for '

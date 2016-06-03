@@ -73,6 +73,7 @@ abstract class ChannelEventName {
  * Event name constants
  */
 abstract class PBXEvent {
+  static const String backgroundJob = 'BACKGROUND_JOB';
   static const String custom = 'CUSTOM';
   static const String channelAnswer = 'CHANNEL_ANSWER';
   static const String channelBridge = 'CHANNEL_BRIDGE';
@@ -95,6 +96,10 @@ abstract class PBXEvent {
     channelAnswer,
     recordStart,
     recordStop,
+    backgroundJob,
+
+    /// Custom needs to be at the end of the list of super-events,
+    /// but before sub-events.
     custom,
     sofiaRegister,
     sofiaUnregister,

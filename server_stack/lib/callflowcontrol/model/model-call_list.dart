@@ -321,15 +321,6 @@ class CallList extends IterableBase<ORModel.Call> {
           this._handleBridge(event);
           break;
 
-//        case ('CHANNEL_STATE'):
-//          this._handleChannelState(event);
-//          break;
-
-//        /// OUtbound calls
-//        case (PBXEvent.CHANNEL_ORIGINATE):
-//          this._createCall(event);
-//          break;
-
         case (PBXEvent.channelDestroy):
           this._handleChannelDestroy(event);
           break;
