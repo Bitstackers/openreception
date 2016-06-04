@@ -13,6 +13,28 @@
 
 library openreception.framework.config;
 
+import 'package:args/args.dart';
+
+class Datastore {
+  final EslConfig eslconfig;
+
+  const Datastore({EslConfig this.eslconfig: const EslConfig()});
+
+  /**
+   *
+   */
+  factory Datastore.fromArgs(ArgResults results) {
+    final EslConfig eslconfig = new EslConfig.fromArgs(results);
+
+    return new Datastore(eslconfig: eslconfig);
+  }
+
+  /**
+   *
+   */
+  factory Datastore.defaults() => const Datastore();
+}
+
 /**
  * ESL configuration values.
  */
@@ -64,5 +86,33 @@ class EslConfig {
     }
 
     return new EslConfig(hostname: hostname, password: password, port: port);
+  }
+
+  /**
+   *
+   */
+  factory EslConfig.fromArgs(ArgResults results) {
+    final String hostname = results['esl-hostname'];
+    final String password = results['esl-password'];
+    final int port = int.parse(results['esl-port']);
+
+    return new EslConfig(hostname: hostname, port: port, password: password);
+  }
+
+  /**
+   *
+   */
+  ArgParser get argParser {
+    EslConfig defaults = const EslConfig();
+
+    return new ArgParser()
+      ..addOption('esl-hostname',
+          defaultsTo: defaults.hostname, help: 'The hostname of the ESL server')
+      ..addOption('esl-password',
+          defaultsTo: defaults.password,
+          help: 'The password for the ESL server')
+      ..addOption('esl-port',
+          defaultsTo: defaults.port.toString(),
+          help: 'The port of the ESL server');
   }
 }
