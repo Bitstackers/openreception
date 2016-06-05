@@ -8,7 +8,7 @@ PREFIX?=/opt/openreception/bin
 RELEASE=$(shell git tag | tail -n1)
 GIT_REV=$(shell git rev-parse --short HEAD)
 
-BUILD_DIR=build
+BUILD_DIR?=build
 RUNNABLES=bin/authserver.dart \
 	  bin/calendarserver.dart \
 	  bin/callflowcontrol.dart \
@@ -27,6 +27,21 @@ all: $(BUILD_DIR) snapshots
 $(BUILD_DIR):
 	-@mkdir $(BUILD_DIR)
 
+snapshots-no-rev: $(BUILD_DIR) \
+	   $(BUILD_DIR)/authserver.dart \
+	   $(BUILD_DIR)/calendarserver.dart \
+	   $(BUILD_DIR)/callflowcontrol.dart \
+	   $(BUILD_DIR)/cdrserver.dart \
+	   $(BUILD_DIR)/configserver.dart \
+	   $(BUILD_DIR)/contactserver.dart \
+	   $(BUILD_DIR)/dialplanserver.dart \
+	   $(BUILD_DIR)/messagedispatcher.dart \
+	   $(BUILD_DIR)/messageserver.dart \
+	   $(BUILD_DIR)/notificationserver.dart \
+	   $(BUILD_DIR)/receptionserver.dart \
+	   $(BUILD_DIR)/userserver.dart
+	
+
 snapshots: $(BUILD_DIR) \
 	   $(BUILD_DIR)/authserver-$(GIT_REV).dart \
 	   $(BUILD_DIR)/calendarserver-$(GIT_REV).dart \
@@ -41,7 +56,11 @@ snapshots: $(BUILD_DIR) \
 	   $(BUILD_DIR)/receptionserver-$(GIT_REV).dart \
 	   $(BUILD_DIR)/userserver-$(GIT_REV).dart
 
-build/%-$(GIT_REV).dart: bin/%.dart
+
+$(BUILD_DIR)/%-$(GIT_REV).dart: bin/%.dart
+	dart --snapshot=$@ $<
+
+$(BUILD_DIR)/%.dart: bin/%.dart
 	dart --snapshot=$@ $<
 
 analyze-all: analyze analyze-hints

@@ -1,4 +1,4 @@
-HOME=$(CURDIR)
+BUILD_DIR?=build
 
 all: build
 
@@ -18,6 +18,12 @@ default-config: web/configuration_url.dart
 
 web/configuration_url.dart: web/configuration_url.dart.dist
 	install web/configuration_url.dart.dist web/configuration_url.dart
+
+js-build: $(BUILD_DIR)
+	pub build --output=$(BUILD_DIR)
+
+$(BUILD_DIR):
+	-@mkdir $(BUILD_DIR)
 
 .PHONY: build
 
