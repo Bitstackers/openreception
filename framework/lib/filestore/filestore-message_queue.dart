@@ -35,7 +35,7 @@ class MessageQueue implements storage.MessageQueue {
   /**
    *
    */
-  Future enqueue(model.Message message) async {
+  Future<model.MessageQueueEntry> enqueue(model.Message message) async {
     final int mqId = _nextId;
 
     final model.MessageQueueEntry queueEntry =
@@ -52,6 +52,8 @@ class MessageQueue implements storage.MessageQueue {
     }
 
     file.writeAsStringSync(_jsonpp.convert(queueEntry));
+
+    return queueEntry;
   }
 
   /**

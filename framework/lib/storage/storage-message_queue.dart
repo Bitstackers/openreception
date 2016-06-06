@@ -17,7 +17,7 @@ abstract class MessageQueue {
   /**
    *
    */
-  Future enqueue(model.Message message);
+  Future<model.MessageQueueEntry> enqueue(model.Message message);
 
   /**
    *
