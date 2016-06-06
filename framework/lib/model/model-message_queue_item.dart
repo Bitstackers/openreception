@@ -14,18 +14,25 @@
 part of openreception.framework.model;
 
 class MessageQueueEntry {
-  static const int noId = 0;
   final DateTime createdAt;
-  int id = noId;
-  int tries = 0;
-
-  Message message = new Message.empty();
-
   Set<MessageEndpoint> _handledRecipients = new Set();
+  int id = noId;
+  static const int noId = 0;
+  int tries = 0;
   Set<MessageEndpoint> _unhandledRecipients = new Set();
 
+  /**
+   * Constructor
+   */
+  Message message = new Message.empty();
+
+  /**
+   * Decoding factory.
+   */
+  static MessageQueueEntry decode(Map map) =>
+      new MessageQueueEntry.fromMap(map);
+
   Iterable<MessageEndpoint> get handledRecipients => _handledRecipients;
-  Iterable<MessageEndpoint> get unhandledRecipients => _unhandledRecipients;
 
   /**
    * Update the handled recipients set. This operation will automatically
@@ -34,10 +41,6 @@ class MessageQueueEntry {
   set handledRecipients(Iterable<MessageEndpoint> handled) {
     _unhandledRecipients = _unhandledRecipients.difference(handled.toSet());
     _handledRecipients.addAll(handled);
-  }
-
-  set unhandledRecipients(Iterable<MessageEndpoint> unhandled) {
-    _unhandledRecipients = new Set()..addAll(unhandled.toSet());
   }
 
   /**
@@ -73,9 +76,12 @@ class MessageQueueEntry {
             _unhandledRecipients.map((r) => r.asMap).toList(growable: false)
       };
 
+  Iterable<MessageEndpoint> get unhandledRecipients => _unhandledRecipients;
+
   /**
-   *
+   * Set the unhandled recipients set.
    */
-  static MessageQueueEntry decode(Map map) =>
-      new MessageQueueEntry.fromMap(map);
+  set unhandledRecipients(Iterable<MessageEndpoint> unhandled) {
+    _unhandledRecipients = new Set()..addAll(unhandled.toSet());
+  }
 }

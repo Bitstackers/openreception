@@ -39,10 +39,11 @@ class Message {
   /// The user of the sender.
   User sender;
 
-  bool get sent => state == MessageState.sent;
   bool get closed => sent || flag.manuallyClosed;
-
   bool get manuallyClosed => flag.manuallyClosed;
+  bool get saved => state == MessageState.saved;
+  bool get sent => state == MessageState.sent;
+
   set manuallyClosed(bool closed) {
     flag.manuallyClosed = closed;
   }

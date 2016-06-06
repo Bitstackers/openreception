@@ -13,25 +13,29 @@
 
 part of view;
 
+class _CachedMessages {
+  DateTime lastFetched;
+  List<ORModel.Message> list;
+
+  _CachedMessages(DateTime this.lastFetched, List<ORModel.Message> this.list);
+}
+
 /**
  * The message archive list.
  */
 class MessageArchive extends ViewWidget {
+  Map<String, _CachedMessages> _cache = new Map<String, _CachedMessages>();
   final Model.UIContactSelector _contactSelector;
   final Map<String, String> _langMap;
+  DateTime _lastFetched;
   final Logger _log = new Logger('$libraryName.MessageArchive');
   final Controller.Message _messageController;
   final Model.UIMessageCompose _messageCompose;
   final Controller.Destination _myDestination;
-  final ORModel.MessageFilter _notSavedFilter =
-      new ORModel.MessageFilter.empty()..limitCount = 100;
   final Controller.Popup _popup;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UIMessageArchive _uiModel;
   final Controller.User _user;
-
-  DateTime _lastFetched;
-  bool get _loadingMessages => _ui.loading;
 
   /**
    * Constructor.
@@ -57,55 +61,46 @@ class MessageArchive extends ViewWidget {
   @override
   void _onBlur(Controller.Destination _) {
     _ui.hideYesNoBoxes();
+    _ui.clearNotSavedList();
   }
 
   @override
   void _onFocus(Controller.Destination _) {
-    _ui.context = new ORModel.MessageContext.empty()
+    _lastFetched = new DateTime.now();
+
+    _ui.currentContext = new ORModel.MessageContext.empty()
       ..cid = _contactSelector.selectedContact.contact.id
       ..contactName = _contactSelector.selectedContact.contact.name
       ..rid = _receptionSelector.selectedReception.id
       ..receptionName = _receptionSelector.selectedReception.name;
 
-    String header =
-        '(${_contactSelector.selectedContact.contact.name} @ ${_receptionSelector.selectedReception.name})';
-
-    if (_receptionSelector.selectedReception == ORModel.Reception.noReception) {
-      header = '';
+    if (_receptionSelector.selectedReception.isEmpty) {
       _ui.headerExtra = '';
       _ui.clearNotSavedList();
-    }
+    } else {
+      _ui.headerExtra =
+          '(${_contactSelector.selectedContact.contact.name} @ ${_receptionSelector.selectedReception.name})';
 
-    _user.list().then((Iterable<ORModel.UserReference> users) {
-      _ui.users = users;
+      _user.list().then((Iterable<ORModel.UserReference> users) {
+        _ui.users = users;
 
-      _lastFetched = new DateTime.now();
-      _messageController.listSaved().then(
-          (Iterable<ORModel.Message> messages) => _ui.savedMessages = messages);
+        _messageController.listSaved().then(
+            (Iterable<ORModel.Message> messages) =>
+                _ui.savedMessages = messages);
 
-      if (header != _ui.header) {
-        _ui.headerExtra = header;
-        _ui.clearNotSavedList();
-        if (_receptionSelector.selectedReception.isNotEmpty &&
-            _contactSelector.selectedContact.contact.isNotEmpty) {
-          _notSavedFilter.contactId =
-              _contactSelector.selectedContact.contact.id;
-          _notSavedFilter.receptionId = _receptionSelector.selectedReception.id;
-
-          _messageController.list(_lastFetched, _notSavedFilter).then(
-              (Iterable<ORModel.Message> messages) =>
-                  _ui.notSavedMessages = messages);
+        if (_cache[_ui.currentContext.contactString] != null) {
+          _ui.setMessages(_cache[_ui.currentContext.contactString].list);
+          _lastFetched = _cache[_ui.currentContext.contactString].lastFetched;
         }
-      }
-    });
+      });
+    }
   }
 
   /**
-   * Simply navigate to my [_myDestination]. Matters not if this widget is already
-   * focused.
+   * Simply navigate to my [_myDestination].
    */
   void _activateMe(MouseEvent event) {
-    if (event.target is! ButtonElement) {
+    if (!_ui.isFocused && event.target is! ButtonElement) {
       _navigateToMyDestination();
     }
   }
@@ -153,22 +148,9 @@ class MessageArchive extends ViewWidget {
   }
 
   /**
-   * Fetch more messages when the user scroll to the bottom of the messages
-   * list.
    *
-   * NOTE: No matter how frantically the user spams his/her scroll wheel, this
-   * method caps the load on the server to one hit per 1 second.
    */
-  Future _fetchMessages(DateTime day) async {
-    final ORModel.MessageFilter filter = new ORModel.MessageFilter.empty()
-      ..contactId = _contactSelector.selectedContact.contact.id
-      ..receptionId = _receptionSelector.selectedReception.id;
-
-    await _messageController
-        .list(day.subtract(new Duration(days: 1)), filter)
-        .then((Iterable<ORModel.Message> messages) =>
-            _ui.notSavedMessages = messages);
-  }
+  bool get _loadingMessages => _ui.loading;
 
   /**
    * Observers.
@@ -186,13 +168,29 @@ class MessageArchive extends ViewWidget {
         return;
       }
 
+      final ORModel.MessageFilter filter = new ORModel.MessageFilter.empty()
+        ..contactId = _contactSelector.selectedContact.contact.id
+        ..receptionId = _receptionSelector.selectedReception.id;
+
       _ui.loading = true;
 
       final Timer t = new Timer.periodic(
           new Duration(milliseconds: 200),
           ((_) async {
             if (_ui.loading) {
-              await _fetchMessages(_lastFetched);
+              final List<ORModel.Message> list =
+                  await _messageController.list(_lastFetched, filter);
+
+              if (_cache[_ui.currentContext.contactString] == null) {
+                _cache[_ui.currentContext.contactString] = new _CachedMessages(
+                    _lastFetched, new List<ORModel.Message>());
+              }
+              _cache[_ui.currentContext.contactString].list.addAll(list);
+              _cache[_ui.currentContext.contactString].lastFetched =
+                  _lastFetched;
+
+              _ui.setMessages(list, addToExisting: true);
+
               print(_lastFetched.toIso8601String());
 
               _lastFetched = _lastFetched.subtract(new Duration(days: 1));
@@ -204,10 +202,15 @@ class MessageArchive extends ViewWidget {
       _ui.loading = false;
     };
 
-    /* We don't need to listen on the onMessageCopy stream here. It is handled in MessageCompose. */
+    /// We don't need to listen on the onMessageCopy stream here. It is handled
+    /// in MessageCompose.
     _ui.onMessageClose.listen(_closeMessage);
     _ui.onMessageDelete.listen(_deleteMessage);
     _ui.onMessageSend.listen(_sendMessage);
+
+    _receptionSelector.onSelect.listen((_) {
+      _cache.clear();
+    });
   }
 
   /**
