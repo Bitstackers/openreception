@@ -48,7 +48,10 @@ Future main(List<String> args) async {
         help: 'The uri of the authentication server')
     ..addOption('notification-uri',
         defaultsTo: config.notificationServer.externalUri.toString(),
-        help: 'The uri of the notification server');
+        help: 'The uri of the notification server')
+    ..addFlag('revisioning',
+        defaultsTo: false,
+        help: 'Enable or disable revisioning on this server');
 
   final ArgResults parsedArgs = parser.parse(args);
 
@@ -65,6 +68,8 @@ Future main(List<String> args) async {
     exit(1);
   }
 
+  final bool revisioning = parsedArgs['revisioning'];
+
   final service.Authentication _authService = new service.Authentication(
       Uri.parse(parsedArgs['auth-uri']),
       config.userServer.serverToken,
@@ -75,7 +80,8 @@ Future main(List<String> args) async {
           config.userServer.serverToken, new service.Client());
 
   final filestore.Message _messageStore = new filestore.Message(
-      filepath + '/message', new filestore.GitEngine(filepath + '/message'));
+      filepath + '/message',
+      revisioning ? new filestore.GitEngine(filepath + '/message') : null);
 
   await _messageStore.rebuildSecondaryIndexes();
 
