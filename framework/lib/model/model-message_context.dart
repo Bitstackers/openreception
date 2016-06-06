@@ -43,6 +43,8 @@ class MessageContext {
     receptionName = rRef.name;
   }
 
+  bool get isEmpty => cid == BaseContact.noId && rid == Reception.noId;
+
   /**
    * Returns a map representation of the object. Suitable for serialization.
    */

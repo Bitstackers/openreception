@@ -132,6 +132,8 @@ abstract class Key {
   static const String messageSaveSuccessTitle = 'message-save-success';
   static const String messageSaveSendErrorTitle = 'message-save-send-error';
   static const String messageSaveSendSuccessTitle = 'message-save-send-success';
+  static const String messagesLoadMore = 'messages-load-more';
+  static const String messagesLoading = 'messages-loading';
   static const String myQueuedCallsHeader = 'my-queued-calls-header';
 
   static const String name = 'name';
@@ -142,8 +144,6 @@ abstract class Key {
   static const String past = 'past';
   static const String paused = 'paused';
   static const String phone = 'phone';
-
-  static const String queued = 'queued';
 
   static const String reception = 'reception';
   static const String receptionAddressesHeader = 'reception-addresses-header';
@@ -296,6 +296,8 @@ Map<String, String> da = {
   Key.messageSaveSuccessTitle: 'Beskeden blev gemt',
   Key.messageSaveSendErrorTitle: 'Beskeden blev ikke sendt',
   Key.messageSaveSendSuccessTitle: 'Beskeden blev sendt',
+  Key.messagesLoadMore: 'Hent flere beskeder',
+  Key.messagesLoading: 'Henter...',
   Key.myQueuedCallsHeader: 'Mine kald',
 
   Key.name: 'Navn',
@@ -306,8 +308,6 @@ Map<String, String> da = {
   Key.past: 'fortid',
   Key.paused: 'Pause',
   Key.phone: 'Telefon',
-
-  Key.queued: 'I kø',
 
   Key.reception: 'Reception',
   Key.receptionAddressesHeader: 'Adresser',
@@ -458,6 +458,8 @@ Map<String, String> en = {
   Key.messageSaveSuccessTitle: 'Message saved',
   Key.messageSaveSendErrorTitle: 'Message not sent',
   Key.messageSaveSendSuccessTitle: 'Message sent',
+  Key.messagesLoadMore: 'Fetch more messages',
+  Key.messagesLoading: 'Loading...',
   Key.myQueuedCallsHeader: 'My calls',
 
   Key.name: 'Name',
@@ -468,8 +470,6 @@ Map<String, String> en = {
   Key.past: 'past',
   Key.paused: 'Paused',
   Key.phone: 'Phone',
-
-  Key.queued: 'Queued',
 
   Key.reception: 'Reception',
   Key.receptionAddressesHeader: 'Addresses',

@@ -17,14 +17,13 @@ part of model;
  * Provides access to the MessageArchive UX components.
  */
 class UIMessageArchive extends UIModel {
-  ORModel.MessageContext _currentContext;
+  ORModel.MessageContext currentContext = new ORModel.MessageContext.empty();
   final Map<String, String> _langMap;
   final Bus<ORModel.Message> _messageCloseBus = new Bus<ORModel.Message>();
   final Bus<ORModel.Message> _messageCopyBus = new Bus<ORModel.Message>();
   final Bus<ORModel.Message> _messageDeleteBus = new Bus<ORModel.Message>();
   final Bus<ORModel.Message> _messageSendBus = new Bus<ORModel.Message>();
   final DivElement _myRoot;
-  final Bus<DateTime> _scrollBus = new Bus<DateTime>();
   Map<int, String> _users = new Map<int, String>();
   final ORUtil.WeekDays _weekDays;
 
@@ -56,7 +55,7 @@ class UIMessageArchive extends UIModel {
       _root.querySelector('table tbody.not-saved-messages-tbody');
   DivElement get _tableContainer => _body.querySelector('div');
   ButtonElement get _loadMoreButton =>
-      _body.querySelector('#saved-messages-load-more');
+      _body.querySelector('button.messages-load-more');
 
   DateTime get lastDateTime => _notSavedTbody.children.length > 0
       ? DateTime.parse(_notSavedTbody.children.last.dataset['message-date'])
@@ -186,6 +185,25 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
+   * Return the String status of [msg].
+   */
+  String _getStatus(ORModel.Message msg) {
+    if (msg.manuallyClosed) {
+      return _langMap[Key.closed].toUpperCase();
+    }
+
+    if (msg.saved) {
+      return _langMap[Key.saved].toUpperCase();
+    }
+
+    if (msg.sent) {
+      return _langMap[Key.sent].toUpperCase();
+    }
+
+    return _langMap[Key.unknown].toUpperCase();
+  }
+
+  /**
    * Get rid of all the Yes/No confirmation boxes.
    */
   void hideYesNoBoxes() {
@@ -203,7 +221,9 @@ class UIMessageArchive extends UIModel {
     _loadMoreButton
       ..disabled = isLoading
       ..classes.toggle('loading', isLoading);
-    _loadMoreButton.text = isLoading ? 'Loading...' : 'Load more';
+    _loadMoreButton.text = isLoading
+        ? _langMap[Key.messagesLoading]
+        : _langMap[Key.messagesLoadMore];
   }
 
   /**
@@ -212,43 +232,13 @@ class UIMessageArchive extends UIModel {
   get loading => _loadMoreButton.disabled;
 
   /**
-   * Set the current message context. This MUST be defined by the currently selected reception and
-   * contact. It is used to decide whether delete/close actions move the message in question from
-   * the saved list to the not saved list.
-   */
-  set context(ORModel.MessageContext context) {
-    _currentContext = context;
-  }
-
-  /**
-   * Return the String status of [msg].
-   */
-  String _getStatus(ORModel.Message msg) {
-    if (msg.flag.manuallyClosed) {
-      return _langMap[Key.closed].toUpperCase();
-    }
-
-    if (msg.sent) {
-      return _langMap[Key.sent].toUpperCase();
-    }
-
-    if (msg.enqueued) {
-      return _langMap[Key.queued].toUpperCase();
-    }
-
-    if (msg.state == ORModel.MessageState.saved) {
-      return _langMap[Key.saved].toUpperCase();
-    }
-
-    return _langMap[Key.unknown].toUpperCase();
-  }
-
-  /**
-   * Move the [message] from the saved list to the not saved list and update the actions cell
-   * according to the state of the [message]. [message] is ALWAYS moved to the top of the not saved
-   * list to make it clear that the move has happened.
+   * Move the [message] from the saved list to the not saved list and update the
+   * actions cell according to the state of the [message]. [message] is ALWAYS
+   * moved to the top of the not saved list to make it clear that the move has
+   * happened.
    *
-   * NOTE: This is a visual only action. It does not perform any actions on the server.
+   * NOTE: This is a visual only action. It does not perform any actions on the
+   * server.
    */
   void moveMessage(ORModel.Message message) {
     final TableRowElement tr =
@@ -260,27 +250,13 @@ class UIMessageArchive extends UIModel {
         if (event.propertyName == 'opacity') {
           tr.remove();
           _savedTbody.parent.hidden = _savedTbody.children.isEmpty;
-          if (_currentContext == message.context) {
+          if (currentContext == message.context) {
             _notSavedTbody.insertBefore(
                 _buildRow(message, false), _notSavedTbody.firstChild);
           }
         }
       });
     }
-  }
-
-  /**
-   * Add the [list] of [ORModel.Message] to the widgets "not saved messages"
-   * table.
-   */
-  set notSavedMessages(Iterable<ORModel.Message> list) {
-    final List<TableRowElement> rows = new List<TableRowElement>();
-    list.forEach((ORModel.Message msg) {
-      rows.add(_buildRow(msg, false));
-    });
-
-    _notSavedTbody.children.addAll(rows);
-    _notSavedTbody.parent.hidden = _notSavedTbody.children.isEmpty;
   }
 
   /**
@@ -292,16 +268,6 @@ class UIMessageArchive extends UIModel {
     _loadMoreButton.onClick.listen((_) {
       if (loadMoreClick != null) {
         loadMoreClick();
-      }
-    });
-
-    _tableContainer.onScroll.listen((Event event) {
-      if (_tableContainer.getBoundingClientRect().height +
-              _tableContainer.scrollTop >=
-          _tableContainer.scrollHeight) {
-        if (_notSavedTbody.children.isNotEmpty) {
-          _scrollBus.fire(lastDateTime);
-        }
       }
     });
   }
@@ -329,7 +295,8 @@ class UIMessageArchive extends UIModel {
   /**
    * Removes a saved [message] from the archive list.
    *
-   * NOTE: This is a visual only action. It does not perform any actions on the server.
+   * NOTE: This is a visual only action. It does not perform any actions on the
+   * server.
    */
   void removeMessage(ORModel.Message message) {
     final TableRowElement tr =
@@ -362,17 +329,34 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
+   * Add the [list] of [ORModel.Message] to the widgets "not saved messages"
+   * table.
+   *
+   * If [addToExisting] is true, the [list] is appended to the table, else the
+   * table is cleared and [list] is set as its sole content.
+   */
+  void setMessages(Iterable<ORModel.Message> list,
+      {bool addToExisting: false}) {
+    final List<TableRowElement> rows = new List<TableRowElement>();
+    list.forEach((ORModel.Message msg) {
+      rows.add(_buildRow(msg, false));
+    });
+
+    if (addToExisting) {
+      _notSavedTbody.children.addAll(rows);
+    } else {
+      _notSavedTbody.children = rows;
+    }
+
+    _notSavedTbody.parent.hidden = _notSavedTbody.children.isEmpty;
+  }
+
+  /**
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
     _hotKeys.registerKeysPreventDefault(_keyboard, _defaultKeyMap());
   }
-
-  /**
-   * Fires the ID of the last ORModel.Message when the message list box is
-   * scrolled to the bottom.
-   */
-  Stream<DateTime> get scrolledToBottom => _scrollBus.stream;
 
   /**
    * Set the list of users. This is used to map the users id of a message to
