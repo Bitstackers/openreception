@@ -174,7 +174,6 @@ class ContactView {
 
     final Map<model.ReceptionReference, Iterable<model.BaseContact>> collRefs =
         (await _contactController.colleagues(cid));
-    print(oRefs);
 
     _ulReceptionList.children.clear();
     collRefs.forEach(
