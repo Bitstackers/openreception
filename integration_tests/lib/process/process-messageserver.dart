@@ -10,6 +10,7 @@ class MessageServer implements ServiceProcess {
   final String bindAddress;
   final Uri authUri;
   final Uri notificationUri;
+  final bool revisioning;
 
   final Completer _ready = new Completer();
   bool get ready => _ready.isCompleted;
@@ -19,6 +20,7 @@ class MessageServer implements ServiceProcess {
       {this.servicePort: 4040,
       this.bindAddress: '0.0.0.0',
       this.authUri: null,
+      this.revisioning: false,
       this.notificationUri}) {
     _init();
   }
@@ -40,6 +42,12 @@ class MessageServer implements ServiceProcess {
       '--host',
       bindAddress
     ];
+
+    if (revisioning) {
+      arguments.add('--revisioning');
+    } else {
+      arguments.add('--no-revisioning');
+    }
 
     if (authUri != null) {
       arguments.addAll(['--auth-uri', authUri.toString()]);

@@ -165,12 +165,14 @@ class TestEnvironment {
   /**
    *
    */
-  Future<process.MessageServer> requestMessageserverProcess() async {
+  Future<process.MessageServer> requestMessageserverProcess(
+      {bool withRevisioning: false}) async {
     if (_messageProcess == null) {
       _messageProcess = new process.MessageServer(
           Config.serverStackPath, runpath.path,
           bindAddress: envConfig.externalIp,
           servicePort: nextNetworkport,
+          revisioning: withRevisioning,
           authUri: (await requestAuthserverProcess()).uri,
           notificationUri: (await requestNotificationserverProcess()).uri);
     }

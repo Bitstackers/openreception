@@ -54,6 +54,19 @@ void _runMessageTests() {
 
     test('remove (event presence)', () => serviceTest.Message.removeEvent(sa));
 
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+
+      mProcess = await env.requestMessageserverProcess(withRevisioning: true);
+
+      sa.messageStore = mProcess.bindClient(env.httpClient, sa.authToken);
+    });
+
+    tearDown(() async {
+      await env.clear();
+    });
+
     test(
         'change listing on create', () => storeTest.Message.changeOnCreate(sa));
 
