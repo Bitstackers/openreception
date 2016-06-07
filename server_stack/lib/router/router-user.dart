@@ -73,6 +73,8 @@ class User {
    */
   void bindRoutes(router) {
     router
+      ..get('/user/cache', _userController.cacheStats)
+      ..delete('/user/cache', _userController.emptyCache)
       ..get('/user/all/statistics', _statsController.list)
       ..get('/user/{uid}/statistics', _statsController.get)
       ..get('/user', _userController.list)
