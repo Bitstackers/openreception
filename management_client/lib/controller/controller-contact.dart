@@ -51,7 +51,8 @@ class Contact {
         await _service.receptions(cid);
 
     await Future.wait(receptions.map((rRef) async {
-      map[rRef] = await _service.receptionContacts(rRef.id);
+      map[rRef] = (await _service.receptionContacts(rRef.id))
+          .map((model.ReceptionContact rc) => rc.contact);
     }));
 
     return map;
