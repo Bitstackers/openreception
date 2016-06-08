@@ -91,7 +91,7 @@ class User {
       await _userStore.remove(uid, modifier);
 
       /// Update cache
-      _userListCache.clear();
+      _userListCache = [];
       _userCache.remove(uid);
 
       var e = new event.UserChange.delete(uid, modifier.id);
@@ -137,7 +137,7 @@ class User {
     final uRef = await _userStore.create(user, creator);
 
     /// Update cache
-    _userListCache.clear();
+    _userListCache = [];
 
     var e = new event.UserChange.create(uRef.id, creator.id);
     try {
@@ -179,7 +179,7 @@ class User {
       final uRef = await _userStore.update(user, modifier);
 
       /// Update cache
-      _userListCache.clear();
+      _userListCache = [];
       _userCache.remove(user.id);
 
       var e = new event.UserChange.update(uRef.id, modifier.id);
@@ -264,7 +264,8 @@ class User {
    */
   Future<shelf.Response> emptyCache(shelf.Request request) async {
     _userCache.clear();
-    _userListCache.clear();
+    _userListCache = [];
+
     return cacheStats(request);
   }
 }
