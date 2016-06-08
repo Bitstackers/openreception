@@ -479,6 +479,9 @@ class Contact {
 
     try {
       await _contactStore.removeData(cid, rid, modifier);
+
+      /// Update cache
+      _receptionContactCache.remove(rid);
       event.ContactChange changeEvent =
           new event.ContactChange.delete(cid, modifier.id);
       _notification.broadcastEvent(changeEvent);
