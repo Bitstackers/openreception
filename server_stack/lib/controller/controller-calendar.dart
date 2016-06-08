@@ -16,19 +16,163 @@ library openreception.server.controller.calendar;
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:openreception.server/response_utils.dart';
-
-import 'package:shelf/shelf.dart' as shelf;
-import 'package:shelf_route/shelf_route.dart' as shelf_route;
+import 'package:archive/archive.dart';
 import 'package:logging/logging.dart';
-
+import 'package:openreception.framework/event.dart' as event;
 import 'package:openreception.framework/filestore.dart' as filestore;
 import 'package:openreception.framework/event.dart' as event;
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.framework/storage.dart' as storage;
+import 'package:openreception.server/response_utils.dart';
+import 'package:shelf/shelf.dart' as shelf;
+import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
 const String _libraryName = 'dialplan_server.controller';
+
+List<int> serializeAndCompressObject(Object obj) =>
+    new GZipEncoder().encode(UTF8.encode(JSON.encode(obj)));
+
+class CalendarCache {
+  final Logger _log = new Logger('$_libraryName.CalendarCache');
+
+  final filestore.Calendar cCalendarStore;
+  final filestore.Calendar rCalendarStore;
+
+  final Map<String, List<int>> _entryCache = {};
+  final Map<String, List<int>> _entryListCache = {};
+
+  /**
+   *
+   */
+  CalendarCache(this.cCalendarStore, this.rCalendarStore) {
+    _observers();
+  }
+
+  /**
+   *
+   */
+  void _observers() {
+    cCalendarStore.changeStream.listen((event.CalendarChange e) {
+      if (e.created) {
+        emptyList(e.owner);
+      } else if (e.updated) {
+        emptyList(e.owner);
+        removeEntry(e.eid, e.owner);
+      } else if (e.deleted) {
+        emptyList(e.owner);
+        removeEntry(e.eid, e.owner);
+      }
+    });
+  }
+
+  /**
+   *
+   */
+  Future<List<int>> get(int eid, model.Owner owner) async {
+    final String key = '$owner:$eid';
+
+    if (!_entryCache.containsKey(key)) {
+      _log.finest('Key $key not found in cache. Looking it up.');
+      if (owner is model.OwningContact) {
+        _entryCache[key] =
+            serializeAndCompressObject(await cCalendarStore.get(eid, owner));
+      } else if (owner is model.OwningReception) {
+        _entryCache[key] =
+            serializeAndCompressObject(await rCalendarStore.get(eid, owner));
+      } else {
+        throw new storage.ClientError('Could not find suitable for store '
+            'for owner type: ${owner.runtimeType}');
+      }
+    }
+    return _entryCache[key];
+  }
+
+  /**
+   *
+   */
+  void removeEntry(int eid, model.Owner owner) {
+    final String key = '$owner:$eid';
+    _log.finest('Removing key $key from cache');
+    _entryCache.remove(key);
+  }
+
+  /**
+   *
+   */
+  Future<List<int>> list(model.Owner owner) async {
+    final String key = '$owner';
+
+    if (!_entryListCache.containsKey(key)) {
+      _log.finest('Key $key not found in cache. Looking it up.');
+
+      Iterable<model.CalendarEntry> entries = [];
+      if (owner is model.OwningContact) {
+        entries = (await cCalendarStore.list(owner)).toList(growable: false);
+      } else if (owner is model.OwningReception) {
+        entries = (await rCalendarStore.list(owner)).toList(growable: false);
+      } else {
+        throw new storage.ClientError('Could not find suitable for store '
+            'for owner type: ${owner.runtimeType}');
+      }
+
+      _entryListCache[key] = serializeAndCompressObject(entries);
+    }
+
+    return _entryListCache[key];
+  }
+
+  /**
+   *
+   */
+  Map get stats => {
+        'calendarEntries': _entryCache.length,
+        'calendarEntrySize': _entryCache.values
+            .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
+        'listSize': _entryListCache.length
+      };
+
+  /**
+   *
+   */
+  Future prefill(Iterable<model.Owner> owners) async {
+    await Future.forEach(owners, (owner) async {
+      List<model.CalendarEntry> entries = [];
+
+      if (owner is model.OwningContact) {
+        entries = (await cCalendarStore.list(owner)).toList(growable: false);
+      } else if (owner is model.OwningReception) {
+        entries = (await rCalendarStore.list(owner)).toList(growable: false);
+      } else {
+        throw new storage.ClientError('Could not find suitable for store '
+            'for owner type: ${owner.runtimeType}');
+      }
+
+      _entryListCache[owner.toString()] = serializeAndCompressObject(entries);
+
+      await Future.forEach(entries, (entry) async {
+        final String key = '$owner:${entry.id}';
+
+        _entryCache[key] = serializeAndCompressObject(entry);
+      });
+    });
+  }
+
+  /**
+   *
+   */
+  void emptyList(model.Owner owner) {
+    _entryListCache.remove(owner.toString);
+  }
+
+  /**
+   *
+   */
+  void emptyAll() {
+    _entryCache.clear();
+    _entryListCache.clear();
+  }
+}
 
 /**
  * Ivr menu controller class.
@@ -39,12 +183,16 @@ class Calendar {
   final service.Authentication _authService;
   final service.NotificationService _notification;
   final Logger _log = new Logger('$_libraryName.Calendar');
+  CalendarCache _cache;
 
   /**
    *
    */
   Calendar(this._contactStore, this._receptionStore, this._authService,
-      this._notification);
+      this._notification) {
+    _cache = new CalendarCache(
+        _contactStore.calendarStore, _receptionStore.calendarStore);
+  }
 
   /**
    *
@@ -116,14 +264,9 @@ class Calendar {
     }
 
     try {
-      if (owner is model.OwningContact) {
-        return okJson(await _contactStore.calendarStore.get(eid, owner));
-      } else if (owner is model.OwningReception) {
-        return okJson(await _receptionStore.calendarStore.get(eid, owner));
-      } else {
-        return clientError('Could not find suitable for store '
-            'for owner type: ${owner.runtimeType}');
-      }
+      return okGzip(new Stream.fromIterable([await _cache.get(eid, owner)]));
+    } on storage.ClientError catch (e) {
+      return clientError(e.toString());
     } on storage.NotFound {
       return notFound('No event with id $eid');
     }
@@ -157,17 +300,11 @@ class Calendar {
       _log.warning(msg, e);
       return clientError(e.toString(msg));
     }
+
     try {
-      if (owner is model.OwningContact) {
-        return okJson((await _contactStore.calendarStore.list(owner))
-            .toList(growable: false));
-      } else if (owner is model.OwningReception) {
-        return okJson((await _receptionStore.calendarStore.list(owner))
-            .toList(growable: false));
-      } else {
-        return clientError('Could not find suitable for store '
-            'for owner type: ${owner.runtimeType}');
-      }
+      return okGzip(new Stream.fromIterable([await _cache.list(owner)]));
+    } on storage.ClientError catch (e) {
+      return clientError(e.toString());
     } on storage.NotFound {
       return notFound('Non-existing owner $owner');
     }
@@ -248,6 +385,7 @@ class Calendar {
         model.CalendarEntry.decode(JSON.decode(await request.readAsString()));
 
     model.CalendarEntry updated;
+
     try {
       if (owner is model.OwningContact) {
         updated =
@@ -306,5 +444,31 @@ class Calendar {
     } on storage.NotFound {
       return notFound('No event with id $eid');
     }
+  }
+
+  /**
+   *
+   */
+  Future<shelf.Response> cacheStats(shelf.Request request) async {
+    return okJson(_cache.stats);
+  }
+
+  /**
+   *
+   */
+  Future<shelf.Response> emptyCache(shelf.Request request) async {
+    _cache.emptyAll();
+
+    return cacheStats(request);
+  }
+
+  /**
+   *
+   */
+  Future<shelf.Response> cachePrefill(shelf.Request request) async {
+    ///TODO: Implement.
+    await _cache.prefill([]);
+
+    return cacheStats(request);
   }
 }

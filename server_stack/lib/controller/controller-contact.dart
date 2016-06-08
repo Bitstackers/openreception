@@ -16,21 +16,155 @@ library openreception.server.controller.contact;
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:openreception.server/response_utils.dart';
-
-import 'package:shelf/shelf.dart' as shelf;
-import 'package:shelf_route/shelf_route.dart' as shelf_route;
-
-import 'package:openreception.framework/filestore.dart' as filestore;
+import 'package:archive/archive.dart';
+import 'package:logging/logging.dart';
 import 'package:openreception.framework/event.dart' as event;
+import 'package:openreception.framework/filestore.dart' as filestore;
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.framework/storage.dart' as storage;
+import 'package:openreception.server/response_utils.dart';
+import 'package:shelf/shelf.dart' as shelf;
+import 'package:shelf_route/shelf_route.dart' as shelf_route;
+
+const String _libraryName = 'openreception.server.controller.reception';
+
+List<int> serializeAndCompressObject(Object obj) =>
+    new GZipEncoder().encode(UTF8.encode(JSON.encode(obj)));
+
+class ReceptionCache {
+  final Logger _log = new Logger('$_libraryName.ReceptionCache');
+
+  final filestore.Reception _receptionStore;
+
+  final Map<int, List<int>> _receptionCache = {};
+  final Map<String, int> _extensionToRid = {};
+  List<int> _receptionList = [];
+
+  /**
+   *
+   */
+  ReceptionCache(this._receptionStore);
+
+  /**
+   *
+   */
+  Future<List<int>> getByExtension(String extension) async {
+    if (!_extensionToRid.containsKey(extension)) {
+      final r = await _receptionStore.getByExtension(extension);
+      _receptionCache[r.id] = serializeAndCompressObject(r);
+      _extensionToRid[extension] = r.id;
+    }
+
+    final int rid = _extensionToRid[extension];
+
+    try {
+      return get(rid);
+    } on storage.NotFound catch (e) {
+      /// Clear out the orphan key
+      _extensionToRid.remove(extension);
+
+      throw e;
+    }
+  }
+
+  /**
+   *
+   */
+  Future<List<int>> get(int rid) async {
+    final int key = rid;
+
+    if (!_receptionCache.containsKey(key)) {
+      _log.finest('Key $key not found in cache. Looking it up.');
+      final r = await _receptionStore.get(rid);
+      _receptionCache[r.id] = serializeAndCompressObject(r);
+      _extensionToRid[r.dialplan] = r.id;
+    }
+    return _receptionCache[key];
+  }
+
+  /**
+   *
+   */
+  void remove(int rid) {
+    _log.finest('Removing key $rid from cache');
+    _receptionCache.remove(rid);
+  }
+
+  /**
+   *
+   */
+  void removeExtension(String extension) {
+    _log.finest('Removing key $extension from cache');
+    _extensionToRid.remove(extension);
+  }
+
+  /**
+   *
+   */
+  Future<List<int>> list() async {
+    if (_receptionList.isEmpty) {
+      _log.finest('No reception list found in cache. Looking one up.');
+
+      _receptionList = serializeAndCompressObject(
+          (await _receptionStore.list()).toList(growable: false));
+    }
+
+    return _receptionList;
+  }
+
+  /**
+   *
+   */
+  Map get stats => {
+        'receptionCount': _receptionCache.length,
+        'receptionSize': _receptionCache.values
+            .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
+        'listSize': _receptionList.length
+      };
+
+  /**
+   *
+   */
+  Future prefill() async {
+    final rRefs = await _receptionStore.list();
+
+    _receptionList = serializeAndCompressObject(rRefs.toList(growable: false));
+
+    await Future.forEach(rRefs, (rRef) async {
+      final r = await _receptionStore.get(rRef.id);
+      _receptionCache[r.id] = serializeAndCompressObject(r);
+      _extensionToRid[r.dialplan] = r.id;
+    });
+  }
+
+  /**
+   *
+   */
+  void emptyList() {
+    _receptionList = [];
+  }
+
+  /**
+   *
+   */
+  void emptyAll() {
+    emptyList();
+    _receptionCache.clear();
+  }
+}
 
 class Contact {
   final service.Authentication _authservice;
   final filestore.Contact _contactStore;
   final service.NotificationService _notification;
+  final Map<int, List<int>> _contactCache = {};
+  List<int> _contactListCache = [];
+  final Map<int, List<int>> _recListCache = {};
+  final Map<int, List<int>> _orgListCache = {};
+
+  /// Rid and pre-gzipped listing.
+  final Map<int, List<int>> _receptionContactCache = {};
 
   Contact(this._contactStore, this._notification, this._authservice);
 
@@ -40,11 +174,19 @@ class Contact {
   Future<shelf.Response> base(shelf.Request request) async {
     final int cid = int.parse(shelf_route.getPathParameter(request, 'cid'));
 
-    try {
-      return okJson(await _contactStore.get(cid));
-    } on storage.NotFound catch (e) {
-      return notFound(e.toString());
+    if (!_contactCache.containsKey(cid)) {
+      model.BaseContact bc;
+      try {
+        bc = await _contactStore.get(cid);
+
+        _contactCache[cid] =
+            new GZipEncoder().encode(UTF8.encode(JSON.encode(bc)));
+      } on storage.NotFound catch (e) {
+        return notFound(e.toString());
+      }
     }
+
+    return okGzip(new Stream.fromIterable([_contactCache[cid]]));
   }
 
   /**
@@ -72,6 +214,9 @@ class Contact {
     final rRef = await _contactStore.create(contact, creator);
     final createEvent = new event.ContactChange.create(rRef.id, creator.id);
 
+    /// Update cache.
+    _contactListCache.clear();
+
     _notification.broadcastEvent(createEvent);
 
     return okJson(rRef);
@@ -80,8 +225,18 @@ class Contact {
   /**
    * Retrives a single base contact based on contactID.
    */
-  Future<shelf.Response> listBase(shelf.Request request) async =>
-      okJson((await _contactStore.list()).toList(growable: false));
+  Future<shelf.Response> listBase(shelf.Request request) async {
+    if (_contactListCache.isEmpty) {
+      try {
+        _contactListCache = new GZipEncoder().encode(UTF8.encode(
+            JSON.encode((await _contactStore.list()).toList(growable: false))));
+      } on storage.NotFound catch (e) {
+        return notFound(e.toString());
+      }
+    }
+
+    return okGzip(new Stream.fromIterable([_contactListCache]));
+  }
 
   /**
    * Retrives a list of base contacts associated with the provided
@@ -151,6 +306,10 @@ class Contact {
       return okJson(const {});
     } on storage.NotFound catch (e) {
       return notFound(e.toString());
+    } finally {
+      /// Remove cached objects. (TODO: remove cached reception data objects)
+      _contactCache.remove(cid);
+      _contactListCache.clear();
     }
   }
 
@@ -181,6 +340,7 @@ class Contact {
             'is too long, missing or invalid',
         'error': error.toString()
       };
+
       return clientErrorJson(response);
     }
 
@@ -194,6 +354,9 @@ class Contact {
       return okJson(ref);
     } on storage.NotFound catch (e) {
       return notFound(e.toString());
+    } finally {
+      /// Remove cached objects. (TODO: remove cached reception data objects)
+      _contactCache.remove(cid);
     }
   }
 
@@ -203,14 +366,20 @@ class Contact {
   Future<shelf.Response> listByReception(shelf.Request request) async {
     final int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
-    try {
-      Iterable<model.ReceptionContact> contacts =
-          await _contactStore.receptionContacts(rid);
+    if (!_receptionContactCache.containsKey(rid)) {
+      Iterable<model.ReceptionContact> contacts;
 
-      return okJson(contacts.toList());
-    } on storage.SqlError catch (error) {
-      new shelf.Response.internalServerError(body: error);
+      try {
+        contacts = await _contactStore.receptionContacts(rid);
+
+        _receptionContactCache[rid] = new GZipEncoder()
+            .encode(UTF8.encode(JSON.encode(contacts.toList(growable: false))));
+      } on storage.NotFound catch (e) {
+        return notFound(e.toString());
+      }
     }
+
+    return okGzip(new Stream.fromIterable([_receptionContactCache[rid]]));
   }
 
   /**
@@ -362,5 +531,32 @@ class Contact {
 
     return okJson(
         (await _contactStore.changes(cid, rid)).toList(growable: false));
+  }
+
+  /**
+   *
+   */
+  Future<shelf.Response> cacheStats(shelf.Request request) async {
+    final Map stats = {
+      'contactCount': _contactCache.length,
+      'contactSize': _contactCache.values
+          .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
+      'receptionContactCount': _receptionContactCache.length,
+      'receptionContactSize': _receptionContactCache.values
+          .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
+    };
+
+    return okJson(stats);
+  }
+
+  /**
+   *
+   */
+  Future<shelf.Response> emptyCache(shelf.Request request) async {
+    _contactCache.clear();
+    _recListCache.clear();
+    _contactListCache.clear();
+    _receptionContactCache.clear();
+    return cacheStats(request);
   }
 }

@@ -66,6 +66,9 @@ class Calendar {
    */
   void bindRoutes(router) {
     router
+      ..get('/calendar/cache', _calendarController.cacheStats)
+      ..post('/calendar/cache/prefill', _calendarController.cachePrefill)
+      ..delete('/calendar/cache', _calendarController.emptyCache)
       ..get('/calendar/{type}:{oid}', _calendarController.list)
       ..get('/calendar/{type}:{oid}/change', _calendarController.changes)
       ..get('/calendar/{type}:{oid}/{eid}', _calendarController.get)

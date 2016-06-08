@@ -18,7 +18,6 @@ import 'dart:io' as io;
 
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.framework/storage.dart' as storage;
 import 'package:openreception.server/configuration.dart';
 import 'package:openreception.server/controller/controller-contact.dart'
     as controller;
@@ -48,6 +47,9 @@ class Contact {
    */
   void bindRoutes(router) {
     router
+      ..get('/contact/history', _contactController.history)
+      ..get('/contact/cache', _contactController.cacheStats)
+      ..delete('/contact/cache', _contactController.emptyCache)
       ..get('/contact/list/reception/{rid}', _contactController.listByReception)
       ..post(
           '/contact/{cid}/reception/{rid}', _contactController.addToReception)
@@ -66,7 +68,6 @@ class Contact {
       ..get('/contact/{cid}/history', _contactController.objectHistory)
       ..get('/contact', _contactController.listBase)
       ..post('/contact', _contactController.create)
-      ..get('/contact/history', _contactController.history)
       ..get(
           '/contact/organization/{oid}', _contactController.listByOrganization)
       ..get('/contact/reception/{rid}', _contactController.listByReception);
@@ -77,43 +78,12 @@ class Contact {
    */
   Future<io.HttpServer> listen(
       {String hostname: '0.0.0.0', int port: 4010}) async {
-    /**
-   * Validate a token by looking it up on the authentication server.
-   */
-    Future<shelf.Response> _lookupToken(shelf.Request request) async {
-      var token = request.requestedUri.queryParameters['token'];
-
-      try {
-        await _authService.validate(token);
-      } on storage.NotFound {
-        return new shelf.Response.forbidden('Invalid token');
-      } on io.SocketException {
-        return new shelf.Response.internalServerError(
-            body: 'Cannot reach authserver');
-      } catch (error, stackTrace) {
-        _log.severe(
-            'Authentication validation lookup failed: $error:$stackTrace');
-
-        return new shelf.Response.internalServerError(body: error.toString());
-      }
-
-      /// Do not intercept the request, but let the next handler take care of it.
-      return null;
-    }
-
-    /**
-     * Authentication middleware.
-     */
-    shelf.Middleware checkAuthentication = shelf.createMiddleware(
-        requestHandler: _lookupToken, responseHandler: null);
-
     final router = shelf_route.router();
     bindRoutes(router);
 
     var handler = const shelf.Pipeline()
         .addMiddleware(
             shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
-        .addMiddleware(checkAuthentication)
         .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
         .addHandler(router.handler);
 
