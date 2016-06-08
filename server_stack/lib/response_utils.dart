@@ -34,6 +34,14 @@ shelf.Response ok(body) => new shelf.Response.ok(body);
 /**
  *
  */
+shelf.Response okGzip(body) => new shelf.Response.ok(body, headers: {
+      'content-encoding': 'gzip',
+      'content-type': 'application/json; charset=utf-8'
+    });
+
+/**
+ *
+ */
 shelf.Response notFoundJson(body) =>
     new shelf.Response.notFound(JSON.encode(body));
 
