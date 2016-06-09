@@ -93,7 +93,7 @@ class OrganizationCache {
    *
    */
   Future<List<int>> list() async {
-    if (!_organizationListCache.isEmpty) {
+    if (_organizationListCache.isEmpty) {
       _log.finest('Listing not found in cache. Looking it up.');
 
       _organizationListCache =
