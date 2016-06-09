@@ -146,6 +146,12 @@ class ContactView {
    *
    */
   Future _activateContact(int cid) async {
+    /// Clear fields
+    _contactData.clear();
+    _ulReceptionData.children = [new ParagraphElement()..text = 'Henter'];
+    _ulReceptionList.children = [new ParagraphElement()..text = 'Henter'];
+    _ulOrganizationList.children = [new ParagraphElement()..text = 'Henter'];
+
     _contactData.contact = await _contactController.get(cid);
 
     _highlightContactInList(cid);

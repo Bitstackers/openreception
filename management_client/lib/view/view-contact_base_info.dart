@@ -185,7 +185,7 @@ class Contact {
    */
   void clear() {
     contact = new model.BaseContact.empty();
-    _header.text = '';
+    _header.text = 'Henter...';
   }
 
   /**
