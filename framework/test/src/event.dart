@@ -90,8 +90,10 @@ abstract class EventTests {
   static void messageChangeState() {
     final int mid = 1;
     final int uid = 2;
+    final Model.MessageState state = Model.MessageState.values.last;
 
-    Event.MessageChange testEvent = new Event.MessageChange.create(mid, uid);
+    Event.MessageChange testEvent =
+        new Event.MessageChange.create(mid, uid, state);
 
     Event.MessageChange builtEvent =
         new Event.Event.parse(testEvent.asMap) as Event.MessageChange;
@@ -99,6 +101,7 @@ abstract class EventTests {
     expect(builtEvent.mid, equals(mid));
     expect(builtEvent.modifierUid, equals(uid));
     expect(builtEvent.state, equals(Event.Change.created));
+    expect(builtEvent.messageState, equals(state));
   }
 
   static void calendarEntryState() {

@@ -26,31 +26,38 @@ abstract class EventMessageChange {
   static void buildObject() {
     final int mid = 1;
     final int uid = 2;
+    final Model.MessageState state = Model.MessageState.values.last;
 
-    Event.MessageChange testEvent = new Event.MessageChange.create(mid, uid);
+    Event.MessageChange testEvent =
+        new Event.MessageChange.create(mid, uid, state);
 
     expect(testEvent.mid, equals(mid));
     expect(testEvent.modifierUid, equals(uid));
     expect(testEvent.state, equals(Event.Change.created));
+    expect(testEvent.messageState, equals(state));
 
-    testEvent = new Event.MessageChange.update(mid, uid);
+    testEvent = new Event.MessageChange.update(mid, uid, state);
 
     expect(testEvent.mid, equals(mid));
     expect(testEvent.modifierUid, equals(uid));
     expect(testEvent.state, equals(Event.Change.updated));
+    expect(testEvent.messageState, equals(state));
 
-    testEvent = new Event.MessageChange.delete(mid, uid);
+    testEvent = new Event.MessageChange.delete(mid, uid, state);
 
     expect(testEvent.mid, equals(mid));
     expect(testEvent.modifierUid, equals(uid));
     expect(testEvent.state, equals(Event.Change.deleted));
+    expect(testEvent.messageState, equals(state));
   }
 
   static void serialization() {
     final int mid = 1;
     final int uid = 2;
+    final Model.MessageState state = Model.MessageState.values.last;
 
-    Event.MessageChange testEvent = new Event.MessageChange.create(mid, uid);
+    Event.MessageChange testEvent =
+        new Event.MessageChange.create(mid, uid, state);
 
     expect(testEvent.toJson, returnsNormally);
   }
@@ -58,12 +65,15 @@ abstract class EventMessageChange {
   static void serializationDeserialization() {
     final int mid = 1;
     final int uid = 2;
+    final Model.MessageState state = Model.MessageState.values.last;
 
-    Event.MessageChange testEvent = new Event.MessageChange.create(mid, uid);
+    Event.MessageChange testEvent =
+        new Event.MessageChange.create(mid, uid, state);
 
     expect(testEvent.mid, equals(mid));
     expect(testEvent.modifierUid, equals(uid));
     expect(testEvent.state, equals(Event.Change.created));
+    expect(testEvent.messageState, equals(state));
 
     Map serialized = testEvent.toJson();
 

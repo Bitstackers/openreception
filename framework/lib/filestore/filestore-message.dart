@@ -356,7 +356,8 @@ class Message implements storage.Message {
           _authorString(modifier));
     }
 
-    _changeBus.fire(new event.MessageChange.create(msg.id, modifier.id));
+    _changeBus
+        .fire(new event.MessageChange.create(msg.id, modifier.id, msg.state));
 
     return msg;
   }
@@ -388,7 +389,8 @@ class Message implements storage.Message {
       _savedIndex.remove(message.id);
     }
 
-    _changeBus.fire(new event.MessageChange.update(message.id, modifier.id));
+    _changeBus.fire(
+        new event.MessageChange.update(message.id, modifier.id, message.state));
     return message;
   }
 
@@ -418,7 +420,8 @@ class Message implements storage.Message {
 
     _index.remove(mid);
 
-    _changeBus.fire(new event.MessageChange.delete(mid, modifier.id));
+    _changeBus.fire(new event.MessageChange.delete(
+        mid, modifier.id, model.MessageState.unknown));
   }
 
   /**
