@@ -46,10 +46,10 @@ class MessageEndpoint {
    * Deserializing constructor.
    */
   MessageEndpoint.fromMap(Map map) {
-    type = map[Key.type];
-    name = map.containsKey(Key.name) ? map[Key.name] : '';
-    address = map[Key.address];
-    note = map[Key.note];
+    type = map[key.type];
+    name = map.containsKey(key.name) ? map[key.name] : '';
+    address = map[key.address];
+    note = map[key.note];
   }
 
   /**
@@ -66,7 +66,7 @@ class MessageEndpoint {
    * Map representation of the object.
    */
   Map get asMap =>
-      {Key.type: type, Key.address: address, Key.name: name, Key.note: note};
+      {key.type: type, key.address: address, key.name: name, key.note: note};
 
   /**
    * Stringify the object.

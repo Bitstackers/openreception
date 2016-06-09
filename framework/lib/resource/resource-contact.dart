@@ -29,7 +29,7 @@ abstract class Contact {
    *
    */
   static Uri root(Uri host) =>
-      Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}');
+      Uri.parse('${util.removeTailingSlashes(host)}/${nameSpace}');
 
   /**
    *

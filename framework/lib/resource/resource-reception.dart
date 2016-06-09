@@ -30,7 +30,7 @@ abstract class Reception {
       Uri.parse('${root(host)}/extension/${extension}');
 
   static Uri root(Uri host) =>
-      Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}');
+      Uri.parse('${util.removeTailingSlashes(host)}/${nameSpace}');
 
   static Uri list(Uri host) => Uri.parse('${root(host)}');
 

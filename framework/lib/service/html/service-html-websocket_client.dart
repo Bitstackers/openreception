@@ -13,26 +13,26 @@
 
 part of openreception.framework.service.html;
 
-class WebSocketClient extends Service.WebSocket {
+class WebSocketClient extends service.WebSocket {
   static final String className = '${libraryName}.WebSocketClient';
   static final Logger log = new Logger(className);
 
-  HTML.WebSocket _websocket = null;
+  html.WebSocket _websocket = null;
 
-  Future<Service.WebSocket> connect(Uri path) {
-    this._websocket = new HTML.WebSocket(path.toString());
-    Completer<Service.WebSocket> ready = new Completer();
+  Future<service.WebSocket> connect(Uri path) {
+    this._websocket = new html.WebSocket(path.toString());
+    Completer<service.WebSocket> ready = new Completer();
 
     this._websocket
       ..onMessage.listen(_onMessage)
-      ..onError.listen((HTML.Event event) => onError(null))
+      ..onError.listen((html.Event event) => onError(null))
       ..onOpen.listen((_) => ready.complete())
       ..onClose.listen((_) => this.onClose());
 
     return ready.future;
   }
 
-  void _onMessage(HTML.MessageEvent e) => this.onMessage(e.data.toString());
+  void _onMessage(html.MessageEvent e) => this.onMessage(e.data.toString());
 
   Future close() => new Future.sync(() => this._websocket.close());
 }

@@ -16,7 +16,7 @@ part of openreception.framework.service.io;
 /**
  * HTTP Client for use with dart:io.
  */
-class Client extends Service.WebService {
+class Client extends service.WebService {
   static final String className = '${libraryName}.Client';
   static final Logger log = new Logger(className);
   static final io.ContentType contentTypeJson =

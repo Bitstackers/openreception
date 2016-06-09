@@ -97,7 +97,7 @@ abstract class CallFlowControl {
    *
    */
   static Uri originate(
-          Uri host, String extension, Model.OriginationContext context) =>
+          Uri host, String extension, model.OriginationContext context) =>
       Uri.parse('${_root(host)}'
           '/originate/${extension}'
           '/dialplan/${context.dialplan}'
@@ -142,5 +142,5 @@ abstract class CallFlowControl {
    *    http://hostname/call
    */
   static Uri _root(Uri host) =>
-      Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}');
+      Uri.parse('${util.removeTailingSlashes(host)}/${nameSpace}');
 }

@@ -73,39 +73,39 @@ class Message {
    */
   Message.fromMap(Map map) {
     Iterable<MessageEndpoint> iterRcp =
-        (map[Key.recipients] as Iterable).map(MessageEndpoint.decode);
+        (map[key.recipients] as Iterable).map(MessageEndpoint.decode);
 
-    id = (map.containsKey(Key.id) ? map[Key.id] : noId);
+    id = (map.containsKey(key.id) ? map[key.id] : noId);
     recipients.addAll(iterRcp);
-    context = new MessageContext.fromMap(map[Key.context]);
+    context = new MessageContext.fromMap(map[key.context]);
     flag = new MessageFlag(map['flags'] as List<String>);
-    callerInfo = new CallerInfo.fromMap(map[Key.caller]);
-    body = map[Key.body];
-    callId = map[Key.callId];
-    sender = User.decode(map[Key.takenByAgent]);
-    createdAt = Util.unixTimestampToDateTime(map[Key.createdAt]);
+    callerInfo = new CallerInfo.fromMap(map[key.caller]);
+    body = map[key.body];
+    callId = map[key.callId];
+    sender = User.decode(map[key.takenByAgent]);
+    createdAt = util.unixTimestampToDateTime(map[key.createdAt]);
 
-    if (map[Key.state] == null) {
+    if (map[key.state] == null) {
       state = MessageState.unknown;
-    } else if (map[Key.state] == MessageState.values.length) {
+    } else if (map[key.state] == MessageState.values.length) {
       state = MessageState.unknown;
     } else {
-      state = MessageState.values[map[Key.state]];
+      state = MessageState.values[map[key.state]];
     }
   }
 
   Map get asMap => {
-        Key.id: id,
-        Key.body: body,
-        Key.context: context.toJson(),
-        Key.takenByAgent: sender.toJson(),
-        Key.caller: callerInfo.toJson(),
-        Key.callId: callId,
-        Key.flags: flag.toJson(),
-        Key.createdAt: Util.dateTimeToUnixTimestamp(createdAt),
-        Key.recipients: recipients
+        key.id: id,
+        key.body: body,
+        key.context: context.toJson(),
+        key.takenByAgent: sender.toJson(),
+        key.caller: callerInfo.toJson(),
+        key.callId: callId,
+        key.flags: flag.toJson(),
+        key.createdAt: util.dateTimeToUnixTimestamp(createdAt),
+        key.recipients: recipients
             .map((MessageEndpoint ep) => ep.toJson())
             .toList(growable: false),
-        Key.state: state.index
+        key.state: state.index
       };
 }

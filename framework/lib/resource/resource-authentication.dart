@@ -26,7 +26,7 @@ abstract class Authentication {
    * Has the format http:/<host>/token/<requestedToken>
    */
   static Uri tokenToUser(Uri host, String requestedToken) =>
-      Uri.parse('${Util.removeTailingSlashes(host)}'
+      Uri.parse('${util.removeTailingSlashes(host)}'
           '/${nameSpace}'
           '/${requestedToken}');
 
@@ -35,7 +35,7 @@ abstract class Authentication {
    * Has the format http:/<host>/token/<requestedToken>/validate
    */
   static Uri validate(Uri host, String requestedToken) =>
-      Uri.parse('${Util.removeTailingSlashes(host)}'
+      Uri.parse('${util.removeTailingSlashes(host)}'
           '/${nameSpace}'
           '/${requestedToken}'
           '/validate');

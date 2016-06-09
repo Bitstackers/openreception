@@ -32,11 +32,11 @@ class MessageFlag {
    * Default constructor.
    */
   MessageFlag(Iterable<String> flags) {
-    pleaseCall = flags.contains(Key.pleaseCall);
-    willCallBack = flags.contains(Key.willCallBack);
-    called = flags.contains(Key.called);
-    urgent = flags.contains(Key.urgent);
-    manuallyClosed = flags.contains(Key.manuallyClosed);
+    pleaseCall = flags.contains(key.pleaseCall);
+    willCallBack = flags.contains(key.willCallBack);
+    called = flags.contains(key.called);
+    urgent = flags.contains(key.urgent);
+    manuallyClosed = flags.contains(key.manuallyClosed);
   }
 
   /**
@@ -45,11 +45,11 @@ class MessageFlag {
   List toJson() {
     List<String> retVal = [];
 
-    pleaseCall ? retVal.add(Key.pleaseCall) : '';
-    willCallBack ? retVal.add(Key.willCallBack) : '';
-    called ? retVal.add(Key.called) : '';
-    urgent ? retVal.add(Key.urgent) : '';
-    manuallyClosed ? retVal.add(Key.manuallyClosed) : '';
+    pleaseCall ? retVal.add(key.pleaseCall) : '';
+    willCallBack ? retVal.add(key.willCallBack) : '';
+    called ? retVal.add(key.called) : '';
+    urgent ? retVal.add(key.urgent) : '';
+    manuallyClosed ? retVal.add(key.manuallyClosed) : '';
 
     return retVal;
   }

@@ -82,5 +82,5 @@ class ContactChange implements Event {
       : cid = map[Key.calendarChange][Key.contactID],
         modifierUid = map[Key.calendarChange][Key.modifierUid],
         state = map[Key.calendarChange][Key.state],
-        timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
+        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
 }

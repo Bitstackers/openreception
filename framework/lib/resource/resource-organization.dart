@@ -33,7 +33,7 @@ abstract class Organization {
    * Url for the organization namespace.
    */
   static Uri root(Uri host) =>
-      Uri.parse('${Util.removeTailingSlashes(host)}/${_organization}');
+      Uri.parse('${util.removeTailingSlashes(host)}/${_organization}');
 
   /**
    * Url for list of organizations.

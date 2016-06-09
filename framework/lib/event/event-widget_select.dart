@@ -29,7 +29,7 @@ class WidgetSelect implements Event {
 
   Map toJson() => {
         Key.event: eventName,
-        Key.timestamp: Util.dateTimeToUnixTimestamp(timestamp),
+        Key.timestamp: util.dateTimeToUnixTimestamp(timestamp),
         Key.changedBy: uid,
         Key.widget: widgetName
       };
@@ -46,7 +46,7 @@ class WidgetSelect implements Event {
   WidgetSelect.fromMap(Map map)
       : uid = map[Key.changedBy],
         widgetName = map[Key.widget],
-        timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
+        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
 }
 
 class FocusChange implements Event {
@@ -65,7 +65,7 @@ class FocusChange implements Event {
 
   Map toJson() => {
         Key.event: eventName,
-        Key.timestamp: Util.dateTimeToUnixTimestamp(timestamp),
+        Key.timestamp: util.dateTimeToUnixTimestamp(timestamp),
         Key.changedBy: uid,
         Key.inFocus: inFocus
       };
@@ -82,5 +82,5 @@ class FocusChange implements Event {
   FocusChange.fromMap(Map map)
       : uid = map[Key.changedBy],
         inFocus = map[Key.inFocus],
-        timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
+        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
 }

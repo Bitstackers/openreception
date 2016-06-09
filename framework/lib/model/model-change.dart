@@ -31,28 +31,28 @@ enum ObjectType {
 
 /// Map with serialization keys and values
 const Map<ObjectType, String> _objectTypeToString = const {
-  ObjectType.user: Key.user,
-  ObjectType.calendar: Key.calendar,
-  ObjectType.reception: Key.reception,
-  ObjectType.contact: Key.contact,
-  ObjectType.receptionAttribute: Key.receptionAttributes,
-  ObjectType.message: Key.message,
-  ObjectType.organization: Key.organization,
-  ObjectType.dialplan: Key.dialplan,
-  ObjectType.ivrMenu: Key.ivrMenu
+  ObjectType.user: key.user,
+  ObjectType.calendar: key.calendar,
+  ObjectType.reception: key.reception,
+  ObjectType.contact: key.contact,
+  ObjectType.receptionAttribute: key.receptionAttributes,
+  ObjectType.message: key.message,
+  ObjectType.organization: key.organization,
+  ObjectType.dialplan: key.dialplan,
+  ObjectType.ivrMenu: key.ivrMenu
 };
 
 /// Map with deserialization keys and values
 const Map<String, ObjectType> _objectTypeFromString = const {
-  Key.user: ObjectType.user,
-  Key.calendar: ObjectType.calendar,
-  Key.reception: ObjectType.reception,
-  Key.contact: ObjectType.contact,
-  Key.receptionAttributes: ObjectType.receptionAttribute,
-  Key.message: ObjectType.message,
-  Key.organization: ObjectType.organization,
-  Key.dialplan: ObjectType.dialplan,
-  Key.ivrMenu: ObjectType.ivrMenu
+  key.user: ObjectType.user,
+  key.calendar: ObjectType.calendar,
+  key.reception: ObjectType.reception,
+  key.contact: ObjectType.contact,
+  key.receptionAttributes: ObjectType.receptionAttribute,
+  key.message: ObjectType.message,
+  key.organization: ObjectType.organization,
+  key.dialplan: ObjectType.dialplan,
+  key.ivrMenu: ObjectType.ivrMenu
 };
 
 /**
@@ -101,7 +101,7 @@ abstract class ObjectChange {
   ObjectType get objectType;
 
   static ObjectChange decode(Map map) {
-    final ObjectType objectType = objectTypeFromString(map[Key.type]);
+    final ObjectType objectType = objectTypeFromString(map[key.type]);
 
     switch (objectType) {
       case ObjectType.calendar:
@@ -151,11 +151,11 @@ class Commit {
    */
   Commit.fromMap(Map map)
       : changes = new List<ObjectChange>.from(
-            (map[Key.changes] as Iterable).map(ObjectChange.decode)),
-        authorIdentity = map[Key.identity],
-        changedAt = Util.unixTimestampToDateTime(map[Key.updatedAt]),
-        commitHash = map[Key.commitHash],
-        uid = map[Key.uid];
+            (map[key.changes] as Iterable).map(ObjectChange.decode)),
+        authorIdentity = map[key.identity],
+        changedAt = util.unixTimestampToDateTime(map[key.updatedAt]),
+        commitHash = map[key.commitHash],
+        uid = map[key.uid];
 
   /**
    * Decoding factory.
@@ -167,11 +167,11 @@ class Commit {
    * Suitable for serialization.
    */
   Map toJson() => {
-        Key.identity: authorIdentity,
-        Key.updatedAt: Util.dateTimeToUnixTimestamp(changedAt),
-        Key.commitHash: commitHash,
-        Key.uid: uid,
-        Key.changes: new List<Map>.from(changes.map((c) => c.toJson()))
+        key.identity: authorIdentity,
+        key.updatedAt: util.dateTimeToUnixTimestamp(changedAt),
+        key.commitHash: commitHash,
+        key.uid: uid,
+        key.changes: new List<Map>.from(changes.map((c) => c.toJson()))
       };
 }
 
@@ -192,22 +192,22 @@ class IvrChange implements ObjectChange {
    *
    */
   static IvrChange decode(Map map) =>
-      new IvrChange(changeTypeFromString(map[Key.change]), map[Key.name]);
+      new IvrChange(changeTypeFromString(map[key.change]), map[key.name]);
 
   /**
    *
    */
   IvrChange.fromJson(Map map)
-      : changeType = changeTypeFromString(map[Key.change]),
-        menuName = map[Key.name];
+      : changeType = changeTypeFromString(map[key.change]),
+        menuName = map[key.name];
 
   /**
    *
    */
   Map toJson() => {
-        Key.change: changeTypeToString(changeType),
-        Key.type: objectTypeToString(objectType),
-        Key.name: menuName
+        key.change: changeTypeToString(changeType),
+        key.type: objectTypeToString(objectType),
+        key.name: menuName
       };
 }
 
@@ -228,22 +228,22 @@ class ReceptionDialplanChange implements ObjectChange {
    *
    */
   static ReceptionDialplanChange decode(Map map) => new ReceptionDialplanChange(
-      changeTypeFromString(map[Key.change]), map[Key.name]);
+      changeTypeFromString(map[key.change]), map[key.name]);
 
   /**
    *
    */
   ReceptionDialplanChange.fromJson(Map map)
-      : changeType = changeTypeFromString(map[Key.change]),
-        extension = map[Key.name];
+      : changeType = changeTypeFromString(map[key.change]),
+        extension = map[key.name];
 
   /**
    *
    */
   Map toJson() => {
-        Key.change: changeTypeToString(changeType),
-        Key.type: objectTypeToString(objectType),
-        Key.name: extension
+        key.change: changeTypeToString(changeType),
+        key.type: objectTypeToString(objectType),
+        key.name: extension
       };
 }
 
@@ -269,16 +269,16 @@ class MessageChange implements ObjectChange {
    *
    */
   MessageChange.fromJson(Map map)
-      : changeType = changeTypeFromString(map[Key.change]),
-        mid = map[Key.mid];
+      : changeType = changeTypeFromString(map[key.change]),
+        mid = map[key.mid];
 
   /**
    *
    */
   Map toJson() => {
-        Key.change: changeTypeToString(changeType),
-        Key.type: objectTypeToString(objectType),
-        Key.mid: mid
+        key.change: changeTypeToString(changeType),
+        key.type: objectTypeToString(objectType),
+        key.mid: mid
       };
 }
 
@@ -305,16 +305,16 @@ class OrganizationChange implements ObjectChange {
    *
    */
   OrganizationChange.fromJson(Map map)
-      : changeType = changeTypeFromString(map[Key.change]),
-        oid = map[Key.mid];
+      : changeType = changeTypeFromString(map[key.change]),
+        oid = map[key.mid];
 
   /**
    *
    */
   Map toJson() => {
-        Key.change: changeTypeToString(changeType),
-        Key.type: objectTypeToString(objectType),
-        Key.mid: oid
+        key.change: changeTypeToString(changeType),
+        key.type: objectTypeToString(objectType),
+        key.mid: oid
       };
 }
 
@@ -340,15 +340,15 @@ class ReceptionChange implements ObjectChange {
    *
    */
   ReceptionChange.fromJson(Map map)
-      : changeType = changeTypeFromString(map[Key.change]),
-        rid = map[Key.mid];
+      : changeType = changeTypeFromString(map[key.change]),
+        rid = map[key.mid];
 
   /**
    *
    */
   Map toJson() => {
-        Key.change: changeTypeToString(changeType),
-        Key.type: objectTypeToString(objectType),
-        Key.mid: rid
+        key.change: changeTypeToString(changeType),
+        key.type: objectTypeToString(objectType),
+        key.mid: rid
       };
 }

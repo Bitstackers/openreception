@@ -16,7 +16,7 @@ part of openreception.framework.service;
 /**
  * Client for dialplan service.
  */
-class RESTDialplanStore implements Storage.ReceptionDialplan {
+class RESTDialplanStore implements storage.ReceptionDialplan {
   WebService _backend = null;
   Uri _host;
   String _token = '';
@@ -29,39 +29,39 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
   /**
    *
    */
-  Future<Model.ReceptionDialplan> create(Model.ReceptionDialplan rdp,
-      [Model.User user]) {
-    Uri url = Resource.ReceptionDialplan.list(_host);
+  Future<model.ReceptionDialplan> create(model.ReceptionDialplan rdp,
+      [model.User user]) {
+    Uri url = resource.ReceptionDialplan.list(_host);
     url = _appendToken(url, _token);
 
     return _backend
         .post(url, JSON.encode(rdp))
         .then(JSON.decode)
-        .then(Model.ReceptionDialplan.decode);
+        .then(model.ReceptionDialplan.decode);
   }
 
   /**
    *
    */
-  Future<Model.ReceptionDialplan> get(String extension) {
-    Uri url = Resource.ReceptionDialplan.single(_host, extension);
+  Future<model.ReceptionDialplan> get(String extension) {
+    Uri url = resource.ReceptionDialplan.single(_host, extension);
     url = _appendToken(url, _token);
 
     return _backend
         .get(url)
         .then(JSON.decode)
-        .then(Model.ReceptionDialplan.decode);
+        .then(model.ReceptionDialplan.decode);
   }
 
   /**
    *
    */
-  Future<Iterable<Model.ReceptionDialplan>> list() {
-    Uri url = Resource.ReceptionDialplan.list(_host);
+  Future<Iterable<model.ReceptionDialplan>> list() {
+    Uri url = resource.ReceptionDialplan.list(_host);
     url = _appendToken(url, _token);
 
-    Iterable<Model.ReceptionDialplan> castMaps(Iterable maps) =>
-        maps.map(Model.ReceptionDialplan.decode);
+    Iterable<model.ReceptionDialplan> castMaps(Iterable maps) =>
+        maps.map(model.ReceptionDialplan.decode);
 
     return _backend.get(url).then(JSON.decode).then(castMaps);
   }
@@ -69,22 +69,22 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
   /**
    *
    */
-  Future<Model.ReceptionDialplan> update(Model.ReceptionDialplan rdp,
-      [Model.User user]) {
-    Uri url = Resource.ReceptionDialplan.single(_host, rdp.extension);
+  Future<model.ReceptionDialplan> update(model.ReceptionDialplan rdp,
+      [model.User user]) {
+    Uri url = resource.ReceptionDialplan.single(_host, rdp.extension);
     url = _appendToken(url, _token);
 
     return _backend
         .put(url, JSON.encode(rdp))
         .then(JSON.decode)
-        .then(Model.ReceptionDialplan.decode);
+        .then(model.ReceptionDialplan.decode);
   }
 
   /**
    *
    */
-  Future remove(String extension, [Model.User user]) {
-    Uri url = Resource.ReceptionDialplan.single(_host, extension);
+  Future remove(String extension, [model.User user]) {
+    Uri url = resource.ReceptionDialplan.single(_host, extension);
     url = _appendToken(url, _token);
 
     return _backend.delete(url);
@@ -94,7 +94,7 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
    *
    */
   Future<Iterable<String>> analyze(String extension) async {
-    Uri url = Resource.ReceptionDialplan.analyze(_host, extension);
+    Uri url = resource.ReceptionDialplan.analyze(_host, extension);
     url = _appendToken(url, _token);
 
     return await _backend.post(url, '').then(JSON.decode) as Iterable<String>;
@@ -105,7 +105,7 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
    *
    */
   Future<Iterable<String>> deployDialplan(String extension, int rid) async {
-    Uri url = Resource.ReceptionDialplan.deploy(_host, extension, rid);
+    Uri url = resource.ReceptionDialplan.deploy(_host, extension, rid);
     url = _appendToken(url, _token);
 
     return JSON.decode(await _backend.post(url, '')) as Iterable<String>;
@@ -115,7 +115,7 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
    * Performs a PBX-reload of the deployed dialplan configuration.
    */
   Future reloadConfig() {
-    Uri url = Resource.ReceptionDialplan.reloadConfig(_host);
+    Uri url = resource.ReceptionDialplan.reloadConfig(_host);
     url = _appendToken(url, _token);
 
     return _backend.post(url, '').then(JSON.decode);
@@ -124,12 +124,12 @@ class RESTDialplanStore implements Storage.ReceptionDialplan {
   /**
    *
    */
-  Future<Iterable<Model.Commit>> changes([String extension]) {
-    Uri url = Resource.ReceptionDialplan.changeList(_host, extension);
+  Future<Iterable<model.Commit>> changes([String extension]) {
+    Uri url = resource.ReceptionDialplan.changeList(_host, extension);
     url = _appendToken(url, this._token);
 
-    Iterable<Model.Commit> convertMaps(Iterable<Map> maps) =>
-        maps.map(Model.Commit.decode);
+    Iterable<model.Commit> convertMaps(Iterable<Map> maps) =>
+        maps.map(model.Commit.decode);
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }

@@ -30,13 +30,13 @@ class PeerAccount {
    * Deserializing factory.
    */
   static PeerAccount decode(Map map) =>
-      new PeerAccount(map[Key.username], map[Key.password], map[Key.context]);
+      new PeerAccount(map[key.username], map[key.password], map[key.context]);
 
   /**
    * Serialization function.
    */
   Map toJson() =>
-      {Key.username: username, Key.password: password, Key.context: context};
+      {key.username: username, key.password: password, key.context: context};
 
   /**
    * Returns a string representation of the [PeerAccount].

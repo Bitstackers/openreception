@@ -47,22 +47,22 @@ class UserChange implements ObjectChange {
    *
    */
   static UserChange decode(Map map) =>
-      new UserChange(changeTypeFromString(map[Key.change]), map[Key.uid]);
+      new UserChange(changeTypeFromString(map[key.change]), map[key.uid]);
 
   /**
    *
    */
   UserChange.fromJson(Map map)
-      : changeType = changeTypeFromString(map[Key.change]),
-        uid = map[Key.uid];
+      : changeType = changeTypeFromString(map[key.change]),
+        uid = map[key.uid];
 
   /**
    *
    */
   Map toJson() => {
-        Key.change: changeTypeToString(changeType),
-        Key.type: objectTypeToString(objectType),
-        Key.uid: uid
+        key.change: changeTypeToString(changeType),
+        key.type: objectTypeToString(objectType),
+        key.uid: uid
       };
 }
 
@@ -76,9 +76,9 @@ class UserReference implements ObjectReference {
   const UserReference(this.id, this.name);
 
   static UserReference decode(Map map) =>
-      new UserReference(map[Key.id], map[Key.name]);
+      new UserReference(map[key.id], map[key.name]);
 
-  Map toJson() => {Key.id: id, Key.name: name};
+  Map toJson() => {key.id: id, key.name: name};
 
   int get hashCode => id.hashCode;
 }
@@ -111,12 +111,12 @@ class User {
    * Constructor.
    */
   User.fromMap(Map map)
-      : id = map[Key.id],
-        address = map[Key.address],
-        name = map[Key.name],
-        extension = map[Key.extension],
-        groups = new Set<String>.from(map[Key.groups]),
-        identities = new Set<String>.from(map[Key.identites]),
+      : id = map[key.id],
+        address = map[key.address],
+        name = map[key.name],
+        extension = map[key.extension],
+        groups = new Set<String>.from(map[key.groups]),
+        identities = new Set<String>.from(map[key.identites]),
         portrait = map.containsKey('remote_attributes') &&
                 (map['remote_attributes'] as Map).containsKey('picture')
             ? (map['remote_attributes'] as Map)['picture']
@@ -126,12 +126,12 @@ class User {
    *
    */
   Map toJson() => {
-        Key.id: id,
-        Key.name: name,
-        Key.identites: identities.toList(growable: false),
-        Key.address: address,
-        Key.extension: extension,
-        Key.groups: groups.toList(growable: false)
+        key.id: id,
+        key.name: name,
+        key.identites: identities.toList(growable: false),
+        key.address: address,
+        key.extension: extension,
+        key.groups: groups.toList(growable: false)
       };
 
   /**

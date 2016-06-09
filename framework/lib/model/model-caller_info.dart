@@ -23,21 +23,21 @@ class CallerInfo {
   CallerInfo.empty();
 
   CallerInfo.fromMap(Map map) {
-    name = map[Key.name];
-    company = map[Key.company];
-    phone = map[Key.phone];
-    cellPhone = map[Key.cellPhone];
-    localExtension = map[Key.localExtension];
+    name = map[key.name];
+    company = map[key.company];
+    phone = map[key.phone];
+    cellPhone = map[key.cellPhone];
+    localExtension = map[key.localExtension];
   }
 
   static CallerInfo decode(Map map) => new CallerInfo.fromMap(map);
 
   Map get asMap => {
-        Key.name: name,
-        Key.company: company,
-        Key.phone: phone,
-        Key.cellPhone: cellPhone,
-        Key.localExtension: localExtension
+        key.name: name,
+        key.company: company,
+        key.phone: phone,
+        key.cellPhone: cellPhone,
+        key.localExtension: localExtension
       };
 
   Map toJson() => this.asMap;

@@ -27,5 +27,5 @@ abstract class CDR {
   static Uri checkpoint(Uri host) => Uri.parse('$host/$_checkpoint');
 
   static Uri root(Uri host) =>
-      Uri.parse('${Util.removeTailingSlashes(host)}/${_cdr}');
+      Uri.parse('${util.removeTailingSlashes(host)}/${_cdr}');
 }

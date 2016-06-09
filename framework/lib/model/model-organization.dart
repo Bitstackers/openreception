@@ -32,9 +32,9 @@ class Organization {
    * Constructor used in serializing.
    */
   Organization.fromMap(Map map)
-      : id = map[Key.id],
-        name = map[Key.name],
-        notes = map[Key.notes] as List<String>;
+      : id = map[key.id],
+        name = map[key.name],
+        notes = map[key.notes] as List<String>;
 
   /**
    * Deserializing factor.
@@ -47,5 +47,5 @@ class Organization {
    * Returns a Map representation of the Organization.
    * Serialization function.
    */
-  Map toJson() => {Key.id: id, Key.name: name, Key.notes: notes};
+  Map toJson() => {key.id: id, key.name: name, key.notes: notes};
 }

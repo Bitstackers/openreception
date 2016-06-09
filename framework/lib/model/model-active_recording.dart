@@ -37,16 +37,16 @@ class ActiveRecording {
    * Deserializing constructor.
    */
   ActiveRecording.fromMap(Map map)
-      : agentChannel = map[Key.agentChannel],
-        path = map[Key.path],
-        started = Util.unixTimestampToDateTime(map[Key.started]);
+      : agentChannel = map[key.agentChannel],
+        path = map[key.path],
+        started = util.unixTimestampToDateTime(map[key.started]);
 
   /**
    * Serialization function.
    */
   Map toJson() => {
-        Key.agentChannel: agentChannel,
-        Key.path: path,
-        Key.started: Util.dateTimeToUnixTimestamp(started)
+        key.agentChannel: agentChannel,
+        key.path: path,
+        key.started: util.dateTimeToUnixTimestamp(started)
       };
 }

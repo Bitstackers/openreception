@@ -38,10 +38,10 @@ class CalendarEntry {
    * help getting the right format. 'content' is the actual entry body.
    */
   CalendarEntry.fromMap(Map map)
-      : id = map[Key.id],
-        start = Util.unixTimestampToDateTime(map[Key.start]),
-        stop = Util.unixTimestampToDateTime(map[Key.stop]),
-        content = map[Key.body];
+      : id = map[key.id],
+        start = util.unixTimestampToDateTime(map[key.start]),
+        stop = util.unixTimestampToDateTime(map[key.stop]),
+        content = map[key.body];
 
   /**
    * Decoding factory.
@@ -62,10 +62,10 @@ class CalendarEntry {
    * Serialization function.
    */
   Map toJson() => {
-        Key.id: id,
-        Key.body: content,
-        Key.start: Util.dateTimeToUnixTimestamp(start),
-        Key.stop: Util.dateTimeToUnixTimestamp(stop)
+        key.id: id,
+        key.body: content,
+        key.start: util.dateTimeToUnixTimestamp(start),
+        key.stop: util.dateTimeToUnixTimestamp(stop)
       };
 
   /**

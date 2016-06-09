@@ -21,20 +21,20 @@ abstract class Message {
   static String nameSpace = 'message';
 
   static Uri single(Uri host, int messageID) =>
-      Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}/${messageID}');
+      Uri.parse('${util.removeTailingSlashes(host)}/${nameSpace}/${messageID}');
 
   static Uri send(Uri host, int messageID) => Uri.parse(
-      '${Util.removeTailingSlashes(host)}/${nameSpace}/${messageID}/send');
+      '${util.removeTailingSlashes(host)}/${nameSpace}/${messageID}/send');
 
   static Uri root(Uri host) =>
-      Uri.parse('${Util.removeTailingSlashes(host)}/${nameSpace}');
+      Uri.parse('${util.removeTailingSlashes(host)}/${nameSpace}');
 
-  static Uri list(Uri host, {Model.MessageFilter filter: null}) {
+  static Uri list(Uri host, {model.MessageFilter filter: null}) {
     String filterParameter =
         filter != null ? '?filter=${JSON.encode(filter)}' : '';
 
     return Uri.parse(
-        '${Util.removeTailingSlashes(host)}/${nameSpace}/list${filterParameter}');
+        '${util.removeTailingSlashes(host)}/${nameSpace}/list${filterParameter}');
   }
 
   static Uri midOfUid(Uri host, int uid) {
@@ -50,7 +50,7 @@ abstract class Message {
   }
 
   static Uri listDay(Uri host, DateTime day,
-      {Model.MessageFilter filter: null}) {
+      {model.MessageFilter filter: null}) {
     final String filterParameter =
         filter != null ? '?filter=${JSON.encode(filter)}' : '';
 
@@ -59,7 +59,7 @@ abstract class Message {
     return Uri.parse('$host/message/list/$dateString${filterParameter}');
   }
 
-  static Uri listSaved(Uri host, {Model.MessageFilter filter: null}) {
+  static Uri listSaved(Uri host, {model.MessageFilter filter: null}) {
     final String filterParameter =
         filter != null ? '?filter=${JSON.encode(filter)}' : '';
 

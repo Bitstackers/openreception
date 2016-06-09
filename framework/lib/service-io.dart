@@ -17,8 +17,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'dart:io' as io;
-import 'storage.dart' as Storage;
-import 'service.dart' as Service;
+import 'storage.dart' as storage;
+import 'service.dart' as service;
 import 'package:logging/logging.dart';
 
 part 'service/io/service-io-client.dart';
@@ -31,7 +31,7 @@ final Logger log = new Logger(libraryName);
 Future<String> _handleResponse(
     io.HttpClientResponse response, String method, Uri resource) async {
   final String body = await extractContent(response);
-  Service.WebService.checkResponse(response.statusCode, method, resource, body);
+  service.WebService.checkResponse(response.statusCode, method, resource, body);
   return body;
 }
 

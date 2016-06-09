@@ -34,29 +34,29 @@ abstract class WebService {
 
       case 400:
         if (response.toLowerCase().contains('unchanged')) {
-          throw new Storage.Unchanged('$method $path - $response');
+          throw new storage.Unchanged('$method $path - $response');
         }
-        throw new Storage.ClientError('$method $path - $response');
+        throw new storage.ClientError('$method $path - $response');
         break;
 
       case 401:
-        throw new Storage.NotAuthorized('$method  $path - $response');
+        throw new storage.NotAuthorized('$method  $path - $response');
         break;
 
       case 403:
-        throw new Storage.Forbidden('$method $path - $response');
+        throw new storage.Forbidden('$method $path - $response');
         break;
 
       case 409:
-        throw new Storage.Conflict('$method $path - $response');
+        throw new storage.Conflict('$method $path - $response');
         break;
 
       case 404:
-        throw new Storage.NotFound('$method  $path - $response');
+        throw new storage.NotFound('$method  $path - $response');
         break;
 
       case 500:
-        throw new Storage.ServerError('$method  $path - $response');
+        throw new storage.ServerError('$method  $path - $response');
         break;
 
       default:

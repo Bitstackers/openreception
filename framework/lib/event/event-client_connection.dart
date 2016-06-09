@@ -30,5 +30,5 @@ class ClientConnectionState implements Event {
 
   ClientConnectionState.fromMap(Map map)
       : conn = new model.ClientConnection.fromMap(map[Key.state]),
-        timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
+        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
 }

@@ -21,19 +21,19 @@ abstract class Calendar {
   /**
    *
    */
-  static Uri ownerBase(Uri host, Model.Owner owner) =>
+  static Uri ownerBase(Uri host, model.Owner owner) =>
       Uri.parse('$host/calendar/${owner.toJson()}');
 
   /**
    *
    */
-  static Uri single(Uri host, int eid, Model.Owner owner) =>
+  static Uri single(Uri host, int eid, model.Owner owner) =>
       Uri.parse('$host/calendar/${owner.toJson()}/${eid}');
 
   /**
    *
    */
-  static Uri changeList(Uri host, Model.Owner owner, [int eid]) {
+  static Uri changeList(Uri host, model.Owner owner, [int eid]) {
     if (eid == null) {
       return Uri.parse('${host}/calendar/${owner.toJson()}/change');
     } else {

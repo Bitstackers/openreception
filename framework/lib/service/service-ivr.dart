@@ -16,7 +16,7 @@ part of openreception.framework.service;
 /**
  * Client for contact service.
  */
-class RESTIvrStore implements Storage.Ivr {
+class RESTIvrStore implements storage.Ivr {
   WebService _backend = null;
   Uri _host;
   String _token = '';
@@ -29,22 +29,22 @@ class RESTIvrStore implements Storage.Ivr {
   /**
    *
    */
-  Future<Model.IvrMenu> create(Model.IvrMenu menu, [Model.User user]) {
-    Uri url = Resource.Ivr.list(_host);
+  Future<model.IvrMenu> create(model.IvrMenu menu, [model.User user]) {
+    Uri url = resource.Ivr.list(_host);
     url = _appendToken(url, this._token);
 
     return this
         ._backend
         .post(url, JSON.encode(menu))
         .then(JSON.decode)
-        .then(Model.IvrMenu.decode);
+        .then(model.IvrMenu.decode);
   }
 
   /**
    *
    */
   Future<Iterable<String>> deploy(String menuName) async {
-    Uri url = Resource.Ivr.deploy(_host, menuName);
+    Uri url = resource.Ivr.deploy(_host, menuName);
     url = _appendToken(url, this._token);
 
     return JSON.decode(await _backend.post(url, '')) as Iterable<String>;
@@ -53,8 +53,8 @@ class RESTIvrStore implements Storage.Ivr {
   /**
    *
    */
-  Future remove(String menuName, [Model.User user]) {
-    Uri url = Resource.Ivr.single(this._host, menuName);
+  Future remove(String menuName, [model.User user]) {
+    Uri url = resource.Ivr.single(this._host, menuName);
     url = _appendToken(url, this._token);
 
     return this._backend.delete(url);
@@ -63,22 +63,22 @@ class RESTIvrStore implements Storage.Ivr {
   /**
   *
   */
-  Future<Model.IvrMenu> get(String menuName) {
-    Uri url = Resource.Ivr.single(this._host, menuName);
+  Future<model.IvrMenu> get(String menuName) {
+    Uri url = resource.Ivr.single(this._host, menuName);
     url = _appendToken(url, this._token);
 
-    return this._backend.get(url).then(JSON.decode).then(Model.IvrMenu.decode);
+    return this._backend.get(url).then(JSON.decode).then(model.IvrMenu.decode);
   }
 
   /**
    *
    */
-  Future<Iterable<Model.IvrMenu>> list() {
-    Uri url = Resource.Ivr.list(_host);
+  Future<Iterable<model.IvrMenu>> list() {
+    Uri url = resource.Ivr.list(_host);
     url = _appendToken(url, this._token);
 
-    Iterable<Model.IvrMenu> castMaps(Iterable maps) =>
-        maps.map(Model.IvrMenu.decode);
+    Iterable<model.IvrMenu> castMaps(Iterable maps) =>
+        maps.map(model.IvrMenu.decode);
 
     return this._backend.get(url).then(JSON.decode).then(castMaps);
   }
@@ -86,26 +86,26 @@ class RESTIvrStore implements Storage.Ivr {
   /**
    *
    */
-  Future<Model.IvrMenu> update(Model.IvrMenu menu, [Model.User user]) {
-    Uri url = Resource.Ivr.single(this._host, menu.name);
+  Future<model.IvrMenu> update(model.IvrMenu menu, [model.User user]) {
+    Uri url = resource.Ivr.single(this._host, menu.name);
     url = _appendToken(url, this._token);
 
     return this
         ._backend
         .put(url, JSON.encode(menu))
         .then(JSON.decode)
-        .then(Model.IvrMenu.decode);
+        .then(model.IvrMenu.decode);
   }
 
   /**
    *
    */
-  Future<Iterable<Model.Commit>> changes([String menuName]) {
-    Uri url = Resource.Ivr.changeList(_host, menuName);
+  Future<Iterable<model.Commit>> changes([String menuName]) {
+    Uri url = resource.Ivr.changeList(_host, menuName);
     url = _appendToken(url, this._token);
 
-    Iterable<Model.Commit> convertMaps(Iterable<Map> maps) =>
-        maps.map(Model.Commit.decode);
+    Iterable<model.Commit> convertMaps(Iterable<Map> maps) =>
+        maps.map(model.Commit.decode);
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }

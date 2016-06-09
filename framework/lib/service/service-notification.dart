@@ -43,8 +43,8 @@ class NotificationService {
   /**
    * Performs a broadcast via the notification server.
    */
-  Future broadcastEvent(Event.Event event) {
-    Uri uri = Resource.Notification.broadcast(host);
+  Future broadcastEvent(event.Event event) {
+    Uri uri = resource.Notification.broadcast(host);
     uri = _appendToken(uri, _clientToken);
 
     log.finest('Broadcasting ${event.runtimeType}');
@@ -57,22 +57,22 @@ class NotificationService {
   /**
    * Retrieves the [ClientConnection]'s currently active on the server.
    */
-  Future<Iterable<Model.ClientConnection>> clientConnections() async {
-    Uri uri = Resource.Notification.clientConnections(host);
+  Future<Iterable<model.ClientConnection>> clientConnections() async {
+    Uri uri = resource.Notification.clientConnections(host);
     uri = _appendToken(uri, _clientToken);
 
     log.finest('GET $uri');
 
     return await _httpClient.get(uri).then(JSON.decode).then(
         (Iterable<Map> maps) =>
-            maps.map((Map map) => new Model.ClientConnection.fromMap(map)));
+            maps.map((Map map) => new model.ClientConnection.fromMap(map)));
   }
 
   /**
    * Retrieves the [ClientConnection] currently associated with [uid].
    */
-  Future<Model.ClientConnection> clientConnection(int uid) {
-    Uri uri = Resource.Notification.clientConnection(host, uid);
+  Future<model.ClientConnection> clientConnection(int uid) {
+    Uri uri = resource.Notification.clientConnection(host, uid);
     uri = _appendToken(uri, _clientToken);
 
     log.finest('GET $uri');
@@ -80,14 +80,14 @@ class NotificationService {
     return _httpClient
         .get(uri)
         .then(JSON.decode)
-        .then((Map map) => new Model.ClientConnection.fromMap(map));
+        .then((Map map) => new model.ClientConnection.fromMap(map));
   }
 
   /**
    * Sends an event via the notification server to [recipients]
    */
-  Future send(Iterable<int> recipients, Event.Event event) {
-    Uri uri = Resource.Notification.send(host);
+  Future send(Iterable<int> recipients, event.Event event) {
+    Uri uri = resource.Notification.send(host);
     uri = _appendToken(uri, _clientToken);
 
     final payload = {
@@ -98,7 +98,7 @@ class NotificationService {
     return _httpClient
         .post(uri, JSON.encode(payload))
         .then(JSON.decode)
-        .then((Map map) => new Model.ClientConnection.fromMap(map));
+        .then((Map map) => new model.ClientConnection.fromMap(map));
   }
 
   /**
@@ -150,7 +150,7 @@ class NotificationService {
       WebSocket notificationBackend, Uri host, String serverToken) {
     return notificationBackend
         .connect(_appendToken(
-            Resource.Notification.notifications(host), serverToken))
+            resource.Notification.notifications(host), serverToken))
         .then((WebSocket ws) => new NotificationSocket(ws));
   }
 }
@@ -162,9 +162,9 @@ class NotificationSocket {
   static final String className = '${libraryName}.NotificationSocket';
 
   WebSocket _websocket = null;
-  StreamController<Event.Event> _streamController =
+  StreamController<event.Event> _streamController =
       new StreamController.broadcast();
-  Stream<Event.Event> get eventStream => _streamController.stream;
+  Stream<event.Event> get eventStream => _streamController.stream;
   static Logger log = new Logger(NotificationSocket.className);
 
   NotificationSocket(this._websocket) {
@@ -177,7 +177,7 @@ class NotificationSocket {
 
   void _parseAndDispatch(String buffer) {
     Map map = JSON.decode(buffer);
-    Event.Event newEvent = new Event.Event.parse(map);
+    event.Event newEvent = new event.Event.parse(map);
 
     if (newEvent != null) {
       _streamController.add(newEvent);

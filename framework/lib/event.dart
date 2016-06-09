@@ -15,7 +15,7 @@ library openreception.framework.event;
 
 import 'package:logging/logging.dart';
 
-import 'package:openreception.framework/util.dart' as Util;
+import 'package:openreception.framework/util.dart' as util;
 import 'package:openreception.framework/model.dart' as model;
 
 part 'event/call/event-call_assign.dart';

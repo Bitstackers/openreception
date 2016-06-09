@@ -31,19 +31,19 @@ class Peer {
    * Deserizaling constructor.
    */
   Peer.fromMap(Map map)
-      : name = map[Key.name],
-        registered = map[Key.registered],
-        inTransition = map[Key.inTransition],
-        channelCount = map[Key.activeChannels];
+      : name = map[key.name],
+        registered = map[key.registered],
+        inTransition = map[key.inTransition],
+        channelCount = map[key.activeChannels];
 
   /**
    * Serialization function.
    */
   Map toJson() => {
-        Key.name: name,
-        Key.inTransition: inTransition,
-        Key.registered: registered,
-        Key.activeChannels: channelCount
+        key.name: name,
+        key.inTransition: inTransition,
+        key.registered: registered,
+        key.activeChannels: channelCount
       };
 
   /**

@@ -28,5 +28,5 @@ class ChannelState implements Event {
 
   ChannelState.fromMap(Map map)
       : channelUuid = map[Key.channel][Key.id],
-        timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
+        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
 }

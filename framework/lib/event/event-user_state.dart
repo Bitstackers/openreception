@@ -31,5 +31,5 @@ class UserState implements Event {
 
   UserState.fromMap(Map map)
       : this.status = new model.UserStatus.fromMap(map),
-        this.timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
+        this.timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
 }

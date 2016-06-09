@@ -27,14 +27,14 @@ class CalendarChange implements ObjectChange {
    *
    */
   static CalendarChange decode(Map map) =>
-      new CalendarChange(changeTypeFromString(map[Key.change]), map[Key.eid]);
+      new CalendarChange(changeTypeFromString(map[key.change]), map[key.eid]);
 
   /**
    *
    */
   Map toJson() => {
-        Key.type: objectTypeToString(objectType),
-        Key.change: changeTypeToString(changeType),
-        Key.eid: eid
+        key.type: objectTypeToString(objectType),
+        key.change: changeTypeToString(changeType),
+        key.eid: eid
       };
 }

@@ -16,10 +16,10 @@ library openreception.framework.service;
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
-import 'model.dart' as Model;
-import 'resource.dart' as Resource;
-import 'storage.dart' as Storage;
-import 'event.dart' as Event;
+import 'model.dart' as model;
+import 'resource.dart' as resource;
+import 'storage.dart' as storage;
+import 'event.dart' as event;
 
 import 'package:logging/logging.dart';
 

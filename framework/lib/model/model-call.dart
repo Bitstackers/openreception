@@ -41,10 +41,10 @@ class Call {
   static final String noId = '';
 
   final Bus<String> _callState = new Bus<String>();
-  final Bus<Event.CallEvent> _eventBus = new Bus<Event.CallEvent>();
+  final Bus<event.CallEvent> _eventBus = new Bus();
 
   DateTime arrived = new DateTime.now();
-  DateTime answeredAt = Util.never;
+  DateTime answeredAt = util.never;
   int assignedTo = User.noId;
   String bLeg = null;
   String callerId = '';
@@ -66,19 +66,19 @@ class Call {
   /**
    * Constructor.
    */
-  factory Call.fromMap(Map map) => new Call.empty(map[Key.id])
+  factory Call.fromMap(Map map) => new Call.empty(map[key.id])
     .._state = map[PbxKey.state]
-    ..answeredAt = Util.unixTimestampToDateTime(map[Key.answeredAt])
-    ..bLeg = map[Key.bLeg]
-    .._locked = map[Key.locked]
-    ..inbound = map[Key.inbound]
-    ..destination = map[Key.destination]
-    ..callerId = map[Key.callerId]
-    ..greetingPlayed = map[Key.greetingPlayed]
+    ..answeredAt = util.unixTimestampToDateTime(map[key.answeredAt])
+    ..bLeg = map[key.bLeg]
+    .._locked = map[key.locked]
+    ..inbound = map[key.inbound]
+    ..destination = map[key.destination]
+    ..callerId = map[key.callerId]
+    ..greetingPlayed = map[key.greetingPlayed]
     ..rid = map[ORPbxKey.receptionId]
     ..cid = map[ORPbxKey.contactId]
-    ..assignedTo = map[Key.assignedTo]
-    ..arrived = Util.unixTimestampToDateTime(map[Key.arrivalTime]);
+    ..assignedTo = map[key.assignedTo]
+    ..arrived = util.unixTimestampToDateTime(map[key.arrivalTime]);
 
   /**
    *
@@ -109,42 +109,42 @@ class Call {
     _log.finest('UUID: ${_id}: ${lastState} => ${newState}');
 
     if (lastState == CallState.queued) {
-      notifyEvent(new Event.QueueLeave(this));
+      notifyEvent(new event.QueueLeave(this));
     } else if (lastState == CallState.parked) {
-      notifyEvent(new Event.CallUnpark(this));
+      notifyEvent(new event.CallUnpark(this));
     }
 
     switch (newState) {
       case (CallState.created):
-        notifyEvent(new Event.CallOffer(this));
+        notifyEvent(new event.CallOffer(this));
         break;
 
       case (CallState.parked):
-        notifyEvent(new Event.CallPark(this));
+        notifyEvent(new event.CallPark(this));
         break;
 
       case (CallState.unparked):
-        notifyEvent(new Event.CallUnpark(this));
+        notifyEvent(new event.CallUnpark(this));
         break;
 
       case (CallState.queued):
-        notifyEvent(new Event.QueueJoin(this));
+        notifyEvent(new event.QueueJoin(this));
         break;
 
       case (CallState.hungup):
-        notifyEvent(new Event.CallHangup(this, hangupCause: hangupCause));
+        notifyEvent(new event.CallHangup(this, hangupCause: hangupCause));
         break;
 
       case (CallState.speaking):
-        notifyEvent(new Event.CallPickup(this));
+        notifyEvent(new event.CallPickup(this));
         break;
 
       case (CallState.transferred):
-        notifyEvent(new Event.CallTransfer(this));
+        notifyEvent(new event.CallTransfer(this));
         break;
 
       case (CallState.ringing):
-        notifyEvent(new Event.CallStateChanged(this));
+        notifyEvent(new event.CallStateChanged(this));
         break;
 
       case (CallState.transferring):
@@ -183,7 +183,7 @@ class Call {
   /**
    *
    */
-  Stream<Event.CallEvent> get event => _eventBus.stream;
+  Stream<event.CallEvent> get event => _eventBus.stream;
 
   /**
    *
@@ -218,16 +218,16 @@ class Call {
     _locked = lock;
 
     if (lock) {
-      notifyEvent(new Event.CallLock((this)));
+      notifyEvent(new event.CallLock((this)));
     } else {
-      notifyEvent(new Event.CallUnlock(this));
+      notifyEvent(new event.CallUnlock(this));
     }
   }
 
   /**
    *
    */
-  void notifyEvent(Event.Event event) => _eventBus.fire(event);
+  void notifyEvent(event.Event event) => _eventBus.fire(event);
 
   /**
    *
@@ -248,20 +248,20 @@ class Call {
    *
    */
   Map toJson() => {
-        Key.id: _id,
+        key.id: _id,
         PbxKey.state: _state,
-        Key.bLeg: bLeg,
-        Key.locked: locked,
-        Key.inbound: inbound,
-        Key.destination: destination,
-        Key.callerId: callerId,
-        Key.greetingPlayed: greetingPlayed,
+        key.bLeg: bLeg,
+        key.locked: locked,
+        key.inbound: inbound,
+        key.destination: destination,
+        key.callerId: callerId,
+        key.greetingPlayed: greetingPlayed,
         ORPbxKey.receptionId: rid,
         ORPbxKey.contactId: cid,
-        Key.assignedTo: assignedTo,
-        Key.channel: channel,
-        Key.arrivalTime: Util.dateTimeToUnixTimestamp(arrived),
-        Key.answeredAt: Util.dateTimeToUnixTimestamp(answeredAt)
+        key.assignedTo: assignedTo,
+        key.channel: channel,
+        key.arrivalTime: util.dateTimeToUnixTimestamp(arrived),
+        key.answeredAt: util.dateTimeToUnixTimestamp(answeredAt)
       };
 
   /**

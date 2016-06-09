@@ -32,13 +32,13 @@ class MessageFilter {
    * Deserializing constructor.
    */
   MessageFilter.fromMap(Map map) {
-    userId = map.containsKey(Key.uid) ? map[Key.uid] : userId;
+    userId = map.containsKey(key.uid) ? map[key.uid] : userId;
 
-    receptionId = map.containsKey(Key.rid) ? map[Key.rid] : receptionId;
+    receptionId = map.containsKey(key.rid) ? map[key.rid] : receptionId;
 
-    contactId = map.containsKey(Key.cid) ? map[Key.cid] : contactId;
+    contactId = map.containsKey(key.cid) ? map[key.cid] : contactId;
 
-    limitCount = map.containsKey(Key.limit) ? map[Key.limit] : limitCount;
+    limitCount = map.containsKey(key.limit) ? map[key.limit] : limitCount;
   }
 
   /**
@@ -82,18 +82,18 @@ class MessageFilter {
     Map retval = {};
 
     if (userId != User.noId) {
-      retval[Key.uid] = userId;
+      retval[key.uid] = userId;
     }
 
     if (receptionId != Reception.noId) {
-      retval[Key.rid] = receptionId;
+      retval[key.rid] = receptionId;
     }
 
     if (contactId != BaseContact.noId) {
-      retval[Key.cid] = contactId;
+      retval[key.cid] = contactId;
     }
 
-    retval[Key.limit] = limitCount;
+    retval[key.limit] = limitCount;
 
     return retval;
   }

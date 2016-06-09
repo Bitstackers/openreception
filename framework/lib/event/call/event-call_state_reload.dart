@@ -25,5 +25,5 @@ class CallStateReload implements Event {
   Map get asMap => EventTemplate._rootElement(this);
 
   CallStateReload.fromMap(Map map)
-      : this.timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
+      : this.timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
 }

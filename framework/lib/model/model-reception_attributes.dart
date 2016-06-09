@@ -29,24 +29,24 @@ class ReceptionAttributeChange implements ObjectChange {
    */
   static ReceptionAttributeChange decode(Map map) =>
       new ReceptionAttributeChange(
-          changeTypeFromString(map[Key.change]), map[Key.cid], map[Key.rid]);
+          changeTypeFromString(map[key.change]), map[key.cid], map[key.rid]);
 
   /**
    *
    */
   ReceptionAttributeChange.fromJson(Map map)
-      : changeType = changeTypeFromString(map[Key.change]),
-        cid = map[Key.cid],
-        rid = map[Key.rid];
+      : changeType = changeTypeFromString(map[key.change]),
+        cid = map[key.cid],
+        rid = map[key.rid];
 
   /**
    *
    */
   Map toJson() => {
-        Key.change: changeTypeToString(changeType),
-        Key.type: objectTypeToString(objectType),
-        Key.cid: cid,
-        Key.rid: rid
+        key.change: changeTypeToString(changeType),
+        key.type: objectTypeToString(objectType),
+        key.cid: cid,
+        key.rid: rid
       };
 }
 
@@ -76,21 +76,21 @@ class ReceptionAttributes {
       new ReceptionAttributes.fromMap(map);
 
   Map toJson() => {
-        Key.cid: cid,
-        Key.rid: receptionId,
-        Key.departments: departments,
-        Key.phones: new List<Map>.from(phoneNumbers.map((p) => p.toJson())),
-        Key.endpoints: new List<Map>.from(endpoints.map((e) => e.toJson())),
-        Key.backup: backupContacts,
-        Key.emailaddresses: emailaddresses,
-        Key.handling: handling,
-        Key.workhours: workhours,
-        Key.tags: tags,
-        Key.infos: infos,
-        Key.titles: titles,
-        Key.relations: relations,
-        Key.responsibilities: responsibilities,
-        Key.messagePrerequisites: messagePrerequisites
+        key.cid: cid,
+        key.rid: receptionId,
+        key.departments: departments,
+        key.phones: new List<Map>.from(phoneNumbers.map((p) => p.toJson())),
+        key.endpoints: new List<Map>.from(endpoints.map((e) => e.toJson())),
+        key.backup: backupContacts,
+        key.emailaddresses: emailaddresses,
+        key.handling: handling,
+        key.workhours: workhours,
+        key.tags: tags,
+        key.infos: infos,
+        key.titles: titles,
+        key.relations: relations,
+        key.responsibilities: responsibilities,
+        key.messagePrerequisites: messagePrerequisites
       };
 
   /**
@@ -98,22 +98,22 @@ class ReceptionAttributes {
    */
   ReceptionAttributes.fromMap(Map map)
       : phoneNumbers =
-            new List<PhoneNumber>.from(map[Key.phones].map(PhoneNumber.decode)),
+            new List<PhoneNumber>.from(map[key.phones].map(PhoneNumber.decode)),
         endpoints = new List<MessageEndpoint>.from(
-            map[Key.endpoints].map(MessageEndpoint.decode)),
-        receptionId = map[Key.rid],
-        cid = map[Key.cid],
-        departments = map[Key.departments] as List<String>,
-        messagePrerequisites = map[Key.messagePrerequisites] as List<String>,
-        backupContacts = map[Key.backup] as List<String>,
-        emailaddresses = map[Key.emailaddresses] as List<String>,
-        handling = map[Key.handling] as List<String>,
-        workhours = map[Key.workhours] as List<String>,
-        tags = map[Key.tags] as List<String>,
-        infos = map[Key.infos] as List<String>,
-        titles = map[Key.titles] as List<String>,
-        relations = map[Key.relations] as List<String>,
-        responsibilities = map[Key.responsibilities] as List<String>;
+            map[key.endpoints].map(MessageEndpoint.decode)),
+        receptionId = map[key.rid],
+        cid = map[key.cid],
+        departments = map[key.departments] as List<String>,
+        messagePrerequisites = map[key.messagePrerequisites] as List<String>,
+        backupContacts = map[key.backup] as List<String>,
+        emailaddresses = map[key.emailaddresses] as List<String>,
+        handling = map[key.handling] as List<String>,
+        workhours = map[key.workhours] as List<String>,
+        tags = map[key.tags] as List<String>,
+        infos = map[key.infos] as List<String>,
+        titles = map[key.titles] as List<String>,
+        relations = map[key.relations] as List<String>,
+        responsibilities = map[key.responsibilities] as List<String>;
 
   /**
    * [Contact] empty constructor.

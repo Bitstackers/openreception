@@ -16,7 +16,7 @@ part of openreception.framework.service;
 /**
  * Client class providing REST access to an organization store.
  */
-class RESTOrganizationStore implements Storage.Organization {
+class RESTOrganizationStore implements storage.Organization {
   static final String className = '${libraryName}.RESTOrganizationStore';
 
   WebService _backend = null;
@@ -28,67 +28,67 @@ class RESTOrganizationStore implements Storage.Organization {
   /**
    *
    */
-  Future<Iterable<Model.BaseContact>> contacts(int oid) {
-    Uri url = Resource.Organization.contacts(this._host, oid);
+  Future<Iterable<model.BaseContact>> contacts(int oid) {
+    Uri url = resource.Organization.contacts(this._host, oid);
     url = _appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
-        (JSON.decode(response) as Iterable).map(Model.BaseContact.decode));
+        (JSON.decode(response) as Iterable).map(model.BaseContact.decode));
   }
 
   /**
    *
    */
-  Future<Iterable<Model.ReceptionReference>> receptions(int oid) async {
-    Uri url = Resource.Organization.receptions(_host, oid);
+  Future<Iterable<model.ReceptionReference>> receptions(int oid) async {
+    Uri url = resource.Organization.receptions(_host, oid);
     url = _appendToken(url, this._token);
 
     return (JSON.decode(await _backend.get(url)) as Iterable<Map>)
-        .map(Model.ReceptionReference.decode);
+        .map(model.ReceptionReference.decode);
   }
 
   /**
    *
    */
-  Future<Model.Organization> get(int oid) {
-    Uri url = Resource.Organization.single(this._host, oid);
+  Future<model.Organization> get(int oid) {
+    Uri url = resource.Organization.single(this._host, oid);
     url = _appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
-        new Model.Organization.fromMap(JSON.decode(response)));
+        new model.Organization.fromMap(JSON.decode(response)));
   }
 
   /**
    *
    */
-  Future<Model.OrganizationReference> create(
-      Model.Organization organization, Model.User modifier) {
-    Uri url = Resource.Organization.root(this._host);
+  Future<model.OrganizationReference> create(
+      model.Organization organization, model.User modifier) {
+    Uri url = resource.Organization.root(this._host);
     url = _appendToken(url, this._token);
 
     String data = JSON.encode(organization);
     return this._backend.post(url, data).then((String response) =>
-        Model.OrganizationReference.decode(JSON.decode(response)));
+        model.OrganizationReference.decode(JSON.decode(response)));
   }
 
   /**
    *
    */
-  Future<Model.OrganizationReference> update(
-      Model.Organization organization, Model.User modifier) {
-    Uri url = Resource.Organization.single(this._host, organization.id);
+  Future<model.OrganizationReference> update(
+      model.Organization organization, model.User modifier) {
+    Uri url = resource.Organization.single(this._host, organization.id);
     url = _appendToken(url, this._token);
 
     String data = JSON.encode(organization);
     return this._backend.put(url, data).then((String response) =>
-        Model.OrganizationReference.decode(JSON.decode(response)));
+        model.OrganizationReference.decode(JSON.decode(response)));
   }
 
   /**
    *
    */
   Future<Map<String, Map<String, String>>> receptionMap() {
-    Uri url = Resource.Organization.receptionMap(this._host);
+    Uri url = resource.Organization.receptionMap(this._host);
     url = _appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
@@ -98,35 +98,35 @@ class RESTOrganizationStore implements Storage.Organization {
   /**
    *
    */
-  Future remove(int organizationID, Model.User modifier) {
-    Uri url = Resource.Organization.single(this._host, organizationID);
+  Future remove(int organizationID, model.User modifier) {
+    Uri url = resource.Organization.single(this._host, organizationID);
     url = _appendToken(url, this._token);
 
     return this._backend.delete(url).then((String response) =>
-        new Model.Organization.fromMap(JSON.decode(response)));
+        new model.Organization.fromMap(JSON.decode(response)));
   }
 
   /**
    *
    */
-  Future<Iterable<Model.OrganizationReference>> list() {
-    Uri url = Resource.Organization.list(this._host, token: this._token);
+  Future<Iterable<model.OrganizationReference>> list() {
+    Uri url = resource.Organization.list(this._host, token: this._token);
     url = _appendToken(url, this._token);
 
     return _backend.get(url).then((String response) =>
         (JSON.decode(response) as Iterable)
-            .map(Model.OrganizationReference.decode));
+            .map(model.OrganizationReference.decode));
   }
 
   /**
    *
    */
-  Future<Iterable<Model.Commit>> changes([int oid]) {
-    Uri url = Resource.Organization.changeList(_host, oid);
+  Future<Iterable<model.Commit>> changes([int oid]) {
+    Uri url = resource.Organization.changeList(_host, oid);
     url = _appendToken(url, this._token);
 
-    Iterable<Model.Commit> convertMaps(Iterable<Map> maps) =>
-        maps.map(Model.Commit.decode);
+    Iterable<model.Commit> convertMaps(Iterable<Map> maps) =>
+        maps.map(model.Commit.decode);
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }

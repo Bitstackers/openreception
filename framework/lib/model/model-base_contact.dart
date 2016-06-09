@@ -40,11 +40,11 @@ class ContactReference implements ObjectReference {
   const ContactReference(this.id, this.name);
 
   static ContactReference decode(Map map) =>
-      new ContactReference(map[Key.id], map[Key.name]);
+      new ContactReference(map[key.id], map[key.name]);
 
   bool get isEmpty => id == BaseContact.noId;
 
-  Map toJson() => {Key.id: id, Key.name: name};
+  Map toJson() => {key.id: id, key.name: name};
 
   int get hashCode => id.hashCode;
 }
@@ -66,22 +66,22 @@ class ContactChange implements ObjectChange {
    *
    */
   static ContactChange decode(Map map) =>
-      new ContactChange(changeTypeFromString(map[Key.change]), map[Key.cid]);
+      new ContactChange(changeTypeFromString(map[key.change]), map[key.cid]);
 
   /**
    *
    */
   ContactChange.fromJson(Map map)
-      : changeType = changeTypeFromString(map[Key.change]),
-        cid = map[Key.cid];
+      : changeType = changeTypeFromString(map[key.change]),
+        cid = map[key.cid];
 
   /**
    *
    */
   Map toJson() => {
-        Key.change: changeTypeToString(changeType),
-        Key.type: objectTypeToString(objectType),
-        Key.cid: cid
+        key.change: changeTypeToString(changeType),
+        key.type: objectTypeToString(objectType),
+        key.cid: cid
       };
 }
 
@@ -92,9 +92,9 @@ class OrganizationReference implements ObjectReference {
   const OrganizationReference(this.id, this.name);
 
   static OrganizationReference decode(Map map) =>
-      new OrganizationReference(map[Key.id], map[Key.name]);
+      new OrganizationReference(map[key.id], map[key.name]);
 
-  Map toJson() => {Key.id: id, Key.name: name};
+  Map toJson() => {key.id: id, key.name: name};
 
   int get hashCode => id.hashCode;
 }
@@ -110,10 +110,10 @@ class ReceptionContact {
   ReceptionContact(this.contact, this.attr);
 
   static ReceptionContact decode(Map map) => new ReceptionContact(
-      BaseContact.decode(map[Key.contact]),
-      ReceptionAttributes.decode(map[Key.reception]));
+      BaseContact.decode(map[key.contact]),
+      ReceptionAttributes.decode(map[key.reception]));
 
-  Map toJson() => {Key.contact: contact.toJson(), Key.reception: attr.toJson()};
+  Map toJson() => {key.contact: contact.toJson(), key.reception: attr.toJson()};
 
   @deprecated
   ContactReference get contactReference =>
@@ -134,9 +134,9 @@ class ReceptionReference implements ObjectReference {
   bool get isNotEmpty => !isEmpty;
 
   static ReceptionReference decode(Map map) =>
-      new ReceptionReference(map[Key.id], map[Key.name]);
+      new ReceptionReference(map[key.id], map[key.name]);
 
-  Map toJson() => {Key.id: id, Key.name: name};
+  Map toJson() => {key.id: id, key.name: name};
 
   int get hashCode => id.hashCode;
 }
@@ -168,16 +168,16 @@ class BaseContact {
    * Deserializing constructor.
    */
   BaseContact.fromMap(Map map)
-      : id = map[Key.id],
-        name = map[Key.name],
-        type = map[Key.contactType],
-        enabled = map[Key.enabled];
+      : id = map[key.id],
+        name = map[key.name],
+        type = map[key.contactType],
+        enabled = map[key.enabled];
 
   /**
    *
    */
   Map toJson() =>
-      {Key.id: id, Key.name: name, Key.contactType: type, Key.enabled: enabled};
+      {key.id: id, key.name: name, key.contactType: type, key.enabled: enabled};
 
   /**
    *

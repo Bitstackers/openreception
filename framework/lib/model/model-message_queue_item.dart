@@ -52,27 +52,27 @@ class MessageQueueEntry {
    * Creates a message from the information given in [map].
    */
   MessageQueueEntry.fromMap(Map map)
-      : createdAt = Util.unixTimestampToDateTime(map[Key.createdAt]),
-        id = map[Key.id],
-        message = Message.decode(map[Key.message]),
-        _handledRecipients = (map[Key.handledRecipients] as Iterable)
+      : createdAt = util.unixTimestampToDateTime(map[key.createdAt]),
+        id = map[key.id],
+        message = Message.decode(map[key.message]),
+        _handledRecipients = (map[key.handledRecipients] as Iterable)
             .map(MessageEndpoint.decode)
             .toSet(),
         _unhandledRecipients = new Set.from(
-            map[Key.unhandledRecipients].map(MessageEndpoint.decode)),
-        tries = map[Key.tries];
+            map[key.unhandledRecipients].map(MessageEndpoint.decode)),
+        tries = map[key.tries];
 
   /**
    * Serialization function
    */
   Map toJson() => {
-        Key.id: id,
-        Key.tries: tries,
-        Key.createdAt: Util.dateTimeToUnixTimestamp(createdAt),
-        Key.message: message.toJson(),
-        Key.handledRecipients:
+        key.id: id,
+        key.tries: tries,
+        key.createdAt: util.dateTimeToUnixTimestamp(createdAt),
+        key.message: message.toJson(),
+        key.handledRecipients:
             _handledRecipients.map((r) => r.asMap).toList(growable: false),
-        Key.unhandledRecipients:
+        key.unhandledRecipients:
             _unhandledRecipients.map((r) => r.asMap).toList(growable: false)
       };
 

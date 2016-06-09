@@ -38,20 +38,20 @@ class ClientConfiguration {
    * Returns a map reflection of the object suitable for data transfer.
    */
   Map get asMap => {
-        Key.authServerURI: authServerUri.toString(),
-        Key.calendarServerUri: calendarServerUri.toString(),
-        Key.callFlowServerURI: callFlowServerUri.toString(),
-        Key.cdrServerUri: cdrServerUri.toString(),
-        Key.contactServerURI: contactServerUri.toString(),
-        Key.dialplanServerURI: dialplanServerUri.toString(),
-        Key.hideInboundCallerId: hideInboundCallerId,
-        Key.messageServerURI: messageServerUri.toString(),
-        Key.myIdentifiers: myIdentifiers,
-        Key.notificationServerUri: notificationServerUri.toString(),
-        Key.notificationSocket: notificationSocketUri.toString(),
-        Key.receptionServerURI: receptionServerUri.toString(),
-        Key.systemLanguage: systemLanguage,
-        Key.userServerURI: userServerUri.toString(),
+        key.authServerURI: authServerUri.toString(),
+        key.calendarServerUri: calendarServerUri.toString(),
+        key.callFlowServerURI: callFlowServerUri.toString(),
+        key.cdrServerUri: cdrServerUri.toString(),
+        key.contactServerURI: contactServerUri.toString(),
+        key.dialplanServerURI: dialplanServerUri.toString(),
+        key.hideInboundCallerId: hideInboundCallerId,
+        key.messageServerURI: messageServerUri.toString(),
+        key.myIdentifiers: myIdentifiers,
+        key.notificationServerUri: notificationServerUri.toString(),
+        key.notificationSocket: notificationSocketUri.toString(),
+        key.receptionServerURI: receptionServerUri.toString(),
+        key.systemLanguage: systemLanguage,
+        key.userServerURI: userServerUri.toString(),
       };
 
   /**
@@ -68,18 +68,18 @@ class ClientConfiguration {
    * Build an object from a serialized map.
    */
   ClientConfiguration.fromMap(Map map)
-      : authServerUri = Uri.parse(map[Key.authServerURI]),
-        calendarServerUri = Uri.parse(map[Key.calendarServerUri]),
-        callFlowServerUri = Uri.parse(map[Key.callFlowServerURI]),
-        cdrServerUri = Uri.parse(map[Key.cdrServerUri]),
-        contactServerUri = Uri.parse(map[Key.contactServerURI]),
-        dialplanServerUri = Uri.parse(map[Key.dialplanServerURI]),
-        hideInboundCallerId = map[Key.hideInboundCallerId],
-        messageServerUri = Uri.parse(map[Key.messageServerURI]),
-        myIdentifiers = map[Key.myIdentifiers] as List<String>,
-        notificationServerUri = Uri.parse(map[Key.notificationServerUri]),
-        notificationSocketUri = Uri.parse(map[Key.notificationSocket]),
-        receptionServerUri = Uri.parse(map[Key.receptionServerURI]),
-        systemLanguage = map[Key.systemLanguage],
-        userServerUri = Uri.parse(map[Key.userServerURI]);
+      : authServerUri = Uri.parse(map[key.authServerURI]),
+        calendarServerUri = Uri.parse(map[key.calendarServerUri]),
+        callFlowServerUri = Uri.parse(map[key.callFlowServerURI]),
+        cdrServerUri = Uri.parse(map[key.cdrServerUri]),
+        contactServerUri = Uri.parse(map[key.contactServerURI]),
+        dialplanServerUri = Uri.parse(map[key.dialplanServerURI]),
+        hideInboundCallerId = map[key.hideInboundCallerId],
+        messageServerUri = Uri.parse(map[key.messageServerURI]),
+        myIdentifiers = map[key.myIdentifiers] as List<String>,
+        notificationServerUri = Uri.parse(map[key.notificationServerUri]),
+        notificationSocketUri = Uri.parse(map[key.notificationSocket]),
+        receptionServerUri = Uri.parse(map[key.receptionServerURI]),
+        systemLanguage = map[key.systemLanguage],
+        userServerUri = Uri.parse(map[key.userServerURI]);
 }

@@ -39,18 +39,18 @@ class CdrAgentSummary {
    * JSON constructor
    */
   CdrAgentSummary.fromJson(Map json, {bool alsoCdrFiles: true}) {
-    answered10 = json[Key.CdrKey.answered10];
-    answered10To20 = json[Key.CdrKey.answered10to20];
-    answered20To60 = json[Key.CdrKey.answered20to60];
-    answeredAfter60 = json[Key.CdrKey.answeredAfter60];
+    answered10 = json[key.CdrKey.answered10];
+    answered10To20 = json[key.CdrKey.answered10to20];
+    answered20To60 = json[key.CdrKey.answered20to60];
+    answeredAfter60 = json[key.CdrKey.answeredAfter60];
     if (alsoCdrFiles) {
-      cdrFiles = json[Key.CdrKey.cdrFiles] as List<String>;
+      cdrFiles = json[key.CdrKey.cdrFiles] as List<String>;
     }
-    inboundBillSeconds = json[Key.CdrKey.inboundBillSeconds];
-    longCalls = json[Key.CdrKey.longCalls];
-    outbound = json[Key.CdrKey.outbound];
-    shortCalls = json[Key.CdrKey.shortCalls];
-    uid = json[Key.CdrKey.uid];
+    inboundBillSeconds = json[key.CdrKey.inboundBillSeconds];
+    longCalls = json[key.CdrKey.longCalls];
+    outbound = json[key.CdrKey.outbound];
+    shortCalls = json[key.CdrKey.shortCalls];
+    uid = json[key.CdrKey.uid];
   }
 
   /**
@@ -74,16 +74,16 @@ class CdrAgentSummary {
       answered10 + answered10To20 + answered20To60 + answeredAfter60;
 
   Map toJson() => {
-        Key.CdrKey.answered10: answered10,
-        Key.CdrKey.answered10to20: answered10To20,
-        Key.CdrKey.answered20to60: answered20To60,
-        Key.CdrKey.answeredAfter60: answeredAfter60,
-        Key.CdrKey.cdrFiles: cdrFiles,
-        Key.CdrKey.inboundBillSeconds: inboundBillSeconds,
-        Key.CdrKey.longCalls: longCalls,
-        Key.CdrKey.outbound: outbound,
-        Key.CdrKey.shortCalls: shortCalls,
-        Key.CdrKey.uid: uid
+        key.CdrKey.answered10: answered10,
+        key.CdrKey.answered10to20: answered10To20,
+        key.CdrKey.answered20to60: answered20To60,
+        key.CdrKey.answeredAfter60: answeredAfter60,
+        key.CdrKey.cdrFiles: cdrFiles,
+        key.CdrKey.inboundBillSeconds: inboundBillSeconds,
+        key.CdrKey.longCalls: longCalls,
+        key.CdrKey.outbound: outbound,
+        key.CdrKey.shortCalls: shortCalls,
+        key.CdrKey.uid: uid
       };
 }
 
@@ -110,19 +110,19 @@ class CdrSummary {
    * JSON constructor.
    */
   CdrSummary.fromJson(Map json, {bool alsoCdrFiles: true}) {
-    (json[Key.CdrKey.agentSummaries] as List).forEach((Map value) {
+    (json[key.CdrKey.agentSummaries] as List).forEach((Map value) {
       agentSummaries
           .add(new CdrAgentSummary.fromJson(value, alsoCdrFiles: alsoCdrFiles));
     });
     if (alsoCdrFiles) {
-      cdrFiles = json[Key.CdrKey.cdrFiles] as List<String>;
+      cdrFiles = json[key.CdrKey.cdrFiles] as List<String>;
     }
-    inboundNotNotified = json[Key.CdrKey.inboundNotNotified];
-    notifiedNotAnswered = json[Key.CdrKey.notifiedNotAnswered];
-    outBoundBillSeconds = json[Key.CdrKey.outboundBillSeconds];
-    outboundCost = json[Key.CdrKey.outboundCost];
-    outboundByPbx = json[Key.CdrKey.outboundByPbx];
-    rid = json[Key.CdrKey.rid];
+    inboundNotNotified = json[key.CdrKey.inboundNotNotified];
+    notifiedNotAnswered = json[key.CdrKey.notifiedNotAnswered];
+    outBoundBillSeconds = json[key.CdrKey.outboundBillSeconds];
+    outboundCost = json[key.CdrKey.outboundCost];
+    outboundByPbx = json[key.CdrKey.outboundByPbx];
+    rid = json[key.CdrKey.rid];
   }
 
   /**
@@ -173,14 +173,14 @@ class CdrSummary {
   }
 
   Map toJson() => {
-        Key.CdrKey.agentSummaries: agentSummaries,
-        Key.CdrKey.cdrFiles: cdrFiles,
-        Key.CdrKey.inboundNotNotified: inboundNotNotified,
-        Key.CdrKey.notifiedNotAnswered: notifiedNotAnswered,
-        Key.CdrKey.outboundBillSeconds: outBoundBillSeconds,
-        Key.CdrKey.outboundByPbx: outboundByPbx,
-        Key.CdrKey.outboundCost: outboundCost,
-        Key.CdrKey.rid: rid
+        key.CdrKey.agentSummaries: agentSummaries,
+        key.CdrKey.cdrFiles: cdrFiles,
+        key.CdrKey.inboundNotNotified: inboundNotNotified,
+        key.CdrKey.notifiedNotAnswered: notifiedNotAnswered,
+        key.CdrKey.outboundBillSeconds: outBoundBillSeconds,
+        key.CdrKey.outboundByPbx: outboundByPbx,
+        key.CdrKey.outboundCost: outboundCost,
+        key.CdrKey.rid: rid
       };
 
   String toString() => '''rid: $rid

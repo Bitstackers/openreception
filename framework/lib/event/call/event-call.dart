@@ -25,5 +25,5 @@ abstract class CallEvent implements Event {
 
   CallEvent.fromMap(Map map)
       : this.call = new model.Call.fromMap(map[Key.call]),
-        this.timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
+        this.timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
 }

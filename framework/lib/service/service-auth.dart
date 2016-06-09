@@ -33,18 +33,18 @@ class Authentication {
    * Performs a lookup of the user on the notification server from the
    * supplied token.
    */
-  Future<Model.User> userOf(String token) {
-    Uri uri = Resource.Authentication.tokenToUser(this.host, token);
+  Future<model.User> userOf(String token) {
+    Uri uri = resource.Authentication.tokenToUser(this.host, token);
 
     return this._httpClient.get(uri).then(
-        (String response) => new Model.User.fromMap(JSON.decode(response)));
+        (String response) => new model.User.fromMap(JSON.decode(response)));
   }
 
   /**
    * Validate [token]. Throws [NotFound] exception if the token is not valid.
    */
   Future validate(String token) {
-    Uri uri = Resource.Authentication.validate(this.host, token);
+    Uri uri = resource.Authentication.validate(this.host, token);
 
     return this._httpClient.get(uri);
   }

@@ -75,5 +75,5 @@ class MessageChange implements Event {
             ? model.MessageState.values[map[Key.messageChange]
                 [Key.messageState]]
             : model.MessageState.unknown,
-        timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
+        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
 }

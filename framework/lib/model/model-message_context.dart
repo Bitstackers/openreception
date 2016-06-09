@@ -28,10 +28,10 @@ class MessageContext {
    * Constructor. Deserializes the object from Map representation.
    */
   MessageContext.fromMap(Map map)
-      : cid = map[Key.cid],
-        contactName = map[Key.contactName],
-        rid = map[Key.rid],
-        receptionName = map[Key.receptionName];
+      : cid = map[key.cid],
+        contactName = map[key.contactName],
+        rid = map[key.rid],
+        receptionName = map[key.receptionName];
 
   /**
    * Creates a messagContext from a [ReceptionAttributes] object
@@ -49,10 +49,10 @@ class MessageContext {
    * Returns a map representation of the object. Suitable for serialization.
    */
   Map toJson() => {
-        Key.cid: cid,
-        Key.contactName: contactName,
-        Key.rid: rid,
-        Key.receptionName: receptionName
+        key.cid: cid,
+        key.contactName: contactName,
+        key.rid: rid,
+        key.receptionName: receptionName
       };
 
   @override

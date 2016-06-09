@@ -48,31 +48,31 @@ class Reception {
   bool enabled = false;
 
   Map get attributes => {
-        Key.addresses: addresses,
-        Key.alternateNames: alternateNames,
-        Key.bankingInfo: bankingInformation,
-        Key.customerTypes: customerTypes,
-        Key.emailAdresses: emailAddresses,
-        Key.greeting: greeting,
-        Key.handlingInstructions: handlingInstructions,
-        Key.openingHours: openingHours,
-        Key.other: otherData,
-        Key.product: product,
-        Key.salesMarketingHandling: salesMarketingHandling,
-        Key.shortGreeting: _shortGreeting,
-        Key.vatNumbers: vatNumbers,
-        Key.phoneNumbers: new List<Map>.from(
+        key.addresses: addresses,
+        key.alternateNames: alternateNames,
+        key.bankingInfo: bankingInformation,
+        key.customerTypes: customerTypes,
+        key.emailAdresses: emailAddresses,
+        key.greeting: greeting,
+        key.handlingInstructions: handlingInstructions,
+        key.openingHours: openingHours,
+        key.other: otherData,
+        key.product: product,
+        key.salesMarketingHandling: salesMarketingHandling,
+        key.shortGreeting: _shortGreeting,
+        key.vatNumbers: vatNumbers,
+        key.phoneNumbers: new List<Map>.from(
             phoneNumbers.map((PhoneNumber number) => number.toJson())),
-        Key.websites: websites,
-        Key.miniWiki: miniWiki
+        key.websites: websites,
+        key.miniWiki: miniWiki
       };
 
   void set attributes(Map attributes) {
-    this.customerTypes = attributes[Key.customerTypes] as List<String>;
+    this.customerTypes = attributes[key.customerTypes] as List<String>;
 
     //Temporary workaround for telephonenumbers to telephoneNumbers transition.
-    if (attributes.containsKey(Key.phoneNumbers)) {
-      Iterable values = attributes[Key.phoneNumbers];
+    if (attributes.containsKey(key.phoneNumbers)) {
+      Iterable values = attributes[key.phoneNumbers];
       List<PhoneNumber> pns = [];
 
       try {
@@ -88,24 +88,24 @@ class Reception {
     }
 
     this
-      ..addresses = attributes[Key.addresses] as List<String>
-      ..alternateNames = attributes[Key.alternateNames] as List<String>
-      ..bankingInformation = attributes[Key.bankingInfo] as List<String>
-      ..emailAddresses = attributes[Key.emailAdresses] as List<String>
-      ..greeting = attributes[Key.greeting] as String
+      ..addresses = attributes[key.addresses] as List<String>
+      ..alternateNames = attributes[key.alternateNames] as List<String>
+      ..bankingInformation = attributes[key.bankingInfo] as List<String>
+      ..emailAddresses = attributes[key.emailAdresses] as List<String>
+      ..greeting = attributes[key.greeting] as String
       ..handlingInstructions =
-          attributes[Key.handlingInstructions] as List<String>
-      ..openingHours = attributes[Key.openingHours] as List<String>
-      ..otherData = attributes[Key.other] as String
-      ..product = attributes[Key.product] as String
+          attributes[key.handlingInstructions] as List<String>
+      ..openingHours = attributes[key.openingHours] as List<String>
+      ..otherData = attributes[key.other] as String
+      ..product = attributes[key.product] as String
       ..salesMarketingHandling =
-          attributes[Key.salesMarketingHandling] as List<String>
-      .._shortGreeting = attributes[Key.shortGreeting] != null
-          ? attributes[Key.shortGreeting]
+          attributes[key.salesMarketingHandling] as List<String>
+      .._shortGreeting = attributes[key.shortGreeting] != null
+          ? attributes[key.shortGreeting]
           : ''
-      ..vatNumbers = attributes[Key.vatNumbers] as List<String>
-      ..websites = attributes[Key.websites] as List<String>
-      ..miniWiki = attributes[Key.miniWiki];
+      ..vatNumbers = attributes[key.vatNumbers] as List<String>
+      ..websites = attributes[key.websites] as List<String>
+      ..miniWiki = attributes[key.miniWiki];
   }
 
   static final Reception noReception = new Reception.empty();
@@ -129,14 +129,14 @@ class Reception {
   Reception.fromMap(Map receptionMap) {
     try {
       this
-        ..id = receptionMap[Key.id]
-        ..oid = receptionMap[Key.oid]
-        ..name = receptionMap[Key.name]
-        ..enabled = receptionMap[Key.enabled]
-        ..dialplan = receptionMap[Key.dialplan];
+        ..id = receptionMap[key.id]
+        ..oid = receptionMap[key.oid]
+        ..name = receptionMap[key.name]
+        ..enabled = receptionMap[key.enabled]
+        ..dialplan = receptionMap[key.dialplan];
 
-      if (receptionMap[Key.attributes] != null) {
-        attributes = receptionMap[Key.attributes];
+      if (receptionMap[key.attributes] != null) {
+        attributes = receptionMap[key.attributes];
       }
     } catch (error) {
       throw new ArgumentError('Invalid data in map');
@@ -147,12 +147,12 @@ class Reception {
    * Returns a Map representation of the Reception.
    */
   Map toJson() => {
-        Key.id: id,
-        Key.enabled: enabled,
-        Key.oid: oid,
-        Key.dialplan: dialplan,
-        Key.name: name,
-        Key.attributes: attributes
+        key.id: id,
+        key.enabled: enabled,
+        key.oid: oid,
+        key.dialplan: dialplan,
+        key.name: name,
+        key.attributes: attributes
       };
 
   @override

@@ -166,30 +166,30 @@ class CdrEntry {
    * JSON constructor.
    */
   CdrEntry.fromJson(Map json) {
-    agentBeginEpoch = json[Key.CdrKey.agentBeginEpoch];
-    agentChannel = json[Key.CdrKey.agentChannel];
-    agentEndEpoch = json[Key.CdrKey.agentEndEpoch];
-    answerEpoch = json[Key.CdrKey.answerEpoch];
-    billSec = json[Key.CdrKey.billSec];
-    bridgeUuid = json[Key.CdrKey.bridgeUuid];
-    callNotify = json[Key.CdrKey.callNotify];
-    cid = json[Key.CdrKey.cid];
-    contextCallId = json[Key.CdrKey.contextCallId];
-    destination = json[Key.CdrKey.destination];
-    direction = json[Key.CdrKey.direction];
-    endEpoch = json[Key.CdrKey.endEpoch];
-    externalTransferEpoch = json[Key.CdrKey.externalTransferEpoch];
-    filename = json[Key.CdrKey.filename];
-    finalTransferAction = json[Key.CdrKey.finalTransferAction];
-    hangupCause = json[Key.CdrKey.hangupCause];
-    ivr = json[Key.CdrKey.ivr];
-    receptionOpen = json[Key.CdrKey.receptionOpen];
-    rid = json[Key.CdrKey.rid];
-    sipFromUserStripped = json[Key.CdrKey.sipFromUserStripped];
-    startEpoch = json[Key.CdrKey.startEpoch];
-    uid = json[Key.CdrKey.uid];
-    uuid = json[Key.CdrKey.uuid];
-    voicemail = json[Key.CdrKey.voicemail];
+    agentBeginEpoch = json[key.CdrKey.agentBeginEpoch];
+    agentChannel = json[key.CdrKey.agentChannel];
+    agentEndEpoch = json[key.CdrKey.agentEndEpoch];
+    answerEpoch = json[key.CdrKey.answerEpoch];
+    billSec = json[key.CdrKey.billSec];
+    bridgeUuid = json[key.CdrKey.bridgeUuid];
+    callNotify = json[key.CdrKey.callNotify];
+    cid = json[key.CdrKey.cid];
+    contextCallId = json[key.CdrKey.contextCallId];
+    destination = json[key.CdrKey.destination];
+    direction = json[key.CdrKey.direction];
+    endEpoch = json[key.CdrKey.endEpoch];
+    externalTransferEpoch = json[key.CdrKey.externalTransferEpoch];
+    filename = json[key.CdrKey.filename];
+    finalTransferAction = json[key.CdrKey.finalTransferAction];
+    hangupCause = json[key.CdrKey.hangupCause];
+    ivr = json[key.CdrKey.ivr];
+    receptionOpen = json[key.CdrKey.receptionOpen];
+    rid = json[key.CdrKey.rid];
+    sipFromUserStripped = json[key.CdrKey.sipFromUserStripped];
+    startEpoch = json[key.CdrKey.startEpoch];
+    uid = json[key.CdrKey.uid];
+    uuid = json[key.CdrKey.uuid];
+    voicemail = json[key.CdrKey.voicemail];
   }
 
   /**
@@ -310,7 +310,7 @@ class CdrEntry {
    */
   bool _ivrApp(List<Map<String, String>> applications) =>
       applications.any((Map<String, String> application) =>
-          application['app_name'].contains(Key.CdrKey.ivr));
+          application['app_name'].contains(key.CdrKey.ivr));
 
   /**
    * Figure out what kind of CDR entry we're dealing with.
@@ -346,56 +346,56 @@ class CdrEntry {
   }
 
   Map toJson() => {
-        Key.CdrKey.agentBeginEpoch: agentBeginEpoch,
-        Key.CdrKey.agentChannel: agentChannel,
-        Key.CdrKey.agentEndEpoch: agentEndEpoch,
-        Key.CdrKey.answerEpoch: answerEpoch,
-        Key.CdrKey.billSec: billSec,
-        Key.CdrKey.bridgeUuid: bridgeUuid,
-        Key.CdrKey.callNotify: callNotify,
-        Key.CdrKey.contextCallId: contextCallId,
-        Key.CdrKey.cid: cid,
-        Key.CdrKey.destination: destination,
-        Key.CdrKey.direction: direction,
-        Key.CdrKey.endEpoch: endEpoch,
-        Key.CdrKey.externalTransferEpoch: externalTransferEpoch,
-        Key.CdrKey.filename: filename,
-        Key.CdrKey.finalTransferAction: finalTransferAction,
-        Key.CdrKey.hangupCause: hangupCause,
-        Key.CdrKey.ivr: ivr,
-        Key.CdrKey.receptionOpen: receptionOpen,
-        Key.CdrKey.sipFromUserStripped: sipFromUserStripped,
-        Key.CdrKey.rid: rid,
-        Key.CdrKey.startEpoch: startEpoch,
-        Key.CdrKey.uid: uid,
-        Key.CdrKey.uuid: uuid,
-        Key.CdrKey.voicemail: voicemail
+        key.CdrKey.agentBeginEpoch: agentBeginEpoch,
+        key.CdrKey.agentChannel: agentChannel,
+        key.CdrKey.agentEndEpoch: agentEndEpoch,
+        key.CdrKey.answerEpoch: answerEpoch,
+        key.CdrKey.billSec: billSec,
+        key.CdrKey.bridgeUuid: bridgeUuid,
+        key.CdrKey.callNotify: callNotify,
+        key.CdrKey.contextCallId: contextCallId,
+        key.CdrKey.cid: cid,
+        key.CdrKey.destination: destination,
+        key.CdrKey.direction: direction,
+        key.CdrKey.endEpoch: endEpoch,
+        key.CdrKey.externalTransferEpoch: externalTransferEpoch,
+        key.CdrKey.filename: filename,
+        key.CdrKey.finalTransferAction: finalTransferAction,
+        key.CdrKey.hangupCause: hangupCause,
+        key.CdrKey.ivr: ivr,
+        key.CdrKey.receptionOpen: receptionOpen,
+        key.CdrKey.sipFromUserStripped: sipFromUserStripped,
+        key.CdrKey.rid: rid,
+        key.CdrKey.startEpoch: startEpoch,
+        key.CdrKey.uid: uid,
+        key.CdrKey.uuid: uuid,
+        key.CdrKey.voicemail: voicemail
       };
 
   String toString() =>
-      '''${Key.CdrKey.agentBeginEpoch}: ${agentBeginEpoch > 0 ? new DateTime.fromMillisecondsSinceEpoch(agentBeginEpoch * 1000).toString() : 0}
-${Key.CdrKey.agentChannel}: $agentChannel
-${Key.CdrKey.agentEndEpoch}: ${agentEndEpoch > 0 ? new DateTime.fromMillisecondsSinceEpoch(agentEndEpoch * 1000).toString() : 0}
-${Key.CdrKey.answerEpoch}: ${answerEpoch > 0 ? new DateTime.fromMillisecondsSinceEpoch(answerEpoch * 1000).toString() : 0}
-${Key.CdrKey.billSec}: $billSec
-${Key.CdrKey.bridgeUuid}: $bridgeUuid
-${Key.CdrKey.callNotify}: $callNotify
-${Key.CdrKey.cid}: $cid
-${Key.CdrKey.contextCallId}: $contextCallId
-${Key.CdrKey.destination}: $destination
-${Key.CdrKey.direction}: $direction
-${Key.CdrKey.endEpoch}: ${endEpoch > 0 ? new DateTime.fromMillisecondsSinceEpoch(endEpoch * 1000).toString() : 0}
-${Key.CdrKey.externalTransferEpoch}: ${externalTransferEpoch > 0 ? new DateTime.fromMillisecondsSinceEpoch(externalTransferEpoch * 1000).toString() : 0}
-${Key.CdrKey.filename}: $filename
-${Key.CdrKey.finalTransferAction}: $finalTransferAction
-${Key.CdrKey.hangupCause}: $hangupCause
-${Key.CdrKey.ivr}: $ivr
-${Key.CdrKey.receptionOpen}: $receptionOpen
-${Key.CdrKey.rid}: $rid
-${Key.CdrKey.sipFromUserStripped}: $sipFromUserStripped
-${Key.CdrKey.startEpoch}: ${startEpoch > 0 ? new DateTime.fromMillisecondsSinceEpoch(startEpoch * 1000).toString() : 0}
-${Key.CdrKey.state}: ${state.toString().split('.').last}
-${Key.CdrKey.uid}: $uid
-${Key.CdrKey.uuid}: $uuid
-${Key.CdrKey.voicemail}: $voicemail''';
+      '''${key.CdrKey.agentBeginEpoch}: ${agentBeginEpoch > 0 ? new DateTime.fromMillisecondsSinceEpoch(agentBeginEpoch * 1000).toString() : 0}
+${key.CdrKey.agentChannel}: $agentChannel
+${key.CdrKey.agentEndEpoch}: ${agentEndEpoch > 0 ? new DateTime.fromMillisecondsSinceEpoch(agentEndEpoch * 1000).toString() : 0}
+${key.CdrKey.answerEpoch}: ${answerEpoch > 0 ? new DateTime.fromMillisecondsSinceEpoch(answerEpoch * 1000).toString() : 0}
+${key.CdrKey.billSec}: $billSec
+${key.CdrKey.bridgeUuid}: $bridgeUuid
+${key.CdrKey.callNotify}: $callNotify
+${key.CdrKey.cid}: $cid
+${key.CdrKey.contextCallId}: $contextCallId
+${key.CdrKey.destination}: $destination
+${key.CdrKey.direction}: $direction
+${key.CdrKey.endEpoch}: ${endEpoch > 0 ? new DateTime.fromMillisecondsSinceEpoch(endEpoch * 1000).toString() : 0}
+${key.CdrKey.externalTransferEpoch}: ${externalTransferEpoch > 0 ? new DateTime.fromMillisecondsSinceEpoch(externalTransferEpoch * 1000).toString() : 0}
+${key.CdrKey.filename}: $filename
+${key.CdrKey.finalTransferAction}: $finalTransferAction
+${key.CdrKey.hangupCause}: $hangupCause
+${key.CdrKey.ivr}: $ivr
+${key.CdrKey.receptionOpen}: $receptionOpen
+${key.CdrKey.rid}: $rid
+${key.CdrKey.sipFromUserStripped}: $sipFromUserStripped
+${key.CdrKey.startEpoch}: ${startEpoch > 0 ? new DateTime.fromMillisecondsSinceEpoch(startEpoch * 1000).toString() : 0}
+${key.CdrKey.state}: ${state.toString().split('.').last}
+${key.CdrKey.uid}: $uid
+${key.CdrKey.uuid}: $uuid
+${key.CdrKey.voicemail}: $voicemail''';
 }

@@ -42,9 +42,9 @@ class PhoneNumber {
    * Deserializing constructor.
    */
   PhoneNumber.fromMap(Map map)
-      : note = map[Key.note],
-        _destination = map[Key.destination],
-        confidential = map[Key.confidential];
+      : note = map[key.note],
+        _destination = map[key.destination],
+        confidential = map[key.confidential];
 
   /**
    *
@@ -70,8 +70,8 @@ class PhoneNumber {
    * Map representation of the object. Serialization function.
    */
   Map toJson() => {
-        Key.destination: destination,
-        Key.confidential: confidential,
-        Key.note: note
+        key.destination: destination,
+        key.confidential: confidential,
+        key.note: note
       };
 }

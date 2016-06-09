@@ -65,5 +65,5 @@ class UserChange implements Event {
       : uid = map[Key.userChange][Key.modifierUid],
         state = map[Key.userChange][Key.state],
         modifierUid = map[Key.userChange][Key.changedBy],
-        timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
+        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
 }

@@ -82,5 +82,5 @@ class CalendarChange implements Event {
         modifierUid = map[Key.calendarChange][Key.modifierUid],
         owner = new model.Owner.parse(map[Key.calendarChange][Key.owner]),
         state = map[Key.calendarChange][Key.state],
-        timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
+        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
 }

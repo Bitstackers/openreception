@@ -16,7 +16,7 @@ part of openreception.framework.service.html;
 /**
  * HTTP Client for use with dart:html.
  */
-class Client extends Service.WebService {
+class Client extends service.WebService {
   static final String className = '${libraryName}.Client';
 
   Logger log = new Logger(Client.className);
@@ -30,12 +30,12 @@ class Client extends Service.WebService {
 
     log.finest("GET $resource");
 
-    HTML.HttpRequest request;
-    request = new HTML.HttpRequest()
+    html.HttpRequest request;
+    request = new html.HttpRequest()
       ..open('GET', resource.toString())
       ..onLoad.listen((_) {
         try {
-          Service.WebService.checkResponse(
+          service.WebService.checkResponse(
               request.status, 'GET', resource, request.responseText);
           completer.complete(request.responseText);
         } catch (error) {
@@ -57,12 +57,12 @@ class Client extends Service.WebService {
 
     log.finest("PUT $resource");
 
-    HTML.HttpRequest request;
-    request = new HTML.HttpRequest()
+    html.HttpRequest request;
+    request = new html.HttpRequest()
       ..open('PUT', resource.toString())
       ..onLoad.listen((_) {
         try {
-          Service.WebService.checkResponse(
+          service.WebService.checkResponse(
               request.status, 'PUT', resource, request.responseText);
           completer.complete(request.responseText);
         } catch (error) {
@@ -84,12 +84,12 @@ class Client extends Service.WebService {
 
     log.finest("POST $resource");
 
-    HTML.HttpRequest request;
-    request = new HTML.HttpRequest()
+    html.HttpRequest request;
+    request = new html.HttpRequest()
       ..open('POST', resource.toString())
       ..onLoad.listen((_) {
         try {
-          Service.WebService.checkResponse(
+          service.WebService.checkResponse(
               request.status, 'GET', resource, request.responseText);
           completer.complete(request.responseText);
         } catch (error) {
@@ -111,12 +111,12 @@ class Client extends Service.WebService {
 
     log.finest("DELETE $resource");
 
-    HTML.HttpRequest request;
-    request = new HTML.HttpRequest()
+    html.HttpRequest request;
+    request = new html.HttpRequest()
       ..open('DELETE', resource.toString())
       ..onLoad.listen((_) {
         try {
-          Service.WebService.checkResponse(
+          service.WebService.checkResponse(
               request.status, 'DELETE', resource, request.responseText);
           completer.complete(request.responseText);
         } catch (error) {

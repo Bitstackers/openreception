@@ -78,5 +78,5 @@ class ReceptionData implements Event {
         rid = map[Key.receptionData][Key.receptionID],
         state = map[Key.receptionData][Key.state],
         modifierUid = map[Key.receptionData][Key.modifierUid],
-        timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
+        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
 }

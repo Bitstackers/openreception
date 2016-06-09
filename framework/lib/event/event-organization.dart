@@ -67,5 +67,5 @@ class OrganizationChange implements Event {
       : this.oid = map[Key.organizationChange][Key.organizationID],
         this.state = map[Key.organizationChange][Key.state],
         this.modifierUid = map[Key.organizationChange][Key.modifierUid],
-        this.timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
+        this.timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
 }

@@ -29,18 +29,18 @@ class PeerAccount {
   /**
    *
    */
-  Future<Model.PeerAccount> get(String accountName) {
-    Uri url = Resource.PeerAccount.single(_host, accountName);
+  Future<model.PeerAccount> get(String accountName) {
+    Uri url = resource.PeerAccount.single(_host, accountName);
     url = _appendToken(url, _token);
 
-    return _backend.get(url).then(JSON.decode).then(Model.PeerAccount.decode);
+    return _backend.get(url).then(JSON.decode).then(model.PeerAccount.decode);
   }
 
   /**
    *
    */
   Future<Iterable<String>> list() {
-    Uri url = Resource.PeerAccount.list(_host);
+    Uri url = resource.PeerAccount.list(_host);
     url = _appendToken(url, _token);
 
     return _backend
@@ -52,8 +52,8 @@ class PeerAccount {
   /**
    * (Re-)deploys a dialplan for a the reception identified by [receptionId]
    */
-  Future deployAccount(Model.PeerAccount account, int userId) {
-    Uri url = Resource.PeerAccount.deploy(_host, userId);
+  Future deployAccount(model.PeerAccount account, int userId) {
+    Uri url = resource.PeerAccount.deploy(_host, userId);
     url = _appendToken(url, _token);
 
     return _backend.post(url, JSON.encode(account));
@@ -63,7 +63,7 @@ class PeerAccount {
    *
    */
   Future remove(String username) {
-    Uri url = Resource.PeerAccount.single(_host, username);
+    Uri url = resource.PeerAccount.single(_host, username);
     url = _appendToken(url, _token);
 
     return _backend.delete(url);

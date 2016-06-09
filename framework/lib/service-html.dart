@@ -14,8 +14,8 @@
 library openreception.framework.service.html;
 
 import 'dart:async';
-import 'dart:html' as HTML;
-import 'service.dart' as Service;
+import 'dart:html' as html;
+import 'service.dart' as service;
 import 'package:logging/logging.dart';
 
 part 'service/html/service-html-client.dart';
