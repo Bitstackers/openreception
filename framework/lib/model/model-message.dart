@@ -41,7 +41,7 @@ class Message {
 
   bool get closed => sent || flag.manuallyClosed;
   bool get manuallyClosed => flag.manuallyClosed;
-  bool get saved => state == MessageState.saved;
+  bool get saved => state == MessageState.saved && !manuallyClosed;
   bool get sent => state == MessageState.sent;
 
   set manuallyClosed(bool closed) {

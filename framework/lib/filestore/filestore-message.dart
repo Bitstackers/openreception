@@ -113,7 +113,7 @@ class Message implements storage.Message {
       uidList.add(msg.id);
       ridList.add(msg.id);
 
-      if (msg.state == model.MessageState.saved) {
+      if (msg.saved) {
         _savedIndex.add(msg.id);
       }
     });
@@ -383,7 +383,7 @@ class Message implements storage.Message {
           _authorString(modifier));
     }
 
-    if (message.state == model.MessageState.saved) {
+    if (message.saved) {
       _savedIndex.add(message.id);
     } else if (_savedIndex.contains(message.id)) {
       _savedIndex.remove(message.id);
