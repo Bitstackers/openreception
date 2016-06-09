@@ -81,6 +81,7 @@ abstract class Key {
   static const widgetSelect = 'widgetSelect';
   static const widget = 'widget';
   static const inFocus = 'inFocus';
+  static const messageState = 'messageState';
 
   static const address = 'address';
   static const addressType = 'addressType';

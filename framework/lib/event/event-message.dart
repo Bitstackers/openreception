@@ -28,18 +28,26 @@ class MessageChange implements Event {
   final int mid;
   final int modifierUid;
   final String state;
+  final model.MessageState messageState;
 
-  MessageChange._internal(this.mid, this.modifierUid, this.state)
+  MessageChange._internal(
+      this.mid, this.modifierUid, this.state, this.messageState)
       : timestamp = new DateTime.now();
 
-  factory MessageChange.create(int mid, int modifierUid) =>
-      new MessageChange._internal(mid, modifierUid, Change.created);
+  factory MessageChange.create(
+          int mid, int modifierUid, model.MessageState messageState) =>
+      new MessageChange._internal(
+          mid, modifierUid, Change.created, messageState);
 
-  factory MessageChange.update(int mid, int modifierUid) =>
-      new MessageChange._internal(mid, modifierUid, Change.updated);
+  factory MessageChange.update(
+          int mid, int modifierUid, model.MessageState messageState) =>
+      new MessageChange._internal(
+          mid, modifierUid, Change.updated, messageState);
 
-  factory MessageChange.delete(int mid, int modifierUid) =>
-      new MessageChange._internal(mid, modifierUid, Change.deleted);
+  factory MessageChange.delete(
+          int mid, int modifierUid, model.MessageState messageState) =>
+      new MessageChange._internal(
+          mid, modifierUid, Change.deleted, messageState);
 
   Map toJson() => this.asMap;
   String toString() => this.asMap.toString();
@@ -50,7 +58,8 @@ class MessageChange implements Event {
     Map body = {
       Key.modifierUid: this.modifierUid,
       Key.messageID: this.mid,
-      Key.state: this.state
+      Key.state: this.state,
+      Key.messageState: this.messageState.index
     };
 
     template[this.eventName] = body;
@@ -62,5 +71,9 @@ class MessageChange implements Event {
       : modifierUid = map[Key.messageChange][Key.modifierUid],
         mid = map[Key.messageChange][Key.messageID],
         state = map[Key.messageChange][Key.state],
+        messageState = map[Key.messageChange].containsKey(Key.messageState)
+            ? model.MessageState.values[map[Key.messageChange]
+                [Key.messageState]]
+            : model.MessageState.unknown,
         timestamp = Util.unixTimestampToDateTime(map[Key.timestamp]);
 }
