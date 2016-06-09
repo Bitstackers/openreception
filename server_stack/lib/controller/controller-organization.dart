@@ -16,38 +16,156 @@ library openreception.server.controller.organization;
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:shelf/shelf.dart' as shelf;
-import 'package:shelf_route/shelf_route.dart' as shelf_route;
-
-import 'package:openreception.framework/filestore.dart' as filestore;
+import 'package:archive/archive.dart';
+import 'package:logging/logging.dart';
 import 'package:openreception.framework/event.dart' as event;
+import 'package:openreception.framework/filestore.dart' as filestore;
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.framework/storage.dart' as storage;
-
+import 'package:openreception.framework/validation.dart';
 import 'package:openreception.server/response_utils.dart';
+import 'package:shelf/shelf.dart' as shelf;
+import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
-void _validate(model.Organization org) {
-  if (org.name.isEmpty)
-    throw new FormatException('organization.name must not be empty');
+const String _libraryName = 'openreception.server.controller.organization';
+
+List<int> serializeAndCompressObject(Object obj) =>
+    new GZipEncoder().encode(UTF8.encode(JSON.encode(obj)));
+
+class OrganizationCache {
+  final Logger _log = new Logger('$_libraryName.CalendarCache');
+
+  final filestore.Organization orgStore;
+
+  final Map<int, List<int>> _organizationCache = {};
+  List<int> _organizationListCache = [];
+
+  /**
+   *
+   */
+  OrganizationCache(this.orgStore) {
+    _observers();
+  }
+
+  /**
+   *
+   */
+  void remove(int oid) {
+    _organizationCache.remove(oid);
+  }
+
+  /**
+   *
+   */
+  void _observers() {
+    orgStore.onOrganizationChange.listen((event.OrganizationChange e) {
+      if (e.created) {
+        emptyList();
+      } else if (e.updated) {
+        emptyList();
+        remove(e.oid);
+      } else if (e.deleted) {
+        emptyList();
+        remove(e.oid);
+      }
+    });
+  }
+
+  /**
+   *
+   */
+  Future<List<int>> get(int oid) async {
+    if (!_organizationCache.containsKey(oid)) {
+      _log.finest('Key $oid not found in cache. Looking it up.');
+      _organizationCache[oid] =
+          serializeAndCompressObject(await orgStore.get(oid));
+    }
+    return _organizationCache[oid];
+  }
+
+  /**
+   *
+   */
+  void removeEntry(int eid, model.Owner owner) {
+    final String key = '$owner:$eid';
+    _log.finest('Removing key $key from cache');
+    _organizationCache.remove(key);
+  }
+
+  /**
+   *
+   */
+  Future<List<int>> list() async {
+    if (!_organizationListCache.isEmpty) {
+      _log.finest('Listing not found in cache. Looking it up.');
+
+      _organizationListCache =
+          serializeAndCompressObject(await orgStore.list());
+    }
+
+    return _organizationListCache;
+  }
+
+  /**
+   *
+   */
+  Map get stats => {
+        'organizationEntries': _organizationCache.length,
+        'organizationSize': _organizationCache.values
+            .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
+        'listSize': _organizationListCache.length
+      };
+
+  /**
+   *
+   */
+  Future prefill() async {
+    List<model.OrganizationReference> oRefs = await orgStore.list();
+
+    _organizationListCache =
+        serializeAndCompressObject(oRefs.toList(growable: false));
+
+    await Future.forEach(oRefs, (oRef) async {
+      final o = await orgStore.get(oRef.id);
+      _organizationCache[o.id] = serializeAndCompressObject(o);
+    });
+  }
+
+  /**
+   *
+   */
+  void emptyList() {
+    _organizationListCache = [];
+  }
+
+  /**
+   *
+   */
+  void emptyAll() {
+    _organizationCache.clear();
+    emptyList();
+  }
 }
 
 class Organization {
   final filestore.Organization _orgStore;
   final service.Authentication _authservice;
   final service.NotificationService _notification;
+  OrganizationCache _cache;
 
   /**
    * Default constructor.
    */
-  Organization(this._orgStore, this._notification, this._authservice);
+  Organization(this._orgStore, this._notification, this._authservice) {
+    _cache = new OrganizationCache(_orgStore);
+  }
 
   /**
    *
    */
   Future<shelf.Response> list(shelf.Request request) async =>
-      okJson((await _orgStore.list()).toList(growable: false));
-
+      okGzip(new Stream.fromIterable([await _cache.list()]));
   /**
    *
    */
@@ -61,7 +179,7 @@ class Organization {
     final int oid = int.parse(shelf_route.getPathParameter(request, 'oid'));
 
     try {
-      return okJson(await _orgStore.get(oid));
+      return okGzip(new Stream.fromIterable([await _cache.get(oid)]));
     } on storage.NotFound catch (error) {
       return notFound(error.toString());
     }
@@ -99,7 +217,12 @@ class Organization {
           .readAsString()
           .then(JSON.decode)
           .then(model.Organization.decode);
-      _validate(organization);
+
+      List<FormatException> errors = validateOrganization(organization);
+
+      if (errors.isNotEmpty) {
+        throw errors.first;
+      }
     } on FormatException catch (error) {
       Map response = {
         'status': 'bad request',
@@ -134,7 +257,11 @@ class Organization {
           .readAsString()
           .then(JSON.decode)
           .then(model.Organization.decode);
-      _validate(org);
+      List<FormatException> errors = validateOrganization(org);
+
+      if (errors.isNotEmpty) {
+        throw errors.first;
+      }
     } on FormatException catch (error) {
       Map response = {
         'status': 'bad request',

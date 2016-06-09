@@ -25,10 +25,6 @@ import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.framework/storage.dart' as storage;
 import 'package:openreception.framework/model.dart' as model;
 
-/**
- * Response templates.
- */
-
 class Message {
   final Logger log = new Logger('controller.message');
   final service.Authentication _authService;
@@ -109,8 +105,8 @@ class Message {
     model.Message createdMessage =
         await _messageStore.update(message, modifier);
 
-    _notification.broadcastEvent(
-        new event.MessageChange.update(createdMessage.id, modifier.id));
+    _notification.broadcastEvent(new event.MessageChange.update(
+        createdMessage.id, modifier.id, message.state));
 
     return okJson(createdMessage);
   }
@@ -132,7 +128,8 @@ class Message {
     try {
       await _messageStore.remove(mid, modifier);
 
-      var e = new event.MessageChange.delete(mid, modifier.id);
+      var e = new event.MessageChange.delete(
+          mid, modifier.id, model.MessageState.unknown);
       try {
         await _notification.broadcastEvent(e);
       } catch (error) {
@@ -279,8 +276,8 @@ class Message {
     final model.MessageQueueEntry queueItem =
         await _messageQueue.enqueue(message);
 
-    _notification
-        .broadcastEvent(new event.MessageChange.update(message.id, user.id));
+    _notification.broadcastEvent(
+        new event.MessageChange.update(message.id, user.id, message.state));
 
     return okJson(queueItem);
   }
@@ -325,8 +322,8 @@ class Message {
     return await _messageStore
         .create(message, modifier)
         .then((model.Message createdMessage) {
-      _notification.broadcastEvent(
-          new event.MessageChange.create(message.id, modifier.id));
+      _notification.broadcastEvent(new event.MessageChange.create(
+          message.id, modifier.id, message.state));
 
       return okJson(createdMessage);
     });
