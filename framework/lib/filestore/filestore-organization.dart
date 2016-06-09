@@ -21,6 +21,11 @@ class Organization implements storage.Organization {
   GitEngine _git;
   Sequencer _sequencer;
 
+  Bus<event.OrganizationChange> _changeBus =
+      new Bus<event.OrganizationChange>();
+  Stream<event.OrganizationChange> get onOrganizationChange =>
+      _changeBus.stream;
+
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
   Future get ready => _git != null ? _git.whenReady : new Future.value(true);
@@ -94,6 +99,8 @@ class Organization implements storage.Organization {
           _authorString(modifier));
     }
 
+    _changeBus.fire(new event.OrganizationChange.create(org.id, modifier.id));
+
     return org.reference;
   }
 
@@ -146,6 +153,8 @@ class Organization implements storage.Organization {
     } else {
       file.deleteSync();
     }
+
+    _changeBus.fire(new event.OrganizationChange.delete(id, modifier.id));
   }
 
   /**
@@ -172,6 +181,8 @@ class Organization implements storage.Organization {
           'updated ${org.name}',
           _authorString(modifier));
     }
+
+    _changeBus.fire(new event.OrganizationChange.update(org.id, modifier.id));
 
     return org.reference;
   }

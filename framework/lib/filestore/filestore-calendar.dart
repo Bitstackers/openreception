@@ -16,6 +16,7 @@ part of openreception.framework.filestore;
 class Calendar implements storage.Calendar {
   final Logger _log = new Logger('$libraryName.Calendar');
   final String path;
+
   Sequencer _sequencer;
   GitEngine _git;
 

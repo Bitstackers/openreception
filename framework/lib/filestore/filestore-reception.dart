@@ -20,6 +20,9 @@ class Reception implements storage.Reception {
   final GitEngine _git;
   final Calendar calendarStore;
 
+  Bus<event.ReceptionChange> _changeBus = new Bus<event.ReceptionChange>();
+  Stream<event.ReceptionChange> get onReceptionChange => _changeBus.stream;
+
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
   Future get ready => _git != null ? _git.whenReady : new Future.value(true);
@@ -101,6 +104,9 @@ class Reception implements storage.Reception {
           'added ${reception.id}',
           _authorString(modifier));
     }
+
+    _changeBus
+        .fire(new event.ReceptionChange.create(reception.id, modifier.id));
 
     return reception.reference;
   }
@@ -188,6 +194,8 @@ class Reception implements storage.Reception {
     } else {
       dir.deleteSync(recursive: true);
     }
+
+    _changeBus.fire(new event.ReceptionChange.delete(id, modifier.id));
   }
 
   /**
@@ -212,6 +220,8 @@ class Reception implements storage.Reception {
           'updated ${rec.name}',
           _authorString(modifier));
     }
+
+    _changeBus.fire(new event.ReceptionChange.create(rec.id, modifier.id));
 
     return rec.reference;
   }

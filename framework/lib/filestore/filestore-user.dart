@@ -19,6 +19,9 @@ class User implements storage.User {
   GitEngine _git;
   Sequencer _sequencer;
 
+  Bus<event.UserChange> _changeBus = new Bus<event.UserChange>();
+  Stream<event.UserChange> get onUserChange => _changeBus.stream;
+
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
   Future get ready => _git != null ? _git.whenReady : new Future.value(true);
@@ -122,6 +125,8 @@ class User implements storage.User {
           _authorString(modifier));
     }
 
+    _changeBus.fire(new event.UserChange.create(user.id, modifier.id));
+
     return user.reference;
   }
 
@@ -189,6 +194,8 @@ class User implements storage.User {
           _authorString(modifier));
     }
 
+    _changeBus.fire(new event.UserChange.update(user.id, modifier.id));
+
     return user.reference;
   }
 
@@ -211,5 +218,6 @@ class User implements storage.User {
     } else {
       file.deleteSync();
     }
+    _changeBus.fire(new event.UserChange.delete(id, modifier.id));
   }
 }

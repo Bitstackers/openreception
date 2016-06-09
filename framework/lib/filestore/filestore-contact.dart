@@ -22,6 +22,14 @@ class Contact implements storage.Contact {
   final Calendar calendarStore;
   final Map<int, String> _index = {};
 
+  Stream<event.ContactChange> get onContactChange => _changeBus.stream;
+  Stream<event.ReceptionData> get onReceptionDataChange =>
+      _receptionDataChangeBus.stream;
+
+  Bus<event.ContactChange> _changeBus = new Bus<event.ContactChange>();
+  Bus<event.ReceptionData> _receptionDataChangeBus =
+      new Bus<event.ReceptionData>();
+
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
   Future get ready => _git != null ? _git.whenReady : new Future.value(true);
@@ -29,8 +37,7 @@ class Contact implements storage.Contact {
   int get _nextId => _sequencer.nextInt();
 
   /**
-   * TODO:
-   *  - Add "link" operations for linking messages to contact datastore.
+   *
    */
   factory Contact(Reception receptionStore, String path, [GitEngine ge]) {
     if (!new Directory(path).existsSync()) {
@@ -121,6 +128,9 @@ class Contact implements storage.Contact {
           'added ${attr.cid} to ${attr.receptionId}',
           _authorString(modifier));
     }
+
+    _receptionDataChangeBus.fire(new event.ReceptionData.create(
+        attr.cid, attr.receptionId, modifier.id));
   }
 
   /**
@@ -146,6 +156,9 @@ class Contact implements storage.Contact {
     _log.finest('Creating new file ${file.path}');
     file.writeAsStringSync(_jsonpp.convert(contact));
 
+    /// Update index
+    _index[contact.id] = file.path;
+
     if (this._git != null) {
       await _git.add(
           file,
@@ -153,6 +166,8 @@ class Contact implements storage.Contact {
           'added ${contact.id}',
           _authorString(modifier));
     }
+
+    _changeBus.fire(new event.ContactChange.create(contact.id, modifier.id));
 
     return contact;
   }
@@ -168,8 +183,10 @@ class Contact implements storage.Contact {
     }
 
     try {
+      final String jsonString = file.readAsStringSync();
       final model.BaseContact bc =
-          model.BaseContact.decode(JSON.decode(file.readAsStringSync()));
+          model.BaseContact.decode(JSON.decode(jsonString));
+
       return bc;
     } catch (e) {
       throw e;
@@ -197,11 +214,7 @@ class Contact implements storage.Contact {
       return [];
     }
 
-    return new Directory(path)
-        .listSync()
-        .where((fse) => fse is Directory && !basename(fse.path).startsWith('.'))
-        .map((FileSystemEntity fse) => model.BaseContact.decode(JSON
-            .decode(new File(fse.path + '/contact.json').readAsStringSync())));
+    return Future.wait(_index.keys.map(get));
   }
 
   /**
@@ -290,25 +303,39 @@ class Contact implements storage.Contact {
   }
 
   /**
-   * TODO: Perform a "real" file cleanup instead of just deleting the entire
-   * directory recursively, which is basically asking for trouble.
+   *
    */
-  Future remove(int id, model.User modifier) async {
-    final Directory dir = new Directory('$path/${id}');
-
-    if (!dir.existsSync()) {
+  Future remove(int cid, model.User modifier) async {
+    if (!_index.containsKey(cid)) {
       throw new storage.NotFound();
     }
 
+    /// Remove reception references.
+    await Future.forEach(await receptions(cid), (rRef) async {
+      await removeData(cid, rRef.id, modifier);
+    });
+
+    /// Remove calendar entries.
+    final model.Owner owner = new model.OwningContact(cid);
+    await Future.forEach(await calendarStore.list(owner),
+        (model.CalendarEntry entry) async {
+      await calendarStore.remove(entry.id, owner, modifier);
+    });
+
+    /// Go ahead and remove the file.
+    final File contactFile = new File(_index[cid]);
+
     if (this._git != null) {
       await _git.remove(
-          dir,
+          contactFile,
           'uid:${modifier.id} - ${modifier.name} '
-          'removed $id',
+          'removed $cid',
           _authorString(modifier));
     } else {
-      dir.deleteSync(recursive: true);
+      await contactFile.delete();
     }
+
+    _changeBus.fire(new event.ContactChange.delete(cid, modifier.id));
   }
 
   /**
@@ -336,6 +363,9 @@ class Contact implements storage.Contact {
     } else {
       file.deleteSync();
     }
+
+    _receptionDataChangeBus
+        .fire(new event.ReceptionData.delete(id, receptionId, modifier.id));
   }
 
   /**
@@ -358,6 +388,8 @@ class Contact implements storage.Contact {
           'updated ${contact.name}',
           _authorString(modifier));
     }
+
+    _changeBus.fire(new event.ContactChange.update(contact.id, modifier.id));
 
     return contact;
   }
@@ -385,6 +417,9 @@ class Contact implements storage.Contact {
           'updated ${attr.cid} in ${attr.receptionId}',
           _authorString(modifier));
     }
+
+    _receptionDataChangeBus.fire(new event.ReceptionData.update(
+        attr.cid, attr.receptionId, modifier.id));
   }
 
   /**
