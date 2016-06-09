@@ -31,11 +31,13 @@ abstract class Reception {
   /**
    *
    */
+  @deprecated
   Future<model.Reception> getByExtension(String extension);
 
   /**
    *
    */
+  @deprecated
   Future<String> extensionOf(int rid);
 
   /**
