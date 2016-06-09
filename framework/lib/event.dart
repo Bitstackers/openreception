@@ -116,17 +116,9 @@ abstract class Key {
   static const userState = 'userState';
   static const state = 'state';
   static const callStateReload = 'callStateReload';
-
-  static const contactCalendarEntryCreate = 'contactCalendarEntryCreate';
-  static const contactCalendarEntryUpdate = 'contactCalendarEntryUpdate';
-  static const contactCalendarEntryDelete = 'contactCalendarEntryDelete';
-
-  static const receptionCalendarEntryCreate = 'receptionCalendarEntryCreate';
-  static const receptionCalendarEntryUpdate = 'receptionCalendarEntryUpdate';
-  static const receptionCalendarEntryDelete = 'receptionCalendarEntryDelete';
 }
 
-const String _libraryName = 'openreception.event';
+const String _libraryName = 'openreception.framework.event';
 
 /**
  * Superclass for events. It's only real purpose is to provide a common
