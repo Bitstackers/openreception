@@ -276,14 +276,13 @@ class Message {
       return clientError(msg);
     }
 
-    return await _messageQueue
-        .enqueue(message)
-        .then((model.MessageQueueEntry queueItem) {
-      _notification
-          .broadcastEvent(new event.MessageChange.update(message.id, user.id));
+    final model.MessageQueueEntry queueItem =
+        await _messageQueue.enqueue(message);
 
-      return okJson(queueItem);
-    });
+    _notification
+        .broadcastEvent(new event.MessageChange.update(message.id, user.id));
+
+    return okJson(queueItem);
   }
 
   /**

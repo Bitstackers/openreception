@@ -18,7 +18,6 @@ import 'dart:io' as io;
 
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.framework/storage.dart' as storage;
 import 'package:openreception.server/configuration.dart';
 import 'package:openreception.server/controller/controller-message.dart'
     as controller;
