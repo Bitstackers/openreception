@@ -41,7 +41,7 @@ class Call {
   static final String noId = '';
 
   final Bus<String> _callState = new Bus<String>();
-  final Bus<event.CallEvent> _eventBus = new Bus();
+  final Bus<_event.CallEvent> _eventBus = new Bus<_event.CallEvent>();
 
   DateTime arrived = new DateTime.now();
   DateTime answeredAt = util.never;
@@ -109,42 +109,42 @@ class Call {
     _log.finest('UUID: ${_id}: ${lastState} => ${newState}');
 
     if (lastState == CallState.queued) {
-      notifyEvent(new event.QueueLeave(this));
+      notifyEvent(new _event.QueueLeave(this));
     } else if (lastState == CallState.parked) {
-      notifyEvent(new event.CallUnpark(this));
+      notifyEvent(new _event.CallUnpark(this));
     }
 
     switch (newState) {
       case (CallState.created):
-        notifyEvent(new event.CallOffer(this));
+        notifyEvent(new _event.CallOffer(this));
         break;
 
       case (CallState.parked):
-        notifyEvent(new event.CallPark(this));
+        notifyEvent(new _event.CallPark(this));
         break;
 
       case (CallState.unparked):
-        notifyEvent(new event.CallUnpark(this));
+        notifyEvent(new _event.CallUnpark(this));
         break;
 
       case (CallState.queued):
-        notifyEvent(new event.QueueJoin(this));
+        notifyEvent(new _event.QueueJoin(this));
         break;
 
       case (CallState.hungup):
-        notifyEvent(new event.CallHangup(this, hangupCause: hangupCause));
+        notifyEvent(new _event.CallHangup(this, hangupCause: hangupCause));
         break;
 
       case (CallState.speaking):
-        notifyEvent(new event.CallPickup(this));
+        notifyEvent(new _event.CallPickup(this));
         break;
 
       case (CallState.transferred):
-        notifyEvent(new event.CallTransfer(this));
+        notifyEvent(new _event.CallTransfer(this));
         break;
 
       case (CallState.ringing):
-        notifyEvent(new event.CallStateChanged(this));
+        notifyEvent(new _event.CallStateChanged(this));
         break;
 
       case (CallState.transferring):
@@ -183,7 +183,7 @@ class Call {
   /**
    *
    */
-  Stream<event.CallEvent> get event => _eventBus.stream;
+  Stream<_event.CallEvent> get event => _eventBus.stream;
 
   /**
    *
@@ -218,16 +218,16 @@ class Call {
     _locked = lock;
 
     if (lock) {
-      notifyEvent(new event.CallLock((this)));
+      notifyEvent(new _event.CallLock((this)));
     } else {
-      notifyEvent(new event.CallUnlock(this));
+      notifyEvent(new _event.CallUnlock(this));
     }
   }
 
   /**
    *
    */
-  void notifyEvent(event.Event event) => _eventBus.fire(event);
+  void notifyEvent(_event.Event e) => _eventBus.fire(e);
 
   /**
    *

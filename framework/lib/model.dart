@@ -19,7 +19,7 @@ import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 
 import 'bus.dart';
-import 'event.dart' as event;
+import 'event.dart' as _event;
 import 'keys.dart' as key;
 import 'pbx-keys.dart';
 import 'util.dart' as util;
