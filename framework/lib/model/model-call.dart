@@ -84,7 +84,7 @@ class Call {
    *
    */
   @override
-  bool operator ==(Call other) => _id == other._id;
+  bool operator ==(Object other) => other is Call && _id == other._id;
 
   /**
    *

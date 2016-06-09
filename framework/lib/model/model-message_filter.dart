@@ -68,7 +68,8 @@ class MessageFilter {
    * two filter instances to be equal.
    */
   @override
-  bool operator ==(MessageFilter other) =>
+  bool operator ==(Object other) =>
+      other is MessageFilter &&
       limitCount == other.limitCount &&
       userId == other.userId &&
       receptionId == other.receptionId &&

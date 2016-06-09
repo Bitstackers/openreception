@@ -36,7 +36,9 @@ class Ivr extends Action {
     return new Ivr(menuName, note: note);
   }
 
-  bool operator ==(Ivr other) => this.menuName == other.menuName;
+  @override
+  bool operator ==(Object other) =>
+      other is Ivr && this.menuName == other.menuName;
 
   String toString() => '${Key.ivr} ${menuName}';
 

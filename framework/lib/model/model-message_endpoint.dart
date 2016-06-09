@@ -78,6 +78,8 @@ class MessageEndpoint {
    *
    */
   @override
-  bool operator ==(MessageEndpoint other) =>
-      this.type == other.type && this.address == other.address;
+  bool operator ==(Object other) =>
+      other is MessageEndpoint &&
+      this.type == other.type &&
+      this.address == other.address;
 }

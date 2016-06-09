@@ -34,13 +34,16 @@ class Owner {
       return new OwningContact(int.parse(buffer.split(':').last));
     } else if (key == Owner._type) {
       return none;
+    } else {
+      return none;
     }
   }
 
   /**
    *
    */
-  bool operator ==(Owner other) => id == other.id && type == other.type;
+  bool operator ==(Object other) =>
+      other is Owner && id == other.id && type == other.type;
 
   /**
    *

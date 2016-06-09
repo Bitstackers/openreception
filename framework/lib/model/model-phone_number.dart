@@ -56,9 +56,10 @@ class PhoneNumber {
    * both their endpoint and type is the same.
    */
   @override
-  bool operator ==(PhoneNumber other) =>
+  bool operator ==(Object other) =>
+      other is PhoneNumber &&
       normalizedDestination.toLowerCase() ==
-      other.normalizedDestination.toLowerCase();
+          other.normalizedDestination.toLowerCase();
 
   /**
    * Default empty constructor.

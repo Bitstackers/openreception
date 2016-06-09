@@ -138,6 +138,8 @@ abstract class Event {
 
   /**
    * Parse an an event that has already been deserialized from JSON string.
+   * TODO: Throw a [FormatException] from this constructor instead of
+   * returning a null object.
    */
   factory Event.parse(Map map) {
     try {
@@ -218,5 +220,7 @@ abstract class Event {
       _log.severe('Failed to parse $map');
       _log.severe(error, stackTrace);
     }
+
+    return null;
   }
 }

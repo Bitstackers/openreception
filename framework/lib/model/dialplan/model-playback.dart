@@ -86,7 +86,8 @@ class Playback extends Action {
    *
    */
   @override
-  bool operator ==(Playback other) => this.filename == other.filename;
+  bool operator ==(Object other) =>
+      other is Playback && this.filename == other.filename;
 
   /**
    *

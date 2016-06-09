@@ -185,5 +185,7 @@ class OpeningHour {
   String toJson() => '${_trimWday(fromDay)}'
       '${toDay != fromDay ? '-${_trimWday(toDay)}' : ''} $_stringifiedTime';
 
-  bool operator ==(OpeningHour other) => this.toString() == other.toString();
+  @override
+  bool operator ==(Object other) =>
+      other is OpeningHour && this.toString() == other.toString();
 }

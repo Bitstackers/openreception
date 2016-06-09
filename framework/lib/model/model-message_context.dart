@@ -59,8 +59,8 @@ class MessageContext {
   int get hashCode => contactString.hashCode;
 
   @override
-  bool operator ==(MessageContext other) =>
-      cid == other.cid && rid == other.rid;
+  bool operator ==(Object other) =>
+      other is MessageContext && cid == other.cid && rid == other.rid;
 
   /**
    *

@@ -86,5 +86,6 @@ class Enqueue implements Action {
   String toJson() => '${Key.enqueue} ${queueName}'
       '${holdMusic.isNotEmpty ? ' music $holdMusic' : ''}';
 
-  bool operator ==(Enqueue other) => this.queueName == other.queueName;
+  bool operator ==(Object other) =>
+      other is Enqueue && this.queueName == other.queueName;
 }
