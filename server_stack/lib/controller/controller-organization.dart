@@ -60,15 +60,11 @@ class OrganizationCache {
    */
   void _observers() {
     orgStore.onOrganizationChange.listen((event.OrganizationChange e) {
-      if (e.created) {
-        emptyList();
-      } else if (e.updated) {
-        emptyList();
-        remove(e.oid);
-      } else if (e.deleted) {
-        emptyList();
+      if (e.updated || e.deleted) {
         remove(e.oid);
       }
+
+      emptyList();
     });
   }
 
