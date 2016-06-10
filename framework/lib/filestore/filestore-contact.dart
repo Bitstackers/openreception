@@ -95,9 +95,8 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Future<Iterable<model.BaseContact>> _contactsOfReception(int id) async =>
-      (await list()).where((model.BaseContact c) =>
-          new File('$path/${c.id}/receptions/${id}.json').existsSync());
+  Future<Iterable<model.BaseContact>> _contactsOfReception(int rid) async =>
+      (await receptionContacts(rid)).map((rc) => rc.contact);
 
   /**
    *
