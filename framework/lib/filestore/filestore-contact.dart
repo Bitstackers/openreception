@@ -335,6 +335,8 @@ class Contact implements storage.Contact {
       await contactFile.delete();
     }
 
+    _index.remove(cid);
+
     _changeBus.fire(new event.ContactChange.delete(cid, modifier.id));
   }
 
