@@ -60,7 +60,7 @@ class Reception implements storage.Reception {
   /**
    *
    */
-  Future<Iterable<model.ReceptionReference>> _receptionsOfOrg(int id) async {
+  Future<Iterable<model.ReceptionReference>> _receptionsOfOrg(int oid) async {
     List<FileSystemEntity> dirs = new Directory(path)
         .listSync()
         .where((fse) => !fse.path.endsWith('.git') && fse is Directory);
@@ -69,9 +69,10 @@ class Reception implements storage.Reception {
         .map((FileSystemEntity fse) {
           final reception = model.Reception.decode(JSON.decode(
               (new File(fse.path + '/reception.json')).readAsStringSync()));
+
           return reception;
         })
-        .where((r) => r.oid == id)
+        .where((r) => r.oid == oid)
         .map((r) => r.reference);
   }
 
