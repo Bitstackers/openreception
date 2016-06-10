@@ -290,8 +290,8 @@ class Contact {
 
     final ref = await _contactStore.addData(attr, modifier);
 
-    event.ContactChange changeEvent =
-        new event.ContactChange.create(attr.cid, modifier.id);
+    event.ReceptionData changeEvent =
+        new event.ReceptionData.create(attr.cid, attr.receptionId, modifier.id);
 
     _notification.broadcastEvent(changeEvent);
 
@@ -330,8 +330,8 @@ class Contact {
 
     try {
       final ref = await _contactStore.updateData(attr, modifier);
-      event.ContactChange changeEvent =
-          new event.ContactChange.update(attr.cid, modifier.id);
+      event.ReceptionData changeEvent = new event.ReceptionData.update(
+          attr.cid, attr.receptionId, modifier.id);
 
       _notification.broadcastEvent(changeEvent);
 
@@ -360,8 +360,8 @@ class Contact {
 
       /// Update cache
       _receptionContactCache.remove(rid);
-      event.ContactChange changeEvent =
-          new event.ContactChange.delete(cid, modifier.id);
+      event.ReceptionData changeEvent =
+          new event.ReceptionData.update(cid, rid, modifier.id);
       _notification.broadcastEvent(changeEvent);
 
       return okJson(const {});
