@@ -59,9 +59,9 @@ class Organization implements storage.Organization {
   /**
    *
    */
-  Future<Iterable<model.BaseContact>> contacts(int id) async {
+  Future<Iterable<model.BaseContact>> contacts(int oid) async {
     List<model.BaseContact> cRefs = [];
-    List<model.ReceptionReference> rRefs = await receptions(id);
+    List<model.ReceptionReference> rRefs = await receptions(oid);
 
     await Future.forEach(rRefs, (rRef) async {
       cRefs.addAll(await _contactFileStore._contactsOfReception(rRef.id));
