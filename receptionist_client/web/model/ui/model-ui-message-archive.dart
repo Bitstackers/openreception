@@ -17,7 +17,7 @@ part of model;
  * Provides access to the MessageArchive UX components.
  */
 class UIMessageArchive extends UIModel {
-  ORModel.MessageContext currentContext = new ORModel.MessageContext.empty();
+  ORModel.MessageContext _currentContext = new ORModel.MessageContext.empty();
   final Map<String, String> _langMap;
   final Bus<ORModel.Message> _messageCloseBus = new Bus<ORModel.Message>();
   final Bus<ORModel.Message> _messageCopyBus = new Bus<ORModel.Message>();
@@ -27,7 +27,7 @@ class UIMessageArchive extends UIModel {
   Map<int, String> _users = new Map<int, String>();
   final ORUtil.WeekDays _weekDays;
 
-  Function loadMoreClick = () => null;
+  TableElement _notSavedTable;
 
   /**
    * Constructor.
@@ -47,19 +47,17 @@ class UIMessageArchive extends UIModel {
   @override
   HtmlElement get _root => _myRoot;
 
+  DivElement get _archiveTableContainer =>
+      _tableContainer.querySelector('.message-archive-tables');
   DivElement get _body => _root.querySelector('.generic-widget-body');
   String get header => _root.querySelector('h4 span.extra-header').text;
-  TableSectionElement get _savedTbody =>
-      _root.querySelector('table tbody.saved-messages-tbody');
-  TableSectionElement get _notSavedTbody =>
-      _root.querySelector('table tbody.not-saved-messages-tbody');
-  DivElement get _tableContainer => _body.querySelector('div');
   ButtonElement get _loadMoreButton =>
       _body.querySelector('button.messages-load-more');
-
-  DateTime get lastDateTime => _notSavedTbody.children.length > 0
-      ? DateTime.parse(_notSavedTbody.children.last.dataset['message-date'])
-      : new DateTime.now();
+  TableSectionElement get _savedTbody =>
+      _tableContainer.querySelector('tbody.saved-messages-tbody');
+  // TableSectionElement get _notSavedTbody =>
+  //     _archiveTableContainer.querySelector('tbody.not-saved-messages-tbody');
+  DivElement get _tableContainer => _body.querySelector('div');
 
   /**
    * Construct the send | delete | copy | close <td> cell.
@@ -119,7 +117,55 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
+   * Construct a <tr> element from [message]. The only data used from [message]
+   * is the createAt DateTime.
+   *
+   * The resulting row is empty, except for the date column.
+   */
+  TableRowElement _buildEmptyRow(ORModel.Message message) {
+    String date() {
+      final DateTime now = new DateTime.now();
+      final StringBuffer sb = new StringBuffer();
+
+      final String day = new DateFormat.d().format(message.createdAt);
+      final String month = new DateFormat.M().format(message.createdAt);
+      final String year = new DateFormat.y().format(message.createdAt);
+
+      sb.write('${_weekDays.name(message.createdAt.weekday)} ${day}/${month}');
+
+      if (message.createdAt.year != now.year) {
+        sb.write('/${year.substring(2)}');
+      }
+
+      return sb.toString();
+    }
+
+    TableCellElement emptyCell() => new TableCellElement()
+      ..text = '-'
+      ..style.textAlign = 'center';
+
+    final TableRowElement row = new TableRowElement();
+    row.children.addAll([
+      new TableCellElement()..text = date(),
+      emptyCell(),
+      emptyCell(),
+      emptyCell(),
+      emptyCell(),
+      emptyCell(),
+      emptyCell(),
+      emptyCell(),
+      emptyCell(),
+      emptyCell(),
+    ]);
+
+    return row;
+  }
+
+  /**
    * Construct a <tr> element from [message]
+   *
+   * If [saved] is true then output the recipient contact and reception name
+   * columns.
    */
   TableRowElement _buildRow(ORModel.Message message, bool saved) {
     final TableRowElement row = new TableRowElement()
@@ -169,6 +215,14 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
+   * Remove all the message archive tables.
+   */
+  void cacheClear() {
+    _archiveTableContainer.children.clear();
+    _archiveTableContainer.dataset['rid'] = '';
+  }
+
+  /**
    * Remove all data from the body and clear the header.
    */
   void clear() {
@@ -180,9 +234,61 @@ class UIMessageArchive extends UIModel {
    * Clear the message lists.
    */
   void clearNotSavedList() {
-    _notSavedTbody.children.clear();
-    _notSavedTbody.parent.hidden = true;
+    // _notSavedTbody.children.clear();
+    // _notSavedTbody.parent.hidden = true;
   }
+
+  /**
+   *
+   */
+  TableElement _archiveTable() => new TableElement()
+    ..classes.add('not-saved-messages-table')
+    ..children.addAll([
+      new Element.tag('thead')
+        ..children.add(new TableRowElement()
+          ..children.addAll(
+              [new TableCellElement()..text = new DateTime.now().toString()])),
+      new Element.tag('tbody')
+        ..classes.addAll(['not-saved-messages-tbody', 'zebra'])
+    ]);
+
+  /**
+   * Set the current message context. If the context contains an empty reception
+   * then disable and hide the loadmore button.
+   */
+  set currentContext(ORModel.MessageContext context) {
+    final bool emptyReception = context.rid == ORModel.Reception.noId;
+    final String rid = _archiveTableContainer.dataset['rid'];
+
+    if (emptyReception) {
+      _archiveTableContainer.children.clear();
+      _archiveTableContainer.dataset['rid'] = '';
+    } else {
+      _notSavedTable = _archiveTableContainer
+          .querySelector('[data-contact="${context.contactString}"]');
+
+      if (_notSavedTable == null) {
+        _notSavedTable = _archiveTable();
+        _notSavedTable.dataset['contact'] = context.contactString;
+        _archiveTableContainer.children.add(_notSavedTable);
+      }
+
+      _notSavedTable.hidden = false;
+
+      if (rid == null || rid.isEmpty || rid == context.rid.toString()) {
+        _archiveTableContainer.dataset['rid'] = context.rid.toString();
+      } else {}
+    }
+
+    _currentContext = context;
+    _loadMoreButton.disabled = emptyReception;
+    _loadMoreButton.style.display = emptyReception ? 'none' : 'block';
+  }
+
+  /**
+   * Return the current message context.
+   */
+  ORModel.MessageContext get currentContext => _currentContext;
 
   /**
    * Return the String status of [msg].
@@ -204,6 +310,15 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
+   * Hide all the message archive tables.
+   */
+  void hideTables() {
+    _archiveTableContainer.querySelectorAll('table').forEach((Element table) {
+      table.hidden = true;
+    });
+  }
+
+  /**
    * Get rid of all the Yes/No confirmation boxes.
    */
   void hideYesNoBoxes() {
@@ -215,7 +330,7 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
-   *
+   * Disable the "load more messages" button.
    */
   set loading(bool isLoading) {
     _loadMoreButton
@@ -227,7 +342,7 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
-   *
+   * Return true if we're in the process of loading messages.
    */
   get loading => _loadMoreButton.disabled;
 
@@ -251,8 +366,8 @@ class UIMessageArchive extends UIModel {
           tr.remove();
           _savedTbody.parent.hidden = _savedTbody.children.isEmpty;
           if (currentContext == message.context) {
-            _notSavedTbody.insertBefore(
-                _buildRow(message, false), _notSavedTbody.firstChild);
+            // _notSavedTbody.insertBefore(
+            //     _buildRow(message, false), _notSavedTbody.firstChild);
           }
         }
       });
@@ -265,12 +380,12 @@ class UIMessageArchive extends UIModel {
   void _observers() {
     _root.onKeyDown.listen(_keyboard.press);
     _root.onClick.listen((_) => _tableContainer.focus());
-    _loadMoreButton.onClick.listen((_) {
-      if (loadMoreClick != null) {
-        loadMoreClick();
-      }
-    });
   }
+
+  /**
+   * The click event stream for the load more messages button.
+   */
+  Stream<MouseEvent> get onLoadMoreMessages => _loadMoreButton.onClick;
 
   /**
    * Fire a [ORModel.Message] when closing it.
@@ -299,8 +414,8 @@ class UIMessageArchive extends UIModel {
    * server.
    */
   void removeMessage(ORModel.Message message) {
-    final TableRowElement tr =
-        _savedTbody.querySelector('[data-message-id="${message.id}"]');
+    TableRowElement tr =
+        _root.querySelector('table [data-message-id="${message.id}"]');
 
     if (tr != null) {
       tr.classes.add('fade-out');
@@ -337,18 +452,23 @@ class UIMessageArchive extends UIModel {
    */
   void setMessages(Iterable<ORModel.Message> list,
       {bool addToExisting: false}) {
-    final List<TableRowElement> rows = new List<TableRowElement>();
-    list.forEach((ORModel.Message msg) {
-      rows.add(_buildRow(msg, false));
-    });
-
-    if (addToExisting) {
-      _notSavedTbody.children.addAll(rows);
-    } else {
-      _notSavedTbody.children = rows;
-    }
-
-    _notSavedTbody.parent.hidden = _notSavedTbody.children.isEmpty;
+    // final List<TableRowElement> rows = new List<TableRowElement>();
+    //
+    // list.forEach((ORModel.Message msg) {
+    //   if (msg.id != ORModel.Message.noId) {
+    //     rows.add(_buildRow(msg, false));
+    //   } else {
+    //     rows.add(_buildEmptyRow(msg));
+    //   }
+    // });
+    //
+    // if (addToExisting) {
+    //   _notSavedTbody.children.addAll(rows);
+    // } else {
+    //   _notSavedTbody.children = rows;
+    // }
+    //
+    // _notSavedTbody.parent.hidden = _notSavedTbody.children.isEmpty;
   }
 
   /**
