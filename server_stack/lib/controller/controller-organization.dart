@@ -96,8 +96,8 @@ class OrganizationCache {
     if (_organizationListCache.isEmpty) {
       _log.finest('Listing not found in cache. Looking it up.');
 
-      _organizationListCache =
-          serializeAndCompressObject(await orgStore.list());
+      _organizationListCache = serializeAndCompressObject(
+          (await orgStore.list()).toList(growable: false));
     }
 
     return _organizationListCache;
