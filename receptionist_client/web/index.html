@@ -651,6 +651,7 @@
               display: block;
               margin-left: auto;
               margin-right: auto;
+              margin-bottom: 1em;
               width: 98%;
               height: 2em;
               font-size: 1.7em;
@@ -658,6 +659,8 @@
 
             #message-archive button.messages-load-more.loading {
               color: red;
+              font-weight: bold;
+              opacity: 0.5;
             }
 
             #message-archive table {
@@ -775,23 +778,25 @@
                 </thead>
                 <tbody class="saved-messages-tbody zebra"></tbody>
               </table>
-              <table class="not-saved-messages-table" hidden>
-                <thead>
-                  <tr>
-                    <td data-lang-text="date">::date::</td>
-                    <td data-lang-text="agent">::agent::</td>
-                    <td data-lang-text="name">::name::</td>
-                    <td data-lang-text="company">::company::</td>
-                    <td data-lang-text="phone">::phone::</td>
-                    <td data-lang-text="cell-phone">::cellphone::</td>
-                    <td data-lang-text="extension">::extension::</td>
-                    <td data-lang-text="message">::message::</td>
-                    <td data-lang-text="status">::status::</td>
-                    <td data-lang-text="actions">::actions::</td>
-                  </tr>
-                </thead>
-                <tbody class="not-saved-messages-tbody zebra"></tbody>
-              </table>
+              <div class="message-archive-tables">
+                <!--<table class="not-saved-messages-table" hidden>
+                  <thead>
+                    <tr>
+                      <td data-lang-text="date">::date::</td>
+                      <td data-lang-text="agent">::agent::</td>
+                      <td data-lang-text="name">::name::</td>
+                      <td data-lang-text="company">::company::</td>
+                      <td data-lang-text="phone">::phone::</td>
+                      <td data-lang-text="cell-phone">::cellphone::</td>
+                      <td data-lang-text="extension">::extension::</td>
+                      <td data-lang-text="message">::message::</td>
+                      <td data-lang-text="status">::status::</td>
+                      <td data-lang-text="actions">::actions::</td>
+                    </tr>
+                  </thead>
+                  <tbody class="not-saved-messages-tbody zebra"></tbody>
+                </table>-->
+              </div>
               <button data-lang-text="messages-load-more" class="messages-load-more">::load-more::</button>
             </div>
           </div>

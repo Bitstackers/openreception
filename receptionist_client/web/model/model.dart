@@ -17,20 +17,20 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 
-import '../controller/controller.dart' as Controller;
-import '../lang.dart';
-
+import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
 import 'package:markdown/markdown.dart' as Markdown;
 import 'package:okeyee/okeyee.dart' as Okeyee;
-import 'package:logging/logging.dart';
 import 'package:openreception.framework/bus.dart';
 import 'package:openreception.framework/event.dart' as OREvent;
 import 'package:openreception.framework/model.dart' as ORModel;
 import 'package:openreception.framework/util.dart' as ORUtil;
 
+import '../controller/controller.dart' as Controller;
+import '../lang.dart';
+
 part 'model-app-state.dart';
 part 'model-client-connection-state.dart';
-
 part 'ui/model-ui-agent-info.dart';
 part 'ui/model-ui-calendar-editor.dart';
 part 'ui/model-ui-contact-calendar.dart';

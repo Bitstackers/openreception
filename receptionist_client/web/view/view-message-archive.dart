@@ -26,6 +26,7 @@ class _CachedMessages {
 class MessageArchive extends ViewWidget {
   Map<String, _CachedMessages> _cache = new Map<String, _CachedMessages>();
   final Model.UIContactSelector _contactSelector;
+  ORModel.MessageContext _context;
   final Map<String, String> _langMap;
   DateTime _lastFetched;
   final Logger _log = new Logger('$libraryName.MessageArchive');
@@ -62,17 +63,20 @@ class MessageArchive extends ViewWidget {
   void _onBlur(Controller.Destination _) {
     _ui.hideYesNoBoxes();
     _ui.clearNotSavedList();
+    _ui.hideTables();
   }
 
   @override
   void _onFocus(Controller.Destination _) {
     _lastFetched = new DateTime.now();
 
-    _ui.currentContext = new ORModel.MessageContext.empty()
+    _context = new ORModel.MessageContext.empty()
       ..cid = _contactSelector.selectedContact.contact.id
       ..contactName = _contactSelector.selectedContact.contact.name
       ..rid = _receptionSelector.selectedReception.id
       ..receptionName = _receptionSelector.selectedReception.name;
+
+    _ui.currentContext = _context;
 
     if (_receptionSelector.selectedReception.isEmpty) {
       _ui.headerExtra = '';
@@ -80,20 +84,21 @@ class MessageArchive extends ViewWidget {
     } else {
       _ui.headerExtra =
           '(${_contactSelector.selectedContact.contact.name} @ ${_receptionSelector.selectedReception.name})';
-
-      _user.list().then((Iterable<ORModel.UserReference> users) {
-        _ui.users = users;
-
-        _messageController.listSaved().then(
-            (Iterable<ORModel.Message> messages) =>
-                _ui.savedMessages = messages);
-
-        if (_cache[_ui.currentContext.contactString] != null) {
-          _ui.setMessages(_cache[_ui.currentContext.contactString].list);
-          _lastFetched = _cache[_ui.currentContext.contactString].lastFetched;
-        }
-      });
     }
+
+    _user.list().then((Iterable<ORModel.UserReference> users) {
+      _ui.users = users;
+
+      _messageController.listSaved().then(
+          (Iterable<ORModel.Message> messages) => _ui.savedMessages = messages);
+
+      if (_cache[_ui.currentContext.contactString] != null) {
+        _ui.setMessages(_cache[_ui.currentContext.contactString].list);
+        _lastFetched = _cache[_ui.currentContext.contactString].lastFetched;
+      } else {
+        _loadMoreMessages();
+      }
+    });
   }
 
   /**
@@ -111,18 +116,14 @@ class MessageArchive extends ViewWidget {
   dynamic _closeMessage(ORModel.Message message) async {
     try {
       message.recipients = new Set();
+      message.flag.manuallyClosed = true;
 
       ORModel.Message savedMessage = await _messageController.save(message);
-      ORModel.MessageQueueEntry response =
-          await _messageController.enqueue(savedMessage);
-
-      message.flag.manuallyClosed = true;
 
       _ui.moveMessage(savedMessage);
 
-      _log.info('Message id ${response.message.id} successfully enqueued');
       _popup.success(
-          _langMap[Key.messageCloseSuccessTitle], 'ID ${response.message.id}');
+          _langMap[Key.messageCloseSuccessTitle], 'ID ${message.id}');
     } catch (error) {
       _log.shout('Could not close ${message.asMap} $error');
       _popup.error(_langMap[Key.messageCloseErrorTitle], 'ID ${message.id}');
@@ -148,9 +149,58 @@ class MessageArchive extends ViewWidget {
   }
 
   /**
+   * Load more messages.
    *
+   * This will never look more than 7 days back, and it will stop as soon as
+   * more than 50 messages have been found.
+   *
+   * Ignores saved messages.
    */
-  bool get _loadingMessages => _ui.loading;
+  Future _loadMoreMessages() async {
+    if (!_ui.loading) {
+      int counter = 0;
+      final ORModel.MessageFilter filter = new ORModel.MessageFilter.empty()
+        ..contactId = _contactSelector.selectedContact.contact.id
+        ..receptionId = _receptionSelector.selectedReception.id;
+      final List<ORModel.Message> messages = new List<ORModel.Message>();
+
+      _ui.loading = true;
+
+      while (counter < 7 && messages.length < 50) {
+        final List<ORModel.Message> list =
+            (await _messageController.list(_lastFetched, filter))
+                .where((ORModel.Message msg) =>
+                    !msg.saved || (msg.saved && msg.closed))
+                .toList();
+
+        if (list.isNotEmpty) {
+          messages.addAll(list);
+        } else {
+          final ORModel.Message emptyMessage = new ORModel.Message.empty()
+            ..createdAt = _lastFetched;
+          list.add(emptyMessage);
+          messages.add(emptyMessage);
+        }
+
+        if (_cache[_ui.currentContext.contactString] == null) {
+          _cache[_ui.currentContext.contactString] =
+              new _CachedMessages(_lastFetched, new List<ORModel.Message>());
+        }
+
+        _cache[_ui.currentContext.contactString].list.addAll(list);
+
+        _lastFetched = _lastFetched.subtract(new Duration(days: 1));
+
+        _cache[_ui.currentContext.contactString].lastFetched = _lastFetched;
+
+        counter++;
+      }
+
+      _ui.setMessages(messages, addToExisting: true);
+
+      _ui.loading = false;
+    }
+  }
 
   /**
    * Observers.
@@ -158,49 +208,22 @@ class MessageArchive extends ViewWidget {
   void _observers() {
     _navigate.onGo.listen(_setWidgetState);
 
-    _messageCompose.onSave.listen((MouseEvent _) => _ui.headerExtra = '');
-    _messageCompose.onSend.listen((MouseEvent _) => _ui.headerExtra = '');
+    _messageCompose.onSave.listen((MouseEvent _) {
+      _ui.headerExtra = '';
+      _cache.clear();
+      _ui.cacheClear();
+    });
+    _messageCompose.onSend.listen((MouseEvent _) {
+      _ui.headerExtra = '';
+      _cache.clear();
+      _ui.cacheClear();
+    });
 
     _ui.onClick.listen(_activateMe);
 
-    _ui.loadMoreClick = () async {
-      if (_loadingMessages) {
-        return;
-      }
-
-      final ORModel.MessageFilter filter = new ORModel.MessageFilter.empty()
-        ..contactId = _contactSelector.selectedContact.contact.id
-        ..receptionId = _receptionSelector.selectedReception.id;
-
-      _ui.loading = true;
-
-      final Timer t = new Timer.periodic(
-          new Duration(milliseconds: 200),
-          ((_) async {
-            if (_ui.loading) {
-              final List<ORModel.Message> list =
-                  await _messageController.list(_lastFetched, filter);
-
-              if (_cache[_ui.currentContext.contactString] == null) {
-                _cache[_ui.currentContext.contactString] = new _CachedMessages(
-                    _lastFetched, new List<ORModel.Message>());
-              }
-              _cache[_ui.currentContext.contactString].list.addAll(list);
-              _cache[_ui.currentContext.contactString].lastFetched =
-                  _lastFetched;
-
-              _ui.setMessages(list, addToExisting: true);
-
-              print(_lastFetched.toIso8601String());
-
-              _lastFetched = _lastFetched.subtract(new Duration(days: 1));
-            }
-          }));
-
-      await new Future.delayed(new Duration(seconds: 2));
-      t.cancel();
-      _ui.loading = false;
-    };
+    _ui.onLoadMoreMessages.listen((_) {
+      _loadMoreMessages();
+    });
 
     /// We don't need to listen on the onMessageCopy stream here. It is handled
     /// in MessageCompose.
@@ -210,6 +233,7 @@ class MessageArchive extends ViewWidget {
 
     _receptionSelector.onSelect.listen((_) {
       _cache.clear();
+      _ui.cacheClear();
     });
   }
 
