@@ -229,11 +229,18 @@ class Contact implements storage.Contact {
         .listSync()
         .where((fse) => fse is File && fse.path.endsWith('.json'));
 
-    return await Future.wait(rFiles.map((FileSystemEntity f) async {
-      final int rid = int.parse(basenameWithoutExtension(f.path));
+    final List<model.ReceptionReference> rRefs = [];
 
-      return (await receptionStore.get(rid)).reference;
-    }));
+    await Future.forEach(rFiles, (FileSystemEntity f) async {
+      final int rid = int.parse(basenameWithoutExtension(f.path));
+      try {
+        rRefs.add((await receptionStore.get(rid)).reference);
+      } catch (e) {
+        _log.warning('Failed to load file ${f.path} (rid:$rid)', e);
+      }
+    });
+
+    return rRefs;
   }
 
   /**
