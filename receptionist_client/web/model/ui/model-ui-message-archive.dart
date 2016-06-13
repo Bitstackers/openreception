@@ -55,8 +55,6 @@ class UIMessageArchive extends UIModel {
       _body.querySelector('button.messages-load-more');
   TableSectionElement get _savedTbody =>
       _tableContainer.querySelector('tbody.saved-messages-tbody');
-  // TableSectionElement get _notSavedTbody =>
-  //     _archiveTableContainer.querySelector('tbody.not-saved-messages-tbody');
   DivElement get _tableContainer => _body.querySelector('div');
 
   /**
@@ -79,19 +77,22 @@ class UIMessageArchive extends UIModel {
       new ImageElement()
         ..src = 'images/send.svg'
         ..title = _langMap['send'].toLowerCase()
-        ..style.visibility = message.closed ? 'hidden' : 'visible'
+        ..style.visibility =
+            message.closed || message.unknown ? 'hidden' : 'visible'
         ..onClick.listen(
             (_) => _yesNo(buttonBox, yesNoBox, message, _messageSendBus)),
       new ImageElement()
         ..src = 'images/bin.svg'
         ..title = _langMap['delete'].toLowerCase()
-        ..style.visibility = message.closed ? 'hidden' : 'visible'
+        ..style.visibility =
+            message.closed || message.unknown ? 'hidden' : 'visible'
         ..onClick.listen(
             (_) => _yesNo(buttonBox, yesNoBox, message, _messageDeleteBus)),
       new ImageElement()
         ..src = 'images/close.svg'
         ..title = _langMap['close'].toLowerCase()
-        ..style.visibility = message.closed ? 'hidden' : 'visible'
+        ..style.visibility =
+            message.closed || message.unknown ? 'hidden' : 'visible'
         ..onClick.listen(
             (_) => _yesNo(buttonBox, yesNoBox, message, _messageCloseBus))
     ]);
@@ -231,14 +232,6 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
-   * Clear the message lists.
-   */
-  void clearNotSavedList() {
-    // _notSavedTbody.children.clear();
-    // _notSavedTbody.parent.hidden = true;
-  }
-
-  /**
    *
    */
   TableElement _archiveTable() => new TableElement()
@@ -246,8 +239,18 @@ class UIMessageArchive extends UIModel {
     ..children.addAll([
       new Element.tag('thead')
         ..children.add(new TableRowElement()
-          ..children.addAll(
-              [new TableCellElement()..text = new DateTime.now().toString()])),
+          ..children.addAll([
+            new TableCellElement()..text = _langMap[Key.date],
+            new TableCellElement()..text = _langMap[Key.agent],
+            new TableCellElement()..text = _langMap[Key.name],
+            new TableCellElement()..text = _langMap[Key.company],
+            new TableCellElement()..text = _langMap[Key.phone],
+            new TableCellElement()..text = _langMap[Key.cellPhone],
+            new TableCellElement()..text = _langMap[Key.extension],
+            new TableCellElement()..text = _langMap[Key.message],
+            new TableCellElement()..text = _langMap[Key.status],
+            new TableCellElement()..text = _langMap[Key.actions]
+          ])),
       new Element.tag('tbody')
         ..classes.addAll(['not-saved-messages-tbody', 'zebra'])
     ]);
@@ -366,8 +369,10 @@ class UIMessageArchive extends UIModel {
           tr.remove();
           _savedTbody.parent.hidden = _savedTbody.children.isEmpty;
           if (currentContext == message.context) {
-            // _notSavedTbody.insertBefore(
-            //     _buildRow(message, false), _notSavedTbody.firstChild);
+            TableSectionElement _notSavedTbody =
+                _notSavedTable.querySelector('tbody.not-saved-messages-tbody');
+            _notSavedTbody.insertBefore(
+                _buildRow(message, false), _notSavedTbody.firstChild);
           }
         }
       });
@@ -452,23 +457,25 @@ class UIMessageArchive extends UIModel {
    */
   void setMessages(Iterable<ORModel.Message> list,
       {bool addToExisting: false}) {
-    // final List<TableRowElement> rows = new List<TableRowElement>();
-    //
-    // list.forEach((ORModel.Message msg) {
-    //   if (msg.id != ORModel.Message.noId) {
-    //     rows.add(_buildRow(msg, false));
-    //   } else {
-    //     rows.add(_buildEmptyRow(msg));
-    //   }
-    // });
-    //
-    // if (addToExisting) {
-    //   _notSavedTbody.children.addAll(rows);
-    // } else {
-    //   _notSavedTbody.children = rows;
-    // }
-    //
-    // _notSavedTbody.parent.hidden = _notSavedTbody.children.isEmpty;
+    TableSectionElement _notSavedTbody =
+        _notSavedTable.querySelector('tbody.not-saved-messages-tbody');
+    final List<TableRowElement> rows = new List<TableRowElement>();
+
+    list.forEach((ORModel.Message msg) {
+      if (msg.id != ORModel.Message.noId) {
+        rows.add(_buildRow(msg, false));
+      } else {
+        rows.add(_buildEmptyRow(msg));
+      }
+    });
+
+    if (addToExisting) {
+      _notSavedTbody.children.addAll(rows);
+    } else {
+      _notSavedTbody.children = rows;
+    }
+
+    _notSavedTbody.parent.hidden = _notSavedTbody.children.isEmpty;
   }
 
   /**
