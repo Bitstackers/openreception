@@ -13,18 +13,11 @@
 
 part of view;
 
-class _CachedMessages {
-  DateTime lastFetched;
-  List<ORModel.Message> list;
-
-  _CachedMessages(DateTime this.lastFetched, List<ORModel.Message> this.list);
-}
-
 /**
  * The message archive list.
  */
 class MessageArchive extends ViewWidget {
-  Map<String, _CachedMessages> _cache = new Map<String, _CachedMessages>();
+  Map<String, DateTime> _lastFetchedCache = new Map<String, DateTime>();
   final Model.UIContactSelector _contactSelector;
   ORModel.MessageContext _context;
   final Map<String, String> _langMap;
@@ -62,7 +55,6 @@ class MessageArchive extends ViewWidget {
   @override
   void _onBlur(Controller.Destination _) {
     _ui.hideYesNoBoxes();
-    _ui.clearNotSavedList();
     _ui.hideTables();
   }
 
@@ -80,7 +72,6 @@ class MessageArchive extends ViewWidget {
 
     if (_receptionSelector.selectedReception.isEmpty) {
       _ui.headerExtra = '';
-      _ui.clearNotSavedList();
     } else {
       _ui.headerExtra =
           '(${_contactSelector.selectedContact.contact.name} @ ${_receptionSelector.selectedReception.name})';
@@ -89,12 +80,14 @@ class MessageArchive extends ViewWidget {
     _user.list().then((Iterable<ORModel.UserReference> users) {
       _ui.users = users;
 
-      _messageController.listSaved().then(
-          (Iterable<ORModel.Message> messages) => _ui.savedMessages = messages);
+      _messageController.listSaved().then((Iterable<ORModel.Message> messages) {
+        final List<ORModel.Message> list = messages.toList(growable: false);
+        list.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+        _ui.savedMessages = list;
+      });
 
-      if (_cache[_ui.currentContext.contactString] != null) {
-        _ui.setMessages(_cache[_ui.currentContext.contactString].list);
-        _lastFetched = _cache[_ui.currentContext.contactString].lastFetched;
+      if (_lastFetchedCache[_ui.currentContext.contactString] != null) {
+        _lastFetched = _lastFetchedCache[_ui.currentContext.contactString];
       } else {
         _loadMoreMessages();
       }
@@ -182,19 +175,14 @@ class MessageArchive extends ViewWidget {
           messages.add(emptyMessage);
         }
 
-        if (_cache[_ui.currentContext.contactString] == null) {
-          _cache[_ui.currentContext.contactString] =
-              new _CachedMessages(_lastFetched, new List<ORModel.Message>());
-        }
-
-        _cache[_ui.currentContext.contactString].list.addAll(list);
-
         _lastFetched = _lastFetched.subtract(new Duration(days: 1));
 
-        _cache[_ui.currentContext.contactString].lastFetched = _lastFetched;
+        _lastFetchedCache[_ui.currentContext.contactString] = _lastFetched;
 
         counter++;
       }
+
+      messages.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
       _ui.setMessages(messages, addToExisting: true);
 
@@ -210,13 +198,21 @@ class MessageArchive extends ViewWidget {
 
     _messageCompose.onSave.listen((MouseEvent _) {
       _ui.headerExtra = '';
-      _cache.clear();
       _ui.cacheClear();
+      _lastFetchedCache.clear();
     });
     _messageCompose.onSend.listen((MouseEvent _) {
       _ui.headerExtra = '';
-      _cache.clear();
       _ui.cacheClear();
+      _lastFetchedCache.clear();
+    });
+
+    _receptionSelector.onSelect.listen((_) {
+      _ui.cacheClear();
+      _lastFetchedCache.clear();
+      if (_ui.isFocused) {
+        _navigate.goHome();
+      }
     });
 
     _ui.onClick.listen(_activateMe);
@@ -230,11 +226,6 @@ class MessageArchive extends ViewWidget {
     _ui.onMessageClose.listen(_closeMessage);
     _ui.onMessageDelete.listen(_deleteMessage);
     _ui.onMessageSend.listen(_sendMessage);
-
-    _receptionSelector.onSelect.listen((_) {
-      _cache.clear();
-      _ui.cacheClear();
-    });
   }
 
   /**
