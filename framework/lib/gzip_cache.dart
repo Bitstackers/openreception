@@ -29,6 +29,18 @@ const String _libraryName = 'openreception.framework.gzip_cache';
 List<int> serializeAndCompressObject(Object obj) =>
     new GZipEncoder().encode(UTF8.encode(JSON.encode(obj)));
 
+bool isEmptyGzipList(List<int> list) {
+  if (list.length != emptyGzipList.length) {
+    return false;
+  }
+
+  for (int i = 0; i < emptyGzipList.length; i++) {
+    if (list[i] != emptyGzipList[i]) return false;
+  }
+
+  return true;
+}
+
 final List<int> emptyGzipList = serializeAndCompressObject([]);
 
 class CalendarCache {
@@ -436,5 +448,79 @@ class ContactCache {
         'receptionContactCount': _receptionContactCache.length,
         'receptionContactSize': _receptionContactCache.values
             .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
+      };
+}
+
+class MessageCache {
+  final filestore.Message _messageStore;
+  final Map<String, List<int>> _messageListCache = {};
+  List<int> _savedListCache = [];
+
+  MessageCache(this._messageStore) {
+    _observers();
+  }
+
+  /**
+   *
+   */
+  Future<List<int>> list(DateTime day) async {
+    final String key = day.toIso8601String().split('T').first;
+
+    if (!_messageListCache.containsKey(key)) {
+      final messages = await _messageStore.listDay(day);
+
+      if (messages.isEmpty) {
+        _messageListCache[key] = emptyGzipList;
+      } else {
+        _messageListCache[key] =
+            new GZipEncoder().encode(UTF8.encode(JSON.encode(messages)));
+      }
+    }
+
+    return _messageListCache[key];
+  }
+
+  /**
+   *
+   */
+  Future<List<int>> listSaved() async {
+    if (_savedListCache.isEmpty) {
+      _savedListCache = new GZipEncoder()
+          .encode(UTF8.encode(JSON.encode(await _messageStore.listSaved())));
+    }
+
+    return _savedListCache;
+  }
+
+  /**
+   * Remove the cache from _today_ only because we simply do not know which
+   * cache the given message is stored in.
+   */
+  void _observers() {
+    _messageStore.changeStream.listen((event.MessageChange e) {
+      final String key = new DateTime.now().toIso8601String().split('T').first;
+      _messageListCache.remove(key);
+
+      if (e.messageState == model.MessageState.saved) {
+        _savedListCache = [];
+      }
+    });
+  }
+
+  /**
+   *
+   */
+  Future prefill() async {
+    throw new UnimplementedError();
+  }
+
+  /**
+   *
+   */
+  Map get stats => {
+        'messageFolderCount': _messageListCache.length,
+        'messageFolderSize': _messageListCache.values
+            .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
+        'savedMessageSize': _savedListCache.length
       };
 }
