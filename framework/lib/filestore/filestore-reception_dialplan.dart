@@ -18,6 +18,9 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   final String path;
   GitEngine _git;
 
+  Bus<event.DialplanChange> _changeBus = new Bus<event.DialplanChange>();
+  Stream<event.DialplanChange> get onChange => _changeBus.stream;
+
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
   Future get ready => _git != null ? _git.whenReady : new Future.value(true);
@@ -56,6 +59,9 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
           'added ${rdp.extension}',
           _authorString(modifier));
     }
+
+    _changeBus
+        .fire(new event.DialplanChange.create(rdp.extension, modifier.id));
 
     return rdp;
   }
@@ -109,6 +115,9 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
           _authorString(modifier));
     }
 
+    _changeBus
+        .fire(new event.DialplanChange.update(rdp.extension, modifier.id));
+
     return rdp;
   }
 
@@ -131,6 +140,8 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
     } else {
       file.deleteSync();
     }
+
+    _changeBus.fire(new event.DialplanChange.delete(extension, modifier.id));
   }
 
   /**
