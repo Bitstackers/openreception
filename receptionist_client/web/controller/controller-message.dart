@@ -42,10 +42,9 @@ class Message {
       _store.listDay(day, filter: filter);
 
   /**
-   * Return an iterable containing [ORModel.Message] according to the supplied
-   * [filter].
+   * Return an iterable containing [ORModel.Message] drafts.
    */
-  Future<Iterable<ORModel.Message>> listSaved() => _store.listSaved();
+  Future<Iterable<ORModel.Message>> listDrafts() => _store.listDrafts();
 
   /**
    * Delete [messageId] from the database. Throws Storage.NotFound if the

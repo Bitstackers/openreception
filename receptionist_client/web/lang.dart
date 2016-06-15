@@ -83,6 +83,7 @@ abstract class Key {
   static const String daySaturday = 'day-saturday';
   static const String daySunday = 'day-sunday';
   static const String delete = 'delete';
+  static const String draft = 'draft';
   static const String duration = 'duration';
 
   static const String editDelete = 'edit-delete';
@@ -166,8 +167,6 @@ abstract class Key {
       'reception-vat-numbers-header';
   static const String receptionWebsitesHeader = 'reception-websites-header';
 
-  static const String save = 'save';
-  static const String saved = 'saved';
   static const String send = 'send';
   static const String sent = 'sent';
   static const String standardGreeting = 'standard-greeting';
@@ -251,6 +250,7 @@ Map<String, String> da = {
   Key.daySaturday: 'Lørdag',
   Key.daySunday: 'Søndag',
   Key.delete: 'Slet',
+  Key.draft: 'Kladde',
   Key.duration: 'Varighed',
 
   Key.editDelete: 'ret/slet for',
@@ -327,8 +327,6 @@ Map<String, String> da = {
   Key.receptionVATNumbersHeader: 'CVR-numre',
   Key.receptionWebsitesHeader: 'WWW',
 
-  Key.save: 'Gem',
-  Key.saved: 'Gemt',
   Key.send: 'Send',
   Key.sent: 'Sendt',
   Key.standardGreeting: 'Velkommen til....',
@@ -413,6 +411,7 @@ Map<String, String> en = {
   Key.daySaturday: 'Saturday',
   Key.daySunday: 'Sunday',
   Key.delete: 'Delete',
+  Key.draft: 'Draft',
   Key.duration: 'Duration',
 
   Key.editDelete: 'edit/delete for',
@@ -489,8 +488,6 @@ Map<String, String> en = {
   Key.receptionVATNumbersHeader: 'VAT numbers',
   Key.receptionWebsitesHeader: 'WWW',
 
-  Key.save: 'Save',
-  Key.saved: 'Saved',
   Key.send: 'Send',
   Key.sent: 'Sent',
   Key.standardGreeting: 'You\'ve called....',

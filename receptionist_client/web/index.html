@@ -632,7 +632,7 @@
               flex-grow: 1;
             }
 
-            #message-archive .saved-alert {
+            #message-archive .drafts-alert {
               color: red;
               font-weight: bold;
             }
@@ -759,7 +759,7 @@
           </h4>
           <div class="generic-widget-body" tabindex="-1">
             <div tabindex="-1">
-              <table class="saved-messages-table" hidden>
+              <table class="drafts-messages-table" hidden>
                 <thead>
                   <tr>
                     <td data-lang-text="date">::date::</td>
@@ -776,7 +776,7 @@
                     <td data-lang-text="actions">::actions::</td>
                   </tr>
                 </thead>
-                <tbody class="saved-messages-tbody zebra"></tbody>
+                <tbody class="drafts-messages-tbody zebra"></tbody>
               </table>
               <div class="message-archive-tables"></div>
               <button data-lang-text="messages-load-more" class="messages-load-more">::load-more::</button>
@@ -1289,7 +1289,7 @@
                     </div>
 
                     <div class="buttons display-flex-row">
-                      <button class="save" disabled tabindex="-1" data-lang-text="save">::save::</button>
+                      <button class="draft" disabled tabindex="-1" data-lang-text="draft">::draft::</button>
                       <button class="send" disabled tabindex="-1" data-lang-text="send">::send::</button>
                     </div>
                   </div>

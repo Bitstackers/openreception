@@ -21,7 +21,6 @@ class MessageFlag {
   bool willCallBack = false;
   bool called = false;
   bool urgent = false;
-  bool manuallyClosed = false;
 
   /**
    * Default empty constructor.
@@ -36,7 +35,6 @@ class MessageFlag {
     willCallBack = flags.contains(key.willCallBack);
     called = flags.contains(key.called);
     urgent = flags.contains(key.urgent);
-    manuallyClosed = flags.contains(key.manuallyClosed);
   }
 
   /**
@@ -49,7 +47,6 @@ class MessageFlag {
     willCallBack ? retVal.add(key.willCallBack) : '';
     called ? retVal.add(key.called) : '';
     urgent ? retVal.add(key.urgent) : '';
-    manuallyClosed ? retVal.add(key.manuallyClosed) : '';
 
     return retVal;
   }

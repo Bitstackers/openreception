@@ -27,7 +27,7 @@ class UIMessageArchive extends UIModel {
   Map<int, String> _users = new Map<int, String>();
   final ORUtil.WeekDays _weekDays;
 
-  TableElement _notSavedTable;
+  TableElement _messagesTable;
 
   /**
    * Constructor.
@@ -53,9 +53,31 @@ class UIMessageArchive extends UIModel {
   String get header => _root.querySelector('h4 span.extra-header').text;
   ButtonElement get _loadMoreButton =>
       _body.querySelector('button.messages-load-more');
-  TableSectionElement get _savedTbody =>
-      _tableContainer.querySelector('tbody.saved-messages-tbody');
+  TableSectionElement get _draftsTbody =>
+      _tableContainer.querySelector('tbody.drafts-messages-tbody');
   DivElement get _tableContainer => _body.querySelector('div');
+
+  /**
+   * Return an archive table element, with headers.
+   */
+  TableElement _archiveTable() => new TableElement()
+    ..children.addAll([
+      new Element.tag('thead')
+        ..children.add(new TableRowElement()
+          ..children.addAll([
+            new TableCellElement()..text = _langMap[Key.date],
+            new TableCellElement()..text = _langMap[Key.agent],
+            new TableCellElement()..text = _langMap[Key.name],
+            new TableCellElement()..text = _langMap[Key.company],
+            new TableCellElement()..text = _langMap[Key.phone],
+            new TableCellElement()..text = _langMap[Key.cellPhone],
+            new TableCellElement()..text = _langMap[Key.extension],
+            new TableCellElement()..text = _langMap[Key.message],
+            new TableCellElement()..text = _langMap[Key.status],
+            new TableCellElement()..text = _langMap[Key.actions]
+          ])),
+      new Element.tag('tbody')..classes.addAll(['messages-tbody', 'zebra'])
+    ]);
 
   /**
    * Construct the send | delete | copy | close <td> cell.
@@ -78,21 +100,21 @@ class UIMessageArchive extends UIModel {
         ..src = 'images/send.svg'
         ..title = _langMap['send'].toLowerCase()
         ..style.visibility =
-            message.closed || message.unknown ? 'hidden' : 'visible'
+            message.isClosed || message.isUnknown ? 'hidden' : 'visible'
         ..onClick.listen(
             (_) => _yesNo(buttonBox, yesNoBox, message, _messageSendBus)),
       new ImageElement()
         ..src = 'images/bin.svg'
         ..title = _langMap['delete'].toLowerCase()
         ..style.visibility =
-            message.closed || message.unknown ? 'hidden' : 'visible'
+            message.isClosed || message.isUnknown ? 'hidden' : 'visible'
         ..onClick.listen(
             (_) => _yesNo(buttonBox, yesNoBox, message, _messageDeleteBus)),
       new ImageElement()
         ..src = 'images/close.svg'
         ..title = _langMap['close'].toLowerCase()
         ..style.visibility =
-            message.closed || message.unknown ? 'hidden' : 'visible'
+            message.isClosed || message.isUnknown ? 'hidden' : 'visible'
         ..onClick.listen(
             (_) => _yesNo(buttonBox, yesNoBox, message, _messageCloseBus))
     ]);
@@ -101,20 +123,6 @@ class UIMessageArchive extends UIModel {
 
     cell.children.add(actionsContainer);
     return cell;
-  }
-
-  /**
-   * Construct the message <td> cell.
-   */
-  TableCellElement _buildMessageCell(ORModel.Message msg) {
-    final DivElement div = new DivElement()
-      ..classes.add('slim')
-      ..appendHtml(msg.body.replaceAll("\n", '<br>'));
-    div.onClick.listen((MouseEvent _) => div.classes.toggle('slim'));
-
-    return new TableCellElement()
-      ..classes.add('message-cell')
-      ..children.add(div);
   }
 
   /**
@@ -163,12 +171,26 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
+   * Construct the message <td> cell.
+   */
+  TableCellElement _buildMessageCell(ORModel.Message msg) {
+    final DivElement div = new DivElement()
+      ..classes.add('slim')
+      ..appendHtml(msg.body.replaceAll("\n", '<br>'));
+    div.onClick.listen((MouseEvent _) => div.classes.toggle('slim'));
+
+    return new TableCellElement()
+      ..classes.add('message-cell')
+      ..children.add(div);
+  }
+
+  /**
    * Construct a <tr> element from [message]
    *
-   * If [saved] is true then output the recipient contact and reception name
+   * If [isDraft] is true then output the recipient contact and reception name
    * columns.
    */
-  TableRowElement _buildRow(ORModel.Message message, bool saved) {
+  TableRowElement _buildRow(ORModel.Message message, bool isDraft) {
     final TableRowElement row = new TableRowElement()
       ..dataset['message-id'] = message.id.toString()
       ..dataset['message-date'] = message.createdAt.toString()
@@ -177,7 +199,7 @@ class UIMessageArchive extends UIModel {
     row.children.add(new TableCellElement()
       ..text = ORUtil.humanReadableTimestamp(message.createdAt, _weekDays));
 
-    if (saved) {
+    if (isDraft) {
       row.children.addAll([
         new TableCellElement()..text = message.context.contactName,
         new TableCellElement()..text = message.context.receptionName,
@@ -193,7 +215,7 @@ class UIMessageArchive extends UIModel {
       new TableCellElement()..text = message.callerInfo.cellPhone,
       new TableCellElement()..text = message.callerInfo.localExtension,
       _buildMessageCell(message),
-      _buildStatusCell(message, saved),
+      _buildStatusCell(message, isDraft),
       _buildActionsCell(message)
     ]);
 
@@ -203,13 +225,13 @@ class UIMessageArchive extends UIModel {
   /**
    * Build the status column for those
    */
-  TableCellElement _buildStatusCell(ORModel.Message message, bool saved) {
+  TableCellElement _buildStatusCell(ORModel.Message message, bool isDraft) {
     final TableCellElement td = new TableCellElement()
       ..classes.add('td-center')
       ..text = _getStatus(message);
 
-    if (saved) {
-      td.classes.add('saved-alert');
+    if (isDraft) {
+      td.classes.add('drafts-alert');
     }
 
     return td;
@@ -232,51 +254,28 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
-   *
-   */
-  TableElement _archiveTable() => new TableElement()
-    ..classes.add('not-saved-messages-table')
-    ..children.addAll([
-      new Element.tag('thead')
-        ..children.add(new TableRowElement()
-          ..children.addAll([
-            new TableCellElement()..text = _langMap[Key.date],
-            new TableCellElement()..text = _langMap[Key.agent],
-            new TableCellElement()..text = _langMap[Key.name],
-            new TableCellElement()..text = _langMap[Key.company],
-            new TableCellElement()..text = _langMap[Key.phone],
-            new TableCellElement()..text = _langMap[Key.cellPhone],
-            new TableCellElement()..text = _langMap[Key.extension],
-            new TableCellElement()..text = _langMap[Key.message],
-            new TableCellElement()..text = _langMap[Key.status],
-            new TableCellElement()..text = _langMap[Key.actions]
-          ])),
-      new Element.tag('tbody')
-        ..classes.addAll(['not-saved-messages-tbody', 'zebra'])
-    ]);
-
-  /**
    * Set the current message context. If the context contains an empty reception
    * then disable and hide the loadmore button.
    */
   set currentContext(ORModel.MessageContext context) {
     final bool emptyReception = context.rid == ORModel.Reception.noId;
+    final bool emptyContact = context.cid == ORModel.BaseContact.noId;
     final String rid = _archiveTableContainer.dataset['rid'];
 
-    if (emptyReception) {
+    if (emptyReception || emptyContact) {
       _archiveTableContainer.children.clear();
       _archiveTableContainer.dataset['rid'] = '';
     } else {
-      _notSavedTable = _archiveTableContainer
+      _messagesTable = _archiveTableContainer
           .querySelector('[data-contact="${context.contactString}"]');
 
-      if (_notSavedTable == null) {
-        _notSavedTable = _archiveTable();
-        _notSavedTable.dataset['contact'] = context.contactString;
-        _archiveTableContainer.children.add(_notSavedTable);
+      if (_messagesTable == null) {
+        _messagesTable = _archiveTable();
+        _messagesTable.dataset['contact'] = context.contactString;
+        _archiveTableContainer.children.add(_messagesTable);
       }
 
-      _notSavedTable.hidden = false;
+      _messagesTable.hidden = false;
 
       if (rid == null || rid.isEmpty || rid == context.rid.toString()) {
         _archiveTableContainer.dataset['rid'] = context.rid.toString();
@@ -284,8 +283,10 @@ class UIMessageArchive extends UIModel {
     }
 
     _currentContext = context;
-    _loadMoreButton.disabled = emptyReception;
-    _loadMoreButton.style.display = emptyReception ? 'none' : 'block';
+
+    _loadMoreButton.disabled = emptyReception || emptyContact;
+    _loadMoreButton.style.display =
+        emptyReception || emptyContact ? 'none' : 'block';
   }
 
   /**
@@ -294,18 +295,33 @@ class UIMessageArchive extends UIModel {
   ORModel.MessageContext get currentContext => _currentContext;
 
   /**
+   * Add the [list] of [ORModel.Message] to the widgets "drafts messages" table.
+   */
+  set drafts(Iterable<ORModel.Message> list) {
+    final List<TableRowElement> rows = new List<TableRowElement>();
+    _draftsTbody.children.clear();
+
+    list.forEach((ORModel.Message msg) {
+      rows.add(_buildRow(msg, true));
+    });
+
+    _draftsTbody.children.addAll(rows);
+    _draftsTbody.parent.hidden = _draftsTbody.children.isEmpty;
+  }
+
+  /**
    * Return the String status of [msg].
    */
   String _getStatus(ORModel.Message msg) {
-    if (msg.manuallyClosed) {
+    if (msg.isClosed) {
       return _langMap[Key.closed].toUpperCase();
     }
 
-    if (msg.saved) {
-      return _langMap[Key.saved].toUpperCase();
+    if (msg.isDraft) {
+      return _langMap[Key.draft].toUpperCase();
     }
 
-    if (msg.sent) {
+    if (msg.isSent) {
       return _langMap[Key.sent].toUpperCase();
     }
 
@@ -350,9 +366,9 @@ class UIMessageArchive extends UIModel {
   get loading => _loadMoreButton.disabled;
 
   /**
-   * Move the [message] from the saved list to the not saved list and update the
+   * Move the [message] from the drafts list to the messages list and update the
    * actions cell according to the state of the [message]. [message] is ALWAYS
-   * moved to the top of the not saved list to make it clear that the move has
+   * moved to the top of the messages list to make it clear that the move has
    * happened.
    *
    * NOTE: This is a visual only action. It does not perform any actions on the
@@ -360,19 +376,19 @@ class UIMessageArchive extends UIModel {
    */
   void moveMessage(ORModel.Message message) {
     final TableRowElement tr =
-        _savedTbody.querySelector('[data-message-id="${message.id}"]');
+        _draftsTbody.querySelector('[data-message-id="${message.id}"]');
 
     if (tr != null) {
       tr.classes.add('fade-out');
       tr.onTransitionEnd.listen((TransitionEvent event) {
         if (event.propertyName == 'opacity') {
           tr.remove();
-          _savedTbody.parent.hidden = _savedTbody.children.isEmpty;
+          _draftsTbody.parent.hidden = _draftsTbody.children.isEmpty;
           if (currentContext == message.context) {
-            TableSectionElement _notSavedTbody =
-                _notSavedTable.querySelector('tbody.not-saved-messages-tbody');
-            _notSavedTbody.insertBefore(
-                _buildRow(message, false), _notSavedTbody.firstChild);
+            TableSectionElement _messagesTbody =
+                _messagesTable.querySelector('tbody.messages-tbody');
+            _messagesTbody.insertBefore(
+                _buildRow(message, false), _messagesTbody.firstChild);
           }
         }
       });
@@ -413,7 +429,7 @@ class UIMessageArchive extends UIModel {
   Stream<ORModel.Message> get onMessageSend => _messageSendBus.stream;
 
   /**
-   * Removes a saved [message] from the archive list.
+   * Removes a draft [message] from the list.
    *
    * NOTE: This is a visual only action. It does not perform any actions on the
    * server.
@@ -427,38 +443,22 @@ class UIMessageArchive extends UIModel {
       tr.onTransitionEnd.listen((TransitionEvent event) {
         if (event.propertyName == 'opacity') {
           tr.remove();
-          _savedTbody.parent.hidden = _savedTbody.children.isEmpty;
+          _draftsTbody.parent.hidden = _draftsTbody.children.isEmpty;
         }
       });
     }
   }
 
   /**
-   * Add the [list] of [ORModel.Message] to the widgets "saved messages" table.
-   */
-  set savedMessages(Iterable<ORModel.Message> list) {
-    final List<TableRowElement> rows = new List<TableRowElement>();
-    _savedTbody.children.clear();
-
-    list.forEach((ORModel.Message msg) {
-      rows.add(_buildRow(msg, true));
-    });
-
-    _savedTbody.children.addAll(rows);
-    _savedTbody.parent.hidden = _savedTbody.children.isEmpty;
-  }
-
-  /**
-   * Add the [list] of [ORModel.Message] to the widgets "not saved messages"
-   * table.
+   * Add the [list] of [ORModel.Message] to the widgets messages table.
    *
    * If [addToExisting] is true, the [list] is appended to the table, else the
    * table is cleared and [list] is set as its sole content.
    */
   void setMessages(Iterable<ORModel.Message> list,
       {bool addToExisting: false}) {
-    TableSectionElement _notSavedTbody =
-        _notSavedTable.querySelector('tbody.not-saved-messages-tbody');
+    TableSectionElement _messagesTbody =
+        _messagesTable.querySelector('tbody.messages-tbody');
     final List<TableRowElement> rows = new List<TableRowElement>();
 
     list.forEach((ORModel.Message msg) {
@@ -470,12 +470,12 @@ class UIMessageArchive extends UIModel {
     });
 
     if (addToExisting) {
-      _notSavedTbody.children.addAll(rows);
+      _messagesTbody.children.addAll(rows);
     } else {
-      _notSavedTbody.children = rows;
+      _messagesTbody.children = rows;
     }
 
-    _notSavedTbody.parent.hidden = _notSavedTbody.children.isEmpty;
+    _messagesTbody.parent.hidden = _messagesTbody.children.isEmpty;
   }
 
   /**

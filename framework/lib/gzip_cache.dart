@@ -486,7 +486,7 @@ class MessageCache {
   Future<List<int>> listSaved() async {
     if (_savedListCache.isEmpty) {
       _savedListCache = new GZipEncoder()
-          .encode(UTF8.encode(JSON.encode(await _messageStore.listSaved())));
+          .encode(UTF8.encode(JSON.encode(await _messageStore.listDrafts())));
     }
 
     return _savedListCache;
@@ -501,7 +501,7 @@ class MessageCache {
       final String key = new DateTime.now().toIso8601String().split('T').first;
       _messageListCache.remove(key);
 
-      if (e.messageState == model.MessageState.saved) {
+      if (e.messageState == model.MessageState.draft) {
         _savedListCache = [];
       }
     });

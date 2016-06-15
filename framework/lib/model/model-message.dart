@@ -16,7 +16,7 @@ part of openreception.framework.model;
 /**
  * Valid states for a message.
  */
-enum MessageState { unknown, saved, sent }
+enum MessageState { unknown, draft, sent, closed }
 
 /**
  *
@@ -39,15 +39,10 @@ class Message {
   /// The user of the sender.
   User sender;
 
-  bool get closed => sent || flag.manuallyClosed;
-  bool get manuallyClosed => flag.manuallyClosed;
-  bool get saved => state == MessageState.saved && !manuallyClosed;
-  bool get sent => state == MessageState.sent;
-  bool get unknown => state == MessageState.unknown;
-
-  set manuallyClosed(bool closed) {
-    flag.manuallyClosed = closed;
-  }
+  bool get isClosed => state == MessageState.closed;
+  bool get isDraft => state == MessageState.draft;
+  bool get isSent => state == MessageState.sent;
+  bool get isUnknown => state == MessageState.unknown;
 
   Message.empty();
 

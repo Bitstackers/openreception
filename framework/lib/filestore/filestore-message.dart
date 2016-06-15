@@ -113,7 +113,7 @@ class Message implements storage.Message {
       uidList.add(msg.id);
       ridList.add(msg.id);
 
-      if (msg.saved) {
+      if (msg.isDraft) {
         _savedIndex.add(msg.id);
       }
     });
@@ -226,7 +226,7 @@ class Message implements storage.Message {
   /**
    *
    */
-  Future<Iterable<model.Message>> listSaved(
+  Future<Iterable<model.Message>> listDrafts(
       {model.MessageFilter filter}) async {
     Set<int> ids = new Set()..addAll(_savedIndex);
 
@@ -344,7 +344,7 @@ class Message implements storage.Message {
     uidList.add(msg.id);
     ridList.add(msg.id);
 
-    if (msg.state == model.MessageState.saved) {
+    if (msg.isDraft) {
       _savedIndex.add(msg.id);
     }
 
@@ -383,7 +383,7 @@ class Message implements storage.Message {
           _authorString(modifier));
     }
 
-    if (message.saved) {
+    if (message.isDraft) {
       _savedIndex.add(message.id);
     } else if (_savedIndex.contains(message.id)) {
       _savedIndex.remove(message.id);

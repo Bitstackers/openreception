@@ -11,7 +11,7 @@ class Message {
       _messageStore.listDay(day, filter: filter).catchError(_handleError);
 
   Future<Iterable<model.Message>> listSaved(model.MessageFilter filter) =>
-      _messageStore.listSaved(filter: filter).catchError(_handleError);
+      _messageStore.listDrafts(filter: filter).catchError(_handleError);
 
   Future remove(int messageId) =>
       _messageStore.remove(messageId, _appUser).catchError(_handleError);
