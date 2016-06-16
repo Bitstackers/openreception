@@ -496,6 +496,12 @@ class Reception {
       _deployDialplanButton.disabled = _deleteButton.disabled;
     });
 
+    element.querySelectorAll('textarea').forEach((Element elem) {
+      elem.onInput.listen((_) {
+        arrowReplace(elem);
+      });
+    });
+
     _deleteButton.onClick.listen((_) async {
       if (_deleteButton.text.toLowerCase() == 'slet') {
         _deleteButton.text = 'Bekræft sletning af rid:${reception.id}?';

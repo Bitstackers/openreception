@@ -51,11 +51,25 @@ int compareUserRefs(model.UserReference u1, model.UserReference u2) =>
 
 int compareRecRefs(model.ReceptionReference r1, model.ReceptionReference r2) =>
     r1.name.toLowerCase().compareTo(r2.name.toLowerCase());
+
+void arrowReplace(TextAreaElement elem) {
+  final String orgValue = elem.value;
+  final String newValue = elem.value.replaceAll('->', '➔');
+
+  if (orgValue != newValue) {
+    final int cursorIndex = elem.selectionStart;
+    elem.value = newValue;
+    elem.selectionStart = cursorIndex - 1;
+    elem.selectionEnd = cursorIndex - 1;
+  }
+}
+
 /**
  *
  */
 List<String> _valuesFromListTextArea(TextAreaElement ta) =>
     new List<String>.from(ta.value
+        .replaceAll('->', '➔')
         .split('\n')
         .map((String str) => str.trim())
         .where((String str) => str.isNotEmpty));
