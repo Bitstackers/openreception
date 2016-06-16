@@ -19,7 +19,7 @@ abstract class NotificationService {
         e.modifierUid == modUid;
 
     Future<Iterable> eventSubScriptions = Future
-        .wait(sockets.map((ns) => ns.eventStream.firstWhere(isExpectedEvent)));
+        .wait(sockets.map((ns) => ns.onEvent.firstWhere(isExpectedEvent)));
 
     await service.broadcastEvent(testEvent);
 
