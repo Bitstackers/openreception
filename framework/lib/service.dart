@@ -16,12 +16,14 @@ library openreception.framework.service;
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
+
+import 'package:logging/logging.dart';
+import 'package:openreception.framework/bus.dart';
+
+import 'event.dart' as event;
 import 'model.dart' as model;
 import 'resource.dart' as resource;
 import 'storage.dart' as storage;
-import 'event.dart' as event;
-
-import 'package:logging/logging.dart';
 
 part 'service/service-auth.dart';
 part 'service/service-calendar.dart';
@@ -29,6 +31,7 @@ part 'service/service-call_flow_control.dart';
 part 'service/service-cdr.dart';
 part 'service/service-configuration.dart';
 part 'service/service-contact.dart';
+part 'service/service-datastore.dart';
 part 'service/service-dialplan.dart';
 part 'service/service-ivr.dart';
 part 'service/service-message.dart';

@@ -162,15 +162,14 @@ class NotificationSocket {
   static final String className = '${libraryName}.NotificationSocket';
 
   WebSocket _websocket = null;
-  StreamController<event.Event> _streamController =
-      new StreamController.broadcast();
-  Stream<event.Event> get eventStream => _streamController.stream;
+  Bus<event.Event> _eventBus = new Bus<event.Event>();
+  Stream<event.Event> get eventStream => _eventBus.stream;
   static Logger log = new Logger(NotificationSocket.className);
 
   NotificationSocket(this._websocket) {
     log.finest('Created a new WebSocket.');
     _websocket.onMessage = _parseAndDispatch;
-    _websocket.onClose = () => _streamController.close();
+    _websocket.onClose = () => _eventBus.close();
   }
 
   Future close() => _websocket.close();
@@ -180,7 +179,7 @@ class NotificationSocket {
     event.Event newEvent = new event.Event.parse(map);
 
     if (newEvent != null) {
-      _streamController.add(newEvent);
+      _eventBus.fire(newEvent);
     } else {
       log.warning('Refusing to inject null objects into event stream');
     }
