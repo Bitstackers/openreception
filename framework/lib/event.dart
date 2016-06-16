@@ -65,6 +65,7 @@ abstract class Key {
   static const _extension = 'extension';
   static const _ivrMenuChange = 'ivrMenuChange';
   static const _menuName = 'menuName';
+  static const _createdAt = 'createdAt';
 
   static const call = 'call';
   static const peer = 'peer';

@@ -356,8 +356,8 @@ class Message implements storage.Message {
           _authorString(modifier));
     }
 
-    _changeBus
-        .fire(new event.MessageChange.create(msg.id, modifier.id, msg.state));
+    _changeBus.fire(new event.MessageChange.create(
+        msg.id, modifier.id, msg.state, msg.createdAt));
 
     return msg;
   }
@@ -365,33 +365,32 @@ class Message implements storage.Message {
   /**
    *
    */
-  Future<model.Message> update(
-      model.Message message, model.User modifier) async {
-    final File file = new File(_index[message.id]);
+  Future<model.Message> update(model.Message msg, model.User modifier) async {
+    final File file = new File(_index[msg.id]);
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
     }
 
-    file.writeAsStringSync(_jsonpp.convert(message));
+    file.writeAsStringSync(_jsonpp.convert(msg));
 
     if (this._git != null) {
       await _git.commit(
           file,
           'uid:${modifier.id} - ${modifier.name} '
-          'updated ${message.id}',
+          'updated ${msg.id}',
           _authorString(modifier));
     }
 
-    if (message.saved) {
-      _savedIndex.add(message.id);
-    } else if (_savedIndex.contains(message.id)) {
-      _savedIndex.remove(message.id);
+    if (msg.saved) {
+      _savedIndex.add(msg.id);
+    } else if (_savedIndex.contains(msg.id)) {
+      _savedIndex.remove(msg.id);
     }
 
-    _changeBus.fire(
-        new event.MessageChange.update(message.id, modifier.id, message.state));
-    return message;
+    _changeBus.fire(new event.MessageChange.update(
+        msg.id, modifier.id, msg.state, msg.createdAt));
+    return msg;
   }
 
   /**
@@ -404,9 +403,7 @@ class Message implements storage.Message {
 
     final File file = new File(_index[mid]);
 
-    if (!file.existsSync()) {
-      throw new storage.NotFound(file.path);
-    }
+    final model.Message msg = await get(mid);
 
     if (this._git != null) {
       await _git.remove(
@@ -421,7 +418,7 @@ class Message implements storage.Message {
     _index.remove(mid);
 
     _changeBus.fire(new event.MessageChange.delete(
-        mid, modifier.id, model.MessageState.unknown));
+        mid, modifier.id, msg.state, msg.createdAt));
   }
 
   /**

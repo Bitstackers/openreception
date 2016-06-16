@@ -27,53 +27,53 @@ class MessageChange implements Event {
 
   final int mid;
   final int modifierUid;
+  final DateTime createdAt;
   final String state;
   final model.MessageState messageState;
 
   MessageChange._internal(
-      this.mid, this.modifierUid, this.state, this.messageState)
+      this.mid, this.modifierUid, this.state, this.messageState, this.createdAt)
       : timestamp = new DateTime.now();
 
-  factory MessageChange.create(
-          int mid, int modifierUid, model.MessageState messageState) =>
+  factory MessageChange.create(int mid, int modifierUid,
+          model.MessageState messageState, DateTime createdAt) =>
       new MessageChange._internal(
-          mid, modifierUid, Change.created, messageState);
+          mid, modifierUid, Change.created, messageState, createdAt);
 
-  factory MessageChange.update(
-          int mid, int modifierUid, model.MessageState messageState) =>
+  factory MessageChange.update(int mid, int modifierUid,
+          model.MessageState messageState, DateTime createdAt) =>
       new MessageChange._internal(
-          mid, modifierUid, Change.updated, messageState);
+          mid, modifierUid, Change.updated, messageState, createdAt);
 
-  factory MessageChange.delete(
-          int mid, int modifierUid, model.MessageState messageState) =>
+  factory MessageChange.delete(int mid, int modifierUid,
+          model.MessageState messageState, DateTime createdAt) =>
       new MessageChange._internal(
-          mid, modifierUid, Change.deleted, messageState);
+          mid, modifierUid, Change.deleted, messageState, createdAt);
 
-  Map toJson() => this.asMap;
   String toString() => this.asMap.toString();
 
-  Map get asMap {
-    Map template = EventTemplate._rootElement(this);
+  Map get asMap => toJson();
 
-    Map body = {
-      Key.modifierUid: this.modifierUid,
-      Key.messageID: this.mid,
-      Key.state: this.state,
-      Key.messageState: this.messageState.index
-    };
+  Map toJson() => {
+        Key.event: eventName,
+        Key.timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        Key.modifierUid: this.modifierUid,
+        Key.messageID: this.mid,
+        Key.state: this.state,
+        Key.messageState: this.messageState.index,
+        Key._createdAt: util.dateTimeToUnixTimestamp(createdAt)
+      };
 
-    template[this.eventName] = body;
-
-    return template;
-  }
-
+  /**
+   * Deserializing contstructor.
+   */
   MessageChange.fromMap(Map map)
-      : modifierUid = map[Key.messageChange][Key.modifierUid],
-        mid = map[Key.messageChange][Key.messageID],
-        state = map[Key.messageChange][Key.state],
-        messageState = map[Key.messageChange].containsKey(Key.messageState)
-            ? model.MessageState.values[map[Key.messageChange]
-                [Key.messageState]]
+      : modifierUid = map[Key.modifierUid],
+        mid = map[Key.messageID],
+        state = map[Key.state],
+        messageState = map.containsKey(Key.messageState)
+            ? model.MessageState.values[map[Key.messageState]]
             : model.MessageState.unknown,
-        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
+        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]),
+        createdAt = util.unixTimestampToDateTime(map[Key._createdAt]);
 }
