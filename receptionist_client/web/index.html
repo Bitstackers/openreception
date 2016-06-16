@@ -979,10 +979,22 @@
                     color: #999;
                   }
 
-                  #reception-calendar .generic-widget-list li .label-and-timestamp .label-future,
-                  #reception-calendar .generic-widget-list li .label-and-timestamp .label-past {
+                  #reception-calendar .generic-widget-list li .label-and-timestamp .label-future {
+                    color: green;
                     padding-top: 5px;
                     font-size: 0.6em;
+                  }
+
+                  #reception-calendar .generic-widget-list li .label-and-timestamp .label-past {
+                    color: red;
+                    -animation: pulse-label-past 0.7s infinite alternate;
+                    -webkit-animation: pulse-label-past 0.7s infinite alternate;
+                  }
+
+                  @-webkit-keyframes pulse-label-past {
+                    to {
+                      opacity: 0.1;
+                    }
                   }
 
                   #reception-calendar .generic-widget-list li.active .timestamp {
@@ -1427,8 +1439,8 @@
 
                     #contact-calendar .generic-widget-list li .label-and-timestamp .label-future {
                       color: green;
-                      -animation: pulse-label-past 0.7s infinite alternate;
-                      -webkit-animation: pulse-label-past 0.7s infinite alternate;
+                      padding-top: 5px;
+                      font-size: 0.6em;
                     }
 
                     #contact-calendar .generic-widget-list li .label-and-timestamp .label-past {
