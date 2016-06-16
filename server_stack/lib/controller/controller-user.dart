@@ -13,11 +13,11 @@
 
 library openreception.server.controller.user;
 
-import 'package:archive/archive.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/model.dart' as model;
+import 'package:openreception.framework/gzip_cache.dart' as gzip_cache;
 import 'package:openreception.framework/event.dart' as event;
 import 'package:openreception.framework/storage.dart' as storage;
 import 'package:openreception.framework/filestore.dart' as filestore;
@@ -33,10 +33,11 @@ class User {
   final filestore.User _userStore;
   final service.Authentication _authservice;
   final service.NotificationService _notification;
-  final Map<int, List<int>> _userCache = {};
-  List<int> _userListCache = [];
+  gzip_cache.UserCache _cache;
 
-  User(this._userStore, this._notification, this._authservice);
+  User(this._userStore, this._notification, this._authservice) {
+    _cache = new gzip_cache.UserCache(_userStore, _userStore.onUserChange);
+  }
 
   /**
    * HTTP Request handler for returning a single user resource.
@@ -44,34 +45,22 @@ class User {
   Future<shelf.Response> get(shelf.Request request) async {
     final int uid = int.parse(shelf_route.getPathParameter(request, 'uid'));
 
-    if (!_userCache.containsKey(uid)) {
-      try {
-        final model.User user = await _userStore.get(uid);
-
-        _userCache[uid] =
-            new GZipEncoder().encode(UTF8.encode(JSON.encode(user)));
-      } on storage.NotFound catch (e) {
-        return notFound(e.toString());
-      }
+    try {
+      return okGzip(new Stream.fromIterable([await _cache.get(uid)]));
+    } on storage.NotFound catch (e) {
+      return notFound(e.toString());
     }
-
-    return okGzip(new Stream.fromIterable([_userCache[uid]]));
   }
 
   /**
    * HTTP Request handler for returning a all user resources.
    */
   Future<shelf.Response> list(shelf.Request request) async {
-    if (_userListCache.isEmpty) {
-      try {
-        _userListCache = new GZipEncoder().encode(UTF8.encode(
-            JSON.encode((await _userStore.list()).toList(growable: false))));
-      } on storage.NotFound catch (e) {
-        return notFound(e.toString());
-      }
+    try {
+      return okGzip(new Stream.fromIterable([await _cache.list()]));
+    } on storage.NotFound catch (e) {
+      return notFound(e.toString());
     }
-
-    return okGzip(new Stream.fromIterable([_userListCache]));
   }
 
   /**
@@ -89,10 +78,6 @@ class User {
 
     try {
       await _userStore.remove(uid, modifier);
-
-      /// Update cache
-      _userListCache = [];
-      _userCache.remove(uid);
 
       var e = new event.UserChange.delete(uid, modifier.id);
       try {
@@ -136,9 +121,6 @@ class User {
 
     final uRef = await _userStore.create(user, creator);
 
-    /// Update cache
-    _userListCache = [];
-
     var e = new event.UserChange.create(uRef.id, creator.id);
     try {
       await _notification.broadcastEvent(e);
@@ -177,10 +159,6 @@ class User {
 
     try {
       final uRef = await _userStore.update(user, modifier);
-
-      /// Update cache
-      _userListCache = [];
-      _userCache.remove(user.id);
 
       var e = new event.UserChange.update(uRef.id, modifier.id);
 
@@ -249,22 +227,14 @@ class User {
    *
    */
   Future<shelf.Response> cacheStats(shelf.Request request) async {
-    final Map stats = {
-      'userCount': _userCache.length,
-      'userSize': _userCache.values
-          .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
-      'listSize': _userListCache.length
-    };
-
-    return okJson(stats);
+    return okJson(_cache.stats);
   }
 
   /**
    *
    */
   Future<shelf.Response> emptyCache(shelf.Request request) async {
-    _userCache.clear();
-    _userListCache = [];
+    _cache.emptyAll();
 
     return cacheStats(request);
   }

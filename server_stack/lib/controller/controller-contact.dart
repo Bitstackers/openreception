@@ -16,10 +16,9 @@ library openreception.server.controller.contact;
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:archive/archive.dart';
-import 'package:logging/logging.dart';
 import 'package:openreception.framework/event.dart' as event;
 import 'package:openreception.framework/filestore.dart' as filestore;
+import 'package:openreception.framework/gzip_cache.dart' as gzip_cache;
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.framework/storage.dart' as storage;
@@ -29,22 +28,14 @@ import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
 const String _libraryName = 'openreception.server.controller.reception';
 
-List<int> serializeAndCompressObject(Object obj) =>
-    new GZipEncoder().encode(UTF8.encode(JSON.encode(obj)));
-
 class Contact {
   final service.Authentication _authservice;
   final filestore.Contact _contactStore;
   final service.NotificationService _notification;
-  final Map<int, List<int>> _contactCache = {};
-  List<int> _contactListCache = [];
-  final Map<int, List<int>> _recListCache = {};
-  final Map<int, List<int>> _orgListCache = {};
+  final gzip_cache.ContactCache _cache;
 
-  /// Rid and pre-gzipped listing.
-  final Map<int, List<int>> _receptionContactCache = {};
-
-  Contact(this._contactStore, this._notification, this._authservice);
+  Contact(
+      this._contactStore, this._notification, this._authservice, this._cache);
 
   /**
    * Retrives a single base contact based on contactID.
@@ -52,19 +43,11 @@ class Contact {
   Future<shelf.Response> base(shelf.Request request) async {
     final int cid = int.parse(shelf_route.getPathParameter(request, 'cid'));
 
-    if (!_contactCache.containsKey(cid)) {
-      model.BaseContact bc;
-      try {
-        bc = await _contactStore.get(cid);
-
-        _contactCache[cid] =
-            new GZipEncoder().encode(UTF8.encode(JSON.encode(bc)));
-      } on storage.NotFound catch (e) {
-        return notFound(e.toString());
-      }
+    try {
+      return okGzip(new Stream.fromIterable([await _cache.get(cid)]));
+    } on storage.NotFound catch (e) {
+      return notFound(e.toString());
     }
-
-    return okGzip(new Stream.fromIterable([_contactCache[cid]]));
   }
 
   /**
@@ -92,9 +75,6 @@ class Contact {
     final rRef = await _contactStore.create(contact, creator);
     final createEvent = new event.ContactChange.create(rRef.id, creator.id);
 
-    /// Update cache.
-    _contactListCache.clear();
-
     _notification.broadcastEvent(createEvent);
 
     return okJson(rRef);
@@ -104,16 +84,11 @@ class Contact {
    * Retrives a single base contact based on contactID.
    */
   Future<shelf.Response> listBase(shelf.Request request) async {
-    if (_contactListCache.isEmpty) {
-      try {
-        _contactListCache = new GZipEncoder().encode(UTF8.encode(
-            JSON.encode((await _contactStore.list()).toList(growable: false))));
-      } on storage.NotFound catch (e) {
-        return notFound(e.toString());
-      }
+    try {
+      return okGzip(new Stream.fromIterable([await _cache.allContacts()]));
+    } on storage.NotFound catch (e) {
+      return notFound(e.toString());
     }
-
-    return okGzip(new Stream.fromIterable([_contactListCache]));
   }
 
   /**
@@ -184,10 +159,6 @@ class Contact {
       return okJson(const {});
     } on storage.NotFound catch (e) {
       return notFound(e.toString());
-    } finally {
-      /// Remove cached objects. (TODO: remove cached reception data objects)
-      _contactCache.remove(cid);
-      _contactListCache.clear();
     }
   }
 
@@ -232,9 +203,6 @@ class Contact {
       return okJson(ref);
     } on storage.NotFound catch (e) {
       return notFound(e.toString());
-    } finally {
-      /// Remove cached objects. (TODO: remove cached reception data objects)
-      _contactCache.remove(cid);
     }
   }
 
@@ -244,20 +212,12 @@ class Contact {
   Future<shelf.Response> listByReception(shelf.Request request) async {
     final int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
-    if (!_receptionContactCache.containsKey(rid)) {
-      Iterable<model.ReceptionContact> contacts;
-
-      try {
-        contacts = await _contactStore.receptionContacts(rid);
-
-        _receptionContactCache[rid] = new GZipEncoder()
-            .encode(UTF8.encode(JSON.encode(contacts.toList(growable: false))));
-      } on storage.NotFound catch (e) {
-        return notFound(e.toString());
-      }
+    try {
+      return okGzip(
+          new Stream.fromIterable([await _cache.receptionContacts(rid)]));
+    } on storage.NotFound catch (e) {
+      return notFound(e.toString());
     }
-
-    return okGzip(new Stream.fromIterable([_receptionContactCache[rid]]));
   }
 
   /**
@@ -358,8 +318,6 @@ class Contact {
     try {
       await _contactStore.removeData(cid, rid, modifier);
 
-      /// Update cache
-      _receptionContactCache.remove(rid);
       event.ReceptionData changeEvent =
           new event.ReceptionData.update(cid, rid, modifier.id);
       _notification.broadcastEvent(changeEvent);
@@ -418,26 +376,22 @@ class Contact {
    *
    */
   Future<shelf.Response> cacheStats(shelf.Request request) async {
-    final Map stats = {
-      'contactCount': _contactCache.length,
-      'contactSize': _contactCache.values
-          .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
-      'receptionContactCount': _receptionContactCache.length,
-      'receptionContactSize': _receptionContactCache.values
-          .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
-    };
+    return okJson(_cache.stats);
+  }
 
-    return okJson(stats);
+  /**
+   *
+   */
+  Future<shelf.Response> cachePrefill(shelf.Request request) async {
+    await _cache.prefill();
+    return cacheStats(request);
   }
 
   /**
    *
    */
   Future<shelf.Response> emptyCache(shelf.Request request) async {
-    _contactCache.clear();
-    _recListCache.clear();
-    _contactListCache.clear();
-    _receptionContactCache.clear();
+    _cache.emptyAll();
     return cacheStats(request);
   }
 }

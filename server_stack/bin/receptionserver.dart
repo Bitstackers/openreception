@@ -19,6 +19,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/filestore.dart' as filestore;
+import 'package:openreception.framework/gzip_cache.dart' as gzip_cache;
 import 'package:openreception.framework/service-io.dart' as service;
 import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.server/configuration.dart';
@@ -88,11 +89,17 @@ Future main(List<String> args) async {
       filepath + '/organization',
       new filestore.GitEngine(filepath + '/organization'));
 
-  final controller.Organization organization =
-      new controller.Organization(oStore, _notification, _authService);
+  final controller.Organization organization = new controller.Organization(
+      oStore,
+      _notification,
+      _authService,
+      new gzip_cache.OrganizationCache(oStore, oStore.onOrganizationChange));
 
-  controller.Reception reception =
-      new controller.Reception(rStore, _notification, _authService);
+  controller.Reception reception = new controller.Reception(
+      rStore,
+      _notification,
+      _authService,
+      new gzip_cache.ReceptionCache(rStore, rStore.onReceptionChange));
 
   await (new router.Reception(
           _authService, _notification, reception, organization)

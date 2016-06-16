@@ -16,9 +16,8 @@ library openreception.server.controller.reception;
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:archive/archive.dart';
-import 'package:logging/logging.dart';
 import 'package:openreception.framework/event.dart' as event;
+import 'package:openreception.framework/gzip_cache.dart' as gzip_cache;
 import 'package:openreception.framework/filestore.dart' as filestore;
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/service.dart' as service;
@@ -29,143 +28,16 @@ import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
 const String _libraryName = 'openreception.server.controller.reception';
 
-List<int> serializeAndCompressObject(Object obj) =>
-    new GZipEncoder().encode(UTF8.encode(JSON.encode(obj)));
-
-class ReceptionCache {
-  final Logger _log = new Logger('$_libraryName.ReceptionCache');
-
-  final filestore.Reception _receptionStore;
-
-  final Map<int, List<int>> _receptionCache = {};
-  final Map<String, int> _extensionToRid = {};
-  List<int> _receptionList = [];
-
-  /**
-   *
-   */
-  ReceptionCache(this._receptionStore);
-
-  /**
-   *
-   */
-  Future<List<int>> getByExtension(String extension) async {
-    if (!_extensionToRid.containsKey(extension)) {
-      final r = await _receptionStore.getByExtension(extension);
-      _receptionCache[r.id] = serializeAndCompressObject(r);
-      _extensionToRid[extension] = r.id;
-    }
-
-    final int rid = _extensionToRid[extension];
-
-    try {
-      return get(rid);
-    } on storage.NotFound catch (e) {
-      /// Clear out the orphan key
-      _extensionToRid.remove(extension);
-
-      throw e;
-    }
-  }
-
-  /**
-   *
-   */
-  Future<List<int>> get(int rid) async {
-    final int key = rid;
-
-    if (!_receptionCache.containsKey(key)) {
-      _log.finest('Key $key not found in cache. Looking it up.');
-      final r = await _receptionStore.get(rid);
-      _receptionCache[r.id] = serializeAndCompressObject(r);
-      _extensionToRid[r.dialplan] = r.id;
-    }
-    return _receptionCache[key];
-  }
-
-  /**
-   *
-   */
-  void remove(int rid) {
-    _log.finest('Removing key $rid from cache');
-    _receptionCache.remove(rid);
-  }
-
-  /**
-   *
-   */
-  void removeExtension(String extension) {
-    _log.finest('Removing key $extension from cache');
-    _extensionToRid.remove(extension);
-  }
-
-  /**
-   *
-   */
-  Future<List<int>> list() async {
-    if (_receptionList.isEmpty) {
-      _log.finest('No reception list found in cache. Looking one up.');
-
-      _receptionList = serializeAndCompressObject(
-          (await _receptionStore.list()).toList(growable: false));
-    }
-
-    return _receptionList;
-  }
-
-  /**
-   *
-   */
-  Map get stats => {
-        'receptionCount': _receptionCache.length,
-        'receptionSize': _receptionCache.values
-            .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
-        'listSize': _receptionList.length
-      };
-
-  /**
-   *
-   */
-  Future prefill() async {
-    final rRefs = await _receptionStore.list();
-
-    _receptionList = serializeAndCompressObject(rRefs.toList(growable: false));
-
-    await Future.forEach(rRefs, (rRef) async {
-      final r = await _receptionStore.get(rRef.id);
-      _receptionCache[r.id] = serializeAndCompressObject(r);
-      _extensionToRid[r.dialplan] = r.id;
-    });
-  }
-
-  /**
-   *
-   */
-  void emptyList() {
-    _receptionList = [];
-  }
-
-  /**
-   *
-   */
-  void emptyAll() {
-    emptyList();
-    _receptionCache.clear();
-  }
-}
-
 class Reception {
   final filestore.Reception _rStore;
   final service.Authentication _authservice;
   final service.NotificationService _notification;
-  ReceptionCache _cache;
+  final gzip_cache.ReceptionCache _cache;
 
   /**
    * Default constructor.
    */
-  Reception(this._rStore, this._notification, this._authservice) {
-    _cache = new ReceptionCache(_rStore);
-  }
+  Reception(this._rStore, this._notification, this._authservice, this._cache);
 
   /**
    *
