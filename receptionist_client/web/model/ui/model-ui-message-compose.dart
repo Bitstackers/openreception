@@ -161,13 +161,28 @@ class UIMessageCompose extends UIModel {
    * Ignores whitespace only elements.
    */
   void set messagePrerequisites(List<String> prerequisites) {
+    _prerequisites.children.clear();
     prerequisites.removeWhere((String prereg) => prereg.trim().isEmpty);
 
     if (prerequisites.isEmpty) {
       _prerequisites.style.display = 'none';
     } else {
+      final List<SpanElement> spans = prerequisites
+          .map((String s) => new SpanElement()..text = s)
+          .toList(growable: false);
+
+      int counter = 0;
+      while (counter < spans.length) {
+        _prerequisites.children.add(spans[counter]);
+        if (spans.length - counter > 1) {
+          _prerequisites.children.add(new SpanElement()
+            ..text = '|'
+            ..classes.add('prerequisites_separator'));
+        }
+        counter++;
+      }
+
       _prerequisites.style.display = 'block';
-      _prerequisites.text = prerequisites.join(', ');
     }
   }
 
