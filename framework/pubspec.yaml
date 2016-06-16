@@ -5,6 +5,7 @@ description: A utility package for the OpenReception application that provides d
 environment:
   sdk: '>=1.0.0 <2.0.0'
 dependencies:
+  archive: any
   intl: any
   logging: any
 dev_dependencies:

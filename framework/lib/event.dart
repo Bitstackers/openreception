@@ -14,10 +14,10 @@
 library openreception.framework.event;
 
 import 'package:logging/logging.dart';
-
-import 'package:openreception.framework/util.dart' as util;
 import 'package:openreception.framework/model.dart' as model;
+import 'package:openreception.framework/util.dart' as util;
 
+part 'event/call/event-call.dart';
 part 'event/call/event-call_assign.dart';
 part 'event/call/event-call_hangup.dart';
 part 'event/call/event-call_lock.dart';
@@ -32,11 +32,12 @@ part 'event/call/event-call_transfer.dart';
 part 'event/call/event-call_unassign.dart';
 part 'event/call/event-call_unlock.dart';
 part 'event/call/event-call_unpark.dart';
-part 'event/call/event-call.dart';
 part 'event/event-calendar.dart';
 part 'event/event-channel.dart';
 part 'event/event-client_connection.dart';
 part 'event/event-contact.dart';
+part 'event/event-dialplan.dart';
+part 'event/event-ivr_menu.dart';
 part 'event/event-message.dart';
 part 'event/event-organization.dart';
 part 'event/event-peer_state.dart';
@@ -60,6 +61,12 @@ abstract class Change {
  * Keys for the serialization and deserialization.
  */
 abstract class Key {
+  static const _dialplanChange = 'dialplanChange';
+  static const _extension = 'extension';
+  static const _ivrMenuChange = 'ivrMenuChange';
+  static const _menuName = 'menuName';
+  static const _createdAt = 'createdAt';
+
   static const call = 'call';
   static const peer = 'peer';
   static const channel = 'channel';
@@ -80,6 +87,7 @@ abstract class Key {
   static const hangupCause = 'hangupCause';
   static const widgetSelect = 'widgetSelect';
   static const widget = 'widget';
+  static const focusChange = 'focusChange';
   static const inFocus = 'inFocus';
   static const messageState = 'messageState';
 
@@ -212,6 +220,12 @@ abstract class Event {
 
         case Key.callStateReload:
           return new CallStateReload.fromMap(map);
+
+        case Key._dialplanChange:
+          return new DialplanChange.fromMap(map);
+
+        case Key._ivrMenuChange:
+          return new IvrMenuChange.fromMap(map);
 
         default:
           _log.severe('Unsupported event type: ${map['event']}');

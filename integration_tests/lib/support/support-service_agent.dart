@@ -17,7 +17,7 @@ class ServiceAgent {
    *
    */
   Future<Stream<event.Event>> get notifications async =>
-      (await notificationSocket).eventStream;
+      (await notificationSocket).onEvent;
 
   /**
    *
@@ -306,7 +306,7 @@ class ServiceAgent {
         new Receptionist(sipPhone, userToken.tokenName, rUser);
 
     final reloadEvent = (await notificationSocket)
-        .eventStream
+        .onEvent
         .firstWhere((e) => e is event.CallStateReload);
 
     _log.finest('Reloading callflow state');
@@ -315,11 +315,10 @@ class ServiceAgent {
     await reloadEvent;
 
     env.allocatedReceptionists.add(r);
-    final registerEvent = (await notificationSocket).eventStream.firstWhere(
-        (e) =>
-            e is event.PeerState &&
-            e.peer.name == r.user.extension &&
-            e.peer.registered);
+    final registerEvent = (await notificationSocket).onEvent.firstWhere((e) =>
+        e is event.PeerState &&
+        e.peer.name == r.user.extension &&
+        e.peer.registered);
 
     await r.initialize(callflowProcess.uri, notificationProcess.notifyUri);
 

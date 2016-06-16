@@ -12,7 +12,7 @@ abstract class Peer {
 
     log.info('Unregistering peer $peerName to assert state');
 
-    Future unregisterEvent = receptionist.notificationSocket.eventStream
+    Future unregisterEvent = receptionist.notificationSocket.onEvent
         .firstWhere((event.Event e) =>
             e is event.PeerState &&
             e.peer.name == peerName &&

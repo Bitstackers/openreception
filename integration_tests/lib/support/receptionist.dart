@@ -69,7 +69,7 @@ class Receptionist {
     log.finest('Connecting websocket to $notifyUri');
 
     await wsc.connect(notifyUri);
-    notificationSocket.eventStream.listen(_handleEvent,
+    notificationSocket.onEvent.listen(_handleEvent,
         onDone: () => log.fine('$this closing notification listener.'));
 
     await phone.initialize();
@@ -337,7 +337,7 @@ class Receptionist {
     log.finest(
         'Event is not yet received, waiting for maximum $timeoutSeconds seconds');
 
-    return notificationSocket.eventStream
+    return notificationSocket.onEvent
         .firstWhere(matches)
         .timeout(new Duration(seconds: timeoutSeconds))
         .catchError((error, stackTrace) {

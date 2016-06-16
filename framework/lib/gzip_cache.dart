@@ -55,24 +55,20 @@ class CalendarCache {
   /**
    *
    */
-  CalendarCache(this.cCalendarStore, this.rCalendarStore) {
-    _observers();
-  }
-
-  /**
-   *
-   */
-  void _observers() {
-    cCalendarStore.changeStream.listen((event.CalendarChange e) {
-      if (e.created) {
-        emptyList(e.owner);
-      } else if (e.updated) {
-        emptyList(e.owner);
-        removeEntry(e.eid, e.owner);
-      } else if (e.deleted) {
-        emptyList(e.owner);
-        removeEntry(e.eid, e.owner);
-      }
+  CalendarCache(this.cCalendarStore, this.rCalendarStore,
+      Iterable<Stream<event.CalendarChange>> streams) {
+    streams.forEach((Stream<event.CalendarChange> stream) {
+      stream.listen((event.CalendarChange e) {
+        if (e.created) {
+          emptyList(e.owner);
+        } else if (e.updated) {
+          emptyList(e.owner);
+          removeEntry(e.eid, e.owner);
+        } else if (e.deleted) {
+          emptyList(e.owner);
+          removeEntry(e.eid, e.owner);
+        }
+      });
     });
   }
 
@@ -200,7 +196,16 @@ class ReceptionCache {
   /**
    *
    */
-  ReceptionCache(this._receptionStore);
+  ReceptionCache(
+      this._receptionStore, Stream<event.ReceptionChange> receptionChanges) {
+    receptionChanges.listen((event.ReceptionChange change) {
+      if (change.updated || change.deleted) {
+        remove(change.rid);
+      }
+
+      emptyList();
+    });
+  }
 
   /**
    *
@@ -323,8 +328,42 @@ class ContactCache {
   /// Cid:rid reception datas
   final Map<String, List<int>> _receptionDataCache = {};
 
-  ContactCache(this._contactStore) {
-    _observers();
+  /**
+   *
+   */
+  ContactCache(
+      this._contactStore,
+      Stream<event.ContactChange> contactChange,
+      Stream<event.ReceptionData> receptionDataChange,
+      Stream<event.ReceptionChange> receptionChange,
+      Stream<event.OrganizationChange> organizationChange) {
+    contactChange.listen((event.ContactChange e) {
+      if (e.updated || e.deleted) {
+        removeContact(e.cid);
+      }
+
+      emptyContactLists();
+    });
+
+    receptionDataChange.listen((event.ReceptionData change) {
+      if (change.deleted || change.updated) {
+        _receptionContactCache.remove(change.rid);
+        _recListCache.remove(change.rid);
+      }
+    });
+
+    receptionChange.listen((event.ReceptionChange change) {
+      if (change.deleted || change.updated) {
+        _receptionContactCache.remove(change.rid);
+        _recListCache.remove(change.rid);
+      }
+    });
+
+    organizationChange.listen((event.OrganizationChange change) {
+      if (change.deleted || change.updated) {
+        _orgListCache.remove(change.oid);
+      }
+    });
   }
 
   /**
@@ -339,19 +378,6 @@ class ContactCache {
     }
 
     return _receptionDataCache[key];
-  }
-
-  /**
-   *
-   */
-  void _observers() {
-    _contactStore.onContactChange.listen((event.ContactChange e) {
-      if (e.updated || e.deleted) {
-        removeContact(e.cid);
-      }
-
-      emptyContactLists();
-    });
   }
 
   /**
@@ -454,10 +480,17 @@ class ContactCache {
 class MessageCache {
   final filestore.Message _messageStore;
   final Map<String, List<int>> _messageListCache = {};
-  List<int> _savedListCache = [];
+  List<int> _draftListCache = [];
 
-  MessageCache(this._messageStore) {
-    _observers();
+  MessageCache(this._messageStore, Stream<event.MessageChange> messageChange) {
+    messageChange.listen((event.MessageChange e) {
+      final String key = e.createdAt.toIso8601String().split('T').first;
+      _messageListCache.remove(key);
+
+      if (e.messageState == model.MessageState.draft) {
+        _draftListCache = [];
+      }
+    });
   }
 
   /**
@@ -484,35 +517,18 @@ class MessageCache {
    *
    */
   Future<List<int>> listSaved() async {
-    if (_savedListCache.isEmpty) {
-      _savedListCache = new GZipEncoder()
+    if (_draftListCache.isEmpty) {
+      _draftListCache = new GZipEncoder()
           .encode(UTF8.encode(JSON.encode(await _messageStore.listDrafts())));
     }
 
-    return _savedListCache;
-  }
-
-  /**
-   * Remove the cache from _today_ only because we simply do not know which
-   * cache the given message is stored in.
-   */
-  void _observers() {
-    _messageStore.changeStream.listen((event.MessageChange e) {
-      final String key = new DateTime.now().toIso8601String().split('T').first;
-      _messageListCache.remove(key);
-
-      if (e.messageState == model.MessageState.draft) {
-        _savedListCache = [];
-      }
-    });
+    return _draftListCache;
   }
 
   /**
    *
    */
-  Future prefill() async {
-    throw new UnimplementedError();
-  }
+  Future prefill() async {}
 
   /**
    *
@@ -521,6 +537,399 @@ class MessageCache {
         'messageFolderCount': _messageListCache.length,
         'messageFolderSize': _messageListCache.values
             .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
-        'savedMessageSize': _savedListCache.length
+        'savedMessageSize': _draftListCache.length
       };
+}
+
+/**
+ *
+ */
+class IvrMenuCache {
+  final filestore.Ivr ivrStore;
+  final Map<String, List<int>> _ivrCache = {};
+  List<int> _ivrListCache = [];
+
+  IvrMenuCache(this.ivrStore, Stream<event.IvrMenuChange> ivrMenuChanges) {
+    ivrMenuChanges.listen((event.IvrMenuChange changeEvent) {
+      if (changeEvent.isDelete || changeEvent.isUpdate) {
+        removeMenu(changeEvent.menuName);
+      }
+
+      clearListCache();
+    });
+  }
+
+  /**
+   *
+   */
+  void removeMenu(String name) {
+    _ivrCache.remove(name);
+  }
+
+  /**
+     *
+     */
+  void clearListCache() {
+    _ivrListCache = [];
+  }
+
+  /**
+   *
+   */
+  Future<List<int>> list() async {
+    if (_ivrCache.isEmpty) {
+      final Iterable ivrs = await ivrStore.list();
+
+      _ivrListCache = ivrs.isEmpty
+          ? emptyGzipList
+          : new GZipEncoder()
+              .encode(UTF8.encode(JSON.encode(ivrs.toList(growable: false))));
+    }
+
+    return _ivrListCache;
+  }
+
+  /**
+   *
+   */
+  Future<List<int>> get(String menuName) async {
+    if (!_ivrCache.containsKey(menuName)) {
+      final model.IvrMenu menu = await ivrStore.get(menuName);
+
+      _ivrCache[menuName] =
+          new GZipEncoder().encode(UTF8.encode(JSON.encode(menu)));
+    }
+
+    return _ivrCache[menuName];
+  }
+
+  /**
+   *
+   */
+  Future emptyAll() async {
+    _ivrCache.clear();
+    clearListCache();
+  }
+
+  /**
+   *
+   */
+  Future prefill() async {
+    Iterable<model.IvrMenu> ivrs = await ivrStore.list();
+    _ivrListCache = ivrs.isEmpty
+        ? emptyGzipList
+        : new GZipEncoder()
+            .encode(UTF8.encode(JSON.encode(ivrs.toList(growable: false))));
+
+    await Future.forEach(ivrs, (model.IvrMenu menu) async {
+      await get(menu.name);
+    });
+  }
+
+  /**
+   *
+   */
+  Map get stats => {
+        'ivrCount': _ivrCache.length,
+        'ivrSize': _ivrCache.values
+            .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
+        'ivrListSize': _ivrListCache.length
+      };
+}
+
+/**
+ *
+ */
+class DialplanCache {
+  final filestore.ReceptionDialplan _rdpStore;
+  final Map<String, List<int>> _dialplanCache = {};
+  List<int> _dialplanListCache = [];
+
+  DialplanCache(this._rdpStore, Stream<event.DialplanChange> dialplanChanges) {
+    dialplanChanges.listen((event.DialplanChange changeEvent) {
+      if (changeEvent.isDelete || changeEvent.isUpdate) {
+        removeDialplan(changeEvent.extension);
+      }
+
+      clearListCache();
+    });
+  }
+
+  /**
+   *
+   */
+  void removeDialplan(String dialplan) {
+    _dialplanCache.remove(dialplan);
+  }
+
+  /**
+     *
+     */
+  void clearListCache() {
+    _dialplanListCache = [];
+  }
+
+  /**
+     *
+     */
+  Future<List<int>> list() async {
+    if (_dialplanCache.isEmpty) {
+      final Iterable dialplans = await _rdpStore.list();
+
+      _dialplanListCache = dialplans.isEmpty
+          ? emptyGzipList
+          : new GZipEncoder().encode(
+              UTF8.encode(JSON.encode(dialplans.toList(growable: false))));
+    }
+
+    return _dialplanListCache;
+  }
+
+  /**
+     *
+     */
+  Future<List<int>> get(String dialplan) async {
+    if (!_dialplanCache.containsKey(dialplan)) {
+      final model.ReceptionDialplan rdp = await _rdpStore.get(dialplan);
+
+      _dialplanCache[dialplan] =
+          new GZipEncoder().encode(UTF8.encode(JSON.encode(rdp)));
+    }
+
+    return _dialplanCache[dialplan];
+  }
+
+  /**
+     *
+     */
+  Future emptyAll() async {
+    _dialplanCache.clear();
+    clearListCache();
+  }
+
+  /**
+     *
+     */
+  Future prefill() async {
+    Iterable<model.ReceptionDialplan> dialplans = await _rdpStore.list();
+    _dialplanListCache = dialplans.isEmpty
+        ? emptyGzipList
+        : new GZipEncoder().encode(
+            UTF8.encode(JSON.encode(dialplans.toList(growable: false))));
+
+    await Future.forEach(dialplans, (model.ReceptionDialplan rdp) async {
+      await get(rdp.extension);
+    });
+  }
+
+  /**
+     *
+     */
+  Map get stats => {
+        'dialplanCount': _dialplanCache.length,
+        'dialplanSize': _dialplanCache.values
+            .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
+        'userListSize': _dialplanListCache.length
+      };
+}
+
+class UserCache {
+  final filestore.User _userStore;
+  final Map<int, List<int>> _userCache = {};
+  List<int> _userListCache = [];
+
+  /**
+   *
+   */
+  UserCache(this._userStore, Stream<event.UserChange> userChanges) {
+    userChanges.listen((event.UserChange changeEvent) {
+      if (changeEvent.deleted || changeEvent.updated) {
+        removeUid(changeEvent.uid);
+      }
+
+      clearListCache();
+    });
+  }
+
+  /**
+   *
+   */
+  void removeUid(int uid) {
+    _userCache.remove(uid);
+  }
+
+  /**
+   *
+   */
+  void clearListCache() {
+    _userListCache = [];
+  }
+
+  /**
+   *
+   */
+  Future<List<int>> list() async {
+    if (_userListCache.isEmpty) {
+      final Iterable users = await _userStore.list();
+
+      _userListCache = users.isEmpty
+          ? emptyGzipList
+          : new GZipEncoder()
+              .encode(UTF8.encode(JSON.encode(users.toList(growable: false))));
+    }
+
+    return _userListCache;
+  }
+
+  /**
+   *
+   */
+  Future<List<int>> get(int uid) async {
+    if (!_userCache.containsKey(uid)) {
+      final model.User user = await _userStore.get(uid);
+
+      _userCache[uid] =
+          new GZipEncoder().encode(UTF8.encode(JSON.encode(user)));
+    }
+
+    return _userCache[uid];
+  }
+
+  /**
+   *
+   */
+  Future emptyAll() async {
+    _userCache.clear();
+    clearListCache();
+  }
+
+  /**
+   *
+   */
+  Future prefill() async {
+    Iterable<model.UserReference> users = await _userStore.list();
+    _userListCache = users.isEmpty
+        ? emptyGzipList
+        : new GZipEncoder()
+            .encode(UTF8.encode(JSON.encode(users.toList(growable: false))));
+
+    await Future.forEach(users, (model.UserReference uRef) async {
+      await get(uRef.id);
+    });
+  }
+
+  /**
+   *
+   */
+  Map get stats => {
+        'userCount': _userCache.length,
+        'userSize': _userCache.values
+            .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
+        'userListSize': _userListCache.length
+      };
+}
+
+class OrganizationCache {
+  final Logger _log = new Logger('$_libraryName.CalendarCache');
+
+  final filestore.Organization orgStore;
+
+  final Map<int, List<int>> _organizationCache = {};
+  List<int> _organizationListCache = [];
+
+  /**
+   *
+   */
+  OrganizationCache(
+      this.orgStore, Stream<event.OrganizationChange> organizationChange) {
+    organizationChange.listen((event.OrganizationChange e) {
+      if (e.updated || e.deleted) {
+        remove(e.oid);
+      }
+
+      emptyList();
+    });
+  }
+
+  /**
+   *
+   */
+  void remove(int oid) {
+    _organizationCache.remove(oid);
+  }
+
+  /**
+   *
+   */
+  Future<List<int>> get(int oid) async {
+    if (!_organizationCache.containsKey(oid)) {
+      _log.finest('Key $oid not found in cache. Looking it up.');
+      _organizationCache[oid] =
+          serializeAndCompressObject(await orgStore.get(oid));
+    }
+    return _organizationCache[oid];
+  }
+
+  /**
+   *
+   */
+  void removeEntry(int eid, model.Owner owner) {
+    final String key = '$owner:$eid';
+    _log.finest('Removing key $key from cache');
+    _organizationCache.remove(key);
+  }
+
+  /**
+   *
+   */
+  Future<List<int>> list() async {
+    if (_organizationListCache.isEmpty) {
+      _log.finest('Listing not found in cache. Looking it up.');
+
+      _organizationListCache = serializeAndCompressObject(
+          (await orgStore.list()).toList(growable: false));
+    }
+
+    return _organizationListCache;
+  }
+
+  /**
+   *
+   */
+  Map get stats => {
+        'organizationEntries': _organizationCache.length,
+        'organizationSize': _organizationCache.values
+            .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
+        'listSize': _organizationListCache.length
+      };
+
+  /**
+   *
+   */
+  Future prefill() async {
+    List<model.OrganizationReference> oRefs = await orgStore.list();
+
+    _organizationListCache =
+        serializeAndCompressObject(oRefs.toList(growable: false));
+
+    await Future.forEach(oRefs, (oRef) async {
+      final o = await orgStore.get(oRef.id);
+      _organizationCache[o.id] = serializeAndCompressObject(o);
+    });
+  }
+
+  /**
+   *
+   */
+  void emptyList() {
+    _organizationListCache = [];
+  }
+
+  /**
+   *
+   */
+  void emptyAll() {
+    _organizationCache.clear();
+    emptyList();
+  }
 }

@@ -6,7 +6,7 @@ class AgentInfoList {
   final TableSectionElement element = new TableElement().createTBody();
 
   AgentInfoList(
-      Iterable<model.User> users,
+      Iterable<model.UserReference> users,
       service.CallFlowControl callFlow,
       service.RESTUserStore userStore,
       service.NotificationSocket notificationSocket,
@@ -48,17 +48,17 @@ class AgentInfoList {
       } else if (e is event.CallEvent && e.call.assignedTo != model.User.noId) {
         _info[e.call.assignedTo].call = e.call;
       } else if (e is event.MessageChange) {
-        if (e.state == event.MessageChangeState.CREATED) {
+        if (e.created) {
           model.Message msg = await messageStore.get(e.mid);
 
           _info[msg.sender.id].numMessage++;
-        } else if (e.state == event.MessageChangeState.DELETED) {
+        } else if (e.deleted) {
           model.Message msg = await messageStore.get(e.mid);
 
           _info[msg.sender.id].numMessage--;
         }
       }
     }
-    notificationSocket.eventStream.listen(dispatchEvent);
+    notificationSocket.onEvent.listen(dispatchEvent);
   }
 }

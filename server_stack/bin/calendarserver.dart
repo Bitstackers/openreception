@@ -22,6 +22,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/filestore.dart' as filestore;
+import 'package:openreception.framework/gzip_cache.dart' as gzip_cache;
 import 'package:openreception.framework/service-io.dart' as service;
 import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.server/configuration.dart';
@@ -101,8 +102,15 @@ Future main(List<String> args) async {
       parsedArgs['filestore'] + '/contact',
       new filestore.GitEngine(parsedArgs['filestore'] + '/contact'));
 
-  final controller.Calendar _calendarController =
-      new controller.Calendar(cStore, rStore, _authentication, _notification);
+  final controller.Calendar _calendarController = new controller.Calendar(
+      cStore,
+      rStore,
+      _authentication,
+      _notification,
+      new gzip_cache.CalendarCache(cStore.calendarStore, rStore.calendarStore, [
+        cStore.calendarStore.changeStream,
+        rStore.calendarStore.changeStream,
+      ]));
 
   final router.Calendar calendarRouter =
       new router.Calendar(_authentication, _notification, _calendarController);

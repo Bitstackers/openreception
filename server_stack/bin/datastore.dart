@@ -23,7 +23,7 @@ import 'package:args/args.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/dialplan_tools.dart' as dialplanTools;
 import 'package:openreception.framework/filestore.dart' as filestore;
-import 'package:openreception.framework/model.dart' as model;
+import 'package:openreception.framework/gzip_cache.dart' as gzip_cache;
 import 'package:openreception.framework/service-io.dart' as service;
 import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.server/configuration.dart';
@@ -35,30 +35,14 @@ import 'package:openreception.server/controller/controller-client_notifier.dart'
     as controller;
 import 'package:openreception.server/controller/controller-contact.dart'
     as controller;
-import 'package:openreception.server/controller/controller-ivr.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-message.dart'
-    as controller;
 import 'package:openreception.server/controller/controller-organization.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-peer_account.dart'
     as controller;
 import 'package:openreception.server/controller/controller-reception.dart'
     as controller;
-import 'package:openreception.server/controller/controller-reception_dialplan.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-user.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-user_state.dart'
-    as controller;
-import 'package:openreception.server/model.dart' as model;
 import 'package:openreception.server/router/router-calendar.dart' as router;
 import 'package:openreception.server/router/router-contact.dart' as router;
 import 'package:openreception.server/router/router-datastore.dart' as router;
-import 'package:openreception.server/router/router-dialplan.dart' as router;
-import 'package:openreception.server/router/router-message.dart' as router;
 import 'package:openreception.server/router/router-reception.dart' as router;
-import 'package:openreception.server/router/router-user.dart' as router;
 
 ArgResults parsedArgs;
 ArgParser parser = new ArgParser();
@@ -67,7 +51,7 @@ Future main(List<String> args) async {
   ///Init logging.
   Logger.root.level = config.calendarServer.log.level;
   Logger.root.onRecord.listen(config.calendarServer.log.onRecord);
-  Logger _log = new Logger('calendarserver');
+  Logger _log = new Logger('datastoreserver');
 
   ///Handle argument parsing.
   ArgParser parser = new ArgParser()
@@ -136,26 +120,12 @@ Future main(List<String> args) async {
   final String playbackPrefix = parsedArgs['playback-prefix'];
   final String fsConfPath = parsedArgs['freeswitch-conf-path'];
 
-  final EslConfig eslConfig = new EslConfig(
-      hostname: parsedArgs['esl-hostname'],
-      password: parsedArgs['esl-password'],
-      port: int.parse(parsedArgs['esl-port']));
-
   /// Initialize filestores
   final filestore.GitEngine git = new filestore.GitEngine(filepath);
   final filestore.Reception rStore =
       new filestore.Reception(filepath + '/reception', git);
   final filestore.Contact cStore =
       new filestore.Contact(rStore, filepath + '/contact', git);
-  final filestore.User userStore =
-      new filestore.User(parsedArgs['filestore'] + '/user', git);
-  final filestore.Ivr ivrStore = new filestore.Ivr(filepath + '/ivr', git);
-  final filestore.ReceptionDialplan dpStore =
-      new filestore.ReceptionDialplan(filepath + '/dialplan', git);
-  final filestore.Message messageStore =
-      new filestore.Message(filepath + '/message', git);
-  final filestore.MessageQueue messageQueue =
-      new filestore.MessageQueue(filepath + '/message_queue');
   final filestore.Organization oStore = new filestore.Organization(
       cStore, rStore, filepath + '/organization', git);
 
@@ -184,31 +154,41 @@ Future main(List<String> args) async {
       new service.NotificationService(Uri.parse(parsedArgs['notification-uri']),
           config.userServer.serverToken, new service.Client());
 
-  /// Local model classes.
-  final model.AgentHistory agentHistory = new model.AgentHistory();
-  final model.UserStatusList userStatus = new model.UserStatusList();
+  final controller.Calendar calendarController = new controller.Calendar(
+      cStore,
+      rStore,
+      authService,
+      notificationService,
+      new gzip_cache.CalendarCache(cStore.calendarStore, rStore.calendarStore, [
+        cStore.calendarStore.changeStream,
+        rStore.calendarStore.changeStream,
+      ]));
 
-  /// Controllers
-  final userController =
-      new controller.User(userStore, notificationService, authService);
-  final statsController = new controller.AgentStatistics(agentHistory);
-  final userStateController =
-      new controller.UserState(agentHistory, userStatus);
+  controller.Contact contactController = new controller.Contact(
+      cStore,
+      notificationService,
+      authService,
+      new gzip_cache.ContactCache(
+          cStore,
+          cStore.onContactChange,
+          cStore.onReceptionDataChange,
+          rStore.onReceptionChange,
+          oStore.onOrganizationChange));
 
-  final controller.Calendar calendarController =
-      new controller.Calendar(cStore, rStore, authService, notificationService);
-  controller.Contact contactController =
-      new controller.Contact(cStore, notificationService, authService);
+  final controller.Organization organization = new controller.Organization(
+      oStore,
+      notificationService,
+      authService,
+      new gzip_cache.OrganizationCache(oStore, oStore.onOrganizationChange));
 
-  final controller.Organization organization =
-      new controller.Organization(oStore, notificationService, authService);
-
-  controller.Reception reception =
-      new controller.Reception(rStore, notificationService, authService);
+  controller.Reception reception = new controller.Reception(
+      rStore,
+      notificationService,
+      authService,
+      new gzip_cache.ReceptionCache(rStore, rStore.onReceptionChange));
 
   final controller.ClientNotifier notifier =
       new controller.ClientNotifier(notificationService);
-  notifier.userStateSubscribe(userStatus);
 
   /// Routers
   final router.Calendar calendarRouter =
@@ -217,41 +197,12 @@ Future main(List<String> args) async {
   final router.Contact contactRouter =
       new router.Contact(authService, notificationService, contactController);
 
-  final controller.Ivr ivrHandler =
-      new controller.Ivr(ivrStore, compiler, authService, fsConfPath);
-  final controller.ReceptionDialplan receptionDialplanHandler =
-      new controller.ReceptionDialplan(dpStore, rStore, authService, compiler,
-          ivrHandler, fsConfPath, eslConfig);
-  final controller.PeerAccount peerAccountHandler =
-      new controller.PeerAccount(userStore, compiler, fsConfPath);
-
-  final controller.Message msgController = new controller.Message(
-      messageStore, messageQueue, authService, notificationService);
-
-  final router.Message messageRouter =
-      new router.Message(authService, notificationService, msgController);
-
-  final router.Dialplan dialplanRouter = new router.Dialplan(
-      authService, ivrHandler, peerAccountHandler, receptionDialplanHandler);
-
-  final router.User userRouter = new router.User(
-      authService,
-      notificationService,
-      userController,
-      statsController,
-      userStateController);
-
   final router.Reception receptionRouter = new router.Reception(
       authService, notificationService, reception, organization);
 
-  await (new router.Datastore(authService, notificationService)).listen([
-    userRouter,
-    calendarRouter,
-    contactRouter,
-    dialplanRouter,
-    messageRouter,
-    receptionRouter
-  ], hostname: parsedArgs['host'], port: port);
+  await (new router.Datastore(authService, notificationService)).listen(
+      [calendarRouter, contactRouter, receptionRouter],
+      hostname: parsedArgs['host'], port: port);
 
   _log.info('Ready to handle requests');
 }

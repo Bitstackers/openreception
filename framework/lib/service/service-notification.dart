@@ -18,20 +18,23 @@ part of openreception.framework.service;
  */
 
 class _NotificationRequest {
-  Map body = null;
-  Uri resource = null;
-  Completer<String> response = new Completer<String>();
+  final Map body;
+  final Uri resource;
+  final Completer<String> response = new Completer<String>();
+
+  _NotificationRequest(Uri this.resource, Map this.body);
 }
 
 /**
  * Client for Notification sending.
  */
 class NotificationService {
-  static final String className = '${libraryName}.Notification';
+  /// Internal logger.
+  final Logger _log =
+      new Logger('openreception.framework.service.NotificationService');
 
   static Queue<_NotificationRequest> _requestQueue = new Queue();
   static bool _busy = false;
-  static Logger log = new Logger(className);
 
   final WebService _httpClient;
   final Uri host;
@@ -47,11 +50,9 @@ class NotificationService {
     Uri uri = resource.Notification.broadcast(host);
     uri = _appendToken(uri, _clientToken);
 
-    log.finest('Broadcasting ${event.runtimeType}');
+    _log.finest('Broadcasting ${event.runtimeType}');
 
-    return _enqueue(new _NotificationRequest()
-      ..body = event.toJson()
-      ..resource = uri);
+    return _enqueue(new _NotificationRequest(uri, event.toJson()));
   }
 
   /**
@@ -61,7 +62,7 @@ class NotificationService {
     Uri uri = resource.Notification.clientConnections(host);
     uri = _appendToken(uri, _clientToken);
 
-    log.finest('GET $uri');
+    _log.finest('GET $uri');
 
     return await _httpClient.get(uri).then(JSON.decode).then(
         (Iterable<Map> maps) =>
@@ -75,7 +76,7 @@ class NotificationService {
     Uri uri = resource.Notification.clientConnection(host, uid);
     uri = _appendToken(uri, _clientToken);
 
-    log.finest('GET $uri');
+    _log.finest('GET $uri');
 
     return _httpClient
         .get(uri)
@@ -138,7 +139,7 @@ class NotificationService {
           .post(request.resource, JSON.encode(request.body))
           .whenComplete(dispatchNext);
     } catch (error, StackTrace) {
-      log.warning('${error} : ${StackTrace}');
+      _log.warning('${error} : ${StackTrace}');
       throw new Error();
     }
   }
@@ -159,30 +160,228 @@ class NotificationService {
  * Notification listener socket client.
  */
 class NotificationSocket {
-  static final String className = '${libraryName}.NotificationSocket';
+  /// Internal logger.
+  final Logger _log =
+      new Logger('openreception.framework.service.NotificationSocket');
 
-  WebSocket _websocket = null;
-  StreamController<event.Event> _streamController =
-      new StreamController.broadcast();
-  Stream<event.Event> get eventStream => _streamController.stream;
-  static Logger log = new Logger(NotificationSocket.className);
+  final WebSocket _websocket;
 
-  NotificationSocket(this._websocket) {
-    log.finest('Created a new WebSocket.');
+  /**
+   * Chuck-o'-busses.
+   */
+  Bus<event.Event> _eventBus = new Bus<event.Event>();
+  Bus<event.CallEvent> _callEventBus = new Bus<event.CallEvent>();
+  Bus<event.CalendarChange> _calenderChangeBus =
+      new Bus<event.CalendarChange>();
+  Bus<event.ClientConnectionState> _clientConnectionBus =
+      new Bus<event.ClientConnectionState>();
+  Bus<event.ContactChange> _contactChangeBus = new Bus<event.ContactChange>();
+  Bus<event.ReceptionData> _receptionDataChangeBus =
+      new Bus<event.ReceptionData>();
+  Bus<event.ReceptionChange> _receptionChangeBus =
+      new Bus<event.ReceptionChange>();
+  Bus<event.MessageChange> _messageChangeBus = new Bus<event.MessageChange>();
+  Bus<event.OrganizationChange> _organizationChangeBus =
+      new Bus<event.OrganizationChange>();
+  Bus<event.DialplanChange> _dialplanChangeBus =
+      new Bus<event.DialplanChange>();
+  Bus<event.IvrMenuChange> _ivrMenuChangeBus = new Bus<event.IvrMenuChange>();
+  Bus<event.PeerState> _peerStateBus = new Bus<event.PeerState>();
+  Bus<event.UserChange> _userChangeBus = new Bus<event.UserChange>();
+  Bus<event.UserState> _userStateBus = new Bus<event.UserState>();
+  Bus<event.WidgetSelect> _widgetSelectBus = new Bus<event.WidgetSelect>();
+  Bus<event.FocusChange> _focusChangeBus = new Bus<event.FocusChange>();
+
+  /**
+   * Global event stream. Receive all events broadcast or sent to uid of
+   * subscriber.
+   */
+  Stream<event.Event> get onEvent => _eventBus.stream;
+  @deprecated
+  Stream<event.Event> get eventStream => onEvent;
+
+  /**
+   * Filtered stream that only emits [event.CallEvent] objects.
+   */
+  Stream<event.CallEvent> get onCallEvent => _callEventBus.stream;
+
+  /**
+   * Filtered stream that only emits [event.MessageChange] objects.
+   */
+  Stream<event.MessageChange> get onMessageChange => _messageChangeBus.stream;
+
+  /**
+   * Filtered stream that only emits [event.CalendarChange] objects.
+   */
+  Stream<event.CalendarChange> get oCalendarChange => _calenderChangeBus.stream;
+
+  /**
+   * Filtered stream that only emits [event.ClientConnectionState] objects.
+   */
+  Stream<event.ClientConnectionState> get onClientConnectionChange =>
+      _clientConnectionBus.stream;
+
+  /**
+   * Filtered stream that only emits [event.ContactChange] objects.
+   */
+  Stream<event.ContactChange> get onContactChange => _contactChangeBus.stream;
+
+  /**
+   * Filtered stream that only emits [event.ReceptionData] objects.
+   */
+  Stream<event.ReceptionData> get onReceptionDataChange =>
+      _receptionDataChangeBus.stream;
+
+  /**
+   * Filtered stream that only emits [event.ReceptionChange] objects.
+   */
+  Stream<event.ReceptionChange> get onReceptionChange =>
+      _receptionChangeBus.stream;
+
+  /**
+   * Filtered stream that only emits [event.OrganizationChange] objects.
+   */
+  Stream<event.OrganizationChange> get onOrganizationChange =>
+      _organizationChangeBus.stream;
+
+  /**
+   * Filtered stream that only emits [event.DialplanChange] objects.
+   */
+  Stream<event.DialplanChange> get onDialplanChange =>
+      _dialplanChangeBus.stream;
+
+  /**
+   * Filtered stream that only emits [event.IvrMenuChange] objects.
+   */
+  Stream<event.IvrMenuChange> get onIvrMenuChange => _ivrMenuChangeBus.stream;
+
+  /**
+   * Filtered stream that only emits [event.PeerState] objects.
+   */
+  Stream<event.PeerState> get onPeerState => _peerStateBus.stream;
+
+  /**
+   * Filtered stream that only emits [event.UserChange] objects.
+   */
+  Stream<event.UserChange> get onUserChange => _userChangeBus.stream;
+
+  /**
+   * Filtered stream that only emits [event.UserState] objects.
+   */
+  Stream<event.UserState> get onUserState => _userStateBus.stream;
+
+  /**
+   * Filtered stream that only emits [event.WidgetSelect] objects.
+   */
+  Stream<event.WidgetSelect> get onWidgetSelect => _widgetSelectBus.stream;
+
+  /**
+   * Filtered stream that only emits [event.FocusChange] objects.
+   */
+  Stream<event.FocusChange> get onFocusChange => _focusChangeBus.stream;
+
+  /**
+   * Creates a new [NotificationSocket]. The [_websocket] parameter object
+   * needs to be connected manually. Otherwise, the notification socket will
+   * remain silent.
+   */
+  NotificationSocket(WebSocket this._websocket) {
+    _log.finest('Created a new WebSocket.');
     _websocket.onMessage = _parseAndDispatch;
-    _websocket.onClose = () => _streamController.close();
+
+    _websocket.onClose = () async {
+      /// Discard any inbound messages instead of injecting them into a
+      /// potentially closed stream.
+      _websocket.onMessage = (_) {};
+
+      await _closeEventListeners();
+    };
+
+    onEvent.listen(_injectInLocalSteams);
   }
 
-  Future close() => _websocket.close();
+  /**
+   * Further decode [event.Event] objects and put into their respective
+   * stream.
+   */
+  void _injectInLocalSteams(event.Event e) {
+    if (e is event.CallEvent) {
+      _callEventBus.fire(e);
+    } else if (e is event.MessageChange) {
+      _messageChangeBus.fire(e);
+    } else if (e is event.CalendarChange) {
+      _calenderChangeBus.fire(e);
+    } else if (e is event.ClientConnectionState) {
+      _clientConnectionBus.fire(e);
+    } else if (e is event.ContactChange) {
+      _contactChangeBus.fire(e);
+    } else if (e is event.ReceptionData) {
+      _receptionDataChangeBus.fire(e);
+    } else if (e is event.ReceptionChange) {
+      _receptionChangeBus.fire(e);
+    } else if (e is event.OrganizationChange) {
+      _organizationChangeBus.fire(e);
+    } else if (e is event.DialplanChange) {
+      _dialplanChangeBus.fire(e);
+    } else if (e is event.IvrMenuChange) {
+      _ivrMenuChangeBus.fire(e);
+    } else if (e is event.PeerState) {
+      _peerStateBus.fire(e);
+    } else if (e is event.UserChange) {
+      _userChangeBus.fire(e);
+    } else if (e is event.UserState) {
+      _userStateBus.fire(e);
+    } else if (e is event.WidgetSelect) {
+      _widgetSelectBus.fire(e);
+    } else if (e is event.FocusChange) {
+      _focusChangeBus.fire(e);
+    }
+  }
 
+  /**
+   *
+   */
+  Future _closeEventListeners() async {
+    await _eventBus.close();
+
+    await Future.wait([
+      _callEventBus.close(),
+      _calenderChangeBus.close(),
+      _clientConnectionBus.close(),
+      _contactChangeBus.close(),
+      _receptionDataChangeBus.close(),
+      _receptionChangeBus.close(),
+      _messageChangeBus.close(),
+      _organizationChangeBus.close(),
+      _dialplanChangeBus.close(),
+      _ivrMenuChangeBus.close(),
+      _peerStateBus.close(),
+      _userChangeBus.close(),
+      _userStateBus.close(),
+      _widgetSelectBus.close(),
+      _focusChangeBus.close()
+    ]);
+  }
+
+  /**
+   * Closes the websocket and all open streams.
+   */
+  Future close() async {
+    await _websocket.close();
+  }
+
+  /**
+   * Parses, decodes and dispatches a received String buffer containg an
+   * encoded event object.
+   */
   void _parseAndDispatch(String buffer) {
     Map map = JSON.decode(buffer);
     event.Event newEvent = new event.Event.parse(map);
 
     if (newEvent != null) {
-      _streamController.add(newEvent);
+      _eventBus.fire(newEvent);
     } else {
-      log.warning('Refusing to inject null objects into event stream');
+      _log.warning('Refusing to inject null objects into event stream');
     }
   }
 }

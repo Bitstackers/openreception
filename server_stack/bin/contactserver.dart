@@ -19,8 +19,9 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/filestore.dart' as filestore;
-import 'package:openreception.framework/service-io.dart' as service;
+import 'package:openreception.framework/gzip_cache.dart' as gzip_cache;
 import 'package:openreception.framework/service.dart' as service;
+import 'package:openreception.framework/service-io.dart' as service;
 import 'package:openreception.server/configuration.dart';
 import 'package:openreception.server/controller/controller-contact.dart'
     as controller;
@@ -95,14 +96,32 @@ Future main(List<String> args) async {
       new service.NotificationService(Uri.parse(parsedArgs['notification-uri']),
           config.userServer.serverToken, new service.Client());
 
+  final Uri notificationUri =
+      Uri.parse('ws://${_notification.host.host}:${_notification.host.port}'
+          '/notifications?token=${config.contactServer.serverToken}');
+
+  final service.WebSocket wsClient =
+      await (new service.WebSocketClient()).connect(notificationUri);
+
+  final service.NotificationSocket _notificationSocket =
+      new service.NotificationSocket(wsClient);
+
   final filestore.Reception rStore = new filestore.Reception(
       filepath + '/reception',
       new filestore.GitEngine(filepath + '/reception'));
   final filestore.Contact cStore = new filestore.Contact(rStore,
       filepath + '/contact', new filestore.GitEngine(filepath + '/contact'));
 
-  controller.Contact contactController =
-      new controller.Contact(cStore, _notification, _authentication);
+  controller.Contact contactController = new controller.Contact(
+      cStore,
+      _notification,
+      _authentication,
+      new gzip_cache.ContactCache(
+          cStore,
+          cStore.onContactChange,
+          cStore.onReceptionDataChange,
+          _notificationSocket.onReceptionChange,
+          _notificationSocket.onOrganizationChange));
 
   final router.Contact contactRouter =
       new router.Contact(_authentication, _notification, contactController);

@@ -18,6 +18,9 @@ class Ivr implements storage.Ivr {
   final String path;
   GitEngine _git;
 
+  Bus<event.IvrMenuChange> _changeBus = new Bus<event.IvrMenuChange>();
+  Stream<event.IvrMenuChange> get onChange => _changeBus.stream;
+
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
   Future get ready => _git != null ? _git.whenReady : new Future.value(true);
@@ -56,6 +59,8 @@ class Ivr implements storage.Ivr {
           'added ${menu.name}',
           _authorString(modifier));
     }
+
+    _changeBus.fire(new event.IvrMenuChange.create(menu.name, modifier.id));
 
     return menu;
   }
@@ -108,6 +113,8 @@ class Ivr implements storage.Ivr {
           _authorString(modifier));
     }
 
+    _changeBus.fire(new event.IvrMenuChange.update(menu.name, modifier.id));
+
     return menu;
   }
 
@@ -130,6 +137,7 @@ class Ivr implements storage.Ivr {
     } else {
       file.deleteSync();
     }
+    _changeBus.fire(new event.IvrMenuChange.delete(menuName, modifier.id));
   }
 
   /**

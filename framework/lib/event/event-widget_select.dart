@@ -52,7 +52,7 @@ class WidgetSelect implements Event {
 class FocusChange implements Event {
   final DateTime timestamp;
 
-  String get eventName => Key.widgetSelect;
+  String get eventName => Key.focusChange;
 
   final int uid;
   final bool inFocus;

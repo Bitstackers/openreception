@@ -21,6 +21,7 @@ part 'controller/controller-message.dart';
 part 'controller/controller-notification.dart';
 part 'controller/controller-popup.dart';
 part 'controller/controller-organization.dart';
+part 'controller/controller-peer_account.dart';
 part 'controller/controller-reception.dart';
 part 'controller/controller-user.dart';
 
