@@ -167,6 +167,7 @@ abstract class Key {
       'reception-vat-numbers-header';
   static const String receptionWebsitesHeader = 'reception-websites-header';
 
+  static const String save = 'save';
   static const String send = 'send';
   static const String sent = 'sent';
   static const String standardGreeting = 'standard-greeting';
@@ -305,7 +306,7 @@ Map<String, String> da = {
   Key.no: 'Nej',
   Key.now: 'nu',
 
-  Key.past: 'fortid',
+  Key.past: 'fortid - slet gerne',
   Key.paused: 'Pause',
   Key.phone: 'Telefon',
 
@@ -327,6 +328,7 @@ Map<String, String> da = {
   Key.receptionVATNumbersHeader: 'CVR-numre',
   Key.receptionWebsitesHeader: 'WWW',
 
+  Key.save: 'Gem',
   Key.send: 'Send',
   Key.sent: 'Sendt',
   Key.standardGreeting: 'Velkommen til....',
@@ -466,7 +468,7 @@ Map<String, String> en = {
   Key.no: 'No',
   Key.now: 'now',
 
-  Key.past: 'past',
+  Key.past: 'past - please delete',
   Key.paused: 'Paused',
   Key.phone: 'Phone',
 
@@ -488,6 +490,7 @@ Map<String, String> en = {
   Key.receptionVATNumbersHeader: 'VAT numbers',
   Key.receptionWebsitesHeader: 'WWW',
 
+  Key.save: 'Save',
   Key.send: 'Send',
   Key.sent: 'Sent',
   Key.standardGreeting: 'You\'ve called....',
