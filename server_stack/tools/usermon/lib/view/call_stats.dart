@@ -22,7 +22,7 @@ class CallHistory {
         _update();
       }
     }
-    notificationSocket.eventStream.listen(dispatchEvent);
+    notificationSocket.onEvent.listen(dispatchEvent);
   }
 
   void _update() {}

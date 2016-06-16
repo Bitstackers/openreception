@@ -1,7 +1,7 @@
 part of usermon.view;
 
 class AgentInfo {
-  final model.User _user;
+  final model.UserReference _user;
 
   int _numMessage = 0;
 

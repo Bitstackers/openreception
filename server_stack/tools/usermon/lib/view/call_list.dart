@@ -17,7 +17,7 @@ class CallList {
   }
 
   void _registerListeners() {
-    _notificationSocket.eventStream.listen((event.Event event) {
+    _notificationSocket.onEvent.listen((event.Event event) {
       if (event is event.CallEvent) {
         if (event is event.CallOffer) {
           _insert(event.call);
