@@ -652,7 +652,6 @@ abstract class Randomizer {
       ..body = randomMessageBody()
       ..callId = 'call-id-${new DateTime.now().millisecondsSinceEpoch}'
       ..callerInfo = randomCaller()
-      ..manuallyClosed = rand.nextBool()
       ..createdAt = new DateTime.now()
       ..flag = new model.MessageFlag(randomMessageFlags());
 

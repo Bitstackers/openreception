@@ -247,7 +247,6 @@ abstract class Message {
     expect(fetched.body, equals(created.body));
     expect(fetched.callerInfo.toJson(), equals(created.callerInfo.toJson()));
     expect(fetched.callId, equals(created.callId));
-    expect(fetched.manuallyClosed, equals(created.manuallyClosed));
     expect(fetched.context.toJson(), equals(context.toJson()));
     expect(fetched.createdAt.isBefore(new DateTime.now()), isTrue);
     expect(fetched.createdAt.difference(new DateTime.now()),
@@ -307,7 +306,6 @@ abstract class Message {
     expect(fetched.body, equals(updated.body));
     expect(fetched.callerInfo.toJson(), equals(updated.callerInfo.toJson()));
     expect(fetched.callId, equals(updated.callId));
-    expect(fetched.manuallyClosed, equals(updated.manuallyClosed));
     expect(fetched.context.toJson(), equals(context.toJson()));
     expect(fetched.createdAt.isBefore(new DateTime.now()), isTrue);
     expect(fetched.createdAt.difference(new DateTime.now()),
