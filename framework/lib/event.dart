@@ -86,6 +86,7 @@ abstract class Key {
   static const hangupCause = 'hangupCause';
   static const widgetSelect = 'widgetSelect';
   static const widget = 'widget';
+  static const focusChange = 'focusChange';
   static const inFocus = 'inFocus';
   static const messageState = 'messageState';
 
