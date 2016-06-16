@@ -480,15 +480,15 @@ class ContactCache {
 class MessageCache {
   final filestore.Message _messageStore;
   final Map<String, List<int>> _messageListCache = {};
-  List<int> _savedListCache = [];
+  List<int> _draftListCache = [];
 
   MessageCache(this._messageStore, Stream<event.MessageChange> messageChange) {
     messageChange.listen((event.MessageChange e) {
       final String key = e.createdAt.toIso8601String().split('T').first;
       _messageListCache.remove(key);
 
-      if (e.messageState == model.MessageState.saved) {
-        _savedListCache = [];
+      if (e.messageState == model.MessageState.draft) {
+        _draftListCache = [];
       }
     });
   }
@@ -517,12 +517,12 @@ class MessageCache {
    *
    */
   Future<List<int>> listSaved() async {
-    if (_savedListCache.isEmpty) {
-      _savedListCache = new GZipEncoder()
-          .encode(UTF8.encode(JSON.encode(await _messageStore.listSaved())));
+    if (_draftListCache.isEmpty) {
+      _draftListCache = new GZipEncoder()
+          .encode(UTF8.encode(JSON.encode(await _messageStore.listDrafts())));
     }
 
-    return _savedListCache;
+    return _draftListCache;
   }
 
   /**
@@ -537,7 +537,7 @@ class MessageCache {
         'messageFolderCount': _messageListCache.length,
         'messageFolderSize': _messageListCache.values
             .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
-        'savedMessageSize': _savedListCache.length
+        'savedMessageSize': _draftListCache.length
       };
 }
 

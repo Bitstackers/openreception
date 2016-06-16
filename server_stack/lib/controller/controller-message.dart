@@ -214,10 +214,10 @@ class Message {
   }
 
   /**
-   * Builds a list of previously stored messages, filtering by the
-   * parameters passed in the [queryParameters] of the request.
+   * Builds a list of draft messages, filtering by the parameters passed in the
+   * [queryParameters] of the request.
    */
-  Future<shelf.Response> listSaved(shelf.Request request) async {
+  Future<shelf.Response> listDrafts(shelf.Request request) async {
     model.MessageFilter filter = new model.MessageFilter.empty();
 
     if (_filterFrom(request) != null) {
@@ -232,7 +232,7 @@ class Message {
     }
 
     return await _messageStore
-        .listSaved(filter: filter)
+        .listDrafts(filter: filter)
         .then((Iterable<model.Message> messages) =>
             okJson(messages.toList(growable: false)))
         .catchError((error, stackTrace) {

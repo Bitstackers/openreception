@@ -36,8 +36,6 @@ abstract class ModelMessage {
         lessThan(new Duration(seconds: 1)));
 
     expect(obj.flag.called, equals(deserializedObj.flag.called));
-    expect(
-        obj.flag.manuallyClosed, equals(deserializedObj.flag.manuallyClosed));
     expect(obj.flag.pleaseCall, equals(deserializedObj.flag.pleaseCall));
     expect(obj.flag.urgent, equals(deserializedObj.flag.urgent));
     expect(obj.flag.willCallBack, equals(deserializedObj.flag.willCallBack));
@@ -99,7 +97,6 @@ abstract class ModelMessage {
       ..callerInfo = info
       ..createdAt = createdAt
       ..flag.called = true
-      ..flag.manuallyClosed = true
       ..flag.pleaseCall = true
       ..flag.urgent = true
       ..flag.willCallBack = true
@@ -114,7 +111,6 @@ abstract class ModelMessage {
     expect(obj.callId, equals(callId));
     expect(obj.createdAt, equals(createdAt));
     expect(obj.flag.called, isTrue);
-    expect(obj.flag.manuallyClosed, isTrue);
     expect(obj.flag.pleaseCall, isTrue);
     expect(obj.flag.urgent, isTrue);
     expect(obj.flag.willCallBack, isTrue);
@@ -131,19 +127,23 @@ abstract class ModelMessage {
     Model.Message builtObject = buildObject();
 
     builtObject.flag = new Model.MessageFlag.empty();
-
-    expect(builtObject.manuallyClosed, equals(false));
-
-    builtObject.flag.manuallyClosed = true;
-    expect(builtObject.manuallyClosed, equals(true));
-    builtObject.flag.manuallyClosed = false;
-    expect(builtObject.manuallyClosed, equals(false));
+    builtObject.flag.pleaseCall = false;
+    builtObject.flag.willCallBack = false;
+    builtObject.flag.called = false;
+    builtObject.flag.urgent = false;
+    expect(builtObject.flag.pleaseCall, equals(false));
+    expect(builtObject.flag.willCallBack, equals(false));
+    expect(builtObject.flag.called, equals(false));
+    expect(builtObject.flag.urgent, equals(false));
 
     builtObject.flag = new Model.MessageFlag.empty();
-
-    builtObject.manuallyClosed = true;
-    expect(builtObject.manuallyClosed, equals(true));
-    builtObject.manuallyClosed = false;
-    expect(builtObject.manuallyClosed, equals(false));
+    builtObject.flag.pleaseCall = true;
+    builtObject.flag.willCallBack = true;
+    builtObject.flag.called = true;
+    builtObject.flag.urgent = true;
+    expect(builtObject.flag.pleaseCall, equals(true));
+    expect(builtObject.flag.willCallBack, equals(true));
+    expect(builtObject.flag.called, equals(true));
+    expect(builtObject.flag.urgent, equals(true));
   }
 }

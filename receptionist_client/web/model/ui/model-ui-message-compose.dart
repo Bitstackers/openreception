@@ -53,6 +53,7 @@ class UIMessageCompose extends UIModel {
       _root.querySelector('.phone-numbers input.cell');
   InputElement get _companyNameInput =>
       _root.querySelector('.names input.company');
+  ButtonElement get _draftButton => _root.querySelector('.buttons .draft');
   InputElement get _extensionInput =>
       _root.querySelector('.phone-numbers input.extension');
   InputElement get _haveCalledInput =>
@@ -67,7 +68,6 @@ class UIMessageCompose extends UIModel {
   DivElement get _recipientsDiv => _root.querySelector('.recipients');
   OListElement get _recipientsList =>
       _root.querySelector('.recipients .generic-widget-list');
-  ButtonElement get _saveButton => _root.querySelector('.buttons .save');
   ButtonElement get _sendButton => _root.querySelector('.buttons .send');
   SpanElement get _showRecipientsSpan =>
       _root.querySelector('.show-recipients');
@@ -203,9 +203,9 @@ class UIMessageCompose extends UIModel {
   }
 
   /**
-   * Return the click event stream for the save button.
+   * Return the click event stream for the draft button.
    */
-  Stream<MouseEvent> get onSave => _saveButton.onClick;
+  Stream<MouseEvent> get onDraft => _draftButton.onClick;
 
   /**
    * Return the click event stream for the send button.
@@ -337,7 +337,7 @@ class UIMessageCompose extends UIModel {
   void _setupLocalKeys() {
     final Map<String, EventListener> bindings = {
       'Ctrl+enter': (Event _) => _sendButton.click(),
-      'Ctrl+s': (Event _) => _saveButton.click()
+      'Ctrl+s': (Event _) => _draftButton.click()
     };
 
     _hotKeys.registerKeysPreventDefault(_keyboard, bindings);
@@ -352,7 +352,7 @@ class UIMessageCompose extends UIModel {
     final bool toggle = !(_callerNameInput.value.trim().isNotEmpty &&
         _messageTextarea.value.trim().isNotEmpty);
 
-    _saveButton.disabled = toggle || _recipientsList.children.isEmpty;
+    _draftButton.disabled = toggle || _recipientsList.children.isEmpty;
     _sendButton.disabled = toggle || _recipientsList.children.isEmpty;
 
     _myLastTabElement = toggle ? _urgentInput : _sendButton;

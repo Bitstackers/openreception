@@ -77,6 +77,26 @@ class MessageCompose extends ViewWidget {
   }
 
   /**
+   * Save message draft in the message archive.
+   */
+  Future _draft(ORModel.Message message) async {
+    message.state = ORModel.MessageState.draft;
+    try {
+      ORModel.Message savedMessage = await _messageController.save(message);
+
+      _ui.reset();
+      _ui.focusOnCurrentFocusElement();
+
+      _log.info('Message id ${savedMessage.id} successfully saved as draft');
+      _popup.success(
+          _langMap[Key.messageSaveSuccessTitle], 'ID ${savedMessage.id}');
+    } catch (error) {
+      _log.shout('Could not save as draft ${message.asMap} $error');
+      _popup.error(_langMap[Key.messageSaveErrorTitle], 'ID ${message.id}');
+    }
+  }
+
+  /**
    * Return a [ORModel.Message] build from the form data and the currently
    * selected contact.
    */
@@ -145,7 +165,7 @@ class MessageCompose extends ViewWidget {
       }
     });
 
-    _ui.onSave.listen((MouseEvent _) async => await _save(_message));
+    _ui.onDraft.listen((MouseEvent _) async => await _draft(_message));
     _ui.onSend.listen((MouseEvent _) async => await _send(_message));
 
     _uiMessageArchive.onMessageCopy.listen((ORModel.Message msg) {
@@ -173,26 +193,6 @@ class MessageCompose extends ViewWidget {
     } else {
       _ui.recipients = attr.endpoints.toSet();
       _ui.messagePrerequisites = attr.messagePrerequisites;
-    }
-  }
-
-  /**
-   * Save message in the message archive.
-   */
-  Future _save(ORModel.Message message) async {
-    message.state = ORModel.MessageState.saved;
-    try {
-      ORModel.Message savedMessage = await _messageController.save(message);
-
-      _ui.reset();
-      _ui.focusOnCurrentFocusElement();
-
-      _log.info('Message id ${savedMessage.id} successfully saved');
-      _popup.success(
-          _langMap[Key.messageSaveSuccessTitle], 'ID ${savedMessage.id}');
-    } catch (error) {
-      _log.shout('Could not save ${message.asMap} $error');
-      _popup.error(_langMap[Key.messageSaveErrorTitle], 'ID ${message.id}');
     }
   }
 

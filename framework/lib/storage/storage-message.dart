@@ -39,7 +39,7 @@ abstract class Message {
   /**
    *
    */
-  Future<Iterable<model.Message>> listSaved({model.MessageFilter filter});
+  Future<Iterable<model.Message>> listDrafts({model.MessageFilter filter});
 
   /**
    *

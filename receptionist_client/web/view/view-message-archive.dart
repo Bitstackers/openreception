@@ -70,8 +70,10 @@ class MessageArchive extends ViewWidget {
 
     _ui.currentContext = _context;
 
-    if (_receptionSelector.selectedReception.isEmpty) {
+    if (_context.rid == ORModel.Reception.noId) {
       _ui.headerExtra = '';
+    } else if (_context.cid == ORModel.BaseContact.noId) {
+      _ui.headerExtra = '(${_receptionSelector.selectedReception.name})';
     } else {
       _ui.headerExtra =
           '(${_contactSelector.selectedContact.contact.name} @ ${_receptionSelector.selectedReception.name})';
@@ -80,10 +82,12 @@ class MessageArchive extends ViewWidget {
     _user.list().then((Iterable<ORModel.UserReference> users) {
       _ui.users = users;
 
-      _messageController.listSaved().then((Iterable<ORModel.Message> messages) {
+      _messageController
+          .listDrafts()
+          .then((Iterable<ORModel.Message> messages) {
         final List<ORModel.Message> list = messages.toList(growable: false);
         list.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-        _ui.savedMessages = list;
+        _ui.drafts = list;
       });
 
       if (_lastFetchedCache[_ui.currentContext.contactString] != null) {
@@ -109,7 +113,7 @@ class MessageArchive extends ViewWidget {
   dynamic _closeMessage(ORModel.Message message) async {
     try {
       message.recipients = new Set();
-      message.flag.manuallyClosed = true;
+      message.state = ORModel.MessageState.closed;
 
       ORModel.Message savedMessage = await _messageController.save(message);
 
@@ -147,10 +151,12 @@ class MessageArchive extends ViewWidget {
    * This will never look more than 7 days back, and it will stop as soon as
    * more than 50 messages have been found.
    *
-   * Ignores saved messages.
+   * Ignores drafts.
    */
   Future _loadMoreMessages() async {
-    if (!_ui.loading) {
+    if (!_ui.loading &&
+        _context.cid != ORModel.BaseContact.noId &&
+        _context.rid != ORModel.Reception.noId) {
       int counter = 0;
       final ORModel.MessageFilter filter = new ORModel.MessageFilter.empty()
         ..contactId = _contactSelector.selectedContact.contact.id
@@ -163,7 +169,7 @@ class MessageArchive extends ViewWidget {
         final List<ORModel.Message> list =
             (await _messageController.list(_lastFetched, filter))
                 .where((ORModel.Message msg) =>
-                    !msg.saved || (msg.saved && msg.closed))
+                    !msg.isDraft || (msg.isDraft && msg.isClosed))
                 .toList();
 
         if (list.isNotEmpty) {
@@ -196,7 +202,7 @@ class MessageArchive extends ViewWidget {
   void _observers() {
     _navigate.onGo.listen(_setWidgetState);
 
-    _messageCompose.onSave.listen((MouseEvent _) {
+    _messageCompose.onDraft.listen((MouseEvent _) {
       _ui.headerExtra = '';
       _ui.cacheClear();
       _lastFetchedCache.clear();

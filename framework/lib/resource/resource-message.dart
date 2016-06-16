@@ -59,11 +59,11 @@ abstract class Message {
     return Uri.parse('$host/message/list/$dateString${filterParameter}');
   }
 
-  static Uri listSaved(Uri host, {model.MessageFilter filter: null}) {
+  static Uri listDrafts(Uri host, {model.MessageFilter filter: null}) {
     final String filterParameter =
         filter != null ? '?filter=${JSON.encode(filter)}' : '';
 
-    return Uri.parse('$host/message/list/saved${filterParameter}');
+    return Uri.parse('$host/message/list/drafts${filterParameter}');
   }
 
   /**

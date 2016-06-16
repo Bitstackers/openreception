@@ -156,8 +156,8 @@ class RESTMessageStore implements storage.Message {
   /**
    *
    */
-  Future<Iterable<model.Message>> listSaved({model.MessageFilter filter}) {
-    Uri uri = resource.Message.listSaved(host, filter: filter);
+  Future<Iterable<model.Message>> listDrafts({model.MessageFilter filter}) {
+    Uri uri = resource.Message.listDrafts(host, filter: filter);
     uri = _appendToken(uri, token);
 
     return _backend.get(uri).then((String response) =>
