@@ -266,7 +266,7 @@ class ReceptionContact {
 
     element.querySelectorAll('textarea').forEach((Element elem) {
       elem.onInput.listen((_) {
-        arrowReplace(elem);
+        specialCharReplace(elem);
       });
     });
   }
