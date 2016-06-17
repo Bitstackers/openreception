@@ -19,7 +19,6 @@ const String _libraryName = 'contact.view';
 controller.Popup notify = controller.popup;
 
 class ContactView {
-  static const String _viewName = 'contact';
   final Logger _log = new Logger('$_libraryName.Contact');
   DivElement element;
 
@@ -304,7 +303,7 @@ class ContactView {
           'Bekræft import (slet cid:${_importCidInput.value})';
 
       if (_importCidInput.value.isEmpty) {
-        return;
+        return null;
       }
 
       if (_importButton.text != confirmationText) {
@@ -317,11 +316,11 @@ class ContactView {
 
           if (sourceCid == baseContact.id) {
             notify.error('"${_importCidInput.value}" er egen ID', '');
-            return;
+            return null;
           }
         } on FormatException {
           notify.error('"${_importCidInput.value}" er ikke et tal', '');
-          return;
+          return null;
         }
 
         try {
@@ -363,7 +362,7 @@ class ContactView {
         } on storage.NotFound {
           notify.error('cid:${sourceCid} Findes ikke', '');
 
-          return;
+          return null;
         }
       }
     });
@@ -415,7 +414,7 @@ class ContactView {
   }
 
   void _highlightContactInList(int id) {
-    _ulContactList.children.forEach((LIElement li) => li.classes
+    _ulContactList.children.forEach((Element li) => li.classes
         .toggle('highlightListItem', li.dataset['contactid'] == '$id'));
   }
 

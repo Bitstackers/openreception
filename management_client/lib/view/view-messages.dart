@@ -107,21 +107,20 @@ class Messages {
 
     List<String> status = [];
 
-    if (msg.closed) {
+    if (msg.isClosed) {
       status.add('Lukket');
     }
-    if (msg.enqueued) {
-      status.add('I kø');
-    }
-    if (msg.manuallyClosed) {
-      status.add('Manuelt lukket');
-    }
-    if (msg.sent) {
+
+    /// TODO: Query the message queue status to get this info
+    //if (msg.enqueued) {
+    //  status.add('I kø');
+    //}
+    if (msg.isSent) {
       status.add('Afsendt');
     }
 
-    if (msg.state == model.MessageState.saved) {
-      status.add('Gemt');
+    if (msg.isDraft) {
+      status.add('Kladde');
     }
 
     if (msg.state == model.MessageState.unknown) {

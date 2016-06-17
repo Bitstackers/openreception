@@ -8,7 +8,7 @@ import 'package:route_hierarchical/client.dart';
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/view.dart' as view;
 
-import 'package:openreception.framework/model.dart' as ORModel;
+import 'package:openreception.framework/model.dart' as model;
 
 class ReceptionView {
   static const String viewName = 'reception';
@@ -41,8 +41,8 @@ class ReceptionView {
 
   view.Reception _receptionView;
 
-  List<ORModel.ReceptionReference> receptions =
-      new List<ORModel.ReceptionReference>();
+  List<model.ReceptionReference> receptions =
+      new List<model.ReceptionReference>();
 
   /**
    *
@@ -109,14 +109,14 @@ class ReceptionView {
 
   void _performSearch() {
     String searchText = _searchBox.value;
-    List<ORModel.ReceptionReference> filteredList = receptions
-        .where((ORModel.ReceptionReference recep) =>
+    List<model.ReceptionReference> filteredList = receptions
+        .where((model.ReceptionReference recep) =>
             recep.name.toLowerCase().contains(searchText.toLowerCase()))
         .toList();
     _renderReceptionList(filteredList);
   }
 
-  void _renderReceptionList(List<ORModel.ReceptionReference> receptions) {
+  void _renderReceptionList(List<model.ReceptionReference> receptions) {
     _uiReceptionList.children
       ..clear()
       ..addAll(receptions.map(_makeReceptionNode));
@@ -128,18 +128,18 @@ class ReceptionView {
   Future _refreshList() {
     return _receptionController
         .list()
-        .then((Iterable<ORModel.ReceptionReference> receptions) {
-      int compareTo(
-              ORModel.ReceptionReference r1, ORModel.ReceptionReference r2) =>
+        .then((Iterable<model.ReceptionReference> receptions) {
+      int compareTo(model.ReceptionReference r1, model.ReceptionReference r2) =>
           r1.name.compareTo(r2.name);
 
-      List list = receptions.toList()..sort(compareTo);
+      List<model.ReceptionReference> list = receptions.toList()
+        ..sort(compareTo);
       this.receptions = list;
       _performSearch();
     });
   }
 
-  LIElement _makeReceptionNode(ORModel.ReceptionReference rRef) {
+  LIElement _makeReceptionNode(model.ReceptionReference rRef) {
     return new LIElement()
       ..classes.add('clickable')
       ..dataset['rid'] = '${rRef.id}'
@@ -148,12 +148,12 @@ class ReceptionView {
   }
 
   void _highlightContactInList(int id) {
-    _uiReceptionList.children.forEach((LIElement li) =>
+    _uiReceptionList.children.forEach((Element li) =>
         li.classes.toggle('highlightListItem', li.dataset['rid'] == '$id'));
   }
 
   Future _activateReception(int receptionId) async {
-    if (receptionId != ORModel.Reception.noId) {
+    if (receptionId != model.Reception.noId) {
       _receptionView.reception = await _receptionController.get(receptionId);
 
       _highlightContactInList(receptionId);
@@ -167,21 +167,21 @@ class ReceptionView {
    *
    */
   Future _updateContactList(int receptionId) async {
-    final Iterable<ORModel.BaseContact> cRefs =
+    final Iterable<model.ReceptionContact> rc =
         await _contactController.receptionContacts(receptionId);
 
-    List<ORModel.BaseContact> sorted = cRefs.toList()
-      ..sort(view.compareContacts);
+    List<model.ReceptionContact> sorted = rc.toList()
+      ..sort(view.compareReceptionContacts);
     _ulContactList.children
       ..clear()
-      ..addAll(sorted.map(
-          (ORModel.BaseContact cRef) => _makeContactNode(cRef, receptionId)));
+      ..addAll(sorted.map((model.ReceptionContact cRef) =>
+          _makeContactNode(cRef.contact, receptionId)));
   }
 
   /**
    * TODO: Add function gear ⚙
    */
-  LIElement _makeContactNode(ORModel.BaseContact contact, int rid) {
+  LIElement _makeContactNode(model.BaseContact contact, int rid) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
       ..text = contact.name
@@ -205,7 +205,7 @@ class ReceptionView {
   }
 
   Future activateCreate(RouteEvent e) async {
-    _receptionView.reception = new ORModel.Reception.empty();
+    _receptionView.reception = new model.Reception.empty();
     _receptionView.element.hidden = false;
   }
 

@@ -251,7 +251,7 @@ class Contact {
           'Bekræft import (slet cid:${_importCidInput.value})';
 
       if (_importCidInput.value.isEmpty) {
-        return;
+        return null;
       }
 
       if (_importButton.text != confirmationText) {
@@ -264,11 +264,11 @@ class Contact {
 
           if (sourceCid == contact.id) {
             notify.error('"${_importCidInput.value}" er egen ID', '');
-            return;
+            return null;
           }
         } on FormatException {
           notify.error('"${_importCidInput.value}" er ikke et tal', '');
-          return;
+          return null;
         }
 
         try {
@@ -309,7 +309,7 @@ class Contact {
         } on storage.NotFound {
           notify.error('cid:${sourceCid} Findes ikke', '');
 
-          return;
+          return null;
         }
       }
     });
@@ -379,7 +379,8 @@ class Contact {
               model.ReceptionReference rs1, model.ReceptionReference rs2) =>
           rs1.name.compareTo(rs2.name);
 
-      List list = receptions.toList()..sort(compareTo);
+      List<model.ReceptionReference> list = receptions.toList()
+        ..sort(compareTo);
 
       _search.updateSourceList(list);
     });

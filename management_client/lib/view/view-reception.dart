@@ -505,7 +505,7 @@ class Reception {
     _deleteButton.onClick.listen((_) async {
       if (_deleteButton.text.toLowerCase() == 'slet') {
         _deleteButton.text = 'Bekræft sletning af rid:${reception.id}?';
-        return;
+        return null;
       }
 
       try {

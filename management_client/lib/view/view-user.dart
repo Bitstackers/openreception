@@ -150,8 +150,8 @@ class User {
       });
     });
 
-    _saveButton.onClick.listen((_) {
-      _updateUser();
+    _saveButton.onClick.listen((_) async {
+      await _updateUser();
     });
 
     _deleteButton.onClick.listen((_) {

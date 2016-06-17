@@ -6,7 +6,7 @@ class Contact {
 
   Contact(this._service, this._appUser);
 
-  Future<Iterable<model.BaseContact>> receptionContacts(int rid) =>
+  Future<Iterable<model.ReceptionContact>> receptionContacts(int rid) =>
       _service.receptionContacts(rid).catchError(_handleError);
 
   Future<Iterable<model.ReceptionReference>> receptions(int rid) =>
@@ -33,15 +33,13 @@ class Contact {
   Future remove(int cid) =>
       _service.remove(cid, _appUser).catchError(_handleError);
 
-  Future<model.ReceptionContact> addToReception(
-          model.ReceptionAttributes attr) =>
+  Future addToReception(model.ReceptionAttributes attr) =>
       _service.addData(attr, _appUser).catchError(_handleError);
 
   Future removeFromReception(int cid, int rid) =>
       _service.removeData(cid, rid, _appUser).catchError(_handleError);
 
-  Future<model.ReceptionContact> updateInReception(
-          model.ReceptionAttributes attr) =>
+  Future updateInReception(model.ReceptionAttributes attr) =>
       _service.updateData(attr, _appUser).catchError(_handleError);
 
   Future<Map<model.ReceptionReference, Iterable<model.BaseContact>>> colleagues(
@@ -55,6 +53,6 @@ class Contact {
           .map((model.ReceptionContact rc) => rc.contact);
     }));
 
-    return map;
+    return map as Map<model.ReceptionReference, Iterable<model.BaseContact>>;
   }
 }

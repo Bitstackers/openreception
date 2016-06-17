@@ -280,8 +280,8 @@ class SearchComponent<T> {
     });
 
     Keyboard keyboard = new Keyboard();
-    keyboard.register('up', _previousElement);
-    keyboard.register('down', _nextElement);
+    keyboard.register('up', (Event e) => _previousElement(e));
+    keyboard.register('down', (Event e) => _nextElement(e));
     keyboard.register('esc', (_) => closeDropDown());
     keyboard.register('enter', (_) => _activateSelectedElement(_highlightedLi));
     _searchBox.onKeyDown.listen(keyboard.press);

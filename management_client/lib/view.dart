@@ -45,6 +45,10 @@ final DateFormat rfc3339 = new DateFormat('yyyy-MM-dd HH:mm');
 int compareContacts(model.BaseContact c1, model.BaseContact c2) =>
     c1.name.toLowerCase().compareTo(c2.name.toLowerCase());
 
+int compareReceptionContacts(
+        model.ReceptionContact c1, model.ReceptionContact c2) =>
+    compareContacts(c1.contact, c2.contact);
+
 int compareOrgRefs(
         model.OrganizationReference o1, model.OrganizationReference o2) =>
     o1.name.toLowerCase().compareTo(o2.name.toLowerCase());

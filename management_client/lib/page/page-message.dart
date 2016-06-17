@@ -4,10 +4,10 @@ import 'dart:async';
 import 'dart:html';
 
 import 'package:logging/logging.dart';
-import 'package:route_hierarchical/client.dart';
-
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/view.dart' as view;
+import 'package:openreception.framework/model.dart' as model;
+import 'package:route_hierarchical/client.dart';
 
 const String _libraryName = 'management_tool.page.message';
 
@@ -86,7 +86,7 @@ class Message {
             (int n) =>
                 _messageFilterView.lastDate.subtract(new Duration(days: n)));
 
-        List messages = [];
+        List<model.Message> messages = [];
         await Future.wait(days.map((DateTime day) async {
           messages.addAll(
               await _messageController.list(day, _messageFilterView.filter));

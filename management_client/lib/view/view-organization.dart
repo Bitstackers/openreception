@@ -125,8 +125,7 @@ class Organization {
           _historyView.element.hidden ? 'Vis historik' : 'Skjul historik';
     });
 
-    Iterable<InputElement> inputs =
-        element.querySelectorAll('input') as Iterable<InputElement>;
+    Iterable<InputElement> inputs = element.querySelectorAll('input');
 
     inputs.forEach((InputElement ine) {
       ine.onInput.listen((_) {
@@ -138,7 +137,7 @@ class Organization {
     _deleteButton.onClick.listen((_) async {
       if (_deleteButton.text.toLowerCase() == 'slet') {
         _deleteButton.text = 'Bekræft sletning af oid: ${organization.id}?';
-        return;
+        return null;
       }
       try {
         await _orgController.remove(organization.id);

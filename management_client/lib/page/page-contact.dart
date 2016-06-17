@@ -81,7 +81,7 @@ class ContactView {
   void _observers() {
     _notificationController.contactChange.listen((event.ContactChange e) async {
       if (isHidden) {
-        return;
+        return null;
       }
 
       _refreshList();
@@ -138,7 +138,7 @@ class ContactView {
   }
 
   void _highlightContactInList(int id) {
-    _ulContactList.children.forEach((LIElement li) =>
+    _ulContactList.children.forEach((Element li) =>
         li.classes.toggle('highlightListItem', li.dataset['cid'] == '$id'));
   }
 

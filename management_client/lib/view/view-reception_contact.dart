@@ -226,7 +226,7 @@ class ReceptionContact {
 
       if (_deleteButton.text != confirmText) {
         _deleteButton.text = confirmText;
-        return;
+        return null;
       }
 
       try {

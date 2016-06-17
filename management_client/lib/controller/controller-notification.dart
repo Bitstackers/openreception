@@ -45,7 +45,7 @@ class Notification {
       }
     }
 
-    _service.eventStream.listen(dispatch);
+    _service.onEvent.listen(dispatch);
 
     //_observers();
   }

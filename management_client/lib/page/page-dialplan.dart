@@ -16,7 +16,6 @@ const String _libraryName = 'management_tool.page.dialplan';
  *
  */
 class Dialplan {
-  static const String _viewName = 'dialplan';
   final Logger _log = new Logger('$_libraryName.Dialplan');
 
   final DivElement element = new DivElement()
@@ -163,7 +162,7 @@ class Dialplan {
    *
    */
   void _highlightDialplanInList(String exten) {
-    _userList.children.forEach((LIElement li) => li.classes
+    _userList.children.forEach((Element li) => li.classes
         .toggle('highlightListItem', li.dataset['extension'] == '$exten'));
   }
 
