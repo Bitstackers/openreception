@@ -45,7 +45,7 @@ class MessageCompose extends ViewWidget {
       Controller.Notification this._notification,
       Controller.Popup this._popup,
       Map<String, String> this._langMap) {
-    _ui.setHint('alt+b | alt+d | ctrl+space | ctrl+s | ctrl+enter');
+    _ui.setHint('alt+b | alt+d | alt+space | ctrl+space | ctrl+s | ctrl+enter');
 
     _myDestinationMessageBox = new Controller.Destination(
         Controller.Context.home, Controller.Widget.messageCompose,

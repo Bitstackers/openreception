@@ -36,6 +36,7 @@ class HotKeys {
   final Bus<Html.KeyboardEvent> _altM = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _altQ = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _altS = new Bus<Html.KeyboardEvent>();
+  final Bus<Html.KeyboardEvent> _altSpace = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _altT = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _altV = new Bus<Html.KeyboardEvent>();
   final Bus<Html.KeyboardEvent> _altW = new Bus<Html.KeyboardEvent>();
@@ -70,6 +71,7 @@ class HotKeys {
   Stream<Html.KeyboardEvent> get onAltM => _altM.stream;
   Stream<Html.KeyboardEvent> get onAltQ => _altQ.stream;
   Stream<Html.KeyboardEvent> get onAltS => _altS.stream;
+  Stream<Html.KeyboardEvent> get onAltSpace => _altSpace.stream;
   Stream<Html.KeyboardEvent> get onAltT => _altT.stream;
   Stream<Html.KeyboardEvent> get onAltV => _altV.stream;
   Stream<Html.KeyboardEvent> get onAltW => _altW.stream;
@@ -112,6 +114,7 @@ class HotKeys {
       'Alt+m': (event) => _altM.fire(event),
       'Alt+q': (event) => _altQ.fire(event),
       'Alt+s': (event) => _altS.fire(event),
+      'Alt+Space': (event) => _altSpace.fire(event),
       'Alt+t': (event) => _altT.fire(event),
       'Alt+v': (event) => _altV.fire(event),
       'Alt+w': (event) => _altW.fire(event),
@@ -212,6 +215,7 @@ class SimulationHotKeys {
   void altM() => _hotKeys._altM.fire(null);
   void altQ() => _hotKeys._altQ.fire(null);
   void altS() => _hotKeys._altS.fire(null);
+  void altSpace() => _hotKeys._altS.fire(null);
   void altT() => _hotKeys._altT.fire(null);
   void altV() => _hotKeys._altV.fire(null);
   void altW() => _hotKeys._altW.fire(null);
