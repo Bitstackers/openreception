@@ -42,9 +42,10 @@ class UserPage {
   /**
    *
    */
-  UserPage(this._userController, this._router) {
+  UserPage(this._userController, controller.PeerAccount peerAccountController,
+      this._router) {
     _setupRouter();
-    _userView = new view.User(_userController);
+    _userView = new view.User(_userController, peerAccountController);
 
     element.children = [
       (new DivElement()

@@ -4,6 +4,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 
+import 'package:random_string/random_string.dart' as random;
+
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/bus.dart';
@@ -25,6 +27,7 @@ part 'view/view-message_filter.dart';
 part 'view/view-messages.dart';
 part 'view/view-object_history.dart';
 part 'view/view-organization.dart';
+part 'view/view-peer_account.dart';
 part 'view/view-phonenumbers.dart';
 part 'view/view-reception_contact.dart';
 part 'view/view-reception.dart';

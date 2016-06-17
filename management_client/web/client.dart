@@ -103,6 +103,8 @@ Future main() async {
       config.clientConfig.dialplanServerUri, config.token, client);
   final service.RESTIvrStore ivrStore = new service.RESTIvrStore(
       config.clientConfig.dialplanServerUri, config.token, client);
+  final service.PeerAccount paService = new service.PeerAccount(
+      config.clientConfig.dialplanServerUri, config.token, client);
 
   final service.RESTMessageStore messageStore = new service.RESTMessageStore(
       config.clientConfig.messageServerUri, config.token, client);
@@ -145,6 +147,9 @@ Future main() async {
   final controller.Ivr ivrController =
       new controller.Ivr(ivrStore, dialplanStore);
 
+  final controller.PeerAccount paController =
+      new controller.PeerAccount(paService);
+
   loadingLog.text += 'Indlæser sider\n';
   loadingProgress.value++;
 
@@ -183,8 +188,8 @@ Future main() async {
 
   querySelector('#ivr-page')
       .replaceWith(new page.Ivr(ivrController, router).element);
-  querySelector("#user-page")
-      .replaceWith(new page.UserPage(userController, router).element);
+  querySelector("#user-page").replaceWith(
+      new page.UserPage(userController, paController, router).element);
 
   //new Menu(querySelector('nav#navigation'));
 

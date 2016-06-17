@@ -28,9 +28,11 @@ class User {
   final Bus<UserChange> _changeBus = new Bus<UserChange>();
 
   final controller.User _userController;
+  final controller.PeerAccount _peerAccountController;
 
   UserGroups _groupsView;
   UserIdentities _identitiesView;
+  PeerAccount _peerAccountView;
   ObjectHistory _historyView;
   final AnchorElement _historyToggle = new AnchorElement()
     ..href = '#history'
@@ -44,8 +46,8 @@ class User {
 
   final InputElement _userSendFromInput = new InputElement()
     ..id = 'user-sendfrom';
-  final InputElement _userExtensionInput = new InputElement()
-    ..id = 'user-extension';
+
+  String get userExtension => _peerAccountView.account.username;
 
   final ButtonElement _saveButton = new ButtonElement()
     ..text = 'Gem'
@@ -69,13 +71,16 @@ class User {
   /**
    *
    */
-  User(this._userController) {
+  User(this._userController,
+      controller.PeerAccount this._peerAccountController) {
     _historyView = new ObjectHistory();
     _historyView.element.hidden = true;
     _historyToggle..text = 'Vis historik';
 
     _groupsView = new UserGroups(_userController);
     _identitiesView = new UserIdentities(_userController);
+    _peerAccountView = new PeerAccount(_peerAccountController, this);
+
     element.children = [
       _saveButton,
       _deleteButton,
@@ -91,13 +96,6 @@ class User {
       new DivElement()
         ..children = [
           new LabelElement()
-            ..text = 'Lokalnummer'
-            ..htmlFor = _userExtensionInput.id,
-          _userExtensionInput
-        ],
-      new DivElement()
-        ..children = [
-          new LabelElement()
             ..text = 'Send-fra adresse'
             ..htmlFor = _userSendFromInput.id,
           _userSendFromInput
@@ -107,7 +105,12 @@ class User {
       new LabelElement()..text = 'Identitieter',
       _identitiesView.element,
       _historyToggle,
-      _historyView.element
+      _historyView.element,
+      new DivElement()
+        ..children = [
+          new HeadingElement.h5()..text = 'SIP konto',
+          _peerAccountView.element
+        ],
     ];
     _observers();
   }
@@ -169,11 +172,15 @@ class User {
     _userIdInput.value = u.id.toString();
     _userNameInput.value = u.name;
     _userSendFromInput.value = u.address;
-    _userExtensionInput.value = u.extension;
 
     _groupsView.groups = u.groups;
     _identitiesView.identities = u.identities;
-    show();
+
+    _peerAccountController.get(user.extension).then((model.PeerAccount pa) {
+      _peerAccountView.account = pa;
+    }).catchError((_) {
+      _peerAccountView.account = new model.PeerAccount('', '', '');
+    }).whenComplete(show);
   }
 
   /**
@@ -185,7 +192,7 @@ class User {
     ..address = _userSendFromInput.value
     ..groups = _groupsView.groups.toSet()
     ..identities = _identitiesView.identities.toSet()
-    ..extension = _userExtensionInput.value;
+    ..extension = userExtension;
 
   /**
    *
