@@ -157,7 +157,7 @@ class Notification {
    * Observers.
    */
   void _observers() {
-    _socket.eventStream.listen(_dispatch, onDone: () => null);
+    _socket.onEvent.listen(_dispatch, onDone: () => null);
   }
 
   /**

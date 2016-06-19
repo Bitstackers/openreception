@@ -168,7 +168,12 @@ class UIMessageCompose extends UIModel {
       _prerequisites.style.display = 'none';
     } else {
       final List<SpanElement> spans = prerequisites
-          .map((String s) => new SpanElement()..text = s)
+          .map((String s) => new SpanElement()
+            ..text = s.replaceAll('!', '').replaceAll('--', '')
+            ..classes.addAll(s.startsWith('!') ? ['is-prerequisite'] : [])
+            ..dataset['prerequisite'] = s.startsWith('!')
+                ? s.split('--').first.replaceAll('!', '').trim()
+                : '')
           .toList(growable: false);
 
       int counter = 0;
@@ -200,6 +205,24 @@ class UIMessageCompose extends UIModel {
         _callerNameInput.focus();
       } else {
         _myFocusElement = _callerNameInput;
+      }
+    });
+
+    _hotKeys.onAltSpace.listen((_) {
+      if (isFocused) {
+        final StringBuffer sb = new StringBuffer();
+        final List<SpanElement> spans = _prerequisites
+            .querySelectorAll('span.is-prerequisite')
+            .toList(growable: false);
+
+        for (SpanElement span in spans) {
+          sb.write('\n${span.dataset['prerequisite']}: ');
+        }
+
+        if (sb.isNotEmpty) {
+          _messageTextarea.value =
+              (_messageTextarea.value + sb.toString()).trimLeft();
+        }
       }
     });
 
