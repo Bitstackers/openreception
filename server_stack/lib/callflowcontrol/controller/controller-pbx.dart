@@ -90,7 +90,7 @@ abstract class PBX {
         '&bridge([${bLegvariables.join(',')}]sofia/external/${extension}) '
         '${_dialplan} $callerIdName $callerIdNumber $timeout');
 
-    if (response.status != ESL.Response.OK) {
+    if (response.status != ESL.Response.ok) {
       throw new StateError('ESL returned ${response.rawBody}');
     }
 
@@ -150,7 +150,7 @@ abstract class PBX {
     final ESL.Response response = new ESL.Response.fromPacketBody(
         (await subscription).field('_body').trim());
 
-    if (response.status == ESL.Response.OK) {
+    if (response.status == ESL.Response.ok) {
       return newCallUuid;
     } else {
       _log.warning('Bad reply from PBX: ${response.status}');
@@ -207,7 +207,7 @@ abstract class PBX {
         'originate {$variableString}${destination} &park()',
         jobUuid: newCallUuid);
 
-    if (reply.status != ESL.Response.OK) {
+    if (reply.status != ESL.Response.ok) {
       throw new PBXException('Creation of agent channel for '
           'uid:${user.id} failed. Destination:$destination. '
           'PBX responded: ${reply.content}');
@@ -256,7 +256,7 @@ abstract class PBX {
     final ESL.Reply reply = await bgapi(
         'uuid_transfer $uuid external_transfer_$extension xml reception-$context');
 
-    if (reply.status != ESL.Reply.OK) {
+    if (reply.status != ESL.Reply.ok) {
       throw new PBXException(reply.replyRaw);
     }
   }
@@ -290,7 +290,7 @@ abstract class PBX {
     final String command =
         'originate {${variables.join(',')}}user/${user.extension} ${recordExtension} ${_dialplan} $callerIdName $callerIdNumber $timeout';
     return api(command).then((ESL.Response response) {
-      if (response.status != ESL.Response.OK) {
+      if (response.status != ESL.Response.ok) {
         throw new StateError('ESL returned ${response.rawBody}');
       }
 
@@ -304,7 +304,7 @@ abstract class PBX {
   static Future bridge(ORModel.Call source, ORModel.Call destination) {
     return api('uuid_bridge ${source.id} ${destination.id}')
         .then((ESL.Response response) {
-      if (response.status != ESL.Response.OK) {
+      if (response.status != ESL.Response.ok) {
         throw new StateError('ESL returned ${response.rawBody}');
       }
 
@@ -333,7 +333,7 @@ abstract class PBX {
       log.shout('Failed to send command $command', error, stackTrace);
     }
 
-    if (response.status != ESL.Response.OK) {
+    if (response.status != ESL.Response.ok) {
       _logAndFail('"$command" failed with response ${response.rawBody}');
     }
     return response;
@@ -379,7 +379,7 @@ abstract class PBX {
 
     await api('uuid_break ${source.channel}');
 
-    if (xfrResponse.status != ESL.Response.OK) {
+    if (xfrResponse.status != ESL.Response.ok) {
       final String msg =
           '"$command" failed with reponse ${xfrResponse.rawBody}';
       log.severe(msg);
@@ -408,7 +408,7 @@ abstract class PBX {
    */
   static Future killChannel(String uuid) =>
       api('uuid_kill $uuid').then((ESL.Response response) {
-        if (response.status != ESL.Response.OK) {
+        if (response.status != ESL.Response.ok) {
           throw new StateError('ESL returned ${response.rawBody}');
         }
       });
@@ -429,7 +429,7 @@ abstract class PBX {
         new ESL.PeerList.fromMultilineBuffer(response.rawBody);
 
     loadedList.where(Model.peerIsInAcceptedContext).forEach((ESL.Peer eslPeer) {
-      final ORModel.Peer peer = new ORModel.Peer(eslPeer.ID)
+      final ORModel.Peer peer = new ORModel.Peer(eslPeer.id)
         ..registered = eslPeer.registered;
       Model.peerlist.add(peer);
     });
@@ -461,7 +461,7 @@ abstract class PBX {
 
     return Future.forEach(channelUUIDs, (String channelUUID) {
       return api('uuid_dump $channelUUID json').then((ESL.Response response) {
-        if (response.status != ESL.Response.ERROR) {
+        if (response.status != ESL.Response.error) {
           Map<String, dynamic> value =
               JSON.decode(response.rawBody) as Map<String, dynamic>;
 
