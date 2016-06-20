@@ -83,7 +83,7 @@ void connectESLClient() {
 
   Future authenticate(esl.Connection client) =>
       client.authenticate(password).then((esl.Reply reply) {
-        if (reply.status != esl.Reply.OK) {
+        if (reply.status != esl.Reply.ok) {
           log.shout('ESL Authentication failed - exiting');
           exit(1);
         }
@@ -92,7 +92,7 @@ void connectESLClient() {
   /// Connect API client.
   Controller.PBX.apiClient.requestStream.listen((esl.Packet packet) async {
     switch (packet.contentType) {
-      case (esl.ContentType.Auth_Request):
+      case (esl.ContentType.authRequest):
         log.info('Connected to ${hostname}:${port}');
         authenticate(Controller.PBX.apiClient)
             .then((_) => Controller.PBX.loadPeers())
@@ -110,12 +110,12 @@ void connectESLClient() {
   /// Connect event client.
   Controller.PBX.eventClient.requestStream.listen((esl.Packet packet) {
     switch (packet.contentType) {
-      case (esl.ContentType.Auth_Request):
+      case (esl.ContentType.authRequest):
         log.info('Connected to ${hostname}:${port}');
         authenticate(Controller.PBX.eventClient).then((_) => Controller
             .PBX.eventClient
             .event(Model.PBXEvent.requiredSubscriptions,
-                format: esl.EventFormat.Json)..catchError(log.shout));
+                format: esl.EventFormat.json)..catchError(log.shout));
 
         break;
 
