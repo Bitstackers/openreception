@@ -28,9 +28,9 @@ class ORCDisaster {
       Model.AppClientState appClientState, Model.UIORCDisaster uiDisaster) {
     if (_singleton == null) {
       _singleton = new ORCDisaster._internal(appClientState, uiDisaster);
-    } else {
-      return _singleton;
     }
+
+    return _singleton;
   }
 
   /**
