@@ -170,7 +170,7 @@ class ReceptionDialplan {
     }
 
     return await _eslClient.api('reloadxml').then((eslResponse) =>
-        eslResponse.status != esl.Response.OK
+        eslResponse.status != esl.Response.ok
             ? logAndReturn(eslResponse)
             : okJson({}));
   }
@@ -230,7 +230,7 @@ class ReceptionDialplan {
 
     Future authenticate(esl.Connection client) =>
         client.authenticate(password).then((reply) {
-          if (reply.status != esl.Reply.OK) {
+          if (reply.status != esl.Reply.ok) {
             _log.shout('ESL Authentication failed - exiting');
             throw new StateError('ESL Authentication failed');
           }
@@ -238,7 +238,7 @@ class ReceptionDialplan {
 
     _eslClient.requestStream.listen((packet) async {
       switch (packet.contentType) {
-        case (esl.ContentType.Auth_Request):
+        case (esl.ContentType.authRequest):
           _log.info('Connected to ${hostname}:${port}');
           await authenticate(_eslClient);
           break;

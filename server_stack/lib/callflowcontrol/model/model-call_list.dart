@@ -55,7 +55,7 @@ class CallList extends IterableBase<ORModel.Call> {
           : ORModel.User.noId;
 
       if (!channel.variables.containsKey(ORPbxKey.agentChannel)) {
-        calls[channel.UUID] = new ORModel.Call.empty(channel.UUID)
+        calls[channel.uuid] = new ORModel.Call.empty(channel.uuid)
           ..arrived = new DateTime.fromMillisecondsSinceEpoch(
               int.parse(channel.fields['Caller-Channel-Created-Time']) ~/ 1000)
           ..assignedTo = assignedTo
@@ -80,7 +80,7 @@ class CallList extends IterableBase<ORModel.Call> {
               : ORModel.BaseContact.noId
           ..event.listen(this._callEvent.fire);
       } else {
-        log.info('Ignoring local channel ${channel.UUID}');
+        log.info('Ignoring local channel ${channel.uuid}');
       }
     });
 
@@ -180,7 +180,7 @@ class CallList extends IterableBase<ORModel.Call> {
   /**
    * Determine if a channel ID is a call-channel and not an agent channel.
    */
-  bool isCall(ESL.Channel channel) => this.containsID(channel.UUID);
+  bool isCall(ESL.Channel channel) => this.containsID(channel.uuid);
 
   /**
    * Handle CHANNEL_BRIDGE event packets.
@@ -191,34 +191,34 @@ class CallList extends IterableBase<ORModel.Call> {
     final ESL.Channel otherLeg =
         ChannelList.instance.get(packet.field('Other-Leg-Unique-ID'));
 
-    log.finest('Bridging channel ${uuid.UUID} and channel ${otherLeg.UUID}');
+    log.finest('Bridging channel ${uuid.uuid} and channel ${otherLeg.uuid}');
 
     if (isCall(uuid) && isCall(otherLeg)) {
       log.finest(
-          'Channel ${uuid.UUID} and channel ${otherLeg.UUID} are both calls');
-      CallList.instance.get(uuid.UUID)..bLeg = otherLeg.UUID;
-      CallList.instance.get(otherLeg.UUID)..bLeg = uuid.UUID;
+          'Channel ${uuid.uuid} and channel ${otherLeg.uuid} are both calls');
+      CallList.instance.get(uuid.uuid)..bLeg = otherLeg.uuid;
+      CallList.instance.get(otherLeg.uuid)..bLeg = uuid.uuid;
 
       CallList.instance
-          .get(uuid.UUID)
+          .get(uuid.uuid)
           .changeState(ORModel.CallState.transferred);
       CallList.instance
-          .get(otherLeg.UUID)
+          .get(otherLeg.uuid)
           .changeState(ORModel.CallState.transferred);
     } else if (isCall(uuid)) {
-      ORModel.Call call = CallList.instance.get(uuid.UUID);
-      log.finest('Channel ${uuid.UUID} is a call');
+      ORModel.Call call = CallList.instance.get(uuid.uuid);
+      log.finest('Channel ${uuid.uuid} is a call');
 
       call
-        ..bLeg = otherLeg.UUID
+        ..bLeg = otherLeg.uuid
         ..changeState(ORModel.CallState.speaking);
 
       _startRecording(call);
     } else if (isCall(otherLeg)) {
-      ORModel.Call call = CallList.instance.get(otherLeg.UUID);
-      log.finest('Channel ${otherLeg.UUID} is a call');
+      ORModel.Call call = CallList.instance.get(otherLeg.uuid);
+      log.finest('Channel ${otherLeg.uuid} is a call');
       call
-        ..bLeg = uuid.UUID
+        ..bLeg = uuid.uuid
         ..changeState(ORModel.CallState.speaking);
 
       _startRecording(call);
