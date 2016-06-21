@@ -193,7 +193,7 @@ class GitEngine {
 
     try {
       await _add(file);
-      await _commit(commitMsg, author);
+      await _commit(file.path, commitMsg, author);
     } finally {
       await _unlock();
     }
@@ -216,7 +216,7 @@ class GitEngine {
     }
 
     try {
-      await _commit(commitMsg, author);
+      await _commit(file.path, commitMsg, author);
     } finally {
       await _unlock();
     }
@@ -267,7 +267,7 @@ class GitEngine {
     }
     try {
       await _remove(fse);
-      await _commit(commitMsg, author);
+      await _commit(fse.path, commitMsg, author);
     } finally {
       await _unlock();
     }
@@ -373,15 +373,16 @@ class GitEngine {
   /**
    *
    */
-  Future _commit(String commitMsg, String author) async {
+  Future _commit(String fsePath, String commitMsg, String author) async {
     final String gitBin = '/usr/bin/git';
     final List<String> arguments = [
       'commit',
-      path,
+      fsePath,
       '--author="$author"',
       '-m',
       commitMsg
     ];
+
     final ProcessResult result =
         await Process.run('/usr/bin/git', arguments, workingDirectory: path);
 

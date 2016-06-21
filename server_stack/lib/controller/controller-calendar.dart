@@ -323,7 +323,7 @@ class Calendar {
 
     _log.finest('User id:${modifier.id} updated entry for ${owner}');
 
-    _cache.prefill([owner]);
+    _cache.emptyAll();
 
     _notification.broadcastEvent(changeEvent);
 
