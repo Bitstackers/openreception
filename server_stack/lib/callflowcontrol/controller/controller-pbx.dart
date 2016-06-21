@@ -138,10 +138,10 @@ abstract class PBX {
         event.eventName == Model.PBXEvent.backgroundJob &&
         event.field('Job-UUID') == newCallUuid;
 
-    final Future<ESL.Event> subscription = eventClient.eventStream
-            .firstWhere(jobUuidMatches)
-            .timeout(
-                new Duration(seconds: config.callFlowControl.agentChantimeOut))
+    final Future<ESL.Event>
+        subscription =
+        eventClient.eventStream.firstWhere(jobUuidMatches).timeout(
+            new Duration(seconds: config.callFlowControl.agentChantimeOut + 1))
         as Future<ESL.Event>;
 
     await bgapi('originate {$variableString}${destination} &park()',
