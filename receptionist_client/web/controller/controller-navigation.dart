@@ -54,12 +54,14 @@ final Map<String, Destination> _destinations = {
       new Destination(Context.calendarEdit, Widget.calendarEditor),
   '${Context.home}-${Widget.contactCalendar}':
       new Destination(Context.home, Widget.contactCalendar),
-  '${Context.home}-${Widget.contactData}': new Destination(Context.home, Widget.contactData),
+  '${Context.home}-${Widget.contactData}':
+      new Destination(Context.home, Widget.contactData),
   '${Context.home}-${Widget.contactSelector}':
       new Destination(Context.home, Widget.contactSelector),
   '${Context.home}-${Widget.globalCallQueue}':
       new Destination(Context.home, Widget.globalCallQueue),
-  '${Context.home}-${Widget.messageCompose}': new Destination(Context.home, Widget.messageCompose),
+  '${Context.home}-${Widget.messageCompose}':
+      new Destination(Context.home, Widget.messageCompose),
   '${Context.home}-${Widget.receptionCalendar}':
       new Destination(Context.home, Widget.receptionCalendar),
   '${Context.home}-${Widget.receptionCommands}':
@@ -113,9 +115,13 @@ class Destination {
   /**
    * Constructor.
    */
-  Destination(Context this.context, Widget this.widget, {Destination this.from, Cmd this.cmd});
+  Destination(Context this.context, Widget this.widget,
+      {Destination this.from, Cmd this.cmd});
 
-  bool operator ==(Destination other) => (context == other.context) && (widget == other.widget);
+  bool operator ==(Object other) =>
+      other is Destination &&
+      context == other.context &&
+      widget == other.widget;
 
   int get hashCode => this.toString().hashCode;
 

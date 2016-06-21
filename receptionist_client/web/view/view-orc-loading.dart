@@ -28,9 +28,9 @@ class ORCLoading {
       Model.AppClientState appState, Model.UIORCLoading uiLoading) {
     if (_singleton == null) {
       _singleton = new ORCLoading._internal(appState, uiLoading);
-    } else {
-      return _singleton;
     }
+
+    return _singleton;
   }
 
   /**

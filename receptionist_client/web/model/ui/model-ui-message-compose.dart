@@ -209,21 +209,11 @@ class UIMessageCompose extends UIModel {
     });
 
     _hotKeys.onAltSpace.listen((_) {
-      if (isFocused) {
-        final StringBuffer sb = new StringBuffer();
-        final List<SpanElement> spans = _prerequisites
-            .querySelectorAll('span.is-prerequisite')
-            .toList(growable: false);
+      _transferPrerequisitesToMessageBody();
+    });
 
-        for (SpanElement span in spans) {
-          sb.write('\n${span.dataset['prerequisite']}: ');
-        }
-
-        if (sb.isNotEmpty) {
-          _messageTextarea.value =
-              (_messageTextarea.value + sb.toString()).trimLeft();
-        }
-      }
+    _prerequisites.onDoubleClick.listen((_) {
+      _transferPrerequisitesToMessageBody();
     });
 
     _hotKeys.onCtrlSpace.listen((_) => _toggleRecipients());
@@ -402,5 +392,26 @@ class UIMessageCompose extends UIModel {
   void _toggleRecipients() {
     _recipientsDiv.classes.toggle('recipients-hidden');
     _showRecipientsSpan.classes.toggle('active');
+  }
+
+  /**
+   * Dump the message prerequisites into the message body text area.
+   */
+  void _transferPrerequisitesToMessageBody() {
+    if (isFocused) {
+      final StringBuffer sb = new StringBuffer();
+      final List<SpanElement> spans = _prerequisites
+          .querySelectorAll('span.is-prerequisite')
+          .toList(growable: false);
+
+      for (SpanElement span in spans) {
+        sb.write('\n${span.dataset['prerequisite']}: ');
+      }
+
+      if (sb.isNotEmpty) {
+        _messageTextarea.value =
+            (_messageTextarea.value + sb.toString()).trimLeft();
+      }
+    }
   }
 }

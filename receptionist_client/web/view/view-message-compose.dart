@@ -108,6 +108,14 @@ class MessageCompose extends ViewWidget {
             _contactSelector.selectedContact.contact,
             _receptionSelector.selectedReception);
 
+    if (messageContext.rid == ORModel.Reception.noId) {
+      /// We shouldn't really be here, since that means the system have returned
+      /// an empty reception reference from _receptionSelector.selectedReception
+      /// Lets at least try to get a rid, so we can proceed with sending the
+      /// message.
+      messageContext.rid = _contactSelector.selectedContact.attr.receptionId;
+    }
+
     message.context = messageContext;
 
     return message;

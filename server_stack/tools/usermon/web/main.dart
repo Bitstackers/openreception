@@ -33,7 +33,7 @@ Future main() async {
   ///Basic setup.
   or_model.ClientConfiguration clientConfig =
       await new ORService.RESTConfiguration(
-              config.defaultConfigServer, new ORTransport.Client())
+              config.CONFIGURATION_URL, new ORTransport.Client())
           .clientConfig();
 
   ORService.CallFlowControl callFlowControl = new ORService.CallFlowControl(

@@ -125,7 +125,7 @@ class Organization {
           _historyView.element.hidden ? 'Vis historik' : 'Skjul historik';
     });
 
-    Iterable<InputElement> inputs = element.querySelectorAll('input');
+    ElementList<InputElement> inputs = element.querySelectorAll('input');
 
     inputs.forEach((InputElement ine) {
       ine.onInput.listen((_) {

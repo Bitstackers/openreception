@@ -73,9 +73,9 @@ class ORCReady {
           popup,
           sound,
           langMap);
-    } else {
-      return _singleton;
     }
+
+    return _singleton;
   }
 
   /**
