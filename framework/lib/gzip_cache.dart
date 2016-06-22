@@ -172,7 +172,8 @@ class CalendarCache {
    *
    */
   void emptyList(model.Owner owner) {
-    _entryListCache.remove(owner.toString);
+    _log.finest('Emptying cache for ${owner.toJson()}');
+    _entryListCache.remove(owner.toString());
   }
 
   /**
