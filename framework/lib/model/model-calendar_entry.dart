@@ -21,6 +21,7 @@ class CalendarEntry {
   static const int noId = 0;
 
   int id = noId;
+  int lastAuthorId = User.noId;
 
   String content;
   DateTime start;
@@ -39,6 +40,7 @@ class CalendarEntry {
    */
   CalendarEntry.fromMap(Map map)
       : id = map[key.id],
+        lastAuthorId = map[key.uid],
         start = util.unixTimestampToDateTime(map[key.start]),
         stop = util.unixTimestampToDateTime(map[key.stop]),
         content = map[key.body];
@@ -63,6 +65,7 @@ class CalendarEntry {
    */
   Map toJson() => {
         key.id: id,
+        key.uid: lastAuthorId,
         key.body: content,
         key.start: util.dateTimeToUnixTimestamp(start),
         key.stop: util.dateTimeToUnixTimestamp(stop)

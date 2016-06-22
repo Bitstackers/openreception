@@ -211,9 +211,11 @@ class MigrationEnvironment {
         Iterable entries = await calendarService
             .list(new old_or_model.OwningContact(contact.id));
 
-        await Future.wait((entries.map(convertCalendarEntry).map((ce) async {
+        await Future.wait((entries
+            .map(convertCalendarEntry)
+            .map((Future<or_model.CalendarEntry> ce) async {
           await _dataStore.contactStore.calendarStore.create(
-              ce, new or_model.OwningContact(contact.id), modifier,
+              await ce, new or_model.OwningContact(contact.id), modifier,
               enforceId: true);
           count++;
         })));
@@ -530,11 +532,16 @@ class MigrationEnvironment {
   /**
    *
    */
-  or_model.CalendarEntry convertCalendarEntry(
-          old_or_model.CalendarEntry oldCe) =>
-      new or_model.CalendarEntry.empty()
-        ..id = oldCe.ID
-        ..content = oldCe.content
-        ..start = oldCe.start
-        ..stop = oldCe.stop;
+  Future<or_model.CalendarEntry> convertCalendarEntry(
+      old_or_model.CalendarEntry oldCe) async {
+    Iterable<old_or_model.CalendarEntryChange> changes =
+        await calendarService.changes(oldCe.ID);
+
+    return new or_model.CalendarEntry.empty()
+      ..id = oldCe.ID
+      ..lastAuthorId = changes.first.userID
+      ..content = oldCe.content
+      ..start = oldCe.start
+      ..stop = oldCe.stop;
+  }
 }

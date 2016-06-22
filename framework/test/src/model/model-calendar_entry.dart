@@ -34,6 +34,7 @@ abstract class ModelCalendarEntry {
         lessThan(1));
     expect(builtObject.stop.difference(deserialized.stop).abs().inMilliseconds,
         lessThan(1));
+    expect(builtObject.lastAuthorId, equals(deserialized.lastAuthorId));
   }
 
   /**
@@ -52,14 +53,17 @@ abstract class ModelCalendarEntry {
     final String body = 'test test test';
     final DateTime begin = new DateTime.now().add(new Duration(hours: 1));
     final DateTime end = new DateTime.now().add(new Duration(hours: 2));
+    final int uid = 42;
 
     Model.CalendarEntry builtObject = new Model.CalendarEntry.empty()
+      ..lastAuthorId = uid
       ..id = id
       ..content = body
       ..start = begin
       ..stop = end;
 
     expect(builtObject.id, equals(id));
+    expect(builtObject.lastAuthorId, equals(uid));
     expect(builtObject.content, equals(body));
     expect(builtObject.start, equals(begin));
     expect(builtObject.stop, equals(end));

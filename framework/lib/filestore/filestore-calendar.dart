@@ -106,6 +106,7 @@ class Calendar implements storage.Calendar {
         entry.id != model.CalendarEntry.noId && enforceId ? entry.id : _nextId;
 
     entry.id = _nextId;
+    entry.lastAuthorId = modifier.id;
     final String ownerPath = '$path/${owner.id}/calendar';
 
     final Directory ownerDir = new Directory(ownerPath);
@@ -210,9 +211,19 @@ class Calendar implements storage.Calendar {
     } else {
       file.deleteSync();
     }
+    if (logChanges) {
+      new ChangeLogger(ownerDir.path).add(
+          new model.CalendarChangelogEntry.delete(modifier.reference, eid));
+    }
 
-    _changeBus.fire(new event.CalendarChange.delete(eid, owner, modifier.id));
+    trashNotify(eid, owner, modifier);
   }
+
+  /**
+   *
+   */
+  void trashNotify(int eid, model.Owner owner, model.User modifier) =>
+      _changeBus.fire(new event.CalendarChange.delete(eid, owner, modifier.id));
 
   /**
    *
@@ -222,7 +233,7 @@ class Calendar implements storage.Calendar {
     final Directory ownerDir = new Directory('$path/${owner.id}/calendar');
 
     final File file = new File('${ownerDir.path}/${entry.id}.json');
-
+    entry.lastAuthorId = modifier.id;
     if (!file.existsSync()) {
       throw new storage.NotFound();
     }
