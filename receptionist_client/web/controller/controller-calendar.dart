@@ -40,13 +40,6 @@ class Calendar {
       (await _calendarStore.changes(owner, entry.id)).first;
 
   /**
-   * Save [entry] to the database.
-   */
-  Future createCalendarEvent(
-          ORModel.CalendarEntry entry, ORModel.Owner owner) =>
-      _calendarStore.create(entry, owner, _user);
-
-  /**
    * Return all the [contact] [ORModel.CalendarEntry]s.
    */
   Future<Iterable<ORModel.CalendarEntry>> contactCalendar(
@@ -72,6 +65,6 @@ class Calendar {
    */
   Future saveCalendarEvent(ORModel.CalendarEntry entry, ORModel.Owner owner) =>
       entry.id == ORModel.CalendarEntry.noId
-          ? createCalendarEvent(entry, owner)
+          ? _calendarStore.create(entry, owner, _user)
           : _calendarStore.update(entry, owner, _user);
 }
