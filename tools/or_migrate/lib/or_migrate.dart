@@ -318,7 +318,7 @@ class MigrationEnvironment {
     if (oldMsg.sent) {
       state = or_model.MessageState.sent;
     } else {
-      state = or_model.MessageState.saved;
+      state = or_model.MessageState.draft;
     }
 
     return new or_model.Message.empty()
