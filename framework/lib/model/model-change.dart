@@ -14,6 +14,368 @@
 part of openreception.framework.model;
 
 /**
+ *
+ */
+class CalendarChangelogEntry implements ChangelogEntry {
+  final UserReference modifier;
+  final DateTime timestamp;
+  final CalendarEntry entry;
+  final ChangeType changeType;
+
+  /**
+   *
+   */
+  CalendarChangelogEntry.create(this.modifier, this.entry)
+      : changeType = ChangeType.add,
+        timestamp = new DateTime.now();
+
+  CalendarChangelogEntry.update(this.modifier, this.entry)
+      : changeType = ChangeType.modify,
+        timestamp = new DateTime.now();
+
+  CalendarChangelogEntry.delete(this.modifier, int eid)
+      : changeType = ChangeType.delete,
+        entry = new CalendarEntry.empty()..id = eid,
+        timestamp = new DateTime.now();
+
+  /**
+   *
+   */
+  CalendarChangelogEntry.fromMap(Map map)
+      : modifier = UserReference.decode(map['modifier']),
+        entry = CalendarEntry.decode(map['entry']),
+        changeType = changeTypeFromString(map['change']),
+        timestamp = util.unixTimestampToDateTime(map['timestamp']);
+
+  /**
+   *
+   */
+  Map toJson() => {
+        'change': changeTypeToString(changeType),
+        'timestamp': util.dateTimeToUnixTimestamp(timestamp),
+        'modifier': modifier.toJson(),
+        'entry': entry.toJson()
+      };
+}
+
+/**
+ *
+ */
+class ContactChangelogEntry implements ChangelogEntry {
+  final UserReference modifier;
+  final DateTime timestamp;
+  final BaseContact contact;
+  final ChangeType changeType;
+
+  /**
+   *
+   */
+  ContactChangelogEntry.create(this.modifier, this.contact)
+      : changeType = ChangeType.add,
+        timestamp = new DateTime.now();
+
+  ContactChangelogEntry.update(this.modifier, this.contact)
+      : changeType = ChangeType.modify,
+        timestamp = new DateTime.now();
+
+  ContactChangelogEntry.delete(this.modifier, int cid)
+      : changeType = ChangeType.delete,
+        contact = new BaseContact.empty()..id = cid,
+        timestamp = new DateTime.now();
+
+  /**
+   *
+   */
+  ContactChangelogEntry.fromMap(Map map)
+      : modifier = UserReference.decode(map['modifier']),
+        contact = BaseContact.decode(map['contact']),
+        changeType = changeTypeFromString(map['change']),
+        timestamp = util.unixTimestampToDateTime(map['timestamp']);
+
+  /**
+   *
+   */
+  Map toJson() => {
+        'change': changeTypeToString(changeType),
+        'modifier': util.dateTimeToUnixTimestamp(timestamp),
+        'user': modifier.toJson(),
+        'contact': contact.toJson()
+      };
+}
+
+/**
+ *
+ */
+class ReceptionDataChangelogEntry implements ChangelogEntry {
+  final UserReference modifier;
+  final DateTime timestamp;
+  final ReceptionAttributes attributes;
+  final ChangeType changeType;
+
+  /**
+   *
+   */
+  ReceptionDataChangelogEntry.create(this.modifier, this.attributes)
+      : changeType = ChangeType.add,
+        timestamp = new DateTime.now();
+
+  ReceptionDataChangelogEntry.update(this.modifier, this.attributes)
+      : changeType = ChangeType.modify,
+        timestamp = new DateTime.now();
+
+  ReceptionDataChangelogEntry.delete(this.modifier, int cid, int rid)
+      : changeType = ChangeType.delete,
+        attributes = new ReceptionAttributes.empty()
+          ..cid = cid
+          ..receptionId = rid,
+        timestamp = new DateTime.now();
+
+  /**
+   *
+   */
+  ReceptionDataChangelogEntry.fromMap(Map map)
+      : modifier = UserReference.decode(map['modifier']),
+        attributes = ReceptionAttributes.decode(map['attributes']),
+        changeType = changeTypeFromString(map['change']),
+        timestamp = util.unixTimestampToDateTime(map['timestamp']);
+
+  /**
+   *
+   */
+  Map toJson() => {
+        'change': changeTypeToString(changeType),
+        'timestamp': util.dateTimeToUnixTimestamp(timestamp),
+        'modifier': modifier.toJson(),
+        'attributes': attributes.toJson()
+      };
+}
+
+/**
+ *
+ */
+class IvrChangelogEntry implements ChangelogEntry {
+  final UserReference modifier;
+  final DateTime timestamp;
+  final IvrMenu menu;
+  final ChangeType changeType;
+
+  /**
+   *
+   */
+  IvrChangelogEntry.create(this.modifier, this.menu)
+      : changeType = ChangeType.add,
+        timestamp = new DateTime.now();
+
+  IvrChangelogEntry.update(this.modifier, this.menu)
+      : changeType = ChangeType.modify,
+        timestamp = new DateTime.now();
+
+  IvrChangelogEntry.delete(this.modifier, String menuName)
+      : changeType = ChangeType.delete,
+        menu = new IvrMenu('', new Playback(''))..name = menuName,
+        timestamp = new DateTime.now();
+
+  /**
+   *
+   */
+  IvrChangelogEntry.fromMap(Map map)
+      : modifier = UserReference.decode(map['modifier']),
+        menu = IvrMenu.decode(map['menu']),
+        changeType = changeTypeFromString(map['change']),
+        timestamp = util.unixTimestampToDateTime(map['timestamp']);
+
+  /**
+   *
+   */
+  Map toJson() => {
+        'change': changeTypeToString(changeType),
+        'timestamp': util.dateTimeToUnixTimestamp(timestamp),
+        'modifier': modifier.toJson(),
+        'menu': menu.toJson()
+      };
+}
+
+/**
+ *
+ */
+class DialplanChangelogEntry implements ChangelogEntry {
+  final UserReference modifier;
+  final DateTime timestamp;
+  final ReceptionDialplan dialplan;
+  final ChangeType changeType;
+
+  /**
+   *
+   */
+  DialplanChangelogEntry.create(this.modifier, this.dialplan)
+      : changeType = ChangeType.add,
+        timestamp = new DateTime.now();
+
+  DialplanChangelogEntry.update(this.modifier, this.dialplan)
+      : changeType = ChangeType.modify,
+        timestamp = new DateTime.now();
+
+  DialplanChangelogEntry.delete(this.modifier, String extension)
+      : changeType = ChangeType.delete,
+        dialplan = new ReceptionDialplan()..extension = extension,
+        timestamp = new DateTime.now();
+
+  /**
+   *
+   */
+  DialplanChangelogEntry.fromMap(Map map)
+      : modifier = UserReference.decode(map['modifier']),
+        dialplan = ReceptionDialplan.decode(map['dialplan']),
+        changeType = changeTypeFromString(map['change']),
+        timestamp = util.unixTimestampToDateTime(map['timestamp']);
+
+  /**
+   *
+   */
+  Map toJson() => {
+        'change': changeTypeToString(changeType),
+        'timestamp': util.dateTimeToUnixTimestamp(timestamp),
+        'modifier': modifier.toJson(),
+        'dialplan': dialplan.toJson()
+      };
+}
+
+/**
+ *
+ */
+class ReceptionChangelogEntry implements ChangelogEntry {
+  final UserReference modifier;
+  final DateTime timestamp;
+  final Reception reception;
+  final ChangeType changeType;
+
+  /**
+   *
+   */
+  ReceptionChangelogEntry.create(this.modifier, this.reception)
+      : changeType = ChangeType.add,
+        timestamp = new DateTime.now();
+
+  ReceptionChangelogEntry.update(this.modifier, this.reception)
+      : changeType = ChangeType.modify,
+        timestamp = new DateTime.now();
+
+  ReceptionChangelogEntry.delete(this.modifier, int rid)
+      : changeType = ChangeType.delete,
+        reception = new Reception.empty()..id = rid,
+        timestamp = new DateTime.now();
+
+  /**
+   *
+   */
+  ReceptionChangelogEntry.fromMap(Map map)
+      : modifier = UserReference.decode(map['modifier']),
+        reception = Reception.decode(map['reception']),
+        changeType = changeTypeFromString(map['change']),
+        timestamp = util.unixTimestampToDateTime(map['timestamp']);
+
+  /**
+   *
+   */
+  Map toJson() => {
+        'change': changeTypeToString(changeType),
+        'timestamp': util.dateTimeToUnixTimestamp(timestamp),
+        'modifier': modifier.toJson(),
+        'reception': reception.toJson()
+      };
+}
+
+/**
+ *
+ */
+class OrganizationChangelogEntry implements ChangelogEntry {
+  final UserReference modifier;
+  final DateTime timestamp;
+  final Organization organization;
+  final ChangeType changeType;
+
+  /**
+   *
+   */
+  OrganizationChangelogEntry.create(this.modifier, this.organization)
+      : changeType = ChangeType.add,
+        timestamp = new DateTime.now();
+
+  OrganizationChangelogEntry.update(this.modifier, this.organization)
+      : changeType = ChangeType.modify,
+        timestamp = new DateTime.now();
+
+  OrganizationChangelogEntry.delete(this.modifier, int oid)
+      : changeType = ChangeType.delete,
+        organization = new Organization.empty()..id = oid,
+        timestamp = new DateTime.now();
+
+  /**
+   *
+   */
+  OrganizationChangelogEntry.fromMap(Map map)
+      : modifier = UserReference.decode(map['modifier']),
+        organization = Organization.decode(map['organization']),
+        changeType = changeTypeFromString(map['change']),
+        timestamp = util.unixTimestampToDateTime(map['timestamp']);
+
+  /**
+   *
+   */
+  Map toJson() => {
+        'change': changeTypeToString(changeType),
+        'timestamp': util.dateTimeToUnixTimestamp(timestamp),
+        'modifier': modifier.toJson(),
+        'organization': organization.toJson()
+      };
+}
+
+/**
+ *
+ */
+class UserChangelogEntry implements ChangelogEntry {
+  final UserReference modifier;
+  final DateTime timestamp;
+  final User user;
+  final ChangeType changeType;
+
+  /**
+   *
+   */
+  UserChangelogEntry.create(this.modifier, this.user)
+      : changeType = ChangeType.add,
+        timestamp = new DateTime.now();
+
+  UserChangelogEntry.update(this.modifier, this.user)
+      : changeType = ChangeType.modify,
+        timestamp = new DateTime.now();
+
+  UserChangelogEntry.delete(this.modifier, int uid)
+      : changeType = ChangeType.delete,
+        user = new User.empty()..id = uid,
+        timestamp = new DateTime.now();
+
+  /**
+   *
+   */
+  UserChangelogEntry.fromMap(Map map)
+      : modifier = UserReference.decode(map['modifier']),
+        user = User.decode(map['user']),
+        changeType = changeTypeFromString(map['change']),
+        timestamp = util.unixTimestampToDateTime(map['timestamp']);
+
+  /**
+   *
+   */
+  Map toJson() => {
+        'change': changeTypeToString(changeType),
+        'timestamp': util.dateTimeToUnixTimestamp(timestamp),
+        'modifier': modifier.toJson(),
+        'user': user.toJson()
+      };
+}
+
+/**
  * Diffent object types available for storage, Matches model classes that
  * needs persistent storage.
  */
