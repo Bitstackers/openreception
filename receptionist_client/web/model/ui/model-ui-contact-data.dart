@@ -72,7 +72,8 @@ class UIContactData extends UIModel {
   /**
    * Remove all data from the widget.
    *
-   * If removePopup is true, then also remove the PSTN/Tags popup. Else leave it.
+   * If removePopup is true, then also remove the PSTN/Tags popup. Else leave
+   * it.
    */
   void clear({bool removePopup: false}) {
     _headerExtra.text = '';
@@ -128,7 +129,8 @@ class UIContactData extends UIModel {
       }
     }
 
-    /// Always set tags, no matter what kind of contact and filter context we have.
+    /// Always set tags, no matter what kind of contact and filter context we
+    /// have.
     tags = cwfc;
   }
 
@@ -193,7 +195,8 @@ class UIContactData extends UIModel {
   set relations(List<String> items) => _populateList(_relationsList, items);
 
   /**
-   * Removes the ringing effect from whatever element that might currently be marked ringing.
+   * Removes the ringing effect from whatever element that might currently be
+   * marked ringing.
    *
    * Removing the effect is delayed by 500ms for usability reasons.
    */
@@ -214,8 +217,8 @@ class UIContactData extends UIModel {
       _populateList(_responsibilityList, items);
 
   /**
-   * Mark selected [ORModel.PhoneNumber] ringing if we're not already ringing. If the PSTN input
-   * field is active and contains something, then call that.
+   * Mark selected [ORModel.PhoneNumber] ringing if we're not already ringing.
+   * If the PSTN input field is active and contains something, then call that.
    *
    * Numbers that start with 0 are illegal to ring from the PSTN field.
    *
@@ -253,8 +256,8 @@ class UIContactData extends UIModel {
   }
 
   /**
-   * Mark a [LIElement] in the telephone number list selected, if one such is the target of the
-   * [event].
+   * Mark a [LIElement] in the telephone number list selected, if one such is
+   * the target of the [event].
    */
   void _selectFromClick(MouseEvent event) {
     if (event.target is LIElement &&
