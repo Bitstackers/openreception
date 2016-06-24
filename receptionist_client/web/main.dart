@@ -52,9 +52,10 @@ main() async {
   }
 
   /// Hang here until the client configuration has been loaded from the server.
-  uiLoading.addLoadingMessage('Fetching config');
   final ORModel.ClientConfiguration clientConfig =
       await getClientConfiguration(configUri);
+  uiLoading.addLoadingMessage('Configuration fetched OK');
+
   Map<String, String> language;
 
   /// This is the 'settoken' URL path parameter.
@@ -77,10 +78,9 @@ main() async {
     Logger.root.level = Level.ALL;
     Logger.root.onRecord.listen(print);
 
-    uiLoading.addLoadingMessage('Checking HTMl5 notification support');
-
     /// Verify that we support HTMl5 notifications
     if (Notification.supported) {
+      uiLoading.addLoadingMessage('HTMl5 notification support OK');
       Notification
           .requestPermission()
           .then((String perm) => log.info('HTML5 permission ${perm}'));
@@ -111,8 +111,10 @@ main() async {
     });
 
     if (token != null) {
-      uiLoading.addLoadingMessage('Validating token');
+      uiLoading.addLoadingMessage('Found token OK');
       appState.currentUser = await getUser(clientConfig.authServerUri, token);
+      uiLoading
+          .addLoadingMessage('User ${appState.currentUser.name} detected OK');
 
       webSocketClient.onClose = () {
         log.shout('Websocket connection died. Trying reload in 10 seconds');
@@ -123,9 +125,9 @@ main() async {
       Uri uri =
           Uri.parse('${clientConfig.notificationSocketUri}?token=${token}');
 
-      uiLoading.addLoadingMessage('Connecting websocket');
       await webSocketClient.connect(uri).then((_) {
         log.info('WebSocketClient connect succeeded - NotificationSocket up');
+        uiLoading.addLoadingMessage('Websocket connected OK');
 
         final ORService.CallFlowControl callFlowControl =
             new ORService.CallFlowControl(clientConfig.callFlowServerUri, token,
@@ -187,12 +189,12 @@ Future<ORModel.ClientConfiguration> getClientConfiguration(
       return config;
     });
   } catch (error, stackTrace) {
-    log.shout(
-        'Could not fully initialize application. Trying again in 10 seconds');
-    uiLoading.addLoadingMessage(
-        'Could not fully initialize application. Trying again in 10 seconds');
-    uiLoading.addLoadingMessage('Error: $error');
+    final String msg =
+        'Could not fully initialize application. Trying again in 10 seconds';
+    log.shout(msg);
     log.shout(error, stackTrace);
+    uiLoading.addLoadingMessage(msg);
+    uiLoading.addLoadingMessage('Error: $error');
     await restartAppInTenSeconds(_appUri);
   }
 }

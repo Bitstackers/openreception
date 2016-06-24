@@ -2178,11 +2178,20 @@
         height: 300px;
         margin: 5em auto;
       }
+
+      #orc-loading div.loading-progress {
+        width: 30%;
+        margin: 0 auto;
+      }
+
+      #orc-loading div.loading-progress span {
+        display: block;
+      }
     </style>
 
-    <h1 data-lang-text="state-loading-header"></h1>
+    <h1 data-lang-text="state-loading-header">...</h1>
     <img src="images/animated-bitstack.gif">
-    <pre class="loading-progress"></pre>
+    <div class="loading-progress"></div>
   </div>
 
   <script type="application/dart" src="main.dart"></script>
