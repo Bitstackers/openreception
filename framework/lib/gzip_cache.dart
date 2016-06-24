@@ -60,12 +60,12 @@ class CalendarCache {
     streams.forEach((Stream<event.CalendarChange> stream) {
       stream.listen((event.CalendarChange e) {
         if (e.created) {
-          emptyList(e.owner);
+          _emptyList(e.owner);
         } else if (e.updated) {
-          emptyList(e.owner);
+          _emptyList(e.owner);
           removeEntry(e.eid, e.owner);
         } else if (e.deleted) {
-          emptyList(e.owner);
+          _emptyList(e.owner);
           removeEntry(e.eid, e.owner);
         }
       });
@@ -171,7 +171,7 @@ class CalendarCache {
   /**
    *
    */
-  void emptyList(model.Owner owner) {
+  void _emptyList(model.Owner owner) {
     _log.finest('Emptying cache for ${owner.toJson()}');
     _entryListCache.remove(owner.toString());
   }

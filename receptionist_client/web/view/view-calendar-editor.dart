@@ -92,6 +92,14 @@ class CalendarEditor extends ViewWidget {
    * Clear the form and navigate one step back in history.
    */
   void _delete(ORModel.CalendarEntry loadedEntry) {
+    Function reInstateDeletedEntry;
+
+    if (_entryOwner is ORModel.OwningContact) {
+      reInstateDeletedEntry = _contactCalendar.preDeleteEntry(loadedEntry);
+    } else {
+      reInstateDeletedEntry = _receptionCalendar.preDeleteEntry(loadedEntry);
+    }
+
     _calendarController
         .deleteCalendarEvent(_ui.loadedEntry, _entryOwner)
         .then((_) {
@@ -102,7 +110,10 @@ class CalendarEditor extends ViewWidget {
       _log.shout('Could not delete calendar entry ${loadedEntry}');
       _popup.error(
           _langMap[Key.calendarEditorDelErrorTitle], 'ID ${loadedEntry.id}');
-    }).whenComplete(() => _close());
+      reInstateDeletedEntry();
+    });
+
+    _close();
   }
 
   /**
@@ -125,6 +136,14 @@ class CalendarEditor extends ViewWidget {
    * Clear the form when done, and then navigate one step back in history.
    */
   void _save(ORModel.CalendarEntry entry) {
+    Function removeUnsavedElement;
+
+    if (_entryOwner is ORModel.OwningContact) {
+      removeUnsavedElement = _contactCalendar.unsavedEntry(entry);
+    } else {
+      removeUnsavedElement = _receptionCalendar.unsavedEntry(entry);
+    }
+
     _calendarController
         .saveCalendarEvent(entry, _entryOwner)
         .then((ORModel.CalendarEntry savedEntry) {
@@ -136,7 +155,10 @@ class CalendarEditor extends ViewWidget {
       _log.shout('Could not save calendar entry ${loadedEntry}');
       _popup.error(
           _langMap[Key.calendarEditorSaveErrorTitle], 'ID ${loadedEntry.id}');
-    }).whenComplete(() => _close());
+      removeUnsavedElement();
+    });
+
+    _close();
   }
 
   /**
