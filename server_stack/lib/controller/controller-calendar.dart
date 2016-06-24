@@ -15,7 +15,7 @@ library openreception.server.controller.calendar;
 
 import 'dart:async';
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/event.dart' as event;
 import 'package:openreception.framework/filestore.dart' as filestore;
@@ -27,8 +27,6 @@ import 'package:openreception.server/response_utils.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
-const String _libraryName = 'calendar_server.controller';
-
 /**
  * Ivr menu controller class.
  */
@@ -36,7 +34,7 @@ class Calendar {
   final service.Authentication _authService;
   final gzip_cache.CalendarCache _cache;
   final filestore.Contact _contactStore;
-  final Logger _log = new Logger('$_libraryName.Calendar');
+  final Logger _log = new Logger('openreception.server.controller.calendar');
   final service.NotificationService _notification;
   final filestore.Reception _receptionStore;
 
@@ -47,11 +45,20 @@ class Calendar {
       this._notification, this._cache);
 
   /**
-   *
+   * Rebuilds the entire cache.
    */
   Future<shelf.Response> cachePrefill(shelf.Request request) async {
-    ///TODO: Implement.
-    await _cache.prefill([]);
+    List<model.Owner> owners = [];
+
+    (await _contactStore.list()).forEach((model.BaseContact bc) {
+      owners.add(new model.OwningContact(bc.id));
+    });
+
+    (await _receptionStore.list()).forEach((model.ReceptionReference rRef) {
+      owners.add(new model.OwningReception(rRef.id));
+    });
+
+    await _cache.prefill(owners);
 
     return cacheStats(request);
   }
@@ -144,8 +151,6 @@ class Calendar {
     event.CalendarChange changeEvent =
         new event.CalendarChange.create(created.id, owner, modifier.id);
     _log.finest('User id:${modifier.id} created entry for ${owner}');
-
-    _cache.prefill([owner]);
 
     _notification.broadcastEvent(changeEvent);
 
@@ -267,8 +272,6 @@ class Calendar {
 
     _log.finest('User id:${modifier.id} removed entry for ${owner}');
 
-    _cache.prefill([owner]);
-
     _notification.broadcastEvent(changeEvent);
 
     return okJson('{}');
@@ -322,8 +325,6 @@ class Calendar {
         new event.CalendarChange.update(updated.id, owner, modifier.id);
 
     _log.finest('User id:${modifier.id} updated entry for ${owner}');
-
-    _cache.prefill([owner]);
 
     _notification.broadcastEvent(changeEvent);
 
