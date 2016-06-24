@@ -40,8 +40,6 @@ void _runMessageTests() {
 
     test('get', () => storeTest.Message.get(sa));
 
-    test('list', () => storeTest.Message.list(sa));
-
     test('remove', () => storeTest.Message.remove(sa));
 
     test('create', () => storeTest.Message.create(sa));

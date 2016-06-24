@@ -4,39 +4,6 @@ abstract class Message {
   static final Logger log = new Logger('$_libraryName.MessageStore');
 
   /**
-   * Test server behaviour when trying to retrieve a non-filtered list of
-   * message objects.
-   *
-   * The expected behaviour is that the server should return a list
-   * of message objects.
-   */
-  static Future list(ServiceAgent sa) async {
-    log.info('Listing messages non-filtered.');
-
-    final org = await sa.createsOrganization();
-    final rec = await sa.createsReception(org);
-    final con = await sa.createsContact();
-    await sa.addsContactToReception(con, rec);
-
-    final context = new model.MessageContext.empty()
-      ..cid = con.id
-      ..rid = rec.id
-      ..contactName = con.name
-      ..receptionName = rec.name;
-
-    final msg1 = await sa.createsMessage(context);
-
-    {
-      final lst = await sa.messageStore.list();
-      expect(lst.length, equals(1));
-
-      final fetchedMsg = lst.firstWhere((m) => m.id == msg1.id);
-
-      expect(msg1.toJson(), equals(fetchedMsg.toJson()));
-    }
-  }
-
-  /**
    * Test server behaviour when trying to retrieve a daily list of
    * message objects.
    *
@@ -101,7 +68,7 @@ abstract class Message {
 
     final msg1 = await sa.createsMessage(context1);
     {
-      final lst = await sa.messageStore.list();
+      final lst = await sa.messageStore.listDay(new DateTime.now());
       expect(lst.length, equals(1));
 
       final fetchedMsg = lst.firstWhere((m) => m.id == msg1.id);
@@ -112,7 +79,8 @@ abstract class Message {
     {
       final filter = new model.MessageFilter.empty()..contactId = con1.id;
       log.info('Listing with contactFilter $filter');
-      final lst = await sa.messageStore.list(filter: filter);
+      final lst = (await sa.messageStore.listDay(new DateTime.now()))
+          .where(filter.appliesTo);
       expect(lst.length, equals(1));
 
       final fetchedMsg = lst.firstWhere((m) => m.id == msg1.id);
@@ -125,7 +93,8 @@ abstract class Message {
     {
       final filter = new model.MessageFilter.empty()..contactId = con2.id;
       log.info('Listing with contactFilter $filter');
-      final lst = await sa.messageStore.list(filter: filter);
+      final lst = (await sa.messageStore.listDay(new DateTime.now()))
+          .where(filter.appliesTo);
       expect(lst.length, equals(1));
       final fetchedMsg = lst.firstWhere((m) => m.id == msg2.id);
 
@@ -135,7 +104,8 @@ abstract class Message {
     {
       final filter = new model.MessageFilter.empty()..receptionId = rec1.id;
       log.info('Listing with filter $filter');
-      final lst = await sa.messageStore.list(filter: filter);
+      final lst = (await sa.messageStore.listDay(new DateTime.now()))
+          .where(filter.appliesTo);
       expect(lst.length, equals(1));
       final fetchedMsg = lst.firstWhere((m) => m.id == msg1.id);
 
@@ -145,7 +115,8 @@ abstract class Message {
     {
       final filter = new model.MessageFilter.empty()..receptionId = rec2.id;
       log.info('Listing with filter $filter');
-      final lst = await sa.messageStore.list(filter: filter);
+      final lst = (await sa.messageStore.listDay(new DateTime.now()))
+          .where(filter.appliesTo);
       expect(lst.length, equals(1));
       final fetchedMsg = lst.firstWhere((m) => m.id == msg2.id);
 
