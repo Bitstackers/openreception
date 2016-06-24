@@ -98,7 +98,7 @@ _runDialplanTests() {
 _runDialplanDeploymentTests() {
   Future authenticate(esl.Connection client) =>
       client.authenticate(Config.eslPassword).then((reply) {
-        if (reply.status != esl.Reply.OK) {
+        if (reply.status != esl.Reply.ok) {
           throw new StateError('ESL Authentication failed!');
         }
       });
@@ -133,7 +133,7 @@ _runDialplanDeploymentTests() {
 
       Future authentication = eslClient.requestStream
           .firstWhere(
-              (packet) => packet.contentType == esl.ContentType.Auth_Request)
+              (packet) => packet.contentType == esl.ContentType.authRequest)
           .then((_) => authenticate(eslClient));
 
       await eslClient.connect(Config.eslHost, Config.eslPort);
