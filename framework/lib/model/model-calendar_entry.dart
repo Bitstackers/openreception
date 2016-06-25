@@ -23,9 +23,9 @@ class CalendarEntry {
   int id = noId;
   int lastAuthorId = User.noId;
 
-  String content;
-  DateTime start;
-  DateTime stop;
+  String content = '';
+  DateTime start = util.never;
+  DateTime stop = util.never;
 
   /**
    * Constructor.
