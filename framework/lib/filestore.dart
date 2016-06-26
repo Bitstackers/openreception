@@ -112,3 +112,27 @@ class DataStore {
       ReceptionDialplan this.receptionDialplanStore,
       User this.userStore);
 }
+
+class ChangeLogger {
+  final File logFile;
+
+  ChangeLogger(String filepath)
+      : logFile = new File(filepath + '/changes.log') {
+    if (!logFile.existsSync()) {
+      logFile.create();
+    }
+  }
+
+  /**
+   *
+   */
+  void add(model.ChangelogEntry object) {
+    logFile.writeAsString(JSON.encode(object) + '\n', mode: FileMode.APPEND);
+  }
+
+  /**
+   *
+   */
+  Future<String> contents() async =>
+      (await new File(logFile.path).readAsString());
+}
