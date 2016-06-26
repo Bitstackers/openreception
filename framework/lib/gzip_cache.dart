@@ -59,15 +59,10 @@ class CalendarCache {
       Iterable<Stream<event.CalendarChange>> streams) {
     streams.forEach((Stream<event.CalendarChange> stream) {
       stream.listen((event.CalendarChange e) {
-        if (e.created) {
-          _emptyList(e.owner);
-        } else if (e.updated) {
-          _emptyList(e.owner);
-          removeEntry(e.eid, e.owner);
-        } else if (e.deleted) {
-          _emptyList(e.owner);
+        if (e.updated || e.deleted) {
           removeEntry(e.eid, e.owner);
         }
+        _emptyList(e.owner);
       });
     });
   }
