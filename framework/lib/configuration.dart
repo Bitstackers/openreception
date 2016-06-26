@@ -11,6 +11,10 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
+/**
+ * Common configuration models and parsing functions. Currently unused in
+ * the stack.
+ */
 library openreception.framework.config;
 
 import 'package:args/args.dart';
