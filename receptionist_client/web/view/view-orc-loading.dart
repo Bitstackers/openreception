@@ -49,8 +49,5 @@ class ORCLoading {
         Model.AppState.loading ? _ui.visible = true : _ui.visible = false);
   }
 
-  /**
-   *
-   */
   void addLoadingMessage(String message) => _ui.addLoadingMessage(message);
 }
