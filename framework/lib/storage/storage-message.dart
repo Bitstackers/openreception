@@ -27,19 +27,12 @@ abstract class Message {
   /**
    *
    */
-  @deprecated
-  Future<Iterable<model.Message>> list({model.MessageFilter filter});
+  Future<Iterable<model.Message>> listDay(DateTime day);
 
   /**
    *
    */
-  Future<Iterable<model.Message>> listDay(DateTime day,
-      {model.MessageFilter filter});
-
-  /**
-   *
-   */
-  Future<Iterable<model.Message>> listDrafts({model.MessageFilter filter});
+  Future<Iterable<model.Message>> listDrafts();
 
   /**
    *

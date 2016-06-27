@@ -22,7 +22,7 @@ class Message implements storage.Message {
   final Map<int, Set<int>> _cidIndex = {};
   final Map<int, Set<int>> _uidIndex = {};
   final Map<int, Set<int>> _ridIndex = {};
-  final Set<int> _savedIndex = new Set<int>();
+  final Set<int> _draftsIndex = new Set<int>();
 
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
@@ -114,7 +114,7 @@ class Message implements storage.Message {
       ridList.add(msg.id);
 
       if (msg.isDraft) {
-        _savedIndex.add(msg.id);
+        _draftsIndex.add(msg.id);
       }
     });
 
@@ -123,7 +123,7 @@ class Message implements storage.Message {
         '${_uidIndex.keys.length} user id\'s and '
         '${_ridIndex.keys.length} reception id\'s in '
         '${timer.elapsedMilliseconds}ms. '
-        'Found ${_savedIndex.length} saved messages');
+        'Found ${_draftsIndex.length} saved messages');
   }
 
   /**
@@ -185,8 +185,7 @@ class Message implements storage.Message {
   /**
    *
    */
-  Future<Iterable<model.Message>> listDay(DateTime day,
-      {model.MessageFilter filter}) async {
+  Future<Iterable<model.Message>> listDay(DateTime day) async {
     final Directory dateDir = _dateDir(day);
 
     if (!await dateDir.exists()) {
@@ -195,80 +194,16 @@ class Message implements storage.Message {
 
     Set<int> ids = _idsOfDir(dateDir).toSet();
 
-    if (filter != null) {
-      if (filter.receptionId != model.Reception.noId) {
-        final ridSet = _ridIndex.containsKey(filter.receptionId)
-            ? _ridIndex[filter.receptionId]
-            : _ridIndex[filter.receptionId] = new Set<int>();
-
-        ids = ids.intersection(ridSet);
-      }
-
-      if (filter.userId != model.User.noId) {
-        final uidSet = _uidIndex.containsKey(filter.userId)
-            ? _uidIndex[filter.userId]
-            : _uidIndex[filter.userId] = new Set<int>();
-
-        ids = ids.intersection(uidSet);
-      }
-
-      if (filter.contactId != model.BaseContact.noId) {
-        final cidSet = _cidIndex.containsKey(filter.contactId)
-            ? _cidIndex[filter.contactId]
-            : _cidIndex[filter.contactId] = new Set<int>();
-        ids = ids.intersection(cidSet);
-      }
-    }
-
     return getByIds(ids);
   }
 
   /**
    *
    */
-  Future<Iterable<model.Message>> listDrafts(
-      {model.MessageFilter filter}) async {
-    Set<int> ids = new Set()..addAll(_savedIndex);
-
-    if (filter.receptionId != model.Reception.noId) {
-      final ridSet = _ridIndex.containsKey(filter.receptionId)
-          ? _ridIndex[filter.receptionId]
-          : _ridIndex[filter.receptionId] = new Set<int>();
-
-      ids = ids.intersection(ridSet);
-    }
-
-    if (filter.userId != model.User.noId) {
-      final uidSet = _uidIndex.containsKey(filter.userId)
-          ? _uidIndex[filter.userId]
-          : _uidIndex[filter.userId] = new Set<int>();
-
-      ids = ids.intersection(uidSet);
-    }
-
-    if (filter.contactId != model.BaseContact.noId) {
-      final cidSet = _cidIndex.containsKey(filter.contactId)
-          ? _cidIndex[filter.contactId]
-          : _cidIndex[filter.contactId] = new Set<int>();
-      ids = ids.intersection(cidSet);
-    }
+  Future<Iterable<model.Message>> listDrafts() async {
+    Set<int> ids = new Set()..addAll(_draftsIndex);
 
     return getByIds(ids);
-  }
-
-  /**
-   *
-   */
-  Future<Iterable<model.Message>> list({model.MessageFilter filter}) async {
-    Iterable<model.Message> messages = await Future.wait(_index.values.map(
-        (String filePath) async => model.Message
-            .decode(JSON.decode(await (new File(filePath)).readAsString()))));
-
-    if (filter != null) {
-      return messages.where(filter.appliesTo);
-    } else {
-      return messages;
-    }
   }
 
   /**
@@ -345,7 +280,7 @@ class Message implements storage.Message {
     ridList.add(msg.id);
 
     if (msg.isDraft) {
-      _savedIndex.add(msg.id);
+      _draftsIndex.add(msg.id);
     }
 
     if (this._git != null) {
@@ -383,9 +318,9 @@ class Message implements storage.Message {
     }
 
     if (msg.isDraft) {
-      _savedIndex.add(msg.id);
-    } else if (_savedIndex.contains(msg.id)) {
-      _savedIndex.remove(msg.id);
+      _draftsIndex.add(msg.id);
+    } else {
+      _draftsIndex.remove(msg.id);
     }
 
     _changeBus.fire(new event.MessageChange.update(
@@ -416,6 +351,7 @@ class Message implements storage.Message {
     }
 
     _index.remove(mid);
+    _draftsIndex.remove(mid);
 
     _changeBus.fire(new event.MessageChange.delete(
         mid, modifier.id, msg.state, msg.createdAt));

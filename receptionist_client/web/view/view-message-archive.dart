@@ -167,9 +167,10 @@ class MessageArchive extends ViewWidget {
 
       while (counter < 7 && messages.length < 50) {
         final List<ORModel.Message> list =
-            (await _messageController.list(_lastFetched, filter))
+            (await _messageController.list(_lastFetched))
                 .where((ORModel.Message msg) =>
-                    !msg.isDraft || (msg.isDraft && msg.isClosed))
+                    filter.appliesTo(msg) && !msg.isDraft ||
+                    (msg.isDraft && msg.isClosed))
                 .toList();
 
         if (list.isNotEmpty) {

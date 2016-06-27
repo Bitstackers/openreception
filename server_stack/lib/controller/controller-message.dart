@@ -15,27 +15,31 @@ library openreception.server.controller.message;
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:openreception.server/response_utils.dart';
-
-import 'package:shelf/shelf.dart' as shelf;
-import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/gzip_cache.dart' as gzip_cache;
 import 'package:openreception.framework/event.dart' as event;
+import 'package:openreception.framework/filestore.dart' as filestore;
+import 'package:openreception.framework/gzip_cache.dart' as gzip_cache;
+import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.framework/storage.dart' as storage;
-import 'package:openreception.framework/model.dart' as model;
+import 'package:openreception.server/response_utils.dart';
+import 'package:shelf/shelf.dart' as shelf;
+import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
 class Message {
   final Logger log = new Logger('controller.message');
   final service.Authentication _authService;
   final service.NotificationService _notification;
+  gzip_cache.MessageCache _cache;
 
-  final storage.Message _messageStore;
+  final filestore.Message _messageStore;
   final storage.MessageQueue _messageQueue;
 
   Message(this._messageStore, this._messageQueue, this._authService,
-      this._notification);
+      this._notification) {
+    _cache =
+        new gzip_cache.MessageCache(_messageStore, _messageStore.changeStream);
+  }
 
   String _filterFrom(shelf.Request request) =>
       request.requestedUri.queryParameters['filter'];
@@ -144,41 +148,10 @@ class Message {
   }
 
   /**
-   * Builds a list of previously stored messages, filtering by the
-   * parameters passed in the [queryParameters] of the request.
+   * Builds a list of previously stored messages left on a single day.
    */
   Future<shelf.Response> list(shelf.Request request) async {
-    model.MessageFilter filter = new model.MessageFilter.empty();
-
-    if (_filterFrom(request) != null) {
-      try {
-        Map map = JSON.decode(_filterFrom(request));
-        filter = new model.MessageFilter.fromMap(map);
-      } catch (error, stackTrace) {
-        log.warning('Bad filter', error, stackTrace);
-
-        return clientError('Bad filter');
-      }
-    }
-
-    return await _messageStore
-        .list(filter: filter)
-        .then((Iterable<model.Message> messages) =>
-            okJson(messages.toList(growable: false)))
-        .catchError((error, stackTrace) {
-      log.severe(error, stackTrace);
-      return serverError(error.toString);
-    });
-  }
-
-  /**
-   * Builds a list of previously stored messages, filtering by the
-   * parameters passed in the [queryParameters] of the request.
-   */
-  Future<shelf.Response> listByDay(shelf.Request request) async {
     final String dayStr = shelf_route.getPathParameter(request, 'day');
-
-    model.MessageFilter filter = new model.MessageFilter.empty();
     DateTime day;
 
     try {
@@ -192,25 +165,12 @@ class Message {
       return clientError(msg);
     }
 
-    if (_filterFrom(request) != null) {
-      try {
-        Map map = JSON.decode(_filterFrom(request));
-        filter = new model.MessageFilter.fromMap(map);
-      } catch (error, stackTrace) {
-        log.warning('Bad filter', error, stackTrace);
-
-        return clientError('Bad filter');
-      }
-    }
-
-    return await _messageStore
-        .listDay(day, filter: filter)
-        .then((Iterable<model.Message> messages) =>
-            okJson(messages.toList(growable: false)))
-        .catchError((error, stackTrace) {
+    try {
+      return okGzip(new Stream.fromIterable([await _cache.list(day)]));
+    } catch (error, stackTrace) {
       log.severe(error, stackTrace);
       return serverError(error.toString);
-    });
+    }
   }
 
   /**
@@ -218,27 +178,12 @@ class Message {
    * [queryParameters] of the request.
    */
   Future<shelf.Response> listDrafts(shelf.Request request) async {
-    model.MessageFilter filter = new model.MessageFilter.empty();
-
-    if (_filterFrom(request) != null) {
-      try {
-        Map map = JSON.decode(_filterFrom(request));
-        filter = new model.MessageFilter.fromMap(map);
-      } catch (error, stackTrace) {
-        log.warning('Bad filter', error, stackTrace);
-
-        return clientError('Bad filter');
-      }
-    }
-
-    return await _messageStore
-        .listDrafts(filter: filter)
-        .then((Iterable<model.Message> messages) =>
-            okJson(messages.toList(growable: false)))
-        .catchError((error, stackTrace) {
+    try {
+      return okGzip(new Stream.fromIterable([await _cache.listDrafts()]));
+    } catch (error, stackTrace) {
       log.severe(error, stackTrace);
       return serverError(error.toString);
-    });
+    }
   }
 
   /**

@@ -37,9 +37,7 @@ class Message {
    * Return an iterable containing [ORModel.Message] according to the supplied
    * [filter].
    */
-  Future<Iterable<ORModel.Message>> list(
-          DateTime day, ORModel.MessageFilter filter) =>
-      _store.listDay(day, filter: filter);
+  Future<Iterable<ORModel.Message>> list(DateTime day) => _store.listDay(day);
 
   /**
    * Return an iterable containing [ORModel.Message] drafts.
