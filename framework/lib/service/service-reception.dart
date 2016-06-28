@@ -116,4 +116,14 @@ class RESTReceptionStore implements storage.Reception {
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }
+
+  /**
+   *
+   */
+  Future<String> changelog(int rid) {
+    Uri url = resource.Reception.changelog(_host, rid);
+    url = _appendToken(url, this._token);
+
+    return _backend.get(url);
+  }
 }

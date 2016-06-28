@@ -18,7 +18,7 @@ part of openreception.framework.resource;
  * resources across servers and clients.
  */
 abstract class User {
-  static const String _user = 'user';
+  static const String _ns = 'user';
   static const String _group = 'group';
   static const String _identity = 'identity';
 
@@ -29,7 +29,7 @@ abstract class User {
       Uri.parse('${root(host)}/identity/${identity}');
 
   static Uri root(Uri host) =>
-      Uri.parse('${util.removeTailingSlashes(host)}/$_user');
+      Uri.parse('${util.removeTailingSlashes(host)}/$_ns');
 
   static Uri list(Uri host) => Uri.parse('${root(host)}');
 
@@ -43,24 +43,29 @@ abstract class User {
       '${util.removeTailingSlashes(host)}/user/$userID/$_group/$groupID');
 
   static Uri userIndentities(Uri host, int userID) =>
-      Uri.parse('$host/$_user/$userID/$_identity');
+      Uri.parse('$host/$_ns/$userID/$_identity');
 
   static Uri userIndentity(Uri host, int userID, String identity) =>
-      Uri.parse('$host/$_user/$userID/$_identity/${identity}');
+      Uri.parse('$host/$_ns/$userID/$_identity/${identity}');
 
-  static Uri userState(Uri host, int uid) =>
-      Uri.parse('$host/$_user/$uid/state');
+  static Uri userState(Uri host, int uid) => Uri.parse('$host/$_ns/$uid/state');
 
-  static Uri userStateAll(Uri host) => Uri.parse('$host/$_user/all/state');
+  static Uri userStateAll(Uri host) => Uri.parse('$host/$_ns/all/state');
 
   static Uri setUserState(Uri host, int uid, String newState) =>
-      Uri.parse('$host/$_user/$uid/state/$newState');
+      Uri.parse('$host/$_ns/$uid/state/$newState');
 
   static Uri change(Uri host, [int uid]) {
     if (uid == null) {
-      return Uri.parse('$host/$_user/history');
+      return Uri.parse('$host/$_ns/history');
     } else {
-      return Uri.parse('$host/$_user/$uid/history');
+      return Uri.parse('$host/$_ns/$uid/history');
     }
   }
+
+  /**
+   *
+   */
+  static Uri changelog(Uri host, int uid) =>
+      Uri.parse('${host}/$_ns/${uid}/changelog');
 }

@@ -80,48 +80,6 @@ class RESTMessageStore implements storage.Message {
   /**
    *
    */
-  Future<Iterable<int>> midsOfUid(int uid) async {
-    Uri uri = resource.Message.midOfUid(host, uid);
-    uri = _appendToken(uri, token);
-
-    final ints = await _backend
-        .get(uri)
-        .then((String response) => JSON.decode(response));
-
-    return ints as Iterable<int>;
-  }
-
-  /**
-   *
-   */
-  Future<Iterable<int>> midsOfCid(int cid) async {
-    Uri uri = resource.Message.midOfCid(host, cid);
-    uri = _appendToken(uri, token);
-
-    final ints = await _backend
-        .get(uri)
-        .then((String response) => JSON.decode(response));
-
-    return ints as Iterable<int>;
-  }
-
-  /**
-   *
-   */
-  Future<Iterable<int>> midsOfRid(int rid) async {
-    Uri uri = resource.Message.midOfRid(host, rid);
-    uri = _appendToken(uri, token);
-
-    final ints = await _backend
-        .get(uri)
-        .then((String response) => JSON.decode(response));
-
-    return ints as Iterable<int>;
-  }
-
-  /**
-   *
-   */
   Future<model.Message> update(model.Message message, model.User modifier) =>
       _backend
           .put(

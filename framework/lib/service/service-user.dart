@@ -187,4 +187,14 @@ class RESTUserStore implements storage.User {
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }
+
+  /**
+   *
+   */
+  Future<String> changelog(int uid) {
+    Uri url = resource.User.changelog(_host, uid);
+    url = _appendToken(url, this._token);
+
+    return _backend.get(url);
+  }
 }

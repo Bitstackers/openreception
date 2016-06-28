@@ -18,37 +18,28 @@ part of openreception.framework.resource;
  * resources across servers and clients.
  */
 abstract class Message {
-  static String nameSpace = 'message';
+  static const String _ns = 'message';
 
-  static Uri single(Uri host, int messageID) =>
-      Uri.parse('${util.removeTailingSlashes(host)}/${nameSpace}/${messageID}');
+  static Uri single(Uri host, int mid) =>
+      Uri.parse('${util.removeTailingSlashes(host)}/${_ns}/${mid}');
 
-  static Uri send(Uri host, int messageID) => Uri.parse(
-      '${util.removeTailingSlashes(host)}/${nameSpace}/${messageID}/send');
+  static Uri send(Uri host, int mid) =>
+      Uri.parse('${util.removeTailingSlashes(host)}/${_ns}/${mid}/send');
 
   static Uri root(Uri host) =>
-      Uri.parse('${util.removeTailingSlashes(host)}/${nameSpace}');
+      Uri.parse('${util.removeTailingSlashes(host)}/${_ns}');
 
   static Uri list(Uri host, {model.MessageFilter filter: null}) {
     String filterParameter =
         filter != null ? '?filter=${JSON.encode(filter)}' : '';
 
     return Uri.parse(
-        '${util.removeTailingSlashes(host)}/${nameSpace}/list${filterParameter}');
+        '${util.removeTailingSlashes(host)}/${_ns}/list${filterParameter}');
   }
 
-  static Uri midOfUid(Uri host, int uid) {
-    return Uri.parse('$host/message/list/by-uid/$uid');
-  }
-
-  static Uri midOfCid(Uri host, int cid) {
-    return Uri.parse('$host/message/list/by-cid/$cid');
-  }
-
-  static Uri midOfRid(Uri host, int rid) {
-    return Uri.parse('$host/message/list/by-rid/$rid');
-  }
-
+  /**
+   *
+   */
   static Uri listDay(Uri host, DateTime day,
       {model.MessageFilter filter: null}) {
     final String filterParameter =
@@ -59,6 +50,9 @@ abstract class Message {
     return Uri.parse('$host/message/list/$dateString${filterParameter}');
   }
 
+  /**
+   * I'm an empty comment
+   */
   static Uri listDrafts(Uri host, {model.MessageFilter filter: null}) {
     final String filterParameter =
         filter != null ? '?filter=${JSON.encode(filter)}' : '';
@@ -71,9 +65,9 @@ abstract class Message {
    */
   static Uri changeList(Uri host, [int mid]) {
     if (mid == null) {
-      return Uri.parse('$host/$nameSpace/history');
+      return Uri.parse('$host/$_ns/history');
     } else {
-      return Uri.parse('$host/$nameSpace/$mid/history');
+      return Uri.parse('$host/$_ns/$mid/history');
     }
   }
 }

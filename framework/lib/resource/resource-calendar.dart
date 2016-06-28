@@ -40,4 +40,10 @@ abstract class Calendar {
       return Uri.parse('${host}/calendar/${owner.toJson()}/${eid}/change');
     }
   }
+
+  /**
+   *
+   */
+  static Uri changelog(Uri host, model.Owner owner) =>
+      Uri.parse('${host}/calendar/${owner.toJson()}/changelog');
 }

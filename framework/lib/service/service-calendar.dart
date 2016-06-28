@@ -107,4 +107,14 @@ class RESTCalendarStore implements storage.Calendar {
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }
+
+  /**
+   *
+   */
+  Future<String> changelog(model.Owner owner) {
+    Uri url = resource.Calendar.changelog(_host, owner);
+    url = _appendToken(url, this._token);
+
+    return _backend.get(url);
+  }
 }

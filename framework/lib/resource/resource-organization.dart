@@ -59,4 +59,10 @@ abstract class Organization {
       return Uri.parse('$host/organization/$oid/history');
     }
   }
+
+  /**
+   *
+   */
+  static Uri changelog(Uri host, int oid) =>
+      Uri.parse('$host/organization/$oid/changelog');
 }

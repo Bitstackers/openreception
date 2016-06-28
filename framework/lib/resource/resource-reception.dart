@@ -18,20 +18,34 @@ part of openreception.framework.resource;
  * resources across servers and clients.
  */
 abstract class Reception {
-  static String nameSpace = 'reception';
+  static const String _ns = 'reception';
 
-  static Uri single(Uri host, int receptionID) =>
-      Uri.parse('${root(host)}/${receptionID}');
+  /**
+   *
+   */
+  static Uri single(Uri host, int rid) => Uri.parse('${root(host)}/${rid}');
 
-  static Uri extensionOf(Uri host, int receptionID) =>
-      Uri.parse('${root(host)}/${receptionID}/extension');
+  /**
+   *
+   */
+  static Uri extensionOf(Uri host, int rid) =>
+      Uri.parse('${root(host)}/${rid}/extension');
 
+  /**
+   *
+   */
   static Uri byExtension(Uri host, String extension) =>
       Uri.parse('${root(host)}/extension/${extension}');
 
+  /**
+   *
+   */
   static Uri root(Uri host) =>
-      Uri.parse('${util.removeTailingSlashes(host)}/${nameSpace}');
+      Uri.parse('${util.removeTailingSlashes(host)}/${_ns}');
 
+  /**
+   * 
+   */
   static Uri list(Uri host) => Uri.parse('${root(host)}');
 
   /**
@@ -44,4 +58,10 @@ abstract class Reception {
       return Uri.parse('$host/reception/$rid/history');
     }
   }
+
+  /**
+   *
+   */
+  static Uri changelog(Uri host, int rid) =>
+      Uri.parse('${host}/$_ns/${rid}/changelog');
 }

@@ -109,4 +109,14 @@ class RESTIvrStore implements storage.Ivr {
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }
+
+  /**
+   *
+   */
+  Future<String> changelog(String menuName) {
+    Uri url = resource.Ivr.changelog(_host, menuName);
+    url = _appendToken(url, this._token);
+
+    return _backend.get(url);
+  }
 }

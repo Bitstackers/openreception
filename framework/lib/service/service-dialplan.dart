@@ -133,4 +133,14 @@ class RESTDialplanStore implements storage.ReceptionDialplan {
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }
+
+  /**
+   *
+   */
+  Future<String> changelog(String extension) {
+    Uri url = resource.ReceptionDialplan.changelog(_host, extension);
+    url = _appendToken(url, this._token);
+
+    return _backend.get(url);
+  }
 }

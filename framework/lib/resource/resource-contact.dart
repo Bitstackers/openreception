@@ -86,4 +86,16 @@ abstract class Contact {
       }
     }
   }
+
+  /**
+   *
+   */
+  static Uri changelog(Uri host, int cid) =>
+      Uri.parse('${host}/contact/${cid}/changelog');
+
+  /**
+   *
+   */
+  static Uri receptionChangelog(Uri host, int cid) =>
+      Uri.parse('${host}/contact/${cid}/reception/changelog');
 }

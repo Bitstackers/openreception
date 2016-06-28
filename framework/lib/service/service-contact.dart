@@ -148,4 +148,24 @@ class RESTContactStore implements storage.Contact {
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }
+
+  /**
+   *
+   */
+  Future<String> changelog(int cid) {
+    Uri url = resource.Contact.changelog(_host, cid);
+    url = _appendToken(url, this._token);
+
+    return _backend.get(url);
+  }
+
+  /**
+   *
+   */
+  Future<String> receptionChangelog(int cid) {
+    Uri url = resource.Contact.receptionChangelog(_host, cid);
+    url = _appendToken(url, this._token);
+
+    return _backend.get(url);
+  }
 }

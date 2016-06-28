@@ -87,17 +87,6 @@ class RESTOrganizationStore implements storage.Organization {
   /**
    *
    */
-  Future<Map<String, Map<String, String>>> receptionMap() {
-    Uri url = resource.Organization.receptionMap(this._host);
-    url = _appendToken(url, this._token);
-
-    return this._backend.get(url).then((String response) =>
-        JSON.decode(response) as Map<String, Map<String, String>>);
-  }
-
-  /**
-   *
-   */
   Future remove(int organizationID, model.User modifier) {
     Uri url = resource.Organization.single(this._host, organizationID);
     url = _appendToken(url, this._token);
@@ -129,5 +118,15 @@ class RESTOrganizationStore implements storage.Organization {
         maps.map(model.Commit.decode);
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
+  }
+
+  /**
+   *
+   */
+  Future<String> changelog(int oid) {
+    Uri url = resource.Organization.changelog(_host, oid);
+    url = _appendToken(url, this._token);
+
+    return _backend.get(url);
   }
 }

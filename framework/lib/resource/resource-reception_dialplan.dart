@@ -18,45 +18,50 @@ part of openreception.framework.resource;
  * resources across servers and clients.
  */
 abstract class ReceptionDialplan {
-  static String nameSpace = 'receptiondialplan';
+  static const String _ns = 'receptiondialplan';
 
   /**
    *
    */
   static Uri analyze(Uri host, String extension) =>
-      Uri.parse('$host/$nameSpace/$extension/analyze');
+      Uri.parse('$host/$_ns/$extension/analyze');
 
   /**
    *
    */
   static Uri deploy(Uri host, String extension, int receptionId) =>
-      Uri.parse('$host/$nameSpace/$extension/deploy/$receptionId');
+      Uri.parse('$host/$_ns/$extension/deploy/$receptionId');
 
   /**
    *
    */
-  static Uri list(Uri host) => Uri.parse('$host/$nameSpace');
+  static Uri list(Uri host) => Uri.parse('$host/$_ns');
 
   /**
    *
    */
-  static Uri reloadConfig(Uri host) =>
-      Uri.parse('$host/$nameSpace/reloadConfig');
+  static Uri reloadConfig(Uri host) => Uri.parse('$host/$_ns/reloadConfig');
 
   /**
    *
    */
   static Uri single(Uri host, String extension) =>
-      Uri.parse('$host/$nameSpace/$extension');
+      Uri.parse('$host/$_ns/$extension');
 
   /**
    *
    */
   static Uri changeList(Uri host, [String extension]) {
     if (extension == null) {
-      return Uri.parse('$host/$nameSpace/history');
+      return Uri.parse('$host/$_ns/history');
     } else {
-      return Uri.parse('$host/$nameSpace/$extension/history');
+      return Uri.parse('$host/$_ns/$extension/history');
     }
   }
+
+  /**
+   *
+   */
+  static Uri changelog(Uri host, String extension) =>
+      Uri.parse('${host}/$_ns/${extension}/changelog');
 }
