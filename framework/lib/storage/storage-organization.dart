@@ -54,10 +54,5 @@ abstract class Organization {
   /**
    *
    */
-  Future<Map<String, Map<String, String>>> receptionMap();
-
-  /**
-   *
-   */
   Future<Iterable<model.Commit>> changes([int oid]);
 }
