@@ -51,11 +51,11 @@ class ReceptionDialplan {
 
   Map toJson() => {
         'extension': extension,
-        'open': new List<Map>.from(open.map((oh) => oh.toJson())),
+        'open': new List.from(open.map((oh) => oh.toJson())),
         'note': note,
         'active': active,
-        'closed': new List<Map>.from(defaultActions.map((da) => da.toJson())),
+        'closed': new List.from(defaultActions.map((da) => da.toJson())),
         'extraExtensions':
-            new List<Map>.from(extraExtensions.map((ee) => ee.toJson())),
+            new List.from(extraExtensions.map((ee) => ee.toJson())),
       };
 }
