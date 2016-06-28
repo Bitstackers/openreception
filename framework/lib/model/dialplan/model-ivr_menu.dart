@@ -20,8 +20,8 @@ List<FormatException> validateIvrMenu(IvrMenu menu) {
     errors.add(new FormatException('Menu name should not be empty'));
   }
 
-  if (menu.entries.isEmpty) {
-    errors.add(new FormatException('Menu name should have at least one entry'));
+  if (menu.entries == null) {
+    errors.add(new FormatException('Menu entries may not be null'));
   }
 
   if (menu.greetingLong.filename.isEmpty) {
