@@ -17,6 +17,8 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   final Logger _log = new Logger('$libraryName.ReceptionDialplan');
   final String path;
   GitEngine _git;
+  final bool logChanges;
+  final Directory trashDir;
 
   Bus<event.DialplanChange> _changeBus = new Bus<event.DialplanChange>();
   Stream<event.DialplanChange> get onChange => _changeBus.stream;
@@ -26,24 +28,41 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
   /**
-   *
+   * TODO: Add sequencer.
    */
-  ReceptionDialplan(String this.path, [GitEngine this._git]) {
+  factory ReceptionDialplan(String path,
+      [GitEngine gitEngine, bool enableChangelog]) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
     }
-    if (this._git != null) {
-      _git.init().catchError((error, stackTrace) => Logger.root
+    if (gitEngine != null) {
+      gitEngine.init().catchError((error, stackTrace) => Logger.root
           .shout('Failed to initialize git engine', error, stackTrace));
     }
+
+    final Directory trashDir = new Directory(path + '/.trash');
+    if (!trashDir.existsSync()) {
+      trashDir.createSync();
+    }
+
+    return new ReceptionDialplan._internal(path, gitEngine,
+        (enableChangelog != null) ? enableChangelog : true, trashDir);
   }
+
+  /**
+   *
+   */
+  ReceptionDialplan._internal(String this.path,
+      [GitEngine this._git, bool this.logChanges, this.trashDir]);
 
   /**
    *
    */
   Future<model.ReceptionDialplan> create(
       model.ReceptionDialplan rdp, model.User modifier) async {
-    final File file = new File('$path/${rdp.extension}.json');
+    final Directory dialplanDir = new Directory('$path/${rdp.extension}')
+      ..createSync();
+    final File file = new File('$path/${rdp.extension}/dialplan.json');
 
     if (file.existsSync()) {
       throw new storage.ClientError(
@@ -60,6 +79,11 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
           _authorString(modifier));
     }
 
+    if (logChanges) {
+      new ChangeLogger(dialplanDir.path).add(
+          new model.DialplanChangelogEntry.create(modifier.reference, rdp));
+    }
+
     _changeBus
         .fire(new event.DialplanChange.create(rdp.extension, modifier.id));
 
@@ -70,10 +94,10 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
    *
    */
   Future<model.ReceptionDialplan> get(String extension) async {
-    final File file = new File('$path/${extension}.json');
+    final File file = new File('$path/${extension}/dialplan.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file with name ${extension}');
+      throw new storage.NotFound('No file with name ${file.path}');
     }
 
     try {
@@ -88,18 +112,26 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   /**
    *
    */
-  Future<Iterable<model.ReceptionDialplan>> list() async => new Directory(path)
-      .listSync()
-      .where((fse) => fse is File && fse.path.endsWith('.json'))
-      .map((FileSystemEntity fse) => model.ReceptionDialplan
-          .decode(JSON.decode((fse as File).readAsStringSync())));
+  Future<Iterable<model.ReceptionDialplan>> list() async {
+    final Iterable dirs = new Directory(path).listSync().where((fse) =>
+        isDirectory(fse) && new File(fse.path + '/dialplan.json').existsSync());
+
+    return dirs.map((Directory fse) {
+      final String fileContents =
+          new File(fse.path + '/dialplan.json').readAsStringSync();
+
+      return model.ReceptionDialplan.decode(JSON.decode(fileContents));
+    });
+  }
 
   /**
    *
    */
   Future<model.ReceptionDialplan> update(
       model.ReceptionDialplan rdp, model.User modifier) async {
-    final File file = new File('$path/${rdp.extension}.json');
+    final Directory dialplanDir = new Directory('$path/${rdp.extension}');
+
+    final File file = new File('$path/${rdp.extension}/dialplan.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
@@ -115,6 +147,11 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
           _authorString(modifier));
     }
 
+    if (logChanges) {
+      new ChangeLogger(dialplanDir.path).add(
+          new model.DialplanChangelogEntry.update(modifier.reference, rdp));
+    }
+
     _changeBus
         .fire(new event.DialplanChange.update(rdp.extension, modifier.id));
 
@@ -125,7 +162,9 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
    *
    */
   Future remove(String extension, model.User modifier) async {
-    final File file = new File('$path/${extension}.json');
+    final Directory dialplanDir = new Directory('$path/${extension}');
+
+    final File file = new File('$path/${extension}/dialplan.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
@@ -138,7 +177,14 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
           'removed $extension',
           _authorString(modifier));
     } else {
-      file.deleteSync();
+      if (logChanges) {
+        new ChangeLogger(dialplanDir.path).add(
+            new model.DialplanChangelogEntry.delete(
+                modifier.reference, extension));
+      }
+
+      await dialplanDir.rename(trashDir.path +
+          '/${extension}-${new DateTime.now().millisecondsSinceEpoch}');
     }
 
     _changeBus.fire(new event.DialplanChange.delete(extension, modifier.id));
@@ -158,7 +204,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
     if (extension == null) {
       fse = new Directory('.');
     } else {
-      fse = new File('$extension.json');
+      fse = new File('$extension/dialplan.json');
     }
 
     Iterable<Change> gitChanges = await _git.changes(fse);
@@ -168,7 +214,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
         : model.User.noId;
 
     model.ObjectChange convertFilechange(FileChange fc) {
-      final List<String> parts = fc.filename.split('.');
+      final List<String> parts = fc.filename.split('/');
       final String name = parts[0];
 
       return new model.ReceptionDialplanChange(fc.changeType, name);
@@ -187,4 +233,10 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
 
     return changes;
   }
+
+  /**
+   *
+   */
+  Future<String> changeLog(String extension) async =>
+      logChanges ? new ChangeLogger('$path/$extension').contents() : '';
 }

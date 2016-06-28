@@ -13,26 +13,50 @@
 
 part of openreception.framework.filestore;
 
+/**
+ * Filestore for persistent storage of [model.CalenarEntry] objects.
+ */
 class Calendar implements storage.Calendar {
+  /// Internal log stream
   final Logger _log = new Logger('$libraryName.Calendar');
+
+  /// Root path to where the object files are stored
   final String path;
 
+  /// Determines whether or not to write object changes to a changelog
+  final bool logChanges;
+
+  /// Internal sequencer. Keeps track of which id's has been used.
   Sequencer _sequencer;
+
+  /// Revision engine. Keeps track of object changes and who performs them.
   GitEngine _git;
 
+  /// Returns when the filestore is initialized
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
+
+  /// Returns when the filestore is initialized and ready - not busy
+  /// performing object changes.
   Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
-  Bus<event.CalendarChange> _changeBus = new Bus<event.CalendarChange>();
+  /// Spawns events on every object change. May be used by external classes
+  /// to, for instance, maintain caches./
   Stream<event.CalendarChange> get changeStream => _changeBus.stream;
 
+  /// Internal change bus. Exposed externally by [changeStream]
+  final Bus<event.CalendarChange> _changeBus = new Bus<event.CalendarChange>();
+
+  /// Returns the next available ID from the sequencer. Notice that every
+  /// call to this function will increase the counter in the
+  /// sequencer object .
   int get _nextId => _sequencer.nextInt();
 
   /**
    *
    */
-  Calendar(String this.path, [GitEngine this._git]) {
+  Calendar(String this.path, [GitEngine this._git, bool enableChangelog])
+      : this.logChanges = (enableChangelog != null) ? enableChangelog : true {
     final List<String> pathsToCreate = [path];
 
     pathsToCreate.forEach((String newPath) {
@@ -107,9 +131,8 @@ class Calendar implements storage.Calendar {
 
     entry.id = _nextId;
     entry.lastAuthorId = modifier.id;
-    final String ownerPath = '$path/${owner.id}/calendar';
 
-    final Directory ownerDir = new Directory(ownerPath);
+    final Directory ownerDir = _ownerDir(owner.id);
     try {
       ownerDir.createSync();
     } catch (e) {
@@ -133,6 +156,11 @@ class Calendar implements storage.Calendar {
           'uid:${modifier.id} - ${modifier.name}'
           'added ${entry.id} to ${owner}',
           _authorString(modifier));
+    }
+
+    if (logChanges) {
+      new ChangeLogger(ownerDir.path).add(
+          new model.CalendarChangelogEntry.create(modifier.reference, entry));
     }
 
     _changeBus
@@ -216,13 +244,13 @@ class Calendar implements storage.Calendar {
           new model.CalendarChangelogEntry.delete(modifier.reference, eid));
     }
 
-    trashNotify(eid, owner, modifier);
+    _deleteNotify(eid, owner, modifier);
   }
 
   /**
-   *
+   * Notifies listeners of the [changeStream] that an item has been deleted.
    */
-  void trashNotify(int eid, model.Owner owner, model.User modifier) =>
+  void _deleteNotify(int eid, model.Owner owner, model.User modifier) =>
       _changeBus.fire(new event.CalendarChange.delete(eid, owner, modifier.id));
 
   /**
@@ -249,9 +277,26 @@ class Calendar implements storage.Calendar {
           _authorString(modifier));
     }
 
+    if (logChanges) {
+      new ChangeLogger(ownerDir.path).add(
+          new model.CalendarChangelogEntry.update(modifier.reference, entry));
+    }
+
     _changeBus
         .fire(new event.CalendarChange.update(entry.id, owner, modifier.id));
 
     return entry;
   }
+
+  /**
+   *
+   */
+  Future<String> changeLog(int ownerId) async =>
+      logChanges ? new ChangeLogger(_ownerDir(ownerId).path).contents() : '';
+
+  /**
+   *
+   */
+  Directory _ownerDir(int ownerId) =>
+      new Directory('$path/${ownerId}/calendar');
 }

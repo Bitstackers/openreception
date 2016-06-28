@@ -113,13 +113,25 @@ class DataStore {
       User this.userStore);
 }
 
+/**
+ *
+ */
 class ChangeLogger {
   final File logFile;
+  final Logger _log =
+      new Logger('openreception.framework.filestore.ChangeLogger');
 
+  /**
+   *
+   */
   ChangeLogger(String filepath)
       : logFile = new File(filepath + '/changes.log') {
-    if (!logFile.existsSync()) {
-      logFile.create();
+    try {
+      if (!logFile.existsSync()) {
+        logFile.createSync();
+      }
+    } on FileSystemException catch (e) {
+      _log.warning('Failed to create changelogfile', e);
     }
   }
 
@@ -133,6 +145,7 @@ class ChangeLogger {
   /**
    *
    */
-  Future<String> contents() async =>
-      (await new File(logFile.path).readAsString());
+  Future<String> contents() async => new File(logFile.path).existsSync()
+      ? (await new File(logFile.path).readAsString())
+      : '';
 }

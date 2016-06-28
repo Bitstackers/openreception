@@ -19,6 +19,8 @@ class Reception implements storage.Reception {
   final Sequencer _sequencer;
   final GitEngine _git;
   final Calendar calendarStore;
+  final bool logChanges;
+  final Directory trashDir;
 
   Bus<event.ReceptionChange> _changeBus = new Bus<event.ReceptionChange>();
   Stream<event.ReceptionChange> get onReceptionChange => _changeBus.stream;
@@ -30,10 +32,9 @@ class Reception implements storage.Reception {
   int get _nextId => _sequencer.nextInt();
 
   /**
-  * TODO:
-  *  - Add "link" operations for linking messages to this datastore.
+   *
    */
-  factory Reception(String path, [GitEngine _git]) {
+  factory Reception(String path, [GitEngine _git, bool enableChangelog]) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
     }
@@ -43,15 +44,24 @@ class Reception implements storage.Reception {
           .shout('Failed to initialize git engine', error, stackTrace));
     }
 
-    return new Reception._internal(
-        path, new Calendar(path, _git), new Sequencer(path), _git);
+    if (enableChangelog == null) {
+      enableChangelog = true;
+    }
+
+    final Directory trashDir = new Directory(path + '/.trash');
+    if (!trashDir.existsSync()) {
+      trashDir.createSync();
+    }
+
+    return new Reception._internal(path, new Calendar(path, _git),
+        new Sequencer(path), _git, enableChangelog, trashDir);
   }
 
   /**
    *
    */
   Reception._internal(String this.path, this.calendarStore, this._sequencer,
-      GitEngine this._git) {
+      GitEngine this._git, bool this.logChanges, this.trashDir) {
     if (_git != null) {
       _git.addIgnoredPath(_sequencer.sequencerFilePath);
     }
@@ -61,15 +71,14 @@ class Reception implements storage.Reception {
    *
    */
   Future<Iterable<model.ReceptionReference>> _receptionsOfOrg(int oid) async {
-    List<FileSystemEntity> dirs = new Directory(path)
-        .listSync()
-        .where((fse) => !fse.path.endsWith('.git') && fse is Directory);
+    List<FileSystemEntity> dirs = new Directory(path).listSync().where((fse) =>
+        isDirectory(fse) &&
+        new File(fse.path + '/reception.json').existsSync());
 
     return dirs
         .map((FileSystemEntity fse) {
           final reception = model.Reception.decode(JSON.decode(
               (new File(fse.path + '/reception.json')).readAsStringSync()));
-
           return reception;
         })
         .where((r) => r.oid == oid)
@@ -106,6 +115,12 @@ class Reception implements storage.Reception {
           _authorString(modifier));
     }
 
+    if (logChanges) {
+      new ChangeLogger('$path/${reception.id}').add(
+          new model.ReceptionChangelogEntry.create(
+              modifier.reference, reception));
+    }
+
     _changeBus
         .fire(new event.ReceptionChange.create(reception.id, modifier.id));
 
@@ -135,9 +150,9 @@ class Reception implements storage.Reception {
    *
    */
   Future<model.Reception> getByExtension(String extension) async {
-    List<FileSystemEntity> dirs = new Directory(path)
-        .listSync()
-        .where((fse) => !fse.path.endsWith('.git') && fse is Directory);
+    List<FileSystemEntity> dirs = new Directory(path).listSync().where((fse) =>
+        isDirectory(fse) &&
+        new File(fse.path + '/reception.json').existsSync());
 
     return dirs.map((FileSystemEntity fse) {
       final reception = model.Reception.decode(JSON
@@ -151,22 +166,15 @@ class Reception implements storage.Reception {
   /**
    *
    */
-  Future<Iterable<Map<String, model.ReceptionReference>>> extensionMap() {
-    throw new UnimplementedError();
-  }
-
-  /**
-   *
-   */
   Future<String> extensionOf(int id) async => (await get(id)).dialplan;
 
   /**
    *
    */
   Future<Iterable<model.ReceptionReference>> list() async {
-    List<FileSystemEntity> dirs = new Directory(path)
-        .listSync()
-        .where((fse) => !fse.path.endsWith('.git') && fse is Directory);
+    List<FileSystemEntity> dirs = new Directory(path).listSync().where((fse) =>
+        isDirectory(fse) &&
+        new File(fse.path + '/reception.json').existsSync());
 
     return dirs.map((FileSystemEntity fse) {
       final reception = model.Reception.decode(JSON
@@ -176,27 +184,32 @@ class Reception implements storage.Reception {
   }
 
   /**
-   * TODO: Delete directory non-recursively.
+   *
    */
-  Future remove(int id, model.User modifier) async {
-    final Directory dir = new Directory('$path/${id}');
+  Future remove(int rid, model.User modifier) async {
+    final Directory receptionDir = new Directory('$path/${rid}');
 
-    if (!dir.existsSync()) {
+    if (!receptionDir.existsSync()) {
       throw new storage.NotFound();
     }
 
-    _log.finest('Deleting file ${dir.path}');
+    _log.finest('Deleting file ${receptionDir.path}');
     if (this._git != null) {
       await _git.remove(
-          dir,
+          receptionDir,
           'uid:${modifier.id} - ${modifier.name} '
-          'removed $id',
+          'removed $rid',
           _authorString(modifier));
-    } else {
-      dir.deleteSync(recursive: true);
     }
 
-    _changeBus.fire(new event.ReceptionChange.delete(id, modifier.id));
+    if (logChanges) {
+      new ChangeLogger('$path/${rid}').add(
+          new model.ReceptionChangelogEntry.delete(modifier.reference, rid));
+    }
+
+    await receptionDir.rename(trashDir.path + '/${rid}');
+
+    _changeBus.fire(new event.ReceptionChange.delete(rid, modifier.id));
   }
 
   /**
@@ -222,7 +235,12 @@ class Reception implements storage.Reception {
           _authorString(modifier));
     }
 
-    _changeBus.fire(new event.ReceptionChange.create(rec.id, modifier.id));
+    if (logChanges) {
+      new ChangeLogger('$path/${rec.id}').add(
+          new model.ReceptionChangelogEntry.update(modifier.reference, rec));
+    }
+
+    _changeBus.fire(new event.ReceptionChange.update(rec.id, modifier.id));
 
     return rec.reference;
   }
@@ -269,4 +287,10 @@ class Reception implements storage.Reception {
 
     return changes;
   }
+
+  /**
+   *
+   */
+  Future<String> changeLog(int rid) async =>
+      logChanges ? new ChangeLogger('$path/$rid').contents() : '';
 }

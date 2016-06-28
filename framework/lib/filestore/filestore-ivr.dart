@@ -17,6 +17,8 @@ class Ivr implements storage.Ivr {
   final Logger _log = new Logger('$libraryName.Ivr');
   final String path;
   GitEngine _git;
+  final bool logChanges;
+  final Directory trashDir;
 
   Bus<event.IvrMenuChange> _changeBus = new Bus<event.IvrMenuChange>();
   Stream<event.IvrMenuChange> get onChange => _changeBus.stream;
@@ -28,22 +30,34 @@ class Ivr implements storage.Ivr {
   /**
    *
    */
-  Ivr(String this.path, [GitEngine this._git]) {
+  factory Ivr(String path, [GitEngine revisionEngine, bool enableChangelog]) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
     }
 
-    if (this._git != null) {
-      _git.init().catchError((error, stackTrace) => Logger.root
+    final Directory trashDir = new Directory(path + '/.trash')..createSync();
+
+    if (revisionEngine != null) {
+      revisionEngine.init().catchError((error, stackTrace) => Logger.root
           .shout('Failed to initialize git engine', error, stackTrace));
     }
+
+    return new Ivr._internal(path, revisionEngine,
+        (enableChangelog != null) ? enableChangelog : true, trashDir);
   }
 
   /**
    *
    */
+  Ivr._internal(
+      String this.path, GitEngine this._git, this.logChanges, this.trashDir);
+
+  /**
+   *
+   */
   Future<model.IvrMenu> create(model.IvrMenu menu, model.User modifier) async {
-    final File file = new File('$path/${menu.name}.json');
+    final Directory menuDir = new Directory('$path/${menu.name}')..createSync();
+    final File file = new File('${menuDir.path}/menu.json');
 
     if (file.existsSync()) {
       throw new storage.ClientError(
@@ -60,6 +74,11 @@ class Ivr implements storage.Ivr {
           _authorString(modifier));
     }
 
+    if (logChanges) {
+      new ChangeLogger(menuDir.path)
+          .add(new model.IvrChangelogEntry.create(modifier.reference, menu));
+    }
+
     _changeBus.fire(new event.IvrMenuChange.create(menu.name, modifier.id));
 
     return menu;
@@ -69,7 +88,7 @@ class Ivr implements storage.Ivr {
    *
    */
   Future<model.IvrMenu> get(String menuName) async {
-    final File file = new File('$path/${menuName}.json');
+    final File file = new File('$path/${menuName}/menu.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound('No file with name ${menuName}');
@@ -89,15 +108,17 @@ class Ivr implements storage.Ivr {
    */
   Future<Iterable<model.IvrMenu>> list() async => new Directory(path)
       .listSync()
-      .where((fse) => fse is File && fse.path.endsWith('.json'))
-      .map((FileSystemEntity fse) =>
-          model.IvrMenu.decode(JSON.decode((fse as File).readAsStringSync())));
+      .where((fse) =>
+          isDirectory(fse) && new File(fse.path + '/menu.json').existsSync())
+      .map((FileSystemEntity fse) => model.IvrMenu.decode(
+          JSON.decode((new File(fse.path + '/menu.json')).readAsStringSync())));
 
   /**
    *
    */
   Future<model.IvrMenu> update(model.IvrMenu menu, model.User modifier) async {
-    final File file = new File('$path/${menu.name}.json');
+    final Directory menuDir = new Directory('$path/${menu.name}');
+    final File file = new File('${menuDir.path}/menu.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
@@ -113,6 +134,11 @@ class Ivr implements storage.Ivr {
           _authorString(modifier));
     }
 
+    if (logChanges) {
+      new ChangeLogger(menuDir.path)
+          .add(new model.IvrChangelogEntry.update(modifier.reference, menu));
+    }
+
     _changeBus.fire(new event.IvrMenuChange.update(menu.name, modifier.id));
 
     return menu;
@@ -122,7 +148,8 @@ class Ivr implements storage.Ivr {
    *
    */
   Future remove(String menuName, model.User modifier) async {
-    final File file = new File('$path/${menuName}.json');
+    final Directory menuDir = new Directory('$path/${menuName}');
+    final File file = new File('${menuDir.path}/menu.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
@@ -134,9 +161,16 @@ class Ivr implements storage.Ivr {
           'uid:${modifier.id} - ${modifier.name} '
           'removed $menuName',
           _authorString(modifier));
-    } else {
-      file.deleteSync();
     }
+
+    if (logChanges) {
+      new ChangeLogger(menuDir.path).add(
+          new model.IvrChangelogEntry.delete(modifier.reference, menuName));
+    }
+
+    await menuDir.rename(trashDir.path +
+        '/${menuName}-${new DateTime.now().millisecondsSinceEpoch}');
+
     _changeBus.fire(new event.IvrMenuChange.delete(menuName, modifier.id));
   }
 
@@ -154,7 +188,7 @@ class Ivr implements storage.Ivr {
     if (menuName == null) {
       fse = new Directory('.');
     } else {
-      fse = new File('$menuName.json');
+      fse = new File('$menuName/menu.json');
     }
 
     Iterable<Change> gitChanges = await _git.changes(fse);
@@ -164,7 +198,7 @@ class Ivr implements storage.Ivr {
         : model.User.noId;
 
     model.ObjectChange convertFilechange(FileChange fc) {
-      final List<String> parts = fc.filename.split('.');
+      final List<String> parts = fc.filename.split('/');
       final String name = parts[0];
 
       return new model.IvrChange(fc.changeType, name);
@@ -183,4 +217,10 @@ class Ivr implements storage.Ivr {
 
     return changes;
   }
+
+  /**
+   *
+   */
+  Future<String> changeLog(String menuName) async =>
+      logChanges ? new ChangeLogger('$path/$menuName').contents() : '';
 }

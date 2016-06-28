@@ -18,8 +18,10 @@ class Organization implements storage.Organization {
   final String path;
   final Contact _contactFileStore;
   final Reception _receptionFileStore;
-  GitEngine _git;
-  Sequencer _sequencer;
+  final GitEngine _git;
+  final Sequencer _sequencer;
+  final bool logChanges;
+  final Directory trashDir;
 
   Bus<event.OrganizationChange> _changeBus =
       new Bus<event.OrganizationChange>();
@@ -35,20 +37,49 @@ class Organization implements storage.Organization {
   /**
    *
    */
-  Organization(
-      this._contactFileStore, this._receptionFileStore, String this.path,
-      [GitEngine this._git]) {
+  factory Organization(_contactFileStore, _receptionFileStore, String path,
+      [GitEngine _git, bool enableChangelog]) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
     }
 
-    _sequencer = new Sequencer(path);
-    if (this._git != null) {
+    final Directory trashDir = new Directory(path + '/.trash');
+    if (!trashDir.existsSync()) {
+      trashDir.createSync();
+    }
+
+    final _sequencer = new Sequencer(path);
+    if (_git != null) {
       _git.init().catchError((error, stackTrace) => Logger.root
           .shout('Failed to initialize git engine', error, stackTrace));
       _git.addIgnoredPath(_sequencer.sequencerFilePath);
     }
+
+    return new Organization._internal(
+        _contactFileStore,
+        _receptionFileStore,
+        path,
+        _git,
+        _sequencer,
+        (enableChangelog != null) ? enableChangelog : true,
+        trashDir);
   }
+
+  /**
+   *
+   */
+  Organization._internal(
+      this._contactFileStore,
+      this._receptionFileStore,
+      String this.path,
+      GitEngine this._git,
+      Sequencer this._sequencer,
+      bool this.logChanges,
+      Directory this.trashDir);
+
+  /**
+   *
+   */
 
   /**
    *
@@ -82,7 +113,8 @@ class Organization implements storage.Organization {
     }
     org.id = org.id != model.Organization.noId && enforceId ? org.id : _nextId;
 
-    final File file = new File('$path/${org.id}.json');
+    final Directory orgDir = new Directory('$path/${org.id}')..createSync();
+    final File file = new File('$path/${org.id}/organization.json');
 
     if (file.existsSync()) {
       throw new storage.ClientError(
@@ -99,6 +131,11 @@ class Organization implements storage.Organization {
           _authorString(modifier));
     }
 
+    if (logChanges) {
+      new ChangeLogger(orgDir.path).add(
+          new model.OrganizationChangelogEntry.create(modifier.reference, org));
+    }
+
     _changeBus.fire(new event.OrganizationChange.create(org.id, modifier.id));
 
     return org.reference;
@@ -108,10 +145,10 @@ class Organization implements storage.Organization {
    *
    */
   Future<model.Organization> get(int id) async {
-    final File file = new File('$path/${id}.json');
+    final File file = new File('$path/${id}/organization.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file with name ${id}');
+      throw new storage.NotFound('No file with name ${file.path}');
     }
 
     try {
@@ -129,32 +166,41 @@ class Organization implements storage.Organization {
   Future<Iterable<model.OrganizationReference>> list() async =>
       new Directory(path)
           .listSync()
-          .where((fse) => fse is File && fse.path.endsWith('.json'))
+          .where((FileSystemEntity fse) =>
+              isDirectory(fse) &&
+              new File(fse.path + '/organization.json').existsSync())
           .map((FileSystemEntity fse) => model.Organization
-              .decode(JSON.decode((fse as File).readAsStringSync()))
+              .decode(JSON.decode((new File(fse.path + '/organization.json'))
+                  .readAsStringSync()))
               .reference);
 
   /**
    *
    */
-  Future remove(int id, model.User modifier) async {
-    final File file = new File('$path/${id}.json');
+  Future remove(int oid, model.User modifier) async {
+    final Directory orgDir = new Directory('$path/${oid}');
+    final File file = new File('$path/${oid}/organization.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
+    }
+
+    if (logChanges) {
+      new ChangeLogger(orgDir.path).add(
+          new model.OrganizationChangelogEntry.delete(modifier.reference, oid));
     }
 
     if (this._git != null) {
       await _git.remove(
           file,
           'uid:${modifier.id} - ${modifier.name} '
-          'removed $id',
+          'removed $oid',
           _authorString(modifier));
     } else {
-      file.deleteSync();
+      await orgDir.rename(trashDir.path + '/${oid}');
     }
 
-    _changeBus.fire(new event.OrganizationChange.delete(id, modifier.id));
+    _changeBus.fire(new event.OrganizationChange.delete(oid, modifier.id));
   }
 
   /**
@@ -162,7 +208,8 @@ class Organization implements storage.Organization {
    */
   Future<model.OrganizationReference> update(
       model.Organization org, model.User modifier) async {
-    final File file = new File('$path/${org.id}.json');
+    final Directory orgDir = new Directory('$path/${org.id}');
+    final File file = new File('$path/${org.id}/organization.json');
 
     if (org.id == model.Organization.noId) {
       throw new storage.ClientError('uuid may not be "noId"');
@@ -180,6 +227,11 @@ class Organization implements storage.Organization {
           'uid:${modifier.id} - ${modifier.name} '
           'updated ${org.name}',
           _authorString(modifier));
+    }
+
+    if (logChanges) {
+      new ChangeLogger(orgDir.path).add(
+          new model.OrganizationChangelogEntry.update(modifier.reference, org));
     }
 
     _changeBus.fire(new event.OrganizationChange.update(org.id, modifier.id));
@@ -207,7 +259,7 @@ class Organization implements storage.Organization {
     if (oid == null) {
       fse = new Directory('.');
     } else {
-      fse = new File('$oid.json');
+      fse = new File('$oid/organization.json');
     }
 
     Iterable<Change> gitChanges = await _git.changes(fse);
@@ -217,7 +269,7 @@ class Organization implements storage.Organization {
         : model.User.noId;
 
     model.OrganizationChange convertFilechange(FileChange fc) {
-      final int id = int.parse(fc.filename.split('.').first);
+      final int id = int.parse(fc.filename.split('/').first);
 
       return new model.OrganizationChange(fc.changeType, id);
     }
@@ -235,4 +287,10 @@ class Organization implements storage.Organization {
 
     return changes;
   }
+
+  /**
+   *
+   */
+  Future<String> changeLog(int oid) async =>
+      logChanges ? new ChangeLogger('$path/$oid').contents() : '';
 }

@@ -18,9 +18,12 @@ class Contact implements storage.Contact {
   final String path;
   final Reception receptionStore;
   final GitEngine _git;
+  final Directory trashDir;
+
   Sequencer _sequencer;
   final Calendar calendarStore;
   final Map<int, String> _index = {};
+  final bool logChanges;
 
   Stream<event.ContactChange> get onContactChange => _changeBus.stream;
   Stream<event.ReceptionData> get onReceptionDataChange =>
@@ -39,7 +42,8 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  factory Contact(Reception receptionStore, String path, [GitEngine ge]) {
+  factory Contact(Reception receptionStore, String path,
+      [GitEngine ge, bool enableChangelog]) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
     }
@@ -49,15 +53,24 @@ class Contact implements storage.Contact {
           .shout('Failed to initialize git engine', error, stackTrace));
     }
 
-    return new Contact._internal(
-        path, receptionStore, new Calendar(path, ge), ge);
+    if (enableChangelog == null) {
+      enableChangelog = true;
+    }
+
+    final Directory trashDir = new Directory(path + '/.trash');
+    if (!trashDir.existsSync()) {
+      trashDir.createSync();
+    }
+
+    return new Contact._internal(path, receptionStore, new Calendar(path, ge),
+        ge, enableChangelog, trashDir);
   }
 
   /**
    *
    */
   Contact._internal(String this.path, this.receptionStore, this.calendarStore,
-      GitEngine this._git) {
+      GitEngine this._git, this.logChanges, this.trashDir) {
     _buildIndex();
     if (_git != null) {
       _git.addIgnoredPath(_sequencer.sequencerFilePath);
@@ -105,7 +118,8 @@ class Contact implements storage.Contact {
     if (attr.receptionId == model.Reception.noId) {
       throw new ArgumentError('attr.receptionId must be valid');
     }
-    final recDir = new Directory('$path/${attr.cid}/receptions');
+
+    final recDir = _receptionDir(attr.cid);
     if (!recDir.existsSync()) {
       recDir.createSync();
     }
@@ -128,6 +142,12 @@ class Contact implements storage.Contact {
           _authorString(modifier));
     }
 
+    if (logChanges) {
+      new ChangeLogger(recDir.path).add(
+          new model.ReceptionDataChangelogEntry.create(
+              modifier.reference, attr));
+    }
+
     _receptionDataChangeBus.fire(new event.ReceptionData.create(
         attr.cid, attr.receptionId, modifier.id));
   }
@@ -142,7 +162,7 @@ class Contact implements storage.Contact {
         ? contact.id
         : _nextId;
 
-    final Directory dir = new Directory('$path/${contact.id}');
+    final Directory dir = _contactDir(contact.id);
 
     if (dir.existsSync()) {
       throw new storage.ClientError(
@@ -164,6 +184,11 @@ class Contact implements storage.Contact {
           'uid:${modifier.id} - ${modifier.name} '
           'added ${contact.id}',
           _authorString(modifier));
+    }
+
+    if (logChanges) {
+      new ChangeLogger(dir.path).add(
+          new model.ContactChangelogEntry.create(modifier.reference, contact));
     }
 
     _changeBus.fire(new event.ContactChange.create(contact.id, modifier.id));
@@ -196,7 +221,7 @@ class Contact implements storage.Contact {
    *
    */
   Future<model.ReceptionAttributes> data(int id, int receptionId) async {
-    final file = new File('$path/$id/receptions/$receptionId.json');
+    final file = _receptionFile(id, receptionId);
     if (!file.existsSync()) {
       throw new storage.NotFound('No file: ${file.path}');
     }
@@ -210,7 +235,7 @@ class Contact implements storage.Contact {
    */
   Future<Iterable<model.BaseContact>> list() async {
     if (!new Directory(path).existsSync()) {
-      return [];
+      return const [];
     }
 
     return Future.wait(_index.keys.map(get));
@@ -220,7 +245,7 @@ class Contact implements storage.Contact {
    *
    */
   Future<Iterable<model.ReceptionReference>> receptions(int cid) async {
-    final rDir = new Directory(path + '/$cid/receptions');
+    final rDir = _receptionDir(cid);
     if (!rDir.existsSync()) {
       return [];
     }
@@ -309,39 +334,53 @@ class Contact implements storage.Contact {
   }
 
   /**
-   *
+   * Trashes a [model.BaseContact] object, identified by [cid], from this
+   * filestore. This action will also delete every other object directly
+   * associated with the [model.BaseContact] object. For example, if a
+   * [model.BaseContact] object has a number of [model.CalendarEntry] and
+   * [model.ReceptionAttributes] object, these will trashed along with the
+   * [model.BaseContact] object. Every object removed will spawn an
+   * appropriate delete event, that allows clients and stores to update
+   * caches or views accordingly.
    */
   Future remove(int cid, model.User modifier) async {
     if (!_index.containsKey(cid)) {
       throw new storage.NotFound();
     }
 
+    final Directory contactDir = new Directory('$path/${cid}');
+
     /// Remove reception references.
     await Future.forEach(await receptions(cid), (rRef) async {
-      await removeData(cid, rRef.id, modifier);
+      _receptionDataChangeBus
+          .fire(new event.ReceptionData.delete(cid, rRef.id, modifier.id));
     });
 
     /// Remove calendar entries.
     final model.Owner owner = new model.OwningContact(cid);
     await Future.forEach(await calendarStore.list(owner),
         (model.CalendarEntry entry) async {
-      await calendarStore.remove(entry.id, owner, modifier);
+      await calendarStore._deleteNotify(entry.id, owner, modifier);
     });
 
-    /// Go ahead and remove the file.
-    final File contactFile = new File(_index[cid]);
-
     if (this._git != null) {
+      /// Go ahead and remove the file.
+      final File contactFile = new File(_index[cid]);
       await _git.remove(
           contactFile,
           'uid:${modifier.id} - ${modifier.name} '
           'removed $cid',
           _authorString(modifier));
-    } else {
-      await contactFile.delete();
     }
 
     _index.remove(cid);
+
+    if (logChanges) {
+      new ChangeLogger(contactDir.path)
+          .add(new model.ContactChangelogEntry.delete(modifier.reference, cid));
+    }
+
+    await contactDir.rename(trashDir.path + '/${cid}');
 
     _changeBus.fire(new event.ContactChange.delete(cid, modifier.id));
   }
@@ -372,6 +411,12 @@ class Contact implements storage.Contact {
       file.deleteSync();
     }
 
+    if (logChanges) {
+      new ChangeLogger(recDir.path).add(
+          new model.ReceptionDataChangelogEntry.delete(
+              modifier.reference, id, receptionId));
+    }
+
     _receptionDataChangeBus
         .fire(new event.ReceptionData.delete(id, receptionId, modifier.id));
   }
@@ -395,6 +440,11 @@ class Contact implements storage.Contact {
           'uid:${modifier.id} - ${modifier.name} '
           'updated ${contact.name}',
           _authorString(modifier));
+    }
+
+    if (logChanges) {
+      new ChangeLogger('$path/${contact.id}').add(
+          new model.ContactChangelogEntry.update(modifier.reference, contact));
     }
 
     _changeBus.fire(new event.ContactChange.update(contact.id, modifier.id));
@@ -426,12 +476,22 @@ class Contact implements storage.Contact {
           _authorString(modifier));
     }
 
+    if (logChanges) {
+      new ChangeLogger(recDir.path).add(
+          new model.ReceptionDataChangelogEntry.update(
+              modifier.reference, attr));
+    }
+
     _receptionDataChangeBus.fire(new event.ReceptionData.update(
         attr.cid, attr.receptionId, modifier.id));
   }
 
   /**
-   *
+   * Lists Git commits on stored objects. The type of objects may be either
+   * [model.BaseContact] or [model.ReceptionAttributes] or both - based
+   * on how many parameters are passed.
+   * Throws [UnsupportedError] if the filestore is instantiated without
+   * Git revisioning.
    */
   Future<Iterable<model.Commit>> changes([int cid, int rid]) async {
     if (this._git == null) {
@@ -447,7 +507,7 @@ class Contact implements storage.Contact {
       if (rid == null) {
         fse = new Directory('$cid');
       } else {
-        fse = new Directory('$cid/receptions/$rid.json');
+        fse = new File('$cid/receptions/$rid.json');
       }
     }
 
@@ -484,4 +544,32 @@ class Contact implements storage.Contact {
 
     return changes;
   }
+
+  /**
+   *
+   */
+  Future<String> changeLog(int cid) async =>
+      logChanges ? new ChangeLogger(_contactDir(cid).path).contents() : '';
+
+  /**
+   *
+   */
+  Future<String> receptionChangeLog(int cid) async =>
+      logChanges ? new ChangeLogger(_receptionDir(cid).path).contents() : '';
+
+  /**
+   *
+   */
+  Directory _receptionDir(int cid) => new Directory('$path/${cid}/receptions');
+
+  /**
+   *
+   */
+  File _receptionFile(int cid, int rid) =>
+      new File('$path/$cid/receptions/$rid.json');
+
+  /**
+   *
+   */
+  Directory _contactDir(int cid) => new Directory('$path/${cid}');
 }

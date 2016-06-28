@@ -16,8 +16,10 @@ part of openreception.framework.filestore;
 class User implements storage.User {
   final Logger _log = new Logger('$libraryName.User');
   final String path;
-  GitEngine _git;
-  Sequencer _sequencer;
+  final GitEngine _git;
+  final Sequencer _sequencer;
+  final bool logChanges;
+  final Directory trashDir;
 
   Bus<event.UserChange> _changeBus = new Bus<event.UserChange>();
   Stream<event.UserChange> get onUserChange => _changeBus.stream;
@@ -29,21 +31,35 @@ class User implements storage.User {
   int get _nextId => _sequencer.nextInt();
 
   /**
-  * TODO:
-  *  - Add "link" operations for linking messages to this datastore.
-  */
-  User(String this.path, [GitEngine this._git]) {
+   *
+   */
+  factory User(String path, [GitEngine gitEngine, bool enableChangelog]) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
     }
 
-    _sequencer = new Sequencer(path);
-    if (this._git != null) {
-      _git.init().catchError((error, stackTrace) => Logger.root
+    final sequencer = new Sequencer(path);
+
+    if (gitEngine != null) {
+      gitEngine.init().catchError((error, stackTrace) => Logger.root
           .shout('Failed to initialize git engine', error, stackTrace));
-      _git.addIgnoredPath(_sequencer.sequencerFilePath);
+      gitEngine.addIgnoredPath(sequencer.sequencerFilePath);
     }
+
+    final Directory trashDir = new Directory(path + '/.trash');
+    if (!trashDir.existsSync()) {
+      trashDir.createSync();
+    }
+
+    return new User._internal(path, sequencer, gitEngine,
+        (enableChangelog != null) ? enableChangelog : true, trashDir);
   }
+
+  /**
+   *
+   */
+  User._internal(
+      this.path, this._sequencer, this._git, this.logChanges, this.trashDir);
 
   /**
    *
@@ -58,10 +74,10 @@ class User implements storage.User {
    *
    */
   Future<model.User> get(int uid) async {
-    final File file = new File('$path/${uid}.json');
+    final File file = new File('$path/${uid}/user.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file with name ${uid}');
+      throw new storage.NotFound('No file with name ${file.path}');
     }
 
     try {
@@ -96,9 +112,11 @@ class User implements storage.User {
    */
   Future<Iterable<model.UserReference>> list() async => new Directory(path)
       .listSync()
-      .where((fse) => fse is File && fse.path.endsWith('.json'))
+      .where((fse) =>
+          isDirectory(fse) && new File(fse.path + '/user.json').existsSync())
       .map((FileSystemEntity fse) => model.User
-          .decode(JSON.decode((fse as File).readAsStringSync()))
+          .decode(
+              JSON.decode(new File(fse.path + '/user.json').readAsStringSync()))
           .reference);
 
   /**
@@ -108,7 +126,8 @@ class User implements storage.User {
       {bool enforceId: false}) async {
     user.id = user.id != model.User.noId && enforceId ? user.id : _nextId;
 
-    final File file = new File('$path/${user.id}.json');
+    final Directory userdir = new Directory('$path/${user.id}')..createSync();
+    final File file = new File('${userdir.path}/user.json');
 
     if (file.existsSync()) {
       throw new storage.ClientError(
@@ -123,6 +142,11 @@ class User implements storage.User {
           'uid:${modifier.id} - ${modifier.name} '
           'added ${user.id}',
           _authorString(modifier));
+    }
+
+    if (logChanges) {
+      new ChangeLogger(userdir.path)
+          .add(new model.UserChangelogEntry.create(modifier.reference, user));
     }
 
     _changeBus.fire(new event.UserChange.create(user.id, modifier.id));
@@ -144,7 +168,7 @@ class User implements storage.User {
     if (uid == null) {
       fse = new Directory('.');
     } else {
-      fse = new File('$uid.json');
+      fse = new File('$uid/user.json');
     }
 
     Iterable<Change> gitChanges = await _git.changes(fse);
@@ -154,7 +178,7 @@ class User implements storage.User {
         : model.User.noId;
 
     model.UserChange convertFilechange(FileChange fc) {
-      final int id = int.parse(fc.filename.split('.').first);
+      final int id = int.parse(fc.filename.split('/').first);
 
       return new model.UserChange(fc.changeType, id);
     }
@@ -178,7 +202,8 @@ class User implements storage.User {
    */
   Future<model.UserReference> update(
       model.User user, model.User modifier) async {
-    final File file = new File('$path/${user.id}.json');
+    final Directory userdir = new Directory('$path/${user.id}');
+    final File file = new File('${userdir.path}/user.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
@@ -194,6 +219,11 @@ class User implements storage.User {
           _authorString(modifier));
     }
 
+    if (logChanges) {
+      new ChangeLogger(userdir.path)
+          .add(new model.UserChangelogEntry.update(modifier.reference, user));
+    }
+
     _changeBus.fire(new event.UserChange.update(user.id, modifier.id));
 
     return user.reference;
@@ -202,22 +232,33 @@ class User implements storage.User {
   /**
    *
    */
-  Future remove(int id, model.User modifier) async {
-    final File file = new File('$path/${id}.json');
+  Future remove(int uid, model.User modifier) async {
+    final Directory userdir = new Directory('$path/${uid}');
 
-    if (!file.existsSync()) {
+    if (!userdir.existsSync()) {
       throw new storage.NotFound();
     }
 
     if (this._git != null) {
       await _git.remove(
-          file,
+          userdir,
           'uid:${modifier.id} - ${modifier.name} '
-          'removed $id',
+          'removed $uid',
           _authorString(modifier));
-    } else {
-      file.deleteSync();
     }
-    _changeBus.fire(new event.UserChange.delete(id, modifier.id));
+
+    if (logChanges) {
+      new ChangeLogger(userdir.path)
+          .add(new model.UserChangelogEntry.delete(modifier.reference, uid));
+    }
+    await userdir.rename(trashDir.path + '/${uid}');
+
+    _changeBus.fire(new event.UserChange.delete(uid, modifier.id));
   }
+
+  /**
+   *
+   */
+  Future<String> changeLog(int uid) async =>
+      logChanges ? new ChangeLogger('$path/$uid').contents() : '';
 }
