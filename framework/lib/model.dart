@@ -14,6 +14,7 @@
 library openreception.framework.model;
 
 import 'dart:async';
+
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
@@ -21,6 +22,7 @@ import 'package:path/path.dart' as path;
 import 'bus.dart';
 import 'event.dart' as _event;
 import 'keys.dart' as key;
+import 'model/dialplan/model-dialplan.dart';
 import 'pbx-keys.dart';
 import 'util.dart' as util;
 
@@ -42,9 +44,9 @@ part 'model/model-client_configuration.dart';
 part 'model/model-client_connection.dart';
 part 'model/model-message.dart';
 part 'model/model-message_context.dart';
-part 'model/model-message_flag.dart';
 part 'model/model-message_endpoint.dart';
 part 'model/model-message_filter.dart';
+part 'model/model-message_flag.dart';
 part 'model/model-message_queue_item.dart';
 part 'model/model-organization.dart';
 part 'model/model-origination_context.dart';
@@ -53,8 +55,8 @@ part 'model/model-peer.dart';
 part 'model/model-peer_account.dart';
 part 'model/model-phone_number.dart';
 part 'model/model-playlist.dart';
-part 'model/model-reception_attributes.dart';
 part 'model/model-reception.dart';
+part 'model/model-reception_attributes.dart';
 part 'model/model-template.dart';
 part 'model/model-template_email.dart';
 part 'model/model-template_sms.dart';
@@ -62,3 +64,7 @@ part 'model/model-user.dart';
 part 'model/model-user_status.dart';
 
 const String libraryName = "openreception.model";
+
+abstract class ChangelogEntry {
+  dynamic toJson();
+}
