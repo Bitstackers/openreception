@@ -27,7 +27,6 @@ part 'resource/resource-contact.dart';
 part 'resource/resource-distribution_list.dart';
 part 'resource/resource-endpoint.dart';
 part 'resource/resource-ivr.dart';
-part 'resource/resource-management.dart';
 part 'resource/resource-message.dart';
 part 'resource/resource-notification.dart';
 part 'resource/resource-organization.dart';
