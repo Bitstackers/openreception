@@ -512,7 +512,7 @@ class MessageCache {
   /**
    *
    */
-  Future<List<int>> listSaved() async {
+  Future<List<int>> listDrafts() async {
     if (_draftListCache.isEmpty) {
       _draftListCache = new GZipEncoder()
           .encode(UTF8.encode(JSON.encode(await _messageStore.listDrafts())));
