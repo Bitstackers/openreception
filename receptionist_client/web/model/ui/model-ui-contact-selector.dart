@@ -19,6 +19,8 @@ part of model;
 class UIContactSelector extends UIModel {
   final Bus<ContactWithFilterContext> _bus =
       new Bus<ContactWithFilterContext>();
+  final Bus<Event> _ctrlEnterBus = new Bus<Event>();
+  final Bus<Event> _ctrlSBus = new Bus<Event>();
   final Map<String, String> _langMap;
   final DivElement _myRoot;
   final Controller.Popup _popup;
@@ -260,6 +262,16 @@ class UIContactSelector extends UIModel {
   }
 
   /**
+   * Fires whenever ctrl+enter is pressed while this widget is in focus.
+   */
+  Stream<Event> get onCtrlEnter => _ctrlEnterBus.stream;
+
+  /**
+   * Fires whenever ctrl+s is pressed while this widget is in focus.
+   */
+  Stream<Event> get onCtrlS => _ctrlSBus.stream;
+
+  /**
    * Fires the selected [ContactWithFilterContext].
    */
   Stream<ContactWithFilterContext> get onSelect => _bus.stream;
@@ -321,7 +333,11 @@ class UIContactSelector extends UIModel {
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
-    final Map<String, EventListener> bindings = {'Esc': _reset};
+    final Map<String, EventListener> bindings = {
+      'Esc': _reset,
+      'Ctrl+enter': _ctrlEnterBus.fire,
+      'Ctrl+s': _ctrlSBus.fire
+    };
 
     _hotKeys.registerKeysPreventDefault(
         _keyboard, _defaultKeyMap(myKeys: bindings));

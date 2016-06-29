@@ -148,6 +148,14 @@ class MessageCompose extends ViewWidget {
     _contactSelector.onSelect.listen(
         (Model.ContactWithFilterContext c) => _render(c.contact, c.attr));
 
+    _contactSelector.onCtrlEnter.listen((_) {
+      _ui.sendButton.click();
+    });
+
+    _contactSelector.onCtrlS.listen((_) {
+      _ui.draftButton.click();
+    });
+
     _notification.onAnyCallStateChange.listen((OREvent.CallEvent event) {
       if (event.call.assignedTo == _appState.currentUser.id &&
           event.call.state == ORModel.CallState.hungup) {
