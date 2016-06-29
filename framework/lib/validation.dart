@@ -302,3 +302,16 @@ List<FormatException> validateBaseContact(BaseContact bc) {
 
   return errors;
 }
+
+/**
+ *
+ */
+List<FormatException> validateReceptionDialplan(ReceptionDialplan rdp) {
+  List<FormatException> errors = [];
+
+  if (rdp.extension.isEmpty) {
+    errors.add(new FormatException('Name should not be empty'));
+  }
+
+  return errors;
+}
