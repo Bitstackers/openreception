@@ -53,7 +53,7 @@ class UIMessageCompose extends UIModel {
       _root.querySelector('.phone-numbers input.cell');
   InputElement get _companyNameInput =>
       _root.querySelector('.names input.company');
-  ButtonElement get _draftButton => _root.querySelector('.buttons .draft');
+  ButtonElement get draftButton => _root.querySelector('.buttons .draft');
   InputElement get _extensionInput =>
       _root.querySelector('.phone-numbers input.extension');
   InputElement get _haveCalledInput =>
@@ -68,7 +68,7 @@ class UIMessageCompose extends UIModel {
   DivElement get _recipientsDiv => _root.querySelector('.recipients');
   OListElement get _recipientsList =>
       _root.querySelector('.recipients .generic-widget-list');
-  ButtonElement get _sendButton => _root.querySelector('.buttons .send');
+  ButtonElement get sendButton => _root.querySelector('.buttons .send');
   SpanElement get _showRecipientsSpan =>
       _root.querySelector('.show-recipients');
   SpanElement get _showRecipientsText =>
@@ -233,12 +233,12 @@ class UIMessageCompose extends UIModel {
   /**
    * Return the click event stream for the draft button.
    */
-  Stream<MouseEvent> get onDraft => _draftButton.onClick;
+  Stream<MouseEvent> get onDraft => draftButton.onClick;
 
   /**
    * Return the click event stream for the send button.
    */
-  Stream<MouseEvent> get onSend => _sendButton.onClick;
+  Stream<MouseEvent> get onSend => sendButton.onClick;
 
   /**
    * Return the Set of [ORModel.MessageRecipient]. May return the empty set.
@@ -364,8 +364,8 @@ class UIMessageCompose extends UIModel {
    */
   void _setupLocalKeys() {
     final Map<String, EventListener> bindings = {
-      'Ctrl+enter': (Event _) => _sendButton.click(),
-      'Ctrl+s': (Event _) => _draftButton.click()
+      'Ctrl+enter': (Event _) => sendButton.click(),
+      'Ctrl+s': (Event _) => draftButton.click()
     };
 
     _hotKeys.registerKeysPreventDefault(_keyboard, bindings);
@@ -380,10 +380,10 @@ class UIMessageCompose extends UIModel {
     final bool toggle = !(_callerNameInput.value.trim().isNotEmpty &&
         _messageTextarea.value.trim().isNotEmpty);
 
-    _draftButton.disabled = toggle || _recipientsList.children.isEmpty;
-    _sendButton.disabled = toggle || _recipientsList.children.isEmpty;
+    draftButton.disabled = toggle || _recipientsList.children.isEmpty;
+    sendButton.disabled = toggle || _recipientsList.children.isEmpty;
 
-    _myLastTabElement = toggle ? _urgentInput : _sendButton;
+    _myLastTabElement = toggle ? _urgentInput : sendButton;
   }
 
   /**

@@ -282,13 +282,18 @@ class UIContactData extends UIModel {
     for (String item in cwfc.attr.tags.toSet()) {
       final LIElement li = new LIElement()..text = item;
       if (cwfc.state == filterState.tag &&
-          filterParts.any((String f) => item.toLowerCase().contains(f))) {
+          filterParts
+              .every((String part) => item.toLowerCase().contains(part))) {
         li.classes.add('found');
         foundLis.add(li);
       } else {
         lis.add(li);
       }
     }
+
+    foundLis
+        .sort((a, b) => a.text.toLowerCase().compareTo(b.text.toLowerCase()));
+
     _tagsList.children = []..addAll(foundLis)..addAll(lis);
   }
 

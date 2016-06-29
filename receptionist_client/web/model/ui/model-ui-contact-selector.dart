@@ -19,6 +19,8 @@ part of model;
 class UIContactSelector extends UIModel {
   final Bus<ContactWithFilterContext> _bus =
       new Bus<ContactWithFilterContext>();
+  final Bus<Event> _ctrlEnterBus = new Bus<Event>();
+  final Bus<Event> _ctrlSBus = new Bus<Event>();
   final Map<String, String> _langMap;
   final DivElement _myRoot;
   final Controller.Popup _popup;
@@ -88,13 +90,15 @@ class UIContactSelector extends UIModel {
       /// when searching for contacts.
       final List<String> tags = new List<String>()
         ..addAll(item.attr.tags)
-        ..addAll(item.contact.name.split(' '));
+        ..add(item.contact.name);
+
+      tags.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
 
       list.add(new LIElement()
         ..dataset['initials'] = initials
         ..dataset['firstinitial'] = initials.substring(0, 1)
         ..dataset['otherinitials'] = initials.substring(1)
-        ..dataset['tags'] = tags.join(',').toLowerCase()
+        ..dataset['tags'] = tags.toSet().join('-|-').toLowerCase()
         ..dataset['object'] = JSON.encode(item)
         ..classes.addAll(item.contact.enabled ? [] : ['disabled'])
         ..classes.addAll(item.contact.type == 'function' ? ['function'] : [])
@@ -122,6 +126,8 @@ class UIContactSelector extends UIModel {
    * Venture forth at your own peril!
    */
   void _filter() {
+    _list.querySelectorAll('span').forEach((element) => element.remove());
+
     switch (state) {
       case filterState.empty:
         _list.children
@@ -170,8 +176,13 @@ class UIContactSelector extends UIModel {
         _list.classes.toggle('zebra', false);
 
         _list.children.forEach((Element li) {
-          if (parts.every((String part) => li.dataset['tags'].contains(part))) {
+          final List<String> hitTags = li.dataset['tags'].split('-|-').where(
+              (String tag) => parts.every((String part) => tag.contains(part)));
+
+          if (hitTags.isNotEmpty) {
             li.classes.toggle('hide', false);
+            hitTags.forEach(
+                (String tag) => li.children.add(new SpanElement()..text = tag));
           } else {
             li.classes.toggle('hide', true);
           }
@@ -185,7 +196,8 @@ class UIContactSelector extends UIModel {
     } else if (_list.children.isNotEmpty) {
       final LIElement selected = _list.querySelector('.selected');
       if (selected != null && selected.classes.contains('hide')) {
-        /// The selected item is hidden. Select the first visible item on the remaining list
+        /// The selected item is hidden. Select the first visible item on the
+        /// remaining list
         _markSelected(_scanForwardForVisibleElement(_list.children.first),
             alwaysFire: true);
       } else {
@@ -250,6 +262,16 @@ class UIContactSelector extends UIModel {
   }
 
   /**
+   * Fires whenever ctrl+enter is pressed while this widget is in focus.
+   */
+  Stream<Event> get onCtrlEnter => _ctrlEnterBus.stream;
+
+  /**
+   * Fires whenever ctrl+s is pressed while this widget is in focus.
+   */
+  Stream<Event> get onCtrlS => _ctrlSBus.stream;
+
+  /**
    * Fires the selected [ContactWithFilterContext].
    */
   Stream<ContactWithFilterContext> get onSelect => _bus.stream;
@@ -311,7 +333,11 @@ class UIContactSelector extends UIModel {
    * Setup keys and bindings to methods specific for this widget.
    */
   void _setupLocalKeys() {
-    final Map<String, EventListener> bindings = {'Esc': _reset};
+    final Map<String, EventListener> bindings = {
+      'Esc': _reset,
+      'Ctrl+enter': _ctrlEnterBus.fire,
+      'Ctrl+s': _ctrlSBus.fire
+    };
 
     _hotKeys.registerKeysPreventDefault(
         _keyboard, _defaultKeyMap(myKeys: bindings));
