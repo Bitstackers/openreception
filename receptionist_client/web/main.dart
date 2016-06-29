@@ -23,6 +23,7 @@ import 'view/view.dart' as View;
 //import 'simulation.dart';
 
 import 'package:logging/logging.dart';
+import 'package:openreception.framework/event.dart' as event;
 import 'package:openreception.framework/model.dart' as ORModel;
 import 'package:openreception.framework/service.dart' as ORService;
 import 'package:openreception.framework/service-html.dart' as ORTransport;
@@ -322,6 +323,14 @@ Future registerReadyView(
 
   Controller.Sound sound =
       new Controller.Sound(querySelector('audio.sound-pling'));
+
+  Controller.Navigate navigate = new Controller.Navigate();
+  navigate.onGo.listen((Controller.Destination destination) {
+    final event.WidgetSelect selectEvent =
+        new event.WidgetSelect(appState.currentUser.id, destination.toString());
+
+    notification.notifySystem(selectEvent);
+  });
 
   return receptionController
       .list()

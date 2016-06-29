@@ -166,4 +166,9 @@ class Notification {
   void _userState(OREvent.UserState event) {
     _agentStateChangeBus.fire(new ORModel.UserStatus.fromMap(event.asMap));
   }
+
+  /**
+   *
+   */
+  Future notifySystem(OREvent.Event e) => _service.send([0], e);
 }
