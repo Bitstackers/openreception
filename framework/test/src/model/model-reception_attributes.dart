@@ -87,7 +87,7 @@ abstract class ModelReceptionAttributes {
     final List<String> titles = ['GOLD-fish'];
     final List<String> relations = ['Yo\' mamma'];
     final List<String> responsibilities = ['Swimming around', 'Nibbling'];
-    final Set<String> tags = ['Fish', 'Gold', 'Athlete'].toSet();
+    final List<String> tags = ['Fish', 'Gold', 'Athlete'];
     final List<String> workhours = ['Quite frankly; never'];
     final List<String> messagePrerequisites = ['[fishcode]'];
 
