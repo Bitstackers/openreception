@@ -43,6 +43,7 @@ class UIGlobalCallQueue extends UIModel {
   SpanElement get _queueLength =>
       _root.querySelector('.generic-widget-headline span.queue-length');
   OListElement get _list => _root.querySelector('.generic-widget-list');
+  TitleElement get _title => querySelector('title');
 
   /**
    * Append [call] to the calls list.
@@ -139,10 +140,12 @@ class UIGlobalCallQueue extends UIModel {
   }
 
   /**
-   * Update the queue length counter in the widget.
+   * Update the queue length counter in the widget and the app title element.
    */
   void _queueLengthUpdate() {
-    _queueLength.text = _list.querySelectorAll('li').length.toString();
+    final String queueLength = _list.querySelectorAll('li').length.toString();
+    _queueLength.text = queueLength;
+    _title.text = 'ORC ($queueLength)';
   }
 
   /**
