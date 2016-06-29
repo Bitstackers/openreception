@@ -97,14 +97,13 @@ Future main(List<String> arguments) async {
           new old_or_service.RESTMessageStore(
               clientConfig.messageServerUri, token, transport));
 
-  await Future.wait([
-    migrationEnvironment.importReceptions(),
-    migrationEnvironment.importBaseContacts(),
-    migrationEnvironment.importOrganizations(),
-    migrationEnvironment.importUsers(),
-    migrationEnvironment.importDialplans(),
-    migrationEnvironment.importIvrs()
-  ]);
+  await migrationEnvironment.importReceptions();
+  await migrationEnvironment.importBaseContacts();
+  await migrationEnvironment.importOrganizations();
+  await migrationEnvironment.importUsers();
+  await migrationEnvironment.importDialplans();
+  await migrationEnvironment.importIvrs();
+
   await migrationEnvironment.importMessages();
   await migrationEnvironment.importReceptionAttributes();
   await migrationEnvironment.importCalendarEntries();
@@ -113,48 +112,6 @@ Future main(List<String> arguments) async {
   transport.client.close(force: true);
 
   print('Import took ${timer.elapsedMilliseconds}ms');
-
-  //TODO: Perform consistency check against old service.
-  //TODO: Update all sequencers
-  {
-    filestore.GitEngine ge =
-        new filestore.GitEngine(datastore.calendarStore.path);
-    ge.add(new File('.'), 'Data import', 'System <system@localhost>');
-  }
-
-  {
-    filestore.GitEngine ge =
-        new filestore.GitEngine(datastore.contactStore.path);
-    ge.add(new File('.'), 'Data import', 'System <system@localhost>');
-  }
-
-  {
-    filestore.GitEngine ge = new filestore.GitEngine(datastore.ivrStore.path);
-    ge.add(new File('.'), 'Data import', 'System <system@localhost>');
-  }
-
-  {
-    filestore.GitEngine ge =
-        new filestore.GitEngine(datastore.organizationStore.path);
-    ge.add(new File('.'), 'Data import', 'System <system@localhost>');
-  }
-
-  {
-    filestore.GitEngine ge =
-        new filestore.GitEngine(datastore.receptionStore.path);
-    ge.add(new File('.'), 'Data import', 'System <system@localhost>');
-  }
-
-  {
-    filestore.GitEngine ge =
-        new filestore.GitEngine(datastore.receptionDialplanStore.path);
-    ge.add(new File('.'), 'Data import', 'System <system@localhost>');
-  }
-
-  {
-    filestore.GitEngine ge = new filestore.GitEngine(datastore.userStore.path);
-    ge.add(new File('.'), 'Data import', 'System <system@localhost>');
-  }
 }
 
 /**

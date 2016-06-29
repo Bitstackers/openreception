@@ -104,8 +104,10 @@ class MigrationEnvironment {
     Iterable<or_model.ReceptionDialplan> converted =
         dialplans.map(convertDialplan);
 
-    await Future.wait(converted.map((or_model.ReceptionDialplan rdp) =>
-        _dataStore.receptionDialplanStore.create(rdp, modifier)));
+    await Future.forEach(
+        converted,
+        (or_model.ReceptionDialplan rdp) =>
+            _dataStore.receptionDialplanStore.create(rdp, modifier));
 
     _log.info('Imported ${converted.length} dialplans'
         ' in ${timer.elapsedMilliseconds}ms');
@@ -120,8 +122,10 @@ class MigrationEnvironment {
 
     Iterable<or_model.Organization> converted = orgs.map(convertOrg);
 
-    await Future.wait(converted.map((or_model.Organization org) =>
-        _dataStore.organizationStore.create(org, modifier, enforceId: true)));
+    await Future.forEach(
+        converted,
+        (or_model.Organization org) => _dataStore.organizationStore
+            .create(org, modifier, enforceId: true));
 
     _log.info('Imported ${converted.length} dialplans'
         ' in ${timer.elapsedMilliseconds}ms');
@@ -146,14 +150,16 @@ class MigrationEnvironment {
       }
     }));
 
-    await Future.wait(converted.map((or_model.Reception rec) async {
+    await Future.forEach(converted, (or_model.Reception rec) async {
       if (rec.enabled) {
+        _log.finest('Importing ${rec.name} (rid:${rec.id})');
+
         await _dataStore.receptionStore.create(rec, modifier, enforceId: true);
       } else {
         skipped++;
         _log.info('Skipping ${rec.name} (rid:${rec.id})');
       }
-    }));
+    });
 
     _log.info('Imported ${converted.length} receptions '
         'in ${timer.elapsedMilliseconds}ms '
@@ -169,8 +175,8 @@ class MigrationEnvironment {
 
     Iterable<or_model.IvrMenu> converted = ivrs.map(convertIvr);
 
-    await Future.wait(converted.map(
-        (or_model.IvrMenu menu) => _dataStore.ivrStore.create(menu, modifier)));
+    await Future.forEach(converted,
+        (or_model.IvrMenu menu) => _dataStore.ivrStore.create(menu, modifier));
 
     _log.info('Imported ${converted.length} ivr menus'
         ' in ${timer.elapsedMilliseconds}ms');
@@ -185,14 +191,15 @@ class MigrationEnvironment {
 
     Iterable converted = contacts.map(convertContact);
 
-    await Future.wait(converted.map((or_model.BaseContact contact) async {
+    await Future.forEach(converted, (or_model.BaseContact contact) async {
       if (contact.enabled) {
+        _log.finest('Importing ${contact.name} (cid:${contact.id})');
         await _dataStore.contactStore
             .create(contact, modifier, enforceId: true);
       } else {
         _log.info('Skipping ${contact.name} (cid:${contact.id})');
       }
-    }));
+    });
 
     _log.info('Imported ${converted.length} base contacts'
         ' in ${timer.elapsedMilliseconds}ms');
@@ -211,14 +218,13 @@ class MigrationEnvironment {
         Iterable entries = await calendarService
             .list(new old_or_model.OwningContact(contact.id));
 
-        await Future.wait((entries
-            .map(convertCalendarEntry)
-            .map((Future<or_model.CalendarEntry> ce) async {
+        await Future.forEach(entries.map(convertCalendarEntry),
+            (Future<or_model.CalendarEntry> ce) async {
           await _dataStore.contactStore.calendarStore.create(
               await ce, new or_model.OwningContact(contact.id), modifier,
               enforceId: true);
           count++;
-        })));
+        });
       } else {
         _log.info(
             'Skipping calendar import ${contact.fullName} (cid:${contact.id})');
@@ -231,11 +237,11 @@ class MigrationEnvironment {
         Iterable entries = await calendarService
             .list(new old_or_model.OwningReception(rec.ID));
 
-        await Future.wait((entries.map(convertCalendarEntry).map((ce) async {
+        await Future.forEach(entries.map(convertCalendarEntry), (ce) async {
           await _dataStore.receptionStore.calendarStore
               .create(ce, new or_model.OwningReception(rec.ID), modifier);
           count++;
-        })));
+        });
       } else {
         _log.info('Skipping calendar import ${rec.fullName} (cid:${rec.ID})');
       }
@@ -289,6 +295,25 @@ class MigrationEnvironment {
    * Validates users
    */
   Future validateUsers() async {
+    final Stopwatch timer = new Stopwatch()..start();
+    final Iterable localUsers = await _dataStore.userStore.list();
+
+    Future.forEach(localUsers, (local) async {
+      final remote = await userService.get(local.id);
+
+      if (local.name != remote.name) {
+        _log.shout('User (uid: ${local.id}): ${local.name} != ${remote.name}');
+      }
+    });
+
+    _log.info('Validated ${localUsers.length} users'
+        ' in ${timer.elapsedMilliseconds}ms');
+  }
+
+  /**
+   * Validates receptions
+   */
+  Future validateReceptions() async {
     final Stopwatch timer = new Stopwatch()..start();
     final Iterable localUsers = await _dataStore.userStore.list();
 
