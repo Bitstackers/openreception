@@ -3,6 +3,7 @@ version: 0.2.0+rc-1
 description: Server stack for the OpenReception application.
 dependencies:
   args: any
+  xml: any
   crypto: any
   emailer:
     git:

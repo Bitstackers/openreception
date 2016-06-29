@@ -16,6 +16,7 @@ library openreception.server.controller.peer_account;
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
+import 'package:xml/xml.dart' as xml;
 
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
@@ -68,7 +69,44 @@ class PeerAccount {
    *
    */
   Future<shelf.Response> get(shelf.Request request) async {
-    throw new UnimplementedError();
+    final String accountName = shelf_route.getPathParameter(request, 'aid');
+
+    final String xmlFilePath = fsConfPath + '/directory/receptionists';
+    final File xmlFile = new File(xmlFilePath + '/$accountName.xml');
+
+    if (!(await xmlFile.exists())) {
+      return notFound('No such file ${xmlFile.path}');
+    }
+
+    final document = xml.parse(await xmlFile.readAsString());
+
+    final user = document
+        .findAllElements('user')
+        .first
+        .attributes
+        .where((attr) => attr.name.toString() == 'id')
+        .first
+        .value;
+
+    final password = document
+        .findAllElements('param')
+        .where((node) => node.getAttribute('name') == 'password')
+        .first
+        .attributes
+        .where((attr) => attr.name.toString() == 'value')
+        .first
+        .value;
+
+    final callgroup = document
+        .findAllElements('variable')
+        .where((node) => node.getAttribute('name') == 'callgroup')
+        .first
+        .attributes
+        .where((attr) => attr.name.toString() == 'value')
+        .first
+        .value;
+
+    return okJson(new model.PeerAccount(user, password, callgroup));
   }
 
   /**
