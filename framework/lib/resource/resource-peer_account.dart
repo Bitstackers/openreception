@@ -18,13 +18,11 @@ part of openreception.framework.resource;
  * resources across servers and clients.
  */
 abstract class PeerAccount {
-  static String nameSpace = 'peeraccount';
-
-  static Uri list(Uri host) => Uri.parse('$host/$nameSpace');
+  static Uri list(Uri host) => Uri.parse('$host/peeraccount');
 
   static Uri single(Uri host, String accountName) =>
-      Uri.parse('$host/$nameSpace/${accountName}');
+      Uri.parse('$host/peeraccount/${accountName}');
 
   static Uri deploy(Uri host, int uid) =>
-      Uri.parse('$host/$nameSpace/user/$uid/deploy');
+      Uri.parse('$host/peeraccount/user/$uid/deploy');
 }
