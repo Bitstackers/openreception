@@ -44,8 +44,8 @@ abstract class ModelReceptionAttributes {
     {
       Iterable<Map> lhsPn =
           builtObject.phoneNumbers.map((Model.PhoneNumber pn) => pn.toJson());
-      Iterable<Map> rhsPn =
-          deserializedObject.phoneNumbers.map((Model.PhoneNumber pn) => pn.toJson());
+      Iterable<Map> rhsPn = deserializedObject.phoneNumbers
+          .map((Model.PhoneNumber pn) => pn.toJson());
 
       expect(lhsPn, equals(rhsPn));
     }
