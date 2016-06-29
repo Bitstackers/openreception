@@ -88,13 +88,15 @@ class UIContactSelector extends UIModel {
       /// when searching for contacts.
       final List<String> tags = new List<String>()
         ..addAll(item.attr.tags)
-        ..addAll(item.contact.name.split(' '));
+        ..add(item.contact.name);
+
+      tags.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
 
       list.add(new LIElement()
         ..dataset['initials'] = initials
         ..dataset['firstinitial'] = initials.substring(0, 1)
         ..dataset['otherinitials'] = initials.substring(1)
-        ..dataset['tags'] = tags.join(',').toLowerCase()
+        ..dataset['tags'] = tags.toSet().join('-|-').toLowerCase()
         ..dataset['object'] = JSON.encode(item)
         ..classes.addAll(item.contact.enabled ? [] : ['disabled'])
         ..classes.addAll(item.contact.type == 'function' ? ['function'] : [])
@@ -122,6 +124,8 @@ class UIContactSelector extends UIModel {
    * Venture forth at your own peril!
    */
   void _filter() {
+    _list.querySelectorAll('span').forEach((element) => element.remove());
+
     switch (state) {
       case filterState.empty:
         _list.children
@@ -170,8 +174,13 @@ class UIContactSelector extends UIModel {
         _list.classes.toggle('zebra', false);
 
         _list.children.forEach((Element li) {
-          if (parts.every((String part) => li.dataset['tags'].contains(part))) {
+          final List<String> hitTags = li.dataset['tags'].split('-|-').where(
+              (String tag) => parts.every((String part) => tag.contains(part)));
+
+          if (hitTags.isNotEmpty) {
             li.classes.toggle('hide', false);
+            hitTags.forEach(
+                (String tag) => li.children.add(new SpanElement()..text = tag));
           } else {
             li.classes.toggle('hide', true);
           }
