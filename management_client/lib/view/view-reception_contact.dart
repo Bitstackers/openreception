@@ -285,8 +285,7 @@ class ReceptionContact {
             _valuesFromListTextArea(_messagePrerequisiteInput)
         ..relations = _valuesFromListTextArea(_relationsInput)
         ..responsibilities = _valuesFromListTextArea(_responsibilitiesInput)
-        ..tags =
-            _valuesFromListTextArea(_tagsInput).toSet().toList(growable: false)
+        ..tags = _valuesFromListTextArea(_tagsInput).toSet()
         ..titles = _valuesFromListTextArea(_titlesInput)
         ..workhours = _valuesFromListTextArea(_workHoursInput)
         ..phoneNumbers = _phoneNumberView.phoneNumbers.toList();

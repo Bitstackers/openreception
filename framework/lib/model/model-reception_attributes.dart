@@ -62,7 +62,7 @@ class ReceptionAttributes {
   List<String> backupContacts = [];
   List<String> messagePrerequisites = [];
 
-  List<String> tags = new List<String>();
+  Set<String> tags = new Set<String>();
   List<String> emailaddresses = new List<String>();
   List<String> handling = new List<String>();
   List<String> workhours = new List<String>();
@@ -109,7 +109,7 @@ class ReceptionAttributes {
         emailaddresses = map[key.emailaddresses] as List<String>,
         handling = map[key.handling] as List<String>,
         workhours = map[key.workhours] as List<String>,
-        tags = map[key.tags] as List<String>,
+        tags = map[key.tags] as Set<String>,
         infos = map[key.infos] as List<String>,
         titles = map[key.titles] as List<String>,
         relations = map[key.relations] as List<String>,

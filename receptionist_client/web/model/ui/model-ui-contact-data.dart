@@ -279,7 +279,7 @@ class UIContactData extends UIModel {
     final List<LIElement> foundLis = new List<LIElement>();
     final List<LIElement> lis = new List<LIElement>();
 
-    for (String item in cwfc.attr.tags.toSet()) {
+    for (String item in cwfc.attr.tags) {
       final LIElement li = new LIElement()..text = item;
       if (cwfc.state == filterState.tag &&
           filterParts
