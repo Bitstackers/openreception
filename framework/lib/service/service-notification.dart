@@ -213,7 +213,8 @@ class NotificationSocket {
   /**
    * Filtered stream that only emits [event.CalendarChange] objects.
    */
-  Stream<event.CalendarChange> get oCalendarChange => _calenderChangeBus.stream;
+  Stream<event.CalendarChange> get onCalendarChange =>
+      _calenderChangeBus.stream;
 
   /**
    * Filtered stream that only emits [event.ClientConnectionState] objects.
