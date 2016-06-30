@@ -139,7 +139,8 @@ class ChangeLogger {
    *
    */
   void add(model.ChangelogEntry object) {
-    logFile.writeAsString(JSON.encode(object) + '\n', mode: FileMode.APPEND);
+    logFile.writeAsStringSync(JSON.encode(object) + '\n',
+        mode: FileMode.APPEND);
   }
 
   /**
