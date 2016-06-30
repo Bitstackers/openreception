@@ -215,4 +215,19 @@ class Organization {
 
     return okJson((await _orgStore.changes(oid)).toList(growable: false));
   }
+
+  /**
+   *
+   */
+  Future<shelf.Response> changelog(shelf.Request request) async {
+    final String oidParam = shelf_route.getPathParameter(request, 'oid');
+    int oid;
+    try {
+      oid = int.parse(oidParam);
+    } on FormatException {
+      return clientError('Bad oid: $oidParam');
+    }
+
+    return ok((await _orgStore.changeLog(oid)));
+  }
 }

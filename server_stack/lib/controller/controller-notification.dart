@@ -226,8 +226,7 @@ class Notification {
     Iterable<model.ClientConnection> connections =
         clientRegistry.keys.map((int uid) => new model.ClientConnection.empty()
           ..userID = uid
-          ..connectionCount = clientRegistry[uid].length)
-        as Iterable<model.ClientConnection>;
+          ..connectionCount = clientRegistry[uid].length);
 
     return okJson(connections.toList(growable: false));
   }

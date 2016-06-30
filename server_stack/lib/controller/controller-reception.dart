@@ -223,4 +223,19 @@ class Reception {
 
     return okJson((await _rStore.changes(rid)).toList(growable: false));
   }
+
+  /**
+   *
+   */
+  Future<shelf.Response> changelog(shelf.Request request) async {
+    final String ridParam = shelf_route.getPathParameter(request, 'rid');
+    int rid;
+    try {
+      rid = int.parse(ridParam);
+    } on FormatException {
+      return clientError('Bad rid: $ridParam');
+    }
+
+    return ok((await _rStore.changeLog(rid)));
+  }
 }

@@ -55,7 +55,7 @@ class Contact {
    */
   Future<shelf.Response> create(shelf.Request request) async {
     model.BaseContact contact;
-    model.User creator;
+    model.User modifier;
 
     try {
       contact = await request
@@ -67,21 +67,22 @@ class Contact {
     }
 
     try {
-      creator = await _authservice.userOf(tokenFrom(request));
+      modifier = await _authservice.userOf(tokenFrom(request));
     } catch (e) {
       return authServerDown();
     }
 
-    final rRef = await _contactStore.create(contact, creator);
-    final createEvent = new event.ContactChange.create(rRef.id, creator.id);
+    final cRef = await _contactStore.create(contact, modifier);
+
+    final createEvent = new event.ContactChange.create(cRef.id, modifier.id);
 
     _notification.broadcastEvent(createEvent);
 
-    return okJson(rRef);
+    return okJson(cRef);
   }
 
   /**
-   * Retrives a single base contact based on contactID.
+   * Retrives a single base contact based on contact ID.
    */
   Future<shelf.Response> listBase(shelf.Request request) async {
     try {
@@ -93,7 +94,7 @@ class Contact {
 
   /**
    * Retrives a list of base contacts associated with the provided
-   * organization id.
+   * organization ID.
    */
   Future<shelf.Response> listByOrganization(shelf.Request request) async {
     final int oid = int.parse(shelf_route.getPathParameter(request, 'oid'));
@@ -156,6 +157,7 @@ class Contact {
           new event.ContactChange.delete(cid, modifier.id);
 
       _notification.broadcastEvent(changeEvent);
+
       return okJson(const {});
     } on storage.NotFound catch (e) {
       return notFound(e.toString());
@@ -194,13 +196,13 @@ class Contact {
     }
 
     try {
-      final ref = await _contactStore.update(contact, modifier);
+      final cRef = await _contactStore.update(contact, modifier);
       event.ContactChange changeEvent =
           new event.ContactChange.update(cid, modifier.id);
 
       _notification.broadcastEvent(changeEvent);
 
-      return okJson(ref);
+      return okJson(cRef);
     } on storage.NotFound catch (e) {
       return notFound(e.toString());
     }
@@ -393,5 +395,35 @@ class Contact {
   Future<shelf.Response> emptyCache(shelf.Request request) async {
     _cache.emptyAll();
     return cacheStats(request);
+  }
+
+  /**
+   *
+   */
+  Future<shelf.Response> receptionChangelog(shelf.Request request) async {
+    final String cidParam = shelf_route.getPathParameter(request, 'cid');
+    int cid;
+    try {
+      cid = int.parse(cidParam);
+    } on FormatException {
+      return clientError('Bad cid: $cidParam');
+    }
+
+    return ok(await _contactStore.receptionChangeLog(cid));
+  }
+
+  /**
+   *
+   */
+  Future<shelf.Response> changelog(shelf.Request request) async {
+    final String cidParam = shelf_route.getPathParameter(request, 'cid');
+    int cid;
+    try {
+      cid = int.parse(cidParam);
+    } on FormatException {
+      return clientError('Bad cid: $cidParam');
+    }
+
+    return ok(await _contactStore.changeLog(cid));
   }
 }

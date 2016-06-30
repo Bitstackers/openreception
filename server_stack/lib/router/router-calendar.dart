@@ -71,6 +71,7 @@ class Calendar {
       ..delete('/calendar/cache', _calendarController.emptyCache)
       ..get('/calendar/{type}:{oid}', _calendarController.list)
       ..get('/calendar/{type}:{oid}/change', _calendarController.changes)
+      ..get('/calendar/{type}:{oid}/changelog', _calendarController.changelog)
       ..get('/calendar/{type}:{oid}/{eid}', _calendarController.get)
       ..get('/calendar/{type}:{oid}/{eid}/change', _calendarController.changes)
       ..get('/calendar/{type}:{oid}/{eid}/deleted',

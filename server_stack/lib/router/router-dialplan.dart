@@ -87,6 +87,7 @@ class Dialplan {
       ..post('/ivr/{name}/deploy', _ivrController.deploy)
       ..delete('/ivr/{name}', _ivrController.remove)
       ..get('/ivr/{name}/history', _ivrController.objectHistory)
+      ..get('/ivr/{name}/changelog', _ivrController.changelog)
       ..post('/ivr', _ivrController.create)
       ..get('/ivr/history', _ivrController.history)
       ..get('/receptiondialplan', _rdpController.list)
@@ -95,6 +96,8 @@ class Dialplan {
       ..post('/receptiondialplan/reloadConfig', _rdpController.reloadConfig)
       ..get('/receptiondialplan/{extension}/history',
           _rdpController.objectHistory)
+      ..get(
+          '/receptiondialplan/{extension}/changelog', _rdpController.changelog)
       ..delete('/receptiondialplan/{extension}', _rdpController.remove)
       ..post('/receptiondialplan', _rdpController.create)
       ..get('/receptiondialplan/history', _rdpController.history)

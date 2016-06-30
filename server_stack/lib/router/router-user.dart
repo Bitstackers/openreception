@@ -37,36 +37,14 @@ import 'package:shelf_route/shelf_route.dart' as shelf_route;
 class User {
   final Logger _log = new Logger('server.router.user');
 
-  final service.Authentication _authService;
   final service.NotificationService _notification;
 
   final controller.User _userController;
   final controller.AgentStatistics _statsController;
   final controller.UserState _userStateController;
 
-  User(this._authService, this._notification, this._userController,
-      this._statsController, this._userStateController);
-
-  Future<shelf.Response> _lookupToken(shelf.Request request) async {
-    var token = request.requestedUri.queryParameters['token'];
-
-    try {
-      await _authService.validate(token);
-    } on storage.NotFound {
-      return new shelf.Response.forbidden('Invalid token');
-    } on io.SocketException {
-      return new shelf.Response.internalServerError(
-          body: 'Cannot reach authserver');
-    } catch (error, stackTrace) {
-      _log.severe(
-          'Authentication validation lookup failed: $error:$stackTrace');
-
-      return new shelf.Response.internalServerError(body: error.toString());
-    }
-
-    /// Do not intercept the request, but let the next handler take care of it.
-    return null;
-  }
+  User(this._notification, this._userController, this._statsController,
+      this._userStateController);
 
   /**
    *
@@ -81,6 +59,7 @@ class User {
       ..get('/user/history', _userController.history)
       ..get('/user/{uid}', _userController.get)
       ..get('/user/{uid}/history', _userController.objectHistory)
+      ..get('/user/{uid}/changelog', _userController.changelog)
       ..put('/user/{uid}', _userController.update)
       ..delete('/user/{uid}', _userController.remove)
       ..get('/user/all/state', _userStateController.list)
@@ -96,20 +75,15 @@ class User {
    * Start the router.
    */
   Future<io.HttpServer> listen({String hostname: '0.0.0.0', int port: 4030}) {
-    shelf.Middleware checkAuthentication = shelf.createMiddleware(
-        requestHandler: _lookupToken, responseHandler: null);
-
     var router = shelf_route.router();
     bindRoutes(router);
 
     var handler = const shelf.Pipeline()
         .addMiddleware(
             shelf_cors.createCorsHeadersMiddleware(corsHeaders: corsHeaders))
-        .addMiddleware(checkAuthentication)
         .addMiddleware(shelf.logRequests(logger: config.accessLog.onAccess))
         .addHandler(router.handler);
 
-    _log.fine('Using server on ${_authService.host} as authentication backend');
     _log.fine('Using server on ${_notification.host} as notification backend');
     _log.fine('Accepting incoming REST requests on http://$hostname:$port');
     _log.fine('Serving routes:');

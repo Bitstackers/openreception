@@ -41,9 +41,8 @@ class Message {
    */
   void bindRoutes(router) {
     router
-      ..get('/message/list', _msgController.list)
       ..get('/message/list/drafts', _msgController.listDrafts)
-      ..get('/message/list/{day}', _msgController.listByDay)
+      ..get('/message/list/{day}', _msgController.list)
       ..post('/message/list', _msgController.queryById)
       ..get('/message', _msgController.list)
       ..get('/message/history', _msgController.history)

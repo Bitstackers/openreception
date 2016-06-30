@@ -133,9 +133,7 @@ class ReceptionDialplan {
     Iterable<model.Ivr> ivrMenus = rdp.allActions.where((a) => a is model.Ivr);
 
     generatedFiles.addAll(await _ivrController.writeIvrfiles(
-        ivrMenus.map((menuAction) => menuAction.menuName) as Iterable<String>,
-        compiler,
-        _log));
+        ivrMenus.map((menuAction) => menuAction.menuName), compiler, _log));
 
     return okJson(generatedFiles);
   }
@@ -282,5 +280,18 @@ class ReceptionDialplan {
 
     return okJson((await _receptionDialplanStore.changes(extension))
         .toList(growable: false));
+  }
+
+  /**
+   *
+   */
+  Future<shelf.Response> changelog(shelf.Request request) async {
+    final String extension = shelf_route.getPathParameter(request, 'extension');
+
+    if (extension == null || extension.isEmpty) {
+      return clientError('Bad extension: $extension');
+    }
+
+    return ok((await _receptionDialplanStore.changeLog(extension)));
   }
 }

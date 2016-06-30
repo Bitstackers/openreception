@@ -77,6 +77,7 @@ class Reception {
       ..put('/organization/{oid}', organization.update)
       ..delete('/organization/{oid}', organization.remove)
       ..get('/organization/{oid}/history', organization.objectHistory)
+      ..get('/organization/{oid}/changelog', organization.changelog)
       ..get('/organization/{oid}/contact', organization.contacts)
       ..get('/organization/{oid}/reception', organization.receptions)
       ..get('/reception', reception.list)
@@ -87,7 +88,8 @@ class Reception {
       ..get('/reception/{rid}/extension', reception.extensionOf)
       ..put('/reception/{rid}', reception.update)
       ..delete('/reception/{rid}', reception.remove)
-      ..get('/reception/{rid}/history', reception.objectHistory);
+      ..get('/reception/{rid}/history', reception.objectHistory)
+      ..get('/reception/{rid}/changelog', reception.changelog);
   }
 
   /**

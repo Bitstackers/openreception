@@ -226,6 +226,21 @@ class User {
   /**
    *
    */
+  Future<shelf.Response> changelog(shelf.Request request) async {
+    final String uidParam = shelf_route.getPathParameter(request, 'uid');
+    int uid;
+    try {
+      uid = int.parse(uidParam);
+    } on FormatException {
+      return clientError('Bad uid: $uidParam');
+    }
+
+    return ok((await _userStore.changeLog(uid)));
+  }
+
+  /**
+   *
+   */
   Future<shelf.Response> cacheStats(shelf.Request request) async {
     return okJson(_cache.stats);
   }

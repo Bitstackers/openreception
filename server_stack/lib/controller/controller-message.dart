@@ -41,9 +41,6 @@ class Message {
         new gzip_cache.MessageCache(_messageStore, _messageStore.changeStream);
   }
 
-  String _filterFrom(shelf.Request request) =>
-      request.requestedUri.queryParameters['filter'];
-
   /**
    * HTTP Request handler for returning a single message resource.
    */

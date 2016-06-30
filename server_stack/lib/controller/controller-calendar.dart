@@ -15,7 +15,7 @@ library openreception.server.controller.calendar;
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
+
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/event.dart' as event;
 import 'package:openreception.framework/filestore.dart' as filestore;
@@ -329,5 +329,34 @@ class Calendar {
     _notification.broadcastEvent(changeEvent);
 
     return okJson(updated);
+  }
+
+  /**
+   *
+   */
+  Future<shelf.Response> changelog(shelf.Request request) async {
+    final String type = shelf_route.getPathParameter(request, 'type');
+    final String oid = shelf_route.getPathParameter(request, 'oid');
+    model.Owner owner;
+    try {
+      owner = new model.Owner.parse('$type:$oid');
+    } catch (e) {
+      final String msg = 'Could parse owner: $type:$oid';
+      _log.warning(msg, e);
+      return clientError(e.toString(msg));
+    }
+
+    try {
+      if (owner is model.OwningContact) {
+        return ok(await _contactStore.calendarStore.changeLog(owner.id));
+      } else if (owner is model.OwningReception) {
+        return ok(await _receptionStore.calendarStore.changeLog(owner.id));
+      } else {
+        return clientError('Could not find suitable for store '
+            'for owner type: ${owner.runtimeType}');
+      }
+    } on storage.NotFound {
+      return notFound('No event with owner ${owner}');
+    }
   }
 }
