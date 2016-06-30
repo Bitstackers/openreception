@@ -152,6 +152,9 @@ abstract class Event {
   factory Event.parse(Map map) {
     try {
       switch (map[Key.event]) {
+        case Key.widgetSelect:
+          return new WidgetSelect.fromMap(map);
+
         case Key.peerState:
           return new PeerState.fromMap(map);
 
