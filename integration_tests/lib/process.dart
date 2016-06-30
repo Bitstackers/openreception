@@ -14,6 +14,7 @@ part 'process/process-calendarserver.dart';
 part 'process/process-configserver.dart';
 part 'process/process-callflowcontrol.dart';
 part 'process/process-contactserver.dart';
+part 'process/process-datastoreserver.dart';
 part 'process/process-dialplanserver.dart';
 part 'process/process-freeswitch.dart';
 part 'process/process-messageserver.dart';
