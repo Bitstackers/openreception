@@ -85,6 +85,19 @@ void _runContactTests() {
 
     test('remove (event presence)', () => serviceTest.Contact.deleteEvent(sa));
 
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+
+      cProcess = await env.requestContactserverProcess(withRevisioning: true);
+
+      sa.contactStore = cProcess.bindClient(env.httpClient, sa.authToken);
+    });
+
+    tearDown(() async {
+      await env.clear();
+    });
+
     test(
         'change listing on create', () => storeTest.Contact.changeOnCreate(sa));
 

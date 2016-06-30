@@ -53,6 +53,18 @@ _runIvrTests() {
 
     test('update', () => storeTest.Ivr.update(ivrStore));
 
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+      ivrServer = await env.requestDialplanProcess(withRevisioning: true);
+      ivrStore = ivrServer.bindIvrClient(env.httpClient, sa.authToken);
+      sa.ivrStore = ivrStore;
+    });
+
+    tearDown(() async {
+      await env.clear();
+    });
+
     test('change listing on create', () => storeTest.Ivr.changeOnCreate(sa));
 
     test('change listing on update', () => storeTest.Ivr.changeOnUpdate(sa));

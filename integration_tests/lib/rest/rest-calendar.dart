@@ -76,6 +76,31 @@ void _runCalendarTests() {
     test('remove (contact owner)',
         () => storeTest.Calendar.remove(owner, calendarStore, sa.user));
 
+    test('create (event presence)',
+        () => serviceTest.Calendar.createEvent(sa, owner, calendarStore));
+
+    test('update (event presence)',
+        () => serviceTest.Calendar.updateEvent(sa, owner, calendarStore));
+
+    test('remove (event presence)',
+        () => serviceTest.Calendar.deleteEvent(sa, owner, calendarStore));
+
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+      contact = await sa.createsContact();
+
+      owner = new model.OwningContact(contact.id);
+
+      cProcess = await env.requestCalendarserverProcess(withRevisioning: true);
+
+      calendarStore = cProcess.bindClient(env.httpClient, sa.authToken);
+    });
+
+    tearDown(() async {
+      await env.clear();
+    });
+
     test('change listing on create (contact owner)',
         () => storeTest.Calendar.changeOnCreate(owner, calendarStore, sa.user));
 
@@ -99,15 +124,6 @@ void _runCalendarTests() {
         'latest change on remove (contact owner)',
         () => storeTest.Calendar
             .latestChangeOnRemove(owner, calendarStore, sa.user));
-
-    test('create (event presence)',
-        () => serviceTest.Calendar.createEvent(sa, owner, calendarStore));
-
-    test('update (event presence)',
-        () => serviceTest.Calendar.updateEvent(sa, owner, calendarStore));
-
-    test('remove (event presence)',
-        () => serviceTest.Calendar.deleteEvent(sa, owner, calendarStore));
 
     /**
      * Setup/teardown Basic CRUD tests for contact owner.
@@ -153,6 +169,25 @@ void _runCalendarTests() {
 
     test('update (reception owner)',
         () => storeTest.Calendar.update(owner, calendarStore, sa.user));
+
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+      await env.receptionStore.ready;
+
+      reception = await sa.createsReception(await sa.createsOrganization());
+
+      owner = new model.OwningReception(reception.id);
+
+      cProcess = await env.requestCalendarserverProcess(withRevisioning: true);
+
+      calendarStore = cProcess.bindClient(env.httpClient, sa.authToken);
+      sa.calendarStore = calendarStore;
+    });
+
+    tearDown(() async {
+      await env.clear();
+    });
 
     test('change listing on create (reception owner)',
         () => storeTest.Calendar.changeOnCreate(owner, calendarStore, sa.user));

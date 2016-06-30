@@ -64,6 +64,18 @@ _runDialplanTests() {
 
     test('update', () => storeTest.ReceptionDialplan.update(rdpStore, sa.user));
 
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+      rdpStore = (await env.requestDialplanProcess(withRevisioning: true))
+          .bindDialplanClient(env.httpClient, sa.authToken);
+      sa.dialplanStore = rdpStore;
+    });
+
+    tearDown(() async {
+      await env.clear();
+    });
+
     test('change listing on create',
         () => storeTest.ReceptionDialplan.changeOnCreate(sa));
 
