@@ -168,11 +168,9 @@ abstract class ModelIvrMenu {
 
     expect(Model.validateIvrMenu(menu).length, equals(1));
 
-    _log.info('Building a menu with no enties');
-    menu = new Model.IvrMenu('named', greeting)..entries = [];
-
-    _log.info('Building a menu with no enties');
-    expect(Model.validateIvrMenu(menu).length, equals(1));
+    // _log.info('Building a menu with no enties');
+    // menu = new Model.IvrMenu('named', greeting)..entries = [];
+    // expect(Model.validateIvrMenu(menu).length, equals(1));
 
     _log.info('Building a menu with an empty greeting');
     menu = new Model.IvrMenu('named', Model.Playback.none)..entries = entries;
