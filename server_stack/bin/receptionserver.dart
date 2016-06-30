@@ -83,7 +83,7 @@ Future main(List<String> args) async {
       : null;
 
   final organizationRevisionEngine = revisioning
-      ? new filestore.GitEngine(parsedArgs['filestore'] + '/reception')
+      ? new filestore.GitEngine(parsedArgs['filestore'] + '/organization')
       : null;
 
   final service.Authentication _authService = new service.Authentication(
