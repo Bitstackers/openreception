@@ -147,14 +147,16 @@ class TestEnvironment {
   /**
    *
    */
-  Future<process.ContactServer> requestContactserverProcess() async {
+  Future<process.ContactServer> requestContactserverProcess(
+      {bool withRevisioning: false}) async {
     if (_contactServer == null) {
       _contactServer = new process.ContactServer(
           Config.serverStackPath, runpath.path,
           bindAddress: envConfig.externalIp,
           servicePort: nextNetworkport,
           authUri: (await requestAuthserverProcess()).uri,
-          notificationUri: (await requestNotificationserverProcess()).uri);
+          notificationUri: (await requestNotificationserverProcess()).uri,
+          enableRevisioning: withRevisioning);
     }
 
     await _contactServer.whenReady;
@@ -172,7 +174,7 @@ class TestEnvironment {
           Config.serverStackPath, runpath.path,
           bindAddress: envConfig.externalIp,
           servicePort: nextNetworkport,
-          revisioning: withRevisioning,
+          enableRevisioning: withRevisioning,
           authUri: (await requestAuthserverProcess()).uri,
           notificationUri: (await requestNotificationserverProcess()).uri);
     }
@@ -185,14 +187,16 @@ class TestEnvironment {
   /**
    *
    */
-  Future<process.CalendarServer> requestCalendarserverProcess() async {
+  Future<process.CalendarServer> requestCalendarserverProcess(
+      {bool withRevisioning: false}) async {
     if (_calendarServer == null) {
       _calendarServer = new process.CalendarServer(
           Config.serverStackPath, runpath.path,
           bindAddress: envConfig.externalIp,
           servicePort: nextNetworkport,
           authUri: (await requestAuthserverProcess()).uri,
-          notificationUri: (await requestNotificationserverProcess()).uri);
+          notificationUri: (await requestNotificationserverProcess()).uri,
+          enableRevisioning: withRevisioning);
     }
 
     await _calendarServer.whenReady;
@@ -220,7 +224,8 @@ class TestEnvironment {
   /**
    *
    */
-  Future<process.DialplanServer> requestDialplanProcess() async {
+  Future<process.DialplanServer> requestDialplanProcess(
+      {bool withRevisioning: false}) async {
     if (_dialplanProcess == null) {
       _dialplanProcess = new process.DialplanServer(Config.serverStackPath,
           runpath.path, (await requestFreeswitchProcess()).confPath,
@@ -229,7 +234,8 @@ class TestEnvironment {
           servicePort: nextNetworkport,
           eslHostname: envConfig.eslConf.hostname,
           eslPassword: envConfig.eslConf.password,
-          eslPort: envConfig.eslConf.port);
+          eslPort: envConfig.eslConf.port,
+          enableRevisioning: withRevisioning);
     }
 
     await _dialplanProcess.whenReady;
@@ -278,14 +284,16 @@ class TestEnvironment {
   /**
    *
    */
-  Future<process.ReceptionServer> requestReceptionserverProcess() async {
+  Future<process.ReceptionServer> requestReceptionserverProcess(
+      {bool withRevisioning: false}) async {
     if (_receptionServer == null) {
       _receptionServer = new process.ReceptionServer(
           Config.serverStackPath, runpath.path,
           bindAddress: envConfig.externalIp,
           servicePort: nextNetworkport,
           authUri: (await requestAuthserverProcess()).uri,
-          notificationUri: (await requestNotificationserverProcess()).uri);
+          notificationUri: (await requestNotificationserverProcess()).uri,
+          enableRevisioning: withRevisioning);
     }
 
     await _receptionServer.whenReady;
@@ -296,13 +304,15 @@ class TestEnvironment {
   /**
    *
    */
-  Future<process.UserServer> requestUserserverProcess() async {
+  Future<process.UserServer> requestUserserverProcess(
+      {bool withRevisioning: false}) async {
     if (_userServer == null) {
       _userServer = new process.UserServer(Config.serverStackPath, runpath.path,
           bindAddress: envConfig.externalIp,
           servicePort: nextNetworkport,
           authUri: (await requestAuthserverProcess()).uri,
-          notificationUri: (await requestNotificationserverProcess()).uri);
+          notificationUri: (await requestNotificationserverProcess()).uri,
+          enableRevisioning: withRevisioning);
     }
 
     await _userServer.whenReady;

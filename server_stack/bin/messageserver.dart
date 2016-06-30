@@ -49,9 +49,9 @@ Future main(List<String> args) async {
     ..addOption('notification-uri',
         defaultsTo: config.notificationServer.externalUri.toString(),
         help: 'The uri of the notification server')
-    ..addFlag('revisioning',
+    ..addFlag('experimental-revisioning',
         defaultsTo: false,
-        help: 'Enable or disable revisioning on this server');
+        help: 'Enable or disable experimental Git revisioning on this server');
 
   final ArgResults parsedArgs = parser.parse(args);
 
@@ -68,7 +68,11 @@ Future main(List<String> args) async {
     exit(1);
   }
 
-  final bool revisioning = parsedArgs['revisioning'];
+  final bool revisioning = parsedArgs['experimental-revisioning'];
+
+  final revisionEngine = revisioning
+      ? new filestore.GitEngine(parsedArgs['filestore'] + '/message')
+      : null;
 
   final service.Authentication _authService = new service.Authentication(
       Uri.parse(parsedArgs['auth-uri']),
@@ -79,9 +83,8 @@ Future main(List<String> args) async {
       new service.NotificationService(Uri.parse(parsedArgs['notification-uri']),
           config.userServer.serverToken, new service.Client());
 
-  final filestore.Message _messageStore = new filestore.Message(
-      filepath + '/message',
-      revisioning ? new filestore.GitEngine(filepath + '/message') : null);
+  final filestore.Message _messageStore =
+      new filestore.Message(filepath + '/message', revisionEngine);
 
   await _messageStore.rebuildSecondaryIndexes();
 

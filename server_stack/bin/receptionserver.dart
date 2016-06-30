@@ -52,7 +52,10 @@ Future main(List<String> args) async {
         help: 'The uri of the authentication server')
     ..addOption('notification-uri',
         defaultsTo: config.notificationServer.externalUri.toString(),
-        help: 'The uri of the notification server');
+        help: 'The uri of the notification server')
+    ..addFlag('experimental-revisioning',
+        defaultsTo: false,
+        help: 'Enable or disable experimental Git revisioning on this server');
 
   ArgResults parsedArgs = parser.parse(args);
 
@@ -69,6 +72,20 @@ Future main(List<String> args) async {
     exit(1);
   }
 
+  final bool revisioning = parsedArgs['experimental-revisioning'];
+
+  final receptionRevisionEngine = revisioning
+      ? new filestore.GitEngine(parsedArgs['filestore'] + '/reception')
+      : null;
+
+  final contactRevisionEngine = revisioning
+      ? new filestore.GitEngine(parsedArgs['filestore'] + '/contact')
+      : null;
+
+  final organizationRevisionEngine = revisioning
+      ? new filestore.GitEngine(parsedArgs['filestore'] + '/reception')
+      : null;
+
   final service.Authentication _authService = new service.Authentication(
       Uri.parse(parsedArgs['auth-uri']),
       config.userServer.serverToken,
@@ -78,16 +95,14 @@ Future main(List<String> args) async {
       new service.NotificationService(Uri.parse(parsedArgs['notification-uri']),
           config.userServer.serverToken, new service.Client());
 
-  final filestore.Reception rStore = new filestore.Reception(
-      filepath + '/reception',
-      new filestore.GitEngine(filepath + '/reception'));
-  final filestore.Contact cStore = new filestore.Contact(rStore,
-      filepath + '/contact', new filestore.GitEngine(filepath + '/contact'));
+  final filestore.Reception rStore =
+      new filestore.Reception(filepath + '/reception', receptionRevisionEngine);
+
+  final filestore.Contact cStore = new filestore.Contact(
+      rStore, filepath + '/contact', contactRevisionEngine);
+
   final filestore.Organization oStore = new filestore.Organization(
-      cStore,
-      rStore,
-      filepath + '/organization',
-      new filestore.GitEngine(filepath + '/organization'));
+      cStore, rStore, filepath + '/organization', organizationRevisionEngine);
 
   final controller.Organization organization = new controller.Organization(
       oStore,

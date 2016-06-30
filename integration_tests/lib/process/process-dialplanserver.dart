@@ -14,6 +14,7 @@ class DialplanServer implements ServiceProcess {
   final String eslHostname;
   final String eslPassword;
   final int eslPort;
+  final bool enableRevisioning;
 
   final Completer _ready = new Completer();
   bool get ready => _ready.isCompleted;
@@ -26,7 +27,8 @@ class DialplanServer implements ServiceProcess {
       this.playbackPrefix: '',
       this.eslHostname: null,
       this.eslPort: null,
-      this.eslPassword: null}) {
+      this.eslPassword: null,
+      this.enableRevisioning: false}) {
     _init();
   }
 
@@ -69,6 +71,12 @@ class DialplanServer implements ServiceProcess {
 
     if (eslPort != null) {
       arguments.addAll(['--esl-port', eslPort.toString()]);
+    }
+
+    if (enableRevisioning) {
+      arguments.add('--experimental-revisioning');
+    } else {
+      arguments.add('--no-experimental-revisioning');
     }
 
     _log.fine('Starting process /usr/bin/dart ${arguments.join(' ')}');

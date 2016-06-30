@@ -68,7 +68,10 @@ Future main(List<String> args) async {
         help: 'The port of the ESL server')
     ..addOption('auth-uri',
         defaultsTo: config.authServer.externalUri.toString(),
-        help: 'The uri of the authentication server');
+        help: 'The uri of the authentication server')
+    ..addFlag('experimental-revisioning',
+        defaultsTo: false,
+        help: 'Enable or disable experimental Git revisioning on this server');
 
   final ArgResults parsedArgs = parser.parse(args);
 
@@ -116,6 +119,8 @@ Future main(List<String> args) async {
       password: parsedArgs['esl-password'],
       port: int.parse(parsedArgs['esl-port']));
 
+  final bool revisioning = parsedArgs['experimental-revisioning'];
+
   final service.Authentication _authentication = new service.Authentication(
       authUri, config.userServer.serverToken, new service.Client());
 
@@ -123,16 +128,16 @@ Future main(List<String> args) async {
    * Controllers.
    */
 
-  final filestore.Ivr _ivrStore = new filestore.Ivr(
-      filepath + '/ivr', new filestore.GitEngine(filepath + '/ivr'));
-  final filestore.ReceptionDialplan _dpStore = new filestore.ReceptionDialplan(
-      filepath + '/dialplan', new filestore.GitEngine(filepath + '/dialplan'));
+  final filestore.Ivr _ivrStore = new filestore.Ivr(filepath + '/ivr',
+      revisioning ? new filestore.GitEngine(filepath + '/ivr') : null);
 
-  final filestore.Reception _rStore = new filestore.Reception(
-      filepath + '/reception',
-      new filestore.GitEngine(filepath + '/reception'));
-  final filestore.User _userStore = new filestore.User(
-      filepath + '/user', new filestore.GitEngine(filepath + '/user'));
+  final filestore.ReceptionDialplan _dpStore = new filestore.ReceptionDialplan(
+      filepath + '/dialplan',
+      revisioning ? new filestore.GitEngine(filepath + '/dialplan') : null);
+
+  final filestore.Reception _rStore =
+      new filestore.Reception(filepath + '/reception');
+  final filestore.User _userStore = new filestore.User(filepath + '/user');
 
   /// Setup dialplan tools.
   final dialplanTools.DialplanCompiler compiler =

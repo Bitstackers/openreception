@@ -56,7 +56,10 @@ Future main(List<String> args) async {
         help: 'The uri of the authentication server')
     ..addOption('notification-uri',
         defaultsTo: config.notificationServer.externalUri.toString(),
-        help: 'The uri of the notification server');
+        help: 'The uri of the notification server')
+    ..addFlag('experimental-revisioning',
+        defaultsTo: false,
+        help: 'Enable or disable experimental Git revisioning on this server');
 
   ArgResults parsedArgs = parser.parse(args);
 
@@ -85,6 +88,16 @@ Future main(List<String> args) async {
     print(parser.usage);
     exit(1);
   }
+
+  final bool revisioning = parsedArgs['experimental-revisioning'];
+
+  filestore.GitEngine contactRevisionEngine = revisioning
+      ? new filestore.GitEngine(parsedArgs['filestore'] + '/contact')
+      : null;
+  filestore.GitEngine receptionRevisionEngine = revisioning
+      ? new filestore.GitEngine(parsedArgs['filestore'] + '/reception')
+      : null;
+
   final service.Authentication _authentication = new service.Authentication(
       Uri.parse(parsedArgs['auth-uri']),
       config.userServer.serverToken,
@@ -95,12 +108,10 @@ Future main(List<String> args) async {
           config.userServer.serverToken, new service.Client());
 
   final filestore.Reception rStore = new filestore.Reception(
-      parsedArgs['filestore'] + '/reception',
-      new filestore.GitEngine(parsedArgs['filestore'] + '/reception'));
+      parsedArgs['filestore'] + '/reception', receptionRevisionEngine);
+
   final filestore.Contact cStore = new filestore.Contact(
-      rStore,
-      parsedArgs['filestore'] + '/contact',
-      new filestore.GitEngine(parsedArgs['filestore'] + '/contact'));
+      rStore, parsedArgs['filestore'] + '/contact', contactRevisionEngine);
 
   final controller.Calendar _calendarController = new controller.Calendar(
       cStore,

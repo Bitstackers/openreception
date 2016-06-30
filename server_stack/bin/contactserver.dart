@@ -57,7 +57,10 @@ Future main(List<String> args) async {
         help: 'The uri of the authentication server')
     ..addOption('notification-uri',
         defaultsTo: config.notificationServer.externalUri.toString(),
-        help: 'The uri of the notification server');
+        help: 'The uri of the notification server')
+    ..addFlag('experimental-revisioning',
+        defaultsTo: false,
+        help: 'Enable or disable experimental Git revisioning on this server');
 
   final ArgResults parsedArgs = parser.parse(args);
 
@@ -87,6 +90,12 @@ Future main(List<String> args) async {
     exit(1);
   }
 
+  final bool revisioning = parsedArgs['experimental-revisioning'];
+
+  final revisionEngine = revisioning
+      ? new filestore.GitEngine(parsedArgs['filestore'] + '/contact')
+      : null;
+
   final service.Authentication _authentication = new service.Authentication(
       Uri.parse(parsedArgs['auth-uri']),
       config.userServer.serverToken,
@@ -106,11 +115,11 @@ Future main(List<String> args) async {
   final service.NotificationSocket _notificationSocket =
       new service.NotificationSocket(wsClient);
 
-  final filestore.Reception rStore = new filestore.Reception(
-      filepath + '/reception',
-      new filestore.GitEngine(filepath + '/reception'));
-  final filestore.Contact cStore = new filestore.Contact(rStore,
-      filepath + '/contact', new filestore.GitEngine(filepath + '/contact'));
+  final filestore.Reception rStore =
+      new filestore.Reception(filepath + '/reception');
+
+  final filestore.Contact cStore =
+      new filestore.Contact(rStore, filepath + '/contact', revisionEngine);
 
   controller.Contact contactController = new controller.Contact(
       cStore,

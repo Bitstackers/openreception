@@ -65,29 +65,15 @@ Future main(List<String> args) async {
         abbr: 'h',
         defaultsTo: config.calendarServer.externalHostName,
         help: 'The hostname or IP listen-address for the HTTP server')
-    ..addOption('playback-prefix',
-        help: ''
-            'Defaults to ${config.dialplanserver.playbackPrefix}',
-        defaultsTo: config.dialplanserver.playbackPrefix)
-    ..addOption('freeswitch-conf-path',
-        help: 'Path to the FreeSWITCH conf directory.'
-            'Defaults to ${config.dialplanserver.freeswitchConfPath}',
-        defaultsTo: config.dialplanserver.freeswitchConfPath)
-    ..addOption('esl-hostname',
-        defaultsTo: config.callFlowControl.eslConfig.hostname,
-        help: 'The hostname of the ESL server')
-    ..addOption('esl-password',
-        defaultsTo: config.callFlowControl.eslConfig.password,
-        help: 'The password for the ESL server')
-    ..addOption('esl-port',
-        defaultsTo: config.callFlowControl.eslConfig.port.toString(),
-        help: 'The port of the ESL server')
     ..addOption('auth-uri',
         defaultsTo: config.authServer.externalUri.toString(),
         help: 'The uri of the authentication server')
     ..addOption('notification-uri',
         defaultsTo: config.notificationServer.externalUri.toString(),
-        help: 'The uri of the notification server');
+        help: 'The uri of the notification server')
+    ..addFlag('experimental-revisioning',
+        defaultsTo: false,
+        help: 'Enable or disable experimental Git revisioning on this server');
 
   ArgResults parsedArgs = parser.parse(args);
 
@@ -117,17 +103,21 @@ Future main(List<String> args) async {
     exit(1);
   }
 
+  final bool revisioning = parsedArgs['experimental-revisioning'];
+
   final String playbackPrefix = parsedArgs['playback-prefix'];
   final String fsConfPath = parsedArgs['freeswitch-conf-path'];
 
   /// Initialize filestores
-  final filestore.GitEngine git = new filestore.GitEngine(filepath);
+  final filestore.GitEngine revisionEngine =
+      revisioning ? new filestore.GitEngine(filepath) : null;
+
   final filestore.Reception rStore =
-      new filestore.Reception(filepath + '/reception', git);
+      new filestore.Reception(filepath + '/reception', revisionEngine);
   final filestore.Contact cStore =
-      new filestore.Contact(rStore, filepath + '/contact', git);
+      new filestore.Contact(rStore, filepath + '/contact', revisionEngine);
   final filestore.Organization oStore = new filestore.Organization(
-      cStore, rStore, filepath + '/organization', git);
+      cStore, rStore, filepath + '/organization', revisionEngine);
 
   /// Setup dialplan tools.
   final dialplanTools.DialplanCompiler compiler =

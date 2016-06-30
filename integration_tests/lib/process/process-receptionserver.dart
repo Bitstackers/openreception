@@ -10,6 +10,7 @@ class ReceptionServer implements ServiceProcess {
   final String bindAddress;
   final Uri authUri;
   final Uri notificationUri;
+  final bool enableRevisioning;
 
   final Completer _ready = new Completer();
   bool get ready => _ready.isCompleted;
@@ -19,7 +20,8 @@ class ReceptionServer implements ServiceProcess {
       {this.servicePort: 4000,
       this.bindAddress: '0.0.0.0',
       this.authUri: null,
-      this.notificationUri}) {
+      this.notificationUri,
+      this.enableRevisioning: false}) {
     _init();
   }
 
@@ -47,6 +49,12 @@ class ReceptionServer implements ServiceProcess {
 
     if (notificationUri != null) {
       arguments.addAll(['--notification-uri', notificationUri.toString()]);
+    }
+
+    if (enableRevisioning) {
+      arguments.add('--experimental-revisioning');
+    } else {
+      arguments.add('--no-experimental-revisioning');
     }
 
     _log.fine('Starting process /usr/bin/dart ${arguments.join(' ')}');

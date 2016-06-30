@@ -56,7 +56,10 @@ Future main(List<String> args) async {
         help: 'The uri of the authentication server')
     ..addOption('notification-uri',
         defaultsTo: config.notificationServer.externalUri.toString(),
-        help: 'The uri of the notification server');
+        help: 'The uri of the notification server')
+    ..addFlag('experimental-revisioning',
+        defaultsTo: false,
+        help: 'Enable or disable experimental Git revisioning on this server');
 
   final ArgResults parsedArgs = parser.parse(args);
 
@@ -80,9 +83,14 @@ Future main(List<String> args) async {
       new service.NotificationService(Uri.parse(parsedArgs['notification-uri']),
           config.userServer.serverToken, new service.Client());
 
-  final filestore.User _userStore = new filestore.User(
-      parsedArgs['filestore'] + '/user',
-      new filestore.GitEngine(parsedArgs['filestore'] + '/user'));
+  final bool revisioning = parsedArgs['experimental-revisioning'];
+
+  final gitEngine = revisioning
+      ? new filestore.GitEngine(parsedArgs['filestore'] + '/user')
+      : null;
+
+  final filestore.User _userStore =
+      new filestore.User(parsedArgs['filestore'] + '/user', gitEngine);
 
   final model.AgentHistory agentHistory = new model.AgentHistory();
   final model.UserStatusList userStatus = new model.UserStatusList();
