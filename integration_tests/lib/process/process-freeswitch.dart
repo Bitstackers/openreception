@@ -163,7 +163,7 @@ class FreeSwitch implements ServiceProcess {
         _process.kill(ProcessSignal.SIGHUP);
         _log.finest('Waiting for freeswitch to become ready');
       } else {
-        _log.info('Canceling timer');
+        _log.info('Cancelling timer');
         t.cancel();
       }
     });
