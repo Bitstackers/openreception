@@ -21,6 +21,7 @@ import 'package:logging/logging.dart';
 import 'package:openreception.framework/filestore.dart' as filestore;
 import 'package:openreception.framework/service-io.dart' as service;
 import 'package:openreception.framework/service.dart' as service;
+import 'package:openreception.framework/event.dart' as event;
 import 'package:openreception.server/configuration.dart';
 import 'package:openreception.server/controller/controller-agent_statistics.dart'
     as controller;
@@ -83,6 +84,16 @@ Future main(List<String> args) async {
       new service.NotificationService(Uri.parse(parsedArgs['notification-uri']),
           config.userServer.serverToken, new service.Client());
 
+  final Uri notificationUri =
+      Uri.parse('ws://${_notification.host.host}:${_notification.host.port}'
+          '/notifications?token=${config.contactServer.serverToken}');
+
+  final service.WebSocket wsClient =
+      await (new service.WebSocketClient()).connect(notificationUri);
+
+  final service.NotificationSocket _notificationSocket =
+      new service.NotificationSocket(wsClient);
+
   final bool revisioning = parsedArgs['experimental-revisioning'];
 
   final gitEngine = revisioning
@@ -94,20 +105,31 @@ Future main(List<String> args) async {
 
   final model.AgentHistory agentHistory = new model.AgentHistory();
   final model.UserStatusList userStatus = new model.UserStatusList();
+  final Map<int, event.WidgetSelect> _userUIState = {};
+  final Map<int, event.FocusChange> _userFocusState = {};
+
+  _notificationSocket.onWidgetSelect.listen((event.WidgetSelect widgetSelect) {
+    _userUIState[widgetSelect.uid] = widgetSelect;
+  });
+
+  _notificationSocket.onFocusChange.listen((event.FocusChange focusChange) {
+    _userFocusState[focusChange.uid] = focusChange;
+  });
 
   final _userController =
       new controller.User(_userStore, _notification, _authService);
   final _statsController = new controller.AgentStatistics(agentHistory);
-  final _userStateController =
-      new controller.UserState(agentHistory, userStatus);
+
+  final _userStateController = new controller.UserState(
+      agentHistory, userStatus, _userUIState, _userFocusState);
 
   /// Client notification controller.
   final controller.ClientNotifier notifier =
       new controller.ClientNotifier(_notification);
   notifier.userStateSubscribe(userStatus);
 
-  await (new router.User(_authService, _notification, _userController,
-          _statsController, _userStateController))
+  await (new router.User(_notification, _userController, _statsController,
+          _userStateController))
       .listen(
           hostname: parsedArgs['host'],
           port: int.parse(parsedArgs['httpport']));

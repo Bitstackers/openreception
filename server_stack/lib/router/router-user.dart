@@ -64,6 +64,7 @@ class User {
       ..delete('/user/{uid}', _userController.remove)
       ..get('/user/all/state', _userStateController.list)
       ..get('/user/{uid}/state', _userStateController.get)
+      ..get('/user/{uid}/widget', _userStateController.uiState)
       ..post('/user/{uid}/state/{state}', _userStateController.set)
       ..post('/user', _userController.create)
       ..get('/user/identity/{identity}', _userController.userIdentity)

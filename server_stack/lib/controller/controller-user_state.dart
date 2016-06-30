@@ -22,15 +22,43 @@ import 'package:openreception.server/response_utils.dart';
 
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.server/model.dart' as model;
+import 'package:openreception.framework/event.dart' as event;
 
 class UserState {
   final model.AgentHistory _history;
   final model.UserStatusList _userStateList;
+  final Map<int, event.WidgetSelect> _userUIState;
+  final Map<int, event.FocusChange> _userFocusState;
 
-  UserState(this._history, this._userStateList);
+  UserState(this._history, this._userStateList, this._userUIState,
+      this._userFocusState);
 
+  /**
+   *
+   */
   shelf.Response stats(shelf.Request request) {
     return new shelf.Response.ok(JSON.encode(_history));
+  }
+
+  /**
+   *
+   */
+  shelf.Response uiStates(shelf.Request request) {
+    return new shelf.Response.ok(
+        JSON.encode(_userUIState.values.toList(growable: false)));
+  }
+
+  /**
+   *
+   */
+  shelf.Response uiState(shelf.Request request) {
+    final int uid = int.parse(shelf_route.getPathParameter(request, 'uid'));
+
+    if (!_userUIState.containsKey(uid)) {
+      return notFound('No UIState for uid:$uid');
+    }
+
+    return new shelf.Response.ok(JSON.encode(_userUIState[uid]));
   }
 
   shelf.Response list(shelf.Request request) {
