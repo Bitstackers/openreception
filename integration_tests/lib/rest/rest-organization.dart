@@ -58,6 +58,20 @@ void _runOrganizationTests() {
     test('remove (event presence)',
         () => serviceTest.Organization.deleteEvent(sa));
 
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+
+      rProcess = await env.requestReceptionserverProcess(withRevisioning: true);
+      sa.receptionStore = rProcess.bindClient(env.httpClient, sa.authToken);
+      sa.organizationStore =
+          rProcess.bindOrgClient(env.httpClient, sa.authToken);
+    });
+
+    tearDown(() async {
+      await env.clear();
+    });
+
     test('change listing on create',
         () => storeTest.Organization.changeOnCreate(sa));
 

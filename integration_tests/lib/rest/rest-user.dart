@@ -57,14 +57,6 @@ void _runUserTests() {
 
     test('groups of (known user)', () => storeTest.User.userGroups(sa));
 
-    test('group join', () => storeTest.User.joinGroup(sa));
-
-    test('group leave', () => storeTest.User.leaveGroup(sa));
-
-    test('identity add', () => storeTest.User.addUserIdentity(sa));
-
-    test('identity remove', () => storeTest.User.removeUserIdentity(sa));
-
     test('get (by identity)', () => storeTest.User.getUserByIdentity(sa));
 
     /*
@@ -93,6 +85,26 @@ void _runUserTests() {
     test('update (event presence)', () => serviceTest.User.updateEvent(sa));
 
     test('remove (event presence)', () => serviceTest.User.deleteEvent(sa));
+
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+
+      uProcess = await env.requestUserserverProcess(withRevisioning: true);
+      sa.userStore = uProcess.bindClient(env.httpClient, sa.authToken);
+    });
+
+    tearDown(() async {
+      await env.clear();
+    });
+
+    test('identity add', () => storeTest.User.addUserIdentity(sa));
+
+    test('identity remove', () => storeTest.User.removeUserIdentity(sa));
+
+    test('group join', () => storeTest.User.joinGroup(sa));
+
+    test('group leave', () => storeTest.User.leaveGroup(sa));
 
     test('change listing on create', () => storeTest.User.changeOnCreate(sa));
 

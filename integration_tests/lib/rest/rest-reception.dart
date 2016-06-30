@@ -59,6 +59,18 @@ void _runReceptionTests() {
     test('Reception removal (event presence)',
         () => serviceTest.Reception.deleteEvent(sa));
 
+    setUp(() async {
+      env = new TestEnvironment();
+      sa = await env.createsServiceAgent();
+
+      rProcess = await env.requestReceptionserverProcess(withRevisioning: true);
+      sa.receptionStore = rProcess.bindClient(env.httpClient, sa.authToken);
+    });
+
+    tearDown(() async {
+      await env.clear();
+    });
+
     test('change listing on create',
         () => storeTest.Reception.changeOnCreate(sa));
 
