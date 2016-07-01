@@ -220,10 +220,15 @@ class MigrationEnvironment {
 
         await Future.forEach(entries.map(convertCalendarEntry),
             (Future<or_model.CalendarEntry> ce) async {
-          await _dataStore.contactStore.calendarStore.create(
-              await ce, new or_model.OwningContact(contact.id), modifier,
-              enforceId: true);
-          count++;
+          try {
+            await _dataStore.contactStore.calendarStore.create(
+                await ce, new or_model.OwningContact(contact.id), modifier,
+                enforceId: true);
+            count++;
+          } catch (e) {
+            _log.warning(
+                'Failed to import calendar entry for contact ${contact.id}');
+          }
         });
       } else {
         _log.info(
@@ -238,9 +243,14 @@ class MigrationEnvironment {
             .list(new old_or_model.OwningReception(rec.ID));
 
         await Future.forEach(entries.map(convertCalendarEntry), (ce) async {
-          await _dataStore.receptionStore.calendarStore
-              .create(await ce, new or_model.OwningReception(rec.ID), modifier);
-          count++;
+          try {
+            await _dataStore.receptionStore.calendarStore.create(
+                await ce, new or_model.OwningReception(rec.ID), modifier);
+            count++;
+          } catch (e) {
+            _log.warning(
+                'Failed to import calendar entry for reception ${rec.ID}');
+          }
         });
       } else {
         _log.info('Skipping calendar import ${rec.fullName} (cid:${rec.ID})');
