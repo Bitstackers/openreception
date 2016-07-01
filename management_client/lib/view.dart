@@ -12,7 +12,7 @@ import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/storage.dart' as storage;
 import 'package:openreception.framework/validation.dart';
 import 'package:random_string/random_string.dart' as random;
-export 'package:management_tool/view/agent-monitoring/agent_monitoring.dart';
+//export 'package:management_tool/view/agent-monitoring/agent_monitoring.dart';
 
 part 'view/view-calendar.dart';
 part 'view/view-changelog.dart';
