@@ -129,7 +129,6 @@ class Calendar implements storage.Calendar {
     entry.id =
         entry.id != model.CalendarEntry.noId && enforceId ? entry.id : _nextId;
 
-    entry.id = _nextId;
     entry.lastAuthorId = modifier.id;
 
     final Directory ownerDir = _ownerDir(owner.id);

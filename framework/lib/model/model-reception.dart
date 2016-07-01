@@ -55,6 +55,7 @@ class Reception {
         key.emailAdresses: emailAddresses,
         key.greeting: greeting,
         key.handlingInstructions: handlingInstructions,
+        key.miniWiki: miniWiki,
         key.openingHours: openingHours,
         key.other: otherData,
         key.product: product,
@@ -63,49 +64,33 @@ class Reception {
         key.vatNumbers: vatNumbers,
         key.phoneNumbers: new List<Map>.from(
             phoneNumbers.map((PhoneNumber number) => number.toJson())),
-        key.websites: websites,
-        key.miniWiki: miniWiki
+        key.websites: websites
       };
 
   void set attributes(Map attributes) {
-    this.customerTypes = attributes[key.customerTypes] as List<String>;
-
-    //Temporary workaround for telephonenumbers to telephoneNumbers transition.
-    if (attributes.containsKey(key.phoneNumbers)) {
-      Iterable values = attributes[key.phoneNumbers];
-      List<PhoneNumber> pns = [];
-
-      try {
-        pns = values.map((Map map) => new PhoneNumber.fromMap(map)).toList();
-      } catch (_) {
-        pns = values
-            .map((String number) =>
-                new PhoneNumber.empty()..destination = number)
-            .toList();
-      }
-
-      phoneNumbers.addAll(pns);
-    }
-
     this
       ..addresses = attributes[key.addresses] as List<String>
       ..alternateNames = attributes[key.alternateNames] as List<String>
       ..bankingInformation = attributes[key.bankingInfo] as List<String>
+      ..customerTypes = attributes[key.customerTypes] as List<String>
       ..emailAddresses = attributes[key.emailAdresses] as List<String>
       ..greeting = attributes[key.greeting] as String
       ..handlingInstructions =
           attributes[key.handlingInstructions] as List<String>
+      ..miniWiki = attributes[key.miniWiki]
+      ..phoneNumbers = (attributes[key.phoneNumbers] as Iterable)
+          .map((Map map) => new PhoneNumber.fromMap(map))
+          .toList()
+      ..product = attributes[key.product] as String
       ..openingHours = attributes[key.openingHours] as List<String>
       ..otherData = attributes[key.other] as String
-      ..product = attributes[key.product] as String
       ..salesMarketingHandling =
           attributes[key.salesMarketingHandling] as List<String>
       .._shortGreeting = attributes[key.shortGreeting] != null
           ? attributes[key.shortGreeting]
           : ''
       ..vatNumbers = attributes[key.vatNumbers] as List<String>
-      ..websites = attributes[key.websites] as List<String>
-      ..miniWiki = attributes[key.miniWiki];
+      ..websites = attributes[key.websites] as List<String>;
   }
 
   static final Reception noReception = new Reception.empty();

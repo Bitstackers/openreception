@@ -144,9 +144,11 @@ class MigrationEnvironment {
     recs.forEach(((rec) {
       try {
         converted.add(convertReception(rec));
-      } catch (e) {
+      } catch (e, stackTrace) {
         failed++;
         _log.shout('Failed to import ${rec.name} (rid:${rec.ID})');
+        print(e);
+        print(stackTrace);
       }
     }));
 
@@ -238,8 +240,9 @@ class MigrationEnvironment {
             .list(new old_or_model.OwningReception(rec.ID));
 
         await Future.forEach(entries.map(convertCalendarEntry), (ce) async {
-          await _dataStore.receptionStore.calendarStore
-              .create(await ce, new or_model.OwningReception(rec.ID), modifier);
+          await _dataStore.receptionStore.calendarStore.create(
+              await ce, new or_model.OwningReception(rec.ID), modifier,
+              enforceId: true);
           count++;
         });
       } else {
@@ -521,16 +524,16 @@ class MigrationEnvironment {
         ..vatNumbers = oldRec.vatNumbers
         ..websites = oldRec.websites
         ..customerTypes = oldRec.customerTypes
-        ..phoneNumbers = new List<or_model.PhoneNumber>.from(
-            oldRec.telephoneNumbers.map(convertPhoneNumber))
+        ..phoneNumbers = oldRec.telephoneNumbers
+            .map(convertPhoneNumber)
+            .toList(growable: false)
         ..miniWiki = oldRec.miniWiki
         ..dialplan = oldRec.dialplan
         ..greeting = oldRec.greeting
         ..otherData = oldRec.otherData
         ..product = oldRec.product
         ..enabled = oldRec.enabled
-        ..shortGreeting = oldRec.shortGreeting
-        ..attributes = oldRec.attributes;
+        ..shortGreeting = oldRec.shortGreeting;
 
   /**
    *
