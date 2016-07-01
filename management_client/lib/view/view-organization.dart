@@ -1,14 +1,5 @@
 part of management_tool.view;
 
-class OrganizationChange {
-  final Change type;
-  final model.Organization organization;
-
-  OrganizationChange.create(this.organization) : type = Change.created;
-  OrganizationChange.delete(this.organization) : type = Change.deleted;
-  OrganizationChange.update(this.organization) : type = Change.updated;
-}
-
 /**
  *
  */
@@ -19,9 +10,6 @@ class Organization {
 
   final Logger _log = new Logger('$_libraryName.Organization');
   final controller.Organization _orgController;
-
-  Stream<OrganizationChange> get changes => _changeBus.stream;
-  final Bus<OrganizationChange> _changeBus = new Bus<OrganizationChange>();
 
   int get _id => int.parse(_idInput.value);
   void set _id(int newId) {
@@ -38,16 +26,16 @@ class Organization {
     ..text = 'Slet'
     ..classes.add('delete');
 
-  ObjectHistory _historyView;
-  final AnchorElement _historyToggle = new AnchorElement()
-    ..href = '#history'
-    ..text = 'Vis historik';
+  Changelog _changelog;
 
   final HeadingElement _heading = new HeadingElement.h2();
 
   final InputElement _notesInput = new InputElement()..value = '';
   final InputElement _nameInput = new InputElement()..value = '';
 
+  /**
+   * 
+   */
   void set organization(model.Organization org) {
     _id = org.id;
     _notesInput.value = org.notes.join(', ');
@@ -65,6 +53,10 @@ class Organization {
     }
     _deleteButton.text = 'Slet';
     _deleteButton.disabled = !_saveButton.disabled;
+
+    _orgController.changelog(org.id).then((String content) {
+      _changelog.content = content;
+    });
   }
 
   /**
@@ -80,9 +72,7 @@ class Organization {
    *
    */
   Organization(this._orgController) {
-    _historyView = new ObjectHistory();
-    _historyView.element.hidden = true;
-    _historyToggle..text = 'Vis historik';
+    _changelog = new Changelog();
 
     element.children = [
       _saveButton,
@@ -103,8 +93,7 @@ class Organization {
             ..htmlFor = _notesInput.id,
           _notesInput
         ],
-      _historyToggle,
-      _historyView.element
+      _changelog.element,
     ];
 
     _observers();
@@ -114,17 +103,6 @@ class Organization {
    *
    */
   void _observers() {
-    _historyToggle.onClick.listen((_) async {
-      await _orgController.changes(organization.id).then((c) {
-        _historyView.commits = c;
-      });
-
-      _historyView.element.hidden = !_historyView.element.hidden;
-
-      _historyToggle.text =
-          _historyView.element.hidden ? 'Vis historik' : 'Skjul historik';
-    });
-
     ElementList<InputElement> inputs = element.querySelectorAll('input');
 
     inputs.forEach((InputElement ine) {
@@ -141,7 +119,6 @@ class Organization {
       }
       try {
         await _orgController.remove(organization.id);
-        _changeBus.fire(new OrganizationChange.delete(organization));
         element.hidden = true;
         notify.success('Organisationen blev slettet', organization.name);
       } catch (error) {
@@ -154,33 +131,66 @@ class Organization {
     });
 
     _saveButton.onClick.listen((_) async {
-      element.hidden = true;
+      loading = true;
       if (organization.id == model.Organization.noId) {
         try {
           model.OrganizationReference newOrg =
               await _orgController.create(organization);
-          _changeBus.fire(new OrganizationChange.create(
-              await _orgController.get(newOrg.id)));
+
           notify.success('Organisationen blev oprettet', newOrg.name);
         } catch (error) {
           notify.error(
               'Der skete en fejl, så organisationen blev ikke oprettet',
               'Fejl: $error');
           _log.severe('Tried to create an new organization, but got: $error');
-          element.hidden = false;
         }
       } else {
         try {
           await _orgController.update(organization);
-          _changeBus.fire(new OrganizationChange.update(organization));
           notify.success('Ændringerne blev gemt', organization.name);
         } catch (error) {
           notify.error('Kunne ikke gemme ændringerne til organisationen',
               'Fejl: $error');
           _log.severe('Tried to update an organization, but got: $error');
-          element.hidden = false;
         }
       }
+
+      /// Get back to non-loading state.
+      loading = false;
     });
   }
+
+  /**
+   * Clear out the fields of the widget
+   */
+  void clear() {
+    _idInput.value = '';
+    _changelog.content = '';
+    _heading.text = '';
+    _notesInput.value = '';
+    _nameInput.value = '';
+  }
+
+  /**
+   * Sets the widget in loading state
+   */
+  void set loading(bool isLoading) {
+    element.classes.toggle('loading', isLoading);
+
+    element.querySelectorAll('input').forEach((Element input) {
+      (input as InputElement).disabled = isLoading;
+    });
+  }
+
+  /**
+   * Hides/shows the widget
+   */
+  void set hidden(bool isHidden) {
+    element.hidden = isHidden;
+  }
+
+  /**
+   * Get visibilty status
+   */
+  bool get hidden => element.hidden;
 }

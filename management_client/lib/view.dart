@@ -4,22 +4,21 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 
-import 'package:random_string/random_string.dart' as random;
-
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/bus.dart';
+import 'package:management_tool/controller.dart' as controller;
+import 'package:management_tool/searchcomponent.dart';
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/storage.dart' as storage;
-
-//import 'package:openreception.framework/util.dart' as util;
-import 'package:management_tool/searchcomponent.dart';
-import 'package:management_tool/controller.dart' as controller;
+import 'package:openreception.framework/validation.dart';
+import 'package:random_string/random_string.dart' as random;
+export 'package:management_tool/view/agent-monitoring/agent_monitoring.dart';
 
 part 'view/view-calendar.dart';
+part 'view/view-changelog.dart';
 part 'view/view-contact_base_info.dart';
-part 'view/view-dialplan_calendar_plot.dart';
 part 'view/view-dialplan.dart';
+part 'view/view-dialplan_calendar_plot.dart';
 part 'view/view-dialplan_list.dart';
 part 'view/view-endpoint.dart';
 part 'view/view-ivr_menu.dart';
@@ -29,8 +28,8 @@ part 'view/view-object_history.dart';
 part 'view/view-organization.dart';
 part 'view/view-peer_account.dart';
 part 'view/view-phonenumbers.dart';
-part 'view/view-reception_contact.dart';
 part 'view/view-reception.dart';
+part 'view/view-reception_contact.dart';
 part 'view/view-user.dart';
 part 'view/view-user_groups.dart';
 part 'view/view-user_identities.dart';
@@ -82,17 +81,6 @@ List<String> _valuesFromListTextArea(TextAreaElement ta) =>
         .split('\n')
         .map((String str) => str.trim())
         .where((String str) => str.isNotEmpty));
-
-/**
- * Returns a valid URI from a string - or null if it is malformed.
- */
-Uri _validUri(String str) {
-  try {
-    return Uri.parse(str);
-  } catch (_) {
-    return null;
-  }
-}
 
 LIElement actionTemplate(model.Action oh) =>
     new LIElement()..text = oh.toString();

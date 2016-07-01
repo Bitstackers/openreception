@@ -28,23 +28,30 @@ class Dialplan {
     ..classes.add('fold-unfold')
     ..hidden = true;
 
+  Changelog _changelog;
+
   Function onUpdate = (String extension) => null;
   Function onDelete = (String extension) => null;
   Function onChange = () => null;
 
   Dialplan(this._dialplanController) {
+    _changelog = new Changelog();
+
     element.children = [
       _foldJson,
       _unfoldJson,
       _deleteButton,
       _saveButton,
       _inputErrorList,
-      _dialplanInput
+      _dialplanInput,
+      _changelog.element
     ];
     _observers();
   }
 
   void _checkInput() {
+    LIElement errorNode(String text) => new LIElement()..text = text;
+
     model.ReceptionDialplan rdp;
     Map json;
     _inputErrorList.children.clear();
@@ -54,15 +61,18 @@ class Dialplan {
 
       try {
         rdp = model.ReceptionDialplan.decode(json);
+        final validationErrors = validateReceptionDialplan(rdp);
+
+        _inputErrorList.children.addAll(
+            validationErrors.map((error) => errorNode(error.toString())));
       } on FormatException {
-        _inputErrorList.children
-            .add(new LIElement()..text = 'Kaldplan-parser fejl.');
-        _dialplanInput.classes.toggle('error', true);
+        _inputErrorList.children.add(errorNode('Kaldplan-parser fejl.'));
       }
     } on FormatException {
       _inputErrorList.children.add(new LIElement()..text = 'JSON-parser fejl.');
-      _dialplanInput.classes.toggle('error', true);
     }
+
+    _dialplanInput.classes.toggle('error', _inputErrorList.children.isNotEmpty);
   }
 
   Future _deleteDialplan() async {
@@ -114,6 +124,10 @@ class Dialplan {
     /// Hack! To accomodate for the fact that hidden = false can take some time before "activating"
     new Future.delayed(new Duration(milliseconds: 100), () {
       _resizeInput();
+    });
+
+    _dialplanController.changelog(rdp.extension).then((String content) {
+      _changelog.content = content;
     });
   }
 

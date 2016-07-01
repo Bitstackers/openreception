@@ -7,12 +7,22 @@ class PeerAccount {
 
   final Logger _log = new Logger('$_libraryName.PeerAccount');
 
+  bool get isChanged =>
+      _orginalAccount.username != account.username ||
+      _orginalAccount.password != account.password ||
+      _orginalAccount.context != account.context;
+
+  bool get isNotChanged => !isChanged;
+
   final controller.PeerAccount _peerAccountController;
   final User _userView;
+  model.PeerAccount _orginalAccount;
 
   final InputElement _peernameInput = new InputElement()..id = 'peername';
   final InputElement _passwordInput = new InputElement()..id = 'peer-password';
-  final InputElement _contextInput = new InputElement()..id = 'peer-context';
+  final InputElement _contextInput = new InputElement()
+    ..id = 'peer-context'
+    ..value = 'receptionists';
 
   final ButtonElement _deleteButton = new ButtonElement()
     ..text = 'Slet'
@@ -34,32 +44,33 @@ class PeerAccount {
    *
    */
   PeerAccount(this._peerAccountController, this._userView) {
-    element.children = [
-      new DivElement()
-        ..children = [
-          new LabelElement()
-            ..text = 'Lokalnummer'
-            ..htmlFor = _peernameInput.id,
-          _peernameInput
-        ],
-      new DivElement()
-        ..children = [
-          new LabelElement()
-            ..text = 'SIP password'
-            ..htmlFor = _passwordInput.id,
-          _passwordInput
-        ],
-      new DivElement()
-        ..children = [
-          new LabelElement()
-            ..text = 'Kontekst'
-            ..htmlFor = _peernameInput.id,
-          _contextInput
-        ]
-        ..hidden = true,
-      _deleteButton,
-      _deployButton,
-    ];
+    element
+      ..children = [
+        new DivElement()
+          ..children = [
+            new LabelElement()
+              ..text = 'Lokalnummer'
+              ..htmlFor = _peernameInput.id,
+            _peernameInput
+          ],
+        new DivElement()
+          ..children = [
+            new LabelElement()
+              ..text = 'SIP password'
+              ..htmlFor = _passwordInput.id,
+            _passwordInput
+          ],
+        new DivElement()
+          ..children = [
+            new LabelElement()
+              ..text = 'Kontekst'
+              ..htmlFor = _contextInput.id,
+            _contextInput
+          ],
+        _deleteButton,
+        _deployButton,
+      ]
+      ..hidden = true;
     _observers();
   }
 
@@ -67,11 +78,11 @@ class PeerAccount {
    *
    */
   void _observers() {
-    Iterable<InputElement> inputs =
-        element.querySelectorAll('input') as Iterable<InputElement>;
+    Iterable<InputElement> inputs = element.querySelectorAll('input');
 
     inputs.forEach((InputElement ine) {
       ine.onInput.listen((_) {
+        element.classes.toggle('changed', isChanged);
         _deployButton.disabled = false;
         _deleteButton.disabled = !_deployButton.disabled;
       });
@@ -87,19 +98,39 @@ class PeerAccount {
   }
 
   ///
-  void set account(model.PeerAccount acc) {
+  Future loadAccount(String extension) async {
     /// Reset labels.
     _deleteButton.text = 'Slet';
 
-    _deleteButton.disabled = acc.username.isNotEmpty;
-    _deployButton.disabled = acc.username.isNotEmpty;
-    _deleteButton.disabled = !_deployButton.disabled;
-
-    _peernameInput.value = acc.username;
-    _passwordInput.value =
-        acc.username.isEmpty ? random.randomAlphaNumeric(8) : acc.password;
-
+    /// Show component and set loading state
     show();
+    loading = true;
+
+    _log.finest('Loading peer account for $extension');
+
+    /// Make a new account and update it later on with a password to trigger
+    /// the "isChanged" condition.
+    _orginalAccount = new model.PeerAccount(extension, '', 'receptionists');
+
+    if (extension.isNotEmpty) {
+      try {
+        _orginalAccount = await _peerAccountController.get(extension);
+        _passwordInput.value = _orginalAccount.password;
+      } on storage.NotFound {}
+    }
+
+    _peernameInput.value = _orginalAccount.username;
+
+    _passwordInput.value = _orginalAccount.password.isEmpty
+        ? random.randomAlphaNumeric(8)
+        : _orginalAccount.password;
+    _contextInput.value = _orginalAccount.context;
+
+    loading = false;
+
+    element.classes.toggle('changed', isChanged);
+    _deleteButton.disabled = isChanged;
+    _deployButton.disabled = isNotChanged;
   }
 
   /**
@@ -153,5 +184,27 @@ class PeerAccount {
       notify.error('Kunne ikke udrullet konto', 'Fejl: $error');
       _log.severe('Deploy account failed with: ${error}');
     }
+  }
+
+  /**
+   * Clear out the input fields of the widget.
+   */
+  void clear() {
+    _peernameInput.value = '';
+    _passwordInput.value = '';
+    _contextInput.value = '';
+  }
+
+  /**
+   *
+   */
+  void set loading(bool isLoading) {
+    element.classes.toggle('loading', isLoading);
+
+    Iterable<InputElement> inputs = element.querySelectorAll('input');
+
+    inputs.forEach((InputElement ine) {
+      ine.disabled = isLoading;
+    });
   }
 }

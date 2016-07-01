@@ -4,8 +4,10 @@ import 'dart:async';
 import 'dart:html';
 
 import 'package:logging/logging.dart';
+import 'package:management_tool/configuration.dart';
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/view.dart' as view;
+import 'package:openreception.framework/event.dart' as event;
 import 'package:openreception.framework/model.dart' as model;
 import 'package:route_hierarchical/client.dart';
 
@@ -13,9 +15,7 @@ controller.Popup _notify = controller.popup;
 
 const String _libraryName = 'management_tool.page.organization';
 
-class OrganizationView {
-  static const String viewName = 'organization';
-
+class Organization {
   Logger _log = new Logger('$_libraryName.Organization');
 
   final controller.Organization _organizationController;
@@ -56,8 +56,8 @@ class OrganizationView {
   /**
    *
    */
-  OrganizationView(controller.Organization this._organizationController,
-      Router this._router) {
+  Organization(controller.Organization this._organizationController,
+      Stream<event.OrganizationChange> orgChanges, Router this._router) {
     _setupRouter();
     _organizationView = new view.Organization(_organizationController);
 
@@ -99,30 +99,44 @@ class OrganizationView {
         ]
     ];
 
-    _observers();
+    _observers(orgChanges);
   }
 
   /**
    *
    */
-  void _observers() {
+  void _observers(Stream<event.OrganizationChange> orgChanges) {
     _createButton.onClick.listen((_) {
       _router.go('organization.create', {});
     });
 
     _searchBox.onInput.listen((_) => _performSearch());
 
-    _organizationView.changes.listen((view.OrganizationChange ogc) async {
-      await _refreshList();
-      if (ogc.type == view.Change.deleted) {} else if (ogc.type ==
-          view.Change.updated) {
-        await _activateOrganization(ogc.organization.id);
-      } else if (ogc.type == view.Change.created) {
-        await _activateOrganization(ogc.organization.id);
+    orgChanges.listen((event.OrganizationChange ogc) async {
+      if (!this.element.hidden) {
+        /// Always refresh the userlist
+        await _refreshList();
+
+        /// This is the currently selected organization
+        if (ogc.oid == _organizationView.organization.id) {
+          if (ogc.deleted) {
+            _organizationView.clear();
+            _organizationView.hidden = true;
+            _clearRightBar();
+            _router.go('organization.edit.id', {'oid': ogc.oid});
+          } else if (ogc.updated) {
+            _router.go('organization.edit.id', {'oid': ogc.oid});
+          }
+        } else if (ogc.created && ogc.modifierUid == config.user.id) {
+          _router.go('organization.edit.id', {'oid': ogc.oid});
+        }
       }
     });
   }
 
+  /**
+   * Clear out the nodes on the right side of the UI.
+   */
   void _clearRightBar() {
     _currentReceptionList.clear();
     _ulContactList.children.clear();
@@ -156,6 +170,7 @@ class OrganizationView {
         ..sort(compareTo);
       this._organizations = list;
       _renderOrganizationList(list);
+      _highlightOrganizationInList(_organizationView.organization.id);
     }).catchError((error) {
       _notify.error('Organisationsliste kunne ikke hentes', 'Fejl: $error');
       _log.severe('Tried to fetch organization list, got error: $error');
@@ -187,7 +202,9 @@ class OrganizationView {
 
   Future _activateOrganization(int oid) async {
     try {
+      _organizationView.loading = true;
       _organizationView.organization = await _organizationController.get(oid);
+      _organizationView.loading = false;
     } catch (error) {
       _notify.error('Kunne ikke hente stamdata for organisation oid:$oid',
           'Fejl: $error');
@@ -246,7 +263,6 @@ class OrganizationView {
       ..classes.add('clickable')
       ..text = '${cRef.name}'
       ..onClick.listen((_) {
-        print('contact.edit.id');
         _router.go('contact.edit.id', {'cid': cRef.id});
       });
     return li;
@@ -270,8 +286,10 @@ class OrganizationView {
   Future activateCreate(RouteEvent e) async {
     await activate(e);
     _clearRightBar();
+    _organizationView.hidden = false;
+    _organizationView.loading = true;
     _organizationView.organization = new model.Organization.empty();
-    _organizationView.element.hidden = false;
+    _organizationView.loading = false;
   }
 
   /**

@@ -1,18 +1,5 @@
 part of management_tool.view;
 
-class EndpointChange {
-  final Change type;
-  final model.MessageEndpoint endpoint;
-
-  EndpointChange.create(this.endpoint) : type = Change.created;
-  EndpointChange.delete(this.endpoint) : type = Change.deleted;
-  EndpointChange.update(this.endpoint) : type = Change.updated;
-
-  String toString() => '$type $endpoint';
-
-  int get hashCode => endpoint.toString().hashCode;
-}
-
 /**
  * Visual representation of an endpoint collection belonging to a contact.
  */
@@ -100,6 +87,9 @@ class Endpoints {
     });
   }
 
+  /**
+   * 
+   */
   void set endpoints(Iterable<model.MessageEndpoint> eps) {
     _originalList = eps.toList(growable: false);
     if (_unfoldJson.hidden) {
@@ -109,17 +99,14 @@ class Endpoints {
     }
   }
 
-  Iterable<EndpointChange> get endpointChanges {
-    Set<EndpointChange> epcs = new Set();
+  /**
+   *
+   */
+  Iterable<model.MessageEndpoint> get endpoints {
+    final List epMaps = JSON.decode(_endpointsInput.value);
 
-    Map<int, model.MessageEndpoint> mepIdMap = {};
-    _originalList.forEach((model.MessageEndpoint ep) {});
-
-    return epcs;
+    return epMaps.map((Map map) => model.MessageEndpoint.decode(map));
   }
-
-  Iterable<model.MessageEndpoint> get endpoints =>
-      JSON.decode(_endpointsInput.value).map(model.MessageEndpoint.decode);
 
   void _resizeInput() {
     while (_endpointsInput.client.height < _endpointsInput.scrollHeight) {

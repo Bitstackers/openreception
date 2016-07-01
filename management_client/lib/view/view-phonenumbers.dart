@@ -106,9 +106,14 @@ class Phonenumbers {
     }
   }
 
-  Iterable<model.PhoneNumber> get phoneNumbers => JSON
-      .decode(_phonenumberInput.value)
-      .map((m) => new model.PhoneNumber.fromMap(m));
+  /**
+   *
+   */
+  Iterable<model.PhoneNumber> get phoneNumbers {
+    final List pnMaps = JSON.decode(_phonenumberInput.value);
+
+    return pnMaps.map((m) => new model.PhoneNumber.fromMap(m));
+  }
 
   void _resizeInput() {
     while (_phonenumberInput.client.height < _phonenumberInput.scrollHeight) {

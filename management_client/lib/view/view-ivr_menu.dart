@@ -30,15 +30,18 @@ class IvrMenu {
 
   Function onUpdate = (String extension) => null;
   Function onDelete = (String extension) => null;
+  Changelog _changelog;
 
   IvrMenu(this._menuController) {
+    _changelog = new Changelog();
     element.children = [
       _foldJson,
       _unfoldJson,
       _deleteButton,
       _saveButton,
       _inputErrorList,
-      _menuInput
+      _menuInput,
+      _changelog.element
     ];
     _observers();
   }
@@ -55,13 +58,12 @@ class IvrMenu {
         menu = model.IvrMenu.decode(json);
         final List<FormatException> errors = model.validateIvrMenu(menu);
 
-        if(errors.isNotEmpty) {
+        if (errors.isNotEmpty) {
           //TODO: Map and build more informational LI-elements.
           _inputErrorList.children
               .add(new LIElement()..text = 'Kaldplan-parser fejl.');
           _menuInput.classes.toggle('error', true);
         }
-
       } on FormatException {
         _inputErrorList.children
             .add(new LIElement()..text = 'Kaldplan-parser fejl.');
@@ -121,6 +123,10 @@ class IvrMenu {
     /// Hack! To accomodate for the fact that hidden = false can take some time before "activating"
     new Future.delayed(new Duration(milliseconds: 100), () {
       _resizeInput();
+    });
+
+    _menuController.changelog(menu.name).then((String content) {
+      _changelog.content = content;
     });
   }
 

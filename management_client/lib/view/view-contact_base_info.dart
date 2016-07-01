@@ -11,6 +11,8 @@ class Contact {
   final controller.Reception _receptionController;
 
   Calendar _calendarView;
+  Changelog _changelog;
+  Changelog _receptionChangelog;
 
   final TextInputElement _nameInput = new TextInputElement()
     ..id = 'contact-input-name'
@@ -98,6 +100,14 @@ class Contact {
 
     _typeInput.options.forEach(
         (OptionElement option) => option.selected = option.value == c.type);
+
+    _contactController.changelog(c.id).then((String content) {
+      _changelog.content = content;
+    });
+
+    _contactController.receptionChangelog(c.id).then((String content) {
+      _receptionChangelog.content = content;
+    });
   }
 
   /**
@@ -114,9 +124,9 @@ class Contact {
    */
   Contact(this._contactController, this._calendarController,
       this._receptionController) {
-    _calendarView =
-        new Calendar(_calendarController, new model.OwningContact(contact.id));
-    //TODO add deletions.
+    _calendarView = new Calendar(_calendarController);
+    _changelog = new Changelog();
+    _receptionChangelog = new Changelog();
 
     element.children = [
       _deleteButton,
@@ -148,6 +158,9 @@ class Contact {
         ],
       new DivElement()
         ..style.clear = 'both'
+        ..children = [_changelog.element, _receptionChangelog.element],
+      new DivElement()
+        ..style.clear = 'both'
         ..children = [_calendarToggle],
       _calendarsContainer
     ];
@@ -158,14 +171,6 @@ class Contact {
         _calendarView.element,
         new HeadingElement.h4()..text = 'Slettede KalenderPoster',
       ];
-
-    _calendarToggle.onClick.listen((_) {
-      _calendarsContainer.hidden = !_calendarsContainer.hidden;
-
-      _calendarToggle.text = _calendarsContainer.hidden
-          ? 'Vis kalenderaftaler'
-          : 'Skjul kalenderaftaler';
-    });
 
     _search = new SearchComponent<model.ReceptionReference>(
         _receptionOuterSelector, 'contact-reception-searchbox')
@@ -220,16 +225,20 @@ class Contact {
     });
 
     _calendarView.onDelete = () async {
-      _calendarController
-          .listContact(contact.id)
-          .then((Iterable<model.CalendarEntry> entries) {
-        _calendarView.entries = entries;
-      });
-
-      _calendarController
-          .listContact(contact.id)
-          .then((Iterable<model.CalendarEntry> entries) {});
+      _calendarView.loadEntries(new model.OwningContact(contact.id));
     };
+
+    _calendarToggle.onClick.listen((_) async {
+      _calendarsContainer.hidden = !_calendarsContainer.hidden;
+
+      _calendarToggle.text = _calendarsContainer.hidden
+          ? 'Vis kalenderaftaler'
+          : 'Skjul kalenderaftaler';
+
+      if (!_calendarsContainer.hidden) {
+        await _calendarView.loadEntries(new model.OwningContact(contact.id));
+      }
+    });
 
     _saveButton.onClick.listen((_) async {
       model.BaseContact updated;
@@ -245,6 +254,9 @@ class Contact {
       contact = await _contactController.get(updated.id);
     });
 
+    /**
+     * TODO: Fix this hunk-o-old-crap.
+     */
     _importButton.onClick.listen((_) async {
       int sourceCid;
       final String confirmationText =
@@ -292,7 +304,6 @@ class Contact {
 
           await Future.wait(entries.map((ce) async {
             ce..id = model.CalendarEntry.noId;
-            ;
 
             _log.finest('Adding calendar entry ${ce.toJson()} to cid:$dcid');
 
@@ -343,8 +354,8 @@ class Contact {
   }
 
   /**
-     *
-     */
+   *
+   */
   Future _deleteSelectedContact() async {
     _log.finest('Deleting contact cid${contact.id}');
     final String confirmationText = 'Bekræft sletning af cid: ${contact.id}?';

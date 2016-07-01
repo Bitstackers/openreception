@@ -4,20 +4,17 @@ import 'dart:async';
 import 'dart:html';
 
 import 'package:logging/logging.dart';
-import 'package:route_hierarchical/client.dart';
-
+import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/view.dart' as view;
-
 import 'package:openreception.framework/event.dart' as event;
 import 'package:openreception.framework/model.dart' as model;
-
-import 'package:management_tool/controller.dart' as controller;
+import 'package:route_hierarchical/client.dart';
 
 const String _libraryName = 'contact.view';
 
 controller.Popup _notify = controller.popup;
 
-class ContactView {
+class Contact {
   final Logger _log = new Logger('$_libraryName.Contact');
   DivElement element;
 
@@ -26,7 +23,6 @@ class ContactView {
   final controller.Contact _contactController;
   final controller.Calendar _calendarController;
   final controller.Reception _receptionController;
-  final controller.Notification _notificationController;
   final Router _router;
 
   UListElement _ulContactList;
@@ -45,12 +41,17 @@ class ContactView {
 
   bool get isHidden => element.hidden;
 
-  ContactView(
+  /**
+   *
+   */
+  Contact(
       DivElement this.element,
       this._contactController,
       this._receptionController,
       this._calendarController,
-      this._notificationController,
+      Stream<event.ContactChange> contactChanges,
+      Stream<event.ReceptionData> receptionDataChanges,
+      Stream<event.CalendarChange> calendarChanges,
       this._router) {
     _setupRouter();
 
@@ -67,7 +68,7 @@ class ContactView {
     _ulContactList = element.querySelector('#contact-list');
     element.classes.add('page');
 
-    _observers();
+    _observers(contactChanges, receptionDataChanges, calendarChanges);
 
     _refreshList();
     _ulReceptionData = element.querySelector('#reception-contacts');
@@ -78,8 +79,11 @@ class ContactView {
   /**
    *
    */
-  void _observers() {
-    _notificationController.contactChange.listen((event.ContactChange e) async {
+  void _observers(
+      Stream<event.ContactChange> contactChanges,
+      Stream<event.ReceptionData> receptionDataChanges,
+      Stream<event.CalendarChange> calendarChanges) {
+    contactChanges.listen((event.ContactChange e) async {
       if (isHidden) {
         return null;
       }
@@ -90,12 +94,12 @@ class ContactView {
         _contactData.contact = await _contactController.get(e.cid);
 
         controller.popup.info(
-            'Valgte kontakperson ændret af ${e.modifierUid} - opdaterer datablad',
+            'Valgte kontaktperson ændret af ${e.modifierUid} - opdaterer datablad',
             '');
       } else if (e.deleted && _contactData.contact.id == e.cid) {
         _clearContent();
         controller.popup.info(
-            'Valgte kontakperson slettet af ${e.modifierUid} - rydder datablad',
+            'Valgte kontaktperson slettet af ${e.modifierUid} - rydder datablad',
             '');
       }
     });

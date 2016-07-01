@@ -1,19 +1,8 @@
 part of management_tool.view;
 
-class UserGroupChange {
-  final Change type;
-  final int groupId;
-
-  UserGroupChange.join(this.groupId) : type = Change.added;
-  UserGroupChange.leave(this.groupId) : type = Change.deleted;
-
-  /**
-   *
-   */
-  @override
-  String toString() => '$type, gid:$groupId';
-}
-
+/**
+ * View for usergroups checkbox group.
+ */
 class UserGroups {
   final controller.User _userController;
   final Logger _log = new Logger('$_libraryName.userGroups');
@@ -24,9 +13,18 @@ class UserGroups {
 
   List<CheckboxInputElement> _checkboxs = new List<CheckboxInputElement>();
   final TableElement _table = new TableElement();
-  List<String> _allGroups = new List<String>();
-  List<String> _originalGroups = new List<String>();
+  Set<String> _allGroups = new Set<String>();
+  Set<String> _originalGroups = new Set<String>();
 
+  bool get isChanged => !isNotChanged;
+
+  bool get isNotChanged =>
+      _originalGroups.containsAll(groups.toSet()) &&
+      groups.toSet().containsAll(_originalGroups);
+
+  /**
+   *
+   */
   UserGroups(this._userController) {
     element.children = [_table];
     _refreshGroupList();
@@ -63,42 +61,28 @@ class UserGroups {
       ..clear()
       ..addAll(_allGroups.map(_makeGroupRow));
 
-    _checkboxs.forEach((cbx) => cbx.onChange.listen((e) {
-          if (onChange != null) {
-            onChange();
-          }
-        }));
+    _checkboxs.forEach((cbx) {
+      cbx.onChange.listen((e) {
+        element.classes.toggle('changed', isChanged);
+
+        if (onChange != null) {
+          onChange();
+        }
+      });
+    });
   }
 
   /**
    *
    */
-  void _refreshGroupList() {
-    _userController.groups().then((Iterable<String> groups) {
-      _allGroups = groups.toList();
-      _renderBaseList();
-    });
-  }
+  Future _refreshGroupList() async {
+    /// Add valid groups to the set of available groups
+    _allGroups = model.UserGroups.validGroups.toSet();
 
-  /**
-   * Finds the groups the user should join/leave and sends the changes to the server.
-   */
-  Iterable<UserGroupChange> changes() {
-    final List<UserGroupChange> changeList = [];
+    /// Alternatively, fetch the groups from the server.
+    //_allGroups = (await _userController.groups()).toSet();
 
-    for (CheckboxInputElement item in _checkboxs) {
-      int groupId = int.parse(item.dataset['id']);
-      bool userIsAMember =
-          _originalGroups.any((String group) => group == groupId);
-
-      if (item.checked && !userIsAMember) {
-        changeList.add(new UserGroupChange.join(groupId));
-      } else if (!item.checked && userIsAMember) {
-        changeList.add(new UserGroupChange.leave(groupId));
-      }
-    }
-
-    return changeList;
+    _renderBaseList();
   }
 
   /**
@@ -114,10 +98,19 @@ class UserGroups {
    *
    */
   void set groups(Iterable<String> gs) {
-    _originalGroups = gs.toList(growable: false);
+    _originalGroups = gs.toSet();
     for (CheckboxInputElement checkbox in _checkboxs) {
       checkbox.checked =
           gs.any((String userGroup) => userGroup == checkbox.dataset['id']);
+    }
+  }
+
+  /**
+   * Clear out the input fields of the widget.
+   */
+  void clear() {
+    for (CheckboxInputElement checkbox in _checkboxs) {
+      checkbox.checked = false;
     }
   }
 }

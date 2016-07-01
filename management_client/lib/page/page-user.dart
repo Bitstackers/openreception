@@ -4,18 +4,19 @@ import 'dart:async';
 import 'dart:html';
 
 import 'package:logging/logging.dart';
-import 'package:route_hierarchical/client.dart';
-
+import 'package:management_tool/configuration.dart';
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/view.dart' as view;
+import 'package:openreception.framework/event.dart' as event;
 import 'package:openreception.framework/model.dart' as model;
+import 'package:route_hierarchical/client.dart';
 
 const String _libraryName = 'management_tool.page.user';
 
 /**
  *
  */
-class UserPage {
+class User {
   final Logger _log = new Logger('$_libraryName.UserPage');
 
   final DivElement element = new DivElement()
@@ -42,8 +43,8 @@ class UserPage {
   /**
    *
    */
-  UserPage(this._userController, controller.PeerAccount peerAccountController,
-      this._router) {
+  User(this._userController, controller.PeerAccount peerAccountController,
+      Stream<event.UserChange> userChanges, this._router) {
     _setupRouter();
     _userView = new view.User(_userController, peerAccountController);
 
@@ -60,22 +61,33 @@ class UserPage {
       _userView.element
     ];
 
-    _observers();
+    _observers(userChanges);
   }
 
   /**
    * Observers.
    */
-  void _observers() {
-    _createButton.onClick.listen((_) => _router.gotoUrl('/user/create'));
+  void _observers(Stream<event.UserChange> userChanges) {
+    _createButton.onClick.listen((_) => _router.go('user.create', {}));
 
-    _userView.changes.listen((view.UserChange uc) async {
-      await _refreshList();
-      if (uc.type == view.Change.deleted) {} else if (uc.type ==
-          view.Change.updated) {
-        await _activateUser(uc.user.id);
-      } else if (uc.type == view.Change.created) {
-        await _activateUser(uc.user.id);
+    userChanges.listen((event.UserChange e) async {
+      if (!this.element.hidden) {
+        /// Always refresh the userlist
+        await _refreshList();
+
+        /// This is the currently selected organization
+        if (e.uid == _userView.user.id) {
+          if (e.deleted) {
+            _userView.clear();
+            _userView.hidden = true;
+
+            _router.go('user.edit.id', {'uid': e.uid});
+          } else if (e.updated) {
+            _router.go('user.edit.id', {'uid': e.uid});
+          }
+        } else if (e.created && e.modifierUid == config.user.id) {
+          _router.go('user.edit.id', {'uid': e.uid});
+        }
       }
     });
   }
@@ -108,7 +120,7 @@ class UserPage {
       ..text = user.name
       ..classes.add('clickable')
       ..dataset['userid'] = '${user.id}'
-      ..onClick.listen((_) => _activateUser(user.id));
+      ..onClick.listen((_) => _router.go('user.edit.id', {'uid': user.id}));
   }
 
   /**

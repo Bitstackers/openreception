@@ -3,24 +3,33 @@ part of management_tool.view;
 class Calendar {
   final Logger _log = new Logger('$_libraryName.Calendar');
 
-  final model.Owner _owner;
   final controller.Calendar _calendarController;
   final DivElement element = new DivElement()..classes.add('full-width');
+  Changelog _changelog;
 
   Function onDelete;
 
   final TableElement _table = new TableElement()..style.width = '100%';
 
-  Calendar(controller.Calendar this._calendarController, this._owner);
+  Calendar(controller.Calendar this._calendarController) {
+    _changelog = new Changelog();
+  }
 
-  void set entries(Iterable<model.CalendarEntry> es) {
+  /**
+   *
+   */
+  Future loadEntries(model.Owner owner) async {
+    final es = await _calendarController.list(owner);
+    _changelog.content = await _calendarController.changelog(owner);
+
     _table.children.clear();
 
     if (es.isEmpty) {
       element.children = [
         new SpanElement()
           ..text = 'Ingen kalenderposter'
-          ..classes.add('centered-info')
+          ..classes.add('centered-info'),
+        _changelog.element
       ];
       return;
     }
@@ -40,7 +49,7 @@ class Calendar {
               ..text = 'Aftale'
               ..style.width = '33%',
             new TableCellElement()
-              ..text = 'Ændringer'
+              ..text = 'Sidst ændret af'
               ..style.width = '30%',
             new TableCellElement()
               ..text = ''
@@ -49,11 +58,14 @@ class Calendar {
       ];
     _table.createTBody()
       ..classes.add('zebra-even')
-      ..children = ([]..addAll(es.map(_entryToRow)));
-    element.children = [_table];
+      ..children = ([]..addAll(es.map((e) => _entryToRow(e, owner))));
+    element.children = [_table, _changelog.element];
   }
 
-  TableRowElement _entryToRow(model.CalendarEntry entry) {
+  /**
+   *
+   */
+  TableRowElement _entryToRow(model.CalendarEntry entry, model.Owner owner) {
     final changeCell = new TableCellElement();
     final ButtonElement deleteButton = new ButtonElement()
       ..text = 'Slet'
@@ -64,7 +76,7 @@ class Calendar {
       final confirmText = 'Bekræft sletning af eid${entry.id}?';
 
       if (deleteButton.text == confirmText) {
-        await _calendarController.remove(entry, _owner);
+        await _calendarController.remove(entry, owner);
         notify.success('Slettede kalenderpost', 'eid:${entry.id}');
 
         onDelete != null ? onDelete() : '';
@@ -73,17 +85,7 @@ class Calendar {
       }
     });
 
-    _calendarController
-        .changes(_owner, entry.id)
-        .then((Iterable<model.Commit> changes) {
-      UListElement changeUl = new UListElement();
-      List changeList = changes.toList();
-      LIElement creation;
-
-      changeUl.children.addAll(changeList.map(_changeToLI));
-
-      changeCell.children = [changeUl];
-    });
+    changeCell.text = entry.lastAuthorId.toString();
 
     return new TableRowElement()
       ..children = [
@@ -93,19 +95,5 @@ class Calendar {
         changeCell,
         deleteCell
       ];
-  }
-
-  LIElement _changeToLI(model.Commit change) {
-    LIElement li = new LIElement()
-      ..children = [
-        new SpanElement()
-          ..text = '${change.changes.join('\n')}'
-          ..style.fontWeight = 'bold',
-        new SpanElement()
-          ..text =
-              rfc3339.format(change.changedAt) + ' - ${change.authorIdentity}'
-      ];
-
-    return li;
   }
 }

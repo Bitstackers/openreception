@@ -2,29 +2,18 @@ import 'dart:async';
 import 'dart:html';
 
 import 'package:logging/logging.dart';
-import 'package:route_hierarchical/client.dart';
-
-///Pages
-import 'package:management_tool/page.dart' as page;
-import 'package:management_tool/page/page-dialplan.dart' as page;
-import 'package:management_tool/page/page-ivr.dart' as page;
-import 'package:management_tool/page/page-message.dart' as page;
-import 'package:management_tool/page/page-reception.dart' as page;
-import 'package:management_tool/page/page-user.dart' as page;
-
-import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/configuration.dart';
-
+import 'package:management_tool/controller.dart' as controller;
+import 'package:management_tool/page.dart' as page;
+import 'package:openreception.framework/service-html.dart' as transport;
 import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.framework/storage.dart' as storage;
-import 'package:openreception.framework/service-html.dart' as transport;
-
-controller.Popup notify = controller.popup;
+import 'package:route_hierarchical/client.dart';
 
 /**
  * Sends the user to the login site.
  */
-void loginRedirect() {
+void _loginRedirect() {
   String loginUrl =
       '${config.clientConfig.authServerUri}/token/create?returnurl=${window.location}';
   window.location.assign(loginUrl);
@@ -41,23 +30,25 @@ Future main() async {
     config.configUri = Uri.parse(clientUri.queryParameters['config_server']);
   }
 
+  /// Setup logging
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen(print);
   Logger _log = Logger.root;
 
+  /// Experimental loading code
   PreElement loadingLog = querySelector('#loading-log');
-
   ProgressElement loadingProgress = querySelector('#loading-progress');
-
   loadingProgress.max = 10;
   loadingProgress.value = 0;
+
+  /// Fetch remote config from config server
   final transport.Client client = new transport.Client();
   loadingLog.text += 'Henter konfiguration fra ${config.configUri}\n';
   config.clientConfig =
       await (new service.RESTConfiguration(config.configUri, client))
           .clientConfig();
 
-  /// Check token.
+  /// Check if we have an authentication token and if it still valid
   if (config.token.isNotEmpty) {
     loadingLog.text += 'Validerer eksistende token\n';
     loadingProgress.value++;
@@ -69,17 +60,17 @@ Future main() async {
           .success('Login godkendt', 'Loggede ind som ${config.user.name}');
     } on storage.NotFound {
       controller.popup.info('Token udløbet', 'Log ind igen');
-      loginRedirect();
+      _loginRedirect();
     }
   } else {
     controller.popup.info('Igen token fundet', 'Log ind');
-    loginRedirect();
+    _loginRedirect();
   }
 
   /// Install handler for taking care of token expirations
   controller.onForbidden = () {
     controller.popup.info('Token udløbet', 'Logger ind igen');
-    loginRedirect();
+    _loginRedirect();
   };
 
   loadingLog.text += 'Initialiserer lagring\n';
@@ -105,15 +96,13 @@ Future main() async {
       config.clientConfig.dialplanServerUri, config.token, client);
   final service.PeerAccount paService = new service.PeerAccount(
       config.clientConfig.dialplanServerUri, config.token, client);
-
   final service.RESTMessageStore messageStore = new service.RESTMessageStore(
       config.clientConfig.messageServerUri, config.token, client);
 
-  final transport.WebSocketClient _websocket = new transport.WebSocketClient();
-
+  /// Connecting the websocket
   loadingLog.text += 'Forbinder websocket\n';
   loadingProgress.value++;
-
+  final transport.WebSocketClient _websocket = new transport.WebSocketClient();
   await _websocket.connect(Uri.parse(
       config.clientConfig.notificationSocketUri.toString() +
           '?token=' +
@@ -121,14 +110,9 @@ Future main() async {
   final service.NotificationSocket notification =
       new service.NotificationSocket(_websocket);
 
-  /// Controllers
-
-  final controller.Notification notificationController =
-      new controller.Notification(notification, config.user);
-
+  /// Setup controllers
   final controller.User userController =
       new controller.User(userStore, config.user);
-
   final controller.Cdr cdrController =
       new controller.Cdr(config.clientConfig.cdrServerUri, config.token);
   final controller.Reception receptionController =
@@ -143,41 +127,45 @@ Future main() async {
       new controller.Dialplan(dialplanStore, receptionStore);
   final controller.Message messageController =
       new controller.Message(messageStore, config.user);
-
   final controller.Ivr ivrController =
       new controller.Ivr(ivrStore, dialplanStore);
-
   final controller.PeerAccount paController =
       new controller.PeerAccount(paService);
 
   loadingLog.text += 'Indlæser sider\n';
   loadingProgress.value++;
 
-  /**
-   * Initialize pages
-   */
+  /// Initialize pages
   final Router router = new Router();
   final page.Cdr cdrPage = new page.Cdr(cdrController, contactController,
       organizationController, receptionController, userController, router);
 
-  final page.OrganizationView orgPage =
-      new page.OrganizationView(organizationController, router);
+  final page.Organization orgPage = new page.Organization(
+      organizationController, notification.onOrganizationChange, router);
 
   querySelector('#cdr-page').replaceWith(cdrPage.element);
 
   querySelector("#organization-page").replaceWith(orgPage.element);
 
-  querySelector("#reception-page").replaceWith(new page.ReceptionView(
+  querySelector("#reception-page").replaceWith(new page.Reception(
           contactController,
           organizationController,
           receptionController,
           dialplanController,
           calendarController,
+          notification.onReceptionChange,
           router)
       .element);
 
-  new page.ContactView(querySelector('#contact-page'), contactController,
-      receptionController, calendarController, notificationController, router);
+  new page.Contact(
+      querySelector('#contact-page'),
+      contactController,
+      receptionController,
+      calendarController,
+      notification.onContactChange,
+      notification.onReceptionDataChange,
+      notification.onCalendarChange,
+      router);
 
   final messagePage = new page.Message(contactController, messageController,
       receptionController, userController, router);
@@ -188,15 +176,13 @@ Future main() async {
 
   querySelector('#ivr-page')
       .replaceWith(new page.Ivr(ivrController, router).element);
-  querySelector("#user-page").replaceWith(
-      new page.UserPage(userController, paController, router).element);
-
-  //new Menu(querySelector('nav#navigation'));
-
-  loadingLog.text += 'Undersøger HTML5 understøttelse\n';
-  loadingProgress.value++;
+  querySelector("#user-page").replaceWith(new page.User(
+          userController, paController, notification.onUserChange, router)
+      .element);
 
   /// Verify that we support HTMl5 notifications
+  loadingLog.text += 'Undersøger HTML5 understøttelse\n';
+  loadingProgress.value++;
   if (Notification.supported) {
     Notification
         .requestPermission()
@@ -205,6 +191,7 @@ Future main() async {
     _log.shout('HTML5 notifications not supported.');
   }
 
+  /// Start the client-side router
   loadingLog.text += 'Starter router\n';
   loadingProgress.value++;
 
@@ -213,9 +200,11 @@ Future main() async {
   loadingLog.text += 'Navigerer til startside\n';
   loadingProgress.value = loadingProgress.max;
 
+  /// Navigate to the requested page
   router.gotoUrl(window.location.toString());
 
-  await new Future.delayed(new Duration(seconds: 1));
+  /// Complete the loading bar
+  loadingProgress.value = 10;
 
   /// Show the main UI
   querySelector('#loading-screen').hidden = true;

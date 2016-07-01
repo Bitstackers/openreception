@@ -3,11 +3,9 @@ library management_tool.page.cdr;
 import 'dart:async';
 import 'dart:html';
 
-import 'package:route_hierarchical/client.dart';
-
 import 'package:management_tool/controller.dart' as controller;
-
 import 'package:openreception.framework/model.dart' as model;
+import 'package:route_hierarchical/client.dart';
 
 const String _libraryName = 'management_tool.page.cdr';
 
@@ -172,7 +170,7 @@ class Cdr {
 
   Future _fetch() async {
     final DateTime from = DateTime.parse(fromInput.value);
-    Map<String, dynamic> ridToNameMap;
+    Map<int, controller.RecOrgAggr> ridToNameMap;
     final DateTime to = DateTime.parse(toInput.value);
     Map<int, String> uidToNameMap = new Map<int, String>();
 
@@ -202,8 +200,11 @@ class Cdr {
     fetchButton.text = 'Hent';
   }
 
-  Future _fetchList(DateTime from, DateTime to,
-      Map<String, dynamic> ridToNameMap, Map<int, String> uidToNameMap) async {
+  Future _fetchList(
+      DateTime from,
+      DateTime to,
+      Map<int, controller.RecOrgAggr> ridToNameMap,
+      Map<int, String> uidToNameMap) async {
     final List<model.CdrEntry> answeredEntries = new List<model.CdrEntry>();
     final List<Context> contexts = new List<Context>();
     final Map<String, dynamic> map = (await _cdrCtrl.list(
@@ -235,12 +236,12 @@ class Cdr {
 
     for (Map m in (map['entries'] as List)) {
       final model.CdrEntry entry = new model.CdrEntry.fromJson(m);
-      if (ridToNameMap.containsKey(entry.rid.toString())) {
+      if (ridToNameMap.containsKey(entry.rid)) {
         contexts.add(new Context()
-          ..name = ridToNameMap[entry.rid.toString()]['organization'] +
-              ridToNameMap[entry.rid.toString()]['reception']
-          ..orgName = ridToNameMap[entry.rid.toString()]['organization']
-          ..recName = ridToNameMap[entry.rid.toString()]['reception']
+          ..name = ridToNameMap[entry.rid].organization.name +
+              ridToNameMap[entry.rid].reception.name
+          ..orgName = ridToNameMap[entry.rid].organization.name
+          ..recName = ridToNameMap[entry.rid].reception.name
           ..entry = entry);
       } else {
         contexts.add(new Context()
@@ -457,8 +458,8 @@ class Cdr {
         totalOutAgent, totalOutPbx);
   }
 
-  Future _fetchSummaries(
-      DateTime from, DateTime to, Map<String, dynamic> ridToNameMap) async {
+  Future _fetchSummaries(DateTime from, DateTime to,
+      Map<int, controller.RecOrgAggr> ridToNameMap) async {
     final List<Context> contexts = new List<Context>();
     final Map<String, dynamic> map =
         (await _cdrCtrl.summaries(from, to, ridInput.value));
@@ -499,12 +500,12 @@ class Cdr {
 
     for (Map m in (map['summaries'] as List)) {
       final model.CdrSummary summary = new model.CdrSummary.fromJson(m);
-      if (ridToNameMap.containsKey(summary.rid.toString())) {
+      if (ridToNameMap.containsKey(summary.rid)) {
         contexts.add(new Context()
-          ..name = ridToNameMap[summary.rid.toString()]['organization'] +
-              ridToNameMap[summary.rid.toString()]['reception']
-          ..orgName = ridToNameMap[summary.rid.toString()]['organization']
-          ..recName = ridToNameMap[summary.rid.toString()]['reception']
+          ..name = ridToNameMap[summary.rid].organization.name +
+              ridToNameMap[summary.rid].reception.name
+          ..orgName = ridToNameMap[summary.rid].organization.name
+          ..recName = ridToNameMap[summary.rid].reception.name
           ..summary = summary);
       } else {
         contexts.add(new Context()

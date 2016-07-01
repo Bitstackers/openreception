@@ -3,16 +3,14 @@ library management_tool.page.reception;
 import 'dart:async';
 import 'dart:html';
 
-import 'package:route_hierarchical/client.dart';
-
+import 'package:management_tool/configuration.dart';
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/view.dart' as view;
-
+import 'package:openreception.framework/event.dart' as event;
 import 'package:openreception.framework/model.dart' as model;
+import 'package:route_hierarchical/client.dart';
 
-class ReceptionView {
-  static const String viewName = 'reception';
-
+class Reception {
   final controller.Contact _contactController;
   final controller.Organization _organizationController;
   final controller.Reception _receptionController;
@@ -47,12 +45,13 @@ class ReceptionView {
   /**
    *
    */
-  ReceptionView(
+  Reception(
       controller.Contact this._contactController,
       controller.Organization this._organizationController,
       controller.Reception this._receptionController,
       controller.Dialplan this._dpController,
       controller.Calendar this._calendarController,
+      Stream<event.ReceptionChange> receptionChanges,
       Router this._router) {
     _setupRouter();
 
@@ -86,27 +85,41 @@ class ReceptionView {
         ]
     ];
 
-    _observers();
+    _observers(receptionChanges);
   }
 
-  void _observers() {
+  void _observers(Stream<event.ReceptionChange> receptionChanges) {
     _createButton.onClick.listen((_) {
-      _router.gotoUrl('reception/create');
+      _router.go('reception.create', {});
     });
 
-    _receptionView.changes.listen((view.ReceptionChange rc) async {
-      await _refreshList();
-      if (rc.type == view.Change.deleted) {} else if (rc.type ==
-          view.Change.updated) {
-        await _activateReception(rc.reception.id);
-      } else if (rc.type == view.Change.created) {
-        await _activateReception(rc.reception.id);
+    receptionChanges.listen((event.ReceptionChange e) async {
+      if (!this.element.hidden) {
+        /// Always refresh the userlist
+        await _refreshList();
+
+        /// This is the currently selected organization
+        if (e.rid == _receptionView.reception.id) {
+          if (e.deleted) {
+            _receptionView.clear();
+            _receptionView.hidden = true;
+            _renderReceptionList([]);
+            _router.go('reception', {});
+          } else if (e.updated) {
+            _router.go('reception.edit.id', {'rid': e.rid});
+          }
+        } else if (e.created && e.modifierUid == config.user.id) {
+          _router.go('reception.edit.id', {'rid': e.rid});
+        }
       }
     });
 
     _searchBox.onInput.listen((_) => _performSearch());
   }
 
+  /**
+   *
+   */
   void _performSearch() {
     String searchText = _searchBox.value;
     List<model.ReceptionReference> filteredList = receptions
@@ -116,10 +129,12 @@ class ReceptionView {
     _renderReceptionList(filteredList);
   }
 
+  /**
+   *
+   */
   void _renderReceptionList(List<model.ReceptionReference> receptions) {
-    _uiReceptionList.children
-      ..clear()
-      ..addAll(receptions.map(_makeReceptionNode));
+    _uiReceptionList.children =
+        new List<LIElement>.from(receptions.map(_makeReceptionNode));
   }
 
   /**
@@ -144,7 +159,8 @@ class ReceptionView {
       ..classes.add('clickable')
       ..dataset['rid'] = '${rRef.id}'
       ..text = rRef.name
-      ..onClick.listen((_) => _router.gotoUrl('/reception/edit/${rRef.id}'));
+      ..onClick
+          .listen((_) => _router.go('reception.edit.id', {'rid': rRef.id}));
   }
 
   void _highlightContactInList(int id) {
@@ -185,7 +201,8 @@ class ReceptionView {
     LIElement li = new LIElement()
       ..classes.add('clickable')
       ..text = contact.name
-      ..onClick.listen((_) => _router.gotoUrl('/contact/edit/${contact.id}'));
+      ..onClick
+          .listen((_) => _router.go('contact.edit.id', {'cid': contact.id}));
     return li;
   }
 
