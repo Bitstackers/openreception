@@ -5,40 +5,22 @@ class Notification {
   final service.NotificationSocket _service;
   final model.User _appUser;
 
-  Stream<event.ReceptionChange> get receptionChange => _reception.stream;
-  Stream<event.ReceptionData> get receptionDataChange => _receptionData.stream;
-  Stream<event.ContactChange> get contactChange => _contact.stream;
-  Stream<event.OrganizationChange> get organizationChange =>
-      _organization.stream;
-  Stream<event.UserChange> get userChange => _user.stream;
-  Stream<event.CalendarChange> get calendarChange => _calendar.stream;
-
-  final Bus<event.ReceptionChange> _reception =
-      new Bus<event.ReceptionChange>();
-  final Bus<event.ReceptionData> _receptionData =
-      new Bus<event.ReceptionData>();
-  final Bus<event.ContactChange> _contact = new Bus<event.ContactChange>();
-  final Bus<event.OrganizationChange> _organization =
-      new Bus<event.OrganizationChange>();
-  final Bus<event.UserChange> _user = new Bus<event.UserChange>();
-  final Bus<event.CalendarChange> _calendar = new Bus<event.CalendarChange>();
-
   Notification(this._service, this._appUser) {
     void dispatch(event.Event e) {
       _log.info(e.eventName);
       try {
         if (e is event.ReceptionChange) {
-          _reception.fire(e);
+          _log.finest(e.state);
         } else if (e is event.ReceptionData) {
-          _receptionData.fire(e);
+          _log.finest(e.state);
         } else if (e is event.ContactChange) {
-          _contact.fire(e);
+          _log.finest(e.state);
         } else if (e is event.OrganizationChange) {
-          _organization.fire(e);
+          _log.finest(e.state);
         } else if (e is event.UserChange) {
-          _user.fire(e);
+          _log.finest(e.state);
         } else if (e is event.CalendarChange) {
-          _calendar.fire(e);
+          _log.finest(e.state);
         }
       } catch (e, s) {
         _log.warning('Failed to dispatch ${e.eventName}', e, s);
@@ -47,11 +29,11 @@ class Notification {
 
     _service.onEvent.listen(dispatch);
 
-    //_observers();
+    _observers();
   }
 
   _observers() {
-    receptionChange.listen((event.ReceptionChange rc) {
+    _service.onReceptionChange.listen((event.ReceptionChange rc) {
       if (rc.modifierUid == _appUser.id) {
         return;
       }
@@ -65,7 +47,7 @@ class Notification {
       }
     });
 
-    receptionDataChange.listen((event.ReceptionData rd) {
+    _service.onReceptionDataChange.listen((event.ReceptionData rd) {
       if (rd.modifierUid == _appUser.id) {
         return;
       }
@@ -88,7 +70,7 @@ class Notification {
       }
     });
 
-    contactChange.listen((event.ContactChange cc) {
+    _service.onContactChange.listen((event.ContactChange cc) {
       if (cc.modifierUid == _appUser.id) {
         return;
       }
@@ -105,7 +87,7 @@ class Notification {
       }
     });
 
-    organizationChange.listen((event.OrganizationChange oc) {
+    _service.onOrganizationChange.listen((event.OrganizationChange oc) {
       if (oc.modifierUid == _appUser.id) {
         return;
       }
@@ -121,7 +103,7 @@ class Notification {
       }
     });
 
-    userChange.listen((event.UserChange uc) {
+    _service.onUserChange.listen((event.UserChange uc) {
       if (uc.modifierUid == _appUser.id) {
         return;
       }
@@ -135,7 +117,7 @@ class Notification {
       }
     });
 
-    calendarChange.listen((event.CalendarChange cc) {
+    _service.onCalendarChange.listen((event.CalendarChange cc) {
       if (cc.modifierUid == _appUser.id) {
         return;
       }

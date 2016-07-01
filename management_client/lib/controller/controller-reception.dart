@@ -20,4 +20,7 @@ class Reception {
 
   Future<Iterable<model.ReceptionReference>> list() =>
       _service.list().catchError(_handleError);
+
+  Future<String> changelog(int rid) =>
+      _service.changelog(rid).catchError(_handleError);
 }

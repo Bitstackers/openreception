@@ -1,38 +1,42 @@
 part of management_tool.controller;
 
 class Calendar {
-  final service.RESTCalendarStore _calendarService;
+  final service.RESTCalendarStore _service;
   final model.User _appUser;
 
-  Calendar(this._calendarService, this._appUser);
+  Calendar(this._service, this._appUser);
 
-  Future<Iterable<model.Commit>> changes(model.Owner owner, [int eid]) =>
-      _calendarService.changes(owner, eid).catchError(_handleError);
+  Future get(model.CalendarEntry entry, model.Owner owner) =>
+      _service.remove(entry.id, owner, _appUser).catchError(_handleError);
 
-  Future get(model.CalendarEntry entry, model.Owner owner) => _calendarService
-      .remove(entry.id, owner, _appUser)
+  /**
+   * 
+   */
+  Future<Iterable<model.CalendarEntry>> list(model.Owner owner) =>
+      _service.list(owner).catchError(_handleError);
+
+  @deprecated
+  Future<Iterable<model.CalendarEntry>> listContact(int contactId) => _service
+      .list(new model.OwningContact(contactId))
       .catchError(_handleError);
 
-  Future<Iterable<model.CalendarEntry>> listContact(int contactId) =>
-      _calendarService
-          .list(new model.OwningContact(contactId))
-          .catchError(_handleError);
-
+  @deprecated
   Future<Iterable<model.CalendarEntry>> listReception(int receptionId) =>
-      _calendarService
+      _service
           .list(new model.OwningReception(receptionId))
           .catchError(_handleError);
 
   Future<model.CalendarEntry> create(
           model.CalendarEntry entry, model.Owner owner) =>
-      _calendarService.create(entry, owner, _appUser).catchError(_handleError);
+      _service.create(entry, owner, _appUser).catchError(_handleError);
 
   Future<model.CalendarEntry> update(
           model.CalendarEntry entry, model.Owner owner) =>
-      _calendarService.update(entry, owner, _appUser).catchError(_handleError);
+      _service.update(entry, owner, _appUser).catchError(_handleError);
 
   Future remove(model.CalendarEntry entry, model.Owner owner) =>
-      _calendarService
-          .remove(entry.id, owner, _appUser)
-          .catchError(_handleError);
+      _service.remove(entry.id, owner, _appUser).catchError(_handleError);
+
+  Future<String> changelog(model.Owner owner) =>
+      _service.changelog(owner).catchError(_handleError);
 }

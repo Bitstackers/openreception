@@ -1,31 +1,34 @@
 part of management_tool.controller;
 
 class Dialplan {
-  final service.RESTDialplanStore _dpStore;
+  final service.RESTDialplanStore _dpService;
   final service.RESTReceptionStore _rStore;
 
-  Dialplan(this._dpStore, this._rStore);
+  Dialplan(this._dpService, this._rStore);
 
   Future<Iterable<model.ReceptionDialplan>> list() =>
-      _dpStore.list().catchError(_handleError);
+      _dpService.list().catchError(_handleError);
 
   Future<model.Reception> getByExtensions(String extension) =>
       _rStore.getByExtension(extension).catchError(_handleError);
 
   Future<model.ReceptionDialplan> get(String extension) =>
-      _dpStore.get(extension).catchError(_handleError);
+      _dpService.get(extension).catchError(_handleError);
 
   Future<Iterable<String>> deploy(String extension, int rid) =>
-      _dpStore.deployDialplan(extension, rid).catchError(_handleError);
+      _dpService.deployDialplan(extension, rid).catchError(_handleError);
 
-  Future reloadConfig() => _dpStore.reloadConfig().catchError(_handleError);
+  Future reloadConfig() => _dpService.reloadConfig().catchError(_handleError);
 
   Future<model.ReceptionDialplan> update(model.ReceptionDialplan rdp) =>
-      _dpStore.update(rdp).catchError(_handleError);
+      _dpService.update(rdp).catchError(_handleError);
 
   Future<model.ReceptionDialplan> create(model.ReceptionDialplan rdp) =>
-      _dpStore.create(rdp).catchError(_handleError);
+      _dpService.create(rdp).catchError(_handleError);
 
   Future remove(String rdpExtension) =>
-      _dpStore.remove(rdpExtension).catchError(_handleError);
+      _dpService.remove(rdpExtension).catchError(_handleError);
+
+  Future<String> changelog(String extension) =>
+      _dpService.changelog(extension).catchError(_handleError);
 }
