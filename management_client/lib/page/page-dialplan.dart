@@ -4,11 +4,10 @@ import 'dart:async';
 import 'dart:html';
 
 import 'package:logging/logging.dart';
-import 'package:route_hierarchical/client.dart';
-
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/view.dart' as view;
 import 'package:openreception.framework/model.dart' as model;
+import 'package:route_hierarchical/client.dart';
 
 const String _libraryName = 'management_tool.page.dialplan';
 
@@ -150,7 +149,9 @@ class Dialplan {
    */
   Future _activateDialplan(String extension) async {
     _log.finest('Activating dialplan ${extension}');
-    _dpView.dialplan = await _dialplanController.get(extension);
+    final dp = await _dialplanController.get(extension);
+    print(dp.toJson());
+    _dpView.dialplan = dp;
     _dpPlot.dialplan = _dpView.dialplan;
     _dpView.create = false;
     _highlightDialplanInList(extension);

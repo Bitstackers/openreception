@@ -55,4 +55,10 @@ class Contact {
 
     return map as Map<model.ReceptionReference, Iterable<model.BaseContact>>;
   }
+
+  Future<String> changelog(int cid) =>
+      _service.changelog(cid).catchError(_handleError);
+
+  Future<String> receptionChangelog(int cid) =>
+      _service.receptionChangelog(cid).catchError(_handleError);
 }

@@ -1,22 +1,5 @@
 part of management_tool.view;
 
-enum Change { added, created, updated, deleted }
-
-const Map<Change, String> changeLabel = const {
-  Change.created: 'Opretter',
-  Change.updated: 'Opdater',
-  Change.deleted: 'Sletter'
-};
-
-class UserChange {
-  final Change type;
-  final model.User user;
-
-  UserChange.create(this.user) : type = Change.created;
-  UserChange.delete(this.user) : type = Change.deleted;
-  UserChange.update(this.user) : type = Change.updated;
-}
-
 class User {
   final DivElement element = new DivElement()
     ..id = 'user-content'
@@ -24,21 +7,15 @@ class User {
 
   final Logger _log = new Logger('$_libraryName.User');
 
-  Stream<UserChange> get changes => _changeBus.stream;
-  final Bus<UserChange> _changeBus = new Bus<UserChange>();
-
   final controller.User _userController;
   final controller.PeerAccount _peerAccountController;
+  Changelog _changelog;
 
   UserGroups _groupsView;
   UserIdentities _identitiesView;
   PeerAccount _peerAccountView;
-  ObjectHistory _historyView;
-  final AnchorElement _historyToggle = new AnchorElement()
-    ..href = '#history'
-    ..text = 'Vis historik';
 
-  final LabelElement _uidLabel = new LabelElement()..text = 'uid:??';
+  final HeadingElement _heading = new HeadingElement.h2()..text = 'Henter...';
   final HiddenInputElement _userIdInput = new HiddenInputElement()
     ..id = 'user-id'
     ..text = model.User.noId.toString();
@@ -73,9 +50,7 @@ class User {
    */
   User(this._userController,
       controller.PeerAccount this._peerAccountController) {
-    _historyView = new ObjectHistory();
-    _historyView.element.hidden = true;
-    _historyToggle..text = 'Vis historik';
+    _changelog = new Changelog();
 
     _groupsView = new UserGroups(_userController);
     _identitiesView = new UserIdentities(_userController);
@@ -84,7 +59,7 @@ class User {
     element.children = [
       _saveButton,
       _deleteButton,
-      _uidLabel..htmlFor = _userIdInput.id,
+      _heading,
       _userIdInput,
       new DivElement()
         ..children = [
@@ -104,13 +79,12 @@ class User {
       _groupsView.element,
       new LabelElement()..text = 'Identitieter',
       _identitiesView.element,
-      _historyToggle,
-      _historyView.element,
       new DivElement()
         ..children = [
           new HeadingElement.h5()..text = 'SIP konto',
           _peerAccountView.element
         ],
+      _changelog.element
     ];
     _observers();
   }
@@ -119,19 +93,7 @@ class User {
    *
    */
   void _observers() {
-    Iterable<InputElement> inputs =
-        element.querySelectorAll('input') as Iterable<InputElement>;
-
-    _historyToggle.onClick.listen((_) async {
-      await _userController.changes(user.id).then((c) {
-        _historyView.commits = c;
-      });
-
-      _historyView.element.hidden = !_historyView.element.hidden;
-
-      _historyToggle.text =
-          _historyView.element.hidden ? 'Vis historik' : 'Skjul historik';
-    });
+    Iterable<InputElement> inputs = element.querySelectorAll('input');
 
     _groupsView.onChange = () {
       _saveButton.disabled = false;
@@ -161,10 +123,10 @@ class User {
 
   ///
   void set user(model.User u) {
+    clear();
+
     /// Reset labels.
     _deleteButton.text = 'Slet';
-    _historyView.element.hidden = true;
-    _historyToggle..text = 'Vis historik';
 
     _deleteButton.disabled = u.id == model.User.noId;
     _saveButton.disabled = u.id != model.User.noId;
@@ -176,11 +138,23 @@ class User {
     _groupsView.groups = u.groups;
     _identitiesView.identities = u.identities;
 
-    _peerAccountController.get(user.extension).then((model.PeerAccount pa) {
-      _peerAccountView.account = pa;
-    }).catchError((_) {
-      _peerAccountView.account = new model.PeerAccount('', '', '');
-    }).whenComplete(show);
+    if (u.id != model.User.noId) {
+      _heading.text = 'Retter bruger ${u.name} (uid:${u.id})';
+      Future.wait([
+        _loadChangeLog(u.id),
+        _peerAccountView.loadAccount(u.extension)
+      ]).whenComplete(show);
+    } else {
+      _heading.text = 'Opret ny bruger';
+      show();
+    }
+  }
+
+  /**
+   *
+   */
+  Future _loadChangeLog(int uid) async {
+    _changelog.content = await _userController.changelog(uid);
   }
 
   /**
@@ -211,7 +185,7 @@ class User {
 
       await _userController.remove(userId);
       notify.success('Bruger slettet', user.name);
-      _changeBus.fire(new UserChange.delete(user));
+
       hide();
     } catch (error) {
       notify.error('Bruger ikke slettet', 'Fejl: $error');
@@ -228,19 +202,15 @@ class User {
     _saveButton.disabled = true;
     _deleteButton.disabled = true;
 
-    model.User u;
-
     try {
       if (userId != model.User.noId) {
-        u = await _userController
+        await _userController
             .update(user)
             .then((ref) => _userController.get(ref.id));
-        _changeBus.fire(new UserChange.update(u));
       } else {
-        u = await _userController
+        await _userController
             .create(user)
             .then((ref) => _userController.get(ref.id));
-        _changeBus.fire(new UserChange.create(u));
       }
 
       notify.success('Brugeren blev opdateret', user.name);
@@ -248,5 +218,31 @@ class User {
       notify.error('Kunne ikke opdatere bruger', 'Fejl: $error');
       _log.severe('Save user failed with: ${error}');
     }
+  }
+
+  /**
+   *
+   */
+  void set hidden(bool isHidden) {
+    element.hidden = isHidden;
+  }
+
+  /**
+   *
+   */
+  bool get hidden => element.hidden;
+
+  /**
+   * Clear out input fields of the widget.
+   */
+  void clear() {
+    _peerAccountView.clear();
+    _changelog.content = '';
+    _groupsView.clear();
+    _identitiesView.clear();
+    _heading.text = '';
+    _userIdInput.value = '';
+    _userNameInput.value = '';
+    _userSendFromInput.value = '';
   }
 }

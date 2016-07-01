@@ -1,14 +1,5 @@
 part of management_tool.view;
 
-class ReceptionChange {
-  final Change type;
-  final model.Reception reception;
-
-  ReceptionChange.create(this.reception) : type = Change.created;
-  ReceptionChange.delete(this.reception) : type = Change.deleted;
-  ReceptionChange.update(this.reception) : type = Change.updated;
-}
-
 /**
  *
  */
@@ -22,11 +13,9 @@ class Reception {
   final controller.Dialplan _dpController;
   final controller.Organization _orgController;
   final controller.Calendar _calendarController;
+  Changelog _changelog;
 
   bool get inputHasErrors => _phoneNumberView._validationError;
-
-  Stream<ReceptionChange> get changes => _changeBus.stream;
-  final Bus<ReceptionChange> _changeBus = new Bus<ReceptionChange>();
 
   final LabelElement _oidLabel = new LabelElement()..text = 'rid:??';
   final HiddenInputElement _idInput = new HiddenInputElement()
@@ -131,7 +120,6 @@ class Reception {
 
   final DivElement _calendarsContainer = new DivElement()..style.clear = 'both';
   Calendar _calendarView;
-  Calendar _deletedCalendarView;
 
   void set reception(model.Reception r) {
     _calendarsContainer..hidden = true;
@@ -199,25 +187,14 @@ class Reception {
       ..disabled = !_saveButton.disabled;
     _deployDialplanButton.disabled = _deleteButton.disabled;
 
-    _calendarController
-        .listReception(reception.id)
-        .then((Iterable<model.CalendarEntry> entries) {
-      _calendarView.entries = entries;
-    });
-
-    ///FIXME: Retrieve changes.
-    _calendarController
-        .listReception(reception.id)
-        .then((Iterable<model.CalendarEntry> entries) {
-      _deletedCalendarView.entries = entries;
-    });
+    _calendarView.loadEntries(new model.OwningReception(r.id));
 
     _orgController.list().then((Iterable<model.OrganizationReference> orgs) {
       int compareTo(model.OrganizationReference org1,
               model.OrganizationReference org2) =>
           org1.name.compareTo(org2.name);
 
-      List list = orgs.toList()..sort(compareTo);
+      List<model.OrganizationReference> list = orgs.toList()..sort(compareTo);
       _search.updateSourceList(list);
 
       _search.selectElement(null, (model.OrganizationReference listItem, _) {
@@ -225,6 +202,10 @@ class Reception {
       });
 
       element.hidden = false;
+    });
+
+    _recController.changelog(r.id).then((String content) {
+      _changelog.content = content;
     });
   }
 
@@ -260,18 +241,15 @@ class Reception {
    */
   Reception(this._recController, this._orgController, this._dpController,
       this._calendarController) {
+    _changelog = new Changelog();
+
     _phoneNumberView = new Phonenumbers();
-    _calendarView = new Calendar(
-        _calendarController, new model.OwningReception(reception.id));
-    _deletedCalendarView = new Calendar(
-        _calendarController, new model.OwningReception(reception.id));
+    _calendarView = new Calendar(_calendarController);
 
     _calendarsContainer
       ..children = [
         new HeadingElement.h4()..text = 'Kalender',
-        _calendarView.element,
-        new HeadingElement.h4()..text = 'Slettede KalenderPoster',
-        _deletedCalendarView.element
+        _calendarView.element
       ];
 
     _calendarToggle.onClick.listen((_) {
@@ -443,6 +421,7 @@ class Reception {
             ..htmlFor = _miniWikiInput.id,
           _miniWikiInput
         ],
+      _changelog.element
     ];
 
     _observers();
@@ -454,32 +433,8 @@ class Reception {
   void _observers() {
     Iterable<Element> inputs = element.querySelectorAll('input,textarea');
 
-    _deletedCalendarView.onDelete = () async {
-      _calendarController
-          .listReception(reception.id)
-          .then((Iterable<model.CalendarEntry> entries) {
-        _calendarView.entries = entries;
-      });
-
-      _calendarController
-          .listReception(reception.id)
-          .then((Iterable<model.CalendarEntry> entries) {
-        _deletedCalendarView.entries = entries;
-      });
-    };
-
     _calendarView.onDelete = () async {
-      _calendarController
-          .listReception(reception.id)
-          .then((Iterable<model.CalendarEntry> entries) {
-        _calendarView.entries = entries;
-      });
-
-      _calendarController
-          .listReception(reception.id)
-          .then((Iterable<model.CalendarEntry> entries) {
-        _deletedCalendarView.entries = entries;
-      });
+      await _calendarView.loadEntries(new model.OwningReception(reception.id));
     };
 
     inputs.forEach((Element ine) {
@@ -510,13 +465,11 @@ class Reception {
 
       try {
         await _recController.remove(reception.id);
-        _changeBus.fire(new ReceptionChange.delete(reception));
-        element.hidden = true;
+
         notify.success('Receptionen blev slettet', reception.name);
       } catch (error) {
         notify.error('Kunne ikke slette reception', reception.name);
         _log.severe('Tried to remove a reception, but got: $error');
-        element.hidden = false;
       }
 
       _phoneNumberView.onChange = () {
@@ -527,30 +480,26 @@ class Reception {
     });
 
     _saveButton.onClick.listen((_) async {
-      element.hidden = true;
+      loading = true;
       if (reception.id == model.Reception.noId) {
         try {
           model.ReceptionReference newRec =
               await _recController.create(reception);
-          _changeBus.fire(
-              new ReceptionChange.create(await _recController.get(newRec.id)));
           notify.success('Receptionen blev oprettet', reception.name);
         } catch (error) {
           notify.error('Receptionen kunne ikke oprettes', 'Fejl: $error');
           _log.severe('Tried to create a new reception, but got: $error');
-          element.hidden = false;
         }
       } else {
         try {
           await _recController.update(reception);
-          _changeBus.fire(new ReceptionChange.update(reception));
           notify.success('Reception opdateret', reception.name);
         } catch (error) {
           notify.error('Kunne ikke opdatere reception', 'Fejl: $error');
           _log.severe('Tried to update a reception, but got: $error');
-          element.hidden = false;
         }
       }
+      loading = false;
     });
 
     _deployDialplanButton.onClick.listen((_) async {
@@ -575,6 +524,37 @@ class Reception {
         _log.severe('Could not deploy dialplan', e, s);
         notify.error('Kunne ikke udrulle kaldplan!', 'Fejl: $e');
       }
+    });
+  }
+
+  /**
+   *
+   */
+  void clear() {
+    Iterable<InputElement> inputs = element.querySelectorAll('input');
+
+    inputs.forEach((input) {
+      input.value = '';
+    });
+  }
+
+  /**
+   *
+   */
+  void set hidden(bool isHidden) {
+    element.hidden = false;
+  }
+
+  /**
+   *
+   */
+  void set loading(bool isLoading) {
+    element.classes.toggle('loading', isLoading);
+
+    Iterable<InputElement> inputs = element.querySelectorAll('input');
+
+    inputs.forEach((input) {
+      input.disabled = isLoading;
     });
   }
 }

@@ -5,8 +5,6 @@ import 'dart:convert';
 import 'dart:html' as html;
 
 import 'package:logging/logging.dart';
-
-import 'package:openreception.framework/bus.dart';
 import 'package:openreception.framework/event.dart' as event;
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/service.dart' as service;
@@ -19,9 +17,9 @@ part 'controller/controller-dialplan.dart';
 part 'controller/controller-ivr.dart';
 part 'controller/controller-message.dart';
 part 'controller/controller-notification.dart';
-part 'controller/controller-popup.dart';
 part 'controller/controller-organization.dart';
 part 'controller/controller-peer_account.dart';
+part 'controller/controller-popup.dart';
 part 'controller/controller-reception.dart';
 part 'controller/controller-user.dart';
 

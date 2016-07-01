@@ -128,7 +128,6 @@ class DialplanCalenderPlot {
   }
 
   _renderOpeningHour(model.OpeningHour oh, String colour) {
-    //TODO handle "all" days.
     Iterable openDays;
     if (oh.fromDay.index <= oh.toDay.index) {
       openDays =

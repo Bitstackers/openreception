@@ -26,4 +26,7 @@ class User {
 
   Future<Iterable<model.Commit>> changes([int uid]) =>
       _service.changes(uid).catchError(_handleError);
+
+  Future<String> changelog(int uid) =>
+      _service.changelog(uid).catchError(_handleError);
 }
