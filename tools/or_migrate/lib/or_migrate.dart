@@ -239,7 +239,7 @@ class MigrationEnvironment {
 
         await Future.forEach(entries.map(convertCalendarEntry), (ce) async {
           await _dataStore.receptionStore.calendarStore
-              .create(ce, new or_model.OwningReception(rec.ID), modifier);
+              .create(await ce, new or_model.OwningReception(rec.ID), modifier);
           count++;
         });
       } else {
