@@ -68,7 +68,11 @@ class MessageChange implements Event {
    * Deserializing contstructor.
    */
   MessageChange.fromMap(Map map)
-      : modifierUid = map[Key.modifierUid],
+      : modifierUid = map.containsKey(Key.modifierUid)
+            ? map[Key.modifierUid]
+            : map.containsKey('messageChange')
+                ? map['messageChange']['userID']
+                : model.User.noId,
         mid = map[Key.messageID],
         state = map[Key.state],
         messageState = map.containsKey(Key.messageState)
