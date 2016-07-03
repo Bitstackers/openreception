@@ -155,6 +155,9 @@ abstract class Event {
         case Key.widgetSelect:
           return new WidgetSelect.fromMap(map);
 
+        case Key.focusChange:
+          return new FocusChange.fromMap(map);
+
         case Key.peerState:
           return new PeerState.fromMap(map);
 
