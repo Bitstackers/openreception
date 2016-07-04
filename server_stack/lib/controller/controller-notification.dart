@@ -213,7 +213,6 @@ class Notification {
 
     channels.forEach((ws) {
       ws.sink.add(JSON.encode(message));
-      _log.finest('Sending $message to ${ws}');
     });
 
     return okJson({"status": "ok"});
