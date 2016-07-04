@@ -14,30 +14,28 @@
 part of openreception.framework.event;
 
 /**
- * Event for notifying about a change in the UI. Specifically, a change of
- * which widget is currently selected.
+ *
  */
-class WidgetSelect implements Event {
+class FocusChange implements Event {
   final DateTime timestamp;
 
-  String get eventName => Key.widgetSelect;
+  String get eventName => Key.focusChange;
 
   final int uid;
-  final String widgetName;
+  final bool inFocus;
 
   /**
    * Default constructor. Takes [uid] of the user changing the widget and
-   * the [widgetName] as mandatory arguments.
+   * the new focus state ([inFocus]) as mandatory arguments.
    */
-  WidgetSelect(int this.uid, String this.widgetName)
-      : timestamp = new DateTime.now();
+  FocusChange(int this.uid, bool this.inFocus) : timestamp = new DateTime.now();
 
   /**
    * Deserializing constructor.
    */
-  WidgetSelect.fromMap(Map map)
+  FocusChange.fromMap(Map map)
       : uid = map[Key.changedBy],
-        widgetName = map[Key.widget],
+        inFocus = map[Key.inFocus],
         timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
 
   /**
@@ -47,7 +45,7 @@ class WidgetSelect implements Event {
         Key.event: eventName,
         Key.timestamp: util.dateTimeToUnixTimestamp(timestamp),
         Key.changedBy: uid,
-        Key.widget: widgetName
+        Key.inFocus: inFocus
       };
 
   /**

@@ -37,6 +37,7 @@ part 'event/event-channel.dart';
 part 'event/event-client_connection.dart';
 part 'event/event-contact.dart';
 part 'event/event-dialplan.dart';
+part 'event/event-focus_change.dart';
 part 'event/event-ivr_menu.dart';
 part 'event/event-message.dart';
 part 'event/event-organization.dart';
