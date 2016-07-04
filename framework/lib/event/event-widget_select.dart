@@ -15,17 +15,18 @@ part of openreception.framework.event;
 
 class WidgetSelect implements Event {
   final DateTime timestamp;
-
-  String get eventName => Key.widgetSelect;
-
   final int uid;
   final String widgetName;
 
-  WidgetSelect._internal(this.uid, this.widgetName)
+  WidgetSelect(int this.uid, String this.widgetName)
       : timestamp = new DateTime.now();
 
-  factory WidgetSelect(int uid, String widgetName) =>
-      new WidgetSelect._internal(uid, widgetName);
+  WidgetSelect.fromMap(Map map)
+      : uid = map[Key.changedBy],
+        widgetName = map[Key.widget],
+        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
+
+  String get eventName => Key.widgetSelect;
 
   Map toJson() => {
         Key.event: eventName,
@@ -34,34 +35,31 @@ class WidgetSelect implements Event {
         Key.widget: widgetName
       };
 
-  /**
-   *
-   */
   @override
   String toString() => toJson().toString();
-
-  /**
-  *
-  */
-  WidgetSelect.fromMap(Map map)
-      : uid = map[Key.changedBy],
-        widgetName = map[Key.widget],
-        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
 }
 
 class FocusChange implements Event {
+  final bool inFocus;
   final DateTime timestamp;
+  final int uid;
+
+  FocusChange(int this.uid, bool this.inFocus) : timestamp = new DateTime.now();
+
+  FocusChange.blur(int this.uid)
+      : inFocus = false,
+        timestamp = new DateTime.now();
+
+  FocusChange.focus(int this.uid)
+      : inFocus = true,
+        timestamp = new DateTime.now();
+
+  FocusChange.fromMap(Map map)
+      : uid = map[Key.changedBy],
+        inFocus = map[Key.inFocus],
+        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
 
   String get eventName => Key.focusChange;
-
-  final int uid;
-  final bool inFocus;
-
-  FocusChange._internal(this.uid, this.inFocus)
-      : timestamp = new DateTime.now();
-
-  factory FocusChange(int uid, bool inFocus) =>
-      new FocusChange._internal(uid, inFocus);
 
   Map toJson() => {
         Key.event: eventName,
@@ -70,17 +68,6 @@ class FocusChange implements Event {
         Key.inFocus: inFocus
       };
 
-  /**
-   *
-   */
   @override
   String toString() => toJson().toString();
-
-  /**
-  *
-  */
-  FocusChange.fromMap(Map map)
-      : uid = map[Key.changedBy],
-        inFocus = map[Key.inFocus],
-        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
 }
