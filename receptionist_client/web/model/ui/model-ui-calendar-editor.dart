@@ -295,7 +295,7 @@ class UICalendarEditor extends UIModel {
     if (start.year != now.year) {
       week.write(' (${start.year})');
     }
-    if (weekStart < weekStop || start.year != stop.year) {
+    if (start.difference(stop).inDays.abs() > 6) {
       week.write(' - $weekStop');
       if (stop.year != now.year) {
         week.write(' (${stop.year})');
