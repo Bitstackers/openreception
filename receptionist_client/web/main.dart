@@ -99,18 +99,6 @@ main() async {
     /// Get the app Disaster and Loading views up and running.
     registerDisasterAndLoadingViews(appState);
 
-    /// Make sure we don't steal focus from widgets with mouseclicks on non-widget
-    /// elements. This is simply done by searching for the "ignoreclickfocus"
-    /// attribute and ignoring mousedown events for those elements.
-    document.onMouseDown.listen((MouseEvent event) {
-      if ((event.target as HtmlElement)
-          .attributes
-          .keys
-          .contains('ignoreclickfocus')) {
-        event.preventDefault();
-      }
-    });
-
     if (token != null) {
       uiLoading.addLoadingMessage('Found token OK');
       appState.currentUser = await getUser(clientConfig.authServerUri, token);
@@ -144,10 +132,15 @@ main() async {
         final Controller.User userController = new Controller.User(
             callFlowControl, notificationService, userService);
 
-        observers(userController, appState, webSocketClient);
-
-        Future rRV = registerReadyView(appState, clientConfig, userController,
-            callFlowControl, notificationController, language, token);
+        Future rRV = registerReadyView(
+            appState,
+            clientConfig,
+            userController,
+            callFlowControl,
+            notificationController,
+            language,
+            token,
+            webSocketClient);
 
         Future lCS = loadCallState(callFlowControl, appState);
 
@@ -257,13 +250,25 @@ Future loadCallState(
 
 /**
  * Observers.
- *
- * Registers the [window.onBeforeUnload] and [window.onUnload] listeners that is
- * responsible for popping a warning on refresh/page close and logging out the
- * user when she exits the application.
  */
-void observers(Controller.User userController, Model.AppClientState appState,
-    ORTransport.WebSocketClient webSocketClient) {
+void observers(
+    Controller.User userController,
+    Model.AppClientState appState,
+    ORTransport.WebSocketClient webSocketClient,
+    Controller.Notification notification) {
+  /// Make sure we don't steal focus from widgets with mouseclicks on
+  /// non-widget elements. This is simply done by searching for the
+  /// "ignoreclickfocus" attribute and ignoring mousedown events for those
+  /// elements.
+  document.onMouseDown.listen((MouseEvent event) {
+    if ((event.target as HtmlElement)
+        .attributes
+        .keys
+        .contains('ignoreclickfocus')) {
+      event.preventDefault();
+    }
+  });
+
   windowOnBeforeUnload = window.onBeforeUnload.listen((Event event) {
     (event as BeforeUnloadEvent).returnValue = '';
   });
@@ -271,11 +276,33 @@ void observers(Controller.User userController, Model.AppClientState appState,
   windowOnUnload = window.onUnload.listen((_) {
     webSocketClient.close();
   });
+
+  Controller.Navigate navigate = new Controller.Navigate();
+  navigate.onGo.listen((Controller.Destination destination) {
+    final event.WidgetSelect destinationEvent =
+        new event.WidgetSelect(appState.currentUser.id, destination.toString());
+    log.info(destinationEvent);
+    notification.notifySystem(destinationEvent);
+  });
+
+  window.onFocus.listen((e) {
+    final event.FocusChange focusEvent =
+        new event.FocusChange.focus(appState.currentUser.id);
+    log.info(focusEvent);
+    notification.notifySystem(focusEvent);
+  });
+
+  window.onBlur.listen((e) {
+    final event.FocusChange focusEvent =
+        new event.FocusChange.blur(appState.currentUser.id);
+    log.info(focusEvent);
+    notification.notifySystem(focusEvent);
+  });
 }
 
 /**
- * Register the [View.ReceptionistclientDisaster] and [View.ReceptionistclientLoading]
- * app view objects.
+ * Register the [View.ReceptionistclientDisaster] and
+ * [View.ReceptionistclientLoading] app view objects.
  *
  * NOTE: This depends on [clientConfig] being set.
  */
@@ -295,7 +322,8 @@ Future registerReadyView(
     ORService.CallFlowControl callFlowControl,
     Controller.Notification notification,
     Map<String, String> langMap,
-    String token) {
+    String token,
+    ORTransport.WebSocketClient webSocketClient) {
   Model.UIORCReady uiReady = new Model.UIORCReady('orc-ready');
 
   ORService.RESTCalendarStore calendarStore = new ORService.RESTCalendarStore(
@@ -324,29 +352,7 @@ Future registerReadyView(
   Controller.Sound sound =
       new Controller.Sound(querySelector('audio.sound-pling'));
 
-  Controller.Navigate navigate = new Controller.Navigate();
-  navigate.onGo.listen((Controller.Destination destination) {
-    final event.WidgetSelect selectEvent =
-        new event.WidgetSelect(appState.currentUser.id, destination.toString());
-
-    notification.notifySystem(selectEvent);
-  });
-  window.onFocus.listen((e) {
-    final event.FocusChange focusEvent =
-        new event.FocusChange(appState.currentUser.id, true);
-
-    print(focusEvent.toJson());
-
-    notification.notifySystem(focusEvent);
-  });
-
-  window.onBlur.listen((e) {
-    final event.FocusChange focusEvent =
-        new event.FocusChange(appState.currentUser.id, false);
-    print(focusEvent.toJson());
-
-    notification.notifySystem(focusEvent);
-  });
+  observers(controllerUser, appState, webSocketClient, notification);
 
   return receptionController
       .list()
