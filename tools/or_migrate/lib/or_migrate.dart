@@ -583,6 +583,7 @@ class MigrationEnvironment {
     return new or_model.CalendarEntry.empty()
       ..id = oldCe.ID
       ..lastAuthorId = changes.first.userID
+      ..touched = changes.first.changedAt
       ..content = oldCe.content
       ..start = oldCe.start
       ..stop = oldCe.stop;

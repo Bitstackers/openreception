@@ -168,6 +168,7 @@ const String assignedCalls = 'assignedCalls';
 
 const String start = 'start';
 const String stop = 'stop';
+const String touched = 'touched';
 
 const String takenByAgent = 'taken_by_agent';
 const String enqueued = 'enqueued';

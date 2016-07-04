@@ -130,6 +130,7 @@ class Calendar implements storage.Calendar {
         entry.id != model.CalendarEntry.noId && enforceId ? entry.id : _nextId;
 
     entry.lastAuthorId = modifier.id;
+    entry.touched = new DateTime.now();
 
     final Directory ownerDir = _ownerDir(owner.id);
     try {
@@ -258,9 +259,11 @@ class Calendar implements storage.Calendar {
   Future<model.CalendarEntry> update(
       model.CalendarEntry entry, model.Owner owner, model.User modifier) async {
     final Directory ownerDir = new Directory('$path/${owner.id}/calendar');
-
     final File file = new File('${ownerDir.path}/${entry.id}.json');
+
     entry.lastAuthorId = modifier.id;
+    entry.touched = new DateTime.now();
+
     if (!file.existsSync()) {
       throw new storage.NotFound();
     }

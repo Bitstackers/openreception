@@ -51,12 +51,14 @@ abstract class ModelCalendarEntry {
   static Model.CalendarEntry buildObject() {
     final int id = 123;
     final String body = 'test test test';
+    final DateTime touched = new DateTime.now();
     final DateTime begin = new DateTime.now().add(new Duration(hours: 1));
     final DateTime end = new DateTime.now().add(new Duration(hours: 2));
     final int uid = 42;
 
     Model.CalendarEntry builtObject = new Model.CalendarEntry.empty()
       ..lastAuthorId = uid
+      ..touched = touched
       ..id = id
       ..content = body
       ..start = begin
@@ -64,6 +66,7 @@ abstract class ModelCalendarEntry {
 
     expect(builtObject.id, equals(id));
     expect(builtObject.lastAuthorId, equals(uid));
+    expect(builtObject.touched, equals(touched));
     expect(builtObject.content, equals(body));
     expect(builtObject.start, equals(begin));
     expect(builtObject.stop, equals(end));

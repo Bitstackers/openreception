@@ -172,12 +172,14 @@ class CalendarEditor extends ViewWidget {
    * Set the [_ui.authorStamp]. This is populated with data from the latest
    * calendar entry change object for [entryId].
    */
-  void _setAuthorStamp(ORModel.CalendarEntry entry) {
-    _calendarController
-        .calendarEntryLatestChange(entry, _entryOwner)
-        .then((ORModel.Commit latestChange) {
-      _ui.authorStamp(latestChange.authorIdentity, latestChange.changedAt);
-    });
+  Future _setAuthorStamp(ORModel.CalendarEntry entry) async {
+    ORModel.User user;
+    try {
+      user = await _userController.get(entry.lastAuthorId);
+    } catch (error) {
+      user = new ORModel.User.empty()..name = 'uid ${entry.lastAuthorId}';
+    }
+    _ui.authorStamp(user.name, entry.touched);
   }
 
   /**

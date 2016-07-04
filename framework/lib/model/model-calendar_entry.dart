@@ -22,6 +22,7 @@ class CalendarEntry {
 
   int id = noId;
   int lastAuthorId = User.noId;
+  DateTime touched = new DateTime.now();
 
   String content = '';
   DateTime start = util.never;
@@ -41,6 +42,7 @@ class CalendarEntry {
   CalendarEntry.fromMap(Map map)
       : id = map[key.id],
         lastAuthorId = map[key.uid],
+        touched = util.unixTimestampToDateTime(map[key.touched]),
         start = util.unixTimestampToDateTime(map[key.start]),
         stop = util.unixTimestampToDateTime(map[key.stop]),
         content = map[key.body];
@@ -66,6 +68,7 @@ class CalendarEntry {
   Map toJson() => {
         key.id: id,
         key.uid: lastAuthorId,
+        key.touched: util.dateTimeToUnixTimestamp(touched),
         key.body: content,
         key.start: util.dateTimeToUnixTimestamp(start),
         key.stop: util.dateTimeToUnixTimestamp(stop)

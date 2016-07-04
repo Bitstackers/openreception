@@ -190,6 +190,7 @@ class ORCReady {
         _uiReceptionSelector,
         _calendarController,
         _popup,
+        _userController,
         _langMap);
 
     _contactSelector = new ContactSelector(
