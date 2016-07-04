@@ -18,10 +18,11 @@ part of openreception.framework.event;
  * which widget is currently selected.
  */
 class WidgetSelect implements Event {
+  /// Common [Event] fields.
   final DateTime timestamp;
-
   String get eventName => Key.widgetSelect;
 
+  /// Specialized fields.
   final int uid;
   final String widgetName;
 

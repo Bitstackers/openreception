@@ -14,13 +14,15 @@
 part of openreception.framework.event;
 
 /**
- *
+ * Event for notifying about a change in the UI. Specifically, a change of
+ * whether or not the window (or tab) is in focus or not.
  */
 class FocusChange implements Event {
+  /// Common [Event] fields.
   final DateTime timestamp;
-
   String get eventName => Key.focusChange;
 
+  /// Specialized fields.
   final int uid;
   final bool inFocus;
 
@@ -29,6 +31,22 @@ class FocusChange implements Event {
    * the new focus state ([inFocus]) as mandatory arguments.
    */
   FocusChange(int this.uid, bool this.inFocus) : timestamp = new DateTime.now();
+
+  /**
+   * Bluring constructor. Takes [uid] of the user changing the widget and
+   * returns an event with [infocus] set to [false].
+   */
+  FocusChange.blur(int this.uid)
+      : inFocus = false,
+        timestamp = new DateTime.now();
+
+  /**
+   * Focusing constructor. Takes [uid] of the user changing the widget and
+   * returns an event with [infocus] set to [true].
+   */
+  FocusChange.focus(int this.uid)
+      : inFocus = true,
+        timestamp = new DateTime.now();
 
   /**
    * Deserializing constructor.
