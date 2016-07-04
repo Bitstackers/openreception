@@ -29,6 +29,7 @@ class CalendarEditor extends ViewWidget {
   final Model.UIReceptionCalendar _receptionCalendar;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UICalendarEditor _uiModel;
+  final Controller.User _userController;
 
   /**
    * Constructor
@@ -42,6 +43,7 @@ class CalendarEditor extends ViewWidget {
       Model.UIReceptionSelector this._receptionSelector,
       Controller.Calendar this._calendarController,
       Controller.Popup this._popup,
+      Controller.User this._userController,
       Map<String, String> this._langMap) {
     _ui.setHint('Esc | ctrl+backspace | ctrl+s ');
 

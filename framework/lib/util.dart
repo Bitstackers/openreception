@@ -127,3 +127,25 @@ final DateTime never = _epoch;
  *
  */
 final DateTime _epoch = new DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
+
+/**
+ * Return the weeknumber for [timestamp]
+ *
+ * Reference: https://en.wikipedia.org/wiki/ISO_week_date
+ */
+int weekNumber(DateTime timestamp) {
+  final int ordinalDay =
+      timestamp.difference(new DateTime(timestamp.year)).inDays + 1;
+  final int weekDay = timestamp.weekday;
+  int weekNumber = ((ordinalDay - weekDay + 10) / 7).floor();
+
+  if (weekNumber == 0) {
+    // Timestamp is in last week of previous year. Recalculate!
+    final DateTime ldpy = new DateTime(timestamp.year - 1, 12, 31);
+    final int pod = ldpy.difference(new DateTime(ldpy.year)).inDays + 1;
+    final int pwd = ldpy.weekday;
+    weekNumber = ((pod - pwd + 10) / 7).floor();
+  }
+
+  return weekNumber;
+}

@@ -182,6 +182,8 @@ abstract class Key {
 
   static const String unknown = 'unknown';
 
+  static const String week = 'week';
+
   static const String yes = 'yes';
 }
 
@@ -343,6 +345,8 @@ Map<String, String> da = {
   Key.today: 'i dag',
 
   Key.unknown: 'Ukendt',
+
+  Key.week: 'Uge',
 
   Key.yes: 'Ja'
 };
@@ -506,6 +510,8 @@ Map<String, String> en = {
   Key.today: 'today',
 
   Key.unknown: 'Unknown',
+
+  Key.week: 'Week',
 
   Key.yes: 'Yes'
 };

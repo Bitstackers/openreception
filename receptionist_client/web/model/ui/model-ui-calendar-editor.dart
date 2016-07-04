@@ -17,6 +17,7 @@ part of model;
  * The calendar editor UI model.
  */
 class UICalendarEditor extends UIModel {
+  final Map<String, String> _langMap;
   ORModel.CalendarEntry _loadedEntry;
   HtmlElement _myFirstTabElement;
   HtmlElement _myFocusElement;
@@ -27,7 +28,8 @@ class UICalendarEditor extends UIModel {
   /**
    * Constructor.
    */
-  UICalendarEditor(DivElement this._myRoot, ORUtil.WeekDays this._weekDays) {
+  UICalendarEditor(DivElement this._myRoot, ORUtil.WeekDays this._weekDays,
+      Map<String, String> this._langMap) {
     _myFocusElement = _textArea;
     _myFirstTabElement = _textArea;
     _myLastTabElement = _cancelButton;
@@ -78,6 +80,8 @@ class UICalendarEditor extends UIModel {
       _root.querySelector('div.entry-stop-container .stop-year');
   ElementList<Element> get _tabElements => _root.querySelectorAll('[tabindex]');
   TextAreaElement get _textArea => _root.querySelector('textarea');
+  DivElement get _weekContainer => _root.querySelector('div.week-container');
+  SpanElement get _weekSpan => _weekContainer.querySelector('span');
 
   /**
    * Set the authorStamp part of the widget header. The format of the String is:
@@ -279,8 +283,25 @@ class UICalendarEditor extends UIModel {
    */
   void _updateReadableAndDuration() {
     final StringBuffer duration = new StringBuffer();
+    final DateTime now = new DateTime.now();
     final DateTime start = _harvestStartDateTime;
     final DateTime stop = _harvestStopDateTime;
+    final StringBuffer week = new StringBuffer();
+    final int weekStart = ORUtil.weekNumber(start);
+    final int weekStop = ORUtil.weekNumber(stop);
+
+    week.write(_langMap[Key.week]);
+    week.write(' $weekStart');
+    if (start.year != now.year) {
+      week.write(' (${start.year})');
+    }
+    if (weekStart < weekStop || start.year != stop.year) {
+      week.write(' - $weekStop');
+      if (stop.year != now.year) {
+        week.write(' (${stop.year})');
+      }
+    }
+    _weekSpan.text = week.toString();
 
     try {
       _startReadable.text = ORUtil.humanReadableTimestamp(start, _weekDays);
