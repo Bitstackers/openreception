@@ -331,6 +331,22 @@ Future registerReadyView(
 
     notification.notifySystem(selectEvent);
   });
+  window.onFocus.listen((e) {
+    final event.FocusChange focusEvent =
+        new event.FocusChange(appState.currentUser.id, true);
+
+    print(focusEvent.toJson());
+
+    notification.notifySystem(focusEvent);
+  });
+
+  window.onBlur.listen((e) {
+    final event.FocusChange focusEvent =
+        new event.FocusChange(appState.currentUser.id, false);
+    print(focusEvent.toJson());
+
+    notification.notifySystem(focusEvent);
+  });
 
   return receptionController
       .list()
