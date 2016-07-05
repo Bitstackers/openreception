@@ -23,6 +23,9 @@ class UICalendarEditor extends UIModel {
   HtmlElement _myFocusElement;
   HtmlElement _myLastTabElement;
   final DivElement _myRoot;
+  bool _newEntry = true;
+  bool _stopHourEdit = false;
+  bool _stopMinuteEdit = false;
   final ORUtil.WeekDays _weekDays;
 
   /**
@@ -100,30 +103,6 @@ class UICalendarEditor extends UIModel {
   }
 
   /**
-   * Populate the calendar editor fields with [calendarEntry].
-   */
-  set calendarEntry(ORModel.CalendarEntry calendarEntry) {
-    _loadedEntry = calendarEntry;
-
-    _textArea.value = calendarEntry.content;
-
-    _startHourInput.value = calendarEntry.start.hour.toString();
-    _startMinuteInput.value = calendarEntry.start.minute.toString();
-    _startDayInput.value = calendarEntry.start.day.toString();
-    _startMonthInput.value = calendarEntry.start.month.toString();
-    _startYearInput.value = calendarEntry.start.year.toString();
-
-    _stopHourInput.value = calendarEntry.stop.hour.toString();
-    _stopMinuteInput.value = calendarEntry.stop.minute.toString();
-    _stopDayInput.value = calendarEntry.stop.day.toString();
-    _stopMonthInput.value = calendarEntry.stop.month.toString();
-    _stopYearInput.value = calendarEntry.stop.year.toString();
-
-    _updateReadableAndDuration();
-    _toggleButtons();
-  }
-
-  /**
    * Harvest a [ORModel.CalendarEntry] from the form.
    */
   ORModel.CalendarEntry get harvestedEntry => _loadedEntry
@@ -169,13 +148,34 @@ class UICalendarEditor extends UIModel {
     });
 
     _textArea.onInput.listen((_) => _toggleButtons());
-    _startHourInput.onInput.listen((_) => _update(_startHourInput));
-    _startMinuteInput.onInput.listen((_) => _update(_startMinuteInput));
+    _startHourInput.onInput.listen((_) {
+      if (!_stopHourEdit && _newEntry) {
+        int startHour = _startHourInput.valueAsNumber;
+        if (startHour < 23) {
+          _stopHourInput.valueAsNumber = startHour + 1;
+        } else if (startHour == 23) {
+          _stopHourInput.valueAsNumber = 23;
+        }
+      }
+      _update(_startHourInput);
+    });
+    _startMinuteInput.onInput.listen((_) {
+      if (!_stopMinuteEdit && _newEntry) {
+        _stopMinuteInput.value = _startMinuteInput.value;
+      }
+      _update(_startMinuteInput);
+    });
     _startDayInput.onInput.listen((_) => _update(_startDayInput));
     _startMonthInput.onInput.listen((_) => _update(_startMonthInput));
     _startYearInput.onInput.listen((_) => _update(_startYearInput));
-    _stopHourInput.onInput.listen((_) => _update(_stopHourInput));
-    _stopMinuteInput.onInput.listen((_) => _update(_stopMinuteInput));
+    _stopHourInput.onInput.listen((_) {
+      _stopHourEdit = true;
+      _update(_stopHourInput);
+    });
+    _stopMinuteInput.onInput.listen((_) {
+      _stopMinuteEdit = true;
+      _update(_stopMinuteInput);
+    });
     _stopDayInput.onInput.listen((_) => _update(_stopDayInput));
     _stopMonthInput.onInput.listen((_) => _update(_stopMonthInput));
     _stopYearInput.onInput.listen((_) => _update(_stopYearInput));
@@ -218,6 +218,34 @@ class UICalendarEditor extends UIModel {
 
     _deleteButton.disabled = true;
     _saveButton.disabled = true;
+  }
+
+  /**
+   * Populate the calendar editor fields with [calendarEntry].
+   */
+  void setCalendarEntry(ORModel.CalendarEntry calendarEntry, bool isNew) {
+    _stopHourEdit = false;
+    _stopMinuteEdit = false;
+    _newEntry = isNew;
+
+    _loadedEntry = calendarEntry;
+
+    _textArea.value = calendarEntry.content;
+
+    _startHourInput.value = calendarEntry.start.hour.toString();
+    _startMinuteInput.value = calendarEntry.start.minute.toString();
+    _startDayInput.value = calendarEntry.start.day.toString();
+    _startMonthInput.value = calendarEntry.start.month.toString();
+    _startYearInput.value = calendarEntry.start.year.toString();
+
+    _stopHourInput.value = calendarEntry.stop.hour.toString();
+    _stopMinuteInput.value = calendarEntry.stop.minute.toString();
+    _stopDayInput.value = calendarEntry.stop.day.toString();
+    _stopMonthInput.value = calendarEntry.stop.month.toString();
+    _stopYearInput.value = calendarEntry.stop.year.toString();
+
+    _updateReadableAndDuration();
+    _toggleButtons();
   }
 
   /**

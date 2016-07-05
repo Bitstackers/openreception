@@ -166,8 +166,8 @@ class CalendarEditor extends ViewWidget {
   /**
    * Render the widget with the [calendarEntry].
    */
-  void _render(ORModel.CalendarEntry calendarEntry) {
-    _ui.calendarEntry = calendarEntry;
+  void _render(ORModel.CalendarEntry calendarEntry, bool isNew) {
+    _ui.setCalendarEntry(calendarEntry, isNew);
   }
 
   /**
@@ -207,7 +207,7 @@ class CalendarEditor extends ViewWidget {
                 '(${_langMap[Key.editDelete]} ${_contactSelector.selectedContact.contact.name})';
             _setAuthorStamp(entry);
 
-            _render(entry);
+            _render(entry, false);
 
             _navigateToMyDestination();
           }
@@ -221,7 +221,7 @@ class CalendarEditor extends ViewWidget {
               '(${_langMap[Key.editorNew]} ${_contactSelector.selectedContact.contact.name})';
           _ui.authorStamp(null, null);
 
-          _render(entry);
+          _render(entry, true);
 
           _navigateToMyDestination();
         }
@@ -239,7 +239,7 @@ class CalendarEditor extends ViewWidget {
                 '(${_langMap[Key.editDelete]} ${_receptionSelector.selectedReception.name})';
             _setAuthorStamp(entry);
 
-            _render(entry);
+            _render(entry, false);
 
             _navigateToMyDestination();
           }
@@ -253,7 +253,7 @@ class CalendarEditor extends ViewWidget {
               '(${_langMap[Key.editorNew]} ${_receptionSelector.selectedReception.name})';
           _ui.authorStamp(null, null);
 
-          _render(entry);
+          _render(entry, true);
 
           _navigateToMyDestination();
         }
