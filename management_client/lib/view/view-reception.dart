@@ -531,7 +531,7 @@ class Reception {
    *
    */
   void clear() {
-    Iterable<InputElement> inputs = element.querySelectorAll('input');
+    ElementList<InputElement> inputs = element.querySelectorAll('input');
 
     inputs.forEach((input) {
       input.value = '';
@@ -551,7 +551,7 @@ class Reception {
   void set loading(bool isLoading) {
     element.classes.toggle('loading', isLoading);
 
-    Iterable<InputElement> inputs = element.querySelectorAll('input');
+    ElementList<InputElement> inputs = element.querySelectorAll('input');
 
     inputs.forEach((input) {
       input.disabled = isLoading;
