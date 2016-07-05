@@ -147,7 +147,10 @@ class UICalendarEditor extends UIModel {
           (Event event) => _myFocusElement = (event.target as HtmlElement));
     });
 
-    _textArea.onInput.listen((_) => _toggleButtons());
+    _textArea.onInput.listen((_) {
+      ORUtilHtml.specialCharReplace(_textArea);
+      _toggleButtons();
+    });
     _startHourInput.onInput.listen((_) {
       if (!_stopHourEdit && _newEntry) {
         int startHour = _startHourInput.valueAsNumber;
