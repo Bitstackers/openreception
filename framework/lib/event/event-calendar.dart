@@ -54,20 +54,14 @@ class CalendarChange implements Event {
   /**
    *
    */
-  Map toJson() {
-    Map template = EventTemplate._rootElement(this);
-
-    Map body = {
-      Key.entryID: eid,
-      Key.owner: owner.toJson(),
-      Key.modifierUid: modifierUid,
-      Key.state: state
-    };
-
-    template[Key.calendarChange] = body;
-
-    return template;
-  }
+  Map toJson() => {
+        Key.event: eventName,
+        Key.timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        Key.entryID: eid,
+        Key.owner: owner.toJson(),
+        Key.modifierUid: modifierUid,
+        Key.state: state
+      };
 
   /**
    *
@@ -77,10 +71,37 @@ class CalendarChange implements Event {
   /**
    *
    */
-  CalendarChange.fromMap(Map map)
-      : eid = map[Key.calendarChange][Key.entryID],
-        modifierUid = map[Key.calendarChange][Key.modifierUid],
-        owner = new model.Owner.parse(map[Key.calendarChange][Key.owner]),
-        state = map[Key.calendarChange][Key.state],
-        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
+  factory CalendarChange.fromMap(Map map) {
+    int eid;
+    int modifierUid;
+    String state;
+    final DateTime timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
+    model.Owner owner = new model.Owner();
+
+    /// Old-style object.
+    if (map.containsKey(Key.calendarChange)) {
+      eid = map[Key.calendarChange][Key.entryID];
+      modifierUid = map[Key.calendarChange][Key.modifierUid];
+      state = map[Key.calendarChange][Key.state];
+
+      final int rid = map[Key.calendarChange]['rid'];
+      final int cid = map[Key.calendarChange]['cid'];
+      if (rid != 0 && rid != null) {
+        owner = new model.OwningReception(rid);
+      } else if (cid != 0 && cid != null) {
+        owner = new model.OwningContact(cid);
+      }
+    } else {
+      eid = map[Key.entryID];
+      modifierUid = map[Key.modifierUid];
+      state = map[Key.state];
+      owner = new model.Owner.parse(map[Key.owner]);
+    }
+
+    return new CalendarChange._internal(
+        eid, owner, modifierUid, state, timestamp);
+  }
+
+  CalendarChange._internal(
+      this.eid, this.owner, this.modifierUid, this.state, this.timestamp);
 }
