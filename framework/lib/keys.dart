@@ -33,17 +33,6 @@ const String ivrMenu = 'ivrMenu';
 
 const String receptionAttributes = 'receptionAttributes';
 
-@deprecated
-const String contactId = cid;
-@deprecated
-const String receptionId = rid;
-@deprecated
-const String organizationId = oid;
-@deprecated
-const String messageId = mid;
-@deprecated
-const String userId = uid;
-
 const String change = 'change';
 const String changes = 'changes';
 const String callId = 'call_id';
