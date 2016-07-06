@@ -26,6 +26,9 @@ import 'package:openreception.framework/storage.dart' as storage;
 
 const String _libraryName = 'openreception.framework.gzip_cache';
 
+dynamic unpackAndDeserializeObject(List<int> data) =>
+    JSON.decode(UTF8.decode(new GZipDecoder().decodeBytes(data)));
+
 List<int> serializeAndCompressObject(Object obj) =>
     new GZipEncoder().encode(UTF8.encode(JSON.encode(obj)));
 
