@@ -20,6 +20,10 @@ class UIContactCalendar extends UIModel {
   final Map<String, String> _langMap;
   final DivElement _myRoot;
   final ORUtil.WeekDays _weekDays;
+  final NodeValidatorBuilder _validator = new NodeValidatorBuilder()
+    ..allowTextElements()
+    ..allowHtml5()
+    ..allowInlineStyles();
 
   /**
    * Constructor.
@@ -71,7 +75,10 @@ class UIContactCalendar extends UIModel {
       return label;
     }
 
-    final DivElement content = new DivElement()..text = entry.content;
+    final DivElement content = new DivElement()
+      ..classes.add('markdown')
+      ..setInnerHtml(Markdown.markdownToHtml(entry.content),
+          validator: _validator);
 
     String start = ORUtil.humanReadableTimestamp(entry.start, _weekDays);
     String stop = ORUtil.humanReadableTimestamp(entry.stop, _weekDays);

@@ -167,15 +167,9 @@ input:focus  ~label {
 }
 
 @keyframes pulse {
-  0% {background-color: inherit;}
-  50% {background-color: #f00;}
-  100% {background-color: inherit;}
-}
-
-@-webkit-keyframes pulse {
-  0% {background-color: inherit;}
-  50% {background-color: #f00;}
-  100% {background-color: inherit;}
+  0% {color: inherit;}
+  50% {color: #f00;}
+  100% {color: inherit;}
 }
 
 .spinning-focus-box {
