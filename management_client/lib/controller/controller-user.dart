@@ -9,6 +9,9 @@ class User {
   Future<Iterable<model.UserReference>> list() =>
       _service.list().catchError(_handleError);
 
+  Future<Iterable<model.UserStatus>> userStatusList() =>
+      _service.userStatusList().catchError(_handleError);
+
   Future<model.UserReference> create(model.User user) =>
       _service.create(user, _appUser).catchError(_handleError);
 
