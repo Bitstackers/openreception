@@ -17,17 +17,22 @@ part of model;
  * The calendar editor UI model.
  */
 class UICalendarEditor extends UIModel {
+  final Map<String, String> _langMap;
   ORModel.CalendarEntry _loadedEntry;
   HtmlElement _myFirstTabElement;
   HtmlElement _myFocusElement;
   HtmlElement _myLastTabElement;
   final DivElement _myRoot;
+  bool _newEntry = true;
+  bool _stopHourEdit = false;
+  bool _stopMinuteEdit = false;
   final ORUtil.WeekDays _weekDays;
 
   /**
    * Constructor.
    */
-  UICalendarEditor(DivElement this._myRoot, ORUtil.WeekDays this._weekDays) {
+  UICalendarEditor(DivElement this._myRoot, ORUtil.WeekDays this._weekDays,
+      Map<String, String> this._langMap) {
     _myFocusElement = _textArea;
     _myFirstTabElement = _textArea;
     _myLastTabElement = _cancelButton;
@@ -78,6 +83,8 @@ class UICalendarEditor extends UIModel {
       _root.querySelector('div.entry-stop-container .stop-year');
   ElementList<Element> get _tabElements => _root.querySelectorAll('[tabindex]');
   TextAreaElement get _textArea => _root.querySelector('textarea');
+  DivElement get _weekContainer => _root.querySelector('div.week-container');
+  SpanElement get _weekSpan => _weekContainer.querySelector('span');
 
   /**
    * Set the authorStamp part of the widget header. The format of the String is:
@@ -93,30 +100,6 @@ class UICalendarEditor extends UIModel {
       _authorStamp.text =
           '${userName} @ ${ORUtil.humanReadableTimestamp(timestamp, _weekDays)}';
     }
-  }
-
-  /**
-   * Populate the calendar editor fields with [calendarEntry].
-   */
-  set calendarEntry(ORModel.CalendarEntry calendarEntry) {
-    _loadedEntry = calendarEntry;
-
-    _textArea.value = calendarEntry.content;
-
-    _startHourInput.value = calendarEntry.start.hour.toString();
-    _startMinuteInput.value = calendarEntry.start.minute.toString();
-    _startDayInput.value = calendarEntry.start.day.toString();
-    _startMonthInput.value = calendarEntry.start.month.toString();
-    _startYearInput.value = calendarEntry.start.year.toString();
-
-    _stopHourInput.value = calendarEntry.stop.hour.toString();
-    _stopMinuteInput.value = calendarEntry.stop.minute.toString();
-    _stopDayInput.value = calendarEntry.stop.day.toString();
-    _stopMonthInput.value = calendarEntry.stop.month.toString();
-    _stopYearInput.value = calendarEntry.stop.year.toString();
-
-    _updateReadableAndDuration();
-    _toggleButtons();
   }
 
   /**
@@ -164,14 +147,38 @@ class UICalendarEditor extends UIModel {
           (Event event) => _myFocusElement = (event.target as HtmlElement));
     });
 
-    _textArea.onInput.listen((_) => _toggleButtons());
-    _startHourInput.onInput.listen((_) => _update(_startHourInput));
-    _startMinuteInput.onInput.listen((_) => _update(_startMinuteInput));
+    _textArea.onInput.listen((_) {
+      ORUtilHtml.specialCharReplace(_textArea);
+      _toggleButtons();
+    });
+    _startHourInput.onInput.listen((_) {
+      if (!_stopHourEdit && _newEntry) {
+        int startHour = _startHourInput.valueAsNumber;
+        if (startHour < 23) {
+          _stopHourInput.valueAsNumber = startHour + 1;
+        } else if (startHour == 23) {
+          _stopHourInput.valueAsNumber = 23;
+        }
+      }
+      _update(_startHourInput);
+    });
+    _startMinuteInput.onInput.listen((_) {
+      if (!_stopMinuteEdit && _newEntry) {
+        _stopMinuteInput.value = _startMinuteInput.value;
+      }
+      _update(_startMinuteInput);
+    });
     _startDayInput.onInput.listen((_) => _update(_startDayInput));
     _startMonthInput.onInput.listen((_) => _update(_startMonthInput));
     _startYearInput.onInput.listen((_) => _update(_startYearInput));
-    _stopHourInput.onInput.listen((_) => _update(_stopHourInput));
-    _stopMinuteInput.onInput.listen((_) => _update(_stopMinuteInput));
+    _stopHourInput.onInput.listen((_) {
+      _stopHourEdit = true;
+      _update(_stopHourInput);
+    });
+    _stopMinuteInput.onInput.listen((_) {
+      _stopMinuteEdit = true;
+      _update(_stopMinuteInput);
+    });
     _stopDayInput.onInput.listen((_) => _update(_stopDayInput));
     _stopMonthInput.onInput.listen((_) => _update(_stopMonthInput));
     _stopYearInput.onInput.listen((_) => _update(_stopYearInput));
@@ -214,6 +221,34 @@ class UICalendarEditor extends UIModel {
 
     _deleteButton.disabled = true;
     _saveButton.disabled = true;
+  }
+
+  /**
+   * Populate the calendar editor fields with [calendarEntry].
+   */
+  void setCalendarEntry(ORModel.CalendarEntry calendarEntry, bool isNew) {
+    _stopHourEdit = false;
+    _stopMinuteEdit = false;
+    _newEntry = isNew;
+
+    _loadedEntry = calendarEntry;
+
+    _textArea.value = calendarEntry.content;
+
+    _startHourInput.value = calendarEntry.start.hour.toString();
+    _startMinuteInput.value = calendarEntry.start.minute.toString();
+    _startDayInput.value = calendarEntry.start.day.toString();
+    _startMonthInput.value = calendarEntry.start.month.toString();
+    _startYearInput.value = calendarEntry.start.year.toString();
+
+    _stopHourInput.value = calendarEntry.stop.hour.toString();
+    _stopMinuteInput.value = calendarEntry.stop.minute.toString();
+    _stopDayInput.value = calendarEntry.stop.day.toString();
+    _stopMonthInput.value = calendarEntry.stop.month.toString();
+    _stopYearInput.value = calendarEntry.stop.year.toString();
+
+    _updateReadableAndDuration();
+    _toggleButtons();
   }
 
   /**
@@ -279,8 +314,25 @@ class UICalendarEditor extends UIModel {
    */
   void _updateReadableAndDuration() {
     final StringBuffer duration = new StringBuffer();
+    final DateTime now = new DateTime.now();
     final DateTime start = _harvestStartDateTime;
     final DateTime stop = _harvestStopDateTime;
+    final StringBuffer week = new StringBuffer();
+    final int weekStart = ORUtil.weekNumber(start);
+    final int weekStop = ORUtil.weekNumber(stop);
+
+    week.write(_langMap[Key.week]);
+    week.write(' $weekStart');
+    if (start.year != now.year) {
+      week.write(' (${start.year})');
+    }
+    if (start.difference(stop).inDays.abs() > 6 || weekStart != weekStop) {
+      week.write(' - $weekStop');
+      if (stop.year != now.year) {
+        week.write(' (${stop.year})');
+      }
+    }
+    _weekSpan.text = week.toString();
 
     try {
       _startReadable.text = ORUtil.humanReadableTimestamp(start, _weekDays);

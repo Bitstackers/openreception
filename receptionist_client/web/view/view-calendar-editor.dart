@@ -29,6 +29,7 @@ class CalendarEditor extends ViewWidget {
   final Model.UIReceptionCalendar _receptionCalendar;
   final Model.UIReceptionSelector _receptionSelector;
   final Model.UICalendarEditor _uiModel;
+  final Controller.User _userController;
 
   /**
    * Constructor
@@ -42,6 +43,7 @@ class CalendarEditor extends ViewWidget {
       Model.UIReceptionSelector this._receptionSelector,
       Controller.Calendar this._calendarController,
       Controller.Popup this._popup,
+      Controller.User this._userController,
       Map<String, String> this._langMap) {
     _ui.setHint('Esc | ctrl+backspace | ctrl+s ');
 
@@ -164,20 +166,22 @@ class CalendarEditor extends ViewWidget {
   /**
    * Render the widget with the [calendarEntry].
    */
-  void _render(ORModel.CalendarEntry calendarEntry) {
-    _ui.calendarEntry = calendarEntry;
+  void _render(ORModel.CalendarEntry calendarEntry, bool isNew) {
+    _ui.setCalendarEntry(calendarEntry, isNew);
   }
 
   /**
    * Set the [_ui.authorStamp]. This is populated with data from the latest
    * calendar entry change object for [entryId].
    */
-  void _setAuthorStamp(ORModel.CalendarEntry entry) {
-    _calendarController
-        .calendarEntryLatestChange(entry, _entryOwner)
-        .then((ORModel.Commit latestChange) {
-      _ui.authorStamp(latestChange.authorIdentity, latestChange.changedAt);
-    });
+  Future _setAuthorStamp(ORModel.CalendarEntry entry) async {
+    ORModel.User user;
+    try {
+      user = await _userController.get(entry.lastAuthorId);
+    } catch (error) {
+      user = new ORModel.User.empty()..name = 'uid ${entry.lastAuthorId}';
+    }
+    _ui.authorStamp(user.name, entry.touched);
   }
 
   /**
@@ -203,7 +207,7 @@ class CalendarEditor extends ViewWidget {
                 '(${_langMap[Key.editDelete]} ${_contactSelector.selectedContact.contact.name})';
             _setAuthorStamp(entry);
 
-            _render(entry);
+            _render(entry, false);
 
             _navigateToMyDestination();
           }
@@ -217,7 +221,7 @@ class CalendarEditor extends ViewWidget {
               '(${_langMap[Key.editorNew]} ${_contactSelector.selectedContact.contact.name})';
           _ui.authorStamp(null, null);
 
-          _render(entry);
+          _render(entry, true);
 
           _navigateToMyDestination();
         }
@@ -235,7 +239,7 @@ class CalendarEditor extends ViewWidget {
                 '(${_langMap[Key.editDelete]} ${_receptionSelector.selectedReception.name})';
             _setAuthorStamp(entry);
 
-            _render(entry);
+            _render(entry, false);
 
             _navigateToMyDestination();
           }
@@ -249,7 +253,7 @@ class CalendarEditor extends ViewWidget {
               '(${_langMap[Key.editorNew]} ${_receptionSelector.selectedReception.name})';
           _ui.authorStamp(null, null);
 
-          _render(entry);
+          _render(entry, true);
 
           _navigateToMyDestination();
         }

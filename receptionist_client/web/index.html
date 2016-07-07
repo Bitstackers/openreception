@@ -88,9 +88,9 @@
           <style scoped>
             #calendar-editor {
               position: absolute;
-              top: 30%;
+              top: 25%;
               left: 35%;
-              height: 20em;
+              height: 25em;
               width: 35%;
               z-index: 1;
               outline: 0;
@@ -117,6 +117,11 @@
               display: flex;
             }
 
+            #calendar-editor .generic-widget-body div.entry-message {
+              flex-grow: 8;
+              display: flex;
+            }
+
             #calendar-editor .padding03 {
               padding: 0.3em;
             }
@@ -132,6 +137,7 @@
 
             #calendar-editor .entry-duration-container,
             #calendar-editor .readable-container,
+            #calendar-editor .week-container,
             #calendar-editor .entry-start-container,
             #calendar-editor .entry-stop-container {
               align-items: center;
@@ -162,7 +168,7 @@
             }
 
             #calendar-editor textarea {
-              margin-top: 0.3em;
+              margin: 0.3em 0.3em 0 0.3em;
               resize: none;
               width: 100%;
               font-size: 1em;
@@ -183,6 +189,9 @@
             </div>
             <div class="readable-container">
               <span class="readable-start"></span>-<span class="readable-stop"></span>
+            </div>
+            <div class="week-container">
+              <span>::weeks::</span>
             </div>
             <div class="entry-duration-container">
               <span data-lang-text="duration">::entry-duration::</span><span class="entry-duration"></span>
@@ -542,12 +551,7 @@
                 overflow: auto;
               }
 
-              #reception-mini-wiki .generic-widget-body h1:first-child,
-              #reception-mini-wiki .generic-widget-body h2:first-child,
-              #reception-mini-wiki .generic-widget-body h3:first-child,
-              #reception-mini-wiki .generic-widget-body h4:first-child,
-              #reception-mini-wiki .generic-widget-body h5:first-child,
-              #reception-mini-wiki .generic-widget-body h6:first-child {
+              #reception-mini-wiki .generic-widget-body *:first-child {
                 margin-top: 0;
               }
 
@@ -957,7 +961,6 @@
 
                   #reception-calendar .generic-widget-list li {
                     border-left: solid 3px #f7f7f7;
-                    color: #999;
                   }
 
                   #reception-calendar .generic-widget-list li.active {
@@ -1005,6 +1008,71 @@
                   #reception-calendar .generic-widget-list li div,
                   #reception-calendar .generic-widget-list li span {
                     pointer-events: none;
+                  }
+
+                  #reception-calendar .generic-widget-list li div.markdown {
+                    color: #999;
+                  }
+
+                  #reception-calendar .generic-widget-list li.active div.markdown {
+                    color: inherit;
+                  }
+
+                  #reception-calendar .generic-widget-list li div.markdown * {
+                    margin: 5px 0;
+                  }
+
+                  #reception-calendar .generic-widget-list li div.markdown *:first-child {
+                    margin-top: 0;
+                  }
+
+                  #reception-calendar .generic-widget-list li div.markdown ul {
+                    padding: 0 26px;
+                  }
+
+                  #reception-calendar .generic-widget-list li div.markdown ol {
+                    padding: 0 30px;
+                  }
+
+                  #reception-calendar .generic-widget-list li div.markdown ul li {
+                    list-style-type: disc;
+                    border: 0;
+                  }
+
+                  #reception-calendar .generic-widget-list li div.markdown ol li {
+                      border: 0;
+                  }
+
+                  #reception-calendar .generic-widget-list li div.markdown li:nth-of-type(even) {
+                    background-color: inherit;
+                  }
+
+                  #reception-calendar .generic-widget-list li div.markdown blockquote {
+                    margin-left: 0.2em;
+                    padding-left: 0.1em;
+                    border-left: solid 3px orange;
+                  }
+
+                  #reception-calendar .generic-widget-list li div.markdown table {
+                    border-collapse: collapse;
+                    border: 1px solid #000;
+                    border-spacing: 0;
+                  }
+
+                  #reception-calendar .generic-widget-list li div.markdown tr:nth-child(odd) {
+                    background-color: #ddd;
+                  }
+
+                  #reception-calendar .generic-widget-list li div.markdown th {
+                    padding: 5px 20px;
+                    border: 1px solid #000;
+                  }
+
+                  #reception-calendar .generic-widget-list li div.markdown td {
+                    vertical-align: middle;
+                    border: 1px solid #000;
+                    text-align: left;
+                    padding: 5px 10px;
                   }
                 </style>
 
@@ -1428,7 +1496,6 @@
 
                     #contact-calendar .generic-widget-list li {
                       border-left: solid 3px #f7f7f7;
-                      color: #999;
                     }
 
                     #contact-calendar .generic-widget-list li.active {
@@ -1476,6 +1543,71 @@
                     #contact-calendar .generic-widget-list li div,
                     #contact-calendar .generic-widget-list li span {
                       pointer-events: none;
+                    }
+
+                    #contact-calendar .generic-widget-list li div.markdown {
+                      color: #999;
+                    }
+
+                    #contact-calendar .generic-widget-list li.active div.markdown {
+                      color: inherit;
+                    }
+
+                    #contact-calendar .generic-widget-list li div.markdown * {
+                      margin: 5px 0;
+                    }
+
+                    #contact-calendar .generic-widget-list li div.markdown *:first-child {
+                      margin-top: 0;
+                    }
+
+                    #contact-calendar .generic-widget-list li div.markdown ul {
+                      padding: 0 26px;
+                    }
+
+                    #contact-calendar .generic-widget-list li div.markdown ol {
+                      padding: 0 30px;
+                    }
+
+                    #contact-calendar .generic-widget-list li div.markdown ul li {
+                      list-style-type: disc;
+                      border: 0;
+                    }
+
+                    #contact-calendar .generic-widget-list li div.markdown ol li {
+                        border: 0;
+                    }
+
+                    #contact-calendar .generic-widget-list li div.markdown li:nth-of-type(even) {
+                      background-color: inherit;
+                    }
+
+                    #contact-calendar .generic-widget-list li div.markdown blockquote {
+                      margin-left: 0.2em;
+                      padding-left: 0.1em;
+                      border-left: solid 3px orange;
+                    }
+
+                    #contact-calendar .generic-widget-list li div.markdown table {
+                      border-collapse: collapse;
+                      border: 1px solid #000;
+                      border-spacing: 0;
+                    }
+
+                    #contact-calendar .generic-widget-list li div.markdown tr:nth-child(odd) {
+                      background-color: #ddd;
+                    }
+
+                    #contact-calendar .generic-widget-list li div.markdown th {
+                      padding: 5px 20px;
+                      border: 1px solid #000;
+                    }
+
+                    #contact-calendar .generic-widget-list li div.markdown td {
+                      vertical-align: middle;
+                      border: 1px solid #000;
+                      text-align: left;
+                      padding: 5px 10px;
                     }
                   </style>
 

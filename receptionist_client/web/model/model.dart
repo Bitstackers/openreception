@@ -25,6 +25,7 @@ import 'package:openreception.framework/bus.dart';
 import 'package:openreception.framework/event.dart' as OREvent;
 import 'package:openreception.framework/model.dart' as ORModel;
 import 'package:openreception.framework/util.dart' as ORUtil;
+import 'package:openreception.framework/util_html.dart' as ORUtilHtml;
 
 import '../controller/controller.dart' as Controller;
 import '../lang.dart';

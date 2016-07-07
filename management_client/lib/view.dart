@@ -10,6 +10,7 @@ import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/searchcomponent.dart';
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/storage.dart' as storage;
+import 'package:openreception.framework/util_html.dart' as util;
 import 'package:openreception.framework/validation.dart';
 import 'package:random_string/random_string.dart' as random;
 
@@ -34,6 +35,7 @@ part 'view/view-reception_contact.dart';
 part 'view/view-user.dart';
 part 'view/view-user_groups.dart';
 part 'view/view-user_identities.dart';
+//export 'package:management_tool/view/agent-monitoring/agent_monitoring.dart';
 
 const String _libraryName = 'management_tool.view';
 const List<String> phonenumberTypes = const ['PSTN', 'SIP'];
@@ -58,19 +60,6 @@ int compareUserRefs(model.UserReference u1, model.UserReference u2) =>
 
 int compareRecRefs(model.ReceptionReference r1, model.ReceptionReference r2) =>
     r1.name.toLowerCase().compareTo(r2.name.toLowerCase());
-
-void specialCharReplace(TextAreaElement elem) {
-  final String orgValue = elem.value;
-  final String newValue = elem.value.replaceAll('->', '➔').replaceAll('¤', '⚙');
-
-  if (orgValue != newValue) {
-    final int cursorIndex = elem.selectionStart;
-    final int diffLength = orgValue.length - newValue.length;
-    elem.value = newValue;
-    elem.selectionStart = cursorIndex - diffLength;
-    elem.selectionEnd = cursorIndex - diffLength;
-  }
-}
 
 /**
  *

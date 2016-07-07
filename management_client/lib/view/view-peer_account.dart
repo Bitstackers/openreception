@@ -78,7 +78,7 @@ class PeerAccount {
    *
    */
   void _observers() {
-    Iterable<InputElement> inputs = element.querySelectorAll('input');
+    ElementList<InputElement> inputs = element.querySelectorAll('input');
 
     inputs.forEach((InputElement ine) {
       ine.onInput.listen((_) {
@@ -201,7 +201,7 @@ class PeerAccount {
   void set loading(bool isLoading) {
     element.classes.toggle('loading', isLoading);
 
-    Iterable<InputElement> inputs = element.querySelectorAll('input');
+    ElementList<InputElement> inputs = element.querySelectorAll('input');
 
     inputs.forEach((InputElement ine) {
       ine.disabled = isLoading;

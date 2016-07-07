@@ -223,8 +223,10 @@ class MigrationEnvironment {
         await Future.forEach(entries.map(convertCalendarEntry),
             (Future<or_model.CalendarEntry> ce) async {
           try {
+            final or_model.User user = new or_model.User.empty()
+              ..id = (await ce).lastAuthorId;
             await _dataStore.contactStore.calendarStore.create(
-                await ce, new or_model.OwningContact(contact.id), modifier,
+                await ce, new or_model.OwningContact(contact.id), user,
                 enforceId: true);
             count++;
           } catch (e) {
@@ -247,8 +249,10 @@ class MigrationEnvironment {
         await Future.forEach(entries.map(convertCalendarEntry),
             (Future<or_model.CalendarEntry> ce) async {
           try {
+            final or_model.User user = new or_model.User.empty()
+              ..id = (await ce).lastAuthorId;
             await _dataStore.receptionStore.calendarStore.create(
-                await ce, new or_model.OwningReception(rec.ID), modifier,
+                await ce, new or_model.OwningReception(rec.ID), user,
                 enforceId: true);
             count++;
           } catch (e) {
@@ -579,6 +583,7 @@ class MigrationEnvironment {
     return new or_model.CalendarEntry.empty()
       ..id = oldCe.ID
       ..lastAuthorId = changes.first.userID
+      ..touched = changes.first.changedAt
       ..content = oldCe.content
       ..start = oldCe.start
       ..stop = oldCe.stop;

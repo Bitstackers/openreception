@@ -181,7 +181,7 @@ class ORCReady {
 
     new CalendarEditor(
         new Model.UICalendarEditor(
-            querySelector('#calendar-editor'), _weekDays),
+            querySelector('#calendar-editor'), _weekDays, _langMap),
         new Controller.Destination(
             Controller.Context.calendarEdit, Controller.Widget.calendarEditor),
         _uiContactCalendar,
@@ -190,6 +190,7 @@ class ORCReady {
         _uiReceptionSelector,
         _calendarController,
         _popup,
+        _userController,
         _langMap);
 
     _contactSelector = new ContactSelector(
