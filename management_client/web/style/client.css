@@ -100,6 +100,10 @@ nav#navigation {
   overflow: auto;
 }
 
+.blur {
+  opacity: .3;
+}
+
 .page-content-with-rightbar {
   float: left;
   width: 60%;
