@@ -98,6 +98,8 @@ Future main() async {
       config.clientConfig.dialplanServerUri, config.token, client);
   final service.RESTMessageStore messageStore = new service.RESTMessageStore(
       config.clientConfig.messageServerUri, config.token, client);
+  final service.CallFlowControl callFlow = new service.CallFlowControl(
+      config.clientConfig.callFlowServerUri, config.token, client);
 
   /// Connecting the websocket
   loadingLog.text += 'Forbinder websocket\n';
@@ -131,6 +133,7 @@ Future main() async {
       new controller.Ivr(ivrStore, dialplanStore);
   final controller.PeerAccount paController =
       new controller.PeerAccount(paService);
+  final controller.Call callController = new controller.Call(callFlow);
 
   loadingLog.text += 'Indlæser sider\n';
   loadingProgress.value++;
@@ -176,8 +179,19 @@ Future main() async {
 
   querySelector('#ivr-page')
       .replaceWith(new page.Ivr(ivrController, router).element);
+
   querySelector("#user-page").replaceWith(new page.User(
           userController, paController, notification.onUserChange, router)
+      .element);
+
+  querySelector("#monitor-page").replaceWith(new page.Monitoring(
+          callController,
+          userController,
+          notification.onUserState,
+          notification.onPeerState,
+          notification.onWidgetSelect,
+          notification.onFocusChange,
+          router)
       .element);
 
   /// Verify that we support HTMl5 notifications
