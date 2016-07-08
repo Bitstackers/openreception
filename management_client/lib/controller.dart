@@ -11,6 +11,7 @@ import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.framework/storage.dart' as storage;
 
 part 'controller/controller-calendar.dart';
+part 'controller/controller-call.dart';
 part 'controller/controller-cdr.dart';
 part 'controller/controller-contact.dart';
 part 'controller/controller-dialplan.dart';
