@@ -13,6 +13,11 @@
 
 part of openreception.framework.event;
 
+/**
+ * Event that is meant to be spawned every time a call is unassigned from a
+ * user. Currently not in use. Meant for a simplification of the event
+ * system.
+ */
 class CallUnassign extends CallEvent {
   final String eventName = Key.callUnassign;
   final int userId;

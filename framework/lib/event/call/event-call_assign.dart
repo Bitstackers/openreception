@@ -13,14 +13,31 @@
 
 part of openreception.framework.event;
 
+/**
+ * Event that is meant to be spawned every time a call is assigned to a
+ * user. Currently not in use. Meant for a simplification of the event
+ * system.
+ */
 class CallAssign extends CallEvent {
   final String eventName = Key.callAssign;
   final int uid;
 
+  /**
+   * Default constructor. Subtypes the general [CallEvent] class. Takes the
+   * [model.Call] being assigned and the [uid] of the user it being assigned
+   * to as arguments.
+   */
   CallAssign(model.Call call, this.uid) : super(call);
+
+  /**
+   * Deserializing constructor.
+   */
   CallAssign.fromMap(Map map)
       : uid = map[Key.modifierUid],
         super.fromMap(map);
 
+  /**
+   * Serialization function.
+   */
   Map toJson() => super.toJson()..addAll({Key.modifierUid: uid});
 }

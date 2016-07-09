@@ -16,15 +16,21 @@ library openreception.framework.filestore;
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:core';
 import 'dart:io';
 
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/bus.dart';
+import 'package:openreception.framework/gzip_cache.dart'
+    show unpackAndDeserializeObject, serializeAndCompressObject;
+
 import 'package:openreception.framework/event.dart' as event;
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/storage.dart' as storage;
 import 'package:path/path.dart';
 
+part 'filestore/filestore-agent_history.dart';
 part 'filestore/filestore-calendar.dart';
 part 'filestore/filestore-contact.dart';
 part 'filestore/filestore-git_engine.dart';
