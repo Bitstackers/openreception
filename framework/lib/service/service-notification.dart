@@ -29,10 +29,6 @@ class _NotificationRequest {
  * Client for Notification sending.
  */
 class NotificationService {
-  /// Internal logger.
-  final Logger _log =
-      new Logger('openreception.framework.service.NotificationService');
-
   static Queue<_NotificationRequest> _requestQueue = new Queue();
   static bool _busy = false;
 
@@ -50,8 +46,6 @@ class NotificationService {
     Uri uri = resource.Notification.broadcast(host);
     uri = _appendToken(uri, _clientToken);
 
-    _log.finest('Broadcasting ${event.runtimeType}');
-
     return _enqueue(new _NotificationRequest(uri, event.toJson()));
   }
 
@@ -61,8 +55,6 @@ class NotificationService {
   Future<Iterable<model.ClientConnection>> clientConnections() async {
     Uri uri = resource.Notification.clientConnections(host);
     uri = _appendToken(uri, _clientToken);
-
-    _log.finest('GET $uri');
 
     return await _httpClient.get(uri).then(JSON.decode).then(
         (Iterable<Map> maps) =>
@@ -75,8 +67,6 @@ class NotificationService {
   Future<model.ClientConnection> clientConnection(int uid) {
     Uri uri = resource.Notification.clientConnection(host, uid);
     uri = _appendToken(uri, _clientToken);
-
-    _log.finest('GET $uri');
 
     return _httpClient
         .get(uri)
@@ -134,14 +124,9 @@ class NotificationService {
       }
     }
 
-    try {
-      return await _httpClient
-          .post(request.resource, JSON.encode(request.body))
-          .whenComplete(dispatchNext);
-    } catch (error, StackTrace) {
-      _log.warning('${error} : ${StackTrace}');
-      throw new Error();
-    }
+    return await _httpClient
+        .post(request.resource, JSON.encode(request.body))
+        .whenComplete(dispatchNext);
   }
 
   /**
