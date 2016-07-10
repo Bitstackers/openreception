@@ -17,17 +17,19 @@ part of openreception.framework.service;
  * Authentication service client.
  */
 class Authentication {
-  static final String className = '${libraryName}.Authentication';
-
   final WebService _httpClient;
+
+  /// The uri of the connected backend.
   final Uri host;
-  final String clientToken;
+
+  /// The token used for authenticating with the backed.
+  final String token;
 
   /**
-   * Default constructor. Needs a host for backend uri, a user token and a
-   * webclient for handling the transport.
+   * Default constructor. Needs a [host] for backend uri, a user [token]
+   * and a [WebService] HTTP client for handling the transport.
    */
-  Authentication(Uri this.host, String this.clientToken, this._httpClient);
+  Authentication(Uri this.host, String this.token, this._httpClient);
 
   /**
    * Performs a lookup of the user on the notification server from the
