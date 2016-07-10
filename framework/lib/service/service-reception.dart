@@ -13,22 +13,29 @@
 
 part of openreception.framework.service;
 
+/// Reception store client class.
+///
+/// The client class wraps REST methods and handles lower-level
+/// communication, such as serialization/deserialization, method choice
+/// (GET, PUT, POST, DELETE) and resource uri building.
 class RESTReceptionStore implements storage.Reception {
-  static final String className = '${libraryName}.RESTReceptionStore';
-
   final WebService _backend;
-  final Uri _host;
-  final String _token;
 
-  RESTReceptionStore(Uri this._host, String this._token, this._backend);
+  /// The uri of the connected backend.
+  final Uri host;
+
+  /// The token used for authenticating with the backed.
+  final String token;
+
+  RESTReceptionStore(Uri this.host, String this.token, this._backend);
 
   /**
    * Returns a reception as a pure map.
    */
   Future<model.ReceptionReference> create(
       model.Reception reception, model.User modifier) {
-    Uri url = resource.Reception.root(this._host);
-    url = _appendToken(url, this._token);
+    Uri url = resource.Reception.root(this.host);
+    url = _appendToken(url, this.token);
 
     return _backend
         .post(url, JSON.encode(reception))
@@ -40,8 +47,8 @@ class RESTReceptionStore implements storage.Reception {
    *
    */
   Future<model.Reception> get(int receptionID) {
-    Uri url = resource.Reception.single(this._host, receptionID);
-    url = _appendToken(url, this._token);
+    Uri url = resource.Reception.single(this.host, receptionID);
+    url = _appendToken(url, this.token);
 
     return this._backend.get(url).then((String response) =>
         new model.Reception.fromMap(JSON.decode(response)));
@@ -51,8 +58,8 @@ class RESTReceptionStore implements storage.Reception {
    *
    */
   Future<String> extensionOf(int receptionId) {
-    Uri url = resource.Reception.extensionOf(this._host, receptionId);
-    url = _appendToken(url, this._token);
+    Uri url = resource.Reception.extensionOf(this.host, receptionId);
+    url = _appendToken(url, this.token);
 
     return this._backend.get(url);
   }
@@ -61,8 +68,8 @@ class RESTReceptionStore implements storage.Reception {
    *
    */
   Future<model.Reception> getByExtension(String extension) {
-    Uri url = resource.Reception.byExtension(this._host, extension);
-    url = _appendToken(url, this._token);
+    Uri url = resource.Reception.byExtension(this.host, extension);
+    url = _appendToken(url, this.token);
 
     return this._backend.get(url).then((String response) =>
         new model.Reception.fromMap(JSON.decode(response)));
@@ -72,8 +79,8 @@ class RESTReceptionStore implements storage.Reception {
    * Returns a reception list.
    */
   Future<Iterable<model.ReceptionReference>> list() {
-    Uri url = resource.Reception.list(this._host);
-    url = _appendToken(url, this._token);
+    Uri url = resource.Reception.list(this.host);
+    url = _appendToken(url, this.token);
 
     return this._backend.get(url).then((String response) =>
         (JSON.decode(response) as Iterable)
@@ -84,8 +91,8 @@ class RESTReceptionStore implements storage.Reception {
    *
    */
   Future remove(int rid, model.User modifier) async {
-    Uri url = resource.Reception.single(this._host, rid);
-    url = _appendToken(url, this._token);
+    Uri url = resource.Reception.single(this.host, rid);
+    url = _appendToken(url, this.token);
 
     await _backend.delete(url);
   }
@@ -95,8 +102,8 @@ class RESTReceptionStore implements storage.Reception {
    */
   Future<model.ReceptionReference> update(
       model.Reception reception, model.User modifier) {
-    Uri url = resource.Reception.single(this._host, reception.id);
-    url = _appendToken(url, this._token);
+    Uri url = resource.Reception.single(this.host, reception.id);
+    url = _appendToken(url, this.token);
 
     String data = JSON.encode(reception);
 
@@ -108,8 +115,8 @@ class RESTReceptionStore implements storage.Reception {
    *
    */
   Future<Iterable<model.Commit>> changes([int rid]) {
-    Uri url = resource.Reception.changeList(_host, rid);
-    url = _appendToken(url, this._token);
+    Uri url = resource.Reception.changeList(host, rid);
+    url = _appendToken(url, this.token);
 
     Iterable<model.Commit> convertMaps(Iterable<Map> maps) =>
         maps.map(model.Commit.decode);
@@ -121,8 +128,8 @@ class RESTReceptionStore implements storage.Reception {
    *
    */
   Future<String> changelog(int rid) {
-    Uri url = resource.Reception.changelog(_host, rid);
-    url = _appendToken(url, this._token);
+    Uri url = resource.Reception.changelog(host, rid);
+    url = _appendToken(url, this.token);
 
     return _backend.get(url);
   }

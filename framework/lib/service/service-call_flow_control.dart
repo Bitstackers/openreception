@@ -13,22 +13,28 @@
 
 part of openreception.framework.service;
 
-/**
- * Client class for call-flow-control service.
- */
+/// Call-flow-control service client class.
+///
+/// The client class wraps REST methods and handles lower-level
+/// communication, such as serialization/deserialization, method choice
+/// (GET, PUT, POST, DELETE) and resource uri building.
 class CallFlowControl {
   final WebService _backend;
-  final Uri _host;
-  final String _token;
 
-  CallFlowControl(this._host, this._token, this._backend);
+  /// The uri of the connected backend.
+  final Uri host;
+
+  /// The token used for authenticating with the backed.
+  final String token;
+
+  CallFlowControl(this.host, this.token, this._backend);
 
   /**
    * Retrives the currently active recordings
    */
   Future<Iterable<model.ActiveRecording>> activeRecordings() {
-    Uri uri = resource.CallFlowControl.activeRecordings(_host);
-    uri = _appendToken(uri, _token);
+    Uri uri = resource.CallFlowControl.activeRecordings(host);
+    uri = _appendToken(uri, token);
 
     Iterable<model.ActiveRecording> decodeMaps(Iterable<Map> maps) =>
         maps.map(model.ActiveRecording.decode);
@@ -40,8 +46,8 @@ class CallFlowControl {
    * Retrives the currently active recordings
    */
   Future<model.ActiveRecording> activeRecording(String channel) {
-    Uri uri = resource.CallFlowControl.activeRecording(_host, channel);
-    uri = _appendToken(uri, _token);
+    Uri uri = resource.CallFlowControl.activeRecording(host, channel);
+    uri = _appendToken(uri, token);
 
     return _backend
         .get(uri)
@@ -53,8 +59,8 @@ class CallFlowControl {
    * Retrives the stats of all agents.
    */
   Future<Iterable<model.AgentStatistics>> agentStats() {
-    Uri uri = resource.CallFlowControl.agentStatistics(_host);
-    uri = _appendToken(uri, _token);
+    Uri uri = resource.CallFlowControl.agentStatistics(host);
+    uri = _appendToken(uri, token);
 
     Iterable<model.AgentStatistics> decodeMaps(Iterable<Map> maps) =>
         maps.map(model.AgentStatistics.decode);
@@ -66,8 +72,8 @@ class CallFlowControl {
    * Retrives the stats of a single agent.
    */
   Future<model.AgentStatistics> agentStat(int userId) {
-    Uri uri = resource.CallFlowControl.agentStatistic(_host, userId);
-    uri = _appendToken(uri, _token);
+    Uri uri = resource.CallFlowControl.agentStatistic(host, userId);
+    uri = _appendToken(uri, token);
 
     return _backend
         .get(uri)
@@ -79,8 +85,8 @@ class CallFlowControl {
    * Retrives the current Call list.
    */
   Future<Iterable<model.Call>> callList() {
-    Uri uri = resource.CallFlowControl.list(_host);
-    uri = _appendToken(uri, _token);
+    Uri uri = resource.CallFlowControl.list(host);
+    uri = _appendToken(uri, token);
 
     return _backend.get(uri).then(JSON.decode).then((Iterable<Map> callMaps) =>
         callMaps.map((Map map) => new model.Call.fromMap(map)));
@@ -91,8 +97,8 @@ class CallFlowControl {
    */
   @deprecated
   Future<Iterable<Map>> channelListMap() {
-    Uri uri = resource.CallFlowControl.channelList(_host);
-    uri = _appendToken(uri, _token);
+    Uri uri = resource.CallFlowControl.channelList(host);
+    uri = _appendToken(uri, token);
 
     return _backend
         .get(uri)
@@ -103,8 +109,8 @@ class CallFlowControl {
    * Retrives the a specific channel as a Map.
    */
   Future<Map> channelMap(String uuid) {
-    Uri uri = resource.CallFlowControl.channel(_host, uuid);
-    uri = _appendToken(uri, _token);
+    Uri uri = resource.CallFlowControl.channel(host, uuid);
+    uri = _appendToken(uri, token);
 
     return _backend
         .get(uri)
@@ -115,8 +121,8 @@ class CallFlowControl {
    * Returns a single call resource.
    */
   Future<model.Call> get(String callID) {
-    Uri uri = resource.CallFlowControl.single(_host, callID);
-    uri = _appendToken(uri, _token);
+    Uri uri = resource.CallFlowControl.single(host, callID);
+    uri = _appendToken(uri, token);
 
     return _backend
         .get(uri)
@@ -128,8 +134,8 @@ class CallFlowControl {
    * Hangs up the call identified by [callID].
    */
   Future hangup(String callID) {
-    Uri uri = resource.CallFlowControl.hangup(_host, callID);
-    uri = _appendToken(uri, _token);
+    Uri uri = resource.CallFlowControl.hangup(host, callID);
+    uri = _appendToken(uri, token);
 
     return _backend.post(uri, '');
   }
@@ -139,8 +145,8 @@ class CallFlowControl {
    */
   Future<model.Call> originate(
       String extension, model.OriginationContext context) {
-    Uri uri = resource.CallFlowControl.originate(_host, extension, context);
-    uri = _appendToken(uri, _token);
+    Uri uri = resource.CallFlowControl.originate(host, extension, context);
+    uri = _appendToken(uri, token);
 
     return _backend
         .post(uri, '')
@@ -152,8 +158,8 @@ class CallFlowControl {
    * Parks the call identified by [callID].
    */
   Future<model.Call> park(String callID) {
-    Uri uri = resource.CallFlowControl.park(_host, callID);
-    uri = _appendToken(uri, _token);
+    Uri uri = resource.CallFlowControl.park(host, callID);
+    uri = _appendToken(uri, token);
 
     return _backend
         .post(uri, '')
@@ -165,8 +171,8 @@ class CallFlowControl {
    * Retrives the current Peer list.
    */
   Future<Iterable<model.Peer>> peerList() {
-    Uri uri = resource.CallFlowControl.peerList(_host);
-    uri = _appendToken(uri, _token);
+    Uri uri = resource.CallFlowControl.peerList(host);
+    uri = _appendToken(uri, token);
 
     return _backend
         .get(uri)
@@ -179,8 +185,8 @@ class CallFlowControl {
    * Picks up the call identified by [callID].
    */
   Future<model.Call> pickup(String callID) {
-    Uri uri = resource.CallFlowControl.pickup(_host, callID);
-    uri = _appendToken(uri, _token);
+    Uri uri = resource.CallFlowControl.pickup(host, callID);
+    uri = _appendToken(uri, token);
 
     return _backend
         .post(uri, '')
@@ -192,8 +198,8 @@ class CallFlowControl {
    * Asks the server to perform a reload.
    */
   Future stateReload() {
-    Uri uri = resource.CallFlowControl.stateReload(_host);
-    uri = _appendToken(uri, _token);
+    Uri uri = resource.CallFlowControl.stateReload(host);
+    uri = _appendToken(uri, token);
 
     return _backend.post(uri, '');
   }
@@ -202,8 +208,8 @@ class CallFlowControl {
    * Transfers the call identified by [callID] to active call [destination].
    */
   Future transfer(String callID, String destination) {
-    Uri uri = resource.CallFlowControl.transfer(_host, callID, destination);
-    uri = _appendToken(uri, _token);
+    Uri uri = resource.CallFlowControl.transfer(host, callID, destination);
+    uri = _appendToken(uri, token);
 
     return _backend.post(uri, '');
   }

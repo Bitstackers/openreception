@@ -13,28 +13,32 @@
 
 part of openreception.framework.service;
 
-/**
- * Client for contact service.
- */
+/// Calendar store client class.
+///
+/// The client class wraps REST methods and handles lower-level
+/// communication, such as serialization/deserialization, method choice
+/// (GET, PUT, POST, DELETE) and resource uri building.
 class RESTCalendarStore implements storage.Calendar {
-  static final Logger log = new Logger('${libraryName}.RESTCalendarStore');
-
   final WebService _backend;
-  final Uri _host;
-  final String _token;
+
+  /// The uri of the connected backend.
+  final Uri host;
+
+  /// The token used for authenticating with the backed.
+  final String token;
 
   /**
    *
    */
-  RESTCalendarStore(Uri this._host, String this._token, this._backend);
+  RESTCalendarStore(Uri this.host, String this.token, this._backend);
 
   /**
    *
    */
   Future<Iterable<model.CalendarEntry>> list(model.Owner owner) {
-    Uri url = resource.Calendar.ownerBase(_host, owner);
+    Uri url = resource.Calendar.ownerBase(host, owner);
 
-    url = _appendToken(url, this._token);
+    url = _appendToken(url, this.token);
 
     Iterable<model.CalendarEntry> convertMaps(Iterable<Map> maps) =>
         maps.map(model.CalendarEntry.decode);
@@ -46,8 +50,8 @@ class RESTCalendarStore implements storage.Calendar {
    *
    */
   Future<model.CalendarEntry> get(int id, model.Owner owner) {
-    Uri url = resource.Calendar.single(_host, id, owner);
-    url = _appendToken(url, this._token);
+    Uri url = resource.Calendar.single(host, id, owner);
+    url = _appendToken(url, this.token);
 
     return this
         ._backend
@@ -61,8 +65,8 @@ class RESTCalendarStore implements storage.Calendar {
    */
   Future<model.CalendarEntry> create(
       model.CalendarEntry entry, model.Owner owner, model.User user) {
-    Uri url = resource.Calendar.ownerBase(_host, owner);
-    url = _appendToken(url, this._token);
+    Uri url = resource.Calendar.ownerBase(host, owner);
+    url = _appendToken(url, this.token);
 
     return this
         ._backend
@@ -76,8 +80,8 @@ class RESTCalendarStore implements storage.Calendar {
    */
   Future<model.CalendarEntry> update(
       model.CalendarEntry entry, model.Owner owner, model.User modifier) {
-    Uri url = resource.Calendar.single(_host, entry.id, owner);
-    url = _appendToken(url, this._token);
+    Uri url = resource.Calendar.single(host, entry.id, owner);
+    url = _appendToken(url, this.token);
 
     return _backend
         .put(url, JSON.encode(entry))
@@ -89,8 +93,8 @@ class RESTCalendarStore implements storage.Calendar {
    *
    */
   Future remove(int eid, model.Owner owner, model.User user) {
-    Uri url = resource.Calendar.single(_host, eid, owner);
-    url = _appendToken(url, this._token);
+    Uri url = resource.Calendar.single(host, eid, owner);
+    url = _appendToken(url, this.token);
 
     return this._backend.delete(url);
   }
@@ -99,8 +103,8 @@ class RESTCalendarStore implements storage.Calendar {
    *
    */
   Future<Iterable<model.Commit>> changes(model.Owner owner, [int eid]) {
-    Uri url = resource.Calendar.changeList(_host, owner, eid);
-    url = _appendToken(url, this._token);
+    Uri url = resource.Calendar.changeList(host, owner, eid);
+    url = _appendToken(url, this.token);
 
     Iterable<model.Commit> convertMaps(Iterable<Map> maps) =>
         maps.map(model.Commit.decode);
@@ -112,8 +116,8 @@ class RESTCalendarStore implements storage.Calendar {
    *
    */
   Future<String> changelog(model.Owner owner) {
-    Uri url = resource.Calendar.changelog(_host, owner);
-    url = _appendToken(url, this._token);
+    Uri url = resource.Calendar.changelog(host, owner);
+    url = _appendToken(url, this.token);
 
     return _backend.get(url);
   }

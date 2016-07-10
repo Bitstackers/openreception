@@ -14,9 +14,6 @@
 part of openreception.framework.service.io;
 
 class WebSocketClient extends service.WebSocket {
-  static final String className = '${libraryName}.WebSocketClient';
-  static final Logger log = new Logger(className);
-
   io.WebSocket _websocket;
 
   Future<service.WebSocket> connect(Uri path) async {

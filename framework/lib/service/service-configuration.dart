@@ -13,22 +13,24 @@
 
 part of openreception.framework.service;
 
-/**
- * Client for configuation service.
- */
+/// Configuration service client class.
+///
+/// The client class wraps REST methods and handles lower-level
+/// communication, such as serialization/deserialization, method choice
+/// (GET, PUT, POST, DELETE) and resource uri building.
 class RESTConfiguration {
-  static final String className = '${libraryName}.RESTConfiguration';
-
   final WebService _backend;
-  final Uri _host;
 
-  RESTConfiguration(Uri this._host, this._backend);
+  /// The uri of the connected backend.
+  final Uri host;
+
+  RESTConfiguration(Uri this.host, this._backend);
 
   /**
    * Returns a [ClientConfiguration] object.
    */
   Future<model.ClientConfiguration> clientConfig() {
-    Uri uri = resource.Config.get(this._host);
+    Uri uri = resource.Config.get(this.host);
 
     return _backend.get(uri).then((String response) =>
         new model.ClientConfiguration.fromMap(JSON.decode(response)));
@@ -38,7 +40,7 @@ class RESTConfiguration {
    * Registers a server in the config server registry.
    */
   Future register(String type, Uri registerUri) {
-    Uri uri = resource.Config.register(this._host);
+    Uri uri = resource.Config.register(this.host);
     final Map body = {'type': type, 'uri': registerUri.toString()};
 
     return _backend.post(uri, JSON.encode(body));

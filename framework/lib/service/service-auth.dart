@@ -13,9 +13,11 @@
 
 part of openreception.framework.service;
 
-/**
- * Authentication service client.
- */
+/// Authentication service client.
+///
+/// The client class wraps REST methods and handles lower-level
+/// communication, such as serialization/deserialization, method choice
+/// (GET, PUT, POST, DELETE) and resource uri building.
 class Authentication {
   final WebService _httpClient;
 

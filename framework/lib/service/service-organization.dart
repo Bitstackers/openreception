@@ -13,23 +13,27 @@
 
 part of openreception.framework.service;
 
-/**
- * Client class providing REST access to an organization store.
- */
+/// Organization store client class.
+///
+/// The client class wraps REST methods and handles lower-level
+/// communication, such as serialization/deserialization, method choice
+/// (GET, PUT, POST, DELETE) and resource uri building.
 class RESTOrganizationStore implements storage.Organization {
-  static final String className = '${libraryName}.RESTOrganizationStore';
-
   final WebService _backend;
-  final Uri _host;
+
+  /// The uri of the connected backend.
+  final Uri host;
+
+  /// The token used for authenticating with the backed.
   final String _token;
 
-  RESTOrganizationStore(Uri this._host, String this._token, this._backend);
+  RESTOrganizationStore(Uri this.host, String this._token, this._backend);
 
   /**
    *
    */
   Future<Iterable<model.BaseContact>> contacts(int oid) {
-    Uri url = resource.Organization.contacts(this._host, oid);
+    Uri url = resource.Organization.contacts(this.host, oid);
     url = _appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
@@ -40,7 +44,7 @@ class RESTOrganizationStore implements storage.Organization {
    *
    */
   Future<Iterable<model.ReceptionReference>> receptions(int oid) async {
-    Uri url = resource.Organization.receptions(_host, oid);
+    Uri url = resource.Organization.receptions(host, oid);
     url = _appendToken(url, this._token);
 
     return (JSON.decode(await _backend.get(url)) as Iterable<Map>)
@@ -51,7 +55,7 @@ class RESTOrganizationStore implements storage.Organization {
    *
    */
   Future<model.Organization> get(int oid) {
-    Uri url = resource.Organization.single(this._host, oid);
+    Uri url = resource.Organization.single(this.host, oid);
     url = _appendToken(url, this._token);
 
     return this._backend.get(url).then((String response) =>
@@ -63,7 +67,7 @@ class RESTOrganizationStore implements storage.Organization {
    */
   Future<model.OrganizationReference> create(
       model.Organization organization, model.User modifier) {
-    Uri url = resource.Organization.root(this._host);
+    Uri url = resource.Organization.root(this.host);
     url = _appendToken(url, this._token);
 
     String data = JSON.encode(organization);
@@ -76,7 +80,7 @@ class RESTOrganizationStore implements storage.Organization {
    */
   Future<model.OrganizationReference> update(
       model.Organization organization, model.User modifier) {
-    Uri url = resource.Organization.single(this._host, organization.id);
+    Uri url = resource.Organization.single(this.host, organization.id);
     url = _appendToken(url, this._token);
 
     String data = JSON.encode(organization);
@@ -88,7 +92,7 @@ class RESTOrganizationStore implements storage.Organization {
    *
    */
   Future remove(int organizationID, model.User modifier) {
-    Uri url = resource.Organization.single(this._host, organizationID);
+    Uri url = resource.Organization.single(this.host, organizationID);
     url = _appendToken(url, this._token);
 
     return this._backend.delete(url).then((String response) =>
@@ -99,7 +103,7 @@ class RESTOrganizationStore implements storage.Organization {
    *
    */
   Future<Iterable<model.OrganizationReference>> list() {
-    Uri url = resource.Organization.list(this._host, token: this._token);
+    Uri url = resource.Organization.list(this.host, token: this._token);
     url = _appendToken(url, this._token);
 
     return _backend.get(url).then((String response) =>
@@ -111,7 +115,7 @@ class RESTOrganizationStore implements storage.Organization {
    *
    */
   Future<Iterable<model.Commit>> changes([int oid]) {
-    Uri url = resource.Organization.changeList(_host, oid);
+    Uri url = resource.Organization.changeList(host, oid);
     url = _appendToken(url, this._token);
 
     Iterable<model.Commit> convertMaps(Iterable<Map> maps) =>
@@ -124,7 +128,7 @@ class RESTOrganizationStore implements storage.Organization {
    *
    */
   Future<String> changelog(int oid) {
-    Uri url = resource.Organization.changelog(_host, oid);
+    Uri url = resource.Organization.changelog(host, oid);
     url = _appendToken(url, this._token);
 
     return _backend.get(url);

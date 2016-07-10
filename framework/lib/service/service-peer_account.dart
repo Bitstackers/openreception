@@ -13,25 +13,31 @@
 
 part of openreception.framework.service;
 
-/**
- * Client for peer account service.
- */
+/// Peer account service client class.
+///
+/// The client class wraps REST methods and handles lower-level
+/// communication, such as serialization/deserialization, method choice
+/// (GET, PUT, POST, DELETE) and resource uri building./
 class PeerAccount {
   final WebService _backend;
-  final Uri _host;
-  final String _token;
+
+  /// The uri of the connected backend.
+  final Uri host;
+
+  /// The token used for authenticating with the backed.
+  final String token;
 
   /**
    *
    */
-  PeerAccount(Uri this._host, String this._token, this._backend);
+  PeerAccount(Uri this.host, String this.token, this._backend);
 
   /**
    *
    */
   Future<model.PeerAccount> get(String accountName) {
-    Uri url = resource.PeerAccount.single(_host, accountName);
-    url = _appendToken(url, _token);
+    Uri url = resource.PeerAccount.single(host, accountName);
+    url = _appendToken(url, token);
 
     return _backend.get(url).then(JSON.decode).then(model.PeerAccount.decode);
   }
@@ -40,8 +46,8 @@ class PeerAccount {
    *
    */
   Future<Iterable<String>> list() {
-    Uri url = resource.PeerAccount.list(_host);
-    url = _appendToken(url, _token);
+    Uri url = resource.PeerAccount.list(host);
+    url = _appendToken(url, token);
 
     return _backend
         .get(url)
@@ -54,8 +60,8 @@ class PeerAccount {
    */
   Future<Iterable<String>> deployAccount(
       model.PeerAccount account, int userId) {
-    Uri url = resource.PeerAccount.deploy(_host, userId);
-    url = _appendToken(url, _token);
+    Uri url = resource.PeerAccount.deploy(host, userId);
+    url = _appendToken(url, token);
 
     return _backend
         .post(url, JSON.encode(account))
@@ -67,8 +73,8 @@ class PeerAccount {
    *
    */
   Future remove(String username) {
-    Uri url = resource.PeerAccount.single(_host, username);
-    url = _appendToken(url, _token);
+    Uri url = resource.PeerAccount.single(host, username);
+    url = _appendToken(url, token);
 
     return _backend.delete(url);
   }

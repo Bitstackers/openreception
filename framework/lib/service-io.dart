@@ -19,14 +19,9 @@ import 'dart:convert';
 import 'dart:io' as io;
 import 'storage.dart' as storage;
 import 'service.dart' as service;
-import 'package:logging/logging.dart';
 
 part 'service/io/service-io-client.dart';
 part 'service/io/service-io-websocket_client.dart';
-
-const String libraryName = "openreception.service.io";
-
-final Logger log = new Logger(libraryName);
 
 Future<String> _handleResponse(
     io.HttpClientResponse response, String method, Uri resource) async {

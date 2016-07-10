@@ -13,11 +13,18 @@
 
 part of openreception.framework.service;
 
+/// Message store client class.
+///
+/// The client class wraps REST methods and handles lower-level
+/// communication, such as serialization/deserialization, method choice
+/// (GET, PUT, POST, DELETE) and resource uri building.
 class RESTMessageStore implements storage.Message {
-  static final String className = '${libraryName}.RESTMessageStore';
-
   final WebService _backend;
+
+  /// The uri of the connected backend.
   final Uri host;
+
+  /// The token used for authenticating with the backed.
   final String token;
 
   const RESTMessageStore(Uri this.host, String this.token, this._backend);

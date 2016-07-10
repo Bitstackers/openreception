@@ -17,7 +17,6 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 
-import 'package:logging/logging.dart';
 import 'package:openreception.framework/bus.dart';
 
 import 'event.dart' as event;
@@ -42,8 +41,6 @@ part 'service/service-reception.dart';
 part 'service/service-user.dart';
 part 'service/service-webservice.dart';
 part 'service/service-websocket.dart';
-
-const String libraryName = "service";
 
 Uri _appendToken(Uri uri, String token) =>
     _appendParameter(uri, 'token', token);

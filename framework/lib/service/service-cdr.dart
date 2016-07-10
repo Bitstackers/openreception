@@ -13,15 +13,19 @@
 
 part of openreception.framework.service;
 
-/**
- *
- */
+/// CDR store client class.
+///
+/// The client class wraps REST methods and handles lower-level
+/// communication, such as serialization/deserialization, method choice
+/// (GET, PUT, POST, DELETE) and resource uri building.
 class RESTCDRService {
-  static final String className = '${libraryName}.RESTCDRStore';
-
   final WebService _backend;
-  final Uri _host;
-  final String _token;
 
-  RESTCDRService(Uri this._host, String this._token, this._backend);
+  /// The uri of the connected backend.
+  final Uri host;
+
+  /// The token used for authenticating with the backed.
+  final String token;
+
+  RESTCDRService(Uri this.host, String this.token, this._backend);
 }

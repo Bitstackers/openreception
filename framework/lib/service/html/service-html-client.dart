@@ -17,18 +17,12 @@ part of openreception.framework.service.html;
  * HTTP Client for use with dart:html.
  */
 class Client extends service.WebService {
-  static final String className = '${libraryName}.Client';
-
-  Logger log = new Logger(Client.className);
-
   /**
    * Retrives [resource] using HTTP GET.
    * Throws subclasses of [StorageException] upon failure.
    */
   Future<String> get(Uri resource) {
     final Completer<String> completer = new Completer<String>();
-
-    log.finest("GET $resource");
 
     html.HttpRequest request;
     request = new html.HttpRequest()
@@ -55,8 +49,6 @@ class Client extends service.WebService {
   Future<String> put(Uri resource, String payload) {
     final Completer<String> completer = new Completer<String>();
 
-    log.finest("PUT $resource");
-
     html.HttpRequest request;
     request = new html.HttpRequest()
       ..open('PUT', resource.toString())
@@ -82,8 +74,6 @@ class Client extends service.WebService {
   Future<String> post(Uri resource, String payload) {
     final Completer<String> completer = new Completer<String>();
 
-    log.finest("POST $resource");
-
     html.HttpRequest request;
     request = new html.HttpRequest()
       ..open('POST', resource.toString())
@@ -108,8 +98,6 @@ class Client extends service.WebService {
    */
   Future<String> delete(Uri resource) {
     final Completer<String> completer = new Completer<String>();
-
-    log.finest("DELETE $resource");
 
     html.HttpRequest request;
     request = new html.HttpRequest()

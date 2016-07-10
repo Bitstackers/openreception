@@ -16,7 +16,6 @@ part of openreception.framework.service;
 /**
  *
  */
-
 class _NotificationRequest {
   final Map body;
   final Uri resource;
@@ -145,10 +144,6 @@ class NotificationService {
  * Notification listener socket client.
  */
 class NotificationSocket {
-  /// Internal logger.
-  final Logger _log =
-      new Logger('openreception.framework.service.NotificationSocket');
-
   final WebSocket _websocket;
 
   /**
@@ -272,12 +267,11 @@ class NotificationSocket {
    * remain silent.
    */
   NotificationSocket(WebSocket this._websocket) {
-    _log.finest('Created a new WebSocket.');
     _websocket.onMessage = _parseAndDispatch;
 
     _websocket.onClose = () async {
-      /// Discard any inbound messages instead of injecting them into a
-      /// potentially closed stream.
+      // Discard any inbound messages instead of injecting them into a
+      // potentially closed stream.
       _websocket.onMessage = (_) {};
 
       await _closeEventListeners();
@@ -367,7 +361,7 @@ class NotificationSocket {
     if (newEvent != null) {
       _eventBus.fire(newEvent);
     } else {
-      _log.warning('Refusing to inject null objects into event stream');
+      // Discard null objects.
     }
   }
 }

@@ -17,11 +17,9 @@ part of openreception.framework.service.io;
  * HTTP Client for use with dart:io.
  */
 class Client extends service.WebService {
-  static final String className = '${libraryName}.Client';
-  static final Logger log = new Logger(className);
-  static final io.ContentType contentTypeJson =
+  static final io.ContentType _contentTypeJson =
       new io.ContentType("application", "json", charset: "utf-8");
-  static final io.ContentType contentTypeApplicationForm =
+  static final io.ContentType _contentTypeApplicationForm =
       new io.ContentType("application", "x-www-form-urlencoded");
 
   final io.HttpClient client = new io.HttpClient();
@@ -31,8 +29,6 @@ class Client extends service.WebService {
    * Throws subclasses of [StorageException] upon failure.
    */
   Future<String> get(Uri resource) async {
-    log.finest('GET $resource');
-
     io.HttpClientRequest request = await client.getUrl(resource);
     io.HttpClientResponse response = await request.close();
 
@@ -44,10 +40,8 @@ class Client extends service.WebService {
    * Throws subclasses of [StorageException] upon failure.
    */
   Future<String> put(Uri resource, String payload) async {
-    log.finest('PUT $resource');
-
     io.HttpClientRequest request = await client.putUrl(resource)
-      ..headers.contentType = contentTypeJson
+      ..headers.contentType = _contentTypeJson
       ..write(payload);
     io.HttpClientResponse response = await request.close();
 
@@ -59,10 +53,8 @@ class Client extends service.WebService {
    * Throws subclasses of [StorageException] upon failure.
    */
   Future<String> post(Uri resource, String payload) async {
-    log.finest('POST $resource');
-
     io.HttpClientRequest request = await client.postUrl(resource)
-      ..headers.contentType = contentTypeJson
+      ..headers.contentType = _contentTypeJson
       ..write(payload);
     io.HttpClientResponse response = await request.close();
 
@@ -74,10 +66,8 @@ class Client extends service.WebService {
    * Throws subclasses of [StorageException] upon failure.
    */
   Future<String> postForm(Uri resource, Map payload) async {
-    log.finest('POST $resource');
-
     io.HttpClientRequest request = await client.postUrl(resource)
-      ..headers.contentType = contentTypeApplicationForm
+      ..headers.contentType = _contentTypeApplicationForm
       ..write(mapToUrlFormEncodedPostBody(payload));
     io.HttpClientResponse response = await request.close();
 
@@ -89,8 +79,6 @@ class Client extends service.WebService {
    * Throws subclasses of [StorageException] upon failure.
    */
   Future<String> delete(Uri resource) async {
-    log.finest('DELETE $resource');
-
     io.HttpClientRequest request = await client.deleteUrl(resource);
     io.HttpClientResponse response = await request.close();
 

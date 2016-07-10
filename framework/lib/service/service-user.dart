@@ -13,27 +13,30 @@
 
 part of openreception.framework.service;
 
-/**
- * Client for user service.
- */
+/// User store client class.
+///
+/// The client class wraps REST methods and handles lower-level
+/// communication, such as serialization/deserialization, method choice
+/// (GET, PUT, POST, DELETE) and resource uri building.
 class RESTUserStore implements storage.User {
-  static final String className = '${libraryName}.RESTUserStore';
-  static final Logger log = new Logger(className);
-
   final WebService _backend;
-  final Uri _host;
+
+  /// The uri of the connected backend.
+  final Uri host;
+
+  /// The token used for authenticating with the backed.
   final String _token;
 
   /**
    *
    */
-  RESTUserStore(Uri this._host, String this._token, this._backend);
+  RESTUserStore(Uri this.host, String this._token, this._backend);
 
   /**
    *
    */
   Future<Iterable<model.UserReference>> list() {
-    Uri url = resource.User.list(_host);
+    Uri url = resource.User.list(host);
     url = _appendToken(url, this._token);
 
     return this
@@ -47,7 +50,7 @@ class RESTUserStore implements storage.User {
    *
    */
   Future<model.User> get(int userId) {
-    Uri url = resource.User.single(_host, userId);
+    Uri url = resource.User.single(host, userId);
     url = _appendToken(url, this._token);
 
     return this
@@ -61,7 +64,7 @@ class RESTUserStore implements storage.User {
    *
    */
   Future<model.User> getByIdentity(String identity) {
-    Uri url = resource.User.singleByIdentity(_host, identity);
+    Uri url = resource.User.singleByIdentity(host, identity);
     url = _appendToken(url, this._token);
 
     return _backend
@@ -74,7 +77,7 @@ class RESTUserStore implements storage.User {
    *
    */
   Future<Iterable<String>> groups() {
-    Uri url = resource.User.group(_host);
+    Uri url = resource.User.group(host);
     url = _appendToken(url, this._token);
 
     return this
@@ -87,7 +90,7 @@ class RESTUserStore implements storage.User {
    *
    */
   Future<model.UserReference> create(model.User user, model.User creator) {
-    Uri url = resource.User.root(_host);
+    Uri url = resource.User.root(host);
     url = _appendToken(url, this._token);
 
     return this
@@ -101,7 +104,7 @@ class RESTUserStore implements storage.User {
    *
    */
   Future<model.UserReference> update(model.User user, model.User creator) {
-    Uri url = resource.User.single(_host, user.id);
+    Uri url = resource.User.single(host, user.id);
     url = _appendToken(url, this._token);
 
     return this
@@ -115,7 +118,7 @@ class RESTUserStore implements storage.User {
    *
    */
   Future remove(int userId, model.User creator) {
-    Uri url = resource.User.single(_host, userId);
+    Uri url = resource.User.single(host, userId);
     url = _appendToken(url, this._token);
 
     return this._backend.delete(url);
@@ -125,7 +128,7 @@ class RESTUserStore implements storage.User {
    * Returns the [model.UserStatus] object associated with [userID].
    */
   Future<model.UserStatus> userStatus(int userID) {
-    Uri uri = resource.User.userState(_host, userID);
+    Uri uri = resource.User.userState(host, userID);
     uri = _appendToken(uri, _token);
 
     return _backend.get(uri).then(JSON.decode).then(model.UserStatus.decode);
@@ -138,7 +141,7 @@ class RESTUserStore implements storage.User {
    * [ClientError] exeptions.
    */
   Future<model.UserStatus> userStateReady(int userId) {
-    Uri uri = resource.User.setUserState(_host, userId, model.UserState.ready);
+    Uri uri = resource.User.setUserState(host, userId, model.UserState.ready);
     uri = _appendToken(uri, _token);
 
     return _backend
@@ -152,7 +155,7 @@ class RESTUserStore implements storage.User {
    * objects currently known to the CallFlowControl server.
    */
   Future<Iterable<model.UserStatus>> userStatusList() {
-    Uri uri = resource.User.userStateAll(_host);
+    Uri uri = resource.User.userStateAll(host);
     uri = _appendToken(uri, _token);
 
     return _backend.get(uri).then(JSON.decode).then((Iterable<Map> maps) =>
@@ -166,7 +169,7 @@ class RESTUserStore implements storage.User {
    * [ClientError] exeptions.
    */
   Future<model.UserStatus> userStatePaused(int userId) {
-    Uri uri = resource.User.setUserState(_host, userId, model.UserState.paused);
+    Uri uri = resource.User.setUserState(host, userId, model.UserState.paused);
     uri = _appendToken(uri, _token);
 
     return _backend
@@ -179,7 +182,7 @@ class RESTUserStore implements storage.User {
    *
    */
   Future<Iterable<model.Commit>> changes([int uid]) {
-    Uri url = resource.User.change(_host, uid);
+    Uri url = resource.User.change(host, uid);
     url = _appendToken(url, this._token);
 
     Iterable<model.Commit> convertMaps(Iterable<Map> maps) =>
@@ -192,7 +195,7 @@ class RESTUserStore implements storage.User {
    *
    */
   Future<String> changelog(int uid) {
-    Uri url = resource.User.changelog(_host, uid);
+    Uri url = resource.User.changelog(host, uid);
     url = _appendToken(url, this._token);
 
     return _backend.get(url);

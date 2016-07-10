@@ -13,9 +13,11 @@
 
 part of openreception.framework.service;
 
-/**
- * Client for contact service.
- */
+/// Datastore store client-aggregation class.
+///
+/// The client class wraps REST methods and handles lower-level
+/// communication, such as serialization/deserialization, method choice
+/// (GET, PUT, POST, DELETE) and resource uri building.
 class Datastore {
   final RESTContactStore contact;
   final RESTReceptionStore reception;
