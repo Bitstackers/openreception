@@ -17,9 +17,9 @@ part of openreception.framework.service;
  * Client for contact service.
  */
 class RESTIvrStore implements storage.Ivr {
-  WebService _backend;
-  Uri _host;
-  String _token = '';
+  final WebService _backend;
+  final Uri _host;
+  final String _token;
 
   /**
    *

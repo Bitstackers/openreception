@@ -19,10 +19,9 @@ part of openreception.framework.service;
 class RESTCDRService {
   static final String className = '${libraryName}.RESTCDRStore';
 
-  WebService _backend;
-  Uri _host;
-  String _token = '';
+  final WebService _backend;
+  final Uri _host;
+  final String _token;
 
   RESTCDRService(Uri this._host, String this._token, this._backend);
-
 }
