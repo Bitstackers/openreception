@@ -17,7 +17,7 @@ part of openreception.framework.service;
  * Client for peer account service.
  */
 class PeerAccount {
-  WebService _backend = null;
+  WebService _backend;
   Uri _host;
   String _token = '';
 

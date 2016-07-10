@@ -17,7 +17,7 @@ part of openreception.framework.service;
  * Client for dialplan service.
  */
 class RESTDialplanStore implements storage.ReceptionDialplan {
-  WebService _backend = null;
+  WebService _backend;
   Uri _host;
   String _token = '';
 

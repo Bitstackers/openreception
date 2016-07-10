@@ -19,7 +19,7 @@ part of openreception.framework.service;
 class RESTOrganizationStore implements storage.Organization {
   static final String className = '${libraryName}.RESTOrganizationStore';
 
-  WebService _backend = null;
+  WebService _backend;
   Uri _host;
   String _token = '';
 

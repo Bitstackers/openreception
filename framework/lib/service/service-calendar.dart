@@ -19,7 +19,7 @@ part of openreception.framework.service;
 class RESTCalendarStore implements storage.Calendar {
   static final Logger log = new Logger('${libraryName}.RESTCalendarStore');
 
-  WebService _backend = null;
+  WebService _backend;
   final Uri _host;
   String _token = '';
 

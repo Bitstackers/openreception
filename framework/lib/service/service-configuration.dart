@@ -19,7 +19,7 @@ part of openreception.framework.service;
 class RESTConfiguration {
   static final String className = '${libraryName}.RESTConfiguration';
 
-  WebService _backend = null;
+  WebService _backend;
   Uri _host;
 
   RESTConfiguration(Uri this._host, this._backend);

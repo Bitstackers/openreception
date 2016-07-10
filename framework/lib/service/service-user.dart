@@ -20,7 +20,7 @@ class RESTUserStore implements storage.User {
   static final String className = '${libraryName}.RESTUserStore';
   static final Logger log = new Logger(className);
 
-  WebService _backend = null;
+  WebService _backend;
   Uri _host;
   String _token = '';
 

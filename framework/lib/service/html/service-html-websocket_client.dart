@@ -17,7 +17,7 @@ class WebSocketClient extends service.WebSocket {
   static final String className = '${libraryName}.WebSocketClient';
   static final Logger log = new Logger(className);
 
-  html.WebSocket _websocket = null;
+  html.WebSocket _websocket;
 
   Future<service.WebSocket> connect(Uri path) {
     this._websocket = new html.WebSocket(path.toString());

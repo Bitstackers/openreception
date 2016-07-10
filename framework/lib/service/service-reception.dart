@@ -16,7 +16,7 @@ part of openreception.framework.service;
 class RESTReceptionStore implements storage.Reception {
   static final String className = '${libraryName}.RESTReceptionStore';
 
-  WebService _backend = null;
+  WebService _backend;
   Uri _host;
   String _token = '';
 

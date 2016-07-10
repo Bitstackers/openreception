@@ -46,13 +46,13 @@ class Call {
   DateTime arrived = new DateTime.now();
   DateTime answeredAt = util.never;
   int assignedTo = User.noId;
-  String bLeg = null;
+  String bLeg;
   String callerId = '';
   int cid = BaseContact.noId;
   String destination = '';
   bool greetingPlayed = false;
   String _id = noId;
-  bool inbound = null;
+  bool inbound;
   bool _locked = false;
   int rid = Reception.noId;
   String _state = CallState.unknown;
