@@ -11,6 +11,18 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
+///
+/// Event model classes and utilities.
+///
+/// The events are an integrated part of the core of OpenReception. Every
+/// time a change happens, either in a persistent or transient object, an
+/// event is sent to every subsystem that needs to respond to this change.
+///
+/// Example of a subsystems in this context are clients that need to update
+/// their UI, based on call-state changes. It may also be a server-side
+/// cache/prefetching service that responds to a change in a persistent
+/// datastore (for example, a deletion) and updates its locals
+/// views/caches accordingly.
 library openreception.framework.event;
 
 import 'package:logging/logging.dart';
@@ -137,7 +149,11 @@ const String _libraryName = 'openreception.framework.event';
 abstract class Event {
   static final Logger _log = new Logger('$_libraryName.Event');
 
+  /// The creation time of the event.
   DateTime get timestamp;
+
+  /// The name of the event. Identifies the type of the object in the
+  /// serialization/deserialization.
   String get eventName;
 
   /**

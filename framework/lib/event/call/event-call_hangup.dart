@@ -13,15 +13,31 @@
 
 part of openreception.framework.event;
 
+/**
+ * Event that is spawned when the channel of a call destroyed. Must only
+ * occur once for every call.
+ */
 class CallHangup extends CallEvent {
   final String eventName = Key.callHangup;
   final String hangupCause;
 
+  /**
+   * Default constructor. Subtypes the general [CallEvent] class. Takes the
+   * [model.Call] being hung up as well as an optional [hangupCause].
+   * The [hangupCause] should be copied from the PBX hangup reason text.
+   */
   CallHangup(model.Call call, {this.hangupCause: ''}) : super(call);
+
+  /**
+   * Deserializing constructor.
+   */
   CallHangup.fromMap(Map map)
       : hangupCause = map[Key.hangupCause],
         super.fromMap(map);
 
+  /**
+   * Serialization function.
+   */
   @override
   Map toJson() => super.toJson()..addAll({Key.hangupCause: this.hangupCause});
 }
