@@ -248,9 +248,9 @@ class UIContactSelector extends UIModel {
 
     _list.onDoubleClick.listen((Event event) {
       if (event.target is LIElement) {
-        _copyToClipboard((event.target as LIElement).text);
-        _popup.success(
-            _langMap[Key.nameCopied], '${(event.target as LIElement).text}',
+        final String text = (event.target as LIElement).firstChild.text;
+        _copyToClipboard(text);
+        _popup.success(_langMap[Key.nameCopied], text,
             closeAfter: new Duration(milliseconds: 1500));
       }
     });
