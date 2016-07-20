@@ -129,6 +129,7 @@ class Message implements storage.Message {
   /**
    *
    */
+  @override
   Future<model.Message> get(int mid) async {
     if (!_index.containsKey(mid)) {
       throw new storage.NotFound('No index key with mid ${mid}');
@@ -150,6 +151,7 @@ class Message implements storage.Message {
     }
   }
 
+  @override
   Future<Iterable<model.Message>> getByIds(Iterable<int> ids) async {
     List<model.Message> list = new List<model.Message>();
 
@@ -185,6 +187,7 @@ class Message implements storage.Message {
   /**
    *
    */
+  @override
   Future<Iterable<model.Message>> listDay(DateTime day) async {
     final Directory dateDir = _dateDir(day);
 
@@ -200,6 +203,7 @@ class Message implements storage.Message {
   /**
    *
    */
+  @override
   Future<Iterable<model.Message>> listDrafts() async {
     Set<int> ids = new Set()..addAll(_draftsIndex);
 
@@ -242,6 +246,7 @@ class Message implements storage.Message {
   /**
    *
    */
+  @override
   Future<model.Message> create(model.Message msg, model.User modifier,
       {bool enforceId: false}) async {
     Directory dateDir = _dateDir(msg.createdAt)..createSync();
@@ -300,6 +305,7 @@ class Message implements storage.Message {
   /**
    *
    */
+  @override
   Future<model.Message> update(model.Message msg, model.User modifier) async {
     final File file = new File(_index[msg.id]);
 
@@ -331,6 +337,7 @@ class Message implements storage.Message {
   /**
    *
    */
+  @override
   Future remove(int mid, model.User modifier) async {
     if (!_index.containsKey(mid)) {
       throw new storage.NotFound('No index key with mid ${mid}');
@@ -360,6 +367,7 @@ class Message implements storage.Message {
   /**
    *
    */
+  @override
   Future<Iterable<model.Commit>> changes([int mid]) async {
     if (this._git == null) {
       throw new UnsupportedError(

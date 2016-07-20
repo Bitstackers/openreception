@@ -14,6 +14,7 @@
 part of openreception.framework.event;
 
 class CallUnlock extends CallEvent {
+  @override
   final String eventName = Key.callUnlock;
 
   CallUnlock(model.Call call) : super(call);

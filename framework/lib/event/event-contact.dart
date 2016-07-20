@@ -17,8 +17,10 @@ part of openreception.framework.event;
  *
  */
 class ContactChange implements Event {
+  @override
   final DateTime timestamp;
 
+  @override
   String get eventName => Key.contactChange;
 
   final int cid;
@@ -56,6 +58,7 @@ class ContactChange implements Event {
   /**
    * JSON serialization function.
    */
+  @override
   Map toJson() {
     Map template = EventTemplate._rootElement(this);
 
@@ -73,6 +76,7 @@ class ContactChange implements Event {
   /**
    * String representation
    */
+  @override
   String toString() => this.toJson().toString();
 
   /**

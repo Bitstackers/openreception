@@ -77,6 +77,7 @@ class Calendar implements storage.Calendar {
   /**
    *
    */
+  @override
   Future<Iterable<model.Commit>> changes(model.Owner owner, [int eid]) async {
     if (this._git == null) {
       throw new UnsupportedError(
@@ -123,6 +124,7 @@ class Calendar implements storage.Calendar {
   /**
    *
    */
+  @override
   Future<model.CalendarEntry> create(
       model.CalendarEntry entry, model.Owner owner, model.User modifier,
       {bool enforceId: false}) async {
@@ -172,6 +174,7 @@ class Calendar implements storage.Calendar {
   /**
    *
    */
+  @override
   Future<model.CalendarEntry> get(int eid, model.Owner owner) async {
     final Iterable<Directory> subdirs =
         new Directory(path).listSync().where(isDirectory);
@@ -195,6 +198,7 @@ class Calendar implements storage.Calendar {
   /**
    *
    */
+  @override
   Future<Iterable<model.CalendarEntry>> list(model.Owner owner) async {
     String ownerPath = '$path/${owner.id}/calendar';
 
@@ -220,6 +224,7 @@ class Calendar implements storage.Calendar {
    * filestore.
    * The action is logged as being performed by user [modifier].
    */
+  @override
   Future remove(int eid, model.Owner owner, model.User modifier) async {
     final Directory ownerDir = new Directory('$path/${owner.id}/calendar');
     final File file = new File('${ownerDir.path}/${eid}.json');
@@ -256,6 +261,7 @@ class Calendar implements storage.Calendar {
   /**
    *
    */
+  @override
   Future<model.CalendarEntry> update(
       model.CalendarEntry entry, model.Owner owner, model.User modifier) async {
     final Directory ownerDir = new Directory('$path/${owner.id}/calendar');

@@ -35,6 +35,7 @@ class MessageQueue implements storage.MessageQueue {
   /**
    *
    */
+  @override
   Future<model.MessageQueueEntry> enqueue(model.Message message) async {
     final int mqId = _nextId;
 
@@ -59,6 +60,7 @@ class MessageQueue implements storage.MessageQueue {
   /**
    *
    */
+  @override
   Future update(model.MessageQueueEntry queueEntry) async {
     final File file = new File('$path/${queueEntry.id}.json');
 
@@ -74,6 +76,7 @@ class MessageQueue implements storage.MessageQueue {
   /**
    *
    */
+  @override
   Future remove(int mqid) async {
     final File file = new File('$path/${mqid}.json');
 
@@ -87,6 +90,7 @@ class MessageQueue implements storage.MessageQueue {
   /**
    *
    */
+  @override
   Future<Iterable<model.MessageQueueEntry>> list() async => new Directory(path)
       .listSync()
       .where((fse) => fse is File && fse.path.endsWith('.json'))

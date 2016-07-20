@@ -14,8 +14,10 @@
 part of openreception.framework.event;
 
 class UserChange implements Event {
+  @override
   final DateTime timestamp;
 
+  @override
   String get eventName => Key.userChange;
 
   final int uid;
@@ -38,6 +40,7 @@ class UserChange implements Event {
   factory UserChange.delete(int userID, int changedBy) =>
       new UserChange._internal(userID, Change.deleted, changedBy);
 
+  @override
   Map toJson() {
     final Map template = EventTemplate._rootElement(this);
 

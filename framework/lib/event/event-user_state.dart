@@ -17,14 +17,19 @@ part of openreception.framework.event;
  * Event that spawns whenever a user changes its call-handling state.
  */
 class UserState implements Event {
+  @override
   final DateTime timestamp;
+
+  @override
   final String eventName = Key.userState;
 
   final model.UserStatus status;
 
   UserState(model.UserStatus this.status) : this.timestamp = new DateTime.now();
 
+  @override
   Map toJson() => this.asMap;
+  @override
   String toString() => this.asMap.toString();
 
   Map get asMap => EventTemplate.userState(this);

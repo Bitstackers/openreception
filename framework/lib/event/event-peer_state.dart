@@ -14,14 +14,18 @@
 part of openreception.framework.event;
 
 class PeerState implements Event {
+  @override
   final DateTime timestamp;
+  @override
   final String eventName = Key.peerState;
 
   final model.Peer peer;
 
   PeerState(model.Peer this.peer) : this.timestamp = new DateTime.now();
 
+  @override
   Map toJson() => this.asMap;
+  @override
   String toString() => this.asMap.toString();
 
   Map get asMap => EventTemplate.peer(this);

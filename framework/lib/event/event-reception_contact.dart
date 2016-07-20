@@ -14,8 +14,10 @@
 part of openreception.framework.event;
 
 class ReceptionData implements Event {
+  @override
   final DateTime timestamp;
 
+  @override
   String get eventName => Key.receptionData;
 
   final int rid;
@@ -50,6 +52,7 @@ class ReceptionData implements Event {
   /**
    *
    */
+  @override
   Map toJson() {
     Map template = EventTemplate._rootElement(this);
 
@@ -68,6 +71,7 @@ class ReceptionData implements Event {
   /**
    *
    */
+  @override
   String toString() => toJson().toString();
 
   /**

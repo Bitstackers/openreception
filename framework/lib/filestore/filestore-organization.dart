@@ -90,6 +90,7 @@ class Organization implements storage.Organization {
   /**
    *
    */
+  @override
   Future<Iterable<model.BaseContact>> contacts(int oid) async {
     List<model.BaseContact> cRefs = [];
     List<model.ReceptionReference> rRefs = await receptions(oid);
@@ -104,6 +105,7 @@ class Organization implements storage.Organization {
   /**
    *
    */
+  @override
   Future<model.OrganizationReference> create(
       model.Organization org, model.User modifier,
       {bool enforceId: false}) async {
@@ -144,6 +146,7 @@ class Organization implements storage.Organization {
   /**
    *
    */
+  @override
   Future<model.Organization> get(int id) async {
     final File file = new File('$path/${id}/organization.json');
 
@@ -163,6 +166,7 @@ class Organization implements storage.Organization {
   /**
    *
    */
+  @override
   Future<Iterable<model.OrganizationReference>> list() async =>
       new Directory(path)
           .listSync()
@@ -177,6 +181,7 @@ class Organization implements storage.Organization {
   /**
    *
    */
+  @override
   Future remove(int oid, model.User modifier) async {
     final Directory orgDir = new Directory('$path/${oid}');
     final File file = new File('$path/${oid}/organization.json');
@@ -206,6 +211,7 @@ class Organization implements storage.Organization {
   /**
    *
    */
+  @override
   Future<model.OrganizationReference> update(
       model.Organization org, model.User modifier) async {
     final Directory orgDir = new Directory('$path/${org.id}');
@@ -242,12 +248,14 @@ class Organization implements storage.Organization {
   /**
    *
    */
+  @override
   Future<Iterable<model.ReceptionReference>> receptions(int uuid) =>
       _receptionFileStore._receptionsOfOrg(uuid);
 
   /**
-       *
-       */
+   *
+   */
+  @override
   Future<Iterable<model.Commit>> changes([int oid]) async {
     if (this._git == null) {
       throw new UnsupportedError(

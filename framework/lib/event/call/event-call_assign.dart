@@ -19,6 +19,7 @@ part of openreception.framework.event;
  * system.
  */
 class CallAssign extends CallEvent {
+  @override
   final String eventName = Key.callAssign;
   final int uid;
 
@@ -39,5 +40,6 @@ class CallAssign extends CallEvent {
   /**
    * Serialization function.
    */
+  @override
   Map toJson() => super.toJson()..addAll({Key.modifierUid: uid});
 }

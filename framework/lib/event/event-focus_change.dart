@@ -19,7 +19,9 @@ part of openreception.framework.event;
  */
 class FocusChange implements Event {
   /// Common [Event] fields.
+  @override
   final DateTime timestamp;
+  @override
   String get eventName => Key.focusChange;
 
   /// Specialized fields.
@@ -59,6 +61,7 @@ class FocusChange implements Event {
   /**
    * Serialization function.
    */
+  @override
   Map toJson() => {
         Key.event: eventName,
         Key.timestamp: util.dateTimeToUnixTimestamp(timestamp),

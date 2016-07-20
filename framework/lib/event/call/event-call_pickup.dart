@@ -14,6 +14,7 @@
 part of openreception.framework.event;
 
 class CallPickup extends CallEvent {
+  @override
   final String eventName = Key.callPickup;
 
   CallPickup(model.Call call) : super(call);

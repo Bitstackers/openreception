@@ -14,6 +14,7 @@
 part of openreception.framework.event;
 
 class CallStateChanged extends CallEvent {
+  @override
   final String eventName = Key.callState;
 
   CallStateChanged(model.Call call) : super(call);

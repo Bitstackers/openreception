@@ -14,6 +14,7 @@
 part of openreception.framework.event;
 
 class CallOffer extends CallEvent {
+  @override
   final String eventName = Key.callOffer;
 
   CallOffer(model.Call call) : super(call);

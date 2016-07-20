@@ -88,6 +88,7 @@ class Reception implements storage.Reception {
   /**
    *
    */
+  @override
   Future<model.ReceptionReference> create(
       model.Reception reception, model.User modifier,
       {bool enforceId: false}) async {
@@ -130,6 +131,7 @@ class Reception implements storage.Reception {
   /**
    *
    */
+  @override
   Future<model.Reception> get(int id) async {
     final File file = new File('$path/${id}/reception.json');
 
@@ -149,6 +151,7 @@ class Reception implements storage.Reception {
   /**
    *
    */
+  @override
   Future<model.Reception> getByExtension(String extension) async {
     List<FileSystemEntity> dirs = new Directory(path).listSync().where((fse) =>
         isDirectory(fse) &&
@@ -166,11 +169,13 @@ class Reception implements storage.Reception {
   /**
    *
    */
+  @override
   Future<String> extensionOf(int id) async => (await get(id)).dialplan;
 
   /**
    *
    */
+  @override
   Future<Iterable<model.ReceptionReference>> list() async {
     List<FileSystemEntity> dirs = new Directory(path).listSync().where((fse) =>
         isDirectory(fse) &&
@@ -186,6 +191,7 @@ class Reception implements storage.Reception {
   /**
    *
    */
+  @override
   Future remove(int rid, model.User modifier) async {
     final Directory receptionDir = new Directory('$path/${rid}');
 
@@ -215,6 +221,7 @@ class Reception implements storage.Reception {
   /**
    *
    */
+  @override
   Future<model.ReceptionReference> update(
       model.Reception rec, model.User modifier) async {
     if (rec.id == model.Reception.noId) {
@@ -248,6 +255,7 @@ class Reception implements storage.Reception {
   /**
    *
    */
+  @override
   Future<Iterable<model.Commit>> changes([int rid]) async {
     if (this._git == null) {
       throw new UnsupportedError(

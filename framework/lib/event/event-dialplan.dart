@@ -17,8 +17,10 @@ part of openreception.framework.event;
  *
  */
 class DialplanChange implements Event {
+  @override
   final DateTime timestamp;
 
+  @override
   String get eventName => Key._dialplanChange;
 
   bool get isCreate => state == Change.created;
@@ -55,12 +57,15 @@ class DialplanChange implements Event {
 
   /**
    *
+   *
    */
+  @override
   String toString() => toJson().toString();
 
   /**
    *
    */
+  @override
   Map toJson() => {
         Key.event: eventName,
         Key.timestamp: util.dateTimeToUnixTimestamp(timestamp),

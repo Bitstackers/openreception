@@ -14,12 +14,16 @@
 part of openreception.framework.event;
 
 class ChannelState implements Event {
+  @override
   final DateTime timestamp;
+  @override
   final String eventName = Key.channelState;
   final String channelUuid;
 
+  @override
   Map toJson() => EventTemplate.channel(this);
 
+  @override
   String toString() => toJson().toString();
 
   ChannelState(String uuid)

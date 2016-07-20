@@ -19,6 +19,7 @@ class NotFound implements StorageException {
   final String message;
   const NotFound([this.message = ""]);
 
+  @override
   String toString() => "NotFound: $message";
 }
 
@@ -26,6 +27,7 @@ class SaveFailed implements StorageException {
   final String message;
   const SaveFailed([this.message = ""]);
 
+  @override
   String toString() => "SaveFailed: $message";
 }
 
@@ -33,6 +35,7 @@ class Forbidden implements StorageException {
   final String message;
   const Forbidden([this.message = ""]);
 
+  @override
   String toString() => "Forbidden: $message";
 }
 
@@ -40,6 +43,7 @@ class Conflict implements StorageException {
   final String message;
   const Conflict([this.message = ""]);
 
+  @override
   String toString() => "Conflict: $message";
 }
 
@@ -47,6 +51,7 @@ class NotAuthorized implements StorageException {
   final String message;
   const NotAuthorized([this.message = ""]);
 
+  @override
   String toString() => "NotAuthorized: $message";
 }
 
@@ -54,6 +59,7 @@ class ClientError implements StorageException {
   final String message;
   const ClientError([this.message = ""]);
 
+  @override
   String toString() => "ClientError: $message";
 }
 
@@ -61,6 +67,7 @@ class InternalClientError implements StorageException {
   final String message;
   const InternalClientError([this.message = ""]);
 
+  @override
   String toString() => "InternalClientError: $message";
 }
 
@@ -68,6 +75,7 @@ class SqlError implements StorageException {
   final String message;
   const SqlError([this.message = ""]);
 
+  @override
   String toString() => "SqlError: $message";
 }
 
@@ -75,6 +83,7 @@ class ServerError implements StorageException {
   final String message;
   const ServerError([this.message = ""]);
 
+  @override
   String toString() => "ServerError: $message";
 }
 
@@ -82,6 +91,7 @@ class Busy implements StorageException {
   final String message;
   const Busy([this.message = ""]);
 
+  @override
   String toString() => "Busy: $message";
 }
 
@@ -89,5 +99,6 @@ class Unchanged implements StorageException {
   final String message;
   const Unchanged([this.message = ""]);
 
+  @override
   String toString() => "Unchanged: $message";
 }

@@ -35,6 +35,7 @@ class RESTUserStore implements storage.User {
   /**
    *
    */
+  @override
   Future<Iterable<model.UserReference>> list() {
     Uri url = resource.User.list(host);
     url = _appendToken(url, this._token);

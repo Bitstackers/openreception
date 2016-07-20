@@ -14,13 +14,17 @@
 part of openreception.framework.event;
 
 abstract class CallEvent implements Event {
+  @override
   final DateTime timestamp;
 
   final model.Call call;
 
   CallEvent(model.Call this.call) : timestamp = new DateTime.now();
 
+  @override
   Map toJson() => EventTemplate.call(this);
+
+  @override
   String toString() => toJson().toString();
 
   CallEvent.fromMap(Map map)

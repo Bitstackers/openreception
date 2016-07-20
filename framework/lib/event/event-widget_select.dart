@@ -19,7 +19,9 @@ part of openreception.framework.event;
  */
 class WidgetSelect implements Event {
   /// Common [Event] fields.
+  @override
   final DateTime timestamp;
+  @override
   String get eventName => Key.widgetSelect;
 
   /// Specialized fields.
@@ -44,6 +46,7 @@ class WidgetSelect implements Event {
   /**
    * Serialization function.
    */
+  @override
   Map toJson() => {
         Key.event: eventName,
         Key.timestamp: util.dateTimeToUnixTimestamp(timestamp),

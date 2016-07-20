@@ -14,8 +14,10 @@
 part of openreception.framework.event;
 
 class OrganizationChange implements Event {
+  @override
   final DateTime timestamp;
 
+  @override
   String get eventName => Key.organizationChange;
 
   final int oid;
@@ -46,7 +48,9 @@ class OrganizationChange implements Event {
       : this.state = Change.deleted,
         this.timestamp = new DateTime.now();
 
+  @override
   Map toJson() => this.asMap;
+  @override
   String toString() => this.asMap.toString();
 
   Map get asMap {

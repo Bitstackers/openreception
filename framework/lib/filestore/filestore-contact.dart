@@ -114,6 +114,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
+  @override
   Future addData(model.ReceptionAttributes attr, model.User modifier) async {
     if (attr.receptionId == model.Reception.noId) {
       throw new ArgumentError('attr.receptionId must be valid');
@@ -155,6 +156,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
+  @override
   Future<model.BaseContact> create(
       model.BaseContact contact, model.User modifier,
       {bool enforceId: false}) async {
@@ -199,6 +201,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
+  @override
   Future<model.BaseContact> get(int id) async {
     final File file = new File('$path/${id}/contact.json');
 
@@ -220,6 +223,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
+  @override
   Future<model.ReceptionAttributes> data(int id, int receptionId) async {
     final file = _receptionFile(id, receptionId);
     if (!file.existsSync()) {
@@ -233,6 +237,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
+  @override
   Future<Iterable<model.BaseContact>> list() async {
     if (!new Directory(path).existsSync()) {
       return const [];
@@ -244,6 +249,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
+  @override
   Future<Iterable<model.ReceptionReference>> receptions(int cid) async {
     final rDir = _receptionDir(cid);
     if (!rDir.existsSync()) {
@@ -271,6 +277,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
+  @override
   Future<Iterable<model.BaseContact>> organizationContacts(
       int organizationId) async {
     Iterable rRefs = await receptionStore._receptionsOfOrg(organizationId);
@@ -287,6 +294,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
+  @override
   Future<Iterable<model.OrganizationReference>> organizations(int cid) async {
     Iterable<model.ReceptionReference> rRefs = await receptions(cid);
 
@@ -302,6 +310,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
+  @override
   Future<Iterable<model.ReceptionContact>> receptionContacts(int rid) async {
     final subDirs =
         new Directory(path).listSync().where((fse) => fse is Directory);
@@ -343,6 +352,7 @@ class Contact implements storage.Contact {
    * appropriate delete event, that allows clients and stores to update
    * caches or views accordingly.
    */
+  @override
   Future remove(int cid, model.User modifier) async {
     if (!_index.containsKey(cid)) {
       throw new storage.NotFound();
@@ -388,6 +398,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
+  @override
   Future removeData(int id, int receptionId, model.User modifier) async {
     if (id == model.BaseContact.noId || receptionId == model.Reception.noId) {
       throw new storage.ClientError('Empty id');
@@ -424,6 +435,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
+  @override
   Future<model.BaseContact> update(
       model.BaseContact contact, model.User modifier) async {
     final File file = new File('$path/${contact.id}/contact.json');
@@ -455,6 +467,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
+  @override
   Future updateData(model.ReceptionAttributes attr, model.User modifier) async {
     if (attr.cid == model.BaseContact.noId) {
       throw new storage.ClientError('Empty id');
@@ -493,6 +506,7 @@ class Contact implements storage.Contact {
    * Throws [UnsupportedError] if the filestore is instantiated without
    * Git revisioning.
    */
+  @override
   Future<Iterable<model.Commit>> changes([int cid, int rid]) async {
     if (this._git == null) {
       throw new UnsupportedError(

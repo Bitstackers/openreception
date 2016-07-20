@@ -64,6 +64,7 @@ class User implements storage.User {
   /**
    *
    */
+  @override
   Future<Iterable<String>> groups() async => [
         model.UserGroups.administrator,
         model.UserGroups.receptionist,
@@ -73,6 +74,7 @@ class User implements storage.User {
   /**
    *
    */
+  @override
   Future<model.User> get(int uid) async {
     final File file = new File('$path/${uid}/user.json');
 
@@ -92,6 +94,7 @@ class User implements storage.User {
   /**
    *
    */
+  @override
   Future<model.User> getByIdentity(String identity) async {
     model.User user;
     await Future.wait((await list()).map((userRef) async {
@@ -110,6 +113,7 @@ class User implements storage.User {
   /**
    *
    */
+  @override
   Future<Iterable<model.UserReference>> list() async => new Directory(path)
       .listSync()
       .where((fse) =>
@@ -122,6 +126,7 @@ class User implements storage.User {
   /**
    *
    */
+  @override
   Future<model.UserReference> create(model.User user, model.User modifier,
       {bool enforceId: false}) async {
     user.id = user.id != model.User.noId && enforceId ? user.id : _nextId;
@@ -157,6 +162,7 @@ class User implements storage.User {
   /**
    *
    */
+  @override
   Future<Iterable<model.Commit>> changes([int uid]) async {
     if (this._git == null) {
       throw new UnsupportedError(
@@ -200,6 +206,7 @@ class User implements storage.User {
   /**
    *
    */
+  @override
   Future<model.UserReference> update(
       model.User user, model.User modifier) async {
     final Directory userdir = new Directory('$path/${user.id}');
@@ -232,6 +239,7 @@ class User implements storage.User {
   /**
    *
    */
+  @override
   Future remove(int uid, model.User modifier) async {
     final Directory userdir = new Directory('$path/${uid}');
 

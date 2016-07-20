@@ -14,6 +14,7 @@
 part of openreception.framework.event;
 
 class QueueLeave extends CallEvent {
+  @override
   final String eventName = Key.queueLeave;
 
   QueueLeave(model.Call call) : super(call);

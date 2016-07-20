@@ -18,6 +18,7 @@ part of openreception.framework.event;
  * occur once for every call.
  */
 class CallHangup extends CallEvent {
+  @override
   final String eventName = Key.callHangup;
   final String hangupCause;
 

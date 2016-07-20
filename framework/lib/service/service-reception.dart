@@ -32,6 +32,7 @@ class RESTReceptionStore implements storage.Reception {
   /**
    * Returns a reception as a pure map.
    */
+  @override
   Future<model.ReceptionReference> create(
       model.Reception reception, model.User modifier) {
     Uri url = resource.Reception.root(this.host);
@@ -46,6 +47,7 @@ class RESTReceptionStore implements storage.Reception {
   /**
    *
    */
+  @override
   Future<model.Reception> get(int receptionID) {
     Uri url = resource.Reception.single(this.host, receptionID);
     url = _appendToken(url, this.token);
@@ -57,6 +59,7 @@ class RESTReceptionStore implements storage.Reception {
   /**
    *
    */
+  @override
   Future<String> extensionOf(int receptionId) {
     Uri url = resource.Reception.extensionOf(this.host, receptionId);
     url = _appendToken(url, this.token);
@@ -67,6 +70,7 @@ class RESTReceptionStore implements storage.Reception {
   /**
    *
    */
+  @override
   Future<model.Reception> getByExtension(String extension) {
     Uri url = resource.Reception.byExtension(this.host, extension);
     url = _appendToken(url, this.token);
@@ -78,6 +82,7 @@ class RESTReceptionStore implements storage.Reception {
   /**
    * Returns a reception list.
    */
+  @override
   Future<Iterable<model.ReceptionReference>> list() {
     Uri url = resource.Reception.list(this.host);
     url = _appendToken(url, this.token);
@@ -90,6 +95,7 @@ class RESTReceptionStore implements storage.Reception {
   /**
    *
    */
+  @override
   Future remove(int rid, model.User modifier) async {
     Uri url = resource.Reception.single(this.host, rid);
     url = _appendToken(url, this.token);
@@ -100,6 +106,7 @@ class RESTReceptionStore implements storage.Reception {
   /**
    *
    */
+  @override
   Future<model.ReceptionReference> update(
       model.Reception reception, model.User modifier) {
     Uri url = resource.Reception.single(this.host, reception.id);
@@ -114,6 +121,7 @@ class RESTReceptionStore implements storage.Reception {
   /**
    *
    */
+  @override
   Future<Iterable<model.Commit>> changes([int rid]) {
     Uri url = resource.Reception.changeList(host, rid);
     url = _appendToken(url, this.token);

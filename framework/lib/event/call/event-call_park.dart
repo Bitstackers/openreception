@@ -14,6 +14,7 @@
 part of openreception.framework.event;
 
 class CallPark extends CallEvent {
+  @override
   final String eventName = Key.callPark;
 
   CallPark(model.Call call) : super(call);

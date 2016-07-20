@@ -14,12 +14,17 @@
 part of openreception.framework.event;
 
 class CallStateReload implements Event {
+  @override
   final String eventName = Key.callStateReload;
+  @override
   final DateTime timestamp;
 
   CallStateReload() : this.timestamp = new DateTime.now();
 
+  @override
   Map toJson() => this.asMap;
+
+  @override
   String toString() => this.asMap.toString();
 
   Map get asMap => EventTemplate._rootElement(this);

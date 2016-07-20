@@ -17,8 +17,10 @@ part of openreception.framework.event;
  *
  */
 class MessageChange implements Event {
+  @override
   final DateTime timestamp;
 
+  @override
   String get eventName => Key.messageChange;
 
   bool get created => state == Change.created;
@@ -50,10 +52,12 @@ class MessageChange implements Event {
       new MessageChange._internal(
           mid, modifierUid, Change.deleted, messageState, createdAt);
 
+  @override
   String toString() => this.asMap.toString();
 
   Map get asMap => toJson();
 
+  @override
   Map toJson() => {
         Key.event: eventName,
         Key.timestamp: util.dateTimeToUnixTimestamp(timestamp),

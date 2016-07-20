@@ -17,15 +17,19 @@ part of openreception.framework.event;
  * Event that spawns every time a client opens or closes a connection.
  */
 class ClientConnectionState implements Event {
+  @override
   final DateTime timestamp;
 
   final model.ClientConnection conn;
+  @override
   String get eventName => Key.connectionState;
 
   ClientConnectionState(model.ClientConnection this.conn)
       : timestamp = new DateTime.now();
 
+  @override
   Map toJson() => EventTemplate.connection(this);
+  @override
   String toString() => toJson().toString();
 
   ClientConnectionState.fromMap(Map map)

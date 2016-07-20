@@ -58,6 +58,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   /**
    *
    */
+  @override
   Future<model.ReceptionDialplan> create(
       model.ReceptionDialplan rdp, model.User modifier) async {
     final Directory dialplanDir = new Directory('$path/${rdp.extension}')
@@ -93,6 +94,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   /**
    *
    */
+  @override
   Future<model.ReceptionDialplan> get(String extension) async {
     final File file = new File('$path/${extension}/dialplan.json');
 
@@ -112,6 +114,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   /**
    *
    */
+  @override
   Future<Iterable<model.ReceptionDialplan>> list() async {
     final Iterable dirs = new Directory(path).listSync().where((fse) =>
         isDirectory(fse) && new File(fse.path + '/dialplan.json').existsSync());
@@ -127,6 +130,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   /**
    *
    */
+  @override
   Future<model.ReceptionDialplan> update(
       model.ReceptionDialplan rdp, model.User modifier) async {
     final Directory dialplanDir = new Directory('$path/${rdp.extension}');
@@ -161,6 +165,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   /**
    *
    */
+  @override
   Future remove(String extension, model.User modifier) async {
     final Directory dialplanDir = new Directory('$path/${extension}');
 
@@ -193,6 +198,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   /**
    *
    */
+  @override
   Future<Iterable<model.Commit>> changes([String extension]) async {
     if (this._git == null) {
       throw new UnsupportedError(

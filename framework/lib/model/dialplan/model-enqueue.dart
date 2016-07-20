@@ -83,9 +83,11 @@ class Enqueue implements Action {
     return new Enqueue(queuename, holdMusic: music, note: note);
   }
 
+  @override
   String toJson() => '${Key.enqueue} ${queueName}'
       '${holdMusic.isNotEmpty ? ' music $holdMusic' : ''}';
 
+  @override
   bool operator ==(Object other) =>
       other is Enqueue && this.queueName == other.queueName;
 }

@@ -18,8 +18,10 @@ part of openreception.framework.event;
  * and sent via a notification socket.
  */
 class CalendarChange implements Event {
+  @override
   final DateTime timestamp;
 
+  @override
   String get eventName => Key.calendarChange;
 
   final int eid;
@@ -54,6 +56,7 @@ class CalendarChange implements Event {
   /**
    *
    */
+  @override
   Map toJson() => {
         Key.event: eventName,
         Key.timestamp: util.dateTimeToUnixTimestamp(timestamp),
@@ -66,6 +69,7 @@ class CalendarChange implements Event {
   /**
    *
    */
+  @override
   String toString() => this.toJson().toString();
 
   /**
