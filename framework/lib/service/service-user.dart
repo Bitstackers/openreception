@@ -25,12 +25,12 @@ class RESTUserStore implements storage.User {
   final Uri host;
 
   /// The token used for authenticating with the backed.
-  final String _token;
+  final String token;
 
   /**
    *
    */
-  RESTUserStore(Uri this.host, String this._token, this._backend);
+  RESTUserStore(Uri this.host, String this.token, this._backend);
 
   /**
    *
@@ -38,7 +38,7 @@ class RESTUserStore implements storage.User {
   @override
   Future<Iterable<model.UserReference>> list() {
     Uri url = resource.User.list(host);
-    url = _appendToken(url, this._token);
+    url = _appendToken(url, this.token);
 
     return this
         ._backend
@@ -50,9 +50,10 @@ class RESTUserStore implements storage.User {
   /**
    *
    */
+  @override
   Future<model.User> get(int userId) {
     Uri url = resource.User.single(host, userId);
-    url = _appendToken(url, this._token);
+    url = _appendToken(url, this.token);
 
     return this
         ._backend
@@ -64,9 +65,10 @@ class RESTUserStore implements storage.User {
   /**
    *
    */
+  @override
   Future<model.User> getByIdentity(String identity) {
     Uri url = resource.User.singleByIdentity(host, identity);
-    url = _appendToken(url, this._token);
+    url = _appendToken(url, this.token);
 
     return _backend
         .get(url)
@@ -77,9 +79,10 @@ class RESTUserStore implements storage.User {
   /**
    *
    */
+  @override
   Future<Iterable<String>> groups() {
     Uri url = resource.User.group(host);
-    url = _appendToken(url, this._token);
+    url = _appendToken(url, this.token);
 
     return this
         ._backend
@@ -90,9 +93,10 @@ class RESTUserStore implements storage.User {
   /**
    *
    */
+  @override
   Future<model.UserReference> create(model.User user, model.User creator) {
     Uri url = resource.User.root(host);
-    url = _appendToken(url, this._token);
+    url = _appendToken(url, this.token);
 
     return this
         ._backend
@@ -104,9 +108,10 @@ class RESTUserStore implements storage.User {
   /**
    *
    */
+  @override
   Future<model.UserReference> update(model.User user, model.User creator) {
     Uri url = resource.User.single(host, user.id);
-    url = _appendToken(url, this._token);
+    url = _appendToken(url, this.token);
 
     return this
         ._backend
@@ -118,9 +123,10 @@ class RESTUserStore implements storage.User {
   /**
    *
    */
+  @override
   Future remove(int userId, model.User creator) {
     Uri url = resource.User.single(host, userId);
-    url = _appendToken(url, this._token);
+    url = _appendToken(url, this.token);
 
     return this._backend.delete(url);
   }
@@ -130,7 +136,7 @@ class RESTUserStore implements storage.User {
    */
   Future<model.UserStatus> userStatus(int userID) {
     Uri uri = resource.User.userState(host, userID);
-    uri = _appendToken(uri, _token);
+    uri = _appendToken(uri, token);
 
     return _backend.get(uri).then(JSON.decode).then(model.UserStatus.decode);
   }
@@ -143,7 +149,7 @@ class RESTUserStore implements storage.User {
    */
   Future<model.UserStatus> userStateReady(int userId) {
     Uri uri = resource.User.setUserState(host, userId, model.UserState.ready);
-    uri = _appendToken(uri, _token);
+    uri = _appendToken(uri, token);
 
     return _backend
         .post(uri, '')
@@ -157,7 +163,7 @@ class RESTUserStore implements storage.User {
    */
   Future<Iterable<model.UserStatus>> userStatusList() {
     Uri uri = resource.User.userStateAll(host);
-    uri = _appendToken(uri, _token);
+    uri = _appendToken(uri, token);
 
     return _backend.get(uri).then(JSON.decode).then((Iterable<Map> maps) =>
         maps.map((Map map) => new model.UserStatus.fromMap(map)));
@@ -171,7 +177,7 @@ class RESTUserStore implements storage.User {
    */
   Future<model.UserStatus> userStatePaused(int userId) {
     Uri uri = resource.User.setUserState(host, userId, model.UserState.paused);
-    uri = _appendToken(uri, _token);
+    uri = _appendToken(uri, token);
 
     return _backend
         .post(uri, '')
@@ -182,9 +188,10 @@ class RESTUserStore implements storage.User {
   /**
    *
    */
+  @override
   Future<Iterable<model.Commit>> changes([int uid]) {
     Uri url = resource.User.change(host, uid);
-    url = _appendToken(url, this._token);
+    url = _appendToken(url, this.token);
 
     Iterable<model.Commit> convertMaps(Iterable<Map> maps) =>
         maps.map(model.Commit.decode);
@@ -197,7 +204,7 @@ class RESTUserStore implements storage.User {
    */
   Future<String> changelog(int uid) {
     Uri url = resource.User.changelog(host, uid);
-    url = _appendToken(url, this._token);
+    url = _appendToken(url, this.token);
 
     return _backend.get(url);
   }
