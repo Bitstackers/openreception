@@ -13,7 +13,9 @@
 
 library openreception.framework.model.monitoring;
 
+import 'package:openreception.framework/event.dart' as _event;
 import 'package:openreception.framework/model.dart';
+import 'package:openreception.framework/util.dart' as util;
 
 class MessageHistory {
   final int mid;
