@@ -27,10 +27,13 @@ import 'package:openreception.server/controller/controller-agent_statistics.dart
     as controller;
 import 'package:openreception.server/controller/controller-client_notifier.dart'
     as controller;
+import 'package:openreception.server/controller/controller-group_notifier.dart'
+    as controller;
 import 'package:openreception.server/controller/controller-user.dart'
     as controller;
 import 'package:openreception.server/controller/controller-user_state.dart'
     as controller;
+import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.server/model.dart' as model;
 import 'package:openreception.server/router/router-user.dart' as router;
 
@@ -103,10 +106,18 @@ Future main(List<String> args) async {
   final filestore.User _userStore =
       new filestore.User(parsedArgs['filestore'] + '/user', gitEngine);
 
-  final model.AgentHistory agentHistory = new model.AgentHistory();
+  final filestore.AgentHistory _agentHistory = new filestore.AgentHistory(
+      parsedArgs['filestore'] + '/agent_history',
+      _userStore,
+      _notificationSocket.onEvent);
+
   final model.UserStatusList userStatus = new model.UserStatusList();
   final Map<int, event.WidgetSelect> _userUIState = {};
   final Map<int, event.FocusChange> _userFocusState = {};
+  final List<int> _serviceAgentCache = [];
+
+  final controller.GroupNotifier groupNotifier =
+      new controller.GroupNotifier(_notification, _serviceAgentCache);
 
   _notificationSocket.onWidgetSelect.listen((event.WidgetSelect widgetSelect) {
     _userUIState[widgetSelect.uid] = widgetSelect;
@@ -118,15 +129,34 @@ Future main(List<String> args) async {
 
   final _userController =
       new controller.User(_userStore, _notification, _authService);
-  final _statsController = new controller.AgentStatistics(agentHistory);
+  final _statsController = new controller.AgentStatistics(_agentHistory);
 
-  final _userStateController = new controller.UserState(
-      agentHistory, userStatus, _userUIState, _userFocusState);
+  final _userStateController =
+      new controller.UserState(userStatus, _userUIState, _userFocusState);
 
   /// Client notification controller.
   final controller.ClientNotifier notifier =
       new controller.ClientNotifier(_notification);
   notifier.userStateSubscribe(userStatus);
+
+  /// Fill serviceagent cache initially.
+  _serviceAgentCache
+    ..clear()
+    ..addAll(await _loadServiceAgents(_userStore));
+
+  /// Respond to future user changes.
+  _userStore.onUserChange.listen((event.UserChange uc) async {
+    log.info('Reloading service agent cache');
+    _serviceAgentCache
+      ..clear()
+      ..addAll(await _loadServiceAgents(_userStore));
+  });
+
+  /// Forward events to service agents and administrators.
+  groupNotifier.listenAll(
+      [_notificationSocket.onWidgetSelect, _notificationSocket.onFocusChange]);
+
+  await _agentHistory.initialized;
 
   await (new router.User(_notification, _userController, _statsController,
           _userStateController))
@@ -134,4 +164,25 @@ Future main(List<String> args) async {
           hostname: parsedArgs['host'],
           port: int.parse(parsedArgs['httpport']));
   log.info('Ready to handle requests');
+}
+
+/**
+ *
+ */
+Future<Iterable<int>> _loadServiceAgents(filestore.User userStore) async {
+  final Iterable allUids = (await userStore.list()).map((u) => u.id);
+  final Set<String> saGroups = new Set.from(
+      [model.UserGroups.serviceAgent, model.UserGroups.administrator]);
+
+  final List<int> uids = [];
+  await Future.forEach(allUids, (uid) async {
+    Set<String> groups = (await userStore.get(uid)).groups;
+    Set<String> commonGroups = groups.intersection(saGroups);
+
+    if (commonGroups.isNotEmpty) {
+      uids.add(uid);
+    }
+  });
+
+  return uids;
 }

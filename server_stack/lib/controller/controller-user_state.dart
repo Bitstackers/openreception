@@ -25,20 +25,11 @@ import 'package:openreception.server/model.dart' as model;
 import 'package:openreception.framework/event.dart' as event;
 
 class UserState {
-  final model.AgentHistory _history;
   final model.UserStatusList _userStateList;
   final Map<int, event.WidgetSelect> _userUIState;
   final Map<int, event.FocusChange> _userFocusState;
 
-  UserState(this._history, this._userStateList, this._userUIState,
-      this._userFocusState);
-
-  /**
-   *
-   */
-  shelf.Response stats(shelf.Request request) {
-    return new shelf.Response.ok(JSON.encode(_history));
-  }
+  UserState(this._userStateList, this._userUIState, this._userFocusState);
 
   /**
    *

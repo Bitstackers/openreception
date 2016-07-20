@@ -53,8 +53,8 @@ class User {
     router
       ..get('/user/cache', _userController.cacheStats)
       ..delete('/user/cache', _userController.emptyCache)
-      ..get('/user/all/statistics', _statsController.list)
-      ..get('/user/{uid}/statistics', _statsController.get)
+      ..get('/user/statistics', _statsController.today)
+      ..get('/user/statistics/{day}', _statsController.get)
       ..get('/user', _userController.list)
       ..get('/user/history', _userController.history)
       ..get('/user/{uid}', _userController.get)

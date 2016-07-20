@@ -13,27 +13,47 @@
 
 library openreception.server.controller.agent_history;
 
-import 'package:openreception.framework/model.dart' as model;
+import 'dart:async';
 import 'package:openreception.framework/storage.dart' as storage;
+import 'package:openreception.framework/filestore.dart' as filestore;
 import 'package:openreception.server/model.dart' as model;
 import 'package:openreception.server/response_utils.dart';
 import 'package:shelf/shelf.dart' as shelf;
+import 'package:logging/logging.dart';
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
 class AgentStatistics {
-  final model.AgentHistory _agentHistory;
+  final filestore.AgentHistory _agentHistory;
+  Logger _log = new Logger('openreception.server.controller.agent_history');
 
+  /**
+   *
+   */
   AgentStatistics(this._agentHistory);
 
-  shelf.Response list(_) => okJson(_agentHistory);
+  Future<shelf.Response> today(shelf.Request request) async {
+    return okJson(await _agentHistory.getRaw(new DateTime.now()));
+  }
 
-  shelf.Response get(shelf.Request request) {
-    final int uid = int.parse(shelf_route.getPathParameter(request, 'uid'));
+  Future<shelf.Response> get(shelf.Request request) async {
+    final String dayStr = shelf_route.getPathParameter(request, 'day');
+    DateTime day;
 
     try {
-      return okJson(_agentHistory.sumUp(uid));
+      final List<String> part = dayStr.split('-');
+
+      day = new DateTime(
+          int.parse(part[0]), int.parse(part[1]), int.parse(part[2]));
+    } catch (e) {
+      final String msg = 'Day parsing failed: $dayStr';
+      _log.warning(msg, e);
+      return clientError(msg);
+    }
+
+    try {
+      return okGzip(await _agentHistory.getRaw(day));
     } on storage.NotFound {
-      return notFound('No stats for agent with uid $uid');
+      return notFound('No stats for the day $dayStr');
     }
   }
 }
