@@ -27,8 +27,8 @@ class UIReceptionSelector extends UIModel {
   /**
    * Constructor.
    */
-  UIReceptionSelector(DivElement this._myRoot, Controller.Popup this._popup, this._receptionController,
-      Map<String, String> this._langMap) {
+  UIReceptionSelector(DivElement this._myRoot, Controller.Popup this._popup,
+      this._receptionController, Map<String, String> this._langMap) {
     _setupLocalKeys();
     _observers();
   }
@@ -131,9 +131,9 @@ class UIReceptionSelector extends UIModel {
 
     _list.onDoubleClick.listen((Event event) {
       if (event.target is LIElement) {
-        _copyToClipboard((event.target as LIElement).text);
-        _popup.success(
-            _langMap[Key.nameCopied], '${(event.target as LIElement).text}',
+        final String text = (event.target as LIElement).firstChild.text;
+        _copyToClipboard(text);
+        _popup.success(_langMap[Key.nameCopied], text,
             closeAfter: new Duration(milliseconds: 1500));
       }
     });
@@ -251,7 +251,8 @@ class UIReceptionSelector extends UIModel {
     LIElement li = _list.querySelector('.selected');
 
     if (li != null) {
-      return ORModel.ReceptionReference.decode(JSON.decode(li.dataset['object']));
+      return ORModel.ReceptionReference
+          .decode(JSON.decode(li.dataset['object']));
     } else {
       return const ORModel.ReceptionReference.none();
     }
