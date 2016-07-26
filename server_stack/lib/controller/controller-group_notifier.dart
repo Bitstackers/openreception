@@ -24,7 +24,7 @@ import 'package:openreception.framework/service.dart' as service;
  */
 class GroupNotifier {
   final service.NotificationService _notificationService;
-  final List<int> _uids;
+  List<int> _uids;
 
   /**
    * Create a new [GroupNotifier] that sends events to the websockets of
@@ -32,6 +32,11 @@ class GroupNotifier {
    */
   GroupNotifier(this._notificationService, Iterable<int> uids)
       : _uids = new List<int>.from(uids);
+
+  ///
+  set recipientUids(List<int> uids) {
+    _uids = uids;
+  }
 
   /**
    * Forward all events in [streams] to the users with id's [_uids].

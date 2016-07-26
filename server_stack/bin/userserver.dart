@@ -114,7 +114,9 @@ Future main(List<String> args) async {
   final model.UserStatusList userStatus = new model.UserStatusList();
   final Map<int, event.WidgetSelect> _userUIState = {};
   final Map<int, event.FocusChange> _userFocusState = {};
-  final List<int> _serviceAgentCache = [];
+
+  // Fill serviceagent cache initially.
+  final List<int> _serviceAgentCache = await _loadServiceAgents(_userStore);
 
   final controller.GroupNotifier groupNotifier =
       new controller.GroupNotifier(_notification, _serviceAgentCache);
@@ -139,17 +141,10 @@ Future main(List<String> args) async {
       new controller.ClientNotifier(_notification);
   notifier.userStateSubscribe(userStatus);
 
-  /// Fill serviceagent cache initially.
-  _serviceAgentCache
-    ..clear()
-    ..addAll(await _loadServiceAgents(_userStore));
-
   /// Respond to future user changes.
   _userStore.onUserChange.listen((event.UserChange uc) async {
     log.info('Reloading service agent cache');
-    _serviceAgentCache
-      ..clear()
-      ..addAll(await _loadServiceAgents(_userStore));
+    groupNotifier.recipientUids = await _loadServiceAgents(_userStore);
   });
 
   /// Forward events to service agents and administrators.
