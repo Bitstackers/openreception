@@ -16,9 +16,6 @@ part of openreception.framework.service;
 /**
  * Superclass for abstracting away the griddy details of
  * client/server-specific web-clients.
- *
- * TODO: Add reason for the exception. Should be carried in 'message'
- *   or 'error' field from the server.
  */
 abstract class WebService {
   Future<String> get(Uri path);
