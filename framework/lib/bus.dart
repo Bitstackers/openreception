@@ -11,36 +11,35 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
+/// Broadcast bus subsystem.
 library openreception.framework.bus;
 
 import 'dart:async';
 
-/**
- * Type "safe" event bus, using the Dart Stream API.
- *
- * This is basically just a thin wrapper around [StreamController].
- */
+/// Type "safe" event bus, using the Dart Stream API.
+///
+/// This is basically just a thin wrapper around [StreamController] that
+/// provides a broadcast stream.
 class Bus<Type> {
   StreamController<Type> _streamController;
 
-  /**
-   * Get the [Stream] stream.
-   */
-  Stream<Type> get stream => _streamController.stream;
-
+  /// Default constructor. Creates and initializes a new broadcast stream
+  /// that emits objects of [Type].
   Bus() {
     _streamController = new StreamController.broadcast();
   }
 
-  /**
-   * Push a [Type] event to the [Stream].
-   */
+  /// The stream of the [Bus] that emits objects of [Type].
+  Stream<Type> get stream => _streamController.stream;
+
+  /// Inject an [event] of [Type] into the stream of [Bus].
+  ///
+  /// Only listeners subscribed to the [stream] of [Bus] prior to the
+  /// calling of this function will receive [event].
   void fire(Type event) {
     _streamController.add(event);
   }
 
-  /**
-   * Close the [Stream].
-   */
+  /// Close the [Bus].
   Future close() => _streamController.close();
 }
