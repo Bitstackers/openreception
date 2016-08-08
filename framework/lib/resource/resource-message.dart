@@ -21,20 +21,20 @@ abstract class Message {
   static const String _ns = 'message';
 
   static Uri single(Uri host, int mid) =>
-      Uri.parse('${util.removeTailingSlashes(host)}/${_ns}/${mid}');
+      Uri.parse('${util.removeTailingSlashes(host)}/$_ns/$mid');
 
   static Uri send(Uri host, int mid) =>
-      Uri.parse('${util.removeTailingSlashes(host)}/${_ns}/${mid}/send');
+      Uri.parse('${util.removeTailingSlashes(host)}/$_ns/$mid/send');
 
   static Uri root(Uri host) =>
-      Uri.parse('${util.removeTailingSlashes(host)}/${_ns}');
+      Uri.parse('${util.removeTailingSlashes(host)}/$_ns');
 
   static Uri list(Uri host, {model.MessageFilter filter: null}) {
     String filterParameter =
         filter != null ? '?filter=${JSON.encode(filter)}' : '';
 
-    return Uri.parse(
-        '${util.removeTailingSlashes(host)}/${_ns}/list${filterParameter}');
+    return Uri
+        .parse('${util.removeTailingSlashes(host)}/$_ns/list$filterParameter');
   }
 
   /**
@@ -47,7 +47,7 @@ abstract class Message {
 
     final String dateString = day.toIso8601String().split('T').first;
 
-    return Uri.parse('$host/message/list/$dateString${filterParameter}');
+    return Uri.parse('$host/message/list/$dateString$filterParameter');
   }
 
   /**
@@ -57,7 +57,7 @@ abstract class Message {
     final String filterParameter =
         filter != null ? '?filter=${JSON.encode(filter)}' : '';
 
-    return Uri.parse('$host/message/list/drafts${filterParameter}');
+    return Uri.parse('$host/message/list/drafts$filterParameter');
   }
 
   /**

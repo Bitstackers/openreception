@@ -23,53 +23,52 @@ abstract class CallFlowControl {
   /**
    *
    */
-  static Uri activeRecordings(Uri host) => Uri.parse('${host}/activerecording');
+  static Uri activeRecordings(Uri host) => Uri.parse('$host/activerecording');
 
   /**
    *
    */
   static Uri activeRecording(Uri host, String uuid) =>
-      Uri.parse('${host}/activerecording/$uuid');
+      Uri.parse('$host/activerecording/$uuid');
 
   /**
    *
    */
-  static Uri agentStatistics(Uri host) => Uri.parse('${host}/agentstatistics');
+  static Uri agentStatistics(Uri host) => Uri.parse('$host/agentstatistics');
 
   /**
    *
    */
   static Uri agentStatistic(Uri host, int userId) =>
-      Uri.parse('${host}/agentstatistics/$userId');
+      Uri.parse('$host/agentstatistics/$userId');
 
   /**
    * Builds a Uri to to request a state update.
    * The output format is:
-   *    http://hostname//state/reload
+   *    http://hostname/state/reload
    */
-  static Uri stateReload(Uri host) => Uri.parse('${host}/state/reload');
+  static Uri stateReload(Uri host) => Uri.parse('$host/state/reload');
 
   /**
    * Builds a Uri to retrieve a userstatus resource.
    * The output format is:
    *    http://hostname/channel/list
    */
-  static Uri channel(Uri host, String uuid) =>
-      Uri.parse('${host}/channel/$uuid');
+  static Uri channel(Uri host, String uuid) => Uri.parse('$host/channel/$uuid');
 
   /**
    * Builds a Uri to retrieve a userstatus resource.
    * The output format is:
    *    http://hostname/channel/list
    */
-  static Uri channelList(Uri host) => Uri.parse('${host}/channel');
+  static Uri channelList(Uri host) => Uri.parse('$host/channel');
 
   /**
    * Builds a Uri to retrieve a every current peer resource.
    * The output format is:
    *    http://hostname/peer/list
    */
-  static Uri peerList(Uri host) => Uri.parse('${host}/peer');
+  static Uri peerList(Uri host) => Uri.parse('$host/peer');
 
   /**
    * Builds a Uri to retrieve a single call resource.
@@ -77,7 +76,7 @@ abstract class CallFlowControl {
    *    http://hostname/call/<callID>
    */
   static Uri single(Uri host, String callID) =>
-      Uri.parse('${_root(host)}/${callID}');
+      Uri.parse('${_root(host)}/$callID');
 
   /**
    * Builds a Uri to pickup a specific call resource.
@@ -99,7 +98,7 @@ abstract class CallFlowControl {
   static Uri originate(
           Uri host, String extension, model.OriginationContext context) =>
       Uri.parse('${_root(host)}'
-          '/originate/${extension}'
+          '/originate/$extension'
           '/dialplan/${context.dialplan}'
           '/reception/${context.receptionId}'
           '/contact/${context.contactId}'
@@ -127,7 +126,7 @@ abstract class CallFlowControl {
    *    http://hostname/call/<callID>/hangup
    */
   static Uri transfer(Uri host, String callID, String destination) =>
-      Uri.parse('${single (host, callID)}/transfer/${destination}');
+      Uri.parse('${single (host, callID)}/transfer/$destination');
 
   /**
    * Builds a Uri to retrieve a every current call resource.
@@ -142,5 +141,5 @@ abstract class CallFlowControl {
    *    http://hostname/call
    */
   static Uri _root(Uri host) =>
-      Uri.parse('${util.removeTailingSlashes(host)}/${nameSpace}');
+      Uri.parse('${util.removeTailingSlashes(host)}/$nameSpace');
 }

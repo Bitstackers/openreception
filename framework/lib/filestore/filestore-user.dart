@@ -76,7 +76,7 @@ class User implements storage.User {
    */
   @override
   Future<model.User> get(int uid) async {
-    final File file = new File('$path/${uid}/user.json');
+    final File file = new File('$path/$uid/user.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound('No file with name ${file.path}');
@@ -241,7 +241,7 @@ class User implements storage.User {
    */
   @override
   Future remove(int uid, model.User modifier) async {
-    final Directory userdir = new Directory('$path/${uid}');
+    final Directory userdir = new Directory('$path/$uid');
 
     if (!userdir.existsSync()) {
       throw new storage.NotFound();
@@ -259,7 +259,7 @@ class User implements storage.User {
       new ChangeLogger(userdir.path)
           .add(new model.UserChangelogEntry.delete(modifier.reference, uid));
     }
-    await userdir.rename(trashDir.path + '/${uid}');
+    await userdir.rename(trashDir.path + '/$uid');
 
     _changeBus.fire(new event.UserChange.delete(uid, modifier.id));
   }

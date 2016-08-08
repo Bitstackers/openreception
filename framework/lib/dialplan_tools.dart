@@ -92,11 +92,11 @@ List<String> _externalTrunkTransfer(
       new HtmlEscape(HtmlEscapeMode.ATTRIBUTE).convert(opts.callerIdNumber);
 
   return [
-    '<extension name="${extension}-${outboundSuffix}-trunk" continue="true">',
+    '<extension name="$extension-$outboundSuffix-trunk" continue="true">',
     '  <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(\\d+)\$">',
     '    <action application="set" data="ringback=\${dk-ring}"/>',
     '    <action application="ring_ready" />',
-    '    <action application="bridge" data="{${ORPbxKey.receptionId}=${rid},originate_timeout=120,origination_caller_id_name=$callerIdName,origination_caller_id_number=$callerIdNumber}[leg_timeout=50,${ORPbxKey.receptionId}=${rid},fifo_music=default]sofia/gateway/\${default_trunk}/\$1"/>',
+    '    <action application="bridge" data="{${ORPbxKey.receptionId}=$rid,originate_timeout=120,origination_caller_id_name=$callerIdName,origination_caller_id_number=$callerIdNumber}[leg_timeout=50,${ORPbxKey.receptionId}=$rid,fifo_music=default]sofia/gateway/\${default_trunk}/\$1"/>',
     '    <action application="hangup"/>',
     '  </condition>',
     '</extension>'
@@ -110,11 +110,11 @@ List<String> _externalSipTransfer(
   final String callerIdNumber =
       new HtmlEscape(HtmlEscapeMode.ATTRIBUTE).convert(opts.callerIdNumber);
   return [
-    '<extension name="${extension}-${outboundSuffix}-sip" continue="true">',
+    '<extension name="$extension-$outboundSuffix-sip" continue="true">',
     '  <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(.*)">',
     '    <action application="set" data="ringback=\${dk-ring}"/>',
     '    <action application="ring_ready" />',
-    '    <action application="bridge" data="{${ORPbxKey.receptionId}=${rid},originate_timeout=120,origination_caller_id_name=$callerIdName,origination_caller_id_number=$callerIdNumber}[leg_timeout=50,${ORPbxKey.receptionId}=${rid},fifo_music=default]sofia/external/\$1"/>',
+    '    <action application="bridge" data="{${ORPbxKey.receptionId}=$rid,originate_timeout=120,origination_caller_id_name=$callerIdName,origination_caller_id_number=$callerIdNumber}[leg_timeout=50,${ORPbxKey.receptionId}=$rid,fifo_music=default]sofia/external/\$1"/>',
     '    <action application="hangup"/>',
     '  </condition>',
     '</extension>'
@@ -155,7 +155,7 @@ List<String> _openingHourToXmlDialplan(
   lines.addAll([
     '',
     _comment('Actions for opening hour $oh'),
-    '<extension name="${extension}-${_normalizeOpeningHour(oh.toString())}" continue="true">'
+    '<extension name="$extension-${_normalizeOpeningHour(oh.toString())}" continue="true">'
   ]);
 
   if (env.callAnnounced) {
@@ -184,7 +184,7 @@ List<String> _fallbackToDialplan(
   return new List<String>.from([
     '',
     _comment('Default fallback actions for $extension'),
-    '<extension name="${extension}-$closedSuffix">',
+    '<extension name="$extension-$closedSuffix">',
     '  <condition>',
   ])
     ..addAll(actions
@@ -306,7 +306,7 @@ String _dialoutTemplate(String extension, DialplanCompilerOpts option) =>
     _isInternalExtension(extension)
         ? extension
         : option.goLive
-            ? '${PbxKey.externalTransfer}_${extension}'
+            ? '${PbxKey.externalTransfer}_$extension'
             : '${PbxKey.externalTransfer}_${option.testNumber}';
 
 /**
@@ -336,7 +336,7 @@ String _transferTemplate(String extension, DialplanCompilerOpts option) =>
  */
 String _receptionTransferTemplate(
         String extension, DialplanCompilerOpts option) =>
-    '<action application="transfer" data="${extension} XML reception-${extension}"/>';
+    '<action application="transfer" data="$extension XML reception-$extension"/>';
 
 /**
  * Template for a sleep action.

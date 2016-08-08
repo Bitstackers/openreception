@@ -203,7 +203,7 @@ class Contact implements storage.Contact {
    */
   @override
   Future<model.BaseContact> get(int id) async {
-    final File file = new File('$path/${id}/contact.json');
+    final File file = new File('$path/$id/contact.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound('No file ${file.path}');
@@ -358,7 +358,7 @@ class Contact implements storage.Contact {
       throw new storage.NotFound();
     }
 
-    final Directory contactDir = new Directory('$path/${cid}');
+    final Directory contactDir = new Directory('$path/$cid');
 
     /// Remove reception references.
     await Future.forEach(await receptions(cid), (rRef) async {
@@ -390,7 +390,7 @@ class Contact implements storage.Contact {
           .add(new model.ContactChangelogEntry.delete(modifier.reference, cid));
     }
 
-    await contactDir.rename(trashDir.path + '/${cid}');
+    await contactDir.rename(trashDir.path + '/$cid');
 
     _changeBus.fire(new event.ContactChange.delete(cid, modifier.id));
   }
@@ -404,10 +404,10 @@ class Contact implements storage.Contact {
       throw new storage.ClientError('Empty id');
     }
 
-    final recDir = new Directory('$path/${id}/receptions');
-    final File file = new File('${recDir.path}/${receptionId}.json');
+    final recDir = new Directory('$path/$id/receptions');
+    final File file = new File('${recDir.path}/$receptionId.json');
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file ${file}');
+      throw new storage.NotFound('No file $file');
     }
 
     _log.finest('Removing file ${file.path}');
@@ -416,7 +416,7 @@ class Contact implements storage.Contact {
       await _git.remove(
           file,
           'uid:${modifier.id} - ${modifier.name} '
-          'removed ${id} from ${receptionId}',
+          'removed $id from $receptionId',
           _authorString(modifier));
     } else {
       file.deleteSync();
@@ -475,7 +475,7 @@ class Contact implements storage.Contact {
     final recDir = new Directory('$path/${attr.cid}/receptions');
     final File file = new File('${recDir.path}/${attr.receptionId}.json');
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file ${file}');
+      throw new storage.NotFound('No file $file');
     }
 
     _log.finest('Creating new file ${file.path}');
@@ -574,7 +574,7 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Directory _receptionDir(int cid) => new Directory('$path/${cid}/receptions');
+  Directory _receptionDir(int cid) => new Directory('$path/$cid/receptions');
 
   /**
    *
@@ -585,5 +585,5 @@ class Contact implements storage.Contact {
   /**
    *
    */
-  Directory _contactDir(int cid) => new Directory('$path/${cid}');
+  Directory _contactDir(int cid) => new Directory('$path/$cid');
 }

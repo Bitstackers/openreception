@@ -90,10 +90,10 @@ class Ivr implements storage.Ivr {
    */
   @override
   Future<model.IvrMenu> get(String menuName) async {
-    final File file = new File('$path/${menuName}/menu.json');
+    final File file = new File('$path/$menuName/menu.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file with name ${menuName}');
+      throw new storage.NotFound('No file with name $menuName');
     }
 
     try {
@@ -153,7 +153,7 @@ class Ivr implements storage.Ivr {
    */
   @override
   Future remove(String menuName, model.User modifier) async {
-    final Directory menuDir = new Directory('$path/${menuName}');
+    final Directory menuDir = new Directory('$path/$menuName');
     final File file = new File('${menuDir.path}/menu.json');
 
     if (!file.existsSync()) {
@@ -174,7 +174,7 @@ class Ivr implements storage.Ivr {
     }
 
     await menuDir.rename(trashDir.path +
-        '/${menuName}-${new DateTime.now().millisecondsSinceEpoch}');
+        '/$menuName-${new DateTime.now().millisecondsSinceEpoch}');
 
     _changeBus.fire(new event.IvrMenuChange.delete(menuName, modifier.id));
   }

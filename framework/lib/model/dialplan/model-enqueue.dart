@@ -84,7 +84,7 @@ class Enqueue implements Action {
   }
 
   @override
-  String toJson() => '${Key.enqueue} ${queueName}'
+  String toJson() => '${Key.enqueue} $queueName'
       '${holdMusic.isNotEmpty ? ' music $holdMusic' : ''}';
 
   @override

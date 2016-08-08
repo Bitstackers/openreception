@@ -25,10 +25,10 @@ abstract class ResourceCDR {
   static final Uri _host = Uri.parse('http://localhost:4090');
 
   static void checkpoint() => expect(
-      Resource.CDR.checkpoint(_host), equals(Uri.parse('${_host}/checkpoint')));
+      Resource.CDR.checkpoint(_host), equals(Uri.parse('$_host/checkpoint')));
 
   static void root() =>
-      expect(Resource.CDR.root(_host), equals(Uri.parse('${_host}/cdr')));
+      expect(Resource.CDR.root(_host), equals(Uri.parse('$_host/cdr')));
 
   /**
    *
@@ -41,6 +41,6 @@ abstract class ResourceCDR {
         .toString();
 
     expect(Resource.CDR.list(_host, from, to),
-        equals(Uri.parse('${_host}/cdr?$from&$to')));
+        equals(Uri.parse('$_host/cdr?$from&$to')));
   }
 }

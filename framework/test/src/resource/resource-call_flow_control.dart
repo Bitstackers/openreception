@@ -41,47 +41,47 @@ abstract class ResourceCallFlowControl {
    */
   static void activeRecordings() => expect(
       Resource.CallFlowControl.activeRecordings(callFlowControlUri),
-      equals(Uri.parse('${callFlowControlUri}/activerecording')));
+      equals(Uri.parse('$callFlowControlUri/activerecording')));
 
   /**
    *
    */
   static void activeRecording() => expect(
       Resource.CallFlowControl.activeRecording(callFlowControlUri, 'abc'),
-      equals(Uri.parse('${callFlowControlUri}/activerecording/abc')));
+      equals(Uri.parse('$callFlowControlUri/activerecording/abc')));
   /**
    *
    */
   static void agentStatistics() => expect(
       Resource.CallFlowControl.agentStatistics(callFlowControlUri),
-      equals(Uri.parse('${callFlowControlUri}/agentstatistics')));
+      equals(Uri.parse('$callFlowControlUri/agentstatistics')));
 
   /**
    *
    */
   static void agentStatistic() => expect(
       Resource.CallFlowControl.agentStatistic(callFlowControlUri, 99),
-      equals(Uri.parse('${callFlowControlUri}/agentstatistics/99')));
+      equals(Uri.parse('$callFlowControlUri/agentstatistics/99')));
 
   static void stateReload() => expect(
       Resource.CallFlowControl.stateReload(callFlowControlUri),
-      equals(Uri.parse('${callFlowControlUri}/state/reload')));
+      equals(Uri.parse('$callFlowControlUri/state/reload')));
 
   static void channelList() => expect(
       Resource.CallFlowControl.channelList(callFlowControlUri),
-      equals(Uri.parse('${callFlowControlUri}/channel')));
+      equals(Uri.parse('$callFlowControlUri/channel')));
 
   static void peerList() => expect(
       Resource.CallFlowControl.peerList(callFlowControlUri),
-      equals(Uri.parse('${callFlowControlUri}/peer')));
+      equals(Uri.parse('$callFlowControlUri/peer')));
 
   static void single() => expect(
       Resource.CallFlowControl.single(callFlowControlUri, 'abcde'),
-      equals(Uri.parse('${callFlowControlUri}/call/abcde')));
+      equals(Uri.parse('$callFlowControlUri/call/abcde')));
 
   static void pickup() => expect(
       Resource.CallFlowControl.pickup(callFlowControlUri, 'abcde'),
-      equals(Uri.parse('${callFlowControlUri}/call/abcde/pickup')));
+      equals(Uri.parse('$callFlowControlUri/call/abcde/pickup')));
 
   static void originate() => expect(
       Resource.CallFlowControl.originate(
@@ -92,21 +92,21 @@ abstract class ResourceCallFlowControl {
             ..receptionId = 1
             ..contactId = 2),
       equals(Uri.parse(
-          '${callFlowControlUri}/call/originate/12345678/dialplan/12340001/reception/1/contact/2')));
+          '$callFlowControlUri/call/originate/12345678/dialplan/12340001/reception/1/contact/2')));
 
   static void park() => expect(
       Resource.CallFlowControl.park(callFlowControlUri, 'abcde'),
-      equals(Uri.parse('${callFlowControlUri}/call/abcde/park')));
+      equals(Uri.parse('$callFlowControlUri/call/abcde/park')));
 
   static void hangup() => expect(
       Resource.CallFlowControl.hangup(callFlowControlUri, 'abcde'),
-      equals(Uri.parse('${callFlowControlUri}/call/abcde/hangup')));
+      equals(Uri.parse('$callFlowControlUri/call/abcde/hangup')));
 
   static void transfer() => expect(
       Resource.CallFlowControl.transfer(callFlowControlUri, 'abcde', 'edcba'),
-      equals(Uri.parse('${callFlowControlUri}/call/abcde/transfer/edcba')));
+      equals(Uri.parse('$callFlowControlUri/call/abcde/transfer/edcba')));
 
   static void list() => expect(
       Resource.CallFlowControl.list(callFlowControlUri),
-      equals(Uri.parse('${callFlowControlUri}/call')));
+      equals(Uri.parse('$callFlowControlUri/call')));
 }

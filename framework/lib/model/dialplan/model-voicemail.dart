@@ -83,6 +83,6 @@ class Voicemail extends Action {
    */
   @override
   String toJson() => '${Key.voicemail} $vmBox'
-      '${recipient.isNotEmpty ? ' ${recipient}' : ''}'
-      '${note.isNotEmpty ? ' (${note})' : ''}';
+      '${recipient.isNotEmpty ? ' $recipient' : ''}'
+      '${note.isNotEmpty ? ' ($note)' : ''}';
 }

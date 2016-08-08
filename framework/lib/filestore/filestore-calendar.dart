@@ -156,7 +156,7 @@ class Calendar implements storage.Calendar {
       await _git.add(
           file,
           'uid:${modifier.id} - ${modifier.name}'
-          'added ${entry.id} to ${owner}',
+          'added ${entry.id} to $owner',
           _authorString(modifier));
     }
 
@@ -183,7 +183,7 @@ class Calendar implements storage.Calendar {
       Iterable<Directory> ownerDirs = subdir.listSync().where(isDirectory);
 
       for (Directory dir in ownerDirs) {
-        File file = new File('${dir.path}/${eid}.json');
+        File file = new File('${dir.path}/$eid.json');
 
         if (file.existsSync()) {
           return model.CalendarEntry
@@ -192,7 +192,7 @@ class Calendar implements storage.Calendar {
       }
     }
 
-    throw new storage.NotFound('No file with eid ${eid}');
+    throw new storage.NotFound('No file with eid $eid');
   }
 
   /**
@@ -227,7 +227,7 @@ class Calendar implements storage.Calendar {
   @override
   Future remove(int eid, model.Owner owner, model.User modifier) async {
     final Directory ownerDir = new Directory('$path/${owner.id}/calendar');
-    final File file = new File('${ownerDir.path}/${eid}.json');
+    final File file = new File('${ownerDir.path}/$eid.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
@@ -305,6 +305,5 @@ class Calendar implements storage.Calendar {
   /**
    *
    */
-  Directory _ownerDir(int ownerId) =>
-      new Directory('$path/${ownerId}/calendar');
+  Directory _ownerDir(int ownerId) => new Directory('$path/$ownerId/calendar');
 }

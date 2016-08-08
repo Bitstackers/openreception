@@ -63,5 +63,5 @@ abstract class ReceptionDialplan {
    *
    */
   static Uri changelog(Uri host, String extension) =>
-      Uri.parse('${host}/$_ns/${extension}/changelog');
+      Uri.parse('$host/$_ns/$extension/changelog');
 }

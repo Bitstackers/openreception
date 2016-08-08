@@ -22,10 +22,10 @@ abstract class CDR {
   static const String _checkpoint = 'checkpoint';
 
   static Uri list(Uri host, String from, String to) =>
-      Uri.parse('${root(host)}?${from}&${to}');
+      Uri.parse('${root(host)}?$from&$to');
 
   static Uri checkpoint(Uri host) => Uri.parse('$host/$_checkpoint');
 
   static Uri root(Uri host) =>
-      Uri.parse('${util.removeTailingSlashes(host)}/${_cdr}');
+      Uri.parse('${util.removeTailingSlashes(host)}/$_cdr');
 }

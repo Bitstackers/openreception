@@ -148,7 +148,7 @@ class Organization implements storage.Organization {
    */
   @override
   Future<model.Organization> get(int id) async {
-    final File file = new File('$path/${id}/organization.json');
+    final File file = new File('$path/$id/organization.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound('No file with name ${file.path}');
@@ -183,8 +183,8 @@ class Organization implements storage.Organization {
    */
   @override
   Future remove(int oid, model.User modifier) async {
-    final Directory orgDir = new Directory('$path/${oid}');
-    final File file = new File('$path/${oid}/organization.json');
+    final Directory orgDir = new Directory('$path/$oid');
+    final File file = new File('$path/$oid/organization.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
@@ -202,7 +202,7 @@ class Organization implements storage.Organization {
           'removed $oid',
           _authorString(modifier));
     } else {
-      await orgDir.rename(trashDir.path + '/${oid}');
+      await orgDir.rename(trashDir.path + '/$oid');
     }
 
     _changeBus.fire(new event.OrganizationChange.delete(oid, modifier.id));

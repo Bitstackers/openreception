@@ -41,8 +41,8 @@ class Ivr extends Action {
       other is Ivr && this.menuName == other.menuName;
 
   @override
-  String toString() => '${Key.ivr} ${menuName}';
+  String toString() => '${Key.ivr} $menuName';
 
   @override
-  String toJson() => '${Key.ivr} ${menuName}';
+  String toJson() => '${Key.ivr} $menuName';
 }

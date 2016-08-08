@@ -28,16 +28,16 @@ abstract class Calendar {
    *
    */
   static Uri single(Uri host, int eid, model.Owner owner) =>
-      Uri.parse('$host/calendar/${owner.toJson()}/${eid}');
+      Uri.parse('$host/calendar/${owner.toJson()}/$eid');
 
   /**
    *
    */
   static Uri changeList(Uri host, model.Owner owner, [int eid]) {
     if (eid == null) {
-      return Uri.parse('${host}/calendar/${owner.toJson()}/change');
+      return Uri.parse('$host/calendar/${owner.toJson()}/change');
     } else {
-      return Uri.parse('${host}/calendar/${owner.toJson()}/${eid}/change');
+      return Uri.parse('$host/calendar/${owner.toJson()}/$eid/change');
     }
   }
 
@@ -45,5 +45,5 @@ abstract class Calendar {
    *
    */
   static Uri changelog(Uri host, model.Owner owner) =>
-      Uri.parse('${host}/calendar/${owner.toJson()}/changelog');
+      Uri.parse('$host/calendar/${owner.toJson()}/changelog');
 }

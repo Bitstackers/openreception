@@ -23,8 +23,8 @@ abstract class Config {
   static Uri get(Uri host) => root(host);
 
   static Uri root(Uri host) =>
-      Uri.parse('${util.removeTailingSlashes(host)}/${nameSpace}');
+      Uri.parse('${util.removeTailingSlashes(host)}/$nameSpace');
 
   static Uri register(Uri host) =>
-      Uri.parse('${util.removeTailingSlashes(host)}/${nameSpace}/register');
+      Uri.parse('${util.removeTailingSlashes(host)}/$nameSpace/register');
 }

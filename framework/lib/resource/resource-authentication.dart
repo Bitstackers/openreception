@@ -27,8 +27,8 @@ abstract class Authentication {
    */
   static Uri tokenToUser(Uri host, String requestedToken) =>
       Uri.parse('${util.removeTailingSlashes(host)}'
-          '/${nameSpace}'
-          '/${requestedToken}');
+          '/$nameSpace'
+          '/$requestedToken');
 
   /**
    * Resource that checks if a is user currently associated with a token.
@@ -36,7 +36,7 @@ abstract class Authentication {
    */
   static Uri validate(Uri host, String requestedToken) =>
       Uri.parse('${util.removeTailingSlashes(host)}'
-          '/${nameSpace}'
-          '/${requestedToken}'
+          '/$nameSpace'
+          '/$requestedToken'
           '/validate');
 }

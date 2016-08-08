@@ -247,10 +247,12 @@ class CdrEntry {
     if (shortDestination.isEmpty) {
       if (rid != 0) {
         throw new PriceNotFound(
-            'Destination "${destination}" not found in callPrices map for call ${uuid}');
+            'Destination "$destination" not found in callPrices map '
+            'for call $uuid');
       } else {
         throw new UnknownDestination(
-            'Destination "${destination}" not found in callPrices map AND no rid found for call ${uuid}');
+            'Destination "$destination" not found in callPrices map '
+            'AND no rid found for call $uuid');
       }
     }
 

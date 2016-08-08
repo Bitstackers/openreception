@@ -20,15 +20,15 @@ abstract class Notification {
           'expected "ws" or "wss" scheme');
     }
 
-    return Uri.parse('${host}/notifications');
+    return Uri.parse('$host/notifications');
   }
 
-  static Uri send(Uri host) => Uri.parse('${host}/send');
+  static Uri send(Uri host) => Uri.parse('$host/send');
 
-  static Uri broadcast(Uri host) => Uri.parse('${host}/broadcast');
+  static Uri broadcast(Uri host) => Uri.parse('$host/broadcast');
 
-  static Uri clientConnections(Uri host) => Uri.parse('${host}/connection');
+  static Uri clientConnections(Uri host) => Uri.parse('$host/connection');
 
   static Uri clientConnection(Uri host, int uid) =>
-      Uri.parse('${host}/connection/${uid}');
+      Uri.parse('$host/connection/$uid');
 }

@@ -30,24 +30,24 @@ abstract class ResourceNotification {
 
   static void notifications() => expect(
       Resource.Notification.notifications(_notificationSocket),
-      equals(Uri.parse('${_notificationSocket}/notifications')));
+      equals(Uri.parse('$_notificationSocket/notifications')));
 
   static void notificationsBadSchema() => expect(
       () => Resource.Notification.notifications(_notificationService),
       throwsA(new isInstanceOf<ArgumentError>()));
 
   static void send() => expect(Resource.Notification.send(_notificationService),
-      equals(Uri.parse('${_notificationService}/send')));
+      equals(Uri.parse('$_notificationService/send')));
 
   static void clientConnection() => expect(
       Resource.Notification.clientConnection(_notificationService, 123),
-      equals(Uri.parse('${_notificationService}/connection/123')));
+      equals(Uri.parse('$_notificationService/connection/123')));
 
   static void clientConnections() => expect(
       Resource.Notification.clientConnections(_notificationService),
-      equals(Uri.parse('${_notificationService}/connection')));
+      equals(Uri.parse('$_notificationService/connection')));
 
   static void broadcast() => expect(
       Resource.Notification.broadcast(_notificationService),
-      equals(Uri.parse('${_notificationService}/broadcast')));
+      equals(Uri.parse('$_notificationService/broadcast')));
 }

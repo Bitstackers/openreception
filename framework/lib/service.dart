@@ -46,4 +46,4 @@ Uri _appendToken(Uri uri, String token) =>
     _appendParameter(uri, 'token', token);
 
 Uri _appendParameter(Uri uri, String key, dynamic value) =>
-    Uri.parse('${uri}${uri.queryParameters.isEmpty ? '?' : '&'}$key=$value');
+    Uri.parse('$uri${uri.queryParameters.isEmpty ? '?' : '&'}$key=$value');

@@ -36,13 +36,13 @@ abstract class ResourceCalendar {
       equals(Uri.parse('$_host/calendar/c:2/2/change')));
 
   static void single() => expect(Resource.Calendar.single(_host, 3, owner),
-      equals(Uri.parse('${_host}/calendar/c:2/3')));
+      equals(Uri.parse('$_host/calendar/c:2/3')));
 
   static void listReception() => expect(
       Resource.Calendar.ownerBase(_host, new Model.OwningReception(2)),
-      equals(Uri.parse('${_host}/calendar/r:2')));
+      equals(Uri.parse('$_host/calendar/r:2')));
 
   static void listContact() => expect(
       Resource.Calendar.ownerBase(_host, new Model.OwningContact(4)),
-      equals(Uri.parse('${_host}/calendar/c:4')));
+      equals(Uri.parse('$_host/calendar/c:4')));
 }

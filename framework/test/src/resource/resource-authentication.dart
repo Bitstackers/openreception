@@ -25,9 +25,9 @@ abstract class ResourceAuthentication {
 
   static void userOf() => expect(
       Resource.Authentication.tokenToUser(authServer, 'testtest'),
-      equals(Uri.parse('${authServer}/token/testtest')));
+      equals(Uri.parse('$authServer/token/testtest')));
 
   static void validate() => expect(
       Resource.Authentication.validate(authServer, 'testtest'),
-      equals(Uri.parse('${authServer}/token/testtest/validate')));
+      equals(Uri.parse('$authServer/token/testtest/validate')));
 }

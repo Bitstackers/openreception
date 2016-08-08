@@ -78,7 +78,7 @@ class MessageQueue implements storage.MessageQueue {
    */
   @override
   Future remove(int mqid) async {
-    final File file = new File('$path/${mqid}.json');
+    final File file = new File('$path/$mqid.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();

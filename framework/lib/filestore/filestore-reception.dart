@@ -133,10 +133,10 @@ class Reception implements storage.Reception {
    */
   @override
   Future<model.Reception> get(int id) async {
-    final File file = new File('$path/${id}/reception.json');
+    final File file = new File('$path/$id/reception.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file with name ${id}');
+      throw new storage.NotFound('No file with name $id');
     }
 
     try {
@@ -193,7 +193,7 @@ class Reception implements storage.Reception {
    */
   @override
   Future remove(int rid, model.User modifier) async {
-    final Directory receptionDir = new Directory('$path/${rid}');
+    final Directory receptionDir = new Directory('$path/$rid');
 
     if (!receptionDir.existsSync()) {
       throw new storage.NotFound();
@@ -209,11 +209,11 @@ class Reception implements storage.Reception {
     }
 
     if (logChanges) {
-      new ChangeLogger('$path/${rid}').add(
+      new ChangeLogger('$path/$rid').add(
           new model.ReceptionChangelogEntry.delete(modifier.reference, rid));
     }
 
-    await receptionDir.rename(trashDir.path + '/${rid}');
+    await receptionDir.rename(trashDir.path + '/$rid');
 
     _changeBus.fire(new event.ReceptionChange.delete(rid, modifier.id));
   }

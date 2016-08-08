@@ -23,13 +23,13 @@ abstract class Contact {
   /**
    *
    */
-  static Uri single(Uri host, int cid) => Uri.parse('${root(host)}/${cid}');
+  static Uri single(Uri host, int cid) => Uri.parse('${root(host)}/$cid');
 
   /**
    *
    */
   static Uri root(Uri host) =>
-      Uri.parse('${util.removeTailingSlashes(host)}/${nameSpace}');
+      Uri.parse('${util.removeTailingSlashes(host)}/$nameSpace');
 
   /**
    *
@@ -40,37 +40,37 @@ abstract class Contact {
    *
    */
   static Uri singleByReception(Uri host, int cid, int rid) =>
-      Uri.parse('${root(host)}/${cid}/reception/${rid}');
+      Uri.parse('${root(host)}/$cid/reception/$rid');
 
   /**
    *
    */
   static Uri listByReception(Uri host, int rid) =>
-      Uri.parse('${root(host)}/list/reception/${rid}');
+      Uri.parse('${root(host)}/list/reception/$rid');
 
   /**
    *
    */
   static Uri receptions(Uri host, int rid) =>
-      Uri.parse('${root(host)}/${rid}/reception');
+      Uri.parse('${root(host)}/$rid/reception');
 
   /**
    *
    */
   static Uri organizations(Uri host, int cid) =>
-      Uri.parse('${root(host)}/${cid}/organization');
+      Uri.parse('${root(host)}/$cid/organization');
 
   /**
    *
    */
   static Uri colleagues(Uri host, int cid) =>
-      Uri.parse('${root(host)}/${cid}/colleagues');
+      Uri.parse('${root(host)}/$cid/colleagues');
 
   /**
    *
    */
   static Uri organizationContacts(Uri host, int oid) =>
-      Uri.parse('$host/contact/organization/${oid}');
+      Uri.parse('$host/contact/organization/$oid');
 
   /**
    *
@@ -80,9 +80,9 @@ abstract class Contact {
       return Uri.parse('$host/contact/history');
     } else {
       if (rid == null) {
-        return Uri.parse('$host/contact/${cid}/history');
+        return Uri.parse('$host/contact/$cid/history');
       } else {
-        return Uri.parse('$host/contact/${cid}/reception/${rid}/history');
+        return Uri.parse('$host/contact/$cid/reception/$rid/history');
       }
     }
   }
@@ -91,11 +91,11 @@ abstract class Contact {
    *
    */
   static Uri changelog(Uri host, int cid) =>
-      Uri.parse('${host}/contact/${cid}/changelog');
+      Uri.parse('$host/contact/$cid/changelog');
 
   /**
    *
    */
   static Uri receptionChangelog(Uri host, int cid) =>
-      Uri.parse('${host}/contact/${cid}/reception/changelog');
+      Uri.parse('$host/contact/$cid/reception/changelog');
 }

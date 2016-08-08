@@ -94,7 +94,7 @@ String humanReadableTimestamp(DateTime timestamp, WeekDays weekDays) {
 
   if (new DateFormat.yMd().format(timestamp) !=
       new DateFormat.yMd().format(now)) {
-    sb.write('${weekDays.name(timestamp.weekday)} ${day}/${month}');
+    sb.write('${weekDays.name(timestamp.weekday)} $day/$month');
     space = ' ';
   }
 
@@ -103,7 +103,7 @@ String humanReadableTimestamp(DateTime timestamp, WeekDays weekDays) {
     space = ' ';
   }
 
-  sb.write('${space}${hourMinute}');
+  sb.write('$space$hourMinute');
 
   return sb.toString();
 }

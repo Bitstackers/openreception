@@ -189,7 +189,7 @@ class AgentHistory {
   AgentHistory._internal(this.path, this._userStore, this._uidMapFile,
       this._eventDumpDir, Stream<event.Event> notifications) {
     if (!new Directory(path).existsSync()) {
-      _log.info('Creating directory ${path}');
+      _log.info('Creating directory $path');
       new Directory(path).createSync();
     }
 

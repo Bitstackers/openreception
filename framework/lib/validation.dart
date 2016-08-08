@@ -236,7 +236,7 @@ List<FormatException> validateUser(User user) {
 
   user.groups.forEach((String group) {
     if (UserGroups.isValid(group)) {
-      errors.add(new FormatException('Invalid group: ${group}'));
+      errors.add(new FormatException('Invalid group: $group'));
     }
   });
 

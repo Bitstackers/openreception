@@ -19,7 +19,7 @@ part of openreception.framework.resource;
  */
 abstract class DistributionList {
   static Uri ofContact(Uri host, int rid, int cid) =>
-      Uri.parse('${host}/contact/${cid}/reception/${rid}/dlist');
+      Uri.parse('$host/contact/$cid/reception/$rid/dlist');
 
-  static Uri single(Uri host, int did) => Uri.parse('${host}/dlist/${did}');
+  static Uri single(Uri host, int did) => Uri.parse('$host/dlist/$did');
 }

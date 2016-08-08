@@ -61,16 +61,16 @@ class OpeningHour {
       errors.add(new FormatException('fromDay is null'));
     } else if (fromDay != null && toDay != null) {
       if (fromDay.index > toDay.index) {
-        errors.add(new FormatException(
-            'FromDay (${fromDay}) is before toDay (${toDay})'));
+        errors.add(
+            new FormatException('FromDay ($fromDay) is before toDay ($toDay)'));
       } else if (fromDay.index == toDay.index) {
         if (fromHour > toHour) {
           errors.add(new FormatException(
-              'FromHour (${fromHour}) is before toDay (${toHour})'));
+              'FromHour ($fromHour) is before toDay ($toHour)'));
         } else if (fromHour == toHour) {
           if (fromMinute > toMinute) {
             errors.add(new FormatException(
-                'fromMinute (${fromHour}) is before fromMinute (${toHour})'));
+                'fromMinute ($fromHour) is before fromMinute ($toHour)'));
           }
         }
       }

@@ -21,7 +21,7 @@ abstract class Endpoint {
   static String nameSpace = 'endpoint';
 
   static Uri ofContact(Uri host, int rid, int cid) =>
-      Uri.parse('${host}/contact/${cid}/reception/${rid}/endpoint');
+      Uri.parse('$host/contact/$cid/reception/$rid/endpoint');
 
-  static Uri single(Uri host, int eid) => Uri.parse('${host}/endpoint/${eid}');
+  static Uri single(Uri host, int eid) => Uri.parse('$host/endpoint/$eid');
 }

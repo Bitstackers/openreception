@@ -31,21 +31,21 @@ abstract class ResourceContact {
   static final Uri _host = Uri.parse('http://localhost:4010');
 
   static void receptions() => expect(Resource.Contact.receptions(_host, 999),
-      equals(Uri.parse('${_host}/contact/999/reception')));
+      equals(Uri.parse('$_host/contact/999/reception')));
 
   static void organizations() => expect(
       Resource.Contact.organizations(_host, 999),
-      equals(Uri.parse('${_host}/contact/999/organization')));
+      equals(Uri.parse('$_host/contact/999/organization')));
 
   static void single() => expect(Resource.Contact.single(_host, 999),
-      equals(Uri.parse('${_host}/contact/999')));
+      equals(Uri.parse('$_host/contact/999')));
 
-  static void list() => expect(
-      Resource.Contact.list(_host), equals(Uri.parse('${_host}/contact')));
+  static void list() =>
+      expect(Resource.Contact.list(_host), equals(Uri.parse('$_host/contact')));
 
   static void singleByReception() => expect(
       Resource.Contact.singleByReception(_host, 999, 456),
-      equals(Uri.parse('${_host}/contact/999/reception/456')));
+      equals(Uri.parse('$_host/contact/999/reception/456')));
 
   static void listByReception() => expect(
       Resource.Contact.listByReception(_host, 99),

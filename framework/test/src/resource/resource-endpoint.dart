@@ -25,8 +25,8 @@ abstract class ResourceEndpoint {
 
   static void ofContact() => expect(
       Resource.Endpoint.ofContact(endpointServer, 4, 1),
-      equals(Uri.parse('${endpointServer}/contact/1/reception/4/endpoint')));
+      equals(Uri.parse('$endpointServer/contact/1/reception/4/endpoint')));
 
   static void single() => expect(Resource.Endpoint.single(endpointServer, 99),
-      equals(Uri.parse('${endpointServer}/endpoint/99')));
+      equals(Uri.parse('$endpointServer/endpoint/99')));
 }

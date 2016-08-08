@@ -23,5 +23,5 @@ abstract class ResourceConfig {
   static final Uri configServer = Uri.parse('http://localhost:4080');
 
   static void get() => expect(Resource.Config.get(configServer),
-      equals(Uri.parse('${configServer}/configuration')));
+      equals(Uri.parse('$configServer/configuration')));
 }

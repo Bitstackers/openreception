@@ -34,7 +34,7 @@ abstract class CallState {
  * unique id (uuid) that may be used as a handle for REST service method calls.
  */
 class Call {
-  static const String className = '${libraryName}.Call';
+  static const String className = '$libraryName.Call';
   static final Logger _log = new Logger(Call.className);
 
   static final Call noCall = new Call.empty(noId);
@@ -106,7 +106,7 @@ class Call {
 
     _state = newState;
 
-    _log.finest('UUID: ${_id}: ${lastState} => ${newState}');
+    _log.finest('UUID: $_id: $lastState => $newState');
 
     if (lastState == CallState.queued) {
       notifyEvent(new _event.QueueLeave(this));
@@ -242,7 +242,7 @@ class Call {
   @override
   String toString() => this == noCall
       ? 'no Call'
-      : 'CallId: ${_id}, state: ${_state}, destination: ${destination}';
+      : 'CallId: $_id, state: $_state, destination: $destination';
 
   /**
    *
@@ -269,7 +269,7 @@ class Call {
    */
   static void validateID(String callId) {
     if (callId == null || callId.isEmpty) {
-      throw new FormatException('Invalid CallId: ${callId}');
+      throw new FormatException('Invalid CallId: $callId');
     }
   }
 }

@@ -22,11 +22,10 @@ abstract class User {
   static const String _group = 'group';
   static const String _identity = 'identity';
 
-  static Uri single(Uri host, int userID) =>
-      Uri.parse('${root(host)}/${userID}');
+  static Uri single(Uri host, int userID) => Uri.parse('${root(host)}/$userID');
 
   static Uri singleByIdentity(Uri host, String identity) =>
-      Uri.parse('${root(host)}/identity/${identity}');
+      Uri.parse('${root(host)}/identity/$identity');
 
   static Uri root(Uri host) =>
       Uri.parse('${util.removeTailingSlashes(host)}/$_ns');
@@ -46,7 +45,7 @@ abstract class User {
       Uri.parse('$host/$_ns/$userID/$_identity');
 
   static Uri userIndentity(Uri host, int userID, String identity) =>
-      Uri.parse('$host/$_ns/$userID/$_identity/${identity}');
+      Uri.parse('$host/$_ns/$userID/$_identity/$identity');
 
   static Uri userState(Uri host, int uid) => Uri.parse('$host/$_ns/$uid/state');
 
@@ -67,5 +66,5 @@ abstract class User {
    *
    */
   static Uri changelog(Uri host, int uid) =>
-      Uri.parse('${host}/$_ns/${uid}/changelog');
+      Uri.parse('$host/$_ns/$uid/changelog');
 }

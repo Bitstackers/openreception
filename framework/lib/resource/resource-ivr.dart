@@ -29,13 +29,13 @@ abstract class Ivr {
    *
    */
   static Uri single(Uri host, String menuName) =>
-      Uri.parse('$host/$_ns/${menuName}');
+      Uri.parse('$host/$_ns/$menuName');
 
   /**
    *
    */
   static Uri deploy(Uri host, String menuName) =>
-      Uri.parse('$host/$_ns/${menuName}/deploy');
+      Uri.parse('$host/$_ns/$menuName/deploy');
 
   /**
    *
@@ -52,5 +52,5 @@ abstract class Ivr {
    *
    */
   static Uri changelog(Uri host, String menuName) =>
-      Uri.parse('${host}/$_ns/${menuName}/changelog');
+      Uri.parse('$host/$_ns/$menuName/changelog');
 }

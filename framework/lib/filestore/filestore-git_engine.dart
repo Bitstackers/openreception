@@ -241,7 +241,7 @@ class GitEngine {
     }
 
     if (result.exitCode != 0) {
-      _log.shout('Failed to get status of ${filePath}');
+      _log.shout('Failed to get status of $filePath');
       throw new storage.ServerError();
     }
 
@@ -365,7 +365,7 @@ class GitEngine {
     }
 
     if (result.exitCode != 0) {
-      _log.shout('Failed to add ${path}');
+      _log.shout('Failed to add $path');
       throw new storage.ServerError();
     }
   }

@@ -42,12 +42,12 @@ class TemplateEmail extends Template {
     sb.write(
         'Til ${_message.context.contactName} (${_message.context.receptionName}).<br><br>');
     sb.write(
-        'Der er besked fra ${_message.callerInfo.name}${company.isEmpty ? '' : ', ${company}'}<br><br>');
+        'Der er besked fra ${_message.callerInfo.name}${company.isEmpty ? '' : ', $company'}<br><br>');
     sb.write(
-        'Tlf. ${_message.callerInfo.phone} ${extension.isEmpty ? '' : 'ext: ${extension}'}<br>');
+        'Tlf. ${_message.callerInfo.phone} ${extension.isEmpty ? '' : 'ext: $extension'}<br>');
     sb.write('Mob. ${_message.callerInfo.cellPhone}<br><br>');
     if (booleanFields.isNotEmpty) {
-      sb.write('${_booleanFieldsHtml}<br>');
+      sb.write('$_booleanFieldsHtml<br>');
     }
     sb.write('Vedr.:<br>');
     sb.write('${_message.body.trim().replaceAll('\n', '<br>')}<br><br>');
@@ -74,12 +74,12 @@ class TemplateEmail extends Template {
 
     sb.write('Til ${_message.context.contactName}.\n\n');
     sb.write(
-        'Der er besked fra ${_message.callerInfo.name}${company.isEmpty ? '' : ', ${company}'}\n\n');
+        'Der er besked fra ${_message.callerInfo.name}${company.isEmpty ? '' : ', $company'}\n\n');
     sb.write(
-        'Tlf. ${_message.callerInfo.phone} ${extension.isEmpty ? '' : 'ext: ${extension}'}\n');
+        'Tlf. ${_message.callerInfo.phone} ${extension.isEmpty ? '' : 'ext: $extension'}\n');
     sb.write('Mob. ${_message.callerInfo.cellPhone}\n\n');
     if (booleanFields.isNotEmpty) {
-      sb.write('${booleanFields}\n');
+      sb.write('$booleanFields\n');
     }
     sb.write('Vedr.:\n');
     sb.write('${_message.body}\n\n');

@@ -23,28 +23,28 @@ abstract class Reception {
   /**
    *
    */
-  static Uri single(Uri host, int rid) => Uri.parse('${root(host)}/${rid}');
+  static Uri single(Uri host, int rid) => Uri.parse('${root(host)}/$rid');
 
   /**
    *
    */
   static Uri extensionOf(Uri host, int rid) =>
-      Uri.parse('${root(host)}/${rid}/extension');
+      Uri.parse('${root(host)}/$rid/extension');
 
   /**
    *
    */
   static Uri byExtension(Uri host, String extension) =>
-      Uri.parse('${root(host)}/extension/${extension}');
+      Uri.parse('${root(host)}/extension/$extension');
 
   /**
    *
    */
   static Uri root(Uri host) =>
-      Uri.parse('${util.removeTailingSlashes(host)}/${_ns}');
+      Uri.parse('${util.removeTailingSlashes(host)}/$_ns');
 
   /**
-   * 
+   *
    */
   static Uri list(Uri host) => Uri.parse('${root(host)}');
 
@@ -63,5 +63,5 @@ abstract class Reception {
    *
    */
   static Uri changelog(Uri host, int rid) =>
-      Uri.parse('${host}/$_ns/${rid}/changelog');
+      Uri.parse('$host/$_ns/$rid/changelog');
 }

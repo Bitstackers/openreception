@@ -96,7 +96,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
    */
   @override
   Future<model.ReceptionDialplan> get(String extension) async {
-    final File file = new File('$path/${extension}/dialplan.json');
+    final File file = new File('$path/$extension/dialplan.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound('No file with name ${file.path}');
@@ -167,9 +167,9 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
    */
   @override
   Future remove(String extension, model.User modifier) async {
-    final Directory dialplanDir = new Directory('$path/${extension}');
+    final Directory dialplanDir = new Directory('$path/$extension');
 
-    final File file = new File('$path/${extension}/dialplan.json');
+    final File file = new File('$path/$extension/dialplan.json');
 
     if (!file.existsSync()) {
       throw new storage.NotFound();
@@ -189,7 +189,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
       }
 
       await dialplanDir.rename(trashDir.path +
-          '/${extension}-${new DateTime.now().millisecondsSinceEpoch}');
+          '/$extension-${new DateTime.now().millisecondsSinceEpoch}');
     }
 
     _changeBus.fire(new event.DialplanChange.delete(extension, modifier.id));

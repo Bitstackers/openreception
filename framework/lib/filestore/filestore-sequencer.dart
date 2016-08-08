@@ -40,7 +40,7 @@ class Sequencer {
    *
    */
   Sequencer(String this.path, {int explicitId: 0}) {
-    _sequencerFile = new File('${path}/.or_filestore-sequencer');
+    _sequencerFile = new File('$path/.or_filestore-sequencer');
     if (!_sequencerFile.existsSync()) {
       _log.info('Creating new sequencer file ${_sequencerFile.path}');
       _currentId = _findHighestId();
@@ -49,7 +49,7 @@ class Sequencer {
     } else {
       _checkForInconsistencies();
     }
-    _log.info('Sequencer ID: ${currentId}');
+    _log.info('Sequencer ID: $currentId');
   }
 
   /**

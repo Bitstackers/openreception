@@ -21,7 +21,7 @@ abstract class PeerAccount {
   static Uri list(Uri host) => Uri.parse('$host/peeraccount');
 
   static Uri single(Uri host, String accountName) =>
-      Uri.parse('$host/peeraccount/${accountName}');
+      Uri.parse('$host/peeraccount/$accountName');
 
   static Uri deploy(Uri host, int uid) =>
       Uri.parse('$host/peeraccount/user/$uid/deploy');

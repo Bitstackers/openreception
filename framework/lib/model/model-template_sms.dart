@@ -28,5 +28,5 @@ class TemplateSMS extends Template {
       '${_message.callerInfo.phone.isEmpty ? '' : 'Tlf. ${_message.callerInfo.phone}  ${_message.callerInfo.localExtension.isEmpty ? '' : '(${_message.callerInfo.localExtension})'}'}\n'
       '${_message.callerInfo.cellPhone.isEmpty ? '' : 'Mob. ${_message.callerInfo.cellPhone}'}\n'
       '${_message.body}\n'
-      '${_booleanFieldsText}';
+      '$_booleanFieldsText';
 }

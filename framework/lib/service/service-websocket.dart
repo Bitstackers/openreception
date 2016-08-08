@@ -52,7 +52,7 @@ abstract class WebSocket {
         break;
 
       default:
-        throw new StateError('Status (${responseCode}):');
+        throw new StateError('Status ($responseCode):');
     }
   }
 }
