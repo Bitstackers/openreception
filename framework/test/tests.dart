@@ -24,8 +24,7 @@ import 'package:openreception.framework/dialplan_tools.dart' as dpTools;
 //import '../lib/service.dart'  as Service;
 
 import 'package:logging/logging.dart';
-import 'package:junitconfiguration/junitconfiguration.dart';
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:xml/xml.dart' as xml;
 
 part 'src/bus.dart';
@@ -88,14 +87,9 @@ part 'src/event.dart';
 part 'src/event-calendar_change.dart';
 part 'src/event-message_change.dart';
 
-void main(List<String> arguments) {
+void main() {
   Logger.root.level = Level.FINEST;
-  Logger.root.onRecord
-      .listen((LogRecord record) => logMessage(record.toString()));
-
-  if (!arguments.contains('text-output')) {
-    JUnitConfiguration.install();
-  }
+  Logger.root.onRecord.listen((LogRecord record) => print(record.toString()));
 
   testModelAction();
   testModelEnqueue();

@@ -7,9 +7,10 @@ upgrade-packages:
 	@pub upgrade
 
 tests: pubspec.lock
-	@echo Test output will be written to results.xml
-	@echo
-	@dart test/tests.dart > results.xml
+	pub run test test/tests.dart
+
+tests-to-json-file:
+	pub run test test/tests.dart --reporter json > test-report.json
 
 tests-text-output:
 	@dart test/tests.dart text-output
