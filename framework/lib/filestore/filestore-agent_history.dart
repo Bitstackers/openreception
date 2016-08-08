@@ -254,6 +254,7 @@ class AgentHistory {
         return '?';
       }
     }
+    return _uidNameCache[uid];
   }
 
   /**
