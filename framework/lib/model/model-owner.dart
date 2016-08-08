@@ -12,14 +12,15 @@
 */
 part of openreception.framework.model;
 
-/**
- * Model super-class representing an owner. Direct instances of this class
- * represents no owner, as it has no link to other object types.
- */
+/// Local serialization keys.
+const String _noneKey = 'none';
+const String _contactKey = 'c';
+const String _receptionKey = 'r';
+
+/// Model super-class representing an owner. Direct instances of this class
+/// represents no owner, as it has no link to other object types.
 class Owner {
   static final Owner none = const Owner();
-  static const String _type = 'none';
-  String get type => _type;
 
   int get id => 0;
 
@@ -28,11 +29,11 @@ class Owner {
    */
   factory Owner.parse(String buffer) {
     final key = buffer.split(':').first;
-    if (key == OwningReception._type) {
+    if (key == _receptionKey) {
       return new OwningReception(int.parse(buffer.split(':').last));
-    } else if (key == OwningContact._type) {
+    } else if (key == _contactKey) {
       return new OwningContact(int.parse(buffer.split(':').last));
-    } else if (key == Owner._type) {
+    } else if (key == _noneKey) {
       return none;
     } else {
       return none;
@@ -43,8 +44,7 @@ class Owner {
    *
    */
   @override
-  bool operator ==(Object other) =>
-      other is Owner && id == other.id && type == other.type;
+  bool operator ==(Object other) => other is Owner && id == other.id;
 
   /**
    *
@@ -60,7 +60,7 @@ class Owner {
    *
    */
   @override
-  String toString() => 'none:';
+  String toString() => '$_noneKey:';
 }
 
 /**
@@ -70,9 +70,6 @@ class Owner {
 class OwningReception extends Owner {
   @override
   final int id;
-  static const String _type = 'r';
-  @override
-  String get type => _type;
 
   const OwningReception(this.id);
 
@@ -86,7 +83,7 @@ class OwningReception extends Owner {
    *
    */
   @override
-  String toString() => '$type:$id';
+  String toString() => '$_receptionKey:$id';
 }
 
 /**
@@ -96,9 +93,6 @@ class OwningReception extends Owner {
 class OwningContact extends Owner {
   @override
   final int id;
-  static final String _type = 'c';
-  @override
-  String get type => _type;
 
   const OwningContact(this.id);
 
@@ -112,5 +106,5 @@ class OwningContact extends Owner {
    *
    */
   @override
-  String toString() => '$type:$id';
+  String toString() => '$_contactKey:$id';
 }
