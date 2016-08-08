@@ -54,8 +54,6 @@ abstract class Action {
       default:
         throw new FormatException('Unknown keyword', consumed.iden);
     }
-
-    throw new FormatException('Invalid buffer', buffer);
   }
 
   /**
