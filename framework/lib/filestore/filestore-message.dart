@@ -33,7 +33,7 @@ class Message implements storage.Message {
 
   int get _nextId => _sequencer.nextInt();
   /**
-   * TODO: Remove git support.
+   * 
    */
   Message(String this.path, [GitEngine this._git]) {
     if (!new Directory(path).existsSync()) {
