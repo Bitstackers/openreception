@@ -25,7 +25,7 @@ class IvrReceptionTransfer implements IvrEntry {
 
   @override
   bool operator ==(Object other) =>
-      other is IvrEntry &&
+      other is IvrReceptionTransfer &&
       digits == other.digits &&
-      transfer == (other as IvrReceptionTransfer).transfer;
+      transfer == other.transfer;
 }
