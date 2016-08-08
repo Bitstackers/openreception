@@ -16,6 +16,7 @@ part of openreception.framework.service.html;
 class WebSocketClient extends service.WebSocket {
   html.WebSocket _websocket;
 
+  @override
   Future<service.WebSocket> connect(Uri path) {
     this._websocket = new html.WebSocket(path.toString());
     Completer<service.WebSocket> ready = new Completer();
@@ -31,5 +32,6 @@ class WebSocketClient extends service.WebSocket {
 
   void _onMessage(html.MessageEvent e) => this.onMessage(e.data.toString());
 
+  @override
   Future close() => new Future.sync(() => this._websocket.close());
 }

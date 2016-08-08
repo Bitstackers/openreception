@@ -56,11 +56,13 @@ class ReceptionTransfer extends Action {
   /**
    * Returns a string representtaion of the object.
    */
+  @override
   String toString() => 'Transfer to reception $extension ($note)';
 
   /**
    * JSON serialization function.
    */
+  @override
   String toJson() => '${Key.reception} $extension'
       '${note.isNotEmpty ? ' ($note)': ''}';
 }

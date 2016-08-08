@@ -28,6 +28,7 @@ class Client extends service.WebService {
    * Retrives [resource] using HTTP GET.
    * Throws subclasses of [StorageException] upon failure.
    */
+  @override
   Future<String> get(Uri resource) async {
     io.HttpClientRequest request = await client.getUrl(resource);
     io.HttpClientResponse response = await request.close();
@@ -39,6 +40,7 @@ class Client extends service.WebService {
    * Retrives [resource] using HTTP PUT, sending [payload].
    * Throws subclasses of [StorageException] upon failure.
    */
+  @override
   Future<String> put(Uri resource, String payload) async {
     io.HttpClientRequest request = await client.putUrl(resource)
       ..headers.contentType = _contentTypeJson
@@ -52,6 +54,7 @@ class Client extends service.WebService {
    * Retrives [resource] using HTTP POST, sending [payload].
    * Throws subclasses of [StorageException] upon failure.
    */
+  @override
   Future<String> post(Uri resource, String payload) async {
     io.HttpClientRequest request = await client.postUrl(resource)
       ..headers.contentType = _contentTypeJson
@@ -78,6 +81,7 @@ class Client extends service.WebService {
    * Retrives [resource] using HTTP DELETE.
    * Throws subclasses of [StorageException] upon failure.
    */
+  @override
   Future<String> delete(Uri resource) async {
     io.HttpClientRequest request = await client.deleteUrl(resource);
     io.HttpClientResponse response = await request.close();

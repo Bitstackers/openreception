@@ -65,6 +65,7 @@ class TemplateEmail extends Template {
   /**
    * Return the [Message] body as text.
    */
+  @override
   String get bodyText {
     final StringBuffer sb = new StringBuffer();
     final String booleanFields = _booleanFieldsText;

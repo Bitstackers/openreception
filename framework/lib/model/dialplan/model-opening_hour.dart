@@ -165,6 +165,7 @@ class OpeningHour {
       '${fromMinute < 10 ? '0$fromMinute' : fromMinute}'
       '-$toHour:${toMinute < 10 ? '0$toMinute' : toMinute}';
 
+  @override
   String toString() => '${_trimWday(fromDay)}'
       '${toDay != fromDay ? '-${_trimWday(toDay)}' : ''} $_stringifiedTime';
 

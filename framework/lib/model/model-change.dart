@@ -50,6 +50,7 @@ class CalendarChangelogEntry implements ChangelogEntry {
   /**
    *
    */
+  @override
   Map toJson() => {
         'change': changeTypeToString(changeType),
         'timestamp': util.dateTimeToUnixTimestamp(timestamp),
@@ -95,6 +96,7 @@ class ContactChangelogEntry implements ChangelogEntry {
   /**
    *
    */
+  @override
   Map toJson() => {
         'change': changeTypeToString(changeType),
         'modifier': util.dateTimeToUnixTimestamp(timestamp),
@@ -142,6 +144,7 @@ class ReceptionDataChangelogEntry implements ChangelogEntry {
   /**
    *
    */
+  @override
   Map toJson() => {
         'change': changeTypeToString(changeType),
         'timestamp': util.dateTimeToUnixTimestamp(timestamp),
@@ -187,6 +190,7 @@ class IvrChangelogEntry implements ChangelogEntry {
   /**
    *
    */
+  @override
   Map toJson() => {
         'change': changeTypeToString(changeType),
         'timestamp': util.dateTimeToUnixTimestamp(timestamp),
@@ -232,6 +236,7 @@ class DialplanChangelogEntry implements ChangelogEntry {
   /**
    *
    */
+  @override
   Map toJson() => {
         'change': changeTypeToString(changeType),
         'timestamp': util.dateTimeToUnixTimestamp(timestamp),
@@ -277,6 +282,7 @@ class ReceptionChangelogEntry implements ChangelogEntry {
   /**
    *
    */
+  @override
   Map toJson() => {
         'change': changeTypeToString(changeType),
         'timestamp': util.dateTimeToUnixTimestamp(timestamp),
@@ -322,6 +328,7 @@ class OrganizationChangelogEntry implements ChangelogEntry {
   /**
    *
    */
+  @override
   Map toJson() => {
         'change': changeTypeToString(changeType),
         'timestamp': util.dateTimeToUnixTimestamp(timestamp),
@@ -367,6 +374,7 @@ class UserChangelogEntry implements ChangelogEntry {
   /**
    *
    */
+  @override
   Map toJson() => {
         'change': changeTypeToString(changeType),
         'timestamp': util.dateTimeToUnixTimestamp(timestamp),
@@ -541,7 +549,9 @@ class Commit {
  *
  */
 class IvrChange implements ObjectChange {
+  @override
   final ChangeType changeType;
+  @override
   ObjectType get objectType => ObjectType.ivrMenu;
   final String menuName;
 
@@ -566,6 +576,7 @@ class IvrChange implements ObjectChange {
   /**
    *
    */
+  @override
   Map toJson() => {
         key.change: changeTypeToString(changeType),
         key.type: objectTypeToString(objectType),
@@ -577,7 +588,9 @@ class IvrChange implements ObjectChange {
  *
  */
 class ReceptionDialplanChange implements ObjectChange {
+  @override
   final ChangeType changeType;
+  @override
   ObjectType get objectType => ObjectType.dialplan;
   final String extension;
 
@@ -602,6 +615,7 @@ class ReceptionDialplanChange implements ObjectChange {
   /**
    *
    */
+  @override
   Map toJson() => {
         key.change: changeTypeToString(changeType),
         key.type: objectTypeToString(objectType),
@@ -613,7 +627,9 @@ class ReceptionDialplanChange implements ObjectChange {
  *
  */
 class MessageChange implements ObjectChange {
+  @override
   final ChangeType changeType;
+  @override
   ObjectType get objectType => ObjectType.message;
   final int mid;
 
@@ -637,6 +653,7 @@ class MessageChange implements ObjectChange {
   /**
    *
    */
+  @override
   Map toJson() => {
         key.change: changeTypeToString(changeType),
         key.type: objectTypeToString(objectType),
@@ -648,7 +665,9 @@ class MessageChange implements ObjectChange {
  *
  */
 class OrganizationChange implements ObjectChange {
+  @override
   final ChangeType changeType;
+  @override
   ObjectType get objectType => ObjectType.organization;
   final int oid;
 
@@ -673,6 +692,7 @@ class OrganizationChange implements ObjectChange {
   /**
    *
    */
+  @override
   Map toJson() => {
         key.change: changeTypeToString(changeType),
         key.type: objectTypeToString(objectType),
@@ -684,7 +704,9 @@ class OrganizationChange implements ObjectChange {
  *
  */
 class ReceptionChange implements ObjectChange {
+  @override
   final ChangeType changeType;
+  @override
   ObjectType get objectType => ObjectType.reception;
   final int rid;
 
@@ -708,6 +730,7 @@ class ReceptionChange implements ObjectChange {
   /**
    *
    */
+  @override
   Map toJson() => {
         key.change: changeTypeToString(changeType),
         key.type: objectTypeToString(objectType),

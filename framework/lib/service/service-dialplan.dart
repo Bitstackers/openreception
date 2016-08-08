@@ -35,6 +35,7 @@ class RESTDialplanStore implements storage.ReceptionDialplan {
   /**
    *
    */
+  @override
   Future<model.ReceptionDialplan> create(model.ReceptionDialplan rdp,
       [model.User user]) {
     Uri url = resource.ReceptionDialplan.list(host);
@@ -49,6 +50,7 @@ class RESTDialplanStore implements storage.ReceptionDialplan {
   /**
    *
    */
+  @override
   Future<model.ReceptionDialplan> get(String extension) {
     Uri url = resource.ReceptionDialplan.single(host, extension);
     url = _appendToken(url, token);
@@ -62,6 +64,7 @@ class RESTDialplanStore implements storage.ReceptionDialplan {
   /**
    *
    */
+  @override
   Future<Iterable<model.ReceptionDialplan>> list() {
     Uri url = resource.ReceptionDialplan.list(host);
     url = _appendToken(url, token);
@@ -75,6 +78,7 @@ class RESTDialplanStore implements storage.ReceptionDialplan {
   /**
    *
    */
+  @override
   Future<model.ReceptionDialplan> update(model.ReceptionDialplan rdp,
       [model.User user]) {
     Uri url = resource.ReceptionDialplan.single(host, rdp.extension);
@@ -89,6 +93,7 @@ class RESTDialplanStore implements storage.ReceptionDialplan {
   /**
    *
    */
+  @override
   Future remove(String extension, [model.User user]) {
     Uri url = resource.ReceptionDialplan.single(host, extension);
     url = _appendToken(url, token);
@@ -130,6 +135,7 @@ class RESTDialplanStore implements storage.ReceptionDialplan {
   /**
    *
    */
+  @override
   Future<Iterable<model.Commit>> changes([String extension]) {
     Uri url = resource.ReceptionDialplan.changeList(host, extension);
     url = _appendToken(url, this.token);

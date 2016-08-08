@@ -49,8 +49,10 @@ class Transfer extends Action {
     return new Transfer(extension, note: note);
   }
 
+  @override
   String toString() => 'Omstil til $extension ($note)';
 
+  @override
   String toJson() => '${Key.transfer} $extension'
       '${note.isNotEmpty ? ' ($note)': ''}';
 }

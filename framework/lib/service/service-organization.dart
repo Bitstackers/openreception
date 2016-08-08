@@ -32,6 +32,7 @@ class RESTOrganizationStore implements storage.Organization {
   /**
    *
    */
+  @override
   Future<Iterable<model.BaseContact>> contacts(int oid) {
     Uri url = resource.Organization.contacts(this.host, oid);
     url = _appendToken(url, this.token);
@@ -43,6 +44,7 @@ class RESTOrganizationStore implements storage.Organization {
   /**
    *
    */
+  @override
   Future<Iterable<model.ReceptionReference>> receptions(int oid) async {
     Uri url = resource.Organization.receptions(host, oid);
     url = _appendToken(url, this.token);
@@ -54,6 +56,7 @@ class RESTOrganizationStore implements storage.Organization {
   /**
    *
    */
+  @override
   Future<model.Organization> get(int oid) {
     Uri url = resource.Organization.single(this.host, oid);
     url = _appendToken(url, this.token);
@@ -65,6 +68,7 @@ class RESTOrganizationStore implements storage.Organization {
   /**
    *
    */
+  @override
   Future<model.OrganizationReference> create(
       model.Organization organization, model.User modifier) {
     Uri url = resource.Organization.root(this.host);
@@ -78,6 +82,7 @@ class RESTOrganizationStore implements storage.Organization {
   /**
    *
    */
+  @override
   Future<model.OrganizationReference> update(
       model.Organization organization, model.User modifier) {
     Uri url = resource.Organization.single(this.host, organization.id);
@@ -91,6 +96,7 @@ class RESTOrganizationStore implements storage.Organization {
   /**
    *
    */
+  @override
   Future remove(int organizationID, model.User modifier) {
     Uri url = resource.Organization.single(this.host, organizationID);
     url = _appendToken(url, this.token);
@@ -102,6 +108,7 @@ class RESTOrganizationStore implements storage.Organization {
   /**
    *
    */
+  @override
   Future<Iterable<model.OrganizationReference>> list() {
     Uri url = resource.Organization.list(this.host, token: this.token);
     url = _appendToken(url, this.token);
@@ -114,6 +121,7 @@ class RESTOrganizationStore implements storage.Organization {
   /**
    *
    */
+  @override
   Future<Iterable<model.Commit>> changes([int oid]) {
     Uri url = resource.Organization.changeList(host, oid);
     url = _appendToken(url, this.token);

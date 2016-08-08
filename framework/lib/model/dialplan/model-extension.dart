@@ -24,7 +24,10 @@ abstract class Extension {
 }
 
 class NamedExtension extends Extension {
+  @override
   final String name;
+
+  @override
   final List<Action> actions;
 
   NamedExtension(this.name, this.actions);
@@ -32,5 +35,6 @@ class NamedExtension extends Extension {
   static NamedExtension decode(Map map) => new NamedExtension(
       map[Key.name], (map[Key.actions] as Iterable).map(Action.parse).toList());
 
+  @override
   Map toJson() => {Key.name: name, Key.actions: actions};
 }

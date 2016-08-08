@@ -14,6 +14,7 @@
 part of openreception.framework.model.dialplan;
 
 class IvrVoicemail extends IvrEntry {
+  @override
   final String digits;
   final Voicemail voicemail;
 

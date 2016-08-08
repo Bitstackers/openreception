@@ -40,5 +40,6 @@ class Ringtone extends Action {
     }
   }
 
+  @override
   String toJson() => '${Key.ringtone} $count';
 }

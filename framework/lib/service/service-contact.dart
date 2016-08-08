@@ -29,6 +29,7 @@ class RESTContactStore implements storage.Contact {
 
   RESTContactStore(Uri this.host, String this.token, this._backend);
 
+  @override
   Future<Iterable<model.ReceptionReference>> receptions(int id) async {
     Uri url = resource.Contact.receptions(host, id);
     url = _appendToken(url, token);
@@ -40,6 +41,7 @@ class RESTContactStore implements storage.Contact {
     return maps.map(model.ReceptionReference.decode);
   }
 
+  @override
   Future<Iterable<model.OrganizationReference>> organizations(int id) async {
     Uri url = resource.Contact.organizations(host, id);
     url = _appendToken(url, token);
@@ -51,6 +53,7 @@ class RESTContactStore implements storage.Contact {
     return maps.map(model.OrganizationReference.decode);
   }
 
+  @override
   Future<model.BaseContact> get(int id) {
     Uri url = resource.Contact.single(host, id);
     url = _appendToken(url, token);
@@ -59,6 +62,7 @@ class RESTContactStore implements storage.Contact {
         new model.BaseContact.fromMap(JSON.decode(response)));
   }
 
+  @override
   Future<model.BaseContact> create(
       model.BaseContact contact, model.User modifier) {
     Uri url = resource.Contact.root(host);
@@ -68,6 +72,7 @@ class RESTContactStore implements storage.Contact {
         (String response) => model.BaseContact.decode(JSON.decode(response)));
   }
 
+  @override
   Future<model.BaseContact> update(
       model.BaseContact contact, model.User modifier) {
     Uri url = resource.Contact.single(host, contact.id);
@@ -77,6 +82,7 @@ class RESTContactStore implements storage.Contact {
         (String response) => model.BaseContact.decode(JSON.decode(response)));
   }
 
+  @override
   Future remove(int id, model.User user) {
     Uri url = resource.Contact.single(host, id);
     url = _appendToken(url, token);
@@ -84,6 +90,7 @@ class RESTContactStore implements storage.Contact {
     return _backend.delete(url);
   }
 
+  @override
   Future<Iterable<model.BaseContact>> list() {
     Uri url = resource.Contact.list(host);
     url = _appendToken(url, token);
@@ -92,6 +99,7 @@ class RESTContactStore implements storage.Contact {
         (JSON.decode(response) as Iterable).map(model.BaseContact.decode));
   }
 
+  @override
   Future<model.ReceptionAttributes> data(int id, int rid) {
     Uri url = resource.Contact.singleByReception(host, id, rid);
     url = _appendToken(url, token);
@@ -100,6 +108,7 @@ class RESTContactStore implements storage.Contact {
         new model.ReceptionAttributes.fromMap(JSON.decode(response)));
   }
 
+  @override
   Future<Iterable<model.ReceptionContact>> receptionContacts(int rid) {
     Uri url = resource.Contact.listByReception(host, rid);
     url = _appendToken(url, token);
@@ -108,6 +117,7 @@ class RESTContactStore implements storage.Contact {
         (JSON.decode(response) as Iterable).map(model.ReceptionContact.decode));
   }
 
+  @override
   Future addData(model.ReceptionAttributes attr, model.User user) {
     Uri url =
         resource.Contact.singleByReception(host, attr.cid, attr.receptionId);
@@ -116,6 +126,7 @@ class RESTContactStore implements storage.Contact {
     return _backend.post(url, JSON.encode(attr));
   }
 
+  @override
   Future<Iterable<model.BaseContact>> organizationContacts(int oid) {
     Uri url = resource.Contact.organizationContacts(host, oid);
     url = _appendToken(url, token);
@@ -127,6 +138,7 @@ class RESTContactStore implements storage.Contact {
   /**
    *
    */
+  @override
   Future removeData(int cid, int rid, model.User user) {
     Uri url = resource.Contact.singleByReception(host, cid, rid);
     url = _appendToken(url, token);
@@ -134,6 +146,7 @@ class RESTContactStore implements storage.Contact {
     return _backend.delete(url);
   }
 
+  @override
   Future updateData(model.ReceptionAttributes attr, model.User modifier) {
     Uri url =
         resource.Contact.singleByReception(host, attr.cid, attr.receptionId);
@@ -145,6 +158,7 @@ class RESTContactStore implements storage.Contact {
   /**
    *
    */
+  @override
   Future<Iterable<model.Commit>> changes([int cid, int rid]) {
     Uri url = resource.Contact.change(host, cid, rid);
     url = _appendToken(url, this.token);

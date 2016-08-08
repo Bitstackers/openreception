@@ -14,6 +14,7 @@
 part of openreception.framework.model.dialplan;
 
 class IvrTransfer extends IvrEntry {
+  @override
   final String digits;
   final Transfer transfer;
 

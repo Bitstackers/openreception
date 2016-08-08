@@ -40,7 +40,9 @@ class Ivr extends Action {
   bool operator ==(Object other) =>
       other is Ivr && this.menuName == other.menuName;
 
+  @override
   String toString() => '${Key.ivr} ${menuName}';
 
+  @override
   String toJson() => '${Key.ivr} ${menuName}';
 }

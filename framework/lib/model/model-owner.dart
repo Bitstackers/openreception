@@ -42,6 +42,7 @@ class Owner {
   /**
    *
    */
+  @override
   bool operator ==(Object other) =>
       other is Owner && id == other.id && type == other.type;
 
@@ -58,6 +59,7 @@ class Owner {
   /**
    *
    */
+  @override
   String toString() => 'none:';
 }
 
@@ -66,8 +68,10 @@ class Owner {
  * For example a [CalendarEntry].
  */
 class OwningReception extends Owner {
+  @override
   final int id;
   static const String _type = 'r';
+  @override
   String get type => _type;
 
   const OwningReception(this.id);
@@ -75,11 +79,13 @@ class OwningReception extends Owner {
   /**
    *
    */
+  @override
   String toJson() => toString();
 
   /**
    *
    */
+  @override
   String toString() => '$type:$id';
 }
 
@@ -88,8 +94,10 @@ class OwningReception extends Owner {
  * For example a [CalendarEntry].
  */
 class OwningContact extends Owner {
+  @override
   final int id;
   static final String _type = 'c';
+  @override
   String get type => _type;
 
   const OwningContact(this.id);
@@ -97,10 +105,12 @@ class OwningContact extends Owner {
   /**
    *
    */
+  @override
   String toJson() => toString();
 
   /**
    *
    */
+  @override
   String toString() => '$type:$id';
 }

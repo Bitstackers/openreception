@@ -34,7 +34,9 @@ abstract class ObjectReference {
 
 @deprecated
 class ContactReference implements ObjectReference {
+  @override
   final int id;
+  @override
   final String name;
 
   const ContactReference(this.id, this.name);
@@ -44,8 +46,10 @@ class ContactReference implements ObjectReference {
 
   bool get isEmpty => id == BaseContact.noId;
 
+  @override
   Map toJson() => {key.id: id, key.name: name};
 
+  @override
   int get hashCode => id.hashCode;
 }
 
@@ -53,7 +57,9 @@ class ContactReference implements ObjectReference {
  *
  */
 class ContactChange implements ObjectChange {
+  @override
   final ChangeType changeType;
+  @override
   ObjectType get objectType => ObjectType.contact;
   final int cid;
 
@@ -78,6 +84,7 @@ class ContactChange implements ObjectChange {
   /**
    *
    */
+  @override
   Map toJson() => {
         key.change: changeTypeToString(changeType),
         key.type: objectTypeToString(objectType),
@@ -86,7 +93,9 @@ class ContactChange implements ObjectChange {
 }
 
 class OrganizationReference implements ObjectReference {
+  @override
   final int id;
+  @override
   final String name;
 
   const OrganizationReference(this.id, this.name);
@@ -94,8 +103,10 @@ class OrganizationReference implements ObjectReference {
   static OrganizationReference decode(Map map) =>
       new OrganizationReference(map[key.id], map[key.name]);
 
+  @override
   Map toJson() => {key.id: id, key.name: name};
 
+  @override
   int get hashCode => id.hashCode;
 }
 
@@ -121,7 +132,9 @@ class ReceptionContact {
 }
 
 class ReceptionReference implements ObjectReference {
+  @override
   final int id;
+  @override
   final String name;
 
   const ReceptionReference(this.id, this.name);
@@ -136,8 +149,10 @@ class ReceptionReference implements ObjectReference {
   static ReceptionReference decode(Map map) =>
       new ReceptionReference(map[key.id], map[key.name]);
 
+  @override
   Map toJson() => {key.id: id, key.name: name};
 
+  @override
   int get hashCode => id.hashCode;
 }
 

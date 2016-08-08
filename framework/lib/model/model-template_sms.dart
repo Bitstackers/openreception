@@ -22,6 +22,7 @@ class TemplateSMS extends Template {
   /**
    * Return the [Message] body as text suited for an SMS or older email clients.
    */
+  @override
   String get bodyText =>
       'Fra ${_message.callerInfo.name}${_message.callerInfo.company.isEmpty ? '' : ', ${_message.callerInfo.company}'}\n'
       '${_message.callerInfo.phone.isEmpty ? '' : 'Tlf. ${_message.callerInfo.phone}  ${_message.callerInfo.localExtension.isEmpty ? '' : '(${_message.callerInfo.localExtension})'}'}\n'

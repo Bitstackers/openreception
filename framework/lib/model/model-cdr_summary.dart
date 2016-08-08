@@ -183,6 +183,7 @@ class CdrSummary {
         key.CdrKey.rid: rid
       };
 
+  @override
   String toString() => '''rid: $rid
 Answered total: ${agentSummaries.fold(0, (int acc, CdrAgentSummary a) => acc + a.answered)}
 Answered 0-10: ${agentSummaries.fold(0, (int acc, CdrAgentSummary a) => acc + a.answered10)}

@@ -14,7 +14,9 @@
 part of openreception.framework.model;
 
 class CalendarChange implements ObjectChange {
+  @override
   final ChangeType changeType;
+  @override
   ObjectType get objectType => ObjectType.calendar;
   final int eid;
 
@@ -32,6 +34,7 @@ class CalendarChange implements ObjectChange {
   /**
    *
    */
+  @override
   Map toJson() => {
         key.type: objectTypeToString(objectType),
         key.change: changeTypeToString(changeType),

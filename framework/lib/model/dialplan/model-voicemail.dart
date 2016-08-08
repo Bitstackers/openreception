@@ -75,11 +75,13 @@ class Voicemail extends Action {
   /**
    *
    */
+  @override
   String toString() => 'Voicemail $vmBox';
 
   /**
    *
    */
+  @override
   String toJson() => '${Key.voicemail} $vmBox'
       '${recipient.isNotEmpty ? ' ${recipient}' : ''}'
       '${note.isNotEmpty ? ' (${note})' : ''}';

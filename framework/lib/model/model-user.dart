@@ -34,7 +34,9 @@ abstract class UserGroups {
  *
  */
 class UserChange implements ObjectChange {
+  @override
   final ChangeType changeType;
+  @override
   ObjectType get objectType => ObjectType.user;
   final int uid;
 
@@ -59,6 +61,7 @@ class UserChange implements ObjectChange {
   /**
    *
    */
+  @override
   Map toJson() => {
         key.change: changeTypeToString(changeType),
         key.type: objectTypeToString(objectType),
@@ -70,16 +73,19 @@ class UserChange implements ObjectChange {
  *
  */
 class UserReference implements ObjectReference {
+  @override
   final int id;
+  @override
   final String name;
 
   const UserReference(this.id, this.name);
 
   static UserReference decode(Map map) =>
       new UserReference(map[key.id], map[key.name]);
-
+  @override
   Map toJson() => {key.id: id, key.name: name};
 
+  @override
   int get hashCode => id.hashCode;
 }
 

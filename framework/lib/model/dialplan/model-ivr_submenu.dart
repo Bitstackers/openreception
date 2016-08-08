@@ -14,6 +14,7 @@
 part of openreception.framework.model.dialplan;
 
 class IvrSubmenu extends IvrEntry {
+  @override
   final String digits;
   final String name;
 

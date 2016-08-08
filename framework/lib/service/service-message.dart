@@ -32,6 +32,7 @@ class RESTMessageStore implements storage.Message {
   /**
    *
    */
+  @override
   Future<model.Message> get(int mid) => this
       ._backend
       .get(_appendToken(resource.Message.single(this.host, mid), this.token))
@@ -41,6 +42,7 @@ class RESTMessageStore implements storage.Message {
   /**
    *
    */
+  @override
   Future<Iterable<model.Message>> getByIds(Iterable<int> ids) async {
     Uri uri = resource.Message.list(host);
     uri = _appendToken(uri, token);
@@ -70,6 +72,7 @@ class RESTMessageStore implements storage.Message {
   /**
    *
    */
+  @override
   Future<model.Message> create(model.Message message, model.User modifier) =>
       _backend
           .post(_appendToken(resource.Message.root(this.host), this.token),
@@ -77,6 +80,7 @@ class RESTMessageStore implements storage.Message {
           .then((String response) =>
               new model.Message.fromMap(JSON.decode(response)));
 
+  @override
   Future remove(int mid, model.User modifier) {
     Uri uri = resource.Message.single(host, mid);
     uri = _appendToken(uri, token);
@@ -87,6 +91,7 @@ class RESTMessageStore implements storage.Message {
   /**
    *
    */
+  @override
   Future<model.Message> update(model.Message message, model.User modifier) =>
       _backend
           .put(
@@ -108,6 +113,7 @@ class RESTMessageStore implements storage.Message {
   /**
    *
    */
+  @override
   Future<Iterable<model.Message>> listDay(DateTime day,
       {model.MessageFilter filter}) async {
     Uri uri = resource.Message.listDay(host, day, filter: filter);
@@ -121,6 +127,7 @@ class RESTMessageStore implements storage.Message {
   /**
    *
    */
+  @override
   Future<Iterable<model.Message>> listDrafts({model.MessageFilter filter}) {
     Uri uri = resource.Message.listDrafts(host, filter: filter);
     uri = _appendToken(uri, token);
@@ -133,6 +140,7 @@ class RESTMessageStore implements storage.Message {
   /**
    *
    */
+  @override
   Future<Iterable<model.Commit>> changes([int mid]) {
     Uri url = resource.Message.changeList(host, mid);
     url = _appendToken(url, this.token);

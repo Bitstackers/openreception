@@ -35,6 +35,7 @@ class RESTCalendarStore implements storage.Calendar {
   /**
    *
    */
+  @override
   Future<Iterable<model.CalendarEntry>> list(model.Owner owner) {
     Uri url = resource.Calendar.ownerBase(host, owner);
 
@@ -49,6 +50,7 @@ class RESTCalendarStore implements storage.Calendar {
   /**
    *
    */
+  @override
   Future<model.CalendarEntry> get(int id, model.Owner owner) {
     Uri url = resource.Calendar.single(host, id, owner);
     url = _appendToken(url, this.token);
@@ -63,6 +65,7 @@ class RESTCalendarStore implements storage.Calendar {
   /**
    *
    */
+  @override
   Future<model.CalendarEntry> create(
       model.CalendarEntry entry, model.Owner owner, model.User user) {
     Uri url = resource.Calendar.ownerBase(host, owner);
@@ -78,6 +81,7 @@ class RESTCalendarStore implements storage.Calendar {
   /**
    *
    */
+  @override
   Future<model.CalendarEntry> update(
       model.CalendarEntry entry, model.Owner owner, model.User modifier) {
     Uri url = resource.Calendar.single(host, entry.id, owner);
@@ -92,6 +96,7 @@ class RESTCalendarStore implements storage.Calendar {
   /**
    *
    */
+  @override
   Future remove(int eid, model.Owner owner, model.User user) {
     Uri url = resource.Calendar.single(host, eid, owner);
     url = _appendToken(url, this.token);
@@ -102,6 +107,7 @@ class RESTCalendarStore implements storage.Calendar {
   /**
    *
    */
+  @override
   Future<Iterable<model.Commit>> changes(model.Owner owner, [int eid]) {
     Uri url = resource.Calendar.changeList(host, owner, eid);
     url = _appendToken(url, this.token);

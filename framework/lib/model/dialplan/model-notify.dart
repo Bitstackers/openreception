@@ -31,5 +31,6 @@ class Notify extends Action {
     return new Notify(eventName);
   }
 
+  @override
   String toJson() => '${Key.notify} $eventName';
 }

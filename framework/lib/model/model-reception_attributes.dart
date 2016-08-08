@@ -14,7 +14,9 @@
 part of openreception.framework.model;
 
 class ReceptionAttributeChange implements ObjectChange {
+  @override
   final ChangeType changeType;
+  @override
   ObjectType get objectType => ObjectType.receptionAttribute;
   final int cid;
   final int rid;
@@ -42,6 +44,7 @@ class ReceptionAttributeChange implements ObjectChange {
   /**
    *
    */
+  @override
   Map toJson() => {
         key.change: changeTypeToString(changeType),
         key.type: objectTypeToString(objectType),

@@ -16,6 +16,7 @@ part of openreception.framework.service.io;
 class WebSocketClient extends service.WebSocket {
   io.WebSocket _websocket;
 
+  @override
   Future<service.WebSocket> connect(Uri path) async {
     if (_websocket != null && _websocket.closeCode != null) {
       throw new StateError('WebSocket is already open. '
@@ -27,5 +28,6 @@ class WebSocketClient extends service.WebSocket {
     return this;
   }
 
+  @override
   Future close() => _websocket.close();
 }

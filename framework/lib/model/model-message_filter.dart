@@ -101,5 +101,6 @@ class MessageFilter {
   /**
    *
    */
+  @override
   String toString() => toJson().toString();
 }

@@ -20,6 +20,7 @@ class HourAction {
   List<OpeningHour> hours = [];
   List<Action> actions = [];
 
+  @override
   String toString() => '${hours.join(', ')} - ${actions.join(',')}';
 
   static HourAction parse(Map map) => new HourAction()
@@ -31,5 +32,6 @@ class HourAction {
         'actions': actions
       };
 
+  @override
   bool operator ==(Object other) => this.toString() == other.toString();
 }

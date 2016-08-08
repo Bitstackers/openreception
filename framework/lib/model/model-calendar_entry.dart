@@ -77,5 +77,6 @@ class CalendarEntry {
   /**
    * [CalendarEntry] as String, for debug/log purposes.
    */
+  @override
   String toString() => toJson().toString();
 }

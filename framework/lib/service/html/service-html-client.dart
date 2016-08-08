@@ -21,6 +21,7 @@ class Client extends service.WebService {
    * Retrives [resource] using HTTP GET.
    * Throws subclasses of [StorageException] upon failure.
    */
+  @override
   Future<String> get(Uri resource) {
     final Completer<String> completer = new Completer<String>();
 
@@ -46,6 +47,7 @@ class Client extends service.WebService {
    * Retrives [resource] using HTTP PUT, sending [payload].
    * Throws subclasses of [StorageException] upon failure.
    */
+  @override
   Future<String> put(Uri resource, String payload) {
     final Completer<String> completer = new Completer<String>();
 
@@ -71,6 +73,7 @@ class Client extends service.WebService {
    * Retrives [resource] using HTTP POST, sending [payload].
    * Throws subclasses of [StorageException] upon failure.
    */
+  @override
   Future<String> post(Uri resource, String payload) {
     final Completer<String> completer = new Completer<String>();
 
@@ -96,6 +99,7 @@ class Client extends service.WebService {
    * Retrives [resource] using HTTP DELETE.
    * Throws subclasses of [StorageException] upon failure.
    */
+  @override
   Future<String> delete(Uri resource) {
     final Completer<String> completer = new Completer<String>();
 

@@ -35,6 +35,7 @@ class RESTIvrStore implements storage.Ivr {
   /**
    *
    */
+  @override
   Future<model.IvrMenu> create(model.IvrMenu menu, [model.User user]) {
     Uri url = resource.Ivr.list(host);
     url = _appendToken(url, this.token);
@@ -59,6 +60,7 @@ class RESTIvrStore implements storage.Ivr {
   /**
    *
    */
+  @override
   Future remove(String menuName, [model.User user]) {
     Uri url = resource.Ivr.single(this.host, menuName);
     url = _appendToken(url, this.token);
@@ -69,6 +71,7 @@ class RESTIvrStore implements storage.Ivr {
   /**
   *
   */
+  @override
   Future<model.IvrMenu> get(String menuName) {
     Uri url = resource.Ivr.single(this.host, menuName);
     url = _appendToken(url, this.token);
@@ -79,6 +82,7 @@ class RESTIvrStore implements storage.Ivr {
   /**
    *
    */
+  @override
   Future<Iterable<model.IvrMenu>> list() {
     Uri url = resource.Ivr.list(host);
     url = _appendToken(url, this.token);
@@ -92,6 +96,7 @@ class RESTIvrStore implements storage.Ivr {
   /**
    *
    */
+  @override
   Future<model.IvrMenu> update(model.IvrMenu menu, [model.User user]) {
     Uri url = resource.Ivr.single(this.host, menu.name);
     url = _appendToken(url, this.token);
@@ -106,6 +111,7 @@ class RESTIvrStore implements storage.Ivr {
   /**
    *
    */
+  @override
   Future<Iterable<model.Commit>> changes([String menuName]) {
     Uri url = resource.Ivr.changeList(host, menuName);
     url = _appendToken(url, this.token);

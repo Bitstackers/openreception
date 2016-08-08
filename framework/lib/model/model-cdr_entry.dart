@@ -372,6 +372,7 @@ class CdrEntry {
         key.CdrKey.voicemail: voicemail
       };
 
+  @override
   String toString() =>
       '''${key.CdrKey.agentBeginEpoch}: ${agentBeginEpoch > 0 ? new DateTime.fromMillisecondsSinceEpoch(agentBeginEpoch * 1000).toString() : 0}
 ${key.CdrKey.agentChannel}: $agentChannel
