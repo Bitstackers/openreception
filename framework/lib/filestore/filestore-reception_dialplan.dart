@@ -28,7 +28,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
   /**
-   * TODO: Add sequencer.
+   *
    */
   factory ReceptionDialplan(String path,
       [GitEngine gitEngine, bool enableChangelog]) {
