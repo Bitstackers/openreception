@@ -124,7 +124,6 @@ abstract class ModelPlayback {
     expect(builtObject.wrapInLock, isTrue);
     expect(builtObject.note, equals(note));
 
-    ///TODO check exceptions.
     expect(() => Model.Playback.parse('layback locked $filename ($note) '),
         throwsA(new isInstanceOf<FormatException>()));
   }

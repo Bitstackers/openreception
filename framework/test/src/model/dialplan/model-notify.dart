@@ -85,7 +85,6 @@ abstract class ModelNotify {
 
     expect(builtObject.eventName, equals(eventName));
 
-    ///TODO check exceptions.
     expect(() => Model.Notify.parse('notif $eventName'),
         throwsA(new isInstanceOf<FormatException>()));
   }

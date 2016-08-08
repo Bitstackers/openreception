@@ -116,7 +116,6 @@ abstract class ModelEnqueue {
     expect(builtObject.holdMusic, equals('default'));
     expect(builtObject.toString(), isNotEmpty);
 
-    ///TODO check exceptions.
     expect(() => Model.Enqueue.parse('equeue $queueName music $music'),
         throwsA(new isInstanceOf<FormatException>()));
   }
