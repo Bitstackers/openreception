@@ -492,6 +492,9 @@ abstract class ObjectChange {
         return UserChange.decode(map);
       case ObjectType.organization:
         return OrganizationChange.decode(map);
+
+      default:
+        throw new StateError('Undefined object type: $objectType');
     }
   }
 
