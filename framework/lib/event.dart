@@ -163,12 +163,13 @@ abstract class Event {
 
   /**
    * Parse an an event that has already been deserialized from JSON string.
-   * TODO: Throw a [FormatException] from this constructor instead of
-   * returning a null object.
+   *
+   * Throws a [FormatException] if the map is not a valid event.
    */
   factory Event.parse(Map map) {
+    final String eventName = map[Key.event];
     try {
-      switch (map[Key.event]) {
+      switch (eventName) {
         case Key.widgetSelect:
           return new WidgetSelect.fromMap(map);
 
@@ -251,13 +252,13 @@ abstract class Event {
           return new IvrMenuChange.fromMap(map);
 
         default:
-          _log.severe('Unsupported event type: ${map['event']}');
+          throw new FormatException('Unsupported event type: $eventName');
       }
     } catch (error, stackTrace) {
-      _log.severe('Failed to parse $map');
+      _log.severe('Failed to parse map as event. Map: $map');
       _log.severe(error, stackTrace);
-    }
 
-    return null;
+      throw new FormatException('Failed to cast map as event.');
+    }
   }
 }
