@@ -16,6 +16,11 @@ library openreception.framework.validation;
 import 'package:openreception.framework/model.dart';
 import 'package:openreception.framework/util.dart';
 
+/// Determines if [string] contains only alphanumeric characters with no
+/// spaces.
+bool isAlphaNumeric(String string) =>
+    new RegExp(r"^[a-zA-Z0-9]*$").hasMatch(string);
+
 List<FormatException> validateOriginationContext(OriginationContext context) {
   List<FormatException> errors = [];
 
@@ -39,6 +44,11 @@ List<FormatException> validateIvrMenu(IvrMenu menu) {
 
   if (menu.name.isEmpty) {
     errors.add(new FormatException('Menu name should not be empty'));
+  }
+
+  if (!isAlphaNumeric(menu.name)) {
+    errors.add(new FormatException('Menu name must contain only '
+        'alphanumeric characters.'));
   }
 
   if (menu.entries == null) {

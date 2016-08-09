@@ -24,7 +24,6 @@ void testModelIvrMenu() {
     test('serialization', ModelIvrMenu.serialization);
 
     test('buildObject', ModelIvrMenu.buildObject);
-    test('validation', ModelIvrMenu.validation);
   });
 }
 
@@ -32,7 +31,6 @@ void testModelIvrMenu() {
  *
  */
 abstract class ModelIvrMenu {
-  static Logger _log = new Logger('test.Model.IvrMenu');
   /**
    *
    */
@@ -139,48 +137,5 @@ abstract class ModelIvrMenu {
     expect(builtObject.greetingLong.toJson(), equals(greeting.toJson()));
 
     return builtObject;
-  }
-
-  static void validation() {
-    final String filename = 'somefile.wav';
-
-    final String note = 'Just a test';
-    final Model.Playback greeting = new Model.Playback(filename, note: note);
-
-    final List<Model.IvrEntry> entries = [
-      new Model.IvrVoicemail(
-          '1',
-          new Model.Voicemail('vm-corp_1',
-              recipient: 'guy@corp1.org', note: 'Just some guy')),
-      new Model.IvrSubmenu('2', 'sub-1')
-    ];
-
-    _log.info('Building a menu with no name');
-    Model.IvrMenu menu = new Model.IvrMenu('', greeting)..entries = entries;
-
-    expect(validateIvrMenu(menu).length, equals(1));
-
-    // _log.info('Building a menu with no enties');
-    // menu = new Model.IvrMenu('named', greeting)..entries = [];
-    // expect(Model.validateIvrMenu(menu).length, equals(1));
-
-    _log.info('Building a menu with an empty greeting');
-    menu = new Model.IvrMenu('named', Model.Playback.none)..entries = entries;
-
-    expect(validateIvrMenu(menu).length, equals(1));
-
-    _log.info('Building a menu with a bad submenu');
-    menu = new Model.IvrMenu('named', greeting)
-      ..entries = entries
-      ..submenus = [new Model.IvrMenu('', greeting)..entries = entries];
-
-    expect(validateIvrMenu(menu).length, equals(1));
-
-    _log.info('Building a bad menu with a bad submenu');
-    menu = new Model.IvrMenu('named', Model.Playback.none)
-      ..entries = entries
-      ..submenus = [new Model.IvrMenu('', greeting)..entries = entries];
-
-    expect(validateIvrMenu(menu).length, equals(2));
   }
 }
