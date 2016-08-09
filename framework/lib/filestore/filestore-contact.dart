@@ -370,7 +370,7 @@ class Contact implements storage.Contact {
     final model.Owner owner = new model.OwningContact(cid);
     await Future.forEach(await calendarStore.list(owner),
         (model.CalendarEntry entry) async {
-      await calendarStore._deleteNotify(entry.id, owner, modifier);
+      calendarStore._deleteNotify(entry.id, owner, modifier);
     });
 
     if (this._git != null) {
