@@ -158,7 +158,7 @@ abstract class ModelIvrMenu {
     _log.info('Building a menu with no name');
     Model.IvrMenu menu = new Model.IvrMenu('', greeting)..entries = entries;
 
-    expect(Model.validateIvrMenu(menu).length, equals(1));
+    expect(validateIvrMenu(menu).length, equals(1));
 
     // _log.info('Building a menu with no enties');
     // menu = new Model.IvrMenu('named', greeting)..entries = [];
@@ -167,20 +167,20 @@ abstract class ModelIvrMenu {
     _log.info('Building a menu with an empty greeting');
     menu = new Model.IvrMenu('named', Model.Playback.none)..entries = entries;
 
-    expect(Model.validateIvrMenu(menu).length, equals(1));
+    expect(validateIvrMenu(menu).length, equals(1));
 
     _log.info('Building a menu with a bad submenu');
     menu = new Model.IvrMenu('named', greeting)
       ..entries = entries
       ..submenus = [new Model.IvrMenu('', greeting)..entries = entries];
 
-    expect(Model.validateIvrMenu(menu).length, equals(1));
+    expect(validateIvrMenu(menu).length, equals(1));
 
     _log.info('Building a bad menu with a bad submenu');
     menu = new Model.IvrMenu('named', Model.Playback.none)
       ..entries = entries
       ..submenus = [new Model.IvrMenu('', greeting)..entries = entries];
 
-    expect(Model.validateIvrMenu(menu).length, equals(2));
+    expect(validateIvrMenu(menu).length, equals(2));
   }
 }

@@ -13,34 +13,6 @@
 
 part of openreception.framework.model.dialplan;
 
-List<FormatException> validateIvrMenu(IvrMenu menu) {
-  List<FormatException> errors = [];
-
-  if (menu.name.isEmpty) {
-    errors.add(new FormatException('Menu name should not be empty'));
-  }
-
-  if (menu.entries == null) {
-    errors.add(new FormatException('Menu entries may not be null'));
-  }
-
-  if (menu.greetingLong.filename.isEmpty) {
-    errors.add(new FormatException('Greeting should be non-empty'));
-  }
-
-  menu.entries.forEach((entry) {
-    if (menu.entries.where((e) => e.digits == entry.digits).length > 1) {
-      errors.add(new FormatException('Duplicate digit ${entry.digits}'));
-    }
-  });
-
-  errors.addAll(menu.submenus.map(validateIvrMenu).fold(
-      new List<FormatException>(),
-      (List<FormatException> list, e) => list..addAll(e)));
-
-  return errors;
-}
-
 /**
  * Class representing an IVR menu.
  */

@@ -13,27 +13,6 @@
 
 part of openreception.framework.model;
 
-/**
- * Does not check for null values.
- */
-List<FormatException> validateOriginationContext(OriginationContext context) {
-  List<FormatException> errors = [];
-
-  if (context.contactId == BaseContact.noId) {
-    errors.add(new FormatException('context.contactUuid == Contact.noId'));
-  }
-
-  if (context.receptionId == Reception.noId) {
-    errors.add(new FormatException('context.receptionUuid == Reception.noId'));
-  }
-
-  if (context.dialplan.isEmpty) {
-    errors.add(new FormatException('context.dialplan should be non-empty'));
-  }
-
-  return errors;
-}
-
 class OriginationContext {
   int contactId = BaseContact.noId;
   int receptionId = Reception.noId;

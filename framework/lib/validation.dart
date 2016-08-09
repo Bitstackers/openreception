@@ -16,6 +16,52 @@ library openreception.framework.validation;
 import 'package:openreception.framework/model.dart';
 import 'package:openreception.framework/util.dart';
 
+List<FormatException> validateOriginationContext(OriginationContext context) {
+  List<FormatException> errors = [];
+
+  if (context.contactId == BaseContact.noId) {
+    errors.add(new FormatException('context.contactUuid == Contact.noId'));
+  }
+
+  if (context.receptionId == Reception.noId) {
+    errors.add(new FormatException('context.receptionUuid == Reception.noId'));
+  }
+
+  if (context.dialplan.isEmpty) {
+    errors.add(new FormatException('context.dialplan should be non-empty'));
+  }
+
+  return errors;
+}
+
+List<FormatException> validateIvrMenu(IvrMenu menu) {
+  List<FormatException> errors = [];
+
+  if (menu.name.isEmpty) {
+    errors.add(new FormatException('Menu name should not be empty'));
+  }
+
+  if (menu.entries == null) {
+    errors.add(new FormatException('Menu entries may not be null'));
+  }
+
+  if (menu.greetingLong.filename.isEmpty) {
+    errors.add(new FormatException('Greeting should be non-empty'));
+  }
+
+  menu.entries.forEach((entry) {
+    if (menu.entries.where((e) => e.digits == entry.digits).length > 1) {
+      errors.add(new FormatException('Duplicate digit ${entry.digits}'));
+    }
+  });
+
+  errors.addAll(menu.submenus.map(validateIvrMenu).fold(
+      new List<FormatException>(),
+      (List<FormatException> list, e) => list..addAll(e)));
+
+  return errors;
+}
+
 /**
  * Validate a [Message] object before and after both serializing and
  * deserializing.
