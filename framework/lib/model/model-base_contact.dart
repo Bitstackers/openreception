@@ -165,7 +165,6 @@ class BaseContact {
   int id = noId;
   String name = '';
 
-  ///TODO: Turn into enum.
   String type = '';
   bool enabled = true;
 
