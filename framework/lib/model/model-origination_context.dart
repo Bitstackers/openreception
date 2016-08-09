@@ -19,7 +19,7 @@ part of openreception.framework.model;
 List<FormatException> validateOriginationContext(OriginationContext context) {
   List<FormatException> errors = [];
 
-  if (context.contactId == ReceptionAttributes.noId) {
+  if (context.contactId == BaseContact.noId) {
     errors.add(new FormatException('context.contactUuid == Contact.noId'));
   }
 
