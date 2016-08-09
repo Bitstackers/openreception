@@ -13,7 +13,7 @@
 
 part of openreception.framework.test;
 
-testModelVoicemail() {
+void testModelVoicemail() {
   group('Model.Voicemail', () {
     test('deserialization', ModelVoicemail.deserialization);
     test('serialization', ModelVoicemail.serialization);

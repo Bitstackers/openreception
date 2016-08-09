@@ -55,7 +55,7 @@ class Sequencer {
   /**
    *
    */
-  _checkForInconsistencies() {
+  void _checkForInconsistencies() {
     final int highestId = _findHighestId();
     if (highestId > _currentId) {
       _log.shout('Index sequence out of sync - resyncing!');

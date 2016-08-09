@@ -13,7 +13,7 @@
 
 part of openreception.framework.test;
 
-testModelNamedExtension() {
+void testModelNamedExtension() {
   group('Model.NamedExtension', () {
     test('deserialization', ModelNamedExtension.deserialization);
 

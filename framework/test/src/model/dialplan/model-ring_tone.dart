@@ -13,7 +13,7 @@
 
 part of openreception.framework.test;
 
-testModelRingtone() {
+void testModelRingtone() {
   group('Model.Ringtone', () {
     test('serializationDeserialization', ModelRingtone.deserialization);
 

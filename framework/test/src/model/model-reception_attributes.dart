@@ -13,7 +13,7 @@
 
 part of openreception.framework.test;
 
-testModelReceptionAttributes() {
+void testModelReceptionAttributes() {
   group('Model.ReceptionAttributes', () {
     test('deserialization', ModelReceptionAttributes.deserialization);
 

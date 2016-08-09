@@ -13,7 +13,7 @@
 
 part of openreception.framework.test;
 
-testModelPeerAccount() {
+void testModelPeerAccount() {
   group('Model.BaseContact', () {
     test('deserialization', ModelPeerAccount.deserialization);
 

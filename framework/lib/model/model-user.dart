@@ -89,7 +89,7 @@ class UserReference implements ObjectReference {
   int get hashCode => id.hashCode;
 
   @override
-  operator ==(Object other) => other is UserReference && other.id == id;
+  bool operator ==(Object other) => other is UserReference && other.id == id;
 }
 
 /**

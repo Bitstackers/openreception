@@ -51,7 +51,7 @@ class MessageHistory {
   Map toJson() => {'mid': mid, 'uid': uid, 'created': createdAt.toString()};
 
   @override
-  operator ==(Object other) => other is MessageHistory && other.mid == mid;
+  bool operator ==(Object other) => other is MessageHistory && other.mid == mid;
 }
 
 class AgentStatSummary {}
@@ -400,7 +400,8 @@ class HistoricCall {
   int get hashCode => callId.hashCode;
 
   @override
-  operator ==(Object other) => other is HistoricCall && other.callId == callId;
+  bool operator ==(Object other) =>
+      other is HistoricCall && other.callId == callId;
 }
 
 class ActiveCall {
@@ -475,7 +476,8 @@ class ActiveCall {
   int get hashCode => callId.hashCode;
 
   @override
-  operator ==(Object other) => other is ActiveCall && other.callId == callId;
+  bool operator ==(Object other) =>
+      other is ActiveCall && other.callId == callId;
 
   /**
    *
@@ -528,6 +530,6 @@ class UserStateHistory {
   int get hashCode => toJson().toString().hashCode;
 
   @override
-  operator ==(Object other) =>
+  bool operator ==(Object other) =>
       other is UserStateHistory && other.hashCode == hashCode;
 }

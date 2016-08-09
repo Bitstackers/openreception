@@ -13,7 +13,7 @@
 
 part of openreception.framework.test;
 
-testModelAgentStatistics() {
+void testModelAgentStatistics() {
   group('Model.AgentStatistics', () {
     test('serializationDeserialization',
         ModelAgentStatistics.serializationDeserialization);

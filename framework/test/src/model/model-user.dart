@@ -13,7 +13,7 @@
 
 part of openreception.framework.test;
 
-testModelUser() {
+void testModelUser() {
   group('Model.User', () {
     test('serialization', ModelUser.serialization);
 

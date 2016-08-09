@@ -13,7 +13,7 @@
 
 part of openreception.framework.test;
 
-testModelReceptionTransfer() {
+void testModelReceptionTransfer() {
   group('Model.ReceptionTransfer', () {
     test('deserialization', ModelReceptionTransfer.deserialization);
 
