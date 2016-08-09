@@ -10,7 +10,7 @@ tests: pubspec.lock
 	pub run test test/tests.dart
 
 tests-to-json-file:
-	pub run test test/tests.dart --reporter json > test-report.json
+	-pub run test test/tests.dart --reporter json > test-report.json
 
 tests-text-output:
 	@dart test/tests.dart text-output
