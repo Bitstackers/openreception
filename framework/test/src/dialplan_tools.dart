@@ -67,7 +67,7 @@ class DialplanToolsReceptionDialplan {
   static void closedActions() {
     Model.ReceptionDialplan rdp = new Model.ReceptionDialplan()
       ..active = true
-      ..defaultActions = [new Model.Playback('closed', wrapInLock: false)];
+      ..defaultActions = [new Model.Playback('closed')];
 
     xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
         .dialplanToXml(rdp, new Model.Reception.empty()..name = 'ost'));
@@ -95,12 +95,12 @@ class DialplanToolsReceptionDialplan {
         new Model.HourAction()
           ..hours = Model.parseMultipleHours('sun 8-17').toList()
           ..actions = [
-            new Model.Playback('none', wrapInLock: false, note: 'IVR transfer'),
+            new Model.Playback('none', note: 'IVR transfer'),
             new Model.Ivr('magic-ivr', note: 'Magic IVR menu')
           ]
       ]
       ..defaultActions = [
-        new Model.Playback('closed', wrapInLock: true, note: 'Just closed'),
+        new Model.Playback('closed', note: 'Just closed'),
         new Model.Voicemail('some-voicemail')
       ];
 

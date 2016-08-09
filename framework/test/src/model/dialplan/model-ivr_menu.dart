@@ -60,8 +60,6 @@ abstract class ModelIvrMenu {
         equals(deserializedObject.greetingShort.filename));
     expect(builtObject.greetingShort.note,
         equals(deserializedObject.greetingShort.note));
-    expect(builtObject.greetingShort.wrapInLock,
-        equals(deserializedObject.greetingShort.wrapInLock));
     expect(builtObject.greetingShort.toJson(),
         equals(deserializedObject.greetingShort.toJson()));
 
@@ -69,8 +67,6 @@ abstract class ModelIvrMenu {
         equals(deserializedObject.greetingLong.filename));
     expect(builtObject.greetingLong.note,
         equals(deserializedObject.greetingLong.note));
-    expect(builtObject.greetingLong.wrapInLock,
-        equals(deserializedObject.greetingLong.wrapInLock));
     expect(builtObject.greetingLong.toJson(),
         equals(deserializedObject.greetingLong.toJson()));
 
@@ -91,14 +87,13 @@ abstract class ModelIvrMenu {
     final String sub2filename = 'sub2somefile.wav';
 
     final String note = 'Just a test';
-    final Model.Playback greeting =
-        new Model.Playback(filename, wrapInLock: false, note: note);
+    final Model.Playback greeting = new Model.Playback(filename, note: note);
 
     final Model.Playback sub1greeting =
-        new Model.Playback(sub1filename, wrapInLock: false, note: note);
+        new Model.Playback(sub1filename, note: note);
 
     final Model.Playback sub2greeting =
-        new Model.Playback(sub2filename, wrapInLock: false, note: note);
+        new Model.Playback(sub2filename, note: note);
 
     final List<Model.IvrEntry> entries = [
       new Model.IvrVoicemail(
@@ -137,12 +132,10 @@ abstract class ModelIvrMenu {
     expect(builtObject.name, equals(name));
     expect(builtObject.greetingShort.filename, equals(filename));
     expect(builtObject.greetingShort.note, equals(note));
-    expect(builtObject.greetingShort.wrapInLock, isFalse);
     expect(builtObject.greetingShort.toJson(), equals(greeting.toJson()));
 
     expect(builtObject.greetingLong.filename, equals(filename));
     expect(builtObject.greetingLong.note, equals(note));
-    expect(builtObject.greetingLong.wrapInLock, equals(isFalse));
     expect(builtObject.greetingLong.toJson(), equals(greeting.toJson()));
 
     return builtObject;
@@ -152,8 +145,7 @@ abstract class ModelIvrMenu {
     final String filename = 'somefile.wav';
 
     final String note = 'Just a test';
-    final Model.Playback greeting =
-        new Model.Playback(filename, wrapInLock: false, note: note);
+    final Model.Playback greeting = new Model.Playback(filename, note: note);
 
     final List<Model.IvrEntry> entries = [
       new Model.IvrVoicemail(

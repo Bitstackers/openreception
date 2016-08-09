@@ -14,12 +14,11 @@
 part of openreception.framework.model.dialplan;
 
 /**
- * TODO: remove the wrap in lock.
+ *
  */
 class Playback extends Action {
   final String filename;
   final int repeat;
-  final bool wrapInLock;
   final String note;
 
   static const Playback none = const Playback('');
@@ -31,18 +30,17 @@ class Playback extends Action {
     /// Remove leading spaces.
     buffer = buffer.trimLeft();
 
-    bool lock = false;
     String filename;
     String note = '';
     int repeat = 1;
 
     buffer = consumeKey(buffer, Key.playback).trimLeft();
 
+    // Legacy. Ignore playbacks with 'locked' keywords.
     if (buffer
         .substring(0, Key.lock.length)
         .toLowerCase()
         .startsWith(Key.lock.toLowerCase())) {
-      lock = true;
       buffer = buffer.substring(Key.lock.length).trimLeft();
     }
 
@@ -73,14 +71,13 @@ class Playback extends Action {
       note = buffer.substring(openBracket + 1, closeBracket);
     }
 
-    return new Playback(filename, wrapInLock: lock, note: note, repeat: repeat);
+    return new Playback(filename, note: note, repeat: repeat);
   }
 
   /**
    *
    */
-  const Playback(String this.filename,
-      {bool this.wrapInLock: true, String this.note: '', this.repeat: 1});
+  const Playback(String this.filename, {String this.note: '', this.repeat: 1});
 
   /**
    *

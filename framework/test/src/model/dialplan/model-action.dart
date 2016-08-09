@@ -44,7 +44,6 @@ abstract class ModelAction {
 
     expect(builtObject.filename, equals(file));
     expect(builtObject.note, equals(note));
-    expect(builtObject.wrapInLock, equals(false));
   }
 
   static void parseTransfer() {

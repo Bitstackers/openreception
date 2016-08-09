@@ -58,8 +58,6 @@ abstract class ModelIvrEntry {
         equals(deserializedObject.greetingShort.filename));
     expect(builtObject.greetingShort.note,
         equals(deserializedObject.greetingShort.note));
-    expect(builtObject.greetingShort.wrapInLock,
-        equals(deserializedObject.greetingShort.wrapInLock));
     expect(builtObject.greetingShort.toJson(),
         equals(deserializedObject.greetingShort.toJson()));
 
@@ -67,8 +65,6 @@ abstract class ModelIvrEntry {
         equals(deserializedObject.greetingLong.filename));
     expect(builtObject.greetingLong.note,
         equals(deserializedObject.greetingLong.note));
-    expect(builtObject.greetingLong.wrapInLock,
-        equals(deserializedObject.greetingLong.wrapInLock));
     expect(builtObject.greetingLong.toJson(),
         equals(deserializedObject.greetingLong.toJson()));
 
@@ -83,10 +79,8 @@ abstract class ModelIvrEntry {
   static Model.IvrMenu buildObject() {
     final String name = 'ivr_1';
     final String filename = 'somefile.wav';
-    final bool lock = false;
     final String note = 'Just a test';
-    final Model.Playback greeting =
-        new Model.Playback(filename, wrapInLock: lock, note: note);
+    final Model.Playback greeting = new Model.Playback(filename, note: note);
 
     final List<Model.IvrEntry> entries = [
       new Model.IvrVoicemail('1', new Model.Voicemail('vm-test')),
@@ -99,13 +93,12 @@ abstract class ModelIvrEntry {
     expect(builtObject.name, equals(name));
     expect(builtObject.greetingShort.filename, equals(filename));
     expect(builtObject.greetingShort.note, equals(note));
-    expect(builtObject.greetingShort.wrapInLock, equals(lock));
+
     expect(builtObject.greetingShort.toJson(), equals(greeting.toJson()));
 
     expect(builtObject.entries, equals(entries));
     expect(builtObject.greetingLong.filename, equals(filename));
     expect(builtObject.greetingLong.note, equals(note));
-    expect(builtObject.greetingLong.wrapInLock, equals(lock));
     expect(builtObject.greetingLong.toJson(), equals(greeting.toJson()));
 
     return builtObject;
