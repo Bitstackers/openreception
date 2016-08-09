@@ -220,14 +220,14 @@ class CdrEntry {
   }
 
   /**
-   * Return the cost of [cdrEntry], based on [callPrices] and '
+   * Return the cost of [CdrEntry], based on [callPrices] and '
    * [callChargeMultiplier].
    *
-   * Throws [PriceNotFound] if the destination found in [cdrEntry] does not
+   * Throws [PriceNotFound] if the destination found in [CdrEntry] does not
    * match any of the options available in the [callPrices] map.
    *
-   * Throws [UnknownDestination] if no rid is found in [cdrEntry] and the
-   * destination found in [cdrEntry] does not match any of the options available
+   * Throws [UnknownDestination] if no rid is found in [CdrEntry] and the
+   * destination found in [CdrEntry] does not match any of the options available
    * in the [callPrices] map.
    */
   double cost(Map<String, Map<String, double>> callPrices,
@@ -263,8 +263,8 @@ class CdrEntry {
   }
 
   /**
-   * Extract [agentBeginEpoch], [agentEndEpoch], [externalTransferEpoch] and [finalTransferEpoch]
-   * from [transferHistory].
+   * Extract [agentBeginEpoch], [agentEndEpoch], [externalTransferEpoch]
+   * and [finalTransferAction] from [transferHistory].
    */
   void _extractTransferHistoryData(String transferHistory) {
     List<Map<String, String>> actions = new List<Map<String, String>>();

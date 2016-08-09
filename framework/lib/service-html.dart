@@ -15,7 +15,8 @@ library openreception.framework.service.html;
 
 import 'dart:async';
 import 'dart:html' as html;
-import 'service.dart' as service;
+import 'package:openreception.framework/service.dart' as service;
+import 'package:openreception.framework/storage.dart';
 
 part 'service/html/service-html-client.dart';
 part 'service/html/service-html-websocket_client.dart';

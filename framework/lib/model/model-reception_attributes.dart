@@ -119,7 +119,7 @@ class ReceptionAttributes {
         responsibilities = map[key.responsibilities] as List<String>;
 
   /**
-   * [Contact] empty constructor.
+   * [ReceptionAttributes] empty constructor.
    */
   ReceptionAttributes.empty();
 

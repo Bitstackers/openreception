@@ -13,9 +13,7 @@
 
 part of openreception.framework.filestore;
 
-/**
- * Filestore for persistent storage of [model.CalenarEntry] objects.
- */
+/// Filestore for persistent storage of [model.CalendarEntry] objects.
 class Calendar implements storage.Calendar {
   /// Internal log stream
   final Logger _log = new Logger('$libraryName.Calendar');
@@ -220,7 +218,7 @@ class Calendar implements storage.Calendar {
               .decode(JSON.decode((fse as File).readAsStringSync())));
 
   /**
-   * Deletes the [Model.CalendarEntry] associated with [eid] in the
+   * Deletes the [model.CalendarEntry] associated with [eid] in the
    * filestore.
    * The action is logged as being performed by user [modifier].
    */

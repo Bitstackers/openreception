@@ -36,7 +36,7 @@ class CalendarEntry {
   /**
    * [CalendarEntry] deserializing constructor.
    * 'start' and 'stop' MUST be in a format that can be parsed by the
-   * [DateTime.parse] method. Please use the methods in the [Util] library to
+   * [DateTime.parse] method. Please use the methods in the [util] library to
    * help getting the right format. 'content' is the actual entry body.
    */
   CalendarEntry.fromMap(Map map)

@@ -13,10 +13,8 @@
 
 part of openreception.framework.event;
 
-/**
- * Event for notifying about a change in the UI. Specifically, a change of
- * whether or not the window (or tab) is in focus or not.
- */
+/// Event for notifying about a change in the UI. Specifically, a change of
+///  whether or not the window (or tab) is in focus or not.
 class FocusChange implements Event {
   /// Common [Event] fields.
   @override
@@ -24,43 +22,35 @@ class FocusChange implements Event {
   @override
   String get eventName => Key.focusChange;
 
-  /// Specialized fields.
+  /// The user ID of the user that changed focus.
   final int uid;
+
+  /// Determines if the application is in focus.
   final bool inFocus;
 
-  /**
-   * Default constructor. Takes [uid] of the user changing the widget and
-   * the new focus state ([inFocus]) as mandatory arguments.
-   */
+  /// Default constructor. Takes [uid] of the user changing the widget and
+  ///  the new focus state ([inFocus]) as mandatory arguments.
   FocusChange(int this.uid, bool this.inFocus) : timestamp = new DateTime.now();
 
-  /**
-   * Bluring constructor. Takes [uid] of the user changing the widget and
-   * returns an event with [infocus] set to [false].
-   */
+  /// Bluring constructor. Takes [uid] of the user changing the widget and
+  /// returns an event with [inFocus] set to [false].
   FocusChange.blur(int this.uid)
       : inFocus = false,
         timestamp = new DateTime.now();
 
-  /**
-   * Focusing constructor. Takes [uid] of the user changing the widget and
-   * returns an event with [infocus] set to [true].
-   */
+  /// Focusing constructor. Takes [uid] of the user changing the widget and
+  /// returns an event with [inFocus] set to [true].
   FocusChange.focus(int this.uid)
       : inFocus = true,
         timestamp = new DateTime.now();
 
-  /**
-   * Deserializing constructor.
-   */
+  /// Deserializing constructor.
   FocusChange.fromMap(Map map)
       : uid = map[Key.changedBy],
         inFocus = map[Key.inFocus],
         timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
 
-  /**
-   * Serialization function.
-   */
+  /// Serialization function.
   @override
   Map toJson() => {
         Key.event: eventName,
@@ -69,9 +59,7 @@ class FocusChange implements Event {
         Key.inFocus: inFocus
       };
 
-  /**
-   * Returns a string reprensentation of the object.
-   */
+  /// Returns a string reprensentation of the object.
   @override
   String toString() => toJson().toString();
 }

@@ -143,7 +143,7 @@ class RESTUserStore implements storage.User {
 
   /**
    * Updates the [model.UserStatus] object associated
-   * with [userID] to state ready.
+   * with [userId] to state ready.
    * The update is conditioned by the server and phone state and may throw
    * [ClientError] exeptions.
    */
@@ -171,7 +171,7 @@ class RESTUserStore implements storage.User {
 
   /**
    * Updates the [model.UserStatus] object associated
-   * with [userID] to state paused.
+   * with [userId] to state paused.
    * The update is conditioned by the server and phone state and may throw
    * [ClientError] exeptions.
    */
