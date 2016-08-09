@@ -17,19 +17,19 @@ void ivrMenuTests() {
   final String filename = 'somefile.wav';
 
   final String note = 'Just a test';
-  final Model.Playback greeting = new Model.Playback(filename, note: note);
+  final model.Playback greeting = new model.Playback(filename, note: note);
 
-  final List<Model.IvrEntry> entries = [
-    new Model.IvrVoicemail(
+  final List<model.IvrEntry> entries = [
+    new model.IvrVoicemail(
         '1',
-        new Model.Voicemail('vm-corp_1',
+        new model.Voicemail('vm-corp_1',
             recipient: 'guy@corp1.org', note: 'Just some guy')),
-    new Model.IvrSubmenu('2', 'sub-1')
+    new model.IvrSubmenu('2', 'sub-1')
   ];
 
   group('validation.ivrMenu', () {
     test('menu with no name', () {
-      final Model.IvrMenu menu = new Model.IvrMenu('', greeting)
+      final model.IvrMenu menu = new model.IvrMenu('', greeting)
         ..entries = entries;
 
       expect(validateIvrMenu(menu).length, equals(1));
@@ -38,7 +38,7 @@ void ivrMenuTests() {
     test('menu with non-alphanumeric name', () {
       {
         // Name contains spaces.
-        final Model.IvrMenu menu = new Model.IvrMenu('test 3', greeting)
+        final model.IvrMenu menu = new model.IvrMenu('test 3', greeting)
           ..entries = entries;
 
         expect(validateIvrMenu(menu).length, equals(1));
@@ -46,7 +46,7 @@ void ivrMenuTests() {
 
       {
         /// Name contains non-alphanumeric character.
-        final Model.IvrMenu menu = new Model.IvrMenu('menü', greeting)
+        final model.IvrMenu menu = new model.IvrMenu('menü', greeting)
           ..entries = entries;
 
         expect(validateIvrMenu(menu).length, equals(1));
@@ -54,24 +54,24 @@ void ivrMenuTests() {
     });
 
     test('menu with empty greeting', () {
-      final Model.IvrMenu menu = new Model.IvrMenu('named', Model.Playback.none)
+      final model.IvrMenu menu = new model.IvrMenu('named', model.Playback.none)
         ..entries = entries;
 
       expect(validateIvrMenu(menu).length, equals(1));
     });
 
     test('menu with a bad submenu', () {
-      final Model.IvrMenu menu = new Model.IvrMenu('named', greeting)
+      final model.IvrMenu menu = new model.IvrMenu('named', greeting)
         ..entries = entries
-        ..submenus = [new Model.IvrMenu('', greeting)..entries = entries];
+        ..submenus = [new model.IvrMenu('', greeting)..entries = entries];
 
       expect(validateIvrMenu(menu).length, equals(1));
     });
 
     test('bad menu with a bad submenu', () {
-      final Model.IvrMenu menu = new Model.IvrMenu('named', Model.Playback.none)
+      final model.IvrMenu menu = new model.IvrMenu('named', model.Playback.none)
         ..entries = entries
-        ..submenus = [new Model.IvrMenu('', greeting)..entries = entries];
+        ..submenus = [new model.IvrMenu('', greeting)..entries = entries];
 
       expect(validateIvrMenu(menu).length, equals(2));
     });

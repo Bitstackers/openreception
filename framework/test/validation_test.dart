@@ -13,14 +13,7 @@
 
 library openreception.framework.test.validation;
 
-import 'dart:async';
-import 'dart:convert';
-
-import 'package:openreception.framework/bus.dart';
-import 'package:openreception.framework/event.dart' as Event;
-import 'package:openreception.framework/model.dart' as Model;
-import 'package:openreception.framework/resource.dart' as Resource;
-import 'package:openreception.framework/dialplan_tools.dart' as dpTools;
+import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/validation.dart';
 import 'package:test/test.dart';
 

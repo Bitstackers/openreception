@@ -21,7 +21,6 @@ import 'package:openreception.framework/event.dart' as Event;
 import 'package:openreception.framework/model.dart' as Model;
 import 'package:openreception.framework/resource.dart' as Resource;
 import 'package:openreception.framework/dialplan_tools.dart' as dpTools;
-import 'package:openreception.framework/validation.dart';
 
 //import '../lib/service.dart'  as Service;
 
