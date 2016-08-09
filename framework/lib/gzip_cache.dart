@@ -44,7 +44,7 @@ bool isEmptyGzipList(List<int> list) {
   return true;
 }
 
-final List<int> emptyGzipList = serializeAndCompressObject([]);
+final List<int> emptyGzipList = serializeAndCompressObject(<int>[]);
 
 class CalendarCache {
   final Logger _log = new Logger('$_libraryName.CalendarCache');
@@ -52,8 +52,8 @@ class CalendarCache {
   final filestore.Calendar cCalendarStore;
   final filestore.Calendar rCalendarStore;
 
-  final Map<String, List<int>> _entryCache = {};
-  final Map<String, List<int>> _entryListCache = {};
+  final Map<String, List<int>> _entryCache = <String, List<int>>{};
+  final Map<String, List<int>> _entryListCache = <String, List<int>>{};
 
   /**
    *
@@ -110,7 +110,7 @@ class CalendarCache {
     if (!_entryListCache.containsKey(key)) {
       _log.finest('Key $key not found in cache. Looking it up.');
 
-      Iterable<model.CalendarEntry> entries = [];
+      Iterable<model.CalendarEntry> entries = <model.CalendarEntry>[];
       if (owner is model.OwningContact) {
         entries = (await cCalendarStore.list(owner)).toList(growable: false);
       } else if (owner is model.OwningReception) {
@@ -133,24 +133,25 @@ class CalendarCache {
   /**
    *
    */
-  Map get stats => {
+  Map<String, dynamic> get stats =>
+      new Map<String, dynamic>.unmodifiable(<String, dynamic>{
         'calendarEntries': _entryCache.length,
         'calendarEntrySize': _entryCache.values
             .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
         'listSize': _entryListCache.length
-      };
+      });
 
   /**
    *
    */
-  Future prefill(Iterable<model.Owner> owners) async {
-    await Future.forEach(owners, (owner) async {
-      List<model.CalendarEntry> entries = [];
+  Future<Null> prefill(Iterable<model.Owner> owners) async {
+    await Future.forEach(owners, (model.Owner owner) async {
+      final List<model.CalendarEntry> entries = <model.CalendarEntry>[];
 
       if (owner is model.OwningContact) {
-        entries = (await cCalendarStore.list(owner)).toList(growable: false);
+        entries.addAll(await cCalendarStore.list(owner));
       } else if (owner is model.OwningReception) {
-        entries = (await rCalendarStore.list(owner)).toList(growable: false);
+        entries.addAll(await rCalendarStore.list(owner));
       } else {
         throw new storage.ClientError('Could not find suitable for store '
             'for owner type: ${owner.runtimeType}');
@@ -158,7 +159,7 @@ class CalendarCache {
 
       _entryListCache[owner.toString()] = serializeAndCompressObject(entries);
 
-      await Future.forEach(entries, (entry) async {
+      await Future.forEach(entries, (model.CalendarEntry entry) async {
         final String key = '$owner:${entry.id}';
 
         _entryCache[key] = serializeAndCompressObject(entry);
@@ -188,9 +189,9 @@ class ReceptionCache {
 
   final filestore.Reception _receptionStore;
 
-  final Map<int, List<int>> _receptionCache = {};
-  final Map<String, int> _extensionToRid = {};
-  List<int> _receptionList = [];
+  final Map<int, List<int>> _receptionCache = <int, List<int>>{};
+  final Map<String, int> _extensionToRid = <String, int>{};
+  List<int> _receptionList = <int>[];
 
   /**
    *
@@ -211,7 +212,7 @@ class ReceptionCache {
    */
   Future<List<int>> getByExtension(String extension) async {
     if (!_extensionToRid.containsKey(extension)) {
-      final r = await _receptionStore.getByExtension(extension);
+      final model.Reception r = await _receptionStore.getByExtension(extension);
       _receptionCache[r.id] = serializeAndCompressObject(r);
       _extensionToRid[extension] = r.id;
     }
@@ -236,7 +237,7 @@ class ReceptionCache {
 
     if (!_receptionCache.containsKey(key)) {
       _log.finest('Key $key not found in cache. Looking it up.');
-      final r = await _receptionStore.get(rid);
+      final model.Reception r = await _receptionStore.get(rid);
       _receptionCache[r.id] = serializeAndCompressObject(r);
       _extensionToRid[r.dialplan] = r.id;
     }
@@ -276,7 +277,7 @@ class ReceptionCache {
   /**
    *
    */
-  Map get stats => {
+  Map<String, dynamic> get stats => <String, dynamic>{
         'receptionCount': _receptionCache.length,
         'receptionSize': _receptionCache.values
             .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
@@ -286,13 +287,14 @@ class ReceptionCache {
   /**
    *
    */
-  Future prefill() async {
-    final rRefs = await _receptionStore.list();
+  Future<Null> prefill() async {
+    final Iterable<model.ReceptionReference> rRefs =
+        await _receptionStore.list();
 
     _receptionList = serializeAndCompressObject(rRefs.toList(growable: false));
 
-    await Future.forEach(rRefs, (rRef) async {
-      final r = await _receptionStore.get(rRef.id);
+    await Future.forEach(rRefs, (model.ReceptionReference rRef) async {
+      final model.Reception r = await _receptionStore.get(rRef.id);
       _receptionCache[r.id] = serializeAndCompressObject(r);
       _extensionToRid[r.dialplan] = r.id;
     });
@@ -302,7 +304,7 @@ class ReceptionCache {
    *
    */
   void emptyList() {
-    _receptionList = [];
+    _receptionList = <int>[];
   }
 
   /**
@@ -316,16 +318,16 @@ class ReceptionCache {
 
 class ContactCache {
   final filestore.Contact _contactStore;
-  final Map<int, List<int>> _contactCache = {};
-  List<int> _contactListCache = [];
-  final Map<int, List<int>> _recListCache = {};
-  final Map<int, List<int>> _orgListCache = {};
+  final Map<int, List<int>> _contactCache = <int, List<int>>{};
+  List<int> _contactListCache = <int>[];
+  final Map<int, List<int>> _recListCache = <int, List<int>>{};
+  final Map<int, List<int>> _orgListCache = <int, List<int>>{};
 
   /// Rid and pre-gzipped listing.
-  final Map<int, List<int>> _receptionContactCache = {};
+  final Map<int, List<int>> _receptionContactCache = <int, List<int>>{};
 
   /// Cid:rid reception datas
-  final Map<String, List<int>> _receptionDataCache = {};
+  final Map<String, List<int>> _receptionDataCache = <String, List<int>>{};
 
   /**
    *
@@ -403,7 +405,7 @@ class ContactCache {
    *
    */
   void emptyContactLists() {
-    _contactListCache = [];
+    _contactListCache = <int>[];
     _receptionContactCache.clear();
   }
 
@@ -436,7 +438,7 @@ class ContactCache {
    */
   void emptyAll() {
     _contactCache.clear();
-    _contactListCache = [];
+    _contactListCache = <int>[];
     _recListCache.clear();
     _orgListCache.clear();
     _receptionContactCache.clear();
@@ -445,16 +447,17 @@ class ContactCache {
   /**
    *
    */
-  Future prefill() async {
-    final contactList = await _contactStore.list();
+  Future<Null> prefill() async {
+    final Iterable<model.BaseContact> contactList = await _contactStore.list();
     _contactListCache = serializeAndCompressObject(contactList);
 
     await Future.forEach(contactList, (model.BaseContact con) async {
       _contactCache[con.id] = serializeAndCompressObject(con);
 
-      final rRefs = await _contactStore.receptions(con.id);
+      final Iterable<model.ReceptionReference> rRefs =
+          await _contactStore.receptions(con.id);
 
-      await Future.forEach(rRefs, (rRef) async {
+      await Future.forEach(rRefs, (model.ReceptionReference rRef) async {
         if (_receptionContactCache[rRef.id] != null) {
           _receptionContactCache[rRef.id] = serializeAndCompressObject(
               await _contactStore.receptionContacts(rRef.id));
@@ -466,7 +469,7 @@ class ContactCache {
   /**
    *
    */
-  Map get stats => {
+  Map<String, dynamic> get stats => <String, dynamic>{
         'contactCount': _contactCache.length,
         'contactSize': _contactCache.values
             .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
@@ -478,8 +481,8 @@ class ContactCache {
 
 class MessageCache {
   final filestore.Message _messageStore;
-  final Map<String, List<int>> _messageListCache = {};
-  List<int> _draftListCache = [];
+  final Map<String, List<int>> _messageListCache = <String, List<int>>{};
+  List<int> _draftListCache = <int>[];
 
   MessageCache(this._messageStore, Stream<event.MessageChange> messageChange) {
     messageChange.listen((event.MessageChange e) {
@@ -487,7 +490,7 @@ class MessageCache {
       _messageListCache.remove(key);
 
       if (e.messageState == model.MessageState.draft) {
-        _draftListCache = [];
+        _draftListCache = <int>[];
       }
     });
   }
@@ -499,7 +502,7 @@ class MessageCache {
     final String key = day.toIso8601String().split('T').first;
 
     if (!_messageListCache.containsKey(key)) {
-      final messages = await _messageStore.listDay(day);
+      final Iterable<model.Message> messages = await _messageStore.listDay(day);
 
       if (messages.isEmpty) {
         _messageListCache[key] = emptyGzipList;
@@ -527,12 +530,12 @@ class MessageCache {
   /**
    *
    */
-  Future prefill() async {}
+  Future<Null> prefill() async {}
 
   /**
    *
    */
-  Map get stats => {
+  Map<String, dynamic> get stats => <String, dynamic>{
         'messageFolderCount': _messageListCache.length,
         'messageFolderSize': _messageListCache.values
             .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
@@ -545,8 +548,8 @@ class MessageCache {
  */
 class IvrMenuCache {
   final filestore.Ivr ivrStore;
-  final Map<String, List<int>> _ivrCache = {};
-  List<int> _ivrListCache = [];
+  final Map<String, List<int>> _ivrCache = <String, List<int>>{};
+  List<int> _ivrListCache = <int>[];
 
   IvrMenuCache(this.ivrStore, Stream<event.IvrMenuChange> ivrMenuChanges) {
     ivrMenuChanges.listen((event.IvrMenuChange changeEvent) {
@@ -569,7 +572,7 @@ class IvrMenuCache {
      *
      */
   void clearListCache() {
-    _ivrListCache = [];
+    _ivrListCache = <int>[];
   }
 
   /**
@@ -577,7 +580,7 @@ class IvrMenuCache {
    */
   Future<List<int>> list() async {
     if (_ivrCache.isEmpty) {
-      final Iterable ivrs = await ivrStore.list();
+      final Iterable<model.IvrMenu> ivrs = await ivrStore.list();
 
       _ivrListCache = ivrs.isEmpty
           ? emptyGzipList
@@ -605,7 +608,7 @@ class IvrMenuCache {
   /**
    *
    */
-  Future emptyAll() async {
+  Future<Null> emptyAll() async {
     _ivrCache.clear();
     clearListCache();
   }
@@ -613,7 +616,7 @@ class IvrMenuCache {
   /**
    *
    */
-  Future prefill() async {
+  Future<Null> prefill() async {
     Iterable<model.IvrMenu> ivrs = await ivrStore.list();
     _ivrListCache = ivrs.isEmpty
         ? emptyGzipList
@@ -628,7 +631,7 @@ class IvrMenuCache {
   /**
    *
    */
-  Map get stats => {
+  Map<String, dynamic> get stats => <String, dynamic>{
         'ivrCount': _ivrCache.length,
         'ivrSize': _ivrCache.values
             .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
@@ -641,8 +644,8 @@ class IvrMenuCache {
  */
 class DialplanCache {
   final filestore.ReceptionDialplan _rdpStore;
-  final Map<String, List<int>> _dialplanCache = {};
-  List<int> _dialplanListCache = [];
+  final Map<String, List<int>> _dialplanCache = <String, List<int>>{};
+  List<int> _dialplanListCache = <int>[];
 
   DialplanCache(this._rdpStore, Stream<event.DialplanChange> dialplanChanges) {
     dialplanChanges.listen((event.DialplanChange changeEvent) {
@@ -665,7 +668,7 @@ class DialplanCache {
      *
      */
   void clearListCache() {
-    _dialplanListCache = [];
+    _dialplanListCache = <int>[];
   }
 
   /**
@@ -673,7 +676,8 @@ class DialplanCache {
      */
   Future<List<int>> list() async {
     if (_dialplanCache.isEmpty) {
-      final Iterable dialplans = await _rdpStore.list();
+      final Iterable<model.ReceptionDialplan> dialplans =
+          await _rdpStore.list();
 
       _dialplanListCache = dialplans.isEmpty
           ? emptyGzipList
@@ -701,7 +705,7 @@ class DialplanCache {
   /**
      *
      */
-  Future emptyAll() async {
+  Future<Null> emptyAll() async {
     _dialplanCache.clear();
     clearListCache();
   }
@@ -709,7 +713,7 @@ class DialplanCache {
   /**
      *
      */
-  Future prefill() async {
+  Future<Null> prefill() async {
     Iterable<model.ReceptionDialplan> dialplans = await _rdpStore.list();
     _dialplanListCache = dialplans.isEmpty
         ? emptyGzipList
@@ -724,7 +728,7 @@ class DialplanCache {
   /**
      *
      */
-  Map get stats => {
+  Map<String, dynamic> get stats => <String, dynamic>{
         'dialplanCount': _dialplanCache.length,
         'dialplanSize': _dialplanCache.values
             .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
@@ -734,8 +738,8 @@ class DialplanCache {
 
 class UserCache {
   final filestore.User _userStore;
-  final Map<int, List<int>> _userCache = {};
-  List<int> _userListCache = [];
+  final Map<int, List<int>> _userCache = <int, List<int>>{};
+  List<int> _userListCache = <int>[];
 
   /**
    *
@@ -761,7 +765,7 @@ class UserCache {
    *
    */
   void clearListCache() {
-    _userListCache = [];
+    _userListCache = <int>[];
   }
 
   /**
@@ -769,7 +773,7 @@ class UserCache {
    */
   Future<List<int>> list() async {
     if (_userListCache.isEmpty) {
-      final Iterable users = await _userStore.list();
+      final Iterable<model.UserReference> users = await _userStore.list();
 
       _userListCache = users.isEmpty
           ? emptyGzipList
@@ -797,7 +801,7 @@ class UserCache {
   /**
    *
    */
-  Future emptyAll() async {
+  Future<Null> emptyAll() async {
     _userCache.clear();
     clearListCache();
   }
@@ -805,7 +809,7 @@ class UserCache {
   /**
    *
    */
-  Future prefill() async {
+  Future<Null> prefill() async {
     Iterable<model.UserReference> users = await _userStore.list();
     _userListCache = users.isEmpty
         ? emptyGzipList
@@ -820,7 +824,7 @@ class UserCache {
   /**
    *
    */
-  Map get stats => {
+  Map<String, dynamic> get stats => <String, dynamic>{
         'userCount': _userCache.length,
         'userSize': _userCache.values
             .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
@@ -833,8 +837,8 @@ class OrganizationCache {
 
   final filestore.Organization orgStore;
 
-  final Map<int, List<int>> _organizationCache = {};
-  List<int> _organizationListCache = [];
+  final Map<int, List<int>> _organizationCache = <int, List<int>>{};
+  List<int> _organizationListCache = <int>[];
 
   /**
    *
@@ -895,7 +899,7 @@ class OrganizationCache {
   /**
    *
    */
-  Map get stats => {
+  Map<String, dynamic> get stats => <String, dynamic>{
         'organizationEntries': _organizationCache.length,
         'organizationSize': _organizationCache.values
             .fold(0, (int sum, List<int> bytes) => sum + bytes.length),
@@ -905,14 +909,14 @@ class OrganizationCache {
   /**
    *
    */
-  Future prefill() async {
+  Future<Null> prefill() async {
     List<model.OrganizationReference> oRefs = await orgStore.list();
 
     _organizationListCache =
         serializeAndCompressObject(oRefs.toList(growable: false));
 
-    await Future.forEach(oRefs, (oRef) async {
-      final o = await orgStore.get(oRef.id);
+    await Future.forEach(oRefs, (model.OrganizationReference oRef) async {
+      final model.Organization o = await orgStore.get(oRef.id);
       _organizationCache[o.id] = serializeAndCompressObject(o);
     });
   }
@@ -921,7 +925,7 @@ class OrganizationCache {
    *
    */
   void emptyList() {
-    _organizationListCache = [];
+    _organizationListCache = <int>[];
   }
 
   /**

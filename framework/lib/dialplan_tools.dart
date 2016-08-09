@@ -91,7 +91,7 @@ List<String> _externalTrunkTransfer(
   final String callerIdNumber =
       new HtmlEscape(HtmlEscapeMode.ATTRIBUTE).convert(opts.callerIdNumber);
 
-  return [
+  return <String>[
     '<extension name="$extension-$outboundSuffix-trunk" continue="true">',
     '  <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(\\d+)\$">',
     '    <action application="set" data="ringback=\${dk-ring}"/>',
@@ -109,7 +109,7 @@ List<String> _externalSipTransfer(
       new HtmlEscape(HtmlEscapeMode.ATTRIBUTE).convert(opts.callerIdName);
   final String callerIdNumber =
       new HtmlEscape(HtmlEscapeMode.ATTRIBUTE).convert(opts.callerIdNumber);
-  return [
+  return <String>[
     '<extension name="$extension-$outboundSuffix-sip" continue="true">',
     '  <condition field="destination_number" expression="^${PbxKey.externalTransfer}_(.*)">',
     '    <action application="set" data="ringback=\${dk-ring}"/>',
@@ -132,7 +132,7 @@ String _normalizeOpeningHour(String string) =>
  * Indent a string by [count] spaces.
  */
 String _indent(String item, {int count: 2}) =>
-    '${new List.filled(count, ' ').join('')}$item';
+    '${new List<String>.filled(count, ' ').join('')}$item';
 
 /**
  *
@@ -146,13 +146,14 @@ List<String> _openingHourToXmlDialplan(
     model.Reception reception) {
   List<String> lines = new List<String>();
   Iterable<String> actionLines = actions
-      .map((action) => _actionToXmlDialplan(action, option, env, reception))
+      .map((model.Action action) =>
+          _actionToXmlDialplan(action, option, env, reception))
       .fold(
           new List<String>(),
-          (List<String> combined, List<String> current) =>
-              combined..addAll(current.map((e) => _indent(e, count: 4))));
+          (List<String> combined, List<String> current) => combined
+            ..addAll(current.map((String e) => _indent(e, count: 4))));
 
-  lines.addAll([
+  lines.addAll(<String>[
     '',
     _comment('Actions for opening hour $oh'),
     '<extension name="$extension-${_normalizeOpeningHour(oh.toString())}" continue="true">'
@@ -181,14 +182,15 @@ List<String> _fallbackToDialplan(
     DialplanCompilerOpts option,
     Environment env,
     model.Reception reception) {
-  return new List<String>.from([
+  return new List<String>.from(<String>[
     '',
     _comment('Default fallback actions for $extension'),
     '<extension name="$extension-$closedSuffix">',
     '  <condition>',
   ])
     ..addAll(actions
-        .map((action) => _actionToXmlDialplan(action, option, env, reception))
+        .map((model.Action action) =>
+            _actionToXmlDialplan(action, option, env, reception))
         .fold(
             new List<String>(),
             (List<String> combined, List<String> current) =>
@@ -206,8 +208,13 @@ Iterable<Iterable<String>> _hourActionToXmlDialplan(
         model.HourAction hourAction,
         DialplanCompilerOpts option,
         model.Reception reception) =>
-    hourAction.hours.map((oh) => _openingHourToXmlDialplan(extension, oh,
-        hourAction.actions, option, new Environment(), reception));
+    hourAction.hours.map((model.OpeningHour oh) => _openingHourToXmlDialplan(
+        extension,
+        oh,
+        hourAction.actions,
+        option,
+        new Environment(),
+        reception));
 
 /**
  *
@@ -217,9 +224,11 @@ Iterable<String> _hourActionsToXmlDialplan(
         Iterable<model.HourAction> hourActions,
         DialplanCompilerOpts option,
         model.Reception reception) =>
-    hourActions.map((ha) =>
-        _hourActionToXmlDialplan(extension, ha, option, reception)
-            .fold([], (List combined, current) => combined..addAll(current)));
+    hourActions.map((model.HourAction ha) =>
+        _hourActionToXmlDialplan(extension, ha, option, reception).fold(
+            <String>[],
+            (List<String> combined, Iterable<String> current) =>
+                combined..addAll(current)));
 
 /**
  * Turns a [NamedExtension] into a dialplan document fragment.
@@ -229,7 +238,7 @@ Iterable<String> _namedExtensionToDialPlan(
         DialplanCompilerOpts option,
         Environment env,
         model.Reception reception) =>
-    [
+    <String>[
       '',
       _noteTemplate('Extra-extension ${extension.name}'),
       '<extension name="${extension.name}" continue="true">',
@@ -238,10 +247,11 @@ Iterable<String> _namedExtensionToDialPlan(
           'break="${PbxKey.onFalse}">',
     ]
       ..addAll(extension.actions
-          .map((action) => _actionToXmlDialplan(action, option, env, reception))
+          .map((model.Action action) =>
+              _actionToXmlDialplan(action, option, env, reception))
           .fold(
-              new List<String>(),
-              (List<String> combined, current) =>
+              <String>[],
+              (List<String> combined, Iterable<String> current) =>
                   combined..addAll(current.map(_indent).map(_indent))))
       ..add('    <action application="hangup"/>')
       ..add('  </condition>')
@@ -252,10 +262,12 @@ Iterable<String> _extraExtensionsToDialplan(
         DialplanCompilerOpts option,
         model.Reception reception) =>
     extensions
-        .map((ne) =>
+        .map((model.NamedExtension ne) =>
             _namedExtensionToDialPlan(ne, option, new Environment(), reception))
-        .fold(new List<String>(),
-            (List<String> combined, current) => combined..addAll(current));
+        .fold(
+            new List<String>(),
+            (List<String> combined, Iterable<String> current) =>
+                combined..addAll(current));
 
 /**
  *
@@ -287,7 +299,7 @@ String _dialplanToXml(model.ReceptionDialplan dialplan,
     <!-- Perform outbound SIP calls -->
     ${_externalSipTransfer(dialplan.extension, reception.id, option).join('\n    ')}
 
-    ${_hourActionsToXmlDialplan(dialplan.extension, dialplan.open, option, reception).fold([], (combined, current) => combined..addAll(current)).join('\n    ')}
+    ${_hourActionsToXmlDialplan(dialplan.extension, dialplan.open, option, reception).fold(<String>[], (List<String> combined, String current) => combined..add(current)).join('\n    ')}
     ${_fallbackToDialplan(dialplan.extension, dialplan.defaultActions, option, new Environment(), reception).join('\n    ')}
 
   </context>
@@ -383,7 +395,7 @@ String get _callNotify => '<action application="${PbxKey.event}" '
  */
 List<String> _actionToXmlDialplan(model.Action action,
     DialplanCompilerOpts option, Environment env, model.Reception reception) {
-  List<String> returnValue = [];
+  List<String> returnValue = <String>[];
 
   /// Transfer action.
   if (action is model.Transfer) {
@@ -400,7 +412,7 @@ List<String> _actionToXmlDialplan(model.Action action,
 
   /// Notify action.
   else if (action is model.Notify) {
-    returnValue.addAll([
+    returnValue.addAll(<String>[
       _comment('Announce the call to the receptionists'),
       _setVar(ORPbxKey.state, 'new'),
       _callNotify
@@ -410,7 +422,7 @@ List<String> _actionToXmlDialplan(model.Action action,
 
   /// ReceptionTransfer action.
   else if (action is model.ReceptionTransfer) {
-    returnValue.addAll([
+    returnValue.addAll(<String>[
       _comment('Transfer call to other reception'),
       _receptionTransferTemplate(action.extension, option)
     ]);
@@ -418,7 +430,7 @@ List<String> _actionToXmlDialplan(model.Action action,
 
   /// Ringtone action.
   else if (action is model.Ringtone) {
-    returnValue.addAll([
+    returnValue.addAll(<String>[
       _comment('Sending ringtones'),
       _setVar(ORPbxKey.state, PbxKey.ringing),
       _ringTone,
@@ -431,7 +443,7 @@ List<String> _actionToXmlDialplan(model.Action action,
   /// Playback action.
   else if (action is model.Playback) {
     if (action.note.isNotEmpty) returnValue.add(_noteTemplate(action.note));
-    returnValue.addAll([_comment('Playback file ${action.filename}')]);
+    returnValue.addAll(<String>[_comment('Playback file ${action.filename}')]);
 
     returnValue..add(_setVar(ORPbxKey.state, PbxKey.playback));
 
@@ -441,7 +453,7 @@ List<String> _actionToXmlDialplan(model.Action action,
     }
 
     if (env.callAnnounced) {
-      returnValue.addAll([_setVar(ORPbxKey.locked, true), _lock]);
+      returnValue.addAll(<String>[_setVar(ORPbxKey.locked, true), _lock]);
     }
 
     String greetingPath;
@@ -454,14 +466,14 @@ List<String> _actionToXmlDialplan(model.Action action,
       greetingPath = option.greetingDir + action.filename;
     }
 
-    returnValue.addAll([
+    returnValue.addAll(<String>[
       '<action application="playback" '
           'data="{loops=${action.repeat}}$greetingPath"/>',
       _setVar(ORPbxKey.greetingPlayed, true),
     ]);
 
     if (env.callAnnounced) {
-      returnValue.addAll([_setVar(ORPbxKey.locked, false), _unlock]);
+      returnValue.addAll(<String>[_setVar(ORPbxKey.locked, false), _unlock]);
     }
   }
 
@@ -472,7 +484,7 @@ List<String> _actionToXmlDialplan(model.Action action,
       env.channelAnswered = true;
     }
 
-    returnValue.addAll([
+    returnValue.addAll(<String>[
       _comment('Enqueue call'),
       _setVar(ORPbxKey.state, PbxKey.queued),
       '<action application="${PbxKey.event}" data="${PbxKey.eventSubclass}=${ORPbxKey.waitQueueEnter},${PbxKey.eventName}=${PbxKey.custom}" />',
@@ -488,7 +500,7 @@ List<String> _actionToXmlDialplan(model.Action action,
       env.channelAnswered = true;
     }
     if (action.note.isNotEmpty) returnValue.add(_noteTemplate(action.note));
-    returnValue.addAll([
+    returnValue.addAll(<String>[
       _setVar(
           ORPbxKey.emailDateHeader, '\${strftime(%a, %d %b %Y %H:%M:%S %z)}'),
       _setVar('record_waste_resources', 'true'),
@@ -503,7 +515,7 @@ List<String> _actionToXmlDialplan(model.Action action,
       env.channelAnswered = true;
     }
 
-    returnValue.addAll([
+    returnValue.addAll(<String>[
       _setVar('record_waste_resources', 'true'),
       _setVar(
           ORPbxKey.emailDateHeader, '\${strftime(%a, %d %b %Y %H:%M:%S %z)}'),
@@ -530,7 +542,7 @@ String _openingHourToFreeSwitch(model.OpeningHour oh) {
   /// Prefixes string of integer with a '0' if the integer value is below 10.
   String _twoDigitInt(int i) => i < 10 ? '0$i' : '$i';
 
-  if ([oh.fromDay, oh.toDay].contains(model.WeekDay.all)) {
+  if (<model.WeekDay>[oh.fromDay, oh.toDay].contains(model.WeekDay.all)) {
     wDayString = '';
   } else if (oh.fromDay == oh.toDay) {
     wDayString = 'wday="${_weekDayToFreeSwitch(oh.fromDay)}"';
@@ -552,8 +564,11 @@ String _openingHourToFreeSwitch(model.OpeningHour oh) {
 
 List<String> _ivrMenuToXml(model.IvrMenu menu, DialplanCompilerOpts option) =>
     menu.entries
-        .map((entry) => _ivrEntryToXml(entry, option))
-        .fold([], (combined, current) => combined..addAll(current));
+        .map((model.IvrEntry entry) => _ivrEntryToXml(entry, option))
+        .fold(
+            <String>[],
+            (List<String> combined, Iterable<String> current) =>
+                combined..addAll(current));
 
 String _generateXmlFromIvrMenu(
         model.IvrMenu menu, DialplanCompilerOpts option) =>
@@ -567,7 +582,7 @@ String _generateXmlFromIvrMenu(
     ${(_ivrMenuToXml(menu, option)).join('\n    ')}
   </menu>
 
-  ${menu.submenus.map((menu) => _generateXmlFromIvrMenu (menu, option)).join('\n  ')}
+  ${menu.submenus.map((model.IvrMenu menu) => _generateXmlFromIvrMenu (menu, option)).join('\n  ')}
 ''';
 
 String _ivrToXml(model.IvrMenu menu, DialplanCompilerOpts option) => '''
@@ -576,7 +591,7 @@ String _ivrToXml(model.IvrMenu menu, DialplanCompilerOpts option) => '''
 </include>''';
 
 List<String> _ivrEntryToXml(model.IvrEntry entry, DialplanCompilerOpts option) {
-  List<String> returnValue = [];
+  List<String> returnValue = <String>[];
 
   /// IvrTransfer action
   if (entry is model.IvrTransfer) {
@@ -612,8 +627,8 @@ List<String> _ivrEntryToXml(model.IvrEntry entry, DialplanCompilerOpts option) {
 }
 
 Iterable<String> ivrOf(model.ReceptionDialplan rdp) => rdp.allActions
-    .where((action) => action is model.Ivr)
-    .map((ivr) => (ivr as model.Ivr).menuName);
+    .where((model.Action action) => action is model.Ivr)
+    .map((model.Action ivr) => (ivr as model.Ivr).menuName);
 
 /**
  *
