@@ -214,7 +214,7 @@ class Call {
   /**
    *
    */
-  void set locked(bool lock) {
+  set locked(bool lock) {
     _locked = lock;
 
     if (lock) {

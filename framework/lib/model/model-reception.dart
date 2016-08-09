@@ -36,7 +36,7 @@ class Reception {
 
   String get shortGreeting =>
       this._shortGreeting.isNotEmpty ? this._shortGreeting : this.greeting;
-  void set shortGreeting(String newGreeting) {
+  set shortGreeting(String newGreeting) {
     this._shortGreeting = newGreeting;
   }
 
@@ -67,7 +67,7 @@ class Reception {
         key.websites: websites
       };
 
-  void set attributes(Map attributes) {
+  set attributes(Map attributes) {
     this
       ..addresses = attributes[key.addresses] as List<String>
       ..alternateNames = attributes[key.alternateNames] as List<String>

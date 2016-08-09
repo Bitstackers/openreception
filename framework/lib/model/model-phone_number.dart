@@ -23,7 +23,7 @@ class PhoneNumber {
   bool confidential = false;
   String note = '';
 
-  void set destination(String newDestination) {
+  set destination(String newDestination) {
     try {
       int.parse(_normalize(newDestination));
     } on FormatException {
