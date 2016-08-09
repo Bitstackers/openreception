@@ -189,4 +189,7 @@ class OpeningHour {
   @override
   bool operator ==(Object other) =>
       other is OpeningHour && this.toString() == other.toString();
+
+  @override
+  int get hashCode => toString().hashCode;
 }

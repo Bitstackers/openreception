@@ -74,4 +74,7 @@ class PhoneNumber {
         key.confidential: confidential,
         key.note: note
       };
+
+  @override
+  int get hashCode => toString().hashCode;
 }

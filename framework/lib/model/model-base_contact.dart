@@ -50,7 +50,10 @@ class ContactReference implements ObjectReference {
   Map toJson() => {key.id: id, key.name: name};
 
   @override
-  int get hashCode => id.hashCode;
+  operator ==(Object other) => other is ContactReference && id == other.id;
+
+  @override
+  int get hashCode => toString().hashCode;
 }
 
 /**
@@ -108,6 +111,9 @@ class OrganizationReference implements ObjectReference {
 
   @override
   int get hashCode => id.hashCode;
+
+  @override
+  operator ==(Object other) => other is OrganizationReference && other.id == id;
 }
 
 class ReceptionContact {
@@ -154,6 +160,9 @@ class ReceptionReference implements ObjectReference {
 
   @override
   int get hashCode => id.hashCode;
+
+  @override
+  operator ==(Object other) => other is ReceptionReference && other.id == id;
 }
 
 /**

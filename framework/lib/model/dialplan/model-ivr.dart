@@ -45,4 +45,7 @@ class Ivr extends Action {
 
   @override
   String toJson() => '${Key.ivr} $menuName';
+
+  @override
+  int get hashCode => menuName.hashCode;
 }

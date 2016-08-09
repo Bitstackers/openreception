@@ -85,4 +85,7 @@ class Voicemail extends Action {
   String toJson() => '${Key.voicemail} $vmBox'
       '${recipient.isNotEmpty ? ' $recipient' : ''}'
       '${note.isNotEmpty ? ' ($note)' : ''}';
+
+  @override
+  int get hashCode => toString().hashCode;
 }

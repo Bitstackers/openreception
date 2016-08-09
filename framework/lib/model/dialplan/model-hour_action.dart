@@ -34,4 +34,7 @@ class HourAction {
 
   @override
   bool operator ==(Object other) => this.toString() == other.toString();
+
+  @override
+  int get hashCode => toString().hashCode;
 }

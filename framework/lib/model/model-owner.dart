@@ -61,6 +61,9 @@ class Owner {
    */
   @override
   String toString() => '$_noneKey:';
+
+  @override
+  int get hashCode => toString().hashCode;
 }
 
 /**

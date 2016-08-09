@@ -90,4 +90,7 @@ class Enqueue implements Action {
   @override
   bool operator ==(Object other) =>
       other is Enqueue && this.queueName == other.queueName;
+
+  @override
+  int get hashCode => this.queueName.hashCode;
 }

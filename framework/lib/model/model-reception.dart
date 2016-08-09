@@ -147,4 +147,7 @@ class Reception {
   bool get isEmpty => this.id == noReception.id;
 
   ReceptionReference get reference => new ReceptionReference(id, name);
+
+  @override
+  int get hashCode => toString().hashCode;
 }

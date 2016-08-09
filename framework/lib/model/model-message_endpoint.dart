@@ -82,4 +82,7 @@ class MessageEndpoint {
       other is MessageEndpoint &&
       this.type == other.type &&
       this.address == other.address;
+
+  @override
+  int get hashCode => toString().hashCode;
 }

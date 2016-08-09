@@ -117,4 +117,7 @@ class IvrMenu {
         Key.submenus:
             submenus.map((entry) => entry.toJson()).toList(growable: false)
       };
+
+  @override
+  int get hashCode => name.hashCode;
 }

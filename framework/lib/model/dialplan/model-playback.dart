@@ -100,4 +100,7 @@ class Playback extends Action {
    */
   @override
   String toJson() => toString();
+
+  @override
+  int get hashCode => toString().hashCode;
 }

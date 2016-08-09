@@ -103,4 +103,7 @@ class MessageFilter {
    */
   @override
   String toString() => toJson().toString();
+
+  @override
+  int get hashCode => toString().hashCode;
 }
