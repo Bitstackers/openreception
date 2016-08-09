@@ -443,8 +443,8 @@ abstract class Randomizer {
   /**
    * Generates a random [model.Playback] action.
    */
-  static model.Playback randomPlayback() => new model.Playback('somefile',
-      wrapInLock: rand.nextBool(), note: randomDialplanNote());
+  static model.Playback randomPlayback() =>
+      new model.Playback('somefile', note: randomDialplanNote());
 
   /**
    * Generates a random [model.Transfer] action.
