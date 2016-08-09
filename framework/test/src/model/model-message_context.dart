@@ -50,19 +50,19 @@ abstract class ModelMessageContext {
   static Model.MessageContext buildObject() {
     final int contactId = 1;
     final String contactName = 'John Arbuckle';
-    final int receptionId = 2;
+    final int rid = 2;
     final String receptionName = 'Lasagna-makers inc.';
 
     Model.MessageContext obj = new Model.MessageContext.empty()
       ..cid = contactId
       ..contactName = contactName
-      ..rid = receptionId
+      ..rid = rid
       ..receptionName = receptionName;
 
     expect(obj.cid, equals(contactId));
     expect(obj.contactName, equals(contactName));
 
-    expect(obj.rid, equals(receptionId));
+    expect(obj.rid, equals(rid));
     expect(obj.receptionName, equals(receptionName));
 
     return obj;

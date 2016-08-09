@@ -29,8 +29,8 @@ abstract class ReceptionDialplan {
   /**
    *
    */
-  static Uri deploy(Uri host, String extension, int receptionId) =>
-      Uri.parse('$host/$_ns/$extension/deploy/$receptionId');
+  static Uri deploy(Uri host, String extension, int rid) =>
+      Uri.parse('$host/$_ns/$extension/deploy/$rid');
 
   /**
    *

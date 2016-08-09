@@ -224,8 +224,8 @@ class Contact implements storage.Contact {
    *
    */
   @override
-  Future<model.ReceptionAttributes> data(int id, int receptionId) async {
-    final file = _receptionFile(id, receptionId);
+  Future<model.ReceptionAttributes> data(int id, int rid) async {
+    final file = _receptionFile(id, rid);
     if (!file.existsSync()) {
       throw new storage.NotFound('No file: ${file.path}');
     }
@@ -399,13 +399,13 @@ class Contact implements storage.Contact {
    *
    */
   @override
-  Future removeData(int id, int receptionId, model.User modifier) async {
-    if (id == model.BaseContact.noId || receptionId == model.Reception.noId) {
+  Future removeData(int id, int rid, model.User modifier) async {
+    if (id == model.BaseContact.noId || rid == model.Reception.noId) {
       throw new storage.ClientError('Empty id');
     }
 
     final recDir = new Directory('$path/$id/receptions');
-    final File file = new File('${recDir.path}/$receptionId.json');
+    final File file = new File('${recDir.path}/$rid.json');
     if (!file.existsSync()) {
       throw new storage.NotFound('No file $file');
     }
@@ -416,7 +416,7 @@ class Contact implements storage.Contact {
       await _git.remove(
           file,
           'uid:${modifier.id} - ${modifier.name} '
-          'removed $id from $receptionId',
+          'removed $id from $rid',
           _authorString(modifier));
     } else {
       file.deleteSync();
@@ -425,11 +425,11 @@ class Contact implements storage.Contact {
     if (logChanges) {
       new ChangeLogger(recDir.path).add(
           new model.ReceptionDataChangelogEntry.delete(
-              modifier.reference, id, receptionId));
+              modifier.reference, id, rid));
     }
 
     _receptionDataChangeBus
-        .fire(new event.ReceptionData.delete(id, receptionId, modifier.id));
+        .fire(new event.ReceptionData.delete(id, rid, modifier.id));
   }
 
   /**

@@ -216,7 +216,7 @@ abstract class ModelCall {
     final int assignedTo = 1;
     final String callerId = 'That guy';
     final int contactId = 2;
-    final int receptionId = 3;
+    final int rid = 3;
     final String destination = '12345678';
     final bool greetingPlayed = false;
     final bool inbound = true;
@@ -234,7 +234,7 @@ abstract class ModelCall {
       ..greetingPlayed = greetingPlayed
       ..inbound = inbound
       ..locked = locked
-      ..rid = receptionId
+      ..rid = rid
       ..state = Model.CallState.created;
 
     expect(builtCall.id, equals(testId));
@@ -248,7 +248,7 @@ abstract class ModelCall {
     expect(builtCall.greetingPlayed, equals(greetingPlayed));
     expect(builtCall.inbound, equals(inbound));
     expect(builtCall.locked, equals(locked));
-    expect(builtCall.rid, equals(receptionId));
+    expect(builtCall.rid, equals(rid));
     expect(builtCall.state, equals(state));
 
     return builtCall;

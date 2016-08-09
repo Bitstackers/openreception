@@ -112,7 +112,7 @@ class RESTDialplanStore implements storage.ReceptionDialplan {
   }
 
   /**
-   * (Re-)deploys a dialplan for a the reception identified by [receptionId]
+   * (Re-)deploys a dialplan for a the reception identified by [rid]
    *
    */
   Future<Iterable<String>> deployDialplan(String extension, int rid) async {

@@ -45,22 +45,22 @@ abstract class ModelMessageFilter {
    * Build an object manually.
    */
   static Model.MessageFilter buildObject() {
-    final int contactId = 1;
+    final int cid = 1;
     final int limitCount = 100;
-    final int receptionId = 2;
+    final int rid = 2;
 
-    final int userId = 99;
+    final int uid = 99;
 
     Model.MessageFilter obj = new Model.MessageFilter.empty()
-      ..contactId = contactId
+      ..contactId = cid
       ..limitCount = limitCount
-      ..receptionId = receptionId
-      ..userId = userId;
+      ..receptionId = rid
+      ..userId = uid;
 
-    expect(obj.contactId, equals(contactId));
+    expect(obj.contactId, equals(cid));
     expect(obj.limitCount, equals(limitCount));
-    expect(obj.receptionId, equals(receptionId));
-    expect(obj.userId, equals(userId));
+    expect(obj.receptionId, equals(rid));
+    expect(obj.userId, equals(uid));
 
     return obj;
   }

@@ -56,11 +56,10 @@ class PeerAccount {
   }
 
   /**
-   * (Re-)deploys a dialplan for a the reception identified by [receptionId]
+   * (Re-)deploys a [model.PeerAccount] for user with [uid].
    */
-  Future<Iterable<String>> deployAccount(
-      model.PeerAccount account, int userId) {
-    Uri url = resource.PeerAccount.deploy(host, userId);
+  Future<Iterable<String>> deployAccount(model.PeerAccount account, int uid) {
+    Uri url = resource.PeerAccount.deploy(host, uid);
     url = _appendToken(url, token);
 
     return _backend
