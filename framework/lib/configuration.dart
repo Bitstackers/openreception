@@ -78,7 +78,7 @@ class EslConfig {
     int port = 0;
 
     {
-      final split = dsn.split('@');
+      final List<String> split = dsn.split('@');
 
       if (split.length > 2) {
         throw new FormatException('Dsn $dsn contains too many "@" characters');
@@ -89,7 +89,7 @@ class EslConfig {
     }
 
     {
-      final split = dsn.split(':');
+      final List<String> split = dsn.split(':');
       if (split.length > 2) {
         throw new FormatException('Dsn $dsn contains too many ":" characters');
       } else if (split.length == 2) {

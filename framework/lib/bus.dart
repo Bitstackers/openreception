@@ -26,7 +26,7 @@ class Bus<Type> {
   /// Default constructor. Creates and initializes a new broadcast stream
   /// that emits objects of [Type].
   Bus() {
-    _streamController = new StreamController.broadcast();
+    _streamController = new StreamController<Type>.broadcast();
   }
 
   /// The stream of the [Bus] that emits objects of [Type].
@@ -41,5 +41,7 @@ class Bus<Type> {
   }
 
   /// Close the [Bus].
-  Future close() => _streamController.close();
+  Future<Null> close() async {
+    await _streamController.close();
+  }
 }
