@@ -11,30 +11,50 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
+/// Model classes for dialplans.
 part of openreception.framework.model.dialplan;
 
-/**
- *
- */
+/// Interface for extensions.
+///
+/// Every realization of the interface must provide a [name], a [List]
+/// of [actions] and a serialization function ([toJson()]).
+/// These fields and this method is used by the dialplan compiler.
 abstract class Extension {
+  /// The name of the extension, which effectively is the extension itself.
+  /// An example of an extension name could be `34904622-test`. There is
+  /// no requirement, at this level, that the extension is PTSN-reachable.
   String get name;
+
+  /// The actions that will be executed, if the extension is reached.
   List<Action> get actions;
 
+  /// Serialization function.
   Map toJson();
 }
 
-class NamedExtension extends Extension {
+/// Model class for an extension without conditions, other than the
+/// extension name which must match the channel destination of a channel.
+///
+/// The class is meant as a way to execute a specific set of actions in a
+/// dialplan by simply transferring a channel to the [name] of the
+/// [NamedExtension].
+class NamedExtension implements Extension {
   @override
   final String name;
 
   @override
   final List<Action> actions;
 
+  /// Create a new [NamedExtension] with [name] that performs [actions] on a
+  /// channel, once reached.
   NamedExtension(this.name, this.actions);
 
+  /// Decode a [Map] into a new [NamedExtension] object.
   static NamedExtension decode(Map map) => new NamedExtension(
       map[Key.name], (map[Key.actions] as Iterable).map(Action.parse).toList());
 
+  /// Serialization function. Suitable for creating a new object from
+  /// the static [decode] function.
   @override
   Map toJson() => {Key.name: name, Key.actions: actions};
 }
