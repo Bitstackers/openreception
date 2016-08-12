@@ -103,7 +103,7 @@ class OpeningHour {
     List<String> parts = buffer.split(' ');
 
     parts.forEach((part) {
-      if (!part.isEmpty) {
+      if (part.isNotEmpty) {
         if (!gotDay) {
           List<String> days = part.split('-');
 

@@ -143,7 +143,7 @@ class Reception {
   @override
   bool operator ==(Object other) => other is Reception && this.id == other.id;
 
-  bool get isNotEmpty => !this.isEmpty;
+  bool get isNotEmpty => this.id != noReception.id;
   bool get isEmpty => this.id == noReception.id;
 
   ReceptionReference get reference => new ReceptionReference(id, name);
