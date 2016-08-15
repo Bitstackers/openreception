@@ -106,7 +106,7 @@ class Organization {
       if (errors.isNotEmpty) {
         throw errors.first;
       }
-    } on FormatException catch (error) {
+    } on ValidationException catch (error) {
       Map response = {
         'status': 'bad request',
         'description': 'passed organization argument '
