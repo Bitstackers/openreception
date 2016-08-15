@@ -13,26 +13,27 @@
 
 part of openreception.framework.event;
 
+@deprecated
 abstract class EventTemplate {
   static Map _rootElement(Event event) => {
-        Key.event: event.eventName,
-        Key.timestamp: util.dateTimeToUnixTimestamp(event.timestamp)
+        _Key._event: event.eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(event.timestamp)
       };
 
   static Map call(CallEvent event) =>
-      _rootElement(event)..addAll({Key.call: event.call.toJson()});
+      _rootElement(event)..addAll({_Key._call: event.call.toJson()});
 
   static Map peer(PeerState event) =>
-      _rootElement(event)..addAll({Key.peer: event.peer.toJson()});
+      _rootElement(event)..addAll({_Key._peer: event.peer.toJson()});
 
   static Map userState(UserState event) =>
       _rootElement(event)..addAll(event.status.toJson());
 
   static Map channel(ChannelState event) => _rootElement(event)
     ..addAll({
-      Key.channel: {Key.id: event.channelUuid}
+      _Key._channel: {_Key._id: event.channelUuid}
     });
 
   static Map connection(ClientConnectionState event) =>
-      _rootElement(event)..addAll({Key.state: event.conn});
+      _rootElement(event)..addAll({_Key._state: event.conn});
 }

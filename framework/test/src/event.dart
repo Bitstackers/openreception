@@ -168,7 +168,7 @@ abstract class EventTests {
             .inMilliseconds
             .abs(),
         lessThan(1000));
-    expect(builtEvent.eventName, equals(Event.Key.callStateReload));
+    expect(builtEvent, new isInstanceOf<Event.CallStateReload>());
     expect(builtEvent.eventName, testEvent.eventName);
   }
 
@@ -187,7 +187,7 @@ abstract class EventTests {
             .abs()
             .inMilliseconds,
         lessThan(1));
-    expect(builtEvent.eventName, equals(Event.Key.callHangup));
+    expect(builtEvent, new isInstanceOf<Event.CallHangup>());
     expect(builtEvent.hangupCause, equals(testEvent.hangupCause));
     expect(builtEvent.eventName, testEvent.eventName);
   }

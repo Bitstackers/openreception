@@ -18,7 +18,7 @@ class UserChange implements Event {
   final DateTime timestamp;
 
   @override
-  String get eventName => Key.userChange;
+  String get eventName => _Key._userChange;
 
   final int uid;
   final int modifierUid;
@@ -45,9 +45,9 @@ class UserChange implements Event {
     final Map template = EventTemplate._rootElement(this);
 
     final Map body = {
-      Key.modifierUid: uid,
-      Key.state: state,
-      Key.changedBy: modifierUid
+      _Key._modifierUid: uid,
+      _Key._state: state,
+      _Key._changedBy: modifierUid
     };
 
     template[this.eventName] = body;
@@ -65,8 +65,8 @@ class UserChange implements Event {
   *
   */
   UserChange.fromMap(Map map)
-      : uid = map[Key.userChange][Key.modifierUid],
-        state = map[Key.userChange][Key.state],
-        modifierUid = map[Key.userChange][Key.changedBy],
-        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
+      : uid = map[_Key._userChange][_Key._modifierUid],
+        state = map[_Key._userChange][_Key._state],
+        modifierUid = map[_Key._userChange][_Key._changedBy],
+        timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 }

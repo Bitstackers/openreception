@@ -39,7 +39,7 @@ abstract class CallList {
     await customer.dial(rdp.extension);
 
     log.info('Receptionist ${receptionist.user.name} waits for call.');
-    final model.Call call = await receptionist.waitForCallOffer();
+    final model.Call call = await receptionist.nextOfferedCall();
     await _validateListContains(receptionist.callFlowControl, [call]);
 
     log.info('Call is present in call list, asserting call list.');
@@ -52,7 +52,7 @@ abstract class CallList {
     log.info('Customer ${customer.name} hangs up all crrent calls.');
     await customer.hangupAll();
     log.info('Receptionist ${receptionist.user.name} awaits call hangup.');
-    await receptionist.waitFor(eventType: "call_hangup");
+    await receptionist.waitForHangup(call.id);
     log.info('Test complete');
   }
 
@@ -62,7 +62,7 @@ abstract class CallList {
     await customer.dial(rdp.extension);
 
     log.info('Receptionist ${receptionist.user.name} waits for call.');
-    final model.Call call = await receptionist.waitForCallOffer();
+    final model.Call call = await receptionist.nextOfferedCall();
     expect(call.rid, equals(rec.id));
     //expect (call.destination, equals(reception));
     expect(call.assignedTo, equals(model.User.noId));
@@ -88,7 +88,7 @@ abstract class CallList {
     log.info('Customer ${customer.name} hangs up all current calls.');
     await customer.hangupAll();
     log.info('Receptionist ${receptionist.user.name} awaits call hangup.');
-    await receptionist.waitFor(eventType: "call_hangup");
+    await receptionist.waitForHangup(call.id);
     log.info('Test complete.');
   }
 
@@ -103,12 +103,10 @@ abstract class CallList {
 
     await caller.dial(rdp.extension);
     log.info('Wating for the call to be received by the PBX.');
-    final model.Call inboundCall = await receptionist.waitForCallOffer();
+    final model.Call inboundCall = await receptionist.nextOfferedCall();
 
     log.info('Wating for the call $inboundCall to be queued.');
-    await receptionist.waitFor(
-        eventType: event.Key.queueJoin, callID: inboundCall.id);
-    log.info('Got ${event.Key.queueJoin} event, checking queue interface.');
+    await receptionist.waitForQueueJoin(inboundCall.id);
 
     {
       Iterable<model.Call> calls =
@@ -129,13 +127,12 @@ abstract class CallList {
       expect(calls.first.state, isNot(model.CallState.queued));
     }
 
-    log.info('Waiting for ${event.Key.queueLeave} event.');
-    await receptionist.waitFor(eventType: event.Key.queueLeave);
+    await receptionist.waitForQueueLeave(inboundCall.id);
     log.info('Checking if the call is now absent from the call list.');
     await caller.hangupAll();
-    log.info('Waiting for ${event.Key.callHangup} event.');
-    await receptionist.waitFor(
-        eventType: event.Key.callHangup, callID: inboundCall.id);
+
+    await receptionist.waitForHangup(inboundCall.id);
+
     await _validateListEmpty(receptionist.callFlowControl);
     log.info('Test success.');
   }
@@ -150,11 +147,10 @@ abstract class CallList {
 
     await caller.dial(rdp.extension);
     log.info('Wating for the call to be received by the PBX.');
-    final model.Call inboundCall = await receptionist.waitForCallOffer();
+    final model.Call inboundCall = await receptionist.nextOfferedCall();
     log.info('Wating for the call $inboundCall to be queued.');
-    await receptionist.waitFor(
-        eventType: event.Key.queueJoin, callID: inboundCall.id);
-    log.info('Got ${event.Key.queueJoin} event, checking queue interface.');
+    await receptionist.waitForQueueJoin(inboundCall.id);
+
     {
       Iterable<model.Call> calls =
           await receptionist.callFlowControl.callList();
@@ -171,12 +167,13 @@ abstract class CallList {
 
     log.info('Caller hangs up call $inboundCall');
     await caller.hangupAll();
-    log.info('Waiting for ${event.Key.queueLeave} event.');
+
+    await receptionist.waitForQueueLeave(inboundCall.id);
 
     log.info('Checking if the call is now absent from the call list.');
-    log.info('Waiting for ${event.Key.callHangup} event.');
-    await receptionist.waitFor(
-        eventType: event.Key.callHangup, callID: inboundCall.id);
+
+    await receptionist.waitForHangup(inboundCall.id);
+
     await _validateListEmpty(receptionist.callFlowControl);
     log.info('Test success. Cleaning up.');
   }

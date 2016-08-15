@@ -11,8 +11,7 @@ abstract class Originate {
       model.OriginationContext context, Receptionist receptionist) async {
     await receptionist.originate(context.dialplan, context);
 
-    final event.CallOffer e =
-        await receptionist.waitFor(eventType: event.Key.callOffer);
+    final event.CallOffer e = await receptionist.waitForCallOffer();
 
     expect(e.call.inbound, isTrue);
     expect(e.call.callerId, equals(receptionist.user.name));

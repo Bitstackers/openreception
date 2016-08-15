@@ -26,15 +26,9 @@ abstract class CallPark {
     log.info('Receptionist waits for the phone to hang up');
     await receptionist.waitForPhoneHangup();
     log.info('Receptionist expects call to unpark');
-    await receptionist.waitFor(
-        eventType: event.Key.callUnpark,
-        callID: targetedCall.id,
-        timeoutSeconds: 1);
+    await receptionist.waitForUnpark(parkedCall.id);
     log.info('Receptionist expects call to hang up');
-    await receptionist.waitFor(
-        eventType: event.Key.callHangup,
-        callID: targetedCall.id,
-        timeoutSeconds: 1);
+    await receptionist.waitForHangup(parkedCall.id);
   }
 
   /**
@@ -94,10 +88,7 @@ abstract class CallPark {
     log.info('Receptionist waits for the phone to hang up');
     await receptionist.waitForPhoneHangup();
     log.info('Receptionist expects call to hang up');
-    await receptionist.waitFor(
-        eventType: event.Key.callHangup,
-        callID: targetedCall.id,
-        timeoutSeconds: 3);
+    await receptionist.waitForHangup(parkedCall.id);
   }
 
   /**

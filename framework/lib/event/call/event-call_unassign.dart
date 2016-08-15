@@ -20,14 +20,14 @@ part of openreception.framework.event;
  */
 class CallUnassign extends CallEvent {
   @override
-  final String eventName = Key.callUnassign;
+  final String eventName = _Key._callUnassign;
   final int userId;
 
   CallUnassign(model.Call call, this.userId) : super(call);
   CallUnassign.fromMap(Map map)
-      : userId = map[Key.modifierUid],
+      : userId = map[_Key._modifierUid],
         super.fromMap(map);
 
   @override
-  Map toJson() => super.toJson()..addAll({Key.modifierUid: userId});
+  Map toJson() => super.toJson()..addAll({_Key._modifierUid: userId});
 }

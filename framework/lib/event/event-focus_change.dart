@@ -20,7 +20,7 @@ class FocusChange implements Event {
   @override
   final DateTime timestamp;
   @override
-  String get eventName => Key.focusChange;
+  String get eventName => _Key._focusChange;
 
   /// The user ID of the user that changed focus.
   final int uid;
@@ -46,17 +46,17 @@ class FocusChange implements Event {
 
   /// Deserializing constructor.
   FocusChange.fromMap(Map map)
-      : uid = map[Key.changedBy],
-        inFocus = map[Key.inFocus],
-        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
+      : uid = map[_Key._changedBy],
+        inFocus = map[_Key._inFocus],
+        timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 
   /// Serialization function.
   @override
   Map toJson() => {
-        Key.event: eventName,
-        Key.timestamp: util.dateTimeToUnixTimestamp(timestamp),
-        Key.changedBy: uid,
-        Key.inFocus: inFocus
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._changedBy: uid,
+        _Key._inFocus: inFocus
       };
 
   /// Returns a string reprensentation of the object.

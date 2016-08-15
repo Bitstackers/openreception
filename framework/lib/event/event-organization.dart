@@ -18,7 +18,7 @@ class OrganizationChange implements Event {
   final DateTime timestamp;
 
   @override
-  String get eventName => Key.organizationChange;
+  String get eventName => _Key._organizationChange;
 
   final int oid;
   final int modifierUid;
@@ -57,9 +57,9 @@ class OrganizationChange implements Event {
     Map template = EventTemplate._rootElement(this);
 
     Map body = {
-      Key.organizationID: this.oid,
-      Key.state: this.state,
-      Key.modifierUid: modifierUid
+      _Key._organizationID: this.oid,
+      _Key._state: this.state,
+      _Key._modifierUid: modifierUid
     };
 
     template[this.eventName] = body;
@@ -68,8 +68,8 @@ class OrganizationChange implements Event {
   }
 
   OrganizationChange.fromMap(Map map)
-      : this.oid = map[Key.organizationChange][Key.organizationID],
-        this.state = map[Key.organizationChange][Key.state],
-        this.modifierUid = map[Key.organizationChange][Key.modifierUid],
-        this.timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
+      : this.oid = map[_Key._organizationChange][_Key._organizationID],
+        this.state = map[_Key._organizationChange][_Key._state],
+        this.modifierUid = map[_Key._organizationChange][_Key._modifierUid],
+        this.timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 }

@@ -49,7 +49,7 @@ abstract class UserState {
     await second_caller.dial(context.dialplan);
 
     log.info('Receptionist waits second call');
-    final model.Call secondCall = await receptionist.waitForCallOffer();
+    final model.Call secondCall = await receptionist.nextOfferedCall();
 
     log.info('Receptionist tries to pick up second call $secondCall');
     expect(receptionist.pickup(secondCall),

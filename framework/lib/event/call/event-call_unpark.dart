@@ -15,7 +15,7 @@ part of openreception.framework.event;
 
 class CallUnpark extends CallEvent {
   @override
-  final String eventName = Key.callUnpark;
+  final String eventName = _Key._callUnpark;
 
   CallUnpark(model.Call call) : super(call);
   CallUnpark.fromMap(Map map) : super.fromMap(map);

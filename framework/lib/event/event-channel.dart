@@ -17,7 +17,7 @@ class ChannelState implements Event {
   @override
   final DateTime timestamp;
   @override
-  final String eventName = Key.channelState;
+  final String eventName = _Key._channelState;
   final String channelUuid;
 
   @override
@@ -31,6 +31,6 @@ class ChannelState implements Event {
         timestamp = new DateTime.now();
 
   ChannelState.fromMap(Map map)
-      : channelUuid = map[Key.channel][Key.id],
-        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
+      : channelUuid = map[_Key._channel][_Key._id],
+        timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 }

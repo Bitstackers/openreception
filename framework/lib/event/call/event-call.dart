@@ -28,6 +28,6 @@ abstract class CallEvent implements Event {
   String toString() => toJson().toString();
 
   CallEvent.fromMap(Map map)
-      : this.call = new model.Call.fromMap(map[Key.call]),
-        this.timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
+      : this.call = new model.Call.fromMap(map[_Key._call]),
+        this.timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 }

@@ -65,89 +65,87 @@ part 'event/event-widget_select.dart';
  * 'Enum' representing different outcomes of an change.
  */
 abstract class Change {
+  /// Object is created.
   static const String created = 'created';
+
+  /// Object is updated.
   static const String updated = 'updated';
+
+  /// Object is deleted.
   static const String deleted = 'deleted';
 }
 
 /**
  * Keys for the serialization and deserialization.
  */
-abstract class Key {
+abstract class _Key {
   static const _dialplanChange = 'dialplanChange';
   static const _extension = 'extension';
   static const _ivrMenuChange = 'ivrMenuChange';
   static const _menuName = 'menuName';
   static const _createdAt = 'createdAt';
 
-  static const call = 'call';
-  static const peer = 'peer';
-  static const channel = 'channel';
-  static const event = 'event';
-  static const calendarEntry = 'calendarEntry';
-  static const calendarChange = 'calendarChange';
-  static const endpointChange = 'endpointChange';
-  static const messageChange = 'messageChange';
-  static const contactChange = 'contactChange';
-  static const receptionData = 'receptionData';
-  static const receptionChange = 'receptionChange';
-  static const userChange = 'userChange';
-  static const organizationChange = 'organizationChange';
-  static const receptionID = 'rid';
-  static const contactID = 'cid';
-  static const messageID = 'mid';
-  static const organizationID = 'oid';
-  static const hangupCause = 'hangupCause';
-  static const widgetSelect = 'widgetSelect';
-  static const widget = 'widget';
-  static const focusChange = 'focusChange';
-  static const inFocus = 'inFocus';
-  static const messageState = 'messageState';
+  static const _call = 'call';
+  static const _peer = 'peer';
+  static const _channel = 'channel';
+  static const _event = 'event';
+  static const _calendarChange = 'calendarChange';
+  static const _messageChange = 'messageChange';
+  static const _contactChange = 'contactChange';
+  static const _receptionData = 'receptionData';
+  static const _receptionChange = 'receptionChange';
+  static const _userChange = 'userChange';
+  static const _organizationChange = 'organizationChange';
+  static const _receptionID = 'rid';
+  static const _contactID = 'cid';
+  static const _messageID = 'mid';
+  static const _organizationID = 'oid';
+  static const _hangupCause = 'hangupCause';
+  static const _widgetSelect = 'widgetSelect';
+  static const _widget = 'widget';
+  static const _focusChange = 'focusChange';
+  static const _inFocus = 'inFocus';
+  static const _messageState = 'messageState';
 
-  static const address = 'address';
-  static const addressType = 'addressType';
+  static const _owner = 'owner';
+  static const _entryID = 'eid';
+  static const _id = 'id';
+  static const _timestamp = 'timestamp';
+  static const _modifierUid = 'modifier';
+  static const _changedBy = 'changedBy';
+  static const _connectionCount = 'connectionCount';
 
-  static const owner = 'owner';
-  static const entryID = 'eid';
-  static const id = 'id';
-  static const timestamp = 'timestamp';
-  static const modifierUid = 'modifier';
-  static const changedBy = 'changedBy';
-  static const connectionCount = 'connectionCount';
+  static const _connectionState = 'connectionState';
 
-  static const connectionState = 'connectionState';
-
-  static const callAssign = 'call_assign';
-  static const callUnassign = 'call_unassign';
-  static const callOffer = 'call_offer';
-  static const callLock = 'call_lock';
-  static const callUnlock = 'call_unlock';
-  static const callPickup = 'call_pickup';
-  static const callState = 'call_state';
-  static const callHangup = 'call_hangup';
-  static const callPark = 'call_park';
-  static const callUnpark = 'call_unpark';
-  static const callTransfer = 'call_transfer';
-  static const callBridge = 'call_bridge';
-  static const queueJoin = 'queue_join';
-  static const queueLeave = 'queue_leave';
-  static const peerState = 'peer_state';
-  static const originateFailed = 'originate_failed';
-  static const originateSuccess = 'originate_success';
-  static const channelState = 'channel_state';
-  static const userState = 'userState';
-  static const state = 'state';
-  static const callStateReload = 'callStateReload';
+  static const _callAssign = 'call_assign';
+  static const _callUnassign = 'call_unassign';
+  static const _callOffer = 'call_offer';
+  static const _callLock = 'call_lock';
+  static const _callUnlock = 'call_unlock';
+  static const _callPickup = 'call_pickup';
+  static const _callState = 'call_state';
+  static const _callHangup = 'call_hangup';
+  static const _callPark = 'call_park';
+  static const _callUnpark = 'call_unpark';
+  static const _callTransfer = 'call_transfer';
+  static const _callBridge = 'call_bridge';
+  static const _queueJoin = 'queue_join';
+  static const _queueLeave = 'queue_leave';
+  static const _peerState = 'peer_state';
+  static const _originateFailed = 'originate_failed';
+  static const _originateSuccess = 'originate_success';
+  static const _channelState = 'channel_state';
+  static const _userState = 'userState';
+  static const _state = 'state';
+  static const _callStateReload = 'callStateReload';
 }
-
-const String _libraryName = 'openreception.framework.event';
 
 /**
  * Superclass for events. It's only real purpose is to provide a common
  * interface for [Event] objects, and a parsing factory constructor.
  */
 abstract class Event {
-  static final Logger _log = new Logger('$_libraryName.Event');
+  static final Logger _log = new Logger('openreception.framework.event.Event');
 
   /// The creation time of the event.
   DateTime get timestamp;
@@ -167,88 +165,88 @@ abstract class Event {
    * Throws a [FormatException] if the map is not a valid event.
    */
   factory Event.parse(Map map) {
-    final String eventName = map[Key.event];
+    final String eventName = map[_Key._event];
     try {
       switch (eventName) {
-        case Key.widgetSelect:
+        case _Key._widgetSelect:
           return new WidgetSelect.fromMap(map);
 
-        case Key.focusChange:
+        case _Key._focusChange:
           return new FocusChange.fromMap(map);
 
-        case Key.peerState:
+        case _Key._peerState:
           return new PeerState.fromMap(map);
 
-        case Key.queueJoin:
+        case _Key._queueJoin:
           return new QueueJoin.fromMap(map);
 
-        case Key.queueLeave:
+        case _Key._queueLeave:
           return new QueueLeave.fromMap(map);
 
-        case Key.callLock:
+        case _Key._callLock:
           return new CallLock.fromMap(map);
 
-        case Key.callUnlock:
+        case _Key._callUnlock:
           return new CallUnlock.fromMap(map);
 
-        case Key.callOffer:
+        case _Key._callOffer:
           return new CallOffer.fromMap(map);
 
-        case Key.callTransfer:
+        case _Key._callTransfer:
           return new CallTransfer.fromMap(map);
 
-        case Key.callUnpark:
+        case _Key._callUnpark:
           return new CallUnpark.fromMap(map);
 
-        case Key.callPark:
+        case _Key._callPark:
           return new CallPark.fromMap(map);
 
-        case Key.callHangup:
+        case _Key._callHangup:
           return new CallHangup.fromMap(map);
 
-        case Key.callState:
+        case _Key._callState:
           return new CallStateChanged.fromMap(map);
 
-        case Key.callPickup:
+        case _Key._callPickup:
           return new CallPickup.fromMap(map);
 
-        case Key.channelState:
+        case _Key._channelState:
           return new ChannelState.fromMap(map);
 
-        case Key.userState:
+        case _Key._userState:
           return new UserState.fromMap(map);
 
-        case Key.calendarChange:
+        case _Key._calendarChange:
           return new CalendarChange.fromMap(map);
 
-        case Key.contactChange:
+        case _Key._contactChange:
           return new ContactChange.fromMap(map);
 
-        case Key.organizationChange:
+        case _Key._organizationChange:
           return new OrganizationChange.fromMap(map);
 
-        case Key.receptionChange:
+        case _Key._receptionChange:
           return new ReceptionChange.fromMap(map);
 
-        case Key.receptionData:
+        case _Key._receptionData:
           return new ReceptionData.fromMap(map);
 
-        case Key.connectionState:
+        case _Key._connectionState:
           return new ClientConnectionState.fromMap(map);
 
-        case Key.messageChange:
+        case _Key._messageChange:
           return new MessageChange.fromMap(map);
 
-        case Key.userChange:
+        case _Key._userChange:
           return new UserChange.fromMap(map);
 
-        case Key.callStateReload:
+        case _Key._callStateReload:
           return new CallStateReload.fromMap(map);
 
-        case Key._dialplanChange:
+        case _Key._dialplanChange:
           return new DialplanChange.fromMap(map);
 
-        case Key._ivrMenuChange:
+        case _Key._ivrMenuChange:
           return new IvrMenuChange.fromMap(map);
 
         default:

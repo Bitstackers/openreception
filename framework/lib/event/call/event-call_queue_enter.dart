@@ -15,7 +15,7 @@ part of openreception.framework.event;
 
 class QueueJoin extends CallEvent {
   @override
-  final String eventName = Key.queueJoin;
+  final String eventName = _Key._queueJoin;
 
   QueueJoin(model.Call call) : super(call);
   QueueJoin.fromMap(Map map) : super.fromMap(map);

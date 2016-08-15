@@ -21,7 +21,7 @@ class MessageChange implements Event {
   final DateTime timestamp;
 
   @override
-  String get eventName => Key.messageChange;
+  String get eventName => _Key._messageChange;
 
   bool get created => state == Change.created;
   bool get updated => state == Change.updated;
@@ -59,29 +59,29 @@ class MessageChange implements Event {
 
   @override
   Map toJson() => {
-        Key.event: eventName,
-        Key.timestamp: util.dateTimeToUnixTimestamp(timestamp),
-        Key.modifierUid: this.modifierUid,
-        Key.messageID: this.mid,
-        Key.state: this.state,
-        Key.messageState: this.messageState.index,
-        Key._createdAt: util.dateTimeToUnixTimestamp(createdAt)
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._modifierUid: this.modifierUid,
+        _Key._messageID: this.mid,
+        _Key._state: this.state,
+        _Key._messageState: this.messageState.index,
+        _Key._createdAt: util.dateTimeToUnixTimestamp(createdAt)
       };
 
   /**
    * Deserializing contstructor.
    */
   MessageChange.fromMap(Map map)
-      : modifierUid = map.containsKey(Key.modifierUid)
-            ? map[Key.modifierUid]
+      : modifierUid = map.containsKey(_Key._modifierUid)
+            ? map[_Key._modifierUid]
             : map.containsKey('messageChange')
                 ? map['messageChange']['userID']
                 : model.User.noId,
-        mid = map[Key.messageID],
-        state = map[Key.state],
-        messageState = map.containsKey(Key.messageState)
-            ? model.MessageState.values[map[Key.messageState]]
+        mid = map[_Key._messageID],
+        state = map[_Key._state],
+        messageState = map.containsKey(_Key._messageState)
+            ? model.MessageState.values[map[_Key._messageState]]
             : model.MessageState.unknown,
-        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]),
-        createdAt = util.unixTimestampToDateTime(map[Key._createdAt]);
+        timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]),
+        createdAt = util.unixTimestampToDateTime(map[_Key._createdAt]);
 }

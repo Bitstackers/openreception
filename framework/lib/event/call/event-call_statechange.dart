@@ -15,7 +15,7 @@ part of openreception.framework.event;
 
 class CallStateChanged extends CallEvent {
   @override
-  final String eventName = Key.callState;
+  final String eventName = _Key._callState;
 
   CallStateChanged(model.Call call) : super(call);
   CallStateChanged.fromMap(Map map) : super.fromMap(map);

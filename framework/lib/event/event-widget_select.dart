@@ -22,7 +22,7 @@ class WidgetSelect implements Event {
   @override
   final DateTime timestamp;
   @override
-  String get eventName => Key.widgetSelect;
+  String get eventName => _Key._widgetSelect;
 
   /// Specialized fields.
   final int uid;
@@ -39,19 +39,19 @@ class WidgetSelect implements Event {
    * Deserializing constructor.
    */
   WidgetSelect.fromMap(Map map)
-      : uid = map[Key.changedBy],
-        widgetName = map[Key.widget],
-        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
+      : uid = map[_Key._changedBy],
+        widgetName = map[_Key._widget],
+        timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 
   /**
    * Serialization function.
    */
   @override
   Map toJson() => {
-        Key.event: eventName,
-        Key.timestamp: util.dateTimeToUnixTimestamp(timestamp),
-        Key.changedBy: uid,
-        Key.widget: widgetName
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._changedBy: uid,
+        _Key._widget: widgetName
       };
 
   /**

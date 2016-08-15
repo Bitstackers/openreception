@@ -17,7 +17,7 @@ class PeerState implements Event {
   @override
   final DateTime timestamp;
   @override
-  final String eventName = Key.peerState;
+  final String eventName = _Key._peerState;
 
   final model.Peer peer;
 
@@ -31,6 +31,6 @@ class PeerState implements Event {
   Map get asMap => EventTemplate.peer(this);
 
   PeerState.fromMap(Map map)
-      : this.peer = new model.Peer.fromMap(map[Key.peer]),
-        this.timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
+      : this.peer = new model.Peer.fromMap(map[_Key._peer]),
+        this.timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 }

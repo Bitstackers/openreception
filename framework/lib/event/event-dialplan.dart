@@ -21,7 +21,7 @@ class DialplanChange implements Event {
   final DateTime timestamp;
 
   @override
-  String get eventName => Key._dialplanChange;
+  String get eventName => _Key._dialplanChange;
 
   bool get isCreate => state == Change.created;
   bool get isUpdate => state == Change.updated;
@@ -67,19 +67,19 @@ class DialplanChange implements Event {
    */
   @override
   Map toJson() => {
-        Key.event: eventName,
-        Key.timestamp: util.dateTimeToUnixTimestamp(timestamp),
-        Key.modifierUid: modifierUid,
-        Key._extension: extension,
-        Key.state: this.state
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._modifierUid: modifierUid,
+        _Key._extension: extension,
+        _Key._state: this.state
       };
 
   /**
    *
    */
   DialplanChange.fromMap(Map map)
-      : modifierUid = map[Key.modifierUid],
-        extension = map[Key._extension],
-        state = map[Key.state],
-        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
+      : modifierUid = map[_Key._modifierUid],
+        extension = map[_Key._extension],
+        state = map[_Key._state],
+        timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 }

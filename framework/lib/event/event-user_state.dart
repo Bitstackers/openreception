@@ -21,7 +21,7 @@ class UserState implements Event {
   final DateTime timestamp;
 
   @override
-  final String eventName = Key.userState;
+  final String eventName = _Key._userState;
 
   final model.UserStatus status;
 
@@ -36,5 +36,5 @@ class UserState implements Event {
 
   UserState.fromMap(Map map)
       : this.status = new model.UserStatus.fromMap(map),
-        this.timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
+        this.timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 }

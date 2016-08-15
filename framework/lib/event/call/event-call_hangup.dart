@@ -19,7 +19,13 @@ part of openreception.framework.event;
  */
 class CallHangup extends CallEvent {
   @override
-  final String eventName = Key.callHangup;
+  final String eventName = _Key._callHangup;
+
+  /// The hangup cause associated with the [call] of this event.
+  ///
+  /// The hangup cause string is directly forwarded from the PBX and may be
+  /// referenced in the table located at:
+  /// https://freeswitch.org/confluence/display/FREESWITCH/Hangup+Cause+Code+Table
   final String hangupCause;
 
   /**
@@ -33,12 +39,12 @@ class CallHangup extends CallEvent {
    * Deserializing constructor.
    */
   CallHangup.fromMap(Map map)
-      : hangupCause = map[Key.hangupCause],
+      : hangupCause = map[_Key._hangupCause],
         super.fromMap(map);
 
   /**
    * Serialization function.
    */
   @override
-  Map toJson() => super.toJson()..addAll({Key.hangupCause: this.hangupCause});
+  Map toJson() => super.toJson()..addAll({_Key._hangupCause: this.hangupCause});
 }

@@ -21,7 +21,7 @@ class IvrMenuChange implements Event {
   final DateTime timestamp;
 
   @override
-  String get eventName => Key._ivrMenuChange;
+  String get eventName => _Key._ivrMenuChange;
 
   bool get isCreate => state == Change.created;
   bool get isUpdate => state == Change.updated;
@@ -66,19 +66,19 @@ class IvrMenuChange implements Event {
    */
   @override
   Map toJson() => {
-        Key.event: eventName,
-        Key.timestamp: util.dateTimeToUnixTimestamp(timestamp),
-        Key.modifierUid: modifierUid,
-        Key._menuName: menuName,
-        Key.state: this.state
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._modifierUid: modifierUid,
+        _Key._menuName: menuName,
+        _Key._state: this.state
       };
 
   /**
    *
    */
   IvrMenuChange.fromMap(Map map)
-      : modifierUid = map[Key.modifierUid],
-        menuName = map[Key._menuName],
-        state = map[Key.state],
-        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
+      : modifierUid = map[_Key._modifierUid],
+        menuName = map[_Key._menuName],
+        state = map[_Key._state],
+        timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 }

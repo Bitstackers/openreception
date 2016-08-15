@@ -21,7 +21,7 @@ class ContactChange implements Event {
   final DateTime timestamp;
 
   @override
-  String get eventName => Key.contactChange;
+  String get eventName => _Key._contactChange;
 
   final int cid;
   final int modifierUid;
@@ -63,12 +63,12 @@ class ContactChange implements Event {
     Map template = EventTemplate._rootElement(this);
 
     Map body = {
-      Key.contactID: cid,
-      Key.state: state,
-      Key.modifierUid: modifierUid
+      _Key._contactID: cid,
+      _Key._state: state,
+      _Key._modifierUid: modifierUid
     };
 
-    template[Key.calendarChange] = body;
+    template[_Key._calendarChange] = body;
 
     return template;
   }
@@ -83,8 +83,8 @@ class ContactChange implements Event {
    * Deserializing constructor.
    */
   ContactChange.fromMap(Map map)
-      : cid = map[Key.calendarChange][Key.contactID],
-        modifierUid = map[Key.calendarChange][Key.modifierUid],
-        state = map[Key.calendarChange][Key.state],
-        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
+      : cid = map[_Key._calendarChange][_Key._contactID],
+        modifierUid = map[_Key._calendarChange][_Key._modifierUid],
+        state = map[_Key._calendarChange][_Key._state],
+        timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 }

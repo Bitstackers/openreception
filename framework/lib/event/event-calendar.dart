@@ -22,7 +22,7 @@ class CalendarChange implements Event {
   final DateTime timestamp;
 
   @override
-  String get eventName => Key.calendarChange;
+  String get eventName => _Key._calendarChange;
 
   final int eid;
   final int modifierUid;
@@ -58,12 +58,12 @@ class CalendarChange implements Event {
    */
   @override
   Map toJson() => {
-        Key.event: eventName,
-        Key.timestamp: util.dateTimeToUnixTimestamp(timestamp),
-        Key.entryID: eid,
-        Key.owner: owner.toJson(),
-        Key.modifierUid: modifierUid,
-        Key.state: state
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._entryID: eid,
+        _Key._owner: owner.toJson(),
+        _Key._modifierUid: modifierUid,
+        _Key._state: state
       };
 
   /**
@@ -79,27 +79,27 @@ class CalendarChange implements Event {
     int eid;
     int modifierUid;
     String state;
-    final DateTime timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
+    final DateTime timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
     model.Owner owner = new model.Owner();
 
     /// Old-style object.
-    if (map.containsKey(Key.calendarChange)) {
-      eid = map[Key.calendarChange][Key.entryID];
-      modifierUid = map[Key.calendarChange][Key.modifierUid];
-      state = map[Key.calendarChange][Key.state];
+    if (map.containsKey(_Key._calendarChange)) {
+      eid = map[_Key._calendarChange][_Key._entryID];
+      modifierUid = map[_Key._calendarChange][_Key._modifierUid];
+      state = map[_Key._calendarChange][_Key._state];
 
-      final int rid = map[Key.calendarChange]['rid'];
-      final int cid = map[Key.calendarChange]['cid'];
+      final int rid = map[_Key._calendarChange]['rid'];
+      final int cid = map[_Key._calendarChange]['cid'];
       if (rid != 0 && rid != null) {
         owner = new model.OwningReception(rid);
       } else if (cid != 0 && cid != null) {
         owner = new model.OwningContact(cid);
       }
     } else {
-      eid = map[Key.entryID];
-      modifierUid = map[Key.modifierUid];
-      state = map[Key.state];
-      owner = new model.Owner.parse(map[Key.owner]);
+      eid = map[_Key._entryID];
+      modifierUid = map[_Key._modifierUid];
+      state = map[_Key._state];
+      owner = new model.Owner.parse(map[_Key._owner]);
     }
 
     return new CalendarChange._internal(

@@ -37,7 +37,9 @@ abstract class Transfer {
     log.info('$receptionist transfers call $outboundCall to $inboundCall.');
     await receptionist.transferCall(inboundCall, outboundCall);
     log.info('$receptionist transferred call $outboundCall to $inboundCall.');
-    await receptionist.waitFor(eventType: event.Key.callTransfer);
+
+    await receptionist.waitForTransfer(inboundCall.id);
+
     log.info('Waiting for ${receptionist} phone to hang up');
     await receptionist.waitForPhoneHangup();
 
@@ -69,7 +71,7 @@ abstract class Transfer {
 
     final model.Call inboundCall = await receptionist.huntNextCall();
     await receptionist.waitForInboundCall();
-    await receptionist.waitFor(eventType: event.Key.callPickup);
+    await receptionist.waitForPickup(inboundCall.id);
     receptionist.eventStack.clear();
     log.info('${receptionist} parks call $inboundCall.');
     await receptionist.park(inboundCall, waitForEvent: true);
@@ -82,7 +84,7 @@ abstract class Transfer {
     expect(outboundCall.assignedTo, equals(receptionist.user.id));
     await callee.waitForInboundCall();
     await callee.pickupCall();
-    await receptionist.waitFor(eventType: event.Key.callPickup);
+    await receptionist.waitForPickup(outboundCall.id);
     log.info('${receptionist} picked up outbound call: $outboundCall');
 
     log.info('$receptionist parks call $outboundCall.');
@@ -95,15 +97,15 @@ abstract class Transfer {
       log.info('Receptionist ${receptionist} got call $receivedCall');
       return;
     });
-    receptionist.waitForInboundCall();
-    receptionist.waitFor(eventType: event.Key.callPickup);
+    await receptionist.waitForInboundCall();
+    await receptionist.waitForPickup(inboundCall.id);
     receptionist.eventStack.clear();
     log.info('$receptionist transfers call $inboundCall to $outboundCall.');
-    receptionist.transferCall(outboundCall, inboundCall);
+    await receptionist.transferCall(outboundCall, inboundCall);
 
     log.info('$receptionist transferred call $inboundCall to $outboundCall.');
 
-    await receptionist.waitFor(eventType: event.Key.callTransfer);
+    await receptionist.waitForTransfer(inboundCall.id);
 
     log.info('Waiting for $receptionist phone to hang up');
     await receptionist.waitForPhoneHangup();
@@ -161,7 +163,7 @@ abstract class Transfer {
     expect((await receptionist.callFlowControl.callList()).length, equals(2));
 
     await receptionist
-        .waitFor(eventType: event.Key.callPickup)
+        .waitForPickup(outboundCall.id)
         .then((event.CallPickup event) {
       log.info('${receptionist} picked up outbound call: $outboundCall');
       expect(outboundCall.assignedTo, equals(receptionist.user.id));
@@ -180,12 +182,13 @@ abstract class Transfer {
       log.info('${receptionist} got call $receivedCall');
     });
     await receptionist.waitForInboundCall();
-    await receptionist.waitFor(eventType: event.Key.callPickup);
+    await receptionist.waitForPickup(inboundCall.id);
     receptionist.eventStack.clear();
     log.info('${receptionist} transfers call $inboundCall to $outboundCall.');
     await receptionist.transferCall(outboundCall, inboundCall);
     log.info('$receptionist transferred call $inboundCall to $outboundCall.');
-    await receptionist.waitFor(eventType: event.Key.callTransfer);
+    await receptionist.waitForTransfer(outboundCall.id);
+    await receptionist.waitForTransfer(inboundCall.id);
     log.info('Waiting for ${receptionist} phone to hang up');
     await receptionist.waitForPhoneHangup();
     log.info('Checking call list length');

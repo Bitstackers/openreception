@@ -22,7 +22,7 @@ class ClientConnectionState implements Event {
 
   final model.ClientConnection conn;
   @override
-  String get eventName => Key.connectionState;
+  String get eventName => _Key._connectionState;
 
   ClientConnectionState(model.ClientConnection this.conn)
       : timestamp = new DateTime.now();
@@ -33,6 +33,6 @@ class ClientConnectionState implements Event {
   String toString() => toJson().toString();
 
   ClientConnectionState.fromMap(Map map)
-      : conn = new model.ClientConnection.fromMap(map[Key.state]),
-        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
+      : conn = new model.ClientConnection.fromMap(map[_Key._state]),
+        timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 }

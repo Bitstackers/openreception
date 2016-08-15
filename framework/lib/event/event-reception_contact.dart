@@ -18,7 +18,7 @@ class ReceptionData implements Event {
   final DateTime timestamp;
 
   @override
-  String get eventName => Key.receptionData;
+  String get eventName => _Key._receptionData;
 
   final int rid;
   final int cid;
@@ -57,10 +57,10 @@ class ReceptionData implements Event {
     Map template = EventTemplate._rootElement(this);
 
     Map body = {
-      Key.contactID: cid,
-      Key.receptionID: rid,
-      Key.state: state,
-      Key.modifierUid: modifierUid
+      _Key._contactID: cid,
+      _Key._receptionID: rid,
+      _Key._state: state,
+      _Key._modifierUid: modifierUid
     };
 
     template[this.eventName] = body;
@@ -78,9 +78,9 @@ class ReceptionData implements Event {
    *
    */
   ReceptionData.fromMap(Map map)
-      : cid = map[Key.receptionData][Key.contactID],
-        rid = map[Key.receptionData][Key.receptionID],
-        state = map[Key.receptionData][Key.state],
-        modifierUid = map[Key.receptionData][Key.modifierUid],
-        timestamp = util.unixTimestampToDateTime(map[Key.timestamp]);
+      : cid = map[_Key._receptionData][_Key._contactID],
+        rid = map[_Key._receptionData][_Key._receptionID],
+        state = map[_Key._receptionData][_Key._state],
+        modifierUid = map[_Key._receptionData][_Key._modifierUid],
+        timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 }

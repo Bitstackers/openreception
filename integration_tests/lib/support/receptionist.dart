@@ -167,7 +167,7 @@ class Receptionist {
    * set [waitForEvent] that will make this method wait until the notification
    * socket confirms the the call was sucessfully parked.
    */
-  Future park(model.Call call, {bool waitForEvent: false}) {
+  Future park(model.Call call, {bool waitForEvent: false}) async {
     Future parkAction = this.callFlowControl.park(call.id);
 
     model.Call validateCall(model.Call parkedCall) {
@@ -195,15 +195,11 @@ class Receptionist {
     }
 
     if (waitForEvent) {
-      return parkAction
-          .then((_) => this.waitFor(
-              eventType: event.Key.callPark,
-              callID: call.id,
-              timeoutSeconds: 2))
-          .then((event.CallPark parkEvent) => validateCall(parkEvent.call));
-    } else {
-      return parkAction;
+      final parkEvent = await waitForPark(call.id);
+
+      validateCall(parkEvent.call);
     }
+    return parkAction;
   }
 
   /**
@@ -252,6 +248,99 @@ class Receptionist {
     }).timeout(new Duration(seconds: 10));
   }
 
+  /// Returns a Future that completes when the hangup event of [callId]
+  /// occurs.
+  Future<event.CallHangup> waitForHangup(String callId) async {
+    log.finest('$this waits for call $callId to hangup');
+
+    return _waitFor(
+        type: new event.CallHangup(model.Call.noCall).runtimeType,
+        callID: callId);
+  }
+
+  /// Returns a Future that completes when [callId] is parked.
+  Future<event.CallPark> waitForPark(String callId) async {
+    log.finest('$this waits for call $callId to park');
+
+    return _waitFor(
+        type: new event.CallPark(model.Call.noCall).runtimeType,
+        callID: callId);
+  }
+
+  /// Returns a Future that completes when [callId] is parked.
+  Future<event.CallUnpark> waitForUnpark(String callId) async {
+    log.finest('$this waits for call $callId to park');
+
+    return _waitFor(
+        type: new event.CallUnpark(model.Call.noCall).runtimeType,
+        callID: callId);
+  }
+
+  /// Returns a Future that completes when [callId] is parked.
+  Future<event.CallLock> waitForLock(String callId) async {
+    log.finest('$this waits for call $callId to park');
+
+    return _waitFor(
+        type: new event.CallLock(model.Call.noCall).runtimeType,
+        callID: callId);
+  }
+
+  /// Returns a Future that completes when [callId] is parked.
+  Future<event.CallUnlock> waitForUnlock(String callId) async {
+    log.finest('$this waits for call $callId to park');
+
+    return _waitFor(
+        type: new event.CallUnlock(model.Call.noCall).runtimeType,
+        callID: callId);
+  }
+
+  /// Returns a Future that completes when [callId] is picked up.
+  Future<event.CallPickup> waitForPickup(String callId) async {
+    log.finest('$this waits for call $callId to be picked up');
+
+    return _waitFor(
+        type: new event.CallPickup(model.Call.noCall).runtimeType,
+        callID: callId);
+  }
+
+  /// Returns a Future that completes when [callId] is enqueued.
+  Future<event.QueueLeave> waitForQueueLeave(String callId) async {
+    log.finest('$this waits for call $callId to leave queue');
+
+    return _waitFor(
+            type: new event.QueueLeave(model.Call.noCall).runtimeType,
+            callID: callId)
+        .timeout(new Duration(seconds: 10));
+  }
+
+  /// Returns a Future that completes when [callId] leaves a queue.
+  Future<event.QueueJoin> waitForQueueJoin(String callId) async {
+    log.finest('$this waits for call $callId to join queue');
+
+    return await _waitFor(
+            type: new event.QueueJoin(model.Call.noCall).runtimeType,
+            callID: callId)
+        .timeout(new Duration(seconds: 10));
+  }
+
+  /// Returns a Future that completes when [callId] is transferred.
+  Future<event.CallTransfer> waitForTransfer(String callId) async {
+    log.finest('$this waits for call $callId to join queue');
+
+    return await _waitFor(
+            type: new event.CallTransfer(model.Call.noCall).runtimeType,
+            callID: callId)
+        .timeout(new Duration(seconds: 10));
+  }
+
+  /// Returns a Future that completes a peer event occurs on [peerId]
+  Future<event.PeerState> waitForPeerState(String peerId) async {
+    log.finest('$this waits for peer $peerId to change state');
+
+    return await _waitFor(type: new event.PeerState(null).runtimeType)
+        .timeout(new Duration(seconds: 10));
+  }
+
   /**
    * Hangs up phone of receptionist directly from the phone.
    */
@@ -294,13 +383,13 @@ class Receptionist {
    * [extension], [receptionID], or a combination of them. The method will
    * wait for, at most, [timeoutSeconds] before returning a Future error.
    */
-  Future<event.Event> waitFor(
-      {String eventType: null,
+  Future<event.Event> _waitFor(
+      {Type type: null,
       String callID: null,
       String extension: null,
       int receptionID: null,
       int timeoutSeconds: 10}) {
-    if (eventType == null &&
+    if (type == null &&
         callID == null &&
         extension == null &&
         receptionID == null) {
@@ -310,8 +399,8 @@ class Receptionist {
 
     bool matches(event.Event e) {
       bool result = false;
-      if (eventType != null) {
-        result = e.eventName == eventType;
+      if (type != null) {
+        result = e.runtimeType == type;
       }
 
       if (callID != null && e is event.CallEvent) {
@@ -342,7 +431,7 @@ class Receptionist {
         .timeout(new Duration(seconds: timeoutSeconds))
         .catchError((error, stackTrace) {
       log.severe(error, stackTrace);
-      log.severe('Parameters: eventType:$eventType, '
+      log.severe('Parameters: type:$type, '
           'callID:$callID, '
           'extension:$extension, '
           'receptionID:$receptionID');
@@ -357,17 +446,14 @@ class Receptionist {
    * socket confirms the the call was picked up.
    * This method picks up a specific call.
    */
-  Future pickup(model.Call call, {waitForEvent: false}) {
-    Future pickupAction = this.callFlowControl.pickup(call.id);
+  Future<model.Call> pickup(model.Call call, {waitForEvent: false}) async {
+    final pickedUpCall = await callFlowControl.pickup(call.id);
 
     if (waitForEvent) {
-      return pickupAction
-          .then((_) =>
-              this.waitFor(eventType: event.Key.callPickup, callID: call.id))
-          .then((event.CallPickup pickupEvent) => pickupEvent.call);
-    } else {
-      return pickupAction;
+      await waitForPickup(call.id);
     }
+
+    return pickedUpCall;
   }
 
   /**
@@ -375,78 +461,68 @@ class Receptionist {
    * returned will complete only after the call has been confirmed connected
    * via the notification socket (a call_pickup event is received).
    */
-  Future<model.Call> huntNextCall() {
-    model.Call selectedCall;
-
-    Future<model.Call> pickupAfterCallUnlock() {
+  Future<model.Call> huntNextCall() async {
+    Future<model.Call> pickupAfterCallUnlock(model.Call call) async {
       log.info('Call not aquired. $this expects the call to be locked.');
 
-      return this
-          .waitFor(
-              eventType: event.Key.callLock,
-              callID: selectedCall.id,
-              timeoutSeconds: 10)
-          .then((_) =>
-              log.info('Call $selectedCall was locked, waiting for unlock.'))
-          .then((_) => this.waitFor(
-              eventType: event.Key.callUnlock, callID: selectedCall.id))
-          .then(
-              (_) => log.info('Call $selectedCall got unlocked, picking it up'))
-          .then((_) => this.pickup(selectedCall, waitForEvent: true));
+      await waitForLock(call.id);
+
+      log.info('Call $call was locked, waiting for unlock.');
+      await waitForUnlock(call.id);
+
+      return pickup(call, waitForEvent: true);
     }
 
     log.info('$this goes hunting for a call.');
-    return this
-        .waitForCallOffer()
-        .then((model.Call offeredCall) => selectedCall = offeredCall)
-        .then((_) => log.fine('$this attempts to pickup $selectedCall.'))
-        .then((_) => this
-                .pickup(selectedCall, waitForEvent: true)
-                .then((model.Call pickedUpCall) {
-              log.info('$this got call $pickedUpCall');
-              return pickedUpCall;
-            }).catchError((error, stackTrace) {
-              if (error is storage.Conflict) {
-                // Call is locked.
-                return pickupAfterCallUnlock();
-              } else if (error is storage.NotFound) {
-                // Call is hungup
 
-                callEventsOnSelecteCall(event.Event e) {
-                  if (e is event.CallEvent) return e.call.id == selectedCall.id;
-                }
+    final model.Call selectedCall = (await waitForCallOffer()).call;
 
-                log.info('$this waits for $selectedCall to hangup');
-                this
-                    .waitFor(
-                        eventType: event.Key.callHangup,
-                        callID: selectedCall.id,
-                        timeoutSeconds: 2)
-                    .then((event.CallHangup hangupEvent) {
-                  this.eventStack.removeWhere(callEventsOnSelecteCall);
+    log.fine('$this attempts to pickup $selectedCall.');
 
-                  // Reschedule the hunting.
-                  return this.huntNextCall();
-                });
+    try {
+      return pickup(selectedCall, waitForEvent: true);
+    }
+// Call is locked.
+    on storage.Conflict {
+      return pickupAfterCallUnlock(selectedCall);
+    }
+// Call is hungup
+    on storage.NotFound {
+      callEventsOnSelectedCall(event.Event e) {
+        if (e is event.CallEvent) return e.call.id == selectedCall.id;
+      }
 
-                this.dumpEventStack();
-                throw new StateError(
-                    'Expected call to hung up, but no hangup event was received.');
-              } else {
-                log.severe('huntNextCall experienced an unexpected error.');
-                log.severe(error, stackTrace);
-                return new Future.error(error, stackTrace);
-              }
-            }));
+      log.info('$this waits for $selectedCall to hangup');
+
+      try {
+        await waitForHangup(selectedCall.id);
+
+        // Clear out the events from selected call.
+        eventStack.removeWhere(callEventsOnSelectedCall);
+
+        // Reschedule the hunting.
+        return this.huntNextCall();
+      } on TimeoutException {
+        this.dumpEventStack();
+        throw new StateError(
+            'Expected call to hung up, but no hangup event was received.');
+      }
+    } catch (error, stackTrace) {
+      log.severe('huntNextCall experienced an unexpected error.');
+      log.severe(error, stackTrace);
+      return new Future.error(error, stackTrace);
+    }
   }
 
   /**
    * Convenience function for waiting for the next call being offered to the
    * receptionist.
    */
-  Future<model.Call> waitForCallOffer() => this
-      .waitFor(eventType: event.Key.callOffer)
-      .then((event.CallOffer offered) => offered.call);
+  Future<event.CallOffer> waitForCallOffer() async {
+    log.finest('$this waits for next call offer');
+
+    return _waitFor(type: new event.CallOffer(model.Call.noCall).runtimeType);
+  }
 
   /**
    * Event handler for events coming from the notification server.
@@ -501,4 +577,7 @@ class Receptionist {
    */
   Future pause(Service.RESTUserStore userStore) =>
       userStore.userStatePaused(user.id);
+
+  /// Await the next available call.
+  Future<model.Call> nextOfferedCall() async => (await waitForCallOffer()).call;
 }

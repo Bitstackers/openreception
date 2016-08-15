@@ -17,6 +17,11 @@ import 'package:openreception.framework/event.dart' as _event;
 import 'package:openreception.framework/model.dart';
 import 'package:openreception.framework/util.dart' as util;
 
+final String _callOfferKey = new _event.CallOffer(null).eventName;
+final String _callPickupKey = new _event.CallPickup(null).eventName;
+final String _callHangupKey = new _event.CallHangup(null).eventName;
+final String _callTransferKey = new _event.CallTransfer(null).eventName;
+
 class MessageHistory {
   final int mid;
   final int uid;
@@ -305,14 +310,12 @@ class HistoricCall {
       return null;
     }
 
-    var offerEvent;
-    var pickupEvent;
+    _HistoricCallEvent offerEvent;
+    _HistoricCallEvent pickupEvent;
     try {
-      offerEvent =
-          _events.firstWhere((e) => e.eventName == _event.Key.callOffer);
+      offerEvent = _events.firstWhere((e) => e.eventName == _callOfferKey);
 
-      pickupEvent =
-          _events.firstWhere((e) => e.eventName == _event.Key.callPickup);
+      pickupEvent = _events.firstWhere((e) => e.eventName == _callPickupKey);
     } on StateError {
       return new Duration(seconds: 2);
     }
@@ -324,11 +327,10 @@ class HistoricCall {
    *
    */
   Duration get lifeTime {
-    final offerEvent =
-        _events.firstWhere((e) => e.eventName == _event.Key.callOffer);
+    final offerEvent = _events.firstWhere((e) => e.eventName == _callOfferKey);
 
     final hangupEvent =
-        _events.firstWhere((e) => e.eventName == _event.Key.callHangup);
+        _events.firstWhere((e) => e.eventName == _callHangupKey);
 
     return hangupEvent.timestamp.difference(offerEvent.timestamp);
   }
@@ -336,19 +338,16 @@ class HistoricCall {
   /**
    * Determines if the call was answered.
    */
-  bool get isAnswered =>
-      _events.any((e) => e.eventName == _event.Key.callPickup);
+  bool get isAnswered => _events.any((e) => e.eventName == _callPickupKey);
 
   /**
    *
    */
   Duration get handleTime {
-    final offerEvent =
-        _events.firstWhere((e) => e.eventName == _event.Key.callOffer);
+    final offerEvent = _events.firstWhere((e) => e.eventName == _callOfferKey);
 
     final hangupEvent = _events.firstWhere((e) =>
-        e.eventName == _event.Key.callHangup ||
-        e.eventName == _event.Key.callTransfer);
+        e.eventName == _callHangupKey || e.eventName == _callTransferKey);
 
     return hangupEvent.timestamp.difference(offerEvent.timestamp);
   }

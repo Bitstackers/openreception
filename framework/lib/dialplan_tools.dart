@@ -135,6 +135,7 @@ class DialplanCompiler {
 </include>''';
 }
 
+/// Extracts a list of names of IVR menus contained in [rdp].
 @deprecated
 Iterable<String> ivrOf(model.ReceptionDialplan rdp) {
   final Iterable<model.Ivr> ivrs =

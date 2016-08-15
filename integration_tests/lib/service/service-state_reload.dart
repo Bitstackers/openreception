@@ -49,8 +49,9 @@ abstract class StateReload {
     await caller.dial(context.dialplan);
 
     log.info('Waiting for the call to be queued');
-    await receptionist.waitFor(
-        eventType: event.Key.queueJoin, timeoutSeconds: 10);
+    final call = await receptionist.nextOfferedCall();
+
+    await receptionist.waitForQueueJoin(call.id);
     log.info('Fetching call list');
     final Iterable<model.Call> orignalCallQueue =
         await receptionist.callFlowControl.callList();
@@ -190,7 +191,7 @@ abstract class StateReload {
 
     await callee.waitForInboundCall();
     await callee.pickupCall();
-    await receptionist.waitFor(eventType: event.Key.callPickup);
+    await receptionist.waitForPickup(outboundCall.id);
     log.info('Fetching original call list');
     final Iterable<model.Call> orignalCallQueue =
         await receptionist.callFlowControl.callList();
@@ -228,8 +229,7 @@ abstract class StateReload {
 
     await callee.waitForInboundCall();
     await callee.pickupCall();
-    await receptionist.waitFor(
-        eventType: event.Key.callPickup, callID: outboundCall.id);
+    await receptionist.waitForPickup(outboundCall.id);
     log.info('Fetching original call list');
     Iterable<model.Call> orignalCallQueue =
         await receptionist.callFlowControl.callList();
@@ -247,7 +247,8 @@ abstract class StateReload {
 
     log.info('Transferring call');
     await receptionist.transferCall(outboundCall, inboundCall);
-    await receptionist.waitFor(eventType: event.Key.callTransfer);
+    await receptionist.waitForTransfer(outboundCall.id);
+    await receptionist.waitForTransfer(inboundCall.id);
     log.info('Fetching original call list');
 
     await receptionist.callFlowControl

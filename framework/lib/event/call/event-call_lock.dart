@@ -15,7 +15,7 @@ part of openreception.framework.event;
 
 class CallLock extends CallEvent {
   @override
-  final String eventName = Key.callLock;
+  final String eventName = _Key._callLock;
 
   CallLock(model.Call call) : super(call);
   CallLock.fromMap(Map map) : super.fromMap(map);

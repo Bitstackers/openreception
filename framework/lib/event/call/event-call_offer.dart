@@ -15,7 +15,7 @@ part of openreception.framework.event;
 
 class CallOffer extends CallEvent {
   @override
-  final String eventName = Key.callOffer;
+  final String eventName = _Key._callOffer;
 
   CallOffer(model.Call call) : super(call);
   CallOffer.fromMap(Map map) : super.fromMap(map);

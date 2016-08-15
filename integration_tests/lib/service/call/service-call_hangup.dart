@@ -15,13 +15,13 @@ abstract class Hangup {
     await caller.dial(rdp.extension);
 
     log.info('Receptionist ${receptionist.user.name} waits for call');
-    await receptionist.waitForCallOffer();
+    final call = await receptionist.nextOfferedCall();
     await new Future.delayed(new Duration(seconds: 1));
 
     log.info('Customer ${caller.name} hangs up all current calls');
     await caller.hangupAll();
     log.info('Receptionist ${receptionist} awaits call hangup');
-    await receptionist.waitFor(eventType: event.Key.callHangup);
+    await receptionist.waitForHangup(call.id);
     log.info('Caller ${caller} awaits phone hangup.');
     await caller.waitForHangup();
   }
@@ -33,14 +33,14 @@ abstract class Hangup {
       Receptionist receptionist, Customer caller) async {
     log.info('Customer ${caller.name} dials ${rdp.extension}');
     await caller.dial(rdp.extension);
+
     log.info('Receptionist ${receptionist.user.name} waits for call.');
-    await receptionist.waitForCallOffer();
+    final call = await receptionist.nextOfferedCall();
     await new Future.delayed(new Duration(seconds: 1));
     log.info('Customer ${caller.name} hangs up all current calls.');
     await caller.hangupAll();
     log.info('Receptionist ${receptionist.user.name} awaits call hangup.');
-    event.CallHangup e =
-        await receptionist.waitFor(eventType: event.Key.callHangup);
+    event.CallHangup e = await receptionist.waitForHangup(call.id);
 
     log.info(e.toJson());
     expect(e.hangupCause, isNotEmpty);
@@ -56,13 +56,14 @@ abstract class Hangup {
       Receptionist receptionist, Customer customer) async {
     log.info('Customer ${customer.name} dials ${rdp.extension}');
     await customer.dial(rdp.extension);
-    await receptionist.huntNextCall();
+    final call = await receptionist.huntNextCall();
     await receptionist.waitForInboundCall();
 
     log.info('Customer ${customer.name} hangs up all current calls.');
     await customer.hangupAll();
+
     log.info('Receptionist ${receptionist.user.name} awaits call hangup.');
-    await receptionist.waitFor(eventType: event.Key.callHangup);
+    await receptionist.waitForHangup(call.id);
   }
 
   /**
