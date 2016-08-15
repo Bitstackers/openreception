@@ -7,7 +7,7 @@ dependencies:
   logging: any
   esl:
     git:
-      ref: master
+      ref: devel
       url: https://github.com/rostgaard/libesl-dart.git
   openreception.framework:
     path: ../framework
