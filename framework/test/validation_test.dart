@@ -15,10 +15,13 @@ library openreception.framework.test.validation;
 
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/validation.dart';
+import 'package:openreception.framework/exceptions.dart';
 import 'package:test/test.dart';
 
 part 'src/validation/ivr_menu.dart';
+part 'src/validation/origination_context.dart';
 
 void main() {
   ivrMenuTests();
+  originationContextTests();
 }

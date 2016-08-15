@@ -56,7 +56,7 @@ class IvrMenu {
 
       try {
         menu = model.IvrMenu.decode(json);
-        final List<FormatException> errors = model.validateIvrMenu(menu);
+        final List<ValidationException> errors = validateIvrMenu(menu);
 
         if (errors.isNotEmpty) {
           //TODO: Map and build more informational LI-elements.
