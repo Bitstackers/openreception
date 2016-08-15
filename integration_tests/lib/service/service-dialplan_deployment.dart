@@ -41,14 +41,13 @@ abstract class DialplanDeployment {
     await new Future.delayed(new Duration(milliseconds: 100));
 
     /// Check event queue.
-    final int playback1 = events.indexOf(events.firstWhere((event) =>
-        event.field('Application-Data') != null &&
-        event.field('Application-Data').contains('sorry-dude-were-closed')));
+    final int playback1 = events.indexOf(events.firstWhere((esl.Event event) =>
+        event.fields['Application-Data'] != null &&
+        event.fields['Application-Data'].contains('sorry-dude-were-closed')));
 
     final int playback2 = events.indexOf(events.firstWhere((event) =>
-        event.field('Application-Data') != null &&
-        event
-            .field('Application-Data')
+        event.fields['Application-Data'] != null &&
+        event.fields['Application-Data']
             .contains('sorry-dude-were-really-closed')));
 
     expect(playback1, lessThan(playback2));
@@ -112,14 +111,13 @@ abstract class DialplanDeployment {
     await new Future.delayed(new Duration(milliseconds: 100));
 
     /// Check event queue.
-    final int playback1 = events.indexOf(events.firstWhere((event) =>
-        event.field('Application-Data') != null &&
-        event.field('Application-Data').contains('sorry-dude-were-open')));
+    final int playback1 = events.indexOf(events.firstWhere((esl.Event event) =>
+        event.fields['Application-Data'] != null &&
+        event.fields['Application-Data'].contains('sorry-dude-were-open')));
 
-    final int playback2 = events.indexOf(events.firstWhere((event) =>
-        event.field('Application-Data') != null &&
-        event
-            .field('Application-Data')
+    final int playback2 = events.indexOf(events.firstWhere((esl.Event event) =>
+        event.fields['Application-Data'] != null &&
+        event.fields['Application-Data']
             .contains('sorry-dude-were-really-open')));
 
     expect(playback1, lessThan(playback2));
@@ -207,12 +205,12 @@ abstract class DialplanDeployment {
 
     /// Check event queue.
     final int playback1 = events.indexOf(events.firstWhere((event) =>
-        event.field('Application-Data') != null &&
-        event.field('Application-Data').contains(firstDialplanGreeting)));
+        event.fields['Application-Data'] != null &&
+        event.fields['Application-Data'].contains(firstDialplanGreeting)));
 
     final int playback2 = events.indexOf(events.firstWhere((event) =>
-        event.field('Application-Data') != null &&
-        event.field('Application-Data').contains(secondDialplanGreeting)));
+        event.fields['Application-Data'] != null &&
+        event.fields['Application-Data'].contains(secondDialplanGreeting)));
 
     expect(playback1, lessThan(playback2));
 

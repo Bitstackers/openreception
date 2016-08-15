@@ -62,7 +62,7 @@ class PeerList {
       case (PBXEvent.custom):
         switch (event.eventSubclass) {
           case (PBXEvent.sofiaRegister):
-            final String peerName = event.field('username');
+            final String peerName = event.fields['username'];
 
             if (this.contains(peerName)) {
               registerPeer(peerName);
@@ -74,7 +74,7 @@ class PeerList {
             break;
 
           case (PBXEvent.sofiaUnregister):
-            final String peerName = event.field('username');
+            final String peerName = event.fields['username'];
 
             if (this.contains(peerName)) {
               unregisterPeer(peerName);

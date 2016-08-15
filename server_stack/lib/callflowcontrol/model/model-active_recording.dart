@@ -41,12 +41,12 @@ class ActiveRecordings extends IterableBase<ORModel.ActiveRecording> {
   /**
    * Handle an incoming [ESL.Event] packet
    */
-  void handleEvent(ESL.Event packet) {
+  void handleEvent(ESL.Event event) {
     void dispatch() {
-      switch (packet.eventName) {
+      switch (event.eventName) {
         case (PBXEvent.recordStart):
-          final String uuid = packet.field('Unique-ID');
-          final String path = packet.field('Record-File-Path');
+          final String uuid = event.uniqueID;
+          final String path = event.fields['Record-File-Path'];
 
           log.finest('Starting recording of channel $uuid at path $path');
           _recordings[uuid] = new ORModel.ActiveRecording(uuid, path);
@@ -54,8 +54,8 @@ class ActiveRecordings extends IterableBase<ORModel.ActiveRecording> {
           break;
 
         case (PBXEvent.recordStop):
-          final String uuid = packet.field('Unique-ID');
-          final String path = packet.field('Record-File-Path');
+          final String uuid = event.uniqueID;
+          final String path = event.fields['Record-File-Path'];
 
           log.finest('Stopping recording of channel $uuid at path $path');
           _recordings.remove(uuid);
@@ -67,7 +67,7 @@ class ActiveRecordings extends IterableBase<ORModel.ActiveRecording> {
     try {
       dispatch();
     } catch (error, stackTrace) {
-      _log.severe('Failed to dispatch ${packet.eventName}');
+      _log.severe('Failed to dispatch ${event.eventName}');
       _log.severe(error, stackTrace);
     }
   }

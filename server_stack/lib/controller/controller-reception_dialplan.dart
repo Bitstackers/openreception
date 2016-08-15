@@ -162,15 +162,19 @@ class ReceptionDialplan {
    */
   Future<shelf.Response> reloadConfig(shelf.Request request) async {
     shelf.Response logAndReturn(esl.Response response) {
-      final msg = 'Failed to reload: PBX response: ${response.rawBody}';
+      final msg =
+          'Failed to reload: PBX response: "${response.content}", status: ${response.status}';
       _log.shout(msg);
       return serverError(msg);
     }
 
-    return await _eslClient.api('reloadxml').then((eslResponse) =>
-        eslResponse.status != esl.Response.ok
-            ? logAndReturn(eslResponse)
-            : okJson({}));
+    final esl.Response r = await _eslClient.api('reloadxml');
+
+    if (r.isOk) {
+      return okJson(const {});
+    } else {
+      return logAndReturn(r);
+    }
   }
 
   /**
@@ -216,50 +220,31 @@ class ReceptionDialplan {
  * ESL client setup
  */
   Future _connectESLClient() async {
-    Duration period = new Duration(seconds: 3);
+    //Duration period = new Duration(seconds: 3);
     final String hostname = eslConfig.hostname;
     final String password = eslConfig.password;
 
     final int port = eslConfig.port;
 
     // Reconnect;
-    _eslClient = new esl.Connection();
-    _eslClient.onDone = _connectESLClient;
+    _eslClient = new esl.Connection(await Socket.connect(hostname, port));
+    //_eslClient.onDone = _connectESLClient;
 
     Future authenticate(esl.Connection client) =>
         client.authenticate(password).then((reply) {
-          if (reply.status != esl.Reply.ok) {
+          if (!reply.isOk) {
             _log.shout('ESL Authentication failed - exiting');
             throw new StateError('ESL Authentication failed');
           }
         });
 
-    _eslClient.requestStream.listen((packet) async {
-      switch (packet.contentType) {
-        case (esl.ContentType.authRequest):
-          _log.info('Connected to ${hostname}:${port}');
-          await authenticate(_eslClient);
-          break;
-
-        default:
-          break;
+    _eslClient.requestStream.listen((esl.Request request) async {
+      if (request is esl.AuthRequest) {
+        _log.info('Connected to ${hostname}:${port}');
+        await authenticate(_eslClient);
       }
     });
     _log.info('Connecting to ${hostname}:${port}');
-
-    Future tryConnect() async {
-      await _eslClient.connect(hostname, port).catchError((error, stackTrace) {
-        if (error is SocketException) {
-          _log.severe(
-              'ESL Connection failed - reconnecting in ${period.inSeconds} seconds');
-          new Timer(period, tryConnect);
-        } else {
-          _log.severe('Failed to connect to FreeSWITCH.', error, stackTrace);
-        }
-      });
-    }
-
-    await tryConnect();
   }
 
   /**

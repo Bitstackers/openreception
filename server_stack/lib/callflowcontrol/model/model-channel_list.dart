@@ -214,15 +214,15 @@ class ChannelList extends ESL.ChannelList {
   /**
    * Handle an incoming [ESL.Event] packet
    */
-  void handleEvent(ESL.Event packet) {
+  void handleEvent(ESL.Event event) {
     void dispatch() {
-      switch (packet.eventName) {
+      switch (event.eventName) {
         case (PBXEvent.channelBridge):
         case (PBXEvent.channelState):
         case (PBXEvent.channelAnswer):
         case (PBXEvent.channelCreate):
         case (PBXEvent.channelDestroy):
-          this.update(new ESL.Channel.fromPacket(packet));
+          this.update(new ESL.Channel.fromEvent(event));
           break;
       }
     }
@@ -230,7 +230,7 @@ class ChannelList extends ESL.ChannelList {
     try {
       dispatch();
     } catch (error, stackTrace) {
-      _log.severe('Failed to dispatch ${packet.eventName}');
+      _log.severe('Failed to dispatch ${event.eventName}');
       _log.severe(error, stackTrace);
     }
   }

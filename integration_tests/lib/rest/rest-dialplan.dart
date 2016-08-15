@@ -110,7 +110,7 @@ _runDialplanTests() {
 _runDialplanDeploymentTests() {
   Future authenticate(esl.Connection client) =>
       client.authenticate(Config.eslPassword).then((reply) {
-        if (reply.status != esl.Reply.ok) {
+        if (!reply.isOk) {
           throw new StateError('ESL Authentication failed!');
         }
       });
@@ -122,6 +122,7 @@ _runDialplanDeploymentTests() {
     ServiceAgent sa;
     TestEnvironment env;
     process.FreeSwitch fsProcess;
+    Socket socket;
     Customer c;
 
     /// Transient object
@@ -140,21 +141,21 @@ _runDialplanDeploymentTests() {
       rdp = await sa.createsDialplan();
       await sa.deploysDialplan(rdp, rec);
 
+      socket = await Socket.connect(Config.eslHost, Config.eslPort);
+
       /// Initilize ESL connection.
-      eslClient = new esl.Connection();
+      eslClient = new esl.Connection(socket);
 
-      Future authentication = eslClient.requestStream
-          .firstWhere(
-              (packet) => packet.contentType == esl.ContentType.authRequest)
-          .then((_) => authenticate(eslClient));
+      Future<Null> authentication =
+          esl.authHandler(eslClient, Config.eslPassword);
 
-      await eslClient.connect(Config.eslHost, Config.eslPort);
       await authentication;
     });
 
     tearDown(() async {
       log.finest('FSLOG:\n ${fsProcess.latestLog.readAsStringSync()}');
-      await eslClient.disconnect();
+      await eslClient.exit();
+      await socket.destroy();
       await env.clear();
     });
 

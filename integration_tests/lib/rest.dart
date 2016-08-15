@@ -4,6 +4,8 @@ import 'dart:io';
 import 'dart:async';
 
 import 'package:esl/esl.dart' as esl;
+import 'package:esl/util.dart' as esl;
+
 import 'package:logging/logging.dart';
 
 import 'package:openreception_tests/storage.dart' as storeTest;

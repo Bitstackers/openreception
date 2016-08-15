@@ -18,6 +18,9 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:esl/esl.dart' as esl;
+import 'package:esl/constants.dart' as esl;
+import 'package:esl/util.dart' as esl;
+
 import 'package:logging/logging.dart';
 import 'package:openreception.server/callflowcontrol/controller.dart'
     as Controller;
@@ -44,103 +47,122 @@ Future main(List<String> args) async {
   Logger.root.level = config.callFlowControl.log.level;
   Logger.root.onRecord.listen(config.callFlowControl.log.onRecord);
 
-  registerAndParseCommandlineArguments(args);
+  _registerAndParseCommandlineArguments(args);
 
-  if (showHelp()) {
+  if (_showHelp()) {
     print(parser.usage);
-  } else {
-    connectESLClient();
-    await router.start(
-        hostname: parsedArgs['host'],
-        port: int.parse(parsedArgs['httpport']),
-        authUri: Uri.parse(parsedArgs['auth-uri']),
-        notificationUri: Uri.parse(parsedArgs['notification-uri']));
-    log.info('Ready to handle requests');
+    exit(1);
   }
-}
 
-void connectESLClient() {
-  final Duration period = new Duration(seconds: 3);
   final String hostname = parsedArgs['esl-hostname'];
   final String password = parsedArgs['esl-password'];
   final int port = int.parse(parsedArgs['esl-port']);
 
-  log.info('Connecting to ${hostname}:${port}');
+  await _connectApiClient(hostname, port, password);
+  await _connectEventClient(hostname, port, password);
 
-  Controller.PBX.apiClient = new esl.Connection();
-  Controller.PBX.eventClient = new esl.Connection();
+  await router.start(
+      hostname: parsedArgs['host'],
+      port: int.parse(parsedArgs['httpport']),
+      authUri: Uri.parse(parsedArgs['auth-uri']),
+      notificationUri: Uri.parse(parsedArgs['notification-uri']));
+  log.info('Ready to handle requests');
+}
+
+/// Connect API client.
+Future _connectApiClient(String hostname, int port, String password) async {
+  Controller.PBX.apiClient = await _connectESLClient(hostname, port, password);
+
+  Controller.PBX.apiClient.requestStream.listen((esl.Request request) async {
+    if (request is esl.AuthRequest) {
+      log.finest('Sending authentication');
+      final esl.Reply reply =
+          await Controller.PBX.apiClient.authenticate(password);
+
+      if (!reply.isOk) {
+        log.shout('ESL api Authentication failed - exiting');
+        exit(1);
+      } else {
+        await Controller.PBX.loadPeers();
+        await Controller.PBX.loadChannels();
+        await Model.CallList.instance
+            .reloadFromChannels(Model.ChannelList.instance);
+      }
+    }
+  });
+}
+
+/// Connect API client.
+Future _connectEventClient(String hostname, int port, String password) async {
+  Controller.PBX.eventClient =
+      await _connectESLClient(hostname, port, password);
 
   Model.CallList.instance.subscribe(Controller.PBX.eventClient.eventStream);
 
   Controller.PBX.eventClient.eventStream
-      .listen(Model.ChannelList.instance.handleEvent)
-      .onDone(connectESLClient); // Reconnect
+      .listen(Model.ChannelList.instance.handleEvent);
 
   Controller.PBX.eventClient.eventStream
       .listen(Model.ActiveRecordings.instance.handleEvent);
 
   Controller.PBX.eventClient.eventStream.listen(Model.peerlist.handlePacket);
 
-  Future authenticate(esl.Connection client) =>
-      client.authenticate(password).then((esl.Reply reply) {
-        if (reply.status != esl.Reply.ok) {
-          log.shout('ESL Authentication failed - exiting');
-          exit(1);
-        }
-      });
-
-  /// Connect API client.
-  Controller.PBX.apiClient.requestStream.listen((esl.Packet packet) async {
-    switch (packet.contentType) {
-      case (esl.ContentType.authRequest):
-        log.info('Connected to ${hostname}:${port}');
-        authenticate(Controller.PBX.apiClient)
-            .then((_) => Controller.PBX.loadPeers())
-            .then((_) => Controller.PBX.loadChannels().then((_) => Model
-                .CallList.instance
-                .reloadFromChannels(Model.ChannelList.instance)));
-
-        break;
-
-      default:
-        break;
-    }
-  });
-
   /// Connect event client.
-  Controller.PBX.eventClient.requestStream.listen((esl.Packet packet) {
-    switch (packet.contentType) {
-      case (esl.ContentType.authRequest):
-        log.info('Connected to ${hostname}:${port}');
-        authenticate(Controller.PBX.eventClient).then((_) => Controller
-            .PBX.eventClient
+  Controller.PBX.eventClient.requestStream.listen((esl.Request request) async {
+    if (request is esl.AuthRequest) {
+      log.finest('Sending authentication');
+      final esl.Reply reply =
+          await Controller.PBX.eventClient.authenticate(password);
+
+      if (!reply.isOk) {
+        log.shout('ESL event Authentication failed - exiting');
+        exit(1);
+      } else {
+        await Controller.PBX.eventClient
             .event(Model.PBXEvent.requiredSubscriptions,
-                format: esl.EventFormat.json)..catchError(log.shout));
-
-        break;
-
-      default:
-        break;
+                format: esl.EventFormat.json)
+            .catchError(log.shout);
+      }
     }
   });
-
-  Future tryConnect(esl.Connection client) async {
-    await client.connect(hostname, port).catchError((error, stackTrace) {
-      if (error is SocketException) {
-        log.severe(
-            'ESL Connection failed - reconnecting in ${period.inSeconds} seconds');
-        new Timer(period, () => tryConnect(client));
-      } else {
-        log.severe('Failed to connect to FreeSWITCH.', error, stackTrace);
-      }
-    });
-  }
-
-  tryConnect(Controller.PBX.apiClient);
-  tryConnect(Controller.PBX.eventClient);
 }
 
-void registerAndParseCommandlineArguments(List<String> arguments) {
+Future<esl.Connection> _connectESLClient(
+    String hostname, int port, String password) async {
+  final Duration reconnectPeriod = new Duration(seconds: 3);
+
+  Future<esl.Connection> tryConnect() async {
+    log.info('Connecting to ${hostname}:${port}');
+
+    try {
+      final Socket socket = await Socket.connect(hostname, port);
+
+      final esl.Connection connection =
+          new esl.Connection(socket, onDisconnect: tryConnect);
+
+      // Await a successful authentication.
+      await esl.authHandler(connection, password);
+
+      return connection;
+    } on SocketException {
+      log.severe('ESL Connection failed - reconnecting '
+          'in ${reconnectPeriod.inSeconds} seconds');
+
+      await new Future.delayed(reconnectPeriod);
+      return tryConnect();
+    } on AuthenticationException {
+      log.severe('ESL Connection failed - reconnecting '
+          'in ${reconnectPeriod.inSeconds} seconds');
+
+      await new Future.delayed(reconnectPeriod);
+      return tryConnect();
+    }
+  }
+
+  return tryConnect();
+}
+
+void _registerAndParseCommandlineArguments(List<String> arguments) {
   parser
     ..addFlag('help', help: 'Output this help')
     ..addOption('httpport',
@@ -169,4 +191,4 @@ void registerAndParseCommandlineArguments(List<String> arguments) {
   parsedArgs = parser.parse(arguments);
 }
 
-bool showHelp() => parsedArgs['help'];
+bool _showHelp() => parsedArgs['help'];

@@ -185,11 +185,11 @@ class CallList extends IterableBase<ORModel.Call> {
   /**
    * Handle CHANNEL_BRIDGE event packets.
    */
-  void _handleBridge(ESL.Packet packet) {
+  void _handleBridge(ESL.Event event) {
     final ESL.Channel uuid =
-        ChannelList.instance.get(packet.field('Unique-ID'));
+        ChannelList.instance.get(event.fields['Unique-ID']);
     final ESL.Channel otherLeg =
-        ChannelList.instance.get(packet.field('Other-Leg-Unique-ID'));
+        ChannelList.instance.get(event.fields['Other-Leg-Unique-ID']);
 
     log.finest('Bridging channel ${uuid.uuid} and channel ${otherLeg.uuid}');
 
@@ -233,8 +233,8 @@ class CallList extends IterableBase<ORModel.Call> {
   void _handleChannelDestroy(ESL.Event event) {
     if (this.containsID(event.uniqueID)) {
       final ORModel.Call call = this.get(event.uniqueID);
-      call.hangupCause = event.field('Hangup-Cause') != null
-          ? event.field('Hangup-Cause')
+      call.hangupCause = event.fields['Hangup-Cause'] != null
+          ? event.fields['Hangup-Cause']
           : '';
       call.changeState(ORModel.CallState.hungup);
       log.finest('Hanging up ${event.uniqueID}');
@@ -250,10 +250,9 @@ class CallList extends IterableBase<ORModel.Call> {
         this._createCall(event);
 
         this.get(event.uniqueID)
-          ..rid =
-              event.contentAsMap.containsKey('variable_${ORPbxKey.receptionId}')
-                  ? int.parse(event.field('variable_${ORPbxKey.receptionId}'))
-                  : 0
+          ..rid = event.fields.containsKey('variable_${ORPbxKey.receptionId}')
+              ? int.parse(event.fields['variable_${ORPbxKey.receptionId}'])
+              : 0
           ..changeState(ORModel.CallState.created);
 
         break;
@@ -364,39 +363,38 @@ class CallList extends IterableBase<ORModel.Call> {
    */
   void _createCall(ESL.Event event) {
     /// Skip local channels
-    if (event.contentAsMap.containsKey('variable_${ORPbxKey.agentChannel}')) {
+    if (event.fields.containsKey('variable_${ORPbxKey.agentChannel}')) {
       log.finest('Skipping origination channel ${event.uniqueID}');
       return;
     }
 
-    if (event.contentAsMap.containsKey('Other-Leg-Username')) {
+    if (event.fields.containsKey('Other-Leg-Username')) {
       log.finest('Skipping transfer channel ${event.uniqueID}');
       return;
     }
 
     log.finest('Creating new call ${event.uniqueID}');
 
-    int contactID =
-        event.contentAsMap.containsKey('variable_${ORPbxKey.contactId}')
-            ? int.parse(event.field('variable_${ORPbxKey.contactId}'))
-            : ORModel.BaseContact.noId;
+    int contactID = event.fields.containsKey('variable_${ORPbxKey.contactId}')
+        ? int.parse(event.fields['variable_${ORPbxKey.contactId}'])
+        : ORModel.BaseContact.noId;
 
     int receptionID =
-        event.contentAsMap.containsKey('variable_${ORPbxKey.receptionId}')
-            ? int.parse(event.field('variable_${ORPbxKey.receptionId}'))
+        event.fields.containsKey('variable_${ORPbxKey.receptionId}')
+            ? int.parse(event.fields['variable_${ORPbxKey.receptionId}'])
             : ORModel.Reception.noId;
 
-    int userID = event.contentAsMap.containsKey('variable_${ORPbxKey.userId}')
-        ? int.parse(event.field('variable_${ORPbxKey.userId}'))
+    int userID = event.fields.containsKey('variable_${ORPbxKey.userId}')
+        ? int.parse(event.fields['variable_${ORPbxKey.userId}'])
         : ORModel.User.noId;
 
-    final ESL.Channel channel = new ESL.Channel.fromPacket(event);
+    final ESL.Channel channel = new ESL.Channel.fromEvent(event);
 
     ORModel.Call createdCall = new ORModel.Call.empty(event.uniqueID)
       ..arrived = new DateTime.fromMillisecondsSinceEpoch(
-          int.parse(event.field('Caller-Channel-Created-Time')) ~/ 1000)
-      ..inbound = (event.field('Call-Direction') == 'inbound' ? true : false)
-      ..callerId = event.field('Caller-Caller-ID-Number')
+          int.parse(event.fields['Caller-Channel-Created-Time']) ~/ 1000)
+      ..inbound = (event.fields['Call-Direction'] == 'inbound' ? true : false)
+      ..callerId = event.fields['Caller-Caller-ID-Number']
       ..destination = channel.variables[ORPbxKey.destination]
       ..rid = receptionID
       ..cid = contactID

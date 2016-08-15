@@ -20,12 +20,10 @@ class Peer extends ESL.Peer {
     this.contact = eslPeer.contact;
   }
 
-  Map get asMap => {
+  @override
+  UnmodifiableMapView<String, dynamic> toJson() => new UnmodifiableMapView({
         'id': this.id,
         'registered': this.registered,
         'activeChannels': ChannelList.instance.activeChannelCount(this.id)
-      };
-
-  @override
-  Map toJson() => this.asMap;
+      });
 }
