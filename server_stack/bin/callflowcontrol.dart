@@ -92,7 +92,7 @@ Future _connectApiClient(String hostname, int port, String password) async {
   });
 }
 
-/// Connect API client.
+/// Connect Event client.
 Future _connectEventClient(String hostname, int port, String password) async {
   Controller.PBX.eventClient =
       await _connectESLClient(hostname, port, password);
@@ -106,25 +106,8 @@ Future _connectEventClient(String hostname, int port, String password) async {
       .listen(Model.ActiveRecordings.instance.handleEvent);
 
   Controller.PBX.eventClient.eventStream.listen(Model.peerlist.handlePacket);
-
-  /// Connect event client.
-  Controller.PBX.eventClient.requestStream.listen((esl.Request request) async {
-    if (request is esl.AuthRequest) {
-      log.finest('Sending authentication');
-      final esl.Reply reply =
-          await Controller.PBX.eventClient.authenticate(password);
-
-      if (!reply.isOk) {
-        log.shout('ESL event Authentication failed - exiting');
-        exit(1);
-      } else {
-        await Controller.PBX.eventClient
-            .event(Model.PBXEvent.requiredSubscriptions,
-                format: esl.EventFormat.json)
-            .catchError(log.shout);
-      }
-    }
-  });
+  await Controller.PBX.eventClient.event(Model.PBXEvent.requiredSubscriptions,
+      format: esl.EventFormat.json);
 }
 
 Future<esl.Connection> _connectESLClient(
