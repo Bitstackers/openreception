@@ -92,12 +92,12 @@ class ServiceAgent {
   /**
    *
    */
-  filestore.Ivr _ivrStore;
+  storage.Ivr _ivrStore;
   void set ivrStore(storage.Ivr ivrs) {
     _ivrStore = ivrs;
   }
 
-  filestore.Ivr get ivrStore {
+  storage.Ivr get ivrStore {
     if (_ivrStore == null) {
       _ivrStore = env.ivrStore;
     }
