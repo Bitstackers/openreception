@@ -57,6 +57,12 @@ void _runOrganizationTests() {
 
     test('remove (event presence)',
         () => serviceTest.Organization.deleteEvent(sa));
+  });
+
+  group('$_namespace.User', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    process.ReceptionServer rProcess;
 
     setUp(() async {
       env = new TestEnvironment();

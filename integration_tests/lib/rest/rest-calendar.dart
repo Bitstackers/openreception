@@ -8,7 +8,6 @@ void _runCalendarTests() {
     TestEnvironment env;
     process.CalendarServer cProcess;
     model.BaseContact contact;
-    model.Reception reception;
     model.Owner owner;
     service.RESTCalendarStore calendarStore;
 
@@ -84,6 +83,16 @@ void _runCalendarTests() {
 
     test('remove (event presence)',
         () => serviceTest.Calendar.deleteEvent(sa, owner, calendarStore));
+  });
+
+  group('$_namespace.Calendar', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    process.CalendarServer cProcess;
+    model.BaseContact contact;
+
+    model.Owner owner;
+    service.RESTCalendarStore calendarStore;
 
     setUp(() async {
       env = new TestEnvironment();
@@ -124,10 +133,17 @@ void _runCalendarTests() {
         'latest change on remove (contact owner)',
         () => storeTest.Calendar
             .latestChangeOnRemove(owner, calendarStore, sa.user));
+  });
 
-    /**
-     * Setup/teardown Basic CRUD tests for contact owner.
-     */
+  // Setup/teardown Basic CRUD tests for reception owner.
+  group('$_namespace.Calendar', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    process.CalendarServer cProcess;
+    model.Reception reception;
+    model.Owner owner;
+    service.RESTCalendarStore calendarStore;
+
     setUp(() async {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();
@@ -147,9 +163,6 @@ void _runCalendarTests() {
       await env.clear();
     });
 
-    /**
-     * Basic CRUD tests for reception owner.
-     */
     test('get (reception owner)',
         () => storeTest.Calendar.get(owner, calendarStore, sa.user));
 
@@ -169,6 +182,15 @@ void _runCalendarTests() {
 
     test('update (reception owner)',
         () => storeTest.Calendar.update(owner, calendarStore, sa.user));
+  });
+
+  group('$_namespace.Calendar', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    process.CalendarServer cProcess;
+    model.Reception reception;
+    model.Owner owner;
+    service.RESTCalendarStore calendarStore;
 
     setUp(() async {
       env = new TestEnvironment();

@@ -535,53 +535,64 @@ class TestEnvironment {
     allocatedCustomers = [];
 
     if (_callflowProcess != null) {
-      _log.info('Shutting down callflow process');
+      _log.info('Shutting down callflow process $_callflowProcess');
       await _callflowProcess.terminate();
+      _callflowProcess = null;
     }
 
     if (_dialplanProcess != null) {
-      _log.info('Shutting down dialplan server process');
+      _log.info('Shutting down dialplan server process $_dialplanProcess');
       await _dialplanProcess.terminate();
+      _dialplanProcess = null;
     }
 
     if (_contactServer != null) {
-      _log.info('Shutting down contact server process');
+      _log.info('Shutting down contact server process $_contactServer');
       await _contactServer.terminate();
+      _contactServer = null;
     }
 
     if (_calendarServer != null) {
-      _log.info('Shutting down calendar server process');
+      _log.info('Shutting down calendar server process $_calendarServer');
       await _calendarServer.terminate();
+      _calendarServer = null;
     }
 
     if (_receptionServer != null) {
-      _log.info('Shutting down reception server process');
+      _log.info('Shutting down reception server process $_receptionServer');
       await _receptionServer.terminate();
+      _receptionServer = null;
     }
 
     if (_messageProcess != null) {
-      _log.info('Shutting down message server process');
+      _log.info('Shutting down message server process $_messageProcess');
       await _messageProcess.terminate();
+      _messageProcess = null;
     }
 
     if (_configProcess != null) {
-      _log.info('Shutting down config server process');
+      _log.info('Shutting down config server process $_configProcess');
       await _configProcess.terminate();
+      _configProcess = null;
     }
 
     if (_userServer != null) {
-      _log.info('Shutting down user server process');
+      _log.info('Shutting down user server process $_userServer');
       await _userServer.terminate();
+      _userServer = null;
     }
 
     if (_notificationProcess != null) {
-      _log.info('Shutting down notification server process');
+      _log.info(
+          'Shutting down notification server process $_notificationProcess');
       await _notificationProcess.terminate();
+      _notificationProcess = null;
     }
 
     if (_authProcess != null) {
-      _log.info('Shutting down authentication server process');
+      _log.info('Shutting down authentication server process $_authProcess');
       await _authProcess.terminate();
+      _authProcess = null;
     }
   }
 

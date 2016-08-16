@@ -5,7 +5,7 @@ import 'package:openreception_tests/support.dart';
 
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/filestore.dart' as filestore;
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 
 part 'filestore/filestore-calendar.dart';
 part 'filestore/filestore-contact.dart';

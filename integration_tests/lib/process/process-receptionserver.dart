@@ -121,4 +121,6 @@ class ReceptionServer implements ServiceProcess {
 
     return new service.RESTOrganizationStore(uri, token.tokenName, client);
   }
+
+  String toString() => '$runtimeType,pid:${_process.pid}:uri$uri';
 }

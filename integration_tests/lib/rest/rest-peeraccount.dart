@@ -45,6 +45,13 @@ _runPeerAccountTests() {
 
     test('deploy',
         () => serviceTest.PeerAccountService.deploy(sa.user, paService));
+  });
+
+  group('$_namespace.PeerAccount', () {
+    TestEnvironment env;
+    ServiceAgent sa;
+    service.PeerAccount paService;
+    process.DialplanServer dpServer;
 
     service.CallFlowControl callFlow;
     service.RESTDialplanStore dpStore;

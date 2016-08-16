@@ -118,4 +118,6 @@ class UserServer implements ServiceProcess {
    *
    */
   Uri get uri => Uri.parse('http://$bindAddress:$servicePort');
+
+  String toString() => '$runtimeType,pid:${_process.pid}:uri$uri';
 }

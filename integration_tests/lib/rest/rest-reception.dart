@@ -58,6 +58,12 @@ void _runReceptionTests() {
 
     test('Reception removal (event presence)',
         () => serviceTest.Reception.deleteEvent(sa));
+  });
+
+  group('$_namespace.Reception', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    process.ReceptionServer rProcess;
 
     setUp(() async {
       env = new TestEnvironment();

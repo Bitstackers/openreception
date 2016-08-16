@@ -52,6 +52,13 @@ _runIvrTests() {
     test('remove', () => storeTest.Ivr.remove(ivrStore));
 
     test('update', () => storeTest.Ivr.update(ivrStore));
+  });
+
+  group('rest.Ivr', () {
+    service.RESTIvrStore ivrStore;
+    process.DialplanServer ivrServer;
+    ServiceAgent sa;
+    TestEnvironment env;
 
     setUp(() async {
       env = new TestEnvironment();

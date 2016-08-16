@@ -2,17 +2,15 @@ library openreception_tests.service.call;
 
 import 'dart:async';
 
-import 'package:phonio/phonio.dart' as phonio;
 import 'package:logging/logging.dart';
-import 'package:openreception_tests/support.dart';
-
+import 'package:openreception.framework/event.dart' as event;
+import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/pbx-keys.dart' as pbxKey;
 import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.framework/storage.dart' as storage;
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/event.dart' as event;
-
-import 'package:unittest/unittest.dart';
+import 'package:openreception_tests/support.dart';
+import 'package:phonio/phonio.dart' as phonio;
+import 'package:test/test.dart';
 
 part 'call/service-active_recording.dart';
 part 'call/service-call_hangup.dart';

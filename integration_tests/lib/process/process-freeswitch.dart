@@ -87,8 +87,7 @@ class FreeSwitch implements ServiceProcess {
     _log.info('Copying example sounds from ${exampleSoundsDir.absolute.path}'
         ' to $soundsPath');
 
-    Iterable<File> files =
-        exampleSoundsDir.listSync().where((fse) => fse is File);
+    final files = exampleSoundsDir.listSync().where((fse) => fse is File);
 
     Future.wait(files.map((File f) async {
       final String newPath = soundsPath + '/' + basename(f.path);

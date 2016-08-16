@@ -19,7 +19,7 @@ import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.framework/service-io.dart' as service;
 import 'package:openreception.framework/model.dart' as model;
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 
 part 'rest/rest-authentication.dart';
 part 'rest/rest-calendar.dart';

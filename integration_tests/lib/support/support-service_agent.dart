@@ -108,12 +108,12 @@ class ServiceAgent {
   /**
    *
    */
-  filestore.ReceptionDialplan _dialplanStore;
+  storage.ReceptionDialplan _dialplanStore;
   void set dialplanStore(storage.ReceptionDialplan dps) {
     _dialplanStore = dps;
   }
 
-  filestore.ReceptionDialplan get dialplanStore {
+  storage.ReceptionDialplan get dialplanStore {
     if (_dialplanStore == null) {
       _dialplanStore = env.dialplanStore;
     }
@@ -125,6 +125,7 @@ class ServiceAgent {
    *
    */
   storage.Calendar _calendarStore;
+  storage.Calendar get calendarStore => _calendarStore;
   void set calendarStore(storage.Calendar cs) {
     _calendarStore = cs;
   }
@@ -489,13 +490,15 @@ class ServiceAgent {
   /**
    *
    */
-  Future<model.ReceptionContact> updatesReceptionAttributes(
+  Future<model.ReceptionAttributes> updatesReceptionAttributes(
       model.ReceptionAttributes attr) async {
     final attributes = Randomizer.randomAttributes()
       ..cid = attr.cid
       ..receptionId = attr.receptionId;
 
-    return await contactStore.updateData(attributes, user);
+    await contactStore.updateData(attributes, user);
+
+    return attributes;
   }
 
   /**

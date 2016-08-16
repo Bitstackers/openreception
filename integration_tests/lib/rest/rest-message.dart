@@ -51,7 +51,12 @@ void _runMessageTests() {
     test('create (event presence)', () => serviceTest.Message.createEvent(sa));
 
     test('remove (event presence)', () => serviceTest.Message.removeEvent(sa));
+  });
 
+  group('$_namespace.Message', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    process.MessageServer mProcess;
     setUp(() async {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();

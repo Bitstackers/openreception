@@ -19,7 +19,7 @@ import 'package:openreception_tests/filestore.dart' as filestore;
 import 'package:openreception_tests/process.dart' as process;
 import 'package:openreception_tests/support/support-auth.dart';
 import 'package:phonio/phonio.dart' as Phonio;
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 
 export 'package:openreception_tests/support/support-auth.dart';
 

@@ -19,7 +19,7 @@ void _runAuthServerTests() {
     });
 
     tearDown(() async {
-      env.clear();
+      await env.clear();
     });
 
     test(

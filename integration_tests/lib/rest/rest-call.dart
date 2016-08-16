@@ -76,7 +76,6 @@ void _runCallStateReloadTests() {
     TestEnvironment env;
     Receptionist r;
     Customer c;
-    Customer c2;
 
     /// Transient object
     model.ReceptionDialplan rdp;
@@ -122,7 +121,19 @@ void _runCallStateReloadTests() {
 
     test('outboundAnsweredCall',
         () => serviceTest.StateReload.outboundAnsweredCall(context, r, c));
+  });
 
+  group('$_namespace.Call.StateReload', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    Receptionist r;
+    Customer c;
+    Customer c2;
+
+    /// Transient object
+    model.ReceptionDialplan rdp;
+    model.Reception rec;
+    model.OriginationContext context;
     setUp(() async {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();
@@ -206,7 +217,7 @@ void _runCallOriginateTests() {
     ServiceAgent sa;
     TestEnvironment env;
     Receptionist r;
-    Receptionist r2;
+
     Customer c;
 
     /// Transient object
@@ -263,7 +274,19 @@ void _runCallOriginateTests() {
         'originationToPeerCheckforduplicate',
         () => serviceTest.Originate
             .originationToPeerCheckforduplicate(context, r, c));
+  });
 
+  group('$_namespace.Call.Originate', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    Receptionist r;
+    Receptionist r2;
+    Customer c;
+
+    /// Transient object
+    model.ReceptionDialplan rdp;
+    model.Reception rec;
+    model.OriginationContext context;
     setUp(() async {
       env = new TestEnvironment();
       sa = await env.createsServiceAgent();

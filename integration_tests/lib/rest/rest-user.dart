@@ -58,10 +58,13 @@ void _runUserTests() {
     test('groups of (known user)', () => storeTest.User.userGroups(sa));
 
     test('get (by identity)', () => storeTest.User.getUserByIdentity(sa));
+  });
 
-    /*
-     * Service-specific tests.
-     */
+  //Service-specific tests.
+  group('$_namespace.User', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    process.UserServer uProcess;
     setUp(() async {
       env = new TestEnvironment(enableRevisions: true);
       sa = await env.createsServiceAgent();
@@ -85,6 +88,12 @@ void _runUserTests() {
     test('update (event presence)', () => serviceTest.User.updateEvent(sa));
 
     test('remove (event presence)', () => serviceTest.User.deleteEvent(sa));
+  });
+
+  group('$_namespace.User', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    process.UserServer uProcess;
 
     setUp(() async {
       env = new TestEnvironment();

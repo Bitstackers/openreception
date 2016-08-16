@@ -1,9 +1,8 @@
 name: openreception_tests
-version: 0.2.0
+version: 0.3.0
 description: OpenReception Acceptance and integration tests
 dependencies:
   http: any
-  junitconfiguration: any
   logging: any
   esl:
     git:
@@ -22,4 +21,4 @@ dependencies:
   shelf_cors: any
   shelf_route: any
 dev_dependencies:
-  unittest: '>=0.11.5 <0.12.0'
+  test: any

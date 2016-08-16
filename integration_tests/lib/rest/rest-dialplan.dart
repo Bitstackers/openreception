@@ -38,9 +38,12 @@ _runDialplanTests() {
                 '?token=${sa.authToken.tokenName}'),
             log));
 
-    /**
-     * CRUD tests
-     */
+    // CRUD tests
+  });
+  group('rest.Dialplan', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+
     service.RESTDialplanStore rdpStore;
     setUp(() async {
       env = new TestEnvironment();
@@ -63,6 +66,12 @@ _runDialplanTests() {
     test('remove', () => storeTest.ReceptionDialplan.remove(rdpStore, sa.user));
 
     test('update', () => storeTest.ReceptionDialplan.update(rdpStore, sa.user));
+  });
+
+  group('rest.Dialplan', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    service.RESTDialplanStore rdpStore;
 
     setUp(() async {
       env = new TestEnvironment();
@@ -84,6 +93,12 @@ _runDialplanTests() {
 
     test('change listing on remove',
         () => storeTest.ReceptionDialplan.changeOnRemove(sa));
+  });
+
+  group('rest.Dialplan', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    service.RESTDialplanStore rdpStore;
 
     /**
      * Deploy test.
@@ -108,13 +123,6 @@ _runDialplanTests() {
 }
 
 _runDialplanDeploymentTests() {
-  Future authenticate(esl.Connection client) =>
-      client.authenticate(Config.eslPassword).then((reply) {
-        if (!reply.isOk) {
-          throw new StateError('ESL Authentication failed!');
-        }
-      });
-
   group('DialplanDeployment', () {
     esl.Connection eslClient;
     Logger log = new Logger('$_namespace.Call');

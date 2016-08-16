@@ -84,6 +84,11 @@ void _runContactTests() {
     test('update (event presence)', () => serviceTest.Contact.updateEvent(sa));
 
     test('remove (event presence)', () => serviceTest.Contact.deleteEvent(sa));
+  });
+  group('$_namespace.Contact', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    process.ContactServer cProcess;
 
     setUp(() async {
       env = new TestEnvironment();

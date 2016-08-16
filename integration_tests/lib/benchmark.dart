@@ -5,7 +5,7 @@ import 'package:openreception_tests/support.dart';
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/storage.dart' as storage;
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:logging/logging.dart';
 
 part 'benchmark/benchmark-call.dart';

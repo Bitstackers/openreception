@@ -5,7 +5,7 @@ export 'package:openreception_tests/service/service-call.dart';
 import 'dart:async';
 
 import 'package:logging/logging.dart';
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 
 import 'package:esl/esl.dart' as esl;
 import 'package:phonio/phonio.dart' as phonio;

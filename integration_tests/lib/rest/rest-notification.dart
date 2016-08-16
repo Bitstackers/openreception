@@ -6,8 +6,6 @@ part of openreception_tests.rest;
  */
 void _runNotificationTests() {
   group('$_namespace.Notification', () {
-    //Logger log = new Logger('$_namespace.Notification');
-
     List<ServiceAgent> sas = new List<ServiceAgent>();
     TestEnvironment env;
     process.NotificationServer nProcess;

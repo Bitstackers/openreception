@@ -134,4 +134,6 @@ class AuthServer implements ServiceProcess {
     _process.kill();
     await _process.exitCode;
   }
+
+  String toString() => '$runtimeType,pid:${_process.pid}:uri$uri';
 }

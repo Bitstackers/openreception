@@ -6,7 +6,10 @@ pubspec.lock: pubspec.yaml
 	@pub upgrade
 
 tests:
-	@dart bin/servertests.dart > results.xml
+	pub run test 
+
+tests-to-json-file:
+	-pub run test --reporter json > test-report.json
 
 tests-plain-output:
 	@dart bin/servertests.dart --no-xml

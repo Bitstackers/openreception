@@ -103,7 +103,7 @@ void _runCalendarTests() {
     });
 
     tearDown(() async {
-      env.clear();
+      await env.clear();
     });
 
     /**
@@ -147,7 +147,7 @@ void _runCalendarTests() {
     });
 
     tearDown(() async {
-      env.clear();
+      await env.clear();
     });
 
     test('change listing on create (reception owner)',
