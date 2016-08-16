@@ -174,11 +174,10 @@ class Calendar implements storage.Calendar {
    */
   @override
   Future<model.CalendarEntry> get(int eid, model.Owner owner) async {
-    final Iterable<Directory> subdirs =
-        new Directory(path).listSync().where(isDirectory);
+    final subdirs = new Directory(path).listSync().where(isDirectory);
 
     for (Directory subdir in subdirs) {
-      Iterable<Directory> ownerDirs = subdir.listSync().where(isDirectory);
+      final ownerDirs = subdir.listSync().where(isDirectory);
 
       for (Directory dir in ownerDirs) {
         File file = new File('${dir.path}/$eid.json');

@@ -67,7 +67,7 @@ bool isJsonFile(FileSystemEntity fse) =>
     fse is File && !fse.path.startsWith('.') && fse.path.endsWith('.json');
 
 bool isDirectory(FileSystemEntity fse) =>
-    fse is Directory && !basename(fse.path).startsWith('.');
+    !basename(fse.path).startsWith('.') && fse is Directory;
 
 class DataStore {
   final Calendar calendarStore;

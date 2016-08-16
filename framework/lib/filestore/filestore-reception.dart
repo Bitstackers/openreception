@@ -71,18 +71,19 @@ class Reception implements storage.Reception {
    *
    */
   Future<Iterable<model.ReceptionReference>> _receptionsOfOrg(int oid) async {
-    List<FileSystemEntity> dirs = new Directory(path).listSync().where((fse) =>
+    final dirs = new Directory(path).listSync().where((fse) =>
         isDirectory(fse) &&
         new File(fse.path + '/reception.json').existsSync());
 
     return dirs
-        .map((FileSystemEntity fse) {
+        .map((fse) {
           final reception = model.Reception.decode(JSON.decode(
               (new File(fse.path + '/reception.json')).readAsStringSync()));
           return reception;
         })
         .where((r) => r.oid == oid)
-        .map((r) => r.reference);
+        .map((r) => r.reference)
+        .toList(growable: false);
   }
 
   /**
@@ -153,7 +154,7 @@ class Reception implements storage.Reception {
    */
   @override
   Future<model.Reception> getByExtension(String extension) async {
-    List<FileSystemEntity> dirs = new Directory(path).listSync().where((fse) =>
+    final dirs = new Directory(path).listSync().where((fse) =>
         isDirectory(fse) &&
         new File(fse.path + '/reception.json').existsSync());
 
@@ -177,7 +178,7 @@ class Reception implements storage.Reception {
    */
   @override
   Future<Iterable<model.ReceptionReference>> list() async {
-    List<FileSystemEntity> dirs = new Directory(path).listSync().where((fse) =>
+    final dirs = new Directory(path).listSync().where((fse) =>
         isDirectory(fse) &&
         new File(fse.path + '/reception.json').existsSync());
 

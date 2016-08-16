@@ -84,21 +84,21 @@ class Contact implements storage.Contact {
     int highestId = 0;
     Stopwatch timer = new Stopwatch()..start();
     _log.info('Building index');
-    Iterable<Directory> idDirs =
-        new Directory(path).listSync().where(isDirectory);
+    List<FileSystemEntity> idDirs = new Directory(path).listSync();
 
-    idDirs.forEach((dir) {
-      try {
-        final id = int.parse(basenameWithoutExtension(dir.path));
-        _index[id] = dir.path;
+    for (FileSystemEntity fse in idDirs) {
+      if (isDirectory(fse))
+        try {
+        final id = int.parse(basenameWithoutExtension(fse.path));
+        _index[id] = fse.path;
 
         if (id > highestId) {
           highestId = id;
         }
       } catch (e) {
-        _log.shout('Failed load index from file ${dir.path}');
+        _log.shout('Failed load index from file ${fse.path}');
       }
-    });
+    }
 
     _log.info('Built index of ${_index.keys.length} elements in'
         ' ${timer.elapsedMilliseconds}ms');

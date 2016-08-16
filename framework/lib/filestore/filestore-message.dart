@@ -61,24 +61,30 @@ class Message implements storage.Message {
     int highestId = 0;
     Stopwatch timer = new Stopwatch()..start();
     _log.info('Building primary index');
-    Iterable<Directory> dateDirs =
-        new Directory(path).listSync().where(isDirectory);
 
-    dateDirs.forEach((fse) {
-      Iterable<File> files = fse.listSync().where(isJsonFile);
-      files.forEach((file) {
-        try {
-          final id = int.parse(basenameWithoutExtension(file.path));
-          _index[id] = file.path;
+    List<FileSystemEntity> dateDirs = new Directory(path).listSync();
 
-          if (id > highestId) {
-            highestId = id;
+    for (FileSystemEntity fse in dateDirs) {
+      // Only process directories.
+      if (fse is Directory) {
+        List<FileSystemEntity> files = fse.listSync();
+
+        for (FileSystemEntity file in files) {
+          if (isJsonFile(file)) {
+            try {
+              final id = int.parse(basenameWithoutExtension(file.path));
+              _index[id] = file.path;
+
+              if (id > highestId) {
+                highestId = id;
+              }
+            } catch (e) {
+              _log.shout('Failed load index from file ${file.path}');
+            }
           }
-        } catch (e) {
-          _log.shout('Failed load index from file ${file.path}');
         }
-      });
-    });
+      }
+    }
 
     _log.info('Built primary index of ${_index.keys.length} elements in'
         ' ${timer.elapsedMilliseconds}ms');
@@ -172,15 +178,20 @@ class Message implements storage.Message {
    *
    */
   Iterable<int> _idsOfDir(Directory dir) {
-    Iterable<File> files = dir.listSync().where(isFile);
+    List<FileSystemEntity> fses = dir.listSync();
+
     List<int> list = [];
-    files.forEach((file) {
-      try {
-        list.add(int.parse(basenameWithoutExtension(file.path)));
-      } catch (e) {
-        _log.shout('Failed load index from file ${file.path}');
+
+    for (FileSystemEntity fse in fses) {
+      // Only process directories.
+      if (isJsonFile(fse)) {
+        try {
+          list.add(int.parse(basenameWithoutExtension(fse.path)));
+        } catch (e) {
+          _log.shout('Failed load index from file ${fse.path}');
+        }
       }
-    });
+    }
     return list;
   }
 
