@@ -159,7 +159,7 @@ abstract class EventTests {
   static void callStateReload() {
     Event.CallStateReload testEvent = new Event.CallStateReload();
 
-    Event.CallEvent builtEvent =
+    Event.Event builtEvent =
         new Event.Event.parse(JSON.decode(JSON.encode(testEvent)));
 
     expect(

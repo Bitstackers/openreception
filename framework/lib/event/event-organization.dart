@@ -53,7 +53,7 @@ class OrganizationChange implements Event {
         _Key._event: eventName,
         _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
         _Key._modifierUid: modifierUid,
-        _Key._calendarChange: {
+        _Key._organizationChange: {
           _Key._organizationID: this.oid,
           _Key._state: this.state,
           _Key._modifierUid: modifierUid
