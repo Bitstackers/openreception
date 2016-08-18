@@ -25,17 +25,17 @@ void testResourceCalendar() {
 
 abstract class ResourceCalendar {
   static final Uri _host = Uri.parse('http://localhost:4010');
-  static final owner = new Model.OwningContact(2);
+  static final _owner = new Model.OwningContact(2);
 
   static void changeListAll() => expect(
-      Resource.Calendar.changeList(_host, owner),
+      Resource.Calendar.changeList(_host, _owner),
       equals(Uri.parse('$_host/calendar/c:2/change')));
 
   static void changeList() => expect(
-      Resource.Calendar.changeList(_host, owner, 2),
+      Resource.Calendar.changeList(_host, _owner, 2),
       equals(Uri.parse('$_host/calendar/c:2/2/change')));
 
-  static void single() => expect(Resource.Calendar.single(_host, 3, owner),
+  static void single() => expect(Resource.Calendar.single(_host, 3, _owner),
       equals(Uri.parse('$_host/calendar/c:2/3')));
 
   static void listReception() => expect(
