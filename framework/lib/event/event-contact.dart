@@ -64,7 +64,7 @@ class ContactChange implements Event {
         _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
         _Key._modifierUid: modifierUid,
         _Key._calendarChange: {
-          _Key._contactID: cid,
+          _Key._cid: cid,
           _Key._state: state,
           _Key._modifierUid: modifierUid
         }
@@ -80,7 +80,7 @@ class ContactChange implements Event {
    * Deserializing constructor.
    */
   ContactChange.fromMap(Map map)
-      : cid = map[_Key._calendarChange][_Key._contactID],
+      : cid = map[_Key._calendarChange][_Key._cid],
         modifierUid = map[_Key._calendarChange][_Key._modifierUid],
         state = map[_Key._calendarChange][_Key._state],
         timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);

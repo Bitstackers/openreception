@@ -60,7 +60,7 @@ class CalendarChange implements Event {
   Map toJson() => {
         _Key._event: eventName,
         _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
-        _Key._entryID: eid,
+        _Key._eid: eid,
         _Key._owner: owner.toJson(),
         _Key._modifierUid: modifierUid,
         _Key._state: state
@@ -84,7 +84,7 @@ class CalendarChange implements Event {
 
     /// Old-style object.
     if (map.containsKey(_Key._calendarChange)) {
-      eid = map[_Key._calendarChange][_Key._entryID];
+      eid = map[_Key._calendarChange][_Key._eid];
       modifierUid = map[_Key._calendarChange][_Key._modifierUid];
       state = map[_Key._calendarChange][_Key._state];
 
@@ -96,7 +96,7 @@ class CalendarChange implements Event {
         owner = new model.OwningContact(cid);
       }
     } else {
-      eid = map[_Key._entryID];
+      eid = map[_Key._eid];
       modifierUid = map[_Key._modifierUid];
       state = map[_Key._state];
       owner = new model.Owner.parse(map[_Key._owner]);

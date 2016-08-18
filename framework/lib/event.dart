@@ -78,63 +78,62 @@ abstract class Change {
  * Keys for the serialization and deserialization.
  */
 abstract class _Key {
+  static const String _id = 'id';
   static const String _uid = 'uid';
-  static const _dialplanChange = 'dialplanChange';
-  static const _extension = 'extension';
-  static const _ivrMenuChange = 'ivrMenuChange';
-  static const _menuName = 'menuName';
-  static const _createdAt = 'createdAt';
+  static const String _cid = 'cid';
+  static const String _mid = 'mid';
+  static const String _oid = 'oid';
+  static const String _rid = 'rid';
+  static const String _eid = 'eid';
+  static const String _modifierUid = 'modifier';
 
-  static const _call = 'call';
-  static const _peer = 'peer';
-  static const _channel = 'channel';
-  static const _event = 'event';
-  static const _calendarChange = 'calendarChange';
-  static const _messageChange = 'messageChange';
-  static const _contactChange = 'contactChange';
-  static const _receptionData = 'receptionData';
-  static const _receptionChange = 'receptionChange';
-  static const _userChange = 'userChange';
-  static const _organizationChange = 'organizationChange';
-  static const _receptionID = 'rid';
-  static const _contactID = 'cid';
-  static const _messageID = 'mid';
-  static const _organizationID = 'oid';
-  static const _hangupCause = 'hangupCause';
-  static const _widgetSelect = 'widgetSelect';
-  static const _widget = 'widget';
-  static const _focusChange = 'focusChange';
-  static const _inFocus = 'inFocus';
-  static const _messageState = 'messageState';
+  static const String _dialplanChange = 'dialplanChange';
+  static const String _ivrMenuChange = 'ivrMenuChange';
+  static const String _calendarChange = 'calendarChange';
+  static const String _messageChange = 'messageChange';
+  static const String _contactChange = 'contactChange';
+  static const String _receptionData = 'receptionData';
+  static const String _receptionChange = 'receptionChange';
+  static const String _userChange = 'userChange';
+  static const String _organizationChange = 'organizationChange';
+  static const String _connectionState = 'connectionState';
+  static const String _widgetSelect = 'widgetSelect';
+  static const String _focusChange = 'focusChange';
+  static const String _messageState = 'messageState';
 
-  static const _owner = 'owner';
-  static const _entryID = 'eid';
-  static const _id = 'id';
-  static const _timestamp = 'timestamp';
-  static const _modifierUid = 'modifier';
-  static const _changedBy = 'changedBy';
-  static const _paused = 'paused';
+  static const String _extension = 'extension';
+  static const String _menuName = 'menuName';
+  static const String _createdAt = 'createdAt';
+  static const String _call = 'call';
+  static const String _peer = 'peer';
+  static const String _channel = 'channel';
+  static const String _event = 'event';
+  static const String _hangupCause = 'hangupCause';
+  static const String _widget = 'widget';
+  static const String _inFocus = 'inFocus';
+  static const String _owner = 'owner';
+  static const String _timestamp = 'timestamp';
+  static const String _changedBy = 'changedBy';
+  static const String _paused = 'paused';
 
-  static const _connectionState = 'connectionState';
-
-  static const _callAssign = 'call_assign';
-  static const _callUnassign = 'call_unassign';
-  static const _callOffer = 'call_offer';
-  static const _callLock = 'call_lock';
-  static const _callUnlock = 'call_unlock';
-  static const _callPickup = 'call_pickup';
-  static const _callState = 'call_state';
-  static const _callHangup = 'call_hangup';
-  static const _callPark = 'call_park';
-  static const _callUnpark = 'call_unpark';
-  static const _callTransfer = 'call_transfer';
-  static const _queueJoin = 'queue_join';
-  static const _queueLeave = 'queue_leave';
-  static const _peerState = 'peer_state';
-  static const _channelState = 'channel_state';
-  static const _userState = 'userState';
-  static const _state = 'state';
-  static const _callStateReload = 'callStateReload';
+  static const String _callAssign = 'call_assign';
+  static const String _callUnassign = 'call_unassign';
+  static const String _callOffer = 'call_offer';
+  static const String _callLock = 'call_lock';
+  static const String _callUnlock = 'call_unlock';
+  static const String _callPickup = 'call_pickup';
+  static const String _callState = 'call_state';
+  static const String _callHangup = 'call_hangup';
+  static const String _callPark = 'call_park';
+  static const String _callUnpark = 'call_unpark';
+  static const String _callTransfer = 'call_transfer';
+  static const String _queueJoin = 'queue_join';
+  static const String _queueLeave = 'queue_leave';
+  static const String _peerState = 'peer_state';
+  static const String _channelState = 'channel_state';
+  static const String _userState = 'userState';
+  static const String _state = 'state';
+  static const String _callStateReload = 'callStateReload';
 }
 
 /**

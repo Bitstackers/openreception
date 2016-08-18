@@ -54,7 +54,7 @@ class OrganizationChange implements Event {
         _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
         _Key._modifierUid: modifierUid,
         _Key._organizationChange: {
-          _Key._organizationID: this.oid,
+          _Key._oid: this.oid,
           _Key._state: this.state,
           _Key._modifierUid: modifierUid
         }
@@ -64,7 +64,7 @@ class OrganizationChange implements Event {
   String toString() => this.toJson().toString();
 
   OrganizationChange.fromMap(Map map)
-      : this.oid = map[_Key._organizationChange][_Key._organizationID],
+      : this.oid = map[_Key._organizationChange][_Key._oid],
         this.state = map[_Key._organizationChange][_Key._state],
         this.modifierUid = map[_Key._organizationChange][_Key._modifierUid],
         this.timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);

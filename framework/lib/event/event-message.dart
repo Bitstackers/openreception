@@ -62,7 +62,7 @@ class MessageChange implements Event {
         _Key._event: eventName,
         _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
         _Key._modifierUid: this.modifierUid,
-        _Key._messageID: this.mid,
+        _Key._mid: this.mid,
         _Key._state: this.state,
         _Key._messageState: this.messageState.index,
         _Key._createdAt: util.dateTimeToUnixTimestamp(createdAt)
@@ -77,7 +77,7 @@ class MessageChange implements Event {
             : map.containsKey('messageChange')
                 ? map['messageChange']['userID']
                 : model.User.noId,
-        mid = map[_Key._messageID],
+        mid = map[_Key._mid],
         state = map[_Key._state],
         messageState = map.containsKey(_Key._messageState)
             ? model.MessageState.values[map[_Key._messageState]]

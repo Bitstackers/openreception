@@ -55,8 +55,8 @@ class ReceptionData implements Event {
         _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
         _Key._modifierUid: modifierUid,
         _Key._receptionData: {
-          _Key._contactID: cid,
-          _Key._receptionID: rid,
+          _Key._cid: cid,
+          _Key._rid: rid,
           _Key._state: state,
           _Key._modifierUid: modifierUid
         }
@@ -72,8 +72,8 @@ class ReceptionData implements Event {
    *
    */
   ReceptionData.fromMap(Map map)
-      : cid = map[_Key._receptionData][_Key._contactID],
-        rid = map[_Key._receptionData][_Key._receptionID],
+      : cid = map[_Key._receptionData][_Key._cid],
+        rid = map[_Key._receptionData][_Key._rid],
         state = map[_Key._receptionData][_Key._state],
         modifierUid = map[_Key._receptionData][_Key._modifierUid],
         timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
