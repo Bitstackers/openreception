@@ -104,8 +104,11 @@ class DialplanToolsReceptionDialplan {
         new Model.Voicemail('some-voicemail')
       ];
 
-    xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
-        .dialplanToXml(rdp, new Model.Reception.empty()..name = 'ost'));
+    final String xmlDialplan =
+        new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
+            .dialplanToXml(rdp, new Model.Reception.empty()..name = 'ost');
+
+    xml.parse(xmlDialplan);
   }
 }
 
