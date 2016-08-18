@@ -49,23 +49,19 @@ class OrganizationChange implements Event {
         this.timestamp = new DateTime.now();
 
   @override
-  Map toJson() => this.asMap;
+  Map toJson() => {
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._modifierUid: modifierUid,
+        _Key._calendarChange: {
+          _Key._organizationID: this.oid,
+          _Key._state: this.state,
+          _Key._modifierUid: modifierUid
+        }
+      };
+
   @override
-  String toString() => this.asMap.toString();
-
-  Map get asMap {
-    Map template = EventTemplate._rootElement(this);
-
-    Map body = {
-      _Key._organizationID: this.oid,
-      _Key._state: this.state,
-      _Key._modifierUid: modifierUid
-    };
-
-    template[this.eventName] = body;
-
-    return template;
-  }
+  String toString() => this.toJson().toString();
 
   OrganizationChange.fromMap(Map map)
       : this.oid = map[_Key._organizationChange][_Key._organizationID],

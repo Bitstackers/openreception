@@ -22,12 +22,13 @@ class CallStateReload implements Event {
   CallStateReload() : this.timestamp = new DateTime.now();
 
   @override
-  Map toJson() => this.asMap;
+  Map toJson() => {
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp)
+      };
 
   @override
-  String toString() => this.asMap.toString();
-
-  Map get asMap => EventTemplate._rootElement(this);
+  String toString() => eventName;
 
   CallStateReload.fromMap(Map map)
       : this.timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);

@@ -13,28 +13,55 @@
 
 part of openreception.framework.filestore;
 
+/// JSON-file based storage backed for [model.Message] objects.
 class Message implements storage.Message {
+  /// Internal logger
   final Logger _log = new Logger('$libraryName.Message');
+
+  /// Directory path to where the serlized [model.Message] objects are
+  /// stored.
   final String path;
+
+  /// Revision engine.
   GitEngine _git;
+
+  /// Internal sequencer.
   Sequencer _sequencer;
+
+  /// Index of message ID to message file path.
   final Map<int, String> _index = {};
+
+  /// Index of contact ID to message ID's.
   final Map<int, Set<int>> _cidIndex = {};
+
+  /// Index of user ID to message ID's.
   final Map<int, Set<int>> _uidIndex = {};
+
+  /// Index of reception ID to message ID's.
   final Map<int, Set<int>> _ridIndex = {};
+
+  /// Index of all messages currently stored as drafts.
   final Set<int> _draftsIndex = new Set<int>();
 
+  /// Returns once the filestore is initializes.
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
+
+  /// Awaits if there is already an operation in progress and returns
+  /// whenever the filestore is ready to process the next request.
   Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
+  /// Internal bus for injecting changes into.
   final Bus<event.MessageChange> _changeBus = new Bus<event.MessageChange>();
+
+  /// Emits [event.MessageChange] upon every object change.
   Stream<event.MessageChange> get changeStream => _changeBus.stream;
 
+  /// Retrieve the next available ID from the sequencer, that implicitly
+  /// increases it.
   int get _nextId => _sequencer.nextInt();
-  /**
-   * 
-   */
+
+  /// Default Constructor.
   Message(String this.path, [GitEngine this._git]) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
@@ -48,9 +75,7 @@ class Message implements storage.Message {
     _buildIndex();
   }
 
-  /**
-   *
-   */
+  /// Turns [DateTime] into a date-dir path and casts it into a [Directory].
   Directory _dateDir(DateTime day) =>
       new Directory('$path/${day.toIso8601String().split('T').first}');
 
@@ -95,9 +120,7 @@ class Message implements storage.Message {
     }
   }
 
-  /**
-   *
-   */
+  /// Rebuilds the secondary indexes of the filestore.
   Future rebuildSecondaryIndexes() async {
     Stopwatch timer = new Stopwatch()..start();
     _log.info('Building secondary indexes');

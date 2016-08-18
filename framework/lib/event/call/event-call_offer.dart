@@ -19,4 +19,11 @@ class CallOffer extends CallEvent {
 
   CallOffer(model.Call call) : super(call);
   CallOffer.fromMap(Map map) : super.fromMap(map);
+
+  @override
+  Map toJson() => {
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._call: call.toJson()
+      };
 }

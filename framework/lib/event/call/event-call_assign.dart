@@ -41,5 +41,10 @@ class CallAssign extends CallEvent {
    * Serialization function.
    */
   @override
-  Map toJson() => super.toJson()..addAll({_Key._modifierUid: uid});
+  Map toJson() => {
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._modifierUid: uid,
+        _Key._call: call.toJson()
+      };
 }

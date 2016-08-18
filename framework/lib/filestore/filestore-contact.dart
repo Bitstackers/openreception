@@ -13,16 +13,37 @@
 
 part of openreception.framework.filestore;
 
+/// JSON-file based storage backed for [model.BaseContact] objects.
 class Contact implements storage.Contact {
+  /// Internal logger
   final Logger _log = new Logger('$libraryName.Contact');
+
+  /// Directory path to where the serlized [model.BaseContact] objects are
+  /// stored.
   final String path;
+
+  /// External [Reception] store. Needed for extracting foreign keys.
   final Reception receptionStore;
+
+  /// Revision engine.
   final GitEngine _git;
+
+  /// Directory path to where the trashed [model.BaseContact] objects are
+  /// stored.
   final Directory trashDir;
 
+  /// Internal sequencer.
   Sequencer _sequencer;
+
+  /// Internal [Calendar] store. Used for storing [model.CalendarEntry]
+  /// objects associated with [model.BaseContact]s.
   final Calendar calendarStore;
+
+  /// Index of contact ID to object file path.
   final Map<int, String> _index = {};
+
+  /// Determines whether or not this filestore log its changes to a
+  /// changelog file.
   final bool logChanges;
 
   Stream<event.ContactChange> get onContactChange => _changeBus.stream;
@@ -39,9 +60,11 @@ class Contact implements storage.Contact {
 
   int get _nextId => _sequencer.nextInt();
 
-  /**
-   *
-   */
+  /// Creates a new [Contact] object-filestore at [path].
+  ///
+  /// Needs an associated [Reception] store in order to be able
+  /// extract "foreign" key data, such as receptions and organizations
+  /// associated with single [model.BaseContact] objects.
   factory Contact(Reception receptionStore, String path,
       [GitEngine ge, bool enableChangelog]) {
     if (!new Directory(path).existsSync()) {

@@ -28,7 +28,12 @@ class ClientConnectionState implements Event {
       : timestamp = new DateTime.now();
 
   @override
-  Map toJson() => EventTemplate.connection(this);
+  Map toJson() => {
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._state: conn
+      };
+
   @override
   String toString() => toJson().toString();
 

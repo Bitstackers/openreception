@@ -49,24 +49,18 @@ class ReceptionData implements Event {
       : this.timestamp = new DateTime.now(),
         state = Change.deleted;
 
-  /**
-   *
-   */
   @override
-  Map toJson() {
-    Map template = EventTemplate._rootElement(this);
-
-    Map body = {
-      _Key._contactID: cid,
-      _Key._receptionID: rid,
-      _Key._state: state,
-      _Key._modifierUid: modifierUid
-    };
-
-    template[this.eventName] = body;
-
-    return template;
-  }
+  Map toJson() => {
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._modifierUid: modifierUid,
+        _Key._receptionData: {
+          _Key._contactID: cid,
+          _Key._receptionID: rid,
+          _Key._state: state,
+          _Key._modifierUid: modifierUid
+        }
+      };
 
   /**
    *

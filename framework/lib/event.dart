@@ -56,7 +56,6 @@ part 'event/event-organization.dart';
 part 'event/event-peer_state.dart';
 part 'event/event-reception.dart';
 part 'event/event-reception_contact.dart';
-part 'event/event-template.dart';
 part 'event/event-user.dart';
 part 'event/event-user_state.dart';
 part 'event/event-widget_select.dart';
@@ -79,6 +78,7 @@ abstract class Change {
  * Keys for the serialization and deserialization.
  */
 abstract class _Key {
+  static const String _uid = 'uid';
   static const _dialplanChange = 'dialplanChange';
   static const _extension = 'extension';
   static const _ivrMenuChange = 'ivrMenuChange';
@@ -114,6 +114,7 @@ abstract class _Key {
   static const _modifierUid = 'modifier';
   static const _changedBy = 'changedBy';
   static const _connectionCount = 'connectionCount';
+  static const _paused = 'paused';
 
   static const _connectionState = 'connectionState';
 

@@ -24,11 +24,14 @@ class PeerState implements Event {
   PeerState(model.Peer this.peer) : this.timestamp = new DateTime.now();
 
   @override
-  Map toJson() => this.asMap;
-  @override
-  String toString() => this.asMap.toString();
+  String toString() => this.toJson().toString();
 
-  Map get asMap => EventTemplate.peer(this);
+  @override
+  Map toJson() => {
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._peer: peer.toJson()
+      };
 
   PeerState.fromMap(Map map)
       : this.peer = new model.Peer.fromMap(map[_Key._peer]),

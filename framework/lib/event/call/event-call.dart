@@ -22,10 +22,7 @@ abstract class CallEvent implements Event {
   CallEvent(model.Call this.call) : timestamp = new DateTime.now();
 
   @override
-  Map toJson() => EventTemplate.call(this);
-
-  @override
-  String toString() => toJson().toString();
+  String toString() => eventName + ': ' + call.id;
 
   CallEvent.fromMap(Map map)
       : this.call = new model.Call.fromMap(map[_Key._call]),

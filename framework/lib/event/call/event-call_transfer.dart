@@ -19,4 +19,12 @@ class CallTransfer extends CallEvent {
 
   CallTransfer(model.Call call) : super(call);
   CallTransfer.fromMap(Map map) : super.fromMap(map);
+
+  @override
+  Map toJson() => {
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._call: call.toJson()
+      };
+
 }

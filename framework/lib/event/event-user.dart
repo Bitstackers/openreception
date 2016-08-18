@@ -41,19 +41,16 @@ class UserChange implements Event {
       new UserChange._internal(userID, Change.deleted, changedBy);
 
   @override
-  Map toJson() {
-    final Map template = EventTemplate._rootElement(this);
-
-    final Map body = {
-      _Key._modifierUid: uid,
-      _Key._state: state,
-      _Key._changedBy: modifierUid
-    };
-
-    template[this.eventName] = body;
-
-    return template;
-  }
+  Map toJson() => {
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._modifierUid: modifierUid,
+        _Key._userChange: {
+          _Key._modifierUid: uid,
+          _Key._state: state,
+          _Key._changedBy: modifierUid
+        }
+      };
 
   /**
    *

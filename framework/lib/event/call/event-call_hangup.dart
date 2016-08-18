@@ -46,5 +46,10 @@ class CallHangup extends CallEvent {
    * Serialization function.
    */
   @override
-  Map toJson() => super.toJson()..addAll({_Key._hangupCause: this.hangupCause});
+  Map toJson() => {
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._hangupCause: this.hangupCause,
+        _Key._call: call.toJson()
+      };
 }

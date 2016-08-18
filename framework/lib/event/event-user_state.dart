@@ -28,13 +28,19 @@ class UserState implements Event {
   UserState(model.UserStatus this.status) : this.timestamp = new DateTime.now();
 
   @override
-  Map toJson() => this.asMap;
-  @override
-  String toString() => this.asMap.toString();
+  String toString() => '$timestamp-$eventName $status';
 
-  Map get asMap => EventTemplate.userState(this);
+  @override
+  Map toJson() => {
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._uid: status.userId,
+        _Key._paused: status.paused
+      };
 
   UserState.fromMap(Map map)
-      : this.status = new model.UserStatus.fromMap(map),
+      : this.status = new model.UserStatus()
+          ..userId = map[_Key._uid]
+          ..paused = map[_Key._paused],
         this.timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 }

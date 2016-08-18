@@ -29,5 +29,10 @@ class CallUnassign extends CallEvent {
         super.fromMap(map);
 
   @override
-  Map toJson() => super.toJson()..addAll({_Key._modifierUid: userId});
+  Map toJson() => {
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._modifierUid: userId,
+        _Key._call: call.toJson()
+      };
 }

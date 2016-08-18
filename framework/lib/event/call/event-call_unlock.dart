@@ -19,4 +19,11 @@ class CallUnlock extends CallEvent {
 
   CallUnlock(model.Call call) : super(call);
   CallUnlock.fromMap(Map map) : super.fromMap(map);
+
+  @override
+  Map toJson() => {
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._call: call.toJson()
+      };
 }

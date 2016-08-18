@@ -59,19 +59,16 @@ class ContactChange implements Event {
    * JSON serialization function.
    */
   @override
-  Map toJson() {
-    Map template = EventTemplate._rootElement(this);
-
-    Map body = {
-      _Key._contactID: cid,
-      _Key._state: state,
-      _Key._modifierUid: modifierUid
-    };
-
-    template[_Key._calendarChange] = body;
-
-    return template;
-  }
+  Map toJson() => {
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._modifierUid: modifierUid,
+        _Key._calendarChange: {
+          _Key._contactID: cid,
+          _Key._state: state,
+          _Key._modifierUid: modifierUid
+        }
+      };
 
   /**
    * String representation

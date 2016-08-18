@@ -21,10 +21,14 @@ class ChannelState implements Event {
   final String channelUuid;
 
   @override
-  Map toJson() => EventTemplate.channel(this);
+  Map toJson() => {
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._channel: {_Key._id: channelUuid}
+      };
 
   @override
-  String toString() => toJson().toString();
+  String toString() => eventName;
 
   ChannelState(String uuid)
       : channelUuid = uuid,

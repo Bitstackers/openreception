@@ -19,4 +19,11 @@ class CallStateChanged extends CallEvent {
 
   CallStateChanged(model.Call call) : super(call);
   CallStateChanged.fromMap(Map map) : super.fromMap(map);
+
+  @override
+  Map toJson() => {
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._call: call.toJson()
+      };
 }
