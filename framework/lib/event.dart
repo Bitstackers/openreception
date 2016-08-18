@@ -113,7 +113,6 @@ abstract class _Key {
   static const _timestamp = 'timestamp';
   static const _modifierUid = 'modifier';
   static const _changedBy = 'changedBy';
-  static const _connectionCount = 'connectionCount';
   static const _paused = 'paused';
 
   static const _connectionState = 'connectionState';
@@ -129,12 +128,9 @@ abstract class _Key {
   static const _callPark = 'call_park';
   static const _callUnpark = 'call_unpark';
   static const _callTransfer = 'call_transfer';
-  static const _callBridge = 'call_bridge';
   static const _queueJoin = 'queue_join';
   static const _queueLeave = 'queue_leave';
   static const _peerState = 'peer_state';
-  static const _originateFailed = 'originate_failed';
-  static const _originateSuccess = 'originate_success';
   static const _channelState = 'channel_state';
   static const _userState = 'userState';
   static const _state = 'state';
