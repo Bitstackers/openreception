@@ -24,10 +24,10 @@ abstract class ResourceAuthentication {
   static final Uri authServer = Uri.parse('http://localhost:4050');
 
   static void userOf() => expect(
-      Resource.Authentication.tokenToUser(authServer, 'testtest'),
+      resource.Authentication.tokenToUser(authServer, 'testtest'),
       equals(Uri.parse('$authServer/token/testtest')));
 
   static void validate() => expect(
-      Resource.Authentication.validate(authServer, 'testtest'),
+      resource.Authentication.validate(authServer, 'testtest'),
       equals(Uri.parse('$authServer/token/testtest/validate')));
 }

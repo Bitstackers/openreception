@@ -31,7 +31,7 @@ abstract class ModelTransfer {
  *
  */
   static void serialization() {
-    Model.Transfer builtObject = buildObject();
+    model.Transfer builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -42,10 +42,10 @@ abstract class ModelTransfer {
  *
  */
   static void deserialization() {
-    Model.Transfer builtObject = buildObject();
+    model.Transfer builtObject = buildObject();
 
-    Model.Transfer deserializedObject =
-        Model.Transfer.parse(JSON.decode(JSON.encode(builtObject)));
+    model.Transfer deserializedObject =
+        model.Transfer.parse(JSON.decode(JSON.encode(builtObject)));
 
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
 
@@ -56,11 +56,11 @@ abstract class ModelTransfer {
 /**
  *
  */
-  static Model.Transfer buildObject() {
+  static model.Transfer buildObject() {
     final String extension = '322114455';
     final String note = 'Just an extension';
 
-    Model.Transfer builtObject = new Model.Transfer(extension, note: note);
+    model.Transfer builtObject = new model.Transfer(extension, note: note);
 
     expect(builtObject.extension, equals(extension));
     expect(builtObject.note, equals(note));

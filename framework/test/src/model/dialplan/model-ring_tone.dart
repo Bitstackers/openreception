@@ -31,7 +31,7 @@ abstract class ModelRingtone {
  *
  */
   static void serialization() {
-    Model.Ringtone builtObject = buildObject();
+    model.Ringtone builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -42,10 +42,10 @@ abstract class ModelRingtone {
  *
  */
   static void deserialization() {
-    Model.Ringtone builtObject = buildObject();
+    model.Ringtone builtObject = buildObject();
 
-    Model.Ringtone deserializedObject =
-        Model.Ringtone.parse(JSON.decode(JSON.encode(builtObject)));
+    model.Ringtone deserializedObject =
+        model.Ringtone.parse(JSON.decode(JSON.encode(builtObject)));
 
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
 
@@ -55,10 +55,10 @@ abstract class ModelRingtone {
 /**
  *
  */
-  static Model.Ringtone buildObject() {
+  static model.Ringtone buildObject() {
     final int count = 2;
 
-    final Model.Ringtone builtObject = new Model.Ringtone(count);
+    final model.Ringtone builtObject = new model.Ringtone(count);
 
     expect(builtObject.count, equals(count));
 

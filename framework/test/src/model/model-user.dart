@@ -25,7 +25,7 @@ void testModelUser() {
 
 abstract class ModelUser {
   static void serialization() {
-    Model.User builtObject = buildObject();
+    model.User builtObject = buildObject();
     String serializedString = JSON.encode(builtObject);
 
     expect(serializedString, isNotEmpty);
@@ -33,10 +33,10 @@ abstract class ModelUser {
   }
 
   static void deserialization() {
-    Model.User builtObject = buildObject();
+    model.User builtObject = buildObject();
     String serializedString = JSON.encode(builtObject);
-    Model.User deserializedObject =
-        new Model.User.fromMap(JSON.decode(serializedString));
+    model.User deserializedObject =
+        new model.User.fromMap(JSON.decode(serializedString));
 
     expect(builtObject.id, equals(deserializedObject.id));
     expect(builtObject.address, equals(deserializedObject.address));
@@ -45,18 +45,18 @@ abstract class ModelUser {
     expect(builtObject.extension, equals(deserializedObject.extension));
   }
 
-  static Model.User buildObject() {
+  static model.User buildObject() {
     final int id = 123;
     final String address = 'golden@fish.net';
     final List<String> groups = [
-      Model.UserGroups.administrator,
-      Model.UserGroups.receptionist
+      model.UserGroups.administrator,
+      model.UserGroups.receptionist
     ];
     final String name = 'Biff, the gold fish';
     final String peer = 'Hidden underneath';
     final String picture = 'too_revealing.png';
 
-    Model.User builtObject = new Model.User.empty()
+    model.User builtObject = new model.User.empty()
       ..id = id
       ..address = address
       ..groups = groups.toSet()

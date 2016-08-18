@@ -36,7 +36,7 @@ abstract class ModelEnqueue {
    *
    */
   static void serialization() {
-    Model.Enqueue builtObject = buildObject();
+    model.Enqueue builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -47,10 +47,10 @@ abstract class ModelEnqueue {
    *
    */
   static void serializationDeserialization() {
-    Model.Enqueue builtObject = buildObject();
+    model.Enqueue builtObject = buildObject();
 
-    Model.Enqueue deserializedObject =
-        Model.Enqueue.parse(JSON.decode(JSON.encode(builtObject)));
+    model.Enqueue deserializedObject =
+        model.Enqueue.parse(JSON.decode(JSON.encode(builtObject)));
 
     expect(builtObject.queueName, equals(deserializedObject.queueName));
     expect(builtObject.holdMusic, equals(deserializedObject.holdMusic));
@@ -60,12 +60,12 @@ abstract class ModelEnqueue {
   /**
    *
    */
-  static Model.Enqueue buildObject() {
+  static model.Enqueue buildObject() {
     final String queueName = 'queue_1';
     final String music = 'playlist_1';
     //final String note = 'Nice music';
 
-    Model.Enqueue builtObject = new Model.Enqueue(queueName, holdMusic: music);
+    model.Enqueue builtObject = new model.Enqueue(queueName, holdMusic: music);
 
     expect(builtObject.queueName, equals(queueName));
     expect(builtObject.holdMusic, equals(music));
@@ -82,15 +82,15 @@ abstract class ModelEnqueue {
     final String music = 'playlist_1';
     final String note = 'Nice music';
 
-    Model.Enqueue builtObject =
-        Model.Enqueue.parse('enqueue $queueName music $music');
+    model.Enqueue builtObject =
+        model.Enqueue.parse('enqueue $queueName music $music');
 
     expect(builtObject.queueName, equals(queueName));
     expect(builtObject.holdMusic, equals(music));
     expect(builtObject.toString(), isNotEmpty);
 
     /// Simple object parsing.
-    builtObject = Model.Enqueue.parse('enqueue');
+    builtObject = model.Enqueue.parse('enqueue');
 
     expect(builtObject.queueName, equals(''));
     expect(builtObject.holdMusic, equals('default'));
@@ -98,25 +98,25 @@ abstract class ModelEnqueue {
 
     /// Adding lots of spaces.
     builtObject =
-        Model.Enqueue.parse('   enqueue     $queueName   music $music');
+        model.Enqueue.parse('   enqueue     $queueName   music $music');
 
     expect(builtObject.queueName, equals(queueName));
     expect(builtObject.holdMusic, equals(music));
     expect(builtObject.toString(), isNotEmpty);
 
-    builtObject = Model.Enqueue.parse('enqueue $queueName ($note)');
+    builtObject = model.Enqueue.parse('enqueue $queueName ($note)');
 
     expect(builtObject.queueName, equals(queueName));
     expect(builtObject.holdMusic, equals('default'));
     expect(builtObject.toString(), isNotEmpty);
 
-    builtObject = Model.Enqueue.parse('  enqueue   $queueName   ($note)   ');
+    builtObject = model.Enqueue.parse('  enqueue   $queueName   ($note)   ');
 
     expect(builtObject.queueName, equals(queueName));
     expect(builtObject.holdMusic, equals('default'));
     expect(builtObject.toString(), isNotEmpty);
 
-    expect(() => Model.Enqueue.parse('equeue $queueName music $music'),
+    expect(() => model.Enqueue.parse('equeue $queueName music $music'),
         throwsA(new isInstanceOf<FormatException>()));
   }
 }

@@ -35,7 +35,7 @@ abstract class ModelIvrMenu {
    *
    */
   static void serialization() {
-    Model.IvrMenu builtObject = buildObject();
+    model.IvrMenu builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -46,10 +46,10 @@ abstract class ModelIvrMenu {
    *
    */
   static void serializationDeserialization() {
-    Model.IvrMenu builtObject = buildObject();
+    model.IvrMenu builtObject = buildObject();
 
-    Model.IvrMenu deserializedObject =
-        Model.IvrMenu.decode(JSON.decode(JSON.encode(builtObject)));
+    model.IvrMenu deserializedObject =
+        model.IvrMenu.decode(JSON.decode(JSON.encode(builtObject)));
 
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
 
@@ -76,7 +76,7 @@ abstract class ModelIvrMenu {
   /**
    *
    */
-  static Model.IvrMenu buildObject() {
+  static model.IvrMenu buildObject() {
     final String name = 'ivr_1';
     final String sub1name = 'sub1';
     final String sub2name = 'sub2';
@@ -85,45 +85,45 @@ abstract class ModelIvrMenu {
     final String sub2filename = 'sub2somefile.wav';
 
     final String note = 'Just a test';
-    final Model.Playback greeting = new Model.Playback(filename, note: note);
+    final model.Playback greeting = new model.Playback(filename, note: note);
 
-    final Model.Playback sub1greeting =
-        new Model.Playback(sub1filename, note: note);
+    final model.Playback sub1greeting =
+        new model.Playback(sub1filename, note: note);
 
-    final Model.Playback sub2greeting =
-        new Model.Playback(sub2filename, note: note);
+    final model.Playback sub2greeting =
+        new model.Playback(sub2filename, note: note);
 
-    final List<Model.IvrEntry> entries = [
-      new Model.IvrVoicemail(
+    final List<model.IvrEntry> entries = [
+      new model.IvrVoicemail(
           '1',
-          new Model.Voicemail('vm-corp_1',
+          new model.Voicemail('vm-corp_1',
               recipient: 'guy@corp1.org', note: 'Just some guy')),
-      new Model.IvrSubmenu('2', 'sub-1')
+      new model.IvrSubmenu('2', 'sub-1')
     ];
 
-    final List<Model.IvrEntry> sub1entries = [
-      new Model.IvrVoicemail(
+    final List<model.IvrEntry> sub1entries = [
+      new model.IvrVoicemail(
           '1',
-          new Model.Voicemail('vm-corp_1',
+          new model.Voicemail('vm-corp_1',
               recipient: 'guy@corp1.org', note: 'Just some guy')),
-      new Model.IvrSubmenu('2', 'sub-2'),
-      new Model.IvrTopmenu('*')
+      new model.IvrSubmenu('2', 'sub-2'),
+      new model.IvrTopmenu('*')
     ];
 
-    final List<Model.IvrEntry> sub2entries = [
-      new Model.IvrVoicemail(
+    final List<model.IvrEntry> sub2entries = [
+      new model.IvrVoicemail(
           '1',
-          new Model.Voicemail('vm-corp_1',
+          new model.Voicemail('vm-corp_1',
               recipient: 'guy@corp1.org', note: 'Just some guy')),
-      new Model.IvrSubmenu('2', 'sub-1')
+      new model.IvrSubmenu('2', 'sub-1')
     ];
 
-    final Model.IvrMenu sub1 = new Model.IvrMenu(sub1name, sub1greeting)
+    final model.IvrMenu sub1 = new model.IvrMenu(sub1name, sub1greeting)
       ..entries = sub1entries;
-    final Model.IvrMenu sub2 = new Model.IvrMenu(sub2name, sub2greeting)
+    final model.IvrMenu sub2 = new model.IvrMenu(sub2name, sub2greeting)
       ..entries = sub2entries;
 
-    Model.IvrMenu builtObject = new Model.IvrMenu(name, greeting)
+    model.IvrMenu builtObject = new model.IvrMenu(name, greeting)
       ..entries = entries
       ..submenus = [sub1, sub2];
 

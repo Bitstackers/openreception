@@ -24,13 +24,13 @@ void testResourceReception() {
 abstract class ResourceReception {
   static Uri receptionServer = Uri.parse('http://localhost:4000');
 
-  static void single() => expect(Resource.Reception.single(receptionServer, 1),
+  static void single() => expect(resource.Reception.single(receptionServer, 1),
       equals(Uri.parse('$receptionServer/reception/1')));
 
   static void byExtension() => expect(
-      Resource.Reception.byExtension(receptionServer, '12340001'),
+      resource.Reception.byExtension(receptionServer, '12340001'),
       equals(Uri.parse('$receptionServer/reception/extension/12340001')));
 
-  static void list() => expect(Resource.Reception.list(receptionServer),
+  static void list() => expect(resource.Reception.list(receptionServer),
       equals(Uri.parse('$receptionServer/reception')));
 }

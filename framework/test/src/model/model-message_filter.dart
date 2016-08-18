@@ -23,9 +23,9 @@ void testModelMessageFilter() {
 
 abstract class ModelMessageFilter {
   static void deserialization() {
-    Model.MessageFilter obj = buildObject();
-    Model.MessageFilter deserializedObj =
-        new Model.MessageFilter.fromMap(JSON.decode(JSON.encode(obj)));
+    model.MessageFilter obj = buildObject();
+    model.MessageFilter deserializedObj =
+        new model.MessageFilter.fromMap(JSON.decode(JSON.encode(obj)));
 
     expect(obj.contactId, equals(deserializedObj.contactId));
     expect(obj.limitCount, equals(deserializedObj.limitCount));
@@ -34,7 +34,7 @@ abstract class ModelMessageFilter {
   }
 
   static void serialization() {
-    Model.MessageFilter builtObject = buildObject();
+    model.MessageFilter builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -44,14 +44,14 @@ abstract class ModelMessageFilter {
   /**
    * Build an object manually.
    */
-  static Model.MessageFilter buildObject() {
+  static model.MessageFilter buildObject() {
     final int cid = 1;
     final int limitCount = 100;
     final int rid = 2;
 
     final int uid = 99;
 
-    Model.MessageFilter obj = new Model.MessageFilter.empty()
+    model.MessageFilter obj = new model.MessageFilter.empty()
       ..contactId = cid
       ..limitCount = limitCount
       ..receptionId = rid

@@ -31,7 +31,7 @@ abstract class ModelPeerAccount {
    *
    */
   static void serialization() {
-    Model.PeerAccount builtObject = buildObject();
+    model.PeerAccount builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -42,9 +42,9 @@ abstract class ModelPeerAccount {
    *
    */
   static void deserialization() {
-    Model.PeerAccount built = ModelPeerAccount.buildObject();
-    Model.PeerAccount deserialized =
-        Model.PeerAccount.decode(JSON.decode(JSON.encode(built)));
+    model.PeerAccount built = ModelPeerAccount.buildObject();
+    model.PeerAccount deserialized =
+        model.PeerAccount.decode(JSON.decode(JSON.encode(built)));
 
     expect(built.username, equals(deserialized.username));
     expect(built.password, equals(deserialized.password));
@@ -54,13 +54,13 @@ abstract class ModelPeerAccount {
   /**
    *
    */
-  static Model.PeerAccount buildObject() {
+  static model.PeerAccount buildObject() {
     final String name = 'hal9000';
     final String password = 'I\'m afraid I cannot let you do that';
     final String context = 'Discovery One';
 
-    Model.PeerAccount builtObject =
-        new Model.PeerAccount(name, password, context);
+    model.PeerAccount builtObject =
+        new model.PeerAccount(name, password, context);
 
     expect(builtObject.username, equals(name));
     expect(builtObject.password, equals(password));

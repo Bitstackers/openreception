@@ -26,7 +26,7 @@ void testModelBaseContact() {
 
 abstract class ModelBaseContact {
   static void serialization() {
-    Model.BaseContact builtObject = buildObject();
+    model.BaseContact builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -34,9 +34,9 @@ abstract class ModelBaseContact {
   }
 
   static void serializationDeserialization() {
-    Model.BaseContact builtObject = buildObject();
-    Model.BaseContact deserializedObject =
-        new Model.BaseContact.fromMap(JSON.decode(JSON.encode(builtObject)));
+    model.BaseContact builtObject = buildObject();
+    model.BaseContact deserializedObject =
+        new model.BaseContact.fromMap(JSON.decode(JSON.encode(builtObject)));
 
     expect(builtObject.id, equals(deserializedObject.id));
     expect(builtObject.enabled, equals(deserializedObject.enabled));
@@ -44,13 +44,13 @@ abstract class ModelBaseContact {
     expect(builtObject.type, equals(deserializedObject.type));
   }
 
-  static Model.BaseContact buildObject() {
+  static model.BaseContact buildObject() {
     final int id = 21;
     final bool enabled = true;
     final String fullName = 'Biff, the goldfish';
-    final String contactType = Model.ContactType.human;
+    final String contactType = model.ContactType.human;
 
-    Model.BaseContact builtObject = new Model.BaseContact.empty()
+    model.BaseContact builtObject = new model.BaseContact.empty()
       ..id = id
       ..enabled = enabled
       ..name = fullName

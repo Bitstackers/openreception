@@ -23,9 +23,9 @@ void testModelReception() {
 
 abstract class ModelReception {
   static void deserialization() {
-    Model.Reception builtObject = buildObject();
-    Model.Reception deserializedObject =
-        new Model.Reception.fromMap(JSON.decode(JSON.encode(builtObject)));
+    model.Reception builtObject = buildObject();
+    model.Reception deserializedObject =
+        new model.Reception.fromMap(JSON.decode(JSON.encode(builtObject)));
 
     expect(builtObject.addresses, equals(deserializedObject.addresses));
     expect(
@@ -68,7 +68,7 @@ abstract class ModelReception {
   /**
    *
    */
-  static Model.Reception buildObject() {
+  static model.Reception buildObject() {
     final List<String> addresses = ['Somewhere else'];
     final String dialplan = '12340001';
     final List<String> alternateNames = ['nice place'];
@@ -88,9 +88,9 @@ abstract class ModelReception {
     final String product = 'Butter';
     final List<String> salesMarketingHandling = ['Ask them to GTFO'];
     final String shortGreeting = 'Please go';
-    final List<Model.PhoneNumber> telephoneNumbers = [
-      new Model.PhoneNumber.empty()..destination = '56 33 21 44',
-      new Model.PhoneNumber.empty()
+    final List<model.PhoneNumber> telephoneNumbers = [
+      new model.PhoneNumber.empty()..destination = '56 33 21 44',
+      new model.PhoneNumber.empty()
         ..destination = '56 33 21 43'
         ..confidential = true
         ..note = 'Home phone'
@@ -98,7 +98,7 @@ abstract class ModelReception {
     final List<String> vatNumbers = ['123455'];
     final List<String> websites = ['www.over-the-rainbow'];
 
-    Model.Reception buildObject = new Model.Reception.empty()
+    model.Reception buildObject = new model.Reception.empty()
       ..addresses = addresses
       ..dialplan = dialplan
       ..alternateNames = alternateNames

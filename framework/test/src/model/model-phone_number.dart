@@ -26,7 +26,7 @@ abstract class ModelPhoneNumber {
    * Merely asserts that no exceptions arise.
    */
   static void serialization() {
-    Model.PhoneNumber builtObject = buildObject();
+    model.PhoneNumber builtObject = buildObject();
 
     expect(() => JSON.encode(builtObject), returnsNormally);
   }
@@ -35,10 +35,10 @@ abstract class ModelPhoneNumber {
    * Merely asserts that no exceptions arise.
    */
   static void deserialization() {
-    Model.PhoneNumber built = buildObject();
+    model.PhoneNumber built = buildObject();
 
-    Model.PhoneNumber decoded =
-        Model.PhoneNumber.decode(JSON.decode(JSON.encode(built)));
+    model.PhoneNumber decoded =
+        model.PhoneNumber.decode(JSON.decode(JSON.encode(built)));
 
     expect(built.confidential, equals(decoded.confidential));
     expect(built.note, equals(decoded.note));
@@ -50,13 +50,13 @@ abstract class ModelPhoneNumber {
   /**
    *
    */
-  static Model.PhoneNumber buildObject() {
+  static model.PhoneNumber buildObject() {
     final String description = 'Cell Phone - work';
     final String value = '+45 44 88 1231';
 
     final bool confidential = false;
 
-    Model.PhoneNumber phoneNumber = new Model.PhoneNumber.empty()
+    model.PhoneNumber phoneNumber = new model.PhoneNumber.empty()
       ..confidential = confidential
       ..note = description
       ..destination = value;

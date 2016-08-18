@@ -35,7 +35,7 @@ abstract class ModelIvrEntry {
    *
    */
   static void serialization() {
-    Model.IvrMenu builtObject = buildObject();
+    model.IvrMenu builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -46,10 +46,10 @@ abstract class ModelIvrEntry {
    *
    */
   static void serializationDeserialization() {
-    Model.IvrMenu builtObject = buildObject();
+    model.IvrMenu builtObject = buildObject();
 
-    Model.IvrMenu deserializedObject =
-        Model.IvrMenu.decode(JSON.decode(JSON.encode(builtObject)));
+    model.IvrMenu deserializedObject =
+        model.IvrMenu.decode(JSON.decode(JSON.encode(builtObject)));
 
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
 
@@ -76,18 +76,18 @@ abstract class ModelIvrEntry {
   /**
    *
    */
-  static Model.IvrMenu buildObject() {
+  static model.IvrMenu buildObject() {
     final String name = 'ivr_1';
     final String filename = 'somefile.wav';
     final String note = 'Just a test';
-    final Model.Playback greeting = new Model.Playback(filename, note: note);
+    final model.Playback greeting = new model.Playback(filename, note: note);
 
-    final List<Model.IvrEntry> entries = [
-      new Model.IvrVoicemail('1', new Model.Voicemail('vm-test')),
-      new Model.IvrTransfer('2', new Model.Transfer('testtesttest')),
+    final List<model.IvrEntry> entries = [
+      new model.IvrVoicemail('1', new model.Voicemail('vm-test')),
+      new model.IvrTransfer('2', new model.Transfer('testtesttest')),
     ];
 
-    Model.IvrMenu builtObject = new Model.IvrMenu(name, greeting)
+    model.IvrMenu builtObject = new model.IvrMenu(name, greeting)
       ..entries = entries;
 
     expect(builtObject.name, equals(name));
@@ -110,10 +110,10 @@ abstract class ModelIvrEntry {
   static void parseSubmenu() {
     final String submenu = 'sub_1';
 
-    Model.IvrSubmenu builtObject = Model.IvrEntry.parse('1: submenu $submenu');
+    model.IvrSubmenu builtObject = model.IvrEntry.parse('1: submenu $submenu');
 
     expect(builtObject.digits, equals('1'));
-    expect(builtObject, new isInstanceOf<Model.IvrSubmenu>());
+    expect(builtObject, new isInstanceOf<model.IvrSubmenu>());
     expect(builtObject.name, equals(submenu));
   }
 
@@ -123,11 +123,11 @@ abstract class ModelIvrEntry {
   static void parseIvrTransfer() {
     final String extension = '33444222';
 
-    Model.IvrTransfer builtObject =
-        Model.IvrEntry.parse('2: transfer $extension');
+    model.IvrTransfer builtObject =
+        model.IvrEntry.parse('2: transfer $extension');
 
     expect(builtObject.digits, equals('2'));
-    expect(builtObject, new isInstanceOf<Model.IvrTransfer>());
+    expect(builtObject, new isInstanceOf<model.IvrTransfer>());
     expect(builtObject.transfer.extension, equals(extension));
   }
 
@@ -137,11 +137,11 @@ abstract class ModelIvrEntry {
   static void parseIvrReceptionTransfer() {
     final String extension = '33444222';
 
-    Model.IvrReceptionTransfer builtObject =
-        Model.IvrEntry.parse('2: reception $extension');
+    model.IvrReceptionTransfer builtObject =
+        model.IvrEntry.parse('2: reception $extension');
 
     expect(builtObject.digits, equals('2'));
-    expect(builtObject, new isInstanceOf<Model.IvrReceptionTransfer>());
+    expect(builtObject, new isInstanceOf<model.IvrReceptionTransfer>());
     expect(builtObject.transfer.extension, equals(extension));
   }
 
@@ -153,28 +153,28 @@ abstract class ModelIvrEntry {
     final String recipient = 'krc@awesome.me';
     final String note = 'Standard email';
 
-    Model.IvrVoicemail builtObject =
-        Model.IvrEntry.parse('3: voicemail $vmBox $recipient ($note)');
+    model.IvrVoicemail builtObject =
+        model.IvrEntry.parse('3: voicemail $vmBox $recipient ($note)');
 
     expect(builtObject.digits, equals('3'));
-    expect(builtObject, new isInstanceOf<Model.IvrVoicemail>());
+    expect(builtObject, new isInstanceOf<model.IvrVoicemail>());
     expect(builtObject.voicemail.vmBox, equals(vmBox));
     expect(builtObject.voicemail.recipient, equals(recipient));
     expect(builtObject.voicemail.note, equals(note));
 
     builtObject =
-        Model.IvrEntry.parse('3:   voicemail   $vmBox   $recipient   ($note)');
+        model.IvrEntry.parse('3:   voicemail   $vmBox   $recipient   ($note)');
 
     expect(builtObject.digits, equals('3'));
-    expect(builtObject, new isInstanceOf<Model.IvrVoicemail>());
+    expect(builtObject, new isInstanceOf<model.IvrVoicemail>());
     expect(builtObject.voicemail.vmBox, equals(vmBox));
     expect(builtObject.voicemail.recipient, equals(recipient));
     expect(builtObject.voicemail.note, equals(note));
 
-    builtObject = Model.IvrEntry.parse('3: voicemail $vmBox ($note)');
+    builtObject = model.IvrEntry.parse('3: voicemail $vmBox ($note)');
 
     expect(builtObject.digits, equals('3'));
-    expect(builtObject, new isInstanceOf<Model.IvrVoicemail>());
+    expect(builtObject, new isInstanceOf<model.IvrVoicemail>());
     expect(builtObject.voicemail.vmBox, equals(vmBox));
     expect(builtObject.voicemail.recipient, isEmpty);
     expect(builtObject.voicemail.note, equals(note));
@@ -184,10 +184,10 @@ abstract class ModelIvrEntry {
    *
    */
   static void parseTopmenu() {
-    Model.IvrTopmenu builtObject = Model.IvrEntry.parse('*: topmenu');
+    model.IvrTopmenu builtObject = model.IvrEntry.parse('*: topmenu');
 
     expect(builtObject.digits, equals('*'));
-    expect(builtObject, new isInstanceOf<Model.IvrEntry>());
+    expect(builtObject, new isInstanceOf<model.IvrEntry>());
   }
 
   /**
@@ -197,11 +197,11 @@ abstract class ModelIvrEntry {
     final String filename = 'somefile.wav';
     //final String note = 'Just a test';
 
-    expect(() => Model.IvrEntry.parse('1: wrong-wrong-wrong '),
+    expect(() => model.IvrEntry.parse('1: wrong-wrong-wrong '),
         throwsA(new isInstanceOf<FormatException>()));
 
     ///Wrong digit length.
-    expect(() => Model.IvrEntry.parse('12: $filename'),
+    expect(() => model.IvrEntry.parse('12: $filename'),
         throwsA(new isInstanceOf<FormatException>()));
   }
 }

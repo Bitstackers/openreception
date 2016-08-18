@@ -26,9 +26,9 @@ abstract class ModelCalendarEntryChange {
    *
    */
   static void deserialization() {
-    Model.Commit built = buildObject();
-    Model.Commit deserialized =
-        new Model.Commit.fromMap(JSON.decode(JSON.encode(built)));
+    model.Commit built = buildObject();
+    model.Commit deserialized =
+        new model.Commit.fromMap(JSON.decode(JSON.encode(built)));
 
     expect(built.toJson(), equals(deserialized.toJson()));
 
@@ -43,19 +43,19 @@ abstract class ModelCalendarEntryChange {
    * Merely asserts that no exceptions arise.
    */
   static void serialization() {
-    Model.Commit builtObject = buildObject();
+    model.Commit builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
     expect(serializedObject, isNotEmpty);
   }
 
-  static Model.Commit buildObject() {
+  static model.Commit buildObject() {
     final DateTime changedAt = new DateTime.now();
     final String parentRef = 'asdm3mmf';
     final String changedBy = 'user@place';
 
-    Model.Commit builtObject = new Model.Commit()
+    model.Commit builtObject = new model.Commit()
       ..changedAt = changedAt
       ..commitHash = parentRef
       ..authorIdentity = changedBy;

@@ -17,9 +17,13 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:openreception.framework/bus.dart';
-import 'package:openreception.framework/event.dart' as Event;
-import 'package:openreception.framework/model.dart' as Model;
-import 'package:openreception.framework/resource.dart' as Resource;
+import 'package:openreception.framework/event.dart' as event;
+import 'package:openreception.framework/model.dart' as model;
+import 'package:openreception.framework/resource.dart' as resource
+
+
+
+;
 import 'package:openreception.framework/dialplan_tools.dart' as dpTools;
 
 //import '../lib/service.dart'  as Service;

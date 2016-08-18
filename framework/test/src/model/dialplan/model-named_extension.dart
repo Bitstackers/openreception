@@ -31,7 +31,7 @@ abstract class ModelNamedExtension {
  *
  */
   static void serialization() {
-    Model.NamedExtension builtObject = buildObject();
+    model.NamedExtension builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -42,10 +42,10 @@ abstract class ModelNamedExtension {
  *
  */
   static void deserialization() {
-    Model.NamedExtension builtObject = buildObject();
+    model.NamedExtension builtObject = buildObject();
 
-    Model.NamedExtension deserializedObject =
-        Model.NamedExtension.decode(JSON.decode(JSON.encode(builtObject)));
+    model.NamedExtension deserializedObject =
+        model.NamedExtension.decode(JSON.decode(JSON.encode(builtObject)));
 
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
 
@@ -57,14 +57,14 @@ abstract class ModelNamedExtension {
 /**
  *
  */
-  static Model.NamedExtension buildObject() {
+  static model.NamedExtension buildObject() {
     final name = 'extension-1';
-    final List<Model.Action> actions = [
-      new Model.Playback('filename.wav'),
-      new Model.Enqueue('queue-1')
+    final List<model.Action> actions = [
+      new model.Playback('filename.wav'),
+      new model.Enqueue('queue-1')
     ];
 
-    Model.NamedExtension builtObject = new Model.NamedExtension(name, actions);
+    model.NamedExtension builtObject = new model.NamedExtension(name, actions);
 
     expect(builtObject.name, equals(name));
     expect(builtObject.actions, equals(actions));

@@ -40,7 +40,7 @@ abstract class ModelOpeningHour {
    *
    */
   static void serialization() {
-    Model.OpeningHour builtObject = buildObject();
+    model.OpeningHour builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -51,10 +51,10 @@ abstract class ModelOpeningHour {
    *
    */
   static void serializationDeserialization() {
-    Model.OpeningHour builtObject = buildObject();
+    model.OpeningHour builtObject = buildObject();
 
-    Model.OpeningHour deserializedObject =
-        Model.OpeningHour.parse(JSON.decode(JSON.encode(builtObject)));
+    model.OpeningHour deserializedObject =
+        model.OpeningHour.parse(JSON.decode(JSON.encode(builtObject)));
 
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
 
@@ -64,10 +64,10 @@ abstract class ModelOpeningHour {
   /**
    *
    */
-  static Model.OpeningHour buildObject() {
-    final Model.OpeningHour builtObject = new Model.OpeningHour.empty()
-      ..fromDay = Model.WeekDay.mon
-      ..toDay = Model.WeekDay.thur
+  static model.OpeningHour buildObject() {
+    final model.OpeningHour builtObject = new model.OpeningHour.empty()
+      ..fromDay = model.WeekDay.mon
+      ..toDay = model.WeekDay.thur
       ..fromHour = 9
       ..fromMinute = 30
       ..toHour = 16
@@ -80,17 +80,17 @@ abstract class ModelOpeningHour {
    *
    */
   static void parseSingle() {
-    Model.OpeningHour builtObject = Model.OpeningHour.parse('mon-fri 8-17');
+    model.OpeningHour builtObject = model.OpeningHour.parse('mon-fri 8-17');
 
-    expect(builtObject.fromDay, equals(Model.WeekDay.mon));
-    expect(builtObject.toDay, equals(Model.WeekDay.fri));
+    expect(builtObject.fromDay, equals(model.WeekDay.mon));
+    expect(builtObject.toDay, equals(model.WeekDay.fri));
     expect(builtObject.fromHour, equals(8));
     expect(builtObject.toHour, equals(17));
 
-    builtObject = Model.OpeningHour.parse('mon-fri     8-17   ');
+    builtObject = model.OpeningHour.parse('mon-fri     8-17   ');
 
-    expect(builtObject.fromDay, equals(Model.WeekDay.mon));
-    expect(builtObject.toDay, equals(Model.WeekDay.fri));
+    expect(builtObject.fromDay, equals(model.WeekDay.mon));
+    expect(builtObject.toDay, equals(model.WeekDay.fri));
     expect(builtObject.fromHour, equals(8));
     expect(builtObject.toHour, equals(17));
   }
@@ -99,7 +99,7 @@ abstract class ModelOpeningHour {
    *
    */
   static void parseSingleFormatException() {
-    expect(() => Model.Notify.parse('mon-ved 8-17'),
+    expect(() => model.Notify.parse('mon-ved 8-17'),
         throwsA(new isInstanceOf<FormatException>()));
   }
 
@@ -107,15 +107,15 @@ abstract class ModelOpeningHour {
    *
    */
   static void printFormat() {
-    expect(Model.OpeningHour.parse('mon-fri 8-17').toJson(),
+    expect(model.OpeningHour.parse('mon-fri 8-17').toJson(),
         equals('mon-fri 8:00-17:00'));
-    expect(Model.OpeningHour.parse('mon-fri 8:00-17:00').toJson(),
+    expect(model.OpeningHour.parse('mon-fri 8:00-17:00').toJson(),
         equals('mon-fri 8:00-17:00'));
 
     expect(
-        Model.OpeningHour.parse('mon 8-17').toJson(), equals('mon 8:00-17:00'));
+        model.OpeningHour.parse('mon 8-17').toJson(), equals('mon 8:00-17:00'));
 
-    expect(Model.OpeningHour.parse('mon 8:00-17:00').toJson(),
+    expect(model.OpeningHour.parse('mon 8:00-17:00').toJson(),
         equals('mon 8:00-17:00'));
   }
 
@@ -123,16 +123,16 @@ abstract class ModelOpeningHour {
    *
    */
   static void parseMultiple() {
-    Iterable<Model.OpeningHour> builtObjects =
-        Model.parseMultipleHours('mon-fri 8-17, sat 12-13');
+    Iterable<model.OpeningHour> builtObjects =
+        model.parseMultipleHours('mon-fri 8-17, sat 12-13');
 
-    expect(builtObjects.first.fromDay, equals(Model.WeekDay.mon));
-    expect(builtObjects.first.toDay, equals(Model.WeekDay.fri));
+    expect(builtObjects.first.fromDay, equals(model.WeekDay.mon));
+    expect(builtObjects.first.toDay, equals(model.WeekDay.fri));
     expect(builtObjects.first.fromHour, equals(8));
     expect(builtObjects.first.toHour, equals(17));
 
-    expect(builtObjects.last.fromDay, equals(Model.WeekDay.sat));
-    expect(builtObjects.last.toDay, equals(Model.WeekDay.sat));
+    expect(builtObjects.last.fromDay, equals(model.WeekDay.sat));
+    expect(builtObjects.last.toDay, equals(model.WeekDay.sat));
     expect(builtObjects.last.fromHour, equals(12));
     expect(builtObjects.last.toHour, equals(13));
   }

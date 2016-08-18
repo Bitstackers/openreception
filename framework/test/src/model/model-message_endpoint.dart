@@ -23,9 +23,9 @@ void testModelMessageEndpoint() {
 
 abstract class ModelMessageEndpoint {
   static void deserialization() {
-    Model.MessageEndpoint obj = buildObject();
-    Model.MessageEndpoint deserializedObj =
-        new Model.MessageEndpoint.fromMap(JSON.decode(JSON.encode(obj)));
+    model.MessageEndpoint obj = buildObject();
+    model.MessageEndpoint deserializedObj =
+        new model.MessageEndpoint.fromMap(JSON.decode(JSON.encode(obj)));
 
     expect(obj.address, equals(deserializedObj.address));
     expect(obj.name, equals(deserializedObj.name));
@@ -34,7 +34,7 @@ abstract class ModelMessageEndpoint {
   }
 
   static void serialization() {
-    Model.MessageEndpoint builtObject = buildObject();
+    model.MessageEndpoint builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -44,13 +44,13 @@ abstract class ModelMessageEndpoint {
   /**
    * Build an object manually.
    */
-  static Model.MessageEndpoint buildObject() {
+  static model.MessageEndpoint buildObject() {
     final String name = 'John Arbuckle';
     final String address = 'test@test.test';
     final String note = 'Some Reception';
-    final String type = Model.MessageEndpointType.emailTo;
+    final String type = model.MessageEndpointType.emailTo;
 
-    Model.MessageEndpoint obj = new Model.MessageEndpoint.empty()
+    model.MessageEndpoint obj = new model.MessageEndpoint.empty()
       ..address = address
       ..name = name
       ..note = note

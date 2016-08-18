@@ -33,80 +33,79 @@ class DialplanToolsReceptionDialplan {
    *
    */
   static void empty() {
-    Model.ReceptionDialplan rdp = new Model.ReceptionDialplan();
+    model.ReceptionDialplan rdp = new model.ReceptionDialplan();
 
     xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
-        .dialplanToXml(rdp, new Model.Reception.empty()..name = 'ost'));
+        .dialplanToXml(rdp, new model.Reception.empty()..name = 'ost'));
   }
 
   /**
    *
    */
   static void openActions() {
-    Model.ReceptionDialplan rdp = new Model.ReceptionDialplan()
+    model.ReceptionDialplan rdp = new model.ReceptionDialplan()
       ..active = true
       ..open = [
-        new Model.HourAction()
-          ..hours = Model.parseMultipleHours('mon-fri 8-17, sat 10-12').toList()
-          ..actions = [new Model.Playback('none')],
-        new Model.HourAction()
-          ..hours = Model.parseMultipleHours('sun 8-17').toList()
+        new model.HourAction()
+          ..hours = model.parseMultipleHours('mon-fri 8-17, sat 10-12').toList()
+          ..actions = [new model.Playback('none')],
+        new model.HourAction()
+          ..hours = model.parseMultipleHours('sun 8-17').toList()
           ..actions = [
-            new Model.Notify('call-offer'),
-            new Model.Playback('none')
+            new model.Notify('call-offer'),
+            new model.Playback('none')
           ]
       ];
 
     xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
-        .dialplanToXml(rdp, new Model.Reception.empty()..name = 'ost'));
+        .dialplanToXml(rdp, new model.Reception.empty()..name = 'ost'));
   }
 
   /**
    *
    */
   static void closedActions() {
-    Model.ReceptionDialplan rdp = new Model.ReceptionDialplan()
+    model.ReceptionDialplan rdp = new model.ReceptionDialplan()
       ..active = true
-      ..defaultActions = [new Model.Playback('closed')];
+      ..defaultActions = [new model.Playback('closed')];
 
     xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
-        .dialplanToXml(rdp, new Model.Reception.empty()..name = 'ost'));
+        .dialplanToXml(rdp, new model.Reception.empty()..name = 'ost'));
   }
 
   /**
    *
    */
   static void bigDialplan() {
-    Model.ReceptionDialplan rdp = new Model.ReceptionDialplan()
+    model.ReceptionDialplan rdp = new model.ReceptionDialplan()
       ..active = true
       ..open = [
-        new Model.HourAction()
-          ..hours = Model
-              .parseMultipleHours('mon-wed 8-17, thur 10-17, fri 10-16:30')
+        new model.HourAction()
+          ..hours = model.parseMultipleHours('mon-wed 8-17, thur 10-17, fri 10-16:30')
               .toList()
           ..actions = [
-            new Model.Notify('call-offer'),
-            new Model.Ringtone(2),
-            new Model.Playback('greeting'),
-            new Model.Playback('2nd-greeting'),
-            new Model.Enqueue('pending',
+            new model.Notify('call-offer'),
+            new model.Ringtone(2),
+            new model.Playback('greeting'),
+            new model.Playback('2nd-greeting'),
+            new model.Enqueue('pending',
                 holdMusic: 'default', note: 'wait queue')
           ],
-        new Model.HourAction()
-          ..hours = Model.parseMultipleHours('sun 8-17').toList()
+        new model.HourAction()
+          ..hours = model.parseMultipleHours('sun 8-17').toList()
           ..actions = [
-            new Model.Playback('none', note: 'IVR transfer'),
-            new Model.Ivr('magic-ivr', note: 'Magic IVR menu')
+            new model.Playback('none', note: 'IVR transfer'),
+            new model.Ivr('magic-ivr', note: 'Magic IVR menu')
           ]
       ]
       ..defaultActions = [
-        new Model.Playback('closed', note: 'Just closed'),
-        new Model.Voicemail('some-voicemail')
+        new model.Playback('closed', note: 'Just closed'),
+        new model.Voicemail('some-voicemail')
       ];
 
     final String xmlDialplan =
         new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
-            .dialplanToXml(rdp, new Model.Reception.empty()..name = 'ost');
+            .dialplanToXml(rdp, new model.Reception.empty()..name = 'ost');
 
     xml.parse(xmlDialplan);
   }
@@ -117,8 +116,8 @@ class DialplanToolsIvrMenu {
    *
    */
   static void empty() {
-    Model.IvrMenu menu =
-        new Model.IvrMenu('some menu', new Model.Playback('greeting'));
+    model.IvrMenu menu =
+        new model.IvrMenu('some menu', new model.Playback('greeting'));
 
     xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
         .ivrToXml(menu));
@@ -128,15 +127,15 @@ class DialplanToolsIvrMenu {
    *
    */
   static void oneLevel() {
-    Model.IvrMenu menu =
-        new Model.IvrMenu('some menu', new Model.Playback('greeting'))
+    model.IvrMenu menu =
+        new model.IvrMenu('some menu', new model.Playback('greeting'))
           ..entries = [
-            new Model.IvrVoicemail(
+            new model.IvrVoicemail(
                 '1',
-                new Model.Voicemail('testbox',
+                new model.Voicemail('testbox',
                     recipient: 'someone@somewhere', note: 'A mailbox')),
-            new Model.IvrTransfer(
-                '2', new Model.Transfer('1234444', note: 'A dude'))
+            new model.IvrTransfer(
+                '2', new model.Transfer('1234444', note: 'A dude'))
           ];
 
     xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
@@ -147,26 +146,26 @@ class DialplanToolsIvrMenu {
    *
    */
   static void twoLevel() {
-    Model.IvrMenu menu =
-        new Model.IvrMenu('some-menu', new Model.Playback('greeting'))
+    model.IvrMenu menu =
+        new model.IvrMenu('some-menu', new model.Playback('greeting'))
           ..entries = [
-            new Model.IvrVoicemail(
+            new model.IvrVoicemail(
                 '1',
-                new Model.Voicemail('testbox',
+                new model.Voicemail('testbox',
                     recipient: 'someone@somewhere', note: 'A mailbox')),
-            new Model.IvrSubmenu('2', 'some-submenu')
+            new model.IvrSubmenu('2', 'some-submenu')
           ]
           ..submenus = [
-            new Model.IvrMenu('some-submenu', new Model.Playback('greeting'))
+            new model.IvrMenu('some-submenu', new model.Playback('greeting'))
               ..entries = [
-                new Model.IvrVoicemail(
+                new model.IvrVoicemail(
                     '1',
-                    new Model.Voicemail('testbox2',
+                    new model.Voicemail('testbox2',
                         recipient: 'someone2@somewhere',
                         note: 'Another mailbox')),
-                new Model.IvrTransfer(
-                    '2', new Model.Transfer('1234442', note: 'Another dude')),
-                new Model.IvrTopmenu('*')
+                new model.IvrTransfer(
+                    '2', new model.Transfer('1234442', note: 'Another dude')),
+                new model.IvrTopmenu('*')
               ]
           ];
 

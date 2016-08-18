@@ -32,7 +32,7 @@ abstract class ModelReceptionTransfer {
  *
  */
   static void serialization() {
-    Model.ReceptionTransfer builtObject = buildObject();
+    model.ReceptionTransfer builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -43,10 +43,10 @@ abstract class ModelReceptionTransfer {
  *
  */
   static void deserialization() {
-    Model.ReceptionTransfer builtObject = buildObject();
+    model.ReceptionTransfer builtObject = buildObject();
 
-    Model.ReceptionTransfer deserializedObject =
-        Model.ReceptionTransfer.parse(JSON.decode(JSON.encode(builtObject)));
+    model.ReceptionTransfer deserializedObject =
+        model.ReceptionTransfer.parse(JSON.decode(JSON.encode(builtObject)));
 
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
 
@@ -62,21 +62,21 @@ abstract class ModelReceptionTransfer {
     final String buffer2 = 'reception 12340001 (Test reception 1)';
     final String buffer3 = 'transfer 12340001 (Test reception 1)';
 
-    expect(Model.ReceptionTransfer.parse(buffer1), isNotNull);
-    expect(Model.ReceptionTransfer.parse(buffer2), isNotNull);
-    expect(() => Model.ReceptionTransfer.parse(buffer3),
+    expect(model.ReceptionTransfer.parse(buffer1), isNotNull);
+    expect(model.ReceptionTransfer.parse(buffer2), isNotNull);
+    expect(() => model.ReceptionTransfer.parse(buffer3),
         throwsA(new isInstanceOf<FormatException>()));
   }
 
 /**
  *
  */
-  static Model.ReceptionTransfer buildObject() {
+  static model.ReceptionTransfer buildObject() {
     final String extension = '322114455';
     final String note = 'Just an extension';
 
-    Model.ReceptionTransfer builtObject =
-        new Model.ReceptionTransfer(extension, note: note);
+    model.ReceptionTransfer builtObject =
+        new model.ReceptionTransfer(extension, note: note);
 
     expect(builtObject.extension, equals(extension));
     expect(builtObject.note, equals(note));

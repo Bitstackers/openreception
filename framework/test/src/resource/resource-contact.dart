@@ -30,31 +30,31 @@ void testResourceContact() {
 abstract class ResourceContact {
   static final Uri _host = Uri.parse('http://localhost:4010');
 
-  static void receptions() => expect(Resource.Contact.receptions(_host, 999),
+  static void receptions() => expect(resource.Contact.receptions(_host, 999),
       equals(Uri.parse('$_host/contact/999/reception')));
 
   static void organizations() => expect(
-      Resource.Contact.organizations(_host, 999),
+      resource.Contact.organizations(_host, 999),
       equals(Uri.parse('$_host/contact/999/organization')));
 
-  static void single() => expect(Resource.Contact.single(_host, 999),
+  static void single() => expect(resource.Contact.single(_host, 999),
       equals(Uri.parse('$_host/contact/999')));
 
   static void list() =>
-      expect(Resource.Contact.list(_host), equals(Uri.parse('$_host/contact')));
+      expect(resource.Contact.list(_host), equals(Uri.parse('$_host/contact')));
 
   static void singleByReception() => expect(
-      Resource.Contact.singleByReception(_host, 999, 456),
+      resource.Contact.singleByReception(_host, 999, 456),
       equals(Uri.parse('$_host/contact/999/reception/456')));
 
   static void listByReception() => expect(
-      Resource.Contact.listByReception(_host, 99),
+      resource.Contact.listByReception(_host, 99),
       equals(Uri.parse('$_host/contact/list/reception/99')));
 
-  static void colleagues() => expect(Resource.Contact.colleagues(_host, 99),
+  static void colleagues() => expect(resource.Contact.colleagues(_host, 99),
       equals(Uri.parse('$_host/contact/99/colleagues')));
 
   static void organizationContacts() => expect(
-      Resource.Contact.organizationContacts(_host, 99),
+      resource.Contact.organizationContacts(_host, 99),
       equals(Uri.parse('$_host/contact/organization/99')));
 }

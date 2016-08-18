@@ -23,9 +23,9 @@ void testModelMessageContext() {
 
 abstract class ModelMessageContext {
   static void deserialization() {
-    Model.MessageContext obj = buildObject();
-    Model.MessageContext deserializedObj =
-        new Model.MessageContext.fromMap(JSON.decode(JSON.encode(obj)));
+    model.MessageContext obj = buildObject();
+    model.MessageContext deserializedObj =
+        new model.MessageContext.fromMap(JSON.decode(JSON.encode(obj)));
 
     expect(obj.cid, equals(deserializedObj.cid));
     expect(obj.contactName, equals(deserializedObj.contactName));
@@ -37,7 +37,7 @@ abstract class ModelMessageContext {
   }
 
   static void serialization() {
-    Model.MessageContext builtObject = buildObject();
+    model.MessageContext builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -47,13 +47,13 @@ abstract class ModelMessageContext {
   /**
    * Build an object manually.
    */
-  static Model.MessageContext buildObject() {
+  static model.MessageContext buildObject() {
     final int contactId = 1;
     final String contactName = 'John Arbuckle';
     final int rid = 2;
     final String receptionName = 'Lasagna-makers inc.';
 
-    Model.MessageContext obj = new Model.MessageContext.empty()
+    model.MessageContext obj = new model.MessageContext.empty()
       ..cid = contactId
       ..contactName = contactName
       ..rid = rid

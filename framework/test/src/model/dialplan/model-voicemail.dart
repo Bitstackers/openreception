@@ -30,7 +30,7 @@ abstract class ModelVoicemail {
  *
  */
   static void serialization() {
-    Model.Voicemail builtObject = buildObject();
+    model.Voicemail builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -41,10 +41,10 @@ abstract class ModelVoicemail {
  *
  */
   static void deserialization() {
-    Model.Voicemail builtObject = buildObject();
+    model.Voicemail builtObject = buildObject();
 
-    Model.Voicemail deserializedObject =
-        Model.Voicemail.parse(JSON.decode(JSON.encode(builtObject)));
+    model.Voicemail deserializedObject =
+        model.Voicemail.parse(JSON.decode(JSON.encode(builtObject)));
 
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
 
@@ -56,13 +56,13 @@ abstract class ModelVoicemail {
 /**
  *
  */
-  static Model.Voicemail buildObject() {
+  static model.Voicemail buildObject() {
     final String vmBox = 'vm-33114422';
     final String recipient = 'someone@email.dot';
     final String note = 'Someones email';
 
-    Model.Voicemail builtObject =
-        new Model.Voicemail(vmBox, recipient: recipient, note: note);
+    model.Voicemail builtObject =
+        new model.Voicemail(vmBox, recipient: recipient, note: note);
 
     expect(builtObject.vmBox, equals(vmBox));
     expect(builtObject.recipient, equals(recipient));
@@ -81,8 +81,8 @@ abstract class ModelVoicemail {
     final String note = 'Someones email';
     final String recipients = [recipient1, recipient2].join('');
 
-    Model.Voicemail builtObject =
-        new Model.Voicemail(vmBox, recipient: recipients, note: note);
+    model.Voicemail builtObject =
+        new model.Voicemail(vmBox, recipient: recipients, note: note);
 
     expect(builtObject.vmBox, equals(vmBox));
     expect(builtObject.recipient, equals(recipients));

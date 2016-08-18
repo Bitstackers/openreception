@@ -23,9 +23,9 @@ void testModelCalendarEntry() {
 
 abstract class ModelCalendarEntry {
   static void deserialization() {
-    Model.CalendarEntry builtObject = buildObject();
-    Model.CalendarEntry deserialized =
-        new Model.CalendarEntry.fromMap(JSON.decode(JSON.encode(builtObject)));
+    model.CalendarEntry builtObject = buildObject();
+    model.CalendarEntry deserialized =
+        new model.CalendarEntry.fromMap(JSON.decode(JSON.encode(builtObject)));
 
     expect(builtObject.id, equals(deserialized.id));
     expect(builtObject.content, equals(deserialized.content));
@@ -48,7 +48,7 @@ abstract class ModelCalendarEntry {
   /**
    *
    */
-  static Model.CalendarEntry buildObject() {
+  static model.CalendarEntry buildObject() {
     final int id = 123;
     final String body = 'test test test';
     final DateTime touched = new DateTime.now();
@@ -56,7 +56,7 @@ abstract class ModelCalendarEntry {
     final DateTime end = new DateTime.now().add(new Duration(hours: 2));
     final int uid = 42;
 
-    Model.CalendarEntry builtObject = new Model.CalendarEntry.empty()
+    model.CalendarEntry builtObject = new model.CalendarEntry.empty()
       ..lastAuthorId = uid
       ..touched = touched
       ..id = id

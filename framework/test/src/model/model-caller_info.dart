@@ -23,9 +23,9 @@ void testModelCallerInfo() {
 
 abstract class ModelCallerInfo {
   static void deserialization() {
-    Model.CallerInfo obj = buildObject();
-    Model.CallerInfo deserializedObj =
-        new Model.CallerInfo.fromMap(JSON.decode(JSON.encode(obj)));
+    model.CallerInfo obj = buildObject();
+    model.CallerInfo deserializedObj =
+        new model.CallerInfo.fromMap(JSON.decode(JSON.encode(obj)));
 
     expect(obj.cellPhone, equals(deserializedObj.cellPhone));
     expect(obj.company, equals(deserializedObj.company));
@@ -38,7 +38,7 @@ abstract class ModelCallerInfo {
   }
 
   static void serialization() {
-    Model.CallerInfo builtObject = buildObject();
+    model.CallerInfo builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -48,14 +48,14 @@ abstract class ModelCallerInfo {
   /**
    * Build an object, and check that the expected values are present.
    */
-  static Model.CallerInfo buildObject() {
+  static model.CallerInfo buildObject() {
     final String cellPhone = '666';
     final String company = 'Inferno Ltd.';
     final String localExtension = '313';
     final String name = 'The dark lord (mom)';
     final String phone = 'Out of service';
 
-    Model.CallerInfo info = new Model.CallerInfo.empty()
+    model.CallerInfo info = new model.CallerInfo.empty()
       ..cellPhone = cellPhone
       ..company = company
       ..localExtension = localExtension

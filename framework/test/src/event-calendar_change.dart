@@ -23,18 +23,18 @@ void testEventCalendarChange() {
 }
 
 abstract class EventCalendarChange {
-  static Event.CalendarChange buildObject() {
+  static event.CalendarChange buildObject() {
     final int eid = 1;
-    final owner = new Model.OwningContact(3);
+    final owner = new model.OwningContact(3);
     final int uid = 1;
 
-    Event.CalendarChange built =
-        new Event.CalendarChange.create(eid, owner, uid);
+    event.CalendarChange built =
+        new event.CalendarChange.create(eid, owner, uid);
 
     expect(built.eid, equals(eid));
     expect(built.owner.toJson(), equals(owner.toJson()));
     expect(built.modifierUid, equals(uid));
-    expect(built.state, equals(Event.Change.created));
+    expect(built.state, equals(event.Change.created));
 
     Logger.root.shout(built.toJson());
 
@@ -42,7 +42,7 @@ abstract class EventCalendarChange {
   }
 
   static void serialization() {
-    Event.CalendarChange builtObject = buildObject();
+    event.CalendarChange builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -50,9 +50,9 @@ abstract class EventCalendarChange {
   }
 
   static void serializationDeserialization() {
-    Event.CalendarChange built = buildObject();
-    Event.CalendarChange deserialized =
-        new Event.CalendarChange.fromMap(JSON.decode(JSON.encode(built)));
+    event.CalendarChange built = buildObject();
+    event.CalendarChange deserialized =
+        new event.CalendarChange.fromMap(JSON.decode(JSON.encode(built)));
 
     expect(built.eid, equals(deserialized.eid));
     expect(built.owner.toJson(), equals(deserialized.owner.toJson()));

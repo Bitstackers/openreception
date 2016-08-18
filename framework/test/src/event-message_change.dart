@@ -27,30 +27,30 @@ abstract class EventMessageChange {
     final int mid = 1;
     final int uid = 2;
     final DateTime now = new DateTime.now();
-    final Model.MessageState state = Model.MessageState.values.last;
+    final model.MessageState state = model.MessageState.values.last;
 
-    Event.MessageChange testEvent =
-        new Event.MessageChange.create(mid, uid, state, now);
+    event.MessageChange testEvent =
+        new event.MessageChange.create(mid, uid, state, now);
 
     expect(testEvent.mid, equals(mid));
     expect(testEvent.modifierUid, equals(uid));
-    expect(testEvent.state, equals(Event.Change.created));
+    expect(testEvent.state, equals(event.Change.created));
     expect(testEvent.messageState, equals(state));
     expect(testEvent.timestamp.difference(now).inMilliseconds, equals(0));
 
-    testEvent = new Event.MessageChange.update(mid, uid, state, now);
+    testEvent = new event.MessageChange.update(mid, uid, state, now);
 
     expect(testEvent.mid, equals(mid));
     expect(testEvent.modifierUid, equals(uid));
-    expect(testEvent.state, equals(Event.Change.updated));
+    expect(testEvent.state, equals(event.Change.updated));
     expect(testEvent.messageState, equals(state));
     expect(testEvent.timestamp.difference(now).inMilliseconds, equals(0));
 
-    testEvent = new Event.MessageChange.delete(mid, uid, state, now);
+    testEvent = new event.MessageChange.delete(mid, uid, state, now);
 
     expect(testEvent.mid, equals(mid));
     expect(testEvent.modifierUid, equals(uid));
-    expect(testEvent.state, equals(Event.Change.deleted));
+    expect(testEvent.state, equals(event.Change.deleted));
     expect(testEvent.messageState, equals(state));
     expect(testEvent.timestamp.difference(now).inMilliseconds, equals(0));
   }
@@ -59,10 +59,10 @@ abstract class EventMessageChange {
     final int mid = 1;
     final int uid = 2;
     final DateTime now = new DateTime.now();
-    final Model.MessageState state = Model.MessageState.values.last;
+    final model.MessageState state = model.MessageState.values.last;
 
-    Event.MessageChange testEvent =
-        new Event.MessageChange.create(mid, uid, state, now);
+    event.MessageChange testEvent =
+        new event.MessageChange.create(mid, uid, state, now);
 
     expect(testEvent.toJson, returnsNormally);
   }
@@ -71,20 +71,20 @@ abstract class EventMessageChange {
     final int mid = 1;
     final int uid = 2;
     final DateTime now = new DateTime.now();
-    final Model.MessageState state = Model.MessageState.values.last;
+    final model.MessageState state = model.MessageState.values.last;
 
-    Event.MessageChange testEvent =
-        new Event.MessageChange.create(mid, uid, state, now);
+    event.MessageChange testEvent =
+        new event.MessageChange.create(mid, uid, state, now);
 
     expect(testEvent.mid, equals(mid));
     expect(testEvent.modifierUid, equals(uid));
-    expect(testEvent.state, equals(Event.Change.created));
+    expect(testEvent.state, equals(event.Change.created));
     expect(testEvent.messageState, equals(state));
     expect(testEvent.timestamp.difference(now).inMilliseconds, equals(0));
 
     Map serialized = testEvent.toJson();
 
     expect(
-        new Event.MessageChange.fromMap(serialized).asMap, equals(serialized));
+        new event.MessageChange.fromMap(serialized).asMap, equals(serialized));
   }
 }

@@ -31,43 +31,43 @@ abstract class EventTests {
   static void contactChangeState() {
     final int cid = 1;
 
-    Event.ContactChange testEvent = new Event.ContactChange.create(cid);
+    event.ContactChange testEvent = new event.ContactChange.create(cid);
 
-    Event.ContactChange builtEvent =
-        new Event.Event.parse(testEvent.toJson()) as Event.ContactChange;
+    event.ContactChange builtEvent =
+        new event.Event.parse(testEvent.toJson()) as event.ContactChange;
 
     expect(builtEvent.cid, equals(cid));
-    expect(builtEvent.state, equals(Event.Change.created));
+    expect(builtEvent.state, equals(event.Change.created));
   }
 
   static void organizationChangeState() {
     final int oid = 1;
     final int uid = 3;
 
-    Event.OrganizationChange testEvent =
-        new Event.OrganizationChange.create(oid, uid);
+    event.OrganizationChange testEvent =
+        new event.OrganizationChange.create(oid, uid);
 
-    Event.OrganizationChange builtEvent =
-        new Event.Event.parse(JSON.decode(JSON.encode(testEvent)));
+    event.OrganizationChange builtEvent =
+        new event.Event.parse(JSON.decode(JSON.encode(testEvent)));
 
     expect(builtEvent.oid, equals(oid));
     expect(builtEvent.modifierUid, equals(uid));
-    expect(builtEvent.state, equals(Event.Change.created));
+    expect(builtEvent.state, equals(event.Change.created));
   }
 
   static void receptionChangeState() {
     final int rid = 1;
     final int uid = 3;
 
-    Event.ReceptionChange testEvent =
-        new Event.ReceptionChange.create(rid, uid);
+    event.ReceptionChange testEvent =
+        new event.ReceptionChange.create(rid, uid);
 
-    Event.ReceptionChange builtEvent =
-        new Event.Event.parse(testEvent.toJson()) as Event.ReceptionChange;
+    event.ReceptionChange builtEvent =
+        new event.Event.parse(testEvent.toJson()) as event.ReceptionChange;
 
     expect(builtEvent.rid, equals(rid));
     expect(builtEvent.modifierUid, equals(uid));
-    expect(builtEvent.state, equals(Event.Change.created));
+    expect(builtEvent.state, equals(event.Change.created));
   }
 
   static void receptionContactChangeState() {
@@ -75,92 +75,92 @@ abstract class EventTests {
     final int rid = 2;
     final int uid = 3;
 
-    Event.ReceptionData testEvent =
-        new Event.ReceptionData.create(cid, rid, uid);
+    event.ReceptionData testEvent =
+        new event.ReceptionData.create(cid, rid, uid);
 
-    Event.ReceptionData builtEvent =
-        new Event.Event.parse(testEvent.toJson()) as Event.ReceptionData;
+    event.ReceptionData builtEvent =
+        new event.Event.parse(testEvent.toJson()) as event.ReceptionData;
 
     expect(builtEvent.cid, equals(cid));
     expect(builtEvent.rid, equals(rid));
     expect(builtEvent.modifierUid, equals(uid));
-    expect(builtEvent.state, equals(Event.Change.created));
+    expect(builtEvent.state, equals(event.Change.created));
   }
 
   static void messageChangeState() {
     final int mid = 1;
     final int uid = 2;
     final DateTime now = new DateTime.now();
-    final Model.MessageState state = Model.MessageState.values.last;
+    final model.MessageState state = model.MessageState.values.last;
 
-    Event.MessageChange testEvent =
-        new Event.MessageChange.create(mid, uid, state, now);
+    event.MessageChange testEvent =
+        new event.MessageChange.create(mid, uid, state, now);
 
-    Event.MessageChange builtEvent =
-        new Event.Event.parse(testEvent.asMap) as Event.MessageChange;
+    event.MessageChange builtEvent =
+        new event.Event.parse(testEvent.asMap) as event.MessageChange;
 
     expect(builtEvent.mid, equals(mid));
     expect(builtEvent.modifierUid, equals(uid));
-    expect(builtEvent.state, equals(Event.Change.created));
+    expect(builtEvent.state, equals(event.Change.created));
     expect(builtEvent.messageState, equals(state));
     expect(builtEvent.timestamp.difference(now).inMilliseconds, equals(0));
   }
 
   static void calendarEntryState() {
     final int eid = 1;
-    final owner = new Model.OwningReception(3);
+    final owner = new model.OwningReception(3);
     final uid = 3;
 
-    Event.CalendarChange testEvent =
-        new Event.CalendarChange.create(eid, owner, uid);
+    event.CalendarChange testEvent =
+        new event.CalendarChange.create(eid, owner, uid);
 
-    Event.CalendarChange builtEvent =
-        new Event.Event.parse(testEvent.toJson()) as Event.CalendarChange;
+    event.CalendarChange builtEvent =
+        new event.Event.parse(testEvent.toJson()) as event.CalendarChange;
 
     expect(builtEvent.owner.toJson(), equals(owner.toJson()));
     expect(builtEvent.eid, equals(eid));
     expect(builtEvent.modifierUid, equals(uid));
-    expect(builtEvent.state, equals(Event.Change.created));
+    expect(builtEvent.state, equals(event.Change.created));
   }
 
   static void userChange() {
     final int userId = 1234;
     final int modifier = 4312;
 
-    Event.UserChange createEvent =
-        new Event.UserChange.create(userId, modifier);
-    Event.UserChange updateEvent =
-        new Event.UserChange.update(userId, modifier);
-    Event.UserChange removeEvent =
-        new Event.UserChange.delete(userId, modifier);
+    event.UserChange createEvent =
+        new event.UserChange.create(userId, modifier);
+    event.UserChange updateEvent =
+        new event.UserChange.update(userId, modifier);
+    event.UserChange removeEvent =
+        new event.UserChange.delete(userId, modifier);
 
-    Event.UserChange builtEvent =
-        new Event.Event.parse(createEvent.toJson()) as Event.UserChange;
+    event.UserChange builtEvent =
+        new event.Event.parse(createEvent.toJson()) as event.UserChange;
 
     expect(builtEvent.uid, equals(userId));
     expect(builtEvent.modifierUid, equals(modifier));
-    expect(builtEvent.state, equals(Event.Change.created));
+    expect(builtEvent.state, equals(event.Change.created));
 
     builtEvent =
-        new Event.Event.parse(updateEvent.toJson()) as Event.UserChange;
+        new event.Event.parse(updateEvent.toJson()) as event.UserChange;
 
     expect(builtEvent.uid, equals(userId));
     expect(builtEvent.modifierUid, equals(modifier));
-    expect(builtEvent.state, equals(Event.Change.updated));
+    expect(builtEvent.state, equals(event.Change.updated));
 
     builtEvent =
-        new Event.Event.parse(removeEvent.toJson()) as Event.UserChange;
+        new event.Event.parse(removeEvent.toJson()) as event.UserChange;
 
     expect(builtEvent.uid, equals(userId));
     expect(builtEvent.modifierUid, equals(modifier));
-    expect(builtEvent.state, equals(Event.Change.deleted));
+    expect(builtEvent.state, equals(event.Change.deleted));
   }
 
   static void callStateReload() {
-    Event.CallStateReload testEvent = new Event.CallStateReload();
+    event.CallStateReload testEvent = new event.CallStateReload();
 
-    Event.Event builtEvent =
-        new Event.Event.parse(JSON.decode(JSON.encode(testEvent)));
+    event.Event builtEvent =
+        new event.Event.parse(JSON.decode(JSON.encode(testEvent)));
 
     expect(
         builtEvent.timestamp
@@ -168,18 +168,18 @@ abstract class EventTests {
             .inMilliseconds
             .abs(),
         lessThan(1000));
-    expect(builtEvent, new isInstanceOf<Event.CallStateReload>());
+    expect(builtEvent, new isInstanceOf<event.CallStateReload>());
     expect(builtEvent.eventName, testEvent.eventName);
   }
 
   static void callHangup() {
-    Model.Call testCall = new Model.Call.empty('test-id');
+    model.Call testCall = new model.Call.empty('test-id');
 
-    Event.CallHangup testEvent =
-        new Event.CallHangup(testCall, hangupCause: 'no-reason');
+    event.CallHangup testEvent =
+        new event.CallHangup(testCall, hangupCause: 'no-reason');
 
-    Event.CallHangup builtEvent =
-        new Event.Event.parse(testEvent.toJson()) as Event.CallHangup;
+    event.CallHangup builtEvent =
+        new event.Event.parse(testEvent.toJson()) as event.CallHangup;
 
     expect(
         builtEvent.timestamp
@@ -187,7 +187,7 @@ abstract class EventTests {
             .abs()
             .inMilliseconds,
         lessThan(1));
-    expect(builtEvent, new isInstanceOf<Event.CallHangup>());
+    expect(builtEvent, new isInstanceOf<event.CallHangup>());
     expect(builtEvent.hangupCause, equals(testEvent.hangupCause));
     expect(builtEvent.eventName, testEvent.eventName);
   }

@@ -27,10 +27,10 @@ abstract class ModelUserStatus {
    * Merely asserts that no exceptions arise.
    */
   static void deserialization() {
-    Model.UserStatus built = buildObject();
+    model.UserStatus built = buildObject();
     String serializedObject = JSON.encode(built);
-    Model.UserStatus decoded =
-        new Model.UserStatus.fromMap(JSON.decode(serializedObject));
+    model.UserStatus decoded =
+        new model.UserStatus.fromMap(JSON.decode(serializedObject));
 
     expect(built.paused, equals(decoded.paused));
     expect(built.userId, equals(decoded.userId));
@@ -39,18 +39,18 @@ abstract class ModelUserStatus {
   }
 
   static void serialization() {
-    Model.UserStatus builtObject = buildObject();
+    model.UserStatus builtObject = buildObject();
     String serializedString = JSON.encode(builtObject);
 
     expect(serializedString, isNotEmpty);
     expect(serializedString, isNotNull);
   }
 
-  static Model.UserStatus buildObject() {
+  static model.UserStatus buildObject() {
     final bool paused = true;
     final int userId = 2;
 
-    Model.UserStatus builtObject = new Model.UserStatus()
+    model.UserStatus builtObject = new model.UserStatus()
       ..paused = paused
       ..userId = userId;
 

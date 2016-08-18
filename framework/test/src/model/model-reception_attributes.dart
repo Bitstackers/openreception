@@ -25,7 +25,7 @@ void testModelReceptionAttributes() {
 
 abstract class ModelReceptionAttributes {
   static void serialization() {
-    Model.ReceptionAttributes builtObject = buildObject();
+    model.ReceptionAttributes builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -33,9 +33,9 @@ abstract class ModelReceptionAttributes {
   }
 
   static void deserialization() {
-    Model.ReceptionAttributes builtObject = buildObject();
-    Model.ReceptionAttributes deserializedObject =
-        new Model.ReceptionAttributes.fromMap(
+    model.ReceptionAttributes builtObject = buildObject();
+    model.ReceptionAttributes deserializedObject =
+        new model.ReceptionAttributes.fromMap(
             JSON.decode(JSON.encode(builtObject)));
 
     expect(builtObject.receptionId, equals(deserializedObject.receptionId));
@@ -43,9 +43,9 @@ abstract class ModelReceptionAttributes {
 
     {
       Iterable<Map> lhsPn =
-          builtObject.phoneNumbers.map((Model.PhoneNumber pn) => pn.toJson());
+          builtObject.phoneNumbers.map((model.PhoneNumber pn) => pn.toJson());
       Iterable<Map> rhsPn = deserializedObject.phoneNumbers
-          .map((Model.PhoneNumber pn) => pn.toJson());
+          .map((model.PhoneNumber pn) => pn.toJson());
 
       expect(lhsPn, equals(rhsPn));
     }
@@ -68,12 +68,12 @@ abstract class ModelReceptionAttributes {
         equals(deserializedObject.messagePrerequisites));
   }
 
-  static Model.ReceptionAttributes buildObject() {
+  static model.ReceptionAttributes buildObject() {
     final int receptionId = 2;
     final int contactId = 3;
 
-    final List<Model.PhoneNumber> pn = [
-      new Model.PhoneNumber.empty()
+    final List<model.PhoneNumber> pn = [
+      new model.PhoneNumber.empty()
         ..confidential = true
         ..note = 'Fluid connection'
         ..destination = '-0045 32112345'
@@ -91,8 +91,8 @@ abstract class ModelReceptionAttributes {
     final List<String> workhours = ['Quite frankly; never'];
     final List<String> messagePrerequisites = ['[fishcode]'];
 
-    Model.ReceptionAttributes builtObject =
-        new Model.ReceptionAttributes.empty()
+    model.ReceptionAttributes builtObject =
+        new model.ReceptionAttributes.empty()
           ..receptionId = receptionId
           ..cid = contactId
           ..phoneNumbers.addAll(pn)

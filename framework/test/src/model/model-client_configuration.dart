@@ -24,7 +24,7 @@ void testModelClientConfiguration() {
 
 abstract class ModelClientConfiguration {
   static void serialization() {
-    Model.ClientConfiguration builtObject = buildObject();
+    model.ClientConfiguration builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -32,9 +32,9 @@ abstract class ModelClientConfiguration {
   }
 
   static void serializationDeserialization() {
-    Model.ClientConfiguration builtObject = buildObject();
-    Model.ClientConfiguration deserializedObject =
-        new Model.ClientConfiguration.fromMap(
+    model.ClientConfiguration builtObject = buildObject();
+    model.ClientConfiguration deserializedObject =
+        new model.ClientConfiguration.fromMap(
             JSON.decode(JSON.encode(builtObject)));
 
     expect(builtObject.authServerUri, equals(deserializedObject.authServerUri));
@@ -63,7 +63,7 @@ abstract class ModelClientConfiguration {
   /**
    * Build an object, and check that the expected values are present.
    */
-  static Model.ClientConfiguration buildObject() {
+  static model.ClientConfiguration buildObject() {
     final Uri authServerUri = Uri.parse('http://authserver.example.com');
     final Uri userServerUri = Uri.parse('http://userserver.example.com');
     final Uri callFlowServerUri = Uri.parse('http://callFlow.example.com');
@@ -79,7 +79,7 @@ abstract class ModelClientConfiguration {
     final Uri receptionServerUri = Uri.parse('http://reception.example.com');
     final String systemLanguage = 'en';
 
-    Model.ClientConfiguration config = new Model.ClientConfiguration.empty()
+    model.ClientConfiguration config = new model.ClientConfiguration.empty()
       ..authServerUri = authServerUri
       ..callFlowServerUri = callFlowServerUri
       ..contactServerUri = contactServerUri

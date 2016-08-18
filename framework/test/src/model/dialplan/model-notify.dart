@@ -36,7 +36,7 @@ abstract class ModelNotify {
    *
    */
   static void serialization() {
-    Model.Notify builtObject = buildObject();
+    model.Notify builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -47,10 +47,10 @@ abstract class ModelNotify {
    *
    */
   static void serializationDeserialization() {
-    Model.Notify builtObject = buildObject();
+    model.Notify builtObject = buildObject();
 
-    Model.Notify deserializedObject =
-        Model.Notify.parse(JSON.decode(JSON.encode(builtObject)));
+    model.Notify deserializedObject =
+        model.Notify.parse(JSON.decode(JSON.encode(builtObject)));
 
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
 
@@ -61,9 +61,9 @@ abstract class ModelNotify {
   /**
    *
    */
-  static Model.Notify buildObject() {
+  static model.Notify buildObject() {
     final String eventName = 'call-offer';
-    final Model.Notify builtObject = new Model.Notify(eventName);
+    final model.Notify builtObject = new model.Notify(eventName);
 
     expect(builtObject.eventName, equals(eventName));
 
@@ -76,16 +76,16 @@ abstract class ModelNotify {
   static void parse() {
     final String eventName = 'call-offer';
 
-    Model.Notify builtObject = Model.Notify.parse('notify $eventName');
+    model.Notify builtObject = model.Notify.parse('notify $eventName');
 
     expect(builtObject.eventName, equals(eventName));
 
     /// Adding lots of spaces.
-    builtObject = Model.Notify.parse('   notify     $eventName');
+    builtObject = model.Notify.parse('   notify     $eventName');
 
     expect(builtObject.eventName, equals(eventName));
 
-    expect(() => Model.Notify.parse('notif $eventName'),
+    expect(() => model.Notify.parse('notif $eventName'),
         throwsA(new isInstanceOf<FormatException>()));
   }
 }

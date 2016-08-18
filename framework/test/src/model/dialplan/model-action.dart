@@ -40,7 +40,7 @@ abstract class ModelAction {
     final String file = 'sub_1';
     final String note = 'a note';
 
-    Model.Playback builtObject = Model.Action.parse('playback $file ($note)');
+    model.Playback builtObject = model.Action.parse('playback $file ($note)');
 
     expect(builtObject.filename, equals(file));
     expect(builtObject.note, equals(note));
@@ -50,8 +50,8 @@ abstract class ModelAction {
     final String extension = 'sub_1';
     final String note = 'a note';
 
-    Model.Transfer builtObject =
-        Model.Action.parse('transfer $extension ($note)');
+    model.Transfer builtObject =
+        model.Action.parse('transfer $extension ($note)');
 
     expect(builtObject.extension, equals(extension));
     expect(builtObject.note, equals(note));
@@ -61,8 +61,8 @@ abstract class ModelAction {
     final String extension = 'sub_1';
     final String note = 'a note';
 
-    Model.ReceptionTransfer builtObject =
-        Model.Action.parse('reception $extension ($note)');
+    model.ReceptionTransfer builtObject =
+        model.Action.parse('reception $extension ($note)');
 
     expect(builtObject.extension, equals(extension));
     expect(builtObject.note, equals(note));
@@ -73,8 +73,8 @@ abstract class ModelAction {
     final String note = 'a note';
     final String recipient = 'someone@somewhere.org';
 
-    Model.Voicemail builtObject =
-        Model.Action.parse('voicemail $vmBox $recipient ($note)');
+    model.Voicemail builtObject =
+        model.Action.parse('voicemail $vmBox $recipient ($note)');
 
     expect(builtObject.vmBox, equals(vmBox));
     expect(builtObject.note, equals(note));
@@ -86,8 +86,8 @@ abstract class ModelAction {
     final String note = 'a note';
     final String music = 'nice_tunes';
 
-    Model.Enqueue builtObject =
-        Model.Action.parse('enqueue $queue music $music ($note)');
+    model.Enqueue builtObject =
+        model.Action.parse('enqueue $queue music $music ($note)');
 
     expect(builtObject.queueName, equals(queue));
     expect(builtObject.note, equals(note));
@@ -97,7 +97,7 @@ abstract class ModelAction {
   static void parseRingtone() {
     final int count = 3;
 
-    Model.Ringtone builtObject = Model.Action.parse('ringtone $count');
+    model.Ringtone builtObject = model.Action.parse('ringtone $count');
 
     expect(builtObject.count, equals(count));
   }
@@ -105,7 +105,7 @@ abstract class ModelAction {
   static void parseNotify() {
     final String target = 'receptionists';
 
-    Model.Notify builtObject = Model.Action.parse('notify $target');
+    model.Notify builtObject = model.Action.parse('notify $target');
 
     expect(builtObject.eventName, equals(target));
   }
@@ -114,7 +114,7 @@ abstract class ModelAction {
     final String menu = 'ivr_1';
     final String note = 'a note';
 
-    Model.Ivr builtObject = Model.Action.parse('ivr $menu ($note)');
+    model.Ivr builtObject = model.Action.parse('ivr $menu ($note)');
 
     expect(builtObject.menuName, equals(menu));
     expect(builtObject.note, equals(note));
@@ -124,7 +124,7 @@ abstract class ModelAction {
    *
    */
   static void parseUndefined() {
-    expect(() => Model.Action.parse('wrong wrong (just wrong)'),
+    expect(() => model.Action.parse('wrong wrong (just wrong)'),
         throwsA(new isInstanceOf<FormatException>()));
   }
 }

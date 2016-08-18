@@ -26,7 +26,7 @@ abstract class ModelOrganization {
    * Merely asserts that no exceptions arise.
    */
   static void serialization() {
-    Model.Organization builtObject = buildObject();
+    model.Organization builtObject = buildObject();
 
     expect(() => JSON.encode(builtObject), returnsNormally);
   }
@@ -35,11 +35,11 @@ abstract class ModelOrganization {
    * Merely asserts that no exceptions arise.
    */
   static void deserialization() {
-    Model.Organization builtObject = buildObject();
+    model.Organization builtObject = buildObject();
 
     String serializedObject = JSON.encode(builtObject);
-    Model.Organization decodedObject =
-        new Model.Organization.fromMap(JSON.decode(serializedObject));
+    model.Organization decodedObject =
+        new model.Organization.fromMap(JSON.decode(serializedObject));
 
     expect(builtObject.notes, equals(decodedObject.notes));
     expect(builtObject.id, equals(decodedObject.id));
@@ -48,12 +48,12 @@ abstract class ModelOrganization {
     expect(builtObject.toJson(), equals(decodedObject.toJson()));
   }
 
-  static Model.Organization buildObject() {
+  static model.Organization buildObject() {
     final List<String> notes = ['Goldmember'];
     final int id = 42;
     final String name = 'Hey Goldmember!';
 
-    Model.Organization testOrganization = new Model.Organization.empty()
+    model.Organization testOrganization = new model.Organization.empty()
       ..notes = notes
       ..id = id
       ..name = name;

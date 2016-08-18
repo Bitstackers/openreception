@@ -33,9 +33,9 @@ void testModelReceptionDialplan() {
  */
 abstract class ModelReceptionDialplan {
   static void deserialization() {
-    Model.ReceptionDialplan builtObject = buildObject();
-    Model.ReceptionDialplan deserializedObject =
-        Model.ReceptionDialplan.decode(JSON.decode(JSON.encode(builtObject)));
+    model.ReceptionDialplan builtObject = buildObject();
+    model.ReceptionDialplan deserializedObject =
+        model.ReceptionDialplan.decode(JSON.decode(JSON.encode(builtObject)));
 
     expect(builtObject.extension, equals(deserializedObject.extension));
     expect(builtObject.note, equals(deserializedObject.note));
@@ -50,7 +50,7 @@ abstract class ModelReceptionDialplan {
    *
    */
   static void serialization() {
-    Model.ReceptionDialplan builtObject = buildObject();
+    model.ReceptionDialplan builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -60,20 +60,20 @@ abstract class ModelReceptionDialplan {
   /**
    *
    */
-  static Model.ReceptionDialplan buildObject() {
+  static model.ReceptionDialplan buildObject() {
     final bool active = false;
     final String extension = '12345678';
     final String note = 'Just a test reception dialplan';
 
-    final List<Model.HourAction> open = [
-      new Model.HourAction()
-        ..hours = Model.parseMultipleHours('mon-fri 16-17').toList()
-        ..actions = [new Model.Playback('somefile')]
+    final List<model.HourAction> open = [
+      new model.HourAction()
+        ..hours = model.parseMultipleHours('mon-fri 16-17').toList()
+        ..actions = [new model.Playback('somefile')]
     ];
 
-    final List<Model.Action> closed = [new Model.Playback('otherfile')];
+    final List<model.Action> closed = [new model.Playback('otherfile')];
 
-    final Model.ReceptionDialplan builtObject = new Model.ReceptionDialplan()
+    final model.ReceptionDialplan builtObject = new model.ReceptionDialplan()
       ..extension = extension
       ..active = active
       ..note = note

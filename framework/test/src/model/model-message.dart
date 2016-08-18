@@ -24,9 +24,9 @@ void testModelMessage() {
 
 abstract class ModelMessage {
   static void deserialization() {
-    Model.Message obj = buildObject();
-    Model.Message deserializedObj =
-        new Model.Message.fromMap(JSON.decode(JSON.encode(obj)));
+    model.Message obj = buildObject();
+    model.Message deserializedObj =
+        new model.Message.fromMap(JSON.decode(JSON.encode(obj)));
 
     expect(obj.body, equals(deserializedObj.body));
     expect(obj.callerInfo.asMap, equals(deserializedObj.callerInfo.asMap));
@@ -49,7 +49,7 @@ abstract class ModelMessage {
   }
 
   static void serialization() {
-    Model.Message builtObject = buildObject();
+    model.Message builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
 
     expect(serializedObject, isNotNull);
@@ -59,39 +59,39 @@ abstract class ModelMessage {
   /**
    * Build an object, and check that the expected values are present.
    */
-  static Model.Message buildObject() {
-    final Model.CallerInfo info = new Model.CallerInfo.empty()
+  static model.Message buildObject() {
+    final model.CallerInfo info = new model.CallerInfo.empty()
       ..cellPhone = 'Drowned'
       ..company = 'Shifty eyes inc.'
       ..localExtension = 'Just ask for Bob'
       ..name = 'Ian Malcom'
       ..phone = 'Out of order';
 
-    final Model.User sender = ModelUser.buildObject();
+    final model.User sender = ModelUser.buildObject();
     final String callId = 'bad-ass-call';
 
-    Set<Model.MessageEndpoint> rlist = new Set<Model.MessageEndpoint>()
+    Set<model.MessageEndpoint> rlist = new Set<model.MessageEndpoint>()
       ..addAll([
-        new Model.MessageEndpoint.empty()
+        new model.MessageEndpoint.empty()
           ..address = 'somewhere'
           ..name = 'someone'
           ..note = 'The Office'
-          ..type = Model.MessageEndpointType.types.first
+          ..type = model.MessageEndpointType.types.first
       ]);
 
     final messageBody = 'You should really clean up.';
     final createdAt = new DateTime.now();
     final id = 42;
 
-    final Model.MessageContext context = new Model.MessageContext.empty()
+    final model.MessageContext context = new model.MessageContext.empty()
       ..cid = 2
       ..contactName = 'John Doe'
       ..rid = 4
       ..receptionName = 'Nowhere';
 
-    final state = Model.MessageState.values.last;
+    final state = model.MessageState.values.last;
 
-    final Model.Message obj = new Model.Message.empty()
+    final model.Message obj = new model.Message.empty()
       ..body = messageBody
       ..callId = callId
       ..callerInfo = info
@@ -124,9 +124,9 @@ abstract class ModelMessage {
   }
 
   static void messageFlag() {
-    Model.Message builtObject = buildObject();
+    model.Message builtObject = buildObject();
 
-    builtObject.flag = new Model.MessageFlag.empty();
+    builtObject.flag = new model.MessageFlag.empty();
     builtObject.flag.pleaseCall = false;
     builtObject.flag.willCallBack = false;
     builtObject.flag.called = false;
@@ -136,7 +136,7 @@ abstract class ModelMessage {
     expect(builtObject.flag.called, equals(false));
     expect(builtObject.flag.urgent, equals(false));
 
-    builtObject.flag = new Model.MessageFlag.empty();
+    builtObject.flag = new model.MessageFlag.empty();
     builtObject.flag.pleaseCall = true;
     builtObject.flag.willCallBack = true;
     builtObject.flag.called = true;
