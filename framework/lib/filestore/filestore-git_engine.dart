@@ -123,7 +123,7 @@ class GitEngine {
       _log.fine('Directory "$path" found - checking permissions');
 
       final tmpDir = _storeDir.createTempSync();
-      tmpDir.delete();
+      await tmpDir.delete();
 
       final ProcessResult status =
           await Process.run('/usr/bin/git', ['status'], workingDirectory: path);

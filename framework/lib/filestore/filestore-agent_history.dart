@@ -231,7 +231,7 @@ class AgentHistory {
       }
     } else {
       _log.finest('Updating daily report');
-      _saveReport(_reports[_dateKey(new DateTime.now())]);
+      await _saveReport(_reports[_dateKey(new DateTime.now())]);
     }
   }
 
