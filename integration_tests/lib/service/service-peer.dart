@@ -31,7 +31,7 @@ abstract class Peer {
 
     event.PeerState peerStateEvent =
         await receptionist.waitForPeerState(receptionist.user.extension);
-    log.info('Got event ${peerStateEvent.asMap}');
+    log.info('Got event $peerStateEvent');
     expect(peerStateEvent.peer.registered, isTrue);
     expect(peerStateEvent.peer.name, equals(peerName));
 
@@ -45,7 +45,7 @@ abstract class Peer {
     peerStateEvent =
         await receptionist.waitForPeerState(receptionist.user.extension);
 
-    log.info('Got event ${peerStateEvent.asMap}');
+    log.info('Got event $peerStateEvent');
     expect(peerStateEvent.peer.registered, isFalse);
     expect(peerStateEvent.peer.name, equals(peerName));
 
