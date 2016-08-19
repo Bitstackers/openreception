@@ -18,7 +18,7 @@ part of openreception.framework.model.dialplan;
  * for signifying the voicemail action. Serializes to a single-line
  * human-readable string format that may be used in a diaplan language.
  */
-class Voicemail extends Action {
+class Voicemail implements Action {
   final String vmBox;
   String note = '';
   String recipient = '';

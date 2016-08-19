@@ -16,7 +16,7 @@ part of openreception.framework.model.dialplan;
 /**
  * Transfer action.
  */
-class Transfer extends Action {
+class Transfer implements Action {
   final String extension;
   final String note;
 

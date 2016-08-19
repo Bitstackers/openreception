@@ -17,7 +17,7 @@ part of openreception.framework.model.dialplan;
  * ReceptionTransfer action. Represents a dialplan transfer to an internal
  * reception extension.
  */
-class ReceptionTransfer extends Action {
+class ReceptionTransfer implements Action {
   final String extension;
   final String note;
 

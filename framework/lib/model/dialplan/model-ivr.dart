@@ -13,7 +13,7 @@
 
 part of openreception.framework.model.dialplan;
 
-class Ivr extends Action {
+class Ivr implements Action {
   final String menuName;
   final String note;
 

@@ -57,11 +57,6 @@ abstract class Action {
   }
 
   /**
-   * Default constructor (interface).
-   */
-  const Action();
-
-  /**
    * Every action _must_ have a serialization function.
    */
   dynamic toJson();

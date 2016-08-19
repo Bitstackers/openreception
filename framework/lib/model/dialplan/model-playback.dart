@@ -16,12 +16,14 @@ part of openreception.framework.model.dialplan;
 /**
  *
  */
-class Playback extends Action {
+class Playback implements Action {
   final String filename;
   final int repeat;
   final String note;
 
   static const Playback none = const Playback('');
+
+  const Playback(String this.filename, {String this.note: '', this.repeat: 1});
 
   /**
    * Parsing factory.
@@ -73,11 +75,6 @@ class Playback extends Action {
 
     return new Playback(filename, note: note, repeat: repeat);
   }
-
-  /**
-   *
-   */
-  const Playback(String this.filename, {String this.note: '', this.repeat: 1});
 
   /**
    *

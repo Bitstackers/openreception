@@ -13,7 +13,7 @@
 
 part of openreception.framework.model.dialplan;
 
-class Notify extends Action {
+class Notify implements Action {
   final String eventName;
 
   const Notify(this.eventName);

@@ -13,7 +13,7 @@
 
 part of openreception.framework.model.dialplan;
 
-class IvrTopmenu extends IvrEntry {
+class IvrTopmenu implements IvrEntry {
   @override
   final String digits;
 
