@@ -192,7 +192,7 @@ class User {
     try {
       return okJson(await _userStore.getByIdentity(identity));
     } on storage.NotFound catch (error) {
-      notFound(error.toString());
+      return notFound(error.toString());
     }
   }
 
