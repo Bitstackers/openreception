@@ -11,19 +11,16 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
+/// Various bit's and pieces of tools and utilites.
 library openreception.framework.utilities;
 
 import 'package:intl/intl.dart';
 
-/**
- * Helper class for handling language specific weekday names.
- */
+/// Helper class for handling language specific weekday names.
 class WeekDays {
   final Map<int, String> _map = new Map<int, String>();
 
-  /**
-   * Constructor.
-   */
+  /// Create a new WeekDays object, providing names for each day.
   WeekDays(String monday, String tuesday, String wednesday, String thursday,
       String friday, String saturday, String sunday) {
     _map[1] = monday;
@@ -35,39 +32,47 @@ class WeekDays {
     _map[7] = sunday;
   }
 
+  /// Localized monday string
   String get monday => _map[1];
+
+  /// Localized tuesday string
   String get tuesday => _map[2];
+
+  /// Localized wednesday string
   String get wednesday => _map[3];
+
+  /// Localized thursday string
   String get thursday => _map[4];
+
+  /// Localized friday string
   String get friday => _map[5];
+
+  /// Localized saturday string
   String get saturday => _map[6];
+
+  /// Localized sunday string
   String get sunday => _map[7];
 
-  /**
-   * Return the name of the [weekDayNumber] day. Monday is 1 and Sunday is 7.
-   */
+  /// Return the name of the [weekDayNumber] day. Monday is 1 and Sunday is 7.
   String name(int weekDayNumber) => _map[weekDayNumber];
 }
 
-/**
- * Serialization function for transferring time from server to client and visa
- * versa.
- * May return null to indicate 'never';
- */
-int dateTimeToUnixTimestamp(DateTime time) =>
-    time != null ? time.millisecondsSinceEpoch : null;
+/// Serialization function for transferring time from server to client and visa
+/// versa.
+/// May return DateTime [never].
+int dateTimeToUnixTimestamp(DateTime time) => time.isAtSameMomentAs(never)
+    ? never.millisecondsSinceEpoch
+    : time.millisecondsSinceEpoch;
 
-/**
- * De-serialization function for transferring time from server to client and
- * visa versa.
- * May return null to indicate 'never';
- */
-DateTime unixTimestampToDateTime(int secondsSinceEpoch) => secondsSinceEpoch !=
-    null ? new DateTime.fromMillisecondsSinceEpoch(secondsSinceEpoch) : null;
+/// De-serialization function for transferring time from server to client and
+/// visa versa.
+/// May return DateTime [never].
+DateTime unixTimestampToDateTime(int millisecondsSinceEpoch) =>
+    millisecondsSinceEpoch != never.millisecondsSinceEpoch
+        ? new DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch)
+        : never;
 
-/**
- *
- */
+/// Remove the trailing slashes from [host].
 String removeTailingSlashes(Uri host) {
   String _trimmedHostname = host.toString();
 
@@ -79,9 +84,7 @@ String removeTailingSlashes(Uri host) {
   return _trimmedHostname;
 }
 
-/**
- * Return the [timestamp] in a nice human-readable format.
- */
+/// Return the [timestamp] in a nice human-readable format.
 String humanReadableTimestamp(DateTime timestamp, WeekDays weekDays) {
   final DateTime now = new DateTime.now();
   final StringBuffer sb = new StringBuffer();
@@ -108,9 +111,7 @@ String humanReadableTimestamp(DateTime timestamp, WeekDays weekDays) {
   return sb.toString();
 }
 
-/**
- * Obfuscate a password of length 3 or above.
- */
+/// Obfuscate a password of length 3 or above.
 String obfuscatePassword(String string) => string.length > 3
     ? '${string.split('').first}'
         '${string.split('').skip(1).take(string.length-2)
@@ -118,21 +119,15 @@ String obfuscatePassword(String string) => string.length > 3
         '${string.substring(string.length -1)}'
     : string;
 
-/**
- *
- */
+/// 'Magic' DateTime indicating that something has neber happended.
 final DateTime never = _epoch;
 
-/**
- *
- */
+/// Epoch. Used by [never].
 final DateTime _epoch = new DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
 
-/**
- * Return the weeknumber for [timestamp]
- *
- * Reference: https://en.wikipedia.org/wiki/ISO_week_date
- */
+/// Return the weeknumber for [timestamp]
+///
+/// Reference: https://en.wikipedia.org/wiki/ISO_week_date
 int weekNumber(DateTime timestamp) {
   final int ordinalDay =
       timestamp.difference(new DateTime(timestamp.year)).inDays + 1;
