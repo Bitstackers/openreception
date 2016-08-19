@@ -62,27 +62,21 @@ class ContactReference implements ObjectReference {
 class ContactChange implements ObjectChange {
   @override
   final ChangeType changeType;
+
   @override
-  ObjectType get objectType => ObjectType.contact;
+  final ObjectType objectType = ObjectType.contact;
   final int cid;
 
-  /**
-   *
-   */
   ContactChange(this.changeType, this.cid);
 
+  ContactChange.fromJson(Map map)
+      : changeType = changeTypeFromString(map[key.change]),
+        cid = map[key.cid];
   /**
    *
    */
   static ContactChange decode(Map map) =>
       new ContactChange(changeTypeFromString(map[key.change]), map[key.cid]);
-
-  /**
-   *
-   */
-  ContactChange.fromJson(Map map)
-      : changeType = changeTypeFromString(map[key.change]),
-        cid = map[key.cid];
 
   /**
    *
@@ -121,11 +115,11 @@ class ReceptionContact {
   final BaseContact contact;
   final ReceptionAttributes attr;
 
+  ReceptionContact(this.contact, this.attr);
+
   ReceptionContact.empty()
       : contact = new BaseContact.empty(),
         attr = new ReceptionAttributes.empty();
-
-  ReceptionContact(this.contact, this.attr);
 
   static ReceptionContact decode(Map map) => new ReceptionContact(
       BaseContact.decode(map[key.contact]),
@@ -185,11 +179,6 @@ class BaseContact {
   BaseContact.empty();
 
   /**
-   * Decoding factory.
-   */
-  static BaseContact decode(Map map) => new BaseContact.fromMap(map);
-
-  /**
    * Deserializing constructor.
    */
   BaseContact.fromMap(Map map)
@@ -197,6 +186,10 @@ class BaseContact {
         name = map[key.name],
         type = map[key.contactType],
         enabled = map[key.enabled];
+  /**
+   * Decoding factory.
+   */
+  static BaseContact decode(Map map) => new BaseContact.fromMap(map);
 
   /**
    *

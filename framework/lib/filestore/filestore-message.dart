@@ -43,23 +43,8 @@ class Message implements storage.Message {
   /// Index of all messages currently stored as drafts.
   final Set<int> _draftsIndex = new Set<int>();
 
-  /// Returns once the filestore is initializes.
-  Future get initialized =>
-      _git != null ? _git.initialized : new Future.value(true);
-
-  /// Awaits if there is already an operation in progress and returns
-  /// whenever the filestore is ready to process the next request.
-  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
-
   /// Internal bus for injecting changes into.
   final Bus<event.MessageChange> _changeBus = new Bus<event.MessageChange>();
-
-  /// Emits [event.MessageChange] upon every object change.
-  Stream<event.MessageChange> get changeStream => _changeBus.stream;
-
-  /// Retrieve the next available ID from the sequencer, that implicitly
-  /// increases it.
-  int get _nextId => _sequencer.nextInt();
 
   /// Default Constructor.
   Message(String this.path, [GitEngine this._git]) {
@@ -74,6 +59,22 @@ class Message implements storage.Message {
 
     _buildIndex();
   }
+
+  /// Returns the next available ID from the sequencer. Notice that every
+  /// call to this function will increase the counter in the
+  /// sequencer object.
+  int get _nextId => _sequencer.nextInt();
+
+  /// Emits [event.MessageChange] upon every object change.
+  Stream<event.MessageChange> get changeStream => _changeBus.stream;
+
+  /// Returns once the filestore is initializes.
+  Future get initialized =>
+      _git != null ? _git.initialized : new Future.value(true);
+
+  /// Awaits if there is already an operation in progress and returns
+  /// whenever the filestore is ready to process the next request.
+  Future get ready async => _git != null ? _git.whenReady : true;
 
   /// Turns [DateTime] into a date-dir path and casts it into a [Directory].
   Directory _dateDir(DateTime day) =>

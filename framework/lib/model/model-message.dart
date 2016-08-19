@@ -39,30 +39,7 @@ class Message {
   /// The user of the sender.
   User sender;
 
-  bool get isClosed => state == MessageState.closed;
-  bool get isDraft => state == MessageState.draft;
-  bool get isSent => state == MessageState.sent;
-  bool get isUnknown => state == MessageState.unknown;
-
   Message.empty();
-
-  Iterable<MessageEndpoint> get emailTo => recipients
-      .where((MessageEndpoint ep) => ep.type == MessageEndpointType.emailTo);
-
-  Iterable<MessageEndpoint> get emailCc => recipients
-      .where((MessageEndpoint ep) => ep.type == MessageEndpointType.emailCc);
-
-  Iterable<MessageEndpoint> get emailBcc => recipients
-      .where((MessageEndpoint ep) => ep.type == MessageEndpointType.emailBcc);
-
-  Iterable<MessageEndpoint> get sms => recipients
-      .where((MessageEndpoint ep) => ep.type == MessageEndpointType.sms);
-
-  bool get hasRecpients => recipients.isNotEmpty;
-
-  Map toJson() => this.asMap;
-
-  static Message decode(Map map) => new Message.fromMap(map);
 
   /**
    *
@@ -89,6 +66,29 @@ class Message {
       state = MessageState.values[map[key.state]];
     }
   }
+
+  bool get isClosed => state == MessageState.closed;
+  bool get isDraft => state == MessageState.draft;
+  bool get isSent => state == MessageState.sent;
+  bool get isUnknown => state == MessageState.unknown;
+
+  Iterable<MessageEndpoint> get emailTo => recipients
+      .where((MessageEndpoint ep) => ep.type == MessageEndpointType.emailTo);
+
+  Iterable<MessageEndpoint> get emailCc => recipients
+      .where((MessageEndpoint ep) => ep.type == MessageEndpointType.emailCc);
+
+  Iterable<MessageEndpoint> get emailBcc => recipients
+      .where((MessageEndpoint ep) => ep.type == MessageEndpointType.emailBcc);
+
+  Iterable<MessageEndpoint> get sms => recipients
+      .where((MessageEndpoint ep) => ep.type == MessageEndpointType.sms);
+
+  bool get hasRecpients => recipients.isNotEmpty;
+
+  Map toJson() => this.asMap;
+
+  static Message decode(Map map) => new Message.fromMap(map);
 
   Map get asMap => {
         key.id: id,

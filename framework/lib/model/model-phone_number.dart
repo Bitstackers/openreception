@@ -18,10 +18,18 @@ part of openreception.framework.model;
  * contact.
  */
 class PhoneNumber {
-  String get destination => _destination;
   String _destination = '';
   bool confidential = false;
   String note = '';
+
+  /// Default empty constructor.
+  PhoneNumber.empty();
+
+  /// Deserializing constructor.
+  PhoneNumber.fromMap(Map map)
+      : note = map[key.note],
+        _destination = map[key.destination],
+        confidential = map[key.confidential];
 
   set destination(String newDestination) {
     try {
@@ -34,17 +42,11 @@ class PhoneNumber {
     _destination = newDestination;
   }
 
+  String get destination => _destination;
+
   String get normalizedDestination => _normalize(destination);
 
   String _normalize(String str) => str.replaceAll(' ', '').replaceAll('+', '');
-
-  /**
-   * Deserializing constructor.
-   */
-  PhoneNumber.fromMap(Map map)
-      : note = map[key.note],
-        _destination = map[key.destination],
-        confidential = map[key.confidential];
 
   /**
    *
@@ -60,11 +62,6 @@ class PhoneNumber {
       other is PhoneNumber &&
       normalizedDestination.toLowerCase() ==
           other.normalizedDestination.toLowerCase();
-
-  /**
-   * Default empty constructor.
-   */
-  PhoneNumber.empty();
 
   /**
    * Map representation of the object. Serialization function.

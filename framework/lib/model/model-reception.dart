@@ -34,12 +34,6 @@ class Reception {
   List<PhoneNumber> phoneNumbers = [];
   String miniWiki = '';
 
-  String get shortGreeting =>
-      this._shortGreeting.isNotEmpty ? this._shortGreeting : this.greeting;
-  set shortGreeting(String newGreeting) {
-    this._shortGreeting = newGreeting;
-  }
-
   String dialplan;
   String greeting;
   String otherData;
@@ -47,6 +41,49 @@ class Reception {
   String product;
   bool enabled = false;
 
+  static final Reception noReception = new Reception.empty();
+
+  static Reception _selectedReception = noReception;
+
+  static Bus<Reception> _receptionChange = new Bus<Reception>();
+
+  /// Default initializing contructor
+  Reception.empty();
+
+  Reception.fromMap(Map receptionMap) {
+    try {
+      this
+        ..id = receptionMap[key.id]
+        ..oid = receptionMap[key.oid]
+        ..name = receptionMap[key.name]
+        ..enabled = receptionMap[key.enabled]
+        ..dialplan = receptionMap[key.dialplan];
+
+      if (receptionMap[key.attributes] != null) {
+        attributes = receptionMap[key.attributes];
+      }
+    } catch (error) {
+      throw new ArgumentError('Invalid data in map');
+    }
+  }
+
+  String get shortGreeting =>
+      this._shortGreeting.isNotEmpty ? this._shortGreeting : this.greeting;
+  set shortGreeting(String newGreeting) {
+    this._shortGreeting = newGreeting;
+  }
+
+  static Reception decode(Map map) => new Reception.fromMap(map);
+
+  static Stream<Reception> get onReceptionChange => _receptionChange.stream;
+
+  static Reception get selectedReception => _selectedReception;
+  static set selectedReception(Reception reception) {
+    _selectedReception = reception;
+    _receptionChange.fire(_selectedReception);
+  }
+
+  //@deprecated
   Map get attributes => {
         key.addresses: addresses,
         key.alternateNames: alternateNames,
@@ -67,6 +104,7 @@ class Reception {
         key.websites: websites
       };
 
+//@deprecated
   set attributes(Map attributes) {
     this
       ..addresses = attributes[key.addresses] as List<String>
@@ -91,41 +129,6 @@ class Reception {
           : ''
       ..vatNumbers = attributes[key.vatNumbers] as List<String>
       ..websites = attributes[key.websites] as List<String>;
-  }
-
-  static final Reception noReception = new Reception.empty();
-
-  static Reception _selectedReception = noReception;
-
-  static Bus<Reception> _receptionChange = new Bus<Reception>();
-  static Stream<Reception> get onReceptionChange => _receptionChange.stream;
-
-  static Reception get selectedReception => _selectedReception;
-  static set selectedReception(Reception reception) {
-    _selectedReception = reception;
-    _receptionChange.fire(_selectedReception);
-  }
-
-  /// Default initializing contructor
-  Reception.empty();
-
-  static Reception decode(Map map) => new Reception.fromMap(map);
-
-  Reception.fromMap(Map receptionMap) {
-    try {
-      this
-        ..id = receptionMap[key.id]
-        ..oid = receptionMap[key.oid]
-        ..name = receptionMap[key.name]
-        ..enabled = receptionMap[key.enabled]
-        ..dialplan = receptionMap[key.dialplan];
-
-      if (receptionMap[key.attributes] != null) {
-        attributes = receptionMap[key.attributes];
-      }
-    } catch (error) {
-      throw new ArgumentError('Invalid data in map');
-    }
   }
 
   /**

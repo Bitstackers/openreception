@@ -46,19 +46,9 @@ class Contact implements storage.Contact {
   /// changelog file.
   final bool logChanges;
 
-  Stream<event.ContactChange> get onContactChange => _changeBus.stream;
-  Stream<event.ReceptionData> get onReceptionDataChange =>
-      _receptionDataChangeBus.stream;
-
   Bus<event.ContactChange> _changeBus = new Bus<event.ContactChange>();
   Bus<event.ReceptionData> _receptionDataChangeBus =
       new Bus<event.ReceptionData>();
-
-  Future get initialized =>
-      _git != null ? _git.initialized : new Future.value(true);
-  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
-
-  int get _nextId => _sequencer.nextInt();
 
   /// Creates a new [Contact] object-filestore at [path].
   ///
@@ -89,9 +79,6 @@ class Contact implements storage.Contact {
         ge, enableChangelog, trashDir);
   }
 
-  /**
-   *
-   */
   Contact._internal(String this.path, this.receptionStore, this.calendarStore,
       GitEngine this._git, this.logChanges, this.trashDir) {
     _buildIndex();
@@ -100,9 +87,20 @@ class Contact implements storage.Contact {
     }
   }
 
-  /**
-   * Rebuilds the entire index.
-   */
+  /// Returns the next available ID from the sequencer. Notice that every
+  /// call to this function will increase the counter in the
+  /// sequencer object.
+  int get _nextId => _sequencer.nextInt();
+
+  Future get initialized =>
+      _git != null ? _git.initialized : new Future.value(true);
+  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
+
+  Stream<event.ContactChange> get onContactChange => _changeBus.stream;
+  Stream<event.ReceptionData> get onReceptionDataChange =>
+      _receptionDataChangeBus.stream;
+
+  /// Rebuilds the entire index.
   void _buildIndex() {
     int highestId = 0;
     Stopwatch timer = new Stopwatch()..start();

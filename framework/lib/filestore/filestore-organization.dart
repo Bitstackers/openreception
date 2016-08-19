@@ -25,14 +25,6 @@ class Organization implements storage.Organization {
 
   Bus<event.OrganizationChange> _changeBus =
       new Bus<event.OrganizationChange>();
-  Stream<event.OrganizationChange> get onOrganizationChange =>
-      _changeBus.stream;
-
-  Future get initialized =>
-      _git != null ? _git.initialized : new Future.value(true);
-  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
-
-  int get _nextId => _sequencer.nextInt();
 
   /**
    *
@@ -77,13 +69,18 @@ class Organization implements storage.Organization {
       bool this.logChanges,
       Directory this.trashDir);
 
-  /**
-   *
-   */
+  /// Returns the next available ID from the sequencer. Notice that every
+  /// call to this function will increase the counter in the
+  /// sequencer object.
+  int get _nextId => _sequencer.nextInt();
 
-  /**
-   *
-   */
+  Stream<event.OrganizationChange> get onOrganizationChange =>
+      _changeBus.stream;
+
+  Future get initialized =>
+      _git != null ? _git.initialized : new Future.value(true);
+  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
+
   Future<Map<String, Map<String, String>>> receptionMap() =>
       throw new UnimplementedError();
 

@@ -16,8 +16,9 @@ part of openreception.framework.model;
 class ReceptionAttributeChange implements ObjectChange {
   @override
   final ChangeType changeType;
+
   @override
-  ObjectType get objectType => ObjectType.receptionAttribute;
+  final ObjectType objectType = ObjectType.receptionAttribute;
   final int cid;
   final int rid;
 
@@ -29,17 +30,14 @@ class ReceptionAttributeChange implements ObjectChange {
   /**
    *
    */
-  static ReceptionAttributeChange decode(Map map) =>
-      new ReceptionAttributeChange(
-          changeTypeFromString(map[key.change]), map[key.cid], map[key.rid]);
-
-  /**
-   *
-   */
   ReceptionAttributeChange.fromJson(Map map)
       : changeType = changeTypeFromString(map[key.change]),
         cid = map[key.cid],
         rid = map[key.rid];
+
+  static ReceptionAttributeChange decode(Map map) =>
+      new ReceptionAttributeChange(
+          changeTypeFromString(map[key.change]), map[key.cid], map[key.rid]);
 
   /**
    *
@@ -75,30 +73,6 @@ class ReceptionAttributes {
   List<String> departments = [];
   List<String> infos = [];
 
-  static ReceptionAttributes decode(Map map) =>
-      new ReceptionAttributes.fromMap(map);
-
-  Map toJson() => {
-        key.cid: cid,
-        key.rid: receptionId,
-        key.departments: departments,
-        key.phones: new List<Map>.from(phoneNumbers.map((p) => p.toJson())),
-        key.endpoints: new List<Map>.from(endpoints.map((e) => e.toJson())),
-        key.backup: backupContacts,
-        key.emailaddresses: emailaddresses,
-        key.handling: handling,
-        key.workhours: workhours,
-        key.tags: tags,
-        key.infos: infos,
-        key.titles: titles,
-        key.relations: relations,
-        key.responsibilities: responsibilities,
-        key.messagePrerequisites: messagePrerequisites
-      };
-
-  /**
-   *
-   */
   ReceptionAttributes.fromMap(Map map)
       : phoneNumbers =
             new List<PhoneNumber>.from(map[key.phones].map(PhoneNumber.decode)),
@@ -122,6 +96,27 @@ class ReceptionAttributes {
    * [ReceptionAttributes] empty constructor.
    */
   ReceptionAttributes.empty();
+
+  static ReceptionAttributes decode(Map map) =>
+      new ReceptionAttributes.fromMap(map);
+
+  Map toJson() => {
+        key.cid: cid,
+        key.rid: receptionId,
+        key.departments: departments,
+        key.phones: new List<Map>.from(phoneNumbers.map((p) => p.toJson())),
+        key.endpoints: new List<Map>.from(endpoints.map((e) => e.toJson())),
+        key.backup: backupContacts,
+        key.emailaddresses: emailaddresses,
+        key.handling: handling,
+        key.workhours: workhours,
+        key.tags: tags,
+        key.infos: infos,
+        key.titles: titles,
+        key.relations: relations,
+        key.responsibilities: responsibilities,
+        key.messagePrerequisites: messagePrerequisites
+      };
 
   bool get isEmpty => cid == BaseContact.noId;
   bool get isNotEmpty => !isEmpty;

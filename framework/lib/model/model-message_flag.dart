@@ -23,11 +23,6 @@ class MessageFlag {
   bool urgent = false;
 
   /**
-   * Default empty constructor.
-   */
-  MessageFlag.empty();
-
-  /**
    * Default constructor.
    */
   MessageFlag(Iterable<String> flags) {
@@ -36,6 +31,11 @@ class MessageFlag {
     called = flags.contains(key.called);
     urgent = flags.contains(key.urgent);
   }
+
+  /**
+   * Default empty constructor.
+   */
+  MessageFlag.empty();
 
   /**
    * JSON serialization function.

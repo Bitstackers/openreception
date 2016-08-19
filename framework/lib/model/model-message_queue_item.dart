@@ -27,23 +27,6 @@ class MessageQueueEntry {
   Message message = new Message.empty();
 
   /**
-   * Decoding factory.
-   */
-  static MessageQueueEntry decode(Map map) =>
-      new MessageQueueEntry.fromMap(map);
-
-  Iterable<MessageEndpoint> get handledRecipients => _handledRecipients;
-
-  /**
-   * Update the handled recipients set. This operation will automatically
-   * remove the handled recipients from the unhandled set.
-   */
-  set handledRecipients(Iterable<MessageEndpoint> handled) {
-    _unhandledRecipients = _unhandledRecipients.difference(handled.toSet());
-    _handledRecipients.addAll(handled);
-  }
-
-  /**
    * Default empty constructor.
    */
   MessageQueueEntry.empty() : createdAt = new DateTime.now();
@@ -61,6 +44,22 @@ class MessageQueueEntry {
         _unhandledRecipients = new Set.from(
             map[key.unhandledRecipients].map(MessageEndpoint.decode)),
         tries = map[key.tries];
+
+  /**
+   * Decoding factory.
+   */
+  static MessageQueueEntry decode(Map map) =>
+      new MessageQueueEntry.fromMap(map);
+
+  Iterable<MessageEndpoint> get handledRecipients => _handledRecipients;
+  /**
+   * Update the handled recipients set. This operation will automatically
+   * remove the handled recipients from the unhandled set.
+   */
+  set handledRecipients(Iterable<MessageEndpoint> handled) {
+    _unhandledRecipients = _unhandledRecipients.difference(handled.toSet());
+    _handledRecipients.addAll(handled);
+  }
 
   /**
    * Serialization function

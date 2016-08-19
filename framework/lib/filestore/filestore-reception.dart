@@ -23,13 +23,6 @@ class Reception implements storage.Reception {
   final Directory trashDir;
 
   Bus<event.ReceptionChange> _changeBus = new Bus<event.ReceptionChange>();
-  Stream<event.ReceptionChange> get onReceptionChange => _changeBus.stream;
-
-  Future get initialized =>
-      _git != null ? _git.initialized : new Future.value(true);
-  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
-
-  int get _nextId => _sequencer.nextInt();
 
   /**
    *
@@ -67,9 +60,17 @@ class Reception implements storage.Reception {
     }
   }
 
-  /**
-   *
-   */
+  Stream<event.ReceptionChange> get onReceptionChange => _changeBus.stream;
+
+  Future get initialized =>
+      _git != null ? _git.initialized : new Future.value(true);
+  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
+
+  /// Returns the next available ID from the sequencer. Notice that every
+  /// call to this function will increase the counter in the
+  /// sequencer object.
+  int get _nextId => _sequencer.nextInt();
+
   Future<Iterable<model.ReceptionReference>> _receptionsOfOrg(int oid) async {
     final dirs = new Directory(path).listSync().where((fse) =>
         isDirectory(fse) &&

@@ -36,8 +36,9 @@ abstract class UserGroups {
 class UserChange implements ObjectChange {
   @override
   final ChangeType changeType;
+
   @override
-  ObjectType get objectType => ObjectType.user;
+  final ObjectType objectType = ObjectType.user;
   final int uid;
 
   /**
@@ -45,18 +46,15 @@ class UserChange implements ObjectChange {
    */
   UserChange(this.changeType, this.uid);
 
+  UserChange.fromJson(Map map)
+      : changeType = changeTypeFromString(map[key.change]),
+        uid = map[key.uid];
+
   /**
    *
    */
   static UserChange decode(Map map) =>
       new UserChange(changeTypeFromString(map[key.change]), map[key.uid]);
-
-  /**
-   *
-   */
-  UserChange.fromJson(Map map)
-      : changeType = changeTypeFromString(map[key.change]),
-        uid = map[key.uid];
 
   /**
    *
@@ -112,11 +110,6 @@ class User {
   User.empty();
 
   /**
-   * Deserializing factory
-   */
-  static User decode(Map map) => new User.fromMap(map);
-
-  /**
    * Constructor.
    */
   User.fromMap(Map map)
@@ -131,6 +124,10 @@ class User {
             ? (map['remote_attributes'] as Map)['picture']
             : '';
 
+  /**
+   * Deserializing factory
+   */
+  static User decode(Map map) => new User.fromMap(map);
   /**
    *
    */

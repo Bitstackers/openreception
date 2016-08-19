@@ -27,6 +27,8 @@ class MessageHistory {
   final int uid;
   final DateTime createdAt;
 
+  MessageHistory(this.mid, this.uid, this.createdAt);
+
   /**
    *
    */
@@ -38,11 +40,6 @@ class MessageHistory {
 
     return new MessageHistory(mid, uid, createdAt);
   }
-
-  /**
-   *
-   */
-  MessageHistory(this.mid, this.uid, this.createdAt);
 
   /**
    *
@@ -181,14 +178,20 @@ class DailyReport {
   final Set<MessageHistory> messageHistory = new Set();
   final Set<UserStateHistory> userStateHistory = new Set();
 
+  /// Create a new empty report.
+  DailyReport.empty();
+
+  DailyReport.fromMap(Map map) {
+    callHistory.addAll((map['calls'] as Iterable)
+        .map((Map chMap) => new HistoricCall.fromMap(chMap)));
+
+    messageHistory.addAll((map['messages'] as Iterable)
+        .map((Map chMap) => new MessageHistory.fromMap(chMap)));
+  }
+
   /// Idicated whether or not this report has actual history entries.
   bool get isEmpty =>
       callHistory.isEmpty && messageHistory.isEmpty && userStateHistory.isEmpty;
-
-  /**
-   * Create a new empty report.
-   */
-  DailyReport.empty();
 
   ///
   DateTime get day {
@@ -209,17 +212,6 @@ class DailyReport {
     }
 
     return util.never;
-  }
-
-  /**
-   *
-   */
-  DailyReport.fromMap(Map map) {
-    callHistory.addAll((map['calls'] as Iterable)
-        .map((Map chMap) => new HistoricCall.fromMap(chMap)));
-
-    messageHistory.addAll((map['messages'] as Iterable)
-        .map((Map chMap) => new MessageHistory.fromMap(chMap)));
   }
 
   /**
@@ -300,6 +292,28 @@ class HistoricCall {
   final bool inbound;
   final List<_HistoricCallEvent> _events = [];
 
+  HistoricCall.fromActiveCall(ActiveCall ac)
+      : callId = ac.callId,
+        uid = ac.assignee,
+        rid = ac.rid,
+        cid = ac.cid,
+        inbound = ac.inbound {
+    _HistoricCallEvent simplifyEvent(_event.CallEvent ce) =>
+        new _HistoricCallEvent(ce.timestamp, ce.eventName);
+
+    _events.addAll(ac._events.map(simplifyEvent));
+  }
+
+  HistoricCall.fromMap(Map map)
+      : callId = map['id'],
+        uid = map['uid'],
+        rid = map['rid'],
+        cid = map['cid'],
+        inbound = map['in'] {
+    _events.addAll((map['es'] as Iterable)
+        .map((map) => new _HistoricCallEvent.fromJson(map)));
+  }
+
   bool get unAssigned => uid == User.noId;
 
   /**
@@ -352,37 +366,6 @@ class HistoricCall {
     return hangupEvent.timestamp.difference(offerEvent.timestamp);
   }
 
-  /**
-   *
-   */
-  HistoricCall.fromActiveCall(ActiveCall ac)
-      : callId = ac.callId,
-        uid = ac.assignee,
-        rid = ac.rid,
-        cid = ac.cid,
-        inbound = ac.inbound {
-    _HistoricCallEvent simplifyEvent(_event.CallEvent ce) =>
-        new _HistoricCallEvent(ce.timestamp, ce.eventName);
-
-    _events.addAll(ac._events.map(simplifyEvent));
-  }
-
-  /**
-   *
-   */
-  HistoricCall.fromMap(Map map)
-      : callId = map['id'],
-        uid = map['uid'],
-        rid = map['rid'],
-        cid = map['cid'],
-        inbound = map['in'] {
-    _events.addAll((map['es'] as Iterable)
-        .map((map) => new _HistoricCallEvent.fromJson(map)));
-  }
-
-  /**
-   *
-   */
   Map toJson() => {
         'id': callId,
         'uid': uid,
@@ -406,6 +389,8 @@ class HistoricCall {
 class ActiveCall {
   final List<_event.CallEvent> _events = [];
 
+  ActiveCall.empty();
+
   ///
   int get rid => _events
       .firstWhere((ce) => ce.call.rid != Reception.noId,
@@ -419,11 +404,6 @@ class ActiveCall {
           orElse: () => new _event.CallOffer(Call.noCall))
       .call
       .cid;
-
-  /**
-   *
-   */
-  ActiveCall.empty();
 
   /**
    *

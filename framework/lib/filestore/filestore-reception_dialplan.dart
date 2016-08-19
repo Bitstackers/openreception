@@ -21,11 +21,6 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   final Directory trashDir;
 
   Bus<event.DialplanChange> _changeBus = new Bus<event.DialplanChange>();
-  Stream<event.DialplanChange> get onChange => _changeBus.stream;
-
-  Future get initialized =>
-      _git != null ? _git.initialized : new Future.value(true);
-  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
   /**
    *
@@ -54,6 +49,12 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
    */
   ReceptionDialplan._internal(String this.path,
       [GitEngine this._git, bool this.logChanges, this.trashDir]);
+
+  Stream<event.DialplanChange> get onChange => _changeBus.stream;
+
+  Future get initialized =>
+      _git != null ? _git.initialized : new Future.value(true);
+  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
   /**
    *

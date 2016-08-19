@@ -13,16 +13,14 @@
 
 part of openreception.framework.model.dialplan;
 
-/**
- * Abstract super-class for [Action]s available for the dialplan.
- */
+///Abstract super-class for [Action]s available for the dialplan.
 abstract class Action {
-  /**
-   * Parsing constructor. Will return a specific [Action] (such as [Transfer]
-   * or [Voicemail]. Will throw or propagate [FormatException] on parse errors.
-   * Note: Every specialization of an [Action] _must_ override the [parse]
-   * method. Otherwise a stack overflow will occur.
-   */
+  /// Parsing constructor.
+  ///
+  /// Will return a specific [Action] (such as [Transfer] or [Voicemail]. Will
+  /// throw or propagate [FormatException] on parse errors. Note: Every
+  /// specialization of an [Action] _must_ override the [parse] method.
+  /// Otherwise a stack overflow will occur.
   static Action parse(dynamic buffer) {
     final consumed = consumeWord(buffer);
 

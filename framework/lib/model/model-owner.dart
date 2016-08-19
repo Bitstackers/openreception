@@ -22,11 +22,8 @@ const String _receptionKey = 'r';
 class Owner {
   static final Owner none = const Owner();
 
-  int get id => 0;
+  const Owner();
 
-  /**
-   *
-   */
   factory Owner.parse(String buffer) {
     final key = buffer.split(':').first;
     if (key == _receptionKey) {
@@ -40,16 +37,13 @@ class Owner {
     }
   }
 
+  int get id => 0;
+
   /**
    *
    */
   @override
   bool operator ==(Object other) => other is Owner && id == other.id;
-
-  /**
-   *
-   */
-  const Owner();
 
   /**
    *

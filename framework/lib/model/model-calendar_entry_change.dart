@@ -17,7 +17,7 @@ class CalendarChange implements ObjectChange {
   @override
   final ChangeType changeType;
   @override
-  ObjectType get objectType => ObjectType.calendar;
+  final ObjectType objectType = ObjectType.calendar;
   final int eid;
 
   /**

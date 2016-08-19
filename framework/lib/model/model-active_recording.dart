@@ -18,8 +18,6 @@ part of openreception.framework.model;
  */
 class ActiveRecording {
   final String agentChannel;
-  @deprecated
-  String get uuid => agentChannel;
   final String path;
   final DateTime started;
 
@@ -29,17 +27,18 @@ class ActiveRecording {
   ActiveRecording(this.agentChannel, this.path) : started = new DateTime.now();
 
   /**
-   * Deconding factory.
-   */
-  static ActiveRecording decode(Map map) => new ActiveRecording.fromMap(map);
-
-  /**
    * Deserializing constructor.
    */
   ActiveRecording.fromMap(Map map)
       : agentChannel = map[key.agentChannel],
         path = map[key.path],
         started = util.unixTimestampToDateTime(map[key.started]);
+
+  /// Decoding factory.
+  static ActiveRecording decode(Map map) => new ActiveRecording.fromMap(map);
+
+  @deprecated
+  String get uuid => agentChannel;
 
   /**
    * Serialization function.

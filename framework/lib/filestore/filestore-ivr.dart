@@ -21,15 +21,7 @@ class Ivr implements storage.Ivr {
   final Directory trashDir;
 
   Bus<event.IvrMenuChange> _changeBus = new Bus<event.IvrMenuChange>();
-  Stream<event.IvrMenuChange> get onChange => _changeBus.stream;
 
-  Future get initialized =>
-      _git != null ? _git.initialized : new Future.value(true);
-  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
-
-  /**
-   *
-   */
   factory Ivr(String path, [GitEngine revisionEngine, bool enableChangelog]) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
@@ -46,15 +38,13 @@ class Ivr implements storage.Ivr {
         (enableChangelog != null) ? enableChangelog : true, trashDir);
   }
 
-  /**
-   *
-   */
   Ivr._internal(
       String this.path, GitEngine this._git, this.logChanges, this.trashDir);
 
-  /**
-   *
-   */
+  Future get initialized =>
+      _git != null ? _git.initialized : new Future.value(true);
+  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
+  Stream<event.IvrMenuChange> get onChange => _changeBus.stream;
   @override
   Future<model.IvrMenu> create(model.IvrMenu menu, model.User modifier) async {
     final Directory menuDir = new Directory('$path/${menu.name}')..createSync();

@@ -22,13 +22,6 @@ class User implements storage.User {
   final Directory trashDir;
 
   Bus<event.UserChange> _changeBus = new Bus<event.UserChange>();
-  Stream<event.UserChange> get onUserChange => _changeBus.stream;
-
-  Future get initialized =>
-      _git != null ? _git.initialized : new Future.value(true);
-  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
-
-  int get _nextId => _sequencer.nextInt();
 
   /**
    *
@@ -55,12 +48,19 @@ class User implements storage.User {
         (enableChangelog != null) ? enableChangelog : true, trashDir);
   }
 
-  /**
-   *
-   */
   User._internal(
       this.path, this._sequencer, this._git, this.logChanges, this.trashDir);
 
+  Stream<event.UserChange> get onUserChange => _changeBus.stream;
+
+  Future get initialized =>
+      _git != null ? _git.initialized : new Future.value(true);
+  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
+
+  /// Returns the next available ID from the sequencer. Notice that every
+  /// call to this function will increase the counter in the
+  /// sequencer object.
+  int get _nextId => _sequencer.nextInt();
   /**
    *
    */

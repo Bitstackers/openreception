@@ -146,9 +146,7 @@ class NotificationService {
 class NotificationSocket {
   final WebSocket _websocket;
 
-  /**
-   * Chuck-o'-busses.
-   */
+  // Chuck-o'-busses.
   Bus<event.Event> _eventBus = new Bus<event.Event>();
   Bus<event.CallEvent> _callEventBus = new Bus<event.CallEvent>();
   Bus<event.CalendarChange> _calenderChangeBus =
@@ -171,6 +169,23 @@ class NotificationSocket {
   Bus<event.UserState> _userStateBus = new Bus<event.UserState>();
   Bus<event.WidgetSelect> _widgetSelectBus = new Bus<event.WidgetSelect>();
   Bus<event.FocusChange> _focusChangeBus = new Bus<event.FocusChange>();
+
+  /// Creates a new [NotificationSocket]. The [_websocket] parameter object needs
+  /// to be connected manually. Otherwise, the notification socket will remain
+  /// silent.
+  NotificationSocket(WebSocket this._websocket) {
+    _websocket.onMessage = _parseAndDispatch;
+
+    _websocket.onClose = () async {
+      // Discard any inbound messages instead of injecting them into a
+      // potentially closed stream.
+      _websocket.onMessage = (_) {};
+
+      await _closeEventListeners();
+    };
+
+    onEvent.listen(_injectInLocalSteams);
+  }
 
   /**
    * Global event stream. Receive all events broadcast or sent to uid of
@@ -262,25 +277,6 @@ class NotificationSocket {
   Stream<event.FocusChange> get onFocusChange => _focusChangeBus.stream;
 
   /**
-   * Creates a new [NotificationSocket]. The [_websocket] parameter object
-   * needs to be connected manually. Otherwise, the notification socket will
-   * remain silent.
-   */
-  NotificationSocket(WebSocket this._websocket) {
-    _websocket.onMessage = _parseAndDispatch;
-
-    _websocket.onClose = () async {
-      // Discard any inbound messages instead of injecting them into a
-      // potentially closed stream.
-      _websocket.onMessage = (_) {};
-
-      await _closeEventListeners();
-    };
-
-    onEvent.listen(_injectInLocalSteams);
-  }
-
-  /**
    * Further decode [event.Event] objects and put into their respective
    * stream.
    */
@@ -355,7 +351,7 @@ class NotificationSocket {
    * encoded event object.
    */
   void _parseAndDispatch(String buffer) {
-    Map map = JSON.decode(buffer);
+    Map<String, dynamic> map = JSON.decode(buffer) as Map<String, dynamic>;
     event.Event newEvent = new event.Event.parse(map);
 
     if (newEvent != null) {

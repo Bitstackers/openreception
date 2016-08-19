@@ -35,31 +35,6 @@ class ClientConfiguration {
   Uri userServerUri;
 
   /**
-   * Returns a map reflection of the object suitable for data transfer.
-   */
-  Map get asMap => {
-        key.authServerURI: authServerUri.toString(),
-        key.calendarServerUri: calendarServerUri.toString(),
-        key.callFlowServerURI: callFlowServerUri.toString(),
-        key.cdrServerUri: cdrServerUri.toString(),
-        key.contactServerURI: contactServerUri.toString(),
-        key.dialplanServerURI: dialplanServerUri.toString(),
-        key.hideInboundCallerId: hideInboundCallerId,
-        key.messageServerURI: messageServerUri.toString(),
-        key.myIdentifiers: myIdentifiers,
-        key.notificationServerUri: notificationServerUri.toString(),
-        key.notificationSocket: notificationSocketUri.toString(),
-        key.receptionServerURI: receptionServerUri.toString(),
-        key.systemLanguage: systemLanguage,
-        key.userServerURI: userServerUri.toString(),
-      };
-
-  /**
-   *
-   */
-  Map toJson() => this.asMap;
-
-  /**
    * Build an uninitialized object
    */
   ClientConfiguration.empty();
@@ -82,4 +57,22 @@ class ClientConfiguration {
         receptionServerUri = Uri.parse(map[key.receptionServerURI]),
         systemLanguage = map[key.systemLanguage],
         userServerUri = Uri.parse(map[key.userServerURI]);
+
+  ///Returns a map reflection of the object suitable for data transfer.
+  Map toJson() => {
+        key.authServerURI: authServerUri.toString(),
+        key.calendarServerUri: calendarServerUri.toString(),
+        key.callFlowServerURI: callFlowServerUri.toString(),
+        key.cdrServerUri: cdrServerUri.toString(),
+        key.contactServerURI: contactServerUri.toString(),
+        key.dialplanServerURI: dialplanServerUri.toString(),
+        key.hideInboundCallerId: hideInboundCallerId,
+        key.messageServerURI: messageServerUri.toString(),
+        key.myIdentifiers: myIdentifiers,
+        key.notificationServerUri: notificationServerUri.toString(),
+        key.notificationSocket: notificationSocketUri.toString(),
+        key.receptionServerURI: receptionServerUri.toString(),
+        key.systemLanguage: systemLanguage,
+        key.userServerURI: userServerUri.toString(),
+      };
 }

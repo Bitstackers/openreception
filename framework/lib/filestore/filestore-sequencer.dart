@@ -18,6 +18,25 @@ class Sequencer {
   final String path;
 
   File _sequencerFile;
+
+  /// Create new sequencer file from [path].
+  ///
+  /// If [explicitId] is set _and_ the [path] contains no sequencer file, the id
+  /// of the new sequencer file will be set to [explicitId].
+  Sequencer(this.path, {int explicitId: 0}) {
+    _sequencerFile = new File('$path/.or_filestore-sequencer');
+    if (!_sequencerFile.existsSync()) {
+      _log.info('Creating new sequencer file ${_sequencerFile.path}');
+      _currentId = _findHighestId();
+    } else if (explicitId > 0) {
+      _currentId = explicitId;
+    } else {
+      _checkForInconsistencies();
+    }
+    _log.info('Sequencer ID: $currentId');
+  }
+
+  /// The path of the sequencerfile
   String get sequencerFilePath => _sequencerFile.path;
 
   set _currentId(int id) => _sequencerFile.writeAsStringSync('$id');
@@ -33,25 +52,6 @@ class Sequencer {
     return newId;
   }
 
-  /**
-   *
-   */
-  Sequencer(String this.path, {int explicitId: 0}) {
-    _sequencerFile = new File('$path/.or_filestore-sequencer');
-    if (!_sequencerFile.existsSync()) {
-      _log.info('Creating new sequencer file ${_sequencerFile.path}');
-      _currentId = _findHighestId();
-    } else if (explicitId > 0) {
-      _currentId = explicitId;
-    } else {
-      _checkForInconsistencies();
-    }
-    _log.info('Sequencer ID: $currentId');
-  }
-
-  /**
-   *
-   */
   void _checkForInconsistencies() {
     final int highestId = _findHighestId();
     if (highestId > _currentId) {
@@ -60,9 +60,6 @@ class Sequencer {
     }
   }
 
-  /**
-   *
-   */
   int _findHighestId() {
     int fseToId(FileSystemEntity fse) {
       try {

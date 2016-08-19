@@ -19,8 +19,6 @@ class MessageQueue implements storage.MessageQueue {
 
   Sequencer _sequencer;
 
-  int get _nextId => _sequencer.nextInt();
-
   /**
    *
    */
@@ -31,6 +29,11 @@ class MessageQueue implements storage.MessageQueue {
 
     _sequencer = new Sequencer(path);
   }
+
+  /// Returns the next available ID from the sequencer. Notice that every
+  /// call to this function will increase the counter in the
+  /// sequencer object.
+  int get _nextId => _sequencer.nextInt();
 
   /**
    *

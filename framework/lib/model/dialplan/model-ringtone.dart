@@ -16,6 +16,17 @@ part of openreception.framework.model.dialplan;
 class Ringtone implements Action {
   final int count;
 
+  factory Ringtone(int count) {
+    if (count < 0) {
+      throw new ArgumentError.value(
+          count, 'count', 'Count must be greater than 0');
+    }
+
+    return new Ringtone._internal(count);
+  }
+
+  const Ringtone._internal(this.count);
+
   static Ringtone parse(String buffer) {
     var buf = consumeKey(buffer.trimLeft(), Key.ringtone).trimLeft();
 
@@ -32,17 +43,6 @@ class Ringtone implements Action {
 
     return new Ringtone(count);
   }
-
-  factory Ringtone(int count) {
-    if (count < 0) {
-      throw new ArgumentError.value(
-          count, 'count', 'Count must be greater than 0');
-    }
-
-    return new Ringtone._internal(count);
-  }
-
-  const Ringtone._internal(this.count);
 
   @override
   String toJson() => '${Key.ringtone} $count';

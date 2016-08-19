@@ -29,9 +29,6 @@ class IvrMenu {
   /// Submenus of this menu.
   List<IvrMenu> submenus = [];
 
-  /// The, shorter, greeting for repeating choices.
-  Playback get greetingShort =>
-      _greetingShort != Playback.none ? _greetingShort : greetingLong;
   Playback _greetingShort = Playback.none;
 
   /**
@@ -60,6 +57,10 @@ class IvrMenu {
 
     return actions;
   }
+
+  /// The, shorter, greeting for repeating choices.
+  Playback get greetingShort =>
+      _greetingShort != Playback.none ? _greetingShort : greetingLong;
 
   /**
    * Decoding factory method.

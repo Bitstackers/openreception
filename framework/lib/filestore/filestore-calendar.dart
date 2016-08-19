@@ -30,25 +30,8 @@ class Calendar implements storage.Calendar {
   /// Revision engine. Keeps track of object changes and who performs them.
   GitEngine _git;
 
-  /// Returns when the filestore is initialized
-  Future get initialized =>
-      _git != null ? _git.initialized : new Future.value(true);
-
-  /// Returns when the filestore is initialized and ready - not busy
-  /// performing object changes.
-  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
-
-  /// Spawns events on every object change. May be used by external classes
-  /// to, for instance, maintain caches./
-  Stream<event.CalendarChange> get changeStream => _changeBus.stream;
-
   /// Internal change bus. Exposed externally by [changeStream]
   final Bus<event.CalendarChange> _changeBus = new Bus<event.CalendarChange>();
-
-  /// Returns the next available ID from the sequencer. Notice that every
-  /// call to this function will increase the counter in the
-  /// sequencer object .
-  int get _nextId => _sequencer.nextInt();
 
   /**
    *
@@ -72,9 +55,23 @@ class Calendar implements storage.Calendar {
     }
   }
 
-  /**
-   *
-   */
+  /// Returns the next available ID from the sequencer. Notice that every
+  /// call to this function will increase the counter in the
+  /// sequencer object.
+  int get _nextId => _sequencer.nextInt();
+
+  /// Spawns events on every object change. May be used by external classes
+  /// to, for instance, maintain caches./
+  Stream<event.CalendarChange> get changeStream => _changeBus.stream;
+
+  /// Returns when the filestore is initialized
+  Future get initialized =>
+      _git != null ? _git.initialized : new Future.value(true);
+
+  /// Returns when the filestore is initialized and ready - not busy
+  /// performing object changes.
+  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
+
   @override
   Future<Iterable<model.Commit>> changes(model.Owner owner, [int eid]) async {
     if (this._git == null) {

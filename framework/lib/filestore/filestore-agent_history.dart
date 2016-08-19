@@ -25,12 +25,8 @@ class AgentHistory {
   final Map<String, model.ActiveCall> _eventHistory = {};
   final Map<String, model.DailyReport> _reports = {};
 
-  Future get initialized => _initialized.future;
   Completer _initialized = new Completer();
 
-  /**
-   *
-   */
   factory AgentHistory(
       String path, storage.User userStore, Stream<event.Event> notifications) {
     return new AgentHistory._internal(
@@ -40,6 +36,38 @@ class AgentHistory {
         new Directory(path + '/eventdumps'),
         notifications);
   }
+
+  AgentHistory._internal(this.path, this._userStore, this._uidMapFile,
+      this._eventDumpDir, Stream<event.Event> notifications) {
+    if (!new Directory(path).existsSync()) {
+      _log.info('Creating directory $path');
+      new Directory(path).createSync();
+    }
+
+    if (!_eventDumpDir.existsSync()) {
+      _log.info('Creating directory ${_eventDumpDir.path}');
+      _eventDumpDir.createSync();
+    }
+
+    if (!new Directory(path + '/reports').existsSync()) {
+      _log.info('Creating directory $path/reports');
+      new Directory(path + '/reports').createSync();
+    }
+
+    if (!_uidMapFile.existsSync()) {
+      _uidMapFile.writeAsStringSync('{}');
+    }
+
+    notifications.listen((event.Event e) {
+      _dispatchEvent(e, _reports);
+    });
+
+    new Timer.periodic(new Duration(seconds: 10), (_) => _cleanup());
+
+    _initialize();
+  }
+
+  Future get initialized => _initialized.future;
 
   /**
    *
@@ -113,7 +141,8 @@ class AgentHistory {
    */
   Future _loadEventDumps() async {
     _log.finest('Loading event dumps from ${_eventDumpDir.path}');
-    final Map<String, model.DailyReport> _dateLog = {};
+    final Map<String, model.DailyReport> _dateLog =
+        <String, model.DailyReport>{};
 
     final Iterable<File> files =
         _eventDumpDir.listSync().where((FileSystemEntity fse) => fse is File);
@@ -124,7 +153,7 @@ class AgentHistory {
         List<String> lines = file.readAsLinesSync();
 
         for (String line in lines) {
-          Map json = JSON.decode(line);
+          Map<String, dynamic> json = JSON.decode(line) as Map<String, dynamic>;
           event.Event e = new event.Event.parse(json);
           try {
             if (e != null) _dispatchEvent(e, _dateLog);
@@ -186,39 +215,6 @@ class AgentHistory {
   /**
    *
    */
-  AgentHistory._internal(this.path, this._userStore, this._uidMapFile,
-      this._eventDumpDir, Stream<event.Event> notifications) {
-    if (!new Directory(path).existsSync()) {
-      _log.info('Creating directory $path');
-      new Directory(path).createSync();
-    }
-
-    if (!_eventDumpDir.existsSync()) {
-      _log.info('Creating directory ${_eventDumpDir.path}');
-      _eventDumpDir.createSync();
-    }
-
-    if (!new Directory(path + '/reports').existsSync()) {
-      _log.info('Creating directory $path/reports');
-      new Directory(path + '/reports').createSync();
-    }
-
-    if (!_uidMapFile.existsSync()) {
-      _uidMapFile.writeAsStringSync('{}');
-    }
-
-    notifications.listen((event.Event e) {
-      _dispatchEvent(e, _reports);
-    });
-
-    new Timer.periodic(new Duration(seconds: 10), (_) => _cleanup());
-
-    _initialize();
-  }
-
-  /**
-   *
-   */
   Future _cleanup() async {
     if (_reports.length > 1) {
       _log.info('Day changed. Rerolling stats');
@@ -235,10 +231,7 @@ class AgentHistory {
     }
   }
 
-  /**
-   *
-   */
-  Future<String> _lookupUsername(int uid) async {
+  Future<String> lookupUsername(int uid) async {
     await initialized;
 
     if (!_uidNameCache.containsKey(uid)) {

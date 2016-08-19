@@ -57,6 +57,16 @@ class GitEngine {
   final String path;
   final bool logStdout;
 
+  final Queue<_Job> _workQueue = new Queue<_Job>();
+  Completer _initialized;
+  Completer _busy = new Completer();
+
+  GitEngine(String this.path, {bool this.logStdout: false});
+
+  Future get whenReady => _busy.future;
+  bool get ready => _busy.isCompleted;
+  Future get initialized => _initialized.future;
+
   List<String> ignoredPaths(String path) =>
       new File('$path/.gitignore').readAsStringSync().split('\n');
 
@@ -70,18 +80,6 @@ class GitEngine {
 
     ignoreFile.writeAsStringSync(paths.join('\n'));
   }
-
-  final Queue<_Job> _workQueue = new Queue<_Job>();
-
-  Future get initialized => _initialized.future;
-  Completer _initialized;
-  bool get ready => _busy.isCompleted;
-
-  Future get whenReady => _busy.future;
-
-  Completer _busy = new Completer();
-
-  GitEngine(String this.path, {bool this.logStdout: false});
 
   /**
    *

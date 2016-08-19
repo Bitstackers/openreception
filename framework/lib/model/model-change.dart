@@ -603,7 +603,7 @@ class IvrChange implements ObjectChange {
   @override
   final ChangeType changeType;
   @override
-  ObjectType get objectType => ObjectType.ivrMenu;
+  final ObjectType objectType = ObjectType.ivrMenu;
   final String menuName;
 
   /**
@@ -614,15 +614,14 @@ class IvrChange implements ObjectChange {
   /**
    *
    */
-  static IvrChange decode(Map map) =>
-      new IvrChange(changeTypeFromString(map[key.change]), map[key.name]);
-
-  /**
-   *
-   */
   IvrChange.fromJson(Map map)
       : changeType = changeTypeFromString(map[key.change]),
         menuName = map[key.name];
+  /**
+   *
+   */
+  static IvrChange decode(Map map) =>
+      new IvrChange(changeTypeFromString(map[key.change]), map[key.name]);
 
   /**
    *
@@ -642,7 +641,7 @@ class ReceptionDialplanChange implements ObjectChange {
   @override
   final ChangeType changeType;
   @override
-  ObjectType get objectType => ObjectType.dialplan;
+  final ObjectType objectType = ObjectType.dialplan;
   final String extension;
 
   /**
@@ -653,15 +652,15 @@ class ReceptionDialplanChange implements ObjectChange {
   /**
    *
    */
-  static ReceptionDialplanChange decode(Map map) => new ReceptionDialplanChange(
-      changeTypeFromString(map[key.change]), map[key.name]);
+  ReceptionDialplanChange.fromJson(Map map)
+      : changeType = changeTypeFromString(map[key.change]),
+        extension = map[key.name];
 
   /**
    *
    */
-  ReceptionDialplanChange.fromJson(Map map)
-      : changeType = changeTypeFromString(map[key.change]),
-        extension = map[key.name];
+  static ReceptionDialplanChange decode(Map map) => new ReceptionDialplanChange(
+      changeTypeFromString(map[key.change]), map[key.name]);
 
   /**
    *
@@ -680,8 +679,9 @@ class ReceptionDialplanChange implements ObjectChange {
 class MessageChange implements ObjectChange {
   @override
   final ChangeType changeType;
+
   @override
-  ObjectType get objectType => ObjectType.message;
+  final ObjectType objectType = ObjectType.message;
   final int mid;
 
   /**
@@ -692,14 +692,14 @@ class MessageChange implements ObjectChange {
   /**
    *
    */
-  static MessageChange decode(Map map) => new MessageChange.fromJson(map);
+  MessageChange.fromJson(Map map)
+      : changeType = changeTypeFromString(map[key.change]),
+        mid = map[key.mid];
 
   /**
    *
    */
-  MessageChange.fromJson(Map map)
-      : changeType = changeTypeFromString(map[key.change]),
-        mid = map[key.mid];
+  static MessageChange decode(Map map) => new MessageChange.fromJson(map);
 
   /**
    *
@@ -719,7 +719,7 @@ class OrganizationChange implements ObjectChange {
   @override
   final ChangeType changeType;
   @override
-  ObjectType get objectType => ObjectType.organization;
+  final ObjectType objectType = ObjectType.organization;
   final int oid;
 
   /**
@@ -730,15 +730,14 @@ class OrganizationChange implements ObjectChange {
   /**
    *
    */
-  static OrganizationChange decode(Map map) =>
-      new OrganizationChange.fromJson(map);
-
-  /**
-   *
-   */
   OrganizationChange.fromJson(Map map)
       : changeType = changeTypeFromString(map[key.change]),
         oid = map[key.mid];
+  /**
+   *
+   */
+  static OrganizationChange decode(Map map) =>
+      new OrganizationChange.fromJson(map);
 
   /**
    *
@@ -758,7 +757,7 @@ class ReceptionChange implements ObjectChange {
   @override
   final ChangeType changeType;
   @override
-  ObjectType get objectType => ObjectType.reception;
+  final ObjectType objectType = ObjectType.reception;
   final int rid;
 
   /**
@@ -769,14 +768,14 @@ class ReceptionChange implements ObjectChange {
   /**
    *
    */
-  static ReceptionChange decode(Map map) => new ReceptionChange.fromJson(map);
+  ReceptionChange.fromJson(Map map)
+      : changeType = changeTypeFromString(map[key.change]),
+        rid = map[key.mid];
 
   /**
    *
    */
-  ReceptionChange.fromJson(Map map)
-      : changeType = changeTypeFromString(map[key.change]),
-        rid = map[key.mid];
+  static ReceptionChange decode(Map map) => new ReceptionChange.fromJson(map);
 
   /**
    *
