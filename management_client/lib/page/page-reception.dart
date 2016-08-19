@@ -100,15 +100,15 @@ class Reception {
 
         /// This is the currently selected organization
         if (e.rid == _receptionView.reception.id) {
-          if (e.deleted) {
+          if (e.isDelete) {
             _receptionView.clear();
             _receptionView.hidden = true;
             _renderReceptionList([]);
             _router.go('reception', {});
-          } else if (e.updated) {
+          } else if (e.isUpdate) {
             _router.go('reception.edit.id', {'rid': e.rid});
           }
-        } else if (e.created && e.modifierUid == config.user.id) {
+        } else if (e.isCreate && e.modifierUid == config.user.id) {
           _router.go('reception.edit.id', {'rid': e.rid});
         }
       }

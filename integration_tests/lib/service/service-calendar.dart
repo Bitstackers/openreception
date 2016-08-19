@@ -15,7 +15,7 @@ abstract class Calendar {
     _log.info('Started createEvent test');
 
     final nextCalendarCreateEvent = (await sa.notifications)
-        .firstWhere((e) => e is event.CalendarChange && e.created);
+        .firstWhere((e) => e is event.CalendarChange && e.isCreate);
 
     final createdEntry = await calendarStore.create(
         Randomizer.randomCalendarEntry(), owner, sa.user);
@@ -40,7 +40,7 @@ abstract class Calendar {
     _log.info('Started createEvent test');
 
     final nextCalendarCreateEvent = (await sa.notifications)
-        .firstWhere((e) => e is event.CalendarChange && e.updated);
+        .firstWhere((e) => e is event.CalendarChange && e.isUpdate);
 
     final createdEntry = await calendarStore.create(
         Randomizer.randomCalendarEntry(), owner, sa.user);
@@ -68,7 +68,7 @@ abstract class Calendar {
     _log.info('Started createEvent test');
 
     final nextCalendarCreateEvent = (await sa.notifications)
-        .firstWhere((e) => e is event.CalendarChange && e.deleted);
+        .firstWhere((e) => e is event.CalendarChange && e.isDelete);
 
     final createdEntry = await calendarStore.create(
         Randomizer.randomCalendarEntry(), owner, sa.user);

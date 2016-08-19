@@ -90,13 +90,13 @@ class Contact {
 
       _refreshList();
 
-      if (e.updated && _contactData.contact.id == e.cid) {
+      if (e.isUpdate && _contactData.contact.id == e.cid) {
         _contactData.contact = await _contactController.get(e.cid);
 
         controller.popup.info(
             'Valgte kontaktperson ændret af ${e.modifierUid} - opdaterer datablad',
             '');
-      } else if (e.deleted && _contactData.contact.id == e.cid) {
+      } else if (e.isDelete && _contactData.contact.id == e.cid) {
         _clearContent();
         controller.popup.info(
             'Valgte kontaktperson slettet af ${e.modifierUid} - rydder datablad',

@@ -48,11 +48,11 @@ class AgentInfoList {
       } else if (e is event.CallEvent && e.call.assignedTo != model.User.noId) {
         _info[e.call.assignedTo].call = e.call;
       } else if (e is event.MessageChange) {
-        if (e.created) {
+        if (e.isCreate) {
           model.Message msg = await messageStore.get(e.mid);
 
           _info[msg.sender.id].numMessage++;
-        } else if (e.deleted) {
+        } else if (e.isDelete) {
           model.Message msg = await messageStore.get(e.mid);
 
           _info[msg.sender.id].numMessage--;

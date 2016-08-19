@@ -14,7 +14,7 @@ abstract class NotificationService {
 
     bool isExpectedEvent(event.Event e) =>
         e is event.UserChange &&
-        e.updated &&
+        e.isUpdate &&
         e.uid == uid &&
         e.modifierUid == modUid;
 
@@ -94,7 +94,7 @@ abstract class NotificationService {
       });
 
       (await sa.notifications).listen((e) {
-        if (e is event.UserChange && e.updated) {
+        if (e is event.UserChange && e.isUpdate) {
           if (!recipientUids.contains(sa.user.id)) {
             errors
                 .add(new StateError('user: ${sa.user.toJson()} not expected to'

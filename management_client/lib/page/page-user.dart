@@ -77,15 +77,15 @@ class User {
 
         /// This is the currently selected organization
         if (e.uid == _userView.user.id) {
-          if (e.deleted) {
+          if (e.isDelete) {
             _userView.clear();
             _userView.hidden = true;
 
             _router.go('user.edit.id', {'uid': e.uid});
-          } else if (e.updated) {
+          } else if (e.isUpdate) {
             _router.go('user.edit.id', {'uid': e.uid});
           }
-        } else if (e.created && e.modifierUid == config.user.id) {
+        } else if (e.isCreate && e.modifierUid == config.user.id) {
           _router.go('user.edit.id', {'uid': e.uid});
         }
       }

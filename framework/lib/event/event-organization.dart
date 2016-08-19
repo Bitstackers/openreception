@@ -55,13 +55,13 @@ class OrganizationChange implements Event {
         this.timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 
   /// Determines if the object signifies a creation.
-  bool get created => state == Change.created;
+  bool get isCreate => state == Change.created;
 
   /// Determines if the object signifies an update.
-  bool get updated => state == Change.updated;
+  bool get isUpdate => state == Change.updated;
 
   /// Determines if the object signifies a deletion.
-  bool get deleted => state == Change.deleted;
+  bool get isDelete => state == Change.deleted;
 
   /// Returns an umodifiable map representation of the object, suitable for
   /// serialization.

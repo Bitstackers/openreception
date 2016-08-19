@@ -27,7 +27,7 @@ class Contact {
     });
 
     _notification.onContactChange.listen((OREvent.ContactChange e) {
-      if (e.updated) {
+      if (e.isUpdate) {
         _rcCache.clear();
       }
     });

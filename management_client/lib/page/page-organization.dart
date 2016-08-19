@@ -119,15 +119,15 @@ class Organization {
 
         /// This is the currently selected organization
         if (ogc.oid == _organizationView.organization.id) {
-          if (ogc.deleted) {
+          if (ogc.isDelete) {
             _organizationView.clear();
             _organizationView.hidden = true;
             _clearRightBar();
             _router.go('organization.edit.id', {'oid': ogc.oid});
-          } else if (ogc.updated) {
+          } else if (ogc.isUpdate) {
             _router.go('organization.edit.id', {'oid': ogc.oid});
           }
-        } else if (ogc.created && ogc.modifierUid == config.user.id) {
+        } else if (ogc.isCreate && ogc.modifierUid == config.user.id) {
           _router.go('organization.edit.id', {'oid': ogc.oid});
         }
       }

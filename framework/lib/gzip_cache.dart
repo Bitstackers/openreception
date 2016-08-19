@@ -62,7 +62,7 @@ class CalendarCache {
       Iterable<Stream<event.CalendarChange>> streams) {
     streams.forEach((Stream<event.CalendarChange> stream) {
       stream.listen((event.CalendarChange e) {
-        if (e.updated || e.deleted) {
+        if (e.isUpdate || e.isDelete) {
           removeEntry(e.eid, e.owner);
         }
         _emptyList(e.owner);
@@ -199,7 +199,7 @@ class ReceptionCache {
   ReceptionCache(
       this._receptionStore, Stream<event.ReceptionChange> receptionChanges) {
     receptionChanges.listen((event.ReceptionChange change) {
-      if (change.updated || change.deleted) {
+      if (change.isUpdate || change.isDelete) {
         remove(change.rid);
       }
 
@@ -339,7 +339,7 @@ class ContactCache {
       Stream<event.ReceptionChange> receptionChange,
       Stream<event.OrganizationChange> organizationChange) {
     contactChange.listen((event.ContactChange e) {
-      if (e.updated || e.deleted) {
+      if (e.isUpdate || e.isDelete) {
         removeContact(e.cid);
       }
 
@@ -347,21 +347,21 @@ class ContactCache {
     });
 
     receptionDataChange.listen((event.ReceptionData change) {
-      if (change.deleted || change.updated) {
+      if (change.isDelete || change.isUpdate) {
         _receptionContactCache.remove(change.rid);
         _recListCache.remove(change.rid);
       }
     });
 
     receptionChange.listen((event.ReceptionChange change) {
-      if (change.deleted || change.updated) {
+      if (change.isDelete || change.isUpdate) {
         _receptionContactCache.remove(change.rid);
         _recListCache.remove(change.rid);
       }
     });
 
     organizationChange.listen((event.OrganizationChange change) {
-      if (change.deleted || change.updated) {
+      if (change.isDelete || change.isUpdate) {
         _orgListCache.remove(change.oid);
       }
     });
@@ -746,7 +746,7 @@ class UserCache {
    */
   UserCache(this._userStore, Stream<event.UserChange> userChanges) {
     userChanges.listen((event.UserChange changeEvent) {
-      if (changeEvent.deleted || changeEvent.updated) {
+      if (changeEvent.isDelete || changeEvent.isUpdate) {
         removeUid(changeEvent.uid);
       }
 
@@ -846,7 +846,7 @@ class OrganizationCache {
   OrganizationCache(
       this.orgStore, Stream<event.OrganizationChange> organizationChange) {
     organizationChange.listen((event.OrganizationChange e) {
-      if (e.updated || e.deleted) {
+      if (e.isUpdate || e.isDelete) {
         remove(e.oid);
       }
 
