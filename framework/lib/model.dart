@@ -66,5 +66,9 @@ part 'model/model-user_status.dart';
 const String libraryName = "openreception.model";
 
 abstract class ChangelogEntry {
+  DateTime get timestamp;
+  ChangeType get changeType;
+  UserReference get modifier;
+
   dynamic toJson();
 }

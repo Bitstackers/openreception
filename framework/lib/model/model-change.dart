@@ -17,10 +17,16 @@ part of openreception.framework.model;
  *
  */
 class CalendarChangelogEntry implements ChangelogEntry {
-  final UserReference modifier;
+  @override
   final DateTime timestamp;
-  final CalendarEntry entry;
+
+  @override
   final ChangeType changeType;
+
+  @override
+  final UserReference modifier;
+
+  final CalendarEntry entry;
 
   /**
    *
@@ -63,10 +69,16 @@ class CalendarChangelogEntry implements ChangelogEntry {
  *
  */
 class ContactChangelogEntry implements ChangelogEntry {
-  final UserReference modifier;
+  @override
   final DateTime timestamp;
-  final BaseContact contact;
+
+  @override
   final ChangeType changeType;
+
+  @override
+  final UserReference modifier;
+
+  final BaseContact contact;
 
   /**
    *
@@ -109,10 +121,16 @@ class ContactChangelogEntry implements ChangelogEntry {
  *
  */
 class ReceptionDataChangelogEntry implements ChangelogEntry {
-  final UserReference modifier;
+  @override
   final DateTime timestamp;
-  final ReceptionAttributes attributes;
+
+  @override
   final ChangeType changeType;
+
+  @override
+  final UserReference modifier;
+
+  final ReceptionAttributes attributes;
 
   /**
    *
@@ -157,10 +175,16 @@ class ReceptionDataChangelogEntry implements ChangelogEntry {
  *
  */
 class IvrChangelogEntry implements ChangelogEntry {
-  final UserReference modifier;
+  @override
   final DateTime timestamp;
-  final IvrMenu menu;
+
+  @override
   final ChangeType changeType;
+
+  @override
+  final UserReference modifier;
+
+  final IvrMenu menu;
 
   /**
    *
@@ -203,10 +227,16 @@ class IvrChangelogEntry implements ChangelogEntry {
  *
  */
 class DialplanChangelogEntry implements ChangelogEntry {
-  final UserReference modifier;
+  @override
   final DateTime timestamp;
-  final ReceptionDialplan dialplan;
+
+  @override
   final ChangeType changeType;
+
+  @override
+  final UserReference modifier;
+
+  final ReceptionDialplan dialplan;
 
   /**
    *
@@ -249,10 +279,16 @@ class DialplanChangelogEntry implements ChangelogEntry {
  *
  */
 class ReceptionChangelogEntry implements ChangelogEntry {
-  final UserReference modifier;
+  @override
   final DateTime timestamp;
-  final Reception reception;
+
+  @override
   final ChangeType changeType;
+
+  @override
+  final UserReference modifier;
+
+  final Reception reception;
 
   /**
    *
@@ -295,10 +331,16 @@ class ReceptionChangelogEntry implements ChangelogEntry {
  *
  */
 class OrganizationChangelogEntry implements ChangelogEntry {
-  final UserReference modifier;
+  @override
   final DateTime timestamp;
-  final Organization organization;
+
+  @override
   final ChangeType changeType;
+
+  @override
+  final UserReference modifier;
+
+  final Organization organization;
 
   /**
    *
@@ -341,10 +383,16 @@ class OrganizationChangelogEntry implements ChangelogEntry {
  *
  */
 class UserChangelogEntry implements ChangelogEntry {
-  final UserReference modifier;
+  @override
   final DateTime timestamp;
-  final User user;
+
+  @override
   final ChangeType changeType;
+
+  @override
+  final UserReference modifier;
+
+  final User user;
 
   /**
    *
