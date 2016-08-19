@@ -13,59 +13,74 @@
 
 part of openreception.framework.event;
 
+/// Model class representing a change in a persistent [model.Organization]
+/// object. May be serialized and sent via a notification socket.
 class OrganizationChange implements Event {
   @override
   final DateTime timestamp;
 
   @override
-  String get eventName => _Key._organizationChange;
+  final String eventName = _Key._organizationChange;
 
+  /// The organization ID of the organization that was modified.
   final int oid;
+
+  /// The uid of the user modifying the calendar entry.
   final int modifierUid;
+
+  /// The modification state. Must be one of the valid [Change] values.
   final String state;
 
-  bool get created => state == Change.created;
-  bool get updated => state == Change.updated;
-  bool get deleted => state == Change.deleted;
-  /**
-   *
-   */
+  /// Create a new creation event.
   OrganizationChange.create(this.oid, this.modifierUid)
       : this.state = Change.created,
         this.timestamp = new DateTime.now();
 
-  /**
-   *
-   */
+  /// Create a new update event.
   OrganizationChange.update(this.oid, this.modifierUid)
       : this.state = Change.updated,
         this.timestamp = new DateTime.now();
 
-  /**
-   *
-   */
+  /// Create a new deletion event.
   OrganizationChange.delete(this.oid, this.modifierUid)
       : this.state = Change.deleted,
         this.timestamp = new DateTime.now();
 
-  @override
-  Map toJson() => {
-        _Key._event: eventName,
-        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
-        _Key._modifierUid: modifierUid,
-        _Key._organizationChange: {
-          _Key._oid: this.oid,
-          _Key._state: this.state,
-          _Key._modifierUid: modifierUid
-        }
-      };
-
-  @override
-  String toString() => this.toJson().toString();
-
-  OrganizationChange.fromMap(Map map)
+  /// Create a new [OrganizationChange] object from serialized data stored
+  /// in [map].
+  OrganizationChange.fromMap(Map<String, dynamic> map)
       : this.oid = map[_Key._organizationChange][_Key._oid],
         this.state = map[_Key._organizationChange][_Key._state],
         this.modifierUid = map[_Key._organizationChange][_Key._modifierUid],
         this.timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
+
+  /// Determines if the object signifies a creation.
+  bool get created => state == Change.created;
+
+  /// Determines if the object signifies an update.
+  bool get updated => state == Change.updated;
+
+  /// Determines if the object signifies a deletion.
+  bool get deleted => state == Change.deleted;
+
+  /// Returns an umodifiable map representation of the object, suitable for
+  /// serialization.
+  @override
+  Map<String, dynamic> toJson() =>
+      new Map<String, dynamic>.unmodifiable(<String, dynamic>{
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._modifierUid: modifierUid,
+        _Key._organizationChange: <String, dynamic>{
+          _Key._oid: this.oid,
+          _Key._state: this.state,
+          _Key._modifierUid: modifierUid
+        }
+      });
+
+  /// Returns a brief string-represented summary of the event, suitable for
+  /// logging or debugging purposes.
+  @override
+  String toString() => '$timestamp-$eventName $state '
+      'modifier:$modifierUid,oid:$oid,';
 }

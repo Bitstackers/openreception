@@ -13,26 +13,39 @@
 
 part of openreception.framework.event;
 
-/**
- * Event that is meant to be spawned every time a call is unassigned from a
- * user. Currently not in use. Meant for a simplification of the event
- * system.
- */
+/// Event that is meant to be spawned every time a call is unassigned from a
+/// user.
+///
+/// *Currently not in use.* Meant for a future simplification of the event system.
 class CallUnassign extends CallEvent {
   @override
   final String eventName = _Key._callUnassign;
-  final int userId;
 
-  CallUnassign(model.Call call, this.userId) : super(call);
-  CallUnassign.fromMap(Map map)
-      : userId = map[_Key._modifierUid],
+  /// The id of user object of the agent that the call was assigned to.
+  final int uid;
+
+  /// Default constructor. Subtypes the general [CallEvent] class and should
+  /// be used to notify clients about a call being unassigned.
+  CallUnassign(model.Call call, this.uid) : super(call);
+
+  /// Create a new [CallUnassign] object from serialized data stored in [map].
+  CallUnassign.fromMap(Map<String, dynamic> map)
+      : uid = map[_Key._modifierUid],
         super.fromMap(map);
 
+  /// Returns an umodifiable map representation of the object, suitable for
+  /// serialization.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() =>
+      new Map<String, dynamic>.unmodifiable(<String, dynamic>{
         _Key._event: eventName,
         _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
-        _Key._modifierUid: userId,
+        _Key._modifierUid: uid,
         _Key._call: call.toJson()
-      };
+      });
+
+  /// Returns a brief string-represented summary of the event, suitable for
+  /// logging or debugging purposes.
+  @override
+  String toString() => '$timestamp-$eventName ${call.id}';
 }

@@ -13,18 +13,20 @@
 
 part of openreception.framework.event;
 
+/// Convenience class/interface that provides a mean for grouping all
+/// call-related events and providing a common shared interface for them.
 abstract class CallEvent implements Event {
   @override
   final DateTime timestamp;
 
+  /// The [model.Call] object of the event.
   final model.Call call;
 
-  CallEvent(model.Call this.call) : timestamp = new DateTime.now();
+  /// Generative constructor for use 
+  CallEvent(this.call) : timestamp = new DateTime.now();
 
-  @override
-  String toString() => eventName + ': ' + call.id;
-
-  CallEvent.fromMap(Map map)
+  /// Generative constructor needed by specializations of the [CallEvent] class.
+  CallEvent.fromMap(Map<String, dynamic> map)
       : this.call = new model.Call.fromMap(map[_Key._call]),
         this.timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 }

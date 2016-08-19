@@ -16,11 +16,11 @@ part of openreception.framework.event;
 /// Event for notifying about a change in the UI. Specifically, a change of
 ///  whether or not the window (or tab) is in focus or not.
 class FocusChange implements Event {
-  /// Common [Event] fields.
   @override
   final DateTime timestamp;
+
   @override
-  String get eventName => _Key._focusChange;
+  final String eventName = _Key._focusChange;
 
   /// The user ID of the user that changed focus.
   final int uid;
@@ -30,36 +30,41 @@ class FocusChange implements Event {
 
   /// Default constructor. Takes [uid] of the user changing the widget and
   ///  the new focus state ([inFocus]) as mandatory arguments.
-  FocusChange(int this.uid, bool this.inFocus) : timestamp = new DateTime.now();
+  FocusChange(this.uid, this.inFocus) : timestamp = new DateTime.now();
 
   /// Bluring constructor. Takes [uid] of the user changing the widget and
   /// returns an event with [inFocus] set to [false].
-  FocusChange.blur(int this.uid)
+  FocusChange.blur(this.uid)
       : inFocus = false,
         timestamp = new DateTime.now();
 
   /// Focusing constructor. Takes [uid] of the user changing the widget and
   /// returns an event with [inFocus] set to [true].
-  FocusChange.focus(int this.uid)
+  FocusChange.focus(this.uid)
       : inFocus = true,
         timestamp = new DateTime.now();
 
-  /// Deserializing constructor.
-  FocusChange.fromMap(Map map)
+  /// Create a new [FocusChange] object from serialized data stored in [map].
+  FocusChange.fromMap(Map<String, dynamic> map)
       : uid = map[_Key._changedBy],
         inFocus = map[_Key._inFocus],
         timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 
-  /// Serialization function.
+  /// Returns an umodifiable map representation of the object, suitable for
+  /// serialization.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() =>
+      new Map<String, dynamic>.unmodifiable(<String, dynamic>{
         _Key._event: eventName,
         _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
         _Key._changedBy: uid,
         _Key._inFocus: inFocus
-      };
+      });
 
-  /// Returns a string reprensentation of the object.
+  /// Returns a brief string-represented summary of the event, suitable for
+  /// logging or debugging purposes.
   @override
-  String toString() => toJson().toString();
+  String toString() => '$timestamp-$eventName '
+      'uid:$uid, '
+      'focus:$inFocus';
 }

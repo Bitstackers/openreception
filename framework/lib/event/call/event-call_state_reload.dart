@@ -13,23 +13,32 @@
 
 part of openreception.framework.event;
 
+/// Event that notifies about a complete call-state reload.
 class CallStateReload implements Event {
   @override
   final String eventName = _Key._callStateReload;
   @override
   final DateTime timestamp;
 
+  /// Default constructor. Subtypes the general [CallEvent] class and should
+  /// be used to notify clients about a full call-state reload.
   CallStateReload() : this.timestamp = new DateTime.now();
 
+  /// Create a new [CallStateReload] object from serialized data stored in [map].
+  CallStateReload.fromMap(Map<String, dynamic> map)
+      : this.timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
+
+  /// Returns an umodifiable map representation of the object, suitable for
+  /// serialization.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() =>
+      new Map<String, dynamic>.unmodifiable(<String, dynamic>{
         _Key._event: eventName,
         _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp)
-      };
+      });
 
+  /// Returns a brief string-represented summary of the event, suitable for
+  /// logging or debugging purposes.
   @override
-  String toString() => eventName;
-
-  CallStateReload.fromMap(Map map)
-      : this.timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
+  String toString() => '$timestamp-$eventName';
 }

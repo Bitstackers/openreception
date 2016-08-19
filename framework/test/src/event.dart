@@ -47,8 +47,8 @@ abstract class EventTests {
     event.OrganizationChange testEvent =
         new event.OrganizationChange.create(oid, uid);
 
-    event.OrganizationChange builtEvent =
-        new event.Event.parse(JSON.decode(JSON.encode(testEvent)));
+    event.OrganizationChange builtEvent = new event.Event.parse(
+        JSON.decode(JSON.encode(testEvent)) as Map<String, dynamic>);
 
     expect(builtEvent.oid, equals(oid));
     expect(builtEvent.modifierUid, equals(uid));
@@ -96,8 +96,8 @@ abstract class EventTests {
     event.MessageChange testEvent =
         new event.MessageChange.create(mid, uid, state, now);
 
-    event.MessageChange builtEvent =
-        new event.Event.parse(testEvent.asMap) as event.MessageChange;
+    event.MessageChange builtEvent = new event.Event.parse(
+        JSON.decode(JSON.encode(testEvent)) as Map<String, dynamic>);
 
     expect(builtEvent.mid, equals(mid));
     expect(builtEvent.modifierUid, equals(uid));
@@ -159,8 +159,8 @@ abstract class EventTests {
   static void callStateReload() {
     event.CallStateReload testEvent = new event.CallStateReload();
 
-    event.Event builtEvent =
-        new event.Event.parse(JSON.decode(JSON.encode(testEvent)));
+    event.Event builtEvent = new event.Event.parse(
+        JSON.decode(JSON.encode(testEvent)) as Map<String, dynamic>);
 
     expect(
         builtEvent.timestamp

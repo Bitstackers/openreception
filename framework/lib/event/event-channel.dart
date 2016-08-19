@@ -13,28 +13,38 @@
 
 part of openreception.framework.event;
 
+/// General event class that is meant to be emitted upon _any_ channel update.
+/// Used primarily in development environment to notify clients about raw channel
+/// updates. This is very useful for debuggin UI's.
 class ChannelState implements Event {
   @override
   final DateTime timestamp;
   @override
   final String eventName = _Key._channelState;
+
+  /// The uuid of the channel that changed state.
   final String channelUuid;
 
-  @override
-  Map toJson() => {
-        _Key._event: eventName,
-        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
-        _Key._channel: {_Key._id: channelUuid}
-      };
+  /// Create a new [ChannelState] event for [channelUuid].
+  ChannelState(this.channelUuid) : timestamp = new DateTime.now();
 
-  @override
-  String toString() => eventName;
-
-  ChannelState(String uuid)
-      : channelUuid = uuid,
-        timestamp = new DateTime.now();
-
-  ChannelState.fromMap(Map map)
+  /// Create a new [ChannelState] object from serialized data stored in [map].
+  ChannelState.fromMap(Map<String, dynamic> map)
       : channelUuid = map[_Key._channel][_Key._id],
         timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
+
+  /// Returns an umodifiable map representation of the object, suitable for
+  /// serialization.
+  @override
+  Map<String, dynamic> toJson() =>
+      new Map<String, dynamic>.unmodifiable(<String, dynamic>{
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._channel: <String, dynamic>{_Key._id: channelUuid}
+      });
+
+  /// Returns a brief string-represented summary of the event, suitable for
+  /// logging or debugging purposes.
+  @override
+  String toString() => '$timestamp-$eventName $channelUuid';
 }

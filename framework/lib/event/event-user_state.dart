@@ -13,9 +13,10 @@
 
 part of openreception.framework.event;
 
-/**
- * Event that spawns whenever a user changes its call-handling state.
- */
+/// Event that spawns whenever an agent explicitly changes its own state.
+///
+/// This state-change is to be interpreted as a call-handling-availability
+/// state. For example, an agent may chage his/her state to `paused`.
 class UserState implements Event {
   @override
   final DateTime timestamp;
@@ -23,24 +24,34 @@ class UserState implements Event {
   @override
   final String eventName = _Key._userState;
 
+  /// The [model.UserStatus] that was changed. The [status] object contains
+  /// information about the new state and uid of agent.
   final model.UserStatus status;
 
-  UserState(model.UserStatus this.status) : this.timestamp = new DateTime.now();
+  /// Create a new [UserState] event object. The payload of the object is
+  /// passed in the [status] parameter.
+  UserState(this.status) : this.timestamp = new DateTime.now();
 
-  @override
-  String toString() => '$timestamp-$eventName $status';
-
-  @override
-  Map toJson() => {
-        _Key._event: eventName,
-        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
-        _Key._uid: status.userId,
-        _Key._paused: status.paused
-      };
-
-  UserState.fromMap(Map map)
+  /// Create a new [UserState] object from serialized data stored in [map].
+  UserState.fromMap(Map<String, dynamic> map)
       : this.status = new model.UserStatus()
           ..userId = map[_Key._uid]
           ..paused = map[_Key._paused],
         this.timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
+
+  /// Returns an umodifiable map representation of the object, suitable for
+  /// serialization.
+  @override
+  Map<String, dynamic> toJson() =>
+      new Map<String, dynamic>.unmodifiable(<String, dynamic>{
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._uid: status.userId,
+        _Key._paused: status.paused
+      });
+
+  /// Returns a brief string-represented summary of the event, suitable for
+  /// logging or debugging purposes.
+  @override
+  String toString() => '$timestamp-$eventName $status';
 }

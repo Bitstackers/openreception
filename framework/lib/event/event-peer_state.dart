@@ -13,27 +13,37 @@
 
 part of openreception.framework.event;
 
+/// Event class that is emitted upon [model.Peer] registration status change.
 class PeerState implements Event {
   @override
   final DateTime timestamp;
   @override
   final String eventName = _Key._peerState;
 
+  /// The peer that changed state.
   final model.Peer peer;
 
-  PeerState(model.Peer this.peer) : this.timestamp = new DateTime.now();
+  /// Create a new [PeerState] object from a [model.Peer] object.
+  PeerState(this.peer) : this.timestamp = new DateTime.now();
 
-  @override
-  String toString() => this.toJson().toString();
+  /// Create a new [PeerState] object from serialized data stored in [map].
+  PeerState.fromMap(Map<String, dynamic> map)
+      : this.peer = new model.Peer.fromMap(map[_Key._peer]),
+        this.timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 
+  /// Returns an umodifiable map representation of the object, suitable for
+  /// serialization.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() =>
+      new Map<String, dynamic>.unmodifiable(<String, dynamic>{
         _Key._event: eventName,
         _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
         _Key._peer: peer.toJson()
-      };
+      });
 
-  PeerState.fromMap(Map map)
-      : this.peer = new model.Peer.fromMap(map[_Key._peer]),
-        this.timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
+  /// Returns a brief string-represented summary of the event, suitable for
+  /// logging or debugging purposes.
+  @override
+  String toString() => '$timestamp-$eventName ${peer.name}, '
+      'reg:${peer.registered}';
 }

@@ -13,69 +13,74 @@
 
 part of openreception.framework.event;
 
+/// Model class representing a change in a persistent [model.Reception]
+/// object. May be serialized and sent via a notification socket.
 class ReceptionChange implements Event {
   @override
   final DateTime timestamp;
 
   @override
-  String get eventName => _Key._receptionChange;
+  final String eventName = _Key._receptionChange;
 
+  /// The reception ID of the reception that was modified.
   final int rid;
+
+  /// The uid of the user modifying the calendar entry.
   int modifierUid;
+
+  /// The modification state. Must be one of the valid [Change] values.
   final String state;
 
-  bool get created => state == Change.created;
-  bool get updated => state == Change.updated;
-  bool get deleted => state == Change.deleted;
-
-  /**
-   *
-   */
+  /// Create a new creation event.
   ReceptionChange.create(this.rid, this.modifierUid)
       : this.state = Change.created,
         this.timestamp = new DateTime.now();
 
-  /**
-   *
-   */
+  /// Create a new update event.
   ReceptionChange.update(this.rid, this.modifierUid)
       : this.state = Change.updated,
         this.timestamp = new DateTime.now();
 
-  /**
-   *
-   */
+  /// Create a new deletion event.
   ReceptionChange.delete(this.rid, this.modifierUid)
       : this.state = Change.deleted,
         this.timestamp = new DateTime.now();
 
-  /**
-   *
-   */
-  @override
-  Map toJson() => {
-        _Key._event: eventName,
-        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
-        _Key._modifierUid: modifierUid,
-        _Key._receptionChange: {
-          _Key._rid: rid,
-          _Key._state: state,
-          _Key._modifierUid: modifierUid
-        }
-      };
-
-  /**
-   *
-   */
-  @override
-  String toString() => toJson().toString();
-
-  /**
-   *
-   */
-  ReceptionChange.fromMap(Map map)
+  /// Create a new [ReceptionChange] object from serialized data stored in [map].
+  ReceptionChange.fromMap(Map<String, dynamic> map)
       : rid = map[_Key._receptionChange][_Key._rid],
         state = map[_Key._receptionChange][_Key._state],
         modifierUid = map[_Key._receptionChange][_Key._modifierUid],
         timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
+
+  /// Determines if the object signifies a creation.
+  bool get created => state == Change.created;
+
+  /// Determines if the object signifies an update.
+  bool get updated => state == Change.updated;
+
+  /// Determines if the object signifies a deletion.
+  bool get deleted => state == Change.deleted;
+
+  /// Returns an umodifiable map representation of the object, suitable for
+  /// serialization.
+  @override
+  Map<String, dynamic> toJson() =>
+      new Map<String, dynamic>.unmodifiable(<String, dynamic>{
+        _Key._event: eventName,
+        _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
+        _Key._modifierUid: modifierUid,
+        _Key._receptionChange: <String, dynamic>{
+          _Key._rid: rid,
+          _Key._state: state,
+          _Key._modifierUid: modifierUid
+        }
+      });
+
+  /// Returns a brief string-represented summary of the event, suitable for
+  /// logging or debugging purposes.
+  @override
+  String toString() => '$timestamp-$eventName $state '
+      'modifier:$modifierUid, '
+      'rid:$rid';
 }

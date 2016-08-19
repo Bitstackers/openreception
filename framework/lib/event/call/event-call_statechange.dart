@@ -13,17 +13,32 @@
 
 part of openreception.framework.event;
 
+/// Event that notifies about a call changing state. Should eventually be phased
+/// out in favour of strongly typed classes instead.
 class CallStateChanged extends CallEvent {
   @override
   final String eventName = _Key._callState;
 
+  /// Default constructor. Subtypes the general [CallEvent] class and should
+  /// be used to notify clients about a generic call-state change for a single
+  /// call.
   CallStateChanged(model.Call call) : super(call);
-  CallStateChanged.fromMap(Map map) : super.fromMap(map);
 
+  /// Create a new [CallStateChanged] object from serialized data stored in [map].
+  CallStateChanged.fromMap(Map<String, dynamic> map) : super.fromMap(map);
+
+  /// Returns an umodifiable map representation of the object, suitable for
+  /// serialization.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() =>
+      new Map<String, dynamic>.unmodifiable(<String, dynamic>{
         _Key._event: eventName,
         _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
         _Key._call: call.toJson()
-      };
+      });
+
+  /// Returns a brief string-represented summary of the event, suitable for
+  /// logging or debugging purposes.
+  @override
+  String toString() => '$timestamp-$eventName ${call.id}';
 }

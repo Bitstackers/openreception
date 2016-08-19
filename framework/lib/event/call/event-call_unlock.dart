@@ -13,17 +13,30 @@
 
 part of openreception.framework.event;
 
+/// Event that notifies about a call being unlocked.
 class CallUnlock extends CallEvent {
   @override
   final String eventName = _Key._callUnlock;
 
+  /// Default constructor. Subtypes the general [CallEvent] class and should
+  /// be used to notify clients about a call being unlocked.
   CallUnlock(model.Call call) : super(call);
-  CallUnlock.fromMap(Map map) : super.fromMap(map);
 
+  /// Create a new [CallUnlock] object from serialized data stored in [map].
+  CallUnlock.fromMap(Map<String, dynamic> map) : super.fromMap(map);
+
+  /// Returns an umodifiable map representation of the object, suitable for
+  /// serialization.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() =>
+      new Map<String, dynamic>.unmodifiable(<String, dynamic>{
         _Key._event: eventName,
         _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
         _Key._call: call.toJson()
-      };
+      });
+
+  /// Returns a brief string-represented summary of the event, suitable for
+  /// logging or debugging purposes.
+  @override
+  String toString() => '$timestamp-$eventName ${call.id}';
 }

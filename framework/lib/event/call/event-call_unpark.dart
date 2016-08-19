@@ -13,17 +13,30 @@
 
 part of openreception.framework.event;
 
+/// Event that notifies about a call leaving a parked state.
 class CallUnpark extends CallEvent {
   @override
   final String eventName = _Key._callUnpark;
 
+  /// Default constructor. Subtypes the general [CallEvent] class and should
+  /// be used to notify clients about a call leaving a parked state.
   CallUnpark(model.Call call) : super(call);
-  CallUnpark.fromMap(Map map) : super.fromMap(map);
 
+  /// Create a new [CallUnpark] object from serialized data stored in [map].
+  CallUnpark.fromMap(Map<String, dynamic> map) : super.fromMap(map);
+
+  /// Returns an umodifiable map representation of the object, suitable for
+  /// serialization.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() =>
+      new Map<String, dynamic>.unmodifiable(<String, dynamic>{
         _Key._event: eventName,
         _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
         _Key._call: call.toJson()
-      };
+      });
+
+  /// Returns a brief string-represented summary of the event, suitable for
+  /// logging or debugging purposes.
+  @override
+  String toString() => '$timestamp-$eventName ${call.id}';
 }

@@ -13,72 +13,70 @@
 
 part of openreception.framework.event;
 
-/**
- *
- */
+/// Model class representing a change in a persistent [model.IvrMenu]
+/// object. May be serialized and sent via a notification socket.
 class IvrMenuChange implements Event {
   @override
   final DateTime timestamp;
 
   @override
-  String get eventName => _Key._ivrMenuChange;
+  final String eventName = _Key._ivrMenuChange;
 
-  bool get isCreate => state == Change.created;
-  bool get isUpdate => state == Change.updated;
-  bool get isDelete => state == Change.deleted;
-
+  /// Name of the menu that was modified.
   final String menuName;
+
+  /// The uid of the user modifying the calendar entry.
   final int modifierUid;
+
+  /// The modification state. Must be one of the valid [Change] values.
   final String state;
 
-  /**
-   *
-   */
   IvrMenuChange._internal(this.menuName, this.modifierUid, this.state)
       : timestamp = new DateTime.now();
 
-  /*
-   *
-   */
+  /// Create a new creation event.
   factory IvrMenuChange.create(String menuName, int modifierUid) =>
       new IvrMenuChange._internal(menuName, modifierUid, Change.created);
 
-  /**
-   *
-   */
+  /// Create a new update event.
   factory IvrMenuChange.update(String menuName, int modifierUid) =>
       new IvrMenuChange._internal(menuName, modifierUid, Change.updated);
 
-  /**
-   *
-   */
+  /// Create a new deletion event.
   factory IvrMenuChange.delete(String menuName, int modifierUid) =>
       new IvrMenuChange._internal(menuName, modifierUid, Change.deleted);
 
-  /**
-   *
-   */
-  @override
-  String toString() => toJson().toString();
+  /// Create a new [IvrMenuChange] object from serialized data stored in [map].
+  IvrMenuChange.fromMap(Map<String, dynamic> map)
+      : modifierUid = map[_Key._modifierUid],
+        menuName = map[_Key._menuName],
+        state = map[_Key._state],
+        timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 
-  /**
-   *
-   */
+  /// Determines if the object signifies a creation.
+  bool get isCreate => state == Change.created;
+
+  /// Determines if the object signifies an update.
+  bool get isUpdate => state == Change.updated;
+
+  /// Determines if the object signifies a deletion.
+  bool get isDelete => state == Change.deleted;
+
+  /// Returns an umodifiable map representation of the object, suitable for
+  /// serialization.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() =>
+      new Map<String, dynamic>.unmodifiable(<String, dynamic>{
         _Key._event: eventName,
         _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
         _Key._modifierUid: modifierUid,
         _Key._menuName: menuName,
         _Key._state: this.state
-      };
+      });
 
-  /**
-   *
-   */
-  IvrMenuChange.fromMap(Map map)
-      : modifierUid = map[_Key._modifierUid],
-        menuName = map[_Key._menuName],
-        state = map[_Key._state],
-        timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
+  /// Returns a brief string-represented summary of the event, suitable for
+  /// logging or debugging purposes.
+  @override
+  String toString() => '$timestamp-$eventName $state '
+      'modifier:$modifierUid,menu:$menuName,';
 }

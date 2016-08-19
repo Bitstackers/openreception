@@ -60,9 +60,7 @@ part 'event/event-user.dart';
 part 'event/event-user_state.dart';
 part 'event/event-widget_select.dart';
 
-/**
- * 'Enum' representing different outcomes of an change.
- */
+///'Enum' representing different outcomes of an change.
 abstract class Change {
   /// Object is created.
   static const String created = 'created';
@@ -74,9 +72,7 @@ abstract class Change {
   static const String deleted = 'deleted';
 }
 
-/**
- * Keys for the serialization and deserialization.
- */
+/// Keys for the serialization and deserialization.
 abstract class _Key {
   static const String _id = 'id';
   static const String _uid = 'uid';
@@ -136,31 +132,15 @@ abstract class _Key {
   static const String _callStateReload = 'callStateReload';
 }
 
-/**
- * Superclass for events. It's only real purpose is to provide a common
- * interface for [Event] objects, and a parsing factory constructor.
- */
+/// Superclass for events. It's only real purpose is to provide a common interface
+/// for [Event] objects, and a parsing factory constructor.
 abstract class Event {
   static final Logger _log = new Logger('openreception.framework.event.Event');
 
-  /// The creation time of the event.
-  DateTime get timestamp;
-
-  /// The name of the event. Identifies the type of the object in the
-  /// serialization/deserialization.
-  String get eventName;
-
-  /**
-   * Every specialized class needs a toJson function.
-   */
-  Map toJson();
-
-  /**
-   * Parse an an event that has already been deserialized from JSON string.
-   *
-   * Throws a [FormatException] if the map is not a valid event.
-   */
-  factory Event.parse(Map map) {
+  /// Parse an an event that has already been deserialized from JSON string.
+  ///
+  /// Throws a [FormatException] if the map is not a valid event.
+  factory Event.parse(Map<String, dynamic> map) {
     final String eventName = map[_Key._event];
     try {
       switch (eventName) {
@@ -255,4 +235,14 @@ abstract class Event {
       throw new FormatException('Failed to cast map as event.');
     }
   }
+
+  /// The creation time of the event.
+  DateTime get timestamp;
+
+  /// The name of the event. Identifies the type of the object in the
+  /// serialization/deserialization.
+  String get eventName;
+
+  /// Every specialized class needs a toJson function.
+  Map<String, dynamic> toJson();
 }

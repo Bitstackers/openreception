@@ -82,9 +82,9 @@ abstract class EventMessageChange {
     expect(testEvent.messageState, equals(state));
     expect(testEvent.timestamp.difference(now).inMilliseconds, equals(0));
 
-    Map serialized = testEvent.toJson();
+    event.MessageChange serialized = new event.MessageChange.fromMap(
+        JSON.decode(JSON.encode(testEvent)) as Map<String, dynamic>);
 
-    expect(
-        new event.MessageChange.fromMap(serialized).asMap, equals(serialized));
+    expect(testEvent.toJson(), equals(serialized.toJson()));
   }
 }

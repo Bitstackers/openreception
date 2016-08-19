@@ -13,50 +13,46 @@
 
 part of openreception.framework.event;
 
-/**
- * Event for notifying about a change in the UI. Specifically, a change of
- * which widget is currently selected.
- */
+/// Event for notifying about a change in the UI. Specifically, a change of
+///  which widget is currently selected.
 class WidgetSelect implements Event {
-  /// Common [Event] fields.
   @override
   final DateTime timestamp;
+
   @override
-  String get eventName => _Key._widgetSelect;
+  final String eventName = _Key._widgetSelect;
 
   /// Specialized fields.
   final int uid;
+
+  /// The name of currently selected widget.
   final String widgetName;
 
-  /**
-   * Default constructor. Takes [uid] of the user changing the widget and
-   * the [widgetName] as mandatory arguments.
-   */
-  WidgetSelect(int this.uid, String this.widgetName)
-      : timestamp = new DateTime.now();
+  ///Default constructor. Takes [uid] of the user changing the widget and the
+  /// [widgetName] as mandatory arguments.
+  WidgetSelect(this.uid, this.widgetName) : timestamp = new DateTime.now();
 
-  /**
-   * Deserializing constructor.
-   */
-  WidgetSelect.fromMap(Map map)
+  /// Create a new [WidgetSelect] object from serialized data stored in [map].
+  WidgetSelect.fromMap(Map<String, dynamic> map)
       : uid = map[_Key._changedBy],
         widgetName = map[_Key._widget],
         timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 
-  /**
-   * Serialization function.
-   */
+  /// Returns an umodifiable map representation of the object, suitable for
+  /// serialization.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() =>
+      new Map<String, dynamic>.unmodifiable(<String, dynamic>{
         _Key._event: eventName,
         _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
         _Key._changedBy: uid,
         _Key._widget: widgetName
-      };
+      });
 
-  /**
-   * Returns a string reprensentation of the object.
-   */
+  /// Returns a brief string-represented summary of the event, suitable for
+  /// logging or debugging purposes.
   @override
-  String toString() => toJson().toString();
+  String toString() => '$timestamp-$eventName '
+      'uid:$uid, '
+      'widget:$widgetName';
 }

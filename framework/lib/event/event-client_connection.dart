@@ -13,31 +13,38 @@
 
 part of openreception.framework.event;
 
-/**
- * Event that spawns every time a client opens or closes a connection.
- */
+///Event that spawns every time a client opens or closes a connection.
 class ClientConnectionState implements Event {
   @override
   final DateTime timestamp;
 
+  /// The client connection that was changed.
   final model.ClientConnection conn;
   @override
-  String get eventName => _Key._connectionState;
+  final String eventName = _Key._connectionState;
 
-  ClientConnectionState(model.ClientConnection this.conn)
-      : timestamp = new DateTime.now();
+  /// Create a new [ClientConnectionState] for the [model.ClientConnection] conn.
+  ClientConnectionState(this.conn) : timestamp = new DateTime.now();
 
+  /// Create a new [ClientConnectionState] object from serialized data stored
+  /// in [map].
+  ClientConnectionState.fromMap(Map<String, dynamic> map)
+      : conn = new model.ClientConnection.fromMap(map[_Key._state]),
+        timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
+
+  /// Returns an umodifiable map representation of the object, suitable for
+  /// serialization.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() =>
+      new Map<String, dynamic>.unmodifiable(<String, dynamic>{
         _Key._event: eventName,
         _Key._timestamp: util.dateTimeToUnixTimestamp(timestamp),
         _Key._state: conn
-      };
+      });
 
+  /// Returns a brief string-represented summary of the event, suitable for
+  /// logging or debugging purposes.
   @override
-  String toString() => toJson().toString();
-
-  ClientConnectionState.fromMap(Map map)
-      : conn = new model.ClientConnection.fromMap(map[_Key._state]),
-        timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
+  String toString() => '$timestamp-$eventName uid:${conn.userID}, '
+      'connections:${conn.connectionCount}';
 }
