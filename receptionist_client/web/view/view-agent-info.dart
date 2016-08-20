@@ -18,12 +18,12 @@ part of view;
  * currently logged in and how many are active/paused.
  */
 class AgentInfo extends ViewWidget {
-  final Model.AppClientState _appState;
+  final ui_model.AppClientState _appState;
   final Logger _log = new Logger('$libraryName.AgentInfo');
-  final Controller.Notification _notification;
-  final Model.UIAgentInfo _uiModel;
-  final Controller.User _user;
-  final Controller.Call _call;
+  final controller.Notification _notification;
+  final ui_model.UIAgentInfo _uiModel;
+  final controller.User _user;
+  final controller.Call _call;
   final Map<int, int> _userConnectionCount = {};
   final Map<int, String> _userPeer = {};
   final Map<String, bool> _peerState = {};
@@ -33,15 +33,15 @@ class AgentInfo extends ViewWidget {
    * Constructor.
    */
   AgentInfo(
-      Model.UIAgentInfo this._uiModel,
-      Model.AppClientState this._appState,
-      Controller.User this._user,
-      Controller.Notification this._notification,
-      Controller.Call this._call) {
+      ui_model.UIAgentInfo this._uiModel,
+      ui_model.AppClientState this._appState,
+      controller.User this._user,
+      controller.Notification this._notification,
+      controller.Call this._call) {
     _ui.activeCount = 0;
     _ui.pausedCount = 0;
-    _ui.agentState = Model.AgentState.unknown;
-    _ui.alertState = Model.AlertState.off;
+    _ui.agentState = ui_model.AgentState.unknown;
+    _ui.alertState = ui_model.AlertState.off;
     _ui.portrait = 'images/face.png';
 
     if (_appState.currentUser.portrait.isNotEmpty) {
@@ -55,14 +55,14 @@ class AgentInfo extends ViewWidget {
   }
 
   @override
-  Controller.Destination get _destination => null;
+  controller.Destination get _destination => null;
   @override
-  Model.UIAgentInfo get _ui => _uiModel;
+  ui_model.UIAgentInfo get _ui => _uiModel;
 
   @override
-  void _onBlur(Controller.Destination _) {}
+  void _onBlur(controller.Destination _) {}
   @override
-  void _onFocus(Controller.Destination _) {}
+  void _onFocus(controller.Destination _) {}
 
   /**
    * Update the users state in the UI.
@@ -101,44 +101,44 @@ class AgentInfo extends ViewWidget {
   void _observers() {
     _hotKeys.onCtrlAltP.listen((KeyboardEvent _) => _toggleAgentState());
 
-    _notification.onAgentStateChange.listen((ORModel.UserStatus userStatus) {
+    _notification.onAgentStateChange.listen((model.UserStatus userStatus) {
       _userPaused[userStatus.userId] = userStatus.paused;
       _updateCounters();
 
       if (userStatus.userId == _appState.currentUser.id &&
-          _appState.activeCall == ORModel.Call.noCall) {
+          _appState.activeCall == model.Call.noCall) {
         if (_userPaused.containsKey(_appState.currentUser.id) &&
             _userPaused[_appState.currentUser.id]) {
-          _ui.agentState = Model.AgentState.paused;
+          _ui.agentState = ui_model.AgentState.paused;
         } else {
-          _ui.agentState = Model.AgentState.idle;
+          _ui.agentState = ui_model.AgentState.idle;
         }
       }
     });
 
     _notification.onClientConnectionStateChange
-        .listen((Model.ClientConnectionState state) {
+        .listen((ui_model.ClientConnectionState state) {
       _userConnectionCount[state.userID] = state.connectionCount;
       _log.info('View.AgentInfo got '
-          'Model.ClientConnectionState: ${state.asMap}');
+          'Model.ClientConnectionState: ${state.toJson()}');
       _updateCounters();
     });
 
-    _notification.onPeerStateChange.listen((OREvent.PeerState state) {
-      _log.info('View.AgentInfo got OREvent.PeerState: ${state.asMap}');
+    _notification.onPeerStateChange.listen((event.PeerState state) {
+      _log.info('View.AgentInfo got OREvent.PeerState: ${state.toJson()}');
       _peerState[state.peer.name] = state.peer.registered;
       _updateCounters();
     });
 
-    _appState.activeCallChanged.listen((ORModel.Call newCall) {
-      if (newCall != ORModel.Call.noCall) {
-        _ui.agentState = Model.AgentState.busy;
+    _appState.activeCallChanged.listen((model.Call newCall) {
+      if (newCall != model.Call.noCall) {
+        _ui.agentState = ui_model.AgentState.busy;
       } else {
         if (_userPaused.containsKey(_appState.currentUser.id) &&
             _userPaused[_appState.currentUser.id]) {
-          _ui.agentState = Model.AgentState.paused;
+          _ui.agentState = ui_model.AgentState.paused;
         } else {
-          _ui.agentState = Model.AgentState.idle;
+          _ui.agentState = ui_model.AgentState.idle;
         }
       }
     });

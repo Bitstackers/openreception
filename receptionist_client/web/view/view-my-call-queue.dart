@@ -1,3 +1,4 @@
+
 /*                  This file is part of OpenReception
                    Copyright (C) 2015-, BitStackers K/S
 
@@ -19,48 +20,48 @@ part of view;
  * This reloads the call queue list at a fixed refresh rate of [_refreshRate].
  */
 class MyCallQueue extends ViewWidget {
-  final Model.AppClientState _appState;
-  final Controller.Call _callController;
+  final ui_model.AppClientState _appState;
+  final controller.Call _callController;
   bool _callControllerBusy = false;
-  final Model.UIContactData _contactData;
-  final Model.UIContactSelector _contactSelector;
+  final ui_model.UIContactData _contactData;
+  final ui_model.UIContactSelector _contactSelector;
   String _contextCallId = '';
   final Map<String, String> _langMap;
   final Logger _log = new Logger('$libraryName.MyCallQueue');
-  final Controller.Destination _myDestination;
-  final Controller.Notification _notification;
-  final Controller.Popup _popup;
-  final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIMyCallQueue _uiModel;
+  final controller.Destination _myDestination;
+  final controller.Notification _notification;
+  final controller.Popup _popup;
+  final ui_model.UIReceptionSelector _receptionSelector;
+  final ui_model.UIMyCallQueue _uiModel;
 
   /**
    * Constructor.
    */
   MyCallQueue(
-      Model.UIMyCallQueue this._uiModel,
-      Model.AppClientState this._appState,
-      Controller.Destination this._myDestination,
-      Controller.Notification this._notification,
-      Controller.Call this._callController,
-      Controller.Popup this._popup,
+      ui_model.UIMyCallQueue this._uiModel,
+      ui_model.AppClientState this._appState,
+      controller.Destination this._myDestination,
+      controller.Notification this._notification,
+      controller.Call this._callController,
+      controller.Popup this._popup,
       Map<String, String> this._langMap,
-      Model.UIContactData this._contactData,
-      Model.UIContactSelector this._contactSelector,
-      Model.UIReceptionSelector this._receptionSelector) {
+      ui_model.UIContactData this._contactData,
+      ui_model.UIContactSelector this._contactSelector,
+      ui_model.UIReceptionSelector this._receptionSelector) {
     _loadCallList();
 
     _observers();
   }
 
   @override
-  Controller.Destination get _destination => _myDestination;
+  controller.Destination get _destination => _myDestination;
   @override
-  Model.UIMyCallQueue get _ui => _uiModel;
+  ui_model.UIMyCallQueue get _ui => _uiModel;
 
   @override
-  void _onBlur(Controller.Destination _) {}
+  void _onBlur(controller.Destination _) {}
   @override
-  void _onFocus(Controller.Destination _) {}
+  void _onFocus(controller.Destination _) {}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
@@ -76,11 +77,11 @@ class MyCallQueue extends ViewWidget {
    * If this is called while [_appState.activeCall] is not [ORModel.Call.noCall]
    * then mark both calls ready for transfer.
    */
-  Future _call(ORModel.PhoneNumber phoneNumber) async {
-    ORModel.Call parkedCall;
-    bool markTransfer = _appState.activeCall == ORModel.Call.noCall &&
+  Future _call(model.PhoneNumber phoneNumber) async {
+    model.Call parkedCall;
+    bool markTransfer = _appState.activeCall == model.Call.noCall &&
         _ui.markedForTransfer.length == 1;
-    bool parkAndMarkTransfer = _appState.activeCall != ORModel.Call.noCall &&
+    bool parkAndMarkTransfer = _appState.activeCall != model.Call.noCall &&
         _ui.markedForTransfer.length < 2;
 
     if (parkAndMarkTransfer) {
@@ -92,7 +93,7 @@ class MyCallQueue extends ViewWidget {
 
     _busyCallController();
     try {
-      ORModel.Call newCall =
+      model.Call newCall =
           await _callController.dial(phoneNumber, _appState.originationContext);
       if (markTransfer || parkAndMarkTransfer) {
         _ui.markForTransfer(newCall);
@@ -120,10 +121,10 @@ class MyCallQueue extends ViewWidget {
    * Clear stale calls from the call list
    */
   void clearStaleCalls() {
-    _ui.calls.forEach((ORModel.Call call) {
-      _callController.get(call.id).then((ORModel.Call c) {
-        if (c == ORModel.Call.noCall ||
-            c.callState == ORModel.CallState.transferred) {
+    _ui.calls.forEach((model.Call call) {
+      _callController.get(call.id).then((model.Call c) {
+        if (c == model.Call.noCall ||
+            c.callState == model.CallState.transferred) {
           if (c.id == contextCallId) {
             contextCallId = '';
           }
@@ -160,7 +161,7 @@ class MyCallQueue extends ViewWidget {
    * Popup with errors.
    */
   void _error(error, String title, String message) {
-    if (error is Controller.BusyException) {
+    if (error is controller.BusyException) {
       _popup.error(
           _langMap[Key.errorSystem], _langMap[Key.errorCallControllerBusy]);
     } else {
@@ -171,21 +172,21 @@ class MyCallQueue extends ViewWidget {
   /**
    * Add, remove, update the queue list, depending on the [event.call] state.
    */
-  void _handleCallStateChanges(OREvent.CallEvent event) {
+  void _handleCallStateChanges(event.CallEvent event) {
     if (event.call.assignedTo != _appState.currentUser.id) {
       return;
     }
 
     switch (event.call.state) {
-      case ORModel.CallState.created:
+      case model.CallState.created:
         if (!event.call.inbound) {
           /// My outbound call.
           _ui.appendCall(event.call);
         }
         break;
 
-      case ORModel.CallState.hungup:
-      case ORModel.CallState.transferred:
+      case model.CallState.hungup:
+      case model.CallState.transferred:
         if (event.call.id == contextCallId) {
           contextCallId = '';
         }
@@ -204,18 +205,18 @@ class MyCallQueue extends ViewWidget {
    * Updates [_appState.activeCall] if any call is detected as being active.
    */
   void _loadCallList() {
-    bool isMine(ORModel.Call call) =>
+    bool isMine(model.Call call) =>
         call.assignedTo == _appState.currentUser.id &&
-        call.state != ORModel.CallState.transferred;
+        call.state != model.CallState.transferred;
 
-    _callController.listCalls().then((Iterable<ORModel.Call> calls) {
-      Iterable<ORModel.Call> myCalls = calls.where(isMine);
+    _callController.listCalls().then((Iterable<model.Call> calls) {
+      Iterable<model.Call> myCalls = calls.where(isMine);
       _ui.calls = myCalls.toList(growable: false);
       _appState.activeCall = myCalls.firstWhere(
-          (ORModel.Call call) =>
-              call.state == ORModel.CallState.speaking ||
-              call.state == ORModel.CallState.ringing,
-          orElse: () => ORModel.Call.noCall);
+          (model.Call call) =>
+              call.state == model.CallState.speaking ||
+              call.state == model.CallState.ringing,
+          orElse: () => model.Call.noCall);
     });
   }
 
@@ -227,10 +228,10 @@ class MyCallQueue extends ViewWidget {
 
     _ui.onClick.listen((MouseEvent _) => _activateMe());
 
-    _ui.onDblClick.listen((ORModel.Call call) => unpark(call: call));
+    _ui.onDblClick.listen((model.Call call) => unpark(call: call));
 
-    _receptionSelector.onSelect.listen((ORModel.Reception reception) {
-      if (_appState.activeCall == ORModel.Call.noCall ||
+    _receptionSelector.onSelect.listen((model.Reception reception) {
+      if (_appState.activeCall == model.Call.noCall ||
           !_appState.activeCall.inbound) {
         contextCallId = '';
       }
@@ -238,16 +239,16 @@ class MyCallQueue extends ViewWidget {
 
     /// Transfer
     _hotKeys.onCtrlNumMinus.listen((_) {
-      final Iterable<ORModel.Call> calls = _ui.markedForTransfer;
+      final Iterable<model.Call> calls = _ui.markedForTransfer;
 
       if (!_callControllerBusy &&
-          _appState.activeCall != ORModel.Call.noCall &&
+          _appState.activeCall != model.Call.noCall &&
           calls.length == 2 &&
-          calls.any((ORModel.Call call) => _appState.activeCall == call)) {
-        final ORModel.Call source = calls.firstWhere(
-            (ORModel.Call call) => call.id == _appState.activeCall.id);
-        final ORModel.Call destination = calls.firstWhere(
-            (ORModel.Call call) => call.id != _appState.activeCall.id);
+          calls.any((model.Call call) => _appState.activeCall == call)) {
+        final model.Call source = calls.firstWhere(
+            (model.Call call) => call.id == _appState.activeCall.id);
+        final model.Call destination = calls.firstWhere(
+            (model.Call call) => call.id != _appState.activeCall.id);
 
         _busyCallController();
 
@@ -272,7 +273,7 @@ class MyCallQueue extends ViewWidget {
 
     /// Hangup
     _hotKeys.onNumDiv.listen((_) {
-      if (!_callControllerBusy && _appState.activeCall != ORModel.Call.noCall) {
+      if (!_callControllerBusy && _appState.activeCall != model.Call.noCall) {
         _callControllerBusy = true;
         final hangupCallId = _appState.activeCall.id;
         _callController.hangup(_appState.activeCall).then((_) {
@@ -294,7 +295,7 @@ class MyCallQueue extends ViewWidget {
         _busyCallController();
         _receptionSelector.refreshReceptions();
 
-        _callController.pickupNext().then((ORModel.Call call) {
+        _callController.pickupNext().then((model.Call call) {
           contextCallId = call.id;
           _ui.removeTransferMarks();
           clearStaleCalls();
@@ -316,10 +317,10 @@ class MyCallQueue extends ViewWidget {
   /**
    * Park [call].
    */
-  Future<ORModel.Call> park(ORModel.Call call) async {
-    ORModel.Call parkedCall = ORModel.Call.noCall;
+  Future<model.Call> park(model.Call call) async {
+    model.Call parkedCall = model.Call.noCall;
 
-    if (!_callControllerBusy && call != ORModel.Call.noCall) {
+    if (!_callControllerBusy && call != model.Call.noCall) {
       try {
         _busyCallController();
         parkedCall = await _callController.park(call);
@@ -346,17 +347,17 @@ class MyCallQueue extends ViewWidget {
   /**
    * Unpark the first parked call or the given [call].
    */
-  void unpark({ORModel.Call call}) {
+  void unpark({model.Call call}) {
     if (!_callControllerBusy &&
-        _appState.activeCall == ORModel.Call.noCall &&
+        _appState.activeCall == model.Call.noCall &&
         _ui.calls.any(
-            (ORModel.Call call) => call.state == ORModel.CallState.parked)) {
+            (model.Call call) => call.state == model.CallState.parked)) {
       _busyCallController();
-      final Future<ORModel.Call> unparkCall = call != null
+      final Future<model.Call> unparkCall = call != null
           ? _callController.pickup(call)
           : _callController.pickupFirstParkedCall();
 
-      unparkCall.then((ORModel.Call call) {
+      unparkCall.then((model.Call call) {
         if (call.inbound) {
           contextCallId = call.id;
         }

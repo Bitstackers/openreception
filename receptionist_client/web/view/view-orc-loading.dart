@@ -17,15 +17,15 @@ part of view;
  * The ORC loading "widget". Activates on AppState.LOADING
  */
 class ORCLoading {
-  final Model.AppClientState _appState;
+  final ui_model.AppClientState _appState;
   static ORCLoading _singleton;
-  final Model.UIORCLoading _ui;
+  final ui_model.UIORCLoading _ui;
 
   /**
    * Constructor.
    */
   factory ORCLoading(
-      Model.AppClientState appState, Model.UIORCLoading uiLoading) {
+      ui_model.AppClientState appState, ui_model.UIORCLoading uiLoading) {
     if (_singleton == null) {
       _singleton = new ORCLoading._internal(appState, uiLoading);
     }
@@ -37,7 +37,7 @@ class ORCLoading {
    * Internal constructor.
    */
   ORCLoading._internal(
-      Model.AppClientState this._appState, Model.UIORCLoading this._ui) {
+      ui_model.AppClientState this._appState, ui_model.UIORCLoading this._ui) {
     _observers();
   }
 
@@ -45,8 +45,8 @@ class ORCLoading {
    * Observers.
    */
   void _observers() {
-    _appState.onStateChange.listen((Model.AppState appState) => appState ==
-        Model.AppState.loading ? _ui.visible = true : _ui.visible = false);
+    _appState.onStateChange.listen((ui_model.AppState appState) => appState ==
+        ui_model.AppState.loading ? _ui.visible = true : _ui.visible = false);
   }
 
   void addLoadingMessage(String message) => _ui.addLoadingMessage(message);

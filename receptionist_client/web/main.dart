@@ -16,28 +16,28 @@ library openreceptionclient;
 import 'dart:async';
 import 'dart:html';
 
-import 'controller/controller.dart' as Controller;
-import 'lang.dart' as Lang;
-import 'model/model.dart' as Model;
-import 'view/view.dart' as View;
+import 'controller/controller.dart' as controller;
+import 'lang.dart' as lang;
+import 'model/model.dart' as ui_model;
+import 'view/view.dart' as view;
 //import 'simulation.dart';
 
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/model.dart' as ORModel;
-import 'package:openreception.framework/service.dart' as ORService;
-import 'package:openreception.framework/service-html.dart' as ORTransport;
+import 'package:openreception.framework/model.dart' as model;
+import 'package:openreception.framework/service.dart' as service;
+import 'package:openreception.framework/service-html.dart' as transport;
 
 part 'configuration_url.dart';
 
 const String libraryName = 'orc';
 
-Model.UIORCDisaster uiDisaster = new Model.UIORCDisaster('orc-disaster');
-Model.UIORCLoading uiLoading = new Model.UIORCLoading('orc-loading');
+ui_model.UIORCDisaster uiDisaster = new ui_model.UIORCDisaster('orc-disaster');
+ui_model.UIORCLoading uiLoading = new ui_model.UIORCLoading('orc-loading');
 
-View.ORCDisaster appDisaster;
-View.ORCLoading appLoading;
-View.ORCReady appReady;
+view.ORCDisaster appDisaster;
+view.ORCLoading appLoading;
+view.ORCReady appReady;
 final Logger log = new Logger(libraryName);
 StreamSubscription<Event> windowOnBeforeUnload;
 StreamSubscription<Event> windowOnUnload;
@@ -53,7 +53,7 @@ main() async {
   }
 
   /// Hang here until the client configuration has been loaded from the server.
-  final ORModel.ClientConfiguration clientConfig =
+  final model.ClientConfiguration clientConfig =
       await getClientConfiguration(configUri);
   uiLoading.addLoadingMessage('Configuration fetched OK');
 
@@ -62,18 +62,17 @@ main() async {
   /// This is the 'settoken' URL path parameter.
   final String token = getToken(_appUri);
 
-  final ORTransport.WebSocketClient webSocketClient =
-      new ORTransport.WebSocketClient();
+  final transport.WebSocketClient webSocketClient =
+      new transport.WebSocketClient();
 
-  final ORService.NotificationService notificationService =
-      new ORService.NotificationService(
-          clientConfig.notificationServerUri, token, new ORTransport.Client());
-  final Controller.Notification notificationController =
-      new Controller.Notification(
-          new ORService.NotificationSocket(webSocketClient),
-          notificationService);
-  final Model.AppClientState appState =
-      new Model.AppClientState(notificationController);
+  final service.NotificationService notificationService =
+      new service.NotificationService(
+          clientConfig.notificationServerUri, token, new transport.Client());
+  final controller.Notification notificationController =
+      new controller.Notification(
+          new service.NotificationSocket(webSocketClient), notificationService);
+  final ui_model.AppClientState appState =
+      new ui_model.AppClientState(notificationController);
 
   try {
     Logger.root.level = Level.ALL;
@@ -107,7 +106,7 @@ main() async {
 
       webSocketClient.onClose = () {
         log.shout('Websocket connection died. Trying reload in 10 seconds');
-        appState.changeState(Model.AppState.error);
+        appState.changeState(ui_model.AppState.error);
         restartAppInTenSeconds(_appUri);
       };
 
@@ -118,18 +117,16 @@ main() async {
         log.info('WebSocketClient connect succeeded - NotificationSocket up');
         uiLoading.addLoadingMessage('Websocket connected OK');
 
-        final ORService.CallFlowControl callFlowControl =
-            new ORService.CallFlowControl(clientConfig.callFlowServerUri, token,
-                new ORTransport.Client());
-        final ORService.NotificationService notificationService =
-            new ORService.NotificationService(
-                clientConfig.notificationServerUri,
-                token,
-                new ORTransport.Client());
-        final ORService.RESTUserStore userService = new ORService.RESTUserStore(
-            clientConfig.userServerUri, token, new ORTransport.Client());
+        final service.CallFlowControl callFlowControl =
+            new service.CallFlowControl(
+                clientConfig.callFlowServerUri, token, new transport.Client());
+        final service.NotificationService notificationService =
+            new service.NotificationService(clientConfig.notificationServerUri,
+                token, new transport.Client());
+        final service.RESTUserStore userService = new service.RESTUserStore(
+            clientConfig.userServerUri, token, new transport.Client());
 
-        final Controller.User userController = new Controller.User(
+        final controller.User userController = new controller.User(
             callFlowControl, notificationService, userService);
 
         Future rRV = registerReadyView(
@@ -146,10 +143,10 @@ main() async {
 
         Future.wait([rRV, lCS]).then((_) async {
           await new Future.delayed(new Duration(seconds: 1));
-          appState.changeState(Model.AppState.ready);
+          appState.changeState(ui_model.AppState.ready);
         }).catchError((error) {
           log.shout('Loading of app failed with ${error}');
-          appState.changeState(Model.AppState.error);
+          appState.changeState(ui_model.AppState.error);
         });
       });
     } else {
@@ -162,7 +159,7 @@ main() async {
     log.shout(
         'Could not fully initialize application. Trying again in 10 seconds');
     log.shout(error, stackTrace);
-    appState.changeState(Model.AppState.error);
+    appState.changeState(ui_model.AppState.error);
     restartAppInTenSeconds(_appUri);
   }
 }
@@ -170,15 +167,14 @@ main() async {
 /**
  * Return the configuration object for the client.
  */
-Future<ORModel.ClientConfiguration> getClientConfiguration(
-    Uri configUri) async {
-  ORService.RESTConfiguration configService =
-      new ORService.RESTConfiguration(configUri, new ORTransport.Client());
+Future<model.ClientConfiguration> getClientConfiguration(Uri configUri) async {
+  service.RESTConfiguration configService =
+      new service.RESTConfiguration(configUri, new transport.Client());
 
   try {
     return await configService
         .clientConfig()
-        .then((ORModel.ClientConfiguration config) {
+        .then((model.ClientConfiguration config) {
       log.info('Loaded client config: ${config.toJson()}');
       return config;
     });
@@ -202,13 +198,13 @@ Map<String, String> getLanguageMap(String language) {
 
   switch (language) {
     case 'da':
-      map = Lang.da;
+      map = lang.da;
       break;
     case 'en':
-      map = Lang.en;
+      map = lang.en;
       break;
     default:
-      map = Lang.en;
+      map = lang.en;
       break;
   }
 
@@ -223,9 +219,9 @@ String getToken(Uri appUri) => appUri.queryParameters['settoken'];
 /**
  * Return the current user.
  */
-Future<ORModel.User> getUser(Uri authServerUri, String token) {
-  ORService.Authentication authService = new ORService.Authentication(
-      authServerUri, token, new ORTransport.Client());
+Future<model.User> getUser(Uri authServerUri, String token) {
+  service.Authentication authService =
+      new service.Authentication(authServerUri, token, new transport.Client());
 
   return authService.userOf(token);
 }
@@ -234,12 +230,12 @@ Future<ORModel.User> getUser(Uri authServerUri, String token) {
  * Load call state for current user.
  */
 Future loadCallState(
-    ORService.CallFlowControl callFlowControl, Model.AppClientState appState) {
-  return callFlowControl.callList().then((Iterable<ORModel.Call> calls) {
-    ORModel.Call myActiveCall = calls.firstWhere(
-        (ORModel.Call call) =>
+    service.CallFlowControl callFlowControl, ui_model.AppClientState appState) {
+  return callFlowControl.callList().then((Iterable<model.Call> calls) {
+    model.Call myActiveCall = calls.firstWhere(
+        (model.Call call) =>
             call.assignedTo == appState.currentUser.id &&
-            call.state == ORModel.CallState.speaking,
+            call.state == model.CallState.speaking,
         orElse: () => null);
 
     if (myActiveCall != null) {
@@ -252,10 +248,10 @@ Future loadCallState(
  * Observers.
  */
 void observers(
-    Controller.User userController,
-    Model.AppClientState appState,
-    ORTransport.WebSocketClient webSocketClient,
-    Controller.Notification notification) {
+    controller.User userController,
+    ui_model.AppClientState appState,
+    transport.WebSocketClient webSocketClient,
+    controller.Notification notification) {
   /// Make sure we don't steal focus from widgets with mouseclicks on
   /// non-widget elements. This is simply done by searching for the
   /// "ignoreclickfocus" attribute and ignoring mousedown events for those
@@ -277,8 +273,8 @@ void observers(
     webSocketClient.close();
   });
 
-  Controller.Navigate navigate = new Controller.Navigate();
-  navigate.onGo.listen((Controller.Destination destination) {
+  controller.Navigate navigate = new controller.Navigate();
+  navigate.onGo.listen((controller.Destination destination) {
     final event.WidgetSelect destinationEvent =
         new event.WidgetSelect(appState.currentUser.id, destination.toString());
     log.info(destinationEvent);
@@ -306,9 +302,9 @@ void observers(
  *
  * NOTE: This depends on [clientConfig] being set.
  */
-void registerDisasterAndLoadingViews(Model.AppClientState appState) {
-  appDisaster = new View.ORCDisaster(appState, uiDisaster);
-  appLoading = new View.ORCLoading(appState, uiLoading);
+void registerDisasterAndLoadingViews(ui_model.AppClientState appState) {
+  appDisaster = new view.ORCDisaster(appState, uiDisaster);
+  appLoading = new view.ORCLoading(appState, uiLoading);
 }
 
 /**
@@ -316,56 +312,55 @@ void registerDisasterAndLoadingViews(Model.AppClientState appState) {
  * NOTE: This depends on [clientConfig] being set.
  */
 Future registerReadyView(
-    Model.AppClientState appState,
-    ORModel.ClientConfiguration clientConfig,
-    Controller.User controllerUser,
-    ORService.CallFlowControl callFlowControl,
-    Controller.Notification notification,
+    ui_model.AppClientState appState,
+    model.ClientConfiguration clientConfig,
+    controller.User controllerUser,
+    service.CallFlowControl callFlowControl,
+    controller.Notification notification,
     Map<String, String> langMap,
     String token,
-    ORTransport.WebSocketClient webSocketClient) {
-  Model.UIORCReady uiReady = new Model.UIORCReady('orc-ready');
+    transport.WebSocketClient webSocketClient) {
+  ui_model.UIORCReady uiReady = new ui_model.UIORCReady('orc-ready');
 
-  ORService.RESTCalendarStore calendarStore = new ORService.RESTCalendarStore(
-      clientConfig.calendarServerUri, token, new ORTransport.Client());
-  ORService.RESTContactStore contactStore = new ORService.RESTContactStore(
-      clientConfig.contactServerUri, token, new ORTransport.Client());
-  ORService.RESTMessageStore messageStore = new ORService.RESTMessageStore(
-      clientConfig.messageServerUri, token, new ORTransport.Client());
-  Controller.Message messageController =
-      new Controller.Message(messageStore, appState.currentUser);
-  ORService.RESTReceptionStore receptionStore =
-      new ORService.RESTReceptionStore(
-          clientConfig.receptionServerUri, token, new ORTransport.Client());
-  Controller.Reception receptionController =
-      new Controller.Reception(receptionStore);
-  Controller.Calendar calendarController =
-      new Controller.Calendar(calendarStore, appState.currentUser);
-  Controller.Call callController =
-      new Controller.Call(callFlowControl, appState);
+  service.RESTCalendarStore calendarStore = new service.RESTCalendarStore(
+      clientConfig.calendarServerUri, token, new transport.Client());
+  service.RESTContactStore contactStore = new service.RESTContactStore(
+      clientConfig.contactServerUri, token, new transport.Client());
+  service.RESTMessageStore messageStore = new service.RESTMessageStore(
+      clientConfig.messageServerUri, token, new transport.Client());
+  controller.Message messageController =
+      new controller.Message(messageStore, appState.currentUser);
+  service.RESTReceptionStore receptionStore = new service.RESTReceptionStore(
+      clientConfig.receptionServerUri, token, new transport.Client());
+  controller.Reception receptionController =
+      new controller.Reception(receptionStore);
+  controller.Calendar calendarController =
+      new controller.Calendar(calendarStore, appState.currentUser);
+  controller.Call callController =
+      new controller.Call(callFlowControl, appState);
 
-  Controller.Popup popup = new Controller.Popup(
+  controller.Popup popup = new controller.Popup(
       new Uri.file('/images/popup_error.png'),
       new Uri.file('/images/popup_info.png'),
       new Uri.file('/images/popup_success.png'));
 
-  Controller.Sound sound =
-      new Controller.Sound(querySelector('audio.sound-pling'));
+  controller.Sound sound =
+      new controller.Sound(querySelector('audio.sound-pling'));
 
   observers(controllerUser, appState, webSocketClient, notification);
 
   return receptionController
       .list()
-      .then((Iterable<ORModel.ReceptionReference> receptions) {
-    Iterable<ORModel.ReceptionReference> sortedReceptions = receptions.toList()
+      .then((Iterable<model.ReceptionReference> receptions) {
+    Iterable<model.ReceptionReference> sortedReceptions = receptions.toList()
       ..sort((x, y) => x.name.toLowerCase().compareTo(y.name.toLowerCase()));
 
-    appReady = new View.ORCReady(
+    appReady = new view.ORCReady(
         appState,
         uiReady,
         calendarController,
         clientConfig,
-        new Controller.Contact(contactStore, notification),
+        new controller.Contact(contactStore, notification),
         receptionController,
         sortedReceptions,
         controllerUser,

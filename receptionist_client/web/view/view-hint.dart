@@ -17,12 +17,12 @@ part of view;
  * Toggle hints on/off.
  */
 class Hint {
-  final Model.UIHint _ui;
+  final ui_model.UIHint _ui;
 
   /**
    * Constructor.
    */
-  Hint(Model.UIHint this._ui) {
+  Hint(ui_model.UIHint this._ui) {
     _observers();
   }
 

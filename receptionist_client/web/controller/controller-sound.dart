@@ -17,12 +17,12 @@ part of controller;
  * Play sounds.
  */
 class Sound {
-  final Html.AudioElement _pling;
+  final html.AudioElement _pling;
 
   /**
    * Constructor.
    */
-  Sound(Html.AudioElement this._pling) {
+  Sound(html.AudioElement this._pling) {
     _pling.volume = 1.0;
   }
 

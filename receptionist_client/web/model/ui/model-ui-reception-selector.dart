@@ -17,17 +17,17 @@ part of model;
  * Provides methods to manipulate and extract data from the widget UX parts.
  */
 class UIReceptionSelector extends UIModel {
-  final Bus<ORModel.Reception> _bus = new Bus<ORModel.Reception>();
+  final Bus<model.Reception> _bus = new Bus<model.Reception>();
   final Map<String, String> _langMap;
   final DivElement _myRoot;
-  final Controller.Popup _popup;
-  final Controller.Reception _receptionController;
+  final controller.Popup _popup;
+  final controller.Reception _receptionController;
   List<LIElement> _receptionsCache = new List<LIElement>();
 
   /**
    * Constructor.
    */
-  UIReceptionSelector(DivElement this._myRoot, Controller.Popup this._popup,
+  UIReceptionSelector(DivElement this._myRoot, controller.Popup this._popup,
       this._receptionController, Map<String, String> this._langMap) {
     _setupLocalKeys();
     _observers();
@@ -59,7 +59,7 @@ class UIReceptionSelector extends UIModel {
   /**
    * Construct a [reception] <li> element.
    */
-  LIElement _buildReceptionElement(ORModel.ReceptionReference reception) =>
+  LIElement _buildReceptionElement(model.ReceptionReference reception) =>
       new LIElement()
         ..dataset['id'] = reception.id.toString()
         ..dataset['name'] = reception.name.toLowerCase()
@@ -147,15 +147,15 @@ class UIReceptionSelector extends UIModel {
   /**
    * Fires the selected [Reception].
    */
-  Stream<ORModel.Reception> get onSelect => _bus.stream;
+  Stream<model.Reception> get onSelect => _bus.stream;
 
   /**
    * Add [items] to the receptions list.
    */
-  set receptions(List<ORModel.ReceptionReference> items) {
+  set receptions(List<model.ReceptionReference> items) {
     final List<LIElement> list = new List<LIElement>();
 
-    items.forEach((ORModel.ReceptionReference item) {
+    items.forEach((model.ReceptionReference item) {
       list.add(_buildReceptionElement(item));
     });
 
@@ -167,7 +167,7 @@ class UIReceptionSelector extends UIModel {
    * receptions list. Call [refreshReceptions] to update the list using the
    * cached values.
    */
-  set receptionsShadow(List<ORModel.ReceptionReference> items) {
+  set receptionsShadow(List<model.ReceptionReference> items) {
     _receptionsCache = items.map(_buildReceptionElement).toList();
   }
 
@@ -184,7 +184,7 @@ class UIReceptionSelector extends UIModel {
   /**
    * Refresh [reception] in the reception list, and mark it selected.
    */
-  void refreshReception(ORModel.ReceptionReference reception) {
+  void refreshReception(model.ReceptionReference reception) {
     final LIElement newLi = _buildReceptionElement(reception);
     final LIElement oldLi = _list.querySelector('[data-id="${reception.id}"]');
     oldLi.replaceWith(newLi);
@@ -210,7 +210,7 @@ class UIReceptionSelector extends UIModel {
     _filter.value = '';
     _filterList();
     _list.children.forEach((Element e) => e.classes.toggle('selected', false));
-    _bus.fire(new ORModel.Reception.empty());
+    _bus.fire(new model.Reception.empty());
   }
 
   /**
@@ -247,14 +247,14 @@ class UIReceptionSelector extends UIModel {
    *
    * Return [Reception.empty] if no [Reception] is selected.
    */
-  ORModel.ReceptionReference get selectedReception {
+  model.ReceptionReference get selectedReception {
     LIElement li = _list.querySelector('.selected');
 
     if (li != null) {
-      return ORModel.ReceptionReference
+      return model.ReceptionReference
           .decode(JSON.decode(li.dataset['object']));
     } else {
-      return const ORModel.ReceptionReference.none();
+      return const model.ReceptionReference.none();
     }
   }
 }

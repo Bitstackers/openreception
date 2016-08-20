@@ -16,43 +16,43 @@ part of model;
 enum AppState { loading, error, ready }
 
 class AppClientState {
-  ORModel.Call _activeCall = ORModel.Call.noCall;
-  final Bus<ORModel.Call> _activeCallChangeBus = new Bus<ORModel.Call>();
-  ORModel.User _currentUser = new ORModel.User.empty();
+  model.Call _activeCall = model.Call.noCall;
+  final Bus<model.Call> _activeCallChangeBus = new Bus<model.Call>();
+  model.User _currentUser = new model.User.empty();
   final Logger _log = new Logger('${libraryName}.AppClientState');
-  final Controller.Notification _notification;
+  final controller.Notification _notification;
   final Bus<AppState> _stateChange = new Bus<AppState>();
 
-  ORModel.OriginationContext _originationContext;
-  ORModel.OriginationContext get originationContext => _originationContext;
+  model.OriginationContext _originationContext;
+  model.OriginationContext get originationContext => _originationContext;
 
   /**
    * Constructor.
    */
-  AppClientState(Controller.Notification this._notification) {
+  AppClientState(controller.Notification this._notification) {
     _observers();
   }
 
   /**
    * Fires an ORModel.Call on pickup and hangup.
    */
-  Stream<ORModel.Call> get activeCallChanged => _activeCallChangeBus.stream;
+  Stream<model.Call> get activeCallChanged => _activeCallChangeBus.stream;
 
   /**
    * Return the currently active call.
    */
-  ORModel.Call get activeCall => _activeCall;
+  model.Call get activeCall => _activeCall;
 
   /**
    * Set the currently active call. A hangup is when [newCall] is
    * [ORModel.Call.noCall].
    */
-  set activeCall(ORModel.Call newCall) {
+  set activeCall(model.Call newCall) {
     _activeCall = newCall;
 
     _activeCallChangeBus.fire(_activeCall);
     _log.finest(
-        'Setting active call to ${_activeCall == ORModel.Call.noCall ? 'noCall' : _activeCall}');
+        'Setting active call to ${_activeCall == model.Call.noCall ? 'noCall' : _activeCall}');
   }
 
   /**
@@ -65,12 +65,12 @@ class AppClientState {
   /**
    * Return the currently logged in user.
    */
-  ORModel.User get currentUser => _currentUser;
+  model.User get currentUser => _currentUser;
 
   /**
    * Set the currently logged in user.
    */
-  set currentUser(ORModel.User newUser) {
+  set currentUser(model.User newUser) {
     _currentUser = newUser;
   }
 
@@ -78,18 +78,18 @@ class AppClientState {
    * Setup listeners needed for this object.
    */
   void _observers() {
-    _notification.onAnyCallStateChange.listen((OREvent.CallEvent event) {
-      final ORModel.Call call = event.call;
+    _notification.onAnyCallStateChange.listen((event.CallEvent event) {
+      final model.Call call = event.call;
 
       if (call.assignedTo != currentUser.id) {
         return;
       }
 
-      if (call.state == ORModel.CallState.ringing ||
-          call.state == ORModel.CallState.speaking) {
+      if (call.state == model.CallState.ringing ||
+          call.state == model.CallState.speaking) {
         activeCall = call;
       } else if (activeCall == call) {
-        activeCall = ORModel.Call.noCall;
+        activeCall = model.Call.noCall;
       }
     });
   }

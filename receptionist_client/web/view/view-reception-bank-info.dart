@@ -17,25 +17,25 @@ part of view;
  * The list of reception banking information.
  */
 class ReceptionBankInfo extends ViewWidget {
-  final Controller.Destination _myDestination;
-  final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIReceptionBankInfo _uiModel;
+  final controller.Destination _myDestination;
+  final ui_model.UIReceptionSelector _receptionSelector;
+  final ui_model.UIReceptionBankInfo _uiModel;
 
   /**
    * Constructor.
    */
   ReceptionBankInfo(
-      Model.UIReceptionBankInfo this._uiModel,
-      Controller.Destination this._myDestination,
-      Model.UIReceptionSelector this._receptionSelector) {
+      ui_model.UIReceptionBankInfo this._uiModel,
+      controller.Destination this._myDestination,
+      ui_model.UIReceptionSelector this._receptionSelector) {
     _observers();
   }
 
-  @override Controller.Destination get _destination => _myDestination;
-  @override Model.UIReceptionBankInfo get _ui => _uiModel;
+  @override controller.Destination get _destination => _myDestination;
+  @override ui_model.UIReceptionBankInfo get _ui => _uiModel;
 
-  @override void _onBlur(Controller.Destination _) {}
-  @override void _onFocus(Controller.Destination _) {}
+  @override void _onBlur(controller.Destination _) {}
+  @override void _onFocus(controller.Destination _) {}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
@@ -59,7 +59,7 @@ class ReceptionBankInfo extends ViewWidget {
   /**
    * Render the widget with [reception].
    */
-  void _render(ORModel.Reception reception) {
+  void _render(model.Reception reception) {
     if (reception.isEmpty) {
       _ui.clear();
     } else {

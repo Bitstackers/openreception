@@ -17,15 +17,15 @@ import 'dart:async';
 import 'dart:html';
 import 'dart:math' show Random;
 
-import 'controller/controller.dart' as Controller;
-import 'model/model.dart' as Model;
+import 'controller/controller.dart' as controller;
+import 'model/model.dart' as ui_model;
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/model.dart' as ORModel;
+import 'package:openreception.framework/model.dart' as model;
 
 _Simulation simulation = new _Simulation();
 
-Controller.SimulationHotKeys key =
-    new Controller.SimulationHotKeys(new Controller.HotKeys());
+controller.SimulationHotKeys key =
+    new controller.SimulationHotKeys(new controller.HotKeys());
 
 ///Important. Fill out this one with actual PSTN numbers.
 List<String> calleeNumbers = [];
@@ -35,18 +35,18 @@ List<String> calleeNumbers = [];
  */
 class _Simulation {
   final Random _rand = new Random(new DateTime.now().millisecondsSinceEpoch);
-  Model.AppClientState _appState;
+  ui_model.AppClientState _appState;
   final Logger _log = new Logger('_Simulation');
   final Duration _oneSecond = new Duration(milliseconds: 1000);
 
-  Controller.Call _callController;
+  controller.Call _callController;
   Duration _actionTimeout = new Duration(seconds: 30);
 
   OListElement get _callQueue => querySelector('#global-call-queue ol');
 
   OListElement get _localCalls => querySelector('#my-call-queue ol');
 
-  ORModel.Call get _activeCall => _appState.activeCall;
+  model.Call get _activeCall => _appState.activeCall;
 
   UListElement get _infoBox => querySelector('ul#simulation-info');
 
@@ -75,7 +75,7 @@ class _Simulation {
     return pool[index];
   }
 
-  void _refreshInfo(ORModel.Call activeCall) {
+  void _refreshInfo(model.Call activeCall) {
     _stateBox.text = 'call:{${activeCall}}';
   }
 
@@ -122,19 +122,19 @@ class _Simulation {
     _log.info('Picking up parked call');
     Future tryPickup() async {
       Future response =
-          _nextOfAny([Controller.CallCommand.pickup]).timeout(randomDelay);
+          _nextOfAny([controller.CallCommand.pickup]).timeout(randomDelay);
 
       key.f8();
       await response;
 
       return await _nextOfAny([
-        Controller.CallCommand.pickupFailure,
-        Controller.CallCommand.pickupSuccess
+        controller.CallCommand.pickupFailure,
+        controller.CallCommand.pickupSuccess
       ]);
     }
 
     await Future.doWhile(() async {
-      Controller.CallCommand response;
+      controller.CallCommand response;
 
       await Future.doWhile(() async {
         try {
@@ -145,7 +145,7 @@ class _Simulation {
         }
       });
 
-      if (response == Controller.CallCommand.pickupSuccess) {
+      if (response == controller.CallCommand.pickupSuccess) {
         return false;
       } else {
         await _sleep(randomDelay);
@@ -204,19 +204,19 @@ class _Simulation {
   Future _continouslyPickup() async {
     Future tryPickup() async {
       Future response =
-          _nextOfAny([Controller.CallCommand.pickup]).timeout(randomDelay);
+          _nextOfAny([controller.CallCommand.pickup]).timeout(randomDelay);
 
       key.numPlus();
       await response;
 
       return await _nextOfAny([
-        Controller.CallCommand.pickupFailure,
-        Controller.CallCommand.pickupSuccess
+        controller.CallCommand.pickupFailure,
+        controller.CallCommand.pickupSuccess
       ]);
     }
 
     await Future.doWhile(() async {
-      Controller.CallCommand response;
+      controller.CallCommand response;
 
       await Future.doWhile(() async {
         try {
@@ -227,7 +227,7 @@ class _Simulation {
         }
       });
 
-      if (response == Controller.CallCommand.pickupSuccess) {
+      if (response == controller.CallCommand.pickupSuccess) {
         return false;
       } else {
         await _sleep(randomDelay);
@@ -241,7 +241,7 @@ class _Simulation {
   /**
    *
    */
-  void start(Controller.Call cc, final Model.AppClientState as) {
+  void start(controller.Call cc, final ui_model.AppClientState as) {
     _callController = cc;
     _appState = as;
 
@@ -256,19 +256,19 @@ class _Simulation {
   Future _hangupCall() async {
     Future sendHangup() async {
       Future response =
-          _nextOfAny([Controller.CallCommand.hangup]).timeout(randomDelay);
+          _nextOfAny([controller.CallCommand.hangup]).timeout(randomDelay);
 
       key.numDiv();
       await response;
 
       return await _nextOfAny([
-        Controller.CallCommand.hangupFailure,
-        Controller.CallCommand.hangupSuccess
+        controller.CallCommand.hangupFailure,
+        controller.CallCommand.hangupSuccess
       ]);
     }
 
     await Future.doWhile(() async {
-      Controller.CallCommand response;
+      controller.CallCommand response;
 
       await Future.doWhile(() async {
         try {
@@ -279,7 +279,7 @@ class _Simulation {
         }
       });
 
-      if (response == Controller.CallCommand.hangupSuccess) {
+      if (response == controller.CallCommand.hangupSuccess) {
         return false;
       } else {
         await _sleep(randomDelay);
@@ -289,11 +289,11 @@ class _Simulation {
     _log.info('Hung up call!');
   }
 
-  Future<Controller.CallCommand> _nextOfAny(
-          List<Controller.CallCommand> callCommands,
+  Future<controller.CallCommand> _nextOfAny(
+          List<controller.CallCommand> callCommands,
           {Duration timeout: const Duration(seconds: 10)}) =>
       _callController.commandStream.firstWhere(callCommands.contains)
-      as Future<Controller.CallCommand>;
+      as Future<controller.CallCommand>;
 
   /**
    *
@@ -305,19 +305,19 @@ class _Simulation {
 
     Future sendOriginate() async {
       Future response =
-          _nextOfAny([Controller.CallCommand.dial]).timeout(randomDelay);
+          _nextOfAny([controller.CallCommand.dial]).timeout(randomDelay);
 
       key.numMult();
       await response;
 
       return await _nextOfAny([
-        Controller.CallCommand.dialSuccess,
-        Controller.CallCommand.dialFailure
+        controller.CallCommand.dialSuccess,
+        controller.CallCommand.dialFailure
       ]);
     }
 
     await Future.doWhile(() async {
-      Controller.CallCommand response;
+      controller.CallCommand response;
 
       await Future.doWhile(() async {
         try {
@@ -328,7 +328,7 @@ class _Simulation {
         }
       });
 
-      if (response == Controller.CallCommand.dialSuccess) {
+      if (response == controller.CallCommand.dialSuccess) {
         return false;
       } else {
         await _sleep(randomDelay);
@@ -353,7 +353,7 @@ class _Simulation {
 
       _log.info(_activeCall.state);
 
-      if (_activeCall == ORModel.Call.noCall) {
+      if (_activeCall == model.Call.noCall) {
         _log.info('Call hung up, returning');
 
         return false;
@@ -365,7 +365,7 @@ class _Simulation {
         return false;
       }
 
-      if (_activeCall.state == ORModel.CallState.speaking) {
+      if (_activeCall.state == model.CallState.speaking) {
         _log.info('Call answered!');
 
         return false;
@@ -374,7 +374,7 @@ class _Simulation {
       return deadline.isAfter(new DateTime.now());
     });
 
-    if (_activeCall.state == ORModel.CallState.ringing) {
+    if (_activeCall.state == model.CallState.ringing) {
       _log.info('Call was not answered within 6s. Hanging it up');
       await _hangupCall();
     }
@@ -393,14 +393,14 @@ class _Simulation {
 
     Future sendTransfer() async {
       Future response =
-          _nextOfAny([Controller.CallCommand.transfer]).timeout(randomDelay);
+          _nextOfAny([controller.CallCommand.transfer]).timeout(randomDelay);
 
       key.ctrlNumMinus();
       await response;
 
       return await _nextOfAny([
-        Controller.CallCommand.transferFailure,
-        Controller.CallCommand.transferSuccess
+        controller.CallCommand.transferFailure,
+        controller.CallCommand.transferSuccess
       ]);
     }
 
@@ -414,7 +414,7 @@ class _Simulation {
     }
 
     await Future.doWhile(() async {
-      Controller.CallCommand response;
+      controller.CallCommand response;
 
       await Future.doWhile(() async {
         try {
@@ -425,7 +425,7 @@ class _Simulation {
         }
       });
 
-      if (response == Controller.CallCommand.transferSuccess) {
+      if (response == controller.CallCommand.transferSuccess) {
         return false;
       } else {
         await _sleep(randomDelay);
@@ -440,7 +440,7 @@ class _Simulation {
    */
   void setup() {
     hierarchicalLoggingEnabled = true;
-    _callController.commandStream.listen((Controller.CallCommand command) {
+    _callController.commandStream.listen((controller.CallCommand command) {
       _log.finest('Got $command');
     });
 

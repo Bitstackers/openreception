@@ -1,3 +1,4 @@
+
 /*                  This file is part of OpenReception
                    Copyright (C) 2015-, BitStackers K/S
 
@@ -15,21 +16,21 @@ part of model;
 
 /**
  * Toggle visibility of contexts. Basically all this does is set the z-index
- * to 1 of the latest [Controller.Destination].context and z-index 0 on all
+ * to 1 of the latest [controller.Destination].context and z-index 0 on all
  * other contexts.
  */
 class UIContexts {
-  Map<Controller.Context, HtmlElement> _contextMap;
+  Map<controller.Context, HtmlElement> _contextMap;
 
   /**
    * Constructor.
    */
   UIContexts() {
     _contextMap = {
-      Controller.Context.calendarEdit: contextCalendarEdit,
-      Controller.Context.home: contextHome,
-      Controller.Context.homePlus: contextHomeplus,
-      Controller.Context.messages: contextMessages
+      controller.Context.calendarEdit: contextCalendarEdit,
+      controller.Context.home: contextHome,
+      controller.Context.homePlus: contextHomeplus,
+      controller.Context.messages: contextMessages
     };
   }
 
@@ -41,7 +42,7 @@ class UIContexts {
   /**
    * Make [destination].context visible and all other contexts invisible.
    */
-  void toggleContext(Controller.Destination destination) {
+  void toggleContext(controller.Destination destination) {
     _contextMap.forEach((id, element) {
       id == destination.context ? element.style.zIndex = '1' : element.style.zIndex = '0';
     });

@@ -17,12 +17,12 @@ part of view;
  * Registers keyboard shortcuts for managing context visibility.
  */
 class Contexts {
-  final Model.UIContexts _ui;
+  final ui_model.UIContexts _ui;
 
   /**
    * Constructor.
    */
-  Contexts(Model.UIContexts this._ui) {
+  Contexts(ui_model.UIContexts this._ui) {
     _observers();
   }
 

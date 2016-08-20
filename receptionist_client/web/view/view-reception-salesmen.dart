@@ -1,3 +1,4 @@
+
 /*                  This file is part of OpenReception
                    Copyright (C) 2015-, BitStackers K/S
 
@@ -17,27 +18,27 @@ part of view;
  * The reception command for handling salesmen calls.
  */
 class ReceptionSalesmen extends ViewWidget {
-  final Controller.Destination _myDestination;
-  final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIReceptionSalesmen _uiModel;
+  final controller.Destination _myDestination;
+  final ui_model.UIReceptionSelector _receptionSelector;
+  final ui_model.UIReceptionSalesmen _uiModel;
 
   /**
    * Constructor.
    */
   ReceptionSalesmen(
-      Model.UIReceptionSalesmen this._uiModel,
-      Controller.Destination this._myDestination,
-      Model.UIReceptionSelector this._receptionSelector) {
+      ui_model.UIReceptionSalesmen this._uiModel,
+      controller.Destination this._myDestination,
+      ui_model.UIReceptionSelector this._receptionSelector) {
     _ui.setHint('alt+c');
 
     _observers();
   }
 
-  @override Controller.Destination get _destination => _myDestination;
-  @override Model.UIReceptionSalesmen get _ui => _uiModel;
+  @override controller.Destination get _destination => _myDestination;
+  @override ui_model.UIReceptionSalesmen get _ui => _uiModel;
 
-  @override void _onBlur(Controller.Destination _) {}
-  @override void _onFocus(Controller.Destination _) {}
+  @override void _onBlur(controller.Destination _) {}
+  @override void _onFocus(controller.Destination _) {}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
@@ -62,7 +63,7 @@ class ReceptionSalesmen extends ViewWidget {
   /**
    * Render the widget with [reception].
    */
-  void _render(ORModel.Reception reception) {
+  void _render(model.Reception reception) {
     if (reception.isEmpty) {
       _ui.clear();
     } else {

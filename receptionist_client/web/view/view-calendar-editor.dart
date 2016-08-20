@@ -18,32 +18,32 @@ part of view;
  * for both receptions and contacts.
  */
 class CalendarEditor extends ViewWidget {
-  final Model.UIContactCalendar _contactCalendar;
-  final Controller.Calendar _calendarController;
-  final Model.UIContactSelector _contactSelector;
-  ORModel.Owner _entryOwner;
+  final ui_model.UIContactCalendar _contactCalendar;
+  final controller.Calendar _calendarController;
+  final ui_model.UIContactSelector _contactSelector;
+  model.Owner _entryOwner;
   final Map<String, String> _langMap;
   final Logger _log = new Logger('$libraryName.CalendarEditor');
-  final Controller.Destination _myDestination;
-  final Controller.Popup _popup;
-  final Model.UIReceptionCalendar _receptionCalendar;
-  final Model.UIReceptionSelector _receptionSelector;
-  final Model.UICalendarEditor _uiModel;
-  final Controller.User _userController;
+  final controller.Destination _myDestination;
+  final controller.Popup _popup;
+  final ui_model.UIReceptionCalendar _receptionCalendar;
+  final ui_model.UIReceptionSelector _receptionSelector;
+  final ui_model.UICalendarEditor _uiModel;
+  final controller.User _userController;
 
   /**
    * Constructor
    */
   CalendarEditor(
-      Model.UICalendarEditor this._uiModel,
-      Controller.Destination this._myDestination,
-      Model.UIContactCalendar this._contactCalendar,
-      Model.UIContactSelector this._contactSelector,
-      Model.UIReceptionCalendar this._receptionCalendar,
-      Model.UIReceptionSelector this._receptionSelector,
-      Controller.Calendar this._calendarController,
-      Controller.Popup this._popup,
-      Controller.User this._userController,
+      ui_model.UICalendarEditor this._uiModel,
+      controller.Destination this._myDestination,
+      ui_model.UIContactCalendar this._contactCalendar,
+      ui_model.UIContactSelector this._contactSelector,
+      ui_model.UIReceptionCalendar this._receptionCalendar,
+      ui_model.UIReceptionSelector this._receptionSelector,
+      controller.Calendar this._calendarController,
+      controller.Popup this._popup,
+      controller.User this._userController,
       Map<String, String> this._langMap) {
     _ui.setHint('Esc | ctrl+backspace | ctrl+s ');
 
@@ -51,29 +51,29 @@ class CalendarEditor extends ViewWidget {
   }
 
   @override
-  Controller.Destination get _destination => _myDestination;
+  controller.Destination get _destination => _myDestination;
   @override
-  void _onBlur(Controller.Destination _) {}
+  void _onBlur(controller.Destination _) {}
   @override
-  void _onFocus(Controller.Destination _) {}
+  void _onFocus(controller.Destination _) {}
   @override
-  Model.UICalendarEditor get _ui => _uiModel;
+  ui_model.UICalendarEditor get _ui => _uiModel;
 
   /**
    * Activate this widget if it's not already activated.
    *
    * Sets the entry owner.
    */
-  void _activateMe(Controller.Cmd cmd) {
-    if (_receptionSelector.selectedReception != ORModel.Reception.noReception) {
+  void _activateMe(controller.Cmd cmd) {
+    if (_receptionSelector.selectedReception != model.Reception.noReception) {
       if (_receptionCalendar.isFocused) {
-        _entryOwner = new ORModel.OwningReception(
+        _entryOwner = new model.OwningReception(
             _receptionSelector.selectedReception.id);
-        _setup(Controller.Widget.receptionCalendar, cmd);
+        _setup(controller.Widget.receptionCalendar, cmd);
       } else {
-        _entryOwner = new ORModel.OwningContact(
+        _entryOwner = new model.OwningContact(
             _contactSelector.selectedContact.contact.id);
-        _setup(Controller.Widget.contactCalendar, cmd);
+        _setup(controller.Widget.contactCalendar, cmd);
       }
     }
   }
@@ -93,10 +93,10 @@ class CalendarEditor extends ViewWidget {
    *
    * Clear the form and navigate one step back in history.
    */
-  void _delete(ORModel.CalendarEntry loadedEntry) {
+  void _delete(model.CalendarEntry loadedEntry) {
     Function reInstateDeletedEntry;
 
-    if (_entryOwner is ORModel.OwningContact) {
+    if (_entryOwner is model.OwningContact) {
       reInstateDeletedEntry = _contactCalendar.preDeleteEntry(loadedEntry);
     } else {
       reInstateDeletedEntry = _receptionCalendar.preDeleteEntry(loadedEntry);
@@ -124,8 +124,8 @@ class CalendarEditor extends ViewWidget {
   void _observers() {
     _navigate.onGo.listen(_setWidgetState);
 
-    _hotKeys.onCtrlE.listen((_) => _activateMe(Controller.Cmd.edit));
-    _hotKeys.onCtrlK.listen((_) => _activateMe(Controller.Cmd.create));
+    _hotKeys.onCtrlE.listen((_) => _activateMe(controller.Cmd.edit));
+    _hotKeys.onCtrlK.listen((_) => _activateMe(controller.Cmd.create));
 
     _ui.onCancel.listen((MouseEvent _) => _close());
     _ui.onDelete.listen((MouseEvent _) async => await _delete(_ui.loadedEntry));
@@ -137,10 +137,10 @@ class CalendarEditor extends ViewWidget {
    *
    * Clear the form when done, and then navigate one step back in history.
    */
-  void _save(ORModel.CalendarEntry entry) {
+  void _save(model.CalendarEntry entry) {
     Function removeUnsavedElement;
 
-    if (_entryOwner is ORModel.OwningContact) {
+    if (_entryOwner is model.OwningContact) {
       removeUnsavedElement = _contactCalendar.unsavedEntry(entry);
     } else {
       removeUnsavedElement = _receptionCalendar.unsavedEntry(entry);
@@ -148,12 +148,12 @@ class CalendarEditor extends ViewWidget {
 
     _calendarController
         .saveCalendarEvent(entry, _entryOwner)
-        .then((ORModel.CalendarEntry savedEntry) {
+        .then((model.CalendarEntry savedEntry) {
       _log.info('${savedEntry} successfully saved to database');
       _popup.success(
           _langMap[Key.calendarEditorSaveSuccessTitle], 'ID ${savedEntry.id}');
     }).catchError((error) {
-      ORModel.CalendarEntry loadedEntry = _ui.loadedEntry;
+      model.CalendarEntry loadedEntry = _ui.loadedEntry;
       _log.shout('Could not save calendar entry ${loadedEntry}');
       _popup.error(
           _langMap[Key.calendarEditorSaveErrorTitle], 'ID ${loadedEntry.id}');
@@ -166,7 +166,7 @@ class CalendarEditor extends ViewWidget {
   /**
    * Render the widget with the [calendarEntry].
    */
-  void _render(ORModel.CalendarEntry calendarEntry, bool isNew) {
+  void _render(model.CalendarEntry calendarEntry, bool isNew) {
     _ui.setCalendarEntry(calendarEntry, isNew);
   }
 
@@ -174,35 +174,35 @@ class CalendarEditor extends ViewWidget {
    * Set the [_ui.authorStamp]. This is populated with data from the latest
    * calendar entry change object for [entryId].
    */
-  Future _setAuthorStamp(ORModel.CalendarEntry entry) async {
-    ORModel.User user;
+  Future _setAuthorStamp(model.CalendarEntry entry) async {
+    model.User user;
     try {
       user = await _userController.get(entry.lastAuthorId);
     } catch (error) {
-      user = new ORModel.User.empty()..name = 'uid ${entry.lastAuthorId}';
+      user = new model.User.empty()..name = 'uid ${entry.lastAuthorId}';
     }
     _ui.authorStamp(user.name, entry.touched);
   }
 
   /**
    * Setup the widget accordingly to where it was opened from. [from] MUST be
-   * the [Controller.Widget] that activated CalendarEditor.
+   * the [controller.Widget] that activated CalendarEditor.
    *
    * [from] decides which calendar to create/edit entries for.
    */
-  void _setup(Controller.Widget from, Controller.Cmd cmd) {
-    ORModel.CalendarEntry entry;
+  void _setup(controller.Widget from, controller.Cmd cmd) {
+    model.CalendarEntry entry;
 
     switch (from) {
-      case Controller.Widget.contactCalendar:
-        if (cmd == Controller.Cmd.edit) {
+      case controller.Widget.contactCalendar:
+        if (cmd == controller.Cmd.edit) {
           entry = _contactCalendar.selectedCalendarEntry;
 
-          if (entry.id == ORModel.CalendarEntry.noId) {
+          if (entry.id == model.CalendarEntry.noId) {
             entry = _contactCalendar.firstCalendarEntry;
           }
 
-          if (entry.id != ORModel.CalendarEntry.noId) {
+          if (entry.id != model.CalendarEntry.noId) {
             _ui.headerExtra =
                 '(${_langMap[Key.editDelete]} ${_contactSelector.selectedContact.contact.name})';
             _setAuthorStamp(entry);
@@ -212,7 +212,7 @@ class CalendarEditor extends ViewWidget {
             _navigateToMyDestination();
           }
         } else {
-          entry = new ORModel.CalendarEntry.empty()
+          entry = new model.CalendarEntry.empty()
             ..start = new DateTime.now()
             ..stop = new DateTime.now().add(new Duration(hours: 1))
             ..content = '';
@@ -226,15 +226,15 @@ class CalendarEditor extends ViewWidget {
           _navigateToMyDestination();
         }
         break;
-      case Controller.Widget.receptionCalendar:
-        if (cmd == Controller.Cmd.edit) {
+      case controller.Widget.receptionCalendar:
+        if (cmd == controller.Cmd.edit) {
           entry = _receptionCalendar.selectedCalendarEntry;
 
-          if (entry.id == ORModel.CalendarEntry.noId) {
+          if (entry.id == model.CalendarEntry.noId) {
             entry = _receptionCalendar.firstCalendarEntry;
           }
 
-          if (entry.id != ORModel.CalendarEntry.noId) {
+          if (entry.id != model.CalendarEntry.noId) {
             _ui.headerExtra =
                 '(${_langMap[Key.editDelete]} ${_receptionSelector.selectedReception.name})';
             _setAuthorStamp(entry);
@@ -244,7 +244,7 @@ class CalendarEditor extends ViewWidget {
             _navigateToMyDestination();
           }
         } else {
-          entry = new ORModel.CalendarEntry.empty()
+          entry = new model.CalendarEntry.empty()
             ..start = new DateTime.now()
             ..stop = new DateTime.now().add(new Duration(hours: 1))
             ..content = '';

@@ -18,51 +18,51 @@ part of view;
  */
 class MessageArchive extends ViewWidget {
   Map<String, DateTime> _lastFetchedCache = new Map<String, DateTime>();
-  final Model.UIContactSelector _contactSelector;
-  ORModel.MessageContext _context;
+  final ui_model.UIContactSelector _contactSelector;
+  model.MessageContext _context;
   final Map<String, String> _langMap;
   DateTime _lastFetched;
   final Logger _log = new Logger('$libraryName.MessageArchive');
-  final Controller.Message _messageController;
-  final Model.UIMessageCompose _messageCompose;
-  final Controller.Destination _myDestination;
-  final Controller.Popup _popup;
-  final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIMessageArchive _uiModel;
-  final Controller.User _user;
+  final controller.Message _messageController;
+  final ui_model.UIMessageCompose _messageCompose;
+  final controller.Destination _myDestination;
+  final controller.Popup _popup;
+  final ui_model.UIReceptionSelector _receptionSelector;
+  final ui_model.UIMessageArchive _uiModel;
+  final controller.User _user;
 
   /**
    * Constructor.
    */
   MessageArchive(
-      Model.UIMessageArchive this._uiModel,
-      Controller.Destination this._myDestination,
-      Controller.Message this._messageController,
-      Controller.User this._user,
-      Model.UIContactSelector this._contactSelector,
-      Model.UIReceptionSelector this._receptionSelector,
-      Model.UIMessageCompose this._messageCompose,
-      Controller.Popup this._popup,
+      ui_model.UIMessageArchive this._uiModel,
+      controller.Destination this._myDestination,
+      controller.Message this._messageController,
+      controller.User this._user,
+      ui_model.UIContactSelector this._contactSelector,
+      ui_model.UIReceptionSelector this._receptionSelector,
+      ui_model.UIMessageCompose this._messageCompose,
+      controller.Popup this._popup,
       Map<String, String> this._langMap) {
     _observers();
   }
 
   @override
-  Controller.Destination get _destination => _myDestination;
+  controller.Destination get _destination => _myDestination;
   @override
-  Model.UIMessageArchive get _ui => _uiModel;
+  ui_model.UIMessageArchive get _ui => _uiModel;
 
   @override
-  void _onBlur(Controller.Destination _) {
+  void _onBlur(controller.Destination _) {
     _ui.hideYesNoBoxes();
     _ui.hideTables();
   }
 
   @override
-  void _onFocus(Controller.Destination _) {
+  void _onFocus(controller.Destination _) {
     _lastFetched = new DateTime.now();
 
-    _context = new ORModel.MessageContext.empty()
+    _context = new model.MessageContext.empty()
       ..cid = _contactSelector.selectedContact.contact.id
       ..contactName = _contactSelector.selectedContact.contact.name
       ..rid = _receptionSelector.selectedReception.id
@@ -70,22 +70,22 @@ class MessageArchive extends ViewWidget {
 
     _ui.currentContext = _context;
 
-    if (_context.rid == ORModel.Reception.noId) {
+    if (_context.rid == model.Reception.noId) {
       _ui.headerExtra = '';
-    } else if (_context.cid == ORModel.BaseContact.noId) {
+    } else if (_context.cid == model.BaseContact.noId) {
       _ui.headerExtra = '(${_receptionSelector.selectedReception.name})';
     } else {
       _ui.headerExtra =
           '(${_contactSelector.selectedContact.contact.name} @ ${_receptionSelector.selectedReception.name})';
     }
 
-    _user.list().then((Iterable<ORModel.UserReference> users) {
+    _user.list().then((Iterable<model.UserReference> users) {
       _ui.users = users;
 
       _messageController
           .listDrafts()
-          .then((Iterable<ORModel.Message> messages) {
-        final List<ORModel.Message> list = messages.toList(growable: false);
+          .then((Iterable<model.Message> messages) {
+        final List<model.Message> list = messages.toList(growable: false);
         list.sort((a, b) => a.createdAt.compareTo(b.createdAt));
         _ui.drafts = list;
       });
@@ -110,12 +110,12 @@ class MessageArchive extends ViewWidget {
   /**
    * Close [message] and update the UI.
    */
-  dynamic _closeMessage(ORModel.Message message) async {
+  dynamic _closeMessage(model.Message message) async {
     try {
       message.recipients = new Set();
-      message.state = ORModel.MessageState.closed;
+      message.state = model.MessageState.closed;
 
-      ORModel.Message savedMessage = await _messageController.save(message);
+      model.Message savedMessage = await _messageController.save(message);
 
       _ui.moveMessage(savedMessage);
 
@@ -130,7 +130,7 @@ class MessageArchive extends ViewWidget {
   /**
    * Delete [message] and update the UI.
    */
-  dynamic _deleteMessage(ORModel.Message message) async {
+  dynamic _deleteMessage(model.Message message) async {
     try {
       await _messageController.remove(message.id);
 
@@ -155,20 +155,20 @@ class MessageArchive extends ViewWidget {
    */
   Future _loadMoreMessages() async {
     if (!_ui.loading &&
-        _context.cid != ORModel.BaseContact.noId &&
-        _context.rid != ORModel.Reception.noId) {
+        _context.cid != model.BaseContact.noId &&
+        _context.rid != model.Reception.noId) {
       int counter = 0;
-      final ORModel.MessageFilter filter = new ORModel.MessageFilter.empty()
+      final model.MessageFilter filter = new model.MessageFilter.empty()
         ..contactId = _contactSelector.selectedContact.contact.id
         ..receptionId = _receptionSelector.selectedReception.id;
-      final List<ORModel.Message> messages = new List<ORModel.Message>();
+      final List<model.Message> messages = new List<model.Message>();
 
       _ui.loading = true;
 
       while (counter < 7 && messages.length < 50) {
-        final List<ORModel.Message> list =
+        final List<model.Message> list =
             (await _messageController.list(_lastFetched))
-                .where((ORModel.Message msg) =>
+                .where((model.Message msg) =>
                     filter.appliesTo(msg) && !msg.isDraft ||
                     (msg.isDraft && msg.isClosed))
                 .toList();
@@ -176,7 +176,7 @@ class MessageArchive extends ViewWidget {
         if (list.isNotEmpty) {
           messages.addAll(list);
         } else {
-          final ORModel.Message emptyMessage = new ORModel.Message.empty()
+          final model.Message emptyMessage = new model.Message.empty()
             ..createdAt = _lastFetched;
           list.add(emptyMessage);
           messages.add(emptyMessage);
@@ -238,10 +238,10 @@ class MessageArchive extends ViewWidget {
   /**
    * Queue/send [message] and update the UI.
    */
-  dynamic _sendMessage(ORModel.Message message) async {
+  dynamic _sendMessage(model.Message message) async {
     try {
-      ORModel.Message savedMessage = await _messageController.save(message);
-      ORModel.MessageQueueEntry response =
+      model.Message savedMessage = await _messageController.save(message);
+      model.MessageQueueEntry response =
           await _messageController.enqueue(savedMessage);
 
       _ui.moveMessage(savedMessage);

@@ -1,3 +1,4 @@
+
 /*                  This file is part of OpenReception
                    Copyright (C) 2015-, BitStackers K/S
 
@@ -17,15 +18,15 @@ part of view;
  * The ORC disaster "widget". Activates on AppState.ERROR
  */
 class ORCDisaster {
-  final Model.AppClientState _appState;
+  final ui_model.AppClientState _appState;
   static ORCDisaster _singleton;
-  Model.UIORCDisaster _ui;
+  ui_model.UIORCDisaster _ui;
 
   /**
    * Constructor.
    */
   factory ORCDisaster(
-      Model.AppClientState appClientState, Model.UIORCDisaster uiDisaster) {
+      ui_model.AppClientState appClientState, ui_model.UIORCDisaster uiDisaster) {
     if (_singleton == null) {
       _singleton = new ORCDisaster._internal(appClientState, uiDisaster);
     }
@@ -37,7 +38,7 @@ class ORCDisaster {
    * Internal constructor.
    */
   ORCDisaster._internal(
-      Model.AppClientState this._appState, Model.UIORCDisaster this._ui) {
+      ui_model.AppClientState this._appState, ui_model.UIORCDisaster this._ui) {
     _observers();
   }
 
@@ -45,7 +46,7 @@ class ORCDisaster {
    * Observers.
    */
   void _observers() {
-    _appState.onStateChange.listen((Model.AppState appState) => appState ==
-        Model.AppState.error ? _ui.visible = true : _ui.visible = false);
+    _appState.onStateChange.listen((ui_model.AppState appState) => appState ==
+        ui_model.AppState.error ? _ui.visible = true : _ui.visible = false);
   }
 }

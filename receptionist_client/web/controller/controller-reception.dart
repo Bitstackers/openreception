@@ -17,7 +17,7 @@ part of controller;
  * Provides services to get, delete and update calendar events.
  */
 class Reception {
-  final ORService.RESTReceptionStore _store;
+  final service.RESTReceptionStore _store;
 
   /**
    * Constructor.
@@ -25,12 +25,12 @@ class Reception {
   Reception(this._store);
 
   /**
-   * Return the [receptionId] [ORModel.Reception].
+   * Return the [receptionId] [model.Reception].
    */
-  Future<ORModel.Reception> get(int receptionId) => _store.get(receptionId);
+  Future<model.Reception> get(int receptionId) => _store.get(receptionId);
 
   /**
-   * List [ORModel.Reception]'s
+   * List [model.Reception]'s
    */
-  Future<Iterable<ORModel.ReceptionReference>> list() => _store.list();
+  Future<Iterable<model.ReceptionReference>> list() => _store.list();
 }

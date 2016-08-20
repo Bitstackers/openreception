@@ -36,17 +36,17 @@ class BusyException implements Exception {
  * Exposes methods for call operations.
  */
 class Call {
-  final Model.AppClientState _appState;
+  final ui_model.AppClientState _appState;
   bool _busyFlag = false;
   final Bus<CallCommand> _command = new Bus<CallCommand>();
   static final Logger _log = new Logger('${libraryName}.Call');
-  final ORService.CallFlowControl _service;
+  final service.CallFlowControl _service;
 
   /**
    * Constructor.
    */
-  Call(ORService.CallFlowControl this._service,
-      Model.AppClientState this._appState);
+  Call(service.CallFlowControl this._service,
+      ui_model.AppClientState this._appState);
 
   /**
    * Return true if the Call object is already busy talking to the server.
@@ -76,8 +76,8 @@ class Call {
    *
    * Setting [contextCallId] creates a reference between the newly created call and the given id.
    */
-  Future<ORModel.Call> dial(ORModel.PhoneNumber phoneNumber,
-      ORModel.OriginationContext context) async {
+  Future<model.Call> dial(model.PhoneNumber phoneNumber,
+      model.OriginationContext context) async {
     _log.info('Dialing ${phoneNumber.destination}.');
 
     _busy = true;
@@ -86,7 +86,7 @@ class Call {
 
     return await _service
         .originate(phoneNumber.destination, context)
-        .then((ORModel.Call call) {
+        .then((model.Call call) {
       _command.fire(CallCommand.dialSuccess);
 
       return call;
@@ -101,33 +101,33 @@ class Call {
   /**
    * Returns the first parked call.
    */
-  Future<ORModel.Call> _firstParkedCall() async {
-    final Iterable<ORModel.Call> calls = await _service.callList();
+  Future<model.Call> _firstParkedCall() async {
+    final Iterable<model.Call> calls = await _service.callList();
 
     return await calls.firstWhere(
-        (ORModel.Call call) =>
+        (model.Call call) =>
             call.assignedTo == _appState.currentUser.id &&
-            call.state == ORModel.CallState.parked,
-        orElse: () => ORModel.Call.noCall);
+            call.state == model.CallState.parked,
+        orElse: () => model.Call.noCall);
   }
 
   /**
-   * Returns the [callId] [ORModel.Call].
+   * Returns the [callId] [model.Call].
    *
    * Returns [ORModel.Call.noCall] if [callId] does not exist.
    */
-  Future<ORModel.Call> get(String callId) async {
+  Future<model.Call> get(String callId) async {
     try {
       return await _service.get(callId);
     } catch (error) {
-      return ORModel.Call.noCall;
+      return model.Call.noCall;
     }
   }
 
   /**
    * Tries to hangup [call].
    */
-  Future hangup(ORModel.Call call) {
+  Future hangup(model.Call call) {
     _busy = true;
 
     _command.fire(CallCommand.hangup);
@@ -148,20 +148,20 @@ class Call {
   /**
    * Returns a list of current calls.
    */
-  Future<Iterable<ORModel.Call>> listCalls() => _service.callList();
+  Future<Iterable<model.Call>> listCalls() => _service.callList();
 
   /**
    * Tries to park [call].
    */
-  Future<ORModel.Call> park(ORModel.Call call) async {
-    if (call == ORModel.Call.noCall) {
-      return ORModel.Call.noCall;
+  Future<model.Call> park(model.Call call) async {
+    if (call == model.Call.noCall) {
+      return model.Call.noCall;
     }
 
     _busy = true;
     _command.fire(CallCommand.park);
 
-    return await _service.park(call.id).then((ORModel.Call parkedCall) {
+    return await _service.park(call.id).then((model.Call parkedCall) {
       _command.fire(CallCommand.parkSuccess);
 
       _log.info('Parking ${parkedCall}');
@@ -178,19 +178,19 @@ class Call {
   /**
    * Returns a list of peers.
    */
-  Future<Iterable<ORModel.Peer>> peerList() => _service.peerList();
+  Future<Iterable<model.Peer>> peerList() => _service.peerList();
 
   /**
    * Make the service layer perform a pickup request to the call-flow-control server.
    */
-  Future<ORModel.Call> pickup(ORModel.Call call) async {
+  Future<model.Call> pickup(model.Call call) async {
     _busy = true;
 
     _command.fire(CallCommand.pickup);
 
     _log.info('Picking up $call.');
 
-    return await _service.pickup(call.id).then((ORModel.Call call) {
+    return await _service.pickup(call.id).then((model.Call call) {
       _command.fire(CallCommand.pickupSuccess);
 
       return call;
@@ -205,21 +205,21 @@ class Call {
   /**
    * Tries to pickup the first parked call and returns it if successful.
    */
-  Future<ORModel.Call> pickupFirstParkedCall() =>
-      _firstParkedCall().then((ORModel.Call parkedCall) =>
-          parkedCall != null ? pickup(parkedCall) : ORModel.Call.noCall)
-      as Future<ORModel.Call>;
+  Future<model.Call> pickupFirstParkedCall() =>
+      _firstParkedCall().then((model.Call parkedCall) =>
+          parkedCall != null ? pickup(parkedCall) : model.Call.noCall)
+      as Future<model.Call>;
 
   /**
    * Requests the next available call, and returns it if successful.
    */
-  Future<ORModel.Call> pickupNext() async {
+  Future<model.Call> pickupNext() async {
     _busy = true;
-    bool availableForPickup(ORModel.Call call) =>
-        call.assignedTo == ORModel.User.noId && !call.locked;
+    bool availableForPickup(model.Call call) =>
+        call.assignedTo == model.User.noId && !call.locked;
 
-    Iterable<ORModel.Call> calls = await _service.callList();
-    ORModel.Call foundCall =
+    Iterable<model.Call> calls = await _service.callList();
+    model.Call foundCall =
         calls.firstWhere(availableForPickup, orElse: () => null);
 
     _busy = false;
@@ -227,19 +227,19 @@ class Call {
     if (foundCall != null) {
       return await pickup(foundCall);
     } else {
-      return ORModel.Call.noCall;
+      return model.Call.noCall;
     }
   }
 
   /**
    * Tries to pickup [call] and returns it if successful.
    */
-  Future<ORModel.Call> pickupParked(ORModel.Call call) => pickup(call);
+  Future<model.Call> pickupParked(model.Call call) => pickup(call);
 
   /**
    * Tries to transfer the [source] call to [destination].
    */
-  Future _transfer(ORModel.Call source, ORModel.Call destination) async {
+  Future _transfer(model.Call source, model.Call destination) async {
     _busy = true;
     _command.fire(CallCommand.transfer);
 
@@ -257,15 +257,15 @@ class Call {
   /**
    * Tries to transfer [source] to [destination].
    */
-  Future transfer(ORModel.Call source, ORModel.Call destination) {
+  Future transfer(model.Call source, model.Call destination) {
     return _transfer(source, destination);
   }
 
   /**
    * Tries to transfer [source] to the first parked call.
    */
-  Future transferToFirstParkedCall(ORModel.Call source) {
-    return _firstParkedCall().then((ORModel.Call parkedCall) {
+  Future transferToFirstParkedCall(model.Call source) {
+    return _firstParkedCall().then((model.Call parkedCall) {
       if (parkedCall != null) {
         return _transfer(source, parkedCall);
       }

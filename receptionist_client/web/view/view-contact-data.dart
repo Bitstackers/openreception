@@ -18,22 +18,22 @@ part of view;
  * navigation and rendering via the UIContactData class.
  */
 class ContactData extends ViewWidget {
-  final Model.UIContactSelector _contactSelector;
+  final ui_model.UIContactSelector _contactSelector;
   final Map<String, String> _langMap;
-  final Controller.Destination _myDestination;
-  final Controller.Popup _popup;
-  final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIContactData _uiModel;
+  final controller.Destination _myDestination;
+  final controller.Popup _popup;
+  final ui_model.UIReceptionSelector _receptionSelector;
+  final ui_model.UIContactData _uiModel;
 
   /**
    * Constructor.
    */
   ContactData(
-      Model.UIContactData this._uiModel,
-      Controller.Destination this._myDestination,
-      Model.UIContactSelector this._contactSelector,
-      Model.UIReceptionSelector this._receptionSelector,
-      Controller.Popup this._popup,
+      ui_model.UIContactData this._uiModel,
+      controller.Destination this._myDestination,
+      ui_model.UIContactSelector this._contactSelector,
+      ui_model.UIReceptionSelector this._receptionSelector,
+      controller.Popup this._popup,
       Map<String, String> this._langMap) {
     _ui.setHint('alt+t | ctrl+space |  alt+↑↓');
 
@@ -41,13 +41,13 @@ class ContactData extends ViewWidget {
   }
 
   @override
-  Controller.Destination get _destination => _myDestination;
+  controller.Destination get _destination => _myDestination;
   @override
-  void _onBlur(Controller.Destination _) {}
+  void _onBlur(controller.Destination _) {}
   @override
-  void _onFocus(Controller.Destination _) {}
+  void _onFocus(controller.Destination _) {}
   @override
-  Model.UIContactData get _ui => _uiModel;
+  ui_model.UIContactData get _ui => _uiModel;
 
   /**
    * Simply navigate to my [_myDestination]. Matters not if this widget is
@@ -60,7 +60,7 @@ class ContactData extends ViewWidget {
   /**
    * Clear the widget on null [Reception].
    */
-  void _clear(ORModel.Reception reception) {
+  void _clear(model.Reception reception) {
     if (reception.isEmpty) {
       _ui.clear(removePopup: true);
     }
@@ -83,7 +83,7 @@ class ContactData extends ViewWidget {
   /**
    * Render the widget with [Contact].
    */
-  void _render(Model.ContactWithFilterContext cwfc) {
+  void _render(ui_model.ContactWithFilterContext cwfc) {
     if (cwfc.contact.isEmpty) {
       _ui.clear(removePopup: false);
     } else {

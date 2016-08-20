@@ -48,7 +48,7 @@ class UIGlobalCallQueue extends UIModel {
   /**
    * Append [call] to the calls list.
    */
-  appendCall(ORModel.Call call) {
+  appendCall(model.Call call) {
     _list.children.add(_buildCallElement(call));
     _queueLengthUpdate();
   }
@@ -56,7 +56,7 @@ class UIGlobalCallQueue extends UIModel {
   /**
    * Construct a call [LIElement] from [call]
    */
-  LIElement _buildCallElement(ORModel.Call call) {
+  LIElement _buildCallElement(model.Call call) {
     final SpanElement callState = new SpanElement()
       ..classes.add('call-state')
       ..text = _langMap['callstate-${call.state.toLowerCase()}'];
@@ -104,10 +104,10 @@ class UIGlobalCallQueue extends UIModel {
   /**
    * Add [calls] to the calls list.
    */
-  set calls(List<ORModel.Call> calls) {
+  set calls(List<model.Call> calls) {
     final List<LIElement> list = new List<LIElement>();
 
-    calls.forEach((ORModel.Call call) {
+    calls.forEach((model.Call call) {
       list.add(_buildCallElement(call));
     });
 
@@ -152,7 +152,7 @@ class UIGlobalCallQueue extends UIModel {
    * Remove [call] from the call list. Does nothing if [call] does not exist
    * in the call list.
    */
-  void removeCall(ORModel.Call call) {
+  void removeCall(model.Call call) {
     final LIElement li = _list.querySelector('[data-id="${call.id}"]');
 
     if (li != null) {
@@ -172,7 +172,7 @@ class UIGlobalCallQueue extends UIModel {
    * Update [call] in the call list. Does nothing if [call] does not exist in
    * the call list.
    */
-  void updateCall(ORModel.Call call) {
+  void updateCall(model.Call call) {
     final LIElement li = _list.querySelector('[data-id="${call.id}"]');
 
     if (li != null) {

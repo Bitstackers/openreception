@@ -1,3 +1,4 @@
+
 /*                  This file is part of OpenReception
                    Copyright (C) 2015-, BitStackers K/S
 
@@ -69,10 +70,10 @@ class UIReceptionTelephoneNumbers extends UIModel {
   /**
    * Add [items] to the telephone number list.
    */
-  set telephoneNumbers(List<ORModel.PhoneNumber> items) {
+  set telephoneNumbers(List<model.PhoneNumber> items) {
     final List<LIElement> list = new List<LIElement>();
 
-    items.forEach((ORModel.PhoneNumber item) {
+    items.forEach((model.PhoneNumber item) {
       final SpanElement spanLabel = new SpanElement();
       final SpanElement spanNumber = new SpanElement();
 

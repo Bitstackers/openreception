@@ -17,33 +17,33 @@ part of view;
  * Provides methods for manipulating the contact selector UI widget.
  */
 class ContactSelector extends ViewWidget {
-  final Controller.Destination _myDestination;
-  final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIContactSelector _uiModel;
-  final Controller.Contact _contactController;
+  final controller.Destination _myDestination;
+  final ui_model.UIReceptionSelector _receptionSelector;
+  final ui_model.UIContactSelector _uiModel;
+  final controller.Contact _contactController;
 
   /**
    * Constructor.
    */
   ContactSelector(
-      Model.UIContactSelector this._uiModel,
-      Controller.Destination this._myDestination,
-      Model.UIReceptionSelector this._receptionSelector,
-      Controller.Contact this._contactController) {
+      ui_model.UIContactSelector this._uiModel,
+      controller.Destination this._myDestination,
+      ui_model.UIReceptionSelector this._receptionSelector,
+      controller.Contact this._contactController) {
     _ui.setHint('alt+s');
 
     _observers();
   }
 
   @override
-  Controller.Destination get _destination => _myDestination;
+  controller.Destination get _destination => _myDestination;
   @override
-  Model.UIContactSelector get _ui => _uiModel;
+  ui_model.UIContactSelector get _ui => _uiModel;
 
   @override
-  void _onBlur(Controller.Destination _) {}
+  void _onBlur(controller.Destination _) {}
   @override
-  void _onFocus(Controller.Destination _) {}
+  void _onFocus(controller.Destination _) {}
 
   /**
    * Activate this widget if it's not already activated.
@@ -67,31 +67,31 @@ class ContactSelector extends ViewWidget {
   /**
    * Render the widget with [reception].
    */
-  void _render(ORModel.Reception reception) {
+  void _render(model.Reception reception) {
     if (reception.isEmpty) {
       _ui.clear();
     } else {
       _contactController
           .list(reception.reference)
-          .then((Iterable<ORModel.ReceptionContact> contacts) {
-        int nameSort(ORModel.ReceptionContact x, ORModel.ReceptionContact y) =>
+          .then((Iterable<model.ReceptionContact> contacts) {
+        int nameSort(model.ReceptionContact x, model.ReceptionContact y) =>
             x.contact.name
                 .toLowerCase()
                 .compareTo(y.contact.name.toLowerCase());
 
-        final List<ORModel.ReceptionContact> functionContacts = contacts
-            .where((ORModel.ReceptionContact rc) =>
+        final List<model.ReceptionContact> functionContacts = contacts
+            .where((model.ReceptionContact rc) =>
                 rc.contact.enabled && rc.contact.type == 'function')
             .toList()..sort(nameSort);
-        final List<ORModel.ReceptionContact> humanContacts = contacts
-            .where((ORModel.ReceptionContact rc) =>
+        final List<model.ReceptionContact> humanContacts = contacts
+            .where((model.ReceptionContact rc) =>
                 rc.contact.enabled && rc.contact.type == 'human')
             .toList()..sort(nameSort);
-        final List<ORModel.ReceptionContact> disabledContacts = contacts
-            .where((ORModel.ReceptionContact rc) => !rc.contact.enabled)
+        final List<model.ReceptionContact> disabledContacts = contacts
+            .where((model.ReceptionContact rc) => !rc.contact.enabled)
             .toList()..sort(nameSort);
 
-        _ui.contacts = new List<ORModel.ReceptionContact>()
+        _ui.contacts = new List<model.ReceptionContact>()
           ..addAll(functionContacts)
           ..addAll(humanContacts)
           ..addAll(disabledContacts);

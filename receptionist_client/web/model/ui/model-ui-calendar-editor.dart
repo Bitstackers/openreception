@@ -18,7 +18,7 @@ part of model;
  */
 class UICalendarEditor extends UIModel {
   final Map<String, String> _langMap;
-  ORModel.CalendarEntry _loadedEntry;
+  model.CalendarEntry _loadedEntry;
   HtmlElement _myFirstTabElement;
   HtmlElement _myFocusElement;
   HtmlElement _myLastTabElement;
@@ -26,12 +26,12 @@ class UICalendarEditor extends UIModel {
   bool _newEntry = true;
   bool _stopHourEdit = false;
   bool _stopMinuteEdit = false;
-  final ORUtil.WeekDays _weekDays;
+  final util.WeekDays _weekDays;
 
   /**
    * Constructor.
    */
-  UICalendarEditor(DivElement this._myRoot, ORUtil.WeekDays this._weekDays,
+  UICalendarEditor(DivElement this._myRoot, util.WeekDays this._weekDays,
       Map<String, String> this._langMap) {
     _myFocusElement = _textArea;
     _myFirstTabElement = _textArea;
@@ -98,14 +98,14 @@ class UICalendarEditor extends UIModel {
       _authorStamp.text = '';
     } else {
       _authorStamp.text =
-          '${userName} @ ${ORUtil.humanReadableTimestamp(timestamp, _weekDays)}';
+          '${userName} @ ${util.humanReadableTimestamp(timestamp, _weekDays)}';
     }
   }
 
   /**
-   * Harvest a [ORModel.CalendarEntry] from the form.
+   * Harvest a [model.CalendarEntry] from the form.
    */
-  ORModel.CalendarEntry get harvestedEntry => _loadedEntry
+  model.CalendarEntry get harvestedEntry => _loadedEntry
     ..start = _harvestStartDateTime
     ..stop = _harvestStopDateTime
     ..content = _textArea.value;
@@ -131,9 +131,9 @@ class UICalendarEditor extends UIModel {
       _stopMinuteInput.valueAsNumber.toInt());
 
   /**
-   * Get the currently loaded [ORModel.CalendarEntry].
+   * Get the currently loaded [model.CalendarEntry].
    */
-  ORModel.CalendarEntry get loadedEntry => _loadedEntry;
+  model.CalendarEntry get loadedEntry => _loadedEntry;
 
   /**
    * Observers.
@@ -148,7 +148,7 @@ class UICalendarEditor extends UIModel {
     });
 
     _textArea.onInput.listen((_) {
-      ORUtilHtml.specialCharReplace(_textArea);
+      util_html.specialCharReplace(_textArea);
       _toggleButtons();
     });
     _startHourInput.onInput.listen((_) {
@@ -226,7 +226,7 @@ class UICalendarEditor extends UIModel {
   /**
    * Populate the calendar editor fields with [calendarEntry].
    */
-  void setCalendarEntry(ORModel.CalendarEntry calendarEntry, bool isNew) {
+  void setCalendarEntry(model.CalendarEntry calendarEntry, bool isNew) {
     _stopHourEdit = false;
     _stopMinuteEdit = false;
     _newEntry = isNew;
@@ -280,7 +280,7 @@ class UICalendarEditor extends UIModel {
         _harvestStartDateTime.isBefore(_harvestStopDateTime);
 
     _deleteButton.disabled = !toggle ||
-        (_loadedEntry != null && _loadedEntry.id == ORModel.CalendarEntry.noId);
+        (_loadedEntry != null && _loadedEntry.id == model.CalendarEntry.noId);
     _saveButton.disabled = !toggle;
 
     _myLastTabElement = toggle ? _saveButton : _cancelButton;
@@ -318,8 +318,8 @@ class UICalendarEditor extends UIModel {
     final DateTime start = _harvestStartDateTime;
     final DateTime stop = _harvestStopDateTime;
     final StringBuffer week = new StringBuffer();
-    final int weekStart = ORUtil.weekNumber(start);
-    final int weekStop = ORUtil.weekNumber(stop);
+    final int weekStart = util.weekNumber(start);
+    final int weekStop = util.weekNumber(stop);
 
     week.write(_langMap[Key.week]);
     week.write(' $weekStart');
@@ -335,13 +335,13 @@ class UICalendarEditor extends UIModel {
     _weekSpan.text = week.toString();
 
     try {
-      _startReadable.text = ORUtil.humanReadableTimestamp(start, _weekDays);
+      _startReadable.text = util.humanReadableTimestamp(start, _weekDays);
     } catch (_) {
       _startReadable.text = '';
     }
 
     try {
-      _stopReadable.text = ORUtil.humanReadableTimestamp(stop, _weekDays);
+      _stopReadable.text = util.humanReadableTimestamp(stop, _weekDays);
     } catch (_) {
       _stopReadable.text = '';
     }

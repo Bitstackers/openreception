@@ -19,15 +19,15 @@ import 'dart:html';
 
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
-import 'package:markdown/markdown.dart' as Markdown;
-import 'package:okeyee/okeyee.dart' as Okeyee;
+import 'package:markdown/markdown.dart' as markdown;
+import 'package:okeyee/okeyee.dart' as okeyee;
 import 'package:openreception.framework/bus.dart';
-import 'package:openreception.framework/event.dart' as OREvent;
-import 'package:openreception.framework/model.dart' as ORModel;
-import 'package:openreception.framework/util.dart' as ORUtil;
-import 'package:openreception.framework/util_html.dart' as ORUtilHtml;
+import 'package:openreception.framework/event.dart' as event;
+import 'package:openreception.framework/model.dart' as model;
+import 'package:openreception.framework/util.dart' as util;
+import 'package:openreception.framework/util_html.dart' as util_html;
 
-import '../controller/controller.dart' as Controller;
+import '../controller/controller.dart' as controller;
 import '../lang.dart';
 
 part 'model-app-state.dart';
@@ -69,13 +69,13 @@ typedef String HumanReadableTimestamp(
     DateTime timestamp, Map<int, String> dayMap);
 typedef void SelectCallback(LIElement li);
 
-final Controller.HotKeys _hotKeys = new Controller.HotKeys();
+final controller.HotKeys _hotKeys = new controller.HotKeys();
 
 /**
  * Base class for all UI model classes.
  */
 abstract class UIModel {
-  final Okeyee.Keyboard _keyboard = new Okeyee.Keyboard();
+  final okeyee.Keyboard _keyboard = new okeyee.Keyboard();
 
   ElementList<Element> get _ctrlAElements =>
       _root.querySelectorAll('[ctrl-a-enabled]');
@@ -350,14 +350,14 @@ abstract class UIModel {
 enum filterState { empty, firstInitial, initials, otherInitials, tag }
 
 class ContactWithFilterContext {
-  final ORModel.BaseContact contact;
-  final ORModel.ReceptionAttributes attr;
+  final model.BaseContact contact;
+  final model.ReceptionAttributes attr;
   final filterState state;
   final String filterValue;
 
   ContactWithFilterContext(
-      ORModel.BaseContact this.contact,
-      ORModel.ReceptionAttributes this.attr,
+      model.BaseContact this.contact,
+      model.ReceptionAttributes this.attr,
       filterState this.state,
       String this.filterValue);
 }

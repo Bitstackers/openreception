@@ -17,38 +17,38 @@ part of view;
  * Handles the contact calendar entries.
  */
 class ContactCalendar extends ViewWidget {
-  final Model.UIContactSelector _contactSelector;
-  final Controller.Destination _myDestination;
-  final Controller.Notification _notification;
-  final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIContactCalendar _uiModel;
-  final Controller.Contact _contactController;
-  final Controller.Calendar _calendarController;
+  final ui_model.UIContactSelector _contactSelector;
+  final controller.Destination _myDestination;
+  final controller.Notification _notification;
+  final ui_model.UIReceptionSelector _receptionSelector;
+  final ui_model.UIContactCalendar _uiModel;
+  final controller.Contact _contactController;
+  final controller.Calendar _calendarController;
 
   /**
    * Constructor.
    */
   ContactCalendar(
-      Model.UIContactCalendar this._uiModel,
-      Controller.Destination this._myDestination,
-      Model.UIContactSelector this._contactSelector,
-      Model.UIReceptionSelector this._receptionSelector,
-      Controller.Contact this._contactController,
-      Controller.Calendar this._calendarController,
-      Controller.Notification this._notification) {
+      ui_model.UIContactCalendar this._uiModel,
+      controller.Destination this._myDestination,
+      ui_model.UIContactSelector this._contactSelector,
+      ui_model.UIReceptionSelector this._receptionSelector,
+      controller.Contact this._contactController,
+      controller.Calendar this._calendarController,
+      controller.Notification this._notification) {
     _ui.setHint('alt+k | ctrl+k | ctrl+e');
 
     _observers();
   }
 
   @override
-  Controller.Destination get _destination => _myDestination;
+  controller.Destination get _destination => _myDestination;
   @override
-  void _onBlur(Controller.Destination _) {}
+  void _onBlur(controller.Destination _) {}
   @override
-  void _onFocus(Controller.Destination _) {}
+  void _onFocus(controller.Destination _) {}
   @override
-  Model.UIContactCalendar get _ui => _uiModel;
+  ui_model.UIContactCalendar get _ui => _uiModel;
 
   /**
    * Activate this widget if it's not already activated.
@@ -60,7 +60,7 @@ class ContactCalendar extends ViewWidget {
   /**
    * Empty the [CalendarEvent] list on null [Reception].
    */
-  void _clear(ORModel.Reception reception) {
+  void _clear(model.Reception reception) {
     if (reception.isEmpty) {
       _ui.clear();
     }
@@ -69,10 +69,10 @@ class ContactCalendar extends ViewWidget {
   /**
    * Fetch all calendar entries for [contact].
    */
-  void _fetchCalendar(ORModel.BaseContact contact) {
+  void _fetchCalendar(model.BaseContact contact) {
     _calendarController
         .contactCalendar(contact)
-        .then((Iterable<ORModel.CalendarEntry> entries) {
+        .then((Iterable<model.CalendarEntry> entries) {
       _ui.calendarEntries = entries.toList()
         ..sort((a, b) => a.start.compareTo(b.start));
     });
@@ -90,7 +90,7 @@ class ContactCalendar extends ViewWidget {
     _notification.onCalendarChange.listen(_updateOnChange);
 
     _contactSelector.onSelect
-        .listen((Model.ContactWithFilterContext c) => _render(c.contact));
+        .listen((ui_model.ContactWithFilterContext c) => _render(c.contact));
 
     _receptionSelector.onSelect.listen(_clear);
   }
@@ -98,7 +98,7 @@ class ContactCalendar extends ViewWidget {
   /**
    * Render the widget with [contact].
    */
-  void _render(ORModel.BaseContact contact) {
+  void _render(model.BaseContact contact) {
     if (contact.isEmpty) {
       _ui.clear();
     } else {
@@ -111,11 +111,11 @@ class ContactCalendar extends ViewWidget {
    * Check if changes to the contact calendar matches the currently selected
    * contact, and update accordingly if so.
    */
-  void _updateOnChange(OREvent.CalendarChange calendarChange) {
-    final ORModel.BaseContact currentContact =
+  void _updateOnChange(event.CalendarChange calendarChange) {
+    final model.BaseContact currentContact =
         _contactSelector.selectedContact.contact;
 
-    if (calendarChange.owner is ORModel.OwningContact &&
+    if (calendarChange.owner is model.OwningContact &&
         calendarChange.owner.id == currentContact.id) {
       _fetchCalendar(currentContact);
     }

@@ -1,3 +1,4 @@
+
 /*                  This file is part of OpenReception
                    Copyright (C) 2015-, BitStackers K/S
 
@@ -17,12 +18,12 @@ part of model;
  * Provides access to the my call queue widget.
  */
 class UIMyCallQueue extends UIModel {
-  final Bus<ORModel.Call> _dblClickBus = new Bus<ORModel.Call>();
-  final Controller.Contact _contactController;
+  final Bus<model.Call> _dblClickBus = new Bus<model.Call>();
+  final controller.Contact _contactController;
   final Map<int, String> _contactMap = new Map<int, String>();
   final Map<String, String> _langMap;
   final DivElement _myRoot;
-  final Controller.Reception _receptionController;
+  final controller.Reception _receptionController;
   final Map<int, String> _receptionMap = new Map<int, String>();
   final Set<String> _transferUUIDs = new Set<String>();
 
@@ -32,8 +33,8 @@ class UIMyCallQueue extends UIModel {
   UIMyCallQueue(
       DivElement this._myRoot,
       Map<String, String> this._langMap,
-      Controller.Contact this._contactController,
-      Controller.Reception this._receptionController) {
+      controller.Contact this._contactController,
+      controller.Reception this._receptionController) {
     _setupLocalKeys();
     _observers();
   }
@@ -54,7 +55,7 @@ class UIMyCallQueue extends UIModel {
   /**
    * Append [call] to the calls list.
    */
-  appendCall(ORModel.Call call) {
+  appendCall(model.Call call) {
     _list.children.add(_buildCallElement(call));
     setTransferMark(call);
     _queueLengthUpdate();
@@ -63,7 +64,7 @@ class UIMyCallQueue extends UIModel {
   /**
    * Construct a call [LIElement] from [call]
    */
-  LIElement _buildCallElement(ORModel.Call call) {
+  LIElement _buildCallElement(model.Call call) {
     final DivElement numbersAndStateDiv = new DivElement()
       ..classes.add('numbers-and-state')
       ..style.pointerEvents = 'none';
@@ -77,7 +78,7 @@ class UIMyCallQueue extends UIModel {
     if (_receptionMap.containsKey(call.rid)) {
       rName.text = _receptionMap[call.rid];
     } else {
-      _receptionController.get(call.rid).then((ORModel.Reception reception) {
+      _receptionController.get(call.rid).then((model.Reception reception) {
         rName.text = reception.name;
         _receptionMap[call.rid] = reception.name;
       });
@@ -90,7 +91,7 @@ class UIMyCallQueue extends UIModel {
       if (_contactMap.containsKey(call.cid)) {
         cName.text = _contactMap[call.cid];
       } else {
-        _contactController.get(call.cid).then((ORModel.BaseContact contact) {
+        _contactController.get(call.cid).then((model.BaseContact contact) {
           cName.text = contact.name;
           _contactMap[call.cid] = contact.name;
         });
@@ -128,7 +129,7 @@ class UIMyCallQueue extends UIModel {
       ..children.addAll([numbersAndStateDiv, nameDiv])
       ..classes.add(call.inbound ? 'inbound' : 'outbound')
       ..classes.toggle('locked', call.locked)
-      ..classes.toggle('speaking', call.state == ORModel.CallState.speaking)
+      ..classes.toggle('speaking', call.state == model.CallState.speaking)
       ..title =
           '${call.inbound ? _langMap[Key.callStateInbound] : _langMap[Key.callStateOutbound]} (${call.id})';
   }
@@ -151,17 +152,17 @@ class UIMyCallQueue extends UIModel {
   /**
    * Return the list of calls found in my call queue.
    */
-  Iterable<ORModel.Call> get calls =>
+  Iterable<model.Call> get calls =>
       _list.querySelectorAll('li').map((Element li) =>
-          new ORModel.Call.fromMap(JSON.decode(li.dataset['object'])));
+          new model.Call.fromMap(JSON.decode(li.dataset['object'])));
 
   /**
    * Add [calls] to the calls list.
    */
-  set calls(Iterable<ORModel.Call> calls) {
+  set calls(Iterable<model.Call> calls) {
     final List<LIElement> newList = new List<LIElement>();
 
-    for (ORModel.Call call in calls) {
+    for (model.Call call in calls) {
       newList.add(_buildCallElement(call));
     }
 
@@ -173,16 +174,16 @@ class UIMyCallQueue extends UIModel {
   /**
    * Return all calls that are marked for transfer.
    */
-  Iterable<ORModel.Call> get markedForTransfer {
+  Iterable<model.Call> get markedForTransfer {
     return _list.querySelectorAll('[transfer]').map((Element li) =>
-        new ORModel.Call.fromMap(JSON.decode(li.dataset['object'])));
+        new model.Call.fromMap(JSON.decode(li.dataset['object'])));
   }
 
   /**
    * Mark [call] ready for transfer. Does nothing if [call] is not found in the
    * list.
    */
-  void markForTransfer(ORModel.Call call) {
+  void markForTransfer(model.Call call) {
     final LIElement li = _list.querySelector('[data-id="${call.id}"]');
 
     _transferUUIDs.add(call.id);
@@ -201,7 +202,7 @@ class UIMyCallQueue extends UIModel {
 
     _list.onDoubleClick.listen((Event event) {
       if ((event as MouseEvent).target is LIElement) {
-        _dblClickBus.fire(new ORModel.Call.fromMap(
+        _dblClickBus.fire(new model.Call.fromMap(
             JSON.decode((event.target as LIElement).dataset['object'])));
       }
     });
@@ -212,7 +213,7 @@ class UIMyCallQueue extends UIModel {
   /**
    * Returns a call when double clicking a call in the call list.
    */
-  Stream<ORModel.Call> get onDblClick => _dblClickBus.stream;
+  Stream<model.Call> get onDblClick => _dblClickBus.stream;
 
   /**
    * Update the queue length counter in the widget.
@@ -228,7 +229,7 @@ class UIMyCallQueue extends UIModel {
    * If [call] was marked with the "transfer" attribute, then remove all
    * transfer marks from the call list.
    */
-  void removeCall(ORModel.Call call) {
+  void removeCall(model.Call call) {
     final LIElement li = _list.querySelector('[data-id="${call.id}"]');
 
     if (li != null) {
@@ -243,7 +244,7 @@ class UIMyCallQueue extends UIModel {
   /**
    * Removes the transfer attribute from the [call] li element.
    */
-  void removeTransferMark(ORModel.Call call) {
+  void removeTransferMark(model.Call call) {
     final LIElement li = _list.querySelector('[data-id="${call.id}"]');
 
     if (li != null) {
@@ -266,7 +267,7 @@ class UIMyCallQueue extends UIModel {
   /**
    * Find [call] in queue list and set the transfer attribute.
    */
-  void setTransferMark(ORModel.Call call) {
+  void setTransferMark(model.Call call) {
     if (_transferUUIDs.contains(call.id)) {
       _list
           .querySelector('[data-id="${call.id}"]')
@@ -286,7 +287,7 @@ class UIMyCallQueue extends UIModel {
    * Update [call] in the call list. If [call] does not exist in the call list,
    * it is appended to the list.
    */
-  void updateCall(ORModel.Call call) {
+  void updateCall(model.Call call) {
     final LIElement li = _list.querySelector('[data-id="${call.id}"]');
 
     if (li != null) {

@@ -1,3 +1,4 @@
+
 /*                  This file is part of OpenReception
                    Copyright (C) 2015-, BitStackers K/S
 
@@ -17,7 +18,7 @@ part of model;
  * Provides methods for manipulating the contact data UI widget.
  */
 class UIContactData extends UIModel {
-  final Bus<ORModel.PhoneNumber> _busRinging = new Bus<ORModel.PhoneNumber>();
+  final Bus<model.PhoneNumber> _busRinging = new Bus<model.PhoneNumber>();
   final DivElement _myRoot;
 
   /**
@@ -176,9 +177,9 @@ class UIContactData extends UIModel {
   }
 
   /**
-   * Fires when a [ORModel.PhoneNumber] is marked ringing.
+   * Fires when a [model.PhoneNumber] is marked ringing.
    */
-  Stream<ORModel.PhoneNumber> get onMarkedRinging => _busRinging.stream;
+  Stream<model.PhoneNumber> get onMarkedRinging => _busRinging.stream;
 
   /**
    * Appends each of the [list] elements to [parent]
@@ -217,12 +218,12 @@ class UIContactData extends UIModel {
       _populateList(_responsibilityList, items);
 
   /**
-   * Mark selected [ORModel.PhoneNumber] ringing if we're not already ringing.
+   * Mark selected [model.PhoneNumber] ringing if we're not already ringing.
    * If the PSTN input field is active and contains something, then call that.
    *
    * Numbers that start with 0 are illegal to ring from the PSTN field.
    *
-   * This fires a [ORModel.PhoneNumber] object on the [onMarkedRinging] stream.
+   * This fires a [model.PhoneNumber] object on the [onMarkedRinging] stream.
    */
   void ring() {
     if (_showPSTNSpan.classes.contains('active') &&
@@ -230,7 +231,7 @@ class UIContactData extends UIModel {
         _headerExtra.text.isNotEmpty &&
         !_pstnInput.value.trim().startsWith('0') &&
         noRinging) {
-      ORModel.PhoneNumber phoneNumber = new ORModel.PhoneNumber.empty()
+      model.PhoneNumber phoneNumber = new model.PhoneNumber.empty()
         ..destination = _pstnInput.value.trim();
       _pstnInput.classes.toggle('ringing', true);
       _busRinging.fire(phoneNumber);
@@ -240,13 +241,13 @@ class UIContactData extends UIModel {
       if (li != null) {
         li.classes.toggle('ringing');
         _busRinging.fire(
-            new ORModel.PhoneNumber.fromMap(JSON.decode(li.dataset['object'])));
+            new model.PhoneNumber.fromMap(JSON.decode(li.dataset['object'])));
       }
     }
   }
 
   /**
-   * Select the first [ORModel.PhoneNumber] in the list.
+   * Select the first [model.PhoneNumber] in the list.
    */
   void selectFirstPhoneNumber() {
     if (_phoneNumberList.children.isNotEmpty) {
@@ -300,10 +301,10 @@ class UIContactData extends UIModel {
   /**
    * Add [items] to the telephone number list.
    */
-  set telephoneNumbers(List<ORModel.PhoneNumber> items) {
+  set telephoneNumbers(List<model.PhoneNumber> items) {
     final List<LIElement> list = new List<LIElement>();
 
-    items.forEach((ORModel.PhoneNumber item) {
+    items.forEach((model.PhoneNumber item) {
       final SpanElement spanLabel = new SpanElement();
       final SpanElement spanNumber = new SpanElement();
 

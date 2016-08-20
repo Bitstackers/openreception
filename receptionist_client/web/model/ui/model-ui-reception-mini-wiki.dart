@@ -1,3 +1,4 @@
+
 /*                  This file is part of OpenReception
                    Copyright (C) 2015-, BitStackers K/S
 
@@ -60,7 +61,7 @@ class UIReceptionMiniWiki extends UIModel {
    */
   set miniWiki(String miniWiki) {
     if (miniWiki != null && miniWiki.isNotEmpty) {
-      _body.setInnerHtml(Markdown.markdownToHtml(miniWiki), validator: _validator);
+      _body.setInnerHtml(markdown.markdownToHtml(miniWiki), validator: _validator);
 
       // Lets make sure all links open up in a new tab/window.
       _body.querySelectorAll('a').forEach((Element a) {

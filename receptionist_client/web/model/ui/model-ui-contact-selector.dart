@@ -1,3 +1,4 @@
+
 /*                  This file is part of OpenReception
                    Copyright (C) 2015-, BitStackers K/S
 
@@ -23,12 +24,12 @@ class UIContactSelector extends UIModel {
   final Bus<Event> _ctrlSBus = new Bus<Event>();
   final Map<String, String> _langMap;
   final DivElement _myRoot;
-  final Controller.Popup _popup;
+  final controller.Popup _popup;
 
   /**
    * Constructor.
    */
-  UIContactSelector(DivElement this._myRoot, Controller.Popup this._popup,
+  UIContactSelector(DivElement this._myRoot, controller.Popup this._popup,
       Map<String, String> this._langMap) {
     _setupLocalKeys();
     _observers();
@@ -65,20 +66,20 @@ class UIContactSelector extends UIModel {
   void clear() {
     _list.children.clear();
     _filterInput.value = '';
-    _bus.fire(new ContactWithFilterContext(new ORModel.BaseContact.empty(),
-        new ORModel.ReceptionAttributes.empty(), state, filterInputValue));
+    _bus.fire(new ContactWithFilterContext(new model.BaseContact.empty(),
+        new model.ReceptionAttributes.empty(), state, filterInputValue));
   }
 
   /**
    * Add [contacts] to the [Contact] list. Always resets the filter input to
    * empty string.
    */
-  set contacts(Iterable<ORModel.ReceptionContact> contacts) {
+  set contacts(Iterable<model.ReceptionContact> contacts) {
     _filterInput.value = '';
 
     final List<LIElement> list = new List<LIElement>();
 
-    contacts.forEach((ORModel.ReceptionContact item) {
+    contacts.forEach((model.ReceptionContact item) {
       String initials = item.contact.name
           .split(' ')
           .where((value) => value.trim().isNotEmpty)
@@ -113,8 +114,8 @@ class UIContactSelector extends UIModel {
    * constructed from JSON found in the data-object attribute of [li].
    */
   void _contactSelectCallback(LIElement li) {
-    ORModel.ReceptionContact rc =
-        ORModel.ReceptionContact.decode(JSON.decode(li.dataset['object']));
+    model.ReceptionContact rc =
+        model.ReceptionContact.decode(JSON.decode(li.dataset['object']));
     _bus.fire(new ContactWithFilterContext(
         rc.contact, rc.attr, state, filterInputValue));
   }
@@ -191,8 +192,8 @@ class UIContactSelector extends UIModel {
     }
 
     if (_list.querySelectorAll('.hide').length == _list.children.length) {
-      _bus.fire(new ContactWithFilterContext(new ORModel.BaseContact.empty(),
-          new ORModel.ReceptionAttributes.empty(), state, filterInputValue));
+      _bus.fire(new ContactWithFilterContext(new model.BaseContact.empty(),
+          new model.ReceptionAttributes.empty(), state, filterInputValue));
     } else if (_list.children.isNotEmpty) {
       final LIElement selected = _list.querySelector('.selected');
       if (selected != null && selected.classes.contains('hide')) {
@@ -291,13 +292,13 @@ class UIContactSelector extends UIModel {
    *
    * Return [Contact.none] if no [Contact] is selected.
    */
-  ORModel.ReceptionContact get selectedContact {
+  model.ReceptionContact get selectedContact {
     LIElement li = _list.querySelector('.selected');
 
     if (li != null) {
-      return ORModel.ReceptionContact.decode(JSON.decode(li.dataset['object']));
+      return model.ReceptionContact.decode(JSON.decode(li.dataset['object']));
     } else {
-      return new ORModel.ReceptionContact.empty();
+      return new model.ReceptionContact.empty();
     }
   }
 
@@ -308,8 +309,8 @@ class UIContactSelector extends UIModel {
     if (_list.children.isNotEmpty) {
       _markSelected(_scanForwardForVisibleElement(_list.children.first));
     } else {
-      _bus.fire(new ContactWithFilterContext(new ORModel.BaseContact.empty(),
-          new ORModel.ReceptionAttributes.empty(), state, filterInputValue));
+      _bus.fire(new ContactWithFilterContext(new model.BaseContact.empty(),
+          new model.ReceptionAttributes.empty(), state, filterInputValue));
     }
   }
 

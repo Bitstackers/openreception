@@ -16,14 +16,14 @@ library view;
 import 'dart:async';
 import 'dart:html';
 
-import '../controller/controller.dart' as Controller;
+import '../controller/controller.dart' as controller;
 import '../lang.dart';
-import '../model/model.dart' as Model;
+import '../model/model.dart' as ui_model;
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/event.dart' as OREvent;
-import 'package:openreception.framework/model.dart' as ORModel;
-import 'package:openreception.framework/util.dart' as ORUtil;
+import 'package:openreception.framework/event.dart' as event;
+import 'package:openreception.framework/model.dart' as model;
+import 'package:openreception.framework/util.dart' as util;
 
 part 'view-agent-info.dart';
 part 'view-calendar-editor.dart';
@@ -58,8 +58,8 @@ part 'view-welcome-message.dart';
 
 const String libraryName = "view";
 
-final Controller.HotKeys _hotKeys = new Controller.HotKeys();
-final Controller.Navigate _navigate = new Controller.Navigate();
+final controller.HotKeys _hotKeys = new controller.HotKeys();
+final controller.Navigate _navigate = new controller.Navigate();
 
 /**
  * Common methods for all view widgets.
@@ -69,22 +69,22 @@ abstract class ViewWidget {
    * SHOULD return the widgets [Destination]. MAY return null if the widget has
    * no [Destination] associated with it.
    */
-  Controller.Destination get _destination;
+  controller.Destination get _destination;
 
   /**
    * What to do when the widget blurs.
    */
-  void _onBlur(Controller.Destination destination);
+  void _onBlur(controller.Destination destination);
 
   /**
    * What to do when the widget is focused.
    */
-  void _onFocus(Controller.Destination destination);
+  void _onFocus(controller.Destination destination);
 
   /**
    * MUST return the widgets [UIModel].
    */
-  Model.UIModel get _ui;
+  ui_model.UIModel get _ui;
 
   /**
    * Navigate to [_destination] if widget is not already in focus.
@@ -104,7 +104,7 @@ abstract class ViewWidget {
    *  call ui.blur()
    *  call onBlur();
    */
-  void _setWidgetState(Controller.Destination destination) {
+  void _setWidgetState(controller.Destination destination) {
     if (_destination == destination) {
       _ui.focus();
       _onFocus(destination);

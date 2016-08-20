@@ -1,3 +1,4 @@
+
 /*                  This file is part of OpenReception
                    Copyright (C) 2015-, BitStackers K/S
 
@@ -17,9 +18,9 @@ part of controller;
  * Methods for getting and setting user state.
  */
 class User {
-  final ORService.CallFlowControl _service;
-  final ORService.NotificationService _connectionService;
-  final ORService.RESTUserStore _user;
+  final service.CallFlowControl _service;
+  final service.NotificationService _connectionService;
+  final service.RESTUserStore _user;
 
   /**
    * Constructor.
@@ -29,54 +30,54 @@ class User {
   /**
    * Fetches the last known connection state of users.
    */
-  Future<Iterable<ORModel.ClientConnection>> connections() =>
+  Future<Iterable<model.ClientConnection>> connections() =>
       _connectionService.clientConnections();
 
   /**
    * Fetches the connection state of a single user.
    */
-  Future<ORModel.ClientConnection> connection(ORModel.User user) =>
+  Future<model.ClientConnection> connection(model.User user) =>
       _connectionService.clientConnection(user.id);
 
   /**
    *
    */
-  Future<ORModel.User> get(int userID) => _user.get(userID);
+  Future<model.User> get(int userID) => _user.get(userID);
 
   /**
    * Get the [Model.UserStatus] for the current user.
    */
-  Future<ORModel.UserStatus> getState(ORModel.User user) async {
+  Future<model.UserStatus> getState(model.User user) async {
     try {
       return await _user.userStatus(user.id);
-    } on ORStorage.NotFound catch (_) {
-      return new ORModel.UserStatus();
+    } on storage.NotFound catch (_) {
+      return new model.UserStatus();
     }
   }
 
   /**
    * Return the users list.
    */
-  Future<Iterable<ORModel.UserReference>> list() => _user.list();
+  Future<Iterable<model.UserReference>> list() => _user.list();
 
   /**
    * Set the user idle.
    */
-  Future<ORModel.UserStatus> setIdle(ORModel.User user) => _user.userStateReady(user.id);
+  Future<model.UserStatus> setIdle(model.User user) => _user.userStateReady(user.id);
 
   /**
    * Set the user logged out.
    */
   @deprecated
-  Future<ORModel.UserStatus> setLoggedOut(ORModel.User user) => null;
+  Future<model.UserStatus> setLoggedOut(model.User user) => null;
 
   /**
    * Set the user paused.
    */
-  Future<ORModel.UserStatus> setPaused(ORModel.User user) => _user.userStatePaused(user.id);
+  Future<model.UserStatus> setPaused(model.User user) => _user.userStatePaused(user.id);
 
   /**
    * Fetches a userStates of all users
    */
-  Future<Iterable<ORModel.UserStatus>> stateList() => _user.userStatusList();
+  Future<Iterable<model.UserStatus>> stateList() => _user.userStatusList();
 }

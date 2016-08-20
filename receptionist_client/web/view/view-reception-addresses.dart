@@ -17,25 +17,25 @@ part of view;
  * The list of reception addresses.
  */
 class ReceptionAddresses extends ViewWidget {
-  final Controller.Destination _myDestination;
-  final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIReceptionAddresses _uiModel;
+  final controller.Destination _myDestination;
+  final ui_model.UIReceptionSelector _receptionSelector;
+  final ui_model.UIReceptionAddresses _uiModel;
 
   /**
    * Constructor.
    */
   ReceptionAddresses(
-      Model.UIReceptionAddresses this._uiModel,
-      Controller.Destination this._myDestination,
-      Model.UIReceptionSelector this._receptionSelector) {
+      ui_model.UIReceptionAddresses this._uiModel,
+      controller.Destination this._myDestination,
+      ui_model.UIReceptionSelector this._receptionSelector) {
     _observers();
   }
 
-  @override Controller.Destination get _destination => _myDestination;
-  @override Model.UIReceptionAddresses get _ui => _uiModel;
+  @override controller.Destination get _destination => _myDestination;
+  @override ui_model.UIReceptionAddresses get _ui => _uiModel;
 
-  @override void _onBlur(Controller.Destination _) {}
-  @override void _onFocus(Controller.Destination _) {}
+  @override void _onBlur(controller.Destination _) {}
+  @override void _onFocus(controller.Destination _) {}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
@@ -59,7 +59,7 @@ class ReceptionAddresses extends ViewWidget {
   /**
    * Render the widget with [reception].
    */
-  void render(ORModel.Reception reception) {
+  void render(model.Reception reception) {
     if (reception.isEmpty) {
       _ui.clear();
     } else {

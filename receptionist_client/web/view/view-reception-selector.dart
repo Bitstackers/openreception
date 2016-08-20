@@ -1,3 +1,4 @@
+
 /*                  This file is part of OpenReception
                    Copyright (C) 2015-, BitStackers K/S
 
@@ -17,29 +18,29 @@ part of view;
  * The reception selector widget.
  */
 class ReceptionSelector extends ViewWidget {
-  final Model.AppClientState _appState;
+  final ui_model.AppClientState _appState;
   final Map<String, String> _langMap;
-  final Controller.Destination _myDestination;
-  final Controller.Notification _notification;
-  final List<ORModel.Call> _pickedUpCalls = new List<ORModel.Call>();
-  final Controller.Popup _popup;
-  final Controller.Reception _receptionController;
-  final List<ORModel.ReceptionReference> _receptions;
+  final controller.Destination _myDestination;
+  final controller.Notification _notification;
+  final List<model.Call> _pickedUpCalls = new List<model.Call>();
+  final controller.Popup _popup;
+  final controller.Reception _receptionController;
+  final List<model.ReceptionReference> _receptions;
   bool _refreshReceptionsCache = false;
   Timer refreshReceptionsCacheTimer;
-  final Model.UIReceptionSelector _uiModel;
+  final ui_model.UIReceptionSelector _uiModel;
 
   /**
    * Constructor.
    */
   ReceptionSelector(
-      Model.UIReceptionSelector this._uiModel,
-      Model.AppClientState this._appState,
-      Controller.Destination this._myDestination,
-      Controller.Notification this._notification,
-      List<ORModel.ReceptionReference> this._receptions,
-      Controller.Reception this._receptionController,
-      Controller.Popup this._popup,
+      ui_model.UIReceptionSelector this._uiModel,
+      ui_model.AppClientState this._appState,
+      controller.Destination this._myDestination,
+      controller.Notification this._notification,
+      List<model.ReceptionReference> this._receptions,
+      controller.Reception this._receptionController,
+      controller.Popup this._popup,
       Map<String, String> this._langMap) {
     _ui.setHint('alt+v');
 
@@ -49,14 +50,14 @@ class ReceptionSelector extends ViewWidget {
   }
 
   @override
-  Controller.Destination get _destination => _myDestination;
+  controller.Destination get _destination => _myDestination;
   @override
-  Model.UIReceptionSelector get _ui => _uiModel;
+  ui_model.UIReceptionSelector get _ui => _uiModel;
 
   @override
-  void _onBlur(Controller.Destination _) {}
+  void _onBlur(controller.Destination _) {}
   @override
-  void _onFocus(Controller.Destination _) {}
+  void _onFocus(controller.Destination _) {}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
@@ -70,8 +71,8 @@ class ReceptionSelector extends ViewWidget {
    * Return true if [call.receptionID] is not equal to the currently selected
    * reception.
    */
-  bool _receptionMismatch(ORModel.Call call) =>
-      _pickedUpCalls.any((ORModel.Call c) => c.id == call.id) &&
+  bool _receptionMismatch(model.Call call) =>
+      _pickedUpCalls.any((model.Call c) => c.id == call.id) &&
       call.rid != _ui.selectedReception.id;
 
   /**
@@ -84,10 +85,10 @@ class ReceptionSelector extends ViewWidget {
     _ui.onClick.listen((MouseEvent _) => _activateMe());
 
     _hotKeys.onCtrlAltR.listen((KeyboardEvent _) {
-      final ORModel.ReceptionReference selected = _ui.selectedReception;
-      if (selected.id != ORModel.Reception.noId) {
+      final model.ReceptionReference selected = _ui.selectedReception;
+      if (selected.id != model.Reception.noId) {
         _receptionController.get(selected.id).then(
-            (ORModel.Reception reception) =>
+            (model.Reception reception) =>
                 _ui.refreshReception(reception.reference));
       }
     });
@@ -95,12 +96,12 @@ class ReceptionSelector extends ViewWidget {
     _hotKeys.onCtrlEsc.listen((KeyboardEvent _) => _ui.resetFilter());
 
     _notification.onReceptionChange
-        .listen((OREvent.ReceptionChange _) => _refreshReceptionsCache = true);
+        .listen((event.ReceptionChange _) => _refreshReceptionsCache = true);
 
-    _notification.onAnyCallStateChange.listen((OREvent.CallEvent event) {
+    _notification.onAnyCallStateChange.listen((event.CallEvent event) {
       if (event.call.assignedTo == _appState.currentUser.id &&
-          event.call.state == ORModel.CallState.hungup) {
-        _pickedUpCalls.removeWhere((ORModel.Call c) => c.id == event.call.id);
+          event.call.state == model.CallState.hungup) {
+        _pickedUpCalls.removeWhere((model.Call c) => c.id == event.call.id);
       }
     });
 
@@ -112,7 +113,7 @@ class ReceptionSelector extends ViewWidget {
             closeAfter: new Duration(seconds: 3));
         _receptionController
             .list()
-            .then((Iterable<ORModel.ReceptionReference> receptions) {
+            .then((Iterable<model.ReceptionReference> receptions) {
           _ui.receptionsShadow = receptions.toList()
             ..sort(
                 (x, y) => x.name.toLowerCase().compareTo(y.name.toLowerCase()));
@@ -120,11 +121,11 @@ class ReceptionSelector extends ViewWidget {
       }
     });
 
-    _appState.activeCallChanged.listen((ORModel.Call newCall) {
-      if (newCall != ORModel.Call.noCall &&
+    _appState.activeCallChanged.listen((model.Call newCall) {
+      if (newCall != model.Call.noCall &&
           newCall.inbound &&
           newCall.assignedTo == _appState.currentUser.id &&
-          (!_pickedUpCalls.any((ORModel.Call c) => c.id == newCall.id) ||
+          (!_pickedUpCalls.any((model.Call c) => c.id == newCall.id) ||
               _receptionMismatch(newCall))) {
         _pickedUpCalls.add(newCall);
         _ui.resetFilter();

@@ -17,15 +17,15 @@ part of model;
  * Provides access to the MessageArchive UX components.
  */
 class UIMessageArchive extends UIModel {
-  ORModel.MessageContext _currentContext = new ORModel.MessageContext.empty();
+  model.MessageContext _currentContext = new model.MessageContext.empty();
   final Map<String, String> _langMap;
-  final Bus<ORModel.Message> _messageCloseBus = new Bus<ORModel.Message>();
-  final Bus<ORModel.Message> _messageCopyBus = new Bus<ORModel.Message>();
-  final Bus<ORModel.Message> _messageDeleteBus = new Bus<ORModel.Message>();
-  final Bus<ORModel.Message> _messageSendBus = new Bus<ORModel.Message>();
+  final Bus<model.Message> _messageCloseBus = new Bus<model.Message>();
+  final Bus<model.Message> _messageCopyBus = new Bus<model.Message>();
+  final Bus<model.Message> _messageDeleteBus = new Bus<model.Message>();
+  final Bus<model.Message> _messageSendBus = new Bus<model.Message>();
   final DivElement _myRoot;
   Map<int, String> _users = new Map<int, String>();
-  final ORUtil.WeekDays _weekDays;
+  final util.WeekDays _weekDays;
 
   TableElement _messagesTable;
 
@@ -33,7 +33,7 @@ class UIMessageArchive extends UIModel {
    * Constructor.
    */
   UIMessageArchive(
-      DivElement this._myRoot, ORUtil.WeekDays this._weekDays, this._langMap) {
+      DivElement this._myRoot, util.WeekDays this._weekDays, this._langMap) {
     _setupLocalKeys();
     _observers();
   }
@@ -82,7 +82,7 @@ class UIMessageArchive extends UIModel {
   /**
    * Construct the send | delete | copy | close <td> cell.
    */
-  TableCellElement _buildActionsCell(ORModel.Message message) {
+  TableCellElement _buildActionsCell(model.Message message) {
     final DivElement actionsContainer = new DivElement()
       ..classes.add('actions-container');
     final DivElement buttonBox = new DivElement()..classes.add('button-box');
@@ -128,7 +128,7 @@ class UIMessageArchive extends UIModel {
    *
    * The resulting row is empty, except for the date column.
    */
-  TableRowElement _buildEmptyRow(ORModel.Message message) {
+  TableRowElement _buildEmptyRow(model.Message message) {
     String date() {
       final DateTime now = new DateTime.now();
       final StringBuffer sb = new StringBuffer();
@@ -170,7 +170,7 @@ class UIMessageArchive extends UIModel {
   /**
    * Construct the message <td> cell.
    */
-  TableCellElement _buildMessageCell(ORModel.Message msg) {
+  TableCellElement _buildMessageCell(model.Message msg) {
     final DivElement div = new DivElement()
       ..classes.add('slim')
       ..appendHtml(msg.body.replaceAll("\n", '<br>'));
@@ -187,14 +187,14 @@ class UIMessageArchive extends UIModel {
    * If [isDraft] is true then output the recipient contact and reception name
    * columns.
    */
-  TableRowElement _buildRow(ORModel.Message message, bool isDraft) {
+  TableRowElement _buildRow(model.Message message, bool isDraft) {
     final TableRowElement row = new TableRowElement()
       ..dataset['message-id'] = message.id.toString()
       ..dataset['message-date'] = message.createdAt.toString()
       ..dataset['contact-string'] = message.context.contactString;
 
     row.children.add(new TableCellElement()
-      ..text = ORUtil.humanReadableTimestamp(message.createdAt, _weekDays));
+      ..text = util.humanReadableTimestamp(message.createdAt, _weekDays));
 
     if (isDraft) {
       row.children.addAll([
@@ -222,7 +222,7 @@ class UIMessageArchive extends UIModel {
   /**
    * Build the status column for those
    */
-  TableCellElement _buildStatusCell(ORModel.Message message, bool isDraft) {
+  TableCellElement _buildStatusCell(model.Message message, bool isDraft) {
     final TableCellElement td = new TableCellElement()
       ..classes.add('td-center')
       ..text = _getStatus(message);
@@ -254,9 +254,9 @@ class UIMessageArchive extends UIModel {
    * Set the current message context. If the context contains an empty reception
    * then disable and hide the loadmore button.
    */
-  set currentContext(ORModel.MessageContext context) {
-    final bool emptyReception = context.rid == ORModel.Reception.noId;
-    final bool emptyContact = context.cid == ORModel.BaseContact.noId;
+  set currentContext(model.MessageContext context) {
+    final bool emptyReception = context.rid == model.Reception.noId;
+    final bool emptyContact = context.cid == model.BaseContact.noId;
     final String rid = _archiveTableContainer.dataset['rid'];
 
     if (emptyReception || emptyContact) {
@@ -289,16 +289,16 @@ class UIMessageArchive extends UIModel {
   /**
    * Return the current message context.
    */
-  ORModel.MessageContext get currentContext => _currentContext;
+  model.MessageContext get currentContext => _currentContext;
 
   /**
-   * Add the [list] of [ORModel.Message] to the widgets "drafts messages" table.
+   * Add the [list] of [model.Message] to the widgets "drafts messages" table.
    */
-  set drafts(Iterable<ORModel.Message> list) {
+  set drafts(Iterable<model.Message> list) {
     final List<TableRowElement> rows = new List<TableRowElement>();
     _draftsTbody.children.clear();
 
-    list.forEach((ORModel.Message msg) {
+    list.forEach((model.Message msg) {
       rows.add(_buildRow(msg, true));
     });
 
@@ -309,7 +309,7 @@ class UIMessageArchive extends UIModel {
   /**
    * Return the String status of [msg].
    */
-  String _getStatus(ORModel.Message msg) {
+  String _getStatus(model.Message msg) {
     if (msg.isClosed) {
       return _langMap[Key.closed].toUpperCase();
     }
@@ -371,7 +371,7 @@ class UIMessageArchive extends UIModel {
    * NOTE: This is a visual only action. It does not perform any actions on the
    * server.
    */
-  void moveMessage(ORModel.Message message) {
+  void moveMessage(model.Message message) {
     final TableRowElement tr =
         _draftsTbody.querySelector('[data-message-id="${message.id}"]');
 
@@ -406,24 +406,24 @@ class UIMessageArchive extends UIModel {
   Stream<MouseEvent> get onLoadMoreMessages => _loadMoreButton.onClick;
 
   /**
-   * Fire a [ORModel.Message] when closing it.
+   * Fire a [model.Message] when closing it.
    */
-  Stream<ORModel.Message> get onMessageClose => _messageCloseBus.stream;
+  Stream<model.Message> get onMessageClose => _messageCloseBus.stream;
 
   /**
-   * Fire a [ORModel.Message] when copying it.
+   * Fire a [model.Message] when copying it.
    */
-  Stream<ORModel.Message> get onMessageCopy => _messageCopyBus.stream;
+  Stream<model.Message> get onMessageCopy => _messageCopyBus.stream;
 
   /**
-   * Fire a [ORModel.Message] when deleting it.
+   * Fire a [model.Message] when deleting it.
    */
-  Stream<ORModel.Message> get onMessageDelete => _messageDeleteBus.stream;
+  Stream<model.Message> get onMessageDelete => _messageDeleteBus.stream;
 
   /**
-   * Fire a [ORModel.Message] when sending it.
+   * Fire a [model.Message] when sending it.
    */
-  Stream<ORModel.Message> get onMessageSend => _messageSendBus.stream;
+  Stream<model.Message> get onMessageSend => _messageSendBus.stream;
 
   /**
    * Removes a draft [message] from the list.
@@ -431,7 +431,7 @@ class UIMessageArchive extends UIModel {
    * NOTE: This is a visual only action. It does not perform any actions on the
    * server.
    */
-  void removeMessage(ORModel.Message message) {
+  void removeMessage(model.Message message) {
     TableRowElement tr =
         _root.querySelector('table [data-message-id="${message.id}"]');
 
@@ -447,19 +447,19 @@ class UIMessageArchive extends UIModel {
   }
 
   /**
-   * Add the [list] of [ORModel.Message] to the widgets messages table.
+   * Add the [list] of [model.Message] to the widgets messages table.
    *
    * If [addToExisting] is true, the [list] is appended to the table, else the
    * table is cleared and [list] is set as its sole content.
    */
-  void setMessages(Iterable<ORModel.Message> list,
+  void setMessages(Iterable<model.Message> list,
       {bool addToExisting: false}) {
     TableSectionElement _messagesTbody =
         _messagesTable.querySelector('tbody.messages-tbody');
     final List<TableRowElement> rows = new List<TableRowElement>();
 
-    list.forEach((ORModel.Message msg) {
-      if (msg.id != ORModel.Message.noId) {
+    list.forEach((model.Message msg) {
+      if (msg.id != model.Message.noId) {
         rows.add(_buildRow(msg, false));
       } else {
         rows.add(_buildEmptyRow(msg));
@@ -486,8 +486,8 @@ class UIMessageArchive extends UIModel {
    * Set the list of users. This is used to map the users id of a message to
    * the users name.
    */
-  set users(Iterable<ORModel.UserReference> list) {
-    list.forEach((ORModel.UserReference user) {
+  set users(Iterable<model.UserReference> list) {
+    list.forEach((model.UserReference user) {
       _users[user.id] = user.name;
     });
   }
@@ -496,7 +496,7 @@ class UIMessageArchive extends UIModel {
    * Setup the yes|no action confirmation box.
    */
   void _yesNo(DivElement actionBox, DivElement yesNoBox,
-      ORModel.Message message, Bus bus) {
+      model.Message message, Bus bus) {
     yesNoBox.children.addAll([
       new SpanElement()
         ..text = _langMap[Key.yes]

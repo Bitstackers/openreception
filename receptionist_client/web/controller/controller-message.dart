@@ -14,8 +14,8 @@
 part of controller;
 
 class Message {
-  final ORService.RESTMessageStore _store;
-  final ORModel.User _user;
+  final service.RESTMessageStore _store;
+  final model.User _user;
 
   /**
    * Constructor.
@@ -23,26 +23,26 @@ class Message {
   Message(this._store, this._user);
 
   /**
-   * Enqueues a [ORModel.Message] object.
+   * Enqueues a [model.Message] object.
    */
-  Future<ORModel.MessageQueueEntry> enqueue(ORModel.Message message) =>
+  Future<model.MessageQueueEntry> enqueue(model.Message message) =>
       _store.enqueue(message);
 
   /**
-   * Fetch the [messageID] [ORModel.Message].
+   * Fetch the [messageID] [model.Message].
    */
-  Future<ORModel.Message> get(int messageID) => _store.get(messageID);
+  Future<model.Message> get(int messageID) => _store.get(messageID);
 
   /**
-   * Return an iterable containing [ORModel.Message] according to the supplied
+   * Return an iterable containing [model.Message] according to the supplied
    * [filter].
    */
-  Future<Iterable<ORModel.Message>> list(DateTime day) => _store.listDay(day);
+  Future<Iterable<model.Message>> list(DateTime day) => _store.listDay(day);
 
   /**
-   * Return an iterable containing [ORModel.Message] drafts.
+   * Return an iterable containing [model.Message] drafts.
    */
-  Future<Iterable<ORModel.Message>> listDrafts() => _store.listDrafts();
+  Future<Iterable<model.Message>> listDrafts() => _store.listDrafts();
 
   /**
    * Delete [messageId] from the database. Throws Storage.NotFound if the
@@ -51,10 +51,10 @@ class Message {
   Future remove(int messageId) => _store.remove(messageId, _user);
 
   /**
-   * Saves a [ORModel.Message] object.
+   * Saves a [model.Message] object.
    */
-  Future<ORModel.Message> save(ORModel.Message message) =>
-      message.id == ORModel.Message.noId
+  Future<model.Message> save(model.Message message) =>
+      message.id == model.Message.noId
           ? _store.create(message, _user)
           : _store.update(message, _user);
 }

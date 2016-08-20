@@ -17,53 +17,53 @@ part of view;
  * Component for creating/editing and saving/sending messages.
  */
 class MessageCompose extends ViewWidget {
-  final Model.AppClientState _appState;
-  final Model.UIContactSelector _contactSelector;
+  final ui_model.AppClientState _appState;
+  final ui_model.UIContactSelector _contactSelector;
   final Map<String, String> _langMap;
   final Logger _log = new Logger('$libraryName.MessageCompose');
-  final Controller.Message _messageController;
-  final Controller.Destination _myDestination;
-  Controller.Destination _myDestinationMessageBox;
-  final Controller.Notification _notification;
-  final List<ORModel.Call> _pickedUpCalls = new List<ORModel.Call>();
-  final Controller.Popup _popup;
-  final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIMessageArchive _uiMessageArchive;
-  final Model.UIMessageCompose _uiModel;
+  final controller.Message _messageController;
+  final controller.Destination _myDestination;
+  controller.Destination _myDestinationMessageBox;
+  final controller.Notification _notification;
+  final List<model.Call> _pickedUpCalls = new List<model.Call>();
+  final controller.Popup _popup;
+  final ui_model.UIReceptionSelector _receptionSelector;
+  final ui_model.UIMessageArchive _uiMessageArchive;
+  final ui_model.UIMessageCompose _uiModel;
 
   /**
    * Constructor.
    */
   MessageCompose(
-      Model.UIMessageCompose this._uiModel,
-      Model.UIMessageArchive this._uiMessageArchive,
-      Model.AppClientState this._appState,
-      Controller.Destination this._myDestination,
-      Model.UIContactSelector this._contactSelector,
-      Model.UIReceptionSelector this._receptionSelector,
-      Controller.Message this._messageController,
-      Controller.Notification this._notification,
-      Controller.Popup this._popup,
+      ui_model.UIMessageCompose this._uiModel,
+      ui_model.UIMessageArchive this._uiMessageArchive,
+      ui_model.AppClientState this._appState,
+      controller.Destination this._myDestination,
+      ui_model.UIContactSelector this._contactSelector,
+      ui_model.UIReceptionSelector this._receptionSelector,
+      controller.Message this._messageController,
+      controller.Notification this._notification,
+      controller.Popup this._popup,
       Map<String, String> this._langMap) {
     _ui.setHint('alt+b | alt+d | alt+space | ctrl+space | ctrl+s | ctrl+enter');
 
-    _myDestinationMessageBox = new Controller.Destination(
-        Controller.Context.home, Controller.Widget.messageCompose,
-        cmd: Controller.Cmd.focusMessageArea);
+    _myDestinationMessageBox = new controller.Destination(
+        controller.Context.home, controller.Widget.messageCompose,
+        cmd: controller.Cmd.focusMessageArea);
 
     _observers();
   }
 
   @override
-  Controller.Destination get _destination => _myDestination;
+  controller.Destination get _destination => _myDestination;
   @override
-  Model.UIMessageCompose get _ui => _uiModel;
+  ui_model.UIMessageCompose get _ui => _uiModel;
 
   @override
-  void _onBlur(Controller.Destination _) {}
+  void _onBlur(controller.Destination _) {}
   @override
-  void _onFocus(Controller.Destination destination) {
-    if (destination.cmd == Controller.Cmd.focusMessageArea) {
+  void _onFocus(controller.Destination destination) {
+    if (destination.cmd == controller.Cmd.focusMessageArea) {
       _ui.focusMessageTextArea();
     }
   }
@@ -79,10 +79,10 @@ class MessageCompose extends ViewWidget {
   /**
    * Save message draft in the message archive.
    */
-  Future _draft(ORModel.Message message) async {
-    message.state = ORModel.MessageState.draft;
+  Future _draft(model.Message message) async {
+    message.state = model.MessageState.draft;
     try {
-      ORModel.Message savedMessage = await _messageController.save(message);
+      model.Message savedMessage = await _messageController.save(message);
 
       _ui.reset();
       _ui.focusOnCurrentFocusElement();
@@ -91,24 +91,24 @@ class MessageCompose extends ViewWidget {
       _popup.success(
           _langMap[Key.messageSaveSuccessTitle], 'ID ${savedMessage.id}');
     } catch (error) {
-      _log.shout('Could not save as draft ${message.asMap} $error');
+      _log.shout('Could not save as draft ${message.toJson()} $error');
       _popup.error(_langMap[Key.messageSaveErrorTitle], 'ID ${message.id}');
     }
   }
 
   /**
-   * Return a [ORModel.Message] build from the form data and the currently
+   * Return a [model.Message] build from the form data and the currently
    * selected contact.
    */
-  ORModel.Message get _message {
-    final ORModel.Message message = _ui.message;
+  model.Message get _message {
+    final model.Message message = _ui.message;
     message.sender = _appState.currentUser;
-    final ORModel.MessageContext messageContext =
-        new ORModel.MessageContext.fromContact(
+    final model.MessageContext messageContext =
+        new model.MessageContext.fromContact(
             _contactSelector.selectedContact.contact,
             _receptionSelector.selectedReception);
 
-    if (messageContext.rid == ORModel.Reception.noId) {
+    if (messageContext.rid == model.Reception.noId) {
       /// We shouldn't really be here, since that means the system have returned
       /// an empty reception reference from _receptionSelector.selectedReception
       /// Lets at least try to get a rid, so we can proceed with sending the
@@ -146,7 +146,7 @@ class MessageCompose extends ViewWidget {
     _hotKeys.onAltD.listen((KeyboardEvent _) => _navigateToMessageTextArea());
 
     _contactSelector.onSelect.listen(
-        (Model.ContactWithFilterContext c) => _render(c.contact, c.attr));
+        (ui_model.ContactWithFilterContext c) => _render(c.contact, c.attr));
 
     _contactSelector.onCtrlEnter.listen((_) {
       _ui.sendButton.click();
@@ -156,17 +156,17 @@ class MessageCompose extends ViewWidget {
       _ui.draftButton.click();
     });
 
-    _notification.onAnyCallStateChange.listen((OREvent.CallEvent event) {
+    _notification.onAnyCallStateChange.listen((event.CallEvent event) {
       if (event.call.assignedTo == _appState.currentUser.id &&
-          event.call.state == ORModel.CallState.hungup) {
-        _pickedUpCalls.removeWhere((ORModel.Call c) => c.id == event.call.id);
+          event.call.state == model.CallState.hungup) {
+        _pickedUpCalls.removeWhere((model.Call c) => c.id == event.call.id);
       }
     });
 
-    _appState.activeCallChanged.listen((ORModel.Call newCall) {
-      if (newCall != ORModel.Call.noCall &&
+    _appState.activeCallChanged.listen((model.Call newCall) {
+      if (newCall != model.Call.noCall &&
           newCall.inbound &&
-          !_pickedUpCalls.any((ORModel.Call c) => c.id == newCall.id)) {
+          !_pickedUpCalls.any((model.Call c) => c.id == newCall.id)) {
         _pickedUpCalls.add(newCall);
 
         /// This is somewhat nasty. We're assuming that this fires _before_ the
@@ -184,7 +184,7 @@ class MessageCompose extends ViewWidget {
     _ui.onDraft.listen((MouseEvent _) async => await _draft(_message));
     _ui.onSend.listen((MouseEvent _) async => await _send(_message));
 
-    _uiMessageArchive.onMessageCopy.listen((ORModel.Message msg) {
+    _uiMessageArchive.onMessageCopy.listen((model.Message msg) {
       /**
        * Hack alert!
        * For some odd reason we're forced to wrap the _activateMe() call in a
@@ -201,7 +201,7 @@ class MessageCompose extends ViewWidget {
   /**
    * Render the widget with [Contact].
    */
-  void _render(ORModel.BaseContact contact, ORModel.ReceptionAttributes attr) {
+  void _render(model.BaseContact contact, model.ReceptionAttributes attr) {
     _ui.headerExtra = contact.name.isEmpty ? '' : ': ${contact.name}';
 
     if (attr.isEmpty) {
@@ -215,10 +215,10 @@ class MessageCompose extends ViewWidget {
   /**
    * Send message. This entails first saving and then enqueueing the message.
    */
-  Future _send(ORModel.Message message) async {
+  Future _send(model.Message message) async {
     try {
-      ORModel.Message savedMessage = await _messageController.save(message);
-      ORModel.MessageQueueEntry response =
+      model.Message savedMessage = await _messageController.save(message);
+      model.MessageQueueEntry response =
           await _messageController.enqueue(savedMessage);
 
       _ui.reset();
@@ -228,7 +228,7 @@ class MessageCompose extends ViewWidget {
       _popup.success(_langMap[Key.messageSaveSendSuccessTitle],
           'ID ${response.message.id}');
     } catch (error) {
-      _log.shout('Could not save/enqueue ${message.asMap} $error');
+      _log.shout('Could not save/enqueue ${message.toJson()} $error');
       _popup.error(_langMap[Key.messageSaveSendErrorTitle], 'ID ${message.id}');
     }
   }

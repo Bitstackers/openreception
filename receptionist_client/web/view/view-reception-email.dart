@@ -17,25 +17,25 @@ part of view;
  * List of reception email addresses.
  */
 class ReceptionEmail extends ViewWidget {
-  final Controller.Destination _myDestination;
-  final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIReceptionEmail _uiModel;
+  final controller.Destination _myDestination;
+  final ui_model.UIReceptionSelector _receptionSelector;
+  final ui_model.UIReceptionEmail _uiModel;
 
   /**
    * Constructor.
    */
   ReceptionEmail(
-      Model.UIReceptionEmail this._uiModel,
-      Controller.Destination this._myDestination,
-      Model.UIReceptionSelector this._receptionSelector) {
+      ui_model.UIReceptionEmail this._uiModel,
+      controller.Destination this._myDestination,
+      ui_model.UIReceptionSelector this._receptionSelector) {
     _observers();
   }
 
-  @override Controller.Destination get _destination => _myDestination;
-  @override Model.UIReceptionEmail get _ui => _uiModel;
+  @override controller.Destination get _destination => _myDestination;
+  @override ui_model.UIReceptionEmail get _ui => _uiModel;
 
-  @override void _onBlur(Controller.Destination _) {}
-  @override void _onFocus(Controller.Destination _) {}
+  @override void _onBlur(controller.Destination _) {}
+  @override void _onFocus(controller.Destination _) {}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
@@ -59,7 +59,7 @@ class ReceptionEmail extends ViewWidget {
   /**
    * Render the widget with [reception].
    */
-  void _render(ORModel.Reception reception) {
+  void _render(model.Reception reception) {
     if (reception.isEmpty) {
       _ui.clear();
     } else {

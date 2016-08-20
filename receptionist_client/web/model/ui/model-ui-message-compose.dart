@@ -117,20 +117,20 @@ class UIMessageCompose extends UIModel {
    *
    * This does NOT set the 'context' field.
    */
-  ORModel.Message get message {
-    final ORModel.CallerInfo callerInfo = new ORModel.CallerInfo.empty()
+  model.Message get message {
+    final model.CallerInfo callerInfo = new model.CallerInfo.empty()
       ..cellPhone = _cellphoneInput.value.trim()
       ..company = _companyNameInput.value.trim()
       ..localExtension = _extensionInput.value.trim()
       ..name = _callerNameInput.value.trim()
       ..phone = _landlineInput.value.trim();
-    final ORModel.MessageFlag messageFlag = new ORModel.MessageFlag.empty()
+    final model.MessageFlag messageFlag = new model.MessageFlag.empty()
       ..called = _haveCalledInput.checked
       ..pleaseCall = _pleaseCallInput.checked
       ..urgent = _urgentInput.checked
       ..willCallBack = _callsBackInput.checked;
 
-    return new ORModel.Message.empty()
+    return new model.Message.empty()
       ..body = _messageTextarea.value.trim()
       ..callerInfo = callerInfo
       ..flag = messageFlag
@@ -140,7 +140,7 @@ class UIMessageCompose extends UIModel {
   /**
    * Populate widget fields with [message].
    */
-  void set message(ORModel.Message message) {
+  void set message(model.Message message) {
     _callerNameInput.value = message.callerInfo.name;
     _companyNameInput.value = message.callerInfo.company;
     _landlineInput.value = message.callerInfo.phone;
@@ -243,55 +243,55 @@ class UIMessageCompose extends UIModel {
   /**
    * Return the Set of [ORModel.MessageRecipient]. May return the empty set.
    */
-  Set<ORModel.MessageEndpoint> get recipients {
+  Set<model.MessageEndpoint> get recipients {
     final String recipientsList = _recipientsList.dataset['recipients-list'];
 
     if (recipientsList != null && recipientsList.isNotEmpty) {
-      return new Set<ORModel.MessageEndpoint>.from(
-          JSON.decode(recipientsList).map(ORModel.MessageEndpoint.decode));
+      return new Set<model.MessageEndpoint>.from(
+          JSON.decode(recipientsList).map(model.MessageEndpoint.decode));
     } else {
-      return new Set<ORModel.MessageEndpoint>();
+      return new Set<model.MessageEndpoint>();
     }
   }
 
   /**
    * Add [recipients] to the recipients list.
    */
-  void set recipients(Set<ORModel.MessageEndpoint> recipients) {
+  void set recipients(Set<model.MessageEndpoint> recipients) {
     _showRecipientsText.hidden = true;
     _showNoRecipientsText.hidden = true;
 
-    String contactString(ORModel.MessageEndpoint recipient) =>
+    String contactString(model.MessageEndpoint recipient) =>
         '${recipient.name} (${recipient.address})';
 
-    Iterable<ORModel.MessageEndpoint> toRecipients() =>
-        recipients.where((ORModel.MessageEndpoint r) =>
-            r.type == ORModel.MessageEndpointType.emailTo);
+    Iterable<model.MessageEndpoint> toRecipients() =>
+        recipients.where((model.MessageEndpoint r) =>
+            r.type == model.MessageEndpointType.emailTo);
 
-    Iterable<ORModel.MessageEndpoint> ccRecipients() =>
-        recipients.where((ORModel.MessageEndpoint r) =>
-            r.type == ORModel.MessageEndpointType.emailCc);
+    Iterable<model.MessageEndpoint> ccRecipients() =>
+        recipients.where((model.MessageEndpoint r) =>
+            r.type == model.MessageEndpointType.emailCc);
 
-    Iterable<ORModel.MessageEndpoint> bccRecipients() =>
-        recipients.where((ORModel.MessageEndpoint r) =>
-            r.type == ORModel.MessageEndpointType.emailBcc);
+    Iterable<model.MessageEndpoint> bccRecipients() =>
+        recipients.where((model.MessageEndpoint r) =>
+            r.type == model.MessageEndpointType.emailBcc);
 
     List<LIElement> list = new List<LIElement>();
 
-    Iterable maps = recipients.map((ORModel.MessageEndpoint r) => r.toJson());
+    Iterable maps = recipients.map((model.MessageEndpoint r) => r.toJson());
     _recipientsList.dataset['recipients-list'] = JSON.encode(maps.toList());
 
-    toRecipients().forEach((ORModel.MessageEndpoint recipient) {
+    toRecipients().forEach((model.MessageEndpoint recipient) {
       list.add(new LIElement()..text = contactString(recipient));
     });
 
-    ccRecipients().forEach((ORModel.MessageEndpoint recipient) {
+    ccRecipients().forEach((model.MessageEndpoint recipient) {
       list.add(new LIElement()
         ..text = contactString(recipient)
         ..classes.add('cc'));
     });
 
-    bccRecipients().forEach((ORModel.MessageEndpoint recipient) {
+    bccRecipients().forEach((model.MessageEndpoint recipient) {
       list.add(new LIElement()
         ..text = contactString(recipient)
         ..classes.add('bcc'));

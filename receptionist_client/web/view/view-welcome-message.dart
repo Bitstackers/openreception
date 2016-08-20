@@ -17,27 +17,27 @@ part of view;
  * The reception greeting widget.
  */
 class WelcomeMessage extends ViewWidget {
-  final Model.AppClientState _appState;
+  final ui_model.AppClientState _appState;
   final Map<String, String> _langMap;
-  final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIWelcomeMessage _uiModel;
+  final ui_model.UIReceptionSelector _receptionSelector;
+  final ui_model.UIWelcomeMessage _uiModel;
 
   /**
    * Constructor.
    */
   WelcomeMessage(
-      Model.UIWelcomeMessage this._uiModel,
-      Model.AppClientState this._appState,
-      Model.UIReceptionSelector this._receptionSelector,
+      ui_model.UIWelcomeMessage this._uiModel,
+      ui_model.AppClientState this._appState,
+      ui_model.UIReceptionSelector this._receptionSelector,
       Map<String, String> this._langMap) {
     _observers();
   }
 
-  @override Controller.Destination get _destination => null;
-  @override Model.UIWelcomeMessage get _ui => _uiModel;
+  @override controller.Destination get _destination => null;
+  @override ui_model.UIWelcomeMessage get _ui => _uiModel;
 
-  @override void _onBlur(Controller.Destination _) {}
-  @override void _onFocus(Controller.Destination _) {}
+  @override void _onBlur(controller.Destination _) {}
+  @override void _onFocus(controller.Destination _) {}
 
   /**
    * Observers.
@@ -45,20 +45,20 @@ class WelcomeMessage extends ViewWidget {
   void _observers() {
     _receptionSelector.onSelect.listen(_render);
 
-    _appState.activeCallChanged.listen((ORModel.Call newCall) {
-      _ui.inActiveCall = newCall != ORModel.Call.noCall;
+    _appState.activeCallChanged.listen((model.Call newCall) {
+      _ui.inActiveCall = newCall != model.Call.noCall;
     });
   }
 
   /**
    * Render the widget with [reception].
    */
-  void _render(ORModel.Reception reception) {
+  void _render(model.Reception reception) {
     if (reception.isEmpty) {
       _ui.clear();
       _ui.greeting = _langMap[Key.standardGreeting];
     } else {
-      if (_appState.activeCall != ORModel.Call.noCall) {
+      if (_appState.activeCall != model.Call.noCall) {
         _ui.greeting = _appState.activeCall.greetingPlayed
             ? reception.greeting
             : reception.shortGreeting;

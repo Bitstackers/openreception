@@ -19,7 +19,7 @@ part of model;
 class UIReceptionCalendar extends UIModel {
   final Map<String, String> _langMap;
   final DivElement _myRoot;
-  final ORUtil.WeekDays _weekDays;
+  final util.WeekDays _weekDays;
   final NodeValidatorBuilder _validator = new NodeValidatorBuilder()
     ..allowTextElements()
     ..allowHtml5()
@@ -28,7 +28,7 @@ class UIReceptionCalendar extends UIModel {
   /**
    * Constructor.
    */
-  UIReceptionCalendar(DivElement this._myRoot, ORUtil.WeekDays this._weekDays,
+  UIReceptionCalendar(DivElement this._myRoot, util.WeekDays this._weekDays,
       Map<String, String> this._langMap) {
     _setupLocalKeys();
     _observers();
@@ -50,7 +50,7 @@ class UIReceptionCalendar extends UIModel {
   /**
    * Construct a calendar entry LIElement from [entry]
    */
-  LIElement _buildEntryElement(ORModel.CalendarEntry entry) {
+  LIElement _buildEntryElement(model.CalendarEntry entry) {
     final DateTime now = new DateTime.now();
 
     bool isToday(DateTime stamp) =>
@@ -58,7 +58,7 @@ class UIReceptionCalendar extends UIModel {
         stamp.month == now.month &&
         stamp.year == now.year;
 
-    SpanElement labelElement(ORModel.CalendarEntry item) {
+    SpanElement labelElement(model.CalendarEntry item) {
       final SpanElement label = new SpanElement();
 
       if (!item.active) {
@@ -77,11 +77,11 @@ class UIReceptionCalendar extends UIModel {
 
     final DivElement content = new DivElement()
       ..classes.add('markdown')
-      ..setInnerHtml(Markdown.markdownToHtml(entry.content),
+      ..setInnerHtml(markdown.markdownToHtml(entry.content),
           validator: _validator);
 
-    String start = ORUtil.humanReadableTimestamp(entry.start, _weekDays);
-    String stop = ORUtil.humanReadableTimestamp(entry.stop, _weekDays);
+    String start = util.humanReadableTimestamp(entry.start, _weekDays);
+    String stop = util.humanReadableTimestamp(entry.stop, _weekDays);
 
     if (isToday(entry.start) && !isToday(entry.stop)) {
       start = '${_langMap[Key.today]} $start';
@@ -111,7 +111,7 @@ class UIReceptionCalendar extends UIModel {
   /**
    * Add [items] to the entry list.
    */
-  set calendarEntries(Iterable<ORModel.CalendarEntry> items) {
+  set calendarEntries(Iterable<model.CalendarEntry> items) {
     _list.children = items.map(_buildEntryElement).toList(growable: false);
   }
 
@@ -127,12 +127,12 @@ class UIReceptionCalendar extends UIModel {
    * Return the first [ReceptionCalendarEntry]. Return empty entry if list is
    * empty.
    */
-  ORModel.CalendarEntry get firstCalendarEntry {
+  model.CalendarEntry get firstCalendarEntry {
     try {
-      return new ORModel.CalendarEntry.fromMap(
+      return new model.CalendarEntry.fromMap(
           JSON.decode(_list.children.first.dataset['object']));
     } catch (_) {
-      return new ORModel.CalendarEntry.empty();
+      return new model.CalendarEntry.empty();
     }
   }
 
@@ -140,14 +140,14 @@ class UIReceptionCalendar extends UIModel {
    * Return currently selected [ReceptionCalendarEntry].
    * Return [ReceptionCalendarEntry.empty] if nothing is selected.
    */
-  ORModel.CalendarEntry get selectedCalendarEntry {
+  model.CalendarEntry get selectedCalendarEntry {
     final LIElement selected = _list.querySelector('.selected');
 
     if (selected != null) {
-      return new ORModel.CalendarEntry.fromMap(
+      return new model.CalendarEntry.fromMap(
           JSON.decode(selected.dataset['object']));
     } else {
-      return new ORModel.CalendarEntry.empty();
+      return new model.CalendarEntry.empty();
     }
   }
 
@@ -165,7 +165,7 @@ class UIReceptionCalendar extends UIModel {
    *
    * The returned function re-instates the entry into the list when called.
    */
-  Function preDeleteEntry(ORModel.CalendarEntry entry) {
+  Function preDeleteEntry(model.CalendarEntry entry) {
     final LIElement li = _list.querySelector('[data-id="${entry.id}"]');
     li.style.display = 'none';
 
@@ -195,17 +195,17 @@ class UIReceptionCalendar extends UIModel {
    *
    * The returned function removes the created/changed LIElement when called.
    */
-  Function unsavedEntry(ORModel.CalendarEntry entry) {
+  Function unsavedEntry(model.CalendarEntry entry) {
     final LIElement newLi = _buildEntryElement(entry);
 
-    if (entry.id == ORModel.CalendarEntry.noId) {
+    if (entry.id == model.CalendarEntry.noId) {
       if (_list.children.isEmpty) {
         _list.children.add(newLi);
       } else {
         LIElement found;
         for (LIElement li in _list.children) {
-          final ORModel.CalendarEntry foundEntry =
-              new ORModel.CalendarEntry.fromMap(
+          final model.CalendarEntry foundEntry =
+              new model.CalendarEntry.fromMap(
                   JSON.decode(li.dataset['object']));
           if (foundEntry.start.isAfter(entry.start) ||
               foundEntry.start.isAtSameMomentAs(entry.start)) {

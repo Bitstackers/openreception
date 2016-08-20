@@ -1,3 +1,4 @@
+
 /*                  This file is part of OpenReception
                    Copyright (C) 2015-, BitStackers K/S
 
@@ -17,34 +18,34 @@ part of view;
  * The reception calendar.
  */
 class ReceptionCalendar extends ViewWidget {
-  final Controller.Destination _myDestination;
-  final Controller.Notification _notification;
-  final Controller.Calendar _calendarController;
-  final Model.UIReceptionSelector _receptionSelector;
-  final Model.UIReceptionCalendar _uiModel;
+  final controller.Destination _myDestination;
+  final controller.Notification _notification;
+  final controller.Calendar _calendarController;
+  final ui_model.UIReceptionSelector _receptionSelector;
+  final ui_model.UIReceptionCalendar _uiModel;
 
   /**
    * Constructor.
    */
   ReceptionCalendar(
-      Model.UIReceptionCalendar this._uiModel,
-      Controller.Destination this._myDestination,
-      Model.UIReceptionSelector this._receptionSelector,
-      Controller.Calendar this._calendarController,
-      Controller.Notification this._notification) {
+      ui_model.UIReceptionCalendar this._uiModel,
+      controller.Destination this._myDestination,
+      ui_model.UIReceptionSelector this._receptionSelector,
+      controller.Calendar this._calendarController,
+      controller.Notification this._notification) {
     _ui.setHint('alt+a | ctrl+k | ctrl+e');
 
     _observers();
   }
 
   @override
-  Controller.Destination get _destination => _myDestination;
+  controller.Destination get _destination => _myDestination;
   @override
-  void _onBlur(Controller.Destination _) {}
+  void _onBlur(controller.Destination _) {}
   @override
-  void _onFocus(Controller.Destination _) {}
+  void _onFocus(controller.Destination _) {}
   @override
-  Model.UIReceptionCalendar get _ui => _uiModel;
+  ui_model.UIReceptionCalendar get _ui => _uiModel;
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
@@ -57,10 +58,10 @@ class ReceptionCalendar extends ViewWidget {
   /**
    * Fetch all calendar entries for [reception].
    */
-  void _fetchCalendar(ORModel.ReceptionReference reception) {
+  void _fetchCalendar(model.ReceptionReference reception) {
     _calendarController
         .receptionCalendar(reception)
-        .then((Iterable<ORModel.CalendarEntry> entries) {
+        .then((Iterable<model.CalendarEntry> entries) {
       _ui.calendarEntries = entries.toList()
         ..sort((a, b) => a.start.compareTo(b.start));
     });
@@ -83,7 +84,7 @@ class ReceptionCalendar extends ViewWidget {
   /**
    * Render the widget with [reception].
    */
-  void _render(ORModel.Reception reception) {
+  void _render(model.Reception reception) {
     if (reception.isEmpty) {
       _ui.clear();
     } else {
@@ -96,8 +97,8 @@ class ReceptionCalendar extends ViewWidget {
    * Check if changes to the reception calendar matches the currently selected
    * reception, and update accordingly if so.
    */
-  void _updateOnChange(OREvent.CalendarChange calendarChange) {
-    final ORModel.ReceptionReference currentReception =
+  void _updateOnChange(event.CalendarChange calendarChange) {
+    final model.ReceptionReference currentReception =
         _receptionSelector.selectedReception;
 
     if (calendarChange.owner.id == currentReception.id) {

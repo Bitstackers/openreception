@@ -28,14 +28,14 @@ class Popup {
   Popup(this._errorIcon, this._infoIcon, this._successIcon);
 
   void error(String title, String body, {Duration closeAfter}) {
-    _schedulePopupForClose(new Html.Notification(title, body: body, icon: _errorIcon.path), closeAfter);
+    _schedulePopupForClose(new html.Notification(title, body: body, icon: _errorIcon.path), closeAfter);
   }
 
   void info(String title, String body, {Duration closeAfter}) {
-    _schedulePopupForClose(new Html.Notification(title, body: body, icon: _infoIcon.path), closeAfter);
+    _schedulePopupForClose(new html.Notification(title, body: body, icon: _infoIcon.path), closeAfter);
   }
 
-  void _schedulePopupForClose(Html.Notification notification, Duration timeout) {
+  void _schedulePopupForClose(html.Notification notification, Duration timeout) {
     Duration closeAfter = _timeout;
 
     if(timeout != null) {
@@ -48,6 +48,6 @@ class Popup {
   }
 
   void success(String title, String body, {Duration closeAfter}) {
-    _schedulePopupForClose(new Html.Notification(title, body: body, icon: _successIcon.path), closeAfter);
+    _schedulePopupForClose(new html.Notification(title, body: body, icon: _successIcon.path), closeAfter);
   }
 }

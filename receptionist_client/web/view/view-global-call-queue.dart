@@ -19,36 +19,36 @@ part of view;
  * This reloads the call queue list at a fixed refresh rate of [_refreshRate].
  */
 class GlobalCallQueue extends ViewWidget {
-  final Model.AppClientState _appState;
-  final Controller.Call _callController;
+  final ui_model.AppClientState _appState;
+  final controller.Call _callController;
   DateTime _lastPling = new DateTime.now();
-  final Controller.Destination _myDestination;
-  final Controller.Notification _notification;
-  final Controller.Sound _sound;
-  final Model.UIGlobalCallQueue _uiModel;
-  ORModel.UserStatus _userState;
+  final controller.Destination _myDestination;
+  final controller.Notification _notification;
+  final controller.Sound _sound;
+  final ui_model.UIGlobalCallQueue _uiModel;
+  model.UserStatus _userState;
 
   /**
    * Constructor.
    */
   GlobalCallQueue(
-      Model.UIGlobalCallQueue this._uiModel,
-      Model.AppClientState this._appState,
-      Controller.Destination this._myDestination,
-      Controller.Notification this._notification,
-      Controller.Call this._callController,
-      Controller.Sound this._sound,
-      ORModel.UserStatus this._userState) {
+      ui_model.UIGlobalCallQueue this._uiModel,
+      ui_model.AppClientState this._appState,
+      controller.Destination this._myDestination,
+      controller.Notification this._notification,
+      controller.Call this._callController,
+      controller.Sound this._sound,
+      model.UserStatus this._userState) {
     _loadCallList();
 
     _observers();
   }
 
-  @override Controller.Destination get _destination => _myDestination;
-  @override Model.UIGlobalCallQueue get _ui => _uiModel;
+  @override controller.Destination get _destination => _myDestination;
+  @override ui_model.UIGlobalCallQueue get _ui => _uiModel;
 
-  @override void _onBlur(Controller.Destination _) {}
-  @override void _onFocus(Controller.Destination _) {}
+  @override void _onBlur(controller.Destination _) {}
+  @override void _onFocus(controller.Destination _) {}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already
@@ -61,14 +61,14 @@ class GlobalCallQueue extends ViewWidget {
   /**
    * Add, remove, update the queue list, depending on the [call] state.
    */
-  void _handleCallStateChanges(OREvent.CallEvent event) {
-    final ORModel.Call call = event.call;
+  void _handleCallStateChanges(event.CallEvent event) {
+    final model.Call call = event.call;
 
-    if (event is OREvent.CallOffer) {
+    if (event is event.CallOffer) {
       _ui.appendCall(call);
       _pling();
-    } else if (event is OREvent.CallHangup ||
-        call.assignedTo != ORModel.User.noId) {
+    } else if (event is event.CallHangup ||
+        call.assignedTo != model.User.noId) {
       _ui.removeCall(call);
     } else if (call.inbound) {
       _ui.updateCall(call);
@@ -79,9 +79,9 @@ class GlobalCallQueue extends ViewWidget {
    * Load the list of calls not currently assigned to anybody.
    */
   void _loadCallList() {
-    bool unassigned(ORModel.Call call) => call.assignedTo == ORModel.User.noId;
+    bool unassigned(model.Call call) => call.assignedTo == model.User.noId;
 
-    _callController.listCalls().then((Iterable<ORModel.Call> calls) {
+    _callController.listCalls().then((Iterable<model.Call> calls) {
       _ui.calls = calls.where(unassigned).toList(growable: false);
     });
   }
@@ -99,7 +99,7 @@ class GlobalCallQueue extends ViewWidget {
     /**
      * Change the user/agent state for the currently logged in user.
      */
-    _notification.onAgentStateChange.listen((ORModel.UserStatus userStatus) {
+    _notification.onAgentStateChange.listen((model.UserStatus userStatus) {
       if (userStatus.userId == _appState.currentUser.id) {
         _userState = userStatus;
       }
@@ -125,7 +125,7 @@ class GlobalCallQueue extends ViewWidget {
     final Duration difference = now.difference(_lastPling);
     if (difference.inSeconds >= 5 &&
         _ui.hasCalls &&
-        _appState.activeCall == ORModel.Call.noCall &&
+        _appState.activeCall == model.Call.noCall &&
         !_userState.paused) {
       _lastPling = now;
       _sound.pling();
