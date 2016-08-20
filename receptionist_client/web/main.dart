@@ -179,7 +179,7 @@ Future<ORModel.ClientConfiguration> getClientConfiguration(
     return await configService
         .clientConfig()
         .then((ORModel.ClientConfiguration config) {
-      log.info('Loaded client config: ${config.asMap}');
+      log.info('Loaded client config: ${config.toJson()}');
       return config;
     });
   } catch (error, stackTrace) {

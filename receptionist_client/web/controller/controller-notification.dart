@@ -68,7 +68,7 @@ class Notification {
    */
   void _clientConnectionState(OREvent.ClientConnectionState event) {
     _clientConnectionStateBus
-        .fire(new Model.ClientConnectionState.fromMap(event.conn.asMap));
+        .fire(new Model.ClientConnectionState.fromMap(event.conn.toJson()));
   }
 
   /**
@@ -164,7 +164,7 @@ class Notification {
    * Handle the [OREvent.UserState] [event].
    */
   void _userState(OREvent.UserState event) {
-    _agentStateChangeBus.fire(new ORModel.UserStatus.fromMap(event.asMap));
+    _agentStateChangeBus.fire(new ORModel.UserStatus.fromMap(event.toJson()));
   }
 
   /**

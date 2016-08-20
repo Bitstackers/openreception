@@ -122,7 +122,7 @@ class MessageArchive extends ViewWidget {
       _popup.success(
           _langMap[Key.messageCloseSuccessTitle], 'ID ${message.id}');
     } catch (error) {
-      _log.shout('Could not close ${message.asMap} $error');
+      _log.shout('Could not close ${message.toJson()} $error');
       _popup.error(_langMap[Key.messageCloseErrorTitle], 'ID ${message.id}');
     }
   }
@@ -140,7 +140,7 @@ class MessageArchive extends ViewWidget {
       _popup.success(
           _langMap[Key.messageDeleteSuccessTitle], 'ID ${message.id}');
     } catch (error) {
-      _log.shout('Could not delete ${message.asMap} $error');
+      _log.shout('Could not delete ${message.toJson()} $error');
       _popup.error(_langMap[Key.messageDeleteErrorTitle], 'ID ${message.id}');
     }
   }
@@ -250,7 +250,7 @@ class MessageArchive extends ViewWidget {
       _popup.success(_langMap[Key.messageSaveSendSuccessTitle],
           'ID ${response.message.id}');
     } catch (error) {
-      _log.shout('Could not save/enqueue ${message.asMap} $error');
+      _log.shout('Could not save/enqueue ${message.toJson()} $error');
       _popup.error(_langMap[Key.messageSaveSendErrorTitle], 'ID ${message.id}');
     }
   }
