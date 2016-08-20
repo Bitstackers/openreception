@@ -123,8 +123,7 @@ class MyCallQueue extends ViewWidget {
   void clearStaleCalls() {
     _ui.calls.forEach((model.Call call) {
       _callController.get(call.id).then((model.Call c) {
-        if (c == model.Call.noCall ||
-            c.callState == model.CallState.transferred) {
+        if (c == model.Call.noCall || c.state == model.CallState.transferred) {
           if (c.id == contextCallId) {
             contextCallId = '';
           }
