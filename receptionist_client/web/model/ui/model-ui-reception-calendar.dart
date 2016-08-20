@@ -97,7 +97,7 @@ class UIReceptionCalendar extends UIModel {
         labelElement(entry),
         new SpanElement()
           ..classes.add('timestamp')
-          ..text = '${start} - ${stop}'
+          ..text = '$start - $stop'
       ]);
 
     return new LIElement()

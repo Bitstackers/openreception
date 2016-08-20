@@ -23,7 +23,7 @@ class UIORCDisaster {
    * Constructor.
    */
   UIORCDisaster(String id) {
-    _myRoot = querySelector('#${id}');
+    _myRoot = querySelector('#$id');
   }
 
   /**

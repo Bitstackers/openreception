@@ -76,7 +76,7 @@ class _Simulation {
   }
 
   void _refreshInfo(model.Call activeCall) {
-    _stateBox.text = 'call:{${activeCall}}';
+    _stateBox.text = 'call:$activeCall';
   }
 
   /**

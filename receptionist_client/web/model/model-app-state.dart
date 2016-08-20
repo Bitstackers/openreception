@@ -19,7 +19,7 @@ class AppClientState {
   model.Call _activeCall = model.Call.noCall;
   final Bus<model.Call> _activeCallChangeBus = new Bus<model.Call>();
   model.User _currentUser = new model.User.empty();
-  final Logger _log = new Logger('${libraryName}.AppClientState');
+  final Logger _log = new Logger('$libraryName.AppClientState');
   final controller.Notification _notification;
   final Bus<AppState> _stateChange = new Bus<AppState>();
 

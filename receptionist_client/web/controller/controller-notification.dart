@@ -96,7 +96,7 @@ class Notification {
     } else if (event is event.ContactChange) {
       _contactChangeBus.fire(event);
     } else {
-      _log.severe('Failed to dispatch event ${event}');
+      _log.severe('Failed to dispatch event $event}');
     }
   }
 
@@ -104,7 +104,7 @@ class Notification {
    * Handle the [OREvent.MessageChange] [event].
    */
   void _messageChange(event.MessageChange event) {
-    _log.info('Ignoring event ${event}');
+    _log.info('Ignoring event $event');
   }
 
   /**

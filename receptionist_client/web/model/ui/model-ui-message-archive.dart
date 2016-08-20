@@ -137,7 +137,7 @@ class UIMessageArchive extends UIModel {
       final String month = new DateFormat.M().format(message.createdAt);
       final String year = new DateFormat.y().format(message.createdAt);
 
-      sb.write('${_weekDays.name(message.createdAt.weekday)} ${day}/${month}');
+      sb.write('${_weekDays.name(message.createdAt.weekday)} $day/$month');
 
       if (message.createdAt.year != now.year) {
         sb.write('/${year.substring(2)}');

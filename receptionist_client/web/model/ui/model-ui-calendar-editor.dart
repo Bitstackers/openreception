@@ -98,7 +98,7 @@ class UICalendarEditor extends UIModel {
       _authorStamp.text = '';
     } else {
       _authorStamp.text =
-          '${userName} @ ${util.humanReadableTimestamp(timestamp, _weekDays)}';
+          '$userName @ ${util.humanReadableTimestamp(timestamp, _weekDays)}';
     }
   }
 

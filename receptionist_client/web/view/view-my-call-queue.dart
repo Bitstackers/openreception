@@ -101,7 +101,7 @@ class MyCallQueue extends ViewWidget {
       }
     } catch (error) {
       _error(error, _langMap[Key.callFailed], phoneNumber.destination);
-      _log.warning('dialing failed with ${error}');
+      _log.warning('dialing failed with $error');
     }
 
     _contactData.removeRinging();
@@ -144,7 +144,7 @@ class MyCallQueue extends ViewWidget {
    */
   set contextCallId(String id) {
     _contextCallId = id == null ? '' : id;
-    _log.info('contextCallId set to "${id}"');
+    _log.info('contextCallId set to "$id"');
   }
 
   /**
@@ -259,7 +259,7 @@ class MyCallQueue extends ViewWidget {
         }).catchError((error) {
           _error(error, _langMap[Key.errorCallTransfer],
               'ID ${_appState.activeCall.id}');
-          _log.warning('transfer failed with ${error}');
+          _log.warning('transfer failed with $error');
         }).whenComplete(() => _readyCallController());
       }
     });
@@ -283,7 +283,7 @@ class MyCallQueue extends ViewWidget {
         }).catchError((error) {
           _error(error, _langMap[Key.errorCallHangup],
               'ID ${_appState.activeCall.id}');
-          _log.warning('hangup failed with ${error}');
+          _log.warning('hangup failed with $error');
         }).whenComplete(() => _readyCallController());
       }
     });
@@ -301,7 +301,7 @@ class MyCallQueue extends ViewWidget {
         }).catchError((error) {
           _error(error, _langMap[Key.errorCallNotFound],
               _langMap[Key.errorCallNotFoundExtended]);
-          _log.warning('pickup failed with ${error}');
+          _log.warning('pickup failed with $error');
         }).whenComplete(() => _readyCallController());
       }
     });
@@ -326,7 +326,7 @@ class MyCallQueue extends ViewWidget {
       } catch (error) {
         _error(error, _langMap[Key.errorCallPark],
             'ID ${_appState.activeCall.id}');
-        _log.warning('parking failed with ${error}');
+        _log.warning('parking failed with $error');
       }
     }
 
@@ -363,7 +363,7 @@ class MyCallQueue extends ViewWidget {
         clearStaleCalls();
       }).catchError((error) {
         _error(error, _langMap[Key.errorCallUnpark], '');
-        _log.warning('unpark failed with ${error}');
+        _log.warning('unpark failed with $error');
       }).whenComplete(() => _readyCallController());
     }
   }

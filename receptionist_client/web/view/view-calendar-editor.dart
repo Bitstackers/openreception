@@ -105,11 +105,11 @@ class CalendarEditor extends ViewWidget {
     _calendarController
         .deleteCalendarEvent(_ui.loadedEntry, _entryOwner)
         .then((_) {
-      _log.info('${loadedEntry} successfully deleted from database');
+      _log.info('$loadedEntry successfully deleted from database');
       _popup.success(
           _langMap[Key.calendarEditorDelSuccessTitle], 'ID ${loadedEntry.id}');
     }).catchError((error) {
-      _log.shout('Could not delete calendar entry ${loadedEntry}');
+      _log.shout('Could not delete calendar entry $loadedEntry');
       _popup.error(
           _langMap[Key.calendarEditorDelErrorTitle], 'ID ${loadedEntry.id}');
       reInstateDeletedEntry();
@@ -149,12 +149,12 @@ class CalendarEditor extends ViewWidget {
     _calendarController
         .saveCalendarEvent(entry, _entryOwner)
         .then((model.CalendarEntry savedEntry) {
-      _log.info('${savedEntry} successfully saved to database');
+      _log.info('$savedEntry successfully saved to database');
       _popup.success(
           _langMap[Key.calendarEditorSaveSuccessTitle], 'ID ${savedEntry.id}');
     }).catchError((error) {
       model.CalendarEntry loadedEntry = _ui.loadedEntry;
-      _log.shout('Could not save calendar entry ${loadedEntry}');
+      _log.shout('Could not save calendar entry $loadedEntry');
       _popup.error(
           _langMap[Key.calendarEditorSaveErrorTitle], 'ID ${loadedEntry.id}');
       removeUnsavedElement();

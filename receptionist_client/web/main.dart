@@ -83,7 +83,7 @@ main() async {
       uiLoading.addLoadingMessage('HTMl5 notification support OK');
       Notification
           .requestPermission()
-          .then((String perm) => log.info('HTML5 permission ${perm}'));
+          .then((String perm) => log.info('HTML5 permission $perm'));
     } else {
       log.shout('HTML5 notifications not supported.');
     }
@@ -110,8 +110,7 @@ main() async {
         restartAppInTenSeconds(_appUri);
       };
 
-      Uri uri =
-          Uri.parse('${clientConfig.notificationSocketUri}?token=${token}');
+      Uri uri = Uri.parse('${clientConfig.notificationSocketUri}?token=$token');
 
       await webSocketClient.connect(uri).then((_) {
         log.info('WebSocketClient connect succeeded - NotificationSocket up');
@@ -145,7 +144,7 @@ main() async {
           await new Future.delayed(new Duration(seconds: 1));
           appState.changeState(ui_model.AppState.ready);
         }).catchError((error) {
-          log.shout('Loading of app failed with ${error}');
+          log.shout('Loading of app failed with $error');
           appState.changeState(ui_model.AppState.error);
         });
       });

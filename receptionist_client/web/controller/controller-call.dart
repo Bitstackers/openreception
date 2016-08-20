@@ -39,7 +39,7 @@ class Call {
   final ui_model.AppClientState _appState;
   bool _busyFlag = false;
   final Bus<CallCommand> _command = new Bus<CallCommand>();
-  static final Logger _log = new Logger('${libraryName}.Call');
+  static final Logger _log = new Logger('$libraryName.Call');
   final service.CallFlowControl _service;
 
   /**
@@ -164,7 +164,7 @@ class Call {
     return await _service.park(call.id).then((model.Call parkedCall) {
       _command.fire(CallCommand.parkSuccess);
 
-      _log.info('Parking ${parkedCall}');
+      _log.info('Parking $parkedCall');
 
       return parkedCall;
     }).catchError((error, stackTrace) {

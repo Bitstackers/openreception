@@ -23,7 +23,7 @@ class UIORCReady {
    * Constructor.
    */
   UIORCReady(String id) {
-    _myRoot = querySelector('#${id}');
+    _myRoot = querySelector('#$id');
   }
 
   /**

@@ -118,14 +118,17 @@ class Destination {
   Destination(Context this.context, Widget this.widget,
       {Destination this.from, Cmd this.cmd});
 
+  @override
   bool operator ==(Object other) =>
       other is Destination &&
       context == other.context &&
       widget == other.widget;
 
+  @override
   int get hashCode => this.toString().hashCode;
 
-  String toString() => '${context}-${widget}';
+  @override
+  String toString() => '$context-$widget';
 }
 
 /**
@@ -160,7 +163,7 @@ class Navigate {
     _widgetHistory[destination.context] = destination.widget;
 
     if (pushState) {
-      html.window.history.pushState(null, '${destination}', '#${destination}');
+      html.window.history.pushState(null, '$destination', '#$destination');
     }
     _bus.fire(destination);
   }

@@ -23,7 +23,7 @@ class UIORCLoading {
    * Constructor.
    */
   UIORCLoading(String id) {
-    _myRoot = querySelector('#${id}');
+    _myRoot = querySelector('#$id');
   }
 
   DivElement get _loadingProgressMessages =>
