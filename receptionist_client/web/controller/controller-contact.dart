@@ -34,12 +34,13 @@ class Contact {
   }
 
   /**
-   * Fetch the [contactId] [ORModel.Contact].
+   * Fetch the [model.BaseContact] identified by [cid] .
    */
-  Future<model.BaseContact> get(int contactId) => _store.get(contactId);
+  Future<model.BaseContact> get(int cid) => _store.get(cid);
 
   /**
-   * Return all the [Model.Contact]'s that belong to [rRef].
+   * Return all the [model.BaseContact]'s that belong to the reception
+   * reference [rRef].
    */
   Future<Iterable<model.ReceptionContact>> list(
       model.ReceptionReference rRef) async {

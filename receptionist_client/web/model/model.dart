@@ -324,7 +324,7 @@ abstract class UIModel {
   }
 
   /**
-   * Set tabindex="[index]" on [root].querySelectorAll('[tabindex]') elements.
+   * Set tabindex="[index]" on [_root].querySelectorAll(`[tabindex]`) elements.
    */
   void _setTabIndex(int index) {
     _root.querySelectorAll('[tabindex]').forEach((Element element) {

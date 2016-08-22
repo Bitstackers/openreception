@@ -124,7 +124,7 @@ class UIReceptionCalendar extends UIModel {
   }
 
   /**
-   * Return the first [ReceptionCalendarEntry]. Return empty entry if list is
+   * Return the first [model.CalendarEntry]. Return empty entry if list is
    * empty.
    */
   model.CalendarEntry get firstCalendarEntry {
@@ -137,8 +137,8 @@ class UIReceptionCalendar extends UIModel {
   }
 
   /**
-   * Return currently selected [ReceptionCalendarEntry].
-   * Return [ReceptionCalendarEntry.empty] if nothing is selected.
+   * Return currently selected [model.CalendarEntry].
+   * Return [model.CalendarEntry.empty] if nothing is selected.
    */
   model.CalendarEntry get selectedCalendarEntry {
     final LIElement selected = _list.querySelector('.selected');

@@ -145,7 +145,7 @@ class UIReceptionSelector extends UIModel {
   }
 
   /**
-   * Fires the selected [Reception].
+   * Fires the selected [model.Reception].
    */
   Stream<model.Reception> get onSelect => _bus.stream;
 
@@ -172,8 +172,8 @@ class UIReceptionSelector extends UIModel {
   }
 
   /**
-   * Fire a [Reception] on [_bus]. The [Reception] is constructed from JSON
-   * fonud in the data-object attribute of [li].
+   * Fire a [model.Reception] on [_bus]. The [model.Reception] is constructed
+   * from JSON found in the data-object attribute of [li].
    */
   Future _receptionSelectCallback(LIElement li) async {
     final int rid = int.parse(li.dataset['id']);
@@ -204,7 +204,7 @@ class UIReceptionSelector extends UIModel {
 
   /**
    * Remove selections, scroll to top and empty filter input and fire an empty
-   * [Reception].
+   * [model.Reception].
    */
   void resetFilter() {
     _filter.value = '';

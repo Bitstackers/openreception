@@ -1,4 +1,3 @@
-
 /*                  This file is part of OpenReception
                    Copyright (C) 2015-, BitStackers K/S
 
@@ -290,7 +289,7 @@ class UIContactSelector extends UIModel {
   /**
    * Returns the currently selected [Contact].
    *
-   * Return [Contact.none] if no [Contact] is selected.
+   * Return [model.ReceptionContact.empty()] if no [Contact] is selected.
    */
   model.ReceptionContact get selectedContact {
     LIElement li = _list.querySelector('.selected');

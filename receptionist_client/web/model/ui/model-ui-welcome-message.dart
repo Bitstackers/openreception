@@ -46,7 +46,7 @@ class UIWelcomeMessage extends UIModel {
   }
 
   /**
-   * Set the [Reception] greeting.
+   * Set the [model.Reception] greeting.
    */
   set greeting(String value) {
     _greeting.text = value;

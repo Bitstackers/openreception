@@ -241,7 +241,7 @@ class UIMessageCompose extends UIModel {
   Stream<MouseEvent> get onSend => sendButton.onClick;
 
   /**
-   * Return the Set of [ORModel.MessageRecipient]. May return the empty set.
+   * Return the Set of [model.MessageEndpoint]. May return the empty set.
    */
   Set<model.MessageEndpoint> get recipients {
     final String recipientsList = _recipientsList.dataset['recipients-list'];

@@ -296,10 +296,7 @@ void observers(
 }
 
 /**
- * Register the [View.ReceptionistclientDisaster] and
- * [View.ReceptionistclientLoading] app view objects.
- *
- * NOTE: This depends on [clientConfig] being set.
+ * Register the [view.ORCDisaster] and [view.ORCLoading] app view objects.
  */
 void registerDisasterAndLoadingViews(ui_model.AppClientState appState) {
   appDisaster = new view.ORCDisaster(appState, uiDisaster);
@@ -307,7 +304,7 @@ void registerDisasterAndLoadingViews(ui_model.AppClientState appState) {
 }
 
 /**
- * Register the [View.ReceptionistclientReady] app view object.
+ * Register the [view.ORCReady] app view object.
  * NOTE: This depends on [clientConfig] being set.
  */
 Future registerReadyView(

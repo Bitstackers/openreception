@@ -1,4 +1,3 @@
-
 /*                  This file is part of OpenReception
                    Copyright (C) 2015-, BitStackers K/S
 
@@ -45,7 +44,7 @@ class User {
   Future<model.User> get(int userID) => _user.get(userID);
 
   /**
-   * Get the [Model.UserStatus] for the current user.
+   * Get the [model.UserStatus] for the current user.
    */
   Future<model.UserStatus> getState(model.User user) async {
     try {

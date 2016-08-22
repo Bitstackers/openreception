@@ -1,4 +1,3 @@
-
 /*                  This file is part of OpenReception
                    Copyright (C) 2015-, BitStackers K/S
 
@@ -17,7 +16,8 @@ part of view;
 /**
  * Show the my call queue and registers keyboard shortcuts for call handling.
  *
- * This reloads the call queue list at a fixed refresh rate of [_refreshRate].
+ * TODO(TL): Clean this doc:
+ *   This reloads the call queue list at a fixed refresh rate of ...
  */
 class MyCallQueue extends ViewWidget {
   final ui_model.AppClientState _appState;
@@ -74,7 +74,8 @@ class MyCallQueue extends ViewWidget {
   /**
    * Tries to dial the [phoneNumber].
    *
-   * If this is called while [_appState.activeCall] is not [ORModel.Call.noCall]
+   * If this is called while `activeCall` of [_appState] is not
+   * [model.Call.noCall]
    * then mark both calls ready for transfer.
    */
   Future _call(model.PhoneNumber phoneNumber) async {
@@ -169,7 +170,7 @@ class MyCallQueue extends ViewWidget {
   }
 
   /**
-   * Add, remove, update the queue list, depending on the [event.call] state.
+   * Add, remove, update the queue list, depending on the `call` state of [event].
    */
   void _handleCallStateChanges(event.CallEvent event) {
     if (event.call.assignedTo != _appState.currentUser.id) {
@@ -201,7 +202,7 @@ class MyCallQueue extends ViewWidget {
 
   /**
    * Load the list of calls assigned to current user and not being transferred.
-   * Updates [_appState.activeCall] if any call is detected as being active.
+   * Updates `activeCall` of [_appState] if any call is detected as being active.
    */
   void _loadCallList() {
     bool isMine(model.Call call) =>

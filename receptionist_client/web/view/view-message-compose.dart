@@ -123,7 +123,7 @@ class MessageCompose extends ViewWidget {
 
   /**
    * If a contact is selected in [_contactSelector], then navigate to the
-   * calendar editor with [cmd] set.
+   * calendar editor with `cmd` set.
    */
   void _navigateToMessageTextArea() {
     _navigate.go(_myDestinationMessageBox);

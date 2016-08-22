@@ -171,8 +171,8 @@ class CalendarEditor extends ViewWidget {
   }
 
   /**
-   * Set the [_ui.authorStamp]. This is populated with data from the latest
-   * calendar entry change object for [entryId].
+   * Set the `authorStamp` of [_ui]. This is populated with data from the latest
+   * calendar entry change object for [entry].
    */
   Future _setAuthorStamp(model.CalendarEntry entry) async {
     model.User user;

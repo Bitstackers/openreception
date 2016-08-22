@@ -124,7 +124,7 @@ class UIContactCalendar extends UIModel {
   }
 
   /**
-   * Return the first [ContactCalendarEntry]. Return empty entry if list is
+   * Return the first [model.CalendarEntry]. Return empty entry if list is
    * empty.
    */
   model.CalendarEntry get firstCalendarEntry {
@@ -158,7 +158,7 @@ class UIContactCalendar extends UIModel {
   }
 
   /**
-   * Return currently selected [ContactCalendarEntry]. Return empty entry if
+   * Return currently selected [model.CalendarEntry]. Return empty entry if
    * nothing is selected.
    */
   model.CalendarEntry get selectedCalendarEntry {

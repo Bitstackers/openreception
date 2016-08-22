@@ -1,4 +1,3 @@
-
 /*                  This file is part of OpenReception
                    Copyright (C) 2015-, BitStackers K/S
 
@@ -104,8 +103,8 @@ class UIContactData extends UIModel {
   set commands(List<String> items) => _populateList(_commandsList, items);
 
   /**
-   * Populate widget with [cwfc.contact] data and mark tags according to the
-   * filter context.
+   * Populate widget with contact data from [cwfc] data and mark tags according
+   * to the filter context.
    */
   set contactWithFilterContext(ContactWithFilterContext cwfc) {
     if (cwfc.contact.isNotEmpty) {
@@ -268,7 +267,7 @@ class UIContactData extends UIModel {
   }
 
   /**
-   * Add [items] to the tags list.
+   * Extracts and adds tags from [cwfc] to the tags list.
    */
   set tags(ContactWithFilterContext cwfc) {
     final List<String> filterParts = new List<String>()

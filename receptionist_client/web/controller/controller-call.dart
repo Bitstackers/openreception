@@ -72,12 +72,12 @@ class Call {
   Stream<CallCommand> get commandStream => _command.stream;
 
   /**
-   * Tries to dial [phoneNumber] in the context of [reception] and [cRef].
-   *
-   * Setting [contextCallId] creates a reference between the newly created call and the given id.
+   * Tries to dial [phoneNumber] in the supplied [context] which sets reception id
+   * and contact id. The call id may also be also set and if set, creates a
+   * reference between the newly created call and the given id.
    */
-  Future<model.Call> dial(model.PhoneNumber phoneNumber,
-      model.OriginationContext context) async {
+  Future<model.Call> dial(
+      model.PhoneNumber phoneNumber, model.OriginationContext context) async {
     _log.info('Dialing ${phoneNumber.destination}.');
 
     _busy = true;

@@ -16,7 +16,8 @@ part of view;
 /**
  * Show the global call queue and registers keyboard shortcuts for call handling.
  *
- * This reloads the call queue list at a fixed refresh rate of [_refreshRate].
+ * TODO(TL): Clean this doc:
+ *   This reloads the call queue list at a fixed refresh rate of ...
  */
 class GlobalCallQueue extends ViewWidget {
   final ui_model.AppClientState _appState;
@@ -59,7 +60,8 @@ class GlobalCallQueue extends ViewWidget {
   }
 
   /**
-   * Add, remove, update the queue list, depending on the [call] state.
+   * Add, remove, update the queue list, depending on the state of `call`
+   * carried in [event].
    */
   void _handleCallStateChanges(event.CallEvent event) {
     final model.Call call = event.call;

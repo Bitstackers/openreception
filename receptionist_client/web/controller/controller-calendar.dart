@@ -26,14 +26,14 @@ class Calendar {
   Calendar(this._calendarStore, this._user);
 
   /**
-   * Return the latest entry change information for the [entryId] calendar entry.
+   * Return the latest entry change information for the [entry] calendar entry.
    */
   Future<Iterable<model.Commit>> calendarEntryChanges(
           model.CalendarEntry entry, model.Owner owner) =>
       _calendarStore.changes(owner, entry.id);
 
   /**
-   * Return the latest entry change information for the [entryId] calendar entry.
+   * Return the latest entry change information for the [entry] calendar entry.
    */
   Future<model.Commit> calendarEntryLatestChange(
           model.CalendarEntry entry, model.Owner owner) async =>

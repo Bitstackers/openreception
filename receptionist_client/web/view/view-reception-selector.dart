@@ -1,4 +1,3 @@
-
 /*                  This file is part of OpenReception
                    Copyright (C) 2015-, BitStackers K/S
 
@@ -68,7 +67,7 @@ class ReceptionSelector extends ViewWidget {
   }
 
   /**
-   * Return true if [call.receptionID] is not equal to the currently selected
+   * Return true if `receptionId` of [call] is not equal to the currently selected
    * reception.
    */
   bool _receptionMismatch(model.Call call) =>

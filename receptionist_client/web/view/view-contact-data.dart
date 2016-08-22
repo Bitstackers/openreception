@@ -58,7 +58,7 @@ class ContactData extends ViewWidget {
   }
 
   /**
-   * Clear the widget on null [Reception].
+   * Clear the widget on null [model.Reception].
    */
   void _clear(model.Reception reception) {
     if (reception.isEmpty) {

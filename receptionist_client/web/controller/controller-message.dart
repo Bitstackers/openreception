@@ -34,8 +34,7 @@ class Message {
   Future<model.Message> get(int messageID) => _store.get(messageID);
 
   /**
-   * Return an iterable containing [model.Message] according to the supplied
-   * [filter].
+   * Return an iterable containing [model.Message] taken on the supplied [day].
    */
   Future<Iterable<model.Message>> list(DateTime day) => _store.listDay(day);
 

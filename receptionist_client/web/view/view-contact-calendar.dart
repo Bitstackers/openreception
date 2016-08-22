@@ -58,7 +58,7 @@ class ContactCalendar extends ViewWidget {
   }
 
   /**
-   * Empty the [CalendarEvent] list on null [Reception].
+   * Empty the [model.CalendarEntry] list on when [model.Reception] is empty.
    */
   void _clear(model.Reception reception) {
     if (reception.isEmpty) {
