@@ -140,7 +140,7 @@ class UIMessageCompose extends UIModel {
   /**
    * Populate widget fields with [message].
    */
-  void set message(model.Message message) {
+  set message(model.Message message) {
     _callerNameInput.value = message.callerInfo.name;
     _companyNameInput.value = message.callerInfo.company;
     _landlineInput.value = message.callerInfo.phone;
@@ -160,7 +160,7 @@ class UIMessageCompose extends UIModel {
    *
    * Ignores whitespace only elements.
    */
-  void set messagePrerequisites(List<String> prerequisites) {
+  set messagePrerequisites(List<String> prerequisites) {
     _prerequisites.children.clear();
     prerequisites.removeWhere((String prereg) => prereg.trim().isEmpty);
 
@@ -257,7 +257,7 @@ class UIMessageCompose extends UIModel {
   /**
    * Add [recipients] to the recipients list.
    */
-  void set recipients(Set<model.MessageEndpoint> recipients) {
+  set recipients(Set<model.MessageEndpoint> recipients) {
     _showRecipientsText.hidden = true;
     _showNoRecipientsText.hidden = true;
 

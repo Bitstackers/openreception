@@ -27,8 +27,7 @@ class Notification {
   Bus<event.PeerState> _peerStateChangeBus = new Bus<event.PeerState>();
   Bus<event.ReceptionChange> _receptionChangeBus =
       new Bus<event.ReceptionChange>();
-  Bus<event.ContactChange> _contactChangeBus =
-      new Bus<event.ContactChange>();
+  Bus<event.ContactChange> _contactChangeBus = new Bus<event.ContactChange>();
   Bus<event.ReceptionData> _receptionDataChangeBus =
       new Bus<event.ReceptionData>();
 

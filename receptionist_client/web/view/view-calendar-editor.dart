@@ -65,10 +65,11 @@ class CalendarEditor extends ViewWidget {
    * Sets the entry owner.
    */
   void _activateMe(controller.Cmd cmd) {
-    if (_receptionSelector.selectedReception != model.Reception.noReception) {
+    if (_receptionSelector.selectedReception.id !=
+        model.Reception.noReception.id) {
       if (_receptionCalendar.isFocused) {
-        _entryOwner = new model.OwningReception(
-            _receptionSelector.selectedReception.id);
+        _entryOwner =
+            new model.OwningReception(_receptionSelector.selectedReception.id);
         _setup(controller.Widget.receptionCalendar, cmd);
       } else {
         _entryOwner = new model.OwningContact(
@@ -128,8 +129,8 @@ class CalendarEditor extends ViewWidget {
     _hotKeys.onCtrlK.listen((_) => _activateMe(controller.Cmd.create));
 
     _ui.onCancel.listen((MouseEvent _) => _close());
-    _ui.onDelete.listen((MouseEvent _) async => await _delete(_ui.loadedEntry));
-    _ui.onSave.listen((MouseEvent _) async => await _save(_ui.harvestedEntry));
+    _ui.onDelete.listen((MouseEvent _) => _delete(_ui.loadedEntry));
+    _ui.onSave.listen((MouseEvent _) => _save(_ui.harvestedEntry));
   }
 
   /**

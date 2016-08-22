@@ -48,7 +48,7 @@ class UIGlobalCallQueue extends UIModel {
   /**
    * Append [call] to the calls list.
    */
-  appendCall(model.Call call) {
+  void appendCall(model.Call call) {
     _list.children.add(_buildCallElement(call));
     _queueLengthUpdate();
   }

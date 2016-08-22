@@ -49,8 +49,7 @@ class Calendar {
   /**
    * Delete [entry] from the database.
    */
-  Future deleteCalendarEvent(
-          model.CalendarEntry entry, model.Owner owner) =>
+  Future deleteCalendarEvent(model.CalendarEntry entry, model.Owner owner) =>
       _calendarStore.remove(entry.id, owner, _user);
 
   /**

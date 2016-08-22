@@ -18,6 +18,7 @@ part of model;
  * limits all links to same origin, which does not work for us.
  */
 class _AllUriPolicy implements UriPolicy {
+  @override
   bool allowsUri(String _) => true;
 }
 
@@ -40,10 +41,14 @@ class UIReceptionMiniWiki extends UIModel {
     _observers();
   }
 
-  @override HtmlElement get _firstTabElement => _body;
-  @override HtmlElement get _focusElement => _body;
-  @override HtmlElement get _lastTabElement => _body;
-  @override HtmlElement get _root => _myRoot;
+  @override
+  HtmlElement get _firstTabElement => _body;
+  @override
+  HtmlElement get _focusElement => _body;
+  @override
+  HtmlElement get _lastTabElement => _body;
+  @override
+  HtmlElement get _root => _myRoot;
 
   DivElement get _body => _root.querySelector('.generic-widget-body');
 
@@ -60,7 +65,8 @@ class UIReceptionMiniWiki extends UIModel {
    */
   set miniWiki(String miniWiki) {
     if (miniWiki != null && miniWiki.isNotEmpty) {
-      _body.setInnerHtml(markdown.markdownToHtml(miniWiki), validator: _validator);
+      _body.setInnerHtml(markdown.markdownToHtml(miniWiki),
+          validator: _validator);
 
       // Lets make sure all links open up in a new tab/window.
       _body.querySelectorAll('a').forEach((Element a) {

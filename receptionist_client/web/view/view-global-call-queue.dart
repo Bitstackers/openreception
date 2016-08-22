@@ -45,11 +45,15 @@ class GlobalCallQueue extends ViewWidget {
     _observers();
   }
 
-  @override controller.Destination get _destination => _myDestination;
-  @override ui_model.UIGlobalCallQueue get _ui => _uiModel;
+  @override
+  controller.Destination get _destination => _myDestination;
+  @override
+  ui_model.UIGlobalCallQueue get _ui => _uiModel;
 
-  @override void _onBlur(controller.Destination _) {}
-  @override void _onFocus(controller.Destination _) {}
+  @override
+  void _onBlur(controller.Destination _) {}
+  @override
+  void _onFocus(controller.Destination _) {}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already

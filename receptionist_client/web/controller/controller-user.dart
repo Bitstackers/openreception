@@ -62,7 +62,8 @@ class User {
   /**
    * Set the user idle.
    */
-  Future<model.UserStatus> setIdle(model.User user) => _user.userStateReady(user.id);
+  Future<model.UserStatus> setIdle(model.User user) =>
+      _user.userStateReady(user.id);
 
   /**
    * Set the user logged out.
@@ -73,7 +74,8 @@ class User {
   /**
    * Set the user paused.
    */
-  Future<model.UserStatus> setPaused(model.User user) => _user.userStatePaused(user.id);
+  Future<model.UserStatus> setPaused(model.User user) =>
+      _user.userStatePaused(user.id);
 
   /**
    * Fetches a userStates of all users

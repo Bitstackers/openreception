@@ -243,16 +243,15 @@ class UIReceptionSelector extends UIModel {
   }
 
   /**
-   * Returns the currently selected [Reception].
+   * Returns the currently selected [model.Reception].
    *
-   * Return [Reception.empty] if no [Reception] is selected.
+   * Return [model.Reception.empty] if no [model.Reception] is selected.
    */
   model.ReceptionReference get selectedReception {
     LIElement li = _list.querySelector('.selected');
 
     if (li != null) {
-      return model.ReceptionReference
-          .decode(JSON.decode(li.dataset['object']));
+      return model.ReceptionReference.decode(JSON.decode(li.dataset['object']));
     } else {
       return const model.ReceptionReference.none();
     }

@@ -406,7 +406,7 @@ class _Simulation {
 
     _log.info('Outbound call is ready, performing transfer in 1 second');
 
-    _sleep(_oneSecond);
+    await _sleep(_oneSecond);
 
     if (_numLocalCalls < 2) {
       _log.info('Not enough calls to perform transfer');

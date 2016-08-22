@@ -57,41 +57,6 @@ class HotKeys {
   final Bus<html.KeyboardEvent> _numMult = new Bus<html.KeyboardEvent>();
   final Bus<html.KeyboardEvent> _numPlus = new Bus<html.KeyboardEvent>();
 
-  Stream<html.KeyboardEvent> get onAltA => _altA.stream;
-  Stream<html.KeyboardEvent> get onAltArrowDown => _altArrowDown.stream;
-  Stream<html.KeyboardEvent> get onAltArrowUp => _altArrowUp.stream;
-  Stream<html.KeyboardEvent> get onAltB => _altB.stream;
-  Stream<html.KeyboardEvent> get onAltC => _altC.stream;
-  Stream<html.KeyboardEvent> get onAltD => _altD.stream;
-  Stream<html.KeyboardEvent> get onAltE => _altE.stream;
-  Stream<html.KeyboardEvent> get onAltF => _altF.stream;
-  Stream<html.KeyboardEvent> get onAltH => _altH.stream;
-  Stream<html.KeyboardEvent> get onAltI => _altI.stream;
-  Stream<html.KeyboardEvent> get onAltK => _altK.stream;
-  Stream<html.KeyboardEvent> get onAltM => _altM.stream;
-  Stream<html.KeyboardEvent> get onAltQ => _altQ.stream;
-  Stream<html.KeyboardEvent> get onAltS => _altS.stream;
-  Stream<html.KeyboardEvent> get onAltSpace => _altSpace.stream;
-  Stream<html.KeyboardEvent> get onAltT => _altT.stream;
-  Stream<html.KeyboardEvent> get onAltV => _altV.stream;
-  Stream<html.KeyboardEvent> get onAltW => _altW.stream;
-  Stream<html.KeyboardEvent> get onAltX => _altX.stream;
-  Stream<html.KeyboardEvent> get onCtrlAltEnter => _ctrlAltEnter.stream;
-  Stream<html.KeyboardEvent> get onCtrlAltP => _ctrlAltP.stream;
-  Stream<html.KeyboardEvent> get onCtrlAltR => _ctrlAltR.stream;
-  Stream<html.KeyboardEvent> get onCtrlE => _ctrlE.stream;
-  Stream<html.KeyboardEvent> get onCtrlEsc => _ctrlEsc.stream;
-  Stream<html.KeyboardEvent> get onCtrlK => _ctrlK.stream;
-  Stream<html.KeyboardEvent> get onCtrlNumMinus => _ctrlNumMinus.stream;
-  Stream<html.KeyboardEvent> get onCtrlSpace => _ctrlSpace.stream;
-  Stream<html.KeyboardEvent> get onF1 => _f1.stream;
-  Stream<html.KeyboardEvent> get onF7 => _f7.stream;
-  Stream<html.KeyboardEvent> get onF8 => _f8.stream;
-  Stream<html.KeyboardEvent> get onF9 => _f9.stream;
-  Stream<html.KeyboardEvent> get onNumDiv => _numDiv.stream;
-  Stream<html.KeyboardEvent> get onNumMult => _numMult.stream;
-  Stream<html.KeyboardEvent> get onNumPlus => _numPlus.stream;
-
   /**
    * Internal constructor.
    */
@@ -145,6 +110,41 @@ class HotKeys {
     registerKeysPreventDefault(_keyDown, preventDefaultBindings);
   }
 
+  Stream<html.KeyboardEvent> get onAltA => _altA.stream;
+  Stream<html.KeyboardEvent> get onAltArrowDown => _altArrowDown.stream;
+  Stream<html.KeyboardEvent> get onAltArrowUp => _altArrowUp.stream;
+  Stream<html.KeyboardEvent> get onAltB => _altB.stream;
+  Stream<html.KeyboardEvent> get onAltC => _altC.stream;
+  Stream<html.KeyboardEvent> get onAltD => _altD.stream;
+  Stream<html.KeyboardEvent> get onAltE => _altE.stream;
+  Stream<html.KeyboardEvent> get onAltF => _altF.stream;
+  Stream<html.KeyboardEvent> get onAltH => _altH.stream;
+  Stream<html.KeyboardEvent> get onAltI => _altI.stream;
+  Stream<html.KeyboardEvent> get onAltK => _altK.stream;
+  Stream<html.KeyboardEvent> get onAltM => _altM.stream;
+  Stream<html.KeyboardEvent> get onAltQ => _altQ.stream;
+  Stream<html.KeyboardEvent> get onAltS => _altS.stream;
+  Stream<html.KeyboardEvent> get onAltSpace => _altSpace.stream;
+  Stream<html.KeyboardEvent> get onAltT => _altT.stream;
+  Stream<html.KeyboardEvent> get onAltV => _altV.stream;
+  Stream<html.KeyboardEvent> get onAltW => _altW.stream;
+  Stream<html.KeyboardEvent> get onAltX => _altX.stream;
+  Stream<html.KeyboardEvent> get onCtrlAltEnter => _ctrlAltEnter.stream;
+  Stream<html.KeyboardEvent> get onCtrlAltP => _ctrlAltP.stream;
+  Stream<html.KeyboardEvent> get onCtrlAltR => _ctrlAltR.stream;
+  Stream<html.KeyboardEvent> get onCtrlE => _ctrlE.stream;
+  Stream<html.KeyboardEvent> get onCtrlEsc => _ctrlEsc.stream;
+  Stream<html.KeyboardEvent> get onCtrlK => _ctrlK.stream;
+  Stream<html.KeyboardEvent> get onCtrlNumMinus => _ctrlNumMinus.stream;
+  Stream<html.KeyboardEvent> get onCtrlSpace => _ctrlSpace.stream;
+  Stream<html.KeyboardEvent> get onF1 => _f1.stream;
+  Stream<html.KeyboardEvent> get onF7 => _f7.stream;
+  Stream<html.KeyboardEvent> get onF8 => _f8.stream;
+  Stream<html.KeyboardEvent> get onF9 => _f9.stream;
+  Stream<html.KeyboardEvent> get onNumDiv => _numDiv.stream;
+  Stream<html.KeyboardEvent> get onNumMult => _numMult.stream;
+  Stream<html.KeyboardEvent> get onNumPlus => _numPlus.stream;
+
   /**
    * Activates Ctrl+a functionality.
    */
@@ -155,14 +155,14 @@ class HotKeys {
   /**
    * Deactivates Crtl+a functionality.
    */
-  deactivateCtrlA() {
+  void deactivateCtrlA() {
     _keyDown.register('Ctrl+a', (html.Event event) => event.preventDefault());
   }
 
   /**
    * Black hole for hotkey combos we don't want.
    */
-  _null(html.Event _) => null;
+  void _null(html.Event _) => null;
 
   /**
    * Register the [keyMap] keybindings to [keyboard].

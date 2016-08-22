@@ -350,8 +350,8 @@ class MyCallQueue extends ViewWidget {
   void unpark({model.Call call}) {
     if (!_callControllerBusy &&
         _appState.activeCall == model.Call.noCall &&
-        _ui.calls.any(
-            (model.Call call) => call.state == model.CallState.parked)) {
+        _ui.calls
+            .any((model.Call call) => call.state == model.CallState.parked)) {
       _busyCallController();
       final Future<model.Call> unparkCall = call != null
           ? _callController.pickup(call)

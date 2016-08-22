@@ -275,7 +275,7 @@ class UICalendarEditor extends UIModel {
 
     final bool toggle = !_inputFields.any(inputIsEmpty) &&
         !_inputFields.any(inputIsInvalid) &&
-        !_textArea.value.trim().isEmpty &&
+        _textArea.value.trim().isNotEmpty && // Prefer isNotEmpty over isEmpty
         !_textArea.validity.badInput &&
         _harvestStartDateTime.isBefore(_harvestStopDateTime);
 

@@ -44,7 +44,19 @@ StreamSubscription<Event> windowOnUnload;
 
 Uri get _appUri => Uri.parse(window.location.href);
 
-main() async {
+/// Verify that we support HTMl5 notifications
+void _html5Checks() {
+  if (Notification.supported) {
+    uiLoading.addLoadingMessage('HTMl5 notification support OK');
+    Notification
+        .requestPermission()
+        .then((String perm) => log.info('HTML5 permission $perm'));
+  } else {
+    log.shout('HTML5 notifications not supported.');
+  }
+}
+
+Future main() async {
   Uri configUri;
   if (_appUri.queryParameters.containsKey('config_server')) {
     configUri = Uri.parse(_appUri.queryParameters['config_server']);
@@ -78,15 +90,7 @@ main() async {
     Logger.root.level = Level.ALL;
     Logger.root.onRecord.listen(print);
 
-    /// Verify that we support HTMl5 notifications
-    if (Notification.supported) {
-      uiLoading.addLoadingMessage('HTMl5 notification support OK');
-      Notification
-          .requestPermission()
-          .then((String perm) => log.info('HTML5 permission $perm'));
-    } else {
-      log.shout('HTML5 notifications not supported.');
-    }
+    _html5Checks();
 
     /// Set the app language
     language = getLanguageMap(clientConfig.systemLanguage);
@@ -159,7 +163,7 @@ main() async {
         'Could not fully initialize application. Trying again in 10 seconds');
     log.shout(error, stackTrace);
     appState.changeState(ui_model.AppState.error);
-    restartAppInTenSeconds(_appUri);
+    await restartAppInTenSeconds(_appUri);
   }
 }
 
@@ -185,6 +189,9 @@ Future<model.ClientConfiguration> getClientConfiguration(Uri configUri) async {
     uiLoading.addLoadingMessage(msg);
     uiLoading.addLoadingMessage('Error: $error');
     await restartAppInTenSeconds(_appUri);
+
+    // Statement will never be reached as browser should have restarted.
+    return null;
   }
 }
 
@@ -376,11 +383,11 @@ Future registerReadyView(
  */
 Future restartAppInTenSeconds(Uri appUri) async {
   if (windowOnBeforeUnload != null) {
-    windowOnBeforeUnload.cancel();
+    await windowOnBeforeUnload.cancel();
   }
 
   if (windowOnUnload != null) {
-    windowOnUnload.cancel();
+    await windowOnUnload.cancel();
   }
 
   await new Future.delayed(new Duration(seconds: 10)).then((_) {

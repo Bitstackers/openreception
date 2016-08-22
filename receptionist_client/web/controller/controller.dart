@@ -46,5 +46,6 @@ class ControllerError implements Exception {
   final String message;
   const ControllerError([this.message = ""]);
 
+  @override
   String toString() => "ControllerError: $message";
 }

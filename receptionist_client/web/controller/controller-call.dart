@@ -22,6 +22,7 @@ enum CallCommand {
  * Is thrown when a [Call] object is busy talking to the server.
  */
 class BusyException implements Exception {
+  /// Exception error message.
   final String message;
 
   /**
@@ -29,6 +30,7 @@ class BusyException implements Exception {
    */
   const BusyException([this.message = ""]);
 
+  @override
   String toString() => "BusyException: $message";
 }
 
@@ -104,7 +106,7 @@ class Call {
   Future<model.Call> _firstParkedCall() async {
     final Iterable<model.Call> calls = await _service.callList();
 
-    return await calls.firstWhere(
+    return calls.firstWhere(
         (model.Call call) =>
             call.assignedTo == _appState.currentUser.id &&
             call.state == model.CallState.parked,

@@ -360,7 +360,7 @@ class UIMessageArchive extends UIModel {
   /**
    * Return true if we're in the process of loading messages.
    */
-  get loading => _loadMoreButton.disabled;
+  bool get loading => _loadMoreButton.disabled;
 
   /**
    * Move the [message] from the drafts list to the messages list and update the
@@ -452,8 +452,7 @@ class UIMessageArchive extends UIModel {
    * If [addToExisting] is true, the [list] is appended to the table, else the
    * table is cleared and [list] is set as its sole content.
    */
-  void setMessages(Iterable<model.Message> list,
-      {bool addToExisting: false}) {
+  void setMessages(Iterable<model.Message> list, {bool addToExisting: false}) {
     TableSectionElement _messagesTbody =
         _messagesTable.querySelector('tbody.messages-tbody');
     final List<TableRowElement> rows = new List<TableRowElement>();
@@ -495,8 +494,8 @@ class UIMessageArchive extends UIModel {
   /**
    * Setup the yes|no action confirmation box.
    */
-  void _yesNo(DivElement actionBox, DivElement yesNoBox,
-      model.Message message, Bus bus) {
+  void _yesNo(DivElement actionBox, DivElement yesNoBox, model.Message message,
+      Bus bus) {
     yesNoBox.children.addAll([
       new SpanElement()
         ..text = _langMap[Key.yes]

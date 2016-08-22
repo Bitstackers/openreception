@@ -18,13 +18,14 @@ enum AppState { loading, error, ready }
 class AppClientState {
   model.Call _activeCall = model.Call.noCall;
   final Bus<model.Call> _activeCallChangeBus = new Bus<model.Call>();
-  model.User _currentUser = new model.User.empty();
+
+  /// The currently logged in user.
+  model.User currentUser = new model.User.empty();
   final Logger _log = new Logger('$libraryName.AppClientState');
   final controller.Notification _notification;
   final Bus<AppState> _stateChange = new Bus<AppState>();
 
   model.OriginationContext _originationContext;
-  model.OriginationContext get originationContext => _originationContext;
 
   /**
    * Constructor.
@@ -32,6 +33,8 @@ class AppClientState {
   AppClientState(controller.Notification this._notification) {
     _observers();
   }
+
+  model.OriginationContext get originationContext => _originationContext;
 
   /**
    * Fires an ORModel.Call on pickup and hangup.
@@ -60,18 +63,6 @@ class AppClientState {
    */
   void changeState(AppState newState) {
     _stateChange.fire(newState);
-  }
-
-  /**
-   * Return the currently logged in user.
-   */
-  model.User get currentUser => _currentUser;
-
-  /**
-   * Set the currently logged in user.
-   */
-  set currentUser(model.User newUser) {
-    _currentUser = newUser;
   }
 
   /**

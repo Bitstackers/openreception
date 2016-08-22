@@ -107,10 +107,10 @@ final Map<String, Destination> _destinations = {
  * to the destination.
  */
 class Destination {
-  Context context = null;
-  Cmd cmd = null;
-  Destination from = null;
-  Widget widget = null;
+  Context context;
+  Cmd cmd;
+  Destination from;
+  Widget widget;
 
   /**
    * Constructor.
