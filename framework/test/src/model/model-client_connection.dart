@@ -13,15 +13,15 @@
 
 part of openreception.framework.test;
 
-void testModelClientConnection() {
+void _testModelClientConnection() {
   group('Model.ClientConnection', () {
-    test('buildObject', ModelClientConnection.buildObject);
-    test('serialization', ModelClientConnection.serialization);
-    test('deserialization', ModelClientConnection.deserialization);
+    test('buildObject', _ModelClientConnection.buildObject);
+    test('serialization', _ModelClientConnection.serialization);
+    test('deserialization', _ModelClientConnection.deserialization);
   });
 }
 
-abstract class ModelClientConnection {
+abstract class _ModelClientConnection {
   static void deserialization() {
     model.ClientConnection builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);

@@ -13,7 +13,7 @@
 
 part of openreception.framework.test;
 
-void testBus() {
+void _testBus() {
   test('async openreception.bus test', () async {
     final String testEvent = 'Foo!';
     Bus bus = new Bus<String>();

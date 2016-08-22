@@ -13,17 +13,17 @@
 
 part of openreception.framework.test;
 
-void testResourceCalendar() {
+void _testResourceCalendar() {
   group('Resource.Calendar', () {
-    test('changeList', ResourceCalendar.changeList);
-    test('changeListAll', ResourceCalendar.changeListAll);
-    test('single', ResourceCalendar.single);
-    test('listReception', ResourceCalendar.listReception);
-    test('listContact', ResourceCalendar.listContact);
+    test('changeList', _ResourceCalendar.changeList);
+    test('changeListAll', _ResourceCalendar.changeListAll);
+    test('single', _ResourceCalendar.single);
+    test('listReception', _ResourceCalendar.listReception);
+    test('listContact', _ResourceCalendar.listContact);
   });
 }
 
-abstract class ResourceCalendar {
+abstract class _ResourceCalendar {
   static final Uri _host = Uri.parse('http://localhost:4010');
   static final _owner = new model.OwningContact(2);
 

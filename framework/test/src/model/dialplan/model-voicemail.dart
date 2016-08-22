@@ -13,19 +13,19 @@
 
 part of openreception.framework.test;
 
-void testModelVoicemail() {
+void _testModelVoicemail() {
   group('Model.Voicemail', () {
-    test('deserialization', ModelVoicemail.deserialization);
-    test('serialization', ModelVoicemail.serialization);
-    test('buildObject', ModelVoicemail.buildObject);
-    test('multipleRecipients', ModelVoicemail.multipleRecipients);
+    test('deserialization', _ModelVoicemail.deserialization);
+    test('serialization', _ModelVoicemail.serialization);
+    test('buildObject', _ModelVoicemail.buildObject);
+    test('multipleRecipients', _ModelVoicemail.multipleRecipients);
   });
 }
 
 /**
 *
  */
-abstract class ModelVoicemail {
+abstract class _ModelVoicemail {
 /**
  *
  */

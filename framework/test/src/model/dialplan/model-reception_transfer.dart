@@ -13,21 +13,21 @@
 
 part of openreception.framework.test;
 
-void testModelReceptionTransfer() {
+void _testModelReceptionTransfer() {
   group('Model.ReceptionTransfer', () {
-    test('deserialization', ModelReceptionTransfer.deserialization);
+    test('deserialization', _ModelReceptionTransfer.deserialization);
 
-    test('serialization', ModelReceptionTransfer.serialization);
+    test('serialization', _ModelReceptionTransfer.serialization);
 
-    test('buildObject', ModelReceptionTransfer.buildObject);
-    test('parsing', ModelReceptionTransfer.parsing);
+    test('buildObject', _ModelReceptionTransfer.buildObject);
+    test('parsing', _ModelReceptionTransfer.parsing);
   });
 }
 
 /**
 *
  */
-abstract class ModelReceptionTransfer {
+abstract class _ModelReceptionTransfer {
 /**
  *
  */

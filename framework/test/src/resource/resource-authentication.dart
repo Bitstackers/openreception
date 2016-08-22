@@ -13,14 +13,14 @@
 
 part of openreception.framework.test;
 
-void testResourceAuthentication() {
+void _testResourceAuthentication() {
   group('Resource.Authentication', () {
-    test('userOf', ResourceAuthentication.userOf);
-    test('validate', ResourceAuthentication.validate);
+    test('userOf', _ResourceAuthentication.userOf);
+    test('validate', _ResourceAuthentication.validate);
   });
 }
 
-abstract class ResourceAuthentication {
+abstract class _ResourceAuthentication {
   static final Uri authServer = Uri.parse('http://localhost:4050');
 
   static void userOf() => expect(

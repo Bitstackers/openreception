@@ -13,16 +13,16 @@
 
 part of openreception.framework.test;
 
-void testModelUserStatus() {
+void _testModelUserStatus() {
   group('Model.Status', () {
-    test('deserialization', ModelUserStatus.deserialization);
-    test('serialization', ModelUserStatus.serialization);
-    test('buildObject', ModelUserStatus.buildObject);
+    test('deserialization', _ModelUserStatus.deserialization);
+    test('serialization', _ModelUserStatus.serialization);
+    test('buildObject', _ModelUserStatus.buildObject);
 //    test('stateChange', ModelUserStatus.stateChange);
   });
 }
 
-abstract class ModelUserStatus {
+abstract class _ModelUserStatus {
   /**
    * Merely asserts that no exceptions arise.
    */

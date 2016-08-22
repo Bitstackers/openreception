@@ -13,28 +13,19 @@
 
 part of openreception.framework.test;
 
-/**
- *
- */
-void testModelEnqueue() {
+void _testModelEnqueue() {
   group('Model.Enqueue', () {
     test('serializationDeserialization',
-        ModelEnqueue.serializationDeserialization);
+        _ModelEnqueue.serializationDeserialization);
 
-    test('serialization', ModelEnqueue.serialization);
+    test('serialization', _ModelEnqueue.serialization);
 
-    test('buildObject', ModelEnqueue.buildObject);
-    test('parse', ModelEnqueue.parse);
+    test('buildObject', _ModelEnqueue.buildObject);
+    test('parse', _ModelEnqueue.parse);
   });
 }
 
-/**
- *
- */
-abstract class ModelEnqueue {
-  /**
-   *
-   */
+abstract class _ModelEnqueue {
   static void serialization() {
     model.Enqueue builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);

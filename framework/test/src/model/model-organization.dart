@@ -13,15 +13,15 @@
 
 part of openreception.framework.test;
 
-void testModelOrganization() {
+void _testModelOrganization() {
   group('Model.Organization', () {
-    test('buildObject', ModelOrganization.buildObject);
-    test('serialization', ModelOrganization.serialization);
-    test('deserialization', ModelOrganization.deserialization);
+    test('buildObject', _ModelOrganization.buildObject);
+    test('serialization', _ModelOrganization.serialization);
+    test('deserialization', _ModelOrganization.deserialization);
   });
 }
 
-abstract class ModelOrganization {
+abstract class _ModelOrganization {
   /**
    * Merely asserts that no exceptions arise.
    */

@@ -13,25 +13,19 @@
 
 part of openreception.framework.test;
 
-/**
- *
- */
-void testModelNotify() {
+void _testModelNotify() {
   group('Model.Notify', () {
     test('serializationDeserialization',
-        ModelNotify.serializationDeserialization);
+        _ModelNotify.serializationDeserialization);
 
-    test('serialization', ModelNotify.serialization);
+    test('serialization', _ModelNotify.serialization);
 
-    test('buildObject', ModelNotify.buildObject);
-    test('parse', ModelNotify.parse);
+    test('buildObject', _ModelNotify.buildObject);
+    test('parse', _ModelNotify.parse);
   });
 }
 
-/**
- *
- */
-abstract class ModelNotify {
+abstract class _ModelNotify {
   /**
    *
    */

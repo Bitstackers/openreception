@@ -13,14 +13,14 @@
 
 part of openreception.framework.test;
 
-void testResourceEndpoint() {
+void _testResourceEndpoint() {
   group('Resource.Endpoint', () {
-    test('ofContact', ResourceEndpoint.ofContact);
-    test('single', ResourceEndpoint.single);
+    test('ofContact', _ResourceEndpoint.ofContact);
+    test('single', _ResourceEndpoint.single);
   });
 }
 
-abstract class ResourceEndpoint {
+abstract class _ResourceEndpoint {
   static final Uri endpointServer = Uri.parse('http://localhost:4010');
 
   static void ofContact() => expect(

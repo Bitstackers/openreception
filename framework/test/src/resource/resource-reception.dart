@@ -13,15 +13,15 @@
 
 part of openreception.framework.test;
 
-void testResourceReception() {
+void _testResourceReception() {
   group('Resource.Reception', () {
-    test('single', ResourceReception.single);
-    test('byExtension', ResourceReception.byExtension);
-    test('list', ResourceReception.list);
+    test('single', _ResourceReception.single);
+    test('byExtension', _ResourceReception.byExtension);
+    test('list', _ResourceReception.list);
   });
 }
 
-abstract class ResourceReception {
+abstract class _ResourceReception {
   static Uri receptionServer = Uri.parse('http://localhost:4000');
 
   static void single() => expect(resource.Reception.single(receptionServer, 1),

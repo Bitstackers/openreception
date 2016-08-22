@@ -13,16 +13,16 @@
 
 part of openreception.framework.test;
 
-void testEventMessageChange() {
+void _testEventMessageChange() {
   group('Event.MessageChange', () {
-    test('buildObject', EventMessageChange.buildObject);
-    test('serialization', EventMessageChange.serialization);
+    test('buildObject', _EventMessageChange.buildObject);
+    test('serialization', _EventMessageChange.serialization);
     test('serializationDeserialization',
-        EventMessageChange.serializationDeserialization);
+        _EventMessageChange.serializationDeserialization);
   });
 }
 
-abstract class EventMessageChange {
+abstract class _EventMessageChange {
   static void buildObject() {
     final int mid = 1;
     final int uid = 2;

@@ -13,20 +13,20 @@
 
 part of openreception.framework.test;
 
-void testModelNamedExtension() {
+void _testModelNamedExtension() {
   group('Model.NamedExtension', () {
-    test('deserialization', ModelNamedExtension.deserialization);
+    test('deserialization', _ModelNamedExtension.deserialization);
 
-    test('serialization', ModelNamedExtension.serialization);
+    test('serialization', _ModelNamedExtension.serialization);
 
-    test('buildObject', ModelNamedExtension.buildObject);
+    test('buildObject', _ModelNamedExtension.buildObject);
   });
 }
 
 /**
 *
  */
-abstract class ModelNamedExtension {
+abstract class _ModelNamedExtension {
 /**
  *
  */

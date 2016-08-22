@@ -13,24 +13,18 @@
 
 part of openreception.framework.test;
 
-/**
- *
- */
-void testModelIvrEntry() {
+void _testModelIvrEntry() {
   group('Model.IvrEntry', () {
-    test('parseUndefined', ModelIvrEntry.parseUndefined);
-    test('parseIvrReceptionTransfer', ModelIvrEntry.parseIvrReceptionTransfer);
-    test('parseSubmenu', ModelIvrEntry.parseSubmenu);
-    test('parseTopmenu', ModelIvrEntry.parseTopmenu);
-    test('parseIvrTransfer', ModelIvrEntry.parseIvrTransfer);
-    test('parseIvrVoicemail', ModelIvrEntry.parseIvrVoicemail);
+    test('parseUndefined', _ModelIvrEntry.parseUndefined);
+    test('parseIvrReceptionTransfer', _ModelIvrEntry.parseIvrReceptionTransfer);
+    test('parseSubmenu', _ModelIvrEntry.parseSubmenu);
+    test('parseTopmenu', _ModelIvrEntry.parseTopmenu);
+    test('parseIvrTransfer', _ModelIvrEntry.parseIvrTransfer);
+    test('parseIvrVoicemail', _ModelIvrEntry.parseIvrVoicemail);
   });
 }
 
-/**
- *
- */
-abstract class ModelIvrEntry {
+abstract class _ModelIvrEntry {
   /**
    *
    */

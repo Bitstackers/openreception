@@ -13,24 +13,24 @@
 
 part of openreception.framework.test;
 
-void testModelCall() {
+void _testModelCall() {
   group('Model.Call', () {
-    test('serialization', ModelCall.serialization);
-    test('deserialization', ModelCall.deserialization);
-    test('buildObject', ModelCall.buildObject);
-    test('callStateStream', ModelCall.callStateStream);
-    test('callStateUnknownToCreated', ModelCall.callStateUnknownToCreated);
-    test('callStateCreatedToRinging', ModelCall.callStateCreatedToRinging);
-    test('callStateParkToHangup', ModelCall.callStateParkToHangup);
-    test('callEventStream', ModelCall.callEventStream);
+    test('serialization', _ModelCall.serialization);
+    test('deserialization', _ModelCall.deserialization);
+    test('buildObject', _ModelCall.buildObject);
+    test('callStateStream', _ModelCall.callStateStream);
+    test('callStateUnknownToCreated', _ModelCall.callStateUnknownToCreated);
+    test('callStateCreatedToRinging', _ModelCall.callStateCreatedToRinging);
+    test('callStateParkToHangup', _ModelCall.callStateParkToHangup);
+    test('callEventStream', _ModelCall.callEventStream);
     test('callEventStreamUnparkFromHangup',
-        ModelCall.callEventStreamUnparkFromHangup);
+        _ModelCall.callEventStreamUnparkFromHangup);
     test('callEventStreamQueueLeaveFromHangup',
-        ModelCall.callEventStreamQueueLeaveFromHangup);
+        _ModelCall.callEventStreamQueueLeaveFromHangup);
   });
 }
 
-abstract class ModelCall {
+abstract class _ModelCall {
   /**
    * Merely asserts that no exceptions arise.
    */

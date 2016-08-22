@@ -13,15 +13,15 @@
 
 part of openreception.framework.test;
 
-void testResourceCDR() {
+void _testResourceCDR() {
   group('Resource.CDR', () {
-    test('checkpoint', ResourceCDR.checkpoint);
-    test('list', ResourceCDR.list);
-    test('baseUri', ResourceCDR.root);
+    test('checkpoint', _ResourceCDR.checkpoint);
+    test('list', _ResourceCDR.list);
+    test('baseUri', _ResourceCDR.root);
   });
 }
 
-abstract class ResourceCDR {
+abstract class _ResourceCDR {
   static final Uri _host = Uri.parse('http://localhost:4090');
 
   static void checkpoint() => expect(

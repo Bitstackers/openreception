@@ -16,11 +16,11 @@ part of openreception.framework.test;
 /**
  *
  */
-void testModelReceptionDialplan() {
+void _testModelReceptionDialplan() {
   group('Model.ReceptionDialplan', () {
-    test('buildObject', ModelReceptionDialplan.buildObject);
-    test('deserialization', ModelReceptionDialplan.deserialization);
-    test('serialization', ModelReceptionDialplan.serialization);
+    test('buildObject', _ModelReceptionDialplan.buildObject);
+    test('deserialization', _ModelReceptionDialplan.deserialization);
+    test('serialization', _ModelReceptionDialplan.serialization);
 
 //   test('buildObject (menu)', ModelReceptionDialplan.buildObjectMenu);
 //   test('serialization (menu)', ModelReceptionDialplan.serializationMenu);
@@ -31,7 +31,7 @@ void testModelReceptionDialplan() {
 /**
  *
  */
-abstract class ModelReceptionDialplan {
+abstract class _ModelReceptionDialplan {
   static void deserialization() {
     model.ReceptionDialplan builtObject = buildObject();
     model.ReceptionDialplan deserializedObject =

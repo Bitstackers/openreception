@@ -13,15 +13,15 @@
 
 part of openreception.framework.test;
 
-void testResourceMessage() {
+void _testResourceMessage() {
   group('Resource.Message', () {
-    test('singleMessage', ResourceMessage.singleMessage);
-    test('send', ResourceMessage.send);
-    test('list', ResourceMessage.list);
+    test('singleMessage', _ResourceMessage.singleMessage);
+    test('send', _ResourceMessage.send);
+    test('list', _ResourceMessage.list);
   });
 }
 
-abstract class ResourceMessage {
+abstract class _ResourceMessage {
   static Uri messageServer = Uri.parse('http://localhost:4040');
 
   static void singleMessage() => expect(

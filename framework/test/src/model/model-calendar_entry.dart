@@ -13,15 +13,15 @@
 
 part of openreception.framework.test;
 
-void testModelCalendarEntry() {
+void _testModelCalendarEntry() {
   group('Model.CalendarEntry', () {
-    test('deserialization', ModelCalendarEntry.deserialization);
-    test('serialization', ModelCalendarEntry.serialization);
-    test('buildObject', ModelCalendarEntry.buildObject);
+    test('deserialization', _ModelCalendarEntry.deserialization);
+    test('serialization', _ModelCalendarEntry.serialization);
+    test('buildObject', _ModelCalendarEntry.buildObject);
   });
 }
 
-abstract class ModelCalendarEntry {
+abstract class _ModelCalendarEntry {
   static void deserialization() {
     model.CalendarEntry builtObject = buildObject();
     model.CalendarEntry deserialized =

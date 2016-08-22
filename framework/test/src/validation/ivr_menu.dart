@@ -13,7 +13,7 @@
 
 part of openreception.framework.test.validation;
 
-void ivrMenuTests() {
+void _ivrMenuTests() {
   final String filename = 'somefile.wav';
 
   final String note = 'Just a test';

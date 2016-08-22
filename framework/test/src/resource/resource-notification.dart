@@ -13,18 +13,18 @@
 
 part of openreception.framework.test;
 
-void testResourceNotification() {
+void _testResourceNotification() {
   group('Resource.Notification', () {
-    test('socket', ResourceNotification.notifications);
-    test('socket (bad schema)', ResourceNotification.notificationsBadSchema);
-    test('send', ResourceNotification.send);
-    test('broadcast', ResourceNotification.broadcast);
-    test('clientConnection', ResourceNotification.clientConnection);
-    test('clientConnections', ResourceNotification.clientConnections);
+    test('socket', _ResourceNotification.notifications);
+    test('socket (bad schema)', _ResourceNotification.notificationsBadSchema);
+    test('send', _ResourceNotification.send);
+    test('broadcast', _ResourceNotification.broadcast);
+    test('clientConnection', _ResourceNotification.clientConnection);
+    test('clientConnections', _ResourceNotification.clientConnections);
   });
 }
 
-abstract class ResourceNotification {
+abstract class _ResourceNotification {
   static final Uri _notificationService = Uri.parse('http://localhost:4242');
   static final Uri _notificationSocket = Uri.parse('ws://localhost:4242');
 

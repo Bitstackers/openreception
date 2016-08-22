@@ -13,26 +13,26 @@
 
 part of openreception.framework.test;
 
-void testModelAction() {
+void _testModelAction() {
   group('Model.Action', () {
-    test('parseUndefined', ModelAction.parseUndefined);
-    test('parseTransfer', ModelAction.parseTransfer);
+    test('parseUndefined', _ModelAction.parseUndefined);
+    test('parseTransfer', _ModelAction.parseTransfer);
 
-    test('parseVoicemail', ModelAction.parseVoicemail);
-    test('parseEnqueue', ModelAction.parseEnqueue);
+    test('parseVoicemail', _ModelAction.parseVoicemail);
+    test('parseEnqueue', _ModelAction.parseEnqueue);
 
-    test('parseNotify', ModelAction.parseNotify);
-    test('parseRingtone', ModelAction.parseRingtone);
-    test('parsePlayback', ModelAction.parsePlayback);
-    test('parseReceptionTransfer', ModelAction.parseReceptionTransfer);
-    test('parseIvr', ModelAction.parseIvr);
+    test('parseNotify', _ModelAction.parseNotify);
+    test('parseRingtone', _ModelAction.parseRingtone);
+    test('parsePlayback', _ModelAction.parsePlayback);
+    test('parseReceptionTransfer', _ModelAction.parseReceptionTransfer);
+    test('parseIvr', _ModelAction.parseIvr);
   });
 }
 
 /**
  *
  */
-abstract class ModelAction {
+abstract class _ModelAction {
   /**
    *
    */

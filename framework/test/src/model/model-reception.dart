@@ -13,15 +13,15 @@
 
 part of openreception.framework.test;
 
-void testModelReception() {
+void _testModelReception() {
   group('Model.Reception', () {
-    test('deserialization', ModelReception.deserialization);
-    test('serialization', ModelReception.serialization);
-    test('buildObject', ModelReception.buildObject);
+    test('deserialization', _ModelReception.deserialization);
+    test('serialization', _ModelReception.serialization);
+    test('buildObject', _ModelReception.buildObject);
   });
 }
 
-abstract class ModelReception {
+abstract class _ModelReception {
   static void deserialization() {
     model.Reception builtObject = buildObject();
     model.Reception deserializedObject =

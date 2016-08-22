@@ -13,29 +13,23 @@
 
 part of openreception.framework.test;
 
-/**
- *
- */
-void testModelOpeningHour() {
+void _testModelOpeningHour() {
   group('Model.OpeningHour', () {
     test('serializationDeserialization',
-        ModelOpeningHour.serializationDeserialization);
+        _ModelOpeningHour.serializationDeserialization);
 
-    test('serialization', ModelOpeningHour.serialization);
+    test('serialization', _ModelOpeningHour.serialization);
 
-    test('buildObject', ModelOpeningHour.buildObject);
-    test('parse (single)', ModelOpeningHour.parseSingle);
+    test('buildObject', _ModelOpeningHour.buildObject);
+    test('parse (single)', _ModelOpeningHour.parseSingle);
     test('parse (single - FormatException)',
-        ModelOpeningHour.parseSingleFormatException);
-    test('parse (multiple)', ModelOpeningHour.parseMultiple);
-    test('printFormat', ModelOpeningHour.printFormat);
+        _ModelOpeningHour.parseSingleFormatException);
+    test('parse (multiple)', _ModelOpeningHour.parseMultiple);
+    test('printFormat', _ModelOpeningHour.printFormat);
   });
 }
 
-/**
- *
- */
-abstract class ModelOpeningHour {
+abstract class _ModelOpeningHour {
   /**
    *
    */

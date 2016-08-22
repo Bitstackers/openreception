@@ -13,15 +13,15 @@
 
 part of openreception.framework.test;
 
-void testModelPhoneNumber() {
+void _testModelPhoneNumber() {
   group('Model.PhoneNumber', () {
-    test('serialization', ModelPhoneNumber.serialization);
-    test('deserialization', ModelPhoneNumber.deserialization);
-    test('buildObject', ModelPhoneNumber.buildObject);
+    test('serialization', _ModelPhoneNumber.serialization);
+    test('deserialization', _ModelPhoneNumber.deserialization);
+    test('buildObject', _ModelPhoneNumber.buildObject);
   });
 }
 
-abstract class ModelPhoneNumber {
+abstract class _ModelPhoneNumber {
   /**
    * Merely asserts that no exceptions arise.
    */

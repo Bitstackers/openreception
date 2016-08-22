@@ -13,20 +13,20 @@
 
 part of openreception.framework.test;
 
-void testModelPeerAccount() {
+void _testModelPeerAccount() {
   group('Model.BaseContact', () {
-    test('deserialization', ModelPeerAccount.deserialization);
+    test('deserialization', _ModelPeerAccount.deserialization);
 
-    test('serialization', ModelPeerAccount.serialization);
+    test('serialization', _ModelPeerAccount.serialization);
 
-    test('buildObject', ModelPeerAccount.buildObject);
+    test('buildObject', _ModelPeerAccount.buildObject);
   });
 }
 
 /**
  *
  */
-abstract class ModelPeerAccount {
+abstract class _ModelPeerAccount {
   /**
    *
    */
@@ -42,7 +42,7 @@ abstract class ModelPeerAccount {
    *
    */
   static void deserialization() {
-    model.PeerAccount built = ModelPeerAccount.buildObject();
+    model.PeerAccount built = _ModelPeerAccount.buildObject();
     model.PeerAccount deserialized =
         model.PeerAccount.decode(JSON.decode(JSON.encode(built)));
 

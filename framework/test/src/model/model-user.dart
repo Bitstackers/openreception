@@ -13,17 +13,17 @@
 
 part of openreception.framework.test;
 
-void testModelUser() {
+void _testModelUser() {
   group('Model.User', () {
-    test('serialization', ModelUser.serialization);
+    test('serialization', _ModelUser.serialization);
 
-    test('deserialization', ModelUser.deserialization);
+    test('deserialization', _ModelUser.deserialization);
 
-    test('buildObject', ModelUser.buildObject);
+    test('buildObject', _ModelUser.buildObject);
   });
 }
 
-abstract class ModelUser {
+abstract class _ModelUser {
   static void serialization() {
     model.User builtObject = buildObject();
     String serializedString = JSON.encode(builtObject);

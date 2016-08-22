@@ -13,18 +13,18 @@
 
 part of openreception.framework.test;
 
-void testModelAgentStatistics() {
+void _testModelAgentStatistics() {
   group('Model.AgentStatistics', () {
     test('serializationDeserialization',
-        ModelAgentStatistics.serializationDeserialization);
+        _ModelAgentStatistics.serializationDeserialization);
 
-    test('serialization', ModelAgentStatistics.serialization);
+    test('serialization', _ModelAgentStatistics.serialization);
 
-    test('buildObject', ModelAgentStatistics.buildObject);
+    test('buildObject', _ModelAgentStatistics.buildObject);
   });
 }
 
-abstract class ModelAgentStatistics {
+abstract class _ModelAgentStatistics {
   static void serialization() {
     model.AgentStatistics builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);

@@ -13,21 +13,21 @@
 
 part of openreception.framework.test;
 
-void testResourceContact() {
+void _testResourceContact() {
   group('Resource.Contact', () {
-    test('list', ResourceContact.list);
-    test('single', ResourceContact.single);
-    test('singleByReception', ResourceContact.singleByReception);
-    test('receptions', ResourceContact.receptions);
-    test('organizations', ResourceContact.organizations);
-    test('listByReception', ResourceContact.listByReception);
+    test('list', _ResourceContact.list);
+    test('single', _ResourceContact.single);
+    test('singleByReception', _ResourceContact.singleByReception);
+    test('receptions', _ResourceContact.receptions);
+    test('organizations', _ResourceContact.organizations);
+    test('listByReception', _ResourceContact.listByReception);
 
-    test('colleagues', ResourceContact.colleagues);
-    test('organizationContacts', ResourceContact.organizationContacts);
+    test('colleagues', _ResourceContact.colleagues);
+    test('organizationContacts', _ResourceContact.organizationContacts);
   });
 }
 
-abstract class ResourceContact {
+abstract class _ResourceContact {
   static final Uri _host = Uri.parse('http://localhost:4010');
 
   static void receptions() => expect(resource.Contact.receptions(_host, 999),

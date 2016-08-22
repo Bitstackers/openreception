@@ -13,20 +13,20 @@
 
 part of openreception.framework.test;
 
-void testModelRingtone() {
+void _testModelRingtone() {
   group('Model.Ringtone', () {
-    test('serializationDeserialization', ModelRingtone.deserialization);
+    test('serializationDeserialization', _ModelRingtone.deserialization);
 
-    test('serialization', ModelRingtone.serialization);
+    test('serialization', _ModelRingtone.serialization);
 
-    test('buildObject', ModelRingtone.buildObject);
+    test('buildObject', _ModelRingtone.buildObject);
   });
 }
 
 /**
 *
  */
-abstract class ModelRingtone {
+abstract class _ModelRingtone {
 /**
  *
  */

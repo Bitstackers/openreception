@@ -13,15 +13,15 @@
 
 part of openreception.framework.test;
 
-void testModelCalendarCommit() {
+void _testModelCalendarCommit() {
   group('Model.CalendarCommit', () {
-    test('deserialization', ModelCalendarEntryChange.deserialization);
-    test('serialization', ModelCalendarEntryChange.serialization);
-    test('buildObject', ModelCalendarEntryChange.buildObject);
+    test('deserialization', _ModelCalendarEntryChange.deserialization);
+    test('serialization', _ModelCalendarEntryChange.serialization);
+    test('buildObject', _ModelCalendarEntryChange.buildObject);
   });
 }
 
-abstract class ModelCalendarEntryChange {
+abstract class _ModelCalendarEntryChange {
   /**
    *
    */

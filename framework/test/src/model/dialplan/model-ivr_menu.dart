@@ -13,24 +13,18 @@
 
 part of openreception.framework.test;
 
-/**
- *
- */
-void testModelIvrMenu() {
+void _testModelIvrMenu() {
   group('Model.IvrMenu', () {
     test('serializationDeserialization',
-        ModelIvrMenu.serializationDeserialization);
+        _ModelIvrMenu.serializationDeserialization);
 
-    test('serialization', ModelIvrMenu.serialization);
+    test('serialization', _ModelIvrMenu.serialization);
 
-    test('buildObject', ModelIvrMenu.buildObject);
+    test('buildObject', _ModelIvrMenu.buildObject);
   });
 }
 
-/**
- *
- */
-abstract class ModelIvrMenu {
+abstract class _ModelIvrMenu {
   /**
    *
    */

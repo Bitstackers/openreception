@@ -13,25 +13,19 @@
 
 part of openreception.framework.test;
 
-/**
- *
- */
-void testModelPlayback() {
+void _testModelPlayback() {
   group('Model.Playback', () {
     test('serializationDeserialization',
-        ModelPlayback.serializationDeserialization);
+        _ModelPlayback.serializationDeserialization);
 
-    test('serialization', ModelPlayback.serialization);
+    test('serialization', _ModelPlayback.serialization);
 
-    test('buildObject', ModelPlayback.buildObject);
-    test('parse', ModelPlayback.parse);
+    test('buildObject', _ModelPlayback.buildObject);
+    test('parse', _ModelPlayback.parse);
   });
 }
 
-/**
- *
- */
-abstract class ModelPlayback {
+abstract class _ModelPlayback {
   /**
    *
    */

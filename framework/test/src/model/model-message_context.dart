@@ -13,15 +13,15 @@
 
 part of openreception.framework.test;
 
-void testModelMessageContext() {
+void _testModelMessageContext() {
   group('Model.MessageContext', () {
-    test('buildObject', ModelMessageContext.buildObject);
-    test('deserialization', ModelMessageContext.deserialization);
-    test('serialization', ModelMessageContext.serialization);
+    test('buildObject', _ModelMessageContext.buildObject);
+    test('deserialization', _ModelMessageContext.deserialization);
+    test('serialization', _ModelMessageContext.serialization);
   });
 }
 
-abstract class ModelMessageContext {
+abstract class _ModelMessageContext {
   static void deserialization() {
     model.MessageContext obj = buildObject();
     model.MessageContext deserializedObj =

@@ -13,24 +13,18 @@
 
 part of openreception.framework.test;
 
-/**
- *
- */
-void testModelHourAction() {
+void _testModelHourAction() {
   group('Model.HourAction', () {
-    test('deserialization', HourAction.deserialization);
+    test('deserialization', _HourAction.deserialization);
 
-    test('serialization', HourAction.serialization);
+    test('serialization', _HourAction.serialization);
 
-    test('buildObject', HourAction.buildObject);
-    test('parse', HourAction.parse);
+    test('buildObject', _HourAction.buildObject);
+    test('parse', _HourAction.parse);
   });
 }
 
-/**
- *
- */
-abstract class HourAction {
+abstract class _HourAction {
   /**
    *
    */
@@ -74,7 +68,7 @@ abstract class HourAction {
         ..toDay = model.WeekDay.fri
         ..toHour = 16
     ];
-    final List<model.Action> actions = [ModelPlayback.buildObject()];
+    final List<model.Action> actions = [_ModelPlayback.buildObject()];
 
     model.HourAction builtObject = new model.HourAction()
       ..hours = openHours

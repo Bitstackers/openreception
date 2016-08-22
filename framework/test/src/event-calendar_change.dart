@@ -13,16 +13,16 @@
 
 part of openreception.framework.test;
 
-void testEventCalendarChange() {
+void _testEventCalendarChange() {
   group('Event.CalendarChangeEvent', () {
-    test('buildObject', EventCalendarChange.buildObject);
-    test('serialization', EventCalendarChange.serialization);
+    test('buildObject', _EventCalendarChange.buildObject);
+    test('serialization', _EventCalendarChange.serialization);
     test('serializationDeserialization',
-        EventCalendarChange.serializationDeserialization);
+        _EventCalendarChange.serializationDeserialization);
   });
 }
 
-abstract class EventCalendarChange {
+abstract class _EventCalendarChange {
   static event.CalendarChange buildObject() {
     final int eid = 1;
     final owner = new model.OwningContact(3);

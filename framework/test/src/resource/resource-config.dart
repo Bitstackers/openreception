@@ -13,13 +13,13 @@
 
 part of openreception.framework.test;
 
-void testResourceConfig() {
+void _testResourceConfig() {
   group('Resource.Config', () {
-    test('get', ResourceConfig.get);
+    test('get', _ResourceConfig.get);
   });
 }
 
-abstract class ResourceConfig {
+abstract class _ResourceConfig {
   static final Uri configServer = Uri.parse('http://localhost:4080');
 
   static void get() => expect(resource.Config.get(configServer),

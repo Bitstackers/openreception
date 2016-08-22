@@ -13,18 +13,18 @@
 
 part of openreception.framework.test;
 
-void testModelBaseContact() {
+void _testModelBaseContact() {
   group('Model.BaseContact', () {
     test('serializationDeserialization',
-        ModelBaseContact.serializationDeserialization);
+        _ModelBaseContact.serializationDeserialization);
 
-    test('serialization', ModelBaseContact.serialization);
+    test('serialization', _ModelBaseContact.serialization);
 
-    test('buildObject', ModelBaseContact.buildObject);
+    test('buildObject', _ModelBaseContact.buildObject);
   });
 }
 
-abstract class ModelBaseContact {
+abstract class _ModelBaseContact {
   static void serialization() {
     model.BaseContact builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);

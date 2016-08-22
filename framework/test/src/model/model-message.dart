@@ -13,16 +13,16 @@
 
 part of openreception.framework.test;
 
-void testModelMessage() {
+void _testModelMessage() {
   group('Model.Message', () {
-    test('deserialization', ModelMessage.deserialization);
-    test('serialization', ModelMessage.serialization);
-    test('buildObject', ModelMessage.buildObject);
-    test('messageFlag', ModelMessage.messageFlag);
+    test('deserialization', _ModelMessage.deserialization);
+    test('serialization', _ModelMessage.serialization);
+    test('buildObject', _ModelMessage.buildObject);
+    test('messageFlag', _ModelMessage.messageFlag);
   });
 }
 
-abstract class ModelMessage {
+abstract class _ModelMessage {
   static void deserialization() {
     model.Message obj = buildObject();
     model.Message deserializedObj =
@@ -67,7 +67,7 @@ abstract class ModelMessage {
       ..name = 'Ian Malcom'
       ..phone = 'Out of order';
 
-    final model.User sender = ModelUser.buildObject();
+    final model.User sender = _ModelUser.buildObject();
     final String callId = 'bad-ass-call';
 
     Set<model.MessageEndpoint> rlist = new Set<model.MessageEndpoint>()

@@ -13,22 +13,22 @@
 
 part of openreception.framework.test;
 
-void testDialplanTools() {
+void _testDialplanTools() {
   group('DialplanTools ReceptionDialplan xml validity', () {
-    test('empty', DialplanToolsReceptionDialplan.empty);
-    test('openActions', DialplanToolsReceptionDialplan.openActions);
-    test('closedActions', DialplanToolsReceptionDialplan.closedActions);
-    test('bigDialplan', DialplanToolsReceptionDialplan.bigDialplan);
+    test('empty', _DialplanToolsReceptionDialplan.empty);
+    test('openActions', _DialplanToolsReceptionDialplan.openActions);
+    test('closedActions', _DialplanToolsReceptionDialplan.closedActions);
+    test('bigDialplan', _DialplanToolsReceptionDialplan.bigDialplan);
   });
 
   group('DialplanTools IvrMenu xml validity', () {
-    test('empty', DialplanToolsIvrMenu.empty);
-    test('openActions', DialplanToolsIvrMenu.oneLevel);
-    test('closedActions', DialplanToolsIvrMenu.twoLevel);
+    test('empty', _DialplanToolsIvrMenu.empty);
+    test('openActions', _DialplanToolsIvrMenu.oneLevel);
+    test('closedActions', _DialplanToolsIvrMenu.twoLevel);
   });
 }
 
-class DialplanToolsReceptionDialplan {
+class _DialplanToolsReceptionDialplan {
   /**
    *
    */
@@ -111,7 +111,7 @@ class DialplanToolsReceptionDialplan {
   }
 }
 
-class DialplanToolsIvrMenu {
+class _DialplanToolsIvrMenu {
   /**
    *
    */

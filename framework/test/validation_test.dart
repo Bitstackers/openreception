@@ -22,6 +22,6 @@ part 'src/validation/ivr_menu.dart';
 part 'src/validation/origination_context.dart';
 
 void main() {
-  ivrMenuTests();
-  originationContextTests();
+  _ivrMenuTests();
+  _originationContextTests();
 }

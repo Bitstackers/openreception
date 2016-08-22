@@ -13,20 +13,20 @@
 
 part of openreception.framework.test;
 
-void testModelTransfer() {
+void _testModelTransfer() {
   group('Model.Voicemail', () {
-    test('deserialization', ModelTransfer.deserialization);
+    test('deserialization', _ModelTransfer.deserialization);
 
-    test('serialization', ModelTransfer.serialization);
+    test('serialization', _ModelTransfer.serialization);
 
-    test('buildObject', ModelTransfer.buildObject);
+    test('buildObject', _ModelTransfer.buildObject);
   });
 }
 
 /**
 *
  */
-abstract class ModelTransfer {
+abstract class _ModelTransfer {
 /**
  *
  */

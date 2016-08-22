@@ -13,21 +13,21 @@
 
 part of openreception.framework.test;
 
-void testEvent() {
+void _testEvent() {
   group('Event.parse', () {
-    test('contactChangeState', EventTests.contactChangeState);
-    test('organizationChangeState', EventTests.organizationChangeState);
-    test('receptionChangeState', EventTests.receptionChangeState);
-    test('receptionContactChangeState', EventTests.receptionContactChangeState);
-    test('messageChangeState', EventTests.messageChangeState);
-    test('calendarEntryState', EventTests.calendarEntryState);
-    test('userChange', EventTests.userChange);
-    test('callStateReload', EventTests.callStateReload);
-    test('callHangup', EventTests.callHangup);
+    test('contactChangeState', _EventTests.contactChangeState);
+    test('organizationChangeState', _EventTests.organizationChangeState);
+    test('receptionChangeState', _EventTests.receptionChangeState);
+    test('receptionContactChangeState', _EventTests.receptionContactChangeState);
+    test('messageChangeState', _EventTests.messageChangeState);
+    test('calendarEntryState', _EventTests.calendarEntryState);
+    test('userChange', _EventTests.userChange);
+    test('callStateReload', _EventTests.callStateReload);
+    test('callHangup', _EventTests.callHangup);
   });
 }
 
-abstract class EventTests {
+abstract class _EventTests {
   static void contactChangeState() {
     final int cid = 1;
 

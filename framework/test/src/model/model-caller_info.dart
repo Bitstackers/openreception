@@ -13,15 +13,15 @@
 
 part of openreception.framework.test;
 
-void testModelCallerInfo() {
+void _testModelCallerInfo() {
   group('Model.CallerInfo', () {
-    test('deserialization', ModelCallerInfo.deserialization);
-    test('serialization', ModelCallerInfo.serialization);
-    test('buildObject', ModelCallerInfo.buildObject);
+    test('deserialization', _ModelCallerInfo.deserialization);
+    test('serialization', _ModelCallerInfo.serialization);
+    test('buildObject', _ModelCallerInfo.buildObject);
   });
 }
 
-abstract class ModelCallerInfo {
+abstract class _ModelCallerInfo {
   static void deserialization() {
     model.CallerInfo obj = buildObject();
     model.CallerInfo deserializedObj =

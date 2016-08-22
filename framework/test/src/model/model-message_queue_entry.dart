@@ -13,17 +13,17 @@
 
 part of openreception.framework.test;
 
-void testModelMessageQueueEntry() {
+void _testModelMessageQueueEntry() {
   group('Model.MessageQueueEntry', () {
-    test('buildObject', ModelMessageQueueEntry.buildObject);
-    test('deserialization', ModelMessageQueueEntry.deserialization);
-    test('serialization', ModelMessageQueueEntry.serialization);
+    test('buildObject', _ModelMessageQueueEntry.buildObject);
+    test('deserialization', _ModelMessageQueueEntry.deserialization);
+    test('serialization', _ModelMessageQueueEntry.serialization);
 
-    test('handleRecipient', ModelMessageQueueEntry.handleRecipient);
+    test('handleRecipient', _ModelMessageQueueEntry.handleRecipient);
   });
 }
 
-abstract class ModelMessageQueueEntry {
+abstract class _ModelMessageQueueEntry {
   static void handleRecipient() {
     model.MessageQueueEntry obj = buildObject();
 
@@ -69,7 +69,7 @@ abstract class ModelMessageQueueEntry {
   static model.MessageQueueEntry buildObject() {
     final id = 666;
     //final lastTry = new DateTime.now();
-    final message = ModelMessage.buildObject();
+    final message = _ModelMessage.buildObject();
 
     final List<model.MessageEndpoint> recipients = [
       new model.MessageEndpoint.empty()

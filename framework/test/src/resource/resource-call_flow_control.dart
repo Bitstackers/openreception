@@ -13,27 +13,27 @@
 
 part of openreception.framework.test;
 
-void testResourceCallFlowControl() {
+void _testResourceCallFlowControl() {
   group('Resource.CallFlowControl', () {
-    test('stateReload', ResourceCallFlowControl.stateReload);
-    test('channelList', ResourceCallFlowControl.channelList);
-    test('peerList', ResourceCallFlowControl.peerList);
-    test('single', ResourceCallFlowControl.single);
-    test('pickup', ResourceCallFlowControl.pickup);
-    test('originate', ResourceCallFlowControl.originate);
-    test('park', ResourceCallFlowControl.park);
-    test('hangup', ResourceCallFlowControl.hangup);
-    test('transfer', ResourceCallFlowControl.transfer);
-    test('list', ResourceCallFlowControl.list);
+    test('stateReload', _ResourceCallFlowControl.stateReload);
+    test('channelList', _ResourceCallFlowControl.channelList);
+    test('peerList', _ResourceCallFlowControl.peerList);
+    test('single', _ResourceCallFlowControl.single);
+    test('pickup', _ResourceCallFlowControl.pickup);
+    test('originate', _ResourceCallFlowControl.originate);
+    test('park', _ResourceCallFlowControl.park);
+    test('hangup', _ResourceCallFlowControl.hangup);
+    test('transfer', _ResourceCallFlowControl.transfer);
+    test('list', _ResourceCallFlowControl.list);
 
-    test('activeRecordings', ResourceCallFlowControl.activeRecordings);
-    test('activeRecording', ResourceCallFlowControl.activeRecording);
-    test('agentStatistics', ResourceCallFlowControl.agentStatistics);
-    test('agentStatistic', ResourceCallFlowControl.agentStatistic);
+    test('activeRecordings', _ResourceCallFlowControl.activeRecordings);
+    test('activeRecording', _ResourceCallFlowControl.activeRecording);
+    test('agentStatistics', _ResourceCallFlowControl.agentStatistics);
+    test('agentStatistic', _ResourceCallFlowControl.agentStatistic);
   });
 }
 
-abstract class ResourceCallFlowControl {
+abstract class _ResourceCallFlowControl {
   static Uri callFlowControlUri = Uri.parse('http://localhost:4242');
 
   /**
