@@ -43,9 +43,6 @@ void _runReceptionTests() {
     test('update (invalid)', () => storeTest.Reception.updateInvalid(sa));
     test('remove', () => storeTest.Reception.remove(sa));
 
-    test('extension of', () => storeTest.Reception.extensionOf(sa));
-    test('by extension', () => storeTest.Reception.byExtension(sa));
-
     test('get', () => storeTest.Reception.existingReception(sa));
     test('get (not found)', () => storeTest.Reception.nonExistingReception(sa));
     test('list', () => storeTest.Reception.listReceptions(sa));

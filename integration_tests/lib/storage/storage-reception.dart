@@ -204,66 +204,6 @@ class Reception {
   }
 
   /**
-   * Test server behaviour when trying to aquire a reception event object that
-   * exists using its extension as key.
-   *
-   * The expected behaviour is that the server should return the
-   * Reception object.
-   */
-  static Future byExtension(ServiceAgent sa) async {
-    _log.info('byExtension test starting.');
-
-    final org = await sa.createsOrganization();
-    final rec = await sa.createsReception(org);
-
-    _log.info('Looking up extension of reception ');
-
-    final fetched = await sa.receptionStore.getByExtension(rec.dialplan);
-
-    expect(fetched.id != model.Reception.noId, isTrue);
-    expect(rec.addresses, equals(fetched.addresses));
-    expect(rec.alternateNames, equals(fetched.alternateNames));
-    expect(rec.attributes, equals(fetched.attributes));
-    expect(rec.bankingInformation, equals(fetched.bankingInformation));
-    expect(rec.customerTypes, equals(fetched.customerTypes));
-    expect(rec.emailAddresses, equals(fetched.emailAddresses));
-    expect(rec.dialplan, equals(fetched.dialplan));
-
-    expect(rec.greeting, equals(fetched.greeting));
-    expect(rec.handlingInstructions, equals(fetched.handlingInstructions));
-    expect(rec.openingHours, equals(fetched.openingHours));
-    expect(rec.otherData, equals(fetched.otherData));
-    expect(rec.product, equals(fetched.product));
-    expect(rec.salesMarketingHandling, equals(fetched.salesMarketingHandling));
-    expect(rec.shortGreeting, equals(fetched.shortGreeting));
-    expect(rec.phoneNumbers, equals(fetched.phoneNumbers));
-    expect(rec.vatNumbers, equals(fetched.vatNumbers));
-    expect(rec.websites, equals(fetched.websites));
-    expect(rec.name, equals(fetched.name));
-
-    _log.info('byExtension test done.');
-  }
-
-  /**
-   * Test server behaviour when trying to aquire the reception extenion of a
-   * reception that exists.
-   *
-   * The expected behaviour is that the server should return the the extension.
-   */
-  static Future extensionOf(ServiceAgent sa) async {
-    _log.info('extensionOf test starting.');
-    final org = await sa.createsOrganization();
-    final rec = await sa.createsReception(org);
-
-    _log.info('extensionOf: Looking up extension of reception ');
-
-    final String extension = await sa.receptionStore.extensionOf(rec.id);
-
-    expect(extension, rec.dialplan);
-    _log.info('extensionOf test done.');
-  }
-
-  /**
    *
    */
   static Future changeOnCreate(ServiceAgent sa) async {
