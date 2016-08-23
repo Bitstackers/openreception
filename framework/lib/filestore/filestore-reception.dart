@@ -154,30 +154,6 @@ class Reception implements storage.Reception {
    *
    */
   @override
-  Future<model.Reception> getByExtension(String extension) async {
-    final dirs = new Directory(path).listSync().where((fse) =>
-        isDirectory(fse) &&
-        new File(fse.path + '/reception.json').existsSync());
-
-    return dirs.map((FileSystemEntity fse) {
-      final reception = model.Reception.decode(JSON
-          .decode((new File(fse.path + '/reception.json')).readAsStringSync()));
-      return reception;
-    }).firstWhere((rec) => rec.dialplan == extension,
-        orElse: () => throw new storage.NotFound(
-            'No reception with dialplan $extension'));
-  }
-
-  /**
-   *
-   */
-  @override
-  Future<String> extensionOf(int id) async => (await get(id)).dialplan;
-
-  /**
-   *
-   */
-  @override
   Future<Iterable<model.ReceptionReference>> list() async {
     final dirs = new Directory(path).listSync().where((fse) =>
         isDirectory(fse) &&

@@ -207,31 +207,13 @@ class ReceptionCache {
     });
   }
 
-  /**
-   *
-   */
-  Future<List<int>> getByExtension(String extension) async {
-    if (!_extensionToRid.containsKey(extension)) {
-      final model.Reception r = await _receptionStore.getByExtension(extension);
-      _receptionCache[r.id] = serializeAndCompressObject(r);
-      _extensionToRid[extension] = r.id;
-    }
-
-    final int rid = _extensionToRid[extension];
-
-    try {
-      return get(rid);
-    } on storage.NotFound catch (e) {
-      /// Clear out the orphan key
-      _extensionToRid.remove(extension);
-
-      throw e;
-    }
-  }
-
-  /**
-   *
-   */
+  /// Retrieve the qzip-compression and serialized [model.Reception] with
+  /// ID [rid].
+  ///
+  /// Throws a [NotFound] exception if the reception is neither found in the
+  /// cache, nor the filestore.
+  /// Will retrieve and cache reception object from the store, if not found
+  /// in the cache.
   Future<List<int>> get(int rid) async {
     final int key = rid;
 
@@ -244,25 +226,11 @@ class ReceptionCache {
     return _receptionCache[key];
   }
 
-  /**
-   *
-   */
   void remove(int rid) {
     _log.finest('Removing key $rid from cache');
     _receptionCache.remove(rid);
   }
 
-  /**
-   *
-   */
-  void removeExtension(String extension) {
-    _log.finest('Removing key $extension from cache');
-    _extensionToRid.remove(extension);
-  }
-
-  /**
-   *
-   */
   Future<List<int>> list() async {
     if (_receptionList.isEmpty) {
       _log.finest('No reception list found in cache. Looking one up.');

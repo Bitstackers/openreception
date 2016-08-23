@@ -28,21 +28,6 @@ abstract class Reception {
    */
   Future<model.Reception> get(int rid);
 
-  /**
-   *
-   */
-  @deprecated
-  Future<model.Reception> getByExtension(String extension);
-
-  /**
-   *
-   */
-  @deprecated
-  Future<String> extensionOf(int rid);
-
-  /**
-   *
-   */
   Future<Iterable<model.ReceptionReference>> list();
 
   /**

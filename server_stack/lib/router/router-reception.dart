@@ -84,8 +84,6 @@ class Reception {
       ..post('/reception', reception.create)
       ..get('/reception/history', reception.history)
       ..get('/reception/{rid}', reception.get)
-      ..get('/reception/extension/{exten}', reception.getByExtension)
-      ..get('/reception/{rid}/extension', reception.extensionOf)
       ..put('/reception/{rid}', reception.update)
       ..delete('/reception/{rid}', reception.remove)
       ..get('/reception/{rid}/history', reception.objectHistory)

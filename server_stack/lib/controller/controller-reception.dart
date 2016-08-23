@@ -49,40 +49,6 @@ class Reception {
   /**
    *
    */
-  Future<shelf.Response> getByExtension(shelf.Request request) async {
-    final String exten = shelf_route.getPathParameter(request, 'exten');
-
-    try {
-      final r = await _cache.getByExtension(exten);
-      return okGzip(new Stream.fromIterable([r]));
-    } on storage.NotFound {
-      return notFoundJson({
-        'description': 'No reception '
-            'found on extension extension'
-      });
-    }
-  }
-
-  /**
-   *
-   */
-  Future<shelf.Response> extensionOf(shelf.Request request) async {
-    final int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
-
-    try {
-      final model.Reception rec = await _rStore.get(rid);
-      return ok(rec.dialplan);
-    } on storage.NotFound {
-      return notFoundJson({
-        'description': 'No reception '
-            'found with ID $rid'
-      });
-    }
-  }
-
-  /**
-   *
-   */
   Future<shelf.Response> get(shelf.Request request) async {
     final int rid = int.parse(shelf_route.getPathParameter(request, 'rid'));
 
@@ -122,7 +88,6 @@ class Reception {
 
     final rRef = await _rStore.create(reception, creator);
 
-    _cache.removeExtension(reception.dialplan);
     _cache.emptyList();
 
     _notification
@@ -161,7 +126,6 @@ class Reception {
       final rRef = await _rStore.update(reception, modifier);
 
       _cache.remove(rRef.id);
-      _cache.removeExtension(reception.dialplan);
       _cache.emptyList();
 
       _notification.broadcastEvent(
