@@ -76,15 +76,14 @@ Future main(args) async {
         .map((_) async => sa.createsReception(await randomChoice(orgs)))
         .toList();
 
-    List rCons = new List(40)
+    new List(40)
         .map((_) async => sa.addsContactToReception(
             await sa.createsContact(), await randomChoice(recs)))
         .toList();
 
-    List rdps = new List(10)
-        .map((_) async => await sa.createsDialplan(mustBeValid: true));
+    new List(10).map((_) async => await sa.createsDialplan(mustBeValid: true));
 
-    List ivrs = new List(10).map((_) async => await sa.createsIvrMenu());
+    new List(10).map((_) async => await sa.createsIvrMenu());
   }
 
   final authserver = env.requestAuthserverProcess();
