@@ -278,24 +278,24 @@ Future go(
     Logger log) async {
   try {
     final List<FileSystemEntity> files = recordingsDirectory.listSync();
-    List<ORModel.ActiveRecording> recordings =
+    List<ORModel.ActiveRecording> activeRecordings =
         new List<ORModel.ActiveRecording>();
 
     files.removeWhere((file) => file is Directory);
 
     if (files.isNotEmpty) {
-      recordings = await getRecordings();
+      activeRecordings = await getRecordings();
     }
 
     log.info('go() found ${files.length} files in ${recordingsDirectory}');
-    log.info('go() found ${recordings.length} ongoing recordings');
+    log.info('go() found ${activeRecordings.length} ongoing recordings');
 
     if (files.length > 500) {
       log.severe(
           'go() suspiciously many files found in ${recordingsDirectory.path}');
     }
 
-    await upload(driveApi, files, recordings, allParent, agentParent,
+    await upload(driveApi, files, activeRecordings, allParent, agentParent,
         receptionParent, log);
   } catch (error) {
     log.severe('go() failed with ${error}');
@@ -541,6 +541,8 @@ Logger setupLogging() {
  * This calls itself recursively as long as there are files left in the [files]
  * list. One file is removed from the list on each call to [upload].
  *
+ * Exits drvupld if uploading a file takes more than 60 seconds.
+ *
  * Does not throw. Logs errors to warning and severe.
  */
 Future upload(
@@ -553,23 +555,40 @@ Future upload(
     Logger log) async {
   File file;
 
-  try {
-    if (files.isNotEmpty) {
-      file = files.removeLast();
-      if (file is Directory) {
-        return;
-      }
-    } else {
+  if (files.isNotEmpty) {
+    file = files.removeLast();
+    if (file is Directory) {
       return;
     }
+  } else {
+    return;
+  }
 
+  final String filename = path.basename(file.path);
+
+  int monitorCounter = 0;
+  final Timer periodic = new Timer.periodic(new Duration(seconds: 10), (t) {
+    monitorCounter++;
+    log.info('upload() ${monitorCounter * 10} seconds passed since we began'
+        ' processing $filename');
+  });
+
+  final Timer timeout = new Timer(new Duration(seconds: 300), () {
+    log.severe(
+        'upload() timeout - exiting drvupld due to apparent Google Drive API'
+        ' failure while uploading $filename');
+    exit(1);
+  });
+
+  try {
+    log.info('upload() start processing $filename');
     final String channelId = harvestChannelId(file);
     if (recordings.any((ORModel.ActiveRecording recording) =>
         recording.agentChannel == channelId)) {
       throw new ActiveRecordingException(channelId);
     } else {
       log.info(
-          'upload() ${channelId} not recording. ${path.basename(file.path)} ready for upload');
+          'upload() ${channelId} not recording. $filename ready for upload');
     }
 
     final drive.Media media =
@@ -578,7 +597,7 @@ Future upload(
 
     if (await exists(driveApi, allFolder, nameParts, log)) {
       log.warning(
-          'upload() ${file.path} seems to already be uploaded. Will not upload again');
+          'upload() $filename seems to already be uploaded. Will not upload again');
     } else {
       final drive.File driveFile = new drive.File()
         ..title = nameParts.titleASCIIOnly()
@@ -630,13 +649,15 @@ Future upload(
     log.info('upload() ${files.length} files to go');
   } on HarvestException catch (error) {
     log.warning(
-        'upload() ${path.basename(file.path)} - harvesting NameParts failed with ${error}');
+        'upload() $filename - harvesting NameParts failed with ${error}');
   } on ActiveRecordingException catch (_) {
-    log.info(
-        'upload() ${path.basename(file.path)} is still recording. Ignoring.');
+    log.info('upload() $filename is still recording. Ignoring.');
   } catch (error) {
     log.severe('upload() failed with ${error}');
   }
+
+  periodic.cancel();
+  timeout.cancel();
 
   await upload(driveApi, files, recordings, allFolder, agentFolder,
       receptionFolder, log);
