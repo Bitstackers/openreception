@@ -13,44 +13,41 @@
 
 part of openreception.framework.storage;
 
+/// Storage interface for persistent storage of [model.User] objects.
 abstract class User {
-  /**
-   *
-   */
+  /// Retrive a previously stored [model.User] identified by [uid].
   Future<model.User> get(int uid);
 
-  /**
-   *
-   */
+  /// Retrive a previously stored [model.User] with [identity].
   Future<model.User> getByIdentity(String identity);
 
-  /**
-   *
-   */
+  /// Retrieve a list of all available groups of the system.
   Future<Iterable<String>> groups();
 
-  /**
-   *
-   */
+  /// Retrieve a list of [model.UserReference] to all available users in
+  /// the store.
   Future<Iterable<model.UserReference>> list();
 
-  /**
-   *
-   */
+  /// Creates and stores a new [model.User] object persistently using [user] data.
+  ///
+  /// Returns a [model.UserReference] containing the ID of the newly created
+  /// [model.User] object. The [modifier] is required for traceability of
+  /// who performed the creation.
   Future<model.UserReference> create(model.User user, model.User modifier);
 
-  /**
-   *
-   */
+  /// Updates the previously stored [model.User] object with data
+  /// from [user].
+  ///
+  /// The ID in [user] must be valid and exist in the store, or a [NotFound]
+  /// exception is thrown.
   Future<model.UserReference> update(model.User user, model.User modifier);
 
-  /**
-   *
-   */
+  /// Permanently removes the previously stored [model.User] object identified
+  /// by [uid].
+  ///
+  /// The [modifier] is required for traceability of who performed the deletion.
   Future remove(int uid, model.User modifier);
 
-  /**
-   *
-   */
+  /// List user object changes for the store, optionally for a single [uid].
   Future<Iterable<model.Commit>> changes([int uid]);
 }

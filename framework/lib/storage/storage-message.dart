@@ -13,44 +13,38 @@
 
 part of openreception.framework.storage;
 
+/// Storage interface for persistent storage of [model.Message] objects.
 abstract class Message {
-  /**
-   *
-   */
+  /// Retrive a previously stored [model.Message] identified by [mid].
   Future<model.Message> get(int mid);
 
-  /**
-   *
-   */
   Future<Iterable<model.Message>> getByIds(Iterable<int> ids);
 
-  /**
-   *
-   */
   Future<Iterable<model.Message>> listDay(DateTime day);
 
-  /**
-   *
-   */
   Future<Iterable<model.Message>> listDrafts();
 
-  /**
-   *
-   */
+  /// Creates and stores a new [model.Message] object persistently
+  /// using [message] data.
+  ///
+  /// Returns a [model.Message] containing the ID of the newly created
+  /// [model.Message] object. The [modifier] is required for traceability of
+  /// who performed the creation.
   Future<model.Message> create(model.Message message, model.User modifier);
 
-  /**
-   *
-   */
+  /// Updates the previously stored [model.Message] object with data
+  /// from [message].
+  ///
+  /// The ID in [message] must be valid and exist in the store, or a [NotFound]
+  /// exception is thrown.
   Future<model.Message> update(model.Message message, model.User modifier);
 
-  /**
-   *
-   */
+  /// Permanently removes the previously stored [model.Message] object identified
+  /// by [mid].
+  ///
+  /// The [modifier] is required for traceability of who performed the deletion.
   Future remove(int mid, model.User modifier);
 
-  /**
-   *
-   */
+  /// List message object changes for the store, optionally for a single [mid].
   Future<Iterable<model.Commit>> changes([int mid]);
 }

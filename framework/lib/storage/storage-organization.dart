@@ -13,46 +13,43 @@
 
 part of openreception.framework.storage;
 
+/// Storage interface for persistent storage of [model.Organization] objects.
 abstract class Organization {
-  /**
-   *
-   */
   Future<Iterable<model.BaseContact>> contacts(int oid);
 
-  /**
-   *
-   */
+  /// Creates and stores a new [model.Organization] object persistently
+  /// using [organization] data.
+  ///
+  /// Returns a [model.OrganizationReference] containing the ID of the newly
+  /// created [model.Organization] object.
+  /// The [modifier] is required for traceability of who performed the creation.
   Future<model.OrganizationReference> create(
       model.Organization organization, model.User modifier);
 
-  /**
-   *
-   */
+  /// Retrive a previously stored [model.Organization] identified by [oid].
   Future<model.Organization> get(int oid);
 
-  /**
-   *
-   */
+  /// Retrieve a list of [model.OrganizationReference] to all available
+  /// organization in the store.
   Future<Iterable<model.OrganizationReference>> list();
 
-  /**
-   *
-   */
+  /// Permanently removes the previously stored [model.Organization] object
+  /// identified by [oid].
+  ///
+  /// The [modifier] is required for traceability of who performed the deletion.
   Future remove(int oid, model.User modifier);
 
-  /**
-   *
-   */
+  /// Updates the previously stored [model.Organization] object with data
+  /// from [organization].
+  ///
+  /// The ID in [organization] must be valid and exist in the store, or
+  /// a [NotFound] exception is thrown.
   Future<model.OrganizationReference> update(
       model.Organization organization, model.User modifier);
 
-  /**
-   *
-   */
   Future<Iterable<model.ReceptionReference>> receptions(int oid);
 
-  /**
-   *
-   */
+  /// List organization object changes for the store, optionally for a
+  /// single [oid].
   Future<Iterable<model.Commit>> changes([int oid]);
 }

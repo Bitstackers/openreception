@@ -13,36 +13,38 @@
 
 part of openreception.framework.storage;
 
-/**
- *
- */
+/// Storage interface for persistent storage of [model.Reception] objects.
 abstract class Reception {
-  /**
-   *
-   */
+  /// Creates and stores a new [model.Reception] object persistently
+  /// using [reception] data.
+  ///
+  /// Returns a [model.ReceptionReference] containing the ID of the newly created
+  /// [model.Reception] object. The [modifier] is required for traceability of
+  /// who performed the creation.
   Future<model.ReceptionReference> create(
       model.Reception reception, model.User modifier);
 
-  /**
-   *
-   */
+  /// Retrive a previously stored [model.Reception] identified by [rid].
   Future<model.Reception> get(int rid);
 
+  /// Retrieve a list of [model.ReceptionReference] to all available receptions
+  /// in the store.
   Future<Iterable<model.ReceptionReference>> list();
 
-  /**
-   *
-   */
+  /// Permanently removes the previously stored [model.Reception] object
+  /// identified by [rid].
+  ///
+  /// The [modifier] is required for traceability of who performed the deletion.
   Future remove(int rid, model.User modifier);
 
-  /**
-   *
-   */
+  /// Updates the previously stored [model.Reception] object with data
+  /// from [reception].
+  ///
+  /// The ID in [reception] must be valid and exist in the store, or a [NotFound]
+  /// exception is thrown.
   Future<model.ReceptionReference> update(
       model.Reception reception, model.User modifier);
 
-  /**
-   *
-   */
+  /// List reception object changes for the store, optionally for a single [rid].
   Future<Iterable<model.Commit>> changes([int rid]);
 }

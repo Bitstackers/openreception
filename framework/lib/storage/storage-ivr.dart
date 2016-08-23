@@ -13,19 +13,36 @@
 
 part of openreception.framework.storage;
 
+/// Storage interface for persistent storage of [model.IvrMenu] objects.
 abstract class Ivr {
-  Future<model.IvrMenu> create(model.IvrMenu menu, model.User user);
+  /// Creates and stores a new [model.IvrMenu] object persistently
+  /// using [menu] data.
+  ///
+  /// Returns a [model.IvrMenu] containing the ID of the newly created
+  /// [model.IvrMenu] object. The [modifier] is required for traceability of
+  /// who performed the creation.
+  Future<model.IvrMenu> create(model.IvrMenu menu, model.User modifier);
 
+  /// Retrive a previously stored [model.IvrMenu] identified by [menuName].
   Future<model.IvrMenu> get(String menuName);
 
+  /// Retrieve a list of [model.IvrMenu] objects in the store.
   Future<Iterable<model.IvrMenu>> list();
 
-  Future<model.IvrMenu> update(model.IvrMenu menu, model.User user);
+  /// Updates the previously stored [model.IvrMenu] object with data
+  /// from [menu].
+  ///
+  /// The ID in [menu] must be valid and exist in the store, or a [NotFound]
+  /// exception is thrown.
+  Future<model.IvrMenu> update(model.IvrMenu menu, model.User modifier);
 
-  Future remove(String menuName, model.User user);
+  /// Permanently removes the previously stored [model.IvrMenu] object identified
+  /// by [menuName].
+  ///
+  /// The [modifier] is required for traceability of who performed the deletion.
+  Future remove(String menuName, model.User modifier);
 
-  /**
-   *
-   */
+  /// List IVR menu object changes for the store, optionally for a
+  /// single [menuName].
   Future<Iterable<model.Commit>> changes([String menuName]);
 }

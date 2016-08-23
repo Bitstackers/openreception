@@ -13,24 +13,13 @@
 
 part of openreception.framework.storage;
 
+/// Storage interface for persistent storage of [model.MessageQueueEntry] objects.
 abstract class MessageQueue {
-  /**
-   *
-   */
   Future<model.MessageQueueEntry> enqueue(model.Message message);
 
-  /**
-   *
-   */
   Future update(model.MessageQueueEntry queueItem);
 
-  /**
-   *
-   */
   Future remove(int mqid);
 
-  /**
-   *
-   */
   Future<Iterable<model.MessageQueueEntry>> list();
 }

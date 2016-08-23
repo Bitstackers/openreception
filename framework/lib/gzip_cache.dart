@@ -11,6 +11,11 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
+/// Library that provides gzip cached overlays on top of the storage layer.
+///
+/// The contained classes are stream-oriented and meant to be self-contained in
+/// the sense that no explicit action should be required to keep them up-to-date
+/// with the backing datastore.
 library openreception.framework.gzip_cache;
 
 import 'dart:async';
@@ -20,18 +25,26 @@ import 'dart:convert';
 import 'package:archive/archive.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/event.dart' as event;
+//import 'package:openreception.framework/exceptions.dart';
 import 'package:openreception.framework/filestore.dart' as filestore;
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/storage.dart' as storage;
 
 const String _libraryName = 'openreception.framework.gzip_cache';
 
+final GZipEncoder _gzipEnc = new GZipEncoder();
+final GZipDecoder _gzipDec = new GZipDecoder();
+
+/// Convenience method that converts a previously gzip encoded object back into
+/// an object.
 dynamic unpackAndDeserializeObject(List<int> data) =>
-    JSON.decode(UTF8.decode(new GZipDecoder().decodeBytes(data)));
+    JSON.decode(UTF8.decode(_gzipDec.decodeBytes(data)));
 
+/// Convenience method that converts an object into a  gzip encoded object.
 List<int> serializeAndCompressObject(Object obj) =>
-    new GZipEncoder().encode(UTF8.encode(JSON.encode(obj)));
+    _gzipEnc.encode(UTF8.encode(JSON.encode(obj)));
 
+/// Returns true if [list] is actually a empty (gzipped) list.
 bool isEmptyGzipList(List<int> list) {
   if (list.length != emptyGzipList.length) {
     return false;
@@ -44,21 +57,27 @@ bool isEmptyGzipList(List<int> list) {
   return true;
 }
 
+/// The empty list, pre-serialized and compressed for convenience.
 final List<int> emptyGzipList = serializeAndCompressObject(<int>[]);
 
+/// Cache for [model.CalendarEntry] objects.
 class CalendarCache {
   final Logger _log = new Logger('$_libraryName.CalendarCache');
 
-  final filestore.Calendar cCalendarStore;
-  final filestore.Calendar rCalendarStore;
+  final filestore.Calendar _cCalendarStore;
+  final filestore.Calendar _rCalendarStore;
 
   final Map<String, List<int>> _entryCache = <String, List<int>>{};
   final Map<String, List<int>> _entryListCache = <String, List<int>>{};
 
-  /**
-   *
-   */
-  CalendarCache(this.cCalendarStore, this.rCalendarStore,
+  /// Create a new [CalendarCache] using [_cCalendarStore] and [_rCalendarStore]
+  /// as storage backends.
+  ///
+  /// Will only respond to store changes from the [streams] provided, so in order
+  /// to make sure that the cache does not come completely out of sync, make
+  /// sure that the streams are directly associated with the ones from the
+  /// supplied filestores.
+  CalendarCache(this._cCalendarStore, this._rCalendarStore,
       Iterable<Stream<event.CalendarChange>> streams) {
     streams.forEach((Stream<event.CalendarChange> stream) {
       stream.listen((event.CalendarChange e) {
@@ -70,9 +89,13 @@ class CalendarCache {
     });
   }
 
-  /**
-   *
-   */
+  /// Retrieve the qzip-compression and serialized [model.CalendarEntry] with
+  /// ID [eid] and [owner].
+  ///
+  /// Throws a [NotFound] exception if the calendar entry is neither found in the
+  /// cache, nor the filestore.
+  /// Will retrieve and cache calendar entry from the relevant store, if not found
+  /// in the cache.
   Future<List<int>> get(int eid, model.Owner owner) async {
     final String key = '$owner:$eid';
 
@@ -80,10 +103,10 @@ class CalendarCache {
       _log.finest('Key $key not found in cache. Looking it up.');
       if (owner is model.OwningContact) {
         _entryCache[key] =
-            serializeAndCompressObject(await cCalendarStore.get(eid, owner));
+            serializeAndCompressObject(await _cCalendarStore.get(eid, owner));
       } else if (owner is model.OwningReception) {
         _entryCache[key] =
-            serializeAndCompressObject(await rCalendarStore.get(eid, owner));
+            serializeAndCompressObject(await _rCalendarStore.get(eid, owner));
       } else {
         throw new storage.ClientError('Could not find suitable for store '
             'for owner type: ${owner.runtimeType}');
@@ -92,18 +115,12 @@ class CalendarCache {
     return _entryCache[key];
   }
 
-  /**
-   *
-   */
   void removeEntry(int eid, model.Owner owner) {
     final String key = '$owner:$eid';
     _log.finest('Removing key $key from cache');
     _entryCache.remove(key);
   }
 
-  /**
-   *
-   */
   Future<List<int>> list(model.Owner owner) async {
     final String key = '$owner';
 
@@ -112,9 +129,9 @@ class CalendarCache {
 
       Iterable<model.CalendarEntry> entries = <model.CalendarEntry>[];
       if (owner is model.OwningContact) {
-        entries = (await cCalendarStore.list(owner)).toList(growable: false);
+        entries = (await _cCalendarStore.list(owner)).toList(growable: false);
       } else if (owner is model.OwningReception) {
-        entries = (await rCalendarStore.list(owner)).toList(growable: false);
+        entries = (await _rCalendarStore.list(owner)).toList(growable: false);
       } else {
         throw new storage.ClientError('Could not find suitable for store '
             'for owner type: ${owner.runtimeType}');
@@ -130,9 +147,7 @@ class CalendarCache {
     return _entryListCache[key];
   }
 
-  /**
-   *
-   */
+  /// Returns the current memory allocation stats of the cache.
   Map<String, dynamic> get stats =>
       new Map<String, dynamic>.unmodifiable(<String, dynamic>{
         'calendarEntries': _entryCache.length,
@@ -141,17 +156,15 @@ class CalendarCache {
         'listSize': _entryListCache.length
       });
 
-  /**
-   *
-   */
+  /// Load data objects and use them to prefill the gzip cache.
   Future<Null> prefill(Iterable<model.Owner> owners) async {
     await Future.forEach(owners, (model.Owner owner) async {
       final List<model.CalendarEntry> entries = <model.CalendarEntry>[];
 
       if (owner is model.OwningContact) {
-        entries.addAll(await cCalendarStore.list(owner));
+        entries.addAll(await _cCalendarStore.list(owner));
       } else if (owner is model.OwningReception) {
-        entries.addAll(await rCalendarStore.list(owner));
+        entries.addAll(await _rCalendarStore.list(owner));
       } else {
         throw new storage.ClientError('Could not find suitable for store '
             'for owner type: ${owner.runtimeType}');
@@ -167,23 +180,20 @@ class CalendarCache {
     });
   }
 
-  /**
-   *
-   */
+  /// Empty the cache associated with [owner].
   void _emptyList(model.Owner owner) {
     _log.finest('Emptying cache for ${owner.toJson()}');
     _entryListCache.remove(owner.toString());
   }
 
-  /**
-   *
-   */
+  /// Clear out the entire cache.
   void emptyAll() {
     _entryCache.clear();
     _entryListCache.clear();
   }
 }
 
+/// Cache for [model.Reception] objects.
 class ReceptionCache {
   final Logger _log = new Logger('$_libraryName.ReceptionCache');
 
@@ -193,9 +203,6 @@ class ReceptionCache {
   final Map<String, int> _extensionToRid = <String, int>{};
   List<int> _receptionList = <int>[];
 
-  /**
-   *
-   */
   ReceptionCache(
       this._receptionStore, Stream<event.ReceptionChange> receptionChanges) {
     receptionChanges.listen((event.ReceptionChange change) {
@@ -242,9 +249,7 @@ class ReceptionCache {
     return _receptionList;
   }
 
-  /**
-   *
-   */
+  /// Returns the current memory allocation stats of the cache.
   Map<String, dynamic> get stats => <String, dynamic>{
         'receptionCount': _receptionCache.length,
         'receptionSize': _receptionCache.values
@@ -252,9 +257,7 @@ class ReceptionCache {
         'listSize': _receptionList.length
       };
 
-  /**
-   *
-   */
+  /// Load data objects and use them to prefill the gzip cache.
   Future<Null> prefill() async {
     final Iterable<model.ReceptionReference> rRefs =
         await _receptionStore.list();
@@ -268,22 +271,18 @@ class ReceptionCache {
     });
   }
 
-  /**
-   *
-   */
   void emptyList() {
     _receptionList = <int>[];
   }
 
-  /**
-   *
-   */
+  /// Clear out the entire cache.
   void emptyAll() {
     emptyList();
     _receptionCache.clear();
   }
 }
 
+/// Cache for [model.BaseContact] and [model.ReceptionAttributes] objects.
 class ContactCache {
   final filestore.Contact _contactStore;
   final Map<int, List<int>> _contactCache = <int, List<int>>{};
@@ -297,9 +296,6 @@ class ContactCache {
   /// Cid:rid reception datas
   final Map<String, List<int>> _receptionDataCache = <String, List<int>>{};
 
-  /**
-   *
-   */
   ContactCache(
       this._contactStore,
       Stream<event.ContactChange> contactChange,
@@ -335,9 +331,6 @@ class ContactCache {
     });
   }
 
-  /**
-   *
-   */
   Future<List<int>> receptionData(int cid, int rid) async {
     final String key = '$cid:$rid';
 
@@ -349,9 +342,6 @@ class ContactCache {
     return _receptionDataCache[key];
   }
 
-  /**
-   *
-   */
   Future<List<int>> allContacts() async {
     if (_contactListCache.isEmpty) {
       _contactListCache = new GZipEncoder().encode(UTF8.encode(
@@ -361,17 +351,11 @@ class ContactCache {
     return _contactListCache;
   }
 
-  /**
-   *
-   */
   void removeContact(int cid) {
     _contactCache.remove(cid);
     _receptionContactCache.clear();
   }
 
-  /**
-   *
-   */
   void emptyContactLists() {
     _contactListCache = <int>[];
     _receptionContactCache.clear();
@@ -390,9 +374,13 @@ class ContactCache {
     return _receptionContactCache[rid];
   }
 
-  /**
-   *
-   */
+  /// Retrieve the qzip-compression and serialized [model.BaseContact] with
+  /// ID [cid].
+  ///
+  /// Throws a [NotFound] exception if the contact is neither found in the
+  /// cache, nor the filestore.
+  /// Will retrieve and cache contact object from the store, if not found
+  /// in the cache.
   Future<List<int>> get(int cid) async {
     if (!_contactCache.containsKey(cid)) {
       _contactCache[cid] = new GZipEncoder()
@@ -401,9 +389,7 @@ class ContactCache {
     return _contactCache[cid];
   }
 
-  /**
-   *
-   */
+  /// Clear out the entire cache.
   void emptyAll() {
     _contactCache.clear();
     _contactListCache = <int>[];
@@ -412,9 +398,7 @@ class ContactCache {
     _receptionContactCache.clear();
   }
 
-  /**
-   *
-   */
+  /// Load data objects and use them to prefill the gzip cache.
   Future<Null> prefill() async {
     final Iterable<model.BaseContact> contactList = await _contactStore.list();
     _contactListCache = serializeAndCompressObject(contactList);
@@ -434,9 +418,7 @@ class ContactCache {
     });
   }
 
-  /**
-   *
-   */
+  /// Returns the current memory allocation stats of the cache.
   Map<String, dynamic> get stats => <String, dynamic>{
         'contactCount': _contactCache.length,
         'contactSize': _contactCache.values
@@ -447,6 +429,7 @@ class ContactCache {
       };
 }
 
+/// Cache for [model.Message] objects.
 class MessageCache {
   final filestore.Message _messageStore;
   final Map<String, List<int>> _messageListCache = <String, List<int>>{};
@@ -463,9 +446,6 @@ class MessageCache {
     });
   }
 
-  /**
-   *
-   */
   Future<List<int>> list(DateTime day) async {
     final String key = day.toIso8601String().split('T').first;
 
@@ -483,9 +463,6 @@ class MessageCache {
     return _messageListCache[key];
   }
 
-  /**
-   *
-   */
   Future<List<int>> listDrafts() async {
     if (_draftListCache.isEmpty) {
       _draftListCache = new GZipEncoder()
@@ -495,14 +472,10 @@ class MessageCache {
     return _draftListCache;
   }
 
-  /**
-   *
-   */
-  Future<Null> prefill() async {}
+  /// Load data objects and use them to prefill the gzip cache.
+  Future<Null> prefill() async => throw new UnimplementedError();
 
-  /**
-   *
-   */
+  /// Returns the current memory allocation stats of the cache.
   Map<String, dynamic> get stats => <String, dynamic>{
         'messageFolderCount': _messageListCache.length,
         'messageFolderSize': _messageListCache.values
@@ -511,9 +484,7 @@ class MessageCache {
       };
 }
 
-/**
- *
- */
+/// Cache for [model.IvrMenu] objects.
 class IvrMenuCache {
   final filestore.Ivr ivrStore;
   final Map<String, List<int>> _ivrCache = <String, List<int>>{};
@@ -529,23 +500,14 @@ class IvrMenuCache {
     });
   }
 
-  /**
-   *
-   */
   void removeMenu(String name) {
     _ivrCache.remove(name);
   }
 
-  /**
-     *
-     */
   void clearListCache() {
     _ivrListCache = <int>[];
   }
 
-  /**
-   *
-   */
   Future<List<int>> list() async {
     if (_ivrCache.isEmpty) {
       final Iterable<model.IvrMenu> ivrs = await ivrStore.list();
@@ -559,9 +521,13 @@ class IvrMenuCache {
     return _ivrListCache;
   }
 
-  /**
-   *
-   */
+  /// Retrieve the qzip-compression and serialized [model.IvrMenu]
+  /// with [menuName].
+  ///
+  /// Throws a [NotFound] exception if the IVR menu is neither found in the
+  /// cache, nor the filestore.
+  /// Will retrieve and cache IVR menu object from the store, if not found
+  /// in the cache.
   Future<List<int>> get(String menuName) async {
     if (!_ivrCache.containsKey(menuName)) {
       final model.IvrMenu menu = await ivrStore.get(menuName);
@@ -573,17 +539,13 @@ class IvrMenuCache {
     return _ivrCache[menuName];
   }
 
-  /**
-   *
-   */
+  /// Clear out the entire cache.
   Future<Null> emptyAll() async {
     _ivrCache.clear();
     clearListCache();
   }
 
-  /**
-   *
-   */
+  /// Load data objects and use them to prefill the gzip cache.
   Future<Null> prefill() async {
     Iterable<model.IvrMenu> ivrs = await ivrStore.list();
     _ivrListCache = ivrs.isEmpty
@@ -596,9 +558,7 @@ class IvrMenuCache {
     });
   }
 
-  /**
-   *
-   */
+  /// Returns the current memory allocation stats of the cache.
   Map<String, dynamic> get stats => <String, dynamic>{
         'ivrCount': _ivrCache.length,
         'ivrSize': _ivrCache.values
@@ -607,9 +567,7 @@ class IvrMenuCache {
       };
 }
 
-/**
- *
- */
+/// Cache for [model.ReceptionDialplan] objects.
 class DialplanCache {
   final filestore.ReceptionDialplan _rdpStore;
   final Map<String, List<int>> _dialplanCache = <String, List<int>>{};
@@ -625,23 +583,14 @@ class DialplanCache {
     });
   }
 
-  /**
-   *
-   */
   void removeDialplan(String dialplan) {
     _dialplanCache.remove(dialplan);
   }
 
-  /**
-     *
-     */
   void clearListCache() {
     _dialplanListCache = <int>[];
   }
 
-  /**
-     *
-     */
   Future<List<int>> list() async {
     if (_dialplanCache.isEmpty) {
       final Iterable<model.ReceptionDialplan> dialplans =
@@ -656,31 +605,31 @@ class DialplanCache {
     return _dialplanListCache;
   }
 
-  /**
-     *
-     */
-  Future<List<int>> get(String dialplan) async {
-    if (!_dialplanCache.containsKey(dialplan)) {
-      final model.ReceptionDialplan rdp = await _rdpStore.get(dialplan);
+  /// Retrieve the qzip-compression and serialized [model.ReceptionDialplan] with
+  /// [extension].
+  ///
+  /// Throws a [NotFound] exception if the reception dialplan is neither found in
+  /// the cache, nor the filestore.
+  /// Will retrieve and cache reception diaplan object from the store, if not
+  /// found in the cache.
+  Future<List<int>> get(String extension) async {
+    if (!_dialplanCache.containsKey(extension)) {
+      final model.ReceptionDialplan rdp = await _rdpStore.get(extension);
 
-      _dialplanCache[dialplan] =
+      _dialplanCache[extension] =
           new GZipEncoder().encode(UTF8.encode(JSON.encode(rdp)));
     }
 
-    return _dialplanCache[dialplan];
+    return _dialplanCache[extension];
   }
 
-  /**
-     *
-     */
+  /// Clear out the entire cache.
   Future<Null> emptyAll() async {
     _dialplanCache.clear();
     clearListCache();
   }
 
-  /**
-     *
-     */
+  /// Load data objects and use them to prefill the gzip cache.
   Future<Null> prefill() async {
     Iterable<model.ReceptionDialplan> dialplans = await _rdpStore.list();
     _dialplanListCache = dialplans.isEmpty
@@ -693,9 +642,7 @@ class DialplanCache {
     });
   }
 
-  /**
-     *
-     */
+  /// Returns the current memory allocation stats of the cache.
   Map<String, dynamic> get stats => <String, dynamic>{
         'dialplanCount': _dialplanCache.length,
         'dialplanSize': _dialplanCache.values
@@ -704,14 +651,12 @@ class DialplanCache {
       };
 }
 
+/// Cache for [model.User] objects.
 class UserCache {
   final filestore.User _userStore;
   final Map<int, List<int>> _userCache = <int, List<int>>{};
   List<int> _userListCache = <int>[];
 
-  /**
-   *
-   */
   UserCache(this._userStore, Stream<event.UserChange> userChanges) {
     userChanges.listen((event.UserChange changeEvent) {
       if (changeEvent.isDelete || changeEvent.isUpdate) {
@@ -722,23 +667,14 @@ class UserCache {
     });
   }
 
-  /**
-   *
-   */
   void removeUid(int uid) {
     _userCache.remove(uid);
   }
 
-  /**
-   *
-   */
   void clearListCache() {
     _userListCache = <int>[];
   }
 
-  /**
-   *
-   */
   Future<List<int>> list() async {
     if (_userListCache.isEmpty) {
       final Iterable<model.UserReference> users = await _userStore.list();
@@ -752,9 +688,12 @@ class UserCache {
     return _userListCache;
   }
 
-  /**
-   *
-   */
+  /// Retrieve the qzip-compression and serialized [model.User] with ID [uid].
+  ///
+  /// Throws a [NotFound] exception if the user is neither found in the
+  /// cache, nor the filestore.
+  /// Will retrieve and cache user object from the store, if not found
+  /// in the cache.
   Future<List<int>> get(int uid) async {
     if (!_userCache.containsKey(uid)) {
       final model.User user = await _userStore.get(uid);
@@ -766,17 +705,13 @@ class UserCache {
     return _userCache[uid];
   }
 
-  /**
-   *
-   */
+  /// Clear out the entire cache.
   Future<Null> emptyAll() async {
     _userCache.clear();
     clearListCache();
   }
 
-  /**
-   *
-   */
+  /// Load data objects and use them to prefill the gzip cache.
   Future<Null> prefill() async {
     Iterable<model.UserReference> users = await _userStore.list();
     _userListCache = users.isEmpty
@@ -789,9 +724,7 @@ class UserCache {
     });
   }
 
-  /**
-   *
-   */
+  /// Returns the current memory allocation stats of the cache.
   Map<String, dynamic> get stats => <String, dynamic>{
         'userCount': _userCache.length,
         'userSize': _userCache.values
@@ -800,17 +733,15 @@ class UserCache {
       };
 }
 
+/// Cache for [model.Organization] objects.
 class OrganizationCache {
-  final Logger _log = new Logger('$_libraryName.CalendarCache');
+  final Logger _log = new Logger('$_libraryName.Organization');
 
   final filestore.Organization orgStore;
 
   final Map<int, List<int>> _organizationCache = <int, List<int>>{};
   List<int> _organizationListCache = <int>[];
 
-  /**
-   *
-   */
   OrganizationCache(
       this.orgStore, Stream<event.OrganizationChange> organizationChange) {
     organizationChange.listen((event.OrganizationChange e) {
@@ -822,16 +753,17 @@ class OrganizationCache {
     });
   }
 
-  /**
-   *
-   */
   void remove(int oid) {
     _organizationCache.remove(oid);
   }
 
-  /**
-   *
-   */
+  /// Retrieve the qzip-compression and serialized [model.Organization] with
+  /// ID [oid].
+  ///
+  /// Throws a [NotFound] exception if the organization is neither found in the
+  /// cache, nor the filestore.
+  /// Will retrieve and cache organization object from the store, if not found
+  /// in the cache.
   Future<List<int>> get(int oid) async {
     if (!_organizationCache.containsKey(oid)) {
       _log.finest('Key $oid not found in cache. Looking it up.');
@@ -841,18 +773,12 @@ class OrganizationCache {
     return _organizationCache[oid];
   }
 
-  /**
-   *
-   */
   void removeEntry(int eid, model.Owner owner) {
     final String key = '$owner:$eid';
     _log.finest('Removing key $key from cache');
     _organizationCache.remove(key);
   }
 
-  /**
-   *
-   */
   Future<List<int>> list() async {
     if (_organizationListCache.isEmpty) {
       _log.finest('Listing not found in cache. Looking it up.');
@@ -864,9 +790,7 @@ class OrganizationCache {
     return _organizationListCache;
   }
 
-  /**
-   *
-   */
+  /// Returns the current memory allocation stats of the cache.
   Map<String, dynamic> get stats => <String, dynamic>{
         'organizationEntries': _organizationCache.length,
         'organizationSize': _organizationCache.values
@@ -874,9 +798,7 @@ class OrganizationCache {
         'listSize': _organizationListCache.length
       };
 
-  /**
-   *
-   */
+  /// Load data objects and use them to prefill the gzip cache.
   Future<Null> prefill() async {
     List<model.OrganizationReference> oRefs = await orgStore.list();
 
@@ -889,16 +811,11 @@ class OrganizationCache {
     });
   }
 
-  /**
-   *
-   */
   void emptyList() {
     _organizationListCache = <int>[];
   }
 
-  /**
-   *
-   */
+  /// Clear out the entire cache.
   void emptyAll() {
     _organizationCache.clear();
     emptyList();

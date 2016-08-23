@@ -13,39 +13,40 @@
 
 part of openreception.framework.storage;
 
-/**
- *
- */
+/// Storage interface for persistent storage of [model.CalendarEntry] objects.
 abstract class Calendar {
-  /**
-   *
-   */
+  /// List calendar entry changes for [owner], optionally for a single [eid] as
+  /// well.
   Future<Iterable<model.Commit>> changes(model.Owner owner, [int eid]);
 
-  /**
-   *
-   */
+  /// Creates and stores a new [model.CalendarEntry] object persistently
+  /// using [entry] data and [owner].
+  ///
+  /// Returns a [model.CalendarEntry] containing the ID of the newly created
+  /// [model.CalendarEntry] object. The [modifier] is required for traceability of
+  /// who performed the creation.
   Future<model.CalendarEntry> create(
       model.CalendarEntry entry, model.Owner owner, model.User modifier);
 
-  /**
-   *
-   */
-  Future<model.CalendarEntry> get(int id, model.Owner owner);
+  /// Retrive a previously stored [model.CalendarEntry] identified by [eid]
+  /// with [owner].
+  Future<model.CalendarEntry> get(int eid, model.Owner owner);
 
-  /**
-   *
-   */
+  /// List all [model.CalendarEntry] of [owner].
   Future<Iterable<model.CalendarEntry>> list(model.Owner owner);
 
-  /**
-   *
-   */
-  Future remove(int id, model.Owner owner, model.User modifier);
+  /// Permanently removes the previously stored [model.CalendarEntry] object
+  /// identified by [eid].
+  ///
+  /// The [modifier] is required for traceability of who performed the deletion.
+  Future remove(int eid, model.Owner owner, model.User modifier);
 
-  /**
-   *
-   */
+  /// Updates the previously stored [model.CalendarEntry] object with data
+  /// from [entry].
+  ///
+  /// The ID in [entry] must be valid and exist in the store, or a [NotFound]
+  /// exception is thrown.
+  /// The [modifier] is required for traceability of who performed the deletion.
   Future<model.CalendarEntry> update(
       model.CalendarEntry entry, model.Owner owner, model.User modifier);
 }
