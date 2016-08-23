@@ -13,8 +13,9 @@
 
 library openreception.framework.model.dialplan;
 
-import 'parsing_utils.dart';
 import 'package:openreception.framework/src/constants/dialplan.dart' as key;
+
+import 'parsing_utils.dart';
 
 part 'model-action.dart';
 part 'model-enqueue.dart';
@@ -30,9 +31,9 @@ part 'model-ivr_transfer.dart';
 part 'model-ivr_voicemail.dart';
 part 'model-notify.dart';
 part 'model-opening_hour.dart';
+part 'model-playback.dart';
 part 'model-reception_dialplan.dart';
 part 'model-reception_transfer.dart';
-part 'model-playback.dart';
 part 'model-ringtone.dart';
 part 'model-transfer.dart';
 part 'model-voicemail.dart';

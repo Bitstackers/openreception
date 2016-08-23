@@ -19,9 +19,9 @@ import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/bus.dart';
 import 'package:openreception.framework/event.dart' as _event;
-import 'package:openreception.framework/keys.dart' as key;
 import 'package:openreception.framework/model/dialplan/model-dialplan.dart';
 import 'package:openreception.framework/pbx-keys.dart';
+import 'package:openreception.framework/src/constants/model.dart' as key;
 import 'package:openreception.framework/util.dart' as util;
 import 'package:path/path.dart' as path;
 
