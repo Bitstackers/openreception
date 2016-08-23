@@ -541,7 +541,7 @@ Logger setupLogging() {
  * This calls itself recursively as long as there are files left in the [files]
  * list. One file is removed from the list on each call to [upload].
  *
- * Exits drvupld if uploading a file takes more than 60 seconds.
+ * Exits drvupld if uploading a file takes more than 300 seconds.
  *
  * Does not throw. Logs errors to warning and severe.
  */
@@ -582,6 +582,7 @@ Future upload(
 
   try {
     log.info('upload() start processing $filename');
+
     final String channelId = harvestChannelId(file);
     if (recordings.any((ORModel.ActiveRecording recording) =>
         recording.agentChannel == channelId)) {
