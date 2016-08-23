@@ -207,10 +207,15 @@ class Call {
   /**
    * Tries to pickup the first parked call and returns it if successful.
    */
-  Future<model.Call> pickupFirstParkedCall() =>
-      _firstParkedCall().then((model.Call parkedCall) =>
-          parkedCall != null ? pickup(parkedCall) : model.Call.noCall)
-      as Future<model.Call>;
+  Future<model.Call> pickupFirstParkedCall() async {
+    final model.Call parkedCall = await _firstParkedCall();
+
+    if (parkedCall != model.Call.noCall) {
+      return pickup(parkedCall);
+    } else {
+      return model.Call.noCall;
+    }
+  }
 
   /**
    * Requests the next available call, and returns it if successful.

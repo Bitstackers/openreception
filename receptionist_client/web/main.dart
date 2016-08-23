@@ -263,16 +263,17 @@ void observers(
   /// "ignoreclickfocus" attribute and ignoring mousedown events for those
   /// elements.
   document.onMouseDown.listen((MouseEvent event) {
-    if ((event.target as HtmlElement)
-        .attributes
-        .keys
-        .contains('ignoreclickfocus')) {
+    final HtmlElement element = event.target;
+
+    if (element.attributes.keys.contains('ignoreclickfocus')) {
       event.preventDefault();
     }
   });
 
   windowOnBeforeUnload = window.onBeforeUnload.listen((Event event) {
-    (event as BeforeUnloadEvent).returnValue = '';
+    final BeforeUnloadEvent bfuEvent = event;
+
+    bfuEvent.returnValue = '';
   });
 
   windowOnUnload = window.onUnload.listen((_) {

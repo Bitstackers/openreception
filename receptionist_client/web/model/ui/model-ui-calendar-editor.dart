@@ -143,8 +143,11 @@ class UICalendarEditor extends UIModel {
 
     /// Enables focused element memory for this widget.
     _tabElements.forEach((Element element) {
-      element.onFocus.listen(
-          (Event event) => _myFocusElement = (event.target as HtmlElement));
+      element.onFocus.listen((Event event) {
+        if (event.target is HtmlElement) {
+          _myFocusElement = event.target;
+        }
+      });
     });
 
     _textArea.onInput.listen((_) {
