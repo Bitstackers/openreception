@@ -18,11 +18,11 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:openreception.framework/bus.dart';
-
-import 'event.dart' as event;
-import 'model.dart' as model;
-import 'resource.dart' as resource;
-import 'storage.dart' as storage;
+import 'package:openreception.framework/event.dart' as event;
+import 'package:openreception.framework/exceptions.dart';
+import 'package:openreception.framework/model.dart' as model;
+import 'package:openreception.framework/resource.dart' as resource;
+import 'package:openreception.framework/storage.dart' as storage;
 
 part 'service/service-auth.dart';
 part 'service/service-calendar.dart';

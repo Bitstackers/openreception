@@ -13,24 +13,22 @@
 
 library openreception.server.controller.dialplan;
 
-import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
-
-import 'package:shelf/shelf.dart' as shelf;
-import 'package:shelf_route/shelf_route.dart' as shelf_route;
-import 'package:logging/logging.dart';
+import 'dart:io';
 
 import 'package:esl/esl.dart' as esl;
+import 'package:logging/logging.dart';
+import 'package:openreception.framework/dialplan_tools.dart' as dialplanTools;
+import 'package:openreception.framework/exceptions.dart';
 import 'package:openreception.framework/filestore.dart' as database;
 import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/storage.dart' as storage;
 import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.framework/dialplan_tools.dart' as dialplanTools;
-
 import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/response_utils.dart';
 import 'package:openreception.server/controller/controller-ivr.dart';
+import 'package:openreception.server/response_utils.dart';
+import 'package:shelf/shelf.dart' as shelf;
+import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
 /**
  * ReceptionDialplan controller class.
@@ -75,7 +73,7 @@ class ReceptionDialplan {
       errors = collectErrors(await _receptionDialplanStore.get(extension));
     } on FormatException {
       /// Could not parse dialplan
-    } on storage.NotFound {
+    } on NotFound {
       return notFound({});
     }
 
@@ -112,7 +110,7 @@ class ReceptionDialplan {
     try {
       rdp = await _receptionDialplanStore.get(extension);
       r = await _receptionStore.get(rid);
-    } on storage.NotFound {
+    } on NotFound {
       return notFound('No dialplan with extension $extension');
     }
     final String xmlFilePath =
@@ -146,7 +144,7 @@ class ReceptionDialplan {
 
     try {
       return okJson(await _receptionDialplanStore.get(extension));
-    } on storage.NotFound {
+    } on NotFound {
       return notFound('No dialplan with extension $extension');
     }
   }
@@ -193,7 +191,7 @@ class ReceptionDialplan {
 
     try {
       return okJson(await _receptionDialplanStore.remove(extension, user));
-    } on storage.NotFound {
+    } on NotFound {
       return notFound('No dialplan with extension $extension');
     }
   }

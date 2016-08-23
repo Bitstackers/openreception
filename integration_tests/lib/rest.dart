@@ -1,24 +1,20 @@
 library openreception_tests.rest;
 
-import 'dart:io';
 import 'dart:async';
+import 'dart:io';
 
 import 'package:esl/esl.dart' as esl;
 import 'package:esl/util.dart' as esl;
-
 import 'package:logging/logging.dart';
-
-import 'package:openreception_tests/storage.dart' as storeTest;
-import 'package:openreception_tests/service.dart' as serviceTest;
-import 'package:openreception_tests/process.dart' as process;
-import 'package:openreception_tests/support.dart';
-import 'package:openreception_tests/config.dart';
-
-import 'package:openreception.framework/resource.dart' as resource;
-import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.framework/service-io.dart' as service;
 import 'package:openreception.framework/model.dart' as model;
-
+import 'package:openreception.framework/resource.dart' as resource;
+import 'package:openreception.framework/service-io.dart' as service;
+import 'package:openreception.framework/service.dart' as service;
+import 'package:openreception_tests/config.dart';
+import 'package:openreception_tests/process.dart' as process;
+import 'package:openreception_tests/service.dart' as serviceTest;
+import 'package:openreception_tests/storage.dart' as storeTest;
+import 'package:openreception_tests/support.dart';
 import 'package:test/test.dart';
 
 part 'rest/rest-authentication.dart';

@@ -18,7 +18,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/storage.dart' as storage;
+import 'package:openreception.framework/exceptions.dart';
 import 'package:openreception.framework/model.dart' as model;
 import 'package:path/path.dart' as path;
 
@@ -51,7 +51,7 @@ class TokenVault {
     } else if (_serverTokens.containsKey(token)) {
       return _serverTokens[token];
     } else {
-      throw new storage.NotFound('getToken. Unknown token: ${token}');
+      throw new NotFound('getToken. Unknown token: ${token}');
     }
   }
 

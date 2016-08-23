@@ -71,6 +71,6 @@ abstract class Hangup {
    */
   static Future interfaceCallNotFound(ServiceAgent sa) async {
     await expect(sa.callflow.hangup(model.Call.noId),
-        throwsA(new isInstanceOf<storage.NotFound>()));
+        throwsA(new isInstanceOf<NotFound>()));
   }
 }

@@ -12,8 +12,7 @@ class Reception {
   static Future nonExistingReception(ServiceAgent sa) async {
     _log.info('Checking server behaviour on a non-existing reception.');
 
-    expect(sa.receptionStore.get(-1),
-        throwsA(new isInstanceOf<storage.NotFound>()));
+    expect(sa.receptionStore.get(-1), throwsA(new isInstanceOf<NotFound>()));
   }
 
   /**
@@ -132,7 +131,7 @@ class Reception {
   static Future updateNonExisting(ServiceAgent sa) async {
     final rec = Randomizer.randomReception()..id = -1;
     expect(sa.receptionStore.update(rec, sa.user),
-        throwsA(new isInstanceOf<storage.NotFound>()));
+        throwsA(new isInstanceOf<NotFound>()));
   }
 
   /**
@@ -144,7 +143,7 @@ class Reception {
   static Future updateInvalid(ServiceAgent sa) async {
     final rec = Randomizer.randomReception()..id = model.Reception.noId;
     expect(sa.receptionStore.update(rec, sa.user),
-        throwsA(new isInstanceOf<storage.ClientError>()));
+        throwsA(new isInstanceOf<ClientError>()));
   }
 
   /**
@@ -199,8 +198,8 @@ class Reception {
     await sa.receptionStore.get(rec.id);
     await sa.removesReception(rec);
 
-    expect(sa.receptionStore.get(rec.id),
-        throwsA(new isInstanceOf<storage.NotFound>()));
+    expect(
+        sa.receptionStore.get(rec.id), throwsA(new isInstanceOf<NotFound>()));
   }
 
   /**

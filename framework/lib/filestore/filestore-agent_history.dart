@@ -82,7 +82,7 @@ class AgentHistory {
     if (f.existsSync()) {
       return f.readAsBytes().asStream();
     } else {
-      throw new storage.NotFound('No report for day ${_dateKey(day)}');
+      throw new NotFound('No report for day ${_dateKey(day)}');
     }
   }
 
@@ -240,7 +240,7 @@ class AgentHistory {
         _uidNameCache[uid] = uRef.name;
 
         await _saveUidCacheFile();
-      } on storage.NotFound {
+      } on NotFound {
         _log.warning('Failed to located name of uid:$uid. '
             'Consider adding name to cache manually'
             ' (file ${_uidMapFile.path})');

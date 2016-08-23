@@ -3,6 +3,7 @@ library openreception_tests.storage;
 import 'dart:async';
 
 import 'package:logging/logging.dart';
+import 'package:openreception.framework/exceptions.dart';
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/storage.dart' as storage;
 import 'package:openreception_tests/support.dart';
@@ -20,5 +21,5 @@ part 'storage/storage-user.dart';
 
 const String _libraryName = 'storage';
 
-final notFoundError = new isInstanceOf<storage.NotFound>();
-final unchangedError = new isInstanceOf<storage.Unchanged>();
+final notFoundError = new isInstanceOf<NotFound>();
+final unchangedError = new isInstanceOf<Unchanged>();

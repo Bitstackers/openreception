@@ -203,7 +203,7 @@ class GitEngine {
   Future commit(File file, String commitMsg, String author) async {
     await init();
     if (!await _hasChanges(file)) {
-      throw new storage.Unchanged('No new content');
+      throw new Unchanged('No new content');
     }
 
     final bool locked = _lock();
@@ -240,7 +240,7 @@ class GitEngine {
 
     if (result.exitCode != 0) {
       _log.shout('Failed to get status of $filePath');
-      throw new storage.ServerError();
+      throw new ServerError();
     }
 
     final List<String> lines = (result.stdout as String).split('\n');
@@ -334,7 +334,7 @@ class GitEngine {
 
     if (result.exitCode != 0) {
       _log.shout('Failed to run $gitBin ${arguments.join(' ')}');
-      throw new storage.ServerError();
+      throw new ServerError();
     }
 
     return changeList;
@@ -364,7 +364,7 @@ class GitEngine {
 
     if (result.exitCode != 0) {
       _log.shout('Failed to add $path');
-      throw new storage.ServerError();
+      throw new ServerError();
     }
   }
 
@@ -396,7 +396,7 @@ class GitEngine {
 
     if (result.exitCode != 0) {
       _log.shout('Failed to run $gitBin ${arguments.join(' ')}');
-      throw new storage.ServerError();
+      throw new ServerError();
     }
   }
 
@@ -419,7 +419,7 @@ class GitEngine {
 
     if (result.exitCode != 0) {
       _log.shout('Failed to remove ${fse.path}');
-      throw new storage.ServerError();
+      throw new ServerError();
     }
   }
 

@@ -134,14 +134,13 @@ class Calendar implements storage.Calendar {
       ownerDir.createSync();
     } catch (e) {
       _log.warning('Creating new directory ${ownerDir.path}');
-      throw new storage.NotFound('Owner not found: ${owner.id}');
+      throw new NotFound('Owner not found: ${owner.id}');
     }
 
     final File file = new File('${ownerDir.path}/${entry.id}.json');
 
     if (file.existsSync()) {
-      throw new storage.ClientError(
-          'File already exists, please update instead');
+      throw new ClientError('File already exists, please update instead');
     }
 
     _log.finest('Creating new file ${file.path}');
@@ -186,7 +185,7 @@ class Calendar implements storage.Calendar {
       }
     }
 
-    throw new storage.NotFound('No file with eid $eid');
+    throw new NotFound('No file with eid $eid');
   }
 
   /**
@@ -224,7 +223,7 @@ class Calendar implements storage.Calendar {
     final File file = new File('${ownerDir.path}/$eid.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound();
+      throw new NotFound();
     }
 
     _log.finest('Deleting file ${file.path}');
@@ -265,7 +264,7 @@ class Calendar implements storage.Calendar {
     entry.touched = new DateTime.now();
 
     if (!file.existsSync()) {
-      throw new storage.NotFound();
+      throw new NotFound();
     }
 
     _log.finest('Updating file ${file.path}');

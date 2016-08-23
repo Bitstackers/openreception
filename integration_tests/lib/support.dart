@@ -8,6 +8,7 @@ import 'dart:math' show Random;
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/configuration.dart' as or_conf;
 import 'package:openreception.framework/event.dart' as event;
+import 'package:openreception.framework/exceptions.dart';
 import 'package:openreception.framework/filestore.dart' as filestore;
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/service-io.dart' as service;

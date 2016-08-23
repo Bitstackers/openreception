@@ -185,8 +185,8 @@ abstract class Message {
     final msg = await sa.createsMessage(context);
     await sa.messageStore.remove(msg.id, sa.user);
 
-    await expect(sa.messageStore.get(msg.id),
-        throwsA(new isInstanceOf<storage.NotFound>()));
+    await expect(
+        sa.messageStore.get(msg.id), throwsA(new isInstanceOf<NotFound>()));
   }
 
   /**
@@ -239,7 +239,7 @@ abstract class Message {
     log.info('Checking server behaviour on a non-existing message.');
 
     await expect(
-        sa.messageStore.get(-1), throwsA(new isInstanceOf<storage.NotFound>()));
+        sa.messageStore.get(-1), throwsA(new isInstanceOf<NotFound>()));
   }
 
   /**

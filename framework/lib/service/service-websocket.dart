@@ -32,23 +32,23 @@ abstract class WebSocket {
         break;
 
       case 400:
-        throw new storage.ClientError();
+        throw new ClientError();
         break;
 
       case 401:
-        throw new storage.NotAuthorized();
+        throw new NotAuthorized();
         break;
 
       case 403:
-        throw new storage.Forbidden();
+        throw new Forbidden();
         break;
 
       case 404:
-        throw new storage.NotFound();
+        throw new NotFound();
         break;
 
       case 500:
-        throw new storage.ServerError();
+        throw new ServerError();
         break;
 
       default:

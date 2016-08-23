@@ -14,12 +14,12 @@
 library openreception.server.controller.agent_history;
 
 import 'dart:async';
-import 'package:openreception.framework/storage.dart' as storage;
+
+import 'package:logging/logging.dart';
+import 'package:openreception.framework/exceptions.dart';
 import 'package:openreception.framework/filestore.dart' as filestore;
-import 'package:openreception.server/model.dart' as model;
 import 'package:openreception.server/response_utils.dart';
 import 'package:shelf/shelf.dart' as shelf;
-import 'package:logging/logging.dart';
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
 class AgentStatistics {
@@ -52,7 +52,7 @@ class AgentStatistics {
 
     try {
       return okGzip(await _agentHistory.getRaw(day));
-    } on storage.NotFound {
+    } on NotFound {
       return notFound('No stats for the day $dayStr');
     }
   }

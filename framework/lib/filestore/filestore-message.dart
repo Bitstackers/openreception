@@ -162,13 +162,13 @@ class Message implements storage.Message {
   @override
   Future<model.Message> get(int mid) async {
     if (!_index.containsKey(mid)) {
-      throw new storage.NotFound('No index key with mid $mid');
+      throw new NotFound('No index key with mid $mid');
     }
 
     final File file = new File(_index[mid]);
 
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file with mid $mid');
+      throw new NotFound('No file with mid $mid');
     }
 
     try {
@@ -188,7 +188,7 @@ class Message implements storage.Message {
     await Future.forEach(ids, (id) async {
       try {
         list.add(await get(id));
-      } on storage.NotFound {
+      } on NotFound {
         // Ignore the non-found element.
       } catch (e, s) {
         _log.shout('Failed to retrieve element with id $id', e, s);
@@ -295,8 +295,7 @@ class Message implements storage.Message {
     final File file = new File('${dateDir.path}/${msg.id}.json');
 
     if (file.existsSync()) {
-      throw new storage.ClientError(
-          'File already exists, please update instead');
+      throw new ClientError('File already exists, please update instead');
     }
 
     file.writeAsStringSync(_jsonpp.convert(msg));
@@ -345,7 +344,7 @@ class Message implements storage.Message {
     final File file = new File(_index[msg.id]);
 
     if (!file.existsSync()) {
-      throw new storage.NotFound();
+      throw new NotFound();
     }
 
     file.writeAsStringSync(_jsonpp.convert(msg));
@@ -375,7 +374,7 @@ class Message implements storage.Message {
   @override
   Future remove(int mid, model.User modifier) async {
     if (!_index.containsKey(mid)) {
-      throw new storage.NotFound('No index key with mid $mid');
+      throw new NotFound('No index key with mid $mid');
     }
 
     final File file = new File(_index[mid]);

@@ -107,7 +107,7 @@ class Organization implements storage.Organization {
       model.Organization org, model.User modifier,
       {bool enforceId: false}) async {
     if (org.id == null) {
-      throw new storage.ClientError(
+      throw new ClientError(
           new ArgumentError.notNull(org.id.toString()).toString());
     }
     org.id = org.id != model.Organization.noId && enforceId ? org.id : _nextId;
@@ -116,8 +116,7 @@ class Organization implements storage.Organization {
     final File file = new File('$path/${org.id}/organization.json');
 
     if (file.existsSync()) {
-      throw new storage.ClientError(
-          'File already exists, please update instead');
+      throw new ClientError('File already exists, please update instead');
     }
 
     file.writeAsStringSync(_jsonpp.convert(org));
@@ -148,7 +147,7 @@ class Organization implements storage.Organization {
     final File file = new File('$path/$id/organization.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file with name ${file.path}');
+      throw new NotFound('No file with name ${file.path}');
     }
 
     try {
@@ -184,7 +183,7 @@ class Organization implements storage.Organization {
     final File file = new File('$path/$oid/organization.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound();
+      throw new NotFound();
     }
 
     if (logChanges) {
@@ -215,11 +214,11 @@ class Organization implements storage.Organization {
     final File file = new File('$path/${org.id}/organization.json');
 
     if (org.id == model.Organization.noId) {
-      throw new storage.ClientError('uuid may not be "noId"');
+      throw new ClientError('uuid may not be "noId"');
     }
 
     if (!file.existsSync()) {
-      throw new storage.NotFound();
+      throw new NotFound();
     }
 
     file.writeAsStringSync(_jsonpp.convert(org));

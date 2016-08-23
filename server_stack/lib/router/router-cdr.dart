@@ -16,9 +16,9 @@ import 'dart:async';
 import 'dart:io' as io;
 
 import 'package:logging/logging.dart';
+import 'package:openreception.framework/exceptions.dart';
 import 'package:openreception.framework/service-io.dart' as Service_IO;
 import 'package:openreception.framework/service.dart' as Service;
-import 'package:openreception.framework/storage.dart' as storage;
 import 'package:openreception.server/controller/controller-cdr.dart'
     as controller;
 import 'package:route/server.dart';
@@ -50,7 +50,7 @@ Future<io.HttpServer> start(
 
     try {
       await _authService.validate(token);
-    } on storage.NotFound {
+    } on NotFound {
       return new shelf.Response.forbidden('Invalid token');
     } on io.SocketException {
       return new shelf.Response.internalServerError(

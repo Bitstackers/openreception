@@ -27,7 +27,7 @@ class PeerList {
   ORModel.Peer get(String peerName) => this.contains(peerName)
       ? (_peers[peerName]
         ..channelCount = ChannelList.instance.activeChannelCount(peerName))
-      : throw new ORStorage.NotFound(peerName);
+      : throw new NotFound(peerName);
 
   int get length => _peers.keys.length;
 

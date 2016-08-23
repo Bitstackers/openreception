@@ -17,8 +17,8 @@ import 'dart:async';
 import 'dart:io' as io;
 
 import 'package:logging/logging.dart';
+import 'package:openreception.framework/exceptions.dart';
 import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.framework/storage.dart' as storage;
 import 'package:openreception.server/configuration.dart';
 import 'package:openreception.server/controller/controller-calendar.dart'
     as controller;
@@ -45,7 +45,7 @@ class Calendar {
 
     try {
       await _authService.validate(token);
-    } on storage.NotFound {
+    } on NotFound {
       return new shelf.Response.forbidden('Invalid token');
     } on io.SocketException {
       return new shelf.Response.internalServerError(

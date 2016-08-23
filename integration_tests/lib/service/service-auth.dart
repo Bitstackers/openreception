@@ -14,8 +14,8 @@ abstract class AuthService {
 
     log.info('Checking server behaviour on a non-existing token.');
 
-    await expect(sa.authService.userOf(badToken),
-        throwsA(new isInstanceOf<storage.NotFound>()));
+    await expect(
+        sa.authService.userOf(badToken), throwsA(new isInstanceOf<NotFound>()));
   }
 
   /**
@@ -48,8 +48,8 @@ abstract class AuthService {
 
     log.info('Checking server behaviour on a non-existing token.');
 
-    await expect(sa.authService.userOf(badToken),
-        throwsA(new isInstanceOf<storage.NotFound>()));
+    await expect(
+        sa.authService.userOf(badToken), throwsA(new isInstanceOf<NotFound>()));
   }
 
   /**

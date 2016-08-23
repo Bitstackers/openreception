@@ -54,8 +54,8 @@ abstract class Ivr {
     model.IvrMenu createdMenu = await ivrStore.create(menu, user);
 
     await ivrStore.remove(createdMenu.name, user);
-    await expect(ivrStore.get(createdMenu.name),
-        throwsA(new isInstanceOf<storage.NotFound>()));
+    await expect(
+        ivrStore.get(createdMenu.name), throwsA(new isInstanceOf<NotFound>()));
   }
 
   /**

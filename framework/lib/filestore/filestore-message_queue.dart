@@ -51,8 +51,7 @@ class MessageQueue implements storage.MessageQueue {
     final File file = new File('$path/$mqId.json');
 
     if (file.existsSync()) {
-      throw new storage.ClientError(
-          'File already exists, please update instead');
+      throw new ClientError('File already exists, please update instead');
     }
 
     file.writeAsStringSync(_jsonpp.convert(queueEntry));
@@ -68,7 +67,7 @@ class MessageQueue implements storage.MessageQueue {
     final File file = new File('$path/${queueEntry.id}.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound();
+      throw new NotFound();
     }
 
     file.writeAsStringSync(_jsonpp.convert(queueEntry));
@@ -84,7 +83,7 @@ class MessageQueue implements storage.MessageQueue {
     final File file = new File('$path/$mqid.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound();
+      throw new NotFound();
     }
 
     await file.delete();

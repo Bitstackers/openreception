@@ -15,8 +15,8 @@ library openreception.framework.resource;
 
 import 'dart:convert';
 
-import 'model.dart' as model;
-import 'util.dart' as util;
+import 'package:openreception.framework/model.dart' as model;
+import 'package:openreception.framework/util.dart' as util;
 
 part 'resource/resource-authentication.dart';
 part 'resource/resource-calendar.dart';

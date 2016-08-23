@@ -77,7 +77,7 @@ abstract class Calendar {
     try {
       await calendarStore.get(-1, new model.OwningReception(1));
       fail('Expected NotFound exception');
-    } on storage.NotFound {
+    } on NotFound {
       // Successs
       await new Future.delayed(new Duration(milliseconds: 10));
     }
@@ -117,7 +117,7 @@ abstract class Calendar {
 
     _log.info('Asserting that the created entry is no longer found');
     expect(calendarStore.get(created.id, owner),
-        throwsA(new isInstanceOf<storage.NotFound>()));
+        throwsA(new isInstanceOf<NotFound>()));
   }
 
   /**

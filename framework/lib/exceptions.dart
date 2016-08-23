@@ -12,7 +12,91 @@
 */
 
 /// Shared errors and exceptions.
-library openreception.framework.config;
+library openreception.framework.exceptions;
+
+class StorageException implements Exception {}
+
+class NotFound implements StorageException {
+  final String message;
+  const NotFound([this.message = ""]);
+
+  @override
+  String toString() => "NotFound: $message";
+}
+
+@deprecated
+class SaveFailed implements StorageException {
+  final String message;
+  const SaveFailed([this.message = ""]);
+
+  @override
+  String toString() => "SaveFailed: $message";
+}
+
+class Forbidden implements StorageException {
+  final String message;
+  const Forbidden([this.message = ""]);
+
+  @override
+  String toString() => "Forbidden: $message";
+}
+
+class Conflict implements StorageException {
+  final String message;
+  const Conflict([this.message = ""]);
+
+  @override
+  String toString() => "Conflict: $message";
+}
+
+class NotAuthorized implements StorageException {
+  final String message;
+  const NotAuthorized([this.message = ""]);
+
+  @override
+  String toString() => "NotAuthorized: $message";
+}
+
+class ClientError implements StorageException {
+  final String message;
+  const ClientError([this.message = ""]);
+
+  @override
+  String toString() => "ClientError: $message";
+}
+
+@deprecated
+class InternalClientError implements StorageException {
+  final String message;
+  const InternalClientError([this.message = ""]);
+
+  @override
+  String toString() => "InternalClientError: $message";
+}
+
+class ServerError implements StorageException {
+  final String message;
+  const ServerError([this.message = ""]);
+
+  @override
+  String toString() => "ServerError: $message";
+}
+
+class Busy implements StorageException {
+  final String message;
+  const Busy([this.message = ""]);
+
+  @override
+  String toString() => "Busy: $message";
+}
+
+class Unchanged implements StorageException {
+  final String message;
+  const Unchanged([this.message = ""]);
+
+  @override
+  String toString() => "Unchanged: $message";
+}
 
 /// General validation exception. Should only be treated as an abstract
 /// superclass, but may also be used directly in cases where the subclasses make

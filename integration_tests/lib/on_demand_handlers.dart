@@ -4,10 +4,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:logging/logging.dart';
+import 'package:openreception_tests/support.dart' as test_fw;
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
-
-import 'package:openreception_tests/support.dart' as test_fw;
 
 const String libraryName = 'or_test_fw.on_demand_handlers';
 final Logger log = new Logger(libraryName);

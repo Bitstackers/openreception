@@ -483,11 +483,11 @@ class Receptionist {
       return pickup(selectedCall, waitForEvent: true);
     }
 // Call is locked.
-    on storage.Conflict {
+    on Conflict {
       return pickupAfterCallUnlock(selectedCall);
     }
 // Call is hungup
-    on storage.NotFound {
+    on NotFound {
       callEventsOnSelectedCall(event.Event e) {
         if (e is event.CallEvent) return e.call.id == selectedCall.id;
       }

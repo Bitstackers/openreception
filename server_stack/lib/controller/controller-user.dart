@@ -15,12 +15,13 @@ library openreception.server.controller.user;
 
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/gzip_cache.dart' as gzip_cache;
 import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/storage.dart' as storage;
+import 'package:openreception.framework/exceptions.dart';
 import 'package:openreception.framework/filestore.dart' as filestore;
+import 'package:openreception.framework/gzip_cache.dart' as gzip_cache;
+import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.server/model.dart' as model;
 import 'package:openreception.server/response_utils.dart';
@@ -47,7 +48,7 @@ class User {
 
     try {
       return okGzip(new Stream.fromIterable([await _cache.get(uid)]));
-    } on storage.NotFound catch (e) {
+    } on NotFound catch (e) {
       return notFound(e.toString());
     }
   }
@@ -58,7 +59,7 @@ class User {
   Future<shelf.Response> list(shelf.Request request) async {
     try {
       return okGzip(new Stream.fromIterable([await _cache.list()]));
-    } on storage.NotFound catch (e) {
+    } on NotFound catch (e) {
       return notFound(e.toString());
     }
   }
@@ -87,7 +88,7 @@ class User {
       }
 
       return okJson({'status': 'ok', 'description': 'User deleted'});
-    } on storage.NotFound {
+    } on NotFound {
       return notFoundJson({'description': 'No user found with id $uid'});
     }
   }
@@ -169,11 +170,11 @@ class User {
       }
 
       return okJson(uRef);
-    } on storage.Unchanged {
+    } on Unchanged {
       return clientError('Unchanged');
-    } on storage.NotFound catch (e) {
+    } on NotFound catch (e) {
       return notFound(e.toString());
-    } on storage.ClientError catch (e) {
+    } on ClientError catch (e) {
       return clientError(e.toString());
     }
   }
@@ -191,7 +192,7 @@ class User {
 
     try {
       return okJson(await _userStore.getByIdentity(identity));
-    } on storage.NotFound catch (error) {
+    } on NotFound catch (error) {
       return notFound(error.toString());
     }
   }

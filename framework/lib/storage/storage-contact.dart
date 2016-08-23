@@ -45,8 +45,8 @@ abstract class Contact {
 
   Future<Iterable<model.ReceptionReference>> receptions(int cid);
 
-  /// Permanently removes the previously stored [model.User] object identified
-  /// by [uid].
+  /// Permanently removes the previously stored [model.BaseContact] object
+  /// identified by [cid].
   ///
   /// The [modifier] is required for traceability of who performed the deletion.
   Future remove(int cid, model.User modifier);

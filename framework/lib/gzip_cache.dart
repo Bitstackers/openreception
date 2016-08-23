@@ -19,16 +19,14 @@
 library openreception.framework.gzip_cache;
 
 import 'dart:async';
-
 import 'dart:convert';
 
 import 'package:archive/archive.dart';
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/event.dart' as event;
-//import 'package:openreception.framework/exceptions.dart';
+import 'package:openreception.framework/exceptions.dart';
 import 'package:openreception.framework/filestore.dart' as filestore;
 import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/storage.dart' as storage;
 
 const String _libraryName = 'openreception.framework.gzip_cache';
 
@@ -108,7 +106,7 @@ class CalendarCache {
         _entryCache[key] =
             serializeAndCompressObject(await _rCalendarStore.get(eid, owner));
       } else {
-        throw new storage.ClientError('Could not find suitable for store '
+        throw new ClientError('Could not find suitable for store '
             'for owner type: ${owner.runtimeType}');
       }
     }
@@ -133,7 +131,7 @@ class CalendarCache {
       } else if (owner is model.OwningReception) {
         entries = (await _rCalendarStore.list(owner)).toList(growable: false);
       } else {
-        throw new storage.ClientError('Could not find suitable for store '
+        throw new ClientError('Could not find suitable for store '
             'for owner type: ${owner.runtimeType}');
       }
 
@@ -166,7 +164,7 @@ class CalendarCache {
       } else if (owner is model.OwningReception) {
         entries.addAll(await _rCalendarStore.list(owner));
       } else {
-        throw new storage.ClientError('Could not find suitable for store '
+        throw new ClientError('Could not find suitable for store '
             'for owner type: ${owner.runtimeType}');
       }
 

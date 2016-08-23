@@ -38,7 +38,7 @@ abstract class CallPark {
   static Future parkNonexistingCall(
       model.ReceptionDialplan rdp, Receptionist receptionist) async {
     await expect(receptionist.callFlowControl.park('null'),
-        throwsA(new isInstanceOf<storage.NotFound>()));
+        throwsA(new isInstanceOf<NotFound>()));
   }
 
   /**

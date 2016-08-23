@@ -68,7 +68,7 @@ abstract class ReceptionDialplanStore {
 
     await rdpStore.remove(createdDialplan.extension, user);
     await expect(rdpStore.get(createdDialplan.extension),
-        throwsA(new isInstanceOf<storage.NotFound>()));
+        throwsA(new isInstanceOf<NotFound>()));
   }
 
   /**

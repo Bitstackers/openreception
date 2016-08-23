@@ -27,7 +27,7 @@ class Peer {
 
     try {
       peer = _peerlist.get(peerName);
-    } on ORStorage.NotFound {
+    } on NotFound {
       return new shelf.Response.notFound('No peer with name $peerName');
     }
 

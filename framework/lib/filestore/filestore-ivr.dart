@@ -51,8 +51,7 @@ class Ivr implements storage.Ivr {
     final File file = new File('${menuDir.path}/menu.json');
 
     if (file.existsSync()) {
-      throw new storage.ClientError(
-          'File already exists, please update instead');
+      throw new ClientError('File already exists, please update instead');
     }
 
     file.writeAsStringSync(_jsonpp.convert(menu));
@@ -83,7 +82,7 @@ class Ivr implements storage.Ivr {
     final File file = new File('$path/$menuName/menu.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file with name $menuName');
+      throw new NotFound('No file with name $menuName');
     }
 
     try {
@@ -115,7 +114,7 @@ class Ivr implements storage.Ivr {
     final File file = new File('${menuDir.path}/menu.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound();
+      throw new NotFound();
     }
 
     file.writeAsStringSync(_jsonpp.convert(menu));
@@ -147,7 +146,7 @@ class Ivr implements storage.Ivr {
     final File file = new File('${menuDir.path}/menu.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound();
+      throw new NotFound();
     }
 
     if (this._git != null) {

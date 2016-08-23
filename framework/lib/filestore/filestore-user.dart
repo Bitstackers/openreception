@@ -79,7 +79,7 @@ class User implements storage.User {
     final File file = new File('$path/$uid/user.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file with name ${file.path}');
+      throw new NotFound('No file with name ${file.path}');
     }
 
     try {
@@ -105,7 +105,7 @@ class User implements storage.User {
     }));
 
     if (user == null) {
-      throw new storage.NotFound('No user found with identity : $identity');
+      throw new NotFound('No user found with identity : $identity');
     }
     return user;
   }
@@ -135,8 +135,7 @@ class User implements storage.User {
     final File file = new File('${userdir.path}/user.json');
 
     if (file.existsSync()) {
-      throw new storage.ClientError(
-          'File already exists, please update instead');
+      throw new ClientError('File already exists, please update instead');
     }
 
     file.writeAsStringSync(_jsonpp.convert(user));
@@ -213,7 +212,7 @@ class User implements storage.User {
     final File file = new File('${userdir.path}/user.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound();
+      throw new NotFound();
     }
 
     file.writeAsStringSync(_jsonpp.convert(user));
@@ -244,7 +243,7 @@ class User implements storage.User {
     final Directory userdir = new Directory('$path/$uid');
 
     if (!userdir.existsSync()) {
-      throw new storage.NotFound();
+      throw new NotFound();
     }
 
     if (this._git != null) {

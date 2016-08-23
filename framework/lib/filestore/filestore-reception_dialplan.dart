@@ -67,8 +67,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
     final File file = new File('$path/${rdp.extension}/dialplan.json');
 
     if (file.existsSync()) {
-      throw new storage.ClientError(
-          'File already exists, please update instead');
+      throw new ClientError('File already exists, please update instead');
     }
 
     file.writeAsStringSync(_jsonpp.convert(rdp));
@@ -100,7 +99,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
     final File file = new File('$path/$extension/dialplan.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file with name ${file.path}');
+      throw new NotFound('No file with name ${file.path}');
     }
 
     try {
@@ -139,7 +138,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
     final File file = new File('$path/${rdp.extension}/dialplan.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound();
+      throw new NotFound();
     }
 
     file.writeAsStringSync(_jsonpp.convert(rdp));
@@ -173,7 +172,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
     final File file = new File('$path/$extension/dialplan.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound();
+      throw new NotFound();
     }
 
     if (this._git != null) {

@@ -31,7 +31,7 @@ abstract class Call {
     try {
       ORModel.Call call = Model.CallList.instance.get(callID);
       return new shelf.Response.ok(JSON.encode(call));
-    } on ORStorage.NotFound {
+    } on NotFound {
       return new shelf.Response.notFound('{}');
     } catch (error, stackTrace) {
       final String msg = 'Could not retrive call list';
@@ -127,7 +127,7 @@ abstract class Call {
     ORModel.Call targetCall;
     try {
       targetCall = Model.CallList.instance.get(callID);
-    } on ORStorage.NotFound catch (_) {
+    } on NotFound catch (_) {
       return new shelf.Response.notFound(JSON.encode({'call_id': callID}));
     }
 
@@ -377,7 +377,7 @@ abstract class Call {
     ORModel.Call call;
     try {
       call = Model.CallList.instance.get(callID);
-    } on ORStorage.NotFound {
+    } on NotFound {
       return notFoundJson({'description': 'callID : $callID'});
     }
 
@@ -446,13 +446,13 @@ abstract class Call {
     try {
       /// Request the specified call.
       assignedCall = Model.CallList.instance.requestSpecificCall(callID, user);
-    } on ORStorage.Conflict {
+    } on Conflict {
       return new shelf.Response(409,
           body: JSON.encode({'error': 'Call not currently available.'}));
-    } on ORStorage.NotFound {
+    } on NotFound {
       return new shelf.Response.notFound(
           JSON.encode({'error': 'No calls available.'}));
-    } on ORStorage.Forbidden {
+    } on Forbidden {
       return new shelf.Response.forbidden(
           JSON.encode({'error': 'Call already assigned.'}));
     } catch (error, stackTrace) {
@@ -554,7 +554,7 @@ abstract class Call {
     try {
       sourceCall = Model.CallList.instance.get(sourceCallID);
       destinationCall = Model.CallList.instance.get(destinationCallID);
-    } on ORStorage.NotFound catch (_) {
+    } on NotFound catch (_) {
       return new shelf.Response.notFound(JSON.encode({
         'description': 'At least one of the calls are ' 'no longer available'
       }));

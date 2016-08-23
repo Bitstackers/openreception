@@ -49,7 +49,7 @@ class User {
   Future<model.UserStatus> getState(model.User user) async {
     try {
       return await _user.userStatus(user.id);
-    } on storage.NotFound catch (_) {
+    } on NotFound catch (_) {
       return new model.UserStatus();
     }
   }

@@ -18,8 +18,8 @@ import 'dart:async';
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/bus.dart';
 import 'package:openreception.framework/event.dart' as event;
+import 'package:openreception.framework/exceptions.dart';
 import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/storage.dart' as storage;
 
 part 'model/model-agent_history.dart';
 part 'model/model-user_status_list.dart';

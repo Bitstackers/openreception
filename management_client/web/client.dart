@@ -5,9 +5,9 @@ import 'package:logging/logging.dart';
 import 'package:management_tool/configuration.dart';
 import 'package:management_tool/controller.dart' as controller;
 import 'package:management_tool/page.dart' as page;
+import 'package:openreception.framework/exceptions.dart';
 import 'package:openreception.framework/service-html.dart' as transport;
 import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.framework/storage.dart' as storage;
 import 'package:route_hierarchical/client.dart';
 
 /**
@@ -58,7 +58,7 @@ Future main() async {
           .userOf(config.token);
       controller.popup
           .success('Login godkendt', 'Loggede ind som ${config.user.name}');
-    } on storage.NotFound {
+    } on NotFound {
       controller.popup.info('Token udløbet', 'Log ind igen');
       _loginRedirect();
     }

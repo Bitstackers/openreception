@@ -15,8 +15,8 @@ abstract class Pickup {
     final model.Call call = await receptionist.nextOfferedCall();
     await receptionist.waitForLock(call.id);
 
-    await expect(receptionist.pickup(call),
-        throwsA(new isInstanceOf<storage.Conflict>()));
+    await expect(
+        receptionist.pickup(call), throwsA(new isInstanceOf<Conflict>()));
   }
 
   /**
@@ -31,8 +31,8 @@ abstract class Pickup {
     final model.Call call = await receptionist.huntNextCall();
     log.info('Receptionist $receptionist got call $call.');
     log.info('Receptionist $receptionist picks up call again');
-    await expect(receptionist.pickup(call),
-        throwsA(new isInstanceOf<storage.ClientError>()));
+    await expect(
+        receptionist.pickup(call), throwsA(new isInstanceOf<ClientError>()));
   }
 
   /**
@@ -50,8 +50,8 @@ abstract class Pickup {
     final model.Call call = await receptionist.huntNextCall();
     log.info(
         'Receptionist 2 $receptionist2 tries to pick up the call as well.');
-    await expect(receptionist2.pickup(call),
-        throwsA(new isInstanceOf<storage.Forbidden>()));
+    await expect(
+        receptionist2.pickup(call), throwsA(new isInstanceOf<Forbidden>()));
 
     log.info('Test done');
   }
@@ -79,7 +79,7 @@ abstract class Pickup {
       log.info('Receptionist 1 got call $call');
       c1.complete();
     }).catchError((error, stackTrace) {
-      if (error is storage.Forbidden) {
+      if (error is Forbidden) {
         log.info('Receptionist 1 got call Forbidden');
         c1.complete();
       } else {
@@ -91,7 +91,7 @@ abstract class Pickup {
       log.info('Receptionist 2 got call $call');
       c2.complete();
     }).catchError((error, stackTrace) {
-      if (error is storage.Forbidden) {
+      if (error is Forbidden) {
         log.info('Receptionist 2 got call Forbidden');
         c2.complete();
       } else {
@@ -155,7 +155,7 @@ abstract class Pickup {
    */
   static Future pickupNonExistingCall(Receptionist receptionist) async {
     await expect(receptionist.callFlowControl.pickup('null'),
-        throwsA(new isInstanceOf<storage.NotFound>()));
+        throwsA(new isInstanceOf<NotFound>()));
   }
 
   /**

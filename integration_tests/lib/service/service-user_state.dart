@@ -19,7 +19,7 @@ abstract class UserState {
 
     log.info('Receptionist tries to orignate a new call to $callee');
     expect(receptionist.originate(callee.extension, context),
-        throwsA(new isInstanceOf<storage.ClientError>()));
+        throwsA(new isInstanceOf<ClientError>()));
     await receptionist.hangUp(firstCall);
     await receptionist.waitForPhoneHangup();
 
@@ -53,7 +53,7 @@ abstract class UserState {
 
     log.info('Receptionist tries to pick up second call $secondCall');
     expect(receptionist.pickup(secondCall),
-        throwsA(new isInstanceOf<storage.ClientError>()));
+        throwsA(new isInstanceOf<ClientError>()));
 
     await receptionist.hangUp(firstCall);
     await receptionist.waitForPhoneHangup();

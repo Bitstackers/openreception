@@ -34,7 +34,7 @@ abstract class Originate {
     await receptionist.waitForInboundCall();
     _log.info('Receptionist $receptionist rejects the call');
     await receptionist.phoneHangupAll();
-    await expect(origination, throwsA(new isInstanceOf<storage.ClientError>()));
+    await expect(origination, throwsA(new isInstanceOf<ClientError>()));
   }
 
   /**
@@ -55,7 +55,7 @@ abstract class Originate {
         .timeout(new Duration(seconds: 30));
     await receptionist.waitForInboundCall();
     _log.info('Receptionist $receptionist ignores the incoming channel');
-    await expect(origination, throwsA(new isInstanceOf<storage.ClientError>()));
+    await expect(origination, throwsA(new isInstanceOf<ClientError>()));
   }
 
   /**
@@ -97,7 +97,7 @@ abstract class Originate {
   static void originationToForbiddenNumber(
       model.OriginationContext context, Receptionist receptionist) {
     return expect(receptionist.originate('X', context),
-        throwsA(new isInstanceOf<storage.ClientError>()));
+        throwsA(new isInstanceOf<ClientError>()));
   }
 
   /**

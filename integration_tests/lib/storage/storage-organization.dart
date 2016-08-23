@@ -149,7 +149,7 @@ class Organization {
     _log.info('Looking up organization $organizationId.');
 
     expect(sa.organizationStore.get(organizationId),
-        throwsA(new isInstanceOf<storage.NotFound>()));
+        throwsA(new isInstanceOf<NotFound>()));
   }
 
   /**
@@ -210,7 +210,7 @@ class Organization {
         'Creating a new empty/invalid organization ${organization.toJson()}');
 
     return expect(sa.organizationStore.create(organization, sa.user),
-        throwsA(new isInstanceOf<storage.ClientError>()));
+        throwsA(new isInstanceOf<ClientError>()));
   }
 
   /**
@@ -315,7 +315,7 @@ class Organization {
     org.id = model.Organization.noId;
 
     expect(sa.organizationStore.update(org, sa.user),
-        throwsA(new isInstanceOf<storage.ClientError>()));
+        throwsA(new isInstanceOf<ClientError>()));
   }
 
   /**
@@ -331,7 +331,7 @@ class Organization {
     await sa.deletesOrganization(org);
 
     expect(sa.organizationStore.get(org.id),
-        throwsA(new isInstanceOf<storage.NotFound>()));
+        throwsA(new isInstanceOf<NotFound>()));
   }
 
   /**
@@ -344,7 +344,7 @@ class Organization {
     _log.info('Targeting not found organization for removal');
 
     return expect(sa.organizationStore.remove(-1, sa.user),
-        throwsA(new isInstanceOf<storage.NotFound>()));
+        throwsA(new isInstanceOf<NotFound>()));
   }
 
   /**

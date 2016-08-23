@@ -127,7 +127,7 @@ class CallList extends IterableBase<ORModel.Call> {
     if (this._map.containsKey(callID)) {
       return this._map[callID];
     } else {
-      throw new ORStorage.NotFound(callID);
+      throw new NotFound(callID);
     }
   }
 
@@ -139,7 +139,7 @@ class CallList extends IterableBase<ORModel.Call> {
     if (_map.containsKey(callID)) {
       _map[callID] = call;
     } else {
-      throw new ORStorage.NotFound(callID);
+      throw new NotFound(callID);
     }
   }
 
@@ -147,7 +147,7 @@ class CallList extends IterableBase<ORModel.Call> {
     if (this._map.containsKey(callID)) {
       this._map.remove(callID);
     } else {
-      throw new ORStorage.NotFound(callID);
+      throw new NotFound(callID);
     }
   }
 
@@ -156,21 +156,21 @@ class CallList extends IterableBase<ORModel.Call> {
       this.firstWhere(
           (ORModel.Call call) =>
               call.assignedTo == ORModel.User.noId && !call.locked,
-          orElse: () => throw new ORStorage.NotFound("No calls available"));
+          orElse: () => throw new NotFound("No calls available"));
 
   ORModel.Call requestSpecificCall(String callID, ORModel.User user) {
     ORModel.Call call = this.get(callID);
 
     if (![user.id, ORModel.User.noId].contains(call.assignedTo)) {
       log.fine('Call ${callID} already assigned to uid: ${call.assignedTo}');
-      throw new ORStorage.Forbidden(callID);
+      throw new Forbidden(callID);
     } else if (call.locked) {
       if (call.assignedTo == user.id) {
         log.fine('Call $callID locked, but assigned. Unlocking.');
         call.locked = false;
       } else {
         log.fine('Uid ${user.id} requested locked call $callID');
-        throw new ORStorage.Conflict(callID);
+        throw new Conflict(callID);
       }
     }
 

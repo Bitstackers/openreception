@@ -149,8 +149,7 @@ class Contact implements storage.Contact {
     final File file = new File('${recDir.path}/${attr.receptionId}.json');
 
     if (file.existsSync()) {
-      throw new storage.ClientError(
-          'File already exists, please update instead');
+      throw new ClientError('File already exists, please update instead');
     }
 
     file.writeAsStringSync(_jsonpp.convert(attr));
@@ -188,8 +187,7 @@ class Contact implements storage.Contact {
     final Directory dir = _contactDir(contact.id);
 
     if (dir.existsSync()) {
-      throw new storage.ClientError(
-          'File already exists, please update instead');
+      throw new ClientError('File already exists, please update instead');
     }
 
     dir.createSync();
@@ -227,7 +225,7 @@ class Contact implements storage.Contact {
     final File file = new File('$path/$id/contact.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file ${file.path}');
+      throw new NotFound('No file ${file.path}');
     }
 
     try {
@@ -248,7 +246,7 @@ class Contact implements storage.Contact {
   Future<model.ReceptionAttributes> data(int id, int rid) async {
     final file = _receptionFile(id, rid);
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file: ${file.path}');
+      throw new NotFound('No file: ${file.path}');
     }
 
     return model.ReceptionAttributes
@@ -376,7 +374,7 @@ class Contact implements storage.Contact {
   @override
   Future remove(int cid, model.User modifier) async {
     if (!_index.containsKey(cid)) {
-      throw new storage.NotFound();
+      throw new NotFound();
     }
 
     final Directory contactDir = new Directory('$path/$cid');
@@ -422,13 +420,13 @@ class Contact implements storage.Contact {
   @override
   Future removeData(int id, int rid, model.User modifier) async {
     if (id == model.BaseContact.noId || rid == model.Reception.noId) {
-      throw new storage.ClientError('Empty id');
+      throw new ClientError('Empty id');
     }
 
     final recDir = new Directory('$path/$id/receptions');
     final File file = new File('${recDir.path}/$rid.json');
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file $file');
+      throw new NotFound('No file $file');
     }
 
     _log.finest('Removing file ${file.path}');
@@ -462,7 +460,7 @@ class Contact implements storage.Contact {
     final File file = new File('$path/${contact.id}/contact.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound();
+      throw new NotFound();
     }
 
     file.writeAsStringSync(_jsonpp.convert(contact));
@@ -491,12 +489,12 @@ class Contact implements storage.Contact {
   @override
   Future updateData(model.ReceptionAttributes attr, model.User modifier) async {
     if (attr.cid == model.BaseContact.noId) {
-      throw new storage.ClientError('Empty id');
+      throw new ClientError('Empty id');
     }
     final recDir = new Directory('$path/${attr.cid}/receptions');
     final File file = new File('${recDir.path}/${attr.receptionId}.json');
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file $file');
+      throw new NotFound('No file $file');
     }
 
     _log.finest('Creating new file ${file.path}');

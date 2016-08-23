@@ -22,6 +22,7 @@ import 'package:openreception.framework/gzip_cache.dart' as gzip_cache;
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.framework/storage.dart' as storage;
+import 'package:openreception.framework/exceptions.dart';
 import 'package:openreception.server/response_utils.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
@@ -61,7 +62,7 @@ class Message {
       model.Message message = await _messageStore.get(mid);
 
       return okJson(message);
-    } on storage.NotFound {
+    } on NotFound {
       return notFound('Not found: $mid');
     } catch (error, stackTrace) {
       final String msg = 'Failed to retrieve message with ID $mid';
@@ -137,7 +138,7 @@ class Message {
       } catch (error) {
         log.severe('Failed to dispatch event $e', error);
       }
-    } on storage.NotFound {
+    } on NotFound {
       return notFound('$mid');
     }
 

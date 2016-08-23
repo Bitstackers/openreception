@@ -16,6 +16,5 @@ abstract class ActiveRecording {
    *
    */
   static void getNonExisting(service.CallFlowControl callFlow) => expect(
-      callFlow.activeRecording('none'),
-      throwsA(new isInstanceOf<storage.NotFound>()));
+      callFlow.activeRecording('none'), throwsA(new isInstanceOf<NotFound>()));
 }

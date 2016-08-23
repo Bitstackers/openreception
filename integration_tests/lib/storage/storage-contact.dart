@@ -13,7 +13,7 @@ abstract class Contact {
     _log.info('Checking server behaviour on a non-existing contact.');
 
     await expect(
-        sa.contactStore.get(-1), throwsA(new isInstanceOf<storage.NotFound>()));
+        sa.contactStore.get(-1), throwsA(new isInstanceOf<NotFound>()));
   }
 
   /**
@@ -281,7 +281,7 @@ abstract class Contact {
     try {
       await sa.contactStore.get(ref.id);
       fail('expected storage.NotFound ');
-    } on storage.NotFound {
+    } on NotFound {
       // Success!
     }
   }

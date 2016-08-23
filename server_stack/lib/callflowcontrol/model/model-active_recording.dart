@@ -36,7 +36,7 @@ class ActiveRecordings extends IterableBase<ORModel.ActiveRecording> {
    */
   ORModel.ActiveRecording get(String uuid) => _recordings.containsKey(uuid)
       ? _recordings[uuid]
-      : throw new ORStorage.NotFound('No active recordings on uuid');
+      : throw new NotFound('No active recordings on uuid');
 
   /**
    * Handle an incoming [ESL.Event] packet

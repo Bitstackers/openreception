@@ -95,7 +95,7 @@ class AgentHistory {
    * object. Throws [NotFound] if the agent has no statistics associated.
    */
   model.AgentStatistics sumUp(int uid) => !_recentCalls.containsKey(uid)
-      ? throw new storage.NotFound()
+      ? throw new NotFound()
       : new model.AgentStatistics(
           uid,
           _recentCalls[uid].length,

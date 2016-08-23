@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/event.dart' as event;
+import 'package:openreception.framework/exceptions.dart';
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/pbx-keys.dart' as pbxKey;
 import 'package:openreception.framework/service.dart' as service;

@@ -42,7 +42,7 @@ class ActiveRecording {
       }
 
       return okJson(Model.ActiveRecordings.instance.get(channelId));
-    } on ORStorage.NotFound {
+    } on NotFound {
       return notFound('No active recording on channel $channelId');
     }
   }

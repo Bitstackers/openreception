@@ -101,8 +101,8 @@ abstract class User {
 
     await sa.userStore.remove(created.id, sa.user);
 
-    return expect(sa.userStore.get(created.id),
-        throwsA(new isInstanceOf<storage.NotFound>()));
+    return expect(
+        sa.userStore.get(created.id), throwsA(new isInstanceOf<NotFound>()));
   }
 
   /**
@@ -220,7 +220,7 @@ abstract class User {
     try {
       await sa.userStore.update(user, sa.user);
       fail('Expected storage.Unchanged');
-    } on storage.Unchanged {
+    } on Unchanged {
       _log.info('Got expected exception');
     }
     {
@@ -279,7 +279,7 @@ abstract class User {
     try {
       await sa.userStore.update(user, sa.user);
       fail('Expected storage.Unchanged');
-    } on storage.Unchanged {
+    } on Unchanged {
       _log.info('Got expected exception');
     }
     {
@@ -357,7 +357,7 @@ abstract class User {
     try {
       await sa.userStore.update(user, sa.user);
       fail('Expected storage.Unchanged');
-    } on storage.Unchanged {
+    } on Unchanged {
       _log.info('Got expected exception');
     }
     {
@@ -416,7 +416,7 @@ abstract class User {
     try {
       await sa.userStore.update(user, sa.user);
       fail('Expected storage.Unchanged');
-    } on storage.Unchanged {
+    } on Unchanged {
       _log.info('Got expected exception');
     }
     {

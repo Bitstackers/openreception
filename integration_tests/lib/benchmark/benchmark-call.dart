@@ -37,13 +37,13 @@ abstract class Call {
         await r.hangUp(activeCall);
         await r.waitForPhoneHangup();
         handled++;
-      } on storage.Conflict {
+      } on Conflict {
         log.fine('$nextCall is locked, trying again later.');
-      } on storage.NotFound {
+      } on NotFound {
         log.fine('$nextCall is hung up, trying the next one.');
-      } on storage.Forbidden {
+      } on Forbidden {
         log.fine('$nextCall is already assigned, trying the next one.');
-      } on storage.ServerError {
+      } on ServerError {
         await r.waitForPhoneHangup();
       }
 

@@ -102,7 +102,7 @@ class Reception implements storage.Reception {
     final File file = new File('${dir.path}/reception.json');
 
     if (file.existsSync()) {
-      throw new storage.ClientError(
+      throw new ClientError(
           'File ${file.path} already exists, please update instead');
     }
 
@@ -138,7 +138,7 @@ class Reception implements storage.Reception {
     final File file = new File('$path/$id/reception.json');
 
     if (!file.existsSync()) {
-      throw new storage.NotFound('No file with name $id');
+      throw new NotFound('No file with name $id');
     }
 
     try {
@@ -174,7 +174,7 @@ class Reception implements storage.Reception {
     final Directory receptionDir = new Directory('$path/$rid');
 
     if (!receptionDir.existsSync()) {
-      throw new storage.NotFound();
+      throw new NotFound();
     }
 
     _log.finest('Deleting file ${receptionDir.path}');
@@ -203,11 +203,11 @@ class Reception implements storage.Reception {
   Future<model.ReceptionReference> update(
       model.Reception rec, model.User modifier) async {
     if (rec.id == model.Reception.noId) {
-      throw new storage.ClientError('id may not be "noId"');
+      throw new ClientError('id may not be "noId"');
     }
     final File file = new File('$path/${rec.id}/reception.json');
     if (!file.existsSync()) {
-      throw new storage.NotFound();
+      throw new NotFound();
     }
 
     file.writeAsStringSync(_jsonpp.convert(rec));

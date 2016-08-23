@@ -21,6 +21,7 @@ import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/service-io.dart' as service;
 import 'package:openreception.framework/storage.dart' as storage;
 import 'package:openreception.server/configuration.dart' as conf;
+import 'package:openreception.framework/exceptions.dart';
 import 'package:openreception.server/googleauth.dart';
 import 'package:openreception.server/response_utils.dart';
 import 'package:openreception.server/token_vault.dart';
@@ -279,7 +280,7 @@ class Authentication {
       }
 
       return new shelf.Response.ok(JSON.encode(content['identity']));
-    } on storage.NotFound {
+    } on NotFound {
       return new shelf.Response.notFound(
           JSON.encode({'Status': 'Token $token not found'}));
     } catch (error, stacktrace) {
