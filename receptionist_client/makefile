@@ -2,6 +2,12 @@ BUILD_DIR?=build
 
 all: build
 
+analyze:
+	@(dartanalyzer --no-hints --fatal-warnings web/main.dart)
+
+analyze-hints:
+	@echo "! (dartanalyzer web/mian.dart | grep '^\[')" | bash
+
 build: pubspec.lock web/configuration_url.dart
 	@pub build
 
