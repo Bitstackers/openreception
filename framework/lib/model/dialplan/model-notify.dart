@@ -19,7 +19,7 @@ class Notify implements Action {
   const Notify(this.eventName);
 
   static Notify parse(String buffer) {
-    var buf = consumeKey(buffer.trimLeft(), Key.notify).trimLeft();
+    var buf = consumeKey(buffer.trimLeft(), key.notify).trimLeft();
 
     var consumed = consumeWord(buf);
 
@@ -32,5 +32,5 @@ class Notify implements Action {
   }
 
   @override
-  String toJson() => '${Key.notify} $eventName';
+  String toJson() => '${key.notify} $eventName';
 }

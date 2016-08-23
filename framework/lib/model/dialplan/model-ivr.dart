@@ -20,7 +20,7 @@ class Ivr implements Action {
   Ivr(this.menuName, {this.note: ''});
 
   static Ivr parse(String buffer) {
-    var buf = consumeKey(buffer.trimLeft(), Key.ivr).trimLeft();
+    var buf = consumeKey(buffer.trimLeft(), key.ivr).trimLeft();
 
     var consumed = consumeWord(buf);
 
@@ -41,10 +41,10 @@ class Ivr implements Action {
       other is Ivr && this.menuName == other.menuName;
 
   @override
-  String toString() => '${Key.ivr} $menuName';
+  String toString() => '${key.ivr} $menuName';
 
   @override
-  String toJson() => '${Key.ivr} $menuName';
+  String toJson() => '${key.ivr} $menuName';
 
   @override
   int get hashCode => menuName.hashCode;

@@ -32,7 +32,7 @@ class Transfer implements Action {
     String extension;
     String note = '';
 
-    buffer = consumeKey(buffer, Key.transfer).trimLeft();
+    buffer = consumeKey(buffer, key.transfer).trimLeft();
 
     int openBracket = buffer.indexOf('(');
 
@@ -53,6 +53,6 @@ class Transfer implements Action {
   String toString() => 'Omstil til $extension ($note)';
 
   @override
-  String toJson() => '${Key.transfer} $extension'
+  String toJson() => '${key.transfer} $extension'
       '${note.isNotEmpty ? ' ($note)': ''}';
 }

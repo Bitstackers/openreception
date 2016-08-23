@@ -28,7 +28,7 @@ class Ringtone implements Action {
   const Ringtone._internal(this.count);
 
   static Ringtone parse(String buffer) {
-    var buf = consumeKey(buffer.trimLeft(), Key.ringtone).trimLeft();
+    var buf = consumeKey(buffer.trimLeft(), key.ringtone).trimLeft();
 
     var consumed = consumeWord(buf);
 
@@ -45,5 +45,5 @@ class Ringtone implements Action {
   }
 
   @override
-  String toJson() => '${Key.ringtone} $count';
+  String toJson() => '${key.ringtone} $count';
 }

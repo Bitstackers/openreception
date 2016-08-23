@@ -25,28 +25,28 @@ abstract class Action {
     final consumed = consumeWord(buffer);
 
     switch (consumed.iden) {
-      case Key.transfer:
+      case key.transfer:
         return Transfer.parse(buffer);
 
-      case Key.voicemail:
+      case key.voicemail:
         return Voicemail.parse(buffer);
 
-      case Key.enqueue:
+      case key.enqueue:
         return Enqueue.parse(buffer);
 
-      case Key.notify:
+      case key.notify:
         return Notify.parse(buffer);
 
-      case Key.playback:
+      case key.playback:
         return Playback.parse(buffer);
 
-      case Key.ringtone:
+      case key.ringtone:
         return Ringtone.parse(buffer);
 
-      case Key.ivr:
+      case key.ivr:
         return Ivr.parse(buffer);
 
-      case Key.reception:
+      case key.reception:
         return ReceptionTransfer.parse(buffer);
 
       default:

@@ -36,14 +36,14 @@ class Playback implements Action {
     String note = '';
     int repeat = 1;
 
-    buffer = consumeKey(buffer, Key.playback).trimLeft();
+    buffer = consumeKey(buffer, key.playback).trimLeft();
 
     // Legacy. Ignore playbacks with 'locked' keywords.
     if (buffer
-        .substring(0, Key.lock.length)
+        .substring(0, key.lock.length)
         .toLowerCase()
-        .startsWith(Key.lock.toLowerCase())) {
-      buffer = buffer.substring(Key.lock.length).trimLeft();
+        .startsWith(key.lock.toLowerCase())) {
+      buffer = buffer.substring(key.lock.length).trimLeft();
     }
 
     if (!buffer.startsWith('(')) {
@@ -58,7 +58,7 @@ class Playback implements Action {
 
       var split = consumed.iden.split(':');
 
-      if (split.length > 1 && split.first == Key.repeat) {
+      if (split.length > 1 && split.first == key.repeat) {
         repeat = int.parse(split[1]);
       }
 
@@ -87,9 +87,9 @@ class Playback implements Action {
    *
    */
   @override
-  String toString() => '${Key.playback}'
+  String toString() => '${key.playback}'
       ' $filename'
-      '${repeat != 1? ' ${Key.repeat}:$repeat' :''}'
+      '${repeat != 1? ' ${key.repeat}:$repeat' :''}'
       '${note.isNotEmpty ? ' ($note)': ''}';
 
   /**

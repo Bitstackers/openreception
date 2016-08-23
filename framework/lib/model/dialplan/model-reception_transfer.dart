@@ -36,7 +36,7 @@ class ReceptionTransfer implements Action {
     String extension;
     String note = '';
 
-    buffer = consumeKey(buffer, Key.reception).trimLeft();
+    buffer = consumeKey(buffer, key.reception).trimLeft();
 
     int openBracket = buffer.indexOf('(');
 
@@ -63,6 +63,6 @@ class ReceptionTransfer implements Action {
    * JSON serialization function.
    */
   @override
-  String toJson() => '${Key.reception} $extension'
+  String toJson() => '${key.reception} $extension'
       '${note.isNotEmpty ? ' ($note)': ''}';
 }

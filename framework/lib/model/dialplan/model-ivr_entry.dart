@@ -34,20 +34,20 @@ abstract class IvrEntry {
         0, nextTerminator > 0 ? nextTerminator : buffer.length);
 
     switch (action) {
-      case Key.ivrTopmenu:
+      case key.ivrTopmenu:
         return new IvrTopmenu(digit);
 
-      case Key.ivrSubmenu:
+      case key.ivrSubmenu:
         buffer = buffer.substring(nextTerminator + 1).trimLeft();
         return new IvrSubmenu(digit, buffer.split(' ').first);
 
-      case Key.transfer:
+      case key.transfer:
         return new IvrTransfer(digit, Transfer.parse(buffer));
 
-      case Key.voicemail:
+      case key.voicemail:
         return new IvrVoicemail(digit, Voicemail.parse(buffer));
 
-      case Key.reception:
+      case key.reception:
         return new IvrReceptionTransfer(digit, ReceptionTransfer.parse(buffer));
 
       default:

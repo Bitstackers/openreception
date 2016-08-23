@@ -43,7 +43,7 @@ class Enqueue implements Action {
       }
     }
 
-    buffer = consumeKey(buffer, Key.enqueue).trimLeft();
+    buffer = consumeKey(buffer, key.enqueue).trimLeft();
 
     if (buffer.startsWith('(')) {
       consumeNote();
@@ -61,13 +61,13 @@ class Enqueue implements Action {
     if (buffer
         .substring(
             0,
-            buffer.length >= Key.music.length
-                ? Key.music.length
+            buffer.length >= key.music.length
+                ? key.music.length
                 : buffer.length)
         .toLowerCase()
-        .startsWith(Key.music.toLowerCase())) {
+        .startsWith(key.music.toLowerCase())) {
       ///Trim the music keyword.
-      buffer = buffer.substring(Key.music.length).trimLeft();
+      buffer = buffer.substring(key.music.length).trimLeft();
 
       int nextSpace =
           buffer.indexOf(' ') > 0 ? buffer.indexOf(' ') : buffer.length;
@@ -84,7 +84,7 @@ class Enqueue implements Action {
   }
 
   @override
-  String toJson() => '${Key.enqueue} $queueName'
+  String toJson() => '${key.enqueue} $queueName'
       '${holdMusic.isNotEmpty ? ' music $holdMusic' : ''}';
 
   @override

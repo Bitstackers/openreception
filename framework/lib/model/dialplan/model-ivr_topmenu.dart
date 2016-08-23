@@ -20,5 +20,5 @@ class IvrTopmenu implements IvrEntry {
   IvrTopmenu(this.digits);
 
   @override
-  String toJson() => '$digits: ${Key.ivrTopmenu}';
+  String toJson() => '$digits: ${key.ivrTopmenu}';
 }

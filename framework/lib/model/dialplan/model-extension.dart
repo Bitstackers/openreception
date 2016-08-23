@@ -50,11 +50,11 @@ class NamedExtension implements Extension {
   NamedExtension(this.name, this.actions);
 
   /// Decode a [Map] into a new [NamedExtension] object.
-  static NamedExtension decode(Map map) => new NamedExtension(
-      map[Key.name], (map[Key.actions] as Iterable).map(Action.parse).toList());
+  static NamedExtension decode(Map map) => new NamedExtension(map[key.name],
+      (map[key.actions] as Iterable).map(Action.parse).toList());
 
   /// Serialization function. Suitable for creating a new object from
   /// the static [decode] function.
   @override
-  Map toJson() => {Key.name: name, Key.actions: actions};
+  Map toJson() => {key.name: name, key.actions: actions};
 }

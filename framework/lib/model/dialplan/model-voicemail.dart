@@ -37,7 +37,7 @@ class Voicemail implements Action {
     String note = '';
 
     /// Keyword.
-    buffer = consumeKey(buffer, Key.voicemail).trimLeft();
+    buffer = consumeKey(buffer, key.voicemail).trimLeft();
 
     /// Voicemail box.
     var consumed = consumeWord(buffer);
@@ -82,7 +82,7 @@ class Voicemail implements Action {
    *
    */
   @override
-  String toJson() => '${Key.voicemail} $vmBox'
+  String toJson() => '${key.voicemail} $vmBox'
       '${recipient.isNotEmpty ? ' $recipient' : ''}'
       '${note.isNotEmpty ? ' ($note)' : ''}';
 

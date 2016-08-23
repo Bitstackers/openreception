@@ -21,5 +21,5 @@ class IvrSubmenu implements IvrEntry {
   IvrSubmenu(this.digits, this.name);
 
   @override
-  String toJson() => '$digits: ${Key.ivrSubmenu} $name';
+  String toJson() => '$digits: ${key.ivrSubmenu} $name';
 }

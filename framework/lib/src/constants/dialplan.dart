@@ -11,10 +11,8 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-/**
- * Serialization keys used by dialplan model classes.
- */
-library openreception.framework.model.dialplan.keys;
+/// Serialization keys used by dialplan model classes.
+library openreception.framework.dialplan_constants;
 
 const String fromDay = 'fromDay';
 const String fromHour = 'fromHour';

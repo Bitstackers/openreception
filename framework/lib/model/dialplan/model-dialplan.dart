@@ -13,8 +13,8 @@
 
 library openreception.framework.model.dialplan;
 
-import 'keys.dart' as Key;
 import 'parsing_utils.dart';
+import 'package:openreception.framework/src/constants/dialplan.dart' as key;
 
 part 'model-action.dart';
 part 'model-enqueue.dart';
