@@ -137,9 +137,7 @@ Future main(List<String> args) async {
       new controller.UserState(userStatus, _userUIState, _userFocusState);
 
   /// Client notification controller.
-  final controller.ClientNotifier notifier =
-      new controller.ClientNotifier(_notification);
-  notifier.userStateSubscribe(userStatus);
+  new controller.ClientNotifier(_notification, userStatus.onChange);
 
   /// Respond to future user changes.
   _userStore.onUserChange.listen((event.UserChange uc) async {

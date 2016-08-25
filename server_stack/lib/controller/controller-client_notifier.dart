@@ -11,37 +11,33 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.controller.client_notifier;
+library openreception.server.controller.client_call_notifier;
 
 import 'dart:async';
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/model.dart' as model;
+import 'package:openreception.framework/event.dart' as event;
 import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.server/model.dart' as model;
 
 /**
- * Controller class that is responsible for notifying clients about state
- * changes in the user server.
- * Listens to model changes, and sends these to the appropriate clients.
+* Controller class that is responsible for broadcasting an event to all
+* connected clients.
  */
 class ClientNotifier {
-  Logger _log = new Logger('server.controller.client_notifier');
+  final StreamSubscription subscription;
 
-  final service.NotificationService _notificationServer;
-  StreamSubscription _userStateListSubscription;
+  factory ClientNotifier(service.NotificationService notificationServer,
+      Stream<event.Event> eventStream) {
+    Logger _log = new Logger('controller.ClientNotifier');
 
-  ClientNotifier(this._notificationServer);
-
-  StreamSubscription userStateSubscribe(model.UserStatusList statusList) {
     void logError(error, stackTrace) =>
         _log.shout('Failed to dispatch event', error, stackTrace);
+    final subscription = eventStream.listen((e) async {
+      await notificationServer.broadcastEvent(e);
+    }, onError: logError);
 
-    _userStateListSubscription = statusList.onChange
-        .listen(_notificationServer.broadcastEvent, onError: logError);
-
-    return _userStateListSubscription;
+    return new ClientNotifier._internal(subscription);
   }
 
-  Future cancelCallEventSubscription() => _userStateListSubscription.cancel();
+  ClientNotifier._internal(this.subscription);
 }

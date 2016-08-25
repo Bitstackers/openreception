@@ -18,6 +18,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:esl/esl.dart' as esl;
+import 'package:esl/util.dart' as esl;
+import 'package:esl/constants.dart' as esl;
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/dialplan_tools.dart' as dialplanTools;
 import 'package:openreception.framework/exceptions.dart';
@@ -169,6 +171,10 @@ class ReceptionDialplan {
     final esl.Response r = await _eslClient.api('reloadxml');
 
     if (r.isOk) {
+      await _eslClient.eventStream.firstWhere((esl.Event e) {
+        return e.eventName == 'RELOADXML';
+      });
+
       return okJson(const {});
     } else {
       return logAndReturn(r);
@@ -224,25 +230,12 @@ class ReceptionDialplan {
 
     final int port = eslConfig.port;
 
-    // Reconnect;
+    _log.info('Connected to ${hostname}:${port}');
     _eslClient = new esl.Connection(await Socket.connect(hostname, port));
-    //_eslClient.onDone = _connectESLClient;
-
-    Future authenticate(esl.Connection client) =>
-        client.authenticate(password).then((reply) {
-          if (!reply.isOk) {
-            _log.shout('ESL Authentication failed - exiting');
-            throw new StateError('ESL Authentication failed');
-          }
-        });
-
-    _eslClient.requestStream.listen((esl.Request request) async {
-      if (request is esl.AuthRequest) {
-        _log.info('Connected to ${hostname}:${port}');
-        await authenticate(_eslClient);
-      }
-    });
+    await esl.authHandler(_eslClient, password);
     _log.info('Connecting to ${hostname}:${port}');
+
+    await _eslClient.event(['RELOADXML'], format: esl.EventFormat.json);
   }
 
   /**

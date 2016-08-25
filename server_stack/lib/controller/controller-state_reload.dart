@@ -11,18 +11,33 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.server.controller.call_flow;
+library openreception.server.controller.state_reload;
 
-class State {
-  final Logger log = new Logger('${libraryName}.State');
+import 'dart:async';
+
+import 'package:openreception.server/controller/controller-pbx.dart'
+    as controller;
+import 'package:openreception.server/model.dart' as _model;
+import 'package:openreception.server/response_utils.dart';
+import 'package:shelf/shelf.dart' as shelf;
+
+class PhoneState {
+  final _model.CallList _callList;
+
+  final _model.PeerList _peerlist;
+  final controller.PBX _pbxController;
+
+  PhoneState(this._callList, this._peerlist, this._pbxController);
 
   /**
    * Performs a total reload of state.
    */
   Future<shelf.Response> reloadAll(shelf.Request request) async {
-    await Future.wait([PBX.loadPeers(), PBX.loadChannels()]);
-    await Model.CallList.instance
-        .reloadFromChannels(Model.ChannelList.instance);
+    _peerlist.clear();
+
+    await Future.wait(
+        [_pbxController.loadPeers(_peerlist), _pbxController.loadChannels()]);
+    await _callList.reloadFromChannels();
     return okJson(const {});
   }
 }

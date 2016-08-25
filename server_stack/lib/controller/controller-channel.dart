@@ -11,13 +11,27 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.call_flow_control_server.router;
+library openreception.server.controller.channel;
 
-abstract class Channel {
-  static shelf.Response list(shelf.Request request) {
+import 'dart:convert';
+
+import 'package:logging/logging.dart';
+import 'package:openreception.server/model.dart' as _model;
+import 'package:shelf/shelf.dart' as shelf;
+import 'package:shelf_route/shelf_route.dart' as shelf_route;
+
+class Channel {
+  final Logger log =
+      new Logger('openreception.call_flow_control_server.Channel');
+
+  final _model.ChannelList _channelList;
+
+  Channel(this._channelList);
+
+  shelf.Response list(shelf.Request request) {
     try {
       List<Map> retval = new List<Map>();
-      Model.ChannelList.instance.forEach((channel) {
+      _channelList.forEach((channel) {
         retval.add(channel.toMap());
       });
 
@@ -29,10 +43,10 @@ abstract class Channel {
     }
   }
 
-  static shelf.Response get(shelf.Request request) {
+  shelf.Response get(shelf.Request request) {
     final String channelId = shelf_route.getPathParameter(request, 'chanid');
 
     return new shelf.Response.ok(
-        JSON.encode(Model.ChannelList.instance.get(channelId).toMap()));
+        JSON.encode(_channelList.get(channelId).toMap()));
   }
 }

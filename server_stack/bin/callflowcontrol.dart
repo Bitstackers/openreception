@@ -17,31 +17,110 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:esl/esl.dart' as esl;
 import 'package:esl/constants.dart' as esl;
+import 'package:esl/esl.dart' as esl;
 import 'package:esl/util.dart' as esl;
-
 import 'package:logging/logging.dart';
-import 'package:openreception.server/callflowcontrol/controller.dart'
-    as Controller;
-import 'package:openreception.server/callflowcontrol/model/model.dart' as Model;
-import 'package:openreception.server/callflowcontrol/router.dart' as router;
+
+import 'package:openreception.server/controller/controller-channel.dart'
+    as controller;
+import 'package:openreception.server/controller/controller-pbx.dart'
+    as controller;
+import 'package:openreception.server/controller/controller-active_recording.dart'
+    as controller;
+import 'package:openreception.server/controller/controller-peer.dart'
+    as controller;
+import 'package:openreception.server/controller/controller-client_notifier.dart'
+    as controller;
+import 'package:openreception.server/controller/controller-state_reload.dart'
+    as controller;
+
+import 'package:openreception.server/model.dart' as _model;
+import 'package:openreception.server/router/router-call.dart' as router;
+import 'package:openreception.framework/service.dart' as service;
+import 'package:openreception.framework/service-io.dart' as service;
+
 import 'package:openreception.server/configuration.dart';
+import 'package:openreception.framework/configuration.dart' as conf;
 
-Logger log = new Logger('callflow');
-ArgResults parsedArgs;
-ArgParser parser = new ArgParser();
+import 'package:openreception.server/controller/controller-call.dart'
+    as controller;
 
-class AuthenticationException implements Exception {
-  final String message;
-  const AuthenticationException([this.message = ""]);
+Logger _log = new Logger('callflow');
+ArgResults _parsedArgs;
+ArgParser _parser = new ArgParser();
 
-  String toString() => "NotFound: $message";
+HttpServer _httpServer;
+
+Future _startService(conf.EslConfig eslConf) async {
+  final service.Authentication _authentication = new service.Authentication(
+      Uri.parse(_parsedArgs['auth-uri']),
+      config.userServer.serverToken,
+      new service.Client());
+
+  final service.NotificationService _notification =
+      new service.NotificationService(
+          Uri.parse(_parsedArgs['notification-uri']),
+          config.userServer.serverToken,
+          new service.Client());
+
+  /// ESL clients.
+  final esl.Connection eslClient = await _connectESLClient(eslConf);
+
+  final _model.ChannelList channelList = new _model.ChannelList();
+
+  // PBX controller
+  controller.PBX pbxController = new controller.PBX(eslClient, channelList);
+
+  // Local model classes
+  final _model.CallList callList =
+      new _model.CallList(pbxController, channelList);
+  final _model.PeerList peerList =
+      new _model.PeerList(_notification, channelList);
+  final _model.ActiveRecordings activeRecordings =
+      new _model.ActiveRecordings();
+
+  controller.Channel _channelController = new controller.Channel(channelList);
+
+  // Load initial state.
+  await pbxController.loadPeers(peerList);
+  await pbxController.loadChannels();
+
+  callList.subscribe(eslClient.eventStream);
+
+  // Send event subscription request to FreeSWITCH server.
+  await eslClient.event(_model.PBXEvent.requiredSubscriptions,
+      format: esl.EventFormat.json);
+
+  new controller.ClientNotifier(_notification, callList.onEvent);
+  eslClient.eventStream.listen(channelList.handleEvent);
+  eslClient.eventStream.listen(activeRecordings.handleEvent);
+
+  controller.Call _callController = new controller.Call(
+      callList, channelList, peerList, pbxController, _authentication);
+
+  final router.Call callRouter = new router.Call(
+      _callController,
+      _channelController,
+      new controller.ActiveRecording(activeRecordings),
+      new controller.PhoneState(callList, peerList, pbxController),
+      new controller.Peer(peerList));
+
+  pbxController.eslClient.eventStream.listen(peerList.handlePacket);
+
+  _httpServer = await callRouter.start(
+      hostname: _parsedArgs['host'], port: int.parse(_parsedArgs['httpport']));
+  _log.fine(
+      'Using server on ${_authentication.host} as authentication backend');
+  _log.fine('Using server on ${_notification.host} as notification backend');
+  _log.info('Ready to handle requests');
 }
 
-/**
- * TODO: Recover from text/disconnect.
- */
+Future _stopService() async {
+  await _httpServer.close(force: true);
+}
+
+/// Call-flow-control server.
 Future main(List<String> args) async {
   ///Init logging. Inherit standard values.
   Logger.root.level = config.callFlowControl.log.level;
@@ -50,91 +129,48 @@ Future main(List<String> args) async {
   _registerAndParseCommandlineArguments(args);
 
   if (_showHelp()) {
-    print(parser.usage);
+    print(_parser.usage);
     exit(1);
   }
 
-  final String hostname = parsedArgs['esl-hostname'];
-  final String password = parsedArgs['esl-password'];
-  final int port = int.parse(parsedArgs['esl-port']);
+  final String hostname = _parsedArgs['esl-hostname'];
+  final String password = _parsedArgs['esl-password'];
+  final int port = int.parse(_parsedArgs['esl-port']);
 
-  await _connectApiClient(hostname, port, password);
-  await _connectEventClient(hostname, port, password);
-
-  await router.start(
-      hostname: parsedArgs['host'],
-      port: int.parse(parsedArgs['httpport']),
-      authUri: Uri.parse(parsedArgs['auth-uri']),
-      notificationUri: Uri.parse(parsedArgs['notification-uri']));
-  log.info('Ready to handle requests');
+  await _startService(
+      new conf.EslConfig(hostname: hostname, password: password, port: port));
 }
 
-/// Connect API client.
-Future _connectApiClient(String hostname, int port, String password) async {
-  Controller.PBX.apiClient = await _connectESLClient(hostname, port, password);
-
-  Controller.PBX.apiClient.requestStream.listen((esl.Request request) async {
-    if (request is esl.AuthRequest) {
-      log.finest('Sending authentication');
-      final esl.Reply reply =
-          await Controller.PBX.apiClient.authenticate(password);
-
-      if (!reply.isOk) {
-        log.shout('ESL api Authentication failed - exiting');
-        exit(1);
-      } else {
-        await Controller.PBX.loadPeers();
-        await Controller.PBX.loadChannels();
-        await Model.CallList.instance
-            .reloadFromChannels(Model.ChannelList.instance);
-      }
-    }
-  });
-}
-
-/// Connect Event client.
-Future _connectEventClient(String hostname, int port, String password) async {
-  Controller.PBX.eventClient =
-      await _connectESLClient(hostname, port, password);
-
-  Model.CallList.instance.subscribe(Controller.PBX.eventClient.eventStream);
-
-  Controller.PBX.eventClient.eventStream
-      .listen(Model.ChannelList.instance.handleEvent);
-
-  Controller.PBX.eventClient.eventStream
-      .listen(Model.ActiveRecordings.instance.handleEvent);
-
-  Controller.PBX.eventClient.eventStream.listen(Model.peerlist.handlePacket);
-  await Controller.PBX.eventClient.event(Model.PBXEvent.requiredSubscriptions,
-      format: esl.EventFormat.json);
-}
-
-Future<esl.Connection> _connectESLClient(
-    String hostname, int port, String password) async {
+Future<esl.Connection> _connectESLClient(conf.EslConfig eslConf) async {
   final Duration reconnectPeriod = new Duration(seconds: 3);
 
   Future<esl.Connection> tryConnect() async {
-    log.info('Connecting to ${hostname}:${port}');
+    _log.info('Connecting to ${eslConf.toDsn()}');
 
     try {
-      final Socket socket = await Socket.connect(hostname, port);
+      final Socket socket =
+          await Socket.connect(eslConf.hostname, eslConf.port);
 
       final esl.Connection connection =
-          new esl.Connection(socket, onDisconnect: tryConnect);
+          new esl.Connection(socket, onDisconnect: () async {
+        await _stopService();
+        await socket.close();
+
+        await _startService(eslConf);
+      });
 
       // Await a successful authentication.
-      await esl.authHandler(connection, password);
+      await esl.authHandler(connection, eslConf.password);
 
       return connection;
     } on SocketException {
-      log.severe('ESL Connection failed - reconnecting '
+      _log.severe('ESL Connection failed - reconnecting '
           'in ${reconnectPeriod.inSeconds} seconds');
 
       await new Future.delayed(reconnectPeriod);
       return tryConnect();
-    } on AuthenticationException {
-      log.severe('ESL Connection failed - reconnecting '
+    } on esl.AuthenticationFailure {
+      _log.severe('ESL Connection failed - reconnecting '
           'in ${reconnectPeriod.inSeconds} seconds');
 
       await new Future.delayed(reconnectPeriod);
@@ -146,7 +182,7 @@ Future<esl.Connection> _connectESLClient(
 }
 
 void _registerAndParseCommandlineArguments(List<String> arguments) {
-  parser
+  _parser
     ..addFlag('help', help: 'Output this help')
     ..addOption('httpport',
         defaultsTo: config.callFlowControl.httpPort.toString(),
@@ -171,7 +207,7 @@ void _registerAndParseCommandlineArguments(List<String> arguments) {
         defaultsTo: config.notificationServer.externalUri.toString(),
         help: 'The uri of the notification server');
 
-  parsedArgs = parser.parse(arguments);
+  _parsedArgs = _parser.parse(arguments);
 }
 
-bool _showHelp() => parsedArgs['help'];
+bool _showHelp() => _parsedArgs['help'];

@@ -27,6 +27,8 @@ import 'package:openreception.framework/gzip_cache.dart' as gzip_cache;
 import 'package:openreception.framework/service-io.dart' as service;
 import 'package:openreception.framework/service.dart' as service;
 import 'package:openreception.server/configuration.dart';
+import 'package:openreception.server/model.dart' as model;
+
 import 'package:openreception.server/controller/controller-agent_statistics.dart'
     as controller;
 import 'package:openreception.server/controller/controller-calendar.dart'
@@ -177,8 +179,11 @@ Future main(List<String> args) async {
       authService,
       new gzip_cache.ReceptionCache(rStore, rStore.onReceptionChange));
 
-  final controller.ClientNotifier notifier =
-      new controller.ClientNotifier(notificationService);
+  // Model classes.
+  final model.UserStatusList userStatus = new model.UserStatusList();
+
+  /// Create an anonymous client notifier.
+  new controller.ClientNotifier(notificationService, userStatus.onChange);
 
   /// Routers
   final router.Calendar calendarRouter =

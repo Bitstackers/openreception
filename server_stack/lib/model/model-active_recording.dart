@@ -11,45 +11,43 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.call_flow_control_server.model;
+part of openreception.server.model;
 
 /**
  * Holds a list of currently active recordings based on events from FreeSWITCH.
  */
-class ActiveRecordings extends IterableBase<ORModel.ActiveRecording> {
-  /// Singleton instance.
-  static final instance = new ActiveRecordings();
+class ActiveRecordings extends IterableBase<model.ActiveRecording> {
 
   ///Internal logger.
-  Logger _log = new Logger('$libraryName.ActiveRecordings');
+  Logger _log = new Logger('openreception.server.model.ActiveRecordings');
 
   /**
    * Active recordings are, internally, stored as maps to enable easy lookup.
    */
-  Map<String, ORModel.ActiveRecording> _recordings = {};
+  Map<String, model.ActiveRecording> _recordings = {};
 
   /// Interator simply forwards the values of the map in no particular order.
-  Iterator<ORModel.ActiveRecording> get iterator => _recordings.values.iterator;
+  Iterator<model.ActiveRecording> get iterator => _recordings.values.iterator;
 
   /**
    * Retrive a specific recording identified by its channel [uuid].
    */
-  ORModel.ActiveRecording get(String uuid) => _recordings.containsKey(uuid)
+  model.ActiveRecording get(String uuid) => _recordings.containsKey(uuid)
       ? _recordings[uuid]
       : throw new NotFound('No active recordings on uuid');
 
   /**
-   * Handle an incoming [ESL.Event] packet
+   * Handle an incoming [esl.Event] packet
    */
-  void handleEvent(ESL.Event event) {
+  void handleEvent(esl.Event event) {
     void dispatch() {
       switch (event.eventName) {
         case (PBXEvent.recordStart):
           final String uuid = event.uniqueID;
           final String path = event.fields['Record-File-Path'];
 
-          log.finest('Starting recording of channel $uuid at path $path');
-          _recordings[uuid] = new ORModel.ActiveRecording(uuid, path);
+          _log.finest('Starting recording of channel $uuid at path $path');
+          _recordings[uuid] = new model.ActiveRecording(uuid, path);
 
           break;
 
@@ -57,7 +55,7 @@ class ActiveRecordings extends IterableBase<ORModel.ActiveRecording> {
           final String uuid = event.uniqueID;
           final String path = event.fields['Record-File-Path'];
 
-          log.finest('Stopping recording of channel $uuid at path $path');
+          _log.finest('Stopping recording of channel $uuid at path $path');
           _recordings.remove(uuid);
 
           break;

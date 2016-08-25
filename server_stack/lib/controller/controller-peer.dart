@@ -11,27 +11,33 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.controller.call_flow;
+library openreception.server.controller.peer;
 
-import 'dart:async';
-import 'dart:convert';
-
-import 'package:esl/esl.dart' as ESL;
-import 'package:logging/logging.dart';
 import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/model.dart' as ORModel;
-import 'package:openreception.framework/pbx-keys.dart';
-import 'package:openreception.framework/service.dart' as ORService;
-import 'package:openreception.server/callflowcontrol/model/model.dart' as Model;
-import 'package:openreception.server/configuration.dart';
+import 'package:openreception.framework/model.dart' as model;
+import 'package:openreception.server/model.dart' as _model;
 import 'package:openreception.server/response_utils.dart';
+
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
-part 'controller/controller-active_recording.dart';
-part 'controller/controller-client_notifier.dart';
-part 'controller/controller-pbx.dart';
-part 'controller/controller-peer.dart';
-part 'controller/controller-state.dart';
+class Peer {
+  final _model.PeerList _peerlist;
 
-const String libraryName = 'controller.call_flow';
+  Peer(this._peerlist);
+
+  shelf.Response list(shelf.Request request) => okJson(_peerlist);
+
+  shelf.Response get(shelf.Request request) {
+    final String peerName = shelf_route.getPathParameter(request, 'peerid');
+    model.Peer peer;
+
+    try {
+      peer = _peerlist.get(peerName);
+    } on NotFound {
+      return new shelf.Response.notFound('No peer with name $peerName');
+    }
+
+    return okJson(peer);
+  }
+}

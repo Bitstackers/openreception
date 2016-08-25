@@ -11,19 +11,18 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.call_flow_control_server.model;
+part of openreception.server.model;
 
 //TODO: test api command: sofia_presence_data list|status|rpid|user_agent [profile/]<user>@domain
-class Peer extends ESL.Peer {
-  Peer.fromESLPeer(ESL.Peer eslPeer) {
-    this.id = eslPeer.id;
-    this.contact = eslPeer.contact;
-  }
+class Peer extends esl.Peer {
+  final ChannelList _channelList;
+
+  Peer(this._channelList);
 
   @override
   UnmodifiableMapView<String, dynamic> toJson() => new UnmodifiableMapView({
         'id': this.id,
         'registered': this.registered,
-        'activeChannels': ChannelList.instance.activeChannelCount(this.id)
+        'activeChannels': _channelList.activeChannelCount(this.id)
       });
 }
