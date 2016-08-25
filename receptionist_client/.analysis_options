@@ -9,3 +9,9 @@ linter:
     - empty_constructor_bodies
     - library_names
     - non_constant_identifier_names
+
+    #Don't explicitly initialize variables to null
+    - avoid_init_to_null
+
+    # Overridden members must be annotated
+    - annotate_overrides

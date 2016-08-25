@@ -70,6 +70,10 @@ Follow these few simple steps to get drvupld up and running:
 **NOTE:** The configuration is part of the final executable. If you make changes to
 `bin/config.dart` then remember to call `make` again to produce a new executable.
 
+**NOTE:** Make sure you monitor drvupld, since it will exit if calls to Google
+Drive API are stuck for more than 300 seconds. If you use supervisord, then the
+monitoring/restarting is automatically handled for you.
+
 ### Logging to rsyslog
 Take a look at the following two files:
 

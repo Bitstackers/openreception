@@ -99,5 +99,7 @@ class TemplateEmail extends Template {
       '${_message.flag.urgent ? '[${urgent.toUpperCase()}]' : ''} '
       'Besked fra ${_message.callerInfo.name}'
       '${_message.callerInfo.company.isEmpty ? '' : ', ${_message.callerInfo.company}'}'
-      '${_message.callerInfo.phone.isEmpty ? '' : ', ${_message.callerInfo.phone}'}';
+      '${_message.callerInfo.phone.isEmpty ? '' : ', ${_message.callerInfo.phone}'}'
+      '${_message.callerInfo.phone.isEmpty && _message.callerInfo.cellPhone.isNotEmpty ? ', ${_message.callerInfo.cellPhone}' : ''}'
+      ' (id:${_message.id.toString()})';
 }
