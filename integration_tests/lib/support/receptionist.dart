@@ -227,6 +227,7 @@ class Receptionist {
 
   /// Perform a call-state reload and await the corresponding event.
   Future callStateReload() async {
+    log.info('Performing call-state reload');
     await callFlowControl.stateReload();
     await _waitFor(type: new event.CallStateReload().runtimeType);
   }

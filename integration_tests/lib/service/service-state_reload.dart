@@ -58,8 +58,7 @@ abstract class StateReload {
     expect(orignalCallQueue.length, equals(1));
     expect(orignalCallQueue.first.assignedTo, equals(model.User.noId));
 
-    log.info('Performing state reload');
-    await receptionist.callFlowControl.stateReload();
+    await receptionist.callStateReload();
     log.info('Comparing reloaded list with original list');
     Iterable<model.Call> reloadedList =
         await receptionist.callFlowControl.callList();
@@ -82,8 +81,7 @@ abstract class StateReload {
     expect(orignalCallQueue.length, equals(1));
     expect(orignalCallQueue.first.assignedTo, equals(receptionist.user.id));
 
-    log.info('Performing state reload');
-    await receptionist.callFlowControl.stateReload();
+    await receptionist.callStateReload();
     log.info('Comparing reloaded list with original list');
     Iterable<model.Call> reloadedList =
         await receptionist.callFlowControl.callList();
@@ -110,8 +108,7 @@ abstract class StateReload {
     expect(orignalCallQueue.length, equals(1));
     expect(orignalCallQueue.first.assignedTo, equals(receptionist.user.id));
 
-    log.info('Performing state reload');
-    await receptionist.callFlowControl.stateReload();
+    await receptionist.callStateReload();
     log.info('Comparing reloaded list with original list');
     _validateCallLists(
         orignalCallQueue, await receptionist.callFlowControl.callList());
@@ -146,8 +143,7 @@ abstract class StateReload {
     expect(orignalCallQueue.first.assignedTo, equals(receptionist.user.id));
     expect(orignalCallQueue.first.state, equals(model.CallState.speaking));
 
-    log.info('Performing state reload');
-    await receptionist.callFlowControl.stateReload();
+    await receptionist.callStateReload();
     log.info('Comparing reloaded list with original list');
     _validateCallLists(
         orignalCallQueue, await receptionist.callFlowControl.callList());
@@ -171,8 +167,7 @@ abstract class StateReload {
     expect(orignalCallQueue.first.assignedTo, equals(receptionist.user.id));
     expect(orignalCallQueue, contains(outboundCall));
 
-    log.info('Performing state reload');
-    await receptionist.callFlowControl.stateReload();
+    await receptionist.callStateReload();
     log.info('Comparing reloaded list with original list');
     _validateCallLists(
         orignalCallQueue, await receptionist.callFlowControl.callList());
@@ -200,8 +195,7 @@ abstract class StateReload {
     expect(orignalCallQueue.first.assignedTo, equals(receptionist.user.id));
     expect(orignalCallQueue, contains(outboundCall));
 
-    log.info('Performing state reload');
-    await receptionist.callFlowControl.stateReload();
+    await receptionist.callStateReload();
     log.info('Comparing reloaded list with original list');
     _validateCallLists(
         orignalCallQueue, await receptionist.callFlowControl.callList());
@@ -239,8 +233,7 @@ abstract class StateReload {
     expect(orignalCallQueue.last.assignedTo, equals(receptionist.user.id));
     expect(orignalCallQueue, contains(outboundCall));
 
-    log.info('Performing state reload');
-    await receptionist.callFlowControl.stateReload();
+    await receptionist.callStateReload();
     log.info('Comparing reloaded list with original list');
     _validateCallLists(
         orignalCallQueue, await receptionist.callFlowControl.callList());
@@ -260,8 +253,7 @@ abstract class StateReload {
       orignalCallQueue = calls;
     });
 
-    log.info('Performing state reload');
-    await receptionist.callFlowControl.stateReload();
+    await receptionist.callStateReload();
     log.info('Comparing reloaded list with original list');
     _validateCallLists(
         orignalCallQueue, await receptionist.callFlowControl.callList());
