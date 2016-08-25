@@ -225,6 +225,12 @@ class Receptionist {
     }).timeout(new Duration(seconds: 10));
   }
 
+  /// Perform a call-state reload and await the corresponding event.
+  Future callStateReload() async {
+    await callFlowControl.stateReload();
+    await _waitFor(type: new event.CallStateReload().runtimeType);
+  }
+
   /**
    * Returns a Future that completes when the phone associated with the
    * receptionist is hung up.
