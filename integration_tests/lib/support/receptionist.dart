@@ -198,6 +198,8 @@ class Receptionist {
       final parkEvent = await waitForPark(call.id);
 
       validateCall(parkEvent.call);
+
+      return parkEvent.call;
     }
     return parkAction;
   }
@@ -457,7 +459,7 @@ class Receptionist {
     final pickedUpCall = await callFlowControl.pickup(call.id);
 
     if (waitForEvent) {
-      await waitForPickup(call.id);
+      return (await waitForPickup(call.id)).call;
     }
 
     return pickedUpCall;
