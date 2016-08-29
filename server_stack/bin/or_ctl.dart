@@ -12,7 +12,7 @@
 */
 
 /**
- * The OR-Stack command-line control interface.
+ * The OR-Stack command-line control interface. Largely unfinished.
  */
 library openreception.server.or_ctl;
 

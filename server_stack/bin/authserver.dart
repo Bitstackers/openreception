@@ -11,9 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-/**
- * The OR-Stack authentication server. Provides a REST authentication interface.
- */
+///The OR-Stack authentication server. Provides a REST authentication interface.
 library openreception.server.authentication;
 
 import 'dart:async';
@@ -28,12 +26,12 @@ import 'package:openreception.server/token_vault.dart';
 import 'package:openreception.server/configuration.dart';
 
 Future main(List<String> args) async {
-  ///Init logging.
+  //Init logging.
   Logger.root.level = config.authServer.log.level;
   Logger.root.onRecord.listen(config.authServer.log.onRecord);
   final Logger log = new Logger('authserver');
 
-  ///Handle argument parsing.
+  //Handle argument parsing.
   final ArgParser parser = new ArgParser()
     ..addFlag('help', help: 'Output this help', negatable: false)
     ..addOption('filestore', abbr: 'f', help: 'Path to the filestore backend')
@@ -66,7 +64,7 @@ Future main(List<String> args) async {
   await watcher.setup();
   await vault.loadFromDirectory(parsedArgs['servertokendir']);
 
-  /// Install "reload-token" mechanism.
+  // Install "reload-token" mechanism.
   ProcessSignal.SIGHUP.watch().listen((_) async {
     log.info('SIGHUP caught. Reloading tokens');
     await vault.loadFromDirectory(parsedArgs['servertokendir']);
