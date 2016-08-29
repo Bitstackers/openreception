@@ -100,12 +100,12 @@ Future main(List<String> args) async {
 
   final service.Authentication _authentication = new service.Authentication(
       Uri.parse(parsedArgs['auth-uri']),
-      config.userServer.serverToken,
+      config.calendarServer.serverToken,
       new service.Client());
 
   final service.NotificationService _notification =
       new service.NotificationService(Uri.parse(parsedArgs['notification-uri']),
-          config.userServer.serverToken, new service.Client());
+          config.calendarServer.serverToken, new service.Client());
 
   final filestore.Reception rStore = new filestore.Reception(
       parsedArgs['filestore'] + '/reception', receptionRevisionEngine);
