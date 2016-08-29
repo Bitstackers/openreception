@@ -13,6 +13,7 @@
 
 part of openreception.framework.filestore;
 
+/// File-based storage backed for [model.Reception] objects.
 class Reception implements storage.Reception {
   final Logger _log = new Logger('$libraryName.Reception');
   final String path;
@@ -73,7 +74,7 @@ class Reception implements storage.Reception {
 
   Future<Iterable<model.ReceptionReference>> _receptionsOfOrg(int oid) async {
     final dirs = new Directory(path).listSync().where((fse) =>
-        isDirectory(fse) &&
+        _isDirectory(fse) &&
         new File(fse.path + '/reception.json').existsSync());
 
     return dirs
@@ -156,7 +157,7 @@ class Reception implements storage.Reception {
   @override
   Future<Iterable<model.ReceptionReference>> list() async {
     final dirs = new Directory(path).listSync().where((fse) =>
-        isDirectory(fse) &&
+        _isDirectory(fse) &&
         new File(fse.path + '/reception.json').existsSync());
 
     return dirs.map((FileSystemEntity fse) {

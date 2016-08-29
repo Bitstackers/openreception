@@ -13,7 +13,9 @@
 
 part of openreception.framework.filestore;
 
+/// File-based storage backed for [model.User] objects.
 class User implements storage.User {
+  /// Internal logger
   final Logger _log = new Logger('$libraryName.User');
   final String path;
   final GitEngine _git;
@@ -117,7 +119,7 @@ class User implements storage.User {
   Future<Iterable<model.UserReference>> list() async => new Directory(path)
       .listSync()
       .where((fse) =>
-          isDirectory(fse) && new File(fse.path + '/user.json').existsSync())
+          _isDirectory(fse) && new File(fse.path + '/user.json').existsSync())
       .map((FileSystemEntity fse) => model.User
           .decode(
               JSON.decode(new File(fse.path + '/user.json').readAsStringSync()))

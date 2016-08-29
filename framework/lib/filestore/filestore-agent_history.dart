@@ -13,10 +13,15 @@
 
 part of openreception.framework.filestore;
 
+/// RFC3339-style (yyyy-MM-dd) [DateFormat]
 final DateFormat _rfc3339 = new DateFormat('yyyy-MM-dd');
 
+/// JSON-file based storage backed for agent call and message history.
 class AgentHistory {
+  /// Internal logger
   final Logger _log = new Logger('$libraryName.AgentHistory');
+
+  /// Path to where
   final String path;
   final storage.User _userStore;
   final Map<int, String> _uidNameCache = {};

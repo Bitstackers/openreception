@@ -11,6 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
+/// File-based storage backend. Realizes the interfaces from [storage].
 library openreception.framework.filestore;
 
 import 'dart:async';
@@ -51,24 +52,29 @@ final model.User _systemUser = new model.User.empty()
   ..name = 'System'
   ..address = 'root@localhost';
 
-/**
- * Generate an author string.
- */
+/// Generate an author string from a [model.User] object.
+///
+/// The generated author string will have the form `$name <$email>` and will
+/// be HTML-escaped.
 String _authorString(model.User user) =>
     new HtmlEscape(HtmlEscapeMode.ATTRIBUTE).convert('${user.name}') +
     ' <${user.address}>';
 
-/**
- * Convenience functions
- */
-bool isFile(FileSystemEntity fse) => fse is File && !fse.path.startsWith('.');
+/// Convenience function for checking that a [FileSystemEntity] is a
+/// non-hidden file.
+bool _isFile(FileSystemEntity fse) => fse is File && !fse.path.startsWith('.');
 
-bool isJsonFile(FileSystemEntity fse) =>
+/// Convenience function for checking that a [FileSystemEntity] is a
+/// non-hidden .json file.
+bool _isJsonFile(FileSystemEntity fse) =>
     fse is File && !fse.path.startsWith('.') && fse.path.endsWith('.json');
 
-bool isDirectory(FileSystemEntity fse) =>
+/// Convenience function for checking that a [FileSystemEntity] is a
+/// non-hidden directory.
+bool _isDirectory(FileSystemEntity fse) =>
     !basename(fse.path).startsWith('.') && fse is Directory;
 
+/// Filestore wrapper class that encloses all the filestores.
 class DataStore {
   final Calendar calendarStore;
   final Contact contactStore;

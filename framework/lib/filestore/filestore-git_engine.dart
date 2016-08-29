@@ -53,6 +53,7 @@ class _Job {
 }
 
 class GitEngine {
+  /// Internal logger
   final Logger _log = new Logger('$libraryName.GitEngine');
   final String path;
   final bool logStdout;

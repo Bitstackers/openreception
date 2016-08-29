@@ -13,7 +13,9 @@
 
 part of openreception.framework.filestore;
 
+/// File-based storage backed for [model.ReceptionDialplan] objects.
 class ReceptionDialplan implements storage.ReceptionDialplan {
+  /// Internal logger
   final Logger _log = new Logger('$libraryName.ReceptionDialplan');
   final String path;
   GitEngine _git;
@@ -117,7 +119,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   @override
   Future<Iterable<model.ReceptionDialplan>> list() async {
     final Iterable dirs = new Directory(path).listSync().where((fse) =>
-        isDirectory(fse) && new File(fse.path + '/dialplan.json').existsSync());
+        _isDirectory(fse) && new File(fse.path + '/dialplan.json').existsSync());
 
     return dirs.map((Directory fse) {
       final String fileContents =

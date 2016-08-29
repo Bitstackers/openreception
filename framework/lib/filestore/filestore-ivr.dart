@@ -13,8 +13,13 @@
 
 part of openreception.framework.filestore;
 
+/// File-based storage backed for [model.IvrMenu] objects.
 class Ivr implements storage.Ivr {
+  /// Internal logger
   final Logger _log = new Logger('$libraryName.Ivr');
+
+  /// Directory path to where the serialized [model.BaseContact] objects
+  /// are stored on disk.
   final String path;
   GitEngine _git;
   final bool logChanges;
@@ -101,7 +106,7 @@ class Ivr implements storage.Ivr {
   Future<Iterable<model.IvrMenu>> list() async => new Directory(path)
       .listSync()
       .where((fse) =>
-          isDirectory(fse) && new File(fse.path + '/menu.json').existsSync())
+          _isDirectory(fse) && new File(fse.path + '/menu.json').existsSync())
       .map((FileSystemEntity fse) => model.IvrMenu.decode(
           JSON.decode((new File(fse.path + '/menu.json')).readAsStringSync())));
 

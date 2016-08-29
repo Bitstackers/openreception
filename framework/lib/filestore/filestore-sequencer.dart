@@ -14,6 +14,7 @@
 part of openreception.framework.filestore;
 
 class Sequencer {
+  /// Internal logger
   final Logger _log = new Logger('$libraryName.GitEngine');
   final String path;
 

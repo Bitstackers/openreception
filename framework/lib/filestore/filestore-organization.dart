@@ -13,7 +13,9 @@
 
 part of openreception.framework.filestore;
 
+/// File-based storage backed for [model.Organization] objects.
 class Organization implements storage.Organization {
+  /// Internal logger
   final Logger _log = new Logger('$libraryName.Organization');
   final String path;
   final Contact _contactFileStore;
@@ -167,7 +169,7 @@ class Organization implements storage.Organization {
       new Directory(path)
           .listSync()
           .where((FileSystemEntity fse) =>
-              isDirectory(fse) &&
+              _isDirectory(fse) &&
               new File(fse.path + '/organization.json').existsSync())
           .map((FileSystemEntity fse) => model.Organization
               .decode(JSON.decode((new File(fse.path + '/organization.json'))

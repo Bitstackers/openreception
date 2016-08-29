@@ -13,7 +13,9 @@
 
 part of openreception.framework.filestore;
 
+/// File-based storage backed for [model.MessageQueueEntry] objects.
 class MessageQueue implements storage.MessageQueue {
+  /// Internal logger
   final Logger _log = new Logger('$libraryName.MessageQueue');
   final String path;
 

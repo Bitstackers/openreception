@@ -14,84 +14,123 @@
 /// Shared errors and exceptions.
 library openreception.framework.exceptions;
 
+/// General storage exception. Should only be treated as an abstract
+/// superclass, but may also be used directly in cases where creating a new
+/// subclass make little or no sense.
 class StorageException implements Exception {}
 
+/// Storage-class exception that indicate that a resource is not found.
 class NotFound implements StorageException {
+  /// The carried exception message.
   final String message;
+
+  /// Create a new [NotFound] exception with [message].
   const NotFound([this.message = ""]);
 
   @override
   String toString() => "NotFound: $message";
 }
 
-@deprecated
-class SaveFailed implements StorageException {
-  final String message;
-  const SaveFailed([this.message = ""]);
-
-  @override
-  String toString() => "SaveFailed: $message";
-}
-
+/// Storage-class exception that indicate that a resource is unavailable
+/// due to insufficient authorization.
 class Forbidden implements StorageException {
+  /// The carried exception message.
   final String message;
+
+  /// Create a new [Forbidden] exception with [message].
   const Forbidden([this.message = ""]);
 
   @override
   String toString() => "Forbidden: $message";
 }
 
+/// Storage-class exception that indicate that a resource conflict has
+/// occured.
+///
+/// This means that, for instance, trying to request an assigned call will
+/// fail with a [Conflict] exception.
 class Conflict implements StorageException {
+  /// The carried exception message.
   final String message;
+
+  /// Create a new [Conflict] exception with [message].
   const Conflict([this.message = ""]);
 
   @override
   String toString() => "Conflict: $message";
 }
 
+/// Storage-class exception that indicate that a no credentials are
+/// supplied.
 class NotAuthorized implements StorageException {
+  /// The carried exception message.
   final String message;
+
+  /// Create a new [NotAuthorized] exception with [message].
   const NotAuthorized([this.message = ""]);
 
   @override
   String toString() => "NotAuthorized: $message";
 }
 
+/// Storage-class exception that indicate that an unspecified client error
+/// occured.
+///
+/// These errors are typically caused by bad parameters passed by clients.
+/// The [message] field may carry addtional information about what
+/// triggered the exception.
 class ClientError implements StorageException {
+  /// The carried exception message.
   final String message;
+
+  /// Create a new [ClientError] exception with [message].
   const ClientError([this.message = ""]);
 
   @override
   String toString() => "ClientError: $message";
 }
 
-@deprecated
-class InternalClientError implements StorageException {
-  final String message;
-  const InternalClientError([this.message = ""]);
-
-  @override
-  String toString() => "InternalClientError: $message";
-}
-
+/// Storage-class exception that indicate that an unspecified server error
+/// occured.
+///
+/// These errors are typically caused by bad state information on the
+/// server or a bad reply from a proxy server or datastore.
+/// The [message] field may carry addtional information about what
+/// triggered the exception.
 class ServerError implements StorageException {
+  /// The carried exception message.
   final String message;
+
+  /// Create a new [ServerError] exception with [message].
   const ServerError([this.message = ""]);
 
   @override
   String toString() => "ServerError: $message";
 }
 
+/// Storage-class exception that indicate that a resource/method combination
+/// is currently not available.
+///
+/// This means that, for instance, trying to request a locked call will
+/// fail with a [Busy] exception.
 class Busy implements StorageException {
+  /// The carried exception message.
   final String message;
+
+  /// Create a new [Busy] exception with [message].
   const Busy([this.message = ""]);
 
   @override
   String toString() => "Busy: $message";
 }
 
+/// Storage-class exception that indicate that a posted resource update
+/// contained no changes.
 class Unchanged implements StorageException {
+  /// The carried exception message.
   final String message;
+
+  /// Create a new [Unchanged] exception with [message].
   const Unchanged([this.message = ""]);
 
   @override
@@ -99,8 +138,8 @@ class Unchanged implements StorageException {
 }
 
 /// General validation exception. Should only be treated as an abstract
-/// superclass, but may also be used directly in cases where the subclasses make
-/// little or no sense.
+/// superclass, but may also be used directly in cases where creating a new
+/// subclass make little or no sense.
 class ValidationException implements Exception {
   /// The carried exception message.
   final String message;

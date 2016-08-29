@@ -13,13 +13,14 @@
 
 part of openreception.framework.filestore;
 
-/// JSON-file based storage backed for [model.BaseContact] objects.
+/// File-based storage backed for [model.BaseContact] and
+/// [model.ReceptionAttributes] objects.
 class Contact implements storage.Contact {
   /// Internal logger
   final Logger _log = new Logger('$libraryName.Contact');
 
-  /// Directory path to where the serlized [model.BaseContact] objects are
-  /// stored.
+  /// Directory path to where the serialized [model.BaseContact] objects
+  /// are stored on disk.
   final String path;
 
   /// External [Reception] store. Needed for extracting foreign keys.
@@ -108,7 +109,7 @@ class Contact implements storage.Contact {
     List<FileSystemEntity> idDirs = new Directory(path).listSync();
 
     for (FileSystemEntity fse in idDirs) {
-      if (isDirectory(fse))
+      if (_isDirectory(fse))
         try {
         final id = int.parse(basenameWithoutExtension(fse.path));
         _index[id] = fse.path;

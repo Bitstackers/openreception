@@ -13,7 +13,7 @@
 
 part of openreception.framework.filestore;
 
-/// JSON-file based storage backed for [model.Message] objects.
+/// File-based storage backed for [model.Message] objects.
 class Message implements storage.Message {
   /// Internal logger
   final Logger _log = new Logger('$libraryName.Message');
@@ -96,7 +96,7 @@ class Message implements storage.Message {
         List<FileSystemEntity> files = fse.listSync();
 
         for (FileSystemEntity file in files) {
-          if (isJsonFile(file)) {
+          if (_isJsonFile(file)) {
             try {
               final id = int.parse(basenameWithoutExtension(file.path));
               _index[id] = file.path;
@@ -208,7 +208,7 @@ class Message implements storage.Message {
 
     for (FileSystemEntity fse in fses) {
       // Only process directories.
-      if (isJsonFile(fse)) {
+      if (_isJsonFile(fse)) {
         try {
           list.add(int.parse(basenameWithoutExtension(fse.path)));
         } catch (e) {

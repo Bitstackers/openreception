@@ -15,7 +15,7 @@ part of openreception.framework.filestore;
 
 /// Filestore for persistent storage of [model.CalendarEntry] objects.
 class Calendar implements storage.Calendar {
-  /// Internal log stream
+  /// Internal logger
   final Logger _log = new Logger('$libraryName.Calendar');
 
   /// Root path to where the object files are stored
@@ -170,10 +170,10 @@ class Calendar implements storage.Calendar {
    */
   @override
   Future<model.CalendarEntry> get(int eid, model.Owner owner) async {
-    final subdirs = new Directory(path).listSync().where(isDirectory);
+    final subdirs = new Directory(path).listSync().where(_isDirectory);
 
     for (Directory subdir in subdirs) {
-      final ownerDirs = subdir.listSync().where(isDirectory);
+      final ownerDirs = subdir.listSync().where(_isDirectory);
 
       for (Directory dir in ownerDirs) {
         File file = new File('${dir.path}/$eid.json');
@@ -208,7 +208,7 @@ class Calendar implements storage.Calendar {
   Future<Iterable<model.CalendarEntry>> _list(String basePath) async =>
       new Directory(basePath)
           .listSync()
-          .where((fse) => isFile(fse) && fse.path.endsWith('.json'))
+          .where((fse) => _isFile(fse) && fse.path.endsWith('.json'))
           .map((FileSystemEntity fse) => model.CalendarEntry
               .decode(JSON.decode((fse as File).readAsStringSync())));
 
