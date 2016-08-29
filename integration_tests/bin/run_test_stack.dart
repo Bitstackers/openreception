@@ -6,8 +6,8 @@ import 'dart:math' show Random;
 import 'package:logging/logging.dart';
 import 'package:args/args.dart';
 import 'package:openreception.client_app_server/router.dart' as app_router;
-import 'package:openreception.framework/keys.dart' as key;
 import 'package:openreception_tests/support.dart';
+import 'package:openreception.framework/service.dart' as service;
 //import 'package:args/args.dart';
 
 /**
@@ -99,18 +99,23 @@ Future main(args) async {
   final configserver = env.requestConfigServerProcess();
   final configClient = (await configserver).createClient(env.httpClient);
 
-  configClient.register(key.authentication, (await authserver).uri);
-  configClient.register(key.calendar, (await calendarserver).uri);
-  configClient.register(key.callflow, (await callflow).uri);
-  //configClient.register(key.cdr, cdrserver.uri);
-  configClient.register(key.contact, (await contactserver).uri);
-  configClient.register(key.dialplan, (await dialplanserver).uri);
-  configClient.register(key.message, (await messageserver).uri);
-  configClient.register(key.notification, (await notificationserver).uri);
   configClient.register(
-      key.notificationSocket, (await notificationserver).notifyUri);
-  configClient.register(key.user, (await userserver).uri);
-  configClient.register(key.reception, (await receptionserver).uri);
+      service.ServerType.authentication, (await authserver).uri);
+  configClient.register(
+      service.ServerType.calendar, (await calendarserver).uri);
+  configClient.register(service.ServerType.callflow, (await callflow).uri);
+  //configClient.register(key.cdr, cdrserver.uri);
+  configClient.register(service.ServerType.contact, (await contactserver).uri);
+  configClient.register(
+      service.ServerType.dialplan, (await dialplanserver).uri);
+  configClient.register(service.ServerType.message, (await messageserver).uri);
+  configClient.register(
+      service.ServerType.notification, (await notificationserver).uri);
+  configClient.register(service.ServerType.notificationSocket,
+      (await notificationserver).notifyUri);
+  configClient.register(service.ServerType.user, (await userserver).uri);
+  configClient.register(
+      service.ServerType.reception, (await receptionserver).uri);
 
   final clientConfig = await configClient.clientConfig();
   final JsonEncoder jsonpp = new JsonEncoder.withIndent('  ');

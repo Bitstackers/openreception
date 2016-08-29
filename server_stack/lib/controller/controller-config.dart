@@ -19,30 +19,34 @@ import 'dart:convert';
 import 'package:logging/logging.dart';
 import 'package:shelf/shelf.dart' as shelf;
 
-import 'package:openreception.framework/keys.dart' as key;
 import 'package:openreception.framework/model.dart' as model;
+
+import 'package:openreception.framework/service.dart' as service;
 
 import 'package:openreception.server/configuration.dart';
 import 'package:openreception.server/response_utils.dart';
 
+/// Configuration controller class.
 class Config {
   final Logger _log = new Logger('controller.config');
 
-  model.ClientConfiguration clientConfig = new model.ClientConfiguration.empty()
-    ..authServerUri = config.configserver.authServerUri
-    ..calendarServerUri = config.configserver.calendarServerUri
-    ..callFlowServerUri = config.configserver.callFlowControlUri
-    ..cdrServerUri = config.configserver.cdrServerUri
-    ..contactServerUri = config.configserver.contactServerUri
-    ..dialplanServerUri = config.configserver.dialplanServerUri
-    ..hideInboundCallerId = config.hideInboundCallerId
-    ..messageServerUri = config.configserver.messageServerUri
-    ..myIdentifiers = config.myIdentifiers
-    ..notificationServerUri = config.configserver.notificationServerUri
-    ..notificationSocketUri = config.configserver.notificationSocketUri
-    ..receptionServerUri = config.configserver.receptionServerUri
-    ..systemLanguage = config.systemLanguage
-    ..userServerUri = config.configserver.userServerUri;
+  /// The current client configuration.
+  final model.ClientConfiguration clientConfig =
+      new model.ClientConfiguration.empty()
+        ..authServerUri = config.configserver.authServerUri
+        ..calendarServerUri = config.configserver.calendarServerUri
+        ..callFlowServerUri = config.configserver.callFlowControlUri
+        ..cdrServerUri = config.configserver.cdrServerUri
+        ..contactServerUri = config.configserver.contactServerUri
+        ..dialplanServerUri = config.configserver.dialplanServerUri
+        ..hideInboundCallerId = config.hideInboundCallerId
+        ..messageServerUri = config.configserver.messageServerUri
+        ..myIdentifiers = config.myIdentifiers
+        ..notificationServerUri = config.configserver.notificationServerUri
+        ..notificationSocketUri = config.configserver.notificationSocketUri
+        ..receptionServerUri = config.configserver.receptionServerUri
+        ..systemLanguage = config.systemLanguage
+        ..userServerUri = config.configserver.userServerUri;
 
   /**
    *
@@ -54,59 +58,62 @@ class Config {
    */
   Future<shelf.Response> register(shelf.Request request) async {
     Uri uri;
-    String type;
+    service.ServerType servertype;
 
     try {
       Map body = JSON.decode(await request.readAsString());
-      type = body['type'];
+      final String type = body['type'];
+
       if (type == null || type.isEmpty) {
         throw new FormatException('Bad value of type: $type');
       }
       if (body['uri'] == null) {
         throw new FormatException('Bad value of uri: $uri');
       }
-
+      servertype = service.decodeServerType(type);
       uri = Uri.parse(body['uri']);
     } on FormatException catch (e) {
       return clientError('Bad parameters: $e');
+    } on StateError catch (e) {
+      return clientError('Bad parameters: $e');
     }
 
-    switch (type) {
-      case key.authentication:
+    switch (servertype) {
+      case service.ServerType.authentication:
         clientConfig.authServerUri = uri;
         break;
-      case key.calendar:
+      case service.ServerType.calendar:
         clientConfig.calendarServerUri = uri;
         break;
-      case key.callflow:
+      case service.ServerType.callflow:
         clientConfig.callFlowServerUri = uri;
         break;
-      case key.cdr:
+      case service.ServerType.cdr:
         clientConfig.cdrServerUri = uri;
         break;
-      case key.contact:
+      case service.ServerType.contact:
         clientConfig.contactServerUri = uri;
         break;
-      case key.dialplan:
+      case service.ServerType.dialplan:
         clientConfig.dialplanServerUri = uri;
         break;
-      case key.message:
+      case service.ServerType.message:
         clientConfig.messageServerUri = uri;
         break;
-      case key.notification:
+      case service.ServerType.notification:
         clientConfig.notificationServerUri = uri;
         break;
-      case key.notificationSocket:
+      case service.ServerType.notificationSocket:
         clientConfig.notificationSocketUri = uri;
         break;
-      case key.reception:
+      case service.ServerType.reception:
         clientConfig.receptionServerUri = uri;
         break;
-      case key.user:
+      case service.ServerType.user:
         clientConfig.userServerUri = uri;
         break;
       default:
-        _log.warning('Uknown type of registration: $type');
+        _log.warning('Uknown type of registration: $servertype');
     }
 
     return okJson({});

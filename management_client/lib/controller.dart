@@ -6,9 +6,9 @@ import 'dart:html' as html;
 
 import 'package:logging/logging.dart';
 import 'package:openreception.framework/event.dart' as event;
+import 'package:openreception.framework/exceptions.dart';
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.framework/storage.dart' as storage;
 
 part 'controller/controller-calendar.dart';
 part 'controller/controller-call.dart';
@@ -34,7 +34,7 @@ final Popup popup = new Popup(
 Function onForbidden = () => null;
 
 void _handleError(e) {
-  if (e is storage.Forbidden) {
+  if (e is Forbidden) {
     onForbidden();
   } else {
     throw e;

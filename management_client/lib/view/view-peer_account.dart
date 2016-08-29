@@ -116,7 +116,7 @@ class PeerAccount {
       try {
         _orginalAccount = await _peerAccountController.get(extension);
         _passwordInput.value = _orginalAccount.password;
-      } on storage.NotFound {}
+      } on NotFound {}
     }
 
     _peernameInput.value = _orginalAccount.username;

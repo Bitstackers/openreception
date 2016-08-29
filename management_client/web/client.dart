@@ -126,7 +126,7 @@ Future main() async {
   final controller.Calendar calendarController =
       new controller.Calendar(calendarStore, config.user);
   final controller.Dialplan dialplanController =
-      new controller.Dialplan(dialplanStore, receptionStore);
+      new controller.Dialplan(dialplanStore);
   final controller.Message messageController =
       new controller.Message(messageStore, config.user);
   final controller.Ivr ivrController =

@@ -317,7 +317,7 @@ class Contact {
               'Tilføjede ${contact.name} til ${rRefs.length} receptioner', '');
 
           contact = await _contactController.get(dcid);
-        } on storage.NotFound {
+        } on NotFound {
           notify.error('cid:${sourceCid} Findes ikke', '');
 
           return null;

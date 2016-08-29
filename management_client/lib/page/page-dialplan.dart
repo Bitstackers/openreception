@@ -155,8 +155,10 @@ class Dialplan {
     _dpPlot.dialplan = _dpView.dialplan;
     _dpView.create = false;
     _highlightDialplanInList(extension);
-    _renderReceptionList(
-        [(await _dialplanController.getByExtensions(extension)).reference]);
+
+    ///FIXME: Dialplan/reception index needs to be fetched and built on
+    /// the client-side for this to work.
+    _renderReceptionList([]);
   }
 
   /**

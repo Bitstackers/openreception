@@ -13,35 +13,96 @@
 
 part of openreception.framework.service;
 
+enum ServerType {
+  authentication,
+  calendar,
+  callflow,
+  cdr,
+  contact,
+  dialplan,
+  message,
+  notification,
+  notificationSocket,
+  user,
+  reception
+}
+
+ServerType decodeServerType(String type) {
+  const Map<String, ServerType> decodeMap = const <String, ServerType>{
+    key.authentication: ServerType.authentication,
+    key.calendar: ServerType.calendar,
+    key.callflow: ServerType.callflow,
+    key.cdr: ServerType.cdr,
+    key.contact: ServerType.contact,
+    key.dialplan: ServerType.dialplan,
+    key.message: ServerType.message,
+    key.notification: ServerType.notification,
+    key.notificationSocket: ServerType.notificationSocket,
+    key.user: ServerType.user,
+    key.reception: ServerType.reception
+  };
+
+  if (!decodeMap.containsKey(type)) {
+    throw new StateError('Undefined ServerType: $type');
+  }
+
+  return decodeMap[type];
+}
+
+String _encodeServerType(ServerType type) {
+  const Map<ServerType, String> encodeMap = const <ServerType, String>{
+    ServerType.authentication: key.authentication,
+    ServerType.calendar: key.calendar,
+    ServerType.callflow: key.callflow,
+    ServerType.cdr: key.cdr,
+    ServerType.contact: key.contact,
+    ServerType.dialplan: key.dialplan,
+    ServerType.message: key.message,
+    ServerType.notification: key.notification,
+    ServerType.notificationSocket: key.notificationSocket,
+    ServerType.user: key.user,
+    ServerType.reception: key.reception
+  };
+
+  if (!encodeMap.containsKey(type)) {
+    throw new StateError('Undefined ServerType: $type');
+  }
+
+  return encodeMap[type];
+}
+
 /// Configuration service client class.
 ///
 /// The client class wraps REST methods and handles lower-level
 /// communication, such as serialization/deserialization, method choice
 /// (GET, PUT, POST, DELETE) and resource uri building.
+///
+/// A [RESTConfiguration] is similar to a broker registry, that maintains
+/// and stores location identifiers for other services.
 class RESTConfiguration {
   final WebService _backend;
 
   /// The uri of the connected backend.
   final Uri host;
 
+  /// Create a new [RESTConfiguration] client.
   RESTConfiguration(Uri this.host, this._backend);
 
-  /**
-   * Returns a [ClientConfiguration] object.
-   */
+  /// Returns a [ClientConfiguration] object.
   Future<model.ClientConfiguration> clientConfig() {
-    Uri uri = resource.Config.get(this.host);
+    final Uri uri = resource.Config.get(this.host);
 
     return _backend.get(uri).then((String response) =>
         new model.ClientConfiguration.fromMap(JSON.decode(response)));
   }
 
-  /**
-   * Registers a server in the config server registry.
-   */
-  Future register(String type, Uri registerUri) {
-    Uri uri = resource.Config.register(this.host);
-    final Map body = {'type': type, 'uri': registerUri.toString()};
+  ///Registers a server in the config server registry.
+  Future register(ServerType type, Uri registerUri) {
+    final Uri uri = resource.Config.register(this.host);
+    final Map body = {
+      'type': _encodeServerType(type),
+      'uri': registerUri.toString()
+    };
 
     return _backend.post(uri, JSON.encode(body));
   }

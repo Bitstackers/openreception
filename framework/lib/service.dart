@@ -20,6 +20,8 @@ import 'dart:convert';
 import 'package:openreception.framework/bus.dart';
 import 'package:openreception.framework/event.dart' as event;
 import 'package:openreception.framework/exceptions.dart';
+import 'package:openreception.framework/src/constants/model.dart' as key;
+
 import 'package:openreception.framework/model.dart' as model;
 import 'package:openreception.framework/resource.dart' as resource;
 import 'package:openreception.framework/storage.dart' as storage;

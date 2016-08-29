@@ -2,15 +2,11 @@ part of management_tool.controller;
 
 class Dialplan {
   final service.RESTDialplanStore _dpService;
-  final service.RESTReceptionStore _rStore;
 
-  Dialplan(this._dpService, this._rStore);
+  Dialplan(this._dpService);
 
   Future<Iterable<model.ReceptionDialplan>> list() =>
       _dpService.list().catchError(_handleError);
-
-  Future<model.Reception> getByExtensions(String extension) =>
-      _rStore.getByExtension(extension).catchError(_handleError);
 
   Future<model.ReceptionDialplan> get(String extension) =>
       _dpService.get(extension).catchError(_handleError);
