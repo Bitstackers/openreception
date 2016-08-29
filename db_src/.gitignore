@@ -1,0 +1,10 @@
+# Generated SQL files:
+
+*/*.sql
+
+# Generated SQLite database:
+
+test.db
+
+# Don't track generated documentation
+doc/

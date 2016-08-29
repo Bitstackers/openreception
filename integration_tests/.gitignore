@@ -21,3 +21,6 @@ support_tools/pjproject-*
 # emacs
 \#*#
 *~
+
+# Don't track generated documentation
+doc/

@@ -18,6 +18,9 @@ lib/configuration.dart
 # Don't track out/
 out/
 
+# Don't track generated documentation
+doc/
+
 # Do not track emacs temporary and backup files
 \#*#
 *~

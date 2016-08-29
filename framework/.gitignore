@@ -20,3 +20,6 @@ pubspec.lock
 
 # Do not track Nano temporary files
 .#*#
+
+# Don't track generated documentation
+doc/

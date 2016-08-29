@@ -35,3 +35,6 @@ lib/dist
 .#*#
 .DS_Store
 .idea
+
+# Don't track generated documentation
+doc/
