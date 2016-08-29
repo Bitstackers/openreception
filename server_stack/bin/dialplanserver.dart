@@ -76,7 +76,7 @@ Future main(List<String> args) async {
   final ArgResults parsedArgs = parser.parse(args);
 
   void exitWithError(String error) {
-    if (!error.isEmpty) {
+    if (error.isNotEmpty) {
       stderr.writeln(error + '\n');
     }
     print(parser.usage);
