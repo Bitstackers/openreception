@@ -359,8 +359,8 @@ class ServiceAgent {
     final DateTime now = new DateTime.now();
 
     model.OpeningHour justNow = new model.OpeningHour.empty()
-      ..fromDay = toWeekDay(now.weekday)
-      ..toDay = toWeekDay(now.weekday)
+      ..fromDay = model.toWeekDay(now.weekday)
+      ..toDay = model.toWeekDay(now.weekday)
       ..fromHour = now.hour
       ..toHour = now.hour + 1
       ..fromMinute = now.minute
@@ -386,7 +386,7 @@ class ServiceAgent {
       ..defaultActions = [new model.Playback('sorry-dude-were-closed')]
       ..active = true;
 
-    _log.info('Creating dialplan ${rdp.toJson()}');
+    _log.fine('Creating dialplan ${rdp.toJson()}');
     await dialplanStore.create(rdp, user);
 
     return rdp;
@@ -400,8 +400,8 @@ class ServiceAgent {
     final DateTime now = new DateTime.now();
 
     model.OpeningHour justNow = new model.OpeningHour.empty()
-      ..fromDay = toWeekDay(now.weekday)
-      ..toDay = toWeekDay(now.weekday)
+      ..fromDay = model.toWeekDay(now.weekday)
+      ..toDay = model.toWeekDay(now.weekday)
       ..fromHour = now.hour
       ..toHour = now.hour + 2
       ..fromMinute = now.minute

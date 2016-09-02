@@ -71,8 +71,8 @@ abstract class DialplanDeployment {
 
     final DateTime now = new DateTime.now();
     model.OpeningHour justNow = new model.OpeningHour.empty()
-      ..fromDay = toWeekDay(now.weekday)
-      ..toDay = toWeekDay(now.weekday)
+      ..fromDay = model.toWeekDay(now.weekday)
+      ..toDay = model.toWeekDay(now.weekday)
       ..fromHour = now.hour
       ..toHour = now.hour + 1
       ..fromMinute = now.minute
@@ -143,8 +143,8 @@ abstract class DialplanDeployment {
 
     final DateTime now = new DateTime.now();
     model.OpeningHour justNow = new model.OpeningHour.empty()
-      ..fromDay = toWeekDay(now.weekday)
-      ..toDay = toWeekDay(now.weekday)
+      ..fromDay = model.toWeekDay(now.weekday)
+      ..toDay = model.toWeekDay(now.weekday)
       ..fromHour = now.hour
       ..toHour = now.hour + 1
       ..fromMinute = now.minute

@@ -625,12 +625,14 @@ class TestEnvironment {
   /**
    *
    */
-  Future<ServiceAgent> createsServiceAgent() async {
+  Future<ServiceAgent> createsServiceAgent([model.User user]) async {
     await userStore.ready;
-    model.User sa = Randomizer.randomUser()
+    model.User sa = (user == null ? Randomizer.randomUser() : user)
       ..groups = [model.UserGroups.serviceAgent].toSet();
 
-    sa.id = (await _userStore.create(sa, _user)).id;
+    if (user == null) {
+      sa.id = (await _userStore.create(sa, _user)).id;
+    }
 
     return new ServiceAgent(runpath, sa, this);
   }
