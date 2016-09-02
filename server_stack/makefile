@@ -69,7 +69,7 @@ analyze:
 	@(dartanalyzer --no-hints --fatal-warnings $(RUNNABLES))
 
 analyze-hints:
-	@echo "! (dartanalyzer $(RUNNABLES | grep '^\[')" | bash
+	@echo "! (dartanalyzer $(RUNNABLES) | grep '^\[')" | bash
 
 dependencies: pubspec.lock
 
