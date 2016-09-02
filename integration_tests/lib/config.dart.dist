@@ -5,75 +5,76 @@ import 'package:phonio/phonio.dart';
 /// Utility library.
 part 'support/config_pool.dart';
 
+Config config = new Config();
+
 /**
  * Configuration parameter of the OpenReception test framework.
  */
-abstract class Config {
+class Config {
   /**
    * ESl configuration parameters
    */
-  static String eslPassword = 'openreception-tests';
-  static String eslHost = 'localhost';
-  static int eslPort = 8021;
+  final String eslPassword = 'openreception-tests';
+  final String eslHost = 'localhost';
+  final int eslPort = 8021;
 
   /**
    *
    */
-  static String serverStackPath = '../server_stack';
+  final String serverStackPath = '../server_stack';
 
   /**
    * Path to the pjsua sip agent binary.
    */
-  static String simpleClientBinaryPath = './bin/basic_agent';
+  final String simpleClientBinaryPath = './bin/basic_agent';
 
   /**
    * The hostname or IP of the external network interface used for tests.
    */
-  static String externalHostname = 'external.hostname';
-
+  final String externalHostname = 'external.hostname';
 
   /**
    * The hostname or IP of the FreeSwitch server which the SIP agents register.
    * Should be an external IP. Use [externalHostname] if FreeSWITCH is running
    * on the same machine as the tests.
    */
-  static String pbxHost = externalHostname;
+  final String pbxHost = 'external.hostname';
 
   /**
    * The hostname or IP of the interface where the SNOM agents should post
    * events to.
    * Must be an external IP, and usually just [myExternalIP].
    */
-  static String snomGWhost = externalHostname;
+  final String snomGWhost = 'external.hostname';
 
   /**
    * The token the test framework uses for fetching data outside the scope of
    * tests. Could be replaced by [authTokens.last] if there is no need to
    * distingush the framework from the users.
    */
-  static String serverToken = 'magicstuff';
+  final String serverToken = 'magicstuff';
 
   /**
    * REST interface magic token.
    */
-  static String magicRESTToken = 'makemagic';
+  final String magicRESTToken = 'makemagic';
 
   /**
    * REST interface listen address.
    */
-  static String listenRESTAddress = '0.0.0.0';
+  final String listenRESTAddress = '0.0.0.0';
 
   /**
    * REST interface listen port.
    */
-  static int listenRESTport = 4224;
+  final int listenRESTport = 4224;
 
   /**
    * Pool of SIP account used for testing. Must mirror accounts present on
    * local FreeSwitch server configured in [pbxHost] and be mapped to a User on
    * the server stack.
    */
-  static List<SIPAccount> localSipAccounts = [];
+  final List<SIPAccount> localSipAccounts = [];
 
   /**
    * SIP accounts that serve as external peers. Can be accounts that are
@@ -82,14 +83,14 @@ abstract class Config {
    * Alternatively, it is entirely external accounts - such as a PSTN numbers
    * at an external trunk.
    */
-  static List<SIPAccount> externalSipAccounts = [];
+  final List<SIPAccount> externalSipAccounts = [];
 
   /**
    * A pool of hostnames that resolve to SNOM phones on the network. Note that
    * these phones _will_ have parts of their configuration overwritten, so
    * please perform a config backup before adding to this list.
    */
-  static List<String> snomHosts = [];
+  final List<String> snomHosts = [];
 
   /**
    * The pjsua agents needs to bind to a local UDP port. By default, we
@@ -97,12 +98,12 @@ abstract class Config {
    * the function to suit an available range of ports or construct the list
    * manually.
    */
-  static List<int> pjsuaPortAvailablePorts =
+  final List<int> pjsuaPortAvailablePorts =
       new List.generate(300, (int index) => 5100 + index);
 
   /**
    * A pool of available authentication tokens pre-allocated on the
    * authentication server. Each token should map to different user.
    */
-  static List authTokens = [];
+  final List authTokens = [];
 }

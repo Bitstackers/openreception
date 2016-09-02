@@ -149,13 +149,13 @@ _runDialplanDeploymentTests() {
       rdp = await sa.createsDialplan();
       await sa.deploysDialplan(rdp, rec);
 
-      socket = await Socket.connect(Config.eslHost, Config.eslPort);
+      socket = await Socket.connect(config.eslHost, config.eslPort);
 
       /// Initilize ESL connection.
       eslClient = new esl.Connection(socket);
 
       Future<Null> authentication =
-          esl.authHandler(eslClient, Config.eslPassword);
+          esl.authHandler(eslClient, config.eslPassword);
 
       await authentication;
     });

@@ -58,7 +58,7 @@ abstract class PeerAccountService {
         new phonio.SIPAccount(pa.username, pa.password, externalHostname);
 
     final phonio.PJSUAProcess phone = new phonio.PJSUAProcess(
-        Config.simpleClientBinaryPath, Config.pjsuaPortAvailablePorts.last);
+        config.simpleClientBinaryPath, config.pjsuaPortAvailablePorts.last);
 
     phone.addAccount(account);
     await phone.initialize();

@@ -23,7 +23,7 @@ shelf.Middleware checkAuthentication =
 shelf.Response _lookupToken(shelf.Request request) {
   var token = request.requestedUri.queryParameters['token'];
 
-  if (token != Config.magicRESTToken) {
+  if (token != config.magicRESTToken) {
     return new shelf.Response.forbidden('Invalid token');
   }
 
@@ -81,5 +81,5 @@ Future main() async {
 
   await setupHandlers();
   await start(receptionistHandler, customerHandler,
-      hostname: Config.listenRESTAddress, port: Config.listenRESTport);
+      hostname: config.listenRESTAddress, port: config.listenRESTport);
 }

@@ -11,10 +11,10 @@ abstract class ConfigPool {
   static int aquiredAuthTokens = 0;
 
   static bool hasAvailableLocalSipAccount() =>
-      aquiredLocalSIPAccounts < Config.localSipAccounts.length;
+      aquiredLocalSIPAccounts < config.localSipAccounts.length;
 
   static bool hasAvailableExternalSipAccount() =>
-      aquiredExternalSipAccounts < Config.externalSipAccounts.length;
+      aquiredExternalSipAccounts < config.externalSipAccounts.length;
 
   static void resetCounters() {
     aquiredLocalSIPAccounts = 0;
@@ -29,7 +29,7 @@ abstract class ConfigPool {
    */
   static SIPAccount requestLocalSipAccount() {
     SIPAccount account =
-        Config.localSipAccounts.skip(aquiredLocalSIPAccounts).first;
+        config.localSipAccounts.skip(aquiredLocalSIPAccounts).first;
     aquiredLocalSIPAccounts++;
 
     return account;
@@ -40,7 +40,7 @@ abstract class ConfigPool {
    */
   static SIPAccount requestExternalSIPAccount() {
     SIPAccount account =
-        Config.externalSipAccounts.skip(aquiredExternalSipAccounts).first;
+        config.externalSipAccounts.skip(aquiredExternalSipAccounts).first;
     aquiredExternalSipAccounts++;
 
     return account;
@@ -50,7 +50,7 @@ abstract class ConfigPool {
    * Request the next available Snom hostname from the config.
    */
   static String requestSNOMHost() {
-    String snomHost = Config.snomHosts.skip(aquiredSnomHosts).first;
+    String snomHost = config.snomHosts.skip(aquiredSnomHosts).first;
     aquiredSnomHosts++;
 
     return snomHost;
@@ -60,7 +60,7 @@ abstract class ConfigPool {
    * Request the next available pjsua UDP port from the config.
    */
   static int requestPjsuaPort() {
-    int port = Config.pjsuaPortAvailablePorts.skip(aquiredPjsuaPorts).first;
+    int port = config.pjsuaPortAvailablePorts.skip(aquiredPjsuaPorts).first;
     aquiredPjsuaPorts++;
 
     return port;
@@ -70,7 +70,7 @@ abstract class ConfigPool {
    * Request the next available authentication token from the config.
    */
   static String requestAuthtoken() {
-    String token = Config.authTokens.skip(aquiredAuthTokens).first;
+    String token = config.authTokens.skip(aquiredAuthTokens).first;
     aquiredAuthTokens++;
 
     return token;

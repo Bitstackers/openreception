@@ -25,9 +25,9 @@ class TestEnvironmentConfig {
     externalIp = nics.first.addresses.first.address;
 
     eslConf = new or_conf.EslConfig(
-        hostname: Config.eslHost,
-        password: Config.eslPassword,
-        port: Config.eslPort);
+        hostname: config.eslHost,
+        password: config.eslPassword,
+        port: config.eslPort);
   }
 
   String toString() => '''
@@ -135,7 +135,7 @@ class TestEnvironment {
    */
   Future<process.ConfigServer> requestConfigServerProcess() async {
     if (_configProcess == null) {
-      _configProcess = new process.ConfigServer(Config.serverStackPath,
+      _configProcess = new process.ConfigServer(config.serverStackPath,
           bindAddress: envConfig.externalIp, servicePort: nextNetworkport);
     }
 
@@ -151,7 +151,7 @@ class TestEnvironment {
       {bool withRevisioning: false}) async {
     if (_contactServer == null) {
       _contactServer = new process.ContactServer(
-          Config.serverStackPath, runpath.path,
+          config.serverStackPath, runpath.path,
           bindAddress: envConfig.externalIp,
           servicePort: nextNetworkport,
           authUri: (await requestAuthserverProcess()).uri,
@@ -171,7 +171,7 @@ class TestEnvironment {
       {bool withRevisioning: false}) async {
     if (_messageProcess == null) {
       _messageProcess = new process.MessageServer(
-          Config.serverStackPath, runpath.path,
+          config.serverStackPath, runpath.path,
           bindAddress: envConfig.externalIp,
           servicePort: nextNetworkport,
           enableRevisioning: withRevisioning,
@@ -191,7 +191,7 @@ class TestEnvironment {
       {bool withRevisioning: false}) async {
     if (_calendarServer == null) {
       _calendarServer = new process.CalendarServer(
-          Config.serverStackPath, runpath.path,
+          config.serverStackPath, runpath.path,
           bindAddress: envConfig.externalIp,
           servicePort: nextNetworkport,
           authUri: (await requestAuthserverProcess()).uri,
@@ -210,7 +210,7 @@ class TestEnvironment {
   Future<process.AuthServer> requestAuthserverProcess() async {
     if (_authProcess == null) {
       _authProcess = new process.AuthServer(
-          Config.serverStackPath, runpath.path,
+          config.serverStackPath, runpath.path,
           initialTokens: [new AuthToken(_user)]..addAll(await userTokens),
           bindAddress: envConfig.externalIp,
           servicePort: nextNetworkport);
@@ -227,7 +227,7 @@ class TestEnvironment {
   Future<process.DialplanServer> requestDialplanProcess(
       {bool withRevisioning: false}) async {
     if (_dialplanProcess == null) {
-      _dialplanProcess = new process.DialplanServer(Config.serverStackPath,
+      _dialplanProcess = new process.DialplanServer(config.serverStackPath,
           runpath.path, (await requestFreeswitchProcess()).confPath,
           authUri: (await requestAuthserverProcess()).uri,
           bindAddress: envConfig.externalIp,
@@ -249,7 +249,7 @@ class TestEnvironment {
   Future<process.CallFlowControl> requestCallFlowProcess() async {
     if (_callflowProcess == null) {
       _callflowProcess = new process.CallFlowControl(
-          Config.serverStackPath, runpath.path,
+          config.serverStackPath, runpath.path,
           bindAddress: envConfig.externalIp,
           servicePort: nextNetworkport,
           notificationUri: (await requestNotificationserverProcess()).uri,
@@ -270,7 +270,7 @@ class TestEnvironment {
   Future<process.NotificationServer> requestNotificationserverProcess() async {
     if (_notificationProcess == null) {
       _notificationProcess = new process.NotificationServer(
-          Config.serverStackPath, runpath.path,
+          config.serverStackPath, runpath.path,
           bindAddress: envConfig.externalIp,
           servicePort: nextNetworkport,
           authUri: (await requestAuthserverProcess()).uri);
@@ -288,7 +288,7 @@ class TestEnvironment {
       {bool withRevisioning: false}) async {
     if (_receptionServer == null) {
       _receptionServer = new process.ReceptionServer(
-          Config.serverStackPath, runpath.path,
+          config.serverStackPath, runpath.path,
           bindAddress: envConfig.externalIp,
           servicePort: nextNetworkport,
           authUri: (await requestAuthserverProcess()).uri,
@@ -307,7 +307,7 @@ class TestEnvironment {
   Future<process.UserServer> requestUserserverProcess(
       {bool withRevisioning: false}) async {
     if (_userServer == null) {
-      _userServer = new process.UserServer(Config.serverStackPath, runpath.path,
+      _userServer = new process.UserServer(config.serverStackPath, runpath.path,
           bindAddress: envConfig.externalIp,
           servicePort: nextNetworkport,
           authUri: (await requestAuthserverProcess()).uri,
