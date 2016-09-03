@@ -16,7 +16,10 @@ part of openreception.framework.filestore;
 /// File-based storage backed for [model.ReceptionDialplan] objects.
 class ReceptionDialplan implements storage.ReceptionDialplan {
   /// Internal logger
-  final Logger _log = new Logger('$libraryName.ReceptionDialplan');
+  final Logger _log = new Logger('$_libraryName.ReceptionDialplan');
+
+  /// Directory path to where the serialized [model.ReceptionDialplan]
+  /// objects are stored on disk.
   final String path;
   GitEngine _git;
   final bool logChanges;
@@ -24,9 +27,6 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
 
   Bus<event.DialplanChange> _changeBus = new Bus<event.DialplanChange>();
 
-  /**
-   *
-   */
   factory ReceptionDialplan(String path,
       [GitEngine gitEngine, bool enableChangelog]) {
     if (!new Directory(path).existsSync()) {
@@ -46,21 +46,20 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
         (enableChangelog != null) ? enableChangelog : true, trashDir);
   }
 
-  /**
-   *
-   */
+  /// Internal constructor.
   ReceptionDialplan._internal(String this.path,
       [GitEngine this._git, bool this.logChanges, this.trashDir]);
 
   Stream<event.DialplanChange> get onChange => _changeBus.stream;
 
+  /// Returns when the filestore is initialized
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
+
+  /// Awaits if there is already an operation in progress and returns
+  /// whenever the filestore is ready to process the next request.
   Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
-  /**
-   *
-   */
   @override
   Future<model.ReceptionDialplan> create(
       model.ReceptionDialplan rdp, model.User modifier) async {
@@ -93,9 +92,6 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
     return rdp;
   }
 
-  /**
-   *
-   */
   @override
   Future<model.ReceptionDialplan> get(String extension) async {
     final File file = new File('$path/$extension/dialplan.json');
@@ -113,13 +109,11 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
     }
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.ReceptionDialplan>> list() async {
     final Iterable dirs = new Directory(path).listSync().where((fse) =>
-        _isDirectory(fse) && new File(fse.path + '/dialplan.json').existsSync());
+        _isDirectory(fse) &&
+        new File(fse.path + '/dialplan.json').existsSync());
 
     return dirs.map((Directory fse) {
       final String fileContents =
@@ -129,9 +123,6 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
     });
   }
 
-  /**
-   *
-   */
   @override
   Future<model.ReceptionDialplan> update(
       model.ReceptionDialplan rdp, model.User modifier) async {
@@ -164,9 +155,6 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
     return rdp;
   }
 
-  /**
-   *
-   */
   @override
   Future remove(String extension, model.User modifier) async {
     final Directory dialplanDir = new Directory('$path/$extension');
@@ -197,9 +185,6 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
     _changeBus.fire(new event.DialplanChange.delete(extension, modifier.id));
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.Commit>> changes([String extension]) async {
     if (this._git == null) {
@@ -242,9 +227,6 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
     return changes;
   }
 
-  /**
-   *
-   */
   Future<String> changeLog(String extension) async =>
       logChanges ? new ChangeLogger('$path/$extension').contents() : '';
 }

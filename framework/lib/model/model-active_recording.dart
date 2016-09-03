@@ -13,22 +13,21 @@
 
 part of openreception.framework.model;
 
-/**
- * Model class of a recording currently active in the system.
- */
+/// Model class of a recording currently active in the system.
 class ActiveRecording {
+  /// The name of the agent channel currently being recorded.
   final String agentChannel;
+
+  /// The filesystem path to the recording file.
   final String path;
+
+  /// The time the recording was started.
   final DateTime started;
 
-  /**
-   * Default constructor. Requires [agentChannel] and [path] to be provided
-   */
+  /// Default constructor. Requires [agentChannel] and [path] to be provided
   ActiveRecording(this.agentChannel, this.path) : started = new DateTime.now();
 
-  /**
-   * Deserializing constructor.
-   */
+  /// Deserializing constructor.
   ActiveRecording.fromMap(Map map)
       : agentChannel = map[key.agentChannel],
         path = map[key.path],
@@ -37,12 +36,7 @@ class ActiveRecording {
   /// Decoding factory.
   static ActiveRecording decode(Map map) => new ActiveRecording.fromMap(map);
 
-  @deprecated
-  String get uuid => agentChannel;
-
-  /**
-   * Serialization function.
-   */
+  /// Serialization function.
   Map toJson() => {
         key.agentChannel: agentChannel,
         key.path: path,

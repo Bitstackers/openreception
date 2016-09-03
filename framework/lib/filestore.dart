@@ -44,7 +44,7 @@ part 'filestore/filestore-reception_dialplan.dart';
 part 'filestore/filestore-sequencer.dart';
 part 'filestore/filestore-user.dart';
 
-const String libraryName = 'openreception.filestore';
+const String _libraryName = 'openreception.filestore';
 
 final JsonEncoder _jsonpp = new JsonEncoder.withIndent('  ');
 
@@ -76,15 +76,35 @@ bool _isDirectory(FileSystemEntity fse) =>
 
 /// Filestore wrapper class that encloses all the filestores.
 class DataStore {
+  /// Calendar child store
   final Calendar calendarStore;
+
+  /// Contact child store
   final Contact contactStore;
+
+  /// Ivr menu child store
   final Ivr ivrStore;
+
+  /// message child store
   final Message messageStore;
+
+  /// Organization child store
   final Organization organizationStore;
+
+  /// Reception child store
   final Reception receptionStore;
+
+  /// Reception dialplan child store
   final ReceptionDialplan receptionDialplanStore;
+
+  /// User child store
   final User userStore;
 
+  /// Create a new [DataStore] in directory [path].
+  ///
+  /// If [path] exists, then the [DataStore] will reuse the existing objects
+  /// in it.
+  /// Optionally uses a [GitEngine] for revisioning.
   factory DataStore(String path, [GitEngine ge]) {
     Calendar calendarStore = new Calendar(path + '/calendar', ge);
     Reception receptionStore = new Reception(path + '/reception', ge);
@@ -108,9 +128,9 @@ class DataStore {
         userStore);
   }
 
-  /**
-   *
-   */
+  /// Internal constructor.
+  ///
+  /// Sets the finalized fields and performs no further initialization.
   DataStore._internal(
       Calendar this.calendarStore,
       Contact this.contactStore,
@@ -122,17 +142,20 @@ class DataStore {
       User this.userStore);
 }
 
-/**
- *
- */
+/// Simple file-based [ChangeLogger] class that bumps serialized objects
+/// (and the changetype) to a plain file.
 class ChangeLogger {
+  /// The [File] object changes are logged to
   final File logFile;
+
+  /// Internal logger.
   final Logger _log =
       new Logger('openreception.framework.filestore.ChangeLogger');
 
-  /**
-   *
-   */
+  /// Create a new [ChangeLogger] in [filepath].
+  ///
+  /// The changelog file will be placed in a `changes.log` file within
+  /// [filepath].
   ChangeLogger(String filepath)
       : logFile = new File(filepath + '/changes.log') {
     try {
@@ -144,17 +167,13 @@ class ChangeLogger {
     }
   }
 
-  /**
-   *
-   */
+  /// Append a [model.ChangelogEntry] to the [logFile].
   void add(model.ChangelogEntry object) {
     logFile.writeAsStringSync(JSON.encode(object) + '\n',
         mode: FileMode.APPEND);
   }
 
-  /**
-   *
-   */
+  /// Read the entire content of [logFile] into a [String] buffer.
   Future<String> contents() async => new File(logFile.path).existsSync()
       ? (await new File(logFile.path).readAsString())
       : '';

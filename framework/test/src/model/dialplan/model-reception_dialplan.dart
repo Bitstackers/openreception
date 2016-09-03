@@ -40,7 +40,6 @@ abstract class _ModelReceptionDialplan {
     expect(builtObject.extension, equals(deserializedObject.extension));
     expect(builtObject.note, equals(deserializedObject.note));
     expect(builtObject.extension, equals(deserializedObject.extension));
-    expect(builtObject.active, equals(deserializedObject.active));
     expect(builtObject.open, equals(deserializedObject.open));
     expect(
         builtObject.defaultActions, equals(deserializedObject.defaultActions));
@@ -61,7 +60,6 @@ abstract class _ModelReceptionDialplan {
    *
    */
   static model.ReceptionDialplan buildObject() {
-    final bool active = false;
     final String extension = '12345678';
     final String note = 'Just a test reception dialplan';
 
@@ -75,7 +73,6 @@ abstract class _ModelReceptionDialplan {
 
     final model.ReceptionDialplan builtObject = new model.ReceptionDialplan()
       ..extension = extension
-      ..active = active
       ..note = note
       ..open = open
       ..defaultActions = closed;
@@ -83,7 +80,6 @@ abstract class _ModelReceptionDialplan {
     expect(builtObject.extension, equals(extension));
     expect(builtObject.extension, equals(extension));
     expect(builtObject.note, equals(note));
-    expect(builtObject.active, equals(active));
     expect(builtObject.open, equals(open));
     expect(builtObject.defaultActions, equals(closed));
 

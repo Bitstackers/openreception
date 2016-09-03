@@ -17,21 +17,43 @@ part of openreception.framework.filestore;
 final DateFormat _rfc3339 = new DateFormat('yyyy-MM-dd');
 
 /// JSON-file based storage backed for agent call and message history.
+///
+/// May load and process event-dump files upon startup in order to recover
+/// state.
+///
+/// Still work-in-progress.
 class AgentHistory {
   /// Internal logger
-  final Logger _log = new Logger('$libraryName.AgentHistory');
+  final Logger _log = new Logger('$_libraryName.AgentHistory');
 
-  /// Path to where
+  /// Directory path to where the serialized [model.BaseContact] objects
+  /// are stored on disk.
   final String path;
+
+  /// Userstore used internally for looking up user names.
   final storage.User _userStore;
+
+  /// Local cache of UID/username mappings.
   final Map<int, String> _uidNameCache = {};
+
+  /// File containing persistent cache of UID/username mappings.
   final File _uidMapFile;
+
+  /// Directory that contains event dump files that processed and purged
+  /// upon object initialization.
   final Directory _eventDumpDir;
   final Map<String, model.ActiveCall> _eventHistory = {};
   final Map<String, model.DailyReport> _reports = {};
 
   Completer _initialized = new Completer();
 
+  /// Create a new [AgentHistory] in directory [path].
+  ///
+  /// Requires a [userStore] to be able to map user ID's to names, and the
+  /// stream of system [notifications].
+  /// Will create a `uidmappings.json` file in [path] and look for a folder
+  /// called `eventdumps`. The latter will be scanned for event dump files
+  /// and any file found, will be processed and deleted subsequently.
   factory AgentHistory(
       String path, storage.User userStore, Stream<event.Event> notifications) {
     return new AgentHistory._internal(
@@ -42,6 +64,8 @@ class AgentHistory {
         notifications);
   }
 
+  /// Internal constructor that creates missing directories and finalizes
+  /// fields.
   AgentHistory._internal(this.path, this._userStore, this._uidMapFile,
       this._eventDumpDir, Stream<event.Event> notifications) {
     if (!new Directory(path).existsSync()) {
@@ -72,16 +96,13 @@ class AgentHistory {
     _initialize();
   }
 
+  /// Returns when the store is fully initialized.
   Future get initialized => _initialized.future;
 
-  /**
-   *
-   */
+  /// Loads a full [model.DailyReport] for a given [day].
   Future<model.DailyReport> get(DateTime day) async => _loadReport(day);
 
-  /**
-   *
-   */
+  /// Loads a full report for a given [day] without deserializing it.
   Stream<List<int>> getRaw(DateTime day) {
     final File f = new File('$path/reports/${_dateKey(day)}.json.gz');
     if (f.existsSync()) {
@@ -91,9 +112,7 @@ class AgentHistory {
     }
   }
 
-  /**
-   *
-   */
+  /// Initilizes the store.
   Future _initialize() async {
     await _loadUidCacheFile();
     await _updateUidCache();
@@ -103,9 +122,7 @@ class AgentHistory {
     _initialized.complete();
   }
 
-  /**
-   *
-   */
+  /// Update the uid/username mapping file.
   Future _updateUidCache() async {
     Iterable<model.UserReference> uRefs = await _userStore.list();
 
@@ -114,6 +131,7 @@ class AgentHistory {
     });
   }
 
+  /// Process and dispatch events from notification stream.
   void _dispatchEvent(event.Event e, Map<String, model.DailyReport> reports) {
     final dateKey = _rfc3339.format(e.timestamp);
 
@@ -141,9 +159,7 @@ class AgentHistory {
     }
   }
 
-  /**
-   *
-   */
+  /// Load historic event dump files and inject them into the agent history.
   Future _loadEventDumps() async {
     _log.finest('Loading event dumps from ${_eventDumpDir.path}');
     final Map<String, model.DailyReport> _dateLog =
@@ -181,9 +197,7 @@ class AgentHistory {
     _log.finest('Read event dumps from ${files.length} files');
   }
 
-  /**
-   *
-   */
+  /// Load a [model.DailyReport] for a given [day].
   model.DailyReport _loadReport(DateTime day) {
     final File f = new File('$path/reports/${_dateKey(day)}.json.gz');
     if (f.existsSync()) {
@@ -196,12 +210,12 @@ class AgentHistory {
     }
   }
 
-  /**
-   *
-   */
+  /// Save a [model.DailyReport] to file.
+  ///
+  /// Will not save the report if it is empty.
   Future _saveReport(model.DailyReport report) async {
     if (report.isEmpty) {
-      _log.info('Refusing to write empty report');
+      _log.fine('Refusing to write empty report');
       return;
     }
 
@@ -210,16 +224,11 @@ class AgentHistory {
     await f.writeAsBytes(serializeAndCompressObject(report));
   }
 
-  /**
-   *
-   */
   // Iterable<model.AgentStatisticsSummary> summaries(DateTime day) {
   //   return [];
   // }
 
-  /**
-   *
-   */
+  /// Cleanup reports on a daily basis.
   Future _cleanup() async {
     if (_reports.length > 1) {
       _log.info('Day changed. Rerolling stats');
@@ -236,6 +245,7 @@ class AgentHistory {
     }
   }
 
+  /// Lookup a the username of a user with [uid].
   Future<String> lookupUsername(int uid) async {
     await initialized;
 
@@ -255,9 +265,7 @@ class AgentHistory {
     return _uidNameCache[uid];
   }
 
-  /**
-   *
-   */
+  /// Load the persistent uid/username mappings from file.
   Future _loadUidCacheFile() async {
     Map deserialized;
     try {
@@ -282,9 +290,7 @@ class AgentHistory {
         'file ${_uidMapFile.path}');
   }
 
-  /**
-   *
-   */
+  /// Save the persistent uid/username mappings to file.
   Future _saveUidCacheFile() async {
     final Map<String, String> serializable = {};
 
@@ -297,6 +303,7 @@ class AgentHistory {
         'file ${_uidMapFile.path}');
   }
 
+  /// Convenience function for generating the map key for a date.
   String _dateKey(DateTime day) => _rfc3339.format(day);
 
   //

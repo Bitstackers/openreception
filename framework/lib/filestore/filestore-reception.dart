@@ -15,7 +15,10 @@ part of openreception.framework.filestore;
 
 /// File-based storage backed for [model.Reception] objects.
 class Reception implements storage.Reception {
-  final Logger _log = new Logger('$libraryName.Reception');
+  final Logger _log = new Logger('$_libraryName.Reception');
+
+  /// Directory path to where the serialized [model.Reception] objects
+  /// are stored on disk.
   final String path;
   final Sequencer _sequencer;
   final GitEngine _git;
@@ -25,9 +28,6 @@ class Reception implements storage.Reception {
 
   Bus<event.ReceptionChange> _changeBus = new Bus<event.ReceptionChange>();
 
-  /**
-   *
-   */
   factory Reception(String path, [GitEngine _git, bool enableChangelog]) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
@@ -51,9 +51,6 @@ class Reception implements storage.Reception {
         new Sequencer(path), _git, enableChangelog, trashDir);
   }
 
-  /**
-   *
-   */
   Reception._internal(String this.path, this.calendarStore, this._sequencer,
       GitEngine this._git, bool this.logChanges, this.trashDir) {
     if (_git != null) {
@@ -63,8 +60,12 @@ class Reception implements storage.Reception {
 
   Stream<event.ReceptionChange> get onReceptionChange => _changeBus.stream;
 
+  /// Returns when the filestore is initialized
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
+
+  /// Awaits if there is already an operation in progress and returns
+  /// whenever the filestore is ready to process the next request.
   Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
   /// Returns the next available ID from the sequencer. Notice that every
@@ -88,9 +89,6 @@ class Reception implements storage.Reception {
         .toList(growable: false);
   }
 
-  /**
-   *
-   */
   @override
   Future<model.ReceptionReference> create(
       model.Reception reception, model.User modifier,
@@ -131,9 +129,6 @@ class Reception implements storage.Reception {
     return reception.reference;
   }
 
-  /**
-   *
-   */
   @override
   Future<model.Reception> get(int id) async {
     final File file = new File('$path/$id/reception.json');
@@ -151,9 +146,6 @@ class Reception implements storage.Reception {
     }
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.ReceptionReference>> list() async {
     final dirs = new Directory(path).listSync().where((fse) =>
@@ -167,9 +159,6 @@ class Reception implements storage.Reception {
     });
   }
 
-  /**
-   *
-   */
   @override
   Future remove(int rid, model.User modifier) async {
     final Directory receptionDir = new Directory('$path/$rid');
@@ -197,9 +186,6 @@ class Reception implements storage.Reception {
     _changeBus.fire(new event.ReceptionChange.delete(rid, modifier.id));
   }
 
-  /**
-   *
-   */
   @override
   Future<model.ReceptionReference> update(
       model.Reception rec, model.User modifier) async {
@@ -231,9 +217,6 @@ class Reception implements storage.Reception {
     return rec.reference;
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.Commit>> changes([int rid]) async {
     if (this._git == null) {
@@ -275,9 +258,6 @@ class Reception implements storage.Reception {
     return changes;
   }
 
-  /**
-   *
-   */
   Future<String> changeLog(int rid) async =>
       logChanges ? new ChangeLogger('$path/$rid').contents() : '';
 }

@@ -13,11 +13,16 @@
 
 part of openreception.framework.model.dialplan;
 
+/// Access a submenu of an IVR menu.
 class IvrSubmenu implements IvrEntry {
   @override
   final String digits;
+
+  /// The name of the submenu to access.
   final String name;
 
+  /// Create a new [IvrSubmenu] that responds to [digits] and navigates to
+  /// the [IvrMenu] with menu [name].
   IvrSubmenu(this.digits, this.name);
 
   @override

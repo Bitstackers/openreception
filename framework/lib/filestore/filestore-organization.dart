@@ -16,7 +16,10 @@ part of openreception.framework.filestore;
 /// File-based storage backed for [model.Organization] objects.
 class Organization implements storage.Organization {
   /// Internal logger
-  final Logger _log = new Logger('$libraryName.Organization');
+  final Logger _log = new Logger('$_libraryName.Organization');
+
+  /// Directory path to where the serialized [model.Organization] objects
+  /// are stored on disk.
   final String path;
   final Contact _contactFileStore;
   final Reception _receptionFileStore;
@@ -28,9 +31,6 @@ class Organization implements storage.Organization {
   Bus<event.OrganizationChange> _changeBus =
       new Bus<event.OrganizationChange>();
 
-  /**
-   *
-   */
   factory Organization(_contactFileStore, _receptionFileStore, String path,
       [GitEngine _git, bool enableChangelog]) {
     if (!new Directory(path).existsSync()) {
@@ -59,9 +59,7 @@ class Organization implements storage.Organization {
         trashDir);
   }
 
-  /**
-   *
-   */
+  /// Internal constructor that finalizes fields.
   Organization._internal(
       this._contactFileStore,
       this._receptionFileStore,
@@ -79,16 +77,17 @@ class Organization implements storage.Organization {
   Stream<event.OrganizationChange> get onOrganizationChange =>
       _changeBus.stream;
 
+  /// Returns when the filestore is initialized
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
+
+  /// Awaits if there is already an operation in progress and returns
+  /// whenever the filestore is ready to process the next request.
   Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
   Future<Map<String, Map<String, String>>> receptionMap() =>
       throw new UnimplementedError();
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.BaseContact>> contacts(int oid) async {
     List<model.BaseContact> cRefs = [];
@@ -101,9 +100,6 @@ class Organization implements storage.Organization {
     return cRefs;
   }
 
-  /**
-   *
-   */
   @override
   Future<model.OrganizationReference> create(
       model.Organization org, model.User modifier,
@@ -141,9 +137,6 @@ class Organization implements storage.Organization {
     return org.reference;
   }
 
-  /**
-   *
-   */
   @override
   Future<model.Organization> get(int id) async {
     final File file = new File('$path/$id/organization.json');
@@ -161,9 +154,6 @@ class Organization implements storage.Organization {
     }
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.OrganizationReference>> list() async =>
       new Directory(path)
@@ -176,9 +166,6 @@ class Organization implements storage.Organization {
                   .readAsStringSync()))
               .reference);
 
-  /**
-   *
-   */
   @override
   Future remove(int oid, model.User modifier) async {
     final Directory orgDir = new Directory('$path/$oid');
@@ -206,9 +193,6 @@ class Organization implements storage.Organization {
     _changeBus.fire(new event.OrganizationChange.delete(oid, modifier.id));
   }
 
-  /**
-   *
-   */
   @override
   Future<model.OrganizationReference> update(
       model.Organization org, model.User modifier) async {
@@ -243,16 +227,10 @@ class Organization implements storage.Organization {
     return org.reference;
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.ReceptionReference>> receptions(int uuid) =>
       _receptionFileStore._receptionsOfOrg(uuid);
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.Commit>> changes([int oid]) async {
     if (this._git == null) {
@@ -294,9 +272,6 @@ class Organization implements storage.Organization {
     return changes;
   }
 
-  /**
-   *
-   */
   Future<String> changeLog(int oid) async =>
       logChanges ? new ChangeLogger('$path/$oid').contents() : '';
 }

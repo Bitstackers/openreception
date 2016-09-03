@@ -13,12 +13,19 @@
 
 part of openreception.framework.model.dialplan;
 
+/// Transfer a channel from a dialplan to the IVR menu application.
 class Ivr implements Action {
+  /// The name of the menu to transfer the channel to.
   final String menuName;
+
+  /// Descriptive note for this [Ivr] action.
   final String note;
 
+  /// Create a new [Ivr] action that transfers to the IVR menu
+  /// named [menuName].
   Ivr(this.menuName, {this.note: ''});
 
+  /// Parses and creates a new [Ivr] action from a [String] [buffer].
   static Ivr parse(String buffer) {
     var buf = consumeKey(buffer.trimLeft(), key.ivr).trimLeft();
 

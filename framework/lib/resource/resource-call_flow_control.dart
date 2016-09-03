@@ -18,7 +18,7 @@ part of openreception.framework.resource;
  * resources across servers and clients.
  */
 abstract class CallFlowControl {
-  static String nameSpace = 'call';
+  static String _ns = 'call';
 
   /**
    *
@@ -141,5 +141,5 @@ abstract class CallFlowControl {
    *    http://hostname/call
    */
   static Uri _root(Uri host) =>
-      Uri.parse('${util.removeTailingSlashes(host)}/$nameSpace');
+      Uri.parse('${util.removeTailingSlashes(host)}/$_ns');
 }

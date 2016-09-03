@@ -15,6 +15,7 @@ part of openreception.framework.storage;
 
 /// Storage interface for persistent storage of [model.Organization] objects.
 abstract class Organization {
+  /// Return a list of [model.BaseContact]s associated with [oid].
   Future<Iterable<model.BaseContact>> contacts(int oid);
 
   /// Creates and stores a new [model.Organization] object persistently
@@ -47,6 +48,7 @@ abstract class Organization {
   Future<model.OrganizationReference> update(
       model.Organization organization, model.User modifier);
 
+  /// Retrieve a list of [model.ReceptionReference]s associated with [oid].
   Future<Iterable<model.ReceptionReference>> receptions(int oid);
 
   /// List organization object changes for the store, optionally for a

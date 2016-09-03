@@ -54,8 +54,6 @@ abstract class Action {
     }
   }
 
-  /**
-   * Every action _must_ have a serialization function.
-   */
+  /// Every action _must_ have a serialization function.
   dynamic toJson();
 }

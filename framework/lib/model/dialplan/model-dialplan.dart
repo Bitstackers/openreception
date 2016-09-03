@@ -38,7 +38,7 @@ part 'model-ringtone.dart';
 part 'model-transfer.dart';
 part 'model-voicemail.dart';
 
-const String libaryName = 'model.dialplan';
+const String _libaryName = 'model.dialplan';
 
 ///Converts a Dart DateTime WeekDay into a [WeekDay].
 WeekDay toWeekDay(int weekday) {

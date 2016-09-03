@@ -16,9 +16,9 @@ part of openreception.framework.filestore;
 /// File-based storage backed for [model.Message] objects.
 class Message implements storage.Message {
   /// Internal logger
-  final Logger _log = new Logger('$libraryName.Message');
+  final Logger _log = new Logger('$_libraryName.Message');
 
-  /// Directory path to where the serlized [model.Message] objects are
+  /// Directory path to where the serialized [model.Message] objects are
   /// stored.
   final String path;
 
@@ -80,9 +80,7 @@ class Message implements storage.Message {
   Directory _dateDir(DateTime day) =>
       new Directory('$path/${day.toIso8601String().split('T').first}');
 
-  /**
-   * Rebuilds the entire index.
-   */
+  /// Rebuilds the entire index.
   void _buildIndex() {
     int highestId = 0;
     Stopwatch timer = new Stopwatch()..start();
@@ -156,9 +154,6 @@ class Message implements storage.Message {
         'Found ${_draftsIndex.length} saved messages');
   }
 
-  /**
-   *
-   */
   @override
   Future<model.Message> get(int mid) async {
     if (!_index.containsKey(mid)) {
@@ -198,9 +193,7 @@ class Message implements storage.Message {
     return list;
   }
 
-  /**
-   *
-   */
+  /// Loads all message ID's of the [Directory] [dir].
   Iterable<int> _idsOfDir(Directory dir) {
     List<FileSystemEntity> fses = dir.listSync();
 
@@ -219,9 +212,6 @@ class Message implements storage.Message {
     return list;
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.Message>> listDay(DateTime day) async {
     final Directory dateDir = _dateDir(day);
@@ -235,9 +225,6 @@ class Message implements storage.Message {
     return getByIds(ids);
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.Message>> listDrafts() async {
     Set<int> ids = new Set()..addAll(_draftsIndex);
@@ -245,9 +232,7 @@ class Message implements storage.Message {
     return getByIds(ids);
   }
 
-  /**
-   *
-   */
+  /// Get all the message ID's associated with [uid].
   Future<Iterable<int>> midsOfUid(int uid) async {
     if (_uidIndex.containsKey(uid)) {
       return _uidIndex[uid];
@@ -256,9 +241,7 @@ class Message implements storage.Message {
     }
   }
 
-  /**
-   *
-   */
+  /// Get all the message ID's associated with [cid].
   Future<Iterable<int>> midsOfCid(int cid) async {
     if (_cidIndex.containsKey(cid)) {
       return _cidIndex[cid];
@@ -267,9 +250,7 @@ class Message implements storage.Message {
     }
   }
 
-  /**
-   *
-   */
+  /// Get all the message ID's associated with [rid].
   Future<Iterable<int>> midsOfRid(int rid) async {
     if (_ridIndex.containsKey(rid)) {
       return _ridIndex[rid];
@@ -278,9 +259,6 @@ class Message implements storage.Message {
     }
   }
 
-  /**
-   *
-   */
   @override
   Future<model.Message> create(model.Message msg, model.User modifier,
       {bool enforceId: false}) async {
@@ -336,9 +314,6 @@ class Message implements storage.Message {
     return msg;
   }
 
-  /**
-   *
-   */
   @override
   Future<model.Message> update(model.Message msg, model.User modifier) async {
     final File file = new File(_index[msg.id]);
@@ -368,9 +343,6 @@ class Message implements storage.Message {
     return msg;
   }
 
-  /**
-   *
-   */
   @override
   Future remove(int mid, model.User modifier) async {
     if (!_index.containsKey(mid)) {
@@ -398,9 +370,6 @@ class Message implements storage.Message {
         mid, modifier.id, msg.state, msg.createdAt));
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.Commit>> changes([int mid]) async {
     if (this._git == null) {
@@ -442,9 +411,6 @@ class Message implements storage.Message {
     return changes;
   }
 
-  /**
-   *
-   */
   Future<Iterable<model.Commit>> changesByDay(DateTime day, [int mid]) async {
     if (this._git == null) {
       throw new UnsupportedError(

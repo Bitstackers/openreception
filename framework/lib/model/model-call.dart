@@ -34,7 +34,7 @@ abstract class CallState {
  * unique id (uuid) that may be used as a handle for REST service method calls.
  */
 class Call {
-  static const String className = '$libraryName.Call';
+  static const String className = '$_libraryName.Call';
   static final Logger _log = new Logger(Call.className);
 
   static final Call noCall = new Call.empty(noId);

@@ -13,23 +13,30 @@
 
 part of openreception.framework.model.dialplan;
 
-/**
- *
- */
+/// Playback a sound file to a channel.
 class Playback implements Action {
+  /// The path of the sound file to play back.
   final String filename;
+
+  /// The amount of times to repeat the sound file.
+  ///
+  /// Note: This seems broken at the moment in the dialplan compiler.
   final int repeat;
+
+  /// Descriptive note for this [Playback] action.
   final String note;
 
+  /// No playback file.
   static const Playback none = const Playback('');
 
-  const Playback(String this.filename, {String this.note: '', this.repeat: 1});
+  /// Create a new [Playback] action that plays back file with [filename].
+  ///
+  /// Will [repeat] the supplied number of times
+  const Playback(String this.filename, {this.repeat: 1, String this.note: ''});
 
-  /**
-   * Parsing factory.
-   */
+  /// Parses and creates a new [Playback] action from a [String] [buffer].
   static Playback parse(String buffer) {
-    /// Remove leading spaces.
+    // Remove leading spaces.
     buffer = buffer.trimLeft();
 
     String filename;
@@ -76,25 +83,16 @@ class Playback implements Action {
     return new Playback(filename, note: note, repeat: repeat);
   }
 
-  /**
-   *
-   */
   @override
   bool operator ==(Object other) =>
       other is Playback && this.filename == other.filename;
 
-  /**
-   *
-   */
   @override
   String toString() => '${key.playback}'
       ' $filename'
       '${repeat != 1? ' ${key.repeat}:$repeat' :''}'
       '${note.isNotEmpty ? ' ($note)': ''}';
 
-  /**
-   *
-   */
   @override
   String toJson() => toString();
 

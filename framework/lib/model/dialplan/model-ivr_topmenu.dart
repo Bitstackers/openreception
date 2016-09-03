@@ -13,10 +13,12 @@
 
 part of openreception.framework.model.dialplan;
 
+/// Access a top-level menu of an IVR menu tree.
 class IvrTopmenu implements IvrEntry {
   @override
   final String digits;
 
+  /// Create a new [IvrTopmenu] entry that reponds to [digits].
   IvrTopmenu(this.digits);
 
   @override

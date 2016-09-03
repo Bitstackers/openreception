@@ -267,11 +267,14 @@ class DuplicateDigits implements ValidationException {
   @override
   final String message;
 
+  /// The field that was contained duplicated digits
   final String field;
 
+  /// The duplicated digits
   final String duplicated;
 
-  // Create a new [DuplicateDigits] exception that signifies that...
+  /// Create a new [DuplicateDigits] exception that signifies that [field]
+  /// contains the duplicate digits [duplicated].
   const DuplicateDigits(this.field, this.duplicated, [this.message = '']);
 
   @override

@@ -16,7 +16,10 @@ part of openreception.framework.filestore;
 /// File-based storage backed for [model.User] objects.
 class User implements storage.User {
   /// Internal logger
-  final Logger _log = new Logger('$libraryName.User');
+  final Logger _log = new Logger('$_libraryName.User');
+
+  /// Directory path to where the serialized [model.User] objects
+  /// are stored on disk.
   final String path;
   final GitEngine _git;
   final Sequencer _sequencer;
@@ -25,9 +28,6 @@ class User implements storage.User {
 
   Bus<event.UserChange> _changeBus = new Bus<event.UserChange>();
 
-  /**
-   *
-   */
   factory User(String path, [GitEngine gitEngine, bool enableChangelog]) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
@@ -55,17 +55,19 @@ class User implements storage.User {
 
   Stream<event.UserChange> get onUserChange => _changeBus.stream;
 
+  /// Returns when the filestore is initialized.
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
+
+  /// Awaits if there is already an operation in progress and returns
+  /// whenever the filestore is ready to process the next request.
   Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
   /// Returns the next available ID from the sequencer. Notice that every
   /// call to this function will increase the counter in the
   /// sequencer object.
   int get _nextId => _sequencer.nextInt();
-  /**
-   *
-   */
+
   @override
   Future<Iterable<String>> groups() async => [
         model.UserGroups.administrator,
@@ -73,9 +75,6 @@ class User implements storage.User {
         model.UserGroups.serviceAgent
       ];
 
-  /**
-   *
-   */
   @override
   Future<model.User> get(int uid) async {
     final File file = new File('$path/$uid/user.json');
@@ -93,9 +92,6 @@ class User implements storage.User {
     }
   }
 
-  /**
-   *
-   */
   @override
   Future<model.User> getByIdentity(String identity) async {
     model.User user;
@@ -112,9 +108,6 @@ class User implements storage.User {
     return user;
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.UserReference>> list() async => new Directory(path)
       .listSync()
@@ -125,9 +118,6 @@ class User implements storage.User {
               JSON.decode(new File(fse.path + '/user.json').readAsStringSync()))
           .reference);
 
-  /**
-   *
-   */
   @override
   Future<model.UserReference> create(model.User user, model.User modifier,
       {bool enforceId: false}) async {
@@ -160,9 +150,6 @@ class User implements storage.User {
     return user.reference;
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.Commit>> changes([int uid]) async {
     if (this._git == null) {
@@ -204,9 +191,6 @@ class User implements storage.User {
     return changes;
   }
 
-  /**
-   *
-   */
   @override
   Future<model.UserReference> update(
       model.User user, model.User modifier) async {
@@ -237,9 +221,6 @@ class User implements storage.User {
     return user.reference;
   }
 
-  /**
-   *
-   */
   @override
   Future remove(int uid, model.User modifier) async {
     final Directory userdir = new Directory('$path/$uid');
@@ -265,9 +246,6 @@ class User implements storage.User {
     _changeBus.fire(new event.UserChange.delete(uid, modifier.id));
   }
 
-  /**
-   *
-   */
   Future<String> changeLog(int uid) async =>
       logChanges ? new ChangeLogger('$path/$uid').contents() : '';
 }

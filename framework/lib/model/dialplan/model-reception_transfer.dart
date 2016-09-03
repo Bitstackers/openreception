@@ -13,24 +13,24 @@
 
 part of openreception.framework.model.dialplan;
 
-/**
- * ReceptionTransfer action. Represents a dialplan transfer to an internal
- * reception extension.
- */
+/// [ReceptionTransfer] action.
+///
+/// Performs an internal transfer on the channel to an internal
+/// reception [extension].
 class ReceptionTransfer implements Action {
+  /// The internal extension to transfer to.
   final String extension;
+
+  /// Descriptive note for this [ReceptionTransfer] action.
   final String note;
 
-  /**
-   * Default constructor.
-   */
+  /// Default constructor.
   const ReceptionTransfer(this.extension, {this.note: ''});
 
-  /**
-   * Parsing factory function.
-   */
+  /// Parses and creates a new [ReceptionTransfer] action from
+  /// a [String] [buffer].
   static ReceptionTransfer parse(String buffer) {
-    /// Remove leading spaces.
+    // Remove leading spaces.
     buffer = buffer.trimLeft();
 
     String extension;
@@ -53,15 +53,11 @@ class ReceptionTransfer implements Action {
     return new ReceptionTransfer(extension, note: note);
   }
 
-  /**
-   * Returns a string representtaion of the object.
-   */
+  /// Returns a string representaion of the object.
   @override
   String toString() => 'Transfer to reception $extension ($note)';
 
-  /**
-   * JSON serialization function.
-   */
+  /// JSON serialization function.
   @override
   String toJson() => '${key.reception} $extension'
       '${note.isNotEmpty ? ' ($note)': ''}';

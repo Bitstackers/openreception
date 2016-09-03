@@ -13,15 +13,18 @@
 
 part of openreception.framework.filestore;
 
+/// A change that has occured in a file.
 class FileChange {
+  /// The type of change that has occurred in the file.
   final model.ChangeType changeType;
+
+  /// The path of the file
   final String filename;
 
+  /// Create new [FileChange] object with [changeType] and [filename].
   const FileChange(this.changeType, this.filename);
 
-  /**
-   *
-   */
+  /// Serialization function.
   String toJson() => '$changeType $filename';
 }
 
@@ -34,9 +37,6 @@ class Change {
 
   Change(this.changeTime, this.author, this.commitHash, {this.message: ''});
 
-  /**
-   *
-   */
   Map toJson() => {
         'changed': changeTime.millisecondsSinceEpoch,
         'author': author,
@@ -54,18 +54,37 @@ class _Job {
 
 class GitEngine {
   /// Internal logger
-  final Logger _log = new Logger('$libraryName.GitEngine');
+  final Logger _log = new Logger('$_libraryName.GitEngine');
+
+  /// Root path to keep under revisioning.
   final String path;
+
+  /// Determines whether or not to inject `STDOUT` of the git process into
+  /// the log stream.
   final bool logStdout;
 
+  /// Work queue of [_Job]s that are enqueued because the git process is
+  /// not currently [ready].
   final Queue<_Job> _workQueue = new Queue<_Job>();
+
+  /// Determines if the [GitEngine] is initialized.
   Completer _initialized;
+
+  /// Determines if the [GitEngine] is currently busy.
   Completer _busy = new Completer();
 
+  /// Place [path] under git revisioning.
   GitEngine(String this.path, {bool this.logStdout: false});
 
-  Future get whenReady => _busy.future;
+  /// Indicates whether or not this [GitEngine] is ready to process the
+  /// next request.
   bool get ready => _busy.isCompleted;
+
+  /// Awaits if there is already an operation in progress and returns
+  /// whenever the [GitEngine] is ready to process the next request.
+  Future get whenReady => _busy.future;
+
+  /// Returns when the [GitEngine] is initialized.
   Future get initialized => _initialized.future;
 
   List<String> ignoredPaths(String path) =>
@@ -82,9 +101,6 @@ class GitEngine {
     ignoreFile.writeAsStringSync(paths.join('\n'));
   }
 
-  /**
-   *
-   */
   Future init() async {
     final _storeDir = new Directory(path);
 
@@ -169,18 +185,12 @@ class GitEngine {
     _busy.complete();
   }
 
-  /**
-   *
-   */
   _Job _enqueue(Function f) {
     _Job job = new _Job(f);
     _workQueue.add(job);
     return job;
   }
 
-  /**
-   *
-   */
   Future add(File file, String commitMsg, String author) async {
     await init();
     final bool locked = _lock();
@@ -198,9 +208,6 @@ class GitEngine {
     }
   }
 
-  /**
-   *
-   */
   Future commit(File file, String commitMsg, String author) async {
     await init();
     if (!await _hasChanges(file)) {
@@ -221,9 +228,6 @@ class GitEngine {
     }
   }
 
-  /**
-   *
-   */
   Future<bool> _hasChanges(File file) async {
     String filePath = file.path.replaceFirst(path, '');
     while (filePath.startsWith('/')) {
@@ -253,9 +257,6 @@ class GitEngine {
     return true;
   }
 
-  /**
-   *
-   */
   Future remove(FileSystemEntity fse, String commitMsg, String author) async {
     await init();
     final bool locked = _lock();
@@ -272,9 +273,6 @@ class GitEngine {
     }
   }
 
-  /**
-   *
-   */
   Future<Iterable<Change>> changes(FileSystemEntity fse) async {
     final String gitBin = '/usr/bin/git';
     final List<String> arguments = [
@@ -341,14 +339,10 @@ class GitEngine {
     return changeList;
   }
 
-  /**
-   * Determine if a path contains a .git folder
-   */
+  /// Determine if a path contains a .git folder
   bool _containsDotGit(String path) => new Directory('$path/.git').existsSync();
 
-  /**
-   *
-   */
+  /// Add [File] path to staging area.
   Future _add(File file) async {
     final ProcessResult result = await Process
         .run('/usr/bin/git', ['add', file.path], workingDirectory: path);
@@ -369,9 +363,7 @@ class GitEngine {
     }
   }
 
-  /**
-   *
-   */
+  /// Commit staged changes.
   Future _commit(String fsePath, String commitMsg, String author) async {
     final String gitBin = '/usr/bin/git';
     final List<String> arguments = [
@@ -401,9 +393,7 @@ class GitEngine {
     }
   }
 
-  /**
-   *
-   */
+  /// Purges [fse] from file system.
   Future _remove(FileSystemEntity fse) async {
     final ProcessResult result = await Process.run(
         '/usr/bin/git', ['rm', fse.path, '-r', '--force'],
@@ -424,9 +414,7 @@ class GitEngine {
     }
   }
 
-  /**
-   *
-   */
+  /// Lock the git process and enqueue subsequent actions as [_Job]s.
   bool _lock() {
     if (!ready) {
       return false;
@@ -436,9 +424,7 @@ class GitEngine {
     return true;
   }
 
-  /**
-   *
-   */
+  /// Unlock the git process and let the next [_Job] in [_workQueue] start.
   Future _unlock() async {
     if (ready) {
       _log.shout('Unlocking not previously locked process');
@@ -449,9 +435,7 @@ class GitEngine {
     await _processWorkQueue();
   }
 
-  /**
-   *
-   */
+  /// Process queued up [_Job]s.
   Future _processWorkQueue() async {
     if (_workQueue.isNotEmpty) {
       _Job job = _workQueue.removeFirst();

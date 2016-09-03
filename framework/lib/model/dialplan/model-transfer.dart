@@ -13,18 +13,20 @@
 
 part of openreception.framework.model.dialplan;
 
-/**
- * Transfer action.
- */
+/// Transfer action.
+///
+/// Performs an external transfer on the channel to [extension].
 class Transfer implements Action {
+  /// The extension to transfer to.
   final String extension;
+
+  /// Descriptive note for this [Transfer] action.
   final String note;
 
-  /**
-   * Default constructor.
-   */
+  /// Default constructor.
   const Transfer(this.extension, {this.note: ''});
 
+  /// Parses and creates a new [Transfer] action from a [String] [buffer].
   static Transfer parse(String buffer) {
     /// Remove leading spaces.
     buffer = buffer.trimLeft();

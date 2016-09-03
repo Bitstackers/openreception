@@ -16,7 +16,7 @@ part of openreception.framework.filestore;
 /// Filestore for persistent storage of [model.CalendarEntry] objects.
 class Calendar implements storage.Calendar {
   /// Internal logger
-  final Logger _log = new Logger('$libraryName.Calendar');
+  final Logger _log = new Logger('$_libraryName.Calendar');
 
   /// Root path to where the object files are stored
   final String path;
@@ -33,9 +33,7 @@ class Calendar implements storage.Calendar {
   /// Internal change bus. Exposed externally by [changeStream]
   final Bus<event.CalendarChange> _changeBus = new Bus<event.CalendarChange>();
 
-  /**
-   *
-   */
+  /// Create a new [Calendar] filestore in [path].
   Calendar(String this.path, [GitEngine this._git, bool enableChangelog])
       : this.logChanges = (enableChangelog != null) ? enableChangelog : true {
     final List<String> pathsToCreate = [path];
@@ -68,8 +66,8 @@ class Calendar implements storage.Calendar {
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
 
-  /// Returns when the filestore is initialized and ready - not busy
-  /// performing object changes.
+  /// Awaits if there is already an operation in progress and returns
+  /// whenever the filestore is ready to process the next request.
   Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
   @override
@@ -116,9 +114,6 @@ class Calendar implements storage.Calendar {
     return changes;
   }
 
-  /**
-   *
-   */
   @override
   Future<model.CalendarEntry> create(
       model.CalendarEntry entry, model.Owner owner, model.User modifier,
@@ -165,9 +160,6 @@ class Calendar implements storage.Calendar {
     return entry;
   }
 
-  /**
-   *
-   */
   @override
   Future<model.CalendarEntry> get(int eid, model.Owner owner) async {
     final subdirs = new Directory(path).listSync().where(_isDirectory);
@@ -188,9 +180,6 @@ class Calendar implements storage.Calendar {
     throw new NotFound('No file with eid $eid');
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.CalendarEntry>> list(model.Owner owner) async {
     String ownerPath = '$path/${owner.id}/calendar';
@@ -202,9 +191,6 @@ class Calendar implements storage.Calendar {
     return _list(ownerPath);
   }
 
-  /**
-   *
-   */
   Future<Iterable<model.CalendarEntry>> _list(String basePath) async =>
       new Directory(basePath)
           .listSync()
@@ -212,11 +198,10 @@ class Calendar implements storage.Calendar {
           .map((FileSystemEntity fse) => model.CalendarEntry
               .decode(JSON.decode((fse as File).readAsStringSync())));
 
-  /**
-   * Deletes the [model.CalendarEntry] associated with [eid] in the
-   * filestore.
-   * The action is logged as being performed by user [modifier].
-   */
+  /// Deletes the [model.CalendarEntry] associated with [eid] in the
+  /// filestore.
+  ///
+  /// The action is logged as being performed by user [modifier].
   @override
   Future remove(int eid, model.Owner owner, model.User modifier) async {
     final Directory ownerDir = new Directory('$path/${owner.id}/calendar');
@@ -245,15 +230,10 @@ class Calendar implements storage.Calendar {
     _deleteNotify(eid, owner, modifier);
   }
 
-  /**
-   * Notifies listeners of the [changeStream] that an item has been deleted.
-   */
+  /// Notifies listeners of the [changeStream] that an item has been deleted.
   void _deleteNotify(int eid, model.Owner owner, model.User modifier) =>
       _changeBus.fire(new event.CalendarChange.delete(eid, owner, modifier.id));
 
-  /**
-   *
-   */
   @override
   Future<model.CalendarEntry> update(
       model.CalendarEntry entry, model.Owner owner, model.User modifier) async {
@@ -289,14 +269,10 @@ class Calendar implements storage.Calendar {
     return entry;
   }
 
-  /**
-   *
-   */
+  /// Returns the changeLog of calender entry changes for owner with
+  /// id [ownerId].
   Future<String> changeLog(int ownerId) async =>
       logChanges ? new ChangeLogger(_ownerDir(ownerId).path).contents() : '';
 
-  /**
-   *
-   */
   Directory _ownerDir(int ownerId) => new Directory('$path/$ownerId/calendar');
 }

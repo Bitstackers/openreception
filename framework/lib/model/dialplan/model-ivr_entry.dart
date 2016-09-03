@@ -13,9 +13,18 @@
 
 part of openreception.framework.model.dialplan;
 
+/// Abstract model super-class for an IVR menu entry.
+///
+/// Provides an interface for concrete IVR menu entries.
 abstract class IvrEntry {
+  /// The digits that trigger the execution of this [IvrEntry].
   String get digits;
 
+  /// Parses and creates a concrete [IvrEntry] specialization object from
+  /// a [String] [buffer].
+  ///
+  /// The returned object may, for instance, be a [IvrTransfer] or
+  /// [IvrVoicemail] entry.
   static IvrEntry parse(String buffer) {
     final int separator = buffer.indexOf(':');
 
@@ -55,6 +64,7 @@ abstract class IvrEntry {
     }
   }
 
+  /// Serialization function.
   dynamic toJson();
 
   @override

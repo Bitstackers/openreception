@@ -13,12 +13,22 @@
 
 part of openreception.framework.model;
 
-/**
- * Available types for [BaseContact] objects.
- */
+/// Available types for [BaseContact] objects.
 abstract class ContactType {
+  /// Human/Person type.
+  ///
+  /// Refers to a real person.
   static const String human = 'human';
+
+  /// Function type.
+  ///
+  /// Used to cover functional groups of persons. For example 'support' or
+  /// 'sales'.
   static const String function = 'function';
+
+  /// Invisible type.
+  ///
+  /// Used to hide persons or functions.
   static const String invisible = 'invisible';
 
   /// Iterable enumerating the different contact types.

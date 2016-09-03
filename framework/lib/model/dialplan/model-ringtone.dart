@@ -13,9 +13,14 @@
 
 part of openreception.framework.model.dialplan;
 
+/// Sends rintones to the channel.
 class Ringtone implements Action {
+  /// The ringtone count to send.
+  ///
+  /// The period of the ringtone differs from country to country.
   final int count;
 
+  /// Create a new [Ringtone] object with [count].
   factory Ringtone(int count) {
     if (count < 0) {
       throw new ArgumentError.value(
@@ -25,8 +30,10 @@ class Ringtone implements Action {
     return new Ringtone._internal(count);
   }
 
+  /// Internal contructor.
   const Ringtone._internal(this.count);
 
+  /// Parses and creates a new [Ringtone] action from a [String] [buffer].
   static Ringtone parse(String buffer) {
     var buf = consumeKey(buffer.trimLeft(), key.ringtone).trimLeft();
 

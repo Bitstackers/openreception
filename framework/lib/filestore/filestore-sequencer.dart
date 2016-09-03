@@ -15,7 +15,7 @@ part of openreception.framework.filestore;
 
 class Sequencer {
   /// Internal logger
-  final Logger _log = new Logger('$libraryName.GitEngine');
+  final Logger _log = new Logger('$_libraryName.GitEngine');
   final String path;
 
   File _sequencerFile;
@@ -34,7 +34,7 @@ class Sequencer {
     } else {
       _checkForInconsistencies();
     }
-    _log.info('Sequencer ID: $currentId');
+    _log.fine('Sequencer ID: $currentId');
   }
 
   /// The path of the sequencerfile

@@ -13,10 +13,8 @@
 
 library openreception.framework.model.dialplan.parsing_utils;
 
-/**
- * 'Tuple' class for returning an identifier consumed from a buffer and
- * the remaining buffer.
- */
+///'Tuple' class for returning an identifier consumed from a buffer and
+/// the remaining buffer.
 class _ConsumedIdenBuf {
   final String buffer;
   final String iden;
@@ -24,10 +22,8 @@ class _ConsumedIdenBuf {
   const _ConsumedIdenBuf(this.iden, this.buffer);
 }
 
-/**
- * 'Tuple' class for returning a comment consumed from a buffer and
- * the remaining buffer.
- */
+/// 'Tuple' class for returning a comment consumed from a buffer and the
+/// remaining buffer.
 class _ConsumedCommentBuf {
   final String buffer;
   final String comment;
@@ -35,9 +31,7 @@ class _ConsumedCommentBuf {
   const _ConsumedCommentBuf(this.comment, this.buffer);
 }
 
-/**
- * Consume the next word up until next space from [buffer].
- */
+/// Consume the next word up until next space from [buffer].
 _ConsumedIdenBuf consumeWord(String buffer) {
   buffer = buffer.trimLeft();
   final nextTerm =
@@ -47,9 +41,7 @@ _ConsumedIdenBuf consumeWord(String buffer) {
       buffer.substring(0, nextTerm), buffer.substring(nextTerm, buffer.length));
 }
 
-/**
- * Consume the next comment from [buffer] up until ')' or [buffer] ends.
- */
+/// Consume the next comment from [buffer] up until ')' or [buffer] ends.
 _ConsumedCommentBuf consumeComment(String buffer) {
   buffer = buffer.trimLeft();
 
@@ -67,12 +59,11 @@ _ConsumedCommentBuf consumeComment(String buffer) {
       buffer.substring(1, parRight), buffer.substring(parRight, buffer.length));
 }
 
-/**
- * Consumes the occurence of [key] from the start of [buffer] and returns the
- * buffer again with the [key] removed.
- * Throws [FormatException] if the buffer does not contain the key in
- * the beginning.
- */
+/// Consumes the occurence of [key] from the start of [buffer] and returns
+/// the buffer again with the [key] removed.
+///
+/// Throws [FormatException] if the buffer does not contain the key in
+/// the beginning.
 String consumeKey(String buffer, String key) => (!buffer
         .trimLeft()
         .substring(0, key.length)

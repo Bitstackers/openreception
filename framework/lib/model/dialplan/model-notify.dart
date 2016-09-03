@@ -13,11 +13,20 @@
 
 part of openreception.framework.model.dialplan;
 
+/// Inject an arbitrary notification with [eventName] into the FreeSWITCH
+/// event stream to indicate that a channel has reached a certain point.
+///
+/// An example may be that the call is announced as available for the
+/// agents (receptionist) to pick up.
 class Notify implements Action {
+  /// The name of the event to send. Remember that ESL clients need to
+  /// subscribe to these events to be able to receive them.
   final String eventName;
 
+  /// Create a new [Notify] action with [eventName].
   const Notify(this.eventName);
 
+  /// Parses and creates a new [Notify] action from a [String] [buffer].
   static Notify parse(String buffer) {
     var buf = consumeKey(buffer.trimLeft(), key.notify).trimLeft();
 

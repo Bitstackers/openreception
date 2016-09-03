@@ -44,7 +44,6 @@ class _DialplanToolsReceptionDialplan {
    */
   static void openActions() {
     model.ReceptionDialplan rdp = new model.ReceptionDialplan()
-      ..active = true
       ..open = [
         new model.HourAction()
           ..hours = model.parseMultipleHours('mon-fri 8-17, sat 10-12').toList()
@@ -66,7 +65,6 @@ class _DialplanToolsReceptionDialplan {
    */
   static void closedActions() {
     model.ReceptionDialplan rdp = new model.ReceptionDialplan()
-      ..active = true
       ..defaultActions = [new model.Playback('closed')];
 
     xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
@@ -78,10 +76,10 @@ class _DialplanToolsReceptionDialplan {
    */
   static void bigDialplan() {
     model.ReceptionDialplan rdp = new model.ReceptionDialplan()
-      ..active = true
       ..open = [
         new model.HourAction()
-          ..hours = model.parseMultipleHours('mon-wed 8-17, thur 10-17, fri 10-16:30')
+          ..hours = model
+              .parseMultipleHours('mon-wed 8-17, thur 10-17, fri 10-16:30')
               .toList()
           ..actions = [
             new model.Notify('call-offer'),

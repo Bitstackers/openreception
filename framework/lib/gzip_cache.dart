@@ -113,12 +113,14 @@ class CalendarCache {
     return _entryCache[key];
   }
 
+  /// Remove a cached calendar entry object with [eid] and [owner].
   void removeEntry(int eid, model.Owner owner) {
     final String key = '$owner:$eid';
     _log.finest('Removing key $key from cache');
     _entryCache.remove(key);
   }
 
+  /// Retrieve a gzipped list of calendar entry objects owned by [owner].
   Future<List<int>> list(model.Owner owner) async {
     final String key = '$owner';
 

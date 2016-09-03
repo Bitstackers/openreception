@@ -13,36 +13,69 @@
 
 part of openreception.framework.model.dialplan;
 
-enum WeekDay { sun, mon, tue, wed, thur, fri, sat, all }
+/// Valid weekdays.
+///
+/// Week starts at sunday intentionally to match the weekday index of
+/// FreeSWITCH.
+enum WeekDay {
+  /// Sunday
+  sun,
 
-/**
- * Parses a comma-separated buffer into an [Iterable] of [OpeningHour] objects.
- */
+  /// Monday
+  mon,
+
+  /// Tuesday
+  tue,
+
+  /// Wednesday
+  wed,
+
+  /// Thursday
+  thur,
+
+  /// Friday
+  fri,
+
+  /// Saturday
+  sat,
+
+  /// All days
+  all
+}
+
+/// Parses a comma-separated buffer into an [Iterable] of [OpeningHour]
+/// objects.
 Iterable<OpeningHour> parseMultipleHours(String buffer) => buffer
     .split(',')
     .where((string) => string.isNotEmpty)
     .map((ohBuffer) => OpeningHour.parse(ohBuffer));
 
-/**
- * Class representing an opening hour.
- */
+/// Class representing an opening hour.
 class OpeningHour {
+  /// The day the opening hour starts at.
   WeekDay fromDay;
+
+  /// The hour the opening hour starts at.
   int fromHour = 0;
+
+  /// The minute the opening hour starts at.
   int fromMinute = 0;
 
+  /// The day the opening hour ends at.
   WeekDay toDay;
+
+  /// The hour the opening hour ends at.
   int toHour = 0;
+
+  /// The minute the opening hour ends at.
   int toMinute = 0;
 
-  /**
-   * Default empty constructor.
-   */
+  /// Default empty constructor.
   OpeningHour.empty();
 
-  /**
-   *
-   */
+  /// The current list of validation errors.
+  ///
+  /// TODO(krc): Turn into ValidationError exceptions.
   List<FormatException> get validationErrors {
     List<FormatException> errors = [];
 
@@ -78,18 +111,20 @@ class OpeningHour {
     return errors;
   }
 
+  /// Determine if the [OpeningHour] is valid.
   bool isValid() => validationErrors.isEmpty;
 
-  /**
-   * Parsing constructor. Manages formats such as:
-   *  mon-fri 8-17
-   *  mon 8-17
-   *  mon 8:30-17:30
-   *
-   * Throws [FormatException] when it encounters a parse error. Implicitly runs
-   * [validate()], so errors from this function will also result in a
-   * [FormatException] for this factory.
-   */
+  /// Parsing constructor.
+  ///
+  /// Manages formats such as:
+  ///
+  ///   mon-fri 8-17
+  ///   mon 8-17
+  ///   mon 8:30-17:30
+  ///
+  /// Throws [FormatException] when it encounters a parse error.
+  /// Implicitly runs [validate()], so errors from this function will also
+  /// result in a [FormatException] for this factory.
   static OpeningHour parse(String buffer) {
     WeekDay weekDayParse(String wDayBuffer) => WeekDay.values.firstWhere(
             (WeekDay wday) => wday.toString() == 'WeekDay.$wDayBuffer',
@@ -169,6 +204,7 @@ class OpeningHour {
   String toString() => '${_trimWday(fromDay)}'
       '${toDay != fromDay ? '-${_trimWday(toDay)}' : ''} $_stringifiedTime';
 
+  /// Determines if an [OpeningHour] is before another.
   bool isBefore(OpeningHour other) {
     if (this.toDay.index == other.fromDay.index) {
       if (this.toHour == other.fromHour) {
@@ -183,6 +219,7 @@ class OpeningHour {
 
   String _trimWday(WeekDay wday) => wday.toString().split('.')[1];
 
+  /// Serialization function.
   String toJson() => '${_trimWday(fromDay)}'
       '${toDay != fromDay ? '-${_trimWday(toDay)}' : ''} $_stringifiedTime';
 

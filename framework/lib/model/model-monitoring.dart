@@ -22,16 +22,24 @@ final String _callPickupKey = new _event.CallPickup(null).eventName;
 final String _callHangupKey = new _event.CallHangup(null).eventName;
 final String _callTransferKey = new _event.CallTransfer(null).eventName;
 
+/// Model class for persistent storage of message/user log entry.
+///
+/// The log entry will record when a message was created, by whom, and
+/// store a reference to the ID message that was created.
 class MessageHistory {
+  /// The ID of the message that was created.
   final int mid;
+
+  /// The ID of the user that created the message.
   final int uid;
+
+  /// The creation time of the message.
   final DateTime createdAt;
 
+  /// Creates a new [MessageHistory] log entry from values.
   MessageHistory(this.mid, this.uid, this.createdAt);
 
-  /**
-   *
-   */
+  /// Creates a new [MessageHistory] log entry from a decoded map.
   factory MessageHistory.fromMap(Map map) {
     final int mid = map['mid'] != null ? map['mid'] : Message.noId;
     final int uid = map['uid'] != null ? map['uid'] : User.noId;
@@ -41,21 +49,28 @@ class MessageHistory {
     return new MessageHistory(mid, uid, createdAt);
   }
 
-  /**
-   *
-   */
+  /// The hash of a [MessageHistory] entry is different if at least one
+  /// value differs.
+  ///
+  /// If no values differ, the hashcode is the same.
   @override
   int get hashCode => '$mid.$uid.${createdAt.millisecondsSinceEpoch}'.hashCode;
 
-  /**
-   *
-   */
+  /// Serialization function.
   Map toJson() => {'mid': mid, 'uid': uid, 'created': createdAt.toString()};
 
+  /// A [MessageHistory] object is equal to another [MessageHistory] object
+  /// if their [mid] are the same.
+  ///
+  /// The motivation for this, is that any message is created _exactly once_
+  /// and message ids should, by definition, _never_ be duplicated in
+  /// message history logs.
   @override
   bool operator ==(Object other) => other is MessageHistory && other.mid == mid;
 }
 
+/// Model class for providing a complete summary of the performance of an
+/// agent.
 class AgentStatSummary {}
 
 class CallSummary {

@@ -13,13 +13,27 @@
 
 part of openreception.framework.model.dialplan;
 
+/// Model class for [Enqueue] dialplan action.
+///
+/// This action will enqueue a channel in a FIFO queue with [queueName].
 class Enqueue implements Action {
+  /// The name of the queue to enqueue in.
   final String queueName;
+
+  /// The hold music playlist to playback to the channel while enqueued
   final String holdMusic;
+
+  /// Descriptive note for this [Enqueue] action.
   final String note;
 
+  /// Create a new [Enqueue] action.
+  ///
+  /// Needs [queueName] and optionally the [holdMusic] and note.
+  /// The [holdMusic] defaults to `default` which is merely the default
+  /// playlist in FreeSWITCH. The [note] is empty if not supplied.
   Enqueue(this.queueName, {this.holdMusic: 'default', this.note: ''});
 
+  /// Parses and creates a new [Enqueue] action from a [String] [buffer].
   static Enqueue parse(String buffer) {
     /// Remove leading spaces.
     buffer = buffer.trimLeft();
@@ -83,14 +97,19 @@ class Enqueue implements Action {
     return new Enqueue(queuename, holdMusic: music, note: note);
   }
 
+  /// Serialization function.
   @override
   String toJson() => '${key.enqueue} $queueName'
       '${holdMusic.isNotEmpty ? ' music $holdMusic' : ''}';
 
+  /// An [Enqueue] action is equal to another [Enqueue] action if their
+  /// [queueName]s are identitical.
   @override
   bool operator ==(Object other) =>
       other is Enqueue && this.queueName == other.queueName;
 
+  /// The hashcode [Enqueue] action is equal to another [Enqueue] action if
+  /// their [queueName]s are identitical.
   @override
   int get hashCode => this.queueName.hashCode;
 }

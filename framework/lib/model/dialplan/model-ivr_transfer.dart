@@ -13,11 +13,16 @@
 
 part of openreception.framework.model.dialplan;
 
+/// Performs an external transfer from an [IvrMenu].
 class IvrTransfer implements IvrEntry {
   @override
   final String digits;
+
+  /// The [Transfer] action to perform if on of [digits] are pressed.
   final Transfer transfer;
 
+  /// Create a new [IvrTransfer] that responds to [digits] and performs
+  /// [transfer].
   IvrTransfer(this.digits, this.transfer);
 
   @override

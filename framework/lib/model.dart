@@ -63,12 +63,19 @@ part 'model/model-template_sms.dart';
 part 'model/model-user.dart';
 part 'model/model-user_status.dart';
 
-const String libraryName = "openreception.model";
+const String _libraryName = "openreception.model";
 
+/// [ChangelogEntry] interface.
 abstract class ChangelogEntry {
+  /// The time of the change.
   DateTime get timestamp;
+
+  /// The type of change.
   ChangeType get changeType;
+
+  /// The reference to the user who performed the change.
   UserReference get modifier;
 
+  /// Serialization function.
   dynamic toJson();
 }

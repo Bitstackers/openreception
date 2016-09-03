@@ -13,9 +13,7 @@
 
 part of openreception.framework.model.dialplan;
 
-/**
- * Class representing an IVR menu.
- */
+///Class representing an IVR menu.
 class IvrMenu {
   /// Name of IVR menu.
   String name;
@@ -31,14 +29,10 @@ class IvrMenu {
 
   Playback _greetingShort = Playback.none;
 
-  /**
-   * Default constructor.
-   */
+  /// Default constructor.
   IvrMenu(this.name, this.greetingLong);
 
-  /**
-   * Extracts the contained [Action] objects from the menu.
-   */
+  /// Extracts the contained [Action] objects from the menu.
   Iterable<Action> get allActions {
     final actions = new List<Action>();
 
@@ -62,24 +56,19 @@ class IvrMenu {
   Playback get greetingShort =>
       _greetingShort != Playback.none ? _greetingShort : greetingLong;
 
-  /**
-   * Decoding factory method.
-   */
+  /// Decoding factory method.
   static IvrMenu decode(Map map) => (new IvrMenu(
       map[key.name],
-      Playback.parse(map[key.greeting])).._greetingShort = Playback.parse(map[key.greetingShort]))
+      Playback.parse(map[key
+          .greeting])).._greetingShort = Playback.parse(map[key.greetingShort]))
     ..entries = new List.from(map[key.ivrEntries].map(IvrEntry.parse))
     ..submenus = new List.from(map[key.submenus].map(IvrMenu.decode));
 
-  /**
-   * An IVR menu equals another IVR menu if their names match.
-   */
+  /// An IVR menu equals another IVR menu if their names match.
   @override
   bool operator ==(Object other) => other is IvrMenu && this.name == other.name;
 
-  /**
-   * Serialization function.
-   */
+  /// Serialization function.
   Map toJson() => {
         key.name: name,
         key.greeting: greetingLong.toJson(),

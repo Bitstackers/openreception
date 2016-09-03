@@ -17,7 +17,7 @@ part of openreception.framework.filestore;
 /// [model.ReceptionAttributes] objects.
 class Contact implements storage.Contact {
   /// Internal logger
-  final Logger _log = new Logger('$libraryName.Contact');
+  final Logger _log = new Logger('$_libraryName.Contact');
 
   /// Directory path to where the serialized [model.BaseContact] objects
   /// are stored on disk.
@@ -93,8 +93,12 @@ class Contact implements storage.Contact {
   /// sequencer object.
   int get _nextId => _sequencer.nextInt();
 
+  /// Returns when the filestore is initialized
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
+
+  /// Awaits if there is already an operation in progress and returns
+  /// whenever the filestore is ready to process the next request.
   Future get ready => _git != null ? _git.whenReady : new Future.value(true);
 
   Stream<event.ContactChange> get onContactChange => _changeBus.stream;
@@ -111,15 +115,15 @@ class Contact implements storage.Contact {
     for (FileSystemEntity fse in idDirs) {
       if (_isDirectory(fse))
         try {
-        final id = int.parse(basenameWithoutExtension(fse.path));
-        _index[id] = fse.path;
+          final id = int.parse(basenameWithoutExtension(fse.path));
+          _index[id] = fse.path;
 
-        if (id > highestId) {
-          highestId = id;
+          if (id > highestId) {
+            highestId = id;
+          }
+        } catch (e) {
+          _log.shout('Failed load index from file ${fse.path}');
         }
-      } catch (e) {
-        _log.shout('Failed load index from file ${fse.path}');
-      }
     }
 
     _log.info('Built index of ${_index.keys.length} elements in'
@@ -127,15 +131,9 @@ class Contact implements storage.Contact {
     _sequencer = new Sequencer(path, explicitId: highestId);
   }
 
-  /**
-   *
-   */
   Future<Iterable<model.BaseContact>> _contactsOfReception(int rid) async =>
       (await receptionContacts(rid)).map((rc) => rc.contact);
 
-  /**
-   *
-   */
   @override
   Future addData(model.ReceptionAttributes attr, model.User modifier) async {
     if (attr.receptionId == model.Reception.noId) {
@@ -174,9 +172,6 @@ class Contact implements storage.Contact {
         attr.cid, attr.receptionId, modifier.id));
   }
 
-  /**
-   *
-   */
   @override
   Future<model.BaseContact> create(
       model.BaseContact contact, model.User modifier,
@@ -218,9 +213,6 @@ class Contact implements storage.Contact {
     return contact;
   }
 
-  /**
-   *
-   */
   @override
   Future<model.BaseContact> get(int id) async {
     final File file = new File('$path/$id/contact.json');
@@ -240,9 +232,6 @@ class Contact implements storage.Contact {
     }
   }
 
-  /**
-   *
-   */
   @override
   Future<model.ReceptionAttributes> data(int id, int rid) async {
     final file = _receptionFile(id, rid);
@@ -254,9 +243,6 @@ class Contact implements storage.Contact {
         .decode(JSON.decode(await file.readAsString()));
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.BaseContact>> list() async {
     if (!new Directory(path).existsSync()) {
@@ -266,9 +252,6 @@ class Contact implements storage.Contact {
     return Future.wait(_index.keys.map(get));
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.ReceptionReference>> receptions(int cid) async {
     final rDir = _receptionDir(cid);
@@ -294,13 +277,11 @@ class Contact implements storage.Contact {
     return rRefs;
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.BaseContact>> organizationContacts(
       int organizationId) async {
-    Iterable rRefs = await receptionStore._receptionsOfOrg(organizationId);
+    Iterable<model.ReceptionReference> rRefs =
+        await receptionStore._receptionsOfOrg(organizationId);
 
     Set<model.BaseContact> contacts = new Set();
 
@@ -311,9 +292,6 @@ class Contact implements storage.Contact {
     return contacts;
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.OrganizationReference>> organizations(int cid) async {
     Iterable<model.ReceptionReference> rRefs = await receptions(cid);
@@ -327,9 +305,6 @@ class Contact implements storage.Contact {
     return orgs;
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.ReceptionContact>> receptionContacts(int rid) async {
     final subDirs =
@@ -362,16 +337,16 @@ class Contact implements storage.Contact {
     return rcs;
   }
 
-  /**
-   * Trashes a [model.BaseContact] object, identified by [cid], from this
-   * filestore. This action will also delete every other object directly
-   * associated with the [model.BaseContact] object. For example, if a
-   * [model.BaseContact] object has a number of [model.CalendarEntry] and
-   * [model.ReceptionAttributes] object, these will trashed along with the
-   * [model.BaseContact] object. Every object removed will spawn an
-   * appropriate delete event, that allows clients and stores to update
-   * caches or views accordingly.
-   */
+  /// Trashes a [model.BaseContact] object, identified by [cid], from this
+  /// filestore.
+  ///
+  /// This action will also delete every other object directly associated
+  /// with the [model.BaseContact] object. For example, if a
+  /// [model.BaseContact] object has a number of [model.CalendarEntry] and
+  /// [model.ReceptionAttributes] object, these will trashed along with the
+  /// [model.BaseContact] object. Every object removed will spawn an
+  /// appropriate delete event, that allows clients and stores to update
+  /// caches or views accordingly.
   @override
   Future remove(int cid, model.User modifier) async {
     if (!_index.containsKey(cid)) {
@@ -415,9 +390,6 @@ class Contact implements storage.Contact {
     _changeBus.fire(new event.ContactChange.delete(cid, modifier.id));
   }
 
-  /**
-   *
-   */
   @override
   Future removeData(int id, int rid, model.User modifier) async {
     if (id == model.BaseContact.noId || rid == model.Reception.noId) {
@@ -452,9 +424,6 @@ class Contact implements storage.Contact {
         .fire(new event.ReceptionData.delete(id, rid, modifier.id));
   }
 
-  /**
-   *
-   */
   @override
   Future<model.BaseContact> update(
       model.BaseContact contact, model.User modifier) async {
@@ -484,9 +453,6 @@ class Contact implements storage.Contact {
     return contact;
   }
 
-  /**
-   *
-   */
   @override
   Future updateData(model.ReceptionAttributes attr, model.User modifier) async {
     if (attr.cid == model.BaseContact.noId) {
@@ -519,13 +485,13 @@ class Contact implements storage.Contact {
         attr.cid, attr.receptionId, modifier.id));
   }
 
-  /**
-   * Lists Git commits on stored objects. The type of objects may be either
-   * [model.BaseContact] or [model.ReceptionAttributes] or both - based
-   * on how many parameters are passed.
-   * Throws [UnsupportedError] if the filestore is instantiated without
-   * Git revisioning.
-   */
+  /// Lists Git commits on stored objects.
+  ///
+  /// The type of objects may be either [model.BaseContact] or
+  /// [model.ReceptionAttributes] or both - based on how many parameters
+  /// are passed.
+  /// Throws [UnsupportedError] if the filestore is instantiated without
+  /// Git revisioning.
   @override
   Future<Iterable<model.Commit>> changes([int cid, int rid]) async {
     if (this._git == null) {
@@ -579,31 +545,16 @@ class Contact implements storage.Contact {
     return changes;
   }
 
-  /**
-   *
-   */
   Future<String> changeLog(int cid) async =>
       logChanges ? new ChangeLogger(_contactDir(cid).path).contents() : '';
 
-  /**
-   *
-   */
   Future<String> receptionChangeLog(int cid) async =>
       logChanges ? new ChangeLogger(_receptionDir(cid).path).contents() : '';
 
-  /**
-   *
-   */
   Directory _receptionDir(int cid) => new Directory('$path/$cid/receptions');
 
-  /**
-   *
-   */
   File _receptionFile(int cid, int rid) =>
       new File('$path/$cid/receptions/$rid.json');
 
-  /**
-   *
-   */
   Directory _contactDir(int cid) => new Directory('$path/$cid');
 }

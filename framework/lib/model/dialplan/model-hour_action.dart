@@ -13,28 +13,34 @@
 
 part of openreception.framework.model.dialplan;
 
-/**
- * Class wrapping an ordered list of actions that is guarded by [hours].
- */
+/// Class wrapping an ordered list of actions that is guarded by [hours].
 class HourAction {
+  /// The [OpeningHour]s that needs to match for [actions] to be executed.
   List<OpeningHour> hours = [];
+
+  /// The [Action]s to be executed.
   List<Action> actions = [];
 
+  /// Debug-friendly string representation of the object.
   @override
   String toString() => '${hours.join(', ')} - ${actions.join(',')}';
 
+  /// Parse and create a new [HourAction] objec from a decoded [Map].
   static HourAction parse(Map map) => new HourAction()
     ..hours = parseMultipleHours(map['hours']).toList()
     ..actions = (map['actions'] as Iterable).map(Action.parse).toList();
 
+  /// Serialization function.
   Map toJson() => {
         'hours': hours.map((hour) => hour.toJson()).join(', '),
         'actions': actions
       };
 
+  /// TODO(krc): Review logic of this function.
   @override
   bool operator ==(Object other) => this.toString() == other.toString();
 
+  /// TODO(krc): Review logic of this function.
   @override
   int get hashCode => toString().hashCode;
 }

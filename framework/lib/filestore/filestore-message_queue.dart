@@ -16,14 +16,15 @@ part of openreception.framework.filestore;
 /// File-based storage backed for [model.MessageQueueEntry] objects.
 class MessageQueue implements storage.MessageQueue {
   /// Internal logger
-  final Logger _log = new Logger('$libraryName.MessageQueue');
+  final Logger _log = new Logger('$_libraryName.MessageQueue');
+
+  /// Directory path to where the serialized [model.MessageQueueEntry]
+  /// objects are stored.
   final String path;
 
   Sequencer _sequencer;
 
-  /**
-   *
-   */
+  /// Create a new [MessageQueue] store in [path].
   MessageQueue(String this.path) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
@@ -37,9 +38,6 @@ class MessageQueue implements storage.MessageQueue {
   /// sequencer object.
   int get _nextId => _sequencer.nextInt();
 
-  /**
-   *
-   */
   @override
   Future<model.MessageQueueEntry> enqueue(model.Message message) async {
     final int mqId = _nextId;
@@ -61,9 +59,6 @@ class MessageQueue implements storage.MessageQueue {
     return queueEntry;
   }
 
-  /**
-   *
-   */
   @override
   Future update(model.MessageQueueEntry queueEntry) async {
     final File file = new File('$path/${queueEntry.id}.json');
@@ -77,9 +72,6 @@ class MessageQueue implements storage.MessageQueue {
     return queueEntry;
   }
 
-  /**
-   *
-   */
   @override
   Future remove(int mqid) async {
     final File file = new File('$path/$mqid.json');
@@ -91,9 +83,6 @@ class MessageQueue implements storage.MessageQueue {
     await file.delete();
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.MessageQueueEntry>> list() async => new Directory(path)
       .listSync()

@@ -16,9 +16,9 @@ part of openreception.framework.filestore;
 /// File-based storage backed for [model.IvrMenu] objects.
 class Ivr implements storage.Ivr {
   /// Internal logger
-  final Logger _log = new Logger('$libraryName.Ivr');
+  final Logger _log = new Logger('$_libraryName.Ivr');
 
-  /// Directory path to where the serialized [model.BaseContact] objects
+  /// Directory path to where the serialized [model.IvrMenu] objects
   /// are stored on disk.
   final String path;
   GitEngine _git;
@@ -46,8 +46,12 @@ class Ivr implements storage.Ivr {
   Ivr._internal(
       String this.path, GitEngine this._git, this.logChanges, this.trashDir);
 
+  /// Returns when the filestore is initialized
   Future get initialized =>
       _git != null ? _git.initialized : new Future.value(true);
+
+  /// Awaits if there is already an operation in progress and returns
+  /// whenever the filestore is ready to process the next request.
   Future get ready => _git != null ? _git.whenReady : new Future.value(true);
   Stream<event.IvrMenuChange> get onChange => _changeBus.stream;
   @override
@@ -79,9 +83,6 @@ class Ivr implements storage.Ivr {
     return menu;
   }
 
-  /**
-   *
-   */
   @override
   Future<model.IvrMenu> get(String menuName) async {
     final File file = new File('$path/$menuName/menu.json');
@@ -99,9 +100,6 @@ class Ivr implements storage.Ivr {
     }
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.IvrMenu>> list() async => new Directory(path)
       .listSync()
@@ -110,9 +108,6 @@ class Ivr implements storage.Ivr {
       .map((FileSystemEntity fse) => model.IvrMenu.decode(
           JSON.decode((new File(fse.path + '/menu.json')).readAsStringSync())));
 
-  /**
-   *
-   */
   @override
   Future<model.IvrMenu> update(model.IvrMenu menu, model.User modifier) async {
     final Directory menuDir = new Directory('$path/${menu.name}');
@@ -142,9 +137,6 @@ class Ivr implements storage.Ivr {
     return menu;
   }
 
-  /**
-   *
-   */
   @override
   Future remove(String menuName, model.User modifier) async {
     final Directory menuDir = new Directory('$path/$menuName');
@@ -173,9 +165,6 @@ class Ivr implements storage.Ivr {
     _changeBus.fire(new event.IvrMenuChange.delete(menuName, modifier.id));
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.Commit>> changes([String menuName]) async {
     if (this._git == null) {
@@ -218,9 +207,6 @@ class Ivr implements storage.Ivr {
     return changes;
   }
 
-  /**
-   *
-   */
   Future<String> changeLog(String menuName) async =>
       logChanges ? new ChangeLogger('$path/$menuName').contents() : '';
 }

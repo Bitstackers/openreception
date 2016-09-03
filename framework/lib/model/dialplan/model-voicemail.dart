@@ -13,24 +13,25 @@
 
 part of openreception.framework.model.dialplan;
 
-/**
- * Class representing a voicemail action. Used in the itermediate representation
- * for signifying the voicemail action. Serializes to a single-line
- * human-readable string format that may be used in a diaplan language.
- */
+/// Class representing a voicemail action. Used in the itermediate
+/// representation for signifying the voicemail action.
+///
+/// Serializes to a single-line human-readable string format that may be
+/// used in a diaplan language.
 class Voicemail implements Action {
+  /// The name of the voicemail account.
   final String vmBox;
+
+  /// Descriptive note for this [Voicemail] action.
   String note = '';
+
+  /// The recipient email address.
   String recipient = '';
 
-  /**
-   * Default constructor.
-   */
+  /// Default constructor.
   Voicemail(this.vmBox, {this.recipient: '', this.note: ''});
 
-  /**
-   *
-   */
+  /// Parses and creates a new [Voicemail] action from a [String] [buffer].
   static Voicemail parse(String buffer) {
     String vmBox = '';
     String recipient = '';
@@ -65,22 +66,13 @@ class Voicemail implements Action {
     return new Voicemail(vmBox, recipient: recipient, note: note);
   }
 
-  /**
-   *
-   */
   @override
   bool operator ==(Object other) =>
       other is Voicemail && this.vmBox == other.vmBox;
 
-  /**
-   *
-   */
   @override
   String toString() => 'Voicemail $vmBox';
 
-  /**
-   *
-   */
   @override
   String toJson() => '${key.voicemail} $vmBox'
       '${recipient.isNotEmpty ? ' $recipient' : ''}'
