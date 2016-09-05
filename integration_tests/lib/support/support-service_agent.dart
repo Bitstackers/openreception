@@ -383,8 +383,7 @@ class ServiceAgent {
       ]
       ..extension = 'test-${Randomizer.randomPhoneNumber()}'
           '-${new DateTime.now().millisecondsSinceEpoch}'
-      ..defaultActions = [new model.Playback('sorry-dude-were-closed')]
-      ..active = true;
+      ..defaultActions = [new model.Playback('sorry-dude-were-closed')];
 
     _log.fine('Creating dialplan ${rdp.toJson()}');
     await dialplanStore.create(rdp, user);
@@ -424,8 +423,7 @@ class ServiceAgent {
       ]
       ..note = rdp.note + ' (updated)'
       ..extension = rdp.extension
-      ..defaultActions = [new model.Playback('sorry-dude-were-closed')]
-      ..active = true;
+      ..defaultActions = [new model.Playback('sorry-dude-were-closed')];
 
     _log.info('Updating dialplan ${rdp.toJson()}');
     await dialplanStore.update(rdp, user);

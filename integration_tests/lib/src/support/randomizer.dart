@@ -392,8 +392,7 @@ abstract class Randomizer {
         ..extension =
             '${randomPhoneNumber()}-${new DateTime.now().millisecondsSinceEpoch}'
         ..defaultActions = randomDialplanActions(excludeMenus: excludeMenus)
-        ..note = randomDialplanNote()
-        ..active = rand.nextBool();
+        ..note = randomDialplanNote();
 
   /**
    *

@@ -17,8 +17,7 @@ abstract class DialplanDeployment {
       ..defaultActions = [
         new model.Playback('sorry-dude-were-closed'),
         new model.Playback('sorry-dude-were-really-closed')
-      ]
-      ..active = true;
+      ];
 
     model.ReceptionDialplan createdDialplan = await rdpStore.create(rdp);
     _log.info('Created dialplan: ${createdDialplan.toJson()}');
@@ -89,8 +88,7 @@ abstract class DialplanDeployment {
       ]
       ..extension = 'test-${Randomizer.randomPhoneNumber()}'
           '-${new DateTime.now().millisecondsSinceEpoch}'
-      ..defaultActions = [new model.Playback('sorry-dude-were-closed')]
-      ..active = true;
+      ..defaultActions = [new model.Playback('sorry-dude-were-closed')];
 
     model.ReceptionDialplan createdDialplan = await rdpStore.create(rdp);
     model.ReceptionReference r = await rStore.create(
@@ -170,8 +168,7 @@ abstract class DialplanDeployment {
                 new model.Playback(firstDialplanGreeting),
                 new model.ReceptionTransfer(secondDialplanExtension)
               ],
-          ]
-          ..active = true);
+          ]);
     _log.info('Created dialplan: ${firstDialplan.toJson()}');
 
     final model.ReceptionDialplan secondDialplan =
@@ -181,8 +178,7 @@ abstract class DialplanDeployment {
             new model.HourAction()
               ..hours = [justNow]
               ..actions = [new model.Playback(secondDialplanGreeting)],
-          ]
-          ..active = true);
+          ]);
 
     model.ReceptionReference r = await rStore.create(
         Randomizer.randomReception()
