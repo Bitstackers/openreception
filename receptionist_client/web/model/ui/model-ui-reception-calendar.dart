@@ -23,7 +23,8 @@ class UIReceptionCalendar extends UIModel {
   final NodeValidatorBuilder _validator = new NodeValidatorBuilder()
     ..allowTextElements()
     ..allowHtml5()
-    ..allowInlineStyles();
+    ..allowInlineStyles()
+    ..allowNavigation(new AllUriPolicy());
 
   /**
    * Constructor.
@@ -51,6 +52,7 @@ class UIReceptionCalendar extends UIModel {
    * Construct a calendar entry LIElement from [entry]
    */
   LIElement _buildEntryElement(model.CalendarEntry entry) {
+    final LIElement li = new LIElement();
     final DateTime now = new DateTime.now();
 
     bool isToday(DateTime stamp) =>
@@ -80,6 +82,15 @@ class UIReceptionCalendar extends UIModel {
       ..setInnerHtml(markdown.markdownToHtml(entry.content),
           validator: _validator);
 
+    content.querySelectorAll('a').forEach((elem) {
+      elem.onClick.listen((MouseEvent event) {
+        event.preventDefault();
+        final AnchorElement a = event.target;
+        window.open(a.href, a.text);
+        _markSelected(li);
+      });
+    });
+
     String start = util.humanReadableTimestamp(entry.start, _weekDays);
     String stop = util.humanReadableTimestamp(entry.stop, _weekDays);
 
@@ -100,7 +111,7 @@ class UIReceptionCalendar extends UIModel {
           ..text = '$start - $stop'
       ]);
 
-    return new LIElement()
+    return li
       ..children.addAll([content, labelAndTimestamp])
       ..title = 'Id: ${entry.id.toString()}'
       ..dataset['object'] = JSON.encode(entry)

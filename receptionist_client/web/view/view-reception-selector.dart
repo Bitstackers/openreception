@@ -92,7 +92,10 @@ class ReceptionSelector extends ViewWidget {
       }
     });
 
-    _hotKeys.onCtrlEsc.listen((KeyboardEvent _) => _ui.resetFilter());
+    _hotKeys.onCtrlEsc.listen((KeyboardEvent _) {
+      _navigateToMyDestination();
+      _ui.resetFilter();
+    });
 
     _notification.onReceptionChange
         .listen((event.ReceptionChange _) => _refreshReceptionsCache = true);
