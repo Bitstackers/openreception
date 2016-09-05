@@ -73,29 +73,29 @@ class Notification {
   /**
    * Fire [event] on relevant bus.
    */
-  void _dispatch(event.Event event) {
-    _log.finest(event.toJson());
+  void _dispatch(event.Event e) {
+    _log.finest(e.toJson());
 
-    if (event is event.CallEvent) {
-      _callEvent(event);
-    } else if (event is event.CalendarChange) {
-      _calendarChange(event);
-    } else if (event is event.ClientConnectionState) {
-      _clientConnectionState(event);
-    } else if (event is event.MessageChange) {
-      _messageChange(event);
-    } else if (event is event.UserState) {
-      _userState(event);
-    } else if (event is event.PeerState) {
-      _peerStateChangeBus.fire(event);
-    } else if (event is event.ReceptionChange) {
-      _receptionChangeBus.fire(event);
-    } else if (event is event.ReceptionData) {
-      _receptionDataChangeBus.fire(event);
-    } else if (event is event.ContactChange) {
-      _contactChangeBus.fire(event);
+    if (e is event.CallEvent) {
+      _callEvent(e);
+    } else if (e is event.CalendarChange) {
+      _calendarChange(e);
+    } else if (e is event.ClientConnectionState) {
+      _clientConnectionState(e);
+    } else if (e is event.MessageChange) {
+      _messageChange(e);
+    } else if (e is event.UserState) {
+      _userState(e);
+    } else if (e is event.PeerState) {
+      _peerStateChangeBus.fire(e);
+    } else if (e is event.ReceptionChange) {
+      _receptionChangeBus.fire(e);
+    } else if (e is event.ReceptionData) {
+      _receptionDataChangeBus.fire(e);
+    } else if (e is event.ContactChange) {
+      _contactChangeBus.fire(e);
     } else {
-      _log.severe('Failed to dispatch event $event}');
+      _log.severe('Failed to dispatch event $e');
     }
   }
 
