@@ -119,9 +119,9 @@ Future customerAutoDialing(support.Customer customer) {
     // Spawn a new call as soon as the old call is disconnected.
     if (event is Phonio.CallDisconnected) {
       bool outbound =
-          _calls[_id(customer, event.callID)] == CallDirection.outbound;
+          _calls[_id(customer, event.callId)] == CallDirection.outbound;
 
-      _calls.remove(_id(customer, event.callID));
+      _calls.remove(_id(customer, event.callId));
 
       updateStatus();
 
@@ -135,19 +135,19 @@ Future customerAutoDialing(support.Customer customer) {
             .then((_) => customer.dial(_randomChoice(_receptionNumbers)));
       }
     } else if (event is Phonio.CallIncoming) {
-      _scheduleHangup(customer, event.callID);
+      _scheduleHangup(customer, event.callId);
 
       final List<int> actions = new List.generate(10, (int i) => i);
       final chosenAction = _randomChoice(actions);
 
       log.info('Got incoming call to ${event.callee}');
 
-      _calls[_id(customer, event.callID)] = CallDirection.inbound;
+      _calls[_id(customer, event.callId)] = CallDirection.inbound;
       updateStatus();
 
       if (chosenAction < 2) {
         Phonio.Call call = customer.call.firstWhere(
-            (Phonio.Call call) => call.ID == event.callID,
+            (Phonio.Call call) => call.id == event.callId,
             orElse: () => null);
 
         if (call != null) {
@@ -156,7 +156,7 @@ Future customerAutoDialing(support.Customer customer) {
               'Declining call to ${event.callee} in ${randomWait.inMilliseconds}ms');
           new Future.delayed(randomWait).then((_) => customer.hangup(call));
         } else {
-          log.warning('Failed to hangup call with ID ${call.ID}');
+          log.warning('Failed to hangup call with ID ${call.id}');
         }
       } else if (chosenAction < 4) {
         log.info('Ignoring call to ${event.callee}');
@@ -168,13 +168,13 @@ Future customerAutoDialing(support.Customer customer) {
             'to ${event.callee}');
 
         Phonio.Call call = customer.phone.activeCalls
-            .firstWhere((Phonio.Call call) => call.ID == event.callID);
+            .firstWhere((Phonio.Call call) => call.id == event.callId);
 
         new Future.delayed(randomWait).then((_) => customer.pickup(call));
       }
     } else if (event is Phonio.CallOutgoing) {
-      _scheduleHangup(customer, event.callID);
-      _calls[_id(customer, event.callID)] = CallDirection.outbound;
+      _scheduleHangup(customer, event.callId);
+      _calls[_id(customer, event.callId)] = CallDirection.outbound;
       updateStatus();
     }
   });
@@ -205,7 +205,7 @@ Future _scheduleHangup(support.Customer customer, String callId) {
 
   return new Future.delayed(new Duration(seconds: 60)).then((_) {
     Phonio.Call call = customer.phone.activeCalls.firstWhere(
-        (Phonio.Call call) => call.ID == callId,
+        (Phonio.Call call) => call.id == callId,
         orElse: () => null);
 
     return call != null ? customer.hangup(call) : null;

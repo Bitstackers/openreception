@@ -29,7 +29,9 @@ class PhonePool {
       if (phone is Phonio.PJSUAProcess) {
         await phone.finalize();
       } else {
-        //TODO: Support additional types of sip phones.
+        throw new UnimplementedError(
+            'Phone type ${phone.runtimeType} is not supported '
+            'by $runtimeType class.');
       }
     });
   }
