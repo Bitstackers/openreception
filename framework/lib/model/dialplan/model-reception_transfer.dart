@@ -36,7 +36,7 @@ class ReceptionTransfer implements Action {
     String extension;
     String note = '';
 
-    buffer = consumeKey(buffer, key.reception).trimLeft();
+    buffer = _consumeKey(buffer, key.reception).trimLeft();
 
     int openBracket = buffer.indexOf('(');
 

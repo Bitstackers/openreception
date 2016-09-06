@@ -28,9 +28,9 @@ class Notify implements Action {
 
   /// Parses and creates a new [Notify] action from a [String] [buffer].
   static Notify parse(String buffer) {
-    var buf = consumeKey(buffer.trimLeft(), key.notify).trimLeft();
+    String buf = _consumeKey(buffer.trimLeft(), key.notify).trimLeft();
 
-    var consumed = consumeWord(buf);
+    _ConsumedIdenBuf consumed = consumeWord(buf);
 
     String eventName = consumed.iden;
     if (eventName.isEmpty) {

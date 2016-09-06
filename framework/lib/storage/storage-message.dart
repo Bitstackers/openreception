@@ -43,7 +43,7 @@ abstract class Message {
   /// by [mid].
   ///
   /// The [modifier] is required for traceability of who performed the deletion.
-  Future remove(int mid, model.User modifier);
+  Future<Null> remove(int mid, model.User modifier);
 
   /// List message object changes for the store, optionally for a single [mid].
   Future<Iterable<model.Commit>> changes([int mid]);

@@ -21,17 +21,17 @@ class Reception {
 
   int oid = Organization.noId;
 
-  List<String> addresses = [];
-  List<String> alternateNames = [];
-  List<String> bankingInformation = [];
-  List<String> salesMarketingHandling = [];
-  List<String> emailAddresses = [];
-  List<String> handlingInstructions = [];
-  List<String> openingHours = [];
-  List<String> vatNumbers = [];
-  List<String> websites = [];
-  List<String> customerTypes = [];
-  List<PhoneNumber> phoneNumbers = [];
+  List<String> addresses = <String>[];
+  List<String> alternateNames = <String>[];
+  List<String> bankingInformation = <String>[];
+  List<String> salesMarketingHandling = <String>[];
+  List<String> emailAddresses = <String>[];
+  List<String> handlingInstructions = <String>[];
+  List<String> openingHours = <String>[];
+  List<String> vatNumbers = <String>[];
+  List<String> websites = <String>[];
+  List<String> customerTypes = <String>[];
+  List<PhoneNumber> phoneNumbers = <PhoneNumber>[];
   String miniWiki = '';
 
   String dialplan;
@@ -50,7 +50,7 @@ class Reception {
   /// Default initializing contructor
   Reception.empty();
 
-  Reception.fromMap(Map receptionMap) {
+  Reception.fromMap(Map<String, dynamic> receptionMap) {
     try {
       this
         ..id = receptionMap[key.id]
@@ -60,7 +60,7 @@ class Reception {
         ..dialplan = receptionMap[key.dialplan];
 
       if (receptionMap[key.attributes] != null) {
-        attributes = receptionMap[key.attributes];
+        attributes = receptionMap[key.attributes] as Map<String, dynamic>;
       }
     } catch (error) {
       throw new ArgumentError('Invalid data in map');
@@ -73,7 +73,8 @@ class Reception {
     this._shortGreeting = newGreeting;
   }
 
-  static Reception decode(Map map) => new Reception.fromMap(map);
+  static Reception decode(Map<String, dynamic> map) =>
+      new Reception.fromMap(map);
 
   static Stream<Reception> get onReceptionChange => _receptionChange.stream;
 
@@ -83,8 +84,7 @@ class Reception {
     _receptionChange.fire(_selectedReception);
   }
 
-  //@deprecated
-  Map get attributes => {
+  Map<String, dynamic> get attributes => <String, dynamic>{
         key.addresses: addresses,
         key.alternateNames: alternateNames,
         key.bankingInfo: bankingInformation,
@@ -99,13 +99,12 @@ class Reception {
         key.salesMarketingHandling: salesMarketingHandling,
         key.shortGreeting: _shortGreeting,
         key.vatNumbers: vatNumbers,
-        key.phoneNumbers: new List<Map>.from(
+        key.phoneNumbers: new List<Map<String, dynamic>>.from(
             phoneNumbers.map((PhoneNumber number) => number.toJson())),
         key.websites: websites
       };
 
-//@deprecated
-  set attributes(Map attributes) {
+  set attributes(Map<String, dynamic> attributes) {
     this
       ..addresses = attributes[key.addresses] as List<String>
       ..alternateNames = attributes[key.alternateNames] as List<String>
@@ -116,9 +115,10 @@ class Reception {
       ..handlingInstructions =
           attributes[key.handlingInstructions] as List<String>
       ..miniWiki = attributes[key.miniWiki]
-      ..phoneNumbers = (attributes[key.phoneNumbers] as Iterable)
-          .map((Map map) => new PhoneNumber.fromMap(map))
-          .toList()
+      ..phoneNumbers =
+          (attributes[key.phoneNumbers] as Iterable<Map<String, dynamic>>)
+              .map((Map<String, dynamic> map) => new PhoneNumber.fromMap(map))
+              .toList()
       ..product = attributes[key.product] as String
       ..openingHours = attributes[key.openingHours] as List<String>
       ..otherData = attributes[key.other] as String
@@ -132,7 +132,7 @@ class Reception {
   }
 
   /// Returns a Map representation of the Reception.
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.id: id,
         key.enabled: enabled,
         key.oid: oid,

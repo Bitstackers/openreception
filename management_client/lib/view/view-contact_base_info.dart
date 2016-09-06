@@ -246,7 +246,8 @@ class Contact {
         updated = await _contactController.create(contact);
         notify.success('Oprettede kontaktperson', '${updated.name}');
       } else {
-        updated = await _contactController.update(contact);
+        updated = contact;
+        await _contactController.update(contact);
         notify.success('Opdaterede kontaktperson', '${updated.name}');
       }
       _saveButton.disabled = false;

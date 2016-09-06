@@ -36,8 +36,8 @@ abstract class _ModelIvrEntry {
   static void serializationDeserialization() {
     model.IvrMenu builtObject = buildObject();
 
-    model.IvrMenu deserializedObject =
-        model.IvrMenu.decode(JSON.decode(JSON.encode(builtObject)));
+    model.IvrMenu deserializedObject = model.IvrMenu
+        .decode(JSON.decode(JSON.encode(builtObject)) as Map<String, dynamic>);
 
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
 
@@ -67,7 +67,7 @@ abstract class _ModelIvrEntry {
     final String note = 'Just a test';
     final model.Playback greeting = new model.Playback(filename, note: note);
 
-    final List<model.IvrEntry> entries = [
+    final List<model.IvrEntry> entries = <model.IvrEntry>[
       new model.IvrVoicemail('1', new model.Voicemail('vm-test')),
       new model.IvrTransfer('2', new model.Transfer('testtesttest')),
     ];

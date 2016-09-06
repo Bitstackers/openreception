@@ -18,7 +18,8 @@ void _testEvent() {
     test('contactChangeState', _EventTests.contactChangeState);
     test('organizationChangeState', _EventTests.organizationChangeState);
     test('receptionChangeState', _EventTests.receptionChangeState);
-    test('receptionContactChangeState', _EventTests.receptionContactChangeState);
+    test(
+        'receptionContactChangeState', _EventTests.receptionContactChangeState);
     test('messageChangeState', _EventTests.messageChangeState);
     test('calendarEntryState', _EventTests.calendarEntryState);
     test('userChange', _EventTests.userChange);
@@ -108,8 +109,8 @@ abstract class _EventTests {
 
   static void calendarEntryState() {
     final int eid = 1;
-    final owner = new model.OwningReception(3);
-    final uid = 3;
+    final model.Owner owner = new model.OwningReception(3);
+    final int uid = 3;
 
     event.CalendarChange testEvent =
         new event.CalendarChange.create(eid, owner, uid);

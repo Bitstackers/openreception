@@ -31,7 +31,6 @@ import '../controller/controller.dart' as controller;
 import '../lang.dart';
 
 part 'model-app-state.dart';
-part 'model-client-connection-state.dart';
 part 'ui/model-ui-agent-info.dart';
 part 'ui/model-ui-calendar-editor.dart';
 part 'ui/model-ui-contact-calendar.dart';

@@ -236,8 +236,8 @@ class Contact implements storage.Contact {
 
     try {
       final String jsonString = file.readAsStringSync();
-      final model.BaseContact bc =
-          model.BaseContact.decode(JSON.decode(jsonString));
+      final model.BaseContact bc = model.BaseContact
+          .decode(JSON.decode(jsonString) as Map<String, dynamic>);
 
       return bc;
     } catch (e) {
@@ -253,7 +253,7 @@ class Contact implements storage.Contact {
     }
 
     return model.ReceptionAttributes
-        .decode(JSON.decode(await file.readAsString()));
+        .decode(JSON.decode(await file.readAsString()) as Map<String, dynamic>);
   }
 
   @override
@@ -439,8 +439,7 @@ class Contact implements storage.Contact {
   }
 
   @override
-  Future<model.BaseContact> update(
-      model.BaseContact contact, model.User modifier) async {
+  Future<Null> update(model.BaseContact contact, model.User modifier) async {
     final File file = new File('$path/${contact.id}/contact.json');
 
     if (!file.existsSync()) {
@@ -463,8 +462,6 @@ class Contact implements storage.Contact {
     }
 
     _changeBus.fire(new event.ContactChange.update(contact.id, modifier.id));
-
-    return contact;
   }
 
   @override

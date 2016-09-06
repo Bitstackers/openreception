@@ -35,7 +35,7 @@ class CalendarEntry {
   /// 'start' and 'stop' MUST be in a format that can be parsed by the
   /// [DateTime.parse] method. Please use the methods in the [util] library
   /// to help getting the right format. 'content' is the actual entry body.
-  CalendarEntry.fromMap(Map map)
+  CalendarEntry.fromMap(Map<String, dynamic> map)
       : id = map[key.id],
         lastAuthorId = map[key.uid],
         touched = util.unixTimestampToDateTime(map[key.touched]),
@@ -44,7 +44,7 @@ class CalendarEntry {
         content = map[key.body];
 
   /// Decoding factory.
-  static CalendarEntry decode(Map map) => map.isNotEmpty
+  static CalendarEntry decode(Map<String, dynamic> map) => map.isNotEmpty
       ? new CalendarEntry.fromMap(map)
       : new CalendarEntry.empty();
 
@@ -55,7 +55,7 @@ class CalendarEntry {
   }
 
   /// Serialization function.
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.id: id,
         key.uid: lastAuthorId,
         key.touched: util.dateTimeToUnixTimestamp(touched),

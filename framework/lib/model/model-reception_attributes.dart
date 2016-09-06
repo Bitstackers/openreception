@@ -24,18 +24,18 @@ class ReceptionAttributeChange implements ObjectChange {
 
   ReceptionAttributeChange(this.changeType, this.cid, this.rid);
 
-  ReceptionAttributeChange.fromJson(Map map)
+  ReceptionAttributeChange.fromJson(Map<String, dynamic> map)
       : changeType = changeTypeFromString(map[key.change]),
         cid = map[key.cid],
         rid = map[key.rid];
 
-  static ReceptionAttributeChange decode(Map map) =>
+  static ReceptionAttributeChange decode(Map<String, dynamic> map) =>
       new ReceptionAttributeChange(
           changeTypeFromString(map[key.change]), map[key.cid], map[key.rid]);
 
   /// Serialization function.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.change: changeTypeToString(changeType),
         key.type: objectTypeToString(objectType),
         key.cid: cid,
@@ -49,23 +49,23 @@ class ReceptionAttributes {
   int cid = BaseContact.noId;
   int receptionId = Reception.noId;
 
-  List<PhoneNumber> phoneNumbers = [];
-  List<MessageEndpoint> endpoints = [];
+  List<PhoneNumber> phoneNumbers = <PhoneNumber>[];
+  List<MessageEndpoint> endpoints = <MessageEndpoint>[];
 
-  List<String> backupContacts = [];
-  List<String> messagePrerequisites = [];
+  List<String> backupContacts = <String>[];
+  List<String> messagePrerequisites = <String>[];
 
-  List<String> tags = new List<String>();
-  List<String> emailaddresses = new List<String>();
-  List<String> handling = new List<String>();
-  List<String> workhours = new List<String>();
-  List<String> titles = [];
-  List<String> responsibilities = [];
-  List<String> relations = [];
-  List<String> departments = [];
-  List<String> infos = [];
+  List<String> tags = <String>[];
+  List<String> emailaddresses = <String>[];
+  List<String> handling = <String>[];
+  List<String> workhours = <String>[];
+  List<String> titles = <String>[];
+  List<String> responsibilities = <String>[];
+  List<String> relations = <String>[];
+  List<String> departments = <String>[];
+  List<String> infos = <String>[];
 
-  ReceptionAttributes.fromMap(Map map)
+  ReceptionAttributes.fromMap(Map<String, dynamic> map)
       : phoneNumbers =
             new List<PhoneNumber>.from(map[key.phones].map(PhoneNumber.decode)),
         endpoints = new List<MessageEndpoint>.from(
@@ -87,15 +87,17 @@ class ReceptionAttributes {
   /// [ReceptionAttributes] empty constructor.
   ReceptionAttributes.empty();
 
-  static ReceptionAttributes decode(Map map) =>
+  static ReceptionAttributes decode(Map<String, dynamic> map) =>
       new ReceptionAttributes.fromMap(map);
 
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.cid: cid,
         key.rid: receptionId,
         key.departments: departments,
-        key.phones: new List<Map>.from(phoneNumbers.map((p) => p.toJson())),
-        key.endpoints: new List<Map>.from(endpoints.map((e) => e.toJson())),
+        key.phones: new List<Map<String, dynamic>>.from(
+            phoneNumbers.map((PhoneNumber p) => p.toJson())),
+        key.endpoints: new List<Map<String, dynamic>>.from(
+            endpoints.map((MessageEndpoint e) => e.toJson())),
         key.backup: backupContacts,
         key.emailaddresses: emailaddresses,
         key.handling: handling,

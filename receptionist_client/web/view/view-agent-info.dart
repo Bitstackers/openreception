@@ -117,8 +117,8 @@ class AgentInfo extends ViewWidget {
     });
 
     _notification.onClientConnectionStateChange
-        .listen((ui_model.ClientConnectionState state) {
-      _userConnectionCount[state.userID] = state.connectionCount;
+        .listen((event.ClientConnectionState state) {
+      _userConnectionCount[state.conn.userID] = state.conn.connectionCount;
       _log.info('View.AgentInfo got '
           'Model.ClientConnectionState: ${state.toJson()}');
       _updateCounters();

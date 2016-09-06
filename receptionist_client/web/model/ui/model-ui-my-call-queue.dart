@@ -152,8 +152,8 @@ class UIMyCallQueue extends UIModel {
    * Return the list of calls found in my call queue.
    */
   Iterable<model.Call> get calls =>
-      _list.querySelectorAll('li').map((Element li) =>
-          new model.Call.fromMap(JSON.decode(li.dataset['object'])));
+      _list.querySelectorAll('li').map((Element li) => new model.Call.fromMap(
+          JSON.decode(li.dataset['object']) as Map<String, dynamic>));
 
   /**
    * Add [calls] to the calls list.
@@ -175,7 +175,8 @@ class UIMyCallQueue extends UIModel {
    */
   Iterable<model.Call> get markedForTransfer {
     return _list.querySelectorAll('[transfer]').map((Element li) =>
-        new model.Call.fromMap(JSON.decode(li.dataset['object'])));
+        new model.Call.fromMap(
+            JSON.decode(li.dataset['object']) as Map<String, dynamic>));
   }
 
   /**
@@ -202,7 +203,8 @@ class UIMyCallQueue extends UIModel {
     _list.onDoubleClick.listen((Event event) {
       if ((event as MouseEvent).target is LIElement) {
         _dblClickBus.fire(new model.Call.fromMap(
-            JSON.decode((event.target as LIElement).dataset['object'])));
+            JSON.decode((event.target as LIElement).dataset['object'])
+            as Map<String, dynamic>));
       }
     });
 

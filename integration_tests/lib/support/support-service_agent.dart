@@ -459,9 +459,9 @@ class ServiceAgent {
     final updatedContact = Randomizer.randomBaseContact()..id = contact.id;
     updatedContact.name = updatedContact.name + ' (updated)';
 
-    final bc = await contactStore.update(updatedContact, user);
+    await contactStore.update(updatedContact, user);
 
-    return contactStore.get(bc.id);
+    return contactStore.get(updatedContact.id);
   }
 
   /**
@@ -631,6 +631,8 @@ class ServiceAgent {
    *
    */
   Future<model.Message> removesMessage(model.Message msg) async {
-    return messageStore.remove(msg.id, user);
+    await messageStore.remove(msg.id, user);
+
+    return msg;
   }
 }

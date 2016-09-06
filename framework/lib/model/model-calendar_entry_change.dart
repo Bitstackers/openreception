@@ -22,12 +22,12 @@ class CalendarChange implements ObjectChange {
 
   CalendarChange(this.changeType, this.eid);
 
-  static CalendarChange decode(Map map) =>
+  static CalendarChange decode(Map<String, dynamic> map) =>
       new CalendarChange(changeTypeFromString(map[key.change]), map[key.eid]);
 
   /// Serization function.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.type: objectTypeToString(objectType),
         key.change: changeTypeToString(changeType),
         key.eid: eid

@@ -34,7 +34,7 @@ bool isAlphaNumeric(String string) =>
 /// any exceptions.
 List<ValidationException> validateOriginationContext(
     OriginationContext context) {
-  List<ValidationException> errors = [];
+  List<ValidationException> errors = <ValidationException>[];
 
   if (context.contactId == BaseContact.noId) {
     errors.add(new InvalidId('cid'));
@@ -56,7 +56,7 @@ List<ValidationException> validateOriginationContext(
 /// Returns a list of errors found in the validation and does not throw
 /// any exceptions.
 List<ValidationException> validateIvrMenu(IvrMenu menu) {
-  List<ValidationException> errors = [];
+  List<ValidationException> errors = <ValidationException>[];
 
   if (menu.name.isEmpty) {
     errors.add(new IsEmpty('name'));
@@ -75,10 +75,10 @@ List<ValidationException> validateIvrMenu(IvrMenu menu) {
     errors.add(new IsEmpty('greeting'));
   }
 
-  menu.entries.forEach((entry) {
-    Iterable<IvrEntry> duplicated = menu.entries.where((e) =>
-        e.digits.runes.any((r) => entry.digits.runes.contains(r)) ||
-        entry.digits.runes.any((r) => e.digits.runes.contains(r)));
+  menu.entries.forEach((IvrEntry entry) {
+    Iterable<IvrEntry> duplicated = menu.entries.where((IvrEntry e) =>
+        e.digits.runes.any((int r) => entry.digits.runes.contains(r)) ||
+        entry.digits.runes.any((int r) => e.digits.runes.contains(r)));
 
     if (duplicated.length > 1) {
       errors.add(new DuplicateDigits('digits', duplicated.first.digits,
@@ -88,7 +88,8 @@ List<ValidationException> validateIvrMenu(IvrMenu menu) {
 
   errors.addAll(menu.submenus.map(validateIvrMenu).fold(
       new List<ValidationException>(),
-      (List<ValidationException> list, e) => list..addAll(e)));
+      (List<ValidationException> list, List<ValidationException> e) =>
+          list..addAll(e)));
 
   return errors;
 }
@@ -98,7 +99,7 @@ List<ValidationException> validateIvrMenu(IvrMenu menu) {
 /// Returns a list of errors found in the validation and does not throw
 /// any exceptions.
 List<ValidationException> validateMessage(Message msg) {
-  List<ValidationException> errors = [];
+  List<ValidationException> errors = <ValidationException>[];
 
   if (msg.id == null) {
     errors.add(new NullValue('id'));
@@ -134,7 +135,7 @@ List<ValidationException> validateMessage(Message msg) {
 /// Returns a list of errors found in the validation and does not throw
 /// any exceptions.
 List<ValidationException> validateMessageCallerInfo(CallerInfo callerInfo) {
-  List<ValidationException> errors = [];
+  List<ValidationException> errors = <ValidationException>[];
 
   if (callerInfo.name.isEmpty) {
     errors.add(new IsEmpty('name'));
@@ -150,7 +151,7 @@ List<ValidationException> validateMessageCallerInfo(CallerInfo callerInfo) {
 /// any exceptions.
 List<ValidationException> validateMessageRecipients(
     Iterable<MessageEndpoint> recipients) {
-  List<ValidationException> errors = [];
+  List<ValidationException> errors = <ValidationException>[];
 
   for (MessageEndpoint recipient in recipients) {
     if (!MessageEndpointType.types.contains(recipient.type)) {
@@ -174,7 +175,7 @@ List<ValidationException> validateMessageRecipients(
 /// Returns a list of errors found in the validation and does not throw
 /// any exceptions.
 List<ValidationException> validateMessageContext(MessageContext context) {
-  List<ValidationException> errors = [];
+  List<ValidationException> errors = <ValidationException>[];
 
   if (context.cid <= BaseContact.noId) {
     errors.add(new InvalidId('cid'));
@@ -200,7 +201,7 @@ List<ValidationException> validateMessageContext(MessageContext context) {
 /// Returns a list of errors found in the validation and does not throw
 /// any exceptions.
 List<ValidationException> validateOwner(Owner owner) {
-  final List<ValidationException> errors = [];
+  final List<ValidationException> errors = <ValidationException>[];
 
   if (owner.id == null) {
     errors.add(new NullValue('id'));
@@ -218,7 +219,7 @@ List<ValidationException> validateOwner(Owner owner) {
 /// Returns a list of errors found in the validation and does not throw
 /// any exceptions.
 List<ValidationException> validatePhonenumber(PhoneNumber pn) {
-  final List<ValidationException> errors = [];
+  final List<ValidationException> errors = <ValidationException>[];
 
   if (pn.normalizedDestination.isEmpty) {
     errors.add(new IsEmpty('destination'));
@@ -232,7 +233,7 @@ List<ValidationException> validatePhonenumber(PhoneNumber pn) {
 /// Returns a list of errors found in the validation and does not throw
 /// any exceptions.
 List<ValidationException> validateReceptionAttribute(ReceptionAttributes attr) {
-  final List<ValidationException> errors = [];
+  final List<ValidationException> errors = <ValidationException>[];
 
   if (attr.cid <= BaseContact.noId) {
     errors.add(new InvalidId('cid'));
@@ -250,7 +251,7 @@ List<ValidationException> validateReceptionAttribute(ReceptionAttributes attr) {
 /// Returns a list of errors found in the validation and does not throw
 /// any exceptions.
 List<ValidationException> validateReception(Reception rec) {
-  List<ValidationException> errors = [];
+  List<ValidationException> errors = <ValidationException>[];
 
   if (rec.name.isEmpty) {
     errors.add(new IsEmpty('name'));
@@ -276,7 +277,7 @@ List<ValidationException> validateReception(Reception rec) {
 /// Returns a list of errors found in the validation and does not throw
 /// any exceptions.
 List<ValidationException> validateOrganization(Organization org) {
-  List<ValidationException> errors = [];
+  List<ValidationException> errors = <ValidationException>[];
 
   if (org.id == null) {
     errors.add(new NullValue('uuid'));
@@ -302,7 +303,7 @@ List<ValidationException> validateOrganization(Organization org) {
 /// Returns a list of errors found in the validation and does not throw
 /// any exceptions.
 List<ValidationException> validateUser(User user) {
-  List<ValidationException> errors = [];
+  List<ValidationException> errors = <ValidationException>[];
 
   if (user.name.isEmpty) {
     errors.add(new IsEmpty('name'));
@@ -336,7 +337,7 @@ List<ValidationException> validateUser(User user) {
 /// Returns a list of errors found in the validation and does not throw
 /// any exceptions.
 List<ValidationException> validateCalendarEntry(CalendarEntry entry) {
-  List<ValidationException> errors = [];
+  List<ValidationException> errors = <ValidationException>[];
 
   if (entry.id == null) {
     errors.add(new NullValue('id'));
@@ -362,7 +363,7 @@ List<ValidationException> validateCalendarEntry(CalendarEntry entry) {
 /// Returns a list of errors found in the validation and does not throw
 /// any exceptions.
 List<ValidationException> validateBaseContact(BaseContact bc) {
-  List<ValidationException> errors = [];
+  List<ValidationException> errors = <ValidationException>[];
 
   if (bc.id == null) {
     errors.add(new NullValue('id'));
@@ -388,7 +389,7 @@ List<ValidationException> validateBaseContact(BaseContact bc) {
 /// Returns a list of errors found in the validation and does not throw
 /// any exceptions.
 List<ValidationException> validateReceptionDialplan(ReceptionDialplan rdp) {
-  List<ValidationException> errors = [];
+  List<ValidationException> errors = <ValidationException>[];
 
   if (rdp.extension.isEmpty) {
     errors.add(new IsEmpty('name'));

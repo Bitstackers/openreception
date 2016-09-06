@@ -37,7 +37,8 @@ class TokenVault {
 
     _tokens.values.forEach((Map map) {
       if (map.containsKey('identity')) {
-        model.User user = new model.User.fromMap(map['identity']);
+        model.User user =
+            new model.User.fromMap(map['identity'] as Map<String, dynamic>);
         users[user.id] = user;
       }
     });

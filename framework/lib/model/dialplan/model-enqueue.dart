@@ -57,7 +57,7 @@ class Enqueue implements Action {
       }
     }
 
-    buffer = consumeKey(buffer, key.enqueue).trimLeft();
+    buffer = _consumeKey(buffer, key.enqueue).trimLeft();
 
     if (buffer.startsWith('(')) {
       consumeNote();

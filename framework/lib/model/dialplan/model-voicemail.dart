@@ -38,16 +38,16 @@ class Voicemail implements Action {
     String note = '';
 
     /// Keyword.
-    buffer = consumeKey(buffer, key.voicemail).trimLeft();
+    buffer = _consumeKey(buffer, key.voicemail).trimLeft();
 
     /// Voicemail box.
-    var consumed = consumeWord(buffer);
+    _ConsumedIdenBuf consumed = consumeWord(buffer);
     vmBox = consumed.iden;
     buffer = consumed.buffer.trimLeft();
 
     /// Check for comments, or consume recipient.
     if (buffer.startsWith('(')) {
-      var consumedComment = consumeComment(buffer);
+      _ConsumedCommentBuf consumedComment = consumeComment(buffer);
       note = consumedComment.comment;
     } else {
       consumed = consumeWord(buffer);
@@ -59,7 +59,7 @@ class Voicemail implements Action {
 
     /// Check for comments.
     if (buffer.startsWith('(')) {
-      var consumedComment = consumeComment(buffer);
+      _ConsumedCommentBuf consumedComment = consumeComment(buffer);
       note = consumedComment.comment;
     }
 

@@ -251,7 +251,8 @@ class UIReceptionSelector extends UIModel {
     LIElement li = _list.querySelector('.selected');
 
     if (li != null) {
-      return model.ReceptionReference.decode(JSON.decode(li.dataset['object']));
+      return model.ReceptionReference
+          .decode(JSON.decode(li.dataset['object']) as Map<String, dynamic>);
     } else {
       return const model.ReceptionReference.none();
     }

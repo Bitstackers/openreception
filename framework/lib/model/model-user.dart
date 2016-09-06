@@ -18,7 +18,7 @@ abstract class UserGroups {
   static const String administrator = 'Administrator';
   static const String serviceAgent = 'Service agent';
 
-  static const Iterable<String> validGroups = const [
+  static const Iterable<String> validGroups = const <String>[
     receptionist,
     administrator,
     serviceAgent
@@ -37,16 +37,16 @@ class UserChange implements ObjectChange {
 
   UserChange(this.changeType, this.uid);
 
-  UserChange.fromJson(Map map)
+  UserChange.fromJson(Map<String, dynamic> map)
       : changeType = changeTypeFromString(map[key.change]),
         uid = map[key.uid];
 
-  static UserChange decode(Map map) =>
+  static UserChange decode(Map<String, dynamic> map) =>
       new UserChange(changeTypeFromString(map[key.change]), map[key.uid]);
 
   /// Serialization function.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.change: changeTypeToString(changeType),
         key.type: objectTypeToString(objectType),
         key.uid: uid
@@ -61,12 +61,13 @@ class UserReference implements ObjectReference {
 
   const UserReference(this.id, this.name);
 
-  static UserReference decode(Map map) =>
+  static UserReference decode(Map<String, dynamic> map) =>
       new UserReference(map[key.id], map[key.name]);
 
   /// Serialization function.
   @override
-  Map toJson() => {key.id: id, key.name: name};
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{key.id: id, key.name: name};
 
   @override
   int get hashCode => id.hashCode;
@@ -90,7 +91,7 @@ class User {
   User.empty();
 
   /// Deserializing constructor.
-  User.fromMap(Map map)
+  User.fromMap(Map<String, dynamic> map)
       : id = map[key.id],
         address = map[key.address],
         name = map[key.name],
@@ -98,15 +99,16 @@ class User {
         groups = new Set<String>.from(map[key.groups]),
         identities = new Set<String>.from(map[key.identites]),
         portrait = map.containsKey('remote_attributes') &&
-                (map['remote_attributes'] as Map).containsKey('picture')
-            ? (map['remote_attributes'] as Map)['picture']
+                (map['remote_attributes'] as Map<String, dynamic>)
+                    .containsKey('picture')
+            ? (map['remote_attributes'] as Map<String, dynamic>)['picture']
             : '';
 
   /// Deserializing factory
-  static User decode(Map map) => new User.fromMap(map);
+  static User decode(Map<String, dynamic> map) => new User.fromMap(map);
 
   /// Serialization function.
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.id: id,
         key.name: name,
         key.identites: identities.toList(growable: false),

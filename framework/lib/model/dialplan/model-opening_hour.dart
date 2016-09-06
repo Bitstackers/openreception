@@ -47,8 +47,8 @@ enum WeekDay {
 /// objects.
 Iterable<OpeningHour> parseMultipleHours(String buffer) => buffer
     .split(',')
-    .where((string) => string.isNotEmpty)
-    .map((ohBuffer) => OpeningHour.parse(ohBuffer));
+    .where((String str) => str.isNotEmpty)
+    .map((String ohBuffer) => OpeningHour.parse(ohBuffer));
 
 /// Class representing an opening hour.
 class OpeningHour {
@@ -77,7 +77,7 @@ class OpeningHour {
   ///
   /// TODO(krc): Turn into ValidationError exceptions.
   List<FormatException> get validationErrors {
-    List<FormatException> errors = [];
+    List<FormatException> errors = <FormatException>[];
 
     if (fromMinute > 59 ||
         toMinute > 59 ||
@@ -137,7 +137,7 @@ class OpeningHour {
     bool gotHour = false;
     List<String> parts = buffer.split(' ');
 
-    parts.forEach((part) {
+    parts.forEach((String part) {
       if (part.isNotEmpty) {
         if (!gotDay) {
           List<String> days = part.split('-');

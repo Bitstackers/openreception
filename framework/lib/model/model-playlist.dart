@@ -33,7 +33,7 @@ class Playlist {
   /// Default empty constructor.
   Playlist.empty();
 
-  Playlist.fromDb(int this.id, Map json) {
+  Playlist.fromDb(int this.id, Map<String, dynamic> json) {
     name = json['name'];
     path = json['path'];
     shuffle = json['shuffle'];

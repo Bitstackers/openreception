@@ -15,8 +15,6 @@ library openreception.framework.model.dialplan;
 
 import 'package:openreception.framework/src/constants/dialplan.dart' as key;
 
-import 'parsing_utils.dart';
-
 part 'model-action.dart';
 part 'model-enqueue.dart';
 part 'model-extension.dart';
@@ -37,6 +35,7 @@ part 'model-reception_transfer.dart';
 part 'model-ringtone.dart';
 part 'model-transfer.dart';
 part 'model-voicemail.dart';
+part 'parsing_utils.dart';
 
 const String _libaryName = 'model.dialplan';
 

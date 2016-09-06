@@ -33,11 +33,13 @@ class UserStatus {
 
   UserStatus();
 
-  UserStatus.fromMap(Map map)
+  UserStatus.fromMap(Map<String, dynamic> map)
       : userId = map[key.uid],
         paused = map[key.paused];
 
-  static UserStatus decode(Map map) => new UserStatus.fromMap(map);
+  static UserStatus decode(Map<String, dynamic> map) =>
+      new UserStatus.fromMap(map);
 
-  Map toJson() => {key.uid: userId, key.paused: paused};
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{key.uid: userId, key.paused: paused};
 }

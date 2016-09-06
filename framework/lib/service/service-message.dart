@@ -33,15 +33,15 @@ class RESTMessageStore implements storage.Message {
   Future<model.Message> get(int mid) => this
       ._backend
       .get(_appendToken(resource.Message.single(this.host, mid), this.token))
-      .then((String response) =>
-          new model.Message.fromMap(JSON.decode(response)));
+      .then((String response) => new model.Message.fromMap(
+          JSON.decode(response) as Map<String, dynamic>));
 
   @override
   Future<Iterable<model.Message>> getByIds(Iterable<int> ids) async {
     Uri uri = resource.Message.list(host);
     uri = _appendToken(uri, token);
 
-    final Iterable maps = await _backend
+    final Iterable<Map<String, dynamic>> maps = await _backend
         .post(uri, JSON.encode(ids))
         .then((String response) => JSON.decode(response));
 
@@ -56,7 +56,7 @@ class RESTMessageStore implements storage.Message {
         ._backend
         .post(uri, JSON.encode(message.asMap))
         .then(JSON.decode)
-        .then((Map queueItemMap) =>
+        .then((Map<String, dynamic> queueItemMap) =>
             new model.MessageQueueEntry.fromMap(queueItemMap));
   }
 
@@ -65,15 +65,15 @@ class RESTMessageStore implements storage.Message {
       _backend
           .post(_appendToken(resource.Message.root(this.host), this.token),
               JSON.encode(message.asMap))
-          .then((String response) =>
-              new model.Message.fromMap(JSON.decode(response)));
+          .then((String response) => new model.Message.fromMap(
+              JSON.decode(response) as Map<String, dynamic>));
 
   @override
-  Future remove(int mid, model.User modifier) {
+  Future<Null> remove(int mid, model.User modifier) async {
     Uri uri = resource.Message.single(host, mid);
     uri = _appendToken(uri, token);
 
-    return _backend.delete(uri);
+    await _backend.delete(uri);
   }
 
   @override
@@ -83,15 +83,16 @@ class RESTMessageStore implements storage.Message {
               _appendToken(
                   resource.Message.single(this.host, message.id), this.token),
               JSON.encode(message.asMap))
-          .then((String response) =>
-              new model.Message.fromMap(JSON.decode(response)));
+          .then((String response) => new model.Message.fromMap(
+              JSON.decode(response) as Map<String, dynamic>));
 
   Future<Iterable<model.Message>> list({model.MessageFilter filter}) => this
       ._backend
       .get(_appendToken(
           resource.Message.list(this.host, filter: filter), this.token))
-      .then((String response) => (JSON.decode(response) as Iterable)
-          .map((Map map) => new model.Message.fromMap(map)));
+      .then((String response) => (JSON.decode(response)
+              as Iterable<Map<String, dynamic>>)
+          .map((Map<String, dynamic> map) => new model.Message.fromMap(map)));
 
   @override
   Future<Iterable<model.Message>> listDay(DateTime day,
@@ -100,8 +101,8 @@ class RESTMessageStore implements storage.Message {
     uri = _appendToken(uri, token);
 
     return _backend.get(uri).then((String response) =>
-        (JSON.decode(response) as Iterable)
-            .map((Map map) => new model.Message.fromMap(map)));
+        (JSON.decode(response) as Iterable<Map<String, dynamic>>)
+            .map((Map<String, dynamic> map) => new model.Message.fromMap(map)));
   }
 
   @override
@@ -110,8 +111,8 @@ class RESTMessageStore implements storage.Message {
     uri = _appendToken(uri, token);
 
     return _backend.get(uri).then((String response) =>
-        (JSON.decode(response) as Iterable)
-            .map((Map map) => new model.Message.fromMap(map)));
+        (JSON.decode(response) as Iterable<Map<String, dynamic>>)
+            .map((Map<String, dynamic> map) => new model.Message.fromMap(map)));
   }
 
   @override
@@ -119,7 +120,7 @@ class RESTMessageStore implements storage.Message {
     Uri url = resource.Message.changeList(host, mid);
     url = _appendToken(url, this.token);
 
-    Iterable<model.Commit> convertMaps(Iterable<Map> maps) =>
+    Iterable<model.Commit> convertMaps(Iterable<Map<String, dynamic>> maps) =>
         maps.map(model.Commit.decode);
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);

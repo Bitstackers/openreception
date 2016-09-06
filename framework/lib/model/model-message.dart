@@ -31,7 +31,7 @@ enum MessageState {
 class Message {
   static const int noId = 0;
 
-  Set<MessageEndpoint> recipients = new Set();
+  Set<MessageEndpoint> recipients = new Set<MessageEndpoint>();
 
   int id = noId;
   MessageContext context = new MessageContext.empty();
@@ -50,18 +50,21 @@ class Message {
   Message.empty();
 
   /// Deserializing constructor.
-  Message.fromMap(Map map) {
+  Message.fromMap(Map<String, dynamic> map) {
     Iterable<MessageEndpoint> iterRcp =
-        (map[key.recipients] as Iterable).map(MessageEndpoint.decode);
+        (map[key.recipients] as Iterable<Map<String, dynamic>>)
+            .map(MessageEndpoint.decode);
 
     id = (map.containsKey(key.id) ? map[key.id] : noId);
     recipients.addAll(iterRcp);
-    context = new MessageContext.fromMap(map[key.context]);
+    context =
+        new MessageContext.fromMap(map[key.context] as Map<String, dynamic>);
     flag = new MessageFlag(map['flags'] as List<String>);
-    callerInfo = new CallerInfo.fromMap(map[key.caller]);
+    callerInfo =
+        new CallerInfo.fromMap(map[key.caller] as Map<String, dynamic>);
     body = map[key.body];
     callId = map[key.callId];
-    sender = User.decode(map[key.takenByAgent]);
+    sender = User.decode(map[key.takenByAgent] as Map<String, dynamic>);
     createdAt = util.unixTimestampToDateTime(map[key.createdAt]);
 
     if (map[key.state] == null) {
@@ -92,11 +95,11 @@ class Message {
 
   bool get hasRecpients => recipients.isNotEmpty;
 
-  Map toJson() => this.asMap;
+  Map<String, dynamic> toJson() => this.asMap;
 
-  static Message decode(Map map) => new Message.fromMap(map);
+  static Message decode(Map<String, dynamic> map) => new Message.fromMap(map);
 
-  Map get asMap => {
+  Map<String, dynamic> get asMap => <String, dynamic>{
         key.id: id,
         key.body: body,
         key.context: context.toJson(),

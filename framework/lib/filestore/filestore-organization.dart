@@ -159,8 +159,8 @@ class Organization implements storage.Organization {
     }
 
     try {
-      final model.Organization org =
-          model.Organization.decode(JSON.decode(file.readAsStringSync()));
+      final model.Organization org = model.Organization
+          .decode(JSON.decode(file.readAsStringSync()) as Map<String, dynamic>);
       return org;
     } catch (e) {
       throw e;
@@ -176,7 +176,7 @@ class Organization implements storage.Organization {
               new File(fse.path + '/organization.json').existsSync())
           .map((FileSystemEntity fse) => model.Organization
               .decode(JSON.decode((new File(fse.path + '/organization.json'))
-                  .readAsStringSync()))
+                  .readAsStringSync()) as Map<String, dynamic>)
               .reference);
 
   @override

@@ -36,15 +36,15 @@ class Authentication {
   Future<model.User> userOf(String token) {
     Uri uri = resource.Authentication.tokenToUser(this.host, token);
 
-    return this._httpClient.get(uri).then(
-        (String response) => new model.User.fromMap(JSON.decode(response)));
+    return this._httpClient.get(uri).then((String response) =>
+        new model.User.fromMap(JSON.decode(response) as Map<String, dynamic>));
   }
 
   /// Validate [token]. Throws [NotFound] exception if the token is not
   /// valid.
-  Future validate(String token) {
+  Future<Null> validate(String token) async {
     Uri uri = resource.Authentication.validate(this.host, token);
 
-    return this._httpClient.get(uri);
+    await _httpClient.get(uri);
   }
 }

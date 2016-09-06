@@ -21,8 +21,8 @@ class Notification {
   Bus<event.CalendarChange> _calendarChangeBus =
       new Bus<event.CalendarChange>();
   Bus<event.CallEvent> _callStateChangeBus = new Bus<event.CallEvent>();
-  Bus<ui_model.ClientConnectionState> _clientConnectionStateBus =
-      new Bus<ui_model.ClientConnectionState>();
+  Bus<event.ClientConnectionState> _clientConnectionStateBus =
+      new Bus<event.ClientConnectionState>();
   final Logger _log = new Logger('$libraryName.Notification');
   Bus<event.PeerState> _peerStateChangeBus = new Bus<event.PeerState>();
   Bus<event.ReceptionChange> _receptionChangeBus =
@@ -66,8 +66,7 @@ class Notification {
    * Handle the [OREvent.ClientConnectionState] [event].
    */
   void _clientConnectionState(event.ClientConnectionState event) {
-    _clientConnectionStateBus
-        .fire(new ui_model.ClientConnectionState.fromMap(event.conn.toJson()));
+    _clientConnectionStateBus.fire(event);
   }
 
   /**
@@ -127,7 +126,7 @@ class Notification {
   /**
    * Client connection state change stream.
    */
-  Stream<ui_model.ClientConnectionState> get onClientConnectionStateChange =>
+  Stream<event.ClientConnectionState> get onClientConnectionStateChange =>
       _clientConnectionStateBus.stream;
 
   /**

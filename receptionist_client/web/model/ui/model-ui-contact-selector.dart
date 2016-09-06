@@ -113,8 +113,8 @@ class UIContactSelector extends UIModel {
    * constructed from JSON found in the data-object attribute of [li].
    */
   void _contactSelectCallback(LIElement li) {
-    model.ReceptionContact rc =
-        model.ReceptionContact.decode(JSON.decode(li.dataset['object']));
+    model.ReceptionContact rc = model.ReceptionContact
+        .decode(JSON.decode(li.dataset['object']) as Map<String, dynamic>);
     _bus.fire(new ContactWithFilterContext(
         rc.contact, rc.attr, state, filterInputValue));
   }
@@ -295,7 +295,8 @@ class UIContactSelector extends UIModel {
     LIElement li = _list.querySelector('.selected');
 
     if (li != null) {
-      return model.ReceptionContact.decode(JSON.decode(li.dataset['object']));
+      return model.ReceptionContact
+          .decode(JSON.decode(li.dataset['object']) as Map<String, dynamic>);
     } else {
       return new model.ReceptionContact.empty();
     }

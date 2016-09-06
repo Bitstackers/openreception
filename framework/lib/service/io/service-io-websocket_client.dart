@@ -23,11 +23,11 @@ class WebSocketClient extends service.WebSocket {
           'Close it before opening.');
     }
     _websocket = await io.WebSocket.connect(path.toString());
-    _websocket.listen((msg) => this.onMessage(msg),
+    _websocket.listen((dynamic msg) => onMessage(msg),
         onError: this.onError, onDone: () => this.onClose);
     return this;
   }
 
   @override
-  Future close() => _websocket.close();
+  Future<Null> close() => _websocket.close().then((_) => null);
 }

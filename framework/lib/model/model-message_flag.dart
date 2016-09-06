@@ -32,8 +32,8 @@ class MessageFlag {
   MessageFlag.empty();
 
   /// JSON serialization function.
-  List toJson() {
-    List<String> retVal = [];
+  List<String> toJson() {
+    final List<String> retVal = <String>[];
 
     pleaseCall ? retVal.add(key.pleaseCall) : '';
     willCallBack ? retVal.add(key.willCallBack) : '';

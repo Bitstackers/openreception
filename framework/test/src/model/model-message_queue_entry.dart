@@ -33,7 +33,7 @@ abstract class _ModelMessageQueueEntry {
 
     model.MessageEndpoint handled = obj.unhandledRecipients.first;
 
-    obj.handledRecipients = [handled];
+    obj.handledRecipients = <model.MessageEndpoint>[handled];
 
     expect(obj.unhandledRecipients.length, equals(origLen - 1));
     expect(obj.handledRecipients.length, equals(1));
@@ -45,7 +45,8 @@ abstract class _ModelMessageQueueEntry {
   static void deserialization() {
     model.MessageQueueEntry obj = buildObject();
     model.MessageQueueEntry deserializedObj =
-        new model.MessageQueueEntry.fromMap(JSON.decode(JSON.encode(obj)));
+        new model.MessageQueueEntry.fromMap(
+            JSON.decode(JSON.encode(obj)) as Map<String, dynamic>);
 
     expect(obj.id, equals(deserializedObj.id));
 
@@ -65,11 +66,11 @@ abstract class _ModelMessageQueueEntry {
 
   /// Build an object manually.
   static model.MessageQueueEntry buildObject() {
-    final id = 666;
+    final int id = 666;
     //final lastTry = new DateTime.now();
-    final message = _ModelMessage.buildObject();
+    final model.Message message = _ModelMessage.buildObject();
 
-    final List<model.MessageEndpoint> recipients = [
+    final List<model.MessageEndpoint> recipients = <model.MessageEndpoint>[
       new model.MessageEndpoint.empty()
         ..address = 'neverland'
         ..name = 'Unholy one'

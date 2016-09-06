@@ -126,11 +126,11 @@ Future main() async {
   final controller.Calendar calendarController =
       new controller.Calendar(calendarStore, config.user);
   final controller.Dialplan dialplanController =
-      new controller.Dialplan(dialplanStore);
+      new controller.Dialplan(dialplanStore, config.user);
   final controller.Message messageController =
       new controller.Message(messageStore, config.user);
   final controller.Ivr ivrController =
-      new controller.Ivr(ivrStore, dialplanStore);
+      new controller.Ivr(ivrStore, dialplanStore, config.user);
   final controller.PeerAccount paController =
       new controller.PeerAccount(paService);
   final controller.Call callController = new controller.Call(callFlow);

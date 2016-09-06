@@ -28,8 +28,8 @@ void _testModelReceptionDialplan() {
 abstract class _ModelReceptionDialplan {
   static void deserialization() {
     model.ReceptionDialplan builtObject = buildObject();
-    model.ReceptionDialplan deserializedObject =
-        model.ReceptionDialplan.decode(JSON.decode(JSON.encode(builtObject)));
+    model.ReceptionDialplan deserializedObject = model.ReceptionDialplan
+        .decode(JSON.decode(JSON.encode(builtObject)) as Map<String, dynamic>);
 
     expect(builtObject.extension, equals(deserializedObject.extension));
     expect(builtObject.note, equals(deserializedObject.note));
@@ -51,13 +51,15 @@ abstract class _ModelReceptionDialplan {
     final String extension = '12345678';
     final String note = 'Just a test reception dialplan';
 
-    final List<model.HourAction> open = [
+    final List<model.HourAction> open = <model.HourAction>[
       new model.HourAction()
         ..hours = model.parseMultipleHours('mon-fri 16-17').toList()
-        ..actions = [new model.Playback('somefile')]
+        ..actions = <model.Action>[new model.Playback('somefile')]
     ];
 
-    final List<model.Action> closed = [new model.Playback('otherfile')];
+    final List<model.Action> closed = <model.Action>[
+      new model.Playback('otherfile')
+    ];
 
     final model.ReceptionDialplan builtObject = new model.ReceptionDialplan()
       ..extension = extension

@@ -96,8 +96,8 @@ class User implements storage.User {
     }
 
     try {
-      final model.User user =
-          model.User.decode(JSON.decode(file.readAsStringSync()));
+      final model.User user = model.User
+          .decode(JSON.decode(file.readAsStringSync()) as Map<String, dynamic>);
       return user;
     } catch (e) {
       throw e;
@@ -127,7 +127,8 @@ class User implements storage.User {
           _isDirectory(fse) && new File(fse.path + '/user.json').existsSync())
       .map((FileSystemEntity fse) => model.User
           .decode(
-              JSON.decode(new File(fse.path + '/user.json').readAsStringSync()))
+              JSON.decode(new File(fse.path + '/user.json').readAsStringSync())
+              as Map<String, dynamic>)
           .reference);
 
   @override

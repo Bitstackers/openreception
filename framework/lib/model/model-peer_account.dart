@@ -25,12 +25,15 @@ class PeerAccount {
   const PeerAccount(this.username, this.password, this.context);
 
   /// Deserializing factory.
-  static PeerAccount decode(Map map) =>
+  static PeerAccount decode(Map<String, dynamic> map) =>
       new PeerAccount(map[key.username], map[key.password], map[key.context]);
 
   /// Serialization function.
-  Map toJson() =>
-      {key.username: username, key.password: password, key.context: context};
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        key.username: username,
+        key.password: password,
+        key.context: context
+      };
 
   /// Returns a string representation of the [PeerAccount].
   @override

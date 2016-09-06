@@ -31,11 +31,11 @@ Future<String> _handleResponse(
 }
 
 Future<String> extractContent(Stream<List<int>> request) {
-  Completer<String> completer = new Completer();
+  Completer<String> completer = new Completer<String>();
   List<int> completeRawContent = new List<int>();
 
   request.listen(completeRawContent.addAll,
-      onError: (error) => completer.completeError(error), onDone: () {
+      onError: (dynamic error) => completer.completeError(error), onDone: () {
     try {
       String content = UTF8.decode(completeRawContent);
       completer.complete(content);

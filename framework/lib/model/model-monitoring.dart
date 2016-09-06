@@ -40,7 +40,7 @@ class MessageHistory {
   MessageHistory(this.mid, this.uid, this.createdAt);
 
   /// Creates a new [MessageHistory] log entry from a decoded map.
-  factory MessageHistory.fromMap(Map map) {
+  factory MessageHistory.fromMap(Map<String, dynamic> map) {
     final int mid = map['mid'] != null ? map['mid'] : Message.noId;
     final int uid = map['uid'] != null ? map['uid'] : User.noId;
 
@@ -57,7 +57,11 @@ class MessageHistory {
   int get hashCode => '$mid.$uid.${createdAt.millisecondsSinceEpoch}'.hashCode;
 
   /// Serialization function.
-  Map toJson() => {'mid': mid, 'uid': uid, 'created': createdAt.toString()};
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'mid': mid,
+        'uid': uid,
+        'created': createdAt.toString()
+      };
 
   /// A [MessageHistory] object is equal to another [MessageHistory] object
   /// if their [mid] are the same.
@@ -94,10 +98,10 @@ class CallSummary {
     int callsAnsweredWithin20s = 0;
     int callWaitingMoreThanOneMinute = 0;
 
-    Map<int, int> callsByAgent = {};
-    Map<int, int> obCallsByAgent = {};
+    Map<int, int> callsByAgent = <int, int>{};
+    Map<int, int> obCallsByAgent = <int, int>{};
 
-    report.callHistory.forEach((history) {
+    report.callHistory.forEach((HistoricCall history) {
       if (history.inbound) {
         inboundCount++;
 
@@ -181,7 +185,7 @@ class CallStat {
   DateTime answered;
   int userId = User.noId;
 
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'arrived': arrived.toString(),
         'answered': answered.toString(),
         'userId': userId,
@@ -189,19 +193,20 @@ class CallStat {
 }
 
 class DailyReport {
-  final Set<HistoricCall> callHistory = new Set();
-  final Set<MessageHistory> messageHistory = new Set();
-  final Set<UserStateHistory> userStateHistory = new Set();
+  final Set<HistoricCall> callHistory = new Set<HistoricCall>();
+  final Set<MessageHistory> messageHistory = new Set<MessageHistory>();
+  final Set<UserStateHistory> userStateHistory = new Set<UserStateHistory>();
 
   /// Create a new empty report.
   DailyReport.empty();
 
-  DailyReport.fromMap(Map map) {
-    callHistory.addAll((map['calls'] as Iterable)
-        .map((Map chMap) => new HistoricCall.fromMap(chMap)));
+  DailyReport.fromMap(Map<String, dynamic> map) {
+    callHistory.addAll((map['calls'] as Iterable<Map<String, dynamic>>)
+        .map((Map<String, dynamic> chMap) => new HistoricCall.fromMap(chMap)));
 
-    messageHistory.addAll((map['messages'] as Iterable)
-        .map((Map chMap) => new MessageHistory.fromMap(chMap)));
+    messageHistory.addAll((map['messages'] as Iterable<Map<String, dynamic>>)
+        .map(
+            (Map<String, dynamic> chMap) => new MessageHistory.fromMap(chMap)));
   }
 
   /// Idicated whether or not this report has actual history entries.
@@ -257,10 +262,13 @@ class DailyReport {
   }
 
   /// Serialization function.
-  Map toJson() => {
-        'calls': callHistory.map((ch) => ch.toJson()).toList(growable: false),
-        'messages':
-            messageHistory.map((mh) => mh.toJson()).toList(growable: false),
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'calls': callHistory
+            .map((HistoricCall ch) => ch.toJson())
+            .toList(growable: false),
+        'messages': messageHistory
+            .map((MessageHistory mh) => mh.toJson())
+            .toList(growable: false),
       };
 }
 
@@ -270,10 +278,11 @@ class _HistoricCallEvent {
 
   const _HistoricCallEvent(this.timestamp, this.eventName);
 
-  factory _HistoricCallEvent.fromJson(Map map) =>
+  factory _HistoricCallEvent.fromJson(Map<String, dynamic> map) =>
       new _HistoricCallEvent(DateTime.parse(map['t']), map['e']);
 
-  Map toJson() => {'t': timestamp.toString(), 'e': eventName};
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{'t': timestamp.toString(), 'e': eventName};
 }
 
 class HistoricCall {
@@ -282,7 +291,7 @@ class HistoricCall {
   final int rid;
   final int cid;
   final bool inbound;
-  final List<_HistoricCallEvent> _events = [];
+  final List<_HistoricCallEvent> _events = <_HistoricCallEvent>[];
 
   HistoricCall.fromActiveCall(ActiveCall ac)
       : callId = ac.callId,
@@ -296,14 +305,14 @@ class HistoricCall {
     _events.addAll(ac._events.map(simplifyEvent));
   }
 
-  HistoricCall.fromMap(Map map)
+  HistoricCall.fromMap(Map<String, dynamic> map)
       : callId = map['id'],
         uid = map['uid'],
         rid = map['rid'],
         cid = map['cid'],
         inbound = map['in'] {
-    _events.addAll((map['es'] as Iterable)
-        .map((map) => new _HistoricCallEvent.fromJson(map)));
+    _events.addAll((map['es'] as Iterable<Map<String, dynamic>>).map(
+        (Map<String, dynamic> map) => new _HistoricCallEvent.fromJson(map)));
   }
 
   bool get unAssigned => uid == User.noId;
@@ -316,9 +325,11 @@ class HistoricCall {
     _HistoricCallEvent offerEvent;
     _HistoricCallEvent pickupEvent;
     try {
-      offerEvent = _events.firstWhere((e) => e.eventName == _callOfferKey);
+      offerEvent = _events
+          .firstWhere((_HistoricCallEvent e) => e.eventName == _callOfferKey);
 
-      pickupEvent = _events.firstWhere((e) => e.eventName == _callPickupKey);
+      pickupEvent = _events
+          .firstWhere((_HistoricCallEvent e) => e.eventName == _callPickupKey);
     } on StateError {
       return new Duration(seconds: 2);
     }
@@ -327,33 +338,39 @@ class HistoricCall {
   }
 
   Duration get lifeTime {
-    final offerEvent = _events.firstWhere((e) => e.eventName == _callOfferKey);
+    final _HistoricCallEvent offerEvent = _events
+        .firstWhere((_HistoricCallEvent e) => e.eventName == _callOfferKey);
 
-    final hangupEvent =
-        _events.firstWhere((e) => e.eventName == _callHangupKey);
+    final _HistoricCallEvent hangupEvent = _events
+        .firstWhere((_HistoricCallEvent e) => e.eventName == _callHangupKey);
 
     return hangupEvent.timestamp.difference(offerEvent.timestamp);
   }
 
   /// Determines if the call was answered.
-  bool get isAnswered => _events.any((e) => e.eventName == _callPickupKey);
+  bool get isAnswered =>
+      _events.any((_HistoricCallEvent e) => e.eventName == _callPickupKey);
 
   Duration get handleTime {
-    final offerEvent = _events.firstWhere((e) => e.eventName == _callOfferKey);
+    final _HistoricCallEvent offerEvent = _events
+        .firstWhere((_HistoricCallEvent e) => e.eventName == _callOfferKey);
 
-    final hangupEvent = _events.firstWhere((e) =>
-        e.eventName == _callHangupKey || e.eventName == _callTransferKey);
+    final _HistoricCallEvent hangupEvent = _events.firstWhere(
+        (_HistoricCallEvent e) =>
+            e.eventName == _callHangupKey || e.eventName == _callTransferKey);
 
     return hangupEvent.timestamp.difference(offerEvent.timestamp);
   }
 
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'id': callId,
         'uid': uid,
         'rid': rid,
         'cid': cid,
         'in': inbound,
-        'es': _events.map((e) => e.toJson()).toList(growable: false)
+        'es': _events
+            .map((_HistoricCallEvent e) => e.toJson())
+            .toList(growable: false)
       };
 
   @override
@@ -365,20 +382,20 @@ class HistoricCall {
 }
 
 class ActiveCall {
-  final List<_event.CallEvent> _events = [];
+  final List<_event.CallEvent> _events = <_event.CallEvent>[];
 
   ActiveCall.empty();
 
   ///
   int get rid => _events
-      .firstWhere((ce) => ce.call.rid != Reception.noId,
+      .firstWhere((_event.CallEvent ce) => ce.call.rid != Reception.noId,
           orElse: () => new _event.CallOffer(Call.noCall))
       .call
       .rid;
 
   ///
   int get cid => _events
-      .firstWhere((ce) => ce.call.cid != BaseContact.noId,
+      .firstWhere((_event.CallEvent ce) => ce.call.cid != BaseContact.noId,
           orElse: () => new _event.CallOffer(Call.noCall))
       .call
       .cid;
@@ -387,7 +404,8 @@ class ActiveCall {
 
   void addEvent(_event.Event e) {
     _events.add(e);
-    _events.sort((e1, e2) => e1.timestamp.compareTo(e2.timestamp));
+    _events.sort((_event.Event e1, _event.Event e2) =>
+        e1.timestamp.compareTo(e2.timestamp));
   }
 
   /// Retrieve the uid of the agent that call was assigned to.
@@ -402,7 +420,8 @@ class ActiveCall {
   bool get unAssigned => assignee == User.noId;
 
   String eventString() =>
-      '  events:\n' + _events.map((e) => '  - ${_eventToString(e)}').join('\n');
+      '  events:\n' +
+      _events.map((_event.Event e) => '  - ${_eventToString(e)}').join('\n');
 
   String _eventToString(_event.Event e) =>
       '${e.timestamp.millisecondsSinceEpoch~/1000}: ${e.eventName}';
@@ -437,8 +456,8 @@ class ActiveCall {
       return null;
     }
 
-    var offerEvent;
-    var pickupEvent;
+    _event.CallOffer offerEvent;
+    _event.CallPickup pickupEvent;
     try {
       offerEvent =
           _events.firstWhere((_event.CallEvent ce) => ce is _event.CallOffer);
@@ -462,13 +481,14 @@ class UserStateHistory {
   const UserStateHistory(this.uid, this.timestamp, this.pause);
 
   /// Deserializing constructor.
-  UserStateHistory.fromMap(Map map)
+  UserStateHistory.fromMap(Map<String, dynamic> map)
       : uid = map['uid'],
         timestamp = DateTime.parse(map['t']),
         pause = map['p'];
 
   /// Serialization function
-  Map toJson() => {'uid': uid, 't': timestamp.toString(), 'p': pause};
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{'uid': uid, 't': timestamp.toString(), 'p': pause};
 
   @override
   int get hashCode => toJson().toString().hashCode;

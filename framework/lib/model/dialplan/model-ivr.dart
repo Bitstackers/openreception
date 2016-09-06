@@ -27,9 +27,9 @@ class Ivr implements Action {
 
   /// Parses and creates a new [Ivr] action from a [String] [buffer].
   static Ivr parse(String buffer) {
-    var buf = consumeKey(buffer.trimLeft(), key.ivr).trimLeft();
+    String buf = _consumeKey(buffer.trimLeft(), key.ivr).trimLeft();
 
-    var consumed = consumeWord(buf);
+    _ConsumedIdenBuf consumed = consumeWord(buf);
 
     final String menuName = consumed.iden;
 

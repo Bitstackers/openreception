@@ -92,8 +92,8 @@ class Message {
     model.Message message;
     try {
       content = await request.readAsString();
-      message = new model.Message.fromMap(JSON.decode(content))
-        ..sender = modifier;
+      message = new model.Message.fromMap(
+          JSON.decode(content) as Map<String, dynamic>)..sender = modifier;
       if (message.id == model.Message.noId) {
         return clientError('Refusing to update a non-existing message. '
             'set messageID or use the PUT method instead.');
@@ -205,7 +205,8 @@ class Message {
     model.Message message;
     try {
       content = await request.readAsString();
-      message = new model.Message.fromMap(JSON.decode(content))..sender = user;
+      message = new model.Message.fromMap(
+          JSON.decode(content) as Map<String, dynamic>)..sender = user;
 
       if ([model.Message.noId, null].contains(message.id)) {
         return clientError('Invalid message ID');
@@ -248,7 +249,8 @@ class Message {
     model.Message message;
     try {
       content = await request.readAsString();
-      message = new model.Message.fromMap(JSON.decode(content))
+      message = new model.Message.fromMap(
+          JSON.decode(content) as Map<String, dynamic>)
         ..sender = modifier
         ..createdAt = new DateTime.now();
 

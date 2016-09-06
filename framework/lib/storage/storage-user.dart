@@ -46,7 +46,7 @@ abstract class User {
   /// by [uid].
   ///
   /// The [modifier] is required for traceability of who performed the deletion.
-  Future remove(int uid, model.User modifier);
+  Future<Null> remove(int uid, model.User modifier);
 
   /// List user object changes for the store, optionally for a single [uid].
   Future<Iterable<model.Commit>> changes([int uid]);

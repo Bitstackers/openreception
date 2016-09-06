@@ -24,8 +24,8 @@ void _testModelReception() {
 abstract class _ModelReception {
   static void deserialization() {
     model.Reception builtObject = buildObject();
-    model.Reception deserializedObject =
-        new model.Reception.fromMap(JSON.decode(JSON.encode(builtObject)));
+    model.Reception deserializedObject = new model.Reception.fromMap(
+        JSON.decode(JSON.encode(builtObject)) as Map<String, dynamic>);
 
     expect(builtObject.addresses, equals(deserializedObject.addresses));
     expect(
@@ -64,34 +64,37 @@ abstract class _ModelReception {
       expect(() => JSON.encode(buildObject()), returnsNormally);
 
   static model.Reception buildObject() {
-    final List<String> addresses = ['Somewhere else'];
+    final List<String> addresses = <String>['Somewhere else'];
     final String dialplan = '12340001';
-    final List<String> alternateNames = ['nice place'];
-    final List<String> bankingInformation = ['The vault'];
-    final List<String> customerTypes = ['Not defined'];
-    final List<String> emailAddresses = ['me@evil.corp', 'him@good.corp'];
+    final List<String> alternateNames = <String>['nice place'];
+    final List<String> bankingInformation = <String>['The vault'];
+    final List<String> emailAddresses = <String>[
+      'me@evil.corp',
+      'him@good.corp'
+    ];
+    final List<String> customerTypes = <String>['Not defined'];
     final bool enabled = true;
 
     final String name = 'Test test';
     final String greeting = 'Go away';
-    final List<String> handlingInstructions = ['Hang up'];
+    final List<String> handlingInstructions = <String>['Hang up'];
     final int id = 999;
 
-    final List<String> openingHours = ['mon-fri 8-17'];
+    final List<String> openingHours = <String>['mon-fri 8-17'];
     final int organizationId = 123;
     final String otherData = 'Ask Data';
     final String product = 'Butter';
-    final List<String> salesMarketingHandling = ['Ask them to GTFO'];
+    final List<String> salesMarketingHandling = <String>['Ask them to GTFO'];
     final String shortGreeting = 'Please go';
-    final List<model.PhoneNumber> telephoneNumbers = [
+    final List<model.PhoneNumber> telephoneNumbers = <model.PhoneNumber>[
       new model.PhoneNumber.empty()..destination = '56 33 21 44',
       new model.PhoneNumber.empty()
         ..destination = '56 33 21 43'
         ..confidential = true
         ..note = 'Home phone'
     ];
-    final List<String> vatNumbers = ['123455'];
-    final List<String> websites = ['www.over-the-rainbow'];
+    final List<String> vatNumbers = <String>['123455'];
+    final List<String> websites = <String>['www.over-the-rainbow'];
 
     model.Reception buildObject = new model.Reception.empty()
       ..addresses = addresses

@@ -44,7 +44,7 @@ abstract class ReceptionDialplan {
   /// identified by [extension].
   ///
   /// The [modifier] is required for traceability of who performed the deletion.
-  Future remove(String extension, model.User modifier);
+  Future<Null> remove(String extension, model.User modifier);
 
   /// List dialplan object changes for the store, optionally for a
   /// single [extension].

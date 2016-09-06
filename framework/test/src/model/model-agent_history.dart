@@ -37,7 +37,7 @@ abstract class _ModelAgentStatistics {
     model.AgentStatistics builtObject = buildObject();
     model.AgentStatistics deserializedObject =
         new model.AgentStatistics.fromMap(
-            JSON.decode(JSON.encode(builtObject)));
+            JSON.decode(JSON.encode(builtObject)) as Map<String, dynamic>);
 
     expect(builtObject.uid, equals(deserializedObject.uid));
     expect(builtObject.recent, equals(deserializedObject.recent));

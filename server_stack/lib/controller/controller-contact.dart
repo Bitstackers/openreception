@@ -233,7 +233,8 @@ class Contact {
 
     try {
       Map data = JSON.decode(await request.readAsString());
-      attr = new model.ReceptionAttributes.fromMap(data);
+      attr =
+          new model.ReceptionAttributes.fromMap(data as Map<String, dynamic>);
     } catch (error) {
       final Map response = {
         'status': 'bad request',

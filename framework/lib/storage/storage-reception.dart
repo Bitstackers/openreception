@@ -35,7 +35,7 @@ abstract class Reception {
   /// identified by [rid].
   ///
   /// The [modifier] is required for traceability of who performed the deletion.
-  Future remove(int rid, model.User modifier);
+  Future<Null> remove(int rid, model.User modifier);
 
   /// Updates the previously stored [model.Reception] object with data
   /// from [reception].

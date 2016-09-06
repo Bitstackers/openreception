@@ -20,7 +20,12 @@ abstract class MessageEndpointType {
   static const String emailCc = 'email-cc';
   static const String emailBcc = 'email-bcc';
 
-  static const List<String> types = const [sms, emailTo, emailCc, emailBcc];
+  static const List<String> types = const <String>[
+    sms,
+    emailTo,
+    emailCc,
+    emailBcc
+  ];
 }
 
 /// Model class for a messaging endpoint.
@@ -39,7 +44,7 @@ class MessageEndpoint {
   MessageEndpoint.empty();
 
   /// Deserializing constructor.
-  MessageEndpoint.fromMap(Map map) {
+  MessageEndpoint.fromMap(Map<String, dynamic> map) {
     type = map[key.type];
     name = map.containsKey(key.name) ? map[key.name] : '';
     address = map[key.address];
@@ -47,11 +52,16 @@ class MessageEndpoint {
   }
 
   /// Deserializing factory
-  static MessageEndpoint decode(Map map) => new MessageEndpoint.fromMap(map);
+  static MessageEndpoint decode(Map<String, dynamic> map) =>
+      new MessageEndpoint.fromMap(map);
 
   /// JSON encoding function.
-  Map toJson() =>
-      {key.type: type, key.address: address, key.name: name, key.note: note};
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        key.type: type,
+        key.address: address,
+        key.name: name,
+        key.note: note
+      };
 
   /// Stringify the object.
   @override

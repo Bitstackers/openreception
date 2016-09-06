@@ -22,7 +22,8 @@ void _originationContextTests() {
         ..dialplan = 'test-dialplan'
         ..callId = 'test-call';
 
-      Iterable errors = validateOriginationContext(context);
+      Iterable<ValidationException> errors =
+          validateOriginationContext(context);
 
       expect(errors.length, equals(0));
     });
@@ -34,7 +35,8 @@ void _originationContextTests() {
         ..dialplan = 'test-dialplan'
         ..callId = 'test-call';
 
-      Iterable errors = validateOriginationContext(context);
+      Iterable<ValidationException> errors =
+          validateOriginationContext(context);
 
       expect(errors.length, equals(1));
 
@@ -48,7 +50,8 @@ void _originationContextTests() {
         ..dialplan = 'test-dialplan'
         ..callId = 'test-call';
 
-      Iterable errors = validateOriginationContext(context);
+      Iterable<ValidationException> errors =
+          validateOriginationContext(context);
 
       expect(errors.length, equals(1));
 
@@ -62,7 +65,8 @@ void _originationContextTests() {
         ..dialplan = ''
         ..callId = 'test-call';
 
-      Iterable errors = validateOriginationContext(context);
+      Iterable<ValidationException> errors =
+          validateOriginationContext(context);
 
       expect(errors.length, equals(1));
 
@@ -75,7 +79,8 @@ void _originationContextTests() {
         ..receptionId = model.Reception.noId
         ..dialplan = '';
 
-      Iterable errors = validateOriginationContext(context);
+      Iterable<ValidationException> errors =
+          validateOriginationContext(context);
 
       expect(errors.length, equals(3));
     });

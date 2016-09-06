@@ -36,8 +36,8 @@ abstract class _HourAction {
   static void deserialization() {
     model.HourAction builtObject = buildObject();
 
-    model.HourAction deserializedObject =
-        model.HourAction.parse(JSON.decode(JSON.encode(builtObject)));
+    model.HourAction deserializedObject = model.HourAction
+        .parse(JSON.decode(JSON.encode(builtObject)) as Map<String, dynamic>);
 
     expect(builtObject.hours, equals(deserializedObject.hours));
     expect(builtObject.actions, equals(deserializedObject.actions));
@@ -45,7 +45,7 @@ abstract class _HourAction {
   }
 
   static model.HourAction buildObject() {
-    final List<model.OpeningHour> openHours = [
+    final List<model.OpeningHour> openHours = <model.OpeningHour>[
       new model.OpeningHour.empty()
         ..fromDay = model.WeekDay.mon
         ..fromHour = 8
@@ -59,7 +59,9 @@ abstract class _HourAction {
         ..toDay = model.WeekDay.fri
         ..toHour = 16
     ];
-    final List<model.Action> actions = [_ModelPlayback.buildObject()];
+    final List<model.Action> actions = <model.Action>[
+      _ModelPlayback.buildObject()
+    ];
 
     model.HourAction builtObject = new model.HourAction()
       ..hours = openHours

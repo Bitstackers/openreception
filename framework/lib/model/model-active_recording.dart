@@ -28,16 +28,17 @@ class ActiveRecording {
   ActiveRecording(this.agentChannel, this.path) : started = new DateTime.now();
 
   /// Deserializing constructor.
-  ActiveRecording.fromMap(Map map)
+  ActiveRecording.fromMap(Map<String, dynamic> map)
       : agentChannel = map[key.agentChannel],
         path = map[key.path],
         started = util.unixTimestampToDateTime(map[key.started]);
 
   /// Decoding factory.
-  static ActiveRecording decode(Map map) => new ActiveRecording.fromMap(map);
+  static ActiveRecording decode(Map<String, dynamic> map) =>
+      new ActiveRecording.fromMap(map);
 
   /// Serialization function.
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.agentChannel: agentChannel,
         key.path: path,
         key.started: util.dateTimeToUnixTimestamp(started)

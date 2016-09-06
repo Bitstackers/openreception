@@ -139,6 +139,7 @@ class EslConfig {
 
 /// Standard configuration values, common among all server configurations.
 abstract class StandardConfig {
+  /// Default constructor.
   const StandardConfig();
   String get externalHostName => 'localhost';
 

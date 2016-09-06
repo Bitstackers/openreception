@@ -35,7 +35,7 @@ abstract class _ModelClientConfiguration {
     model.ClientConfiguration builtObject = buildObject();
     model.ClientConfiguration deserializedObject =
         new model.ClientConfiguration.fromMap(
-            JSON.decode(JSON.encode(builtObject)));
+            JSON.decode(JSON.encode(builtObject)) as Map<String, dynamic>);
 
     expect(builtObject.authServerUri, equals(deserializedObject.authServerUri));
     expect(builtObject.userServerUri, equals(deserializedObject.userServerUri));
@@ -68,7 +68,7 @@ abstract class _ModelClientConfiguration {
     final Uri contactServerUri = Uri.parse('http://contact.example.com');
     final bool hideInboundCallerId = true;
     final Uri messageServerUri = Uri.parse('http://message.example.com');
-    final List<String> myIdentifiers = const ['123456789'];
+    final List<String> myIdentifiers = const <String>['123456789'];
     final Uri dialplanServerUri = Uri.parse('http://dialplan.example.com');
     final Uri notificationServerUri =
         Uri.parse('http://notification.example.com');

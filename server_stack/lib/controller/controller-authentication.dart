@@ -135,8 +135,8 @@ class Authentication {
     //Now we have the "code" which will be exchanged to a token.
     Map json;
     try {
-      final String response =
-          await httpClient.postForm(tokenEndpoint, postBody);
+      final String response = await httpClient.postForm(
+          tokenEndpoint, postBody as Map<String, dynamic>);
       json = JSON.decode(response);
     } catch (error) {
       return new shelf.Response.internalServerError(

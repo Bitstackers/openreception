@@ -15,7 +15,7 @@ part of openreception.framework.resource;
 
 abstract class Notification {
   static Uri notifications(Uri host) {
-    if (!['ws', 'wss'].contains(host.scheme)) {
+    if (!<String>['ws', 'wss'].contains(host.scheme)) {
       throw new ArgumentError.value(host.scheme, 'Resource.Notification',
           'expected "ws" or "wss" scheme');
     }

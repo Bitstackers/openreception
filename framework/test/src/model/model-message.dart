@@ -25,11 +25,12 @@ void _testModelMessage() {
 abstract class _ModelMessage {
   static void deserialization() {
     model.Message obj = buildObject();
-    model.Message deserializedObj =
-        new model.Message.fromMap(JSON.decode(JSON.encode(obj)));
+    model.Message deserializedObj = new model.Message.fromMap(
+        JSON.decode(JSON.encode(obj)) as Map<String, dynamic>);
 
     expect(obj.body, equals(deserializedObj.body));
-    expect(obj.callerInfo.asMap, equals(deserializedObj.callerInfo.asMap));
+    expect(
+        obj.callerInfo.toJson(), equals(deserializedObj.callerInfo.toJson()));
     expect(obj.callId, equals(deserializedObj.callId));
 
     expect(obj.createdAt.difference(deserializedObj.createdAt).abs(),
@@ -69,7 +70,7 @@ abstract class _ModelMessage {
     final String callId = 'bad-ass-call';
 
     Set<model.MessageEndpoint> rlist = new Set<model.MessageEndpoint>()
-      ..addAll([
+      ..addAll(<model.MessageEndpoint>[
         new model.MessageEndpoint.empty()
           ..address = 'somewhere'
           ..name = 'someone'
@@ -77,9 +78,9 @@ abstract class _ModelMessage {
           ..type = model.MessageEndpointType.types.first
       ]);
 
-    final messageBody = 'You should really clean up.';
-    final createdAt = new DateTime.now();
-    final id = 42;
+    final String messageBody = 'You should really clean up.';
+    final DateTime createdAt = new DateTime.now();
+    final int id = 42;
 
     final model.MessageContext context = new model.MessageContext.empty()
       ..cid = 2
@@ -87,7 +88,7 @@ abstract class _ModelMessage {
       ..rid = 4
       ..receptionName = 'Nowhere';
 
-    final state = model.MessageState.values.last;
+    final model.MessageState state = model.MessageState.values.last;
 
     final model.Message obj = new model.Message.empty()
       ..body = messageBody

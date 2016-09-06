@@ -24,7 +24,7 @@ class Contact {
   Future<model.BaseContact> get(int cid) =>
       _service.get(cid).catchError(_handleError);
 
-  Future<model.BaseContact> update(model.BaseContact contact) =>
+  Future<Null> update(model.BaseContact contact) =>
       _service.update(contact, _appUser).catchError(_handleError);
 
   Future<model.BaseContact> create(model.BaseContact contact) =>

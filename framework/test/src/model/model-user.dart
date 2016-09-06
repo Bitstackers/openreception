@@ -35,8 +35,8 @@ abstract class _ModelUser {
   static void deserialization() {
     model.User builtObject = buildObject();
     String serializedString = JSON.encode(builtObject);
-    model.User deserializedObject =
-        new model.User.fromMap(JSON.decode(serializedString));
+    model.User deserializedObject = new model.User.fromMap(
+        JSON.decode(serializedString) as Map<String, dynamic>);
 
     expect(builtObject.id, equals(deserializedObject.id));
     expect(builtObject.address, equals(deserializedObject.address));
@@ -48,7 +48,7 @@ abstract class _ModelUser {
   static model.User buildObject() {
     final int id = 123;
     final String address = 'golden@fish.net';
-    final List<String> groups = [
+    final List<String> groups = <String>[
       model.UserGroups.administrator,
       model.UserGroups.receptionist
     ];

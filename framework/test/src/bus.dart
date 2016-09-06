@@ -16,10 +16,11 @@ part of openreception.framework.test;
 void _testBus() {
   test('async openreception.bus test', () async {
     final String testEvent = 'Foo!';
-    Bus bus = new Bus<String>();
-    Stream stream = bus.stream;
-    Future expectTestEvent =
-        stream.firstWhere((String value) => value == testEvent);
+    Bus<String> bus = new Bus<String>();
+    Stream<String> stream = bus.stream;
+    Future<String> expectTestEvent = stream
+        .firstWhere((String value) => value == testEvent)
+        .then((String value) => value);
 
     try {
       bus.fire(testEvent);

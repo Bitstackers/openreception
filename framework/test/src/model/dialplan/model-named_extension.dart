@@ -35,7 +35,8 @@ abstract class _ModelNamedExtension {
   static void deserialization() {
     model.NamedExtension builtObject = buildObject();
 
-    final map = JSON.decode(JSON.encode(builtObject)) as Map<String, dynamic>;
+    final Map<String, dynamic> map =
+        JSON.decode(JSON.encode(builtObject)) as Map<String, dynamic>;
 
     model.NamedExtension deserializedObject = model.NamedExtension.decode(map);
 
@@ -47,8 +48,8 @@ abstract class _ModelNamedExtension {
   }
 
   static model.NamedExtension buildObject() {
-    final name = 'extension-1';
-    final List<model.Action> actions = [
+    final String name = 'extension-1';
+    final List<model.Action> actions = <model.Action>[
       new model.Playback('filename.wav'),
       new model.Enqueue('queue-1')
     ];

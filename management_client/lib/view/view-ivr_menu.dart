@@ -55,7 +55,7 @@ class IvrMenu {
       json = JSON.decode(_menuInput.value);
 
       try {
-        menu = model.IvrMenu.decode(json);
+        menu = model.IvrMenu.decode(json as Map<String, dynamic>);
         final List<ValidationException> errors = validateIvrMenu(menu);
 
         if (errors.isNotEmpty) {
@@ -106,7 +106,8 @@ class IvrMenu {
 
   bool get hasValidationError => _menuInput.classes.contains('error');
 
-  model.IvrMenu get menu => model.IvrMenu.decode(JSON.decode(_menuInput.value));
+  model.IvrMenu get menu => model.IvrMenu
+      .decode(JSON.decode(_menuInput.value) as Map<String, dynamic>);
 
   set menu(model.IvrMenu menu) {
     _menuInput.hidden = false;

@@ -38,13 +38,13 @@ class _DialplanToolsReceptionDialplan {
 
   static void openActions() {
     model.ReceptionDialplan rdp = new model.ReceptionDialplan()
-      ..open = [
+      ..open = <model.HourAction>[
         new model.HourAction()
           ..hours = model.parseMultipleHours('mon-fri 8-17, sat 10-12').toList()
-          ..actions = [new model.Playback('none')],
+          ..actions = <model.Action>[new model.Playback('none')],
         new model.HourAction()
           ..hours = model.parseMultipleHours('sun 8-17').toList()
-          ..actions = [
+          ..actions = <model.Action>[
             new model.Notify('call-offer'),
             new model.Playback('none')
           ]
@@ -56,7 +56,7 @@ class _DialplanToolsReceptionDialplan {
 
   static void closedActions() {
     model.ReceptionDialplan rdp = new model.ReceptionDialplan()
-      ..defaultActions = [new model.Playback('closed')];
+      ..defaultActions = <model.Action>[new model.Playback('closed')];
 
     xml.parse(new dpTools.DialplanCompiler(new dpTools.DialplanCompilerOpts())
         .dialplanToXml(rdp, new model.Reception.empty()..name = 'ost'));
@@ -64,12 +64,12 @@ class _DialplanToolsReceptionDialplan {
 
   static void bigDialplan() {
     model.ReceptionDialplan rdp = new model.ReceptionDialplan()
-      ..open = [
+      ..open = <model.HourAction>[
         new model.HourAction()
           ..hours = model
               .parseMultipleHours('mon-wed 8-17, thur 10-17, fri 10-16:30')
               .toList()
-          ..actions = [
+          ..actions = <model.Action>[
             new model.Notify('call-offer'),
             new model.Ringtone(2),
             new model.Playback('greeting'),
@@ -79,12 +79,12 @@ class _DialplanToolsReceptionDialplan {
           ],
         new model.HourAction()
           ..hours = model.parseMultipleHours('sun 8-17').toList()
-          ..actions = [
+          ..actions = <model.Action>[
             new model.Playback('none', note: 'IVR transfer'),
             new model.Ivr('magic-ivr', note: 'Magic IVR menu')
           ]
       ]
-      ..defaultActions = [
+      ..defaultActions = <model.Action>[
         new model.Playback('closed', note: 'Just closed'),
         new model.Voicemail('some-voicemail')
       ];
@@ -109,7 +109,7 @@ class _DialplanToolsIvrMenu {
   static void oneLevel() {
     model.IvrMenu menu =
         new model.IvrMenu('some menu', new model.Playback('greeting'))
-          ..entries = [
+          ..entries = <model.IvrEntry>[
             new model.IvrVoicemail(
                 '1',
                 new model.Voicemail('testbox',
@@ -125,16 +125,16 @@ class _DialplanToolsIvrMenu {
   static void twoLevel() {
     model.IvrMenu menu =
         new model.IvrMenu('some-menu', new model.Playback('greeting'))
-          ..entries = [
+          ..entries = <model.IvrEntry>[
             new model.IvrVoicemail(
                 '1',
                 new model.Voicemail('testbox',
                     recipient: 'someone@somewhere', note: 'A mailbox')),
             new model.IvrSubmenu('2', 'some-submenu')
           ]
-          ..submenus = [
+          ..submenus = <model.IvrMenu>[
             new model.IvrMenu('some-submenu', new model.Playback('greeting'))
-              ..entries = [
+              ..entries = <model.IvrEntry>[
                 new model.IvrVoicemail(
                     '1',
                     new model.Voicemail('testbox2',

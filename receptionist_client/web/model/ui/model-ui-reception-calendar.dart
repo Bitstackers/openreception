@@ -141,7 +141,8 @@ class UIReceptionCalendar extends UIModel {
   model.CalendarEntry get firstCalendarEntry {
     try {
       return new model.CalendarEntry.fromMap(
-          JSON.decode(_list.children.first.dataset['object']));
+          JSON.decode(_list.children.first.dataset['object'])
+          as Map<String, dynamic>);
     } catch (_) {
       return new model.CalendarEntry.empty();
     }
@@ -156,7 +157,7 @@ class UIReceptionCalendar extends UIModel {
 
     if (selected != null) {
       return new model.CalendarEntry.fromMap(
-          JSON.decode(selected.dataset['object']));
+          JSON.decode(selected.dataset['object']) as Map<String, dynamic>);
     } else {
       return new model.CalendarEntry.empty();
     }
@@ -217,7 +218,7 @@ class UIReceptionCalendar extends UIModel {
         for (LIElement li in _list.children) {
           final model.CalendarEntry foundEntry =
               new model.CalendarEntry.fromMap(
-                  JSON.decode(li.dataset['object']));
+                  JSON.decode(li.dataset['object']) as Map<String, dynamic>);
           if (foundEntry.start.isAfter(entry.start) ||
               foundEntry.start.isAtSameMomentAs(entry.start)) {
             found = li;

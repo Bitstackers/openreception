@@ -24,11 +24,14 @@ class Datastore {
   final RESTCalendarStore calendar;
   final RESTUserStore user;
 
-  factory Datastore(Uri host, String token, backend) {
-    final contactStore = new RESTContactStore(host, token, backend);
-    final receptionStore = new RESTReceptionStore(host, token, backend);
-    final calendarStore = new RESTCalendarStore(host, token, backend);
-    final userStore = new RESTUserStore(host, token, backend);
+  factory Datastore(Uri host, String token, WebService backend) {
+    final RESTContactStore contactStore =
+        new RESTContactStore(host, token, backend);
+    final RESTReceptionStore receptionStore =
+        new RESTReceptionStore(host, token, backend);
+    final RESTCalendarStore calendarStore =
+        new RESTCalendarStore(host, token, backend);
+    final RESTUserStore userStore = new RESTUserStore(host, token, backend);
 
     return new Datastore._(
         contactStore, receptionStore, calendarStore, userStore);

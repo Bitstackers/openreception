@@ -180,7 +180,8 @@ class Message implements storage.Message {
 
     try {
       final String fileContents = await file.readAsString();
-      final model.Message msg = model.Message.decode(JSON.decode(fileContents));
+      final model.Message msg = model.Message
+          .decode(JSON.decode(fileContents) as Map<String, dynamic>);
       return msg;
     } catch (e, s) {
       _log.shout('Failed to load file ${file.path}', e, s);

@@ -53,11 +53,11 @@ class Dialplan {
     LIElement errorNode(String text) => new LIElement()..text = text;
 
     model.ReceptionDialplan rdp;
-    Map json;
+    Map<String, dynamic> json;
     _inputErrorList.children.clear();
     _dialplanInput.classes.toggle('error', false);
     try {
-      json = JSON.decode(_dialplanInput.value);
+      json = JSON.decode(_dialplanInput.value) as Map<String, dynamic>;
 
       try {
         rdp = model.ReceptionDialplan.decode(json);
@@ -106,8 +106,8 @@ class Dialplan {
     _deleteButton.text = 'Slet';
   }
 
-  model.ReceptionDialplan get dialplan =>
-      model.ReceptionDialplan.decode(JSON.decode(_dialplanInput.value));
+  model.ReceptionDialplan get dialplan => model.ReceptionDialplan
+      .decode(JSON.decode(_dialplanInput.value) as Map<String, dynamic>);
 
   set dialplan(model.ReceptionDialplan rdp) {
     _dialplanInput.hidden = false;

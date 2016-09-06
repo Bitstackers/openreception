@@ -14,16 +14,17 @@
 part of openreception.framework.service;
 
 class _NotificationRequest {
-  final Map body;
+  final Map<String, dynamic> body;
   final Uri resource;
   final Completer<String> response = new Completer<String>();
 
-  _NotificationRequest(Uri this.resource, Map this.body);
+  _NotificationRequest(Uri this.resource, Map<String, dynamic> this.body);
 }
 
 /// Client for Notification sending.
 class NotificationService {
-  static Queue<_NotificationRequest> _requestQueue = new Queue();
+  static Queue<_NotificationRequest> _requestQueue =
+      new Queue<_NotificationRequest>();
   static bool _busy = false;
 
   final WebService _httpClient;
@@ -34,7 +35,7 @@ class NotificationService {
       Uri this.host, String this._clientToken, this._httpClient);
 
   /// Performs a broadcast via the notification server.
-  Future broadcastEvent(event.Event event) {
+  Future<String> broadcastEvent(event.Event event) {
     Uri uri = resource.Notification.broadcast(host);
     uri = _appendToken(uri, _clientToken);
 
@@ -47,8 +48,9 @@ class NotificationService {
     uri = _appendToken(uri, _clientToken);
 
     return await _httpClient.get(uri).then(JSON.decode).then(
-        (Iterable<Map> maps) =>
-            maps.map((Map map) => new model.ClientConnection.fromMap(map)));
+        (Iterable<Map<String, dynamic>> maps) => maps.map(
+            (Map<String, dynamic> map) =>
+                new model.ClientConnection.fromMap(map)));
   }
 
   /// Retrieves the [ClientConnection] currently associated with [uid].
@@ -56,26 +58,21 @@ class NotificationService {
     Uri uri = resource.Notification.clientConnection(host, uid);
     uri = _appendToken(uri, _clientToken);
 
-    return _httpClient
-        .get(uri)
-        .then(JSON.decode)
-        .then((Map map) => new model.ClientConnection.fromMap(map));
+    return _httpClient.get(uri).then(JSON.decode).then(
+        (Map<String, dynamic> map) => new model.ClientConnection.fromMap(map));
   }
 
   /// Sends an event via the notification server to [recipients]
-  Future send(Iterable<int> recipients, event.Event event) {
+  Future<Null> send(Iterable<int> recipients, event.Event event) async {
     Uri uri = resource.Notification.send(host);
     uri = _appendToken(uri, _clientToken);
 
-    final payload = {
+    final Map<String, dynamic> payload = <String, dynamic>{
       'recipients': recipients.toList(),
       'message': event.toJson()
     };
 
-    return _httpClient
-        .post(uri, JSON.encode(payload))
-        .then(JSON.decode)
-        .then((Map map) => new model.ClientConnection.fromMap(map));
+    await _httpClient.post(uri, JSON.encode(payload));
   }
 
   /// Every request sent to the phone is enqueued and executed in-order
@@ -261,10 +258,10 @@ class NotificationSocket {
   }
 
   /// Finalize object and close all subscriptions.
-  Future _closeEventListeners() async {
+  Future<Null> _closeEventListeners() async {
     await _eventBus.close();
 
-    await Future.wait([
+    await Future.wait(<Future<Null>>[
       _callEventBus.close(),
       _calenderChangeBus.close(),
       _clientConnectionBus.close(),
@@ -284,7 +281,7 @@ class NotificationSocket {
   }
 
   /// Closes the websocket and all open streams.
-  Future close() async {
+  Future<Null> close() async {
     await _websocket.close();
   }
 

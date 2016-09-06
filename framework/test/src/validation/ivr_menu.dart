@@ -19,7 +19,7 @@ void _ivrMenuTests() {
   final String note = 'Just a test';
   final model.Playback greeting = new model.Playback(filename, note: note);
 
-  final List<model.IvrEntry> entries = [
+  final List<model.IvrEntry> entries = <model.IvrEntry>[
     new model.IvrVoicemail(
         '1',
         new model.Voicemail('vm-corp_1',
@@ -63,7 +63,9 @@ void _ivrMenuTests() {
     test('menu with a bad submenu', () {
       final model.IvrMenu menu = new model.IvrMenu('named', greeting)
         ..entries = entries
-        ..submenus = [new model.IvrMenu('', greeting)..entries = entries];
+        ..submenus = <model.IvrMenu>[
+          new model.IvrMenu('', greeting)..entries = entries
+        ];
 
       expect(validateIvrMenu(menu).length, equals(1));
     });
@@ -71,7 +73,9 @@ void _ivrMenuTests() {
     test('bad menu with a bad submenu', () {
       final model.IvrMenu menu = new model.IvrMenu('named', model.Playback.none)
         ..entries = entries
-        ..submenus = [new model.IvrMenu('', greeting)..entries = entries];
+        ..submenus = <model.IvrMenu>[
+          new model.IvrMenu('', greeting)..entries = entries
+        ];
 
       expect(validateIvrMenu(menu).length, equals(2));
     });

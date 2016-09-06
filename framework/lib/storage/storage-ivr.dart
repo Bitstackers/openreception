@@ -40,7 +40,7 @@ abstract class Ivr {
   /// by [menuName].
   ///
   /// The [modifier] is required for traceability of who performed the deletion.
-  Future remove(String menuName, model.User modifier);
+  Future<Null> remove(String menuName, model.User modifier);
 
   /// List IVR menu object changes for the store, optionally for a
   /// single [menuName].

@@ -35,7 +35,8 @@ class RESTCalendarStore implements storage.Calendar {
 
     url = _appendToken(url, this.token);
 
-    Iterable<model.CalendarEntry> convertMaps(Iterable<Map> maps) =>
+    Iterable<model.CalendarEntry> convertMaps(
+            Iterable<Map<String, dynamic>> maps) =>
         maps.map(model.CalendarEntry.decode);
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
@@ -79,11 +80,11 @@ class RESTCalendarStore implements storage.Calendar {
   }
 
   @override
-  Future remove(int eid, model.Owner owner, model.User user) {
+  Future<Null> remove(int eid, model.Owner owner, model.User user) async {
     Uri url = resource.Calendar.single(host, eid, owner);
     url = _appendToken(url, this.token);
 
-    return this._backend.delete(url);
+    await _backend.delete(url);
   }
 
   @override
@@ -91,7 +92,7 @@ class RESTCalendarStore implements storage.Calendar {
     Uri url = resource.Calendar.changeList(host, owner, eid);
     url = _appendToken(url, this.token);
 
-    Iterable<model.Commit> convertMaps(Iterable<Map> maps) =>
+    Iterable<model.Commit> convertMaps(Iterable<Map<String, dynamic>> maps) =>
         maps.map(model.Commit.decode);
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);

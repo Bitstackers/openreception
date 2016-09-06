@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.framework.model.dialplan.parsing_utils;
+part of openreception.framework.model.dialplan;
 
 ///'Tuple' class for returning an identifier consumed from a buffer and
 /// the remaining buffer.
@@ -34,7 +34,9 @@ class _ConsumedCommentBuf {
 /// Consume the next word up until next space from [buffer].
 _ConsumedIdenBuf consumeWord(String buffer) {
   buffer = buffer.trimLeft();
-  final nextTerm =
+
+  // Locate the next terminating character.
+  final int nextTerm =
       buffer.indexOf(' ') > 0 ? buffer.indexOf(' ') : buffer.length;
 
   return new _ConsumedIdenBuf(
@@ -64,7 +66,7 @@ _ConsumedCommentBuf consumeComment(String buffer) {
 ///
 /// Throws [FormatException] if the buffer does not contain the key in
 /// the beginning.
-String consumeKey(String buffer, String key) => (!buffer
+String _consumeKey(String buffer, String key) => (!buffer
         .trimLeft()
         .substring(0, key.length)
         .toLowerCase()

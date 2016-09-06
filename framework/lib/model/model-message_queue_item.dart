@@ -15,11 +15,11 @@ part of openreception.framework.model;
 
 class MessageQueueEntry {
   final DateTime createdAt;
-  Set<MessageEndpoint> _handledRecipients = new Set();
+  Set<MessageEndpoint> _handledRecipients = new Set<MessageEndpoint>();
   int id = noId;
   static const int noId = 0;
   int tries = 0;
-  Set<MessageEndpoint> _unhandledRecipients = new Set();
+  Set<MessageEndpoint> _unhandledRecipients = new Set<MessageEndpoint>();
 
   /// Default constructor
   Message message = new Message.empty();
@@ -28,19 +28,20 @@ class MessageQueueEntry {
   MessageQueueEntry.empty() : createdAt = new DateTime.now();
 
   /// Creates a message from the information given in [map].
-  MessageQueueEntry.fromMap(Map map)
+  MessageQueueEntry.fromMap(Map<String, dynamic> map)
       : createdAt = util.unixTimestampToDateTime(map[key.createdAt]),
         id = map[key.id],
-        message = Message.decode(map[key.message]),
-        _handledRecipients = (map[key.handledRecipients] as Iterable)
-            .map(MessageEndpoint.decode)
-            .toSet(),
-        _unhandledRecipients = new Set.from(
+        message = Message.decode(map[key.message] as Map<String, dynamic>),
+        _handledRecipients =
+            (map[key.handledRecipients] as Iterable<Map<String, dynamic>>)
+                .map(MessageEndpoint.decode)
+                .toSet(),
+        _unhandledRecipients = new Set<MessageEndpoint>.from(
             map[key.unhandledRecipients].map(MessageEndpoint.decode)),
         tries = map[key.tries];
 
   /// Decoding factory.
-  static MessageQueueEntry decode(Map map) =>
+  static MessageQueueEntry decode(Map<String, dynamic> map) =>
       new MessageQueueEntry.fromMap(map);
 
   Iterable<MessageEndpoint> get handledRecipients => _handledRecipients;
@@ -55,21 +56,24 @@ class MessageQueueEntry {
   }
 
   /// Serialization function
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.id: id,
         key.tries: tries,
         key.createdAt: util.dateTimeToUnixTimestamp(createdAt),
         key.message: message.toJson(),
-        key.handledRecipients:
-            _handledRecipients.map((r) => r.toJson()).toList(growable: false),
-        key.unhandledRecipients:
-            _unhandledRecipients.map((r) => r.toJson()).toList(growable: false)
+        key.handledRecipients: _handledRecipients
+            .map((MessageEndpoint r) => r.toJson())
+            .toList(growable: false),
+        key.unhandledRecipients: _unhandledRecipients
+            .map((MessageEndpoint r) => r.toJson())
+            .toList(growable: false)
       };
 
   Iterable<MessageEndpoint> get unhandledRecipients => _unhandledRecipients;
 
   /// Set the unhandled recipients set.
   set unhandledRecipients(Iterable<MessageEndpoint> unhandled) {
-    _unhandledRecipients = new Set()..addAll(unhandled.toSet());
+    _unhandledRecipients = new Set<MessageEndpoint>()
+      ..addAll(unhandled.toSet());
   }
 }

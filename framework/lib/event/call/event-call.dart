@@ -22,11 +22,11 @@ abstract class CallEvent implements Event {
   /// The [model.Call] object of the event.
   final model.Call call;
 
-  /// Generative constructor for use 
+  /// Generative constructor for use
   CallEvent(this.call) : timestamp = new DateTime.now();
 
   /// Generative constructor needed by specializations of the [CallEvent] class.
   CallEvent.fromMap(Map<String, dynamic> map)
-      : this.call = new model.Call.fromMap(map[_Key._call]),
-        this.timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
+      : call = new model.Call.fromMap(map[_Key._call] as Map<String, dynamic>),
+        timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 }

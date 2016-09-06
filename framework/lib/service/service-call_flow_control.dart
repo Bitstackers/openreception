@@ -34,7 +34,8 @@ class CallFlowControl {
     Uri uri = resource.CallFlowControl.activeRecordings(host);
     uri = _appendToken(uri, token);
 
-    Iterable<model.ActiveRecording> decodeMaps(Iterable<Map> maps) =>
+    Iterable<model.ActiveRecording> decodeMaps(
+            Iterable<Map<String, dynamic>> maps) =>
         maps.map(model.ActiveRecording.decode);
 
     return _backend.get(uri).then(JSON.decode).then(decodeMaps);
@@ -56,7 +57,8 @@ class CallFlowControl {
     Uri uri = resource.CallFlowControl.agentStatistics(host);
     uri = _appendToken(uri, token);
 
-    Iterable<model.AgentStatistics> decodeMaps(Iterable<Map> maps) =>
+    Iterable<model.AgentStatistics> decodeMaps(
+            Iterable<Map<String, dynamic>> maps) =>
         maps.map(model.AgentStatistics.decode);
 
     return _backend.get(uri).then(JSON.decode).then(decodeMaps);
@@ -78,18 +80,18 @@ class CallFlowControl {
     Uri uri = resource.CallFlowControl.list(host);
     uri = _appendToken(uri, token);
 
-    return _backend.get(uri).then(JSON.decode).then((Iterable<Map> callMaps) =>
-        callMaps.map((Map map) => new model.Call.fromMap(map)));
+    return _backend.get(uri).then(JSON.decode).then(
+        (Iterable<Map<String, dynamic>> callMaps) => callMaps
+            .map((Map<String, dynamic> map) => new model.Call.fromMap(map)));
   }
 
   /// Retrives the a specific channel as a Map.
-  Future<Map> channelMap(String uuid) {
+  Future<Map<String, dynamic>> channelMap(String uuid) {
     Uri uri = resource.CallFlowControl.channel(host, uuid);
     uri = _appendToken(uri, token);
 
-    return _backend
-        .get(uri)
-        .then((String response) => (JSON.decode(response) as Map));
+    return _backend.get(uri).then(
+        (String response) => (JSON.decode(response) as Map<String, dynamic>));
   }
 
   /// Returns a single call resource.
@@ -100,15 +102,15 @@ class CallFlowControl {
     return _backend
         .get(uri)
         .then(JSON.decode)
-        .then((Map map) => new model.Call.fromMap(map));
+        .then((Map<String, dynamic> map) => new model.Call.fromMap(map));
   }
 
   /// Hangs up the call identified by [callID].
-  Future hangup(String callID) {
+  Future<Null> hangup(String callID) async {
     Uri uri = resource.CallFlowControl.hangup(host, callID);
     uri = _appendToken(uri, token);
 
-    return _backend.post(uri, '');
+    await _backend.post(uri, '');
   }
 
   /// Originate a new call via the server.
@@ -117,10 +119,8 @@ class CallFlowControl {
     Uri uri = resource.CallFlowControl.originate(host, extension, context);
     uri = _appendToken(uri, token);
 
-    return _backend
-        .post(uri, '')
-        .then(JSON.decode)
-        .then((Map callMap) => new model.Call.fromMap(callMap));
+    return _backend.post(uri, '').then(JSON.decode).then(
+        (Map<String, dynamic> callMap) => new model.Call.fromMap(callMap));
   }
 
   /// Parks the call identified by [callID].
@@ -131,7 +131,7 @@ class CallFlowControl {
     return _backend
         .post(uri, '')
         .then(JSON.decode)
-        .then((Map map) => new model.Call.fromMap(map));
+        .then((Map<String, dynamic> map) => new model.Call.fromMap(map));
   }
 
   /// Retrives the current Peer list.
@@ -142,8 +142,8 @@ class CallFlowControl {
     return _backend
         .get(uri)
         .then((String response) => (JSON.decode(response)))
-        .then((Iterable<Map> maps) =>
-            maps.map((Map map) => new model.Peer.fromMap(map)));
+        .then((Iterable<Map<String, dynamic>> maps) => maps
+            .map((Map<String, dynamic> map) => new model.Peer.fromMap(map)));
   }
 
   /// Picks up the call identified by [callID].
@@ -151,25 +151,23 @@ class CallFlowControl {
     Uri uri = resource.CallFlowControl.pickup(host, callID);
     uri = _appendToken(uri, token);
 
-    return _backend
-        .post(uri, '')
-        .then(JSON.decode)
-        .then((Map callMap) => new model.Call.fromMap(callMap));
+    return _backend.post(uri, '').then(JSON.decode).then(
+        (Map<String, dynamic> callMap) => new model.Call.fromMap(callMap));
   }
 
   /// Asks the server to perform a reload.
-  Future stateReload() {
+  Future<Null> stateReload() async {
     Uri uri = resource.CallFlowControl.stateReload(host);
     uri = _appendToken(uri, token);
 
-    return _backend.post(uri, '');
+    await _backend.post(uri, '');
   }
 
   /// Transfers the call identified by [callID] to active call [destination].
-  Future transfer(String callID, String destination) {
+  Future<Null> transfer(String callID, String destination) async {
     Uri uri = resource.CallFlowControl.transfer(host, callID, destination);
     uri = _appendToken(uri, token);
 
-    return _backend.post(uri, '');
+    await _backend.post(uri, '');
   }
 }

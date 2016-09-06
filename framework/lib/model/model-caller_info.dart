@@ -22,7 +22,7 @@ class CallerInfo {
 
   CallerInfo.empty();
 
-  CallerInfo.fromMap(Map map) {
+  CallerInfo.fromMap(Map<String, dynamic> map) {
     name = map[key.name];
     company = map[key.company];
     phone = map[key.phone];
@@ -30,15 +30,17 @@ class CallerInfo {
     localExtension = map[key.localExtension];
   }
 
-  static CallerInfo decode(Map map) => new CallerInfo.fromMap(map);
+  static CallerInfo decode(Map<String, dynamic> map) =>
+      new CallerInfo.fromMap(map);
 
-  Map get asMap => {
+  @deprecated
+  Map<String, dynamic> get asMap => toJson();
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.name: name,
         key.company: company,
         key.phone: phone,
         key.cellPhone: cellPhone,
         key.localExtension: localExtension
       };
-
-  Map toJson() => this.asMap;
 }

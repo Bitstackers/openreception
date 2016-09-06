@@ -204,7 +204,8 @@ class AgentHistory {
     if (f.existsSync()) {
       _log.finest('Loading existing report for ${_dateKey(day)}');
       return new model.DailyReport.fromMap(
-          unpackAndDeserializeObject(f.readAsBytesSync()));
+          unpackAndDeserializeObject(f.readAsBytesSync())
+          as Map<String, dynamic>);
     } else {
       _log.finest('Creating new daily report for ${_dateKey(day)}');
       return new model.DailyReport.empty();

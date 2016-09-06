@@ -86,8 +86,8 @@ class ReceptionDialplan {
    *
    */
   Future<shelf.Response> create(shelf.Request request) async {
-    final model.ReceptionDialplan rdp = model.ReceptionDialplan
-        .decode(JSON.decode(await request.readAsString()));
+    final model.ReceptionDialplan rdp = model.ReceptionDialplan.decode(
+        JSON.decode(await request.readAsString()) as Map<String, dynamic>);
 
     model.User user;
     try {
@@ -206,8 +206,8 @@ class ReceptionDialplan {
    *
    */
   Future<shelf.Response> update(shelf.Request request) async {
-    final model.ReceptionDialplan rdp = model.ReceptionDialplan
-        .decode(JSON.decode(await request.readAsString()));
+    final model.ReceptionDialplan rdp = model.ReceptionDialplan.decode(
+        JSON.decode(await request.readAsString()) as Map<String, dynamic>);
 
     model.User user;
     try {

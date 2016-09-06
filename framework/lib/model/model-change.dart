@@ -38,15 +38,16 @@ class CalendarChangelogEntry implements ChangelogEntry {
         entry = new CalendarEntry.empty()..id = eid,
         timestamp = new DateTime.now();
 
-  CalendarChangelogEntry.fromMap(Map map)
-      : modifier = UserReference.decode(map['modifier']),
-        entry = CalendarEntry.decode(map['entry']),
+  CalendarChangelogEntry.fromMap(Map<String, dynamic> map)
+      : modifier =
+            UserReference.decode(map['modifier'] as Map<String, dynamic>),
+        entry = CalendarEntry.decode(map['entry'] as Map<String, dynamic>),
         changeType = changeTypeFromString(map['change']),
         timestamp = util.unixTimestampToDateTime(map['timestamp']);
 
   /// Serialization function.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'change': changeTypeToString(changeType),
         'timestamp': util.dateTimeToUnixTimestamp(timestamp),
         'modifier': modifier.toJson(),
@@ -79,15 +80,16 @@ class ContactChangelogEntry implements ChangelogEntry {
         contact = new BaseContact.empty()..id = cid,
         timestamp = new DateTime.now();
 
-  ContactChangelogEntry.fromMap(Map map)
-      : modifier = UserReference.decode(map['modifier']),
-        contact = BaseContact.decode(map['contact']),
+  ContactChangelogEntry.fromMap(Map<String, dynamic> map)
+      : modifier =
+            UserReference.decode(map['modifier'] as Map<String, dynamic>),
+        contact = BaseContact.decode(map['contact'] as Map<String, dynamic>),
         changeType = changeTypeFromString(map['change']),
         timestamp = util.unixTimestampToDateTime(map['timestamp']);
 
   /// Serialization function.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'change': changeTypeToString(changeType),
         'modifier': util.dateTimeToUnixTimestamp(timestamp),
         'user': modifier.toJson(),
@@ -122,15 +124,17 @@ class ReceptionDataChangelogEntry implements ChangelogEntry {
           ..receptionId = rid,
         timestamp = new DateTime.now();
 
-  ReceptionDataChangelogEntry.fromMap(Map map)
-      : modifier = UserReference.decode(map['modifier']),
-        attributes = ReceptionAttributes.decode(map['attributes']),
+  ReceptionDataChangelogEntry.fromMap(Map<String, dynamic> map)
+      : modifier =
+            UserReference.decode(map['modifier'] as Map<String, dynamic>),
+        attributes = ReceptionAttributes
+            .decode(map['attributes'] as Map<String, dynamic>),
         changeType = changeTypeFromString(map['change']),
         timestamp = util.unixTimestampToDateTime(map['timestamp']);
 
   /// Serialization function.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'change': changeTypeToString(changeType),
         'timestamp': util.dateTimeToUnixTimestamp(timestamp),
         'modifier': modifier.toJson(),
@@ -163,15 +167,16 @@ class IvrChangelogEntry implements ChangelogEntry {
         menu = new IvrMenu('', new Playback(''))..name = menuName,
         timestamp = new DateTime.now();
 
-  IvrChangelogEntry.fromMap(Map map)
-      : modifier = UserReference.decode(map['modifier']),
-        menu = IvrMenu.decode(map['menu']),
+  IvrChangelogEntry.fromMap(Map<String, dynamic> map)
+      : modifier =
+            UserReference.decode(map['modifier'] as Map<String, dynamic>),
+        menu = IvrMenu.decode(map['menu'] as Map<String, dynamic>),
         changeType = changeTypeFromString(map['change']),
         timestamp = util.unixTimestampToDateTime(map['timestamp']);
 
   /// Serialization function.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'change': changeTypeToString(changeType),
         'timestamp': util.dateTimeToUnixTimestamp(timestamp),
         'modifier': modifier.toJson(),
@@ -204,15 +209,17 @@ class DialplanChangelogEntry implements ChangelogEntry {
         dialplan = new ReceptionDialplan()..extension = extension,
         timestamp = new DateTime.now();
 
-  DialplanChangelogEntry.fromMap(Map map)
-      : modifier = UserReference.decode(map['modifier']),
-        dialplan = ReceptionDialplan.decode(map['dialplan']),
+  DialplanChangelogEntry.fromMap(Map<String, dynamic> map)
+      : modifier =
+            UserReference.decode(map['modifier'] as Map<String, dynamic>),
+        dialplan =
+            ReceptionDialplan.decode(map['dialplan'] as Map<String, dynamic>),
         changeType = changeTypeFromString(map['change']),
         timestamp = util.unixTimestampToDateTime(map['timestamp']);
 
   /// Serialization function.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'change': changeTypeToString(changeType),
         'timestamp': util.dateTimeToUnixTimestamp(timestamp),
         'modifier': modifier.toJson(),
@@ -245,15 +252,16 @@ class ReceptionChangelogEntry implements ChangelogEntry {
         reception = new Reception.empty()..id = rid,
         timestamp = new DateTime.now();
 
-  ReceptionChangelogEntry.fromMap(Map map)
-      : modifier = UserReference.decode(map['modifier']),
-        reception = Reception.decode(map['reception']),
+  ReceptionChangelogEntry.fromMap(Map<String, dynamic> map)
+      : modifier =
+            UserReference.decode(map['modifier'] as Map<String, dynamic>),
+        reception = Reception.decode(map['reception'] as Map<String, dynamic>),
         changeType = changeTypeFromString(map['change']),
         timestamp = util.unixTimestampToDateTime(map['timestamp']);
 
   /// Serialization function.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'change': changeTypeToString(changeType),
         'timestamp': util.dateTimeToUnixTimestamp(timestamp),
         'modifier': modifier.toJson(),
@@ -286,15 +294,17 @@ class OrganizationChangelogEntry implements ChangelogEntry {
         organization = new Organization.empty()..id = oid,
         timestamp = new DateTime.now();
 
-  OrganizationChangelogEntry.fromMap(Map map)
-      : modifier = UserReference.decode(map['modifier']),
-        organization = Organization.decode(map['organization']),
+  OrganizationChangelogEntry.fromMap(Map<String, dynamic> map)
+      : modifier =
+            UserReference.decode(map['modifier'] as Map<String, dynamic>),
+        organization =
+            Organization.decode(map['organization'] as Map<String, dynamic>),
         changeType = changeTypeFromString(map['change']),
         timestamp = util.unixTimestampToDateTime(map['timestamp']);
 
   /// Serialization function.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'change': changeTypeToString(changeType),
         'timestamp': util.dateTimeToUnixTimestamp(timestamp),
         'modifier': modifier.toJson(),
@@ -327,15 +337,16 @@ class UserChangelogEntry implements ChangelogEntry {
         user = new User.empty()..id = uid,
         timestamp = new DateTime.now();
 
-  UserChangelogEntry.fromMap(Map map)
-      : modifier = UserReference.decode(map['modifier']),
-        user = User.decode(map['user']),
+  UserChangelogEntry.fromMap(Map<String, dynamic> map)
+      : modifier =
+            UserReference.decode(map['modifier'] as Map<String, dynamic>),
+        user = User.decode(map['user'] as Map<String, dynamic>),
         changeType = changeTypeFromString(map['change']),
         timestamp = util.unixTimestampToDateTime(map['timestamp']);
 
   /// Serialization function.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'change': changeTypeToString(changeType),
         'timestamp': util.dateTimeToUnixTimestamp(timestamp),
         'modifier': modifier.toJson(),
@@ -359,7 +370,7 @@ enum ObjectType {
 }
 
 /// Map with serialization keys and values
-const Map<ObjectType, String> _objectTypeToString = const {
+const Map<ObjectType, String> _objectTypeToString = const <ObjectType, String>{
   ObjectType.user: key.user,
   ObjectType.calendar: key.calendar,
   ObjectType.reception: key.reception,
@@ -372,7 +383,8 @@ const Map<ObjectType, String> _objectTypeToString = const {
 };
 
 /// Map with deserialization keys and values
-const Map<String, ObjectType> _objectTypeFromString = const {
+const Map<String, ObjectType> _objectTypeFromString =
+    const <String, ObjectType>{
   key.user: ObjectType.user,
   key.calendar: ObjectType.calendar,
   key.reception: ObjectType.reception,
@@ -406,13 +418,14 @@ ChangeType changeTypeFromString(String str) =>
         ? _changeTypeFromString[str]
         : throw new ArgumentError('Unknown ChangeType $str');
 
-const Map<ChangeType, String> _changeTypeToString = const {
+const Map<ChangeType, String> _changeTypeToString = const <ChangeType, String>{
   ChangeType.add: 'A',
   ChangeType.modify: 'M',
   ChangeType.delete: 'D'
 };
 
-const Map<String, ChangeType> _changeTypeFromString = const {
+const Map<String, ChangeType> _changeTypeFromString =
+    const <String, ChangeType>{
   'A': ChangeType.add,
   'M': ChangeType.modify,
   'D': ChangeType.delete
@@ -422,7 +435,7 @@ abstract class ObjectChange {
   ChangeType get changeType;
   ObjectType get objectType;
 
-  static ObjectChange decode(Map map) {
+  static ObjectChange decode(Map<String, dynamic> map) {
     final ObjectType objectType = objectTypeFromString(map[key.type]);
 
     switch (objectType) {
@@ -450,7 +463,7 @@ abstract class ObjectChange {
     }
   }
 
-  Map toJson();
+  Map<String, dynamic> toJson();
 }
 
 /// Class representing a historic change, by a [User].
@@ -459,32 +472,34 @@ class Commit {
   String authorIdentity;
   String commitHash;
   int uid = User.noId;
-  List<ObjectChange> changes = [];
+  List<ObjectChange> changes = <ObjectChange>[];
 
   /// Default constructor.
   Commit();
 
   /// Deserializing constructor.
-  Commit.fromMap(Map map)
+  Commit.fromMap(Map<String, dynamic> map)
       : changes = new List<ObjectChange>.from(
-            (map[key.changes] as Iterable).map(ObjectChange.decode)),
+            (map[key.changes] as Iterable<Map<String, dynamic>>)
+                .map(ObjectChange.decode)),
         authorIdentity = map[key.identity],
         changedAt = util.unixTimestampToDateTime(map[key.updatedAt]),
         commitHash = map[key.commitHash],
         uid = map[key.uid];
 
   /// Decoding factory.
-  static Commit decode(Map map) => new Commit.fromMap(map);
+  static Commit decode(Map<String, dynamic> map) => new Commit.fromMap(map);
 
   /// Returns a map representation of the object.
   ///
   /// Suitable for serialization.
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.identity: authorIdentity,
         key.updatedAt: util.dateTimeToUnixTimestamp(changedAt),
         key.commitHash: commitHash,
         key.uid: uid,
-        key.changes: new List<Map>.from(changes.map((c) => c.toJson()))
+        key.changes: new List<Map<String, dynamic>>.from(
+            changes.map((ObjectChange c) => c.toJson()))
       };
 }
 
@@ -497,18 +512,18 @@ class IvrChange implements ObjectChange {
 
   IvrChange(this.changeType, this.menuName);
 
-  IvrChange.fromJson(Map map)
+  IvrChange.fromJson(Map<String, dynamic> map)
       : changeType = changeTypeFromString(map[key.change]),
         menuName = map[key.name];
 
-  static IvrChange decode(Map map) =>
+  static IvrChange decode(Map<String, dynamic> map) =>
       new IvrChange(changeTypeFromString(map[key.change]), map[key.name]);
 
   /// Returns a map representation of the object.
   ///
   /// Suitable for serialization.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.change: changeTypeToString(changeType),
         key.type: objectTypeToString(objectType),
         key.name: menuName
@@ -524,18 +539,19 @@ class ReceptionDialplanChange implements ObjectChange {
 
   ReceptionDialplanChange(this.changeType, this.extension);
 
-  ReceptionDialplanChange.fromJson(Map map)
+  ReceptionDialplanChange.fromJson(Map<String, dynamic> map)
       : changeType = changeTypeFromString(map[key.change]),
         extension = map[key.name];
 
-  static ReceptionDialplanChange decode(Map map) => new ReceptionDialplanChange(
-      changeTypeFromString(map[key.change]), map[key.name]);
+  static ReceptionDialplanChange decode(Map<String, dynamic> map) =>
+      new ReceptionDialplanChange(
+          changeTypeFromString(map[key.change]), map[key.name]);
 
   /// Returns a map representation of the object.
   ///
   /// Suitable for serialization.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.change: changeTypeToString(changeType),
         key.type: objectTypeToString(objectType),
         key.name: extension
@@ -552,17 +568,18 @@ class MessageChange implements ObjectChange {
 
   MessageChange(this.changeType, this.mid);
 
-  MessageChange.fromJson(Map map)
+  MessageChange.fromJson(Map<String, dynamic> map)
       : changeType = changeTypeFromString(map[key.change]),
         mid = map[key.mid];
 
-  static MessageChange decode(Map map) => new MessageChange.fromJson(map);
+  static MessageChange decode(Map<String, dynamic> map) =>
+      new MessageChange.fromJson(map);
 
   /// Returns a map representation of the object.
   ///
   /// Suitable for serialization.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.change: changeTypeToString(changeType),
         key.type: objectTypeToString(objectType),
         key.mid: mid
@@ -578,18 +595,18 @@ class OrganizationChange implements ObjectChange {
 
   OrganizationChange(this.changeType, this.oid);
 
-  OrganizationChange.fromJson(Map map)
+  OrganizationChange.fromJson(Map<String, dynamic> map)
       : changeType = changeTypeFromString(map[key.change]),
         oid = map[key.mid];
 
-  static OrganizationChange decode(Map map) =>
+  static OrganizationChange decode(Map<String, dynamic> map) =>
       new OrganizationChange.fromJson(map);
 
   /// Returns a map representation of the object.
   ///
   /// Suitable for serialization.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.change: changeTypeToString(changeType),
         key.type: objectTypeToString(objectType),
         key.mid: oid
@@ -605,17 +622,18 @@ class ReceptionChange implements ObjectChange {
 
   ReceptionChange(this.changeType, this.rid);
 
-  ReceptionChange.fromJson(Map map)
+  ReceptionChange.fromJson(Map<String, dynamic> map)
       : changeType = changeTypeFromString(map[key.change]),
         rid = map[key.mid];
 
-  static ReceptionChange decode(Map map) => new ReceptionChange.fromJson(map);
+  static ReceptionChange decode(Map<String, dynamic> map) =>
+      new ReceptionChange.fromJson(map);
 
   /// Returns a map representation of the object.
   ///
   /// Suitable for serialization.
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.change: changeTypeToString(changeType),
         key.type: objectTypeToString(objectType),
         key.mid: rid

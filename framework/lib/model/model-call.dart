@@ -60,7 +60,7 @@ class Call {
   Call.empty(this._id);
 
   /// Default constructor.
-  factory Call.fromMap(Map map) => new Call.empty(map[key.id])
+  factory Call.fromMap(Map<String, dynamic> map) => new Call.empty(map[key.id])
     .._state = map[PbxKey.state]
     ..answeredAt = util.unixTimestampToDateTime(map[key.answeredAt])
     ..bLeg = map[key.bLeg]
@@ -209,7 +209,7 @@ class Call {
       : 'CallId: $_id, state: $_state, destination: $destination';
 
   /// Serilization function.
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.id: _id,
         PbxKey.state: _state,
         key.bLeg: bLeg,

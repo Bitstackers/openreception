@@ -43,7 +43,7 @@ class Playback implements Action {
     String note = '';
     int repeat = 1;
 
-    buffer = consumeKey(buffer, key.playback).trimLeft();
+    buffer = _consumeKey(buffer, key.playback).trimLeft();
 
     // Legacy. Ignore playbacks with 'locked' keywords.
     if (buffer
@@ -54,16 +54,16 @@ class Playback implements Action {
     }
 
     if (!buffer.startsWith('(')) {
-      var consumed = consumeWord(buffer);
+      _ConsumedIdenBuf consumed = consumeWord(buffer);
 
       buffer = consumed.buffer.trimLeft();
       filename = consumed.iden;
     }
 
     if (!buffer.startsWith('(')) {
-      var consumed = consumeWord(buffer);
+      _ConsumedIdenBuf consumed = consumeWord(buffer);
 
-      var split = consumed.iden.split(':');
+      List<String> split = consumed.iden.split(':');
 
       if (split.length > 1 && split.first == key.repeat) {
         repeat = int.parse(split[1]);

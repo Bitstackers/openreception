@@ -36,8 +36,8 @@ abstract class _ModelIvrMenu {
   static void serializationDeserialization() {
     model.IvrMenu builtObject = buildObject();
 
-    model.IvrMenu deserializedObject =
-        model.IvrMenu.decode(JSON.decode(JSON.encode(builtObject)));
+    model.IvrMenu deserializedObject = model.IvrMenu
+        .decode(JSON.decode(JSON.encode(builtObject)) as Map<String, dynamic>);
 
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
 
@@ -78,7 +78,7 @@ abstract class _ModelIvrMenu {
     final model.Playback sub2greeting =
         new model.Playback(sub2filename, note: note);
 
-    final List<model.IvrEntry> entries = [
+    final List<model.IvrEntry> entries = <model.IvrEntry>[
       new model.IvrVoicemail(
           '1',
           new model.Voicemail('vm-corp_1',
@@ -86,7 +86,7 @@ abstract class _ModelIvrMenu {
       new model.IvrSubmenu('2', 'sub-1')
     ];
 
-    final List<model.IvrEntry> sub1entries = [
+    final List<model.IvrEntry> sub1entries = <model.IvrEntry>[
       new model.IvrVoicemail(
           '1',
           new model.Voicemail('vm-corp_1',
@@ -95,7 +95,7 @@ abstract class _ModelIvrMenu {
       new model.IvrTopmenu('*')
     ];
 
-    final List<model.IvrEntry> sub2entries = [
+    final List<model.IvrEntry> sub2entries = <model.IvrEntry>[
       new model.IvrVoicemail(
           '1',
           new model.Voicemail('vm-corp_1',
@@ -110,7 +110,7 @@ abstract class _ModelIvrMenu {
 
     model.IvrMenu builtObject = new model.IvrMenu(name, greeting)
       ..entries = entries
-      ..submenus = [sub1, sub2];
+      ..submenus = <model.IvrMenu>[sub1, sub2];
 
     expect(builtObject.name, equals(name));
     expect(builtObject.greetingShort.filename, equals(filename));

@@ -64,7 +64,7 @@ class Client extends service.WebService {
   ///
   /// Throws subclasses of [StorageException] upon failure.
 
-  Future<String> postForm(Uri resource, Map payload) async {
+  Future<String> postForm(Uri resource, Map<String, dynamic> payload) async {
     io.HttpClientRequest request = await client.postUrl(resource)
       ..headers.contentType = _contentTypeApplicationForm
       ..write(mapToUrlFormEncodedPostBody(payload));
@@ -85,6 +85,6 @@ class Client extends service.WebService {
   }
 }
 
-String mapToUrlFormEncodedPostBody(Map body) => body.keys
-    .map((key) => '$key=${Uri.encodeQueryComponent(body[key])}')
+String mapToUrlFormEncodedPostBody(Map<String, dynamic> body) => body.keys
+    .map((String key) => '$key=${Uri.encodeQueryComponent(body[key])}')
     .join('&');

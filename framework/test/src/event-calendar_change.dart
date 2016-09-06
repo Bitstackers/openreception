@@ -25,7 +25,7 @@ void _testEventCalendarChange() {
 abstract class _EventCalendarChange {
   static event.CalendarChange buildObject() {
     final int eid = 1;
-    final owner = new model.OwningContact(3);
+    final model.Owner owner = new model.OwningContact(3);
     final int uid = 1;
 
     event.CalendarChange built =

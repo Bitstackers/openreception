@@ -39,7 +39,7 @@ abstract class Calendar {
   /// identified by [eid].
   ///
   /// The [modifier] is required for traceability of who performed the deletion.
-  Future remove(int eid, model.Owner owner, model.User modifier);
+  Future<Null> remove(int eid, model.Owner owner, model.User modifier);
 
   /// Updates the previously stored [model.CalendarEntry] object with data
   /// from [entry].

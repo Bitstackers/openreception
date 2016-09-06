@@ -38,7 +38,8 @@ class RESTUserStore implements storage.User {
         ._backend
         .get(url)
         .then((String reponse) => JSON.decode(reponse))
-        .then((Iterable userMaps) => userMaps.map(model.UserReference.decode));
+        .then((Iterable<Map<String, dynamic>> userMaps) =>
+            userMaps.map(model.UserReference.decode));
   }
 
   @override
@@ -50,7 +51,8 @@ class RESTUserStore implements storage.User {
         ._backend
         .get(url)
         .then((String reponse) => JSON.decode(reponse))
-        .then(((Map userMap) => new model.User.fromMap(userMap)));
+        .then(((Map<String, dynamic> userMap) =>
+            new model.User.fromMap(userMap)));
   }
 
   @override
@@ -58,10 +60,8 @@ class RESTUserStore implements storage.User {
     Uri url = resource.User.singleByIdentity(host, identity);
     url = _appendToken(url, this.token);
 
-    return _backend
-        .get(url)
-        .then(JSON.decode)
-        .then(((Map userMap) => new model.User.fromMap(userMap)));
+    return _backend.get(url).then(JSON.decode).then(
+        ((Map<String, dynamic> userMap) => new model.User.fromMap(userMap)));
   }
 
   @override
@@ -100,11 +100,11 @@ class RESTUserStore implements storage.User {
   }
 
   @override
-  Future remove(int userId, model.User creator) {
+  Future<Null> remove(int userId, model.User creator) async {
     Uri url = resource.User.single(host, userId);
     url = _appendToken(url, this.token);
 
-    return this._backend.delete(url);
+    await _backend.delete(url);
   }
 
   /// Returns the [model.UserStatus] object associated with [uid].
@@ -127,7 +127,7 @@ class RESTUserStore implements storage.User {
     return _backend
         .post(uri, '')
         .then(JSON.decode)
-        .then((Map map) => new model.UserStatus.fromMap(map));
+        .then((Map<String, dynamic> map) => new model.UserStatus.fromMap(map));
   }
 
   /// Returns an Iterable representation of the all the [model.UserStatus]
@@ -136,8 +136,9 @@ class RESTUserStore implements storage.User {
     Uri uri = resource.User.userStateAll(host);
     uri = _appendToken(uri, token);
 
-    return _backend.get(uri).then(JSON.decode).then((Iterable<Map> maps) =>
-        maps.map((Map map) => new model.UserStatus.fromMap(map)));
+    return _backend.get(uri).then(JSON.decode).then(
+        (Iterable<Map<String, dynamic>> maps) => maps.map(
+            (Map<String, dynamic> map) => new model.UserStatus.fromMap(map)));
   }
 
   /// Updates the [model.UserStatus] object associated with [userId] to
@@ -152,7 +153,7 @@ class RESTUserStore implements storage.User {
     return _backend
         .post(uri, '')
         .then(JSON.decode)
-        .then((Map map) => new model.UserStatus.fromMap(map));
+        .then((Map<String, dynamic> map) => new model.UserStatus.fromMap(map));
   }
 
   @override
@@ -160,7 +161,7 @@ class RESTUserStore implements storage.User {
     Uri url = resource.User.change(host, uid);
     url = _appendToken(url, this.token);
 
-    Iterable<model.Commit> convertMaps(Iterable<Map> maps) =>
+    Iterable<model.Commit> convertMaps(Iterable<Map<String, dynamic>> maps) =>
         maps.map(model.Commit.decode);
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);

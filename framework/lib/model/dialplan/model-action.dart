@@ -22,7 +22,7 @@ abstract class Action {
   /// specialization of an [Action] _must_ override the [parse] method.
   /// Otherwise a stack overflow will occur.
   static Action parse(dynamic buffer) {
-    final consumed = consumeWord(buffer);
+    final dynamic consumed = consumeWord(buffer);
 
     switch (consumed.iden) {
       case key.transfer:

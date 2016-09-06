@@ -57,10 +57,10 @@ class PeerAccount {
         .then((Iterable<String> value) => value);
   }
 
-  Future remove(String username) {
+  Future<Null> remove(String username) async {
     Uri url = resource.PeerAccount.single(host, username);
     url = _appendToken(url, token);
 
-    return _backend.delete(url);
+    await _backend.delete(url);
   }
 }

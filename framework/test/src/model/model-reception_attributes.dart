@@ -36,15 +36,15 @@ abstract class _ModelReceptionAttributes {
     model.ReceptionAttributes builtObject = buildObject();
     model.ReceptionAttributes deserializedObject =
         new model.ReceptionAttributes.fromMap(
-            JSON.decode(JSON.encode(builtObject)));
+            JSON.decode(JSON.encode(builtObject)) as Map<String, dynamic>);
 
     expect(builtObject.receptionId, equals(deserializedObject.receptionId));
     expect(builtObject.cid, equals(deserializedObject.cid));
 
     {
-      Iterable<Map> lhsPn =
+      Iterable<Map<String, dynamic>> lhsPn =
           builtObject.phoneNumbers.map((model.PhoneNumber pn) => pn.toJson());
-      Iterable<Map> rhsPn = deserializedObject.phoneNumbers
+      Iterable<Map<String, dynamic>> rhsPn = deserializedObject.phoneNumbers
           .map((model.PhoneNumber pn) => pn.toJson());
 
       expect(lhsPn, equals(rhsPn));
@@ -72,24 +72,29 @@ abstract class _ModelReceptionAttributes {
     final int receptionId = 2;
     final int contactId = 3;
 
-    final List<model.PhoneNumber> pn = [
+    final List<model.PhoneNumber> pn = <model.PhoneNumber>[
       new model.PhoneNumber.empty()
         ..confidential = true
         ..note = 'Fluid connection'
         ..destination = '-0045 32112345'
     ];
 
-    final List<String> backupContacts = ['Buford'];
-    final List<String> departments = ['Fish school', 'Clowning'];
-    final List<String> emailaddresses = ['scaly@nibble.bits'];
-    final List<String> handling = ['Avoid fishing rods, please'];
-    final List<String> infos = ['He\'s a fish, what more do you need to know?'];
-    final List<String> titles = ['GOLD-fish'];
-    final List<String> relations = ['Yo\' mamma'];
-    final List<String> responsibilities = ['Swimming around', 'Nibbling'];
-    final List<String> tags = ['Fish', 'Gold', 'Athlete'];
-    final List<String> workhours = ['Quite frankly; never'];
-    final List<String> messagePrerequisites = ['[fishcode]'];
+    final List<String> backupContacts = <String>['Buford'];
+    final List<String> departments = <String>['Fish school', 'Clowning'];
+    final List<String> emailaddresses = <String>['scaly@nibble.bits'];
+    final List<String> handling = <String>['Avoid fishing rods, please'];
+    final List<String> infos = <String>[
+      'He\'s a fish, what more do you need to know?'
+    ];
+    final List<String> titles = <String>['GOLD-fish'];
+    final List<String> relations = <String>['Yo\' mamma'];
+    final List<String> responsibilities = <String>[
+      'Swimming around',
+      'Nibbling'
+    ];
+    final List<String> tags = <String>['Fish', 'Gold', 'Athlete'];
+    final List<String> workhours = <String>['Quite frankly; never'];
+    final List<String> messagePrerequisites = <String>['[fishcode]'];
 
     model.ReceptionAttributes builtObject =
         new model.ReceptionAttributes.empty()

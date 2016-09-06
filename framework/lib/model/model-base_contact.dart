@@ -32,14 +32,18 @@ abstract class ContactType {
   static const String invisible = 'invisible';
 
   /// Iterable enumerating the different contact types.
-  static const Iterable types = const [human, function, invisible];
+  static const Iterable<String> types = const <String>[
+    human,
+    function,
+    invisible
+  ];
 }
 
 abstract class ObjectReference {
   int get id;
   String get name;
 
-  Map toJson();
+  Map<String, dynamic> toJson();
 }
 
 @deprecated
@@ -51,13 +55,14 @@ class ContactReference implements ObjectReference {
 
   const ContactReference(this.id, this.name);
 
-  static ContactReference decode(Map map) =>
+  static ContactReference decode(Map<String, dynamic> map) =>
       new ContactReference(map[key.id], map[key.name]);
 
   bool get isEmpty => id == BaseContact.noId;
 
   @override
-  Map toJson() => {key.id: id, key.name: name};
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{key.id: id, key.name: name};
 
   @override
   bool operator ==(Object other) => other is ContactReference && id == other.id;
@@ -76,15 +81,15 @@ class ContactChange implements ObjectChange {
 
   ContactChange(this.changeType, this.cid);
 
-  ContactChange.fromJson(Map map)
+  ContactChange.fromJson(Map<String, dynamic> map)
       : changeType = changeTypeFromString(map[key.change]),
         cid = map[key.cid];
 
-  static ContactChange decode(Map map) =>
+  static ContactChange decode(Map<String, dynamic> map) =>
       new ContactChange(changeTypeFromString(map[key.change]), map[key.cid]);
 
   @override
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.change: changeTypeToString(changeType),
         key.type: objectTypeToString(objectType),
         key.cid: cid
@@ -99,11 +104,12 @@ class OrganizationReference implements ObjectReference {
 
   const OrganizationReference(this.id, this.name);
 
-  static OrganizationReference decode(Map map) =>
+  static OrganizationReference decode(Map<String, dynamic> map) =>
       new OrganizationReference(map[key.id], map[key.name]);
 
   @override
-  Map toJson() => {key.id: id, key.name: name};
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{key.id: id, key.name: name};
 
   @override
   int get hashCode => id.hashCode;
@@ -123,11 +129,16 @@ class ReceptionContact {
       : contact = new BaseContact.empty(),
         attr = new ReceptionAttributes.empty();
 
-  static ReceptionContact decode(Map map) => new ReceptionContact(
-      BaseContact.decode(map[key.contact]),
-      ReceptionAttributes.decode(map[key.reception]));
+  static ReceptionContact decode(Map<String, dynamic> map) =>
+      new ReceptionContact(
+          BaseContact.decode(map[key.contact] as Map<String, dynamic>),
+          ReceptionAttributes
+              .decode(map[key.reception] as Map<String, dynamic>));
 
-  Map toJson() => {key.contact: contact.toJson(), key.reception: attr.toJson()};
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        key.contact: contact.toJson(),
+        key.reception: attr.toJson()
+      };
 
   @deprecated
   ContactReference get contactReference =>
@@ -149,11 +160,12 @@ class ReceptionReference implements ObjectReference {
   bool get isEmpty => id == Reception.noId;
   bool get isNotEmpty => !isEmpty;
 
-  static ReceptionReference decode(Map map) =>
+  static ReceptionReference decode(Map<String, dynamic> map) =>
       new ReceptionReference(map[key.id], map[key.name]);
 
   @override
-  Map toJson() => {key.id: id, key.name: name};
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{key.id: id, key.name: name};
 
   @override
   int get hashCode => id.hashCode;
@@ -177,18 +189,23 @@ class BaseContact {
   BaseContact.empty();
 
   /// Deserializing constructor.
-  BaseContact.fromMap(Map map)
+  BaseContact.fromMap(Map<String, dynamic> map)
       : id = map[key.id],
         name = map[key.name],
         type = map[key.contactType],
         enabled = map[key.enabled];
 
   /// Decoding factory.
-  static BaseContact decode(Map map) => new BaseContact.fromMap(map);
+  static BaseContact decode(Map<String, dynamic> map) =>
+      new BaseContact.fromMap(map);
 
   /// Serilization function.
-  Map toJson() =>
-      {key.id: id, key.name: name, key.contactType: type, key.enabled: enabled};
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        key.id: id,
+        key.name: name,
+        key.contactType: type,
+        key.enabled: enabled
+      };
 
   /// Determine if the [BaseContact] has no ID.
   bool get isEmpty => id == BaseContact.noId;

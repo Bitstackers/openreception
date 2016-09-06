@@ -25,7 +25,7 @@ abstract class _ModelMessageFilter {
   static void deserialization() {
     model.MessageFilter obj = buildObject();
     model.MessageFilter deserializedObj =
-        new model.MessageFilter.fromMap(JSON.decode(JSON.encode(obj)));
+        new model.MessageFilter.fromMap(JSON.decode(JSON.encode(obj))as Map<String,dynamic>);
 
     expect(obj.contactId, equals(deserializedObj.contactId));
     expect(obj.limitCount, equals(deserializedObj.limitCount));

@@ -36,7 +36,7 @@ class ClientConfiguration {
   ClientConfiguration.empty();
 
   /// Build an object from a serialized map.
-  ClientConfiguration.fromMap(Map map)
+  ClientConfiguration.fromMap(Map<String, dynamic> map)
       : authServerUri = Uri.parse(map[key.authServerURI]),
         calendarServerUri = Uri.parse(map[key.calendarServerUri]),
         callFlowServerUri = Uri.parse(map[key.callFlowServerURI]),
@@ -53,7 +53,7 @@ class ClientConfiguration {
         userServerUri = Uri.parse(map[key.userServerURI]);
 
   ///Returns a map reflection of the object suitable for data transfer.
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.authServerURI: authServerUri.toString(),
         key.calendarServerUri: calendarServerUri.toString(),
         key.callFlowServerURI: callFlowServerUri.toString(),

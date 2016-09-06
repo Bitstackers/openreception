@@ -34,8 +34,8 @@ abstract class _ModelPeerAccount {
 
   static void deserialization() {
     model.PeerAccount built = _ModelPeerAccount.buildObject();
-    model.PeerAccount deserialized =
-        model.PeerAccount.decode(JSON.decode(JSON.encode(built)));
+    model.PeerAccount deserialized = model.PeerAccount
+        .decode(JSON.decode(JSON.encode(built)) as Map<String, dynamic>);
 
     expect(built.username, equals(deserialized.username));
     expect(built.password, equals(deserialized.password));

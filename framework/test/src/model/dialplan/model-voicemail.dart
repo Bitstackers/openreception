@@ -64,7 +64,7 @@ abstract class _ModelVoicemail {
     final String recipient1 = 'someone@email.dot';
     final String recipient2 = 'someoneelse@otheremail.prik';
     final String note = 'Someones email';
-    final String recipients = [recipient1, recipient2].join('');
+    final String recipients = <String>[recipient1, recipient2].join('');
 
     model.Voicemail builtObject =
         new model.Voicemail(vmBox, recipient: recipients, note: note);

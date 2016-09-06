@@ -25,7 +25,7 @@ class Owner {
   const Owner();
 
   factory Owner.parse(String buffer) {
-    final key = buffer.split(':').first;
+    final String key = buffer.split(':').first;
     if (key == _receptionKey) {
       return new OwningReception(int.parse(buffer.split(':').last));
     } else if (key == _contactKey) {

@@ -34,7 +34,7 @@ class Transfer implements Action {
     String extension;
     String note = '';
 
-    buffer = consumeKey(buffer, key.transfer).trimLeft();
+    buffer = _consumeKey(buffer, key.transfer).trimLeft();
 
     int openBracket = buffer.indexOf('(');
 

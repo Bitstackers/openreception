@@ -26,11 +26,12 @@ class ClientConnection {
   ClientConnection.empty();
 
   /// Deserializing constructor.
-  ClientConnection.fromMap(Map map) {
+  ClientConnection.fromMap(Map<String, dynamic> map) {
     userID = map[key.uid];
     connectionCount = map[key.connectionCount];
   }
 
   /// JSON encoding function.
-  Map toJson() => {key.uid: userID, key.connectionCount: connectionCount};
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{key.uid: userID, key.connectionCount: connectionCount};
 }

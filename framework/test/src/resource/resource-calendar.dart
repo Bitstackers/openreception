@@ -25,7 +25,7 @@ void _testResourceCalendar() {
 
 abstract class _ResourceCalendar {
   static final Uri _host = Uri.parse('http://localhost:4010');
-  static final _owner = new model.OwningContact(2);
+  static final model.Owner _owner = new model.OwningContact(2);
 
   static void changeListAll() => expect(
       resource.Calendar.changeList(_host, _owner),

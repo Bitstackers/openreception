@@ -28,7 +28,8 @@ class PeerState implements Event {
 
   /// Create a new [PeerState] object from serialized data stored in [map].
   PeerState.fromMap(Map<String, dynamic> map)
-      : this.peer = new model.Peer.fromMap(map[_Key._peer]),
+      : this.peer =
+            new model.Peer.fromMap(map[_Key._peer] as Map<String, dynamic>),
         this.timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 
   /// Returns an umodifiable map representation of the object, suitable for

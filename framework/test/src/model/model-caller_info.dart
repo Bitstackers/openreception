@@ -24,8 +24,8 @@ void _testModelCallerInfo() {
 abstract class _ModelCallerInfo {
   static void deserialization() {
     model.CallerInfo obj = buildObject();
-    model.CallerInfo deserializedObj =
-        new model.CallerInfo.fromMap(JSON.decode(JSON.encode(obj)));
+    model.CallerInfo deserializedObj = new model.CallerInfo.fromMap(
+        JSON.decode(JSON.encode(obj)) as Map<String, dynamic>);
 
     expect(obj.cellPhone, equals(deserializedObj.cellPhone));
     expect(obj.company, equals(deserializedObj.company));
@@ -34,7 +34,7 @@ abstract class _ModelCallerInfo {
 
     expect(obj.phone, equals(deserializedObj.phone));
 
-    expect(obj.asMap, equals(deserializedObj.asMap));
+    expect(obj.toJson(), equals(deserializedObj.toJson()));
   }
 
   static void serialization() {

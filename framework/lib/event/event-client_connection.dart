@@ -29,7 +29,8 @@ class ClientConnectionState implements Event {
   /// Create a new [ClientConnectionState] object from serialized data stored
   /// in [map].
   ClientConnectionState.fromMap(Map<String, dynamic> map)
-      : conn = new model.ClientConnection.fromMap(map[_Key._state]),
+      : conn = new model.ClientConnection.fromMap(
+            map[_Key._state] as Map<String, dynamic>),
         timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 
   /// Returns an umodifiable map representation of the object, suitable for

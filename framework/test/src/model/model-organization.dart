@@ -34,8 +34,8 @@ abstract class _ModelOrganization {
     model.Organization builtObject = buildObject();
 
     String serializedObject = JSON.encode(builtObject);
-    model.Organization decodedObject =
-        new model.Organization.fromMap(JSON.decode(serializedObject));
+    model.Organization decodedObject = new model.Organization.fromMap(
+        JSON.decode(serializedObject) as Map<String, dynamic>);
 
     expect(builtObject.notes, equals(decodedObject.notes));
     expect(builtObject.id, equals(decodedObject.id));
@@ -45,7 +45,7 @@ abstract class _ModelOrganization {
   }
 
   static model.Organization buildObject() {
-    final List<String> notes = ['Goldmember'];
+    final List<String> notes = <String>['Goldmember'];
     final int id = 42;
     final String name = 'Hey Goldmember!';
 

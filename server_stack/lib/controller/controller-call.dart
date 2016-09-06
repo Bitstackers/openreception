@@ -672,10 +672,8 @@ class Call {
 
     model.Call updatedCall;
     try {
-      updatedCall = await request
-          .readAsString()
-          .then(JSON.decode)
-          .then((Map map) => new model.Call.fromMap(map));
+      updatedCall = await request.readAsString().then(JSON.decode).then(
+          (Map map) => new model.Call.fromMap(map as Map<String, dynamic>));
     } catch (error, stackTrace) {
       _log.warning(
           'Bad parameters from user '

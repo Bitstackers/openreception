@@ -19,7 +19,7 @@ class WebSocketClient extends service.WebSocket {
   @override
   Future<service.WebSocket> connect(Uri path) {
     this._websocket = new html.WebSocket(path.toString());
-    Completer<service.WebSocket> ready = new Completer();
+    Completer<service.WebSocket> ready = new Completer<service.WebSocket>();
 
     this._websocket
       ..onMessage.listen(_onMessage)
@@ -33,5 +33,5 @@ class WebSocketClient extends service.WebSocket {
   void _onMessage(html.MessageEvent e) => this.onMessage(e.data.toString());
 
   @override
-  Future close() => new Future.sync(() => this._websocket.close());
+  Future<Null> close() => new Future<Null>.sync(() => _websocket.close());
 }

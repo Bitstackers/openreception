@@ -55,7 +55,6 @@ abstract class DialplanDeployment {
     _log.info('Test successful. Cleaning up.');
 
     await rStore.remove(r.id, new model.User.empty());
-    await rdpStore.remove(createdDialplan.extension);
   }
 
   /**
@@ -124,7 +123,6 @@ abstract class DialplanDeployment {
     _log.info('Test successful. Cleaning up.');
 
     await rStore.remove(r.id, new model.User.empty());
-    await rdpStore.remove(createdDialplan.extension);
   }
 
   /**
@@ -214,7 +212,5 @@ abstract class DialplanDeployment {
     _log.info('Test successful. Cleaning up.');
 
     await rStore.remove(r.id, new model.User.empty());
-    await rdpStore.remove(firstDialplan.extension);
-    await rdpStore.remove(secondDialplan.extension);
   }
 }

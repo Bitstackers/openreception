@@ -24,8 +24,8 @@ void _testModelMessageContext() {
 abstract class _ModelMessageContext {
   static void deserialization() {
     model.MessageContext obj = buildObject();
-    model.MessageContext deserializedObj =
-        new model.MessageContext.fromMap(JSON.decode(JSON.encode(obj)));
+    model.MessageContext deserializedObj = new model.MessageContext.fromMap(
+        JSON.decode(JSON.encode(obj)) as Map<String, dynamic>);
 
     expect(obj.cid, equals(deserializedObj.cid));
     expect(obj.contactName, equals(deserializedObj.contactName));

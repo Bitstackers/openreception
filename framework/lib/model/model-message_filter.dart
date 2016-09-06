@@ -26,7 +26,7 @@ class MessageFilter {
   MessageFilter.empty();
 
   /// Deserializing constructor.
-  MessageFilter.fromMap(Map map) {
+  MessageFilter.fromMap(Map<String, dynamic> map) {
     userId = map.containsKey(key.uid) ? map[key.uid] : userId;
 
     receptionId = map.containsKey(key.rid) ? map[key.rid] : receptionId;
@@ -44,9 +44,9 @@ class MessageFilter {
 
   /// Check if the filter applies to [message].
   bool appliesTo(Message message) =>
-      [message.context.cid, BaseContact.noId].contains(contactId) &&
-      [message.context.rid, Reception.noId].contains(receptionId) &&
-      [message.sender.id, User.noId].contains(userId);
+      <int>[message.context.cid, BaseContact.noId].contains(contactId) &&
+      <int>[message.context.rid, Reception.noId].contains(receptionId) &&
+      <int>[message.sender.id, User.noId].contains(userId);
 
   /// Filters [messages] using this filter.
   Iterable<Message> filter(Iterable<Message> messages) =>
@@ -67,8 +67,8 @@ class MessageFilter {
   /// JSON serialization function.
   ///
   /// Returns a map representation of the object.
-  Map toJson() {
-    Map retval = {};
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> retval = <String, dynamic>{};
 
     if (userId != User.noId) {
       retval[key.uid] = userId;

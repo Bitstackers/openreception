@@ -16,13 +16,13 @@ part of openreception.framework.service;
 /// Superclass for abstracting away the griddy details of
 /// client/server-specific web-clients.
 abstract class WebSocket {
-  dynamic onMessage = (_) => {};
-  dynamic onError = (_) => {};
-  dynamic onClose = () => {};
+  dynamic onMessage = (_) {};
+  dynamic onError = (_) {};
+  dynamic onClose = () {};
 
   Future<WebSocket> connect(Uri path);
 
-  Future close();
+  Future<Null> close();
 
   void checkResponseCode(int responseCode) {
     switch (responseCode) {

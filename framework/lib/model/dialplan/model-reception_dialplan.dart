@@ -15,7 +15,7 @@ part of openreception.framework.model.dialplan;
 
 /// Extract all [Playback] actions of a [ReceptionDialplan].
 Iterable<Playback> playbackActions(ReceptionDialplan rdp) =>
-    rdp.allActions.where((a) => a is Playback);
+    rdp.allActions.where((Action a) => a is Playback);
 
 /// Dialplan class for a reception.
 class ReceptionDialplan {
@@ -25,7 +25,7 @@ class ReceptionDialplan {
   String extension = 'empty';
 
   /// The list of opening hours of the reception.
-  List<HourAction> open = [];
+  List<HourAction> open = <HourAction>[];
 
   /// Descriptive note for this [ReceptionDialplan].
   String note = '';
@@ -35,38 +35,42 @@ class ReceptionDialplan {
   bool active = true;
 
   /// A list of sub-extensions used by this [ReceptionDialplan].
-  List<NamedExtension> extraExtensions = [];
+  List<NamedExtension> extraExtensions = <NamedExtension>[];
 
   /// Collect an [Iterable] of all actions in this [ReceptionDialplan].
-  Iterable<Action> get allActions => []
+  Iterable<Action> get allActions => <Action>[]
     ..addAll(defaultActions)
-    ..addAll(open.fold(
-        [], (List<Action> list, HourAction hour) => list..addAll(hour.actions)))
+    ..addAll(open.fold(<Action>[],
+        (List<Action> list, HourAction hour) => list..addAll(hour.actions)))
     ..addAll(extraExtensions.fold(
-        [],
+        <Action>[],
         (List<Action> list, NamedExtension exten) =>
             list..addAll(exten.actions)));
 
   /// The [Action]s to execute if none of the [open] hours match.
-  List<Action> defaultActions = [];
+  List<Action> defaultActions = <Action>[];
 
   /// Decodes and creates a new [ReceptionDialplan] from a previously
   /// deserialized [Map].
-  static ReceptionDialplan decode(Map map) => new ReceptionDialplan()
-    ..extension = map['extension']
-    ..open = new List.from(map['open'].map(HourAction.parse))
-    ..extraExtensions =
-        new List.from(map['extraExtensions'].map(NamedExtension.decode))
-    ..defaultActions = new List.from(map['closed'].map(Action.parse))
-    ..note = map['note'];
+  static ReceptionDialplan decode(Map<String, dynamic> map) =>
+      new ReceptionDialplan()
+        ..extension = map['extension']
+        ..open = new List<HourAction>.from(map['open'].map(HourAction.parse))
+        ..extraExtensions = new List<NamedExtension>.from(
+            map['extraExtensions'].map(NamedExtension.decode))
+        ..defaultActions =
+            new List<Action>.from(map['closed'].map(Action.parse))
+        ..note = map['note'];
 
   /// Serialization function.
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'extension': extension,
-        'open': new List.from(open.map((oh) => oh.toJson())),
+        'open': new List<Map<String, dynamic>>.from(
+            open.map((HourAction ha) => ha.toJson())),
         'note': note,
-        'closed': new List.from(defaultActions.map((da) => da.toJson())),
-        'extraExtensions':
-            new List.from(extraExtensions.map((ee) => ee.toJson())),
+        'closed':
+            new List<String>.from(defaultActions.map((Action a) => a.toJson())),
+        'extraExtensions': new List<Map<String, dynamic>>.from(
+            extraExtensions.map((NamedExtension ee) => ee.toJson())),
       };
 }

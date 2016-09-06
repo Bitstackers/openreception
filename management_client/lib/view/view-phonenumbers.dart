@@ -112,7 +112,8 @@ class Phonenumbers {
   Iterable<model.PhoneNumber> get phoneNumbers {
     final List pnMaps = JSON.decode(_phonenumberInput.value);
 
-    return pnMaps.map((m) => new model.PhoneNumber.fromMap(m));
+    return pnMaps
+        .map((m) => new model.PhoneNumber.fromMap(m as Map<String, dynamic>));
   }
 
   void _resizeInput() {

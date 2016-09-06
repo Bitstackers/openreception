@@ -34,7 +34,7 @@ class Client extends service.WebService {
           completer.completeError(error);
         }
       })
-      ..onError.listen((e) => completer.completeError(e))
+      ..onError.listen((dynamic e) => completer.completeError(e))
       ..send();
 
     return completer.future;
@@ -59,7 +59,7 @@ class Client extends service.WebService {
           completer.completeError(error);
         }
       })
-      ..onError.listen((e) => completer.completeError(e))
+      ..onError.listen((dynamic e) => completer.completeError(e))
       ..send(payload);
 
     return completer.future;
@@ -84,7 +84,7 @@ class Client extends service.WebService {
           completer.completeError(error);
         }
       })
-      ..onError.listen((e) => completer.completeError(e))
+      ..onError.listen((dynamic e) => completer.completeError(e))
       ..send(payload);
 
     return completer.future;
@@ -109,7 +109,7 @@ class Client extends service.WebService {
           completer.completeError(error);
         }
       })
-      ..onError.listen((e) => completer.completeError(e))
+      ..onError.listen((dynamic e) => completer.completeError(e))
       ..send();
 
     return completer.future;

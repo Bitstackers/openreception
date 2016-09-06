@@ -47,7 +47,8 @@ class RESTReceptionStore implements storage.Reception {
     url = _appendToken(url, this.token);
 
     return this._backend.get(url).then((String response) =>
-        new model.Reception.fromMap(JSON.decode(response)));
+        new model.Reception.fromMap(
+            JSON.decode(response) as Map<String, dynamic>));
   }
 
   @override
@@ -56,12 +57,13 @@ class RESTReceptionStore implements storage.Reception {
     url = _appendToken(url, this.token);
 
     return this._backend.get(url).then((String response) =>
-        (JSON.decode(response) as Iterable)
-            .map((Map map) => model.ReceptionReference.decode(map)));
+        (JSON.decode(response) as Iterable<Map<String, dynamic>>).map(
+            (Map<String, dynamic> map) =>
+                model.ReceptionReference.decode(map)));
   }
 
   @override
-  Future remove(int rid, model.User modifier) async {
+  Future<Null> remove(int rid, model.User modifier) async {
     Uri url = resource.Reception.single(this.host, rid);
     url = _appendToken(url, this.token);
 
@@ -76,8 +78,9 @@ class RESTReceptionStore implements storage.Reception {
 
     String data = JSON.encode(reception);
 
-    return this._backend.put(url, data).then((String response) =>
-        model.ReceptionReference.decode(JSON.decode(response)));
+    return this._backend.put(url, data).then((String response) => model
+        .ReceptionReference
+        .decode(JSON.decode(response) as Map<String, dynamic>));
   }
 
   @override
@@ -85,7 +88,7 @@ class RESTReceptionStore implements storage.Reception {
     Uri url = resource.Reception.changeList(host, rid);
     url = _appendToken(url, this.token);
 
-    Iterable<model.Commit> convertMaps(Iterable<Map> maps) =>
+    Iterable<model.Commit> convertMaps(Iterable<Map<String, dynamic>> maps) =>
         maps.map(model.Commit.decode);
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);

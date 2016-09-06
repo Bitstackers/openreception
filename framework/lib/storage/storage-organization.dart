@@ -38,7 +38,7 @@ abstract class Organization {
   /// identified by [oid].
   ///
   /// The [modifier] is required for traceability of who performed the deletion.
-  Future remove(int oid, model.User modifier);
+  Future<Null> remove(int oid, model.User modifier);
 
   /// Updates the previously stored [model.Organization] object with data
   /// from [organization].

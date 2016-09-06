@@ -86,6 +86,6 @@ class MessageQueue implements storage.MessageQueue {
       .listSync()
       .where(
           (FileSystemEntity fse) => fse is File && fse.path.endsWith('.json'))
-      .map((FileSystemEntity fse) => model.MessageQueueEntry
-          .decode(JSON.decode((fse as File).readAsStringSync())));
+      .map((FileSystemEntity fse) => model.MessageQueueEntry.decode(JSON
+          .decode((fse as File).readAsStringSync()) as Map<String, dynamic>));
 }

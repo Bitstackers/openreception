@@ -35,9 +35,9 @@ class Ringtone implements Action {
 
   /// Parses and creates a new [Ringtone] action from a [String] [buffer].
   static Ringtone parse(String buffer) {
-    var buf = consumeKey(buffer.trimLeft(), key.ringtone).trimLeft();
+    String buf = _consumeKey(buffer.trimLeft(), key.ringtone).trimLeft();
 
-    var consumed = consumeWord(buf);
+    _ConsumedIdenBuf consumed = consumeWord(buf);
 
     int count;
     try {

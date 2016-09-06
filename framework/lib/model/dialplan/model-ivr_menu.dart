@@ -19,13 +19,13 @@ class IvrMenu {
   String name;
 
   /// The entries (different possible actions) of the IVR menu
-  List<IvrEntry> entries = [];
+  List<IvrEntry> entries = <IvrEntry>[];
 
   /// The initial greeting of the menu.
   final Playback greetingLong;
 
   /// Submenus of this menu.
-  List<IvrMenu> submenus = [];
+  List<IvrMenu> submenus = <IvrMenu>[];
 
   Playback _greetingShort = Playback.none;
 
@@ -34,9 +34,9 @@ class IvrMenu {
 
   /// Extracts the contained [Action] objects from the menu.
   Iterable<Action> get allActions {
-    final actions = new List<Action>();
+    final List<Action> actions = new List<Action>();
 
-    entries.fold(actions, (List<Action> list, entry) {
+    entries.fold(actions, (List<Action> list, IvrEntry entry) {
       if (entry is IvrTransfer) {
         list.add(entry.transfer);
       } else if (entry is IvrVoicemail) {
@@ -57,26 +57,28 @@ class IvrMenu {
       _greetingShort != Playback.none ? _greetingShort : greetingLong;
 
   /// Decoding factory method.
-  static IvrMenu decode(Map map) => (new IvrMenu(
+  static IvrMenu decode(Map<String, dynamic> map) => (new IvrMenu(
       map[key.name],
       Playback.parse(map[key
           .greeting])).._greetingShort = Playback.parse(map[key.greetingShort]))
-    ..entries = new List.from(map[key.ivrEntries].map(IvrEntry.parse))
-    ..submenus = new List.from(map[key.submenus].map(IvrMenu.decode));
+    ..entries = new List<IvrEntry>.from(map[key.ivrEntries].map(IvrEntry.parse))
+    ..submenus = new List<IvrMenu>.from(map[key.submenus].map(IvrMenu.decode));
 
   /// An IVR menu equals another IVR menu if their names match.
   @override
   bool operator ==(Object other) => other is IvrMenu && this.name == other.name;
 
   /// Serialization function.
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.name: name,
         key.greeting: greetingLong.toJson(),
         key.greetingShort: greetingShort.toJson(),
-        key.ivrEntries:
-            entries.map((entry) => entry.toJson()).toList(growable: false),
-        key.submenus:
-            submenus.map((entry) => entry.toJson()).toList(growable: false)
+        key.ivrEntries: entries
+            .map((IvrEntry entry) => entry.toJson())
+            .toList(growable: false),
+        key.submenus: submenus
+            .map((IvrMenu menu) => menu.toJson())
+            .toList(growable: false)
       };
 
   @override

@@ -49,11 +49,11 @@ class RESTIvrStore implements storage.Ivr {
   }
 
   @override
-  Future remove(String menuName, [model.User user]) {
+  Future<Null> remove(String menuName, model.User modifier) async {
     Uri url = resource.Ivr.single(this.host, menuName);
     url = _appendToken(url, this.token);
 
-    return this._backend.delete(url);
+    await _backend.delete(url);
   }
 
   @override
@@ -69,7 +69,7 @@ class RESTIvrStore implements storage.Ivr {
     Uri url = resource.Ivr.list(host);
     url = _appendToken(url, this.token);
 
-    Iterable<model.IvrMenu> castMaps(Iterable maps) =>
+    Iterable<model.IvrMenu> castMaps(Iterable<Map<String, dynamic>> maps) =>
         maps.map(model.IvrMenu.decode);
 
     return this._backend.get(url).then(JSON.decode).then(castMaps);
@@ -92,7 +92,7 @@ class RESTIvrStore implements storage.Ivr {
     Uri url = resource.Ivr.changeList(host, menuName);
     url = _appendToken(url, this.token);
 
-    Iterable<model.Commit> convertMaps(Iterable<Map> maps) =>
+    Iterable<model.Commit> convertMaps(Iterable<Map<String, dynamic>> maps) =>
         maps.map(model.Commit.decode);
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);

@@ -17,9 +17,9 @@ part of openreception.framework.storage;
 abstract class MessageQueue {
   Future<model.MessageQueueEntry> enqueue(model.Message message);
 
-  Future update(model.MessageQueueEntry queueItem);
+  Future<Null> update(model.MessageQueueEntry queueItem);
 
-  Future remove(int mqid);
+  Future<Null> remove(int mqid);
 
   Future<Iterable<model.MessageQueueEntry>> list();
 }

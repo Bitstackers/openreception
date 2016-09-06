@@ -16,7 +16,7 @@ part of openreception.framework.storage;
 /// Storage interface for persistent storage of [model.BaseContact] and
 /// [model.ReceptionAttributes] objects.
 abstract class Contact {
-  Future addData(model.ReceptionAttributes attr, model.User modifier);
+  Future<Null> addData(model.ReceptionAttributes attr, model.User modifier);
 
   /// Creates and stores a new [model.BaseContact] object persistently using
   /// [contact] data.
@@ -49,16 +49,16 @@ abstract class Contact {
   /// identified by [cid].
   ///
   /// The [modifier] is required for traceability of who performed the deletion.
-  Future remove(int cid, model.User modifier);
+  Future<Null> remove(int cid, model.User modifier);
 
-  Future removeData(int cid, int rid, model.User modifier);
+  Future<Null> removeData(int cid, int rid, model.User modifier);
 
   /// Updates the previously stored [model.BaseContact] object with data
   /// from [contact].
   ///
   /// The ID in [contact] must be valid and exist in the store, or a [NotFound]
   /// exception is thrown.
-  Future update(model.BaseContact contact, model.User modifier);
+  Future<Null> update(model.BaseContact contact, model.User modifier);
 
   /// Updates the previously stored [model.ReceptionAttributes] object with data
   /// from [attr].
@@ -66,9 +66,9 @@ abstract class Contact {
   /// The ID's in [attr] must be valid and exist in the store, or a [NotFound]
   /// exception is thrown.
   /// The [modifier] is required for traceability of who performed the deletion.
-  Future updateData(model.ReceptionAttributes attr, model.User modifier);
+  Future<Null> updateData(model.ReceptionAttributes attr, model.User modifier);
 
   /// List contact and attribute set object changes for the store, optionally
   /// for a single [cid] or [cid] and [rid].
-  Future changes([int cid, int rid]);
+  Future<Iterable<model.Commit>> changes([int cid, int rid]);
 }

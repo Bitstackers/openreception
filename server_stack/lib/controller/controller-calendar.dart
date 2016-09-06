@@ -128,8 +128,8 @@ class Calendar {
       return clientError(e.toString(msg));
     }
 
-    final model.CalendarEntry entry =
-        model.CalendarEntry.decode(JSON.decode(await request.readAsString()));
+    final model.CalendarEntry entry = model.CalendarEntry.decode(
+        JSON.decode(await request.readAsString()) as Map<String, dynamic>);
 
     model.CalendarEntry created;
 
@@ -301,8 +301,8 @@ class Calendar {
       return clientError(e.toString(msg));
     }
 
-    final model.CalendarEntry entry =
-        model.CalendarEntry.decode(JSON.decode(await request.readAsString()));
+    final model.CalendarEntry entry = model.CalendarEntry.decode(
+        JSON.decode(await request.readAsString()) as Map<String, dynamic>);
 
     model.CalendarEntry updated;
 

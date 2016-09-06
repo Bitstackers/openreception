@@ -34,9 +34,9 @@ class RESTContactStore implements storage.Contact {
     Uri url = resource.Contact.receptions(host, id);
     url = _appendToken(url, token);
 
-    final Iterable<Map> maps = await _backend
-        .get(url)
-        .then((String response) => JSON.decode(response) as Iterable<Map>);
+    final Iterable<Map<String, dynamic>> maps = await _backend.get(url).then(
+        (String response) =>
+            JSON.decode(response) as Iterable<Map<String, dynamic>>);
 
     return maps.map(model.ReceptionReference.decode);
   }
@@ -46,9 +46,9 @@ class RESTContactStore implements storage.Contact {
     Uri url = resource.Contact.organizations(host, id);
     url = _appendToken(url, token);
 
-    final Iterable<Map> maps = await _backend
-        .get(url)
-        .then((String response) => JSON.decode(response) as Iterable<Map>);
+    final Iterable<Map<String, dynamic>> maps = await _backend.get(url).then(
+        (String response) =>
+            JSON.decode(response) as Iterable<Map<String, dynamic>>);
 
     return maps.map(model.OrganizationReference.decode);
   }
@@ -59,7 +59,8 @@ class RESTContactStore implements storage.Contact {
     url = _appendToken(url, token);
 
     return _backend.get(url).then((String response) =>
-        new model.BaseContact.fromMap(JSON.decode(response)));
+        new model.BaseContact.fromMap(
+            JSON.decode(response) as Map<String, dynamic>));
   }
 
   @override
@@ -68,26 +69,25 @@ class RESTContactStore implements storage.Contact {
     Uri url = resource.Contact.root(host);
     url = _appendToken(url, token);
 
-    return _backend.post(url, JSON.encode(contact)).then(
-        (String response) => model.BaseContact.decode(JSON.decode(response)));
+    return _backend.post(url, JSON.encode(contact)).then((String response) =>
+        model.BaseContact
+            .decode(JSON.decode(response) as Map<String, dynamic>));
   }
 
   @override
-  Future<model.BaseContact> update(
-      model.BaseContact contact, model.User modifier) {
+  Future<Null> update(model.BaseContact contact, model.User modifier) async {
     Uri url = resource.Contact.single(host, contact.id);
     url = _appendToken(url, token);
 
-    return _backend.put(url, JSON.encode(contact)).then(
-        (String response) => model.BaseContact.decode(JSON.decode(response)));
+    await _backend.put(url, JSON.encode(contact));
   }
 
   @override
-  Future remove(int id, model.User user) {
+  Future<Null> remove(int id, model.User user) async {
     Uri url = resource.Contact.single(host, id);
     url = _appendToken(url, token);
 
-    return _backend.delete(url);
+    await _backend.delete(url);
   }
 
   @override
@@ -96,7 +96,8 @@ class RESTContactStore implements storage.Contact {
     url = _appendToken(url, token);
 
     return _backend.get(url).then((String response) =>
-        (JSON.decode(response) as Iterable).map(model.BaseContact.decode));
+        (JSON.decode(response) as Iterable<Map<String, dynamic>>)
+            .map(model.BaseContact.decode));
   }
 
   @override
@@ -105,7 +106,8 @@ class RESTContactStore implements storage.Contact {
     url = _appendToken(url, token);
 
     return _backend.get(url).then((String response) =>
-        new model.ReceptionAttributes.fromMap(JSON.decode(response)));
+        new model.ReceptionAttributes.fromMap(
+            JSON.decode(response) as Map<String, dynamic>));
   }
 
   @override
@@ -114,16 +116,17 @@ class RESTContactStore implements storage.Contact {
     url = _appendToken(url, token);
 
     return _backend.get(url).then((String response) =>
-        (JSON.decode(response) as Iterable).map(model.ReceptionContact.decode));
+        (JSON.decode(response) as Iterable<Map<String, dynamic>>)
+            .map(model.ReceptionContact.decode));
   }
 
   @override
-  Future addData(model.ReceptionAttributes attr, model.User user) {
+  Future<Null> addData(model.ReceptionAttributes attr, model.User user) async {
     Uri url =
         resource.Contact.singleByReception(host, attr.cid, attr.receptionId);
     url = _appendToken(url, token);
 
-    return _backend.post(url, JSON.encode(attr));
+    await _backend.post(url, JSON.encode(attr));
   }
 
   @override
@@ -132,24 +135,26 @@ class RESTContactStore implements storage.Contact {
     url = _appendToken(url, token);
 
     return _backend.get(url).then((String response) =>
-        (JSON.decode(response) as Iterable).map(model.BaseContact.decode));
+        (JSON.decode(response) as Iterable<Map<String, dynamic>>)
+            .map(model.BaseContact.decode));
   }
 
   @override
-  Future removeData(int cid, int rid, model.User user) {
+  Future<Null> removeData(int cid, int rid, model.User user) async {
     Uri url = resource.Contact.singleByReception(host, cid, rid);
     url = _appendToken(url, token);
 
-    return _backend.delete(url);
+    await _backend.delete(url);
   }
 
   @override
-  Future updateData(model.ReceptionAttributes attr, model.User modifier) {
+  Future<Null> updateData(
+      model.ReceptionAttributes attr, model.User modifier) async {
     Uri url =
         resource.Contact.singleByReception(host, attr.cid, attr.receptionId);
     url = _appendToken(url, token);
 
-    return _backend.put(url, JSON.encode(attr));
+    await _backend.put(url, JSON.encode(attr));
   }
 
   @override
@@ -157,7 +162,7 @@ class RESTContactStore implements storage.Contact {
     Uri url = resource.Contact.change(host, cid, rid);
     url = _appendToken(url, this.token);
 
-    Iterable<model.Commit> convertMaps(Iterable<Map> maps) =>
+    Iterable<model.Commit> convertMaps(Iterable<Map<String, dynamic>> maps) =>
         maps.map(model.Commit.decode);
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);

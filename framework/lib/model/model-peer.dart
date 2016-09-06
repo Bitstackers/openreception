@@ -27,14 +27,14 @@ class Peer {
   Peer(this.name);
 
   /// Deserizaling constructor.
-  Peer.fromMap(Map map)
+  Peer.fromMap(Map<String, dynamic> map)
       : name = map[key.name],
         registered = map[key.registered],
         inTransition = map[key.inTransition],
         channelCount = map[key.activeChannels];
 
   /// Serialization function.
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.name: name,
         key.inTransition: inTransition,
         key.registered: registered,
@@ -42,7 +42,7 @@ class Peer {
       };
 
   /// Deserializing factory.
-  static Peer decode(Map map) => new Peer.fromMap(map);
+  static Peer decode(Map<String, dynamic> map) => new Peer.fromMap(map);
 
   /// Returns a string representation of the object.
   @override

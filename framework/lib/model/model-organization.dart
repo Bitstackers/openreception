@@ -19,19 +19,20 @@ class Organization {
 
   int id = noId;
   String name = '';
-  List<String> notes = [];
+  List<String> notes = <String>[];
 
   /// Default empty constructor.
   Organization.empty();
 
   /// Constructor used for deserialization.
-  Organization.fromMap(Map map)
+  Organization.fromMap(Map<String, dynamic> map)
       : id = map[key.id],
         name = map[key.name],
         notes = map[key.notes] as List<String>;
 
   /// Deserializing factory.
-  static Organization decode(Map map) => new Organization.fromMap(map);
+  static Organization decode(Map<String, dynamic> map) =>
+      new Organization.fromMap(map);
 
   OrganizationReference get reference => new OrganizationReference(id, name);
 
@@ -39,5 +40,6 @@ class Organization {
   ///
   /// Serialization function.
 
-  Map toJson() => {key.id: id, key.name: name, key.notes: notes};
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{key.id: id, key.name: name, key.notes: notes};
 }

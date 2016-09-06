@@ -57,7 +57,8 @@ class RESTDialplanStore implements storage.ReceptionDialplan {
     Uri url = resource.ReceptionDialplan.list(host);
     url = _appendToken(url, token);
 
-    Iterable<model.ReceptionDialplan> castMaps(Iterable maps) =>
+    Iterable<model.ReceptionDialplan> castMaps(
+            Iterable<Map<String, dynamic>> maps) =>
         maps.map(model.ReceptionDialplan.decode);
 
     return _backend.get(url).then(JSON.decode).then(castMaps);
@@ -76,11 +77,11 @@ class RESTDialplanStore implements storage.ReceptionDialplan {
   }
 
   @override
-  Future remove(String extension, [model.User user]) {
+  Future<Null> remove(String extension, model.User user) async {
     Uri url = resource.ReceptionDialplan.single(host, extension);
     url = _appendToken(url, token);
 
-    return _backend.delete(url);
+    await _backend.delete(url);
   }
 
   Future<Iterable<String>> analyze(String extension) async {
@@ -99,11 +100,11 @@ class RESTDialplanStore implements storage.ReceptionDialplan {
   }
 
   /// Performs a PBX-reload of the deployed dialplan configuration.
-  Future reloadConfig() {
+  Future<Null> reloadConfig() async {
     Uri url = resource.ReceptionDialplan.reloadConfig(host);
     url = _appendToken(url, token);
 
-    return _backend.post(url, '').then(JSON.decode);
+    await _backend.post(url, '').then(JSON.decode);
   }
 
   @override
@@ -111,7 +112,7 @@ class RESTDialplanStore implements storage.ReceptionDialplan {
     Uri url = resource.ReceptionDialplan.changeList(host, extension);
     url = _appendToken(url, this.token);
 
-    Iterable<model.Commit> convertMaps(Iterable<Map> maps) =>
+    Iterable<model.Commit> convertMaps(Iterable<Map<String, dynamic>> maps) =>
         maps.map(model.Commit.decode);
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
