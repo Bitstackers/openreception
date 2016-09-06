@@ -1,0 +1,11 @@
+analyzer:
+  exclude:
+    - .pub-cache/
+  strong-mode: true
+linter:
+  rules:
+    - camel_case_types
+    - constant_identifier_names
+    - empty_constructor_bodies
+    - library_names
+    - non_constant_identifier_names
