@@ -14,6 +14,7 @@ dependencies:
   openreception.client_app_server:
     path: ../tools/client_app_server
   phonio:
+    version: '>=0.0.91'
     git: https://github.com/Bitstackers/Phonio.git
   route: any
   shelf: '>=0.6.0 <0.7.0'
