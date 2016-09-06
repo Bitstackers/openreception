@@ -27,10 +27,14 @@ class UIReceptionProduct extends UIModel {
     _observers();
   }
 
-  @override HtmlElement get _firstTabElement => _body;
-  @override HtmlElement get _focusElement => _body;
-  @override HtmlElement get _lastTabElement => _body;
-  @override HtmlElement get _root => _myRoot;
+  @override
+  HtmlElement get _firstTabElement => _body;
+  @override
+  HtmlElement get _focusElement => _body;
+  @override
+  HtmlElement get _lastTabElement => _body;
+  @override
+  HtmlElement get _root => _myRoot;
 
   DivElement get _body => _root.querySelector('.generic-widget-body');
 

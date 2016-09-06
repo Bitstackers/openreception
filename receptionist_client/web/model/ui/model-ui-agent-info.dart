@@ -28,10 +28,14 @@ class UIAgentInfo extends UIModel {
    */
   UIAgentInfo(DivElement this._myRoot);
 
-  @override HtmlElement get _firstTabElement => null;
-  @override HtmlElement get _focusElement => null;
-  @override HtmlElement get _lastTabElement => null;
-  @override HtmlElement get _root => _myRoot;
+  @override
+  HtmlElement get _firstTabElement => null;
+  @override
+  HtmlElement get _focusElement => null;
+  @override
+  HtmlElement get _lastTabElement => null;
+  @override
+  HtmlElement get _root => _myRoot;
 
   TableCellElement get _activeCount => _root.querySelector('.active-count');
   ImageElement get _agentState => _root.querySelector('.agent-state');

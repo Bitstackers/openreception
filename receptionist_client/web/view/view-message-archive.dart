@@ -82,9 +82,7 @@ class MessageArchive extends ViewWidget {
     _user.list().then((Iterable<model.UserReference> users) {
       _ui.users = users;
 
-      _messageController
-          .listDrafts()
-          .then((Iterable<model.Message> messages) {
+      _messageController.listDrafts().then((Iterable<model.Message> messages) {
         final List<model.Message> list = messages.toList(growable: false);
         list.sort((a, b) => a.createdAt.compareTo(b.createdAt));
         _ui.drafts = list;

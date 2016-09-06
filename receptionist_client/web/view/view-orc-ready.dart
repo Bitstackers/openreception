@@ -119,12 +119,14 @@ class ORCReady {
         _langMap[Key.dayFriday],
         _langMap[Key.daySaturday],
         _langMap[Key.daySunday]);
-    ui_model.UIContactCalendar _uiContactCalendar = new ui_model.UIContactCalendar(
-        querySelector('#contact-calendar'), _weekDays, _langMap);
+    ui_model.UIContactCalendar _uiContactCalendar =
+        new ui_model.UIContactCalendar(
+            querySelector('#contact-calendar'), _weekDays, _langMap);
     ui_model.UIContactData _uiContactData =
         new ui_model.UIContactData(querySelector('#contact-data'));
-    ui_model.UIContactSelector _uiContactSelector = new ui_model.UIContactSelector(
-        querySelector('#contact-selector'), _popup, _langMap);
+    ui_model.UIContactSelector _uiContactSelector =
+        new ui_model.UIContactSelector(
+            querySelector('#contact-selector'), _popup, _langMap);
     ui_model.UIMessageArchive _uiMessageArchive = new ui_model.UIMessageArchive(
         querySelector('#message-archive'), _weekDays, _langMap);
     ui_model.UIMessageCompose _uiMessageCompose =
@@ -240,7 +242,8 @@ class ORCReady {
         _uiReceptionSelector);
 
     new ReceptionAddresses(
-        new ui_model.UIReceptionAddresses(querySelector('#reception-addresses')),
+        new ui_model.UIReceptionAddresses(
+            querySelector('#reception-addresses')),
         new controller.Destination(
             controller.Context.homePlus, controller.Widget.receptionAddresses),
         _uiReceptionSelector);

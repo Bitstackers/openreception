@@ -1,4 +1,3 @@
-
 /*                  This file is part of OpenReception
                    Copyright (C) 2015-, BitStackers K/S
 
@@ -34,11 +33,15 @@ class ReceptionSalesmen extends ViewWidget {
     _observers();
   }
 
-  @override controller.Destination get _destination => _myDestination;
-  @override ui_model.UIReceptionSalesmen get _ui => _uiModel;
+  @override
+  controller.Destination get _destination => _myDestination;
+  @override
+  ui_model.UIReceptionSalesmen get _ui => _uiModel;
 
-  @override void _onBlur(controller.Destination _) {}
-  @override void _onFocus(controller.Destination _) {}
+  @override
+  void _onBlur(controller.Destination _) {}
+  @override
+  void _onFocus(controller.Destination _) {}
 
   /**
    * Simply navigate to my [Destination]. Matters not if this widget is already

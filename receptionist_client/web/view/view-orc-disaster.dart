@@ -1,4 +1,3 @@
-
 /*                  This file is part of OpenReception
                    Copyright (C) 2015-, BitStackers K/S
 
@@ -25,8 +24,8 @@ class ORCDisaster {
   /**
    * Constructor.
    */
-  factory ORCDisaster(
-      ui_model.AppClientState appClientState, ui_model.UIORCDisaster uiDisaster) {
+  factory ORCDisaster(ui_model.AppClientState appClientState,
+      ui_model.UIORCDisaster uiDisaster) {
     if (_singleton == null) {
       _singleton = new ORCDisaster._internal(appClientState, uiDisaster);
     }
@@ -46,7 +45,9 @@ class ORCDisaster {
    * Observers.
    */
   void _observers() {
-    _appState.onStateChange.listen((ui_model.AppState appState) => appState ==
-        ui_model.AppState.error ? _ui.visible = true : _ui.visible = false);
+    _appState.onStateChange.listen((ui_model.AppState appState) =>
+        appState == ui_model.AppState.error
+            ? _ui.visible = true
+            : _ui.visible = false);
   }
 }

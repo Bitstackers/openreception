@@ -1,4 +1,3 @@
-
 /*                  This file is part of OpenReception
                    Copyright (C) 2015-, BitStackers K/S
 
@@ -34,7 +33,8 @@ class UIContexts {
     };
   }
 
-  HtmlElement get contextCalendarEdit => querySelector('#context-calendar-edit');
+  HtmlElement get contextCalendarEdit =>
+      querySelector('#context-calendar-edit');
   HtmlElement get contextHome => querySelector('#context-home');
   HtmlElement get contextHomeplus => querySelector('#context-homeplus');
   HtmlElement get contextMessages => querySelector('#context-messages');
@@ -44,7 +44,9 @@ class UIContexts {
    */
   void toggleContext(controller.Destination destination) {
     _contextMap.forEach((id, element) {
-      id == destination.context ? element.style.zIndex = '1' : element.style.zIndex = '0';
+      id == destination.context
+          ? element.style.zIndex = '1'
+          : element.style.zIndex = '0';
     });
   }
 }

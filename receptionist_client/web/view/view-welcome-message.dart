@@ -33,11 +33,15 @@ class WelcomeMessage extends ViewWidget {
     _observers();
   }
 
-  @override controller.Destination get _destination => null;
-  @override ui_model.UIWelcomeMessage get _ui => _uiModel;
+  @override
+  controller.Destination get _destination => null;
+  @override
+  ui_model.UIWelcomeMessage get _ui => _uiModel;
 
-  @override void _onBlur(controller.Destination _) {}
-  @override void _onFocus(controller.Destination _) {}
+  @override
+  void _onBlur(controller.Destination _) {}
+  @override
+  void _onFocus(controller.Destination _) {}
 
   /**
    * Observers.
