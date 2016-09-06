@@ -38,9 +38,10 @@ class ActiveRecording {
   /// Retrieve and JSON encode a single recording from the
   /// [ActiveRecordings] model class.
   Future<shelf.Response> get(shelf.Request request) async {
-    final String channelId = shelf_route
-        .getPathParameters(request)
-        .containsKey('cid') ? shelf_route.getPathParameter(request, 'cid') : '';
+    final String channelId =
+        shelf_route.getPathParameters(request).containsKey('cid')
+            ? shelf_route.getPathParameter(request, 'cid')
+            : '';
 
     if (channelId.isEmpty) {
       return clientError('No channel id supplied');

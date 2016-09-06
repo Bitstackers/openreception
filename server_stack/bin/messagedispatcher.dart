@@ -28,7 +28,7 @@ import 'package:ors/configuration.dart';
 ///Logger
 final Logger _log = new Logger('MessageDispatcher');
 
-SmtpOptions options = new SmtpOptions()
+SmtpOptions _options = new SmtpOptions()
   ..hostName = config.messageDispatcher.smtp.hostname
   ..port = config.messageDispatcher.smtp.port
   ..secure = config.messageDispatcher.smtp.secure
@@ -36,7 +36,7 @@ SmtpOptions options = new SmtpOptions()
   ..username = config.messageDispatcher.smtp.username
   ..name = config.messageDispatcher.smtp.name;
 
-storage.MessageQueue messageQueue;
+storage.MessageQueue _messageQueue;
 
 void main(List<String> args) {
   ///Init logging. Inherit standard values.
@@ -63,7 +63,7 @@ void main(List<String> args) {
     exit(1);
   }
 
-  messageQueue =
+  _messageQueue =
       new filestore.MessageQueue(parsedArgs['filestore'] + '/message_queue');
 }
 
@@ -94,7 +94,7 @@ Iterable<model.MessageEndpoint> smsRecipients(
 void periodicEmailSend() {
   DateTime start = new DateTime.now();
 
-  messageQueue.list().then((Iterable<model.MessageQueueEntry> queuedMessages) {
+  _messageQueue.list().then((Iterable<model.MessageQueueEntry> queuedMessages) {
     Future.forEach(queuedMessages, tryDispatch).whenComplete(() {
       _log.info('Processed ${queuedMessages.length} messages in '
           '${(new DateTime.now().difference(start)).inMilliseconds} milliseconds.'
@@ -122,7 +122,7 @@ Future tryDispatch(model.MessageQueueEntry queueItem) async {
 
   if (queueItem.unhandledRecipients.isEmpty) {
     _log.info("No recipients left detected on message with ID ${message.id}!");
-    return messageQueue.remove(queueItem.id);
+    return _messageQueue.remove(queueItem.id);
   }
 
   final String senderAddress =
@@ -165,7 +165,7 @@ Future tryDispatch(model.MessageQueueEntry queueItem) async {
       ..partText = templateEmail.bodyText
       ..partHtml = templateEmail.bodyHtml;
 
-    await new SmtpClient(options).send(email).then((_) {
+    await new SmtpClient(_options).send(email).then((_) {
       /// Update the handled recipient set.
       queueItem.handledRecipients = currentRecipients;
     }).catchError((error, stackTrace) {
@@ -189,7 +189,7 @@ Future tryDispatch(model.MessageQueueEntry queueItem) async {
           mrto.address + config.messageDispatcher.smsKey.trim(), '')))
       ..partText = templateSMS.bodyText;
 
-    await new SmtpClient(options).send(sms).then((_) {
+    await new SmtpClient(_options).send(sms).then((_) {
       queueItem.handledRecipients = currentRecipients;
     }).catchError((error, stackTrace) {
       _log.shout(
@@ -201,5 +201,5 @@ Future tryDispatch(model.MessageQueueEntry queueItem) async {
     });
   }
 
-  return messageQueue.update(queueItem);
+  return _messageQueue.update(queueItem);
 }

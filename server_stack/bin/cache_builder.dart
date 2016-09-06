@@ -145,7 +145,7 @@ Future buildMessageObjects(filestore.Message messageStore,
     if (!gzip_cache.isEmptyGzipList(bytes)) {
       final dayString = dayToFetch.toIso8601String().split('T').first;
 
-      File listingFile = new File('$path/message/${dayString}');
+      File listingFile = new File('$path/message/$dayString');
       if (!listingFile.existsSync()) {
         listingFile.writeAsBytesSync(bytes);
         _log.info('Writing file ${listingFile.path}');
@@ -159,8 +159,8 @@ Future buildMessageObjects(filestore.Message messageStore,
 }
 
 /**
- * Builds a gzipped version of all the [model.Contact] object
- * in [rStore]. Also builds associated [model.CalenderEntry] objects and
+ * Builds a gzipped version of all the [model.BaseContact] object
+ * in [cStore]. Also builds associated [model.CalendarEntry] objects and
  * a gzipped list of all the [model.ReceptionAttributes] of the contact.
  */
 Future buildContactObjects(
@@ -210,7 +210,7 @@ Future buildContactObjects(
 
 /**
  * Builds a gzipped version of all the [model.Reception] object
- * in [rStore]. Also builds associated [model.CalenderEntry] objects.
+ * in [rStore]. Also builds associated [model.CalendarEntry] objects.
  */
 Future buildReceptionObjects(
     filestore.Reception rStore,

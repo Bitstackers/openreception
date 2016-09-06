@@ -32,7 +32,7 @@ class AgentStatistics {
   AgentStatistics(this._agentHistory);
 
   Future<shelf.Response> today(shelf.Request request) async {
-    return okJson(await _agentHistory.getRaw(new DateTime.now()));
+    return okJson(_agentHistory.getRaw(new DateTime.now()));
   }
 
   Future<shelf.Response> get(shelf.Request request) async {
@@ -51,7 +51,7 @@ class AgentStatistics {
     }
 
     try {
-      return okGzip(await _agentHistory.getRaw(day));
+      return okGzip(_agentHistory.getRaw(day));
     } on NotFound {
       return notFound('No stats for the day $dayStr');
     }

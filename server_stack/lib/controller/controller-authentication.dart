@@ -32,13 +32,13 @@ import 'package:shelf_route/shelf_route.dart' as shelf_route;
 class Authentication {
   final Logger _log = new Logger('server.controller.authentication');
 
-  final TokenVault vault;
-  final conf.AuthServer config;
+  final TokenVault _vault;
+  final conf.AuthServer _config;
   final storage.User _userStore;
 
   service.Client httpClient = new service.Client();
 
-  Authentication(this.config, this._userStore, this.vault);
+  Authentication(this._config, this._userStore, this._vault);
 
   /**
    *
@@ -48,7 +48,7 @@ class Authentication {
 
     if (token != null && token.isNotEmpty) {
       try {
-        vault.removeToken(token);
+        _vault.removeToken(token);
         return okJson(const {});
       } catch (error, stacktrace) {
         _log.severe(error, stacktrace);
@@ -77,7 +77,7 @@ class Authentication {
       Map<String, String> googleParameters = {
         'access_type': 'online',
         'approval_prompt': 'auto',
-        'state': config.redirectUri.toString()
+        'state': _config.redirectUri.toString()
       };
 
       if (returnUrlString.isNotEmpty) {
@@ -87,7 +87,7 @@ class Authentication {
       }
 
       Uri authUrl = googleAuthUrl(
-          config.clientId, config.clientSecret, config.redirectUri);
+          _config.clientId, _config.clientSecret, _config.redirectUri);
 
       googleParameters.addAll(authUrl.queryParameters);
       Uri googleOauthRequestUrl = new Uri(
@@ -124,9 +124,9 @@ class Authentication {
     final Map postBody = {
       "grant_type": "authorization_code",
       "code": request.url.queryParameters['code'],
-      "redirect_uri": config.redirectUri.toString(),
-      "client_id": config.clientId,
-      "client_secret": config.clientSecret
+      "redirect_uri": _config.redirectUri.toString(),
+      "client_id": _config.clientId,
+      "client_secret": _config.clientSecret
     };
 
     _log.finest(
@@ -151,7 +151,7 @@ class Authentication {
     } else {
       ///FIXME: Change to use format from framework AND update the dummy tokens.
       json['expiresAt'] =
-          new DateTime.now().add(config.tokenLifetime).toString();
+          new DateTime.now().add(_config.tokenLifetime).toString();
 
       Map userData;
 
@@ -176,7 +176,7 @@ class Authentication {
         String hash = sha256Token(cacheObject);
 
         try {
-          vault.insertToken(hash, json);
+          _vault.insertToken(hash, json);
           Map<String, String> queryParameters = {'settoken': hash};
 
           return new shelf.Response.found(new Uri(
@@ -222,15 +222,15 @@ class Authentication {
             : '';
 
     try {
-      Map content = vault.getToken(token);
+      Map content = _vault.getToken(token);
 
       String refreshToken = content['refresh_token'];
 
       Uri url = Uri.parse('https://www.googleapis.com/oauth2/v3/token');
       Map body = {
         'refresh_token': refreshToken,
-        'client_id': config.clientId,
-        'client_secret': config.clientSecret,
+        'client_id': _config.clientId,
+        'client_secret': _config.clientSecret,
         'grant_type': 'refresh_token'
       };
 
@@ -249,7 +249,7 @@ class Authentication {
   shelf.Response userportraits(shelf.Request request) {
     final Map<String, String> picturemap = {};
 
-    vault.usermap.values.forEach((model.User user) {
+    _vault.usermap.values.forEach((model.User user) {
       picturemap[user.address] = user.portrait;
     });
     return new shelf.Response.ok(JSON.encode(picturemap));
@@ -262,12 +262,12 @@ class Authentication {
             : '';
 
     try {
-      if (token == config.serverToken) {
+      if (token == _config.serverToken) {
         return new shelf.Response.ok(
             JSON.encode(new model.User.empty()..id = model.User.noId));
       }
 
-      Map content = vault.getToken(token);
+      Map content = _vault.getToken(token);
       try {
         watcher.seen(token);
       } catch (error, stacktrace) {
@@ -298,11 +298,11 @@ class Authentication {
             : '';
 
     if (token.isNotEmpty) {
-      if (token == config.serverToken) {
+      if (token == _config.serverToken) {
         return new shelf.Response.ok(JSON.encode(const {}));
       }
 
-      if (vault.containsToken(token)) {
+      if (_vault.containsToken(token)) {
         try {
           watcher.seen(token);
         } catch (error, stacktrace) {

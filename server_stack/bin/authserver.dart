@@ -60,7 +60,7 @@ Future main(List<String> args) async {
     exit(1);
   }
 
-  await watcher.setup();
+  watcher.setup();
   await vault.loadFromDirectory(parsedArgs['servertokendir']);
 
   // Install "reload-token" mechanism.
