@@ -13,9 +13,7 @@
 
 part of openreception.framework.model;
 
-/**
- * Class representing an organization.
- */
+/// Class representing an organization.
 class Organization {
   static const int noId = 0;
 
@@ -23,29 +21,23 @@ class Organization {
   String name = '';
   List<String> notes = [];
 
-  /**
-   * Default empty constructor.
-   */
+  /// Default empty constructor.
   Organization.empty();
 
-  /**
-   * Constructor used in serializing.
-   */
+  /// Constructor used for deserialization.
   Organization.fromMap(Map map)
       : id = map[key.id],
         name = map[key.name],
         notes = map[key.notes] as List<String>;
 
-  /**
-   * Deserializing factor.
-   */
+  /// Deserializing factory.
   static Organization decode(Map map) => new Organization.fromMap(map);
 
   OrganizationReference get reference => new OrganizationReference(id, name);
 
-  /**
-   * Returns a Map representation of the Organization.
-   * Serialization function.
-   */
+  /// Returns a Map representation of the Organization.
+  ///
+  /// Serialization function.
+
   Map toJson() => {key.id: id, key.name: name, key.notes: notes};
 }

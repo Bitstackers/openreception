@@ -206,22 +206,16 @@ List<String> _externalSipTransfer(
   ];
 }
 
-/**
- * Normalizes an opening hour string for use in extension name by removing the
- * spaces and removing other odd characters.
- */
+/// Normalizes an opening hour string for use in extension name by removing
+/// the spaces and removing other odd characters.
 String _normalizeOpeningHour(String string) =>
     string.replaceAll(' ', '_').replaceAll(':', '');
 
-/**
- * Indent a string by [count] spaces.
- */
+/// Indent a string by [count] spaces.
 String _indent(String item, {int count: 2}) =>
     '${new List<String>.filled(count, ' ').join('')}$item';
 
-/**
- *
- */
+/// Turn an [model.OpeningHour] into a list of dialplan actions.
 List<String> _openingHourToXmlDialplan(
     String extension,
     model.OpeningHour oh,
@@ -256,9 +250,7 @@ List<String> _openingHourToXmlDialplan(
   return lines;
 }
 
-/**
- * Generate a fallback extension.
- */
+/// Generate a fallback extension.
 List<String> _fallbackToDialplan(
     String extension,
     Iterable<model.Action> actions,
@@ -282,9 +274,7 @@ List<String> _fallbackToDialplan(
     ..add('</extension>');
 }
 
-/**
- *
- */
+/// Turn a [model.HourAction] into a list of dialplan actions.
 Iterable<String> _hourActionToXmlDialplan(String extension,
     model.HourAction hourAction, DialplanCompilerOpts option) {
   final Iterable<Iterable<String>> has = hourAction.hours.map(
@@ -320,9 +310,7 @@ Iterable<String> _hourActionsToXmlDialplan(String extension,
   return folded;
 }
 
-/**
- * Turns a [NamedExtension] into a dialplan document fragment.
- */
+/// Turns a [NamedExtension] into a dialplan document fragment.
 Iterable<String> _namedExtensionToDialPlan(model.NamedExtension extension,
         DialplanCompilerOpts option, Environment env) =>
     <String>[
@@ -355,9 +343,7 @@ Iterable<String> _extraExtensionsToDialplan(
             (List<String> combined, Iterable<String> current) =>
                 combined..addAll(current));
 
-/**
- *
- */
+/// Turn a [model.ReceptionDialplan] into an xml-dialplan as string.
 String _dialplanToXml(model.ReceptionDialplan dialplan,
     DialplanCompilerOpts option, model.Reception reception) {
   final String htmlEncodedReceptionName = _sanify(reception.name);
@@ -394,14 +380,10 @@ String _dialplanToXml(model.ReceptionDialplan dialplan,
 </include>''';
 }
 
-/**
- * Detemine whether or not an extension is local or not.
- */
+/// Detemine whether or not an extension is local or not.
 bool _isInternalExtension(String extension) => extension.contains('-');
 
-/**
- * Template for dialout action.
- */
+/// Template for dialout action.
 String _dialoutTemplate(String extension, DialplanCompilerOpts option) =>
     _isInternalExtension(extension)
         ? extension
@@ -409,83 +391,59 @@ String _dialoutTemplate(String extension, DialplanCompilerOpts option) =>
             ? '${PbxKey.externalTransfer}_$extension'
             : '${PbxKey.externalTransfer}_${option.testNumber}';
 
-/**
- *
- */
+/// Returns the [email] if the [option] specify that the dialplan is live,
+/// otherwise return whatever is specified in [option].
 String _liveCheckEmail(String email, DialplanCompilerOpts option) =>
     option.goLive ? email : option.testEmail;
 
-/**
-* Template for dialplan note.
-*/
+/// Template for dialplan note.
 String _noteTemplate(String note) => _comment('Note: $note');
 
-/**
- * Template for a comment.
- */
+/// Template for a comment.
 String _comment(String text) => '<!-- $text -->';
 
-/**
- * Template transfer action.
- */
+/// Template transfer action.
 String _transferTemplate(String extension, DialplanCompilerOpts option) =>
     '<action application="transfer" data="${_dialoutTemplate(extension, option)}"/>';
 
-/**
- * Template fo [ReceptionTransfer] action.
- */
+/// Template fo [ReceptionTransfer] action.
 String _receptionTransferTemplate(
         String extension, DialplanCompilerOpts option) =>
     '<action application="transfer" data="$extension XML reception-$extension"/>';
 
-/**
- * Template for a sleep action.
- */
+/// Template for a sleep action.
 String _sleep(int msec) => '<action application="sleep" data="$msec"/>';
 
-/**
- * Template for a call lock event.
- */
+/// Template for a call lock event.
 String get _lock => '<action application="${PbxKey.event}" '
     'data="${PbxKey.eventSubclass}=${ORPbxKey.callLock},${PbxKey.eventName}=${PbxKey.custom}"/>';
 
-/**
- * Template for a call unlock event.
- */
+/// Template for a call unlock event.
 String get _unlock => '<action application="${PbxKey.event}" '
     'data="${PbxKey.eventSubclass}=${ORPbxKey.callUnlock},${PbxKey.eventName}=${PbxKey.custom}"/>';
 
-/**
- * Template for a set variable action.
- */
+/// Template for a set variable action.
 String _setVar(String key, dynamic value) =>
     '<action application="set" data="$key=$value"/>';
 
-/**
- * Template for a ring tone event.
- */
+/// Template for a ring tone event.
 String get _ringTone => '<action application="${PbxKey.event}" '
     'data="${PbxKey.eventSubclass}=${ORPbxKey.ringingStart},${PbxKey.eventName}=${PbxKey.custom}" />';
-/**
- * Template for a ring stop event.
- */
+
+/// Template for a ring stop event.
 String get _ringToneStop => '<action application="${PbxKey.event}" '
     'data="${PbxKey.eventSubclass}=${ORPbxKey.ringingStop},${PbxKey.eventName}=${PbxKey.custom}"/>';
 
-/**
- * Template for a notify event.
- */
+/// Template for a notify event.
 String get _callNotify => '<action application="${PbxKey.event}" '
     'data="${PbxKey.eventSubclass}=${ORPbxKey.callNotify},${PbxKey.eventName}=${PbxKey.custom}" />';
 
-/**
- * Convert an action a xml dialplan entry.
- */
+/// Convert an action a xml dialplan entry.
 List<String> _actionToXmlDialplan(
     model.Action action, DialplanCompilerOpts option, Environment env) {
   List<String> returnValue = <String>[];
 
-  /// Transfer action.
+  // Transfer action.
   if (action is model.Transfer) {
     if (action.note.isNotEmpty) returnValue.add(_noteTemplate(action.note));
     if (!env.channelAnswered) {
@@ -498,7 +456,7 @@ List<String> _actionToXmlDialplan(
     returnValue.add(_transferTemplate(action.extension, option));
   }
 
-  /// Notify action.
+  // Notify action.
   else if (action is model.Notify) {
     returnValue.addAll(<String>[
       _comment('Announce the call to the receptionists'),
@@ -508,7 +466,7 @@ List<String> _actionToXmlDialplan(
     env.callAnnounced = true;
   }
 
-  /// ReceptionTransfer action.
+  // ReceptionTransfer action.
   else if (action is model.ReceptionTransfer) {
     returnValue.addAll(<String>[
       _comment('Transfer call to other reception'),
@@ -516,7 +474,7 @@ List<String> _actionToXmlDialplan(
     ]);
   }
 
-  /// Ringtone action.
+  // Ringtone action.
   else if (action is model.Ringtone) {
     returnValue.addAll(<String>[
       _comment('Sending ringtones'),
@@ -528,7 +486,7 @@ List<String> _actionToXmlDialplan(
     ]);
   }
 
-  /// Playback action.
+  // Playback action.
   else if (action is model.Playback) {
     if (action.note.isNotEmpty) returnValue.add(_noteTemplate(action.note));
     returnValue.addAll(<String>[_comment('Playback file ${action.filename}')]);
@@ -565,7 +523,7 @@ List<String> _actionToXmlDialplan(
     }
   }
 
-  /// Enqueue action.
+  // Enqueue action.
   else if (action is model.Enqueue) {
     if (!env.channelAnswered) {
       returnValue.add('<action application="answer"/>');
@@ -581,7 +539,7 @@ List<String> _actionToXmlDialplan(
     ]);
   }
 
-  /// Voicemail  action.
+  // Voicemail  action.
   else if (action is model.Voicemail) {
     if (!env.channelAnswered) {
       returnValue.add('<action application="answer"/>');
@@ -596,7 +554,7 @@ List<String> _actionToXmlDialplan(
     ]);
   }
 
-  /// Ivr action.
+  // Ivr action.
   else if (action is model.Ivr) {
     if (!env.channelAnswered) {
       returnValue.add('<action application="answer"/>');
@@ -616,18 +574,15 @@ List<String> _actionToXmlDialplan(
   return returnValue;
 }
 
-/**
- * Turns a [model.WeekDay] into a FreeSWITCH weekday index.
- */
+/// Turns a [model.WeekDay] into a FreeSWITCH weekday index.
 int _weekDayToFreeSwitch(model.WeekDay wday) => (wday.index) + 1;
 
-/**
- * Formats an [model.OpeningHour] into a format that FreeSWITCH understands.
- */
+/// Formats an [model.OpeningHour] into a format that FreeSWITCH
+/// understands.
 String _openingHourToFreeSwitch(model.OpeningHour oh) {
   String wDayString = '';
 
-  /// Prefixes string of integer with a '0' if the integer value is below 10.
+  // Prefixes string of integer with a '0' if the integer value is below 10.
   String _twoDigitInt(int i) => i < 10 ? '0$i' : '$i';
 
   if (<model.WeekDay>[oh.fromDay, oh.toDay].contains(model.WeekDay.all)) {
@@ -646,10 +601,7 @@ String _openingHourToFreeSwitch(model.OpeningHour oh) {
   return '$wDayString time-of-day="$ohString"';
 }
 
-/**
- *
- */
-
+/// Turn an [model.IvrMenu] into a list of ivr menu actions.
 List<String> _ivrMenuToXml(model.IvrMenu menu, DialplanCompilerOpts option) =>
     menu.entries
         .map((model.IvrEntry entry) => _ivrEntryToXml(entry, option))
@@ -658,6 +610,7 @@ List<String> _ivrMenuToXml(model.IvrMenu menu, DialplanCompilerOpts option) =>
             (List<String> combined, Iterable<String> current) =>
                 combined..addAll(current));
 
+/// Generate an xml formatted ivr menu string from a [model.IvrMenu].
 String _generateXmlFromIvrMenu(
         model.IvrMenu menu, DialplanCompilerOpts option) =>
     '''<menu name="${menu.name}"
@@ -673,15 +626,19 @@ String _generateXmlFromIvrMenu(
   ${menu.submenus.map((model.IvrMenu menu) => _generateXmlFromIvrMenu (menu, option)).join('\n  ')}
 ''';
 
+/// Wrap a [model.IvrMenu] in an include directive.
+///
+/// This is needed for stand-alone menus.
 String _ivrToXml(model.IvrMenu menu, DialplanCompilerOpts option) => '''
 <include>
   ${_generateXmlFromIvrMenu(menu, option)}
 </include>''';
 
+/// Turn a single [model.IvrMenu] entry int a list of xml actions.
 List<String> _ivrEntryToXml(model.IvrEntry entry, DialplanCompilerOpts option) {
   List<String> returnValue = <String>[];
 
-  /// IvrTransfer action
+  // IvrTransfer action
   if (entry is model.IvrTransfer) {
     if (entry.transfer.note.isNotEmpty)
       returnValue.add(_noteTemplate(entry.transfer.note));
@@ -689,7 +646,7 @@ List<String> _ivrEntryToXml(model.IvrEntry entry, DialplanCompilerOpts option) {
         '<entry action="${PbxKey.menuExecApp}" digits="${entry.digits}" '
         'param="transfer ${_dialoutTemplate(entry.transfer.extension, option)}"/>');
 
-    /// IvrReceptionTransfer action
+    // IvrReceptionTransfer action
   } else if (entry is model.IvrReceptionTransfer) {
     if (entry.transfer.note.isNotEmpty)
       returnValue.add(_noteTemplate(entry.transfer.note));
@@ -714,9 +671,7 @@ List<String> _ivrEntryToXml(model.IvrEntry entry, DialplanCompilerOpts option) {
   return returnValue;
 }
 
-/**
- *
- */
+/// Turn a [model.Voicemail] object into an xml voicemail account.
 String _voicemailToXml(model.Voicemail vm, DialplanCompilerOpts option) =>
     '''<include>
   <user id="${vm.vmBox}">

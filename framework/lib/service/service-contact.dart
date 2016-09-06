@@ -135,9 +135,6 @@ class RESTContactStore implements storage.Contact {
         (JSON.decode(response) as Iterable).map(model.BaseContact.decode));
   }
 
-  /**
-   *
-   */
   @override
   Future removeData(int cid, int rid, model.User user) {
     Uri url = resource.Contact.singleByReception(host, cid, rid);
@@ -155,9 +152,6 @@ class RESTContactStore implements storage.Contact {
     return _backend.put(url, JSON.encode(attr));
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.Commit>> changes([int cid, int rid]) {
     Uri url = resource.Contact.change(host, cid, rid);
@@ -169,9 +163,6 @@ class RESTContactStore implements storage.Contact {
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }
 
-  /**
-   *
-   */
   Future<String> changelog(int cid) {
     Uri url = resource.Contact.changelog(host, cid);
     url = _appendToken(url, this.token);
@@ -179,9 +170,6 @@ class RESTContactStore implements storage.Contact {
     return _backend.get(url);
   }
 
-  /**
-   *
-   */
   Future<String> receptionChangelog(int cid) {
     Uri url = resource.Contact.receptionChangelog(host, cid);
     url = _appendToken(url, this.token);

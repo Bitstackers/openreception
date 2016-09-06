@@ -24,13 +24,7 @@ void _testModelReceptionTransfer() {
   });
 }
 
-/**
-*
- */
 abstract class _ModelReceptionTransfer {
-/**
- *
- */
   static void serialization() {
     model.ReceptionTransfer builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
@@ -39,9 +33,6 @@ abstract class _ModelReceptionTransfer {
     expect(serializedObject, isNotEmpty);
   }
 
-/**
- *
- */
   static void deserialization() {
     model.ReceptionTransfer builtObject = buildObject();
 
@@ -54,9 +45,6 @@ abstract class _ModelReceptionTransfer {
     expect(builtObject.note, equals(deserializedObject.note));
   }
 
-  /**
-   *
-   */
   static void parsing() {
     final String buffer1 = 'reception 12340001';
     final String buffer2 = 'reception 12340001 (Test reception 1)';
@@ -68,9 +56,6 @@ abstract class _ModelReceptionTransfer {
         throwsA(new isInstanceOf<FormatException>()));
   }
 
-/**
- *
- */
   static model.ReceptionTransfer buildObject() {
     final String extension = '322114455';
     final String note = 'Just an extension';

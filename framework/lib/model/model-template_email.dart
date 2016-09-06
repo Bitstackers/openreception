@@ -16,23 +16,17 @@ part of openreception.framework.model;
 class TemplateEmail extends Template {
   final User _sender;
 
-  /**
-   * Constructor.
-   */
+  /// Default constructor.
   TemplateEmail(Message message, User this._sender) : super(message);
 
-  /**
-   * Return the activated boolean message fields as HTML.
-   */
+  /// Return the activated boolean message fields as HTML.
   String get _booleanFieldsHtml =>
       '${_message.flag.called ? '<strong>(X)</strong> Har ringet<br>' : ''}'
       '${_message.flag.pleaseCall ? '<strong>(X)</strong> Ring venligst<br>' : ''}'
       '${_message.flag.willCallBack ? '<strong>(X)</strong> Kunden ringer selv igen<br>' : ''}'
       '${_message.flag.urgent ? '<strong>(X)</strong> Haster<br>' : ''}';
 
-  /**
-   * Return the [Message] body as HTML.
-   */
+  /// Return the [Message] body as HTML.
   String get bodyHtml {
     final StringBuffer sb = new StringBuffer();
     final String booleanFields = _booleanFieldsHtml;
@@ -62,9 +56,7 @@ class TemplateEmail extends Template {
     return sb.toString();
   }
 
-  /**
-   * Return the [Message] body as text.
-   */
+  /// Return the [Message] body as text.
   @override
   String get bodyText {
     final StringBuffer sb = new StringBuffer();
@@ -92,9 +84,7 @@ class TemplateEmail extends Template {
     return sb.toString();
   }
 
-  /**
-   * Return the [Message] subject line.
-   */
+  /// Return the [Message] subject line.
   String get subject =>
       '${_message.flag.urgent ? '[${urgent.toUpperCase()}]' : ''} '
       'Besked fra ${_message.callerInfo.name}'

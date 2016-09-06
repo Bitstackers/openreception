@@ -27,14 +27,8 @@ class RESTIvrStore implements storage.Ivr {
   /// The token used for authenticating with the backed.
   final String token;
 
-  /**
-   *
-   */
   RESTIvrStore(Uri this.host, String this.token, this._backend);
 
-  /**
-   *
-   */
   @override
   Future<model.IvrMenu> create(model.IvrMenu menu, [model.User user]) {
     Uri url = resource.Ivr.list(host);
@@ -47,9 +41,6 @@ class RESTIvrStore implements storage.Ivr {
         .then(model.IvrMenu.decode);
   }
 
-  /**
-   *
-   */
   Future<Iterable<String>> deploy(String menuName) async {
     Uri url = resource.Ivr.deploy(host, menuName);
     url = _appendToken(url, this.token);
@@ -57,9 +48,6 @@ class RESTIvrStore implements storage.Ivr {
     return JSON.decode(await _backend.post(url, '')) as Iterable<String>;
   }
 
-  /**
-   *
-   */
   @override
   Future remove(String menuName, [model.User user]) {
     Uri url = resource.Ivr.single(this.host, menuName);
@@ -68,9 +56,6 @@ class RESTIvrStore implements storage.Ivr {
     return this._backend.delete(url);
   }
 
-  /**
-  *
-  */
   @override
   Future<model.IvrMenu> get(String menuName) {
     Uri url = resource.Ivr.single(this.host, menuName);
@@ -79,9 +64,6 @@ class RESTIvrStore implements storage.Ivr {
     return this._backend.get(url).then(JSON.decode).then(model.IvrMenu.decode);
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.IvrMenu>> list() {
     Uri url = resource.Ivr.list(host);
@@ -93,9 +75,6 @@ class RESTIvrStore implements storage.Ivr {
     return this._backend.get(url).then(JSON.decode).then(castMaps);
   }
 
-  /**
-   *
-   */
   @override
   Future<model.IvrMenu> update(model.IvrMenu menu, [model.User user]) {
     Uri url = resource.Ivr.single(this.host, menu.name);
@@ -108,9 +87,6 @@ class RESTIvrStore implements storage.Ivr {
         .then(model.IvrMenu.decode);
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.Commit>> changes([String menuName]) {
     Uri url = resource.Ivr.changeList(host, menuName);
@@ -122,9 +98,6 @@ class RESTIvrStore implements storage.Ivr {
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }
 
-  /**
-   *
-   */
   Future<String> changelog(String menuName) {
     Uri url = resource.Ivr.changelog(host, menuName);
     url = _appendToken(url, this.token);

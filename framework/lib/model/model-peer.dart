@@ -13,32 +13,27 @@
 
 part of openreception.framework.model;
 
-/**
- *
- */
+/// [Peer] model class.
+///
+/// Used in the call-flow-control server to monitor the registration and
+/// availability status of peers (phones).
 class Peer {
   final String name;
   int channelCount = 0;
   bool inTransition = false;
   bool registered = false;
 
-  /**
-   * Default constructor.
-   */
+  /// Default constructor.
   Peer(this.name);
 
-  /**
-   * Deserizaling constructor.
-   */
+  /// Deserizaling constructor.
   Peer.fromMap(Map map)
       : name = map[key.name],
         registered = map[key.registered],
         inTransition = map[key.inTransition],
         channelCount = map[key.activeChannels];
 
-  /**
-   * Serialization function.
-   */
+  /// Serialization function.
   Map toJson() => {
         key.name: name,
         key.inTransition: inTransition,
@@ -46,14 +41,10 @@ class Peer {
         key.activeChannels: channelCount
       };
 
-  /**
-   * Deserializing factory.
-   */
+  /// Deserializing factory.
   static Peer decode(Map map) => new Peer.fromMap(map);
 
-  /**
-   * Returns a string representation of the object.
-   */
+  /// Returns a string representation of the object.
   @override
   String toString() => '$name, registered:$registered';
 }

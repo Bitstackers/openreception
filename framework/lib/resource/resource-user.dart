@@ -13,10 +13,8 @@
 
 part of openreception.framework.resource;
 
-/**
- * Protocol wrapper class for building homogenic REST
- * resources across servers and clients.
- */
+/// Protocol wrapper class for building homogenic REST resources across
+/// servers and clients.
 abstract class User {
   static const String _ns = 'user';
   static const String _group = 'group';
@@ -62,9 +60,6 @@ abstract class User {
     }
   }
 
-  /**
-   *
-   */
   static Uri changelog(Uri host, int uid) =>
       Uri.parse('$host/$_ns/$uid/changelog');
 }

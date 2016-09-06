@@ -27,14 +27,8 @@ class RESTCalendarStore implements storage.Calendar {
   /// The token used for authenticating with the backed.
   final String token;
 
-  /**
-   *
-   */
   RESTCalendarStore(Uri this.host, String this.token, this._backend);
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.CalendarEntry>> list(model.Owner owner) {
     Uri url = resource.Calendar.ownerBase(host, owner);
@@ -47,9 +41,6 @@ class RESTCalendarStore implements storage.Calendar {
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }
 
-  /**
-   *
-   */
   @override
   Future<model.CalendarEntry> get(int id, model.Owner owner) {
     Uri url = resource.Calendar.single(host, id, owner);
@@ -62,9 +53,6 @@ class RESTCalendarStore implements storage.Calendar {
         .then(model.CalendarEntry.decode);
   }
 
-  /**
-   *
-   */
   @override
   Future<model.CalendarEntry> create(
       model.CalendarEntry entry, model.Owner owner, model.User user) {
@@ -78,9 +66,6 @@ class RESTCalendarStore implements storage.Calendar {
         .then(model.CalendarEntry.decode);
   }
 
-  /**
-   *
-   */
   @override
   Future<model.CalendarEntry> update(
       model.CalendarEntry entry, model.Owner owner, model.User modifier) {
@@ -93,9 +78,6 @@ class RESTCalendarStore implements storage.Calendar {
         .then(model.CalendarEntry.decode);
   }
 
-  /**
-   *
-   */
   @override
   Future remove(int eid, model.Owner owner, model.User user) {
     Uri url = resource.Calendar.single(host, eid, owner);
@@ -104,9 +86,6 @@ class RESTCalendarStore implements storage.Calendar {
     return this._backend.delete(url);
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.Commit>> changes(model.Owner owner, [int eid]) {
     Uri url = resource.Calendar.changeList(host, owner, eid);
@@ -118,9 +97,6 @@ class RESTCalendarStore implements storage.Calendar {
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }
 
-  /**
-   *
-   */
   Future<String> changelog(model.Owner owner) {
     Uri url = resource.Calendar.changelog(host, owner);
     url = _appendToken(url, this.token);

@@ -13,10 +13,8 @@
 
 part of openreception.framework.model;
 
-/**
- * A model class repsenting a phone number that can be associated with a
- * contact.
- */
+/// A model class repsenting a phone number that can be associated with a
+/// contact.
 class PhoneNumber {
   String _destination = '';
   bool confidential = false;
@@ -48,24 +46,19 @@ class PhoneNumber {
 
   String _normalize(String str) => str.replaceAll(' ', '').replaceAll('+', '');
 
-  /**
-   *
-   */
   static PhoneNumber decode(Map map) => new PhoneNumber.fromMap(map);
 
-  /**
-   * A phone number is, by this definition, equal to another phone number, if
-   * both their endpoint and type is the same.
-   */
+  /// A phone number is, by this definition, equal to another phone number,
+  /// if both their endpoint and type is the same.
   @override
   bool operator ==(Object other) =>
       other is PhoneNumber &&
       normalizedDestination.toLowerCase() ==
           other.normalizedDestination.toLowerCase();
 
-  /**
-   * Map representation of the object. Serialization function.
-   */
+  /// Map representation of the object.
+  ///
+  /// Serialization function.
   Map toJson() => {
         key.destination: destination,
         key.confidential: confidential,

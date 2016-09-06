@@ -39,20 +39,12 @@ class Owner {
 
   int get id => 0;
 
-  /**
-   *
-   */
   @override
   bool operator ==(Object other) => other is Owner && id == other.id;
 
-  /**
-   *
-   */
+  /// Serialization function.
   String toJson() => toString();
 
-  /**
-   *
-   */
   @override
   String toString() => '$_noneKey:';
 
@@ -60,48 +52,36 @@ class Owner {
   int get hashCode => toString().hashCode;
 }
 
-/**
- * Specialized [Owner] class that associates a [Reception] with another object.
- * For example a [CalendarEntry].
- */
+/// Specialized [Owner] class that associates a [Reception] with
+/// another object.
+///
+/// For example a [CalendarEntry].
 class OwningReception extends Owner {
   @override
   final int id;
 
   const OwningReception(this.id);
 
-  /**
-   *
-   */
   @override
   String toJson() => toString();
 
-  /**
-   *
-   */
   @override
   String toString() => '$_receptionKey:$id';
 }
 
-/**
- * Specialized [Owner] class that associates a [ReceptionAttributes] with another object.
- * For example a [CalendarEntry].
- */
+/// Specialized [Owner] class that associates a [ReceptionAttributes] with
+/// another object.
+///
+/// For example a [CalendarEntry].
 class OwningContact extends Owner {
   @override
   final int id;
 
   const OwningContact(this.id);
 
-  /**
-   *
-   */
   @override
   String toJson() => toString();
 
-  /**
-   *
-   */
   @override
   String toString() => '$_contactKey:$id';
 }

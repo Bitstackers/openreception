@@ -41,9 +41,7 @@ abstract class _ModelMessageFilter {
     expect(serializedObject, isNotEmpty);
   }
 
-  /**
-   * Build an object manually.
-   */
+  /// Build an object manually.
   static model.MessageFilter buildObject() {
     final int cid = 1;
     final int limitCount = 100;

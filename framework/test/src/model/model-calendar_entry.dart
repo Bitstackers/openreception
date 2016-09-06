@@ -37,17 +37,11 @@ abstract class _ModelCalendarEntry {
     expect(builtObject.lastAuthorId, equals(deserialized.lastAuthorId));
   }
 
-  /**
-   *
-   */
   static void serialization() {
     expect(JSON.encode(buildObject()), isNotNull);
     expect(JSON.encode(buildObject()), isNotEmpty);
   }
 
-  /**
-   *
-   */
   static model.CalendarEntry buildObject() {
     final int id = 123;
     final String body = 'test test test';

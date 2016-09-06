@@ -44,9 +44,7 @@ abstract class _ModelMessageContext {
     expect(serializedObject, isNotEmpty);
   }
 
-  /**
-   * Build an object manually.
-   */
+  /// Build an object manually.
   static model.MessageContext buildObject() {
     final int contactId = 1;
     final String contactName = 'John Arbuckle';

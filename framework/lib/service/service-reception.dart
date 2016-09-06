@@ -29,9 +29,6 @@ class RESTReceptionStore implements storage.Reception {
 
   RESTReceptionStore(Uri this.host, String this.token, this._backend);
 
-  /**
-   * Returns a reception as a pure map.
-   */
   @override
   Future<model.ReceptionReference> create(
       model.Reception reception, model.User modifier) {
@@ -44,9 +41,6 @@ class RESTReceptionStore implements storage.Reception {
         .then(model.ReceptionReference.decode);
   }
 
-  /**
-   *
-   */
   @override
   Future<model.Reception> get(int receptionID) {
     Uri url = resource.Reception.single(this.host, receptionID);
@@ -56,9 +50,6 @@ class RESTReceptionStore implements storage.Reception {
         new model.Reception.fromMap(JSON.decode(response)));
   }
 
-  /**
-   * Returns a reception list.
-   */
   @override
   Future<Iterable<model.ReceptionReference>> list() {
     Uri url = resource.Reception.list(this.host);
@@ -69,9 +60,6 @@ class RESTReceptionStore implements storage.Reception {
             .map((Map map) => model.ReceptionReference.decode(map)));
   }
 
-  /**
-   *
-   */
   @override
   Future remove(int rid, model.User modifier) async {
     Uri url = resource.Reception.single(this.host, rid);
@@ -80,9 +68,6 @@ class RESTReceptionStore implements storage.Reception {
     await _backend.delete(url);
   }
 
-  /**
-   *
-   */
   @override
   Future<model.ReceptionReference> update(
       model.Reception reception, model.User modifier) {
@@ -95,9 +80,6 @@ class RESTReceptionStore implements storage.Reception {
         model.ReceptionReference.decode(JSON.decode(response)));
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.Commit>> changes([int rid]) {
     Uri url = resource.Reception.changeList(host, rid);
@@ -109,9 +91,6 @@ class RESTReceptionStore implements storage.Reception {
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }
 
-  /**
-   *
-   */
   Future<String> changelog(int rid) {
     Uri url = resource.Reception.changelog(host, rid);
     url = _appendToken(url, this.token);

@@ -13,10 +13,8 @@
 
 part of openreception.framework.resource;
 
-/**
- * Protocol wrapper class for building homogenic REST
- * resources across servers and clients.
- */
+/// Protocol wrapper class for building homogenic REST resources across
+/// servers and clients.
 abstract class DistributionList {
   static Uri ofContact(Uri host, int rid, int cid) =>
       Uri.parse('$host/contact/$cid/reception/$rid/dlist');

@@ -131,9 +131,7 @@ class Reception {
       ..websites = attributes[key.websites] as List<String>;
   }
 
-  /**
-   * Returns a Map representation of the Reception.
-   */
+  /// Returns a Map representation of the Reception.
   Map toJson() => {
         key.id: id,
         key.enabled: enabled,

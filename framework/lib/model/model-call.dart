@@ -13,9 +13,7 @@
 
 part of openreception.framework.model;
 
-/**
- * Enumeration type for call states.
- */
+/// Enumeration type for call states.
 abstract class CallState {
   static const String unknown = 'UNKNOWN';
   static const String created = 'CREATED';
@@ -29,10 +27,10 @@ abstract class CallState {
   static const String parked = 'PARKED';
 }
 
-/**
- * Class representing a call in the system. Every call is identified by a
- * unique id (uuid) that may be used as a handle for REST service method calls.
- */
+/// Class representing a call in the system.
+///
+/// Every call is identified by a unique id (uuid) that may be used as a
+/// handle for REST service method calls.
 class Call {
   static const String className = '$_libraryName.Call';
   static final Logger _log = new Logger(Call.className);
@@ -58,14 +56,10 @@ class Call {
   String _state = CallState.unknown;
   String hangupCause = '';
 
-  /**
-   * Constructor.
-   */
+  /// Default empty constructor.
   Call.empty(this._id);
 
-  /**
-   * Constructor.
-   */
+  /// Default constructor.
   factory Call.fromMap(Map map) => new Call.empty(map[key.id])
     .._state = map[PbxKey.state]
     ..answeredAt = util.unixTimestampToDateTime(map[key.answeredAt])
@@ -80,27 +74,21 @@ class Call {
     ..assignedTo = map[key.assignedTo]
     ..arrived = util.unixTimestampToDateTime(map[key.arrivalTime]);
 
-  /**
-   *
-   */
+  /// A call is identical to another call if their id's match.
   @override
   bool operator ==(Object other) => other is Call && _id == other._id;
 
-  /**
-   *
-   */
+  /// Assign a call to a user.
+  ///
+  /// Effectively sets [assignedTo] to the ID of the [user].
   void assignTo(User user) {
     assignedTo = user.id;
   }
 
-  /**
-   *
-   */
+  /// Stream of call-state changes.
   Stream<String> get callState => _callState.stream;
 
-  /**
-   *
-   */
+  /// Change the state of the [Call] object to [newState].
   void changeState(String newState) {
     final String lastState = _state;
 
@@ -156,49 +144,36 @@ class Call {
     }
   }
 
-  /**
-   * Note: The channel is a unique identifier.
-   *   Remember to change, if ID changes.
-   */
+  /// The channel ID of the call.
+  ///
+  /// Note: The channel is a unique identifier so remember to change it,
+  /// if ID changes.
   String get channel => _id;
 
-  /**
-   * The Unique identification of the call
-   */
+  /// The Unique identification of the call
   String get id => _id;
 
-  /**
-   *
-   */
+  /// The current state of the call.
   String get state => _state;
 
-  /**
-   *
-   */
+  /// Explicitly change the state of the call without sending
+  /// [_event.CallEvent]s
   set state(String newState) {
     _state = newState;
     _callState.fire(newState);
   }
 
-  /**
-   *
-   */
   Stream<_event.CallEvent> get event => _eventBus.stream;
 
-  /**
-   *
-   */
+  /// Hashcode follows convention from [==].
   @override
   int get hashCode => _id.hashCode;
 
-  /**
-   *
-   */
+  /// Convenicence function to determine if the [Call] is no a [noCall]
+  /// object.
   bool get isActive => this != noCall;
 
-  /**
-   *
-   */
+  /// Link (bridge) thwo calls.
   void link(Call other) {
     if (locked) locked = false;
 
@@ -206,14 +181,10 @@ class Call {
     other.bLeg = _id;
   }
 
-  /**
-   *
-   */
+  /// Determines if the call is currently locked for pickup.
   bool get locked => _locked;
 
-  /**
-   *
-   */
+  /// Update the lock status of the [Call].
   set locked(bool lock) {
     _locked = lock;
 
@@ -224,29 +195,20 @@ class Call {
     }
   }
 
-  /**
-   *
-   */
   void notifyEvent(_event.Event e) => _eventBus.fire(e);
 
-  /**
-   *
-   */
+  /// Unassign a call from a user.
   void release() {
     assignedTo = User.noId;
   }
 
-  /**
-   * String version of [Call] for debug/log purposes.
-   */
+  /// String version of [Call] for debug/log purposes.
   @override
   String toString() => this == noCall
       ? 'no Call'
       : 'CallId: $_id, state: $_state, destination: $destination';
 
-  /**
-   *
-   */
+  /// Serilization function.
   Map toJson() => {
         key.id: _id,
         PbxKey.state: _state,
@@ -264,9 +226,10 @@ class Call {
         key.answeredAt: util.dateTimeToUnixTimestamp(answeredAt)
       };
 
-  /**
-   *
-   */
+  /// Validate call-id.
+  ///
+  /// Note: Should really be moved to validation library.
+  @deprecated
   static void validateID(String callId) {
     if (callId == null || callId.isEmpty) {
       throw new FormatException('Invalid CallId: $callId');

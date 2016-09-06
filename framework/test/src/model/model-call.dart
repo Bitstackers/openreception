@@ -31,18 +31,14 @@ void _testModelCall() {
 }
 
 abstract class _ModelCall {
-  /**
-   * Merely asserts that no exceptions arise.
-   */
+  /// Assert that no exceptions arise during serialization.
   static void serialization() {
     model.Call builtObject = buildObject();
 
     expect(() => JSON.encode(builtObject), returnsNormally);
   }
 
-  /**
-   * Asserts that the event stream spawns events.
-   */
+  /// Assert that the event stream actually spawns events.
   static Future callEventStream() {
     List<event.Event> stateChanges = [];
 
@@ -58,9 +54,7 @@ abstract class _ModelCall {
     });
   }
 
-  /**
-   * Asserts that the event stream spawns events.
-   */
+  /// Asserts that the event stream spawns unpark event from hangup.
   static Future callEventStreamUnparkFromHangup() {
     List<event.Event> stateChanges = [];
 
@@ -80,10 +74,8 @@ abstract class _ModelCall {
     });
   }
 
-  /**
-   * Asserts that the event stream spawns extra event on queue-> hangup
-   * transition.
-   */
+  /// Assert that the event stream spawns extra event on queue-> hangup
+  /// transition.
   static Future callEventStreamQueueLeaveFromHangup() {
     List<event.Event> stateChanges = [];
 
@@ -103,9 +95,7 @@ abstract class _ModelCall {
     });
   }
 
-  /**
-   * Asserts that the stream spawns events.
-   */
+  /// Assert that the stream spawns events.
   static Future callStateStream() {
     List<String> stateChanges = [];
 
@@ -120,9 +110,7 @@ abstract class _ModelCall {
     });
   }
 
-  /**
-   * Asserts that the stream spawns the correct event.
-   */
+  /// Assert that the stream spawns the correct event.
   static Future callStateUnknownToCreated() {
     List<String> stateChanges = [];
 
@@ -139,9 +127,7 @@ abstract class _ModelCall {
     });
   }
 
-  /**
-   * Asserts that the stream spawns events in the correct order.
-   */
+  /// Assert that the stream spawns events in the correct order.
   static Future callStateParkToHangup() {
     List<String> stateChanges = [];
 
@@ -160,9 +146,7 @@ abstract class _ModelCall {
     });
   }
 
-  /**
-   * Asserts that the stream spawns the correct event.
-   */
+  /// Assert that the stream spawns the correct event.
   static Future callStateCreatedToRinging() {
     List<String> stateChanges = [];
 
@@ -179,9 +163,7 @@ abstract class _ModelCall {
     });
   }
 
-  /**
-   * Merely asserts that no exceptions arise.
-   */
+  /// Asserts that no exceptions arise during serialization.
   static void deserialization() {
     model.Call builtCall = buildObject();
     String serializedObject = JSON.encode(builtCall);

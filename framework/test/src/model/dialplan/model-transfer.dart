@@ -23,13 +23,7 @@ void _testModelTransfer() {
   });
 }
 
-/**
-*
- */
 abstract class _ModelTransfer {
-/**
- *
- */
   static void serialization() {
     model.Transfer builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
@@ -38,9 +32,6 @@ abstract class _ModelTransfer {
     expect(serializedObject, isNotEmpty);
   }
 
-/**
- *
- */
   static void deserialization() {
     model.Transfer builtObject = buildObject();
 
@@ -53,9 +44,6 @@ abstract class _ModelTransfer {
     expect(builtObject.note, equals(deserializedObject.note));
   }
 
-/**
- *
- */
   static model.Transfer buildObject() {
     final String extension = '322114455';
     final String note = 'Just an extension';

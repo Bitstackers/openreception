@@ -34,9 +34,7 @@ abstract class _ModelClientConnection {
     expect(builtObject.toJson(), equals(decodedCall.toJson()));
   }
 
-  /**
-   * Merely asserts that no exceptions arise.
-   */
+  /// Assert that no exceptions arise during serialization.
   static void serialization() {
     model.ClientConnection builtObject = buildObject();
 

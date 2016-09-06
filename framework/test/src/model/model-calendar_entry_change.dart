@@ -22,9 +22,6 @@ void _testModelCalendarCommit() {
 }
 
 abstract class _ModelCalendarEntryChange {
-  /**
-   *
-   */
   static void deserialization() {
     model.Commit built = buildObject();
     model.Commit deserialized =
@@ -39,9 +36,7 @@ abstract class _ModelCalendarEntryChange {
     expect(built.authorIdentity, equals(deserialized.authorIdentity));
   }
 
-  /**
-   * Merely asserts that no exceptions arise.
-   */
+  /// Asserts that no exceptions arise during serialization.
   static void serialization() {
     model.Commit builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);

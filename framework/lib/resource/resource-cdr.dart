@@ -13,10 +13,8 @@
 
 part of openreception.framework.resource;
 
-/**
- * Protocol wrapper class for building homogenic REST
- * resources across servers and clients.
- */
+/// Protocol wrapper class for building homogenic REST  resources across
+/// servers and clients.
 abstract class CDR {
   static const String _cdr = 'cdr';
   static const String _checkpoint = 'checkpoint';

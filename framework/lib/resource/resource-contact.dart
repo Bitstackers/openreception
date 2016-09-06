@@ -13,68 +13,36 @@
 
 part of openreception.framework.resource;
 
-/**
- * Protocol wrapper class for building homogenic REST
- * resources across servers and clients.
- */
+/// Protocol wrapper class for building homogenic REST resources across
+/// servers and clients.
 abstract class Contact {
-  static String nameSpace = 'contact';
+  static String _ns = 'contact';
 
-  /**
-   *
-   */
   static Uri single(Uri host, int cid) => Uri.parse('${root(host)}/$cid');
 
-  /**
-   *
-   */
   static Uri root(Uri host) =>
-      Uri.parse('${util.removeTailingSlashes(host)}/$nameSpace');
+      Uri.parse('${util.removeTailingSlashes(host)}/$_ns');
 
-  /**
-   *
-   */
   static Uri list(Uri host) => Uri.parse('${root(host)}');
 
-  /**
-   *
-   */
   static Uri singleByReception(Uri host, int cid, int rid) =>
       Uri.parse('${root(host)}/$cid/reception/$rid');
 
-  /**
-   *
-   */
   static Uri listByReception(Uri host, int rid) =>
       Uri.parse('${root(host)}/list/reception/$rid');
 
-  /**
-   *
-   */
   static Uri receptions(Uri host, int rid) =>
       Uri.parse('${root(host)}/$rid/reception');
 
-  /**
-   *
-   */
   static Uri organizations(Uri host, int cid) =>
       Uri.parse('${root(host)}/$cid/organization');
 
-  /**
-   *
-   */
   static Uri colleagues(Uri host, int cid) =>
       Uri.parse('${root(host)}/$cid/colleagues');
 
-  /**
-   *
-   */
   static Uri organizationContacts(Uri host, int oid) =>
       Uri.parse('$host/contact/organization/$oid');
 
-  /**
-   *
-   */
   static Uri change(Uri host, [int cid, int rid]) {
     if (cid == null) {
       return Uri.parse('$host/contact/history');
@@ -87,15 +55,9 @@ abstract class Contact {
     }
   }
 
-  /**
-   *
-   */
   static Uri changelog(Uri host, int cid) =>
       Uri.parse('$host/contact/$cid/changelog');
 
-  /**
-   *
-   */
   static Uri receptionChangelog(Uri host, int cid) =>
       Uri.parse('$host/contact/$cid/reception/changelog');
 }

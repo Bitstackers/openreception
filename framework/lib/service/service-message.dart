@@ -29,9 +29,6 @@ class RESTMessageStore implements storage.Message {
 
   const RESTMessageStore(Uri this.host, String this.token, this._backend);
 
-  /**
-   *
-   */
   @override
   Future<model.Message> get(int mid) => this
       ._backend
@@ -39,9 +36,6 @@ class RESTMessageStore implements storage.Message {
       .then((String response) =>
           new model.Message.fromMap(JSON.decode(response)));
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.Message>> getByIds(Iterable<int> ids) async {
     Uri uri = resource.Message.list(host);
@@ -54,9 +48,6 @@ class RESTMessageStore implements storage.Message {
     return maps.map(model.Message.decode);
   }
 
-  /**
-   *
-   */
   Future<model.MessageQueueEntry> enqueue(model.Message message) {
     Uri uri = resource.Message.send(this.host, message.id);
     uri = _appendToken(uri, this.token);
@@ -69,9 +60,6 @@ class RESTMessageStore implements storage.Message {
             new model.MessageQueueEntry.fromMap(queueItemMap));
   }
 
-  /**
-   *
-   */
   @override
   Future<model.Message> create(model.Message message, model.User modifier) =>
       _backend
@@ -88,9 +76,6 @@ class RESTMessageStore implements storage.Message {
     return _backend.delete(uri);
   }
 
-  /**
-   *
-   */
   @override
   Future<model.Message> update(model.Message message, model.User modifier) =>
       _backend
@@ -100,9 +85,7 @@ class RESTMessageStore implements storage.Message {
               JSON.encode(message.asMap))
           .then((String response) =>
               new model.Message.fromMap(JSON.decode(response)));
-  /**
-   *
-   */
+
   Future<Iterable<model.Message>> list({model.MessageFilter filter}) => this
       ._backend
       .get(_appendToken(
@@ -110,9 +93,6 @@ class RESTMessageStore implements storage.Message {
       .then((String response) => (JSON.decode(response) as Iterable)
           .map((Map map) => new model.Message.fromMap(map)));
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.Message>> listDay(DateTime day,
       {model.MessageFilter filter}) async {
@@ -124,9 +104,6 @@ class RESTMessageStore implements storage.Message {
             .map((Map map) => new model.Message.fromMap(map)));
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.Message>> listDrafts({model.MessageFilter filter}) {
     Uri uri = resource.Message.listDrafts(host, filter: filter);
@@ -137,9 +114,6 @@ class RESTMessageStore implements storage.Message {
             .map((Map map) => new model.Message.fromMap(map)));
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.Commit>> changes([int mid]) {
     Uri url = resource.Message.changeList(host, mid);

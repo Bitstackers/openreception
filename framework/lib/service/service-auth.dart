@@ -27,16 +27,12 @@ class Authentication {
   /// The token used for authenticating with the backed.
   final String token;
 
-  /**
-   * Default constructor. Needs a [host] for backend uri, a user [token]
-   * and a [WebService] HTTP client for handling the transport.
-   */
+  /// Default constructor. Needs a [host] for backend uri, a user [token]
+  /// and a [WebService] HTTP client for handling the transport.
   Authentication(Uri this.host, String this.token, this._httpClient);
 
-  /**
-   * Performs a lookup of the user on the notification server from the
-   * supplied token.
-   */
+  /// Performs a lookup of the user on the notification server from the
+  /// supplied [token].
   Future<model.User> userOf(String token) {
     Uri uri = resource.Authentication.tokenToUser(this.host, token);
 
@@ -44,9 +40,8 @@ class Authentication {
         (String response) => new model.User.fromMap(JSON.decode(response)));
   }
 
-  /**
-   * Validate [token]. Throws [NotFound] exception if the token is not valid.
-   */
+  /// Validate [token]. Throws [NotFound] exception if the token is not
+  /// valid.
   Future validate(String token) {
     Uri uri = resource.Authentication.validate(this.host, token);
 

@@ -34,9 +34,6 @@ abstract class _ModelEnqueue {
     expect(serializedObject, isNotEmpty);
   }
 
-  /**
-   *
-   */
   static void serializationDeserialization() {
     model.Enqueue builtObject = buildObject();
 
@@ -48,9 +45,6 @@ abstract class _ModelEnqueue {
     expect(builtObject.toString(), isNotEmpty);
   }
 
-  /**
-   *
-   */
   static model.Enqueue buildObject() {
     final String queueName = 'queue_1';
     final String music = 'playlist_1';
@@ -65,9 +59,6 @@ abstract class _ModelEnqueue {
     return builtObject;
   }
 
-  /**
-   *
-   */
   static void parse() {
     final String queueName = 'queue_1';
     final String music = 'playlist_1';

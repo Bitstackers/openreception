@@ -13,10 +13,9 @@
 
 part of openreception.framework.model;
 
-/**
- * CalendarEntry class representing a single entry in a calendar. Can be owned
- * by either a contact or a reception.
- */
+/// CalendarEntry class representing a single entry in a calendar.
+///
+/// Can be owned by either a contact or a reception.
 class CalendarEntry {
   static const int noId = 0;
 
@@ -28,17 +27,14 @@ class CalendarEntry {
   DateTime start = util.never;
   DateTime stop = util.never;
 
-  /**
-   * Constructor.
-   */
+  /// Constructor.
   CalendarEntry.empty();
 
-  /**
-   * [CalendarEntry] deserializing constructor.
-   * 'start' and 'stop' MUST be in a format that can be parsed by the
-   * [DateTime.parse] method. Please use the methods in the [util] library to
-   * help getting the right format. 'content' is the actual entry body.
-   */
+  /// [CalendarEntry] deserializing constructor.
+  ///
+  /// 'start' and 'stop' MUST be in a format that can be parsed by the
+  /// [DateTime.parse] method. Please use the methods in the [util] library
+  /// to help getting the right format. 'content' is the actual entry body.
   CalendarEntry.fromMap(Map map)
       : id = map[key.id],
         lastAuthorId = map[key.uid],
@@ -47,24 +43,18 @@ class CalendarEntry {
         stop = util.unixTimestampToDateTime(map[key.stop]),
         content = map[key.body];
 
-  /**
-   * Decoding factory.
-   */
+  /// Decoding factory.
   static CalendarEntry decode(Map map) => map.isNotEmpty
       ? new CalendarEntry.fromMap(map)
       : new CalendarEntry.empty();
 
-  /**
-   * Return true if now is between after [start] and before [stop].
-   */
+  /// Return true if now is between after [start] and before [stop].
   bool get active {
     DateTime now = new DateTime.now();
     return (now.isAfter(start) && now.isBefore(stop));
   }
 
-  /**
-   * Serialization function.
-   */
+  /// Serialization function.
   Map toJson() => {
         key.id: id,
         key.uid: lastAuthorId,
@@ -74,9 +64,7 @@ class CalendarEntry {
         key.stop: util.dateTimeToUnixTimestamp(stop)
       };
 
-  /**
-   * [CalendarEntry] as String, for debug/log purposes.
-   */
+  /// [CalendarEntry] as String, for debug/log purposes.
   @override
   String toString() => toJson().toString();
 }

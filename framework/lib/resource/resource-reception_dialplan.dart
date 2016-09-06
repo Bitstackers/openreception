@@ -13,44 +13,23 @@
 
 part of openreception.framework.resource;
 
-/**
- * Protocol wrapper class for building homogenic REST
- * resources across servers and clients.
- */
+/// Protocol wrapper class for building homogenic REST resources across
+/// servers and clients.
 abstract class ReceptionDialplan {
   static const String _ns = 'receptiondialplan';
 
-  /**
-   *
-   */
   static Uri analyze(Uri host, String extension) =>
       Uri.parse('$host/$_ns/$extension/analyze');
 
-  /**
-   *
-   */
   static Uri deploy(Uri host, String extension, int rid) =>
       Uri.parse('$host/$_ns/$extension/deploy/$rid');
 
-  /**
-   *
-   */
   static Uri list(Uri host) => Uri.parse('$host/$_ns');
 
-  /**
-   *
-   */
   static Uri reloadConfig(Uri host) => Uri.parse('$host/$_ns/reloadConfig');
 
-  /**
-   *
-   */
   static Uri single(Uri host, String extension) =>
       Uri.parse('$host/$_ns/$extension');
-
-  /**
-   *
-   */
   static Uri changeList(Uri host, [String extension]) {
     if (extension == null) {
       return Uri.parse('$host/$_ns/history');
@@ -59,9 +38,6 @@ abstract class ReceptionDialplan {
     }
   }
 
-  /**
-   *
-   */
   static Uri changelog(Uri host, String extension) =>
       Uri.parse('$host/$_ns/$extension/changelog');
 }

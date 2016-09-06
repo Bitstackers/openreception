@@ -13,26 +13,15 @@
 
 part of openreception.framework.resource;
 
-/**
- * Protocol wrapper class for building homogenic REST
- * resources across servers and clients.
- */
+/// Protocol wrapper class for building homogenic REST resources across
+/// servers and clients.
 abstract class Calendar {
-  /**
-   *
-   */
   static Uri ownerBase(Uri host, model.Owner owner) =>
       Uri.parse('$host/calendar/${owner.toJson()}');
 
-  /**
-   *
-   */
   static Uri single(Uri host, int eid, model.Owner owner) =>
       Uri.parse('$host/calendar/${owner.toJson()}/$eid');
 
-  /**
-   *
-   */
   static Uri changeList(Uri host, model.Owner owner, [int eid]) {
     if (eid == null) {
       return Uri.parse('$host/calendar/${owner.toJson()}/change');
@@ -41,9 +30,6 @@ abstract class Calendar {
     }
   }
 
-  /**
-   *
-   */
   static Uri changelog(Uri host, model.Owner owner) =>
       Uri.parse('$host/calendar/${owner.toJson()}/changelog');
 }

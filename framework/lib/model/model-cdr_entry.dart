@@ -57,12 +57,10 @@ class CdrEntry {
   String uuid = '';
   bool voicemail = false;
 
-  /**
-   * Constructor.
-   *
-   * Creates a CdrEntry object from [rawCdrJson], which must be a FreeSWITCH CDR
-   * JSON.
-   */
+  /// Default Constructor.
+  ///
+  /// Creates a CdrEntry object from [rawCdrJson], which must be a
+  /// FreeSWITCH CDR JSON.
   CdrEntry(Map rawCdrJson, String cdrFilename) {
     final Map vars = rawCdrJson['variables'];
     final Map appLog =
@@ -162,9 +160,7 @@ class CdrEntry {
     }
   }
 
-  /**
-   * JSON constructor.
-   */
+  /// JSON constructor.
   CdrEntry.fromJson(Map json) {
     agentBeginEpoch = json[key.CdrKey.agentBeginEpoch];
     agentChannel = json[key.CdrKey.agentChannel];
@@ -192,16 +188,12 @@ class CdrEntry {
     voicemail = json[key.CdrKey.voicemail];
   }
 
-  /**
-   * Return true if any one of the applications contains the call-notify string.
-   */
+  /// Return true if any one of the applications contains the call-notify string.
   bool _callHasBeenNotified(List<Map<String, String>> applications) =>
       applications.any((Map<String, String> application) =>
           application['app_data'].contains(ORPbxKey.callNotify));
 
-  /**
-   * Try to locate the destination number.
-   */
+  /// Try to locate the destination number.
   String _extractDestination(Map json) {
     final Map vars = json['variables'];
     final List callFlow =
@@ -219,17 +211,15 @@ class CdrEntry {
     return desti;
   }
 
-  /**
-   * Return the cost of [CdrEntry], based on [callPrices] and '
-   * [callChargeMultiplier].
-   *
-   * Throws [PriceNotFound] if the destination found in [CdrEntry] does not
-   * match any of the options available in the [callPrices] map.
-   *
-   * Throws [UnknownDestination] if no rid is found in [CdrEntry] and the
-   * destination found in [CdrEntry] does not match any of the options available
-   * in the [callPrices] map.
-   */
+  /// Return the cost of [CdrEntry], based on [callPrices] and
+  /// [callChargeMultiplier].
+  ///
+  /// Throws [PriceNotFound] if the destination found in [CdrEntry] does not
+  /// match any of the options available in the [callPrices] map.
+  ///
+  /// Throws [UnknownDestination] if no rid is found in [CdrEntry] and the
+  /// destination found in [CdrEntry] does not match any of the options
+  /// available in the [callPrices] map.
   double cost(Map<String, Map<String, double>> callPrices,
       double callChargeMultiplier) {
     if (agentChannel || direction == 'inbound') {
@@ -262,10 +252,8 @@ class CdrEntry {
         .ceilToDouble();
   }
 
-  /**
-   * Extract [agentBeginEpoch], [agentEndEpoch], [externalTransferEpoch]
-   * and [finalTransferAction] from [transferHistory].
-   */
+  /// Extract [agentBeginEpoch], [agentEndEpoch], [externalTransferEpoch]
+  /// and [finalTransferAction] from [transferHistory].
   void _extractTransferHistoryData(String transferHistory) {
     List<Map<String, String>> actions = new List<Map<String, String>>();
     final String actionString = transferHistory.split('::').last;
@@ -307,16 +295,12 @@ class CdrEntry {
         '${actions.last['command']}:${actions.last['destination']}';
   }
 
-  /**
-   * Return true if any one of the applications contains the ivr string.
-   */
+  /// Return true if any one of the applications contains the ivr string.
   bool _ivrApp(List<Map<String, String>> applications) =>
       applications.any((Map<String, String> application) =>
           application['app_name'].contains(key.CdrKey.ivr));
 
-  /**
-   * Figure out what kind of CDR entry we're dealing with.
-   */
+  /// Figure out what kind of CDR entry we're dealing with.
   CdrEntryState get state {
     if (agentChannel) {
       return CdrEntryState.agentChannel;

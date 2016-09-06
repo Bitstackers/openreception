@@ -13,9 +13,6 @@
 
 part of openreception.framework.service;
 
-/**
- *
- */
 class _NotificationRequest {
   final Map body;
   final Uri resource;
@@ -24,9 +21,7 @@ class _NotificationRequest {
   _NotificationRequest(Uri this.resource, Map this.body);
 }
 
-/**
- * Client for Notification sending.
- */
+/// Client for Notification sending.
 class NotificationService {
   static Queue<_NotificationRequest> _requestQueue = new Queue();
   static bool _busy = false;
@@ -38,9 +33,7 @@ class NotificationService {
   NotificationService(
       Uri this.host, String this._clientToken, this._httpClient);
 
-  /**
-   * Performs a broadcast via the notification server.
-   */
+  /// Performs a broadcast via the notification server.
   Future broadcastEvent(event.Event event) {
     Uri uri = resource.Notification.broadcast(host);
     uri = _appendToken(uri, _clientToken);
@@ -48,9 +41,7 @@ class NotificationService {
     return _enqueue(new _NotificationRequest(uri, event.toJson()));
   }
 
-  /**
-   * Retrieves the [ClientConnection]'s currently active on the server.
-   */
+  /// Retrieves the [ClientConnection]'s currently active on the server.
   Future<Iterable<model.ClientConnection>> clientConnections() async {
     Uri uri = resource.Notification.clientConnections(host);
     uri = _appendToken(uri, _clientToken);
@@ -60,9 +51,7 @@ class NotificationService {
             maps.map((Map map) => new model.ClientConnection.fromMap(map)));
   }
 
-  /**
-   * Retrieves the [ClientConnection] currently associated with [uid].
-   */
+  /// Retrieves the [ClientConnection] currently associated with [uid].
   Future<model.ClientConnection> clientConnection(int uid) {
     Uri uri = resource.Notification.clientConnection(host, uid);
     uri = _appendToken(uri, _clientToken);
@@ -73,9 +62,7 @@ class NotificationService {
         .then((Map map) => new model.ClientConnection.fromMap(map));
   }
 
-  /**
-   * Sends an event via the notification server to [recipients]
-   */
+  /// Sends an event via the notification server to [recipients]
   Future send(Iterable<int> recipients, event.Event event) {
     Uri uri = resource.Notification.send(host);
     uri = _appendToken(uri, _clientToken);
@@ -91,11 +78,11 @@ class NotificationService {
         .then((Map map) => new model.ClientConnection.fromMap(map));
   }
 
-  /**
-   * Every request sent to the phone is enqueued and executed in-order without
-   * the possibility to pipeline requests. This is done to enforce strict
-   * ordering of notifications, so that they are received in-order.
-   */
+  /// Every request sent to the phone is enqueued and executed in-order
+  /// without the possibility to pipeline requests.
+  ///
+  /// This is done to enforce strict ordering of notifications, so that
+  /// they are received in-order.
   Future<String> _enqueue(_NotificationRequest request) {
     if (!_busy) {
       _busy = true;
@@ -106,10 +93,7 @@ class NotificationService {
     }
   }
 
-  /**
-   * Performs the actual backend post operation.
-   *
-   */
+  /// Performs the actual backend post operation.
   Future<String> _performRequest(_NotificationRequest request) async {
     void dispatchNext() {
       if (_requestQueue.isNotEmpty) {
@@ -128,9 +112,7 @@ class NotificationService {
         .whenComplete(dispatchNext);
   }
 
-  /**
-   * Factory shortcut for opening a [NotificationSocket] client connection.
-   */
+  /// Factory shortcut for opening a [NotificationSocket] client connection.
   static Future<NotificationSocket> socket(
       WebSocket notificationBackend, Uri host, String serverToken) {
     return notificationBackend
@@ -140,9 +122,7 @@ class NotificationService {
   }
 }
 
-/**
- * Notification listener socket client.
- */
+/// Notification listener socket client.
 class NotificationSocket {
   final WebSocket _websocket;
 
@@ -187,99 +167,65 @@ class NotificationSocket {
     onEvent.listen(_injectInLocalSteams);
   }
 
-  /**
-   * Global event stream. Receive all events broadcast or sent to uid of
-   * subscriber.
-   */
+  /// Global event stream. Receive all events broadcast or sent to uid of
+  /// subscriber.
   Stream<event.Event> get onEvent => _eventBus.stream;
   @deprecated
   Stream<event.Event> get eventStream => onEvent;
 
-  /**
-   * Filtered stream that only emits [event.CallEvent] objects.
-   */
+  /// Filtered stream that only emits [event.CallEvent] objects.
   Stream<event.CallEvent> get onCallEvent => _callEventBus.stream;
 
-  /**
-   * Filtered stream that only emits [event.MessageChange] objects.
-   */
+  /// Filtered stream that only emits [event.MessageChange] objects.
   Stream<event.MessageChange> get onMessageChange => _messageChangeBus.stream;
 
-  /**
-   * Filtered stream that only emits [event.CalendarChange] objects.
-   */
+  /// Filtered stream that only emits [event.CalendarChange] objects.
   Stream<event.CalendarChange> get onCalendarChange =>
       _calenderChangeBus.stream;
 
-  /**
-   * Filtered stream that only emits [event.ClientConnectionState] objects.
-   */
+  /// Filtered stream that only emits [event.ClientConnectionState] objects.
   Stream<event.ClientConnectionState> get onClientConnectionChange =>
       _clientConnectionBus.stream;
 
-  /**
-   * Filtered stream that only emits [event.ContactChange] objects.
-   */
+  /// Filtered stream that only emits [event.ContactChange] objects.
   Stream<event.ContactChange> get onContactChange => _contactChangeBus.stream;
 
-  /**
-   * Filtered stream that only emits [event.ReceptionData] objects.
-   */
+  /// Filtered stream that only emits [event.ReceptionData] objects.
   Stream<event.ReceptionData> get onReceptionDataChange =>
       _receptionDataChangeBus.stream;
 
-  /**
-   * Filtered stream that only emits [event.ReceptionChange] objects.
-   */
+  /// Filtered stream that only emits [event.ReceptionChange] objects.
   Stream<event.ReceptionChange> get onReceptionChange =>
       _receptionChangeBus.stream;
 
-  /**
-   * Filtered stream that only emits [event.OrganizationChange] objects.
-   */
+  /// Filtered stream that only emits [event.OrganizationChange] objects.
   Stream<event.OrganizationChange> get onOrganizationChange =>
       _organizationChangeBus.stream;
 
-  /**
-   * Filtered stream that only emits [event.DialplanChange] objects.
-   */
+  /// Filtered stream that only emits [event.DialplanChange] objects.
   Stream<event.DialplanChange> get onDialplanChange =>
       _dialplanChangeBus.stream;
 
-  /**
-   * Filtered stream that only emits [event.IvrMenuChange] objects.
-   */
+  /// Filtered stream that only emits [event.IvrMenuChange] objects.
   Stream<event.IvrMenuChange> get onIvrMenuChange => _ivrMenuChangeBus.stream;
 
-  /**
-   * Filtered stream that only emits [event.PeerState] objects.
-   */
+  /// Filtered stream that only emits [event.PeerState] objects.
   Stream<event.PeerState> get onPeerState => _peerStateBus.stream;
 
-  /**
-   * Filtered stream that only emits [event.UserChange] objects.
-   */
+  /// Filtered stream that only emits [event.UserChange] objects.
   Stream<event.UserChange> get onUserChange => _userChangeBus.stream;
 
-  /**
-   * Filtered stream that only emits [event.UserState] objects.
-   */
+  /// Filtered stream that only emits [event.UserState] objects.
   Stream<event.UserState> get onUserState => _userStateBus.stream;
 
-  /**
-   * Filtered stream that only emits [event.WidgetSelect] objects.
-   */
+  /// Filtered stream that only emits [event.WidgetSelect] objects.
   Stream<event.WidgetSelect> get onWidgetSelect => _widgetSelectBus.stream;
 
-  /**
-   * Filtered stream that only emits [event.FocusChange] objects.
-   */
+  /// Filtered stream that only emits [event.FocusChange] objects.
   Stream<event.FocusChange> get onFocusChange => _focusChangeBus.stream;
 
-  /**
-   * Further decode [event.Event] objects and put into their respective
-   * stream.
-   */
+  /// Further decode [event.Event] objects and put into their respective
+  /// stream.
   void _injectInLocalSteams(event.Event e) {
     if (e is event.CallEvent) {
       _callEventBus.fire(e);
@@ -314,9 +260,7 @@ class NotificationSocket {
     }
   }
 
-  /**
-   *
-   */
+  /// Finalize object and close all subscriptions.
   Future _closeEventListeners() async {
     await _eventBus.close();
 
@@ -339,17 +283,13 @@ class NotificationSocket {
     ]);
   }
 
-  /**
-   * Closes the websocket and all open streams.
-   */
+  /// Closes the websocket and all open streams.
   Future close() async {
     await _websocket.close();
   }
 
-  /**
-   * Parses, decodes and dispatches a received String buffer containg an
-   * encoded event object.
-   */
+  /// Parses, decodes and dispatches a received String buffer containg an
+  /// encoded event object.
   void _parseAndDispatch(String buffer) {
     Map<String, dynamic> map = JSON.decode(buffer) as Map<String, dynamic>;
     event.Event newEvent = new event.Event.parse(map);

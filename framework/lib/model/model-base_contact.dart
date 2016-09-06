@@ -66,9 +66,6 @@ class ContactReference implements ObjectReference {
   int get hashCode => toString().hashCode;
 }
 
-/**
- *
- */
 class ContactChange implements ObjectChange {
   @override
   final ChangeType changeType;
@@ -82,15 +79,10 @@ class ContactChange implements ObjectChange {
   ContactChange.fromJson(Map map)
       : changeType = changeTypeFromString(map[key.change]),
         cid = map[key.cid];
-  /**
-   *
-   */
+
   static ContactChange decode(Map map) =>
       new ContactChange(changeTypeFromString(map[key.change]), map[key.cid]);
 
-  /**
-   *
-   */
   @override
   Map toJson() => {
         key.change: changeTypeToString(changeType),
@@ -171,9 +163,7 @@ class ReceptionReference implements ObjectReference {
       other is ReceptionReference && other.id == id;
 }
 
-/**
- * A base contact represents a contact outside the context of a reception.
- */
+/// A base contact represents a contact outside the context of a reception.
 class BaseContact {
   static const int noId = 0;
 
@@ -183,34 +173,26 @@ class BaseContact {
   String type = '';
   bool enabled = true;
 
-  /**
-   * Default empty constructor.
-   */
+  /// Default empty constructor.
   BaseContact.empty();
 
-  /**
-   * Deserializing constructor.
-   */
+  /// Deserializing constructor.
   BaseContact.fromMap(Map map)
       : id = map[key.id],
         name = map[key.name],
         type = map[key.contactType],
         enabled = map[key.enabled];
-  /**
-   * Decoding factory.
-   */
+
+  /// Decoding factory.
   static BaseContact decode(Map map) => new BaseContact.fromMap(map);
 
-  /**
-   *
-   */
+  /// Serilization function.
   Map toJson() =>
       {key.id: id, key.name: name, key.contactType: type, key.enabled: enabled};
 
-  /**
-   *
-   */
+  /// Determine if the [BaseContact] has no ID.
   bool get isEmpty => id == BaseContact.noId;
 
+  /// Determine if the [BaseContact] has a valid ID.
   bool get isNotEmpty => !isEmpty;
 }

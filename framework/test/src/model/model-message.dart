@@ -56,9 +56,7 @@ abstract class _ModelMessage {
     expect(serializedObject, isNotEmpty);
   }
 
-  /**
-   * Build an object, and check that the expected values are present.
-   */
+  /// Build an object, and check that the expected values are present.
   static model.Message buildObject() {
     final model.CallerInfo info = new model.CallerInfo.empty()
       ..cellPhone = 'Drowned'

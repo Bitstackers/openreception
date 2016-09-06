@@ -29,13 +29,7 @@ void _testModelAction() {
   });
 }
 
-/**
- *
- */
 abstract class _ModelAction {
-  /**
-   *
-   */
   static void parsePlayback() {
     final String file = 'sub_1';
     final String note = 'a note';
@@ -120,9 +114,6 @@ abstract class _ModelAction {
     expect(builtObject.note, equals(note));
   }
 
-  /**
-   *
-   */
   static void parseUndefined() {
     expect(() => model.Action.parse('wrong wrong (just wrong)'),
         throwsA(new isInstanceOf<FormatException>()));

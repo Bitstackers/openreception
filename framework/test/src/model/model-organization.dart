@@ -22,18 +22,14 @@ void _testModelOrganization() {
 }
 
 abstract class _ModelOrganization {
-  /**
-   * Merely asserts that no exceptions arise.
-   */
+  /// Asserts that no exceptions arise during serialization.
   static void serialization() {
     model.Organization builtObject = buildObject();
 
     expect(() => JSON.encode(builtObject), returnsNormally);
   }
 
-  /**
-   * Merely asserts that no exceptions arise.
-   */
+  /// Assert that no exceptions arise during deserialization.
   static void deserialization() {
     model.Organization builtObject = buildObject();
 

@@ -13,24 +13,19 @@
 
 part of openreception.framework.model;
 
-/**
- * Message filter model class. Meant for transmitting a filter 'function' from
- * a client to a server.
- */
+/// Message filter model class.
+///
+/// Meant for transmitting a filter 'function' from a client to a server.
 class MessageFilter {
   int userId = User.noId;
   int receptionId = Reception.noId;
   int contactId = BaseContact.noId;
   int limitCount = 100;
 
-  /**
-   * Default empty constructor.
-   */
+  /// Default empty constructor.
   MessageFilter.empty();
 
-  /**
-   * Deserializing constructor.
-   */
+  /// Deserializing constructor.
   MessageFilter.fromMap(Map map) {
     userId = map.containsKey(key.uid) ? map[key.uid] : userId;
 
@@ -41,32 +36,26 @@ class MessageFilter {
     limitCount = map.containsKey(key.limit) ? map[key.limit] : limitCount;
   }
 
-  /**
-   * Check if this filter is active (any field is set).
-   */
+  /// Check if this filter is active (any field is set).
   bool get active =>
       userId != User.noId ||
       receptionId != Reception.noId ||
       contactId != BaseContact.noId;
 
-  /**
-   * Check if the filter applies to [message].
-   */
+  /// Check if the filter applies to [message].
   bool appliesTo(Message message) =>
       [message.context.cid, BaseContact.noId].contains(contactId) &&
       [message.context.rid, Reception.noId].contains(receptionId) &&
       [message.sender.id, User.noId].contains(userId);
 
-  /**
-   * Filters [messages] using this filter.
-   */
+  /// Filters [messages] using this filter.
   Iterable<Message> filter(Iterable<Message> messages) =>
       messages.where((Message message) => appliesTo(message));
 
-  /**
-   * Equals operator override. All fields of filter needs match in order for
-   * two filter instances to be equal.
-   */
+  /// Equals operator override.
+  ///
+  /// All fields of filter needs match in order for two filter instances
+  /// to be equal.
   @override
   bool operator ==(Object other) =>
       other is MessageFilter &&
@@ -75,9 +64,9 @@ class MessageFilter {
       receptionId == other.receptionId &&
       contactId == other.contactId;
 
-  /**
-   * JSON serialization function. Returns a map representation of the object.
-   */
+  /// JSON serialization function.
+  ///
+  /// Returns a map representation of the object.
   Map toJson() {
     Map retval = {};
 
@@ -98,9 +87,6 @@ class MessageFilter {
     return retval;
   }
 
-  /**
-   *
-   */
   @override
   String toString() => toJson().toString();
 

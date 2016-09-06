@@ -13,34 +13,26 @@
 
 part of openreception.framework.model;
 
-/**
- * Model class representing a peer account. Used in
- */
+/// Model class representing a peer account.
+///
+/// Used for generating new xml peer accounts in the FreeSWITCH config.
 class PeerAccount {
   final String username;
   final String password;
   final String context;
 
-  /**
-   * Default constructor.
-   */
+  /// Default constructor.
   const PeerAccount(this.username, this.password, this.context);
 
-  /**
-   * Deserializing factory.
-   */
+  /// Deserializing factory.
   static PeerAccount decode(Map map) =>
       new PeerAccount(map[key.username], map[key.password], map[key.context]);
 
-  /**
-   * Serialization function.
-   */
+  /// Serialization function.
   Map toJson() =>
       {key.username: username, key.password: password, key.context: context};
 
-  /**
-   * Returns a string representation of the [PeerAccount].
-   */
+  /// Returns a string representation of the [PeerAccount].
   @override
   String toString() => '$username ($context)';
 }

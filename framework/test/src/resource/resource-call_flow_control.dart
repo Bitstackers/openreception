@@ -36,29 +36,18 @@ void _testResourceCallFlowControl() {
 abstract class _ResourceCallFlowControl {
   static Uri callFlowControlUri = Uri.parse('http://localhost:4242');
 
-  /**
-   *
-   */
   static void activeRecordings() => expect(
       resource.CallFlowControl.activeRecordings(callFlowControlUri),
       equals(Uri.parse('$callFlowControlUri/activerecording')));
 
-  /**
-   *
-   */
   static void activeRecording() => expect(
       resource.CallFlowControl.activeRecording(callFlowControlUri, 'abc'),
       equals(Uri.parse('$callFlowControlUri/activerecording/abc')));
-  /**
-   *
-   */
+
   static void agentStatistics() => expect(
       resource.CallFlowControl.agentStatistics(callFlowControlUri),
       equals(Uri.parse('$callFlowControlUri/agentstatistics')));
 
-  /**
-   *
-   */
   static void agentStatistic() => expect(
       resource.CallFlowControl.agentStatistic(callFlowControlUri, 99),
       equals(Uri.parse('$callFlowControlUri/agentstatistics/99')));

@@ -25,9 +25,6 @@ void _testModelHourAction() {
 }
 
 abstract class _HourAction {
-  /**
-   *
-   */
   static void serialization() {
     model.HourAction builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
@@ -36,9 +33,6 @@ abstract class _HourAction {
     expect(serializedObject, isNotEmpty);
   }
 
-  /**
-   *
-   */
   static void deserialization() {
     model.HourAction builtObject = buildObject();
 
@@ -50,9 +44,6 @@ abstract class _HourAction {
     expect(builtObject.toString(), isNotEmpty);
   }
 
-  /**
-   *
-   */
   static model.HourAction buildObject() {
     final List<model.OpeningHour> openHours = [
       new model.OpeningHour.empty()
@@ -81,8 +72,5 @@ abstract class _HourAction {
     return builtObject;
   }
 
-  /**
-   *
-   */
   static void parse() {}
 }

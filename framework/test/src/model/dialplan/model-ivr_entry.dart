@@ -25,9 +25,6 @@ void _testModelIvrEntry() {
 }
 
 abstract class _ModelIvrEntry {
-  /**
-   *
-   */
   static void serialization() {
     model.IvrMenu builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
@@ -36,9 +33,6 @@ abstract class _ModelIvrEntry {
     expect(serializedObject, isNotEmpty);
   }
 
-  /**
-   *
-   */
   static void serializationDeserialization() {
     model.IvrMenu builtObject = buildObject();
 
@@ -67,9 +61,6 @@ abstract class _ModelIvrEntry {
     expect(builtObject.entries, equals(deserializedObject.entries));
   }
 
-  /**
-   *
-   */
   static model.IvrMenu buildObject() {
     final String name = 'ivr_1';
     final String filename = 'somefile.wav';
@@ -98,9 +89,6 @@ abstract class _ModelIvrEntry {
     return builtObject;
   }
 
-  /**
-   *
-   */
   static void parseSubmenu() {
     final String submenu = 'sub_1';
 
@@ -111,9 +99,6 @@ abstract class _ModelIvrEntry {
     expect(builtObject.name, equals(submenu));
   }
 
-  /**
-   *
-   */
   static void parseIvrTransfer() {
     final String extension = '33444222';
 
@@ -125,9 +110,6 @@ abstract class _ModelIvrEntry {
     expect(builtObject.transfer.extension, equals(extension));
   }
 
-  /**
-   *
-   */
   static void parseIvrReceptionTransfer() {
     final String extension = '33444222';
 
@@ -139,9 +121,6 @@ abstract class _ModelIvrEntry {
     expect(builtObject.transfer.extension, equals(extension));
   }
 
-  /**
-   *
-   */
   static void parseIvrVoicemail() {
     final String vmBox = 'vm-33444222';
     final String recipient = 'krc@awesome.me';
@@ -174,9 +153,6 @@ abstract class _ModelIvrEntry {
     expect(builtObject.voicemail.note, equals(note));
   }
 
-  /**
-   *
-   */
   static void parseTopmenu() {
     model.IvrTopmenu builtObject = model.IvrEntry.parse('*: topmenu');
 
@@ -184,9 +160,6 @@ abstract class _ModelIvrEntry {
     expect(builtObject, new isInstanceOf<model.IvrEntry>());
   }
 
-  /**
-   *
-   */
   static void parseUndefined() {
     final String filename = 'somefile.wav';
     //final String note = 'Just a test';

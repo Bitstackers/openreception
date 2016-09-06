@@ -13,10 +13,8 @@
 
 part of openreception.framework.model;
 
-/**
- * A summary of agent stats, such as amount of outbound calls and amount of
- * calls answered within specific time limits.
- */
+/// A summary of agent stats, such as amount of outbound calls and amount of
+/// calls answered within specific time limits.
 class CdrAgentSummary {
   int answered10 = 0; // Calls answered <=10 seconds
   int answered10To20 = 0; // Calls answered >10 && <=20 seconds
@@ -30,14 +28,10 @@ class CdrAgentSummary {
   int shortCalls = 0; // Calls that lasted <= config.shortCallBoundaryInSeconds
   int uid = 0; // The agent id
 
-  /**
-   * Constructor.
-   */
+  /// Default constructor.
   CdrAgentSummary();
 
-  /**
-   * JSON constructor
-   */
+  /// JSON constructor
   CdrAgentSummary.fromJson(Map json, {bool alsoCdrFiles: true}) {
     answered10 = json[key.CdrKey.answered10];
     answered10To20 = json[key.CdrKey.answered10to20];
@@ -53,9 +47,7 @@ class CdrAgentSummary {
     uid = json[key.CdrKey.uid];
   }
 
-  /**
-   * Add [other] to this. Retains the [uid] of this.
-   */
+  /// Add [other] to this. Retains the [uid] of this.
   void add(CdrAgentSummary other, {bool alsoCdrFiles: true}) {
     answered10 += other.answered10;
     answered10To20 += other.answered10To20;
@@ -87,10 +79,9 @@ class CdrAgentSummary {
       };
 }
 
-/**
- * A summary of how calls have been handled for a specific reception. Contains
- * info about cost, amount, fails and agents.
- */
+/// A summary of how calls have been handled for a specific reception.
+///
+/// Contains info about cost, amount, fails and agents.
 class CdrSummary {
   List<CdrAgentSummary> agentSummaries = new List<CdrAgentSummary>();
   List<String> cdrFiles = new List<String>();
@@ -101,14 +92,10 @@ class CdrSummary {
   int outboundByPbx = 0; // Amount of outbound calls made by voicemail
   int rid = 0; // The reception id
 
-  /**
-   * Constructor.
-   */
+  /// Default constructor.
   CdrSummary();
 
-  /**
-   * JSON constructor.
-   */
+  /// JSON constructor.
   CdrSummary.fromJson(Map json, {bool alsoCdrFiles: true}) {
     (json[key.CdrKey.agentSummaries] as List).forEach((Map value) {
       agentSummaries
@@ -125,9 +112,7 @@ class CdrSummary {
     rid = json[key.CdrKey.rid];
   }
 
-  /**
-   * Add [other] to this. Retains the [rid] of this.
-   */
+  /// Add [other] to this. Retains the [rid] of this.
   void add(CdrSummary other, {bool alsoCdrFiles: true}) {
     for (CdrAgentSummary agentSummary in other.agentSummaries) {
       final CdrAgentSummary found = getAgentSummary(agentSummary.uid);
@@ -144,17 +129,14 @@ class CdrSummary {
     outboundCost += other.outboundCost;
   }
 
-  /**
-   * Return the [uid] [CdrAgentSummary]. If none exists, return a new
-   * [CdrAgentSummary] object.
-   */
+  /// Return the [uid] [CdrAgentSummary].
+  ///
+  /// If none exists, return a new [CdrAgentSummary] object.
   CdrAgentSummary getAgentSummary(int uid) =>
       agentSummaries.firstWhere((CdrAgentSummary as) => as.uid == uid,
           orElse: () => new CdrAgentSummary()..uid = uid);
 
-  /**
-   * Return a list comprised of all the CDR files for this summary.
-   */
+  /// Return a list comprised of all the CDR files for this summary.
   List<String> getAllCdrFiles() {
     final List<String> cdr = new List<String>()..addAll(cdrFiles);
     for (CdrAgentSummary a in agentSummaries) {
@@ -163,9 +145,7 @@ class CdrSummary {
     return cdr;
   }
 
-  /**
-   * Add the [agentSummary] object to the [CdrSummary].
-   */
+  /// Add the [agentSummary] object to the [CdrSummary].
   void setAgentSummary(CdrAgentSummary agentSummary) {
     agentSummaries
         .removeWhere((CdrAgentSummary old) => old.uid == agentSummary.uid);

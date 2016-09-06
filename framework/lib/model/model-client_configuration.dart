@@ -13,11 +13,9 @@
 
 part of openreception.framework.model;
 
-/**
- * Configuration for clients. Is provided by the config server and contains
- * information about where to locate the various services provided by the
- * server stack.
- */
+/// Configuration for clients. Is provided by the config server and contains
+/// information about where to locate the various services provided by the
+/// server stack.
 class ClientConfiguration {
   Uri authServerUri;
   Uri calendarServerUri;
@@ -34,14 +32,10 @@ class ClientConfiguration {
   String systemLanguage;
   Uri userServerUri;
 
-  /**
-   * Build an uninitialized object
-   */
+  /// Build an uninitialized object
   ClientConfiguration.empty();
 
-  /**
-   * Build an object from a serialized map.
-   */
+  /// Build an object from a serialized map.
   ClientConfiguration.fromMap(Map map)
       : authServerUri = Uri.parse(map[key.authServerURI]),
         calendarServerUri = Uri.parse(map[key.calendarServerUri]),

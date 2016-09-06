@@ -13,14 +13,15 @@
 
 part of openreception.framework.model;
 
-/**
- * 'Enum' type representing the different states of a user, in the context of
- * being able to pickup calls. As an example; a user in the the 'idle' state
- * may pick up a call, while a user that is 'paused' may not.
- * UserState does not imply connectivity, so other states such as [PeerState]
- * or [ClientConnection] should always also be checked before detemining wheter
- * a user is connectable or not.
- */
+/// 'Enum' type representing the different states of a user, in the
+/// context of being able to pickup calls.
+///
+/// As an example; a user in the the 'idle' state may pick up a call, while
+/// a user that is 'paused' may not.
+///
+/// UserState does not imply connectivity, so other states such
+/// as [PeerState] or [ClientConnection] should always also be checked
+/// before detemining wheter a user is connectable or not.
 abstract class UserState {
   static const String ready = 'ready';
   static const String paused = 'paused';

@@ -136,3 +136,73 @@ class EslConfig {
           help: 'The port of the ESL server');
   }
 }
+
+/// Standard configuration values, common among all server configurations.
+abstract class StandardConfig {
+  const StandardConfig();
+  String get externalHostName => 'localhost';
+
+  String get serverToken => 'veeerysecret';
+
+  int get httpPort;
+
+  Uri get externalUri => Uri.parse('http://$externalHostName:$httpPort');
+}
+
+/// Authentication server configuration values.
+class AuthServer extends StandardConfig {
+  final Duration tokenLifetime;
+  final String clientId;
+  final String clientSecret;
+  final String tokenDir;
+
+  @override
+  final int httpPort = 4050;
+
+  const AuthServer(
+      {this.clientId: 'google-client-id',
+      this.tokenLifetime: const Duration(hours: 12),
+      this.clientSecret: 'google-client-secret',
+      this.tokenDir: ''});
+
+  /// Creates a new [AuthServer] configuration object from parsed
+  /// agument [results].
+  factory AuthServer.fromArgs(ArgResults results) {
+    final String clientId = results['google-client-id'];
+    final String clientSecret = results['google-client-secret'];
+    final Duration lifetime =
+        new Duration(seconds: int.parse(results['token-lifetime']));
+    final String tokenDir = results['token-dir'];
+
+    return new AuthServer(
+        clientId: clientId,
+        tokenLifetime: lifetime,
+        clientSecret: clientSecret,
+        tokenDir: tokenDir);
+  }
+
+  Uri get clientUri => Uri.parse('http://localhost:8080');
+
+  Uri get redirectUri => Uri.parse('$externalUri/token/oauth2callback');
+
+  /// An [ArgParser] suitable for parsing command line arguments.
+  ///
+  /// The [ArgParser] may be used to convert arguments into [ArgResults]
+  /// that can then be turned into [AuthServer] objects, using the
+  /// [AuthServer.fromArgs] constructor.
+  static ArgParser get argParser {
+    AuthServer defaults = const AuthServer();
+
+    return new ArgParser()
+      ..addOption('google-client-id',
+          defaultsTo: defaults.clientId, help: 'The Google client ID')
+      ..addOption('google-client-secret',
+          defaultsTo: defaults.clientSecret, help: 'The Google client secret')
+      ..addOption('token-lifetime',
+          defaultsTo: defaults.tokenLifetime.toString(),
+          help: 'The maximum lifetime of tokens (in seconds)')
+      ..addOption('token-dir',
+          defaultsTo: defaults.tokenDir,
+          help: 'The directory to load pre-made tokens from');
+  }
+}

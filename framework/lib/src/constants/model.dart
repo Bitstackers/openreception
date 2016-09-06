@@ -183,9 +183,7 @@ const String manuallyClosed = 'manuallyClosed';
 const String upperMessageId = 'upper_message_id';
 const String limit = 'limit';
 
-/**
- * Common CDR related keys.
- */
+/// Common CDR related keys.
 class CdrKey {
   static final String agentBeginEpoch = 'agentBeginEpoch';
   static final String agentChannel = 'agentChannel';

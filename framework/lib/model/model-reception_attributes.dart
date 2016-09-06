@@ -22,14 +22,8 @@ class ReceptionAttributeChange implements ObjectChange {
   final int cid;
   final int rid;
 
-  /**
-   *
-   */
   ReceptionAttributeChange(this.changeType, this.cid, this.rid);
 
-  /**
-   *
-   */
   ReceptionAttributeChange.fromJson(Map map)
       : changeType = changeTypeFromString(map[key.change]),
         cid = map[key.cid],
@@ -39,9 +33,7 @@ class ReceptionAttributeChange implements ObjectChange {
       new ReceptionAttributeChange(
           changeTypeFromString(map[key.change]), map[key.cid], map[key.rid]);
 
-  /**
-   *
-   */
+  /// Serialization function.
   @override
   Map toJson() => {
         key.change: changeTypeToString(changeType),
@@ -92,9 +84,7 @@ class ReceptionAttributes {
         relations = map[key.relations] as List<String>,
         responsibilities = map[key.responsibilities] as List<String>;
 
-  /**
-   * [ReceptionAttributes] empty constructor.
-   */
+  /// [ReceptionAttributes] empty constructor.
   ReceptionAttributes.empty();
 
   static ReceptionAttributes decode(Map map) =>

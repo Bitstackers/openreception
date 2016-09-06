@@ -13,14 +13,21 @@
 
 part of openreception.framework.model;
 
-/**
- * Valid states for a message.
- */
-enum MessageState { unknown, draft, sent, closed }
+/// Valid states for a message.
+enum MessageState {
+  /// Default initialized state, without anything other specified.
+  unknown,
 
-/**
- *
- */
+  /// Message is current a draft in composition.
+  draft,
+
+  /// Message has been sent
+  sent,
+
+  /// Message has been closed manually
+  closed
+}
+
 class Message {
   static const int noId = 0;
 
@@ -39,11 +46,10 @@ class Message {
   /// The user of the sender.
   User sender;
 
+  /// Default empty constructor.
   Message.empty();
 
-  /**
-   *
-   */
+  /// Deserializing constructor.
   Message.fromMap(Map map) {
     Iterable<MessageEndpoint> iterRcp =
         (map[key.recipients] as Iterable).map(MessageEndpoint.decode);

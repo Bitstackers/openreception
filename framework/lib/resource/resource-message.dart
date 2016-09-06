@@ -13,10 +13,8 @@
 
 part of openreception.framework.resource;
 
-/**
- * Protocol wrapper class for building homogenic REST
- * resources across servers and clients.
- */
+/// Protocol wrapper class for building homogenic REST resources across
+/// servers and clients.
 abstract class Message {
   static const String _ns = 'message';
 
@@ -37,9 +35,6 @@ abstract class Message {
         .parse('${util.removeTailingSlashes(host)}/$_ns/list$filterParameter');
   }
 
-  /**
-   *
-   */
   static Uri listDay(Uri host, DateTime day,
       {model.MessageFilter filter: null}) {
     final String filterParameter =
@@ -50,9 +45,6 @@ abstract class Message {
     return Uri.parse('$host/message/list/$dateString$filterParameter');
   }
 
-  /**
-   * I'm an empty comment
-   */
   static Uri listDrafts(Uri host, {model.MessageFilter filter: null}) {
     final String filterParameter =
         filter != null ? '?filter=${JSON.encode(filter)}' : '';
@@ -60,9 +52,6 @@ abstract class Message {
     return Uri.parse('$host/message/list/drafts$filterParameter');
   }
 
-  /**
-   *
-   */
   static Uri changeList(Uri host, [int mid]) {
     if (mid == null) {
       return Uri.parse('$host/$_ns/history');

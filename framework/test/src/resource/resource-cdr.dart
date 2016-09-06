@@ -30,9 +30,6 @@ abstract class _ResourceCDR {
   static void root() =>
       expect(resource.CDR.root(_host), equals(Uri.parse('$_host/cdr')));
 
-  /**
-   *
-   */
   static void list() {
     final String from = new DateTime.now().millisecondsSinceEpoch.toString();
     final String to = new DateTime.now()

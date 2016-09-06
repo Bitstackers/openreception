@@ -23,13 +23,7 @@ void _testModelNamedExtension() {
   });
 }
 
-/**
-*
- */
 abstract class _ModelNamedExtension {
-/**
- *
- */
   static void serialization() {
     model.NamedExtension builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
@@ -38,14 +32,12 @@ abstract class _ModelNamedExtension {
     expect(serializedObject, isNotEmpty);
   }
 
-/**
- *
- */
   static void deserialization() {
     model.NamedExtension builtObject = buildObject();
 
-    model.NamedExtension deserializedObject =
-        model.NamedExtension.decode(JSON.decode(JSON.encode(builtObject)));
+    final map = JSON.decode(JSON.encode(builtObject)) as Map<String, dynamic>;
+
+    model.NamedExtension deserializedObject = model.NamedExtension.decode(map);
 
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
 
@@ -54,9 +46,6 @@ abstract class _ModelNamedExtension {
     expect(builtObject.actions, equals(builtObject.actions));
   }
 
-/**
- *
- */
   static model.NamedExtension buildObject() {
     final name = 'extension-1';
     final List<model.Action> actions = [

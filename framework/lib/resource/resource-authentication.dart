@@ -13,30 +13,26 @@
 
 part of openreception.framework.resource;
 
-/**
- * Protocol wrapper class for building homogenic REST
- * resources across servers and clients.
- */
+/// Protocol wrapper class for building homogenic REST resources across
+/// servers and clients.
 abstract class Authentication {
   /// The intial component of the Uri.
-  static String nameSpace = 'token';
+  static String _ns = 'token';
 
-  /**
-   * Resource that returns the user currently associated with a token.
-   * Has the format http:/<host>/token/<requestedToken>
-   */
+  /// Resource that returns the user currently associated with a token.
+  ///
+  /// Has the format http:/<host>/token/<requestedToken>
   static Uri tokenToUser(Uri host, String requestedToken) =>
       Uri.parse('${util.removeTailingSlashes(host)}'
-          '/$nameSpace'
+          '/$_ns'
           '/$requestedToken');
 
-  /**
-   * Resource that checks if a is user currently associated with a token.
-   * Has the format http:/<host>/token/<requestedToken>/validate
-   */
+  /// Resource that checks if a is user currently associated with a token.
+  ///
+  /// Has the format http:/<host>/token/<requestedToken>/validate
   static Uri validate(Uri host, String requestedToken) =>
       Uri.parse('${util.removeTailingSlashes(host)}'
-          '/$nameSpace'
+          '/$_ns'
           '/$requestedToken'
           '/validate');
 }

@@ -14,14 +14,11 @@
 part of openreception.framework.model;
 
 class TemplateSMS extends Template {
-  /**
-   * Constructor.
-   */
+  /// Default constructor.
   TemplateSMS(Message _message) : super(_message);
 
-  /**
-   * Return the [Message] body as text suited for an SMS or older email clients.
-   */
+  /// Return the [Message] body as text suited for an SMS or older email
+  /// clients.
   @override
   String get bodyText =>
       'Fra ${_message.callerInfo.name}${_message.callerInfo.company.isEmpty ? '' : ', ${_message.callerInfo.company}'}\n'

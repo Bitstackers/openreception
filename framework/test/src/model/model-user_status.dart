@@ -23,9 +23,7 @@ void _testModelUserStatus() {
 }
 
 abstract class _ModelUserStatus {
-  /**
-   * Merely asserts that no exceptions arise.
-   */
+  /// Merely asserts that no exceptions arise during a deserialization.
   static void deserialization() {
     model.UserStatus built = buildObject();
     String serializedObject = JSON.encode(built);

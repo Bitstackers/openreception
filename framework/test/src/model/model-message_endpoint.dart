@@ -41,9 +41,7 @@ abstract class _ModelMessageEndpoint {
     expect(serializedObject, isNotEmpty);
   }
 
-  /**
-   * Build an object manually.
-   */
+  /// Build an object manually.
   static model.MessageEndpoint buildObject() {
     final String name = 'John Arbuckle';
     final String address = 'test@test.test';

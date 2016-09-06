@@ -13,33 +13,19 @@
 
 part of openreception.framework.resource;
 
-/**
- * Protocol wrapper class for building homogenic REST
- * resources across servers and clients.
- */
+/// Protocol wrapper class for building homogenic REST resources across
+/// servers and clients.
 abstract class Ivr {
   static const String _ns = 'ivr';
 
-  /**
-   *
-   */
   static Uri list(Uri host) => Uri.parse('$host/$_ns');
 
-  /**
-   *
-   */
   static Uri single(Uri host, String menuName) =>
       Uri.parse('$host/$_ns/$menuName');
 
-  /**
-   *
-   */
   static Uri deploy(Uri host, String menuName) =>
       Uri.parse('$host/$_ns/$menuName/deploy');
 
-  /**
-   *
-   */
   static Uri changeList(Uri host, [String menuName]) {
     if (menuName == null) {
       return Uri.parse('$host/$_ns/history');
@@ -48,9 +34,6 @@ abstract class Ivr {
     }
   }
 
-  /**
-   *
-   */
   static Uri changelog(Uri host, String menuName) =>
       Uri.parse('$host/$_ns/$menuName/changelog');
 }

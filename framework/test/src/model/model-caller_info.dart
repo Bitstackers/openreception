@@ -45,9 +45,7 @@ abstract class _ModelCallerInfo {
     expect(serializedObject, isNotEmpty);
   }
 
-  /**
-   * Build an object, and check that the expected values are present.
-   */
+  /// Build an object, and check that the expected values are present.
   static model.CallerInfo buildObject() {
     final String cellPhone = '666';
     final String company = 'Inferno Ltd.';

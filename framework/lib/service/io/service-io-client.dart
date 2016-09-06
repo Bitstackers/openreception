@@ -13,9 +13,7 @@
 
 part of openreception.framework.service.io;
 
-/**
- * HTTP Client for use with dart:io.
- */
+/// HTTP Client for use with dart:io.
 class Client extends service.WebService {
   static final io.ContentType _contentTypeJson =
       new io.ContentType("application", "json", charset: "utf-8");
@@ -24,10 +22,10 @@ class Client extends service.WebService {
 
   final io.HttpClient client = new io.HttpClient();
 
-  /**
-   * Retrives [resource] using HTTP GET.
-   * Throws subclasses of [StorageException] upon failure.
-   */
+  /// Retrives [resource] using HTTP GET.
+  ///
+  /// Throws subclasses of [StorageException] upon failure.
+
   @override
   Future<String> get(Uri resource) async {
     io.HttpClientRequest request = await client.getUrl(resource);
@@ -36,10 +34,9 @@ class Client extends service.WebService {
     return await _handleResponse(response, 'GET', resource);
   }
 
-  /**
-   * Retrives [resource] using HTTP PUT, sending [payload].
-   * Throws subclasses of [StorageException] upon failure.
-   */
+  /// Retrives [resource] using HTTP PUT, sending [payload].
+  ///
+  /// Throws subclasses of [StorageException] upon failure.
   @override
   Future<String> put(Uri resource, String payload) async {
     io.HttpClientRequest request = await client.putUrl(resource)
@@ -50,10 +47,9 @@ class Client extends service.WebService {
     return await _handleResponse(response, 'PUT', resource);
   }
 
-  /**
-   * Retrives [resource] using HTTP POST, sending [payload].
-   * Throws subclasses of [StorageException] upon failure.
-   */
+  /// Retrives [resource] using HTTP POST, sending [payload].
+  ///
+  /// Throws subclasses of [StorageException] upon failure.
   @override
   Future<String> post(Uri resource, String payload) async {
     io.HttpClientRequest request = await client.postUrl(resource)
@@ -64,10 +60,10 @@ class Client extends service.WebService {
     return await _handleResponse(response, 'POST', resource);
   }
 
-  /**
-   * Retrives [resource] using HTTP POST, sending [payload] as a from.
-   * Throws subclasses of [StorageException] upon failure.
-   */
+  /// Retrives [resource] using HTTP POST, sending [payload] as a form.
+  ///
+  /// Throws subclasses of [StorageException] upon failure.
+
   Future<String> postForm(Uri resource, Map payload) async {
     io.HttpClientRequest request = await client.postUrl(resource)
       ..headers.contentType = _contentTypeApplicationForm
@@ -77,10 +73,9 @@ class Client extends service.WebService {
     return await _handleResponse(response, 'POST', resource);
   }
 
-  /**
-   * Retrives [resource] using HTTP DELETE.
-   * Throws subclasses of [StorageException] upon failure.
-   */
+  /// Retrives [resource] using HTTP DELETE.
+  ///
+  /// Throws subclasses of [StorageException] upon failure.
   @override
   Future<String> delete(Uri resource) async {
     io.HttpClientRequest request = await client.deleteUrl(resource);

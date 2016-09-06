@@ -60,9 +60,7 @@ abstract class _ModelClientConfiguration {
         builtObject.systemLanguage, equals(deserializedObject.systemLanguage));
   }
 
-  /**
-   * Build an object, and check that the expected values are present.
-   */
+  /// Build an object, and check that the expected values are present.
   static model.ClientConfiguration buildObject() {
     final Uri authServerUri = Uri.parse('http://authserver.example.com');
     final Uri userServerUri = Uri.parse('http://userserver.example.com');

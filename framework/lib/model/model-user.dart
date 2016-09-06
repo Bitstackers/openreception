@@ -13,9 +13,6 @@
 
 part of openreception.framework.model;
 
-/**
- *
- */
 abstract class UserGroups {
   static const String receptionist = 'Receptionist';
   static const String administrator = 'Administrator';
@@ -30,9 +27,6 @@ abstract class UserGroups {
   static bool isValid(String group) => validGroups.toSet().contains(group);
 }
 
-/**
- *
- */
 class UserChange implements ObjectChange {
   @override
   final ChangeType changeType;
@@ -41,24 +35,16 @@ class UserChange implements ObjectChange {
   final ObjectType objectType = ObjectType.user;
   final int uid;
 
-  /**
-   *
-   */
   UserChange(this.changeType, this.uid);
 
   UserChange.fromJson(Map map)
       : changeType = changeTypeFromString(map[key.change]),
         uid = map[key.uid];
 
-  /**
-   *
-   */
   static UserChange decode(Map map) =>
       new UserChange(changeTypeFromString(map[key.change]), map[key.uid]);
 
-  /**
-   *
-   */
+  /// Serialization function.
   @override
   Map toJson() => {
         key.change: changeTypeToString(changeType),
@@ -67,9 +53,6 @@ class UserChange implements ObjectChange {
       };
 }
 
-/**
- *
- */
 class UserReference implements ObjectReference {
   @override
   final int id;
@@ -80,6 +63,8 @@ class UserReference implements ObjectReference {
 
   static UserReference decode(Map map) =>
       new UserReference(map[key.id], map[key.name]);
+
+  /// Serialization function.
   @override
   Map toJson() => {key.id: id, key.name: name};
 
@@ -90,9 +75,6 @@ class UserReference implements ObjectReference {
   bool operator ==(Object other) => other is UserReference && other.id == id;
 }
 
-/**
- *
- */
 class User {
   static const int noId = 0;
 
@@ -104,14 +86,10 @@ class User {
   Set<String> groups = new Set<String>();
   Set<String> identities = new Set<String>();
 
-  /**
-   * Constructor for creating an empty object.
-   */
+  /// Constructor for creating an empty object.
   User.empty();
 
-  /**
-   * Constructor.
-   */
+  /// Deserializing constructor.
   User.fromMap(Map map)
       : id = map[key.id],
         address = map[key.address],
@@ -124,13 +102,10 @@ class User {
             ? (map['remote_attributes'] as Map)['picture']
             : '';
 
-  /**
-   * Deserializing factory
-   */
+  /// Deserializing factory
   static User decode(Map map) => new User.fromMap(map);
-  /**
-   *
-   */
+
+  /// Serialization function.
   Map toJson() => {
         key.id: id,
         key.name: name,
@@ -140,8 +115,5 @@ class User {
         key.groups: groups.toList(growable: false)
       };
 
-  /**
-   *
-   */
   UserReference get reference => new UserReference(id, name);
 }

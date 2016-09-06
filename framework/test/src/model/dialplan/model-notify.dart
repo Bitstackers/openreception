@@ -26,9 +26,6 @@ void _testModelNotify() {
 }
 
 abstract class _ModelNotify {
-  /**
-   *
-   */
   static void serialization() {
     model.Notify builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
@@ -37,9 +34,6 @@ abstract class _ModelNotify {
     expect(serializedObject, isNotEmpty);
   }
 
-  /**
-   *
-   */
   static void serializationDeserialization() {
     model.Notify builtObject = buildObject();
 
@@ -52,9 +46,6 @@ abstract class _ModelNotify {
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
   }
 
-  /**
-   *
-   */
   static model.Notify buildObject() {
     final String eventName = 'call-offer';
     final model.Notify builtObject = new model.Notify(eventName);
@@ -64,9 +55,6 @@ abstract class _ModelNotify {
     return builtObject;
   }
 
-  /**
-   *
-   */
   static void parse() {
     final String eventName = 'call-offer';
 

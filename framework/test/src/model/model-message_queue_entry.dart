@@ -63,9 +63,7 @@ abstract class _ModelMessageQueueEntry {
     expect(serializedObject, isNotEmpty);
   }
 
-  /**
-   * Build an object manually.
-   */
+  /// Build an object manually.
   static model.MessageQueueEntry buildObject() {
     final id = 666;
     //final lastTry = new DateTime.now();

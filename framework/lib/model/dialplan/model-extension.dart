@@ -29,7 +29,7 @@ abstract class Extension {
   List<Action> get actions;
 
   /// Serialization function.
-  Map toJson();
+  Map<String, dynamic> toJson();
 }
 
 /// Model class for an extension without conditions, other than the
@@ -50,11 +50,17 @@ class NamedExtension implements Extension {
   NamedExtension(this.name, this.actions);
 
   /// Decode a [Map] into a new [NamedExtension] object.
-  static NamedExtension decode(Map map) => new NamedExtension(map[key.name],
-      (map[key.actions] as Iterable).map(Action.parse).toList());
+  static NamedExtension decode(Map<String, dynamic> map) {
+    final Iterable<Action> actionIter =
+        (map[key.actions] as Iterable<dynamic>).map(Action.parse);
+
+    return new NamedExtension(
+        map[key.name], actionIter.toList(growable: false));
+  }
 
   /// Serialization function. Suitable for creating a new object from
   /// the static [decode] function.
   @override
-  Map toJson() => {key.name: name, key.actions: actions};
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{key.name: name, key.actions: actions};
 }

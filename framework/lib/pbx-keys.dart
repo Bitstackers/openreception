@@ -13,9 +13,7 @@
 
 library openreception.framework.pbx_keys;
 
-/**
- * This class contains '__or__' namespaced call related String constants.
- */
+/// This class contains '__or__' namespaced call related String constants.
 class ORPbxKey {
   static const String namespace = '__or__';
 
@@ -45,10 +43,10 @@ class ORPbxKey {
   static const String waitQueueEnter = namespace + 'wait-queue-enter';
 }
 
-/**
- * This class contains non-namespaced call related String constants. Note that there might be some
- * overlap with keys found in [ORPbxKey]. Use the latter if you need the '__OR__' namespace.
- */
+/// This class contains non-namespaced call related String constants.
+///
+/// Note that there might be some overlap with keys found in [ORPbxKey].
+/// Use the latter if you need the '__OR__' namespace.
 class PbxKey {
   static const String answerEpoch = 'answer_epoch';
   static const String billSec = 'billsec';

@@ -229,48 +229,34 @@ class DailyReport {
     return util.never;
   }
 
-  /**
-   * Retrieve the call history of a single agent.
-   */
+  /// Retrieve the call history of a single agent.
   Iterable<HistoricCall> callsOfUid(int uid) =>
       callHistory.where((HistoricCall ch) => ch.uid == uid);
 
-  /**
-   * Retrieve the call history of a single agent.
-   */
+  /// Retrieve the call history of a single agent.
   Iterable<MessageHistory> messagesOfUid(int uid) =>
       messageHistory.where((MessageHistory mh) => mh.uid == uid);
 
-  /**
-   * Retrieve the uids involved in the daily report.
-   */
+  /// Retrieve the uids involved in the daily report.
   Iterable<int> get uids =>
       callHistory.map((HistoricCall ch) => ch.uid).toSet();
 
-  /**
-   * Add a (completed) call history object to the report.
-   */
+  /// Add a (completed) call history object to the report.
   void addCallHistory(ActiveCall ac) {
     callHistory.add(new HistoricCall.fromActiveCall(ac));
   }
 
-  /**
-   * Add a [MessageHistory] history object to the report.
-   */
+  /// Add a [MessageHistory] history object to the report.
   void addMessageHistory(MessageHistory history) {
     messageHistory.add(history);
   }
 
-  /**
-     * Add a [UserStateHistory] history object to the report.
-     */
+  /// Add a [UserStateHistory] history object to the report.
   void addUserStateChange(UserStateHistory history) {
     userStateHistory.add(history);
   }
 
-  /**
-   *
-   */
+  /// Serialization function.
   Map toJson() => {
         'calls': callHistory.map((ch) => ch.toJson()).toList(growable: false),
         'messages':
@@ -282,20 +268,11 @@ class _HistoricCallEvent {
   final DateTime timestamp;
   final String eventName;
 
-  /**
-   *
-   */
   const _HistoricCallEvent(this.timestamp, this.eventName);
 
-  /**
-   *
-   */
   factory _HistoricCallEvent.fromJson(Map map) =>
       new _HistoricCallEvent(DateTime.parse(map['t']), map['e']);
 
-  /**
-   *
-   */
   Map toJson() => {'t': timestamp.toString(), 'e': eventName};
 }
 
@@ -331,9 +308,6 @@ class HistoricCall {
 
   bool get unAssigned => uid == User.noId;
 
-  /**
-   *
-   */
   Duration get answerLatency {
     if (!inbound) {
       return null;
@@ -352,9 +326,6 @@ class HistoricCall {
     return pickupEvent.timestamp.difference(offerEvent.timestamp);
   }
 
-  /**
-   *
-   */
   Duration get lifeTime {
     final offerEvent = _events.firstWhere((e) => e.eventName == _callOfferKey);
 
@@ -364,14 +335,9 @@ class HistoricCall {
     return hangupEvent.timestamp.difference(offerEvent.timestamp);
   }
 
-  /**
-   * Determines if the call was answered.
-   */
+  /// Determines if the call was answered.
   bool get isAnswered => _events.any((e) => e.eventName == _callPickupKey);
 
-  /**
-   *
-   */
   Duration get handleTime {
     final offerEvent = _events.firstWhere((e) => e.eventName == _callOfferKey);
 
@@ -390,9 +356,6 @@ class HistoricCall {
         'es': _events.map((e) => e.toJson()).toList(growable: false)
       };
 
-  /**
-   *
-   */
   @override
   int get hashCode => callId.hashCode;
 
@@ -420,9 +383,6 @@ class ActiveCall {
       .call
       .cid;
 
-  /**
-   *
-   */
   String get callId => _events.isNotEmpty ? _events.first.call.id : Call.noId;
 
   void addEvent(_event.Event e) {
@@ -430,10 +390,9 @@ class ActiveCall {
     _events.sort((e1, e2) => e1.timestamp.compareTo(e2.timestamp));
   }
 
-  /**
-   * Retrieve the uid of the agent that call was assigned to. If the call
-   * was never assigned, returns [model.User.noId].
-   */
+  /// Retrieve the uid of the agent that call was assigned to.
+  ///
+  /// If the call was never assigned, returns [model.User.noId].
   int get assignee => _events
       .firstWhere((_event.CallEvent ce) => ce.call.assignedTo != User.noId,
           orElse: () => _events.first)
@@ -455,7 +414,7 @@ class ActiveCall {
       'inbound:$inbound\n'
       '${eventString()}';
 
-  ///
+  /// Determine if the call is inbound.
   bool get inbound => _events.first.call.inbound;
 
   bool get isAnswered =>
@@ -473,9 +432,6 @@ class ActiveCall {
   bool operator ==(Object other) =>
       other is ActiveCall && other.callId == callId;
 
-  /**
-   *
-   */
   Duration get answerLatency {
     if (!inbound) {
       return null;
@@ -502,22 +458,16 @@ class UserStateHistory {
   final DateTime timestamp;
   final bool pause;
 
-  /**
-   * Default constructor
-   */
+  /// Default constructor
   const UserStateHistory(this.uid, this.timestamp, this.pause);
 
-  /**
-   * Deserilizing constructor.
-   */
+  /// Deserializing constructor.
   UserStateHistory.fromMap(Map map)
       : uid = map['uid'],
         timestamp = DateTime.parse(map['t']),
         pause = map['p'];
 
-  /**
-   * Serialization function
-   */
+  /// Serialization function
   Map toJson() => {'uid': uid, 't': timestamp.toString(), 'p': pause};
 
   @override

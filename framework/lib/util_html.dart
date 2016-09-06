@@ -15,9 +15,7 @@ library openreception.framework.utilities.html;
 
 import 'dart:html';
 
-/**
- * Replace ¤ with ⚙ and -> with ➔ in [elem].
- */
+/// Replace ¤ with ⚙ and -> with ➔ in [elem].
 void specialCharReplace(TextAreaElement elem) {
   final String orgValue = elem.value;
   final String newValue = elem.value.replaceAll('->', '➔').replaceAll('¤', '⚙');

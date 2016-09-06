@@ -23,14 +23,10 @@ abstract class Template {
 
   Template(this._message);
 
-  /**
-   * Return the [Message] body as text suited for an SMS or older email clients.
-   */
+  /// Return the [Message] body as text suited for an SMS or older email clients.
   String get bodyText;
 
-  /**
-   * Return the activated boolean [Message] fields as text.
-   */
+  /// Return the activated boolean [Message] fields as text.
   String get _booleanFieldsText =>
       '${_message.flag.called ? '(X) Har ringet\n' : ''}'
       '${_message.flag.pleaseCall ? '(X) Ring venligst\n' : ''}'

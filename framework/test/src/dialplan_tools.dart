@@ -29,9 +29,6 @@ void _testDialplanTools() {
 }
 
 class _DialplanToolsReceptionDialplan {
-  /**
-   *
-   */
   static void empty() {
     model.ReceptionDialplan rdp = new model.ReceptionDialplan();
 
@@ -39,9 +36,6 @@ class _DialplanToolsReceptionDialplan {
         .dialplanToXml(rdp, new model.Reception.empty()..name = 'ost'));
   }
 
-  /**
-   *
-   */
   static void openActions() {
     model.ReceptionDialplan rdp = new model.ReceptionDialplan()
       ..open = [
@@ -60,9 +54,6 @@ class _DialplanToolsReceptionDialplan {
         .dialplanToXml(rdp, new model.Reception.empty()..name = 'ost'));
   }
 
-  /**
-   *
-   */
   static void closedActions() {
     model.ReceptionDialplan rdp = new model.ReceptionDialplan()
       ..defaultActions = [new model.Playback('closed')];
@@ -71,9 +62,6 @@ class _DialplanToolsReceptionDialplan {
         .dialplanToXml(rdp, new model.Reception.empty()..name = 'ost'));
   }
 
-  /**
-   *
-   */
   static void bigDialplan() {
     model.ReceptionDialplan rdp = new model.ReceptionDialplan()
       ..open = [
@@ -110,9 +98,6 @@ class _DialplanToolsReceptionDialplan {
 }
 
 class _DialplanToolsIvrMenu {
-  /**
-   *
-   */
   static void empty() {
     model.IvrMenu menu =
         new model.IvrMenu('some menu', new model.Playback('greeting'));
@@ -121,9 +106,6 @@ class _DialplanToolsIvrMenu {
         .ivrToXml(menu));
   }
 
-  /**
-   *
-   */
   static void oneLevel() {
     model.IvrMenu menu =
         new model.IvrMenu('some menu', new model.Playback('greeting'))
@@ -140,9 +122,6 @@ class _DialplanToolsIvrMenu {
         .ivrToXml(menu));
   }
 
-  /**
-   *
-   */
   static void twoLevel() {
     model.IvrMenu menu =
         new model.IvrMenu('some-menu', new model.Playback('greeting'))

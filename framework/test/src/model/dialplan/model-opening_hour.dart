@@ -30,9 +30,6 @@ void _testModelOpeningHour() {
 }
 
 abstract class _ModelOpeningHour {
-  /**
-   *
-   */
   static void serialization() {
     model.OpeningHour builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
@@ -41,9 +38,6 @@ abstract class _ModelOpeningHour {
     expect(serializedObject, isNotEmpty);
   }
 
-  /**
-   *
-   */
   static void serializationDeserialization() {
     model.OpeningHour builtObject = buildObject();
 
@@ -55,9 +49,6 @@ abstract class _ModelOpeningHour {
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
   }
 
-  /**
-   *
-   */
   static model.OpeningHour buildObject() {
     final model.OpeningHour builtObject = new model.OpeningHour.empty()
       ..fromDay = model.WeekDay.mon
@@ -70,9 +61,6 @@ abstract class _ModelOpeningHour {
     return builtObject;
   }
 
-  /**
-   *
-   */
   static void parseSingle() {
     model.OpeningHour builtObject = model.OpeningHour.parse('mon-fri 8-17');
 
@@ -89,17 +77,11 @@ abstract class _ModelOpeningHour {
     expect(builtObject.toHour, equals(17));
   }
 
-  /**
-   *
-   */
   static void parseSingleFormatException() {
     expect(() => model.Notify.parse('mon-ved 8-17'),
         throwsA(new isInstanceOf<FormatException>()));
   }
 
-  /**
-   *
-   */
   static void printFormat() {
     expect(model.OpeningHour.parse('mon-fri 8-17').toJson(),
         equals('mon-fri 8:00-17:00'));
@@ -113,9 +95,6 @@ abstract class _ModelOpeningHour {
         equals('mon 8:00-17:00'));
   }
 
-  /**
-   *
-   */
   static void parseMultiple() {
     Iterable<model.OpeningHour> builtObjects =
         model.parseMultipleHours('mon-fri 8-17, sat 12-13');

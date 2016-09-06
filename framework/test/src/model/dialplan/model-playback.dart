@@ -26,9 +26,6 @@ void _testModelPlayback() {
 }
 
 abstract class _ModelPlayback {
-  /**
-   *
-   */
   static void serialization() {
     model.Playback builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
@@ -37,9 +34,6 @@ abstract class _ModelPlayback {
     expect(serializedObject, isNotEmpty);
   }
 
-  /**
-   *
-   */
   static void serializationDeserialization() {
     model.Playback builtObject = buildObject();
 
@@ -55,9 +49,6 @@ abstract class _ModelPlayback {
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
   }
 
-  /**
-   *
-   */
   static model.Playback buildObject() {
     final String filename = 'somefile.wav';
     final String note = 'Just a test';
@@ -69,9 +60,6 @@ abstract class _ModelPlayback {
     return builtObject;
   }
 
-  /**
-   *
-   */
   static void parse() {
     final String filename = 'somefile.wav';
     final String note = 'Just a test';

@@ -13,9 +13,6 @@
 
 part of openreception.framework.test;
 
-/**
- *
- */
 void _testModelReceptionDialplan() {
   group('Model.ReceptionDialplan', () {
     test('buildObject', _ModelReceptionDialplan.buildObject);
@@ -28,9 +25,6 @@ void _testModelReceptionDialplan() {
   });
 }
 
-/**
- *
- */
 abstract class _ModelReceptionDialplan {
   static void deserialization() {
     model.ReceptionDialplan builtObject = buildObject();
@@ -45,9 +39,6 @@ abstract class _ModelReceptionDialplan {
         builtObject.defaultActions, equals(deserializedObject.defaultActions));
   }
 
-  /**
-   *
-   */
   static void serialization() {
     model.ReceptionDialplan builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
@@ -56,9 +47,6 @@ abstract class _ModelReceptionDialplan {
     expect(serializedObject, isNotEmpty);
   }
 
-  /**
-   *
-   */
   static model.ReceptionDialplan buildObject() {
     final String extension = '12345678';
     final String note = 'Just a test reception dialplan';

@@ -23,13 +23,7 @@ void _testModelPeerAccount() {
   });
 }
 
-/**
- *
- */
 abstract class _ModelPeerAccount {
-  /**
-   *
-   */
   static void serialization() {
     model.PeerAccount builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
@@ -38,9 +32,6 @@ abstract class _ModelPeerAccount {
     expect(serializedObject, isNotEmpty);
   }
 
-  /**
-   *
-   */
   static void deserialization() {
     model.PeerAccount built = _ModelPeerAccount.buildObject();
     model.PeerAccount deserialized =
@@ -51,9 +42,6 @@ abstract class _ModelPeerAccount {
     expect(built.context, equals(deserialized.context));
   }
 
-  /**
-   *
-   */
   static model.PeerAccount buildObject() {
     final String name = 'hal9000';
     final String password = 'I\'m afraid I cannot let you do that';

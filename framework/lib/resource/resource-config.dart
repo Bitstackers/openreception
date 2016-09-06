@@ -13,18 +13,16 @@
 
 part of openreception.framework.resource;
 
-/**
- * Protocol wrapper class for building homogenic REST
- * resources across servers and clients.
- */
+/// Protocol wrapper class for building homogenic REST resources across
+/// servers and clients.
 abstract class Config {
-  static String nameSpace = 'configuration';
+  static String _ns = 'configuration';
 
   static Uri get(Uri host) => root(host);
 
   static Uri root(Uri host) =>
-      Uri.parse('${util.removeTailingSlashes(host)}/$nameSpace');
+      Uri.parse('${util.removeTailingSlashes(host)}/$_ns');
 
   static Uri register(Uri host) =>
-      Uri.parse('${util.removeTailingSlashes(host)}/$nameSpace/register');
+      Uri.parse('${util.removeTailingSlashes(host)}/$_ns/register');
 }

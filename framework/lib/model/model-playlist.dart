@@ -13,6 +13,12 @@
 
 part of openreception.framework.model;
 
+/// Queue music playlist model class.
+///
+/// Used for generating an playlist xml configuration file within a
+/// FreeSWITCH config.
+///
+/// Currently unused.
 class Playlist {
   int id;
   String name;
@@ -24,14 +30,9 @@ class Playlist {
   int chimefreq;
   int chimemax;
 
-  /**
-   * Default empty constructor.
-   */
+  /// Default empty constructor.
   Playlist.empty();
 
-  /**
-   *
-   */
   Playlist.fromDb(int this.id, Map json) {
     name = json['name'];
     path = json['path'];

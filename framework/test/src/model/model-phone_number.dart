@@ -22,18 +22,14 @@ void _testModelPhoneNumber() {
 }
 
 abstract class _ModelPhoneNumber {
-  /**
-   * Merely asserts that no exceptions arise.
-   */
+  /// assert that no exceptions arise during serialization.
   static void serialization() {
     model.PhoneNumber builtObject = buildObject();
 
     expect(() => JSON.encode(builtObject), returnsNormally);
   }
 
-  /**
-   * Merely asserts that no exceptions arise.
-   */
+  /// Assert that no exceptions arise during a deserialization.
   static void deserialization() {
     model.PhoneNumber built = buildObject();
 
@@ -47,9 +43,6 @@ abstract class _ModelPhoneNumber {
     expect(built.toJson(), equals(decoded.toJson()));
   }
 
-  /**
-   *
-   */
   static model.PhoneNumber buildObject() {
     final String description = 'Cell Phone - work';
     final String value = '+45 44 88 1231';

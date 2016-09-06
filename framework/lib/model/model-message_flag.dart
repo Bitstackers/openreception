@@ -13,18 +13,14 @@
 
 part of openreception.framework.model;
 
-/**
- * 'bitvector' class representing different messageflags that can be set.
- */
+/// 'bitvector' class representing different messageflags that can be set.
 class MessageFlag {
   bool pleaseCall = false;
   bool willCallBack = false;
   bool called = false;
   bool urgent = false;
 
-  /**
-   * Default constructor.
-   */
+  /// Default constructor.
   MessageFlag(Iterable<String> flags) {
     pleaseCall = flags.contains(key.pleaseCall);
     willCallBack = flags.contains(key.willCallBack);
@@ -32,14 +28,10 @@ class MessageFlag {
     urgent = flags.contains(key.urgent);
   }
 
-  /**
-   * Default empty constructor.
-   */
+  /// Default empty constructor.
   MessageFlag.empty();
 
-  /**
-   * JSON serialization function.
-   */
+  /// JSON serialization function.
   List toJson() {
     List<String> retVal = [];
 

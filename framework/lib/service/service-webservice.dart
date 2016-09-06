@@ -13,10 +13,8 @@
 
 part of openreception.framework.service;
 
-/**
- * Superclass for abstracting away the griddy details of
- * client/server-specific web-clients.
- */
+/// Superclass for abstracting away the griddy details of
+/// client/server-specific web-clients.
 abstract class WebService {
   Future<String> get(Uri path);
   Future<String> put(Uri path, String payload);

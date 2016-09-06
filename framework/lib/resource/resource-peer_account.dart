@@ -13,10 +13,8 @@
 
 part of openreception.framework.resource;
 
-/**
- * Protocol wrapper class for building homogenic REST
- * resources across servers and clients.
- */
+/// Protocol wrapper class for building homogenic REST resources across
+/// servers and clients.
 abstract class PeerAccount {
   static Uri list(Uri host) => Uri.parse('$host/peeraccount');
 

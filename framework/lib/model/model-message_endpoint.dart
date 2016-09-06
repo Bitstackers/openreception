@@ -13,9 +13,7 @@
 
 part of openreception.framework.model;
 
-/**
- * 'Enum' type representing the different types of messaging endpoints.
- */
+/// 'Enum' type representing the different types of messaging endpoints.
 abstract class MessageEndpointType {
   static const String sms = 'sms';
   static const String emailTo = 'email-to';
@@ -25,11 +23,11 @@ abstract class MessageEndpointType {
   static const List<String> types = const [sms, emailTo, emailCc, emailBcc];
 }
 
-/**
- * Model class for a messaging endpoint. A messaging endpoint is any
- * destination idenfier that supports message delivery. The known types of
- * endpoints are identified by [MessageEndpointType].
- */
+/// Model class for a messaging endpoint.
+///
+/// A messaging endpoint is any destination idenfier that supports
+/// message delivery. The known types of endpoints are identified
+/// by [MessageEndpointType].
 class MessageEndpoint {
   /// Type of endpoint. Must be one of [MessageEndpointType.types].
   String type = MessageEndpointType.emailTo;
@@ -37,14 +35,10 @@ class MessageEndpoint {
   String address = '';
   String note = '';
 
-  /**
-   * Default empty constructor.
-   */
+  /// Default empty constructor.
   MessageEndpoint.empty();
 
-  /**
-   * Deserializing constructor.
-   */
+  /// Deserializing constructor.
   MessageEndpoint.fromMap(Map map) {
     type = map[key.type];
     name = map.containsKey(key.name) ? map[key.name] : '';
@@ -52,31 +46,17 @@ class MessageEndpoint {
     note = map[key.note];
   }
 
-  /**
-   * Deserializing factory
-   */
+  /// Deserializing factory
   static MessageEndpoint decode(Map map) => new MessageEndpoint.fromMap(map);
 
-  /**
-   * JSON encoding function.
-   */
-  Map toJson() => this.asMap;
-
-  /**
-   * Map representation of the object.
-   */
-  Map get asMap =>
+  /// JSON encoding function.
+  Map toJson() =>
       {key.type: type, key.address: address, key.name: name, key.note: note};
 
-  /**
-   * Stringify the object.
-   */
+  /// Stringify the object.
   @override
   String toString() => '$type:$address';
 
-  /**
-   *
-   */
   @override
   bool operator ==(Object other) =>
       other is MessageEndpoint &&

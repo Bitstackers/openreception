@@ -29,9 +29,6 @@ class RESTOrganizationStore implements storage.Organization {
 
   RESTOrganizationStore(Uri this.host, String this.token, this._backend);
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.BaseContact>> contacts(int oid) {
     Uri url = resource.Organization.contacts(this.host, oid);
@@ -41,9 +38,6 @@ class RESTOrganizationStore implements storage.Organization {
         (JSON.decode(response) as Iterable).map(model.BaseContact.decode));
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.ReceptionReference>> receptions(int oid) async {
     Uri url = resource.Organization.receptions(host, oid);
@@ -53,9 +47,6 @@ class RESTOrganizationStore implements storage.Organization {
         .map(model.ReceptionReference.decode);
   }
 
-  /**
-   *
-   */
   @override
   Future<model.Organization> get(int oid) {
     Uri url = resource.Organization.single(this.host, oid);
@@ -65,9 +56,6 @@ class RESTOrganizationStore implements storage.Organization {
         new model.Organization.fromMap(JSON.decode(response)));
   }
 
-  /**
-   *
-   */
   @override
   Future<model.OrganizationReference> create(
       model.Organization organization, model.User modifier) {
@@ -79,9 +67,6 @@ class RESTOrganizationStore implements storage.Organization {
         model.OrganizationReference.decode(JSON.decode(response)));
   }
 
-  /**
-   *
-   */
   @override
   Future<model.OrganizationReference> update(
       model.Organization organization, model.User modifier) {
@@ -93,9 +78,6 @@ class RESTOrganizationStore implements storage.Organization {
         model.OrganizationReference.decode(JSON.decode(response)));
   }
 
-  /**
-   *
-   */
   @override
   Future remove(int organizationID, model.User modifier) {
     Uri url = resource.Organization.single(this.host, organizationID);
@@ -105,9 +87,6 @@ class RESTOrganizationStore implements storage.Organization {
         new model.Organization.fromMap(JSON.decode(response)));
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.OrganizationReference>> list() {
     Uri url = resource.Organization.list(this.host, token: this.token);
@@ -118,9 +97,6 @@ class RESTOrganizationStore implements storage.Organization {
             .map(model.OrganizationReference.decode));
   }
 
-  /**
-   *
-   */
   @override
   Future<Iterable<model.Commit>> changes([int oid]) {
     Uri url = resource.Organization.changeList(host, oid);
@@ -132,9 +108,6 @@ class RESTOrganizationStore implements storage.Organization {
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }
 
-  /**
-   *
-   */
   Future<String> changelog(int oid) {
     Uri url = resource.Organization.changelog(host, oid);
     url = _appendToken(url, this.token);

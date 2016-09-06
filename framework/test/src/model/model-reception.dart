@@ -59,15 +59,10 @@ abstract class _ModelReception {
     expect(builtObject.websites, equals(deserializedObject.websites));
   }
 
-  /**
-   * Merely asserts that no exceptions arise.
-   */
+  /// Merely asserts that no exceptions arise during a serialization.
   static void serialization() =>
       expect(() => JSON.encode(buildObject()), returnsNormally);
 
-  /**
-   *
-   */
   static model.Reception buildObject() {
     final List<String> addresses = ['Somewhere else'];
     final String dialplan = '12340001';

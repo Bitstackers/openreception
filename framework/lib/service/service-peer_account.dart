@@ -27,14 +27,8 @@ class PeerAccount {
   /// The token used for authenticating with the backed.
   final String token;
 
-  /**
-   *
-   */
   PeerAccount(Uri this.host, String this.token, this._backend);
 
-  /**
-   *
-   */
   Future<model.PeerAccount> get(String accountName) {
     Uri url = resource.PeerAccount.single(host, accountName);
     url = _appendToken(url, token);
@@ -42,9 +36,6 @@ class PeerAccount {
     return _backend.get(url).then(JSON.decode).then(model.PeerAccount.decode);
   }
 
-  /**
-   *
-   */
   Future<Iterable<String>> list() {
     Uri url = resource.PeerAccount.list(host);
     url = _appendToken(url, token);
@@ -55,9 +46,7 @@ class PeerAccount {
         .then((Iterable<String> value) => value);
   }
 
-  /**
-   * (Re-)deploys a [model.PeerAccount] for user with [uid].
-   */
+  /// (Re-)deploys a [model.PeerAccount] for user with [uid].
   Future<Iterable<String>> deployAccount(model.PeerAccount account, int uid) {
     Uri url = resource.PeerAccount.deploy(host, uid);
     url = _appendToken(url, token);
@@ -68,9 +57,6 @@ class PeerAccount {
         .then((Iterable<String> value) => value);
   }
 
-  /**
-   *
-   */
   Future remove(String username) {
     Uri url = resource.PeerAccount.single(host, username);
     url = _appendToken(url, token);

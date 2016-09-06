@@ -19,23 +19,19 @@ class MessageContext {
   String contactName = '';
   String receptionName = '';
 
-  /**
-   * Default empty constructor.
-   */
+  /// Default empty constructor.
   MessageContext.empty();
 
-  /**
-   * Constructor. Deserializes the object from Map representation.
-   */
+  /// Default deserializing constructor.
+  ///
+  /// Deserializes the object from Map representation.
   MessageContext.fromMap(Map map)
       : cid = map[key.cid],
         contactName = map[key.contactName],
         rid = map[key.rid],
         receptionName = map[key.receptionName];
 
-  /**
-   * Creates a messagContext from a [ReceptionAttributes] object
-   */
+  /// Creates a messagContext from a [ReceptionAttributes] object
   MessageContext.fromContact(BaseContact contact, ReceptionReference rRef) {
     cid = contact.id;
     contactName = contact.name;
@@ -45,9 +41,9 @@ class MessageContext {
 
   bool get isEmpty => cid == BaseContact.noId && rid == Reception.noId;
 
-  /**
-   * Returns a map representation of the object. Suitable for serialization.
-   */
+  /// Returns a map representation of the object.
+  ///
+  /// Suitable for serialization.
   Map toJson() => {
         key.cid: cid,
         key.contactName: contactName,
@@ -62,14 +58,8 @@ class MessageContext {
   bool operator ==(Object other) =>
       other is MessageContext && cid == other.cid && rid == other.rid;
 
-  /**
-   *
-   */
   String get contactString => '$cid@$rid';
 
-  /**
-   *
-   */
   @override
   String toString() => '$contactString - $contactName@$receptionName';
 }

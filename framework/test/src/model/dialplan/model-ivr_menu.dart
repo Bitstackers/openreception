@@ -25,9 +25,6 @@ void _testModelIvrMenu() {
 }
 
 abstract class _ModelIvrMenu {
-  /**
-   *
-   */
   static void serialization() {
     model.IvrMenu builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
@@ -36,9 +33,6 @@ abstract class _ModelIvrMenu {
     expect(serializedObject, isNotEmpty);
   }
 
-  /**
-   *
-   */
   static void serializationDeserialization() {
     model.IvrMenu builtObject = buildObject();
 
@@ -67,9 +61,6 @@ abstract class _ModelIvrMenu {
     expect(builtObject.entries, equals(builtObject.entries));
   }
 
-  /**
-   *
-   */
   static model.IvrMenu buildObject() {
     final String name = 'ivr_1';
     final String sub1name = 'sub1';

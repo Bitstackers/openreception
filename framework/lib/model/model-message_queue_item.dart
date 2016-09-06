@@ -21,19 +21,13 @@ class MessageQueueEntry {
   int tries = 0;
   Set<MessageEndpoint> _unhandledRecipients = new Set();
 
-  /**
-   * Constructor
-   */
+  /// Default constructor
   Message message = new Message.empty();
 
-  /**
-   * Default empty constructor.
-   */
+  /// Default empty constructor.
   MessageQueueEntry.empty() : createdAt = new DateTime.now();
 
-  /**
-   * Creates a message from the information given in [map].
-   */
+  /// Creates a message from the information given in [map].
   MessageQueueEntry.fromMap(Map map)
       : createdAt = util.unixTimestampToDateTime(map[key.createdAt]),
         id = map[key.id],
@@ -45,41 +39,36 @@ class MessageQueueEntry {
             map[key.unhandledRecipients].map(MessageEndpoint.decode)),
         tries = map[key.tries];
 
-  /**
-   * Decoding factory.
-   */
+  /// Decoding factory.
   static MessageQueueEntry decode(Map map) =>
       new MessageQueueEntry.fromMap(map);
 
   Iterable<MessageEndpoint> get handledRecipients => _handledRecipients;
-  /**
-   * Update the handled recipients set. This operation will automatically
-   * remove the handled recipients from the unhandled set.
-   */
+
+  /// Update the handled recipients set.
+  ///
+  /// This operation will automatically remove the handled recipients from
+  /// the unhandled set by using the aweseom power of math set theory.
   set handledRecipients(Iterable<MessageEndpoint> handled) {
     _unhandledRecipients = _unhandledRecipients.difference(handled.toSet());
     _handledRecipients.addAll(handled);
   }
 
-  /**
-   * Serialization function
-   */
+  /// Serialization function
   Map toJson() => {
         key.id: id,
         key.tries: tries,
         key.createdAt: util.dateTimeToUnixTimestamp(createdAt),
         key.message: message.toJson(),
         key.handledRecipients:
-            _handledRecipients.map((r) => r.asMap).toList(growable: false),
+            _handledRecipients.map((r) => r.toJson()).toList(growable: false),
         key.unhandledRecipients:
-            _unhandledRecipients.map((r) => r.asMap).toList(growable: false)
+            _unhandledRecipients.map((r) => r.toJson()).toList(growable: false)
       };
 
   Iterable<MessageEndpoint> get unhandledRecipients => _unhandledRecipients;
 
-  /**
-   * Set the unhandled recipients set.
-   */
+  /// Set the unhandled recipients set.
   set unhandledRecipients(Iterable<MessageEndpoint> unhandled) {
     _unhandledRecipients = new Set()..addAll(unhandled.toSet());
   }

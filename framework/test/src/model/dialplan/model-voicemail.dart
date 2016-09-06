@@ -22,13 +22,7 @@ void _testModelVoicemail() {
   });
 }
 
-/**
-*
- */
 abstract class _ModelVoicemail {
-/**
- *
- */
   static void serialization() {
     model.Voicemail builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
@@ -37,9 +31,6 @@ abstract class _ModelVoicemail {
     expect(serializedObject, isNotEmpty);
   }
 
-/**
- *
- */
   static void deserialization() {
     model.Voicemail builtObject = buildObject();
 
@@ -53,9 +44,6 @@ abstract class _ModelVoicemail {
     expect(builtObject.note, equals(deserializedObject.note));
   }
 
-/**
- *
- */
   static model.Voicemail buildObject() {
     final String vmBox = 'vm-33114422';
     final String recipient = 'someone@email.dot';
@@ -71,9 +59,6 @@ abstract class _ModelVoicemail {
     return builtObject;
   }
 
-  /**
-   *
-   */
   static void multipleRecipients() {
     final String vmBox = 'vm-33114422';
     final String recipient1 = 'someone@email.dot';
