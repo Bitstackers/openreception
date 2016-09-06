@@ -13,3 +13,8 @@ dependencies: pubspec.lock
 pubspec.lock: pubspec.yaml
 	@pub upgrade
 
+analyze:
+	@(dartanalyzer --no-hints --fatal-warnings web/client.dart)
+
+analyze-hints:
+	@echo "! (dartanalyzer web/client.dart | grep '^\[')" | bash
