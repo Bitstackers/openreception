@@ -111,9 +111,10 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
 
   @override
   Future<Iterable<model.ReceptionDialplan>> list() async {
-    final Iterable dirs = new Directory(path).listSync().where((fse) =>
-        _isDirectory(fse) &&
-        new File(fse.path + '/dialplan.json').existsSync());
+    final Iterable<Directory> dirs = new Directory(path).listSync().where(
+        (fse) =>
+            _isDirectory(fse) &&
+            new File(fse.path + '/dialplan.json').existsSync());
 
     return dirs.map((Directory fse) {
       final String fileContents =
