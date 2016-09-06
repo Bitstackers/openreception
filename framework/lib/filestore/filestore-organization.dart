@@ -31,7 +31,8 @@ class Organization implements storage.Organization {
   Bus<event.OrganizationChange> _changeBus =
       new Bus<event.OrganizationChange>();
 
-  factory Organization(_contactFileStore, _receptionFileStore, String path,
+  factory Organization(
+      Contact _contactFileStore, Reception _receptionFileStore, String path,
       [GitEngine _git, bool enableChangelog]) {
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
@@ -42,9 +43,10 @@ class Organization implements storage.Organization {
       trashDir.createSync();
     }
 
-    final _sequencer = new Sequencer(path);
+    final Sequencer _sequencer = new Sequencer(path);
     if (_git != null) {
-      _git.init().catchError((error, stackTrace) => Logger.root
+      _git.init().catchError((dynamic error, StackTrace stackTrace) => Logger
+          .root
           .shout('Failed to initialize git engine', error, stackTrace));
       _git.addIgnoredPath(_sequencer.sequencerFilePath);
     }
@@ -78,22 +80,33 @@ class Organization implements storage.Organization {
       _changeBus.stream;
 
   /// Returns when the filestore is initialized
-  Future get initialized =>
-      _git != null ? _git.initialized : new Future.value(true);
+  Future<Null> get initialized async {
+    if (_git != null) {
+      return _git.initialized;
+    } else {
+      return null;
+    }
+  }
 
   /// Awaits if there is already an operation in progress and returns
   /// whenever the filestore is ready to process the next request.
-  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
+  Future<Null> get ready async {
+    if (_git != null) {
+      return _git.whenReady;
+    } else {
+      return null;
+    }
+  }
 
   Future<Map<String, Map<String, String>>> receptionMap() =>
       throw new UnimplementedError();
 
   @override
   Future<Iterable<model.BaseContact>> contacts(int oid) async {
-    List<model.BaseContact> cRefs = [];
+    List<model.BaseContact> cRefs = <model.BaseContact>[];
     List<model.ReceptionReference> rRefs = await receptions(oid);
 
-    await Future.forEach(rRefs, (rRef) async {
+    await Future.forEach(rRefs, (model.ReceptionReference rRef) async {
       cRefs.addAll(await _contactFileStore._contactsOfReception(rRef.id));
     });
 
@@ -167,7 +180,7 @@ class Organization implements storage.Organization {
               .reference);
 
   @override
-  Future remove(int oid, model.User modifier) async {
+  Future<Null> remove(int oid, model.User modifier) async {
     final Directory orgDir = new Directory('$path/$oid');
     final File file = new File('$path/$oid/organization.json');
 
@@ -258,7 +271,7 @@ class Organization implements storage.Organization {
       return new model.OrganizationChange(fc.changeType, id);
     }
 
-    Iterable<model.Commit> changes = gitChanges.map((change) =>
+    Iterable<model.Commit> changes = gitChanges.map((Change change) =>
         new model.Commit()
           ..uid = extractUid(change.message)
           ..changedAt = change.changeTime
@@ -267,7 +280,7 @@ class Organization implements storage.Organization {
           ..changes = new List<model.ObjectChange>.from(
               change.fileChanges.map(convertFilechange)));
 
-    _log.info(changes.map((c) => c.toJson()));
+    _log.info(changes.map((model.Commit c) => c.toJson()));
 
     return changes;
   }

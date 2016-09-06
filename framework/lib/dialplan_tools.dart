@@ -169,7 +169,7 @@ List<String> _externalTrunkTransfer(
     'origination_caller_id_number': opts.callerIdNumber,
   };
 
-  final Map<String, dynamic> bLegVars = {
+  final Map<String, dynamic> bLegVars = <String, dynamic>{
     'leg_timeout': 50,
     ORPbxKey.receptionId: rid,
     'fifo_music': 'default'
@@ -302,7 +302,7 @@ Iterable<String> _hourActionsToXmlDialplan(String extension,
       (model.HourAction ha) => _hourActionToXmlDialplan(extension, ha, option));
 
   // Reduce the all the iterables found into a single iterable of strings.
-  final folded = haStrings.fold(
+  final List<String> folded = haStrings.fold(
       <String>[],
       (List<String> combined, Iterable<String> current) =>
           combined..addAll(current));

@@ -34,7 +34,7 @@ class AgentHistory {
   final storage.User _userStore;
 
   /// Local cache of UID/username mappings.
-  final Map<int, String> _uidNameCache = {};
+  final Map<int, String> _uidNameCache = <int, String>{};
 
   /// File containing persistent cache of UID/username mappings.
   final File _uidMapFile;
@@ -42,10 +42,11 @@ class AgentHistory {
   /// Directory that contains event dump files that processed and purged
   /// upon object initialization.
   final Directory _eventDumpDir;
-  final Map<String, model.ActiveCall> _eventHistory = {};
-  final Map<String, model.DailyReport> _reports = {};
+  final Map<String, model.ActiveCall> _eventHistory =
+      <String, model.ActiveCall>{};
+  final Map<String, model.DailyReport> _reports = <String, model.DailyReport>{};
 
-  Completer _initialized = new Completer();
+  Completer<Null> _initialized = new Completer<Null>();
 
   /// Create a new [AgentHistory] in directory [path].
   ///
@@ -97,7 +98,7 @@ class AgentHistory {
   }
 
   /// Returns when the store is fully initialized.
-  Future get initialized => _initialized.future;
+  Future<Null> get initialized => _initialized.future;
 
   /// Loads a full [model.DailyReport] for a given [day].
   Future<model.DailyReport> get(DateTime day) async => _loadReport(day);
@@ -113,7 +114,7 @@ class AgentHistory {
   }
 
   /// Initilizes the store.
-  Future _initialize() async {
+  Future<Null> _initialize() async {
     await _loadUidCacheFile();
     await _updateUidCache();
     await _saveUidCacheFile();
@@ -123,17 +124,17 @@ class AgentHistory {
   }
 
   /// Update the uid/username mapping file.
-  Future _updateUidCache() async {
+  Future<Null> _updateUidCache() async {
     Iterable<model.UserReference> uRefs = await _userStore.list();
 
-    uRefs.forEach((uref) {
+    uRefs.forEach((model.UserReference uref) {
       _uidNameCache[uref.id] = uref.name;
     });
   }
 
   /// Process and dispatch events from notification stream.
   void _dispatchEvent(event.Event e, Map<String, model.DailyReport> reports) {
-    final dateKey = _rfc3339.format(e.timestamp);
+    final String dateKey = _rfc3339.format(e.timestamp);
 
     if (!reports.containsKey(dateKey)) {
       reports[dateKey] = _loadReport(e.timestamp);
@@ -160,7 +161,7 @@ class AgentHistory {
   }
 
   /// Load historic event dump files and inject them into the agent history.
-  Future _loadEventDumps() async {
+  Future<Null> _loadEventDumps() async {
     _log.finest('Loading event dumps from ${_eventDumpDir.path}');
     final Map<String, model.DailyReport> _dateLog =
         <String, model.DailyReport>{};
@@ -168,7 +169,7 @@ class AgentHistory {
     final Iterable<File> files =
         _eventDumpDir.listSync().where((FileSystemEntity fse) => fse is File);
 
-    files.forEach((file) {
+    files.forEach((File file) {
       _log.info('Reading event dump from ${file.path}');
       try {
         List<String> lines = file.readAsLinesSync();
@@ -190,7 +191,7 @@ class AgentHistory {
       }
     });
 
-    await Future.forEach(_dateLog.values, (report) async {
+    await Future.forEach(_dateLog.values, (model.DailyReport report) async {
       await _saveReport(report);
     });
 
@@ -213,7 +214,7 @@ class AgentHistory {
   /// Save a [model.DailyReport] to file.
   ///
   /// Will not save the report if it is empty.
-  Future _saveReport(model.DailyReport report) async {
+  Future<Null> _saveReport(model.DailyReport report) async {
     if (report.isEmpty) {
       _log.fine('Refusing to write empty report');
       return;
@@ -229,12 +230,12 @@ class AgentHistory {
   // }
 
   /// Cleanup reports on a daily basis.
-  Future _cleanup() async {
+  Future<Null> _cleanup() async {
     if (_reports.length > 1) {
       _log.info('Day changed. Rerolling stats');
 
-      final Iterable keysToRemove =
-          _reports.keys.where((key) => key != _dateKey(new DateTime.now()));
+      final Iterable<String> keysToRemove = _reports.keys
+          .where((String key) => key != _dateKey(new DateTime.now()));
 
       for (String key in keysToRemove) {
         await _saveReport(_reports.remove(key));
@@ -251,8 +252,8 @@ class AgentHistory {
 
     if (!_uidNameCache.containsKey(uid)) {
       try {
-        final uRef = await _userStore.get(uid);
-        _uidNameCache[uid] = uRef.name;
+        final model.User user = await _userStore.get(uid);
+        _uidNameCache[uid] = user.name;
 
         await _saveUidCacheFile();
       } on NotFound {
@@ -266,10 +267,11 @@ class AgentHistory {
   }
 
   /// Load the persistent uid/username mappings from file.
-  Future _loadUidCacheFile() async {
-    Map deserialized;
+  Future<Null> _loadUidCacheFile() async {
+    Map<String, String> deserialized;
     try {
-      deserialized = JSON.decode(await _uidMapFile.readAsString());
+      deserialized =
+          JSON.decode(await _uidMapFile.readAsString()) as Map<String, String>;
     } on FormatException {
       _log.shout('Corrupt format for uid -> name mappings in '
           'file ${_uidMapFile.path}');
@@ -277,12 +279,12 @@ class AgentHistory {
     }
 
     _uidNameCache.clear();
-    deserialized.forEach((k, v) {
+    deserialized.forEach((String uidString, String userName) {
       try {
-        final int uid = int.parse(k);
-        _uidNameCache[uid] = v;
+        final int uid = int.parse(uidString);
+        _uidNameCache[uid] = userName;
       } on FormatException {
-        _log.warning('Bad key value $k');
+        _log.warning('Bad key value $uidString');
       }
     });
 
@@ -291,11 +293,11 @@ class AgentHistory {
   }
 
   /// Save the persistent uid/username mappings to file.
-  Future _saveUidCacheFile() async {
-    final Map<String, String> serializable = {};
+  Future<Null> _saveUidCacheFile() async {
+    final Map<String, String> serializable = <String, String>{};
 
-    _uidNameCache.forEach((k, v) {
-      serializable[k.toString()] = v;
+    _uidNameCache.forEach((int uid, String username) {
+      serializable[uid.toString()] = username;
     });
 
     await _uidMapFile.writeAsString(JSON.encode(serializable));

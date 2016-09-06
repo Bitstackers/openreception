@@ -74,7 +74,7 @@ class Sequencer {
 
     int maximum = 0;
 
-    listing.forEach((n) {
+    listing.forEach((int n) {
       if (n > maximum) {
         maximum = n;
       }

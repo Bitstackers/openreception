@@ -34,7 +34,8 @@ class Reception implements storage.Reception {
     }
 
     if (_git != null) {
-      _git.init().catchError((error, stackTrace) => Logger.root
+      _git.init().catchError((dynamic error, StackTrace stackTrace) => Logger
+          .root
           .shout('Failed to initialize git engine', error, stackTrace));
     }
 
@@ -61,12 +62,23 @@ class Reception implements storage.Reception {
   Stream<event.ReceptionChange> get onReceptionChange => _changeBus.stream;
 
   /// Returns when the filestore is initialized
-  Future get initialized =>
-      _git != null ? _git.initialized : new Future.value(true);
+  Future<Null> get initialized async {
+    if (_git != null) {
+      return _git.initialized;
+    } else {
+      return null;
+    }
+  }
 
   /// Awaits if there is already an operation in progress and returns
   /// whenever the filestore is ready to process the next request.
-  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
+  Future<Null> get ready async {
+    if (_git != null) {
+      return _git.whenReady;
+    } else {
+      return null;
+    }
+  }
 
   /// Returns the next available ID from the sequencer. Notice that every
   /// call to this function will increase the counter in the
@@ -74,18 +86,20 @@ class Reception implements storage.Reception {
   int get _nextId => _sequencer.nextInt();
 
   Future<Iterable<model.ReceptionReference>> _receptionsOfOrg(int oid) async {
-    final dirs = new Directory(path).listSync().where((fse) =>
-        _isDirectory(fse) &&
-        new File(fse.path + '/reception.json').existsSync());
+    final Iterable<FileSystemEntity> dirs = new Directory(path)
+        .listSync()
+        .where((FileSystemEntity fse) =>
+            _isDirectory(fse) &&
+            new File(fse.path + '/reception.json').existsSync());
 
     return dirs
-        .map((fse) {
-          final reception = model.Reception.decode(JSON.decode(
+        .map((FileSystemEntity fse) {
+          final model.Reception reception = model.Reception.decode(JSON.decode(
               (new File(fse.path + '/reception.json')).readAsStringSync()));
           return reception;
         })
-        .where((r) => r.oid == oid)
-        .map((r) => r.reference)
+        .where((model.Reception r) => r.oid == oid)
+        .map((model.Reception r) => r.reference)
         .toList(growable: false);
   }
 
@@ -148,19 +162,21 @@ class Reception implements storage.Reception {
 
   @override
   Future<Iterable<model.ReceptionReference>> list() async {
-    final dirs = new Directory(path).listSync().where((fse) =>
-        _isDirectory(fse) &&
-        new File(fse.path + '/reception.json').existsSync());
+    final Iterable<FileSystemEntity> dirs = new Directory(path)
+        .listSync()
+        .where((FileSystemEntity fse) =>
+            _isDirectory(fse) &&
+            new File(fse.path + '/reception.json').existsSync());
 
     return dirs.map((FileSystemEntity fse) {
-      final reception = model.Reception.decode(JSON
+      final model.Reception reception = model.Reception.decode(JSON
           .decode((new File(fse.path + '/reception.json')).readAsStringSync()));
       return reception.reference;
     });
   }
 
   @override
-  Future remove(int rid, model.User modifier) async {
+  Future<Null> remove(int rid, model.User modifier) async {
     final Directory receptionDir = new Directory('$path/$rid');
 
     if (!receptionDir.existsSync()) {
@@ -244,7 +260,7 @@ class Reception implements storage.Reception {
       return new model.ReceptionChange(fc.changeType, id);
     }
 
-    Iterable<model.Commit> changes = gitChanges.map((change) =>
+    Iterable<model.Commit> changes = gitChanges.map((Change change) =>
         new model.Commit()
           ..uid = extractUid(change.message)
           ..changedAt = change.changeTime
@@ -253,7 +269,7 @@ class Reception implements storage.Reception {
           ..changes = new List<model.ObjectChange>.from(
               change.fileChanges.map(convertFilechange)));
 
-    _log.info(changes.map((c) => c.toJson()));
+    _log.info(changes.map((model.Commit c) => c.toJson()));
 
     return changes;
   }

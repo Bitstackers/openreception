@@ -35,8 +35,9 @@ class Ivr implements storage.Ivr {
     final Directory trashDir = new Directory(path + '/.trash')..createSync();
 
     if (revisionEngine != null) {
-      revisionEngine.init().catchError((error, stackTrace) => Logger.root
-          .shout('Failed to initialize git engine', error, stackTrace));
+      revisionEngine.init().catchError((dynamic error, StackTrace stackTrace) =>
+          Logger.root
+              .shout('Failed to initialize git engine', error, stackTrace));
     }
 
     return new Ivr._internal(path, revisionEngine,
@@ -47,12 +48,24 @@ class Ivr implements storage.Ivr {
       String this.path, GitEngine this._git, this.logChanges, this.trashDir);
 
   /// Returns when the filestore is initialized
-  Future get initialized =>
-      _git != null ? _git.initialized : new Future.value(true);
+  Future<Null> get initialized async {
+    if (_git != null) {
+      return _git.initialized;
+    } else {
+      return null;
+    }
+  }
 
   /// Awaits if there is already an operation in progress and returns
   /// whenever the filestore is ready to process the next request.
-  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
+  Future<Null> get ready async {
+    if (_git != null) {
+      return _git.whenReady;
+    } else {
+      return null;
+    }
+  }
+
   Stream<event.IvrMenuChange> get onChange => _changeBus.stream;
   @override
   Future<model.IvrMenu> create(model.IvrMenu menu, model.User modifier) async {
@@ -103,7 +116,7 @@ class Ivr implements storage.Ivr {
   @override
   Future<Iterable<model.IvrMenu>> list() async => new Directory(path)
       .listSync()
-      .where((fse) =>
+      .where((FileSystemEntity fse) =>
           _isDirectory(fse) && new File(fse.path + '/menu.json').existsSync())
       .map((FileSystemEntity fse) => model.IvrMenu.decode(
           JSON.decode((new File(fse.path + '/menu.json')).readAsStringSync())));
@@ -138,7 +151,7 @@ class Ivr implements storage.Ivr {
   }
 
   @override
-  Future remove(String menuName, model.User modifier) async {
+  Future<Null> remove(String menuName, model.User modifier) async {
     final Directory menuDir = new Directory('$path/$menuName');
     final File file = new File('${menuDir.path}/menu.json');
 
@@ -193,7 +206,7 @@ class Ivr implements storage.Ivr {
       return new model.IvrChange(fc.changeType, name);
     }
 
-    Iterable<model.Commit> changes = gitChanges.map((change) =>
+    Iterable<model.Commit> changes = gitChanges.map((Change change) =>
         new model.Commit()
           ..uid = extractUid(change.message)
           ..changedAt = change.changeTime
@@ -202,7 +215,7 @@ class Ivr implements storage.Ivr {
           ..changes = new List<model.ObjectChange>.from(
               change.fileChanges.map(convertFilechange)));
 
-    _log.info(changes.map((c) => c.toJson()));
+    _log.info(changes.map((model.Commit c) => c.toJson()));
 
     return changes;
   }

@@ -60,7 +60,7 @@ class MessageQueue implements storage.MessageQueue {
   }
 
   @override
-  Future update(model.MessageQueueEntry queueEntry) async {
+  Future<Null> update(model.MessageQueueEntry queueEntry) async {
     final File file = new File('$path/${queueEntry.id}.json');
 
     if (!file.existsSync()) {
@@ -68,12 +68,10 @@ class MessageQueue implements storage.MessageQueue {
     }
 
     file.writeAsStringSync(_jsonpp.convert(queueEntry));
-
-    return queueEntry;
   }
 
   @override
-  Future remove(int mqid) async {
+  Future<Null> remove(int mqid) async {
     final File file = new File('$path/$mqid.json');
 
     if (!file.existsSync()) {
@@ -86,7 +84,8 @@ class MessageQueue implements storage.MessageQueue {
   @override
   Future<Iterable<model.MessageQueueEntry>> list() async => new Directory(path)
       .listSync()
-      .where((fse) => fse is File && fse.path.endsWith('.json'))
+      .where(
+          (FileSystemEntity fse) => fse is File && fse.path.endsWith('.json'))
       .map((FileSystemEntity fse) => model.MessageQueueEntry
           .decode(JSON.decode((fse as File).readAsStringSync())));
 }

@@ -33,8 +33,9 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
       new Directory(path).createSync();
     }
     if (gitEngine != null) {
-      gitEngine.init().catchError((error, stackTrace) => Logger.root
-          .shout('Failed to initialize git engine', error, stackTrace));
+      gitEngine.init().catchError((dynamic error, StackTrace stackTrace) =>
+          Logger.root
+              .shout('Failed to initialize git engine', error, stackTrace));
     }
 
     final Directory trashDir = new Directory(path + '/.trash');
@@ -53,12 +54,23 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   Stream<event.DialplanChange> get onChange => _changeBus.stream;
 
   /// Returns when the filestore is initialized
-  Future get initialized =>
-      _git != null ? _git.initialized : new Future.value(true);
+  Future<Null> get initialized async {
+    if (_git != null) {
+      return _git.initialized;
+    } else {
+      return null;
+    }
+  }
 
   /// Awaits if there is already an operation in progress and returns
   /// whenever the filestore is ready to process the next request.
-  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
+  Future<Null> get ready async {
+    if (_git != null) {
+      return _git.whenReady;
+    } else {
+      return null;
+    }
+  }
 
   @override
   Future<model.ReceptionDialplan> create(
@@ -111,12 +123,13 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
 
   @override
   Future<Iterable<model.ReceptionDialplan>> list() async {
-    final Iterable<Directory> dirs = new Directory(path).listSync().where(
-        (fse) =>
+    final Iterable<FileSystemEntity> dirs = new Directory(path)
+        .listSync()
+        .where((FileSystemEntity fse) =>
             _isDirectory(fse) &&
             new File(fse.path + '/dialplan.json').existsSync());
 
-    return dirs.map((Directory fse) {
+    return dirs.map((FileSystemEntity fse) {
       final String fileContents =
           new File(fse.path + '/dialplan.json').readAsStringSync();
 
@@ -157,7 +170,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
   }
 
   @override
-  Future remove(String extension, model.User modifier) async {
+  Future<Null> remove(String extension, model.User modifier) async {
     final Directory dialplanDir = new Directory('$path/$extension');
 
     final File file = new File('$path/$extension/dialplan.json');
@@ -214,7 +227,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
       return new model.ReceptionDialplanChange(fc.changeType, name);
     }
 
-    Iterable<model.Commit> changes = gitChanges.map((change) =>
+    Iterable<model.Commit> changes = gitChanges.map((Change change) =>
         new model.Commit()
           ..uid = extractUid(change.message)
           ..changedAt = change.changeTime
@@ -223,7 +236,7 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
           ..changes = new List<model.ObjectChange>.from(
               change.fileChanges.map(convertFilechange)));
 
-    _log.info(changes.map((c) => c.toJson()));
+    _log.info(changes.map((model.Commit c) => c.toJson()));
 
     return changes;
   }

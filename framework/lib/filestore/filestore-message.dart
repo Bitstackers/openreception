@@ -29,16 +29,16 @@ class Message implements storage.Message {
   Sequencer _sequencer;
 
   /// Index of message ID to message file path.
-  final Map<int, String> _index = {};
+  final Map<int, String> _index = <int, String>{};
 
   /// Index of contact ID to message ID's.
-  final Map<int, Set<int>> _cidIndex = {};
+  final Map<int, Set<int>> _cidIndex = <int, Set<int>>{};
 
   /// Index of user ID to message ID's.
-  final Map<int, Set<int>> _uidIndex = {};
+  final Map<int, Set<int>> _uidIndex = <int, Set<int>>{};
 
   /// Index of reception ID to message ID's.
-  final Map<int, Set<int>> _ridIndex = {};
+  final Map<int, Set<int>> _ridIndex = <int, Set<int>>{};
 
   /// Index of all messages currently stored as drafts.
   final Set<int> _draftsIndex = new Set<int>();
@@ -53,7 +53,8 @@ class Message implements storage.Message {
     }
 
     if (this._git != null) {
-      _git.init().catchError((error, stackTrace) => Logger.root
+      _git.init().catchError((dynamic error, StackTrace stackTrace) => Logger
+          .root
           .shout('Failed to initialize git engine', error, stackTrace));
     }
 
@@ -69,12 +70,23 @@ class Message implements storage.Message {
   Stream<event.MessageChange> get changeStream => _changeBus.stream;
 
   /// Returns once the filestore is initializes.
-  Future get initialized =>
-      _git != null ? _git.initialized : new Future.value(true);
+  Future<Null> get initialized async {
+    if (_git != null) {
+      return _git.initialized;
+    } else {
+      return null;
+    }
+  }
 
   /// Awaits if there is already an operation in progress and returns
   /// whenever the filestore is ready to process the next request.
-  Future get ready async => _git != null ? _git.whenReady : true;
+  Future<Null> get ready async {
+    if (_git != null) {
+      return _git.whenReady;
+    } else {
+      return null;
+    }
+  }
 
   /// Turns [DateTime] into a date-dir path and casts it into a [Directory].
   Directory _dateDir(DateTime day) =>
@@ -96,7 +108,7 @@ class Message implements storage.Message {
         for (FileSystemEntity file in files) {
           if (_isJsonFile(file)) {
             try {
-              final id = int.parse(basenameWithoutExtension(file.path));
+              final int id = int.parse(basenameWithoutExtension(file.path));
               _index[id] = file.path;
 
               if (id > highestId) {
@@ -120,20 +132,20 @@ class Message implements storage.Message {
   }
 
   /// Rebuilds the secondary indexes of the filestore.
-  Future rebuildSecondaryIndexes() async {
+  Future<Null> rebuildSecondaryIndexes() async {
     Stopwatch timer = new Stopwatch()..start();
     _log.info('Building secondary indexes');
     await Future.forEach(_index.keys, (int id) async {
       final model.Message msg = await get(id);
-      final cidList = _cidIndex.containsKey(msg.context.cid)
+      final Set<int> cidList = _cidIndex.containsKey(msg.context.cid)
           ? _cidIndex[msg.context.cid]
           : _cidIndex[msg.context.cid] = new Set<int>();
 
-      final uidList = _uidIndex.containsKey(msg.sender.id)
+      final Set<int> uidList = _uidIndex.containsKey(msg.sender.id)
           ? _uidIndex[msg.sender.id]
           : _uidIndex[msg.sender.id] = new Set<int>();
 
-      final ridList = _ridIndex.containsKey(msg.context.rid)
+      final Set<int> ridList = _ridIndex.containsKey(msg.context.rid)
           ? _ridIndex[msg.context.rid]
           : _ridIndex[msg.context.rid] = new Set<int>();
 
@@ -180,7 +192,7 @@ class Message implements storage.Message {
   Future<Iterable<model.Message>> getByIds(Iterable<int> ids) async {
     List<model.Message> list = new List<model.Message>();
 
-    await Future.forEach(ids, (id) async {
+    await Future.forEach(ids, (int id) async {
       try {
         list.add(await get(id));
       } on NotFound {
@@ -197,7 +209,7 @@ class Message implements storage.Message {
   Iterable<int> _idsOfDir(Directory dir) {
     List<FileSystemEntity> fses = dir.listSync();
 
-    List<int> list = [];
+    List<int> list = <int>[];
 
     for (FileSystemEntity fse in fses) {
       // Only process directories.
@@ -217,7 +229,7 @@ class Message implements storage.Message {
     final Directory dateDir = _dateDir(day);
 
     if (!await dateDir.exists()) {
-      return [];
+      return const <model.Message>[];
     }
 
     Set<int> ids = _idsOfDir(dateDir).toSet();
@@ -227,7 +239,7 @@ class Message implements storage.Message {
 
   @override
   Future<Iterable<model.Message>> listDrafts() async {
-    Set<int> ids = new Set()..addAll(_draftsIndex);
+    Set<int> ids = new Set<int>()..addAll(_draftsIndex);
 
     return getByIds(ids);
   }
@@ -237,7 +249,7 @@ class Message implements storage.Message {
     if (_uidIndex.containsKey(uid)) {
       return _uidIndex[uid];
     } else {
-      return [];
+      return const <int>[];
     }
   }
 
@@ -246,7 +258,7 @@ class Message implements storage.Message {
     if (_cidIndex.containsKey(cid)) {
       return _cidIndex[cid];
     } else {
-      return [];
+      return <int>[];
     }
   }
 
@@ -255,7 +267,7 @@ class Message implements storage.Message {
     if (_ridIndex.containsKey(rid)) {
       return _ridIndex[rid];
     } else {
-      return [];
+      return const <int>[];
     }
   }
 
@@ -280,15 +292,15 @@ class Message implements storage.Message {
 
     /// Update indexes.
     _index[msg.id] = file.path;
-    final cidList = _cidIndex.containsKey(msg.context.cid)
+    final Set<int> cidList = _cidIndex.containsKey(msg.context.cid)
         ? _cidIndex[msg.context.cid]
         : _cidIndex[msg.context.cid] = new Set<int>();
 
-    final uidList = _uidIndex.containsKey(msg.sender.id)
+    final Set<int> uidList = _uidIndex.containsKey(msg.sender.id)
         ? _uidIndex[msg.sender.id]
         : _uidIndex[msg.sender.id] = new Set<int>();
 
-    final ridList = _ridIndex.containsKey(msg.context.rid)
+    final Set<int> ridList = _ridIndex.containsKey(msg.context.rid)
         ? _ridIndex[msg.context.rid]
         : _ridIndex[msg.context.rid] = new Set<int>();
 
@@ -344,7 +356,7 @@ class Message implements storage.Message {
   }
 
   @override
-  Future remove(int mid, model.User modifier) async {
+  Future<Null> remove(int mid, model.User modifier) async {
     if (!_index.containsKey(mid)) {
       throw new NotFound('No index key with mid $mid');
     }
@@ -397,7 +409,7 @@ class Message implements storage.Message {
       return new model.MessageChange(fc.changeType, id);
     }
 
-    Iterable<model.Commit> changes = gitChanges.map((change) =>
+    Iterable<model.Commit> changes = gitChanges.map((Change change) =>
         new model.Commit()
           ..uid = extractUid(change.message)
           ..changedAt = change.changeTime
@@ -406,7 +418,7 @@ class Message implements storage.Message {
           ..changes = new List<model.ObjectChange>.from(
               change.fileChanges.map(convertFilechange)));
 
-    _log.info(changes.map((c) => c.toJson()));
+    _log.info(changes.map((model.Commit c) => c.toJson()));
 
     return changes;
   }
@@ -437,7 +449,7 @@ class Message implements storage.Message {
       return new model.MessageChange(fc.changeType, id);
     }
 
-    Iterable<model.Commit> changes = gitChanges.map((change) =>
+    Iterable<model.Commit> changes = gitChanges.map((Change change) =>
         new model.Commit()
           ..uid = extractUid(change.message)
           ..changedAt = change.changeTime
@@ -446,7 +458,7 @@ class Message implements storage.Message {
           ..changes = new List<model.ObjectChange>.from(
               change.fileChanges.map(convertFilechange)));
 
-    _log.info(changes.map((c) => c.toJson()));
+    _log.info(changes.map((model.Commit c) => c.toJson()));
 
     return changes;
   }

@@ -33,11 +33,12 @@ class User implements storage.User {
       new Directory(path).createSync();
     }
 
-    final sequencer = new Sequencer(path);
+    final Sequencer sequencer = new Sequencer(path);
 
     if (gitEngine != null) {
-      gitEngine.init().catchError((error, stackTrace) => Logger.root
-          .shout('Failed to initialize git engine', error, stackTrace));
+      gitEngine.init().catchError((dynamic error, StackTrace stackTrace) =>
+          Logger.root
+              .shout('Failed to initialize git engine', error, stackTrace));
       gitEngine.addIgnoredPath(sequencer.sequencerFilePath);
     }
 
@@ -56,12 +57,23 @@ class User implements storage.User {
   Stream<event.UserChange> get onUserChange => _changeBus.stream;
 
   /// Returns when the filestore is initialized.
-  Future get initialized =>
-      _git != null ? _git.initialized : new Future.value(true);
+  Future<Null> get initialized async {
+    if (_git != null) {
+      return _git.initialized;
+    } else {
+      return null;
+    }
+  }
 
   /// Awaits if there is already an operation in progress and returns
   /// whenever the filestore is ready to process the next request.
-  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
+  Future<Null> get ready async {
+    if (_git != null) {
+      return _git.whenReady;
+    } else {
+      return null;
+    }
+  }
 
   /// Returns the next available ID from the sequencer. Notice that every
   /// call to this function will increase the counter in the
@@ -69,7 +81,7 @@ class User implements storage.User {
   int get _nextId => _sequencer.nextInt();
 
   @override
-  Future<Iterable<String>> groups() async => [
+  Future<Iterable<String>> groups() async => <String>[
         model.UserGroups.administrator,
         model.UserGroups.receptionist,
         model.UserGroups.serviceAgent
@@ -95,8 +107,8 @@ class User implements storage.User {
   @override
   Future<model.User> getByIdentity(String identity) async {
     model.User user;
-    await Future.wait((await list()).map((userRef) async {
-      final u = await get(userRef.id);
+    await Future.wait((await list()).map((model.UserReference uRef) async {
+      final model.User u = await get(uRef.id);
       if (u.identities.contains(identity)) {
         user = u;
       }
@@ -111,7 +123,7 @@ class User implements storage.User {
   @override
   Future<Iterable<model.UserReference>> list() async => new Directory(path)
       .listSync()
-      .where((fse) =>
+      .where((FileSystemEntity fse) =>
           _isDirectory(fse) && new File(fse.path + '/user.json').existsSync())
       .map((FileSystemEntity fse) => model.User
           .decode(
@@ -177,7 +189,7 @@ class User implements storage.User {
       return new model.UserChange(fc.changeType, id);
     }
 
-    Iterable<model.Commit> changes = gitChanges.map((change) =>
+    Iterable<model.Commit> changes = gitChanges.map((Change change) =>
         new model.Commit()
           ..uid = extractUid(change.message)
           ..changedAt = change.changeTime
@@ -186,7 +198,7 @@ class User implements storage.User {
           ..changes = new List<model.ObjectChange>.from(
               change.fileChanges.map(convertFilechange)));
 
-    _log.info(changes.map((c) => c.toJson()));
+    _log.info(changes.map((model.Commit c) => c.toJson()));
 
     return changes;
   }
@@ -222,7 +234,7 @@ class User implements storage.User {
   }
 
   @override
-  Future remove(int uid, model.User modifier) async {
+  Future<Null> remove(int uid, model.User modifier) async {
     final Directory userdir = new Directory('$path/$uid');
 
     if (!userdir.existsSync()) {

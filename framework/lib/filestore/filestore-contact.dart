@@ -41,7 +41,7 @@ class Contact implements storage.Contact {
   final Calendar calendarStore;
 
   /// Index of contact ID to object file path.
-  final Map<int, String> _index = {};
+  final Map<int, String> _index = <int, String>{};
 
   /// Determines whether or not this filestore log its changes to a
   /// changelog file.
@@ -63,7 +63,7 @@ class Contact implements storage.Contact {
     }
 
     if (ge != null) {
-      ge.init().catchError((error, stackTrace) => Logger.root
+      ge.init().catchError((dynamic error, StackTrace stackTrace) => Logger.root
           .shout('Failed to initialize git engine', error, stackTrace));
     }
 
@@ -94,12 +94,23 @@ class Contact implements storage.Contact {
   int get _nextId => _sequencer.nextInt();
 
   /// Returns when the filestore is initialized
-  Future get initialized =>
-      _git != null ? _git.initialized : new Future.value(true);
+  Future<Null> get initialized async {
+    if (_git != null) {
+      return _git.initialized;
+    } else {
+      return null;
+    }
+  }
 
   /// Awaits if there is already an operation in progress and returns
   /// whenever the filestore is ready to process the next request.
-  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
+  Future<Null> get ready async {
+    if (_git != null) {
+      return _git.whenReady;
+    } else {
+      return null;
+    }
+  }
 
   Stream<event.ContactChange> get onContactChange => _changeBus.stream;
   Stream<event.ReceptionData> get onReceptionDataChange =>
@@ -115,7 +126,7 @@ class Contact implements storage.Contact {
     for (FileSystemEntity fse in idDirs) {
       if (_isDirectory(fse))
         try {
-          final id = int.parse(basenameWithoutExtension(fse.path));
+          final int id = int.parse(basenameWithoutExtension(fse.path));
           _index[id] = fse.path;
 
           if (id > highestId) {
@@ -132,15 +143,17 @@ class Contact implements storage.Contact {
   }
 
   Future<Iterable<model.BaseContact>> _contactsOfReception(int rid) async =>
-      (await receptionContacts(rid)).map((rc) => rc.contact);
+      (await receptionContacts(rid))
+          .map((model.ReceptionContact rc) => rc.contact);
 
   @override
-  Future addData(model.ReceptionAttributes attr, model.User modifier) async {
+  Future<Null> addData(
+      model.ReceptionAttributes attr, model.User modifier) async {
     if (attr.receptionId == model.Reception.noId) {
       throw new ArgumentError('attr.receptionId must be valid');
     }
 
-    final recDir = _receptionDir(attr.cid);
+    final Directory recDir = _receptionDir(attr.cid);
     if (!recDir.existsSync()) {
       recDir.createSync();
     }
@@ -234,7 +247,7 @@ class Contact implements storage.Contact {
 
   @override
   Future<model.ReceptionAttributes> data(int id, int rid) async {
-    final file = _receptionFile(id, rid);
+    final File file = _receptionFile(id, rid);
     if (!file.existsSync()) {
       throw new NotFound('No file: ${file.path}');
     }
@@ -246,7 +259,7 @@ class Contact implements storage.Contact {
   @override
   Future<Iterable<model.BaseContact>> list() async {
     if (!new Directory(path).existsSync()) {
-      return const [];
+      return const <model.BaseContact>[];
     }
 
     return Future.wait(_index.keys.map(get));
@@ -254,16 +267,15 @@ class Contact implements storage.Contact {
 
   @override
   Future<Iterable<model.ReceptionReference>> receptions(int cid) async {
-    final rDir = _receptionDir(cid);
+    final Directory rDir = _receptionDir(cid);
     if (!rDir.existsSync()) {
-      return [];
+      return <model.ReceptionReference>[];
     }
 
-    final rFiles = rDir
-        .listSync()
-        .where((fse) => fse is File && fse.path.endsWith('.json'));
+    final Iterable<FileSystemEntity> rFiles =
+        rDir.listSync().where(_isJsonFile);
 
-    final List<model.ReceptionReference> rRefs = [];
+    final List<model.ReceptionReference> rRefs = <model.ReceptionReference>[];
 
     await Future.forEach(rFiles, (FileSystemEntity f) async {
       final int rid = int.parse(basenameWithoutExtension(f.path));
@@ -283,9 +295,9 @@ class Contact implements storage.Contact {
     Iterable<model.ReceptionReference> rRefs =
         await receptionStore._receptionsOfOrg(organizationId);
 
-    Set<model.BaseContact> contacts = new Set();
+    Set<model.BaseContact> contacts = new Set<model.BaseContact>();
 
-    await Future.wait(rRefs.map((rRef) async {
+    await Future.wait(rRefs.map((model.ReceptionReference rRef) async {
       contacts.addAll(await _contactsOfReception(rRef.id));
     }));
 
@@ -296,10 +308,11 @@ class Contact implements storage.Contact {
   Future<Iterable<model.OrganizationReference>> organizations(int cid) async {
     Iterable<model.ReceptionReference> rRefs = await receptions(cid);
 
-    Set<model.OrganizationReference> orgs = new Set();
-    await Future.wait(rRefs.map((rid) async {
+    Set<model.OrganizationReference> orgs =
+        new Set<model.OrganizationReference>();
+    await Future.wait(rRefs.map((model.ReceptionReference rRef) async {
       orgs.add(new model.OrganizationReference(
-          (await receptionStore.get(rid.id)).oid, ''));
+          (await receptionStore.get(rRef.id)).oid, ''));
     }));
 
     return orgs;
@@ -307,18 +320,18 @@ class Contact implements storage.Contact {
 
   @override
   Future<Iterable<model.ReceptionContact>> receptionContacts(int rid) async {
-    final subDirs =
-        new Directory(path).listSync().where((fse) => fse is Directory);
+    final Iterable<FileSystemEntity> subDirs =
+        new Directory(path).listSync().where(_isDirectory);
 
-    List<model.ReceptionContact> rcs = [];
-    await Future.wait(subDirs.map((dir) async {
-      final ridFile = new File(dir.path + '/receptions/$rid.json');
+    List<model.ReceptionContact> rcs = <model.ReceptionContact>[];
+    await Future.wait(subDirs.map((FileSystemEntity fse) async {
+      final File ridFile = new File(fse.path + '/receptions/$rid.json');
 
       if (ridFile.existsSync()) {
-        final String bn = basename(dir.path);
+        final String bn = basename(fse.path);
 
         if (!bn.startsWith('.')) {
-          final File contactFile = new File('${dir.path}/contact.json');
+          final File contactFile = new File('${fse.path}/contact.json');
           final Future<model.BaseContact> bc = contactFile
               .readAsString()
               .then(JSON.decode)
@@ -348,7 +361,7 @@ class Contact implements storage.Contact {
   /// appropriate delete event, that allows clients and stores to update
   /// caches or views accordingly.
   @override
-  Future remove(int cid, model.User modifier) async {
+  Future<Null> remove(int cid, model.User modifier) async {
     if (!_index.containsKey(cid)) {
       throw new NotFound();
     }
@@ -356,7 +369,8 @@ class Contact implements storage.Contact {
     final Directory contactDir = new Directory('$path/$cid');
 
     /// Remove reception references.
-    await Future.forEach(await receptions(cid), (rRef) async {
+    await Future.forEach(await receptions(cid),
+        (model.ReceptionReference rRef) async {
       _receptionDataChangeBus
           .fire(new event.ReceptionData.delete(cid, rRef.id, modifier.id));
     });
@@ -391,12 +405,12 @@ class Contact implements storage.Contact {
   }
 
   @override
-  Future removeData(int id, int rid, model.User modifier) async {
+  Future<Null> removeData(int id, int rid, model.User modifier) async {
     if (id == model.BaseContact.noId || rid == model.Reception.noId) {
       throw new ClientError('Empty id');
     }
 
-    final recDir = new Directory('$path/$id/receptions');
+    final Directory recDir = new Directory('$path/$id/receptions');
     final File file = new File('${recDir.path}/$rid.json');
     if (!file.existsSync()) {
       throw new NotFound('No file $file');
@@ -454,11 +468,12 @@ class Contact implements storage.Contact {
   }
 
   @override
-  Future updateData(model.ReceptionAttributes attr, model.User modifier) async {
+  Future<Null> updateData(
+      model.ReceptionAttributes attr, model.User modifier) async {
     if (attr.cid == model.BaseContact.noId) {
       throw new ClientError('Empty id');
     }
-    final recDir = new Directory('$path/${attr.cid}/receptions');
+    final Directory recDir = new Directory('$path/${attr.cid}/receptions');
     final File file = new File('${recDir.path}/${attr.receptionId}.json');
     if (!file.existsSync()) {
       throw new NotFound('No file $file');
@@ -531,7 +546,7 @@ class Contact implements storage.Contact {
       }
     }
 
-    Iterable<model.Commit> changes = gitChanges.map((change) =>
+    Iterable<model.Commit> changes = gitChanges.map((Change change) =>
         new model.Commit()
           ..uid = extractUid(change.message)
           ..changedAt = change.changeTime
@@ -540,7 +555,7 @@ class Contact implements storage.Contact {
           ..changes = new List<model.ObjectChange>.from(
               change.fileChanges.map(convertFilechange)));
 
-    _log.info(changes.map((c) => c.toJson()));
+    _log.info(changes.map((model.Commit c) => c.toJson()));
 
     return changes;
   }

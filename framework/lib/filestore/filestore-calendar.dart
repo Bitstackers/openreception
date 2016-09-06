@@ -36,7 +36,7 @@ class Calendar implements storage.Calendar {
   /// Create a new [Calendar] filestore in [path].
   Calendar(String this.path, [GitEngine this._git, bool enableChangelog])
       : this.logChanges = (enableChangelog != null) ? enableChangelog : true {
-    final List<String> pathsToCreate = [path];
+    final List<String> pathsToCreate = <String>[path];
 
     pathsToCreate.forEach((String newPath) {
       final Directory dir = new Directory(newPath);
@@ -47,7 +47,8 @@ class Calendar implements storage.Calendar {
 
     _sequencer = new Sequencer(path);
     if (this._git != null) {
-      _git.init().catchError((error, stackTrace) => Logger.root
+      _git.init().catchError((dynamic error, StackTrace stackTrace) => Logger
+          .root
           .shout('Failed to initialize git engine', error, stackTrace));
       _git.addIgnoredPath(_sequencer.sequencerFilePath);
     }
@@ -63,12 +64,23 @@ class Calendar implements storage.Calendar {
   Stream<event.CalendarChange> get changeStream => _changeBus.stream;
 
   /// Returns when the filestore is initialized
-  Future get initialized =>
-      _git != null ? _git.initialized : new Future.value(true);
+  Future<Null> get initialized async {
+    if (_git != null) {
+      return _git.initialized;
+    } else {
+      return null;
+    }
+  }
 
   /// Awaits if there is already an operation in progress and returns
   /// whenever the filestore is ready to process the next request.
-  Future get ready => _git != null ? _git.whenReady : new Future.value(true);
+  Future<Null> get ready async {
+    if (_git != null) {
+      return _git.whenReady;
+    } else {
+      return null;
+    }
+  }
 
   @override
   Future<Iterable<model.Commit>> changes(model.Owner owner, [int eid]) async {
@@ -94,13 +106,13 @@ class Calendar implements storage.Calendar {
         : model.User.noId;
 
     model.CalendarChange convertFilechange(FileChange fc) {
-      final parts = fc.filename.split('/');
+      final List<String> parts = fc.filename.split('/');
       final int eid = int.parse(parts[2].split('.').first);
 
       return new model.CalendarChange(fc.changeType, eid);
     }
 
-    Iterable<model.Commit> changes = gitChanges.map((change) =>
+    Iterable<model.Commit> changes = gitChanges.map((Change change) =>
         new model.Commit()
           ..uid = extractUid(change.message)
           ..changedAt = change.changeTime
@@ -109,7 +121,7 @@ class Calendar implements storage.Calendar {
           ..changes = new List<model.ObjectChange>.from(
               change.fileChanges.map(convertFilechange)));
 
-    _log.info(changes.map((c) => c.toJson()));
+    _log.info(changes.map((model.Commit c) => c.toJson()));
 
     return changes;
   }
@@ -162,17 +174,21 @@ class Calendar implements storage.Calendar {
 
   @override
   Future<model.CalendarEntry> get(int eid, model.Owner owner) async {
-    final subdirs = new Directory(path).listSync().where(_isDirectory);
+    final Iterable<FileSystemEntity> subdirs =
+        new Directory(path).listSync().where(_isDirectory);
 
-    for (Directory subdir in subdirs) {
-      final ownerDirs = subdir.listSync().where(_isDirectory);
+    for (FileSystemEntity subdir in subdirs) {
+      if (subdir is Directory) {
+        final Iterable<FileSystemEntity> ownerDirs =
+            subdir.listSync().where(_isDirectory);
 
-      for (Directory dir in ownerDirs) {
-        File file = new File('${dir.path}/$eid.json');
+        for (FileSystemEntity dir in ownerDirs) {
+          File file = new File('${dir.path}/$eid.json');
 
-        if (file.existsSync()) {
-          return model.CalendarEntry
-              .decode(JSON.decode(file.readAsStringSync()));
+          if (file.existsSync()) {
+            return model.CalendarEntry
+                .decode(JSON.decode(file.readAsStringSync()));
+          }
         }
       }
     }
@@ -185,7 +201,7 @@ class Calendar implements storage.Calendar {
     String ownerPath = '$path/${owner.id}/calendar';
 
     if (!new Directory(ownerPath).existsSync()) {
-      return const [];
+      return const <model.CalendarEntry>[];
     }
 
     return _list(ownerPath);
@@ -194,7 +210,8 @@ class Calendar implements storage.Calendar {
   Future<Iterable<model.CalendarEntry>> _list(String basePath) async =>
       new Directory(basePath)
           .listSync()
-          .where((fse) => _isFile(fse) && fse.path.endsWith('.json'))
+          .where((FileSystemEntity fse) =>
+              _isFile(fse) && fse.path.endsWith('.json'))
           .map((FileSystemEntity fse) => model.CalendarEntry
               .decode(JSON.decode((fse as File).readAsStringSync())));
 
@@ -203,7 +220,7 @@ class Calendar implements storage.Calendar {
   ///
   /// The action is logged as being performed by user [modifier].
   @override
-  Future remove(int eid, model.Owner owner, model.User modifier) async {
+  Future<Null> remove(int eid, model.Owner owner, model.User modifier) async {
     final Directory ownerDir = new Directory('$path/${owner.id}/calendar');
     final File file = new File('${ownerDir.path}/$eid.json');
 
