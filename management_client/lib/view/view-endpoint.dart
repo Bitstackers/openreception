@@ -88,7 +88,7 @@ class Endpoints {
   }
 
   /**
-   * 
+   *
    */
   void set endpoints(Iterable<model.MessageEndpoint> eps) {
     _originalList = eps.toList(growable: false);

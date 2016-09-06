@@ -425,10 +425,14 @@ class Cdr {
           new TableCellElement()
             ..text = c.entry.uuid
             ..title = c.entry.filename
-            ..style.cursor = c.entry.answerEpoch > 0 &&
-                actorMap[c.entry.state] == 'agent' ? 'pointer' : ''
-            ..style.textDecoration = c.entry.answerEpoch > 0 &&
-                actorMap[c.entry.state] == 'agent' ? 'underline' : ''
+            ..style.cursor =
+                c.entry.answerEpoch > 0 && actorMap[c.entry.state] == 'agent'
+                    ? 'pointer'
+                    : ''
+            ..style.textDecoration =
+                c.entry.answerEpoch > 0 && actorMap[c.entry.state] == 'agent'
+                    ? 'underline'
+                    : ''
             ..onMouseOver.listen((MouseEvent event) {
               if (c.entry.answerEpoch > 0 &&
                   actorMap[c.entry.state] == 'agent') {
@@ -709,8 +713,9 @@ class Cdr {
         .where((model.CdrEntry entry) =>
             entry.agentBeginEpoch - entry.startEpoch <= 20)
         .length;
-    final Duration totalSpeakTime = new Duration(seconds: answeredEntries.fold(
-        0, (acc, model.CdrEntry entry) => acc + entry.billSec));
+    final Duration totalSpeakTime = new Duration(
+        seconds: answeredEntries.fold(
+            0, (acc, model.CdrEntry entry) => acc + entry.billSec));
     final DivElement sumsIn = new DivElement()
       ..text =
           'Total ind: ${answeredEntries.length + totalPbxAnswered + totalMissed}'

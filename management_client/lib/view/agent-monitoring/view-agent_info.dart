@@ -1,12 +1,7 @@
-part of management_tool.view.agent_monitoring;
+part of orm.view.agent_monitoring;
 
 class AgentInfo {
   final model.UserReference _user;
-
-  final SpanElement _messageElement = new SpanElement()
-    ..classes.add('message')
-    ..text = '[0]'
-    ..style.textTransform = 'bold';
 
   final TableCellElement _nameCell = new TableCellElement()
     ..classes.add('name');
@@ -20,8 +15,10 @@ class AgentInfo {
   final TableCellElement _focusAgeCell = new TableCellElement();
   final TableCellElement _statsCell = new TableCellElement();
 
-  final TableCellElement currentCallCell = new TableCellElement();
-  final TableCellElement lastSeenCell = new TableCellElement();
+  final TableCellElement _currentCallCell = new TableCellElement();
+  final SpanElement _currentCallSpan = new SpanElement();
+  final SpanElement _currentParkedCallSpan = new SpanElement();
+  final TableCellElement _lastSeenCell = new TableCellElement();
 
   final ImageElement _userStateIcon =
       new ImageElement(src: _unknownImgPath, width: 16, height: 16);
@@ -36,15 +33,12 @@ class AgentInfo {
   final TableRowElement element = new TableRowElement();
   int _numMessage = 0;
 
-  int get numMessage => _numMessage;
-  Set<String> _callshandled = new Set();
-
   /**
    *
    */
   set numMessage(int count) {
     _numMessage = count;
-    currentCallCell.text = '$_numMessage';
+    _currentCallCell.text = '$_numMessage';
   }
 
   set focus(bool inFocus) {
@@ -54,6 +48,9 @@ class AgentInfo {
     tick();
   }
 
+  /**
+   *
+   */
   set widget(String widgetName) {
     _widgetCell.text = widgetName;
   }
@@ -68,15 +65,12 @@ class AgentInfo {
   /**
    *
    */
-  set call(model.Call c) {
-    _callshandled.add(c.id);
+  void updateCall(model.Call c) {
     if (c.state == model.CallState.hungup ||
         c.state == model.CallState.transferred) {
-      currentCallCell.text = '';
-
-      _updateStats();
+      _currentCallSpan.text = '';
     } else {
-      currentCallCell.text = c.callerId;
+      _currentCallCell.text = _remoteParty(c);
     }
   }
 
@@ -94,18 +88,12 @@ class AgentInfo {
   /**
    *
    */
-  _updateStats() {
-    _statsCell.text = 'Håndterede kald: ${_callshandled.length}';
-  }
-
   set paused(bool isPaused) {
     if (isPaused) {
       _userStateIcon.src = _pauseImgPath;
     } else {
       _userStateIcon.src = _idleImgPath;
     }
-
-    lastSeenCell.text = '??';
 
     element.classes
       ..clear()
@@ -123,6 +111,7 @@ class AgentInfo {
     element.children = [
       _stateCell..children = [_userStateIcon],
       _nameCell,
+      _currentCallCell,
       _widgetCell,
       _focusCell..children = [_focusCellText, _focusAgeCell]
     ];
@@ -130,7 +119,7 @@ class AgentInfo {
 }
 
 /**
- * Prettyfy duration.
+ * Prettify duration.
  */
 String _prettyDuration(Duration d) {
   final int h = d.inHours;

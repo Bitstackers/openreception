@@ -10,7 +10,7 @@ class Calendar {
       _service.remove(entry.id, owner, _appUser).catchError(_handleError);
 
   /**
-   * 
+   *
    */
   Future<Iterable<model.CalendarEntry>> list(model.Owner owner) =>
       _service.list(owner).catchError(_handleError);

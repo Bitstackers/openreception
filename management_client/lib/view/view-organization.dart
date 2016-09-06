@@ -34,7 +34,7 @@ class Organization {
   final InputElement _nameInput = new InputElement()..value = '';
 
   /**
-   * 
+   *
    */
   void set organization(model.Organization org) {
     _id = org.id;
