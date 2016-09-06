@@ -1,11 +1,11 @@
-library openreception_tests.support.auth;
+library ort.support.auth;
 
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:logging/logging.dart';
 
-import 'package:openreception.framework/model.dart' as model;
+import 'package:orf/model.dart' as model;
 
 const String _namespace = 'test.support.auth';
 

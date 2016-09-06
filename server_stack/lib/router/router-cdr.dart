@@ -10,24 +10,23 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.cdr_server.router;
+library ors.cdr_server.router;
 
 import 'dart:async';
 import 'dart:io' as io;
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/service-io.dart' as Service_IO;
-import 'package:openreception.framework/service.dart' as Service;
-import 'package:openreception.server/controller/controller-cdr.dart'
-    as controller;
+import 'package:orf/exceptions.dart';
+import 'package:orf/service-io.dart' as Service_IO;
+import 'package:orf/service.dart' as Service;
+import 'package:ors/controller/controller-cdr.dart' as controller;
 import 'package:route/server.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
-import '../configuration.dart';
+import 'package:ors/configuration.dart';
 
 const String libraryName = 'cdrserver.router';
 final Logger log = new Logger(libraryName);

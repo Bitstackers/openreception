@@ -1,4 +1,4 @@
-part of openreception_tests.service.call;
+part of ort.service.call;
 
 abstract class Pickup {
   static Logger log = new Logger('$_namespace.CallFlowControl.Pickup');

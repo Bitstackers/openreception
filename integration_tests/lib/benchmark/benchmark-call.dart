@@ -1,4 +1,4 @@
-part of openreception_tests.benchmark;
+part of ort.benchmark;
 
 Future _sleep(int milliseconds) =>
     new Future.delayed(new Duration(milliseconds: milliseconds));

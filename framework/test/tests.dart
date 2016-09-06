@@ -11,17 +11,17 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.framework.test;
+library orf.test;
 
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:openreception.framework/bus.dart';
-import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/resource.dart' as resource;
-import 'package:openreception.framework/dialplan_tools.dart' as dpTools;
+import 'package:orf/bus.dart';
+import 'package:orf/event.dart' as event;
+import 'package:orf/model.dart' as model;
+import 'package:orf/resource.dart' as resource;
+import 'package:orf/dialplan_tools.dart' as dpTools;
 
 //import '../lib/service.dart'  as Service;
 

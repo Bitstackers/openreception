@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of model;
+part of orc.model;
 
 /**
  * UI model for welcome message.

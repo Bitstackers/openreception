@@ -16,7 +16,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:openreception.framework/model.dart';
+import 'package:orf/model.dart';
 import 'package:path/path.dart' as path;
 
 import 'configuration.dart';

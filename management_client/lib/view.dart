@@ -1,4 +1,4 @@
-library management_tool.view;
+library orm.view;
 
 import 'dart:async';
 import 'dart:convert';
@@ -6,15 +6,15 @@ import 'dart:html';
 
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:logging/logging.dart';
-import 'package:management_tool/controller.dart' as controller;
-import 'package:management_tool/searchcomponent.dart';
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/util_html.dart' as util;
-import 'package:openreception.framework/validation.dart';
+import 'package:orm/controller.dart' as controller;
+import 'package:orm/searchcomponent.dart';
+import 'package:orf/exceptions.dart';
+import 'package:orf/model.dart' as model;
+import 'package:orf/util_html.dart' as util;
+import 'package:orf/validation.dart';
 import 'package:random_string/random_string.dart' as random;
 
-export 'package:management_tool/view/view-agent_monitoring.dart';
+export 'package:orm/view/view-agent_monitoring.dart';
 
 part 'view/view-calendar.dart';
 part 'view/view-changelog.dart';
@@ -35,9 +35,9 @@ part 'view/view-reception_contact.dart';
 part 'view/view-user.dart';
 part 'view/view-user_groups.dart';
 part 'view/view-user_identities.dart';
-//export 'package:management_tool/view/agent-monitoring/agent_monitoring.dart';
+//export 'package:orm/view/agent-monitoring/agent_monitoring.dart';
 
-const String _libraryName = 'management_tool.view';
+const String _libraryName = 'orm.view';
 const List<String> phonenumberTypes = const ['PSTN', 'SIP'];
 controller.Popup notify = controller.popup;
 

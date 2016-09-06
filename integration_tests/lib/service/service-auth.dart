@@ -1,4 +1,4 @@
-part of openreception_tests.service;
+part of ort.service;
 
 abstract class AuthService {
   static final Logger log = new Logger('$_namespace.AuthService');

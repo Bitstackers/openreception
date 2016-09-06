@@ -1,4 +1,4 @@
-part of openreception_tests.rest;
+part of ort.rest;
 
 void _runUserTests() {
   group('$_namespace.User', () {

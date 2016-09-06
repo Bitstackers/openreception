@@ -1,4 +1,4 @@
-part of openreception_tests.service;
+part of ort.service;
 
 abstract class PeerAccountService {
   static Logger _log = new Logger('$_namespace.PeerAccountService');

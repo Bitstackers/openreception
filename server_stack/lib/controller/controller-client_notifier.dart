@@ -11,13 +11,13 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.controller.client_call_notifier;
+library ors.controller.client_call_notifier;
 
 import 'dart:async';
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/service.dart' as service;
+import 'package:orf/event.dart' as event;
+import 'package:orf/service.dart' as service;
 
 /**
 * Controller class that is responsible for broadcasting an event to all

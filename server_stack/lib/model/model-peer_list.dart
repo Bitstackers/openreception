@@ -11,14 +11,13 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.server.model;
+part of ors.model;
 
 bool peerIsInAcceptedContext(esl.Peer peer) =>
     config.callFlowControl.peerContexts.contains(peer.context);
 
 class PeerList {
-  final Logger _log =
-      new Logger('openreception.server.call_flow_control.model.PeerList');
+  final Logger _log = new Logger('ors.call_flow_control.model.PeerList');
 
   final Map<String, model.Peer> _peers = {};
 

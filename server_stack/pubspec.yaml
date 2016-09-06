@@ -1,4 +1,4 @@
-name: openreception.server
+name: ors
 version: 0.2.0+rc-1
 description: Server stack for the OpenReception application.
 dependencies:
@@ -18,7 +18,7 @@ dependencies:
   intl: any
   logging: any
   oauth2: <1.0.0
-  openreception.framework:
+  orf:
     path: ../framework
     version: '>=0.0.30'
   route: any

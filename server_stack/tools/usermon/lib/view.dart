@@ -15,9 +15,9 @@ library usermon.view;
 
 import 'dart:html';
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/service.dart' as service;
+import 'package:orf/event.dart' as event;
+import 'package:orf/model.dart' as model;
+import 'package:orf/service.dart' as service;
 
 part 'view/agent_info.dart';
 part 'view/agent_info_list.dart';

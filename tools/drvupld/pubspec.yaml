@@ -6,6 +6,6 @@ dependencies:
   googleapis_auth: any
   logging: any
   path: any
-  openreception.framework:
+  orf:
     path: ../../framework
     version: '>=0.0.30'

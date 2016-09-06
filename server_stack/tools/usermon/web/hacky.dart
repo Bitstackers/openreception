@@ -17,8 +17,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 // import 'package:logging/logging.dart';
-// import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.framework/service-html.dart' as transport;
+// import 'package:orf/service.dart' as service;
+import 'package:orf/service-html.dart' as transport;
 
 import 'package:usermon/view.dart' as view;
 

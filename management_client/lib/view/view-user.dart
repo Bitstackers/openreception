@@ -1,4 +1,4 @@
-part of management_tool.view;
+part of orm.view;
 
 class User {
   final DivElement element = new DivElement()

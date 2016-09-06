@@ -1,4 +1,4 @@
-name: openreception_tests
+name: ort
 version: 0.3.0
 description: OpenReception Acceptance and integration tests
 dependencies:
@@ -8,7 +8,7 @@ dependencies:
     git:
       ref: devel
       url: https://github.com/rostgaard/libesl-dart.git
-  openreception.framework:
+  orf:
     path: ../framework
     version: '>=0.0.30'
   openreception.client_app_server:

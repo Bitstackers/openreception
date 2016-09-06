@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.framework.filestore;
+part of orf.filestore;
 
 /// RFC3339-style (yyyy-MM-dd) [DateFormat]
 final DateFormat _rfc3339 = new DateFormat('yyyy-MM-dd');

@@ -11,23 +11,21 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.reception;
+library ors.reception;
 
 import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/filestore.dart' as filestore;
-import 'package:openreception.framework/gzip_cache.dart' as gzip_cache;
-import 'package:openreception.framework/service-io.dart' as service;
-import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/controller/controller-organization.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-reception.dart'
-    as controller;
-import 'package:openreception.server/router/router-reception.dart' as router;
+import 'package:orf/filestore.dart' as filestore;
+import 'package:orf/gzip_cache.dart' as gzip_cache;
+import 'package:orf/service-io.dart' as service;
+import 'package:orf/service.dart' as service;
+import 'package:ors/configuration.dart';
+import 'package:ors/controller/controller-organization.dart' as controller;
+import 'package:ors/controller/controller-reception.dart' as controller;
+import 'package:ors/router/router-reception.dart' as router;
 
 Future main(List<String> args) async {
   ///Init logging.

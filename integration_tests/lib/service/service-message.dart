@@ -1,4 +1,4 @@
-part of openreception_tests.service;
+part of ort.service;
 
 abstract class Message {
   static const int invalidMessageID = -1;

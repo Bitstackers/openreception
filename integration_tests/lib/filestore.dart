@@ -1,9 +1,9 @@
-library openreception_tests.filestore;
+library ort.filestore;
 
-import 'package:openreception.framework/filestore.dart' as filestore;
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception_tests/storage.dart' as storeTest;
-import 'package:openreception_tests/support.dart';
+import 'package:orf/filestore.dart' as filestore;
+import 'package:orf/model.dart' as model;
+import 'package:ort/storage.dart' as storeTest;
+import 'package:ort/support.dart';
 import 'package:test/test.dart';
 
 part 'filestore/filestore-calendar.dart';

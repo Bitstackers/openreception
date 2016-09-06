@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:html';
 
 import 'package:logging/logging.dart';
-import 'package:management_tool/configuration.dart';
-import 'package:management_tool/controller.dart' as controller;
-import 'package:management_tool/page.dart' as page;
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/service-html.dart' as transport;
-import 'package:openreception.framework/service.dart' as service;
+import 'package:orm/configuration.dart';
+import 'package:orm/controller.dart' as controller;
+import 'package:orm/page.dart' as page;
+import 'package:orf/exceptions.dart';
+import 'package:orf/service-html.dart' as transport;
+import 'package:orf/service.dart' as service;
 import 'package:route_hierarchical/client.dart';
 
 /**

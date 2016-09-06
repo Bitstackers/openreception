@@ -6,8 +6,8 @@ import 'dart:math' show Random;
 import 'package:logging/logging.dart';
 import 'package:args/args.dart';
 import 'package:openreception.client_app_server/router.dart' as app_router;
-import 'package:openreception_tests/support.dart';
-import 'package:openreception.framework/service.dart' as service;
+import 'package:ort/support.dart';
+import 'package:orf/service.dart' as service;
 //import 'package:args/args.dart';
 
 /**

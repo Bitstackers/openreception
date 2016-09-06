@@ -16,9 +16,9 @@ library usermon;
 import 'dart:async';
 import 'dart:html';
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/model.dart' as or_model;
-import 'package:openreception.framework/service.dart' as ORService;
-import 'package:openreception.framework/service-html.dart' as ORTransport;
+import 'package:orf/model.dart' as or_model;
+import 'package:orf/service.dart' as ORService;
+import 'package:orf/service-html.dart' as ORTransport;
 
 import 'package:usermon/view.dart' as view;
 import 'package:usermon/config.dart' as config;
@@ -33,7 +33,7 @@ Future main() async {
   ///Basic setup.
   or_model.ClientConfiguration clientConfig =
       await new ORService.RESTConfiguration(
-              config.CONFIGURATION_URL, new ORTransport.Client())
+              config.defaultConfigServer, new ORTransport.Client())
           .clientConfig();
 
   ORService.CallFlowControl callFlowControl = new ORService.CallFlowControl(

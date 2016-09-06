@@ -10,7 +10,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.controller.cdr;
+library ors.controller.cdr;
 
 import 'dart:async';
 import 'dart:io' as io;
@@ -19,7 +19,7 @@ import 'package:logging/logging.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
-import 'package:openreception.server/configuration.dart';
+import 'package:ors/configuration.dart';
 
 class Cdr {
   final Logger _log = new Logger('cdr_server.controller.cdr');

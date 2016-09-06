@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.framework.model.dialplan;
+part of orf.model.dialplan;
 
 ///Abstract super-class for [Action]s available for the dialplan.
 abstract class Action {

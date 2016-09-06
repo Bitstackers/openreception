@@ -11,18 +11,18 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.controller.user_state;
+library ors.controller.user_state;
 
 import 'dart:convert';
 
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
-import 'package:openreception.server/response_utils.dart';
+import 'package:ors/response_utils.dart';
 
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.server/model.dart' as model;
-import 'package:openreception.framework/event.dart' as event;
+import 'package:orf/model.dart' as model;
+import 'package:ors/model.dart' as model;
+import 'package:orf/event.dart' as event;
 
 class UserState {
   final model.UserStatusList _userStateList;

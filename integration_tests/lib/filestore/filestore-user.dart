@@ -1,4 +1,4 @@
-part of openreception_tests.filestore;
+part of ort.filestore;
 
 _runUserTests() {
   group('$_namespace.User', () {

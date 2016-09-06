@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreceptionclient;
+library orc;
 
 import 'dart:async';
 import 'dart:html';
@@ -23,10 +23,10 @@ import 'view/view.dart' as view;
 //import 'simulation.dart';
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.framework/service-html.dart' as transport;
+import 'package:orf/event.dart' as event;
+import 'package:orf/model.dart' as model;
+import 'package:orf/service.dart' as service;
+import 'package:orf/service-html.dart' as transport;
 
 part 'configuration_url.dart';
 

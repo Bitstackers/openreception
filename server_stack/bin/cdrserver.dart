@@ -11,15 +11,15 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.cdr;
+library ors.cdr;
 
 import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
-import 'package:openreception.server/router/router-cdr.dart' as router;
-import 'package:openreception.server/configuration.dart';
+import 'package:ors/router/router-cdr.dart' as router;
+import 'package:ors/configuration.dart';
 
 /**
  * CDR server.

@@ -1,4 +1,4 @@
-part of openreception_tests.rest;
+part of ort.rest;
 
 /**
  * TODO: Add tests for both broadcast, send and FIFO message ordering.

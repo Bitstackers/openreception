@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.framework.model;
+part of orf.model;
 
 /// CalendarEntry class representing a single entry in a calendar.
 ///

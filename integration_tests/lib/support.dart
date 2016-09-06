@@ -1,29 +1,29 @@
-library openreception_tests.support;
+library ort.support;
 
 import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/configuration.dart' as or_conf;
-import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/filestore.dart' as filestore;
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/service-io.dart' as service;
-import 'package:openreception.framework/service-io.dart' as Transport;
-import 'package:openreception.framework/service.dart' as Service;
-import 'package:openreception.framework/storage.dart' as storage;
-import 'package:openreception_tests/config.dart';
-import 'package:openreception_tests/filestore.dart' as filestore;
-import 'package:openreception_tests/process.dart' as process;
-import 'package:openreception_tests/src/support/randomizer.dart';
-import 'package:openreception_tests/support/support-auth.dart';
+import 'package:orf/configuration.dart' as or_conf;
+import 'package:orf/event.dart' as event;
+import 'package:orf/exceptions.dart';
+import 'package:orf/filestore.dart' as filestore;
+import 'package:orf/model.dart' as model;
+import 'package:orf/service-io.dart' as service;
+import 'package:orf/service-io.dart' as Transport;
+import 'package:orf/service.dart' as Service;
+import 'package:orf/storage.dart' as storage;
+import 'package:ort/config.dart';
+import 'package:ort/filestore.dart' as filestore;
+import 'package:ort/process.dart' as process;
+import 'package:ort/src/support/randomizer.dart';
+import 'package:ort/support/support-auth.dart';
 import 'package:phonio/phonio.dart' as Phonio;
 import 'package:test/test.dart';
 
-export 'package:openreception_tests/src/support/randomizer.dart';
-export 'package:openreception_tests/support/support-auth.dart';
+export 'package:ort/src/support/randomizer.dart';
+export 'package:ort/support/support-auth.dart';
 
 part 'support/customer.dart';
 part 'support/customer_pool.dart';

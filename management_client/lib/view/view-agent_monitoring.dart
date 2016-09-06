@@ -11,14 +11,14 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library management_tool.view.agent_monitoring;
+library orm.view.agent_monitoring;
 
 import 'dart:async';
 import 'dart:html';
 
-import 'package:management_tool/controller.dart' as controller;
-import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/model.dart' as model;
+import 'package:orm/controller.dart' as controller;
+import 'package:orf/event.dart' as event;
+import 'package:orf/model.dart' as model;
 
 part 'agent-monitoring/view-agent_info.dart';
 part 'agent-monitoring/view-agent_info_list.dart';

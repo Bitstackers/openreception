@@ -11,18 +11,17 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.router.authentication;
+library ors.router.authentication;
 
 import 'dart:async';
 import 'dart:io' as io;
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/filestore.dart' as filestore;
-import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/controller/controller-authentication.dart'
-    as controller;
-import 'package:openreception.server/response_utils.dart';
-import 'package:openreception.server/token_vault.dart';
+import 'package:orf/filestore.dart' as filestore;
+import 'package:ors/configuration.dart';
+import 'package:ors/controller/controller-authentication.dart' as controller;
+import 'package:ors/response_utils.dart';
+import 'package:ors/token_vault.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;

@@ -11,15 +11,14 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.server.model;
+part of ors.model;
 
 /**
  * Holds a list of currently active recordings based on events from FreeSWITCH.
  */
 class ActiveRecordings extends IterableBase<model.ActiveRecording> {
-
   ///Internal logger.
-  Logger _log = new Logger('openreception.server.model.ActiveRecordings');
+  Logger _log = new Logger('ors.model.ActiveRecordings');
 
   /**
    * Active recordings are, internally, stored as maps to enable easy lookup.

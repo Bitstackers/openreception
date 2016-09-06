@@ -11,17 +11,17 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.controller.pbx;
+library ors.controller.pbx;
 
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:esl/esl.dart' as esl;
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/pbx-keys.dart';
-import 'package:openreception.server/model.dart' as _model;
-import 'package:openreception.server/configuration.dart';
+import 'package:orf/model.dart' as model;
+import 'package:orf/pbx-keys.dart';
+import 'package:ors/model.dart' as _model;
+import 'package:ors/configuration.dart';
 
 class PBXException implements Exception {
   final String message;
@@ -46,7 +46,7 @@ class CallRejected extends PBXException {
 }
 
 class PBX {
-  final Logger _log = new Logger('openreception.server.controller.pbx');
+  final Logger _log = new Logger('ors.controller.pbx');
   final String _dialplan = 'xml receptions';
 
   final esl.Connection eslClient;

@@ -1,8 +1,8 @@
-library openreception_tests.mock_data;
+library ort.mock_data;
 
 import 'dart:math' show Random;
 
-import 'package:openreception.framework/model.dart' as model;
+import 'package:orf/model.dart' as model;
 
 abstract class Randomizer {
   static int seed = new DateTime.now().millisecondsSinceEpoch;

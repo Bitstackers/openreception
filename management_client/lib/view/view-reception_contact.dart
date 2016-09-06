@@ -1,4 +1,4 @@
-part of management_tool.view;
+part of orm.view;
 
 class ReceptionContact {
   final bool _single; // Are we alone in the list?

@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.framework.event;
+part of orf.event;
 
 /// General event class that is meant to be emitted upon _any_ channel update.
 /// Used primarily in development environment to notify clients about raw channel

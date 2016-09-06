@@ -12,7 +12,7 @@
 */
 
 /// Serialization keys used by dialplan model classes.
-library openreception.framework.dialplan_constants;
+library orf.dialplan_constants;
 
 /// fromDay constant.
 const String fromDay = 'fromDay';

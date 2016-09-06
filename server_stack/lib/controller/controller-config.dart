@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.controller.config;
+library ors.controller.config;
 
 import 'dart:async';
 import 'dart:convert';
@@ -19,12 +19,12 @@ import 'dart:convert';
 import 'package:logging/logging.dart';
 import 'package:shelf/shelf.dart' as shelf;
 
-import 'package:openreception.framework/model.dart' as model;
+import 'package:orf/model.dart' as model;
 
-import 'package:openreception.framework/service.dart' as service;
+import 'package:orf/service.dart' as service;
 
-import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/response_utils.dart';
+import 'package:ors/configuration.dart';
+import 'package:ors/response_utils.dart';
 
 /// Configuration controller class.
 class Config {

@@ -1,4 +1,4 @@
-library openreception_tests.rest;
+library ort.rest;
 
 import 'dart:async';
 import 'dart:io';
@@ -6,15 +6,15 @@ import 'dart:io';
 import 'package:esl/esl.dart' as esl;
 import 'package:esl/util.dart' as esl;
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/resource.dart' as resource;
-import 'package:openreception.framework/service-io.dart' as service;
-import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception_tests/config.dart';
-import 'package:openreception_tests/process.dart' as process;
-import 'package:openreception_tests/service.dart' as serviceTest;
-import 'package:openreception_tests/storage.dart' as storeTest;
-import 'package:openreception_tests/support.dart';
+import 'package:orf/model.dart' as model;
+import 'package:orf/resource.dart' as resource;
+import 'package:orf/service-io.dart' as service;
+import 'package:orf/service.dart' as service;
+import 'package:ort/config.dart';
+import 'package:ort/process.dart' as process;
+import 'package:ort/service.dart' as serviceTest;
+import 'package:ort/storage.dart' as storeTest;
+import 'package:ort/support.dart';
 import 'package:test/test.dart';
 
 part 'rest/rest-authentication.dart';

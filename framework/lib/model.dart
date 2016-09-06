@@ -11,22 +11,22 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.framework.model;
+library orf.model;
 
 import 'dart:async';
 
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/bus.dart';
-import 'package:openreception.framework/event.dart' as _event;
-import 'package:openreception.framework/model/dialplan/model-dialplan.dart';
-import 'package:openreception.framework/pbx-keys.dart';
-import 'package:openreception.framework/src/constants/model.dart' as key;
-import 'package:openreception.framework/util.dart' as util;
+import 'package:orf/bus.dart';
+import 'package:orf/event.dart' as _event;
+import 'package:orf/model/dialplan/model-dialplan.dart';
+import 'package:orf/pbx-keys.dart';
+import 'package:orf/src/constants/model.dart' as key;
+import 'package:orf/util.dart' as util;
 import 'package:path/path.dart' as path;
 
-export 'package:openreception.framework/model/dialplan/model-dialplan.dart';
-export 'package:openreception.framework/model/model-monitoring.dart';
+export 'package:orf/model/dialplan/model-dialplan.dart';
+export 'package:orf/model/model-monitoring.dart';
 
 part 'model/model-active_recording.dart';
 part 'model/model-agent_statistics.dart';

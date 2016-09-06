@@ -17,11 +17,11 @@
 /// serverside validation of objects. The error lists returned by the
 /// validation functions may serve as may serve as both pre-storage checks,
 /// but also as "fix these" error lists in a client UI.
-library openreception.framework.validation;
+library orf.validation;
 
-import 'package:openreception.framework/model.dart';
-import 'package:openreception.framework/util.dart';
-import 'package:openreception.framework/exceptions.dart';
+import 'package:orf/model.dart';
+import 'package:orf/util.dart';
+import 'package:orf/exceptions.dart';
 
 /// Determines if [string] contains only alphanumeric characters with no
 /// spaces.

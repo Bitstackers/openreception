@@ -13,5 +13,5 @@
 
 library usermon.config;
 
-final Uri CONFIGURATION_URL = Uri.parse('http://config.example.com');
+final Uri defaultConfigServer = Uri.parse('http://localhost:4080');
 final String token = 'secret token';

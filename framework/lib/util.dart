@@ -12,7 +12,7 @@
 */
 
 /// Various bit's and pieces of tools and utilites.
-library openreception.framework.utilities;
+library orf.utilities;
 
 import 'package:intl/intl.dart';
 

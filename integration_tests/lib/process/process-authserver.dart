@@ -1,4 +1,4 @@
-part of openreception_tests.process;
+part of ort.process;
 
 class AuthServer implements ServiceProcess {
   final String path;

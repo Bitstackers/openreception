@@ -1,4 +1,4 @@
-part of management_tool.view;
+part of orm.view;
 
 class Contact {
   final Logger _log = new Logger('$_libraryName.Contact');

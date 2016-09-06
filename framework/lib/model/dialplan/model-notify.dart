@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.framework.model.dialplan;
+part of orf.model.dialplan;
 
 /// Inject an arbitrary notification with [eventName] into the FreeSWITCH
 /// event stream to indicate that a channel has reached a certain point.

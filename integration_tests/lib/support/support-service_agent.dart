@@ -1,4 +1,4 @@
-part of openreception_tests.support;
+part of ort.support;
 
 class ServiceAgent {
   final Directory runpath;

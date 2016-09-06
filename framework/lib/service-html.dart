@@ -11,13 +11,13 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.framework.service.html;
+library orf.service.html;
 
 import 'dart:async';
 import 'dart:html' as html;
 
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/service.dart' as service;
+import 'package:orf/exceptions.dart';
+import 'package:orf/service.dart' as service;
 
 part 'service/html/service-html-client.dart';
 part 'service/html/service-html-websocket_client.dart';

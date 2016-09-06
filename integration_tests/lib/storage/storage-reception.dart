@@ -1,4 +1,4 @@
-part of openreception_tests.storage;
+part of ort.storage;
 
 class Reception {
   static Logger _log = new Logger('$_libraryName.Reception');

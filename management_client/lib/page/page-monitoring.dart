@@ -1,19 +1,19 @@
-library management_tool.page.monitoring;
+library orm.page.monitoring;
 
 import 'dart:async';
 import 'dart:html';
 
 //import 'package:logging/logging.dart';
-import 'package:management_tool/controller.dart' as controller;
-import 'package:management_tool/view.dart' as view;
-import 'package:openreception.framework/event.dart' as event;
+import 'package:orm/controller.dart' as controller;
+import 'package:orm/view.dart' as view;
+import 'package:orf/event.dart' as event;
 import 'package:route_hierarchical/client.dart';
 
 /**
  *
  */
 class Monitoring {
-  //final Logger _log = new Logger('management_tool.page.monitoring');
+  //final Logger _log = new Logger('orm.page.monitoring');
 
   final DivElement element = new DivElement()
     ..id = "monitoring-page"

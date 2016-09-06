@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.framework.event;
+part of orf.event;
 
 /// Event that is meant to be spawned every time a call is assigned to a user.
 ///

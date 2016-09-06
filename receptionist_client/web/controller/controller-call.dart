@@ -1,4 +1,4 @@
-part of controller;
+part of orc.controller;
 
 enum CallCommand {
   pickup,

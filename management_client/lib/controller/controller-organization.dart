@@ -1,4 +1,4 @@
-part of management_tool.controller;
+part of orm.controller;
 
 class Organization {
   final service.RESTOrganizationStore _service;

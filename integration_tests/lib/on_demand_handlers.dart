@@ -1,10 +1,10 @@
-library openreception_tests.on_demand_handlers;
+library ort.on_demand_handlers;
 
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:logging/logging.dart';
-import 'package:openreception_tests/support.dart' as test_fw;
+import 'package:ort/support.dart' as test_fw;
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 

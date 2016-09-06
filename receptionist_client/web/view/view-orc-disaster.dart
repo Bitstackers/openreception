@@ -12,7 +12,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of view;
+part of orc.view;
 
 /**
  * The ORC disaster "widget". Activates on AppState.ERROR

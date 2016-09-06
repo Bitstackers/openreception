@@ -11,20 +11,20 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.framework.service;
+library orf.service;
 
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 
-import 'package:openreception.framework/bus.dart';
-import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/src/constants/model.dart' as key;
+import 'package:orf/bus.dart';
+import 'package:orf/event.dart' as event;
+import 'package:orf/exceptions.dart';
+import 'package:orf/src/constants/model.dart' as key;
 
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/resource.dart' as resource;
-import 'package:openreception.framework/storage.dart' as storage;
+import 'package:orf/model.dart' as model;
+import 'package:orf/resource.dart' as resource;
+import 'package:orf/storage.dart' as storage;
 
 part 'service/service-auth.dart';
 part 'service/service-calendar.dart';

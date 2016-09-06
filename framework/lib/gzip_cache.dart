@@ -16,19 +16,19 @@
 /// The contained classes are stream-oriented and meant to be self-contained in
 /// the sense that no explicit action should be required to keep them up-to-date
 /// with the backing datastore.
-library openreception.framework.gzip_cache;
+library orf.gzip_cache;
 
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:archive/archive.dart';
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/filestore.dart' as filestore;
-import 'package:openreception.framework/model.dart' as model;
+import 'package:orf/event.dart' as event;
+import 'package:orf/exceptions.dart';
+import 'package:orf/filestore.dart' as filestore;
+import 'package:orf/model.dart' as model;
 
-const String _libraryName = 'openreception.framework.gzip_cache';
+const String _libraryName = 'orf.gzip_cache';
 
 final GZipEncoder _gzipEnc = new GZipEncoder();
 final GZipDecoder _gzipDec = new GZipDecoder();

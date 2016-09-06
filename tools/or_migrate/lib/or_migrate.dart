@@ -14,8 +14,8 @@
 import 'dart:async';
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/filestore.dart' as filestore;
-import 'package:openreception.framework/model.dart' as or_model;
+import 'package:orf/filestore.dart' as filestore;
+import 'package:orf/model.dart' as or_model;
 import 'package:openreception_framework/model.dart' as old_or_model;
 import 'package:openreception_framework/service-io.dart' as old_or_service;
 import 'package:openreception_framework/service.dart' as old_or_service;

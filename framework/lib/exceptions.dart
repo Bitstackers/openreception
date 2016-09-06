@@ -12,7 +12,7 @@
 */
 
 /// Shared errors and exceptions.
-library openreception.framework.exceptions;
+library orf.exceptions;
 
 /// General storage exception. Should only be treated as an abstract
 /// superclass, but may also be used directly in cases where creating a new

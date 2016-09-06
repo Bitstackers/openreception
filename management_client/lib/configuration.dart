@@ -1,8 +1,8 @@
-library management_tool.configuration;
+library orm.configuration;
 
 import 'dart:html';
 
-import 'package:openreception.framework/model.dart' as model;
+import 'package:orf/model.dart' as model;
 
 Configuration config = new Configuration._internal();
 

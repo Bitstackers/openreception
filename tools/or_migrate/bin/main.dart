@@ -16,7 +16,7 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/filestore.dart' as filestore;
+import 'package:orf/filestore.dart' as filestore;
 import 'package:openreception_framework/model.dart' as old_or_model;
 import 'package:openreception_framework/service-io.dart' as old_or_service;
 import 'package:openreception_framework/service.dart' as old_or_service;

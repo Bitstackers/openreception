@@ -1,4 +1,4 @@
-library openreception_tests.config;
+library ort.config;
 
 import 'package:phonio/phonio.dart';
 

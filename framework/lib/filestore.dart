@@ -12,7 +12,7 @@
 */
 
 /// File-based storage backend. Realizes the interfaces from [storage].
-library openreception.framework.filestore;
+library orf.filestore;
 
 import 'dart:async';
 import 'dart:collection';
@@ -22,13 +22,13 @@ import 'dart:io';
 
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/bus.dart';
-import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/gzip_cache.dart'
+import 'package:orf/bus.dart';
+import 'package:orf/event.dart' as event;
+import 'package:orf/exceptions.dart';
+import 'package:orf/gzip_cache.dart'
     show unpackAndDeserializeObject, serializeAndCompressObject;
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/storage.dart' as storage;
+import 'package:orf/model.dart' as model;
+import 'package:orf/storage.dart' as storage;
 import 'package:path/path.dart';
 
 part 'filestore/filestore-agent_history.dart';
@@ -150,7 +150,7 @@ class ChangeLogger {
 
   /// Internal logger.
   final Logger _log =
-      new Logger('openreception.framework.filestore.ChangeLogger');
+      new Logger('orf.filestore.ChangeLogger');
 
   /// Create a new [ChangeLogger] in [filepath].
   ///

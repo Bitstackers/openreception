@@ -18,9 +18,9 @@ import 'dart:io';
 import 'package:googleapis/drive/v2.dart' as drive;
 import 'package:googleapis_auth/auth_io.dart' as auth;
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/model.dart' as ORModel;
-import 'package:openreception.framework/service-io.dart' as ORTransport;
-import 'package:openreception.framework/service.dart' as ORService;
+import 'package:orf/model.dart' as ORModel;
+import 'package:orf/service-io.dart' as ORTransport;
+import 'package:orf/service.dart' as ORService;
 import 'package:path/path.dart' as path;
 
 import 'config.dart';

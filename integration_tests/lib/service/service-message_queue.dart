@@ -1,4 +1,4 @@
-part of openreception_tests.service;
+part of ort.service;
 
 abstract class MessageQueueStore {
   static final Logger log = new Logger('$_namespace.MessageStore');

@@ -5,7 +5,7 @@ import 'package:logging/logging.dart';
 import 'package:phonio/phonio.dart' as Phonio;
 import 'dart:math' show Random;
 
-import 'package:openreception_tests/support.dart' as support;
+import 'package:ort/support.dart' as support;
 
 Logger log = new Logger('Call-Spawner');
 Logger _statusLog = new Logger('Status');

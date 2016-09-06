@@ -1,4 +1,4 @@
-part of openreception_tests.rest;
+part of ort.rest;
 
 _runDialplanTests() {
   Logger log = new Logger('$_namespace.dialplan');

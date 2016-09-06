@@ -11,20 +11,18 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.router.reception;
+library ors.router.reception;
 
 import 'dart:async';
 import 'dart:io' as io;
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/controller/controller-organization.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-reception.dart'
-    as controller;
-import 'package:openreception.server/response_utils.dart';
+import 'package:orf/exceptions.dart';
+import 'package:orf/service.dart' as service;
+import 'package:ors/configuration.dart';
+import 'package:ors/controller/controller-organization.dart' as controller;
+import 'package:ors/controller/controller-reception.dart' as controller;
+import 'package:ors/response_utils.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;

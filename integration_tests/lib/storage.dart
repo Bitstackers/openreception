@@ -1,12 +1,12 @@
-library openreception_tests.storage;
+library ort.storage;
 
 import 'dart:async';
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/storage.dart' as storage;
-import 'package:openreception_tests/support.dart';
+import 'package:orf/exceptions.dart';
+import 'package:orf/model.dart' as model;
+import 'package:orf/storage.dart' as storage;
+import 'package:ort/support.dart';
 import 'package:test/test.dart';
 
 part 'storage/storage-calendar.dart';

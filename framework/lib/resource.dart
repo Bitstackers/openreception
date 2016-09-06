@@ -11,12 +11,12 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.framework.resource;
+library orf.resource;
 
 import 'dart:convert';
 
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/util.dart' as util;
+import 'package:orf/model.dart' as model;
+import 'package:orf/util.dart' as util;
 
 part 'resource/resource-authentication.dart';
 part 'resource/resource-calendar.dart';

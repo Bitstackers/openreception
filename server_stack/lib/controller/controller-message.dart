@@ -10,20 +10,20 @@
   You should have received a copy of the GNU General Public License along with
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
-library openreception.server.controller.message;
+library ors.controller.message;
 
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/filestore.dart' as filestore;
-import 'package:openreception.framework/gzip_cache.dart' as gzip_cache;
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.framework/storage.dart' as storage;
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.server/response_utils.dart';
+import 'package:orf/event.dart' as event;
+import 'package:orf/filestore.dart' as filestore;
+import 'package:orf/gzip_cache.dart' as gzip_cache;
+import 'package:orf/model.dart' as model;
+import 'package:orf/service.dart' as service;
+import 'package:orf/storage.dart' as storage;
+import 'package:orf/exceptions.dart';
+import 'package:ors/response_utils.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 

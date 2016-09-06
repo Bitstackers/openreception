@@ -11,7 +11,7 @@ import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 
 import '../lib/config.dart';
-import 'package:openreception_tests/support.dart' as support;
+import 'package:ort/support.dart' as support;
 import '../lib/on_demand_handlers.dart' as handler;
 
 const String libraryName = 'support_tools.on_demand_service';

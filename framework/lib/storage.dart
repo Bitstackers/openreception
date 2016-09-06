@@ -1,8 +1,8 @@
-library openreception.framework.storage;
+library orf.storage;
 
 import 'dart:async';
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/exceptions.dart';
+import 'package:orf/model.dart' as model;
+import 'package:orf/exceptions.dart';
 
 part 'storage/storage-calendar.dart';
 part 'storage/storage-contact.dart';

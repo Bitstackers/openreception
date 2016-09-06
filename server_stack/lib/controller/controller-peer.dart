@@ -11,12 +11,12 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.controller.peer;
+library ors.controller.peer;
 
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.server/model.dart' as _model;
-import 'package:openreception.server/response_utils.dart';
+import 'package:orf/exceptions.dart';
+import 'package:orf/model.dart' as model;
+import 'package:ors/model.dart' as _model;
+import 'package:ors/response_utils.dart';
 
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;

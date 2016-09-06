@@ -1,4 +1,4 @@
-part of openreception_tests.service.call;
+part of ort.service.call;
 
 /**
  * Tests for the call listing interface.

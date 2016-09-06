@@ -1,4 +1,4 @@
-part of openreception_tests.storage;
+part of ort.storage;
 
 abstract class MessageQueue {
   static final Logger log = new Logger('$_libraryName.MessageQueue');

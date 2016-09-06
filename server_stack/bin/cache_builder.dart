@@ -15,21 +15,21 @@
  * Builds a static file cache of gzipped filestore objects. Unused in the
  * current stack, but serves as example code for a basic caching frontend.
  */
-library openreception.server.cache_builder;
+library ors.cache_builder;
 
 import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/filestore.dart' as filestore;
-import 'package:openreception.framework/gzip_cache.dart' as gzip_cache;
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/model.dart' as model;
+import 'package:orf/filestore.dart' as filestore;
+import 'package:orf/gzip_cache.dart' as gzip_cache;
+import 'package:orf/model.dart' as model;
+import 'package:ors/configuration.dart';
+import 'package:ors/model.dart' as model;
 
-ArgResults parsedArgs;
-ArgParser parser = new ArgParser();
+ArgResults _parsedArgs;
+ArgParser _parser = new ArgParser();
 Logger _log = new Logger('cache_server');
 
 Future main(List<String> args) async {

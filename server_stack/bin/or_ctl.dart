@@ -14,21 +14,21 @@
 /**
  * The OR-Stack command-line control interface. Largely unfinished.
  */
-library openreception.server.or_ctl;
+library ors.or_ctl;
 
 import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/service-io.dart' as transport;
-import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.server/configuration.dart';
-//import 'package:openreception.framework/model.dart' as model;
-//import 'package:openreception.framework/storage.dart' as storage;
+import 'package:orf/service-io.dart' as transport;
+import 'package:orf/service.dart' as service;
+import 'package:ors/configuration.dart';
+//import 'package:orf/model.dart' as model;
+//import 'package:orf/storage.dart' as storage;
 
-ArgResults parsedArgs;
-ArgParser parser = new ArgParser();
+ArgResults _parsedArgs;
+ArgParser _parser = new ArgParser();
 
 Future main(List<String> args) async {
   ///Init logging.

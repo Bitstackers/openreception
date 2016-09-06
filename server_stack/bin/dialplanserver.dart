@@ -11,25 +11,25 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.dialplan;
+library ors.dialplan;
 
 import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/dialplan_tools.dart' as dialplanTools;
-import 'package:openreception.framework/filestore.dart' as filestore;
-import 'package:openreception.framework/service-io.dart' as service;
-import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server'
+import 'package:orf/dialplan_tools.dart' as dialplanTools;
+import 'package:orf/filestore.dart' as filestore;
+import 'package:orf/service-io.dart' as service;
+import 'package:orf/service.dart' as service;
+import 'package:ors/configuration.dart';
+import 'package:ors'
     '/controller/controller-ivr.dart' as controller;
-import 'package:openreception.server'
+import 'package:ors'
     '/controller/controller-peer_account.dart' as controller;
-import 'package:openreception.server'
+import 'package:ors'
     '/controller/controller-reception_dialplan.dart' as controller;
-import 'package:openreception.server/router/router-dialplan.dart' as router;
+import 'package:ors/router/router-dialplan.dart' as router;
 
 Future main(List<String> args) async {
   ///Init logging.
@@ -101,7 +101,7 @@ Future main(List<String> args) async {
   /// Parse port argument;
   int port;
   try {
-    port = parsePort(parsedArgs['httpport']);
+    port = _parsePort(parsedArgs['httpport']);
   } on FormatException {
     exitWithError('Bad port argument: ${parsedArgs['httpport']}');
   }
@@ -169,7 +169,7 @@ Future main(List<String> args) async {
   _log.info('Ready to handle requests');
 }
 
-int parsePort(String value) {
+int _parsePort(String value) {
   int port = int.parse(value);
   if (port < 1 || port > 65535) {
     throw new FormatException();

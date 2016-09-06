@@ -7,9 +7,10 @@ environment:
 
 dependencies:
   args: any
-  openreception.framework:
+  orf:
     path: ../../framework
     version: '>=0.0.30'
+  # The old openreception framework
   openreception_framework:
     git: https://github.com/Bitstackers/OpenReceptionFramework.git
 

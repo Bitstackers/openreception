@@ -11,21 +11,21 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.controller.authentication;
+library ors.controller.authentication;
 
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/service-io.dart' as service;
-import 'package:openreception.framework/storage.dart' as storage;
-import 'package:openreception.server/configuration.dart' as conf;
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.server/googleauth.dart';
-import 'package:openreception.server/response_utils.dart';
-import 'package:openreception.server/token_vault.dart';
-import 'package:openreception.server/token_watcher.dart' as watcher;
+import 'package:orf/model.dart' as model;
+import 'package:orf/service-io.dart' as service;
+import 'package:orf/storage.dart' as storage;
+import 'package:ors/configuration.dart' as conf;
+import 'package:orf/exceptions.dart';
+import 'package:ors/googleauth.dart';
+import 'package:ors/response_utils.dart';
+import 'package:ors/token_vault.dart';
+import 'package:ors/token_watcher.dart' as watcher;
 import 'package:shelf/shelf.dart' as shelf show Request, Response;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 

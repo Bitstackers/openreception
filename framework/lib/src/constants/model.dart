@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.framework.keys;
+library orf.keys;
 
 const String id = 'id';
 const String cid = 'cid';

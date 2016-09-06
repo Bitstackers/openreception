@@ -11,20 +11,20 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.controller.agent_history;
+library ors.controller.agent_history;
 
 import 'dart:async';
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/filestore.dart' as filestore;
-import 'package:openreception.server/response_utils.dart';
+import 'package:orf/exceptions.dart';
+import 'package:orf/filestore.dart' as filestore;
+import 'package:ors/response_utils.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
 class AgentStatistics {
   final filestore.AgentHistory _agentHistory;
-  Logger _log = new Logger('openreception.server.controller.agent_history');
+  Logger _log = new Logger('ors.controller.agent_history');
 
   /**
    *

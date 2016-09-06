@@ -1,4 +1,4 @@
-part of openreception_tests.support;
+part of ort.support;
 
 int _currentInternalPeerName = 1100;
 String get _nextInternalPeerName {

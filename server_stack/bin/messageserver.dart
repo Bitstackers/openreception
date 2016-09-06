@@ -11,20 +11,19 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.message;
+library ors.message;
 
 import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/filestore.dart' as filestore;
-import 'package:openreception.framework/service-io.dart' as service;
-import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/controller/controller-message.dart'
-    as controller;
-import 'package:openreception.server/router/router-message.dart' as router;
+import 'package:orf/filestore.dart' as filestore;
+import 'package:orf/service-io.dart' as service;
+import 'package:orf/service.dart' as service;
+import 'package:ors/configuration.dart';
+import 'package:ors/controller/controller-message.dart' as controller;
+import 'package:ors/router/router-message.dart' as router;
 
 Future main(List<String> args) async {
   ///Init logging. Inherit standard values.

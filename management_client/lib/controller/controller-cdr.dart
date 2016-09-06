@@ -1,4 +1,4 @@
-part of management_tool.controller;
+part of orm.controller;
 
 class Cdr {
   final Uri _host;

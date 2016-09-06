@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.call_flow;
+library ors.call_flow;
 
 import 'dart:async';
 import 'dart:io';
@@ -21,26 +21,19 @@ import 'package:esl/constants.dart' as esl;
 import 'package:esl/esl.dart' as esl;
 import 'package:esl/util.dart' as esl;
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/configuration.dart' as conf;
-import 'package:openreception.framework/service-io.dart' as service;
-import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/controller/controller-active_recording.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-call.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-channel.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-client_notifier.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-pbx.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-peer.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-state_reload.dart'
-    as controller;
-import 'package:openreception.server/model.dart' as _model;
-import 'package:openreception.server/router/router-call.dart' as router;
+import 'package:orf/configuration.dart' as conf;
+import 'package:orf/service-io.dart' as service;
+import 'package:orf/service.dart' as service;
+import 'package:ors/configuration.dart';
+import 'package:ors/controller/controller-active_recording.dart' as controller;
+import 'package:ors/controller/controller-call.dart' as controller;
+import 'package:ors/controller/controller-channel.dart' as controller;
+import 'package:ors/controller/controller-client_notifier.dart' as controller;
+import 'package:ors/controller/controller-pbx.dart' as controller;
+import 'package:ors/controller/controller-peer.dart' as controller;
+import 'package:ors/controller/controller-state_reload.dart' as controller;
+import 'package:ors/model.dart' as _model;
+import 'package:ors/router/router-call.dart' as router;
 
 Logger _log = new Logger('callflow');
 ArgResults _parsedArgs;

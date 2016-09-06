@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.framework.storage;
+part of orf.storage;
 
 /// Storage interface for persistent storage of [model.IvrMenu] objects.
 abstract class Ivr {

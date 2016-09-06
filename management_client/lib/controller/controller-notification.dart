@@ -1,4 +1,4 @@
-part of management_tool.controller;
+part of orm.controller;
 
 class Notification {
   final Logger _log = new Logger('$_libraryName.Notification');

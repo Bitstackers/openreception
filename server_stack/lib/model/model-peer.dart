@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.server.model;
+part of ors.model;
 
 //TODO: test api command: sofia_presence_data list|status|rpid|user_agent [profile/]<user>@domain
 class Peer extends esl.Peer {

@@ -1,13 +1,13 @@
-library management_tool.page.cdr;
+library orm.page.cdr;
 
 import 'dart:async';
 import 'dart:html';
 
-import 'package:management_tool/controller.dart' as controller;
-import 'package:openreception.framework/model.dart' as model;
+import 'package:orm/controller.dart' as controller;
+import 'package:orf/model.dart' as model;
 import 'package:route_hierarchical/client.dart';
 
-const String _libraryName = 'management_tool.page.cdr';
+const String _libraryName = 'orm.page.cdr';
 
 final Map<model.CdrEntryState, String> actorMap = {
   model.CdrEntryState.agentChannel: 'agentkanal',

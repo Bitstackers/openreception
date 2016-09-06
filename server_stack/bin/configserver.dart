@@ -11,17 +11,16 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.configuration;
+library ors.configuration;
 
 import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
-import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/controller/controller-config.dart'
-    as controller;
-import 'package:openreception.server/router/router-config.dart' as router;
+import 'package:ors/configuration.dart';
+import 'package:ors/controller/controller-config.dart' as controller;
+import 'package:ors/router/router-config.dart' as router;
 
 /**
  * The OR-Stack configuration server. Provides a REST configuration interface.

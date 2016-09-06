@@ -1,4 +1,4 @@
-part of openreception_tests.service.call;
+part of ort.service.call;
 
 abstract class CallPark {
   static Logger log = new Logger('$_namespace.CallFlowControl.Park');

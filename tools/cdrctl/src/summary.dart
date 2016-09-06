@@ -15,7 +15,7 @@ library summary;
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:openreception.framework/model.dart';
+import 'package:orf/model.dart';
 
 import 'callpricing.dart';
 import 'configuration.dart';

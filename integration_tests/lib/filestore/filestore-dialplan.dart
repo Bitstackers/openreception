@@ -1,4 +1,4 @@
-part of openreception_tests.filestore;
+part of ort.filestore;
 
 void _runDialplanTests() {
   group('$_namespace.ReceptionDialplan', () {

@@ -1,10 +1,10 @@
-library openreception_tests;
+library ort;
 
-import 'package:openreception_tests/filestore.dart' as filestore;
-import 'package:openreception_tests/rest.dart' as rest;
-import 'package:openreception_tests/benchmark.dart' as benchmark;
+import 'package:ort/filestore.dart' as filestore;
+import 'package:ort/rest.dart' as rest;
+import 'package:ort/benchmark.dart' as benchmark;
 
-import 'package:openreception_tests/support.dart';
+import 'package:ort/support.dart';
 
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';

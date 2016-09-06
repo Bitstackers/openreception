@@ -1,4 +1,4 @@
-part of openreception_tests.service;
+part of ort.service;
 
 abstract class Calendar {
   static final Logger _log = new Logger('$_namespace.Calendar');

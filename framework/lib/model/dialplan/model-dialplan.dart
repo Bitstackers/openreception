@@ -11,9 +11,9 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.framework.model.dialplan;
+library orf.model.dialplan;
 
-import 'package:openreception.framework/src/constants/dialplan.dart' as key;
+import 'package:orf/src/constants/dialplan.dart' as key;
 
 part 'model-action.dart';
 part 'model-enqueue.dart';

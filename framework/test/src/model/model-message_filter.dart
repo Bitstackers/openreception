@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.framework.test;
+part of orf.test;
 
 void _testModelMessageFilter() {
   group('Model.MessageFilter', () {
@@ -24,8 +24,8 @@ void _testModelMessageFilter() {
 abstract class _ModelMessageFilter {
   static void deserialization() {
     model.MessageFilter obj = buildObject();
-    model.MessageFilter deserializedObj =
-        new model.MessageFilter.fromMap(JSON.decode(JSON.encode(obj))as Map<String,dynamic>);
+    model.MessageFilter deserializedObj = new model.MessageFilter.fromMap(
+        JSON.decode(JSON.encode(obj)) as Map<String, dynamic>);
 
     expect(obj.contactId, equals(deserializedObj.contactId));
     expect(obj.limitCount, equals(deserializedObj.limitCount));

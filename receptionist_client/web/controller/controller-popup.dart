@@ -11,15 +11,15 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of controller;
+part of orc.controller;
 
 /**
  * Activate browser popup notifications.
  */
 class Popup {
-  final Uri      _errorIcon;
-  final Uri      _infoIcon;
-  final Uri      _successIcon;
+  final Uri _errorIcon;
+  final Uri _infoIcon;
+  final Uri _successIcon;
   final Duration _timeout = new Duration(seconds: 3);
 
   /**

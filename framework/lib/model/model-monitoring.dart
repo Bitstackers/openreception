@@ -11,11 +11,11 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.framework.model.monitoring;
+library orf.model.monitoring;
 
-import 'package:openreception.framework/event.dart' as _event;
-import 'package:openreception.framework/model.dart';
-import 'package:openreception.framework/util.dart' as util;
+import 'package:orf/event.dart' as _event;
+import 'package:orf/model.dart';
+import 'package:orf/util.dart' as util;
 
 final String _callOfferKey = new _event.CallOffer(null).eventName;
 final String _callPickupKey = new _event.CallPickup(null).eventName;

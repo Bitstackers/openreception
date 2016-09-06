@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.model;
+library ors.model;
 
 import 'dart:async';
 import 'dart:collection';
@@ -19,15 +19,14 @@ import 'dart:collection';
 import 'package:esl/esl.dart' as esl;
 import 'package:esl/constants.dart' as esl_const;
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/bus.dart';
-import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/pbx-keys.dart';
-import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/controller/controller-pbx.dart'
-    as controller;
+import 'package:orf/bus.dart';
+import 'package:orf/event.dart' as event;
+import 'package:orf/exceptions.dart';
+import 'package:orf/model.dart' as model;
+import 'package:orf/pbx-keys.dart';
+import 'package:orf/service.dart' as service;
+import 'package:ors/configuration.dart';
+import 'package:ors/controller/controller-pbx.dart' as controller;
 
 part 'model/model-active_recording.dart';
 part 'model/model-agent_history.dart';

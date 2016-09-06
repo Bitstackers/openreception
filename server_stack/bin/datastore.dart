@@ -14,40 +14,34 @@
 /**
  * The OR-Stack calendar server. Provides a REST calendar interface.
  */
-library openreception.server.datastore;
+library ors.datastore;
 
 import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/dialplan_tools.dart' as dialplanTools;
-import 'package:openreception.framework/filestore.dart' as filestore;
-import 'package:openreception.framework/gzip_cache.dart' as gzip_cache;
-import 'package:openreception.framework/service-io.dart' as service;
-import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/model.dart' as model;
+import 'package:orf/dialplan_tools.dart' as dialplanTools;
+import 'package:orf/filestore.dart' as filestore;
+import 'package:orf/gzip_cache.dart' as gzip_cache;
+import 'package:orf/service-io.dart' as service;
+import 'package:orf/service.dart' as service;
+import 'package:ors/configuration.dart';
+import 'package:ors/model.dart' as model;
 
-import 'package:openreception.server/controller/controller-agent_statistics.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-calendar.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-client_notifier.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-contact.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-organization.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-reception.dart'
-    as controller;
-import 'package:openreception.server/router/router-calendar.dart' as router;
-import 'package:openreception.server/router/router-contact.dart' as router;
-import 'package:openreception.server/router/router-datastore.dart' as router;
-import 'package:openreception.server/router/router-reception.dart' as router;
+import 'package:ors/controller/controller-agent_statistics.dart' as controller;
+import 'package:ors/controller/controller-calendar.dart' as controller;
+import 'package:ors/controller/controller-client_notifier.dart' as controller;
+import 'package:ors/controller/controller-contact.dart' as controller;
+import 'package:ors/controller/controller-organization.dart' as controller;
+import 'package:ors/controller/controller-reception.dart' as controller;
+import 'package:ors/router/router-calendar.dart' as router;
+import 'package:ors/router/router-contact.dart' as router;
+import 'package:ors/router/router-datastore.dart' as router;
+import 'package:ors/router/router-reception.dart' as router;
 
-ArgResults parsedArgs;
-ArgParser parser = new ArgParser();
+ArgResults _parsedArgs;
+ArgParser _parser = new ArgParser();
 
 Future main(List<String> args) async {
   ///Init logging.

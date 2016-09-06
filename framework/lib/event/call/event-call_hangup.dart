@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.framework.event;
+part of orf.event;
 
 /// Event that is spawned when the channel of a call destroyed. Must only occur
 /// once for every call.

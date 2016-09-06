@@ -11,18 +11,18 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library controller;
+library orc.controller;
 
 import 'dart:async';
 import 'dart:html' as html;
 
 import 'package:logging/logging.dart';
 import 'package:okeyee/okeyee.dart';
-import 'package:openreception.framework/bus.dart';
-import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/service.dart' as service;
+import 'package:orf/bus.dart';
+import 'package:orf/event.dart' as event;
+import 'package:orf/exceptions.dart';
+import 'package:orf/model.dart' as model;
+import 'package:orf/service.dart' as service;
 
 import '../model/model.dart' as ui_model;
 

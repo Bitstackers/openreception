@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.framework.event;
+part of orf.event;
 
 /// Convenience class/interface that provides a mean for grouping all
 /// call-related events and providing a common shared interface for them.

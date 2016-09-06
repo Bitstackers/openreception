@@ -1,13 +1,13 @@
-library management_tool.page.reception;
+library orm.page.reception;
 
 import 'dart:async';
 import 'dart:html';
 
-import 'package:management_tool/configuration.dart';
-import 'package:management_tool/controller.dart' as controller;
-import 'package:management_tool/view.dart' as view;
-import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/model.dart' as model;
+import 'package:orm/configuration.dart';
+import 'package:orm/controller.dart' as controller;
+import 'package:orm/view.dart' as view;
+import 'package:orf/event.dart' as event;
+import 'package:orf/model.dart' as model;
 import 'package:route_hierarchical/client.dart';
 
 class Reception {

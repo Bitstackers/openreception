@@ -1,4 +1,4 @@
-part of openreception_tests.config;
+part of ort.config;
 
 /**
  * Helper functions for keeping track how config resource usage.

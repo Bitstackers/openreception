@@ -11,28 +11,23 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.call_flow_control_server.router;
+library ors.call_flow_control_server.router;
 
 import 'dart:async';
 import 'dart:io' as io;
 
 import 'package:logging/logging.dart';
-import 'package:openreception.server/controller/controller-active_recording.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-call.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-channel.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-peer.dart'
-    as controller;
-import 'package:openreception.server/controller/controller-state_reload.dart'
-    as controller;
+import 'package:ors/controller/controller-active_recording.dart' as controller;
+import 'package:ors/controller/controller-call.dart' as controller;
+import 'package:ors/controller/controller-channel.dart' as controller;
+import 'package:ors/controller/controller-peer.dart' as controller;
+import 'package:ors/controller/controller-state_reload.dart' as controller;
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_cors/shelf_cors.dart' as shelf_cors;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
-import '../configuration.dart';
+import 'package:ors/configuration.dart';
 
 const Map<String, String> corsHeaders = const {
   'Access-Control-Allow-Origin': '*',

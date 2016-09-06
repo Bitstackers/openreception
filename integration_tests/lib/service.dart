@@ -1,20 +1,20 @@
-library openreception_tests.service;
+library ort.service;
 
 import 'dart:async';
 
 import 'package:esl/esl.dart' as esl;
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.framework/storage.dart' as storage;
-import 'package:openreception_tests/config.dart';
-import 'package:openreception_tests/support.dart';
+import 'package:orf/event.dart' as event;
+import 'package:orf/exceptions.dart';
+import 'package:orf/model.dart' as model;
+import 'package:orf/service.dart' as service;
+import 'package:orf/storage.dart' as storage;
+import 'package:ort/config.dart';
+import 'package:ort/support.dart';
 import 'package:phonio/phonio.dart' as phonio;
 import 'package:test/test.dart';
 
-export 'package:openreception_tests/service/service-call.dart';
+export 'package:ort/service/service-call.dart';
 
 part 'service/service-auth.dart';
 part 'service/service-calendar.dart';

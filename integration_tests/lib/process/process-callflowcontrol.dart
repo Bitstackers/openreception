@@ -1,4 +1,4 @@
-part of openreception_tests.process;
+part of ort.process;
 
 class CallFlowControl implements ServiceProcess {
   final Logger _log = new Logger('$_namespace.CallFlowControl');

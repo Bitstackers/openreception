@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of view;
+part of orc.view;
 
 /**
  * The ORC loading "widget". Activates on AppState.LOADING
@@ -45,8 +45,10 @@ class ORCLoading {
    * Observers.
    */
   void _observers() {
-    _appState.onStateChange.listen((ui_model.AppState appState) => appState ==
-        ui_model.AppState.loading ? _ui.visible = true : _ui.visible = false);
+    _appState.onStateChange.listen((ui_model.AppState appState) =>
+        appState == ui_model.AppState.loading
+            ? _ui.visible = true
+            : _ui.visible = false);
   }
 
   void addLoadingMessage(String message) => _ui.addLoadingMessage(message);

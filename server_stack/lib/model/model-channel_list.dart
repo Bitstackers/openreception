@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.server.model;
+part of ors.model;
 
 /// Utility function that extracts and returns the name of the peer owning
 /// the [channel].
@@ -148,8 +148,7 @@ class ChannelEvent {
 /// detection of duplicate channels for clients.
 class ChannelList extends esl.ChannelList {
   /// Internal logger
-  static final Logger _log =
-      new Logger('openreception.server.model.ChanneList');
+  static final Logger _log = new Logger('ors.model.ChanneList');
 
   /// Controller for injecting events into [event] stream.
   static StreamController<ChannelEvent> _eventController =

@@ -17,7 +17,7 @@
 /// common method for configuring and launching processes for use with,
 /// among others, tests.
 
-library openreception.framework.config;
+library orf.config;
 
 import 'package:args/args.dart';
 

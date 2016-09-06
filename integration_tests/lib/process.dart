@@ -1,13 +1,13 @@
-library openreception_tests.process;
+library ort.process;
 
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/service-io.dart' as service;
-import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception_tests/support/support-auth.dart';
+import 'package:orf/service-io.dart' as service;
+import 'package:orf/service.dart' as service;
+import 'package:ort/support/support-auth.dart';
 import 'package:path/path.dart';
 
 part 'process/process-authserver.dart';

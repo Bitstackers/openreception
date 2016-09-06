@@ -1,4 +1,4 @@
-part of openreception_tests.service;
+part of ort.service;
 
 /**
  * Converts a Dart DateTime WeekDay into a [model.Weekday].

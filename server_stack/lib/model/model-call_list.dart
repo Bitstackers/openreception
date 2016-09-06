@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.server.model;
+part of ors.model;
 
 class CallList extends IterableBase<model.Call> {
   final controller.PBX _pbxController;
@@ -19,7 +19,7 @@ class CallList extends IterableBase<model.Call> {
 
   CallList(this._pbxController, this._channelList);
 
-  static final Logger log = new Logger('openreception.server.model.CallList');
+  static final Logger log = new Logger('ors.model.CallList');
 
   Map<String, model.Call> _map = new Map<String, model.Call>();
 

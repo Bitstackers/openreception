@@ -11,19 +11,19 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.controller.ivr;
+library ors.controller.ivr;
 
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/dialplan_tools.dart' as dialplanTools;
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/filestore.dart' as filestore;
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.server/response_utils.dart';
+import 'package:orf/dialplan_tools.dart' as dialplanTools;
+import 'package:orf/exceptions.dart';
+import 'package:orf/filestore.dart' as filestore;
+import 'package:orf/model.dart' as model;
+import 'package:orf/service.dart' as service;
+import 'package:ors/response_utils.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 

@@ -11,15 +11,15 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception_servers.authentication.token_vault;
+library ors.authentication.token_vault;
 
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/model.dart' as model;
+import 'package:orf/exceptions.dart';
+import 'package:orf/model.dart' as model;
 import 'package:path/path.dart' as path;
 
 TokenVault vault = new TokenVault();

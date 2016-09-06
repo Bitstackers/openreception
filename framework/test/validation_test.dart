@@ -11,11 +11,11 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.framework.test.validation;
+library orf.test.validation;
 
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/validation.dart';
-import 'package:openreception.framework/exceptions.dart';
+import 'package:orf/model.dart' as model;
+import 'package:orf/validation.dart';
+import 'package:orf/exceptions.dart';
 import 'package:test/test.dart';
 
 part 'src/validation/ivr_menu.dart';

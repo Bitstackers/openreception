@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.framework.service;
+part of orf.service;
 
 /// Superclass for abstracting away the griddy details of
 /// client/server-specific web-clients.

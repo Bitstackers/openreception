@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of controller;
+part of orc.controller;
 
 enum Context { home, homePlus, calendarEdit, messages }
 

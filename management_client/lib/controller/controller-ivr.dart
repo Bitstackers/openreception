@@ -1,4 +1,4 @@
-part of management_tool.controller;
+part of orm.controller;
 
 class Ivr {
   final service.RESTIvrStore _ivrService;

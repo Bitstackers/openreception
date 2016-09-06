@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception_servers.authentication.google_auth;
+library ors.authentication.google_auth;
 
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:crypto/crypto.dart';

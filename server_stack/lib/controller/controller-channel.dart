@@ -11,12 +11,12 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.controller.channel;
+library ors.controller.channel;
 
 import 'dart:convert';
 
 import 'package:logging/logging.dart';
-import 'package:openreception.server/model.dart' as _model;
+import 'package:ors/model.dart' as _model;
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 

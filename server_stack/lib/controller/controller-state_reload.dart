@@ -11,14 +11,13 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.controller.state_reload;
+library ors.controller.state_reload;
 
 import 'dart:async';
 
-import 'package:openreception.server/controller/controller-pbx.dart'
-    as controller;
-import 'package:openreception.server/model.dart' as _model;
-import 'package:openreception.server/response_utils.dart';
+import 'package:ors/controller/controller-pbx.dart' as controller;
+import 'package:ors/model.dart' as _model;
+import 'package:ors/response_utils.dart';
 import 'package:shelf/shelf.dart' as shelf;
 
 class PhoneState {

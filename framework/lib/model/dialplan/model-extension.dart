@@ -12,7 +12,7 @@
 */
 
 /// Model classes for dialplans.
-part of openreception.framework.model.dialplan;
+part of orf.model.dialplan;
 
 /// Interface for extensions.
 ///

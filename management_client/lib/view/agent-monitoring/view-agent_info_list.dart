@@ -1,4 +1,4 @@
-part of management_tool.view.agent_monitoring;
+part of orm.view.agent_monitoring;
 
 class AgentInfoList {
   Map<int, AgentInfo> _info = {};

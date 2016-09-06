@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of view;
+part of orc.view;
 
 /**
  * Show the global call queue and registers keyboard shortcuts for call handling.

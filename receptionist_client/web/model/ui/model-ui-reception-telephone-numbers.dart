@@ -12,7 +12,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of model;
+part of orc.model;
 
 /**
  * Provides methods for manipulating the reception telephone numbers UI widget.

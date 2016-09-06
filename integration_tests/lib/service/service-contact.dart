@@ -1,4 +1,4 @@
-part of openreception_tests.service;
+part of ort.service;
 
 abstract class Contact {
   static Logger _log = new Logger('$_namespace.Contact');

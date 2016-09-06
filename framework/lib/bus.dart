@@ -12,7 +12,7 @@
 */
 
 /// Broadcast bus subsystem.
-library openreception.framework.bus;
+library orf.bus;
 
 import 'dart:async';
 

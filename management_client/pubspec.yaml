@@ -1,4 +1,4 @@
-name: management_tool
+name: orm
 version: 0.1.0
 description:
 author: BitStackers
@@ -14,7 +14,7 @@ dependencies:
   random_string: any
   route_hierarchical: any
   stream_channel: any
-  openreception.framework:
+  orf:
     path: ../framework
     version: '>=0.0.30'
 transformers:

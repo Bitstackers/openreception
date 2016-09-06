@@ -1,15 +1,15 @@
-library openreception_tests.service.call;
+library ort.service.call;
 
 import 'dart:async';
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/pbx-keys.dart' as pbxKey;
-import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.framework/storage.dart' as storage;
-import 'package:openreception_tests/support.dart';
+import 'package:orf/event.dart' as event;
+import 'package:orf/exceptions.dart';
+import 'package:orf/model.dart' as model;
+import 'package:orf/pbx-keys.dart' as pbxKey;
+import 'package:orf/service.dart' as service;
+import 'package:orf/storage.dart' as storage;
+import 'package:ort/support.dart';
 import 'package:phonio/phonio.dart' as phonio;
 import 'package:test/test.dart';
 

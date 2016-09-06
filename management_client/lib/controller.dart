@@ -1,14 +1,14 @@
-library management_tool.controller;
+library orm.controller;
 
 import 'dart:async';
 import 'dart:convert';
 import 'dart:html' as html;
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/service.dart' as service;
+import 'package:orf/event.dart' as event;
+import 'package:orf/exceptions.dart';
+import 'package:orf/model.dart' as model;
+import 'package:orf/service.dart' as service;
 
 part 'controller/controller-calendar.dart';
 part 'controller/controller-call.dart';

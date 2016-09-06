@@ -1,4 +1,4 @@
-part of management_tool.view;
+part of orm.view;
 
 /**
  * Visual representation of an endpoint collection belonging to a contact.

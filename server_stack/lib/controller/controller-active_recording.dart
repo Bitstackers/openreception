@@ -12,13 +12,13 @@
 */
 
 /// Controller library for listing and querying recordings currently active.
-library openreception.server.controller.active_recording;
+library ors.controller.active_recording;
 
 import 'dart:async';
 
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.server/model.dart' as model;
-import 'package:openreception.server/response_utils.dart';
+import 'package:orf/exceptions.dart';
+import 'package:ors/model.dart' as model;
+import 'package:ors/response_utils.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 

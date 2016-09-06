@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library view;
+library orc.view;
 
 import 'dart:async';
 import 'dart:html';
@@ -21,9 +21,9 @@ import '../lang.dart';
 import '../model/model.dart' as ui_model;
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/util.dart' as util;
+import 'package:orf/event.dart' as event;
+import 'package:orf/model.dart' as model;
+import 'package:orf/util.dart' as util;
 
 part 'view-agent-info.dart';
 part 'view-calendar-editor.dart';

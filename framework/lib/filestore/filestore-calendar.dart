@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.framework.filestore;
+part of orf.filestore;
 
 /// Filestore for persistent storage of [model.CalendarEntry] objects.
 class Calendar implements storage.Calendar {

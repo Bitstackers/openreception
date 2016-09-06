@@ -1,4 +1,4 @@
-part of openreception_tests.process;
+part of ort.process;
 
 class NotificationServer implements ServiceProcess {
   final Logger _log = new Logger('$_namespace.NotificationServer');

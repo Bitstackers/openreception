@@ -15,11 +15,11 @@
 ///
 /// Provides [DialplanCompiler] and utility functions for generating
 /// dialplans from model classes, such as [model.ReceptionDialplan].
-library openreception.framework.dialplan_tools;
+library orf.dialplan_tools;
 
 import 'dart:convert';
 
-import 'model.dart' as model;
+import 'package:orf/model.dart' as model;
 import 'pbx-keys.dart';
 
 /// String constant that is appended to extensions that are used as

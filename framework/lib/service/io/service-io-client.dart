@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.framework.service.io;
+part of orf.service.io;
 
 /// HTTP Client for use with dart:io.
 class Client extends service.WebService {

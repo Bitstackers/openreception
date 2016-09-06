@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.controller.dialplan;
+library ors.controller.dialplan;
 
 import 'dart:async';
 import 'dart:convert';
@@ -21,14 +21,14 @@ import 'package:esl/esl.dart' as esl;
 import 'package:esl/util.dart' as esl;
 import 'package:esl/constants.dart' as esl;
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/dialplan_tools.dart' as dialplanTools;
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/filestore.dart' as database;
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/controller/controller-ivr.dart';
-import 'package:openreception.server/response_utils.dart';
+import 'package:orf/dialplan_tools.dart' as dialplanTools;
+import 'package:orf/exceptions.dart';
+import 'package:orf/filestore.dart' as database;
+import 'package:orf/model.dart' as model;
+import 'package:orf/service.dart' as service;
+import 'package:ors/configuration.dart';
+import 'package:ors/controller/controller-ivr.dart';
+import 'package:ors/response_utils.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 

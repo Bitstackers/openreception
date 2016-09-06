@@ -11,12 +11,12 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.controller.group_notifier;
+library ors.controller.group_notifier;
 
 import 'dart:async';
 
-import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/service.dart' as service;
+import 'package:orf/event.dart' as event;
+import 'package:orf/service.dart' as service;
 
 /**
  * Controller class that is responsible for muticasting a message to a

@@ -11,25 +11,24 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.contact;
+library ors.contact;
 
 import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/filestore.dart' as filestore;
-import 'package:openreception.framework/gzip_cache.dart' as gzip_cache;
-import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.framework/service-io.dart' as service;
-import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/controller/controller-contact.dart'
-    as controller;
-import 'package:openreception.server/router/router-contact.dart' as router;
+import 'package:orf/filestore.dart' as filestore;
+import 'package:orf/gzip_cache.dart' as gzip_cache;
+import 'package:orf/service.dart' as service;
+import 'package:orf/service-io.dart' as service;
+import 'package:ors/configuration.dart';
+import 'package:ors/controller/controller-contact.dart' as controller;
+import 'package:ors/router/router-contact.dart' as router;
 
-Logger log = new Logger('ContactServer');
-ArgResults parsedArgs;
-ArgParser parser = new ArgParser();
+Logger _log = new Logger('ContactServer');
+ArgResults _parsedArgs;
+ArgParser _parser = new ArgParser();
 
 /**
  * The OR-Stack contact server. Provides a REST interface for retrieving and
@@ -137,5 +136,5 @@ Future main(List<String> args) async {
 
   await contactRouter.listen(port: port, hostname: parsedArgs['host']);
 
-  log.info('Ready to handle requests');
+  _log.info('Ready to handle requests');
 }

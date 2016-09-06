@@ -23,11 +23,11 @@
 /// cache/prefetching service that responds to a change in a persistent
 /// datastore (for example, a deletion) and updates its locals
 /// views/caches accordingly.
-library openreception.framework.event;
+library orf.event;
 
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/util.dart' as util;
+import 'package:orf/model.dart' as model;
+import 'package:orf/util.dart' as util;
 
 part 'event/call/event-call.dart';
 part 'event/call/event-call_assign.dart';
@@ -135,7 +135,7 @@ abstract class _Key {
 /// Superclass for events. It's only real purpose is to provide a common interface
 /// for [Event] objects, and a parsing factory constructor.
 abstract class Event {
-  static final Logger _log = new Logger('openreception.framework.event.Event');
+  static final Logger _log = new Logger('orf.event.Event');
 
   /// Parse an an event that has already been deserialized from JSON string.
   ///

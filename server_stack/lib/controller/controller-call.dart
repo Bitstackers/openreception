@@ -11,24 +11,23 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.controller.call;
+library ors.controller.call;
 
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:esl/esl.dart' as esl;
 import 'package:logging/logging.dart';
-import 'package:openreception.framework/event.dart' as event;
-import 'package:openreception.framework/exceptions.dart';
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/pbx-keys.dart';
-import 'package:openreception.framework/service-io.dart' as service;
-import 'package:openreception.framework/service.dart' as service;
-import 'package:openreception.server/controller/controller-pbx.dart'
-    as controller;
-import 'package:openreception.server/model.dart' as _model;
-import 'package:openreception.server/configuration.dart';
-import 'package:openreception.server/response_utils.dart';
+import 'package:orf/event.dart' as event;
+import 'package:orf/exceptions.dart';
+import 'package:orf/model.dart' as model;
+import 'package:orf/pbx-keys.dart';
+import 'package:orf/service-io.dart' as service;
+import 'package:orf/service.dart' as service;
+import 'package:ors/controller/controller-pbx.dart' as controller;
+import 'package:ors/model.dart' as _model;
+import 'package:ors/configuration.dart';
+import 'package:ors/response_utils.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
@@ -42,8 +41,7 @@ class Call {
   final _model.ChannelList _channelList;
   final controller.PBX _pbxController;
   final service.Authentication authService;
-  final Logger _log =
-      new Logger('openreception.server.controller.call_flow_control');
+  final Logger _log = new Logger('ors.controller.call_flow_control');
 
   Call(this._callList, this._channelList, this._peerlist, this._pbxController,
       this.authService);

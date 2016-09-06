@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.framework.event;
+part of orf.event;
 
 /// Event for notifying about a change in the UI. Specifically, a change of
 ///  whether or not the window (or tab) is in focus or not.

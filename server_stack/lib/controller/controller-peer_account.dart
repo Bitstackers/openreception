@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-library openreception.server.controller.peer_account;
+library ors.controller.peer_account;
 
 import 'dart:io';
 import 'dart:async';
@@ -22,11 +22,11 @@ import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 import 'package:logging/logging.dart';
 
-import 'package:openreception.framework/model.dart' as model;
-import 'package:openreception.framework/storage.dart' as storage;
-import 'package:openreception.framework/dialplan_tools.dart' as dialplanTools;
+import 'package:orf/model.dart' as model;
+import 'package:orf/storage.dart' as storage;
+import 'package:orf/dialplan_tools.dart' as dialplanTools;
 
-import 'package:openreception.server/response_utils.dart';
+import 'package:ors/response_utils.dart';
 
 /**
  * PeerAccount controller class.

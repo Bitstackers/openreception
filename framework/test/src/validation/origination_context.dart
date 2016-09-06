@@ -11,7 +11,7 @@
   this program; see the file COPYING3. If not, see http://www.gnu.org/licenses.
 */
 
-part of openreception.framework.test.validation;
+part of orf.test.validation;
 
 void _originationContextTests() {
   group('validation.originationContext', () {
