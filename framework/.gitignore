@@ -4,6 +4,9 @@ packages
 .packages
 .pub
 
+# Don't track local TODO
+TODO
+
 # Or the files created by dart2js.
 *.dart.js
 *.dart.precompiled.js

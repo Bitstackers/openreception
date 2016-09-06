@@ -24,3 +24,7 @@ support_tools/pjproject-*
 
 # Don't track generated documentation
 doc/
+
+# Don't track local TODO
+TODO
+
