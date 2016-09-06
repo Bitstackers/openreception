@@ -27,8 +27,8 @@ import 'package:orf/model.dart' as model;
 import 'package:orf/util.dart' as util;
 import 'package:orf/util_html.dart' as util_html;
 
-import '../controller/controller.dart' as controller;
-import '../lang.dart';
+import 'package:orc/controller/controller.dart' as controller;
+import 'package:orc/lang.dart';
 
 part 'model-app-state.dart';
 part 'ui/model-ui-agent-info.dart';

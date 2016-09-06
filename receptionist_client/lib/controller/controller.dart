@@ -24,7 +24,7 @@ import 'package:orf/exceptions.dart';
 import 'package:orf/model.dart' as model;
 import 'package:orf/service.dart' as service;
 
-import '../model/model.dart' as ui_model;
+import 'package:orc/model/model.dart' as ui_model;
 
 part 'controller-calendar.dart';
 part 'controller-call.dart';

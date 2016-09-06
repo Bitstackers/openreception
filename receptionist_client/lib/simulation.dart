@@ -17,9 +17,9 @@ import 'dart:async';
 import 'dart:html';
 import 'dart:math' show Random;
 
-import 'controller/controller.dart' as controller;
-import 'model/model.dart' as ui_model;
 import 'package:logging/logging.dart';
+import 'package:orc/controller/controller.dart' as controller;
+import 'package:orc/model/model.dart' as ui_model;
 import 'package:orf/model.dart' as model;
 
 _Simulation simulation = new _Simulation();

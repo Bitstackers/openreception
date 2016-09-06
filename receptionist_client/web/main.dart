@@ -16,11 +16,11 @@ library orc;
 import 'dart:async';
 import 'dart:html';
 
-import 'controller/controller.dart' as controller;
-import 'lang.dart' as lang;
-import 'model/model.dart' as ui_model;
-import 'view/view.dart' as view;
-//import 'simulation.dart';
+import 'package:orc/controller/controller.dart' as controller;
+import 'package:orc/lang.dart' as lang;
+import 'package:orc/model/model.dart' as ui_model;
+import 'package:orc/view/view.dart' as view;
+//import 'package:orc/simulation.dart';
 
 import 'package:logging/logging.dart';
 import 'package:orf/event.dart' as event;

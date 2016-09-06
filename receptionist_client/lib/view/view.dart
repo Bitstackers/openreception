@@ -16,11 +16,10 @@ library orc.view;
 import 'dart:async';
 import 'dart:html';
 
-import '../controller/controller.dart' as controller;
-import '../lang.dart';
-import '../model/model.dart' as ui_model;
-
 import 'package:logging/logging.dart';
+import 'package:orc/controller/controller.dart' as controller;
+import 'package:orc/lang.dart';
+import 'package:orc/model/model.dart' as ui_model;
 import 'package:orf/event.dart' as event;
 import 'package:orf/model.dart' as model;
 import 'package:orf/util.dart' as util;
@@ -32,9 +31,9 @@ part 'view-contact-data.dart';
 part 'view-contact-selector.dart';
 part 'view-contexts.dart';
 part 'view-global-call-queue.dart';
-part 'view-message-compose.dart';
 part 'view-hint.dart';
 part 'view-message-archive.dart';
+part 'view-message-compose.dart';
 part 'view-my-call-queue.dart';
 part 'view-orc-disaster.dart';
 part 'view-orc-loading.dart';
