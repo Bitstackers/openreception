@@ -404,7 +404,6 @@ class MigrationEnvironment {
         ..open = new List<or_model.HourAction>.from(
             oldDialplan.open.map(convertHourAction))
         ..note = oldDialplan.note
-        ..active = oldDialplan.active
         ..defaultActions = new List<or_model.Action>.from(
             oldDialplan.defaultActions.map(convertDialplanAction))
         ..extraExtensions = new List<or_model.NamedExtension>.from(
