@@ -5,6 +5,9 @@ packages/**
 .pub-cache/**
 .pub/**
 
+# Don't track local TODO
+TODO
+
 # Don't track pubspec.lock
 pubspec.lock
 
