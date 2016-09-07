@@ -1,5 +1,6 @@
 library ort;
 
+import 'dart:io';
 import 'package:ort/filestore.dart' as filestore;
 import 'package:ort/rest.dart' as rest;
 import 'package:ort/benchmark.dart' as benchmark;
@@ -37,7 +38,57 @@ void main() {
     }
   }
 
-  Logger.root.level = Level.FINEST;
+  Map<String, String> env = Platform.environment;
+
+  if (env.containsKey('LOGLEVEL')) {
+    switch (env['LOGLEVEL']) {
+      case 'ALL':
+        Logger.root.level = Level.ALL;
+        break;
+
+      case 'FINEST':
+        Logger.root.level = Level.FINEST;
+        break;
+
+      case 'FINER':
+        Logger.root.level = Level.FINER;
+        break;
+
+      case 'FINE':
+        Logger.root.level = Level.FINE;
+        break;
+
+      case 'CONFIG':
+        Logger.root.level = Level.CONFIG;
+        break;
+
+      case 'INFO':
+        Logger.root.level = Level.INFO;
+        break;
+
+      case 'WARNING':
+        Logger.root.level = Level.WARNING;
+        break;
+
+      case 'SEVERE':
+        Logger.root.level = Level.SEVERE;
+        break;
+
+      case 'SHOUT':
+        Logger.root.level = Level.SHOUT;
+        break;
+
+      case 'OFF':
+        Logger.root.level = Level.OFF;
+        break;
+      default:
+        Logger.root.level = Level.OFF;
+        print('Warning: Bad loglevel value: ${env['LOGLEVEL']}');
+    }
+  } else {
+    Logger.root.level = Level.OFF;
+  }
+  Logger.root.onRecord.listen((LogRecord record) => print(record.toString()));
   Logger.root.onRecord.listen(logMessage);
 
   /*
