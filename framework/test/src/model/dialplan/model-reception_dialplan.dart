@@ -18,10 +18,6 @@ void _testModelReceptionDialplan() {
     test('buildObject', _ModelReceptionDialplan.buildObject);
     test('deserialization', _ModelReceptionDialplan.deserialization);
     test('serialization', _ModelReceptionDialplan.serialization);
-
-//   test('buildObject (menu)', ModelReceptionDialplan.buildObjectMenu);
-//   test('serialization (menu)', ModelReceptionDialplan.serializationMenu);
-//   test('deserialization (menu)', ModelReceptionDialplan.deserializationMenu);
   });
 }
 
