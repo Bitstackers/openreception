@@ -397,3 +397,39 @@ List<ValidationException> validateReceptionDialplan(ReceptionDialplan rdp) {
 
   return errors;
 }
+
+/// Performs object validation of an [OpeningHour] object.
+///
+/// Returns a list of errors found in the validation and does not throw
+/// any exceptions.
+List<ValidationException> validateOpeningHour(OpeningHour oh) {
+  final List<ValidationException> errors = <ValidationException>[];
+
+  if (oh.fromMinute > 59 ||
+      oh.toMinute > 59 ||
+      oh.fromMinute < 0 ||
+      oh.toMinute < 0 ||
+      oh.fromHour < 0 ||
+      oh.toHour < 0 ||
+      oh.fromHour > 23 ||
+      oh.toHour > 23) {
+    errors.add(new ValidationException('Bad opening hour range: $oh'));
+  }
+
+  if (oh.fromDay == null) {
+    errors.add(new NullValue('fromDay'));
+  } else if (oh.fromDay != null && oh.toDay != null) {
+    if (oh.fromDay.index > oh.toDay.index) {
+      errors.add(new TimeOrderConstraint('fromDay', 'toDay'));
+    } else if (oh.fromDay.index == oh.toDay.index) {
+      if (oh.fromHour > oh.toHour) {
+        errors.add(new TimeOrderConstraint('fromHour', 'toHour'));
+      } else if (oh.fromHour == oh.toHour) {
+        if (oh.fromMinute > oh.toMinute) {
+          errors.add(new TimeOrderConstraint('fromMinute', 'toMinute'));
+        }
+      }
+    }
+  }
+  return errors;
+}

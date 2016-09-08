@@ -73,46 +73,9 @@ class OpeningHour {
   /// Default empty constructor.
   OpeningHour.empty();
 
-  /// The current list of validation errors.
-  ///
-  /// TODO(krc): Turn into ValidationError exceptions.
-  List<FormatException> get validationErrors {
-    List<FormatException> errors = <FormatException>[];
-
-    if (fromMinute > 59 ||
-        toMinute > 59 ||
-        fromMinute < 0 ||
-        toMinute < 0 ||
-        fromHour < 0 ||
-        toHour < 0 ||
-        fromHour > 23 ||
-        toHour > 23) {
-      errors.add(new FormatException('Bad opening hour range: ${this}'));
-    }
-
-    if (fromDay == null) {
-      errors.add(new FormatException('fromDay is null'));
-    } else if (fromDay != null && toDay != null) {
-      if (fromDay.index > toDay.index) {
-        errors.add(
-            new FormatException('FromDay ($fromDay) is before toDay ($toDay)'));
-      } else if (fromDay.index == toDay.index) {
-        if (fromHour > toHour) {
-          errors.add(new FormatException(
-              'FromHour ($fromHour) is before toDay ($toHour)'));
-        } else if (fromHour == toHour) {
-          if (fromMinute > toMinute) {
-            errors.add(new FormatException(
-                'fromMinute ($fromHour) is before fromMinute ($toHour)'));
-          }
-        }
-      }
-    }
-    return errors;
-  }
-
   /// Determine if the [OpeningHour] is valid.
-  bool isValid() => validationErrors.isEmpty;
+
+  bool isValid() => validateOpeningHour(this).isEmpty;
 
   /// Parsing constructor.
   ///
