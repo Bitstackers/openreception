@@ -53,4 +53,10 @@ class Ringtone implements Action {
 
   @override
   String toJson() => '${key.ringtone} $count';
+
+  @override
+  int get hashCode => toString().hashCode;
+
+  @override
+  bool operator ==(Object other) => other is Ringtone && count == count;
 }

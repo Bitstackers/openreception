@@ -36,11 +36,28 @@ class HourAction {
         'actions': actions
       };
 
-  /// TODO(krc): Review logic of this function.
+  /// Two [HourAction] objects are equal if the contains the same hours
+  /// and actions.
   @override
-  bool operator ==(Object other) => this.toString() == other.toString();
+  bool operator ==(Object other) {
+    if (other is HourAction) {
+      final Set<OpeningHour> ohLhs = hours.toSet();
+      final Set<OpeningHour> ohRhs = other.hours.toSet();
 
-  /// TODO(krc): Review logic of this function.
+      final Set<Action> aLhs = actions.toSet();
+      final Set<Action> aRhs = other.actions.toSet();
+
+      return ohLhs.containsAll(ohRhs) &&
+          ohRhs.containsAll(ohLhs) &&
+          aLhs.containsAll(aRhs) &&
+          aRhs.containsAll(aLhs);
+    }
+    return false;
+  }
+
+  /// Hash code follows convention from [==].
   @override
-  int get hashCode => toString().hashCode;
+  int get hashCode => ((new List.from(hours)..sort()).join('::') +
+          (new List.from(actions)..sort()).join('::'))
+      .hashCode;
 }

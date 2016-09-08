@@ -61,4 +61,12 @@ class ReceptionTransfer implements Action {
   @override
   String toJson() => '${key.reception} $extension'
       '${note.isNotEmpty ? ' ($note)': ''}';
+
+  @override
+  int get hashCode => toString().hashCode;
+
+  /// Equals ignore [note].
+  @override
+  bool operator ==(Object other) =>
+      other is ReceptionTransfer && extension == other.extension;
 }

@@ -42,4 +42,11 @@ class Notify implements Action {
 
   @override
   String toJson() => '${key.notify} $eventName';
+
+  @override
+  int get hashCode => toString().hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      other is Notify && eventName == other.eventName;
 }

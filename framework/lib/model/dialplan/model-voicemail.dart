@@ -66,6 +66,7 @@ class Voicemail implements Action {
     return new Voicemail(vmBox, recipient: recipient, note: note);
   }
 
+  /// Equals ignore [note].
   @override
   bool operator ==(Object other) =>
       other is Voicemail && this.vmBox == other.vmBox;
