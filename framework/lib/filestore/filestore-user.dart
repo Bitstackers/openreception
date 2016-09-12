@@ -179,7 +179,7 @@ class User implements storage.User {
     if (uid == null) {
       fse = new Directory(path);
     } else {
-      fse = new File('$path$uid/user.json');
+      fse = new File('$path/$uid/user.json');
     }
 
     Iterable<Change> gitChanges = await _git.changes(fse);
