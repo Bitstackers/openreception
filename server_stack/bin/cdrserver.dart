@@ -28,14 +28,38 @@ Future main(List<String> args) async {
   ///Init logging.
   Logger.root.level = config.cdrServer.log.level;
   Logger.root.onRecord.listen(config.cdrServer.log.onRecord);
+  Logger log = new Logger('cdrserver');
 
   final ArgParser parser = new ArgParser()
-    ..addFlag('help', abbr: 'h', negatable: false, help: 'Output this help');
+    ..addFlag('help', abbr: 'h', negatable: false, help: 'Output this help')
+    ..addOption('host',
+        defaultsTo: config.calendarServer.externalHostName,
+        help: 'The hostname or IP listen-address for the HTTP server')
+    ..addOption('port',
+        abbr: 'p',
+        defaultsTo: config.cdrServer.httpPort.toString(),
+        help: 'The port the HTTP server listens on.');
   final ArgResults parsedArgs = parser.parse(args);
 
   if (parsedArgs['help']) {
     print(parser.usage);
     exit(1);
   }
-  await router.start(port: config.cdrServer.httpPort);
+
+  int port;
+  try {
+    port = int.parse(parsedArgs['port']);
+    if (port < 1 || port > 65535) {
+      throw new FormatException();
+    }
+  } on FormatException {
+    stderr.writeln('Bad port argument: ${parsedArgs['port']}');
+    print('');
+    print(parser.usage);
+    exit(1);
+  }
+
+  await router.start(port: port, hostname: parsedArgs['host']);
+
+  log.info('Ready to handle requests');
 }
