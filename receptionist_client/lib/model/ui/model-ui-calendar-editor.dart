@@ -267,8 +267,11 @@ class UICalendarEditor extends UIModel {
    * Populate the calendar editor fields with [calendarEntry].
    */
   void setCalendarEntry(model.CalendarEntry calendarEntry, bool isNew) {
+    _stopDayEdit = false;
     _stopHourEdit = false;
     _stopMinuteEdit = false;
+    _stopMonthEdit = false;
+    _stopYearEdit = false;
     _newEntry = isNew;
 
     _loadedEntry = calendarEntry;
