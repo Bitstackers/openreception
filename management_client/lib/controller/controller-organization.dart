@@ -41,16 +41,16 @@ class Organization {
    */
   Future<Map<int, RecOrgAggr>> receptionMap() async {
     final Map<int, RecOrgAggr> aggrMap = {};
-    Iterable orgRefs = await _service.list();
+    Iterable<model.OrganizationReference> orgRefs = await _service.list();
 
-    await orgRefs.forEach((model.OrganizationReference oRef) async {
+    for (model.OrganizationReference orgRef in orgRefs) {
       final Iterable<model.ReceptionReference> rRfefs =
-          await receptions(oRef.id);
+          await receptions(orgRef.id);
 
       rRfefs.forEach((model.ReceptionReference rRef) {
-        aggrMap[rRef.id] = new RecOrgAggr(oRef, rRef);
+        aggrMap[rRef.id] = new RecOrgAggr(orgRef, rRef);
       });
-    });
+    }
 
     return aggrMap;
   }
