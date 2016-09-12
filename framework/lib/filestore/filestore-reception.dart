@@ -249,9 +249,9 @@ class Reception implements storage.Reception {
     FileSystemEntity fse;
 
     if (rid == null) {
-      fse = new Directory('.');
+      fse = new Directory(path);
     } else {
-      fse = new File('$rid/reception.json');
+      fse = new File('$path/$rid/reception.json');
     }
 
     Iterable<Change> gitChanges = await _git.changes(fse);
@@ -261,7 +261,19 @@ class Reception implements storage.Reception {
         : model.User.noId;
 
     model.ReceptionChange convertFilechange(FileChange fc) {
-      final int id = int.parse(fc.filename.split('/').first);
+      String filename = fc.filename;
+
+      List<String> pathParts = path.split('/');
+
+      for (String pathPart in pathParts.reversed) {
+        if (filename.startsWith(pathPart)) {
+          filename = filename.replaceFirst(pathPart, '');
+        }
+      }
+
+      List<String> parts =
+          filename.split('/').where((String str) => str.isNotEmpty);
+      final int id = int.parse(parts.first);
 
       return new model.ReceptionChange(fc.changeType, id);
     }
@@ -275,7 +287,7 @@ class Reception implements storage.Reception {
           ..changes = new List<model.ObjectChange>.from(
               change.fileChanges.map(convertFilechange)));
 
-    _log.info(changes.map((model.Commit c) => c.toJson()));
+    _log.finest(changes.map((model.Commit c) => c.toJson()));
 
     return changes;
   }

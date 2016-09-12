@@ -193,9 +193,9 @@ class Ivr implements storage.Ivr {
     FileSystemEntity fse;
 
     if (menuName == null) {
-      fse = new Directory('.');
+      fse = new Directory(path);
     } else {
-      fse = new File('$menuName/menu.json');
+      fse = new File('$path/$menuName/menu.json');
     }
 
     Iterable<Change> gitChanges = await _git.changes(fse);
@@ -205,8 +205,19 @@ class Ivr implements storage.Ivr {
         : model.User.noId;
 
     model.ObjectChange convertFilechange(FileChange fc) {
-      final List<String> parts = fc.filename.split('/');
-      final String name = parts[0];
+      String filename = fc.filename;
+
+      List<String> pathParts = path.split('/');
+
+      for (String pathPart in pathParts.reversed) {
+        if (filename.startsWith(pathPart)) {
+          filename = filename.replaceFirst(pathPart, '');
+        }
+      }
+
+      List<String> parts =
+          filename.split('/').where((String str) => str.isNotEmpty);
+      final String name = parts.first;
 
       return new model.IvrChange(fc.changeType, name);
     }

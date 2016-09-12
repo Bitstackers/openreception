@@ -214,9 +214,9 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
     FileSystemEntity fse;
 
     if (extension == null) {
-      fse = new Directory('.');
+      fse = new Directory(path);
     } else {
-      fse = new File('$extension/dialplan.json');
+      fse = new File('$path/$extension/dialplan.json');
     }
 
     Iterable<Change> gitChanges = await _git.changes(fse);
@@ -226,8 +226,19 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
         : model.User.noId;
 
     model.ObjectChange convertFilechange(FileChange fc) {
-      final List<String> parts = fc.filename.split('/');
-      final String name = parts[0];
+      String filename = fc.filename;
+
+      List<String> pathParts = path.split('/');
+
+      for (String pathPart in pathParts.reversed) {
+        if (filename.startsWith(pathPart)) {
+          filename = filename.replaceFirst(pathPart, '');
+        }
+      }
+
+      List<String> parts =
+          filename.split('/').where((String str) => str.isNotEmpty);
+      final String name = parts.first;
 
       return new model.ReceptionDialplanChange(fc.changeType, name);
     }

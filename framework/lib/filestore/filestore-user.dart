@@ -177,9 +177,9 @@ class User implements storage.User {
     FileSystemEntity fse;
 
     if (uid == null) {
-      fse = new Directory('.');
+      fse = new Directory(path);
     } else {
-      fse = new File('$uid/user.json');
+      fse = new File('$path$uid/user.json');
     }
 
     Iterable<Change> gitChanges = await _git.changes(fse);
@@ -189,7 +189,18 @@ class User implements storage.User {
         : model.User.noId;
 
     model.UserChange convertFilechange(FileChange fc) {
-      final int id = int.parse(fc.filename.split('/').first);
+      String filename = fc.filename;
+
+      List<String> pathParts = path.split('/');
+
+      for (String pathPart in pathParts.reversed) {
+        if (filename.startsWith(pathPart)) {
+          filename = filename.replaceFirst(pathPart, '');
+        }
+      }
+
+      final int id = int.parse(
+          filename.split('/').where((String str) => str.isNotEmpty).first);
 
       return new model.UserChange(fc.changeType, id);
     }

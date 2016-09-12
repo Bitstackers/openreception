@@ -518,12 +518,12 @@ class Contact implements storage.Contact {
     FileSystemEntity fse;
 
     if (cid == null) {
-      fse = new Directory('.');
+      fse = new Directory(path);
     } else {
       if (rid == null) {
-        fse = new Directory('$cid');
+        fse = new Directory('$path/$cid');
       } else {
-        fse = new File('$cid/receptions/$rid.json');
+        fse = new File('$path/$cid/receptions/$rid.json');
       }
     }
 
@@ -534,8 +534,21 @@ class Contact implements storage.Contact {
         : model.User.noId;
 
     model.ObjectChange convertFilechange(FileChange fc) {
-      final List<String> parts = fc.filename.split('/');
-      final int id = int.parse(parts[0]);
+      String filename = fc.filename;
+
+      List<String> pathParts = path.split('/');
+
+      for (String pathPart in pathParts.reversed) {
+        if (filename.startsWith(pathPart)) {
+          filename = filename.replaceFirst(pathPart, '');
+        }
+      }
+
+      List<String> parts = filename
+          .split('/')
+          .where((String str) => str.isNotEmpty)
+          .toList(growable: false);
+      final int id = int.parse(parts.first);
 
       if (parts.last == 'contact.json') {
         return new model.ContactChange(fc.changeType, id);

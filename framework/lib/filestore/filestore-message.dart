@@ -409,7 +409,20 @@ class Message implements storage.Message {
         : model.User.noId;
 
     model.MessageChange convertFilechange(FileChange fc) {
-      final int id = int.parse(fc.filename.split('/').last.split('.').first);
+      String filename = fc.filename;
+
+      List<String> pathParts = path.split('/');
+
+      for (String pathPart in pathParts.reversed) {
+        if (filename.startsWith(pathPart)) {
+          filename = filename.replaceFirst(pathPart, '');
+        }
+      }
+
+      List<String> parts =
+          filename.split('/').where((String str) => str.isNotEmpty);
+
+      final int id = int.parse(parts.last.split('.').first);
 
       return new model.MessageChange(fc.changeType, id);
     }

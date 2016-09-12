@@ -258,9 +258,9 @@ class Organization implements storage.Organization {
     FileSystemEntity fse;
 
     if (oid == null) {
-      fse = new Directory('.');
+      fse = new Directory(path);
     } else {
-      fse = new File('$oid/organization.json');
+      fse = new File('$path/$oid/organization.json');
     }
 
     Iterable<Change> gitChanges = await _git.changes(fse);
@@ -270,7 +270,18 @@ class Organization implements storage.Organization {
         : model.User.noId;
 
     model.OrganizationChange convertFilechange(FileChange fc) {
-      final int id = int.parse(fc.filename.split('/').first);
+      String filename = fc.filename;
+
+      List<String> pathParts = path.split('/');
+
+      for (String pathPart in pathParts.reversed) {
+        if (filename.startsWith(pathPart)) {
+          filename = filename.replaceFirst(pathPart, '');
+        }
+      }
+
+      final int id = int.parse(
+          filename.split('/').where((String str) => str.isNotEmpty).first);
 
       return new model.OrganizationChange(fc.changeType, id);
     }

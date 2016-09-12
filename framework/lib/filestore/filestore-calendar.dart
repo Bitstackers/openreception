@@ -110,7 +110,19 @@ class Calendar implements storage.Calendar {
         : model.User.noId;
 
     model.CalendarChange convertFilechange(FileChange fc) {
-      final List<String> parts = fc.filename.split('/');
+      String filename = fc.filename;
+
+      List<String> pathParts = path.split('/');
+
+      for (String pathPart in pathParts.reversed) {
+        if (filename.startsWith(pathPart)) {
+          filename = filename.replaceFirst(pathPart, '');
+        }
+      }
+
+      List<String> parts =
+          filename.split('/').where((String str) => str.isNotEmpty);
+
       final int eid = int.parse(parts[2].split('.').first);
 
       return new model.CalendarChange(fc.changeType, eid);
