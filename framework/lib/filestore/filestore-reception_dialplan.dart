@@ -236,8 +236,11 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
         }
       }
 
-      List<String> parts =
-          filename.split('/').where((String str) => str.isNotEmpty);
+      List<String> parts = filename
+          .split('/')
+          .where((String str) => str.isNotEmpty)
+          .toList(growable: false);
+
       final String name = parts.first;
 
       return new model.ReceptionDialplanChange(fc.changeType, name);

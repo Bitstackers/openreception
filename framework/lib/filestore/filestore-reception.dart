@@ -271,8 +271,11 @@ class Reception implements storage.Reception {
         }
       }
 
-      List<String> parts =
-          filename.split('/').where((String str) => str.isNotEmpty);
+      List<String> parts = filename
+          .split('/')
+          .where((String str) => str.isNotEmpty)
+          .toList(growable: false);
+
       final int id = int.parse(parts.first);
 
       return new model.ReceptionChange(fc.changeType, id);

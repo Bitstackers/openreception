@@ -120,8 +120,10 @@ class Calendar implements storage.Calendar {
         }
       }
 
-      List<String> parts =
-          filename.split('/').where((String str) => str.isNotEmpty);
+      List<String> parts = filename
+          .split('/')
+          .where((String str) => str.isNotEmpty)
+          .toList(growable: false);
 
       final int eid = int.parse(parts[2].split('.').first);
 

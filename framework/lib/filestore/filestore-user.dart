@@ -191,7 +191,7 @@ class User implements storage.User {
     model.UserChange convertFilechange(FileChange fc) {
       String filename = fc.filename;
 
-      List<String> pathParts = path.split('/');
+      List<String> pathParts = path.split('/').toList(growable: false);
 
       for (String pathPart in pathParts.reversed) {
         if (filename.startsWith(pathPart)) {

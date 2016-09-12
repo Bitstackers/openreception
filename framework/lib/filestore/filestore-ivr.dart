@@ -215,8 +215,10 @@ class Ivr implements storage.Ivr {
         }
       }
 
-      List<String> parts =
-          filename.split('/').where((String str) => str.isNotEmpty);
+      List<String> parts = filename
+          .split('/')
+          .where((String str) => str.isNotEmpty)
+          .toList(growable: false);
       final String name = parts.first;
 
       return new model.IvrChange(fc.changeType, name);
