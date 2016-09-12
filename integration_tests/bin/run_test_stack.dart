@@ -98,6 +98,7 @@ Future main(args) async {
   final userserver = env.requestUserserverProcess();
   final configserver = env.requestConfigServerProcess();
   final configClient = (await configserver).createClient(env.httpClient);
+  final cdrServer = env.requestCdrServerProcess();
 
   configClient.register(
       service.ServerType.authentication, (await authserver).uri);
@@ -116,6 +117,7 @@ Future main(args) async {
   configClient.register(service.ServerType.user, (await userserver).uri);
   configClient.register(
       service.ServerType.reception, (await receptionserver).uri);
+  configClient.register(service.ServerType.cdr, (await cdrServer).uri);
 
   final clientConfig = await configClient.clientConfig();
   final JsonEncoder jsonpp = new JsonEncoder.withIndent('  ');
