@@ -21,8 +21,12 @@ part of orf.service;
 class Datastore {
   final RESTContactStore contact;
   final RESTReceptionStore reception;
+  final RESTOrganizationStore organization;
   final RESTCalendarStore calendar;
   final RESTUserStore user;
+  final RESTIvrStore ivr;
+  final RESTDialplanStore dialplan;
+  final PeerAccount peerAccount;
 
   factory Datastore(Uri host, String token, WebService backend) {
     final RESTContactStore contactStore =
@@ -32,10 +36,17 @@ class Datastore {
     final RESTCalendarStore calendarStore =
         new RESTCalendarStore(host, token, backend);
     final RESTUserStore userStore = new RESTUserStore(host, token, backend);
+    final RESTOrganizationStore orgStore =
+        new RESTOrganizationStore(host, token, backend);
+    final RESTIvrStore ivrStore = new RESTIvrStore(host, token, backend);
+    final RESTDialplanStore rdpStore =
+        new RESTDialplanStore(host, token, backend);
+    final PeerAccount paService = new PeerAccount(host, token, backend);
 
-    return new Datastore._(
-        contactStore, receptionStore, calendarStore, userStore);
+    return new Datastore._(contactStore, receptionStore, calendarStore,
+        orgStore, userStore, ivrStore, rdpStore, paService);
   }
 
-  Datastore._(this.contact, this.reception, this.calendar, this.user);
+  Datastore._(this.contact, this.reception, this.calendar, this.organization,
+      this.user, this.ivr, this.dialplan, this.peerAccount);
 }
