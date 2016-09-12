@@ -75,7 +75,11 @@ class GitEngine {
   Completer<Null> _busy = new Completer<Null>();
 
   /// Place [path] under git revisioning.
-  GitEngine(String this.path, {bool this.logStdout: false});
+  GitEngine(String this.path, {bool this.logStdout: false}) {
+    if (path.isEmpty) {
+      throw new ArgumentError.value('', 'path', 'Path must not be empty');
+    }
+  }
 
   /// Indicates whether or not this [GitEngine] is ready to process the
   /// next request.

@@ -48,6 +48,10 @@ class Message implements storage.Message {
 
   /// Default Constructor.
   Message(String this.path, [GitEngine this._git]) {
+    if (path.isEmpty) {
+      throw new ArgumentError.value('', 'path', 'Path must not be empty');
+    }
+
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
     }

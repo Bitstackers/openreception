@@ -29,6 +29,10 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
 
   factory ReceptionDialplan(String path,
       [GitEngine gitEngine, bool enableChangelog]) {
+    if (path.isEmpty) {
+      throw new ArgumentError.value('', 'path', 'Path must not be empty');
+    }
+
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
     }

@@ -34,6 +34,10 @@ class Organization implements storage.Organization {
   factory Organization(
       Contact _contactFileStore, Reception _receptionFileStore, String path,
       [GitEngine _git, bool enableChangelog]) {
+    if (path.isEmpty) {
+      throw new ArgumentError.value('', 'path', 'Path must not be empty');
+    }
+
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
     }

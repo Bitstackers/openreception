@@ -62,6 +62,10 @@ class Contact implements storage.Contact {
       new Directory(path).createSync();
     }
 
+    if (path.isEmpty) {
+      throw new ArgumentError.value('', 'path', 'Path must not be empty');
+    }
+
     if (ge != null) {
       ge.init().catchError((dynamic error, StackTrace stackTrace) => Logger.root
           .shout('Failed to initialize git engine', error, stackTrace));

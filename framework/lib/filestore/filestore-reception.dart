@@ -29,6 +29,10 @@ class Reception implements storage.Reception {
   Bus<event.ReceptionChange> _changeBus = new Bus<event.ReceptionChange>();
 
   factory Reception(String path, [GitEngine _git, bool enableChangelog]) {
+    if (path.isEmpty) {
+      throw new ArgumentError.value('', 'path', 'Path must not be empty');
+    }
+
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
     }

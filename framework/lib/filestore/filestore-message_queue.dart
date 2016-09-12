@@ -26,6 +26,10 @@ class MessageQueue implements storage.MessageQueue {
 
   /// Create a new [MessageQueue] store in [path].
   MessageQueue(String this.path) {
+    if (path.isEmpty) {
+      throw new ArgumentError.value('', 'path', 'Path must not be empty');
+    }
+
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
     }

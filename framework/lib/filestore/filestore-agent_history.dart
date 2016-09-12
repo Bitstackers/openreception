@@ -57,6 +57,10 @@ class AgentHistory {
   /// and any file found, will be processed and deleted subsequently.
   factory AgentHistory(
       String path, storage.User userStore, Stream<event.Event> notifications) {
+    if (path.isEmpty) {
+      throw new ArgumentError.value('', 'path', 'Path must not be empty');
+    }
+
     return new AgentHistory._internal(
         path,
         userStore,

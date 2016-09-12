@@ -38,6 +38,10 @@ class Calendar implements storage.Calendar {
       : this.logChanges = (enableChangelog != null) ? enableChangelog : true {
     final List<String> pathsToCreate = <String>[path];
 
+    if (path.isEmpty) {
+      throw new ArgumentError.value('', 'path', 'Path must not be empty');
+    }
+
     pathsToCreate.forEach((String newPath) {
       final Directory dir = new Directory(newPath);
       if (!dir.existsSync()) {

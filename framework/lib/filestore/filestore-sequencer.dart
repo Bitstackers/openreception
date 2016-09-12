@@ -25,6 +25,10 @@ class Sequencer {
   /// If [explicitId] is set _and_ the [path] contains no sequencer file, the id
   /// of the new sequencer file will be set to [explicitId].
   Sequencer(this.path, {int explicitId: 0}) {
+    if (path.isEmpty) {
+      throw new ArgumentError.value('', 'path', 'Path must not be empty');
+    }
+
     _sequencerFile = new File('$path/.or_filestore-sequencer');
     if (!_sequencerFile.existsSync()) {
       _log.info('Creating new sequencer file ${_sequencerFile.path}');

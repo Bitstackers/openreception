@@ -28,6 +28,10 @@ class Ivr implements storage.Ivr {
   Bus<event.IvrMenuChange> _changeBus = new Bus<event.IvrMenuChange>();
 
   factory Ivr(String path, [GitEngine revisionEngine, bool enableChangelog]) {
+    if (path.isEmpty) {
+      throw new ArgumentError.value('', 'path', 'Path must not be empty');
+    }
+
     if (!new Directory(path).existsSync()) {
       new Directory(path).createSync();
     }
