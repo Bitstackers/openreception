@@ -83,6 +83,8 @@ class TestEnvironment {
   process.ContactServer _contactServer;
   process.DialplanServer _dialplanProcess;
   process.ConfigServer _configProcess;
+  process.CdrServer _cdrProcess;
+
   process.MessageDispatcher _messageDispatcher;
   process.MessageServer _messageProcess;
   process.NotificationServer _notificationProcess;
@@ -142,6 +144,18 @@ class TestEnvironment {
     await _configProcess.whenReady;
 
     return _configProcess;
+  }
+
+  /// Spawn a CDR server process within the current evironment.
+  Future<process.CdrServer> requestCdrServerProcess() async {
+    if (_cdrProcess == null) {
+      _cdrProcess = new process.CdrServer(config.serverStackPath,
+          bindAddress: envConfig.externalIp, servicePort: nextNetworkport);
+    }
+
+    await _cdrProcess.whenReady;
+
+    return _cdrProcess;
   }
 
   /**
@@ -593,6 +607,12 @@ class TestEnvironment {
       _log.info('Shutting down authentication server process $_authProcess');
       await _authProcess.terminate();
       _authProcess = null;
+    }
+
+    if (_cdrProcess != null) {
+      _log.info('Shutting down cdr server process $_cdrProcess');
+      await _cdrProcess.terminate();
+      _cdrProcess = null;
     }
   }
 
