@@ -8,8 +8,14 @@ class DatastoreServer implements ServiceProcess {
 
   final int servicePort;
   final String bindAddress;
+  final String fsConfPath;
   final Uri authUri;
   final Uri notificationUri;
+  final bool enableRevisioning;
+  final String playbackPrefix;
+  final String eslHostname;
+  final String eslPassword;
+  final int eslPort;
 
   final Completer _ready = new Completer();
   bool get ready => _ready.isCompleted;
@@ -18,11 +24,16 @@ class DatastoreServer implements ServiceProcess {
   /**
    *
    */
-  DatastoreServer(this.path, this.storePath,
+  DatastoreServer(this.path, this.storePath, this.fsConfPath,
       {this.servicePort: 4090,
       this.bindAddress: '0.0.0.0',
       this.authUri: null,
-      this.notificationUri}) {
+      this.notificationUri,
+      this.playbackPrefix: '',
+      this.eslHostname: null,
+      this.eslPort: null,
+      this.eslPassword: null,
+      this.enableRevisioning: false}) {
     _init();
   }
 
@@ -41,10 +52,14 @@ class DatastoreServer implements ServiceProcess {
       '$path/bin/datastore.dart',
       '--filestore',
       storePath,
-      '--httpport',
+      '--port',
       servicePort.toString(),
       '--host',
-      bindAddress
+      bindAddress,
+      '--freeswitch-conf-path',
+      fsConfPath,
+      '--playback-prefix',
+      playbackPrefix
     ];
 
     if (authUri != null) {
@@ -53,6 +68,24 @@ class DatastoreServer implements ServiceProcess {
 
     if (notificationUri != null) {
       arguments.addAll(['--notification-uri', notificationUri.toString()]);
+    }
+
+    if (eslHostname != null) {
+      arguments.addAll(['--esl-hostname', eslHostname.toString()]);
+    }
+
+    if (eslPassword != null) {
+      arguments.addAll(['--esl-password', eslPassword.toString()]);
+    }
+
+    if (eslPort != null) {
+      arguments.addAll(['--esl-port', eslPort.toString()]);
+    }
+
+    if (enableRevisioning) {
+      arguments.add('--experimental-revisioning');
+    } else {
+      arguments.add('--no-experimental-revisioning');
     }
 
     _log.fine('Starting process /usr/bin/dart ${arguments.join(' ')}');

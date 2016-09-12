@@ -27,18 +27,22 @@ import 'package:orf/gzip_cache.dart' as gzip_cache;
 import 'package:orf/service-io.dart' as service;
 import 'package:orf/service.dart' as service;
 import 'package:ors/configuration.dart';
-import 'package:ors/model.dart' as model;
-
 import 'package:ors/controller/controller-agent_statistics.dart' as controller;
 import 'package:ors/controller/controller-calendar.dart' as controller;
 import 'package:ors/controller/controller-client_notifier.dart' as controller;
 import 'package:ors/controller/controller-contact.dart' as controller;
+import 'package:ors/controller/controller-ivr.dart' as controller;
 import 'package:ors/controller/controller-organization.dart' as controller;
+import 'package:ors/controller/controller-peer_account.dart' as controller;
 import 'package:ors/controller/controller-reception.dart' as controller;
+import 'package:ors/controller/controller-reception_dialplan.dart'
+    as controller;
+import 'package:ors/model.dart' as model;
 import 'package:ors/router/router-calendar.dart' as router;
 import 'package:ors/router/router-contact.dart' as router;
 import 'package:ors/router/router-datastore.dart' as router;
 import 'package:ors/router/router-reception.dart' as router;
+import 'package:ors/router/router-dialplan.dart' as router;
 
 ArgResults _parsedArgs;
 ArgParser _parser = new ArgParser();
@@ -67,6 +71,23 @@ Future main(List<String> args) async {
     ..addOption('notification-uri',
         defaultsTo: config.notificationServer.externalUri.toString(),
         help: 'The uri of the notification server')
+    ..addOption('playback-prefix',
+        help: ''
+            'Defaults to ${config.dialplanserver.playbackPrefix}',
+        defaultsTo: config.dialplanserver.playbackPrefix)
+    ..addOption('freeswitch-conf-path',
+        help: 'Path to the FreeSWITCH conf directory.'
+            'Defaults to ${config.dialplanserver.freeswitchConfPath}',
+        defaultsTo: config.dialplanserver.freeswitchConfPath)
+    ..addOption('esl-hostname',
+        defaultsTo: config.callFlowControl.eslConfig.hostname,
+        help: 'The hostname of the ESL server')
+    ..addOption('esl-password',
+        defaultsTo: config.callFlowControl.eslConfig.password,
+        help: 'The password for the ESL server')
+    ..addOption('esl-port',
+        defaultsTo: config.callFlowControl.eslConfig.port.toString(),
+        help: 'The port of the ESL server')
     ..addFlag('experimental-revisioning',
         defaultsTo: false,
         help: 'Enable or disable experimental Git revisioning on this server');
@@ -104,16 +125,16 @@ Future main(List<String> args) async {
   final String playbackPrefix = parsedArgs['playback-prefix'];
   final String fsConfPath = parsedArgs['freeswitch-conf-path'];
 
-  /// Initialize filestores
+  final EslConfig eslConfig = new EslConfig(
+      hostname: parsedArgs['esl-hostname'],
+      password: parsedArgs['esl-password'],
+      port: int.parse(parsedArgs['esl-port']));
+
   final filestore.GitEngine revisionEngine =
       revisioning ? new filestore.GitEngine(filepath) : null;
 
-  final filestore.Reception rStore =
-      new filestore.Reception(filepath + '/reception', revisionEngine);
-  final filestore.Contact cStore =
-      new filestore.Contact(rStore, filepath + '/contact', revisionEngine);
-  final filestore.Organization oStore = new filestore.Organization(
-      cStore, rStore, filepath + '/organization', revisionEngine);
+  final filestore.DataStore dataStore =
+      new filestore.DataStore(filepath, revisionEngine);
 
   /// Setup dialplan tools.
   final dialplanTools.DialplanCompiler compiler =
@@ -126,8 +147,8 @@ Future main(List<String> args) async {
           callerIdNumber: config.callFlowControl.callerIdNumber));
 
   _log.info('Dialplan tools are ${compiler.option.goLive ? 'live ' : 'NOT live '
-              'diverting all voicemails to ${compiler.option.testEmail} and directing '
-              'all calls to ${compiler.option.testNumber}'}');
+                'diverting all voicemails to ${compiler.option.testEmail} and directing '
+                'all calls to ${compiler.option.testNumber}'}');
   _log.fine('Deploying generated xml files to $fsConfPath subdirs');
 
   /// Service clients.
@@ -141,43 +162,61 @@ Future main(List<String> args) async {
           config.userServer.serverToken, new service.Client());
 
   final controller.Calendar calendarController = new controller.Calendar(
-      cStore,
-      rStore,
+      dataStore.contactStore,
+      dataStore.receptionStore,
       authService,
       notificationService,
-      new gzip_cache.CalendarCache(cStore.calendarStore, rStore.calendarStore, [
-        cStore.calendarStore.changeStream,
-        rStore.calendarStore.changeStream,
+      new gzip_cache.CalendarCache(dataStore.contactStore.calendarStore,
+          dataStore.receptionStore.calendarStore, [
+        dataStore.contactStore.calendarStore.changeStream,
+        dataStore.receptionStore.calendarStore.changeStream,
       ]));
 
   controller.Contact contactController = new controller.Contact(
-      cStore,
+      dataStore.contactStore,
       notificationService,
       authService,
       new gzip_cache.ContactCache(
-          cStore,
-          cStore.onContactChange,
-          cStore.onReceptionDataChange,
-          rStore.onReceptionChange,
-          oStore.onOrganizationChange));
+          dataStore.contactStore,
+          dataStore.contactStore.onContactChange,
+          dataStore.contactStore.onReceptionDataChange,
+          dataStore.receptionStore.onReceptionChange,
+          dataStore.organizationStore.onOrganizationChange));
 
   final controller.Organization organization = new controller.Organization(
-      oStore,
+      dataStore.organizationStore,
       notificationService,
       authService,
-      new gzip_cache.OrganizationCache(oStore, oStore.onOrganizationChange));
+      new gzip_cache.OrganizationCache(dataStore.organizationStore,
+          dataStore.organizationStore.onOrganizationChange));
 
   controller.Reception reception = new controller.Reception(
-      rStore,
+      dataStore.receptionStore,
       notificationService,
       authService,
-      new gzip_cache.ReceptionCache(rStore, rStore.onReceptionChange));
+      new gzip_cache.ReceptionCache(dataStore.receptionStore,
+          dataStore.receptionStore.onReceptionChange));
 
   // Model classes.
   final model.UserStatusList userStatus = new model.UserStatusList();
 
   /// Create an anonymous client notifier.
   new controller.ClientNotifier(notificationService, userStatus.onChange);
+
+  final controller.Ivr ivrHandler =
+      new controller.Ivr(dataStore.ivrStore, compiler, authService, fsConfPath);
+  final controller.ReceptionDialplan receptionDialplanHandler =
+      new controller.ReceptionDialplan(
+          dataStore.receptionDialplanStore,
+          dataStore.receptionStore,
+          authService,
+          compiler,
+          ivrHandler,
+          fsConfPath,
+          eslConfig);
+
+  final controller.PeerAccount peerAccountHandler =
+      new controller.PeerAccount(dataStore.userStore, compiler, fsConfPath);
 
   /// Routers
   final router.Calendar calendarRouter =
@@ -189,8 +228,11 @@ Future main(List<String> args) async {
   final router.Reception receptionRouter = new router.Reception(
       authService, notificationService, reception, organization);
 
+  final router.Dialplan dialplanRouter = new router.Dialplan(
+      authService, ivrHandler, peerAccountHandler, receptionDialplanHandler);
+
   await (new router.Datastore(authService, notificationService)).listen(
-      [calendarRouter, contactRouter, receptionRouter],
+      [calendarRouter, contactRouter, receptionRouter, dialplanRouter],
       hostname: parsedArgs['host'], port: port);
 
   _log.info('Ready to handle requests');
