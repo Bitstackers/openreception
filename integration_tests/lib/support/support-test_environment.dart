@@ -488,7 +488,7 @@ class TestEnvironment {
    */
   TestEnvironment({String path: '', this.enableRevisions: false})
       : runpath = path.isEmpty
-            ? new Directory('/tmp').createTempSync('filestore-')
+            ? Directory.systemTemp.createTempSync('filestore-')
             : new Directory(path) {
     _isTmpDir = path.isEmpty;
     _log.info('New test environment created in directory $runpath');
