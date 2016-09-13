@@ -480,7 +480,7 @@ class _CreateCommand extends Command {
 Future main(args) async {
   Logger.root.level = Level.INFO;
   Logger.root.onRecord.listen(logEntryDispatch);
-  Logger _log = new Logger('datastore_ctl');
+  // Logger _log = new Logger('datastore_ctl');
 
   var runner = new CommandRunner(
       "datastore_ctl", 'OpenReception datastore management tool')

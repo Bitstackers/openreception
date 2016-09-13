@@ -85,7 +85,6 @@ class TestEnvironment {
   process.ConfigServer _configProcess;
   process.CdrServer _cdrProcess;
 
-  process.MessageDispatcher _messageDispatcher;
   process.MessageServer _messageProcess;
   process.NotificationServer _notificationProcess;
 
