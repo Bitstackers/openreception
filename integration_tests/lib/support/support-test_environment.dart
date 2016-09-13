@@ -149,7 +149,9 @@ class TestEnvironment {
   Future<process.CdrServer> requestCdrServerProcess() async {
     if (_cdrProcess == null) {
       _cdrProcess = new process.CdrServer(config.serverStackPath,
-          bindAddress: envConfig.externalIp, servicePort: nextNetworkport);
+          bindAddress: envConfig.externalIp,
+          servicePort: nextNetworkport,
+          authUri: (await requestAuthserverProcess()).uri);
     }
 
     await _cdrProcess.whenReady;

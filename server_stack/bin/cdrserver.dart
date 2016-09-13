@@ -18,8 +18,10 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
-import 'package:ors/router/router-cdr.dart' as router;
+import 'package:orf/service-io.dart' as service;
+import 'package:orf/service.dart' as service;
 import 'package:ors/configuration.dart';
+import 'package:ors/router/router-cdr.dart' as router;
 
 /**
  * CDR server.
@@ -32,6 +34,9 @@ Future main(List<String> args) async {
 
   final ArgParser parser = new ArgParser()
     ..addFlag('help', abbr: 'h', negatable: false, help: 'Output this help')
+    ..addOption('auth-uri',
+        defaultsTo: config.authServer.externalUri.toString(),
+        help: 'The uri of the authentication server')
     ..addOption('host',
         defaultsTo: config.calendarServer.externalHostName,
         help: 'The hostname or IP listen-address for the HTTP server')
@@ -59,7 +64,12 @@ Future main(List<String> args) async {
     exit(1);
   }
 
-  await router.start(port: port, hostname: parsedArgs['host']);
+  final service.Authentication authService = new service.Authentication(
+      Uri.parse(parsedArgs['auth-uri']),
+      config.userServer.serverToken,
+      new service.Client());
+
+  await router.start(authService, port: port, hostname: parsedArgs['host']);
 
   log.info('Ready to handle requests');
 }

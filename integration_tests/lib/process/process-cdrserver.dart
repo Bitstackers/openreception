@@ -1,6 +1,7 @@
 part of ort.process;
 
 class CdrServer implements ServiceProcess {
+  final Uri authUri;
   final String path;
   final int servicePort;
   final String bindAddress;
@@ -15,7 +16,12 @@ class CdrServer implements ServiceProcess {
   /**
    *
    */
-  CdrServer(this.path, {this.servicePort: 4090, this.bindAddress: '0.0.0.0'}) {
+  CdrServer(
+    this.path, {
+    this.servicePort: 4090,
+    this.bindAddress: '0.0.0.0',
+    this.authUri: null,
+  }) {
     _init();
   }
 
@@ -37,6 +43,10 @@ class CdrServer implements ServiceProcess {
       '--host',
       bindAddress
     ];
+
+    if (authUri != null) {
+      arguments.addAll(['--auth-uri', authUri.toString()]);
+    }
 
     _log.fine('Starting process /usr/bin/dart ${arguments.join(' ')}');
     _process = await Process.start('/usr/bin/dart', arguments,
