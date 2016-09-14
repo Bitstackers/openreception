@@ -34,12 +34,14 @@ class MyCallQueue extends ViewWidget {
   final controller.Popup _popup;
   final ui_model.UIReceptionSelector _receptionSelector;
   final ui_model.UIMyCallQueue _uiModel;
+  final ui_model.UIMessageCompose _uiModelMessageCompose;
 
   /**
    * Constructor.
    */
   MyCallQueue(
       ui_model.UIMyCallQueue this._uiModel,
+      ui_model.UIMessageCompose this._uiModelMessageCompose,
       ui_model.AppClientState this._appState,
       controller.Destination this._myDestination,
       controller.Notification this._notification,
@@ -295,7 +297,9 @@ class MyCallQueue extends ViewWidget {
 
     /// Pickup new call
     _hotKeys.onNumPlus.listen((_) {
-      if (_homeIsFocused && !_callControllerBusy) {
+      if (_homeIsFocused &&
+          _uiModelMessageCompose.noMessage &&
+          !_callControllerBusy) {
         _busyCallController();
         _receptionSelector.refreshReceptions();
 

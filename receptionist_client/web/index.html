@@ -1151,6 +1151,18 @@
                     outline: 0;
                   }
 
+                  #message-compose.message-compose-alert {
+                    animation-name: message-compose-alert;
+                    animation-duration: 2s;
+                    animation-fill-mode: both;
+                    animation-iteration-count: 1;
+                  }
+
+                  @keyframes message-compose-alert {
+                    0%, 50%, 100% {background-color: #f7f7f7}
+                    25%, 75% {background-color: red}
+                  }
+
                   #message-compose .padding03 {
                     padding: 0.3em;
                   }
