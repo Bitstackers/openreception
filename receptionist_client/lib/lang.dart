@@ -101,6 +101,7 @@ abstract class Key {
   static const String extension = 'extension';
 
   static const String filter = 'filter';
+  static const String filterContactSelector = 'filter-contact-selector';
   static const String future = 'future';
 
   static const String globalCallQueueHeader = 'global-call-queue-header';
@@ -270,6 +271,7 @@ Map<String, String> da = {
   Key.extension: 'Lokalnummer',
 
   Key.filter: 'filter...',
+  Key.filterContactSelector: 'søg på navn, stikord, a:afd. eller t:titel',
   Key.future: 'fremtid',
 
   Key.globalCallQueueHeader: 'Kø',
@@ -434,6 +436,7 @@ Map<String, String> en = {
   Key.extension: 'Extension',
 
   Key.filter: 'filter...',
+  Key.filterContactSelector: 'filter on name, tag, a:dep. or t:title',
   Key.future: 'future',
 
   Key.globalCallQueueHeader: 'Queue',
