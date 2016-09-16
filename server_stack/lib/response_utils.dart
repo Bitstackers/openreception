@@ -24,17 +24,17 @@ const Map<String, String> corsHeaders = const {
 /**
  *
  */
-shelf.Response okJson(body) => ok(JSON.encode(body));
+shelf.Response okJson(dynamic body) => ok(JSON.encode(body));
 
 /**
  *
  */
-shelf.Response ok(body) => new shelf.Response.ok(body);
+shelf.Response ok(dynamic body) => new shelf.Response.ok(body);
 
 /**
  *
  */
-shelf.Response okGzip(body) => new shelf.Response.ok(body, headers: {
+shelf.Response okGzip(dynamic body) => new shelf.Response.ok(body, headers: {
       'content-encoding': 'gzip',
       'content-type': 'application/json; charset=utf-8'
     });
@@ -42,13 +42,13 @@ shelf.Response okGzip(body) => new shelf.Response.ok(body, headers: {
 /**
  *
  */
-shelf.Response notFoundJson(body) =>
+shelf.Response notFoundJson(dynamic body) =>
     new shelf.Response.notFound(JSON.encode(body));
 
 /**
      *
      */
-shelf.Response notFound(body) => new shelf.Response.notFound(body);
+shelf.Response notFound(dynamic body) => new shelf.Response.notFound(body);
 
 /**
  *
@@ -59,7 +59,7 @@ shelf.Response clientError(String reason) =>
 /**
  *
  */
-shelf.Response clientErrorJson(reason) =>
+shelf.Response clientErrorJson(dynamic reason) =>
     new shelf.Response(400, body: JSON.encode(reason));
 
 /**

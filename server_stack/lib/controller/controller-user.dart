@@ -250,7 +250,7 @@ class User {
    *
    */
   Future<shelf.Response> emptyCache(shelf.Request request) async {
-    _cache.emptyAll();
+    await _cache.emptyAll();
 
     return cacheStats(request);
   }

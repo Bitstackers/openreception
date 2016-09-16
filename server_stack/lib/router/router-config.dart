@@ -40,7 +40,7 @@ class Config {
   /**
    *
    */
-  void bindRoutes(router) {
+  void bindRoutes(dynamic router) {
     router
       ..get('/configuration', _configController.get)
       ..post('/configuration/register', _configController.register);

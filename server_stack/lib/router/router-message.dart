@@ -38,7 +38,7 @@ class Message {
   /**
    *
    */
-  void bindRoutes(router) {
+  void bindRoutes(dynamic router) {
     router
       ..get('/message/list/drafts', _msgController.listDrafts)
       ..get('/message/list/{day}', _msgController.list)

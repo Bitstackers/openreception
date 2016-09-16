@@ -52,7 +52,7 @@ class TokenVault {
     } else if (_serverTokens.containsKey(token)) {
       return _serverTokens[token];
     } else {
-      throw new NotFound('getToken. Unknown token: ${token}');
+      throw new NotFound('getToken. Unknown token: $token');
     }
   }
 
@@ -72,7 +72,7 @@ class TokenVault {
     } else if (_serverTokens.containsKey(token)) {
       return;
     } else {
-      throw new Exception('updateToken. Unknown token: ${token}');
+      throw new Exception('updateToken. Unknown token: $token');
     }
   }
 
@@ -83,7 +83,7 @@ class TokenVault {
     if (_tokens.containsKey(token)) {
       _tokens.remove(token);
     } else {
-      throw new Exception('containsToken. Unknown token: ${token}');
+      throw new Exception('containsToken. Unknown token: $token');
     }
   }
 
@@ -94,8 +94,9 @@ class TokenVault {
   Future loadFromDirectory(String dirPath) async {
     final Directory dir = new Directory(dirPath);
     if (dir.existsSync()) {
-      List<File> files = dir.listSync().where((fse) => fse is File);
-      files.forEach((item) {
+      List<FileSystemEntity> files =
+          dir.listSync().where((fse) => fse is File).toList(growable: false);
+      files.forEach((FileSystemEntity item) {
         try {
           String text = load(item.path);
           String token = path.basenameWithoutExtension(item.path);

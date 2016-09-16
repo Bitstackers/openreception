@@ -55,7 +55,7 @@ class Call {
   /**
    *
    */
-  void bindRoutes(router) {
+  void bindRoutes(dynamic router) {
     router
       ..get('/peer', _peerController.list)
       ..get('/peer/{peerid}', _peerController.get)

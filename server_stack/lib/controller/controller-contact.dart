@@ -24,15 +24,15 @@ import 'package:orf/model.dart' as model;
 import 'package:orf/service.dart' as service;
 import 'package:ors/response_utils.dart';
 import 'package:shelf/shelf.dart' as shelf;
+import 'package:logging/logging.dart';
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
-
-const String _libraryName = 'ors.controller.reception';
 
 class Contact {
   final service.Authentication _authservice;
   final filestore.Contact _contactStore;
   final service.NotificationService _notification;
   final gzip_cache.ContactCache _cache;
+  final Logger _log = new Logger('ors.controller.reception');
 
   Contact(
       this._contactStore, this._notification, this._authservice, this._cache);
@@ -76,7 +76,11 @@ class Contact {
 
     final createEvent = new event.ContactChange.create(cRef.id, modifier.id);
 
-    _notification.broadcastEvent(createEvent);
+    try {
+      await _notification.broadcastEvent(createEvent);
+    } catch (e) {
+      _log.shout('Failed to send event $createEvent');
+    }
 
     return okJson(cRef);
   }
@@ -156,7 +160,11 @@ class Contact {
       event.ContactChange changeEvent =
           new event.ContactChange.delete(cid, modifier.id);
 
-      _notification.broadcastEvent(changeEvent);
+      try {
+        await _notification.broadcastEvent(changeEvent);
+      } catch (e) {
+        _log.shout('Failed to send event $changeEvent');
+      }
 
       return okJson(const {});
     } on NotFound catch (e) {
@@ -200,7 +208,11 @@ class Contact {
       event.ContactChange changeEvent =
           new event.ContactChange.update(cid, modifier.id);
 
-      _notification.broadcastEvent(changeEvent);
+      try {
+        await _notification.broadcastEvent(changeEvent);
+      } catch (e) {
+        _log.shout('Failed to send event $changeEvent');
+      }
 
       return okJson(cRef);
     } on NotFound catch (e) {
@@ -256,7 +268,11 @@ class Contact {
     event.ReceptionData changeEvent =
         new event.ReceptionData.create(attr.cid, attr.receptionId, modifier.id);
 
-    _notification.broadcastEvent(changeEvent);
+    try {
+      await _notification.broadcastEvent(changeEvent);
+    } catch (e) {
+      _log.shout('Failed to send event $changeEvent');
+    }
 
     return okJson(ref);
   }
@@ -296,7 +312,11 @@ class Contact {
       event.ReceptionData changeEvent = new event.ReceptionData.update(
           attr.cid, attr.receptionId, modifier.id);
 
-      _notification.broadcastEvent(changeEvent);
+      try {
+        await _notification.broadcastEvent(changeEvent);
+      } catch (e) {
+        _log.shout('Failed to send event $changeEvent');
+      }
 
       return okJson(ref);
     } on NotFound catch (e) {
@@ -323,7 +343,12 @@ class Contact {
 
       event.ReceptionData changeEvent =
           new event.ReceptionData.update(cid, rid, modifier.id);
-      _notification.broadcastEvent(changeEvent);
+
+      try {
+        await _notification.broadcastEvent(changeEvent);
+      } catch (e) {
+        _log.shout('Failed to send event $changeEvent');
+      }
 
       return okJson(const {});
     } on NotFound catch (e) {

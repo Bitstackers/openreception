@@ -58,6 +58,8 @@ class Ivr {
   final String fsConfPath;
   final Logger _log = new Logger('server.controller.ivr');
 
+  Ivr(this._ivrStore, this.compiler, this._authService, this.fsConfPath);
+
   Future<List<String>> _writeIvrfile(model.IvrMenu menu,
       dialplanTools.DialplanCompiler compiler, Logger _log) async {
     final String xmlFilePath = fsConfPath + '/ivr_menus/${menu.name}.xml';
@@ -65,7 +67,7 @@ class Ivr {
     final List<String> generatedFiles = new List<String>.from([xmlFilePath]);
 
     _log.fine('Deploying new dialplan to file $xmlFilePath');
-    new File(xmlFilePath).writeAsString(compiler.ivrToXml(menu));
+    await new File(xmlFilePath).writeAsString(compiler.ivrToXml(menu));
 
     Iterable<model.Voicemail> voicemailAccounts =
         menu.allActions.where((a) => a is model.Voicemail);
@@ -92,11 +94,6 @@ class Ivr {
 
     return allFiles;
   }
-
-  /**
-   *
-   */
-  Ivr(this._ivrStore, this.compiler, this._authService, this.fsConfPath);
 
   /**
    *

@@ -42,7 +42,7 @@ class Notification {
   /**
    *
    */
-  void bindRoutes(router) {
+  void bindRoutes(dynamic router) {
     router
       ..get('/notifications', _notificationController.handleWsConnect)
       ..post('/broadcast', _notificationController.broadcast)

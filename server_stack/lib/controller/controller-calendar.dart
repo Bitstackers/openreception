@@ -150,9 +150,13 @@ class Calendar {
 
     event.CalendarChange changeEvent =
         new event.CalendarChange.create(created.id, owner, modifier.id);
-    _log.finest('User id:${modifier.id} created entry for ${owner}');
+    _log.finest('User id:${modifier.id} created entry for $owner');
 
-    _notification.broadcastEvent(changeEvent);
+    try {
+      await _notification.broadcastEvent(changeEvent);
+    } catch (e) {
+      _log.warning('$e: Failed to send $changeEvent');
+    }
 
     return okJson(created);
   }
@@ -270,9 +274,13 @@ class Calendar {
     final event.CalendarChange changeEvent =
         new event.CalendarChange.delete(eid, owner, modifier.id);
 
-    _log.finest('User id:${modifier.id} removed entry for ${owner}');
+    _log.finest('User id:${modifier.id} removed entry for $owner');
 
-    _notification.broadcastEvent(changeEvent);
+    try {
+      await _notification.broadcastEvent(changeEvent);
+    } catch (e) {
+      _log.warning('$e: Failed to send $changeEvent');
+    }
 
     return okJson('{}');
   }
@@ -324,9 +332,13 @@ class Calendar {
     final event.CalendarChange changeEvent =
         new event.CalendarChange.update(updated.id, owner, modifier.id);
 
-    _log.finest('User id:${modifier.id} updated entry for ${owner}');
+    _log.finest('User id:${modifier.id} updated entry for $owner');
 
-    _notification.broadcastEvent(changeEvent);
+    try {
+      await _notification.broadcastEvent(changeEvent);
+    } catch (e) {
+      _log.warning('$e: Failed to send $changeEvent');
+    }
 
     return okJson(updated);
   }
@@ -356,7 +368,7 @@ class Calendar {
             'for owner type: ${owner.runtimeType}');
       }
     } on NotFound {
-      return notFound('No event with owner ${owner}');
+      return notFound('No event with owner $owner');
     }
   }
 }

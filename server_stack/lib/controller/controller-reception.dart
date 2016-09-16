@@ -25,14 +25,14 @@ import 'package:orf/service.dart' as service;
 import 'package:ors/response_utils.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
-
-const String _libraryName = 'ors.controller.reception';
+import 'package:logging/logging.dart';
 
 class Reception {
   final filestore.Reception _rStore;
   final service.Authentication _authservice;
   final service.NotificationService _notification;
   final gzip_cache.ReceptionCache _cache;
+  final Logger _log = new Logger('ors.controller.reception');
 
   /**
    * Default constructor.
@@ -90,8 +90,12 @@ class Reception {
 
     _cache.emptyList();
 
-    _notification
-        .broadcastEvent(new event.ReceptionChange.create(rRef.id, creator.id));
+    final evt = new event.ReceptionChange.create(rRef.id, creator.id);
+    try {
+      await _notification.broadcastEvent(evt);
+    } catch (e) {
+      _log.warning('$e: Failed to send $evt');
+    }
     return okJson(rRef);
   }
 
@@ -128,8 +132,12 @@ class Reception {
       _cache.remove(rRef.id);
       _cache.emptyList();
 
-      _notification.broadcastEvent(
-          new event.ReceptionChange.update(rRef.id, modifier.id));
+      final evt = new event.ReceptionChange.update(rRef.id, modifier.id);
+      try {
+        await _notification.broadcastEvent(evt);
+      } catch (e) {
+        _log.warning('$e: Failed to send $evt');
+      }
       return okJson(rRef);
     } on NotFound catch (e) {
       return notFound(e.toString());
@@ -158,8 +166,12 @@ class Reception {
 
       _cache.emptyList();
 
-      _notification
-          .broadcastEvent(new event.ReceptionChange.delete(rid, modifier.id));
+      final evt = new event.ReceptionChange.delete(rid, modifier.id);
+      try {
+        await _notification.broadcastEvent(evt);
+      } catch (e) {
+        _log.warning('$e: Failed to send $evt');
+      }
 
       return okJson({'status': 'ok', 'description': 'Reception deleted'});
     } on NotFound {

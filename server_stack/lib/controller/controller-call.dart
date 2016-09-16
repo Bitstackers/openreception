@@ -24,18 +24,15 @@ import 'package:orf/model.dart' as model;
 import 'package:orf/pbx-keys.dart';
 import 'package:orf/service-io.dart' as service;
 import 'package:orf/service.dart' as service;
+import 'package:orf/validation.dart';
+import 'package:ors/configuration.dart';
 import 'package:ors/controller/controller-pbx.dart' as controller;
 import 'package:ors/model.dart' as _model;
-import 'package:ors/configuration.dart';
 import 'package:ors/response_utils.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
 class Call {
-  String _peerInfo(model.Peer peer) => '${peer.name}: '
-      'channels: ${_channelList.activeChannelCount(peer.name)},'
-      'inTransition: ${peer.inTransition}';
-
   final _model.CallList _callList;
   final _model.PeerList _peerlist;
   final _model.ChannelList _channelList;
@@ -45,6 +42,10 @@ class Call {
 
   Call(this._callList, this._channelList, this._peerlist, this._pbxController,
       this.authService);
+
+  String _peerInfo(model.Peer peer) => '${peer.name}: '
+      'channels: ${_channelList.activeChannelCount(peer.name)},'
+      'inTransition: ${peer.inTransition}';
 
   /**
    * Retrieves a single call from the call list.
@@ -161,16 +162,15 @@ class Call {
     peer.inTransition = true;
 
     ///Completer
-    Completer<model.Call> completer = new Completer<model.Call>();
+    //Completer<model.Call> completer = new Completer<model.Call>();
 
-    _callList.onEvent
+    Future<model.Call> callHangup = _callList.onEvent
         .firstWhere(
             (event.Event e) => e is event.CallHangup && e.call.id == callID)
-        .then((event.CallHangup hangupEvent) =>
-            completer.complete(hangupEvent.call));
+        .then((event.CallHangup hangupEvent) => hangupEvent.call);
 
     return await _pbxController.hangup(targetCall).then((_) {
-      return completer.future.then((model.Call hungupCall) {
+      return callHangup.then((model.Call hungupCall) {
         /// Update peer state.
         peer.inTransition = false;
         return new shelf.Response.ok(JSON.encode(hungupCall));
@@ -220,8 +220,8 @@ class Call {
       extension = '$extension@$host:$port';
     }
 
-    _log.finest('Originating to ${extension} in context '
-        '${contactID}@${receptionID}');
+    _log.finest('Originating to $extension in context '
+        '$contactID@$receptionID');
 
     /// Any authenticated user is allowed to originate new calls.
     bool aclCheck(model.User user) => true;
@@ -557,8 +557,8 @@ class Call {
   Future<shelf.Response> transfer(shelf.Request request) async {
     String sourceCallID = shelf_route.getPathParameter(request, "aleg");
     String destinationCallID = shelf_route.getPathParameter(request, 'bleg');
-    model.Call sourceCall = null;
-    model.Call destinationCall = null;
+    model.Call sourceCall;
+    model.Call destinationCall;
     model.User user;
 
     if (sourceCallID == null || sourceCallID == "") {
@@ -567,7 +567,7 @@ class Call {
 
     ///Check valitity of the call. (Will raise exception on invalid).
     try {
-      [sourceCallID, destinationCallID].forEach(model.Call.validateID);
+      [sourceCallID, destinationCallID].forEach(validateCallId);
     } on FormatException catch (_) {
       return new shelf.Response(400,
           body: 'Error in call id format (empty, null, nullID)');

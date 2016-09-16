@@ -151,11 +151,11 @@ class ChannelList extends esl.ChannelList {
   static final Logger _log = new Logger('ors.model.ChanneList');
 
   /// Controller for injecting events into [event] stream.
-  static StreamController<ChannelEvent> _eventController =
+  StreamController<ChannelEvent> _eventController =
       new StreamController<ChannelEvent>.broadcast();
 
   /// Broadcast stream for channel events.
-  static Stream<ChannelEvent> event = _eventController.stream;
+  Stream<ChannelEvent> get event => _eventController.stream;
 
   /// Returns true if channel with [uuid] is in the channel list
   bool containsChannel(String uuid) => get(uuid) != null;
@@ -165,12 +165,13 @@ class ChannelList extends esl.ChannelList {
       (esl.Channel channel) => simplePeerName(ownedByPeer(channel)) == peerId);
 
   /// Determine the number of active channels the peer with [peerId] has.
-  int activeChannelCount(String peerID) => this
+  int activeChannelCount(String peerId) => this
       .where((esl.Channel channel) =>
-          simplePeerName(ownedByPeer(channel)) == peerID)
+          simplePeerName(ownedByPeer(channel)) == peerId)
       .length;
 
   /// Updates, removes or adds a channel, based on the state of [channel].
+  @override
   void update(esl.Channel channel) {
     bool newChannel = false;
 

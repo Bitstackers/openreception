@@ -53,14 +53,14 @@ class PeerList {
    */
   bool contains(String peerName) => _peers.containsKey(peerName);
 
-  registerPeer(String peerName) {
+  void registerPeer(String peerName) {
     model.Peer peer = get(peerName);
 
     peer.registered = true;
     _notification.broadcastEvent(new event.PeerState(peer));
   }
 
-  unregisterPeer(String peerName) {
+  void unregisterPeer(String peerName) {
     model.Peer peer = get(peerName);
 
     peer.registered = false;

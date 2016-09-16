@@ -132,8 +132,7 @@ class PeerAccount {
   Future<shelf.Response> remove(shelf.Request request) async {
     final String aid = shelf_route.getPathParameter(request, 'aid');
 
-    final String xmlFilePath =
-        fsConfPath + '/directory/receptionists/${aid}.xml';
+    final String xmlFilePath = fsConfPath + '/directory/receptionists/$aid.xml';
 
     final File peerAccount = new File(xmlFilePath);
 

@@ -26,6 +26,7 @@ class ActiveRecordings extends IterableBase<model.ActiveRecording> {
   Map<String, model.ActiveRecording> _recordings = {};
 
   /// Interator simply forwards the values of the map in no particular order.
+  @override
   Iterator<model.ActiveRecording> get iterator => _recordings.values.iterator;
 
   /**

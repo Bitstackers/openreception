@@ -44,7 +44,7 @@ void _timerTick(Timer timer) {
 
     int now = new DateTime.now().millisecondsSinceEpoch;
     if (now > expiresAt.millisecondsSinceEpoch) {
-      log.info('This token ${token} expired ${expiresAt} - removing it');
+      log.info('This token $token expired $expiresAt - removing it');
       vault.removeToken(token);
     }
   }

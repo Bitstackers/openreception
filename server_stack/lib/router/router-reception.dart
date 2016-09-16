@@ -65,7 +65,7 @@ class Reception {
   /**
    *
    */
-  void bindRoutes(router) {
+  void bindRoutes(dynamic router) {
     router
       ..get('/organization', organization.list)
       ..get('/organization/receptionmap', organization.receptionMap)

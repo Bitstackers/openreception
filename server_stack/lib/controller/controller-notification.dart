@@ -37,13 +37,13 @@ class Notification {
 
   final service.Authentication _authService;
 
-  initStats() {
+  Notification(this._authService);
+
+  void initStats() {
     new Timer.periodic(new Duration(seconds: 1), _tick);
   }
 
-  Notification(this._authService);
-
-  _tick(Timer t) {
+  void _tick(Timer t) {
     if (_stats.length > 60) {
       _stats.removeAt(0);
     }

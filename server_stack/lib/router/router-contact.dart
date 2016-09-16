@@ -44,7 +44,7 @@ class Contact {
   /**
    *
    */
-  void bindRoutes(router) {
+  void bindRoutes(dynamic router) {
     router
       ..get('/contact/history', _contactController.history)
       ..get('/contact/cache', _contactController.cacheStats)

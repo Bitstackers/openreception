@@ -30,14 +30,19 @@ class ClientNotifier {
       Stream<event.Event> eventStream) {
     Logger _log = new Logger('controller.ClientNotifier');
 
-    void logError(error, stackTrace) =>
+    void logError(dynamic error, StackTrace stackTrace) =>
         _log.shout('Failed to dispatch event', error, stackTrace);
-    final subscription = eventStream.listen((e) async {
+    StreamSubscription subscription;
+    subscription = eventStream.listen((e) async {
       await notificationServer.broadcastEvent(e);
-    }, onError: logError);
+    }, onError: logError, onDone: () => subscription.cancel());
 
     return new ClientNotifier._internal(subscription);
   }
 
   ClientNotifier._internal(this.subscription);
+
+  Future close() async {
+    await subscription.cancel();
+  }
 }

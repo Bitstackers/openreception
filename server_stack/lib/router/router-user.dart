@@ -44,7 +44,7 @@ class User {
   /**
    *
    */
-  void bindRoutes(router) {
+  void bindRoutes(dynamic router) {
     router
       ..get('/user/cache', _userController.cacheStats)
       ..delete('/user/cache', _userController.emptyCache)

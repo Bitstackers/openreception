@@ -26,14 +26,14 @@ import 'package:orf/validation.dart';
 import 'package:ors/response_utils.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
-
-const String _libraryName = 'ors.controller.organization';
+import 'package:logging/logging.dart';
 
 class Organization {
   final filestore.Organization _orgStore;
   final service.Authentication _authservice;
   final service.NotificationService _notification;
   final gzip_cache.OrganizationCache _cache;
+  final Logger _log = new Logger('ors.controller.organization');
 
   /**
    * Default constructor.
@@ -121,8 +121,13 @@ class Organization {
     }
 
     final oRef = await _orgStore.create(organization, creator);
-    _notification.broadcastEvent(
-        new event.OrganizationChange.create(oRef.id, creator.id));
+    final evt = new event.OrganizationChange.create(oRef.id, creator.id);
+
+    try {
+      await _notification.broadcastEvent(evt);
+    } catch (e) {
+      _log.warning('$e: Failed to send $evt');
+    }
 
     return okJson(oRef);
   }
@@ -161,8 +166,14 @@ class Organization {
 
     try {
       final rRef = await _orgStore.update(org, modifier);
-      _notification.broadcastEvent(
-          new event.OrganizationChange.update(rRef.id, modifier.id));
+      final evt = new event.OrganizationChange.update(rRef.id, modifier.id);
+
+      try {
+        await _notification.broadcastEvent(evt);
+      } catch (e) {
+        _log.warning('$e: Failed to send $evt');
+      }
+
       return okJson(rRef);
     } on NotFound catch (e) {
       return notFound(e.toString());
@@ -186,8 +197,13 @@ class Organization {
 
     try {
       await _orgStore.remove(oid, modifier);
-      _notification.broadcastEvent(
-          new event.OrganizationChange.delete(oid, modifier.id));
+      final evt = new event.OrganizationChange.delete(oid, modifier.id);
+
+      try {
+        await _notification.broadcastEvent(evt);
+      } catch (e) {
+        _log.warning('$e: Failed to send $evt');
+      }
 
       return okJson({'status': 'ok', 'description': 'Organization deleted'});
     } on NotFound {

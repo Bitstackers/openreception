@@ -63,7 +63,7 @@ class Calendar {
   /**
    *
    */
-  void bindRoutes(router) {
+  void bindRoutes(dynamic router) {
     router
       ..get('/calendar/cache', _calendarController.cacheStats)
       ..post('/calendar/cache/prefill', _calendarController.cachePrefill)

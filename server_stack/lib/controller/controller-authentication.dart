@@ -129,8 +129,7 @@ class Authentication {
       "client_secret": _config.clientSecret
     };
 
-    _log.finest(
-        'Sending request to google. "${tokenEndpoint}" body "${postBody}"');
+    _log.finest('Sending request to google. "$tokenEndpoint" body "$postBody"');
 
     //Now we have the "code" which will be exchanged to a token.
     Map json;
@@ -140,14 +139,14 @@ class Authentication {
       json = JSON.decode(response);
     } catch (error) {
       return new shelf.Response.internalServerError(
-          body:
-              'authenticationserver.router.oauthCallback uri ${request.url} error: "${error}"');
+          body: 'authenticationserver.router.oauthCallback uri ${request.url} '
+              'error: "$error"');
     }
 
     if (json.containsKey('error')) {
       return new shelf.Response.internalServerError(
           body: 'authenticationserver.router.oauthCallback() '
-              'Authentication failed. "${json}"');
+              'Authentication failed. "$json"');
     } else {
       ///FIXME: Change to use format from framework AND update the dummy tokens.
       json['expiresAt'] =
@@ -165,7 +164,7 @@ class Authentication {
 
       if (userData == null || userData.isEmpty) {
         _log.finest('authenticationserver.router.oauthCallback() '
-            'token:"${json['access_token']}" userdata:"${userData}"');
+            'token:"${json['access_token']}" userdata:"$userData"');
 
         return new shelf.Response.forbidden(
             JSON.encode(const {'status': 'Forbidden'}));
@@ -191,18 +190,18 @@ class Authentication {
 
           return new shelf.Response.internalServerError(
               body: 'authenticationserver.router.oauthCallback '
-                  'uri ${request.url} error: "${error}" data: "$json"');
+                  'uri ${request.url} error: "$error" data: "$json"');
         }
       }
     }
   }
 
   /**
-   * Asks google for the user data, for the user bound to the [access_token].
+   * Asks google for the user data, for the user bound to the [accessToken].
    */
   Future<Map> getUserInfo(String accessToken) async {
     Uri url = Uri.parse('https://www.googleapis.com/oauth2/'
-        'v1/userinfo?alt=json&access_token=${accessToken}');
+        'v1/userinfo?alt=json&access_token=$accessToken');
 
     final Map googleProfile =
         await new service.Client().get(url).then(JSON.decode);
@@ -238,7 +237,7 @@ class Authentication {
 
       return new shelf.Response.ok(
           'BODY \n ==== \n${JSON.encode(body)} \n\n RESPONSE '
-          '\n ======== \n ${response}');
+          '\n ======== \n $response');
     } catch (error, stackTrace) {
       _log.severe(error, stackTrace);
 

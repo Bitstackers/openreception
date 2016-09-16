@@ -85,9 +85,9 @@ class PBX {
     List<String> aLegvariables = ['${ORPbxKey.agentChannel}=true'];
 
     List<String> bLegvariables = [
-      '${ORPbxKey.receptionId}=${receptionID}',
+      '${ORPbxKey.receptionId}=$receptionID',
       '${ORPbxKey.userId}=${user.id}',
-      '${ORPbxKey.contactId}=${contactID}'
+      '${ORPbxKey.contactId}=$contactID'
     ];
 
     final String callerIdName = config.callFlowControl.callerIdName;
@@ -96,8 +96,8 @@ class PBX {
 
     esl.Response response = await api(
         'originate {${aLegvariables.join(',')}}user/${user.extension} '
-        '&bridge([${bLegvariables.join(',')}]sofia/external/${extension}) '
-        '${_dialplan} $callerIdName $callerIdNumber $timeout');
+        '&bridge([${bLegvariables.join(',')}]sofia/external/$extension) '
+        '$_dialplan $callerIdName $callerIdNumber $timeout');
 
     if (!response.isOk) {
       throw new StateError('ESL returned ${response.content}');
@@ -108,7 +108,7 @@ class PBX {
 
   Future _cleanupChannel(String uuid) =>
       killChannel(uuid).catchError((error, stackTrace) =>
-          _log.severe('Failed to close agent channel', error, stackTrace));
+          _log.finest('Failed to close agent channel', error, stackTrace));
 
   /**
    * Spawns a channel to an agent.
@@ -120,7 +120,7 @@ class PBX {
   Future<String> createAgentChannel(model.User user,
       {Map<String, String> extravars: const {}}) async {
     final int msecs = new DateTime.now().millisecondsSinceEpoch;
-    final String newCallUuid = 'agent-${user.id}-${msecs}';
+    final String newCallUuid = 'agent-${user.id}-$msecs';
     final String destination = 'user/${user.extension}';
 
     _log.finest('New uuid: $newCallUuid');
@@ -153,7 +153,7 @@ class PBX {
             new Duration(seconds: config.callFlowControl.agentChantimeOut + 1))
         as Future<esl.Event>;
 
-    await bgapi('originate {$variableString}${destination} &park()',
+    await bgapi('originate {$variableString}$destination &park()',
         jobUuid: newCallUuid);
 
     final esl.Response response = new esl.Response.fromPacketBody(
@@ -190,7 +190,7 @@ class PBX {
    */
   Future<String> createAgentChannelBg(model.User user) async {
     final int msecs = new DateTime.now().millisecondsSinceEpoch;
-    final String newCallUuid = 'agent-${user.id}-${msecs}';
+    final String newCallUuid = 'agent-${user.id}-$msecs';
     final String destination = 'user/${user.extension}';
 
     _log.finest('New uuid: $newCallUuid');
@@ -213,7 +213,7 @@ class PBX {
         variables.keys.map((String key) => '$key=${variables[key]}').join(',');
 
     esl.Reply reply = await bgapi(
-        'originate {$variableString}${destination} &park()',
+        'originate {$variableString}$destination &park()',
         jobUuid: newCallUuid);
 
     if (!reply.isOk) {
@@ -242,7 +242,7 @@ class PBX {
           .timeout(
               new Duration(seconds: config.callFlowControl.agentChantimeOut));
     } on TimeoutException {
-      _cleanupChannel(ORPbxKey.agentChannel);
+      await _cleanupChannel(ORPbxKey.agentChannel);
 
       throw new NoAnswer('destination: $destination');
     }
@@ -288,16 +288,16 @@ class PBX {
   Future originateRecording(int receptionID, String recordExtension,
       String soundFilePath, model.User user) {
     List<String> variables = [
-      '${ORPbxKey.receptionId}=${receptionID}',
+      '${ORPbxKey.receptionId}=$receptionID',
       '${ORPbxKey.userId}=${user.id}',
-      'recordpath=${soundFilePath}'
+      'recordpath=$soundFilePath'
     ];
     final String callerIdName = config.callFlowControl.callerIdName;
     final String callerIdNumber = config.callFlowControl.callerIdNumber;
     final int timeout = config.callFlowControl.originateTimeout;
 
     final String command =
-        'originate {${variables.join(',')}}user/${user.extension} ${recordExtension} ${_dialplan} $callerIdName $callerIdNumber $timeout';
+        'originate {${variables.join(',')}}user/${user.extension} $recordExtension $_dialplan $callerIdName $callerIdNumber $timeout';
     return api(command).then((esl.Response response) {
       if (!response.isOk) {
         throw new StateError('ESL returned ${response.content}');
@@ -382,7 +382,7 @@ class PBX {
    * Transfers an active call to a user.
    */
   Future transfer(model.Call source, String extension) async {
-    final command = 'uuid_transfer ${source.channel} ${extension}';
+    final command = 'uuid_transfer ${source.channel} $extension';
 
     esl.Response xfrResponse = await api(command);
 

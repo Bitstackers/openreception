@@ -36,7 +36,7 @@ class PhoneState {
 
     await Future.wait(
         [_pbxController.loadPeers(_peerlist), _pbxController.loadChannels()]);
-    await _callList.reloadFromChannels();
+    _callList.reloadFromChannels();
     return okJson(const {});
   }
 }

@@ -75,7 +75,7 @@ class Dialplan {
   /**
    *
    */
-  void bindRoutes(router) {
+  void bindRoutes(dynamic router) {
     router
       ..post('/peeraccount/user/{uid}/deploy', _paController.deploy)
       ..get('/peeraccount', _paController.list)

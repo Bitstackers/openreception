@@ -23,6 +23,7 @@ class CallList extends IterableBase<model.Call> {
 
   Map<String, model.Call> _map = new Map<String, model.Call>();
 
+  @override
   Iterator<model.Call> get iterator => this._map.values.iterator;
 
   Bus<event.Event> _callEvent = new Bus<event.Event>();
@@ -164,7 +165,7 @@ class CallList extends IterableBase<model.Call> {
     }
   }
 
-  model.Call requestCall(user) =>
+  model.Call requestCall(model.User user) =>
       //TODO: Implement a real algorithm for selecting calls.
       this.firstWhere(
           (model.Call call) =>
@@ -175,7 +176,7 @@ class CallList extends IterableBase<model.Call> {
     model.Call call = this.get(callID);
 
     if (![user.id, model.User.noId].contains(call.assignedTo)) {
-      log.fine('Call ${callID} already assigned to uid: ${call.assignedTo}');
+      log.fine('Call $callID already assigned to uid: ${call.assignedTo}');
       throw new Forbidden(callID);
     } else if (call.locked) {
       if (call.assignedTo == user.id) {
@@ -357,7 +358,7 @@ class CallList extends IterableBase<model.Call> {
    * These will, in their good right, spawn CHANNEL_ORIGINATE events which we
    * manually need to filter :-\
    * For now, the filter for origination is done by tagging the channels with a
-   * variable ([agentChan]) by the origination request.
+   * variable (`agentChan`) by the origination request.
    * This is picked up by this function which then filters the channels from the
    * call list.
    * Upon call transfer, we also create a channel, but cannot (easily) tag the

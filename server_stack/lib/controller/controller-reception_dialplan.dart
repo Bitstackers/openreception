@@ -230,10 +230,10 @@ class ReceptionDialplan {
 
     final int port = eslConfig.port;
 
-    _log.info('Connected to ${hostname}:${port}');
+    _log.info('Connected to $hostname:$port');
     _eslClient = new esl.Connection(await Socket.connect(hostname, port));
     await esl.authHandler(_eslClient, password);
-    _log.info('Connecting to ${hostname}:${port}');
+    _log.info('Connecting to $hostname:$port');
 
     await _eslClient.event(['RELOADXML'], format: esl.EventFormat.json);
   }

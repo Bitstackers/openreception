@@ -28,7 +28,7 @@ import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_route/shelf_route.dart' as shelf_route;
 
 class Message {
-  final Logger log = new Logger('controller.message');
+  final Logger _log = new Logger('controller.message');
   final service.Authentication _authService;
   final service.NotificationService _notification;
   gzip_cache.MessageCache _cache;
@@ -53,7 +53,7 @@ class Message {
       mid = int.parse(midStr);
     } on FormatException {
       final msg = 'Bad message id: $midStr';
-      log.warning(msg);
+      _log.warning(msg);
 
       return clientError(msg);
     }
@@ -66,7 +66,7 @@ class Message {
       return notFound('Not found: $mid');
     } catch (error, stackTrace) {
       final String msg = 'Failed to retrieve message with ID $mid';
-      log.severe(msg, error, stackTrace);
+      _log.severe(msg, error, stackTrace);
 
       return serverError(msg);
     }
@@ -83,7 +83,7 @@ class Message {
       modifier = await _authService.userOf(tokenFrom(request));
     } catch (error, stackTrace) {
       final String msg = 'Failed to contact authserver';
-      log.severe(msg, error, stackTrace);
+      _log.severe(msg, error, stackTrace);
 
       return authServerDown();
     }
@@ -100,7 +100,7 @@ class Message {
       }
     } catch (error, stackTrace) {
       final msg = 'Failed to parse message in POST body. body:$content';
-      log.severe(msg, error, stackTrace);
+      _log.severe(msg, error, stackTrace);
 
       return clientError(msg);
     }
@@ -108,9 +108,14 @@ class Message {
     model.Message createdMessage =
         await _messageStore.update(message, modifier);
 
-    _notification.broadcastEvent(new event.MessageChange.update(
-        createdMessage.id, modifier.id, message.state, message.createdAt));
+    final evt = new event.MessageChange.update(
+        createdMessage.id, modifier.id, message.state, message.createdAt);
 
+    try {
+      await _notification.broadcastEvent(evt);
+    } catch (e) {
+      _log.warning('$e: Failed to send $evt');
+    }
     return okJson(createdMessage);
   }
 
@@ -131,12 +136,13 @@ class Message {
     try {
       await _messageStore.remove(mid, modifier);
 
-      var e = new event.MessageChange.delete(
+      final evt = new event.MessageChange.delete(
           mid, modifier.id, model.MessageState.unknown, new DateTime.now());
+
       try {
-        await _notification.broadcastEvent(e);
-      } catch (error) {
-        log.severe('Failed to dispatch event $e', error);
+        await _notification.broadcastEvent(evt);
+      } catch (e) {
+        _log.warning('$e: Failed to send $evt');
       }
     } on NotFound {
       return notFound('$mid');
@@ -159,27 +165,27 @@ class Message {
           int.parse(part[0]), int.parse(part[1]), int.parse(part[2]));
     } catch (e) {
       final String msg = 'Day parsing failed: $dayStr';
-      log.warning(msg, e);
+      _log.warning(msg, e);
       return clientError(msg);
     }
 
     try {
       return okGzip(new Stream.fromIterable([await _cache.list(day)]));
     } catch (error, stackTrace) {
-      log.severe(error, stackTrace);
+      _log.severe(error, stackTrace);
       return serverError(error.toString);
     }
   }
 
   /**
-   * Builds a list of draft messages, filtering by the parameters passed in the
-   * [queryParameters] of the request.
+   * Builds a list of draft messages, filtering by the parameters passed in
+   * the queryParameters of the request.
    */
   Future<shelf.Response> listDrafts(shelf.Request request) async {
     try {
       return okGzip(new Stream.fromIterable([await _cache.listDrafts()]));
     } catch (error, stackTrace) {
-      log.severe(error, stackTrace);
+      _log.severe(error, stackTrace);
       return serverError(error.toString);
     }
   }
@@ -196,7 +202,7 @@ class Message {
       user = await _authService.userOf(tokenFrom(request));
     } catch (error, stackTrace) {
       final String msg = 'Failed to contact authserver';
-      log.severe(msg, error, stackTrace);
+      _log.severe(msg, error, stackTrace);
 
       return authServerDown();
     }
@@ -213,7 +219,7 @@ class Message {
       }
     } catch (error, stackTrace) {
       final msg = 'Failed to parse message in POST body. body:$content';
-      log.severe(msg, error, stackTrace);
+      _log.severe(msg, error, stackTrace);
 
       return clientError(msg);
     }
@@ -221,9 +227,14 @@ class Message {
     final model.MessageQueueEntry queueItem =
         await _messageQueue.enqueue(message);
 
-    _notification.broadcastEvent(new event.MessageChange.update(
-        message.id, user.id, message.state, message.createdAt));
+    final evt = new event.MessageChange.update(
+        message.id, user.id, message.state, message.createdAt);
 
+    try {
+      await _notification.broadcastEvent(evt);
+    } catch (e) {
+      _log.warning('$e: Failed to send $evt');
+    }
     return okJson(queueItem);
   }
 
@@ -240,7 +251,7 @@ class Message {
       modifier = await _authService.userOf(tokenFrom(request));
     } catch (error, stackTrace) {
       final String msg = 'Failed to contact authserver';
-      log.severe(msg, error, stackTrace);
+      _log.severe(msg, error, stackTrace);
 
       return authServerDown();
     }
@@ -260,19 +271,24 @@ class Message {
       }
     } catch (error, stackTrace) {
       final msg = 'Failed to parse message in PUT body. body:$content';
-      log.severe(msg, error, stackTrace);
+      _log.severe(msg, error, stackTrace);
 
       return clientError(msg);
     }
 
-    return await _messageStore
-        .create(message, modifier)
-        .then((model.Message createdMessage) {
-      _notification.broadcastEvent(new event.MessageChange.create(
-          message.id, modifier.id, message.state, message.createdAt));
+    final model.Message createdMessage =
+        await _messageStore.create(message, modifier);
 
-      return okJson(createdMessage);
-    });
+    final evt = new event.MessageChange.create(createdMessage.id,
+        createdMessage.id, createdMessage.state, createdMessage.createdAt);
+
+    try {
+      await _notification.broadcastEvent(evt);
+    } catch (e) {
+      _log.warning('$e: Failed to send $evt');
+    }
+
+    return okJson(createdMessage);
   }
 
   /**
