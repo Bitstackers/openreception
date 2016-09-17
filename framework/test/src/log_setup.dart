@@ -30,11 +30,7 @@ void setupLogging([LogHandler logFunction]) {
             ? ' - ${record.stackTrace}'
             : ''}';
 
-      if (record.level.value > Level.INFO.value) {
-        stderr.writeln('${record.time} - $record$error');
-      } else {
-        stdout.writeln('${record.time} - $record$error');
-      }
+      print('${record.time} - $record$error');
     };
   }
 
