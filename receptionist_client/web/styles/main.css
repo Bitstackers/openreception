@@ -63,18 +63,9 @@ button::-moz-focus-inner {
   animation-name: focus;
   animation-duration: 3s;
   animation-iteration-count: infinite;
-  -webkit-animation-name: focus;
-  -webkit-animation-duration: 3s;
-  -webkit-animation-iteration-count: infinite;
 }
 
 @keyframes focus {
-  0% {transform: rotate(0deg);}
-  50% {transform: rotate(360deg);}
-  100% {transform: rotate(0deg);}
-}
-
-@-webkit-keyframes focus {
   0% {transform: rotate(0deg);}
   50% {transform: rotate(360deg);}
   100% {transform: rotate(0deg);}
@@ -161,9 +152,6 @@ input:focus  ~label {
   animation-name: pulse;
   animation-duration: 1s;
   animation-iteration-count: infinite;
-  -webkit-animation-name: pulse;
-  -webkit-animation-duration: 1s;
-  -webkit-animation-iteration-count: infinite;
 }
 
 @keyframes pulse {

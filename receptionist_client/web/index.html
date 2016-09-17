@@ -990,11 +990,10 @@
 
                   #reception-calendar .generic-widget-list li .label-and-timestamp .label-past {
                     color: red;
-                    -animation: pulse-label-past 0.7s infinite alternate;
-                    -webkit-animation: pulse-label-past 0.7s infinite alternate;
+                    animation: pulse-label-past 0.7s infinite alternate;
                   }
 
-                  @-webkit-keyframes pulse-label-past {
+                  @keyframes pulse-label-past {
                     to {
                       opacity: 0.1;
                     }
@@ -1150,6 +1149,18 @@
                   #message-compose {
                     flex-grow: 2;
                     outline: 0;
+                  }
+
+                  #message-compose.message-compose-alert {
+                    animation-name: message-compose-alert;
+                    animation-duration: 2s;
+                    animation-fill-mode: both;
+                    animation-iteration-count: 1;
+                  }
+
+                  @keyframes message-compose-alert {
+                    0%, 50%, 100% {background-color: #f7f7f7}
+                    25%, 75% {background-color: red}
                   }
 
                   #message-compose .padding03 {
@@ -1469,7 +1480,7 @@
                     <span class="extra-header"></span>
                   </h4>
                   <div class="generic-widget-body">
-                    <input ctrl-a-enabled class="filter" placeholder="::filter....::" tabindex="-1" data-lang-placeholder="filter">
+                    <input ctrl-a-enabled class="filter" placeholder="::filter....::" tabindex="-1" data-lang-placeholder="filter-contact-selector">
                     <ol class="generic-widget-list zebra" tabindex="-1"></ol>
                   </div>
                 </div>
@@ -1530,11 +1541,10 @@
 
                     #contact-calendar .generic-widget-list li .label-and-timestamp .label-past {
                       color: red;
-                      -animation: pulse-label-past 0.7s infinite alternate;
-                      -webkit-animation: pulse-label-past 0.7s infinite alternate;
+                      animation: pulse-label-past 0.7s infinite alternate;
                     }
 
-                    @-webkit-keyframes pulse-label-past {
+                    @keyframes pulse-label-past {
                       to {
                         opacity: 0.1;
                       }
@@ -1729,28 +1739,15 @@
                     color: initial;
                   }
 
-                  /*
-                    TODO (TL): Remove the -webkit- specific selectors
-                    when Chrome gets rid of them.
-                  */
                   #contact-data .popup .ringing,
                   #contact-data .cell .ringing {
                     animation-name: flash;
                     animation-duration: 2s;
                     animation-fill-mode: both;
                     animation-iteration-count: infinite;
-                    -webkit-animation-name: flash;
-                    -webkit-animation-duration: 2s;
-                    -webkit-animation-fill-mode: both;
-                    -webkit-animation-iteration-count: infinite;
                   }
 
                   @keyframes flash {
-                    0%, 50%, 100% {opacity: 1}
-                    25%, 75% {opacity: 0.1}
-                  }
-
-                  @-webkit-keyframes flash {
                     0%, 50%, 100% {opacity: 1}
                     25%, 75% {opacity: 0.1}
                   }

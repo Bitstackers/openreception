@@ -136,6 +136,7 @@ class MessageCompose extends ViewWidget {
     _navigate.onGo.listen(_setWidgetState);
 
     _ui.onClick.listen((MouseEvent _) => _activateMe());
+
     _hotKeys.onAltB.listen((KeyboardEvent _) {
       if (_ui.isFocused) {
         _ui.focusCallerNameInput();
@@ -143,6 +144,7 @@ class MessageCompose extends ViewWidget {
         _activateMe();
       }
     });
+
     _hotKeys.onAltD.listen((KeyboardEvent _) => _navigateToMessageTextArea());
 
     _contactSelector.onSelect.listen(

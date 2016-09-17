@@ -192,6 +192,17 @@ class UIMessageCompose extends UIModel {
   }
 
   /**
+   * Return true if message body, name, company, phone and cellphone are empty.
+   * False otherwise.
+   */
+  bool get noMessage =>
+      message.body.trim().isEmpty &&
+      message.callerInfo.name.trim().isEmpty &&
+      message.callerInfo.company.trim().isEmpty &&
+      message.callerInfo.phone.trim().isEmpty &&
+      message.callerInfo.cellPhone.trim().isEmpty;
+
+  /**
    * Observers.
    */
   void _observers() {
@@ -214,6 +225,18 @@ class UIMessageCompose extends UIModel {
 
     _prerequisites.onDoubleClick.listen((_) {
       _transferPrerequisitesToMessageBody();
+    });
+
+    /// Flash alert if user is trying to pickup a new call while there is data
+    /// in the message compose widget.
+    _hotKeys.onNumPlus.listen((_) {
+      if (!noMessage && !_root.classes.contains('message-compose-alert')) {
+        _root.classes.toggle('message-compose-alert', true);
+        new Future.delayed(new Duration(seconds: 2), () {
+          _root.classes.toggle('message-compose-alert', false);
+        });
+      }
+      _root.classes.toggle('message-compose-alert', !noMessage);
     });
 
     _hotKeys.onCtrlSpace.listen((_) => _toggleRecipients());
@@ -315,6 +338,7 @@ class UIMessageCompose extends UIModel {
    * If [pristine] is true, then also clear and close the recipient list.
    */
   void reset({pristine: false}) {
+    _root.classes.remove('message-compose-alert');
     _callerNameInput.value = '';
     _callsBackInput.checked = false;
     _cellphoneInput.value = '';

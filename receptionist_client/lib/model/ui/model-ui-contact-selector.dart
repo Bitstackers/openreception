@@ -86,19 +86,25 @@ class UIContactSelector extends UIModel {
           .join()
           .toLowerCase();
 
-      /// Add contact name to tags. We simply treat the name as just another tag
-      /// when searching for contacts.
+      final List<String> departments = <String>[]
+        ..addAll(item.attr.departments);
       final List<String> tags = new List<String>()
         ..addAll(item.attr.tags)
-        ..add(item.contact.name);
+        ..add(item.contact.name); // treat name as any other normal tag.
+      final List<String> titles = <String>[]..addAll(item.attr.titles);
 
-      tags.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+      int compare(String a, b) => a.toLowerCase().compareTo(b.toLowerCase());
+      departments.sort(compare);
+      tags.sort(compare);
+      titles.sort(compare);
 
       list.add(new LIElement()
         ..dataset['initials'] = initials
         ..dataset['firstinitial'] = initials.substring(0, 1)
         ..dataset['otherinitials'] = initials.substring(1)
+        ..dataset['departments'] = departments.toSet().join('-|-').toLowerCase()
         ..dataset['tags'] = tags.toSet().join('-|-').toLowerCase()
+        ..dataset['titles'] = titles.toSet().join('-|-').toLowerCase()
         ..dataset['object'] = JSON.encode(item)
         ..classes.addAll(item.contact.enabled ? [] : ['disabled'])
         ..classes.addAll(item.contact.type == 'function' ? ['function'] : [])
@@ -128,7 +134,28 @@ class UIContactSelector extends UIModel {
   void _filter() {
     _list.querySelectorAll('span').forEach((element) => element.remove());
 
+    void prefixedFilter(String input, String datasetName) {
+      _list.classes.toggle('zebra', false);
+
+      _list.children.forEach((Element li) {
+        final Iterable<String> hits = li.dataset[datasetName]
+            .split('-|-')
+            .where((String hit) => hit.contains(input) && input.isNotEmpty);
+
+        if (hits.isNotEmpty) {
+          li.classes.toggle('hide', false);
+          hits.forEach(
+              (String hit) => li.children.add(new SpanElement()..text = hit));
+        } else {
+          li.classes.toggle('hide', true);
+        }
+      });
+    }
+
     switch (state) {
+      case filterState.department:
+        prefixedFilter(trimmedFilterInputValue.substring(2), 'departments');
+        break;
       case filterState.empty:
         _list.children
             .forEach((Element li) => li.classes.toggle('hide', false));
@@ -188,6 +215,9 @@ class UIContactSelector extends UIModel {
           }
         });
         break;
+      case filterState.title:
+        prefixedFilter(trimmedFilterInputValue.substring(2), 'titles');
+        break;
     }
 
     if (_list.querySelectorAll('.hide').length == _list.children.length) {
@@ -217,6 +247,10 @@ class UIContactSelector extends UIModel {
     if (filterInputValue.isEmpty || trimmedFilterInputValue.isEmpty) {
       /// Empty filter
       s = filterState.empty;
+    } else if (filterInputValue.startsWith('a:')) {
+      s = filterState.department;
+    } else if (filterInputValue.startsWith('t:')) {
+      s = filterState.title;
     } else if (!filterInputValue.startsWith(' ') &&
         trimmedFilterInputValue.length == 1) {
       /// Pattern: one non-space character followed by zero or more spaces

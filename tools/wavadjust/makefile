@@ -12,7 +12,7 @@ makefile.setup:
 
 wavadjust:
 	-@mkdir -p ${PREFIX}
-	pub get && pub --no-package-symlinks upgrade
+	pub get && pub upgrade
 	dart --snapshot=${SNAPSHOT} bin/wavadjust.dart
 	ln -f -s ${SNAPSHOT} ${PREFIX}/wavadjust.dart
 

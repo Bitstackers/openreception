@@ -17,7 +17,6 @@ import 'dart:io' as io;
 
 import 'package:logging/logging.dart';
 import 'package:orf/exceptions.dart';
-import 'package:orf/service-io.dart' as Service_IO;
 import 'package:orf/service.dart' as Service;
 import 'package:ors/controller/controller-cdr.dart' as controller;
 import 'package:route/server.dart';
@@ -36,19 +35,15 @@ const Map<String, String> corsHeaders = const {
   'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE'
 };
 
-Future<io.HttpServer> start(
+Future<io.HttpServer> start(Service.Authentication authService,
     {String hostname: '0.0.0.0', int port: 4090}) async {
-  final Service.Authentication _authService = new Service.Authentication(
-      config.authServer.externalUri,
-      config.userServer.serverToken,
-      new Service_IO.Client());
   final controller.Cdr cdrController = new controller.Cdr();
 
   Future<shelf.Response> _lookupToken(shelf.Request request) async {
     String token = request.requestedUri.queryParameters['token'];
 
     try {
-      await _authService.validate(token);
+      await authService.validate(token);
     } on NotFound {
       return new shelf.Response.forbidden('Invalid token');
     } on io.SocketException {
