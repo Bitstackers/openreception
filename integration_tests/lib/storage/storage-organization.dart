@@ -35,6 +35,34 @@ class Organization {
   }
 
   /**
+   * Test server behaviour when trying to aquire a mappings of
+   * reception ID -> reception name + organization name
+   *
+   * The expected behaviour is that the server should return these mappings.
+   */
+  static Future receptionMap(ServiceAgent sa) async {
+    final org1 = await sa.createsOrganization();
+    final org2 = await sa.createsOrganization();
+
+    final rec1 = await sa.createsReception(org1);
+    final rec2 = await sa.createsReception(org2);
+
+    final orgStore = sa.env.organizationStore;
+
+    Map recMap = await orgStore.receptionMap();
+
+    expect(recMap.length, equals(2));
+
+    Map rec1map = recMap[rec1.id.toString()];
+    Map rec2map = recMap[rec2.id.toString()];
+
+    expect(rec1map['reception'], equals(rec1.name));
+    expect(rec2map['reception'], equals(rec2.name));
+    expect(rec1map['organization'], equals(org1.name));
+    expect(rec2map['organization'], equals(org2.name));
+  }
+
+  /**
    * Test server behaviour when trying to aquire a list of organization objects
    *
    * The expected behaviour is that the server should return a list of
