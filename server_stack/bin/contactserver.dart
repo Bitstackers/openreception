@@ -120,16 +120,17 @@ Future main(List<String> args) async {
   final filestore.Contact cStore =
       new filestore.Contact(rStore, filepath + '/contact', revisionEngine);
 
-  controller.Contact contactController = new controller.Contact(
+  final _cache = new gzip_cache.ContactCache(
       cStore,
-      _notification,
-      _authentication,
-      new gzip_cache.ContactCache(
-          cStore,
-          cStore.onContactChange,
-          cStore.onReceptionDataChange,
-          _notificationSocket.onReceptionChange,
-          _notificationSocket.onOrganizationChange));
+      cStore.onContactChange,
+      cStore.onReceptionDataChange,
+      _notificationSocket.onReceptionChange,
+      _notificationSocket.onOrganizationChange);
+
+  await _prefillCache(_cache);
+
+  controller.Contact contactController =
+      new controller.Contact(cStore, _notification, _authentication, _cache);
 
   final router.Contact contactRouter =
       new router.Contact(_authentication, _notification, contactController);
@@ -137,4 +138,16 @@ Future main(List<String> args) async {
   await contactRouter.listen(port: port, hostname: parsedArgs['host']);
 
   _log.info('Ready to handle requests');
+}
+
+Future<Null> _prefillCache(gzip_cache.ContactCache _cache) async {
+  Stopwatch timer = new Stopwatch()..start();
+  _log.info('Prefilling cache');
+  await _cache.prefill();
+
+  int byteCount =
+      _cache.stats['contactSize'] + _cache.stats['receptionContactSize'];
+  timer.stop();
+  _log.info('Prefilled cache with ${byteCount~/1024}kB gzipped data '
+      'in ${timer.elapsedMilliseconds}ms.');
 }
