@@ -57,6 +57,8 @@ void _runOrganizationTests() {
 
     test('remove (event presence)',
         () => serviceTest.Organization.deleteEvent(sa));
+
+    test('Reception map', () => storeTest.Organization.receptionMap(sa));
   });
 
   group('$_namespace.User', () {

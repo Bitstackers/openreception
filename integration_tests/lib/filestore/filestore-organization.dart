@@ -44,6 +44,8 @@ void _runOrganizationTests() {
     test('Reception listing',
         () => storeTest.Organization.existingOrganizationReceptions(sa));
 
+    test('Reception map', () => storeTest.Organization.receptionMap(sa));
+
     test('Reception listing Non-existing organization',
         () => storeTest.Organization.nonExistingOrganizationReceptions(sa));
 
