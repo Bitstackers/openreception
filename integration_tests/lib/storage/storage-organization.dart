@@ -284,6 +284,8 @@ class Organization {
     final model.Organization updated = Randomizer.randomOrganization()
       ..id = newOrgRef.id;
 
+    updated.name = updated.name + ' - updated';
+
     await sa.organizationStore.update(updated, sa.user);
 
     final model.Organization fetched =
