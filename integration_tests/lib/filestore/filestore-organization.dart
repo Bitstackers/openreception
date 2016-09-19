@@ -48,7 +48,11 @@ void _runOrganizationTests() {
 
     test('Reception listing Non-existing organization',
         () => storeTest.Organization.nonExistingOrganizationReceptions(sa));
+  });
 
+  group('$_namespace.Organization', () {
+    ServiceAgent sa;
+    TestEnvironment env;
     setUp(() async {
       env = new TestEnvironment(enableRevisions: true);
       sa = await env.createsServiceAgent();

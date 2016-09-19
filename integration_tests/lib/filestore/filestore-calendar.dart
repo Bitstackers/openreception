@@ -46,6 +46,13 @@ void _runCalendarTests() {
 
     test('remove (contact owner)',
         () => storeTest.Calendar.remove(owner, calendarStore, sa.user));
+  });
+
+  group('$_namespace.Calendar', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    model.Owner owner;
+    filestore.Calendar calendarStore;
 
     setUp(() async {
       env = new TestEnvironment(enableRevisions: true);
@@ -84,7 +91,13 @@ void _runCalendarTests() {
         'latest change on remove (contact owner)',
         () => storeTest.Calendar
             .latestChangeOnRemove(owner, calendarStore, sa.user));
+  });
 
+  group('$_namespace.Calendar', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    model.Owner owner;
+    filestore.Calendar calendarStore;
     /**
      * Setup/teardown Basic CRUD tests for reception owner.
      */
@@ -128,7 +141,13 @@ void _runCalendarTests() {
 
     test('update (reception owner)',
         () => storeTest.Calendar.update(owner, calendarStore, sa.user));
+  });
 
+  group('$_namespace.Calendar', () {
+    ServiceAgent sa;
+    TestEnvironment env;
+    model.Owner owner;
+    filestore.Calendar calendarStore;
     /**
      * Setup/teardown Basic CRUD tests for contact owner.
      */

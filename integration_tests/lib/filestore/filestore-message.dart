@@ -27,7 +27,11 @@ _runMessageTests() {
 
     test('update', () => storeTest.Message.update(sa));
     test('remove', () => storeTest.Message.remove(sa));
+  });
 
+  group('$_namespace.Message', () {
+    ServiceAgent sa;
+    TestEnvironment env;
     setUp(() async {
       env = new TestEnvironment(enableRevisions: true);
       await env.messageStore.ready;

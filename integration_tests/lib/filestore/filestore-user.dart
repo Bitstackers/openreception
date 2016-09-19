@@ -34,7 +34,11 @@ _runUserTests() {
     test('list', () => storeTest.User.list(sa));
 
     test('get (by identity)', () => storeTest.User.getUserByIdentity(sa));
+  });
 
+  group('$_namespace.User', () {
+    ServiceAgent sa;
+    TestEnvironment env;
     setUp(() async {
       env = new TestEnvironment(enableRevisions: true);
       await env.contactStore.ready;

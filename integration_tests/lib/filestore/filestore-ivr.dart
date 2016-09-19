@@ -27,7 +27,11 @@ void _runIvrTests() {
     test('remove', () => storeTest.Ivr.remove(env.ivrStore, sa.user));
 
     test('update', () => storeTest.Ivr.update(env.ivrStore, sa.user));
+  });
 
+  group('$_namespace.Ivr', () {
+    ServiceAgent sa;
+    TestEnvironment env;
     setUp(() async {
       env = new TestEnvironment(enableRevisions: true);
       sa = await env.createsServiceAgent();

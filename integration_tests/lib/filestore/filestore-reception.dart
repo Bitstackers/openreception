@@ -27,7 +27,11 @@ void _runReceptionTests() {
     test('get', () => storeTest.Reception.existingReception(sa));
     test('get (not found)', () => storeTest.Reception.nonExistingReception(sa));
     test('list', () => storeTest.Reception.listReceptions(sa));
+  });
 
+  group('$_namespace.Reception', () {
+    ServiceAgent sa;
+    TestEnvironment env;
     setUp(() async {
       env = new TestEnvironment(enableRevisions: true);
       sa = await env.createsServiceAgent();

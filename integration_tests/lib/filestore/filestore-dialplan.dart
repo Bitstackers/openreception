@@ -32,7 +32,11 @@ void _runDialplanTests() {
 
     test('update',
         () => storeTest.ReceptionDialplan.update(env.dialplanStore, sa.user));
+  });
 
+  group('$_namespace.ReceptionDialplan', () {
+    ServiceAgent sa;
+    TestEnvironment env;
     setUp(() async {
       env = new TestEnvironment(enableRevisions: true);
       sa = await env.createsServiceAgent();

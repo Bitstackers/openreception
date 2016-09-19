@@ -60,7 +60,11 @@ void _runContactTests() {
 
     test(
         'deleteFromReception', () => storeTest.Contact.deleteFromReception(sa));
+  });
 
+  group('$_namespace.Contact', () {
+    ServiceAgent sa;
+    TestEnvironment env;
     setUp(() async {
       env = new TestEnvironment(enableRevisions: true);
       await env.contactStore.ready;
