@@ -41,15 +41,14 @@ class Organization {
    */
   Future<Map<int, RecOrgAggr>> receptionMap() async {
     final Map<int, RecOrgAggr> aggrMap = {};
-    Iterable<model.OrganizationReference> orgRefs = await _service.list();
+    Map<String, Map<String, String>> map = await _service.receptionMap();
 
-    for (model.OrganizationReference orgRef in orgRefs) {
-      final Iterable<model.ReceptionReference> rRfefs =
-          await receptions(orgRef.id);
+    for (String key in map.keys) {
+      final rRef =
+          new model.ReceptionReference(int.parse(key), map[key]['reception']);
+      final String orgName = map[key]['organization'];
 
-      rRfefs.forEach((model.ReceptionReference rRef) {
-        aggrMap[rRef.id] = new RecOrgAggr(orgRef, rRef);
-      });
+      aggrMap[rRef.id] = new RecOrgAggr(orgName, rRef);
     }
 
     return aggrMap;
@@ -60,8 +59,8 @@ class Organization {
  * Reception/organization aggregation holder class.
  */
 class RecOrgAggr {
-  final model.OrganizationReference organization;
+  final String organizationName;
   final model.ReceptionReference reception;
 
-  const RecOrgAggr(this.organization, this.reception);
+  const RecOrgAggr(this.organizationName, this.reception);
 }

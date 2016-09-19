@@ -261,9 +261,9 @@ class Cdr {
       final model.CdrEntry entry = new model.CdrEntry.fromJson(m);
       if (ridToNameMap.containsKey(entry.rid)) {
         contexts.add(new Context()
-          ..name = ridToNameMap[entry.rid].organization.name +
+          ..name = ridToNameMap[entry.rid].organizationName +
               ridToNameMap[entry.rid].reception.name
-          ..orgName = ridToNameMap[entry.rid].organization.name
+          ..orgName = ridToNameMap[entry.rid].organizationName
           ..recName = ridToNameMap[entry.rid].reception.name
           ..entry = entry);
       } else {
@@ -448,10 +448,14 @@ class Cdr {
           new TableCellElement()
             ..text = c.entry.uuid
             ..title = c.entry.filename
-            ..style.cursor = c.entry.answerEpoch > 0 &&
-                actorMap[c.entry.state] == 'agent' ? 'pointer' : ''
-            ..style.textDecoration = c.entry.answerEpoch > 0 &&
-                actorMap[c.entry.state] == 'agent' ? 'underline' : ''
+            ..style.cursor =
+                c.entry.answerEpoch > 0 && actorMap[c.entry.state] == 'agent'
+                    ? 'pointer'
+                    : ''
+            ..style.textDecoration =
+                c.entry.answerEpoch > 0 && actorMap[c.entry.state] == 'agent'
+                    ? 'underline'
+                    : ''
             ..onMouseOver.listen((MouseEvent event) {
               if (c.entry.answerEpoch > 0 &&
                   actorMap[c.entry.state] == 'agent') {
@@ -525,9 +529,9 @@ class Cdr {
       final model.CdrSummary summary = new model.CdrSummary.fromJson(m);
       if (ridToNameMap.containsKey(summary.rid)) {
         contexts.add(new Context()
-          ..name = ridToNameMap[summary.rid].organization.name +
+          ..name = ridToNameMap[summary.rid].organizationName +
               ridToNameMap[summary.rid].reception.name
-          ..orgName = ridToNameMap[summary.rid].organization.name
+          ..orgName = ridToNameMap[summary.rid].organizationName
           ..recName = ridToNameMap[summary.rid].reception.name
           ..summary = summary);
       } else {
@@ -741,8 +745,9 @@ class Cdr {
         .where((model.CdrEntry entry) =>
             entry.agentBeginEpoch - entry.startEpoch <= 20)
         .length;
-    final Duration totalSpeakTime = new Duration(seconds: answeredEntries.fold(
-        0, (acc, model.CdrEntry entry) => acc + entry.billSec));
+    final Duration totalSpeakTime = new Duration(
+        seconds: answeredEntries.fold(
+            0, (acc, model.CdrEntry entry) => acc + entry.billSec));
     final DivElement sumsIn = new DivElement()
       ..text =
           'Total ind: ${answeredEntries.length + totalPbxAnswered + totalMissed}'
