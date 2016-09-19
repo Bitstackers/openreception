@@ -61,7 +61,7 @@ void _runOrganizationTests() {
     test('Reception map', () => storeTest.Organization.receptionMap(sa));
   });
 
-  group('$_namespace.User', () {
+  group('$_namespace.Organization', () {
     ServiceAgent sa;
     TestEnvironment env;
     process.ReceptionServer rProcess;
