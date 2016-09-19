@@ -102,8 +102,34 @@ class Organization implements storage.Organization {
     }
   }
 
-  Future<Map<String, Map<String, String>>> receptionMap() =>
-      throw new UnimplementedError();
+  /// Returns a map with int rid keys and organization / reception names in a
+  /// map as value.
+  ///
+  /// Example:
+  /// {"42": {'organization': "orgName", "reception": "recName"}}
+  Future<Map<String, Map<String, String>>> receptionMap() async {
+    final Map<String, Map<String, String>> map = {};
+
+    Iterable<model.ReceptionReference> rRefs = await _receptionFileStore.list();
+
+    await Future.forEach(rRefs, (model.ReceptionReference rRef) async {
+      try {
+        final model.Reception reception =
+            await _receptionFileStore.get(rRef.id);
+        final model.Organization org = await get(reception.oid);
+
+        map[rRef.id.toString()] = {
+          'organization': org.name,
+          'reception': reception.name
+        };
+      } catch (e, s) {
+        _log.warning(
+            'Failed to map reception ${rRef.name} (rid: ${rRef.id})', e, s);
+      }
+    });
+
+    return map;
+  }
 
   @override
   Future<Iterable<model.BaseContact>> contacts(int oid) async {
@@ -245,8 +271,8 @@ class Organization implements storage.Organization {
   }
 
   @override
-  Future<Iterable<model.ReceptionReference>> receptions(int uuid) =>
-      _receptionFileStore._receptionsOfOrg(uuid);
+  Future<Iterable<model.ReceptionReference>> receptions(int oid) =>
+      _receptionFileStore._receptionsOfOrg(oid);
 
   @override
   Future<Iterable<model.Commit>> changes([int oid]) async {
