@@ -102,11 +102,7 @@ class Organization implements storage.Organization {
     }
   }
 
-  /// Returns a map with int rid keys and organization / reception names in a
-  /// map as value.
-  ///
-  /// Example:
-  /// {"42": {'organization': "orgName", "reception": "recName"}}
+  @override
   Future<Map<String, Map<String, String>>> receptionMap() async {
     final Map<String, Map<String, String>> map = {};
 

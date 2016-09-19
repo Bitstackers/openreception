@@ -50,6 +50,14 @@ class RESTOrganizationStore implements storage.Organization {
   }
 
   @override
+  Future<Map<String, Map<String, String>>> receptionMap() async {
+    Uri url = resource.Organization.receptionMap(host);
+    url = _appendToken(url, this.token);
+
+    return (JSON.decode(await _backend.get(url)));
+  }
+
+  @override
   Future<model.Organization> get(int oid) {
     Uri url = resource.Organization.single(this.host, oid);
     url = _appendToken(url, this.token);

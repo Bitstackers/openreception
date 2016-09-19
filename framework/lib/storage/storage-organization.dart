@@ -54,4 +54,11 @@ abstract class Organization {
   /// List organization object changes for the store, optionally for a
   /// single [oid].
   Future<Iterable<model.Commit>> changes([int oid]);
+
+  /// Returns a map with int rid keys and organization / reception names in a
+  /// map as value.
+  ///
+  /// Example:
+  /// {"42": {'organization': "orgName", "reception": "recName"}
+  Future<Map<String, Map<String, String>>> receptionMap();
 }
