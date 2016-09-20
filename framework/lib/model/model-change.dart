@@ -442,7 +442,8 @@ abstract class ObjectChange {
       case ObjectType.calendar:
         return CalendarChange.decode(map);
       case ObjectType.contact:
-        return ContactChange.decode(map);
+        return new ContactChange(
+            changeTypeFromString(map[key.change]), map[key.cid]);
       case ObjectType.dialplan:
         return ReceptionDialplanChange.decode(map);
       case ObjectType.ivrMenu:
