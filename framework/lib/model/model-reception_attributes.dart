@@ -29,6 +29,7 @@ class ReceptionAttributeChange implements ObjectChange {
         cid = map[key.cid],
         rid = map[key.rid];
 
+  @deprecated
   static ReceptionAttributeChange decode(Map<String, dynamic> map) =>
       new ReceptionAttributeChange(
           changeTypeFromString(map[key.change]), map[key.cid], map[key.rid]);
@@ -87,6 +88,7 @@ class ReceptionAttributes {
   /// [ReceptionAttributes] empty constructor.
   ReceptionAttributes.empty();
 
+  @deprecated
   static ReceptionAttributes decode(Map<String, dynamic> map) =>
       new ReceptionAttributes.fromJson(map);
 

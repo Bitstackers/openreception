@@ -73,6 +73,7 @@ class Reception {
     this._shortGreeting = newGreeting;
   }
 
+  @deprecated
   static Reception decode(Map<String, dynamic> map) =>
       new Reception.fromJson(map);
 

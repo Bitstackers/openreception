@@ -57,16 +57,20 @@ class RESTMessageStore implements storage.Message {
         .post(uri, JSON.encode(message.asMap))
         .then(JSON.decode)
         .then((Map<String, dynamic> queueItemMap) =>
-            new model.MessageQueueEntry.fromMap(queueItemMap));
+            new model.MessageQueueEntry.fromJson(queueItemMap));
   }
 
   @override
-  Future<model.Message> create(model.Message message, model.User modifier) =>
-      _backend
-          .post(_appendToken(resource.Message.root(this.host), this.token),
-              JSON.encode(message.asMap))
-          .then((String response) => new model.Message.fromMap(
-              JSON.decode(response) as Map<String, dynamic>));
+  Future<model.Message> create(
+      model.Message message, model.User modifier) async {
+    Uri uri = resource.Message.root(this.host);
+    uri = _appendToken(uri, this.token);
+
+    return _backend
+        .post(uri, JSON.encode(message))
+        .then(JSON.decode)
+        .then((Map<String, dynamic> map) => new model.Message.fromJson(map));
+  }
 
   @override
   Future<Null> remove(int mid, model.User modifier) async {

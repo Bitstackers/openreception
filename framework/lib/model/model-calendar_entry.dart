@@ -44,6 +44,7 @@ class CalendarEntry {
         content = map[key.body];
 
   /// Decoding factory.
+  @deprecated
   static CalendarEntry decode(Map<String, dynamic> map) => map.isNotEmpty
       ? new CalendarEntry.fromJson(map)
       : new CalendarEntry.empty();

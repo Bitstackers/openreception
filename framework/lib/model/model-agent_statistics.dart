@@ -25,6 +25,7 @@ class AgentStatistics {
         recent = map[key.recent],
         total = map[key.total];
 
+  @deprecated
   static AgentStatistics decode(Map<String, dynamic> map) =>
       new AgentStatistics.fromJson(map);
 

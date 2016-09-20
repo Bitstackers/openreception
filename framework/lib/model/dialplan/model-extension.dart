@@ -50,6 +50,7 @@ class NamedExtension implements Extension {
   NamedExtension(this.name, this.actions);
 
   /// Decode a [Map] into a new [NamedExtension] object.
+  @deprecated
   static NamedExtension decode(Map<String, dynamic> map) {
     final Iterable<Action> actionIter =
         (map[key.actions] as Iterable<dynamic>).map(Action.parse);

@@ -435,6 +435,7 @@ abstract class ObjectChange {
   ChangeType get changeType;
   ObjectType get objectType;
 
+  @deprecated
   static ObjectChange decode(Map<String, dynamic> map) {
     final ObjectType objectType = objectTypeFromString(map[key.type]);
 
@@ -518,6 +519,7 @@ class IvrChange implements ObjectChange {
       : changeType = changeTypeFromString(map[key.change]),
         menuName = map[key.name];
 
+  @deprecated
   static IvrChange decode(Map<String, dynamic> map) =>
       new IvrChange(changeTypeFromString(map[key.change]), map[key.name]);
 
@@ -545,6 +547,7 @@ class ReceptionDialplanChange implements ObjectChange {
       : changeType = changeTypeFromString(map[key.change]),
         extension = map[key.name];
 
+  @deprecated
   static ReceptionDialplanChange decode(Map<String, dynamic> map) =>
       new ReceptionDialplanChange(
           changeTypeFromString(map[key.change]), map[key.name]);
@@ -574,6 +577,7 @@ class MessageChange implements ObjectChange {
       : changeType = changeTypeFromString(map[key.change]),
         mid = map[key.mid];
 
+  @deprecated
   static MessageChange decode(Map<String, dynamic> map) =>
       new MessageChange.fromJson(map);
 
@@ -601,6 +605,7 @@ class OrganizationChange implements ObjectChange {
       : changeType = changeTypeFromString(map[key.change]),
         oid = map[key.mid];
 
+  @deprecated
   static OrganizationChange decode(Map<String, dynamic> map) =>
       new OrganizationChange.fromJson(map);
 
@@ -628,6 +633,7 @@ class ReceptionChange implements ObjectChange {
       : changeType = changeTypeFromString(map[key.change]),
         rid = map[key.mid];
 
+  @deprecated
   static ReceptionChange decode(Map<String, dynamic> map) =>
       new ReceptionChange.fromJson(map);
 

@@ -185,8 +185,8 @@ class Organization implements storage.Organization {
     }
 
     try {
-      final model.Organization org = model.Organization
-          .decode(JSON.decode(file.readAsStringSync()) as Map<String, dynamic>);
+      final model.Organization org = new model.Organization.fromJson(
+          JSON.decode(file.readAsStringSync()) as Map<String, dynamic>);
       return org;
     } catch (e) {
       throw e;

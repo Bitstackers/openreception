@@ -41,6 +41,7 @@ class UserChange implements ObjectChange {
       : changeType = changeTypeFromString(map[key.change]),
         uid = map[key.uid];
 
+  @deprecated
   static UserChange decode(Map<String, dynamic> map) =>
       new UserChange(changeTypeFromString(map[key.change]), map[key.uid]);
 
@@ -61,6 +62,7 @@ class UserReference implements ObjectReference {
 
   const UserReference(this.id, this.name);
 
+  @deprecated
   static UserReference decode(Map<String, dynamic> map) =>
       new UserReference(map[key.id], map[key.name]);
 

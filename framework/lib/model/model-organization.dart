@@ -31,6 +31,7 @@ class Organization {
         notes = map[key.notes] as List<String>;
 
   /// Deserializing factory.
+  @deprecated
   static Organization decode(Map<String, dynamic> map) =>
       new Organization.fromJson(map);
 

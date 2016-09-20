@@ -22,6 +22,7 @@ class CalendarChange implements ObjectChange {
 
   CalendarChange(this.changeType, this.eid);
 
+  @deprecated
   static CalendarChange decode(Map<String, dynamic> map) =>
       new CalendarChange(changeTypeFromString(map[key.change]), map[key.eid]);
 

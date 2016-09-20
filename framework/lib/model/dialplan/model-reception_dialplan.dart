@@ -52,6 +52,7 @@ class ReceptionDialplan {
 
   /// Decodes and creates a new [ReceptionDialplan] from a previously
   /// deserialized [Map].
+  @deprecated
   static ReceptionDialplan decode(Map<String, dynamic> map) =>
       new ReceptionDialplan()
         ..extension = map['extension']

@@ -30,6 +30,7 @@ class CallerInfo {
     localExtension = map[key.localExtension];
   }
 
+  @deprecated
   static CallerInfo decode(Map<String, dynamic> map) =>
       new CallerInfo.fromJson(map);
 

@@ -55,6 +55,7 @@ class ContactReference implements ObjectReference {
 
   const ContactReference(this.id, this.name);
 
+  @deprecated
   static ContactReference decode(Map<String, dynamic> map) =>
       new ContactReference(map[key.id], map[key.name]);
 
@@ -85,6 +86,7 @@ class ContactChange implements ObjectChange {
       : changeType = changeTypeFromString(map[key.change]),
         cid = map[key.cid];
 
+  @deprecated
   static ContactChange decode(Map<String, dynamic> map) =>
       new ContactChange(changeTypeFromString(map[key.change]), map[key.cid]);
 
@@ -103,7 +105,7 @@ class OrganizationReference implements ObjectReference {
   final String name;
 
   const OrganizationReference(this.id, this.name);
-
+  @deprecated
   static OrganizationReference decode(Map<String, dynamic> map) =>
       new OrganizationReference(map[key.id], map[key.name]);
 
@@ -129,6 +131,7 @@ class ReceptionContact {
       : contact = new BaseContact.empty(),
         attr = new ReceptionAttributes.empty();
 
+  @deprecated
   static ReceptionContact decode(Map<String, dynamic> map) =>
       new ReceptionContact(
           BaseContact.decode(map[key.contact] as Map<String, dynamic>),
@@ -160,6 +163,7 @@ class ReceptionReference implements ObjectReference {
   bool get isEmpty => id == Reception.noId;
   bool get isNotEmpty => !isEmpty;
 
+  @deprecated
   static ReceptionReference decode(Map<String, dynamic> map) =>
       new ReceptionReference(map[key.id], map[key.name]);
 
@@ -196,6 +200,7 @@ class BaseContact {
         enabled = map[key.enabled];
 
   /// Decoding factory.
+  @deprecated
   static BaseContact decode(Map<String, dynamic> map) =>
       new BaseContact.fromJson(map);
 

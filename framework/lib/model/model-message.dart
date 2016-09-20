@@ -95,11 +95,7 @@ class Message {
 
   bool get hasRecpients => recipients.isNotEmpty;
 
-  Map<String, dynamic> toJson() => this.asMap;
-
-  static Message decode(Map<String, dynamic> map) => new Message.fromMap(map);
-
-  Map<String, dynamic> get asMap => <String, dynamic>{
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.id: id,
         key.body: body,
         key.context: context.toJson(),
@@ -113,4 +109,10 @@ class Message {
             .toList(growable: false),
         key.state: state.index
       };
+
+  @deprecated
+  static Message decode(Map<String, dynamic> map) => new Message.fromJson(map);
+
+  @deprecated
+  Map<String, dynamic> get asMap => toJson();
 }

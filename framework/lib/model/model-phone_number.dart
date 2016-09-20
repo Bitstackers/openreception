@@ -46,6 +46,7 @@ class PhoneNumber {
 
   String _normalize(String str) => str.replaceAll(' ', '').replaceAll('+', '');
 
+  @deprecated
   static PhoneNumber decode(Map<String, dynamic> map) =>
       new PhoneNumber.fromJson(map);
 

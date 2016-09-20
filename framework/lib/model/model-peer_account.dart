@@ -25,6 +25,7 @@ class PeerAccount {
   const PeerAccount(this.username, this.password, this.context);
 
   /// Deserializing factory.
+  @deprecated
   static PeerAccount decode(Map<String, dynamic> map) =>
       new PeerAccount(map[key.username], map[key.password], map[key.context]);
 

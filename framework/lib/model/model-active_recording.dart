@@ -34,6 +34,7 @@ class ActiveRecording {
         started = util.unixTimestampToDateTime(map[key.started]);
 
   /// Decoding factory.
+  @deprecated
   static ActiveRecording decode(Map<String, dynamic> map) =>
       new ActiveRecording.fromJson(map);
 

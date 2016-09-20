@@ -37,6 +37,7 @@ class UserStatus {
       : userId = map[key.uid],
         paused = map[key.paused];
 
+  @deprecated
   static UserStatus decode(Map<String, dynamic> map) =>
       new UserStatus.fromJson(map);
 

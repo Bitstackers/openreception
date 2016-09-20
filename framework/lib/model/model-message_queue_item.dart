@@ -41,6 +41,7 @@ class MessageQueueEntry {
         tries = map[key.tries];
 
   /// Decoding factory.
+  @deprecated
   static MessageQueueEntry decode(Map<String, dynamic> map) =>
       new MessageQueueEntry.fromJson(map);
 

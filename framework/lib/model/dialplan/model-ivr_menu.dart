@@ -57,6 +57,7 @@ class IvrMenu {
       _greetingShort != Playback.none ? _greetingShort : greetingLong;
 
   /// Decoding factory method.
+  @deprecated
   static IvrMenu decode(Map<String, dynamic> map) => (new IvrMenu(
       map[key.name],
       Playback.parse(map[key
