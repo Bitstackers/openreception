@@ -170,6 +170,9 @@ class ChannelList extends esl.ChannelList {
           simplePeerName(ownedByPeer(channel)) == peerId)
       .length;
 
+  /// Finalizes the [ChannelList].
+  Future<Null> finalize() async => await _eventController.close();
+
   /// Updates, removes or adds a channel, based on the state of [channel].
   @override
   void update(esl.Channel channel) {
