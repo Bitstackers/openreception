@@ -143,7 +143,7 @@ abstract class MessageQueue {
       final queueEntry = listing.first;
       expect(queueEntry.id, greaterThan(model.MessageQueueEntry.noId));
       expect(queueEntry.unhandledRecipients, isEmpty);
-      expect(queueEntry.handledRecipients, equals(attr.endpoints));
+      expect(queueEntry.handledRecipients, equals(attr.endpoints.toSet()));
       expect(queueEntry.tries, equals(1));
       expect(queueEntry.createdAt.isBefore(new DateTime.now()), isTrue);
       expect(queueEntry.createdAt.difference(new DateTime.now()),
