@@ -48,9 +48,7 @@ abstract class _ModelUserStatus {
     final bool paused = true;
     final int userId = 2;
 
-    model.UserStatus builtObject = new model.UserStatus()
-      ..paused = paused
-      ..userId = userId;
+    model.UserStatus builtObject = new model.UserStatus(paused, userId);
 
     expect(builtObject.paused, equals(paused));
     expect(builtObject.userId, equals(userId));
