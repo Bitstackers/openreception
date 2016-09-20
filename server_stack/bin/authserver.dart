@@ -19,10 +19,10 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
-import 'package:ors/router/router-authentication.dart' as router;
-import 'package:ors/token_watcher.dart' as watcher;
-import 'package:ors/token_vault.dart';
 import 'package:ors/configuration.dart';
+import 'package:ors/router/router-authentication.dart' as router;
+import 'package:ors/token_vault.dart';
+import 'package:ors/token_watcher.dart' as watcher;
 
 Future main(List<String> args) async {
   //Init logging.

@@ -41,8 +41,8 @@ import 'package:ors/model.dart' as model;
 import 'package:ors/router/router-calendar.dart' as router;
 import 'package:ors/router/router-contact.dart' as router;
 import 'package:ors/router/router-datastore.dart' as router;
-import 'package:ors/router/router-reception.dart' as router;
 import 'package:ors/router/router-dialplan.dart' as router;
+import 'package:ors/router/router-reception.dart' as router;
 
 ArgResults _parsedArgs;
 ArgParser _parser = new ArgParser();
