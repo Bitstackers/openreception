@@ -38,7 +38,8 @@ abstract class _ModelNamedExtension {
     final Map<String, dynamic> map =
         JSON.decode(JSON.encode(builtObject)) as Map<String, dynamic>;
 
-    model.NamedExtension deserializedObject = model.NamedExtension.decode(map);
+    model.NamedExtension deserializedObject =
+        new model.NamedExtension.fromJson(map);
 
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
 

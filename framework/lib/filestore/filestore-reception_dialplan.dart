@@ -117,8 +117,8 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
     }
 
     try {
-      final model.ReceptionDialplan rdp = model.ReceptionDialplan
-          .decode(JSON.decode(file.readAsStringSync()) as Map<String, dynamic>);
+      final model.ReceptionDialplan rdp = new model.ReceptionDialplan.fromJson(
+          JSON.decode(file.readAsStringSync()) as Map<String, dynamic>);
       return rdp;
     } catch (e) {
       throw e;
@@ -137,8 +137,8 @@ class ReceptionDialplan implements storage.ReceptionDialplan {
       final String fileContents =
           new File(fse.path + '/dialplan.json').readAsStringSync();
 
-      return model.ReceptionDialplan
-          .decode(JSON.decode(fileContents) as Map<String, dynamic>);
+      return new model.ReceptionDialplan.fromJson(
+          JSON.decode(fileContents) as Map<String, dynamic>);
     });
   }
 

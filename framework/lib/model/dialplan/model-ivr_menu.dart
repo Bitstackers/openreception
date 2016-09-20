@@ -32,6 +32,15 @@ class IvrMenu {
   /// Default constructor.
   IvrMenu(this.name, this.greetingLong);
 
+  /// Decoding factory.
+  factory IvrMenu.fromJson(Map<String, dynamic> map) => (new IvrMenu(
+      map[key.name],
+      Playback.parse(map[key
+          .greeting])).._greetingShort = Playback.parse(map[key.greetingShort]))
+    ..entries = new List<IvrEntry>.from(map[key.ivrEntries].map(IvrEntry.parse))
+    ..submenus = new List<IvrMenu>.from(map[key.submenus]
+        .map((Map<String, dynamic> map) => new IvrMenu.fromJson(map)));
+
   /// Extracts the contained [Action] objects from the menu.
   Iterable<Action> get allActions {
     final List<Action> actions = new List<Action>();
@@ -58,12 +67,7 @@ class IvrMenu {
 
   /// Decoding factory method.
   @deprecated
-  static IvrMenu decode(Map<String, dynamic> map) => (new IvrMenu(
-      map[key.name],
-      Playback.parse(map[key
-          .greeting])).._greetingShort = Playback.parse(map[key.greetingShort]))
-    ..entries = new List<IvrEntry>.from(map[key.ivrEntries].map(IvrEntry.parse))
-    ..submenus = new List<IvrMenu>.from(map[key.submenus].map(IvrMenu.decode));
+  static IvrMenu decode(Map<String, dynamic> map) => new IvrMenu.fromJson(map);
 
   /// An IVR menu equals another IVR menu if their names match.
   @override

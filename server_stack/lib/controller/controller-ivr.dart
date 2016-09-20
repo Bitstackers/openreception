@@ -99,7 +99,7 @@ class Ivr {
    *
    */
   Future<shelf.Response> create(shelf.Request request) async {
-    final model.IvrMenu ivrMenu = model.IvrMenu.decode(
+    final model.IvrMenu ivrMenu = new model.IvrMenu.fromJson(
         JSON.decode(await request.readAsString()) as Map<String, dynamic>);
 
     model.User user;
@@ -163,7 +163,7 @@ class Ivr {
    *
    */
   Future<shelf.Response> update(shelf.Request request) async {
-    final model.IvrMenu ivrMenu = model.IvrMenu.decode(
+    final model.IvrMenu ivrMenu = new model.IvrMenu.fromJson(
         JSON.decode(await request.readAsString()) as Map<String, dynamic>);
 
     model.User user;

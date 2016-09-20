@@ -58,10 +58,8 @@ class Contact {
     model.User modifier;
 
     try {
-      contact = await request
-          .readAsString()
-          .then(JSON.decode)
-          .then(model.BaseContact.decode);
+      contact = await request.readAsString().then(JSON.decode).then(
+          (Map<String, dynamic> map) => new model.BaseContact.fromJson(map));
     } on FormatException {
       return clientError('Failed to parse contact object');
     }
@@ -188,10 +186,8 @@ class Contact {
     model.BaseContact contact;
 
     try {
-      contact = await request
-          .readAsString()
-          .then(JSON.decode)
-          .then(model.BaseContact.decode);
+      contact = await request.readAsString().then(JSON.decode).then(
+          (Map<String, dynamic> map) => new model.BaseContact.fromJson(map));
     } catch (error) {
       final Map response = {
         'status': 'bad request',
@@ -292,10 +288,9 @@ class Contact {
 
     model.ReceptionAttributes attr;
     try {
-      attr = await request
-          .readAsString()
-          .then(JSON.decode)
-          .then(model.ReceptionAttributes.decode);
+      attr = await request.readAsString().then(JSON.decode).then(
+          (Map<String, dynamic> map) =>
+              new model.ReceptionAttributes.fromJson(map));
     } catch (error) {
       Map response = {
         'status': 'bad request',

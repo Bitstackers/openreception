@@ -105,8 +105,8 @@ class Endpoints {
   Iterable<model.MessageEndpoint> get endpoints {
     final List epMaps = JSON.decode(_endpointsInput.value);
 
-    return epMaps.map(
-        (Map map) => model.MessageEndpoint.decode(map as Map<String, dynamic>));
+    return epMaps.map((Map map) =>
+        new model.MessageEndpoint.fromJson(map as Map<String, dynamic>));
   }
 
   void _resizeInput() {

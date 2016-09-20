@@ -24,10 +24,13 @@ class PeerAccount {
   /// Default constructor.
   const PeerAccount(this.username, this.password, this.context);
 
+  factory PeerAccount.fromJson(Map<String, dynamic> map) =>
+      new PeerAccount(map[key.username], map[key.password], map[key.context]);
+
   /// Deserializing factory.
   @deprecated
   static PeerAccount decode(Map<String, dynamic> map) =>
-      new PeerAccount(map[key.username], map[key.password], map[key.context]);
+      new PeerAccount.fromJson(map);
 
   /// Serialization function.
   Map<String, dynamic> toJson() => <String, dynamic>{

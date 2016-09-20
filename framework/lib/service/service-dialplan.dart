@@ -35,10 +35,9 @@ class RESTDialplanStore implements storage.ReceptionDialplan {
     Uri url = resource.ReceptionDialplan.list(host);
     url = _appendToken(url, token);
 
-    return _backend
-        .post(url, JSON.encode(rdp))
-        .then(JSON.decode)
-        .then(model.ReceptionDialplan.decode);
+    return _backend.post(url, JSON.encode(rdp)).then(JSON.decode).then(
+        (Map<String, dynamic> map) =>
+            new model.ReceptionDialplan.fromJson(map));
   }
 
   @override
@@ -46,10 +45,9 @@ class RESTDialplanStore implements storage.ReceptionDialplan {
     Uri url = resource.ReceptionDialplan.single(host, extension);
     url = _appendToken(url, token);
 
-    return _backend
-        .get(url)
-        .then(JSON.decode)
-        .then(model.ReceptionDialplan.decode);
+    return _backend.get(url).then(JSON.decode).then(
+        (Map<String, dynamic> map) =>
+            new model.ReceptionDialplan.fromJson(map));
   }
 
   @override
@@ -59,7 +57,8 @@ class RESTDialplanStore implements storage.ReceptionDialplan {
 
     Iterable<model.ReceptionDialplan> castMaps(
             Iterable<Map<String, dynamic>> maps) =>
-        maps.map(model.ReceptionDialplan.decode);
+        maps.map((Map<String, dynamic> map) =>
+            new model.ReceptionDialplan.fromJson(map));
 
     return _backend.get(url).then(JSON.decode).then(castMaps);
   }
@@ -70,10 +69,9 @@ class RESTDialplanStore implements storage.ReceptionDialplan {
     Uri url = resource.ReceptionDialplan.single(host, rdp.extension);
     url = _appendToken(url, token);
 
-    return _backend
-        .put(url, JSON.encode(rdp))
-        .then(JSON.decode)
-        .then(model.ReceptionDialplan.decode);
+    return _backend.put(url, JSON.encode(rdp)).then(JSON.decode).then(
+        (Map<String, dynamic> map) =>
+            new model.ReceptionDialplan.fromJson(map));
   }
 
   @override
@@ -113,7 +111,7 @@ class RESTDialplanStore implements storage.ReceptionDialplan {
     url = _appendToken(url, this.token);
 
     Iterable<model.Commit> convertMaps(Iterable<Map<String, dynamic>> maps) =>
-        maps.map(model.Commit.decode);
+        maps.map((Map<String, dynamic> map) => new model.Commit.fromJson(map));
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }

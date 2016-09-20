@@ -67,10 +67,10 @@ class ReceptionAttributes {
   List<String> infos = <String>[];
 
   ReceptionAttributes.fromJson(Map<String, dynamic> map)
-      : phoneNumbers =
-            new List<PhoneNumber>.from(map[key.phones].map(PhoneNumber.decode)),
-        endpoints = new List<MessageEndpoint>.from(
-            map[key.endpoints].map(MessageEndpoint.decode)),
+      : phoneNumbers = new List<PhoneNumber>.from(map[key.phones]
+            .map((Map<String, dynamic> map) => new PhoneNumber.fromJson(map))),
+        endpoints = new List<MessageEndpoint>.from(map[key.endpoints].map(
+            (Map<String, dynamic> map) => new MessageEndpoint.fromJson(map))),
         receptionId = map[key.rid],
         cid = map[key.cid],
         departments = map[key.departments] as List<String>,

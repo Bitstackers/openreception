@@ -103,7 +103,7 @@ class User {
       user = await request
           .readAsString()
           .then((String buffer) => JSON.decode(buffer))
-          .then(model.User.decode);
+          .then((Map<String, dynamic> map) => new model.User.fromJson(map));
     } on FormatException catch (error) {
       Map response = {
         'status': 'bad request',
@@ -141,7 +141,7 @@ class User {
       user = await request
           .readAsString()
           .then(JSON.decode)
-          .then(model.User.decode);
+          .then((Map<String, dynamic> map) => new model.User.fromJson(map));
     } on FormatException catch (error) {
       Map response = {
         'status': 'bad request',

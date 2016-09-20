@@ -93,10 +93,8 @@ class Organization {
     model.User creator;
 
     try {
-      organization = await request
-          .readAsString()
-          .then(JSON.decode)
-          .then(model.Organization.decode);
+      organization = await request.readAsString().then(JSON.decode).then(
+          (Map<String, dynamic> map) => new model.Organization.fromJson(map));
 
       final List<ValidationException> errors =
           validateOrganization(organization);
@@ -139,10 +137,8 @@ class Organization {
     model.Organization org;
     model.User modifier;
     try {
-      org = await request
-          .readAsString()
-          .then(JSON.decode)
-          .then(model.Organization.decode);
+      org = await request.readAsString().then(JSON.decode).then(
+          (Map<String, dynamic> map) => new model.Organization.fromJson(map));
       final List<ValidationException> errors = validateOrganization(org);
 
       if (errors.isNotEmpty) {

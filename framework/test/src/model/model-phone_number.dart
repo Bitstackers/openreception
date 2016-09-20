@@ -33,8 +33,8 @@ abstract class _ModelPhoneNumber {
   static void deserialization() {
     model.PhoneNumber built = buildObject();
 
-    model.PhoneNumber decoded = model.PhoneNumber
-        .decode(JSON.decode(JSON.encode(built)) as Map<String, dynamic>);
+    model.PhoneNumber decoded = new model.PhoneNumber.fromJson(
+        JSON.decode(JSON.encode(built)) as Map<String, dynamic>);
 
     expect(built.confidential, equals(decoded.confidential));
     expect(built.note, equals(decoded.note));

@@ -62,9 +62,12 @@ class UserReference implements ObjectReference {
 
   const UserReference(this.id, this.name);
 
+  factory UserReference.fromJson(Map<String, dynamic> map) =>
+      new UserReference(map[key.id], map[key.name]);
+
   @deprecated
   static UserReference decode(Map<String, dynamic> map) =>
-      new UserReference(map[key.id], map[key.name]);
+      new UserReference.fromJson(map);
 
   /// Serialization function.
   @override

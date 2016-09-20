@@ -37,6 +37,21 @@ class ReceptionDialplan {
   /// A list of sub-extensions used by this [ReceptionDialplan].
   List<NamedExtension> extraExtensions = <NamedExtension>[];
 
+  ReceptionDialplan();
+
+  /// Decodes and creates a new [ReceptionDialplan] from a previously
+  /// deserialized [Map].
+  factory ReceptionDialplan.fromJson(Map<String, dynamic> map) =>
+      new ReceptionDialplan()
+        ..extension = map['extension']
+        ..open = new List<HourAction>.from(map['open'].map(HourAction.parse))
+        ..extraExtensions = new List<NamedExtension>.from(map['extraExtensions']
+            .map(
+                (Map<String, dynamic> map) => new NamedExtension.fromJson(map)))
+        ..defaultActions =
+            new List<Action>.from(map['closed'].map(Action.parse))
+        ..note = map['note'];
+
   /// Collect an [Iterable] of all actions in this [ReceptionDialplan].
   Iterable<Action> get allActions => <Action>[]
     ..addAll(defaultActions)
@@ -54,14 +69,7 @@ class ReceptionDialplan {
   /// deserialized [Map].
   @deprecated
   static ReceptionDialplan decode(Map<String, dynamic> map) =>
-      new ReceptionDialplan()
-        ..extension = map['extension']
-        ..open = new List<HourAction>.from(map['open'].map(HourAction.parse))
-        ..extraExtensions = new List<NamedExtension>.from(
-            map['extraExtensions'].map(NamedExtension.decode))
-        ..defaultActions =
-            new List<Action>.from(map['closed'].map(Action.parse))
-        ..note = map['note'];
+      new ReceptionDialplan.fromJson(map);
 
   /// Serialization function.
   Map<String, dynamic> toJson() => <String, dynamic>{

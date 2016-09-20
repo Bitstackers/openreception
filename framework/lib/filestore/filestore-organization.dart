@@ -200,9 +200,9 @@ class Organization implements storage.Organization {
           .where((FileSystemEntity fse) =>
               _isDirectory(fse) &&
               new File(fse.path + '/organization.json').existsSync())
-          .map((FileSystemEntity fse) => model.Organization
-              .decode(JSON.decode((new File(fse.path + '/organization.json'))
-                  .readAsStringSync()) as Map<String, dynamic>)
+          .map((FileSystemEntity fse) => new model.Organization.fromJson(
+                  JSON.decode((new File(fse.path + '/organization.json'))
+                      .readAsStringSync()) as Map<String, dynamic>)
               .reference);
 
   @override

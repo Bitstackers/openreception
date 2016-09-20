@@ -38,7 +38,8 @@ class RESTContactStore implements storage.Contact {
         (String response) =>
             JSON.decode(response) as Iterable<Map<String, dynamic>>);
 
-    return maps.map(model.ReceptionReference.decode);
+    return maps.map((Map<String, dynamic> map) =>
+        new model.ReceptionReference.fromJson(map));
   }
 
   @override
@@ -50,7 +51,8 @@ class RESTContactStore implements storage.Contact {
         (String response) =>
             JSON.decode(response) as Iterable<Map<String, dynamic>>);
 
-    return maps.map(model.OrganizationReference.decode);
+    return maps.map((Map<String, dynamic> map) =>
+        new model.OrganizationReference.fromJson(map));
   }
 
   @override
@@ -69,9 +71,8 @@ class RESTContactStore implements storage.Contact {
     Uri url = resource.Contact.root(host);
     url = _appendToken(url, token);
 
-    return _backend.post(url, JSON.encode(contact)).then((String response) =>
-        model.BaseContact
-            .decode(JSON.decode(response) as Map<String, dynamic>));
+    return _backend.post(url, JSON.encode(contact)).then(JSON.decode).then(
+        (Map<String, dynamic> map) => new model.BaseContact.fromJson(map));
   }
 
   @override
@@ -96,8 +97,8 @@ class RESTContactStore implements storage.Contact {
     url = _appendToken(url, token);
 
     return _backend.get(url).then((String response) =>
-        (JSON.decode(response) as Iterable<Map<String, dynamic>>)
-            .map(model.BaseContact.decode));
+        (JSON.decode(response) as Iterable<Map<String, dynamic>>).map(
+            (Map<String, dynamic> map) => new model.BaseContact.fromJson(map)));
   }
 
   @override
@@ -116,8 +117,9 @@ class RESTContactStore implements storage.Contact {
     url = _appendToken(url, token);
 
     return _backend.get(url).then((String response) =>
-        (JSON.decode(response) as Iterable<Map<String, dynamic>>)
-            .map(model.ReceptionContact.decode));
+        (JSON.decode(response) as Iterable<Map<String, dynamic>>).map(
+            (Map<String, dynamic> map) =>
+                new model.ReceptionContact.fromJson(map)));
   }
 
   @override
@@ -135,8 +137,8 @@ class RESTContactStore implements storage.Contact {
     url = _appendToken(url, token);
 
     return _backend.get(url).then((String response) =>
-        (JSON.decode(response) as Iterable<Map<String, dynamic>>)
-            .map(model.BaseContact.decode));
+        (JSON.decode(response) as Iterable<Map<String, dynamic>>).map(
+            (Map<String, dynamic> map) => new model.BaseContact.fromJson(map)));
   }
 
   @override
@@ -163,7 +165,7 @@ class RESTContactStore implements storage.Contact {
     url = _appendToken(url, this.token);
 
     Iterable<model.Commit> convertMaps(Iterable<Map<String, dynamic>> maps) =>
-        maps.map(model.Commit.decode);
+        maps.map((Map<String, dynamic> map) => new model.Commit.fromJson(map));
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }

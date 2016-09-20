@@ -45,18 +45,16 @@ class RESTMessageStore implements storage.Message {
         .post(uri, JSON.encode(ids))
         .then((String response) => JSON.decode(response));
 
-    return maps.map(model.Message.decode);
+    return maps
+        .map((Map<String, dynamic> map) => new model.Message.fromJson(map));
   }
 
   Future<model.MessageQueueEntry> enqueue(model.Message message) {
     Uri uri = resource.Message.send(this.host, message.id);
     uri = _appendToken(uri, this.token);
 
-    return this
-        ._backend
-        .post(uri, JSON.encode(message.asMap))
-        .then(JSON.decode)
-        .then((Map<String, dynamic> queueItemMap) =>
+    return this._backend.post(uri, JSON.encode(message)).then(JSON.decode).then(
+        (Map<String, dynamic> queueItemMap) =>
             new model.MessageQueueEntry.fromJson(queueItemMap));
   }
 
@@ -86,7 +84,7 @@ class RESTMessageStore implements storage.Message {
           .put(
               _appendToken(
                   resource.Message.single(this.host, message.id), this.token),
-              JSON.encode(message.asMap))
+              JSON.encode(message))
           .then((String response) => new model.Message.fromJson(
               JSON.decode(response) as Map<String, dynamic>));
 
@@ -125,7 +123,7 @@ class RESTMessageStore implements storage.Message {
     url = _appendToken(url, this.token);
 
     Iterable<model.Commit> convertMaps(Iterable<Map<String, dynamic>> maps) =>
-        maps.map(model.Commit.decode);
+        maps.map((Map<String, dynamic> map) => new model.Commit.fromJson(map));
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }

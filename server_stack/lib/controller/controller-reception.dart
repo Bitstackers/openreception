@@ -66,10 +66,8 @@ class Reception {
     model.Reception reception;
     model.User creator;
     try {
-      reception = await request
-          .readAsString()
-          .then(JSON.decode)
-          .then(model.Reception.decode);
+      reception = await request.readAsString().then(JSON.decode).then(
+          (Map<String, dynamic> map) => new model.Reception.fromJson(map));
     } on FormatException catch (error) {
       Map response = {
         'status': 'bad request',
@@ -106,10 +104,8 @@ class Reception {
     model.Reception reception;
     model.User modifier;
     try {
-      reception = await request
-          .readAsString()
-          .then(JSON.decode)
-          .then(model.Reception.decode);
+      reception = await request.readAsString().then(JSON.decode).then(
+          (Map<String, dynamic> map) => new model.Reception.fromJson(map));
     } on FormatException catch (error) {
       Map response = {
         'status': 'bad request',

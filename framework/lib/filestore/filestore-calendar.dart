@@ -204,7 +204,7 @@ class Calendar implements storage.Calendar {
           File file = new File('${dir.path}/$eid.json');
 
           if (file.existsSync()) {
-            return model.CalendarEntry.decode(
+            return new model.CalendarEntry.fromJson(
                 JSON.decode(file.readAsStringSync()) as Map<String, dynamic>);
           }
         }
@@ -230,7 +230,7 @@ class Calendar implements storage.Calendar {
           .listSync()
           .where((FileSystemEntity fse) =>
               _isFile(fse) && fse.path.endsWith('.json'))
-          .map((FileSystemEntity fse) => model.CalendarEntry.decode(
+          .map((FileSystemEntity fse) => new model.CalendarEntry.fromJson(
               JSON.decode((fse as File).readAsStringSync())
               as Map<String, dynamic>));
 

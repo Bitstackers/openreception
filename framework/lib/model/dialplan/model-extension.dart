@@ -50,8 +50,7 @@ class NamedExtension implements Extension {
   NamedExtension(this.name, this.actions);
 
   /// Decode a [Map] into a new [NamedExtension] object.
-  @deprecated
-  static NamedExtension decode(Map<String, dynamic> map) {
+  factory NamedExtension.fromJson(Map<String, dynamic> map) {
     final Iterable<Action> actionIter =
         (map[key.actions] as Iterable<dynamic>).map(Action.parse);
 
@@ -59,8 +58,13 @@ class NamedExtension implements Extension {
         map[key.name], actionIter.toList(growable: false));
   }
 
+  /// Decode a [Map] into a new [NamedExtension] object.
+  @deprecated
+  static NamedExtension decode(Map<String, dynamic> map) =>
+      new NamedExtension.fromJson(map);
+
   /// Serialization function. Suitable for creating a new object from
-  /// the static [decode] function.
+  /// the [NamedExtension.fromJson] constructor.
   @override
   Map<String, dynamic> toJson() =>
       <String, dynamic>{key.name: name, key.actions: actions};

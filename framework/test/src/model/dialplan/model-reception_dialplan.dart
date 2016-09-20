@@ -24,8 +24,9 @@ void _testModelReceptionDialplan() {
 abstract class _ModelReceptionDialplan {
   static void deserialization() {
     model.ReceptionDialplan builtObject = buildObject();
-    model.ReceptionDialplan deserializedObject = model.ReceptionDialplan
-        .decode(JSON.decode(JSON.encode(builtObject)) as Map<String, dynamic>);
+    model.ReceptionDialplan deserializedObject =
+        new model.ReceptionDialplan.fromJson(
+            JSON.decode(JSON.encode(builtObject)) as Map<String, dynamic>);
 
     expect(builtObject.extension, equals(deserializedObject.extension));
     expect(builtObject.note, equals(deserializedObject.note));

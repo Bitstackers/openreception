@@ -35,10 +35,9 @@ class RESTReceptionStore implements storage.Reception {
     Uri url = resource.Reception.root(this.host);
     url = _appendToken(url, this.token);
 
-    return _backend
-        .post(url, JSON.encode(reception))
-        .then(JSON.decode)
-        .then(model.ReceptionReference.decode);
+    return _backend.post(url, JSON.encode(reception)).then(JSON.decode).then(
+        (Map<String, dynamic> map) =>
+            new model.ReceptionReference.fromJson(map));
   }
 
   @override
@@ -59,7 +58,7 @@ class RESTReceptionStore implements storage.Reception {
     return this._backend.get(url).then((String response) =>
         (JSON.decode(response) as Iterable<Map<String, dynamic>>).map(
             (Map<String, dynamic> map) =>
-                model.ReceptionReference.decode(map)));
+                new model.ReceptionReference.fromJson(map)));
   }
 
   @override
@@ -78,9 +77,9 @@ class RESTReceptionStore implements storage.Reception {
 
     String data = JSON.encode(reception);
 
-    return this._backend.put(url, data).then((String response) => model
-        .ReceptionReference
-        .decode(JSON.decode(response) as Map<String, dynamic>));
+    return this._backend.put(url, data).then(JSON.decode).then(
+        (Map<String, dynamic> map) =>
+            new model.ReceptionReference.fromJson(map));
   }
 
   @override
@@ -89,7 +88,7 @@ class RESTReceptionStore implements storage.Reception {
     url = _appendToken(url, this.token);
 
     Iterable<model.Commit> convertMaps(Iterable<Map<String, dynamic>> maps) =>
-        maps.map(model.Commit.decode);
+        maps.map((Map<String, dynamic> map) => new model.Commit.fromJson(map));
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }

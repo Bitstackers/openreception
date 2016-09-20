@@ -40,8 +40,9 @@ class CalendarChangelogEntry implements ChangelogEntry {
 
   CalendarChangelogEntry.fromJson(Map<String, dynamic> map)
       : modifier =
-            UserReference.decode(map['modifier'] as Map<String, dynamic>),
-        entry = CalendarEntry.decode(map['entry'] as Map<String, dynamic>),
+            new UserReference.fromJson(map['modifier'] as Map<String, dynamic>),
+        entry =
+            new CalendarEntry.fromJson(map['entry'] as Map<String, dynamic>),
         changeType = changeTypeFromString(map['change']),
         timestamp = util.unixTimestampToDateTime(map['timestamp']);
 
@@ -82,8 +83,9 @@ class ContactChangelogEntry implements ChangelogEntry {
 
   ContactChangelogEntry.fromJson(Map<String, dynamic> map)
       : modifier =
-            UserReference.decode(map['modifier'] as Map<String, dynamic>),
-        contact = BaseContact.decode(map['contact'] as Map<String, dynamic>),
+            new UserReference.fromJson(map['modifier'] as Map<String, dynamic>),
+        contact =
+            new BaseContact.fromJson(map['contact'] as Map<String, dynamic>),
         changeType = changeTypeFromString(map['change']),
         timestamp = util.unixTimestampToDateTime(map['timestamp']);
 
@@ -126,9 +128,9 @@ class ReceptionDataChangelogEntry implements ChangelogEntry {
 
   ReceptionDataChangelogEntry.fromJson(Map<String, dynamic> map)
       : modifier =
-            UserReference.decode(map['modifier'] as Map<String, dynamic>),
-        attributes = ReceptionAttributes
-            .decode(map['attributes'] as Map<String, dynamic>),
+            new UserReference.fromJson(map['modifier'] as Map<String, dynamic>),
+        attributes = new ReceptionAttributes.fromJson(
+            map['attributes'] as Map<String, dynamic>),
         changeType = changeTypeFromString(map['change']),
         timestamp = util.unixTimestampToDateTime(map['timestamp']);
 
@@ -169,8 +171,8 @@ class IvrChangelogEntry implements ChangelogEntry {
 
   IvrChangelogEntry.fromJson(Map<String, dynamic> map)
       : modifier =
-            UserReference.decode(map['modifier'] as Map<String, dynamic>),
-        menu = IvrMenu.decode(map['menu'] as Map<String, dynamic>),
+            new UserReference.fromJson(map['modifier'] as Map<String, dynamic>),
+        menu = new IvrMenu.fromJson(map['menu'] as Map<String, dynamic>),
         changeType = changeTypeFromString(map['change']),
         timestamp = util.unixTimestampToDateTime(map['timestamp']);
 
@@ -211,9 +213,9 @@ class DialplanChangelogEntry implements ChangelogEntry {
 
   DialplanChangelogEntry.fromJson(Map<String, dynamic> map)
       : modifier =
-            UserReference.decode(map['modifier'] as Map<String, dynamic>),
-        dialplan =
-            ReceptionDialplan.decode(map['dialplan'] as Map<String, dynamic>),
+            new UserReference.fromJson(map['modifier'] as Map<String, dynamic>),
+        dialplan = new ReceptionDialplan.fromJson(
+            map['dialplan'] as Map<String, dynamic>),
         changeType = changeTypeFromString(map['change']),
         timestamp = util.unixTimestampToDateTime(map['timestamp']);
 
@@ -254,8 +256,9 @@ class ReceptionChangelogEntry implements ChangelogEntry {
 
   ReceptionChangelogEntry.fromJson(Map<String, dynamic> map)
       : modifier =
-            UserReference.decode(map['modifier'] as Map<String, dynamic>),
-        reception = Reception.decode(map['reception'] as Map<String, dynamic>),
+            new UserReference.fromJson(map['modifier'] as Map<String, dynamic>),
+        reception =
+            new Reception.fromJson(map['reception'] as Map<String, dynamic>),
         changeType = changeTypeFromString(map['change']),
         timestamp = util.unixTimestampToDateTime(map['timestamp']);
 
@@ -296,9 +299,9 @@ class OrganizationChangelogEntry implements ChangelogEntry {
 
   OrganizationChangelogEntry.fromJson(Map<String, dynamic> map)
       : modifier =
-            UserReference.decode(map['modifier'] as Map<String, dynamic>),
-        organization =
-            Organization.decode(map['organization'] as Map<String, dynamic>),
+            new UserReference.fromJson(map['modifier'] as Map<String, dynamic>),
+        organization = new Organization.fromJson(
+            map['organization'] as Map<String, dynamic>),
         changeType = changeTypeFromString(map['change']),
         timestamp = util.unixTimestampToDateTime(map['timestamp']);
 
@@ -339,8 +342,8 @@ class UserChangelogEntry implements ChangelogEntry {
 
   UserChangelogEntry.fromJson(Map<String, dynamic> map)
       : modifier =
-            UserReference.decode(map['modifier'] as Map<String, dynamic>),
-        user = User.decode(map['user'] as Map<String, dynamic>),
+            new UserReference.fromJson(map['modifier'] as Map<String, dynamic>),
+        user = new User.fromJson(map['user'] as Map<String, dynamic>),
         changeType = changeTypeFromString(map['change']),
         timestamp = util.unixTimestampToDateTime(map['timestamp']);
 
@@ -432,38 +435,41 @@ const Map<String, ChangeType> _changeTypeFromString =
 };
 
 abstract class ObjectChange {
-  ChangeType get changeType;
-  ObjectType get objectType;
-
-  @deprecated
-  static ObjectChange decode(Map<String, dynamic> map) {
+  factory ObjectChange.fromJson(Map<String, dynamic> map) {
     final ObjectType objectType = objectTypeFromString(map[key.type]);
 
     switch (objectType) {
       case ObjectType.calendar:
-        return CalendarChange.decode(map);
+        return new CalendarChange.fromJson(map);
       case ObjectType.contact:
         return new ContactChange(
             changeTypeFromString(map[key.change]), map[key.cid]);
       case ObjectType.dialplan:
-        return ReceptionDialplanChange.decode(map);
+        return new ReceptionDialplanChange.fromJson(map);
       case ObjectType.ivrMenu:
-        return IvrChange.decode(map);
+        return new IvrChange.fromJson(map);
       case ObjectType.message:
-        return MessageChange.decode(map);
+        return new MessageChange.fromJson(map);
       case ObjectType.reception:
-        return ReceptionChange.decode(map);
+        return new ReceptionChange.fromJson(map);
       case ObjectType.receptionAttribute:
-        return ReceptionAttributeChange.decode(map);
+        return new ReceptionAttributeChange.fromJson(map);
       case ObjectType.user:
-        return UserChange.decode(map);
+        return new UserChange.fromJson(map);
       case ObjectType.organization:
-        return OrganizationChange.decode(map);
+        return new OrganizationChange.fromJson(map);
 
       default:
         throw new StateError('Undefined object type: $objectType');
     }
   }
+
+  ChangeType get changeType;
+  ObjectType get objectType;
+
+  @deprecated
+  static ObjectChange decode(Map<String, dynamic> map) =>
+      new ObjectChange.fromJson(map);
 
   Map<String, dynamic> toJson();
 }
@@ -481,9 +487,9 @@ class Commit {
 
   /// Deserializing constructor.
   Commit.fromJson(Map<String, dynamic> map)
-      : changes = new List<ObjectChange>.from(
-            (map[key.changes] as Iterable<Map<String, dynamic>>)
-                .map(ObjectChange.decode)),
+      : changes = new List<ObjectChange>.from((map[key.changes]
+                as Iterable<Map<String, dynamic>>)
+            .map((Map<String, dynamic> map) => new ObjectChange.fromJson(map))),
         authorIdentity = map[key.identity],
         changedAt = util.unixTimestampToDateTime(map[key.updatedAt]),
         commitHash = map[key.commitHash],

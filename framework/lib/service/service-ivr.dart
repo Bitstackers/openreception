@@ -38,7 +38,7 @@ class RESTIvrStore implements storage.Ivr {
         ._backend
         .post(url, JSON.encode(menu))
         .then(JSON.decode)
-        .then(model.IvrMenu.decode);
+        .then((Map<String, dynamic> map) => new model.IvrMenu.fromJson(map));
   }
 
   Future<Iterable<String>> deploy(String menuName) async {
@@ -61,7 +61,11 @@ class RESTIvrStore implements storage.Ivr {
     Uri url = resource.Ivr.single(this.host, menuName);
     url = _appendToken(url, this.token);
 
-    return this._backend.get(url).then(JSON.decode).then(model.IvrMenu.decode);
+    return this
+        ._backend
+        .get(url)
+        .then(JSON.decode)
+        .then((Map<String, dynamic> map) => new model.IvrMenu.fromJson(map));
   }
 
   @override
@@ -70,7 +74,7 @@ class RESTIvrStore implements storage.Ivr {
     url = _appendToken(url, this.token);
 
     Iterable<model.IvrMenu> castMaps(Iterable<Map<String, dynamic>> maps) =>
-        maps.map(model.IvrMenu.decode);
+        maps.map((Map<String, dynamic> map) => new model.IvrMenu.fromJson(map));
 
     return this._backend.get(url).then(JSON.decode).then(castMaps);
   }
@@ -84,7 +88,7 @@ class RESTIvrStore implements storage.Ivr {
         ._backend
         .put(url, JSON.encode(menu))
         .then(JSON.decode)
-        .then(model.IvrMenu.decode);
+        .then((Map<String, dynamic> map) => new model.IvrMenu.fromJson(map));
   }
 
   @override
@@ -93,7 +97,7 @@ class RESTIvrStore implements storage.Ivr {
     url = _appendToken(url, this.token);
 
     Iterable<model.Commit> convertMaps(Iterable<Map<String, dynamic>> maps) =>
-        maps.map(model.Commit.decode);
+        maps.map((Map<String, dynamic> map) => new model.Commit.fromJson(map));
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }

@@ -38,8 +38,9 @@ class RESTUserStore implements storage.User {
         ._backend
         .get(url)
         .then((String reponse) => JSON.decode(reponse))
-        .then((Iterable<Map<String, dynamic>> userMaps) =>
-            userMaps.map(model.UserReference.decode));
+        .then((Iterable<Map<String, dynamic>> userMaps) => userMaps.map(
+            (Map<String, dynamic> map) =>
+                new model.UserReference.fromJson(map)));
   }
 
   @override
@@ -84,7 +85,8 @@ class RESTUserStore implements storage.User {
         ._backend
         .post(url, JSON.encode(user))
         .then((String reponse) => JSON.decode(reponse))
-        .then((model.UserReference.decode));
+        .then(((Map<String, dynamic> map) =>
+            new model.UserReference.fromJson(map)));
   }
 
   @override
@@ -96,7 +98,8 @@ class RESTUserStore implements storage.User {
         ._backend
         .put(url, JSON.encode(user))
         .then((String reponse) => JSON.decode(reponse))
-        .then((model.UserReference.decode));
+        .then(((Map<String, dynamic> map) =>
+            new model.UserReference.fromJson(map)));
   }
 
   @override
@@ -112,7 +115,10 @@ class RESTUserStore implements storage.User {
     Uri uri = resource.User.userState(host, uid);
     uri = _appendToken(uri, token);
 
-    return _backend.get(uri).then(JSON.decode).then(model.UserStatus.decode);
+    return _backend
+        .get(uri)
+        .then(JSON.decode)
+        .then((Map<String, dynamic> map) => new model.UserStatus.fromJson(map));
   }
 
   /// Updates the [model.UserStatus] object associated with [uid] to
@@ -162,7 +168,7 @@ class RESTUserStore implements storage.User {
     url = _appendToken(url, this.token);
 
     Iterable<model.Commit> convertMaps(Iterable<Map<String, dynamic>> maps) =>
-        maps.map(model.Commit.decode);
+        maps.map((Map<String, dynamic> map) => new model.Commit.fromJson(map));
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }

@@ -50,7 +50,8 @@ class PeerAccount {
     final model.PeerAccount account = await request
         .readAsString()
         .then(JSON.decode)
-        .then(model.PeerAccount.decode);
+        .then(
+            (Map<String, dynamic> map) => new model.PeerAccount.fromJson(map));
 
     final model.User user = await _userStore.get(uid);
 

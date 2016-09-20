@@ -36,7 +36,8 @@ class CallFlowControl {
 
     Iterable<model.ActiveRecording> decodeMaps(
             Iterable<Map<String, dynamic>> maps) =>
-        maps.map(model.ActiveRecording.decode);
+        maps.map((Map<String, dynamic> map) =>
+            new model.ActiveRecording.fromJson(map));
 
     return _backend.get(uri).then(JSON.decode).then(decodeMaps);
   }
@@ -46,10 +47,8 @@ class CallFlowControl {
     Uri uri = resource.CallFlowControl.activeRecording(host, channel);
     uri = _appendToken(uri, token);
 
-    return _backend
-        .get(uri)
-        .then(JSON.decode)
-        .then(model.ActiveRecording.decode);
+    return _backend.get(uri).then(JSON.decode).then(
+        (Map<String, dynamic> map) => new model.ActiveRecording.fromJson(map));
   }
 
   /// Retrives the stats of all agents.
@@ -59,7 +58,8 @@ class CallFlowControl {
 
     Iterable<model.AgentStatistics> decodeMaps(
             Iterable<Map<String, dynamic>> maps) =>
-        maps.map(model.AgentStatistics.decode);
+        maps.map((Map<String, dynamic> map) =>
+            new model.AgentStatistics.fromJson(map));
 
     return _backend.get(uri).then(JSON.decode).then(decodeMaps);
   }
@@ -69,10 +69,8 @@ class CallFlowControl {
     Uri uri = resource.CallFlowControl.agentStatistic(host, userId);
     uri = _appendToken(uri, token);
 
-    return _backend
-        .get(uri)
-        .then(JSON.decode)
-        .then(model.AgentStatistics.decode);
+    return _backend.get(uri).then(JSON.decode).then(
+        (Map<String, dynamic> map) => new model.AgentStatistics.fromJson(map));
   }
 
   /// Retrives the current Call list.

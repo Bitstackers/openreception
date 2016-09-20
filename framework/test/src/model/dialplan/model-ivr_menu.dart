@@ -36,8 +36,8 @@ abstract class _ModelIvrMenu {
   static void serializationDeserialization() {
     model.IvrMenu builtObject = buildObject();
 
-    model.IvrMenu deserializedObject = model.IvrMenu
-        .decode(JSON.decode(JSON.encode(builtObject)) as Map<String, dynamic>);
+    model.IvrMenu deserializedObject = new model.IvrMenu.fromJson(
+        JSON.decode(JSON.encode(builtObject)) as Map<String, dynamic>);
 
     expect(builtObject.toJson(), equals(deserializedObject.toJson()));
 

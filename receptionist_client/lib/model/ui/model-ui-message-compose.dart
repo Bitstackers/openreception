@@ -270,8 +270,10 @@ class UIMessageCompose extends UIModel {
     final String recipientsList = _recipientsList.dataset['recipients-list'];
 
     if (recipientsList != null && recipientsList.isNotEmpty) {
-      return new Set<model.MessageEndpoint>.from(
-          JSON.decode(recipientsList).map(model.MessageEndpoint.decode));
+      return new Set<model.MessageEndpoint>.from(JSON
+          .decode(recipientsList)
+          .map((Map<String, dynamic> map) =>
+              new model.MessageEndpoint.fromJson(map)));
     } else {
       return new Set<model.MessageEndpoint>();
     }

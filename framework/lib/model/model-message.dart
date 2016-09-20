@@ -51,9 +51,9 @@ class Message {
 
   /// Deserializing constructor.
   Message.fromJson(Map<String, dynamic> map) {
-    Iterable<MessageEndpoint> iterRcp =
-        (map[key.recipients] as Iterable<Map<String, dynamic>>)
-            .map(MessageEndpoint.decode);
+    Iterable<MessageEndpoint> iterRcp = (map[key.recipients]
+            as Iterable<Map<String, dynamic>>)
+        .map((Map<String, dynamic> map) => new MessageEndpoint.fromJson(map));
 
     id = (map.containsKey(key.id) ? map[key.id] : noId);
     recipients.addAll(iterRcp);

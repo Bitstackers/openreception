@@ -98,7 +98,8 @@ class Reception implements storage.Reception {
 
     return dirs
         .map((FileSystemEntity fse) {
-          final model.Reception reception = model.Reception.decode(JSON.decode(
+          final model.Reception reception = new model.Reception.fromJson(
+              JSON.decode(
                   (new File(fse.path + '/reception.json')).readAsStringSync())
               as Map<String, dynamic>);
           return reception;
@@ -157,8 +158,8 @@ class Reception implements storage.Reception {
     }
 
     try {
-      final model.Reception bc = model.Reception
-          .decode(JSON.decode(file.readAsStringSync()) as Map<String, dynamic>);
+      final model.Reception bc = new model.Reception.fromJson(
+          JSON.decode(file.readAsStringSync()) as Map<String, dynamic>);
       return bc;
     } catch (e) {
       throw e;
@@ -174,7 +175,8 @@ class Reception implements storage.Reception {
             new File(fse.path + '/reception.json').existsSync());
 
     return dirs.map((FileSystemEntity fse) {
-      final model.Reception reception = model.Reception.decode(JSON.decode(
+      final model.Reception reception = new model.Reception.fromJson(
+          JSON.decode(
               (new File(fse.path + '/reception.json')).readAsStringSync())
           as Map<String, dynamic>);
       return reception.reference;

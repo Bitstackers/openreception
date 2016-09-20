@@ -240,8 +240,8 @@ class Contact implements storage.Contact {
 
     try {
       final String jsonString = file.readAsStringSync();
-      final model.BaseContact bc = model.BaseContact
-          .decode(JSON.decode(jsonString) as Map<String, dynamic>);
+      final model.BaseContact bc = new model.BaseContact.fromJson(
+          JSON.decode(jsonString) as Map<String, dynamic>);
 
       return bc;
     } catch (e) {
@@ -256,8 +256,8 @@ class Contact implements storage.Contact {
       throw new NotFound('No file: ${file.path}');
     }
 
-    return model.ReceptionAttributes
-        .decode(JSON.decode(await file.readAsString()) as Map<String, dynamic>);
+    return new model.ReceptionAttributes.fromJson(
+        JSON.decode(await file.readAsString()) as Map<String, dynamic>);
   }
 
   @override
@@ -339,12 +339,14 @@ class Contact implements storage.Contact {
           final Future<model.BaseContact> bc = contactFile
               .readAsString()
               .then(JSON.decode)
-              .then(model.BaseContact.decode);
+              .then((Map<String, dynamic> map) =>
+                  new model.BaseContact.fromJson(map));
 
           final Future<model.ReceptionAttributes> attr = ridFile
               .readAsString()
               .then(JSON.decode)
-              .then(model.ReceptionAttributes.decode);
+              .then((Map<String, dynamic> map) =>
+                  new model.ReceptionAttributes.fromJson(map));
 
           rcs.add(new model.ReceptionContact(await bc, await attr));
         }

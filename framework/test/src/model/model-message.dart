@@ -46,7 +46,7 @@ abstract class _ModelMessage {
         obj.recipients.toList(), equals(deserializedObj.recipients.toList()));
     expect(obj.sender.id, equals(deserializedObj.sender.id));
 
-    expect(obj.asMap, equals(deserializedObj.asMap));
+    expect(obj.toJson(), equals(deserializedObj.toJson()));
   }
 
   static void serialization() {

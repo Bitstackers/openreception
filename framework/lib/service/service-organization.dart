@@ -35,8 +35,8 @@ class RESTOrganizationStore implements storage.Organization {
     url = _appendToken(url, this.token);
 
     return this._backend.get(url).then((String response) =>
-        (JSON.decode(response) as Iterable<Map<String, dynamic>>)
-            .map(model.BaseContact.decode));
+        (JSON.decode(response) as Iterable<Map<String, dynamic>>).map(
+            (Map<String, dynamic> map) => new model.BaseContact.fromJson(map)));
   }
 
   @override
@@ -46,7 +46,8 @@ class RESTOrganizationStore implements storage.Organization {
 
     return (JSON.decode(await _backend.get(url))
             as Iterable<Map<String, dynamic>>)
-        .map(model.ReceptionReference.decode);
+        .map((Map<String, dynamic> map) =>
+            new model.ReceptionReference.fromJson(map));
   }
 
   @override
@@ -74,9 +75,9 @@ class RESTOrganizationStore implements storage.Organization {
     url = _appendToken(url, this.token);
 
     String data = JSON.encode(organization);
-    return this._backend.post(url, data).then((String response) => model
-        .OrganizationReference
-        .decode(JSON.decode(response) as Map<String, dynamic>));
+    return this._backend.post(url, data).then(JSON.decode).then(
+        (Map<String, dynamic> map) =>
+            new model.OrganizationReference.fromJson(map));
   }
 
   @override
@@ -86,9 +87,9 @@ class RESTOrganizationStore implements storage.Organization {
     url = _appendToken(url, this.token);
 
     String data = JSON.encode(organization);
-    return this._backend.put(url, data).then((String response) => model
-        .OrganizationReference
-        .decode(JSON.decode(response) as Map<String, dynamic>));
+    return this._backend.put(url, data).then(JSON.decode).then(
+        (Map<String, dynamic> map) =>
+            new model.OrganizationReference.fromJson(map));
   }
 
   @override
@@ -105,8 +106,9 @@ class RESTOrganizationStore implements storage.Organization {
     url = _appendToken(url, this.token);
 
     return _backend.get(url).then((String response) =>
-        (JSON.decode(response) as Iterable<Map<String, dynamic>>)
-            .map(model.OrganizationReference.decode));
+        (JSON.decode(response) as Iterable<Map<String, dynamic>>).map(
+            (Map<String, dynamic> map) =>
+                new model.OrganizationReference.fromJson(map)));
   }
 
   @override
@@ -115,7 +117,7 @@ class RESTOrganizationStore implements storage.Organization {
     url = _appendToken(url, this.token);
 
     Iterable<model.Commit> convertMaps(Iterable<Map<String, dynamic>> maps) =>
-        maps.map(model.Commit.decode);
+        maps.map((Map<String, dynamic> map) => new model.Commit.fromJson(map));
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }

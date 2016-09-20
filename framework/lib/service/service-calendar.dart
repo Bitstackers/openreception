@@ -37,7 +37,8 @@ class RESTCalendarStore implements storage.Calendar {
 
     Iterable<model.CalendarEntry> convertMaps(
             Iterable<Map<String, dynamic>> maps) =>
-        maps.map(model.CalendarEntry.decode);
+        maps.map((Map<String, dynamic> map) =>
+            new model.CalendarEntry.fromJson(map));
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }
@@ -47,11 +48,8 @@ class RESTCalendarStore implements storage.Calendar {
     Uri url = resource.Calendar.single(host, id, owner);
     url = _appendToken(url, this.token);
 
-    return this
-        ._backend
-        .get(url)
-        .then(JSON.decode)
-        .then(model.CalendarEntry.decode);
+    return this._backend.get(url).then(JSON.decode).then(
+        (Map<String, dynamic> map) => new model.CalendarEntry.fromJson(map));
   }
 
   @override
@@ -60,11 +58,8 @@ class RESTCalendarStore implements storage.Calendar {
     Uri url = resource.Calendar.ownerBase(host, owner);
     url = _appendToken(url, this.token);
 
-    return this
-        ._backend
-        .post(url, JSON.encode(entry))
-        .then(JSON.decode)
-        .then(model.CalendarEntry.decode);
+    return this._backend.post(url, JSON.encode(entry)).then(JSON.decode).then(
+        (Map<String, dynamic> map) => new model.CalendarEntry.fromJson(map));
   }
 
   @override
@@ -73,10 +68,8 @@ class RESTCalendarStore implements storage.Calendar {
     Uri url = resource.Calendar.single(host, entry.id, owner);
     url = _appendToken(url, this.token);
 
-    return _backend
-        .put(url, JSON.encode(entry))
-        .then(JSON.decode)
-        .then(model.CalendarEntry.decode);
+    return _backend.put(url, JSON.encode(entry)).then(JSON.decode).then(
+        (Map<String, dynamic> map) => new model.CalendarEntry.fromJson(map));
   }
 
   @override
@@ -93,7 +86,7 @@ class RESTCalendarStore implements storage.Calendar {
     url = _appendToken(url, this.token);
 
     Iterable<model.Commit> convertMaps(Iterable<Map<String, dynamic>> maps) =>
-        maps.map(model.Commit.decode);
+        maps.map((Map<String, dynamic> map) => new model.Commit.fromJson(map));
 
     return this._backend.get(url).then(JSON.decode).then(convertMaps);
   }

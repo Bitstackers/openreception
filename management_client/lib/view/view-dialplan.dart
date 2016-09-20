@@ -60,7 +60,7 @@ class Dialplan {
       json = JSON.decode(_dialplanInput.value) as Map<String, dynamic>;
 
       try {
-        rdp = model.ReceptionDialplan.decode(json);
+        rdp = new model.ReceptionDialplan.fromJson(json);
         final validationErrors = validateReceptionDialplan(rdp);
 
         _inputErrorList.children.addAll(
@@ -106,8 +106,8 @@ class Dialplan {
     _deleteButton.text = 'Slet';
   }
 
-  model.ReceptionDialplan get dialplan => model.ReceptionDialplan
-      .decode(JSON.decode(_dialplanInput.value) as Map<String, dynamic>);
+  model.ReceptionDialplan get dialplan => new model.ReceptionDialplan.fromJson(
+      JSON.decode(_dialplanInput.value) as Map<String, dynamic>);
 
   set dialplan(model.ReceptionDialplan rdp) {
     _dialplanInput.hidden = false;
