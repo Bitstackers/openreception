@@ -13,7 +13,6 @@
 
 part of ors.model;
 
-//TODO: test api command: sofia_presence_data list|status|rpid|user_agent [profile/]<user>@domain
 class Peer extends esl.Peer {
   final ChannelList _channelList;
 
