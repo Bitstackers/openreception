@@ -34,9 +34,7 @@ class UserState implements Event {
 
   /// Create a new [UserState] object from serialized data stored in [map].
   UserState.fromMap(Map<String, dynamic> map)
-      : this.status = new model.UserStatus()
-          ..userId = map[_Key._uid]
-          ..paused = map[_Key._paused],
+      : this.status = new model.UserStatus(map[_Key._uid], map[_Key._paused]),
         this.timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 
   /// Returns an umodifiable map representation of the object, suitable for

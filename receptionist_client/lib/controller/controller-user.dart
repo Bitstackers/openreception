@@ -50,7 +50,7 @@ class User {
     try {
       return await _user.userStatus(user.id);
     } on NotFound catch (_) {
-      return new model.UserStatus();
+      return new model.UserStatus(true, user.id);
     }
   }
 

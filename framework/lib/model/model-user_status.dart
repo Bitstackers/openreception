@@ -28,10 +28,10 @@ abstract class UserState {
 }
 
 class UserStatus {
-  bool paused = true;
-  int userId = User.noId;
+  final bool paused;
+  final int userId;
 
-  UserStatus();
+  const UserStatus(this.paused, this.userId);
 
   UserStatus.fromMap(Map<String, dynamic> map)
       : userId = map[key.uid],

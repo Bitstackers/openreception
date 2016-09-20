@@ -26,25 +26,27 @@ class UserStatusList {
 
   bool has(int userID) => this._userStatus.containsKey(userID);
 
-  model.UserStatus pause(int userID) {
-    model.UserStatus status = this.getOrCreate(userID)..paused = true;
+  model.UserStatus pause(int uid) {
+    model.UserStatus status = new model.UserStatus(true, uid);
+    _userStatus[uid] = status;
 
-    _change.fire(new event.UserState(status));
+    _change.fire(new event.UserState(_userStatus[uid]));
     return status;
   }
 
-  model.UserStatus ready(int userID) {
-    model.UserStatus status = this.getOrCreate(userID)..paused = false;
+  model.UserStatus ready(int uid) {
+    model.UserStatus status = new model.UserStatus(false, uid);
+    _userStatus[uid] = status;
 
-    _change.fire(new event.UserState(status));
+    _change.fire(new event.UserState(_userStatus[uid]));
     return status;
   }
 
-  model.UserStatus getOrCreate(int userId) {
-    if (!this._userStatus.containsKey(userId)) {
-      this._userStatus[userId] = new model.UserStatus()..userId = userId;
+  model.UserStatus get(int uid) {
+    if (_userStatus.containsKey(uid)) {
+      return _userStatus[uid];
+    } else {
+      throw new NotFound();
     }
-
-    return this._userStatus[userId];
   }
 }

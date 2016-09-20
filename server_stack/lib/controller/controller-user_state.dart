@@ -63,8 +63,7 @@ class UserState {
       return new shelf.Response.notFound('{}');
     }
 
-    return new shelf.Response.ok(
-        JSON.encode(_userStateList.getOrCreate(userID)));
+    return new shelf.Response.ok(JSON.encode(_userStateList.get(userID)));
   }
 
   shelf.Response set(shelf.Request request) {
