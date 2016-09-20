@@ -18,17 +18,18 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
+import 'package:orf/event.dart' as event;
 import 'package:orf/filestore.dart' as filestore;
+import 'package:orf/gzip_cache.dart' as gzip_cache;
+import 'package:orf/model.dart' as model;
 import 'package:orf/service-io.dart' as service;
 import 'package:orf/service.dart' as service;
-import 'package:orf/event.dart' as event;
 import 'package:ors/configuration.dart';
 import 'package:ors/controller/controller-agent_statistics.dart' as controller;
 import 'package:ors/controller/controller-client_notifier.dart' as controller;
 import 'package:ors/controller/controller-group_notifier.dart' as controller;
 import 'package:ors/controller/controller-user.dart' as controller;
 import 'package:ors/controller/controller-user_state.dart' as controller;
-import 'package:orf/model.dart' as model;
 import 'package:ors/model.dart' as model;
 import 'package:ors/router/router-user.dart' as router;
 
@@ -101,6 +102,9 @@ Future main(List<String> args) async {
   final filestore.User _userStore =
       new filestore.User(parsedArgs['filestore'] + '/user', gitEngine);
 
+  final gzip_cache.UserCache _cache =
+      new gzip_cache.UserCache(_userStore, _userStore.onUserChange);
+
   final filestore.AgentHistory _agentHistory = new filestore.AgentHistory(
       parsedArgs['filestore'] + '/agent_history',
       _userStore,
@@ -125,7 +129,7 @@ Future main(List<String> args) async {
   });
 
   final _userController =
-      new controller.User(_userStore, _notification, _authService);
+      new controller.User(_userStore, _notification, _authService, _cache);
   final _statsController = new controller.AgentStatistics(_agentHistory);
 
   final _userStateController =

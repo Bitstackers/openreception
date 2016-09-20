@@ -203,6 +203,10 @@ Future main(List<String> args) async {
   /// Create an anonymous client notifier.
   new controller.ClientNotifier(notificationService, userStatus.onChange);
 
+  gzip_cache.DialplanCache _cache = new gzip_cache.DialplanCache(
+      dataStore.receptionDialplanStore,
+      dataStore.receptionDialplanStore.onChange);
+
   final controller.Ivr ivrHandler =
       new controller.Ivr(dataStore.ivrStore, compiler, authService, fsConfPath);
   final controller.ReceptionDialplan receptionDialplanHandler =
@@ -213,7 +217,8 @@ Future main(List<String> args) async {
           compiler,
           ivrHandler,
           fsConfPath,
-          eslConfig);
+          eslConfig,
+          _cache);
 
   final controller.PeerAccount peerAccountHandler =
       new controller.PeerAccount(dataStore.userStore, compiler, fsConfPath);

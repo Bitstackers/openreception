@@ -19,6 +19,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
 import 'package:orf/filestore.dart' as filestore;
+import 'package:orf/gzip_cache.dart' as gzip_cache;
 import 'package:orf/service-io.dart' as service;
 import 'package:orf/service.dart' as service;
 import 'package:ors/configuration.dart';
@@ -85,13 +86,16 @@ Future main(List<String> args) async {
   final filestore.Message _messageStore =
       new filestore.Message(filepath + '/message', revisionEngine);
 
+  final gzip_cache.MessageCache _cache =
+      new gzip_cache.MessageCache(_messageStore, _messageStore.changeStream);
+
   await _messageStore.rebuildSecondaryIndexes();
 
   final filestore.MessageQueue _messageQueue =
       new filestore.MessageQueue(filepath + '/message_queue');
 
   final controller.Message msgController = new controller.Message(
-      _messageStore, _messageQueue, _authService, _notification);
+      _messageStore, _messageQueue, _authService, _notification, _cache);
 
   await (new router.Message(_authService, _notification, msgController)).listen(
       hostname: parsedArgs['host'], port: int.parse(parsedArgs['httpport']));

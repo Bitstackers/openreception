@@ -34,11 +34,9 @@ class User {
   final filestore.User _userStore;
   final service.Authentication _authservice;
   final service.NotificationService _notification;
-  gzip_cache.UserCache _cache;
+  final gzip_cache.UserCache _cache;
 
-  User(this._userStore, this._notification, this._authservice) {
-    _cache = new gzip_cache.UserCache(_userStore, _userStore.onUserChange);
-  }
+  User(this._userStore, this._notification, this._authservice, this._cache);
 
   /**
    * HTTP Request handler for returning a single user resource.

@@ -20,6 +20,7 @@ import 'package:args/args.dart';
 import 'package:logging/logging.dart';
 import 'package:orf/dialplan_tools.dart' as dialplanTools;
 import 'package:orf/filestore.dart' as filestore;
+import 'package:orf/gzip_cache.dart' as gzip_cache;
 import 'package:orf/service-io.dart' as service;
 import 'package:orf/service.dart' as service;
 import 'package:ors/configuration.dart';
@@ -154,11 +155,15 @@ Future main(List<String> args) async {
           'all calls to ${compiler.option.testNumber}'}');
   _log.fine('Deploying generated xml files to $fsConfPath subdirs');
 
+  gzip_cache.DialplanCache _cache =
+      new gzip_cache.DialplanCache(_dpStore, _dpStore.onChange);
+
   final controller.Ivr ivrHandler =
       new controller.Ivr(_ivrStore, compiler, _authentication, fsConfPath);
+
   final controller.ReceptionDialplan receptionDialplanHandler =
       new controller.ReceptionDialplan(_dpStore, _rStore, _authentication,
-          compiler, ivrHandler, fsConfPath, eslConfig);
+          compiler, ivrHandler, fsConfPath, eslConfig, _cache);
 
   final controller.PeerAccount peerAccountHandler =
       new controller.PeerAccount(_userStore, compiler, fsConfPath);

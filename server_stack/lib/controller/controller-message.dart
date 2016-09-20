@@ -31,16 +31,13 @@ class Message {
   final Logger _log = new Logger('controller.message');
   final service.Authentication _authService;
   final service.NotificationService _notification;
-  gzip_cache.MessageCache _cache;
+  final gzip_cache.MessageCache _cache;
 
   final filestore.Message _messageStore;
   final storage.MessageQueue _messageQueue;
 
   Message(this._messageStore, this._messageQueue, this._authService,
-      this._notification) {
-    _cache =
-        new gzip_cache.MessageCache(_messageStore, _messageStore.changeStream);
-  }
+      this._notification, this._cache);
 
   /**
    * HTTP Request handler for returning a single message resource.

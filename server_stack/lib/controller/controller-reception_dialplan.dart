@@ -24,6 +24,8 @@ import 'package:logging/logging.dart';
 import 'package:orf/dialplan_tools.dart' as dialplanTools;
 import 'package:orf/exceptions.dart';
 import 'package:orf/filestore.dart' as database;
+import 'package:orf/gzip_cache.dart' as gzip_cache;
+
 import 'package:orf/model.dart' as model;
 import 'package:orf/service.dart' as service;
 import 'package:ors/configuration.dart';
@@ -42,6 +44,7 @@ class ReceptionDialplan {
   final String fsConfPath;
   final Ivr _ivrController;
   final service.Authentication _authService;
+  final gzip_cache.DialplanCache _cache;
 
   final Logger _log = new Logger('server.controller.dialplan');
   esl.Connection _eslClient;
@@ -57,7 +60,8 @@ class ReceptionDialplan {
       this.compiler,
       this._ivrController,
       this.fsConfPath,
-      this.eslConfig) {
+      this.eslConfig,
+      this._cache) {
     _connectESLClient();
   }
 
@@ -97,7 +101,13 @@ class ReceptionDialplan {
       return authServerDown();
     }
 
-    return okJson(await _receptionDialplanStore.create(rdp, user));
+    await _receptionDialplanStore.create(rdp, user);
+
+    try {
+      return okGzip(new Stream.fromIterable([await _cache.get(rdp.extension)]));
+    } on NotFound catch (e) {
+      return notFound(e.toString());
+    }
   }
 
   /**
@@ -145,17 +155,23 @@ class ReceptionDialplan {
     final String extension = shelf_route.getPathParameter(request, 'extension');
 
     try {
-      return okJson(await _receptionDialplanStore.get(extension));
-    } on NotFound {
-      return notFound('No dialplan with extension $extension');
+      return okGzip(new Stream.fromIterable([await _cache.get(extension)]));
+    } on NotFound catch (e) {
+      return notFound(e.toString());
     }
   }
 
   /**
    *
    */
-  Future<shelf.Response> list(shelf.Request request) async =>
-      okJson((await _receptionDialplanStore.list()).toList(growable: false));
+  Future<shelf.Response> list(shelf.Request request) async {
+    try {
+      return okGzip(new Stream.fromIterable(
+          [(await _cache.list()).toList(growable: false)]));
+    } on NotFound catch (e) {
+      return notFound(e.toString());
+    }
+  }
 
   /**
    *
