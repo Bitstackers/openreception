@@ -50,7 +50,7 @@ class ReceptionData implements Event {
         state = Change.deleted;
 
   /// Create a new [ReceptionData] object from serialized data stored in [map].
-  ReceptionData.fromMap(Map<String, dynamic> map)
+  ReceptionData.fromJson(Map<String, dynamic> map)
       : cid = map[_Key._receptionData][_Key._cid],
         rid = map[_Key._receptionData][_Key._rid],
         state = map[_Key._receptionData][_Key._state],

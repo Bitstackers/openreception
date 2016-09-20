@@ -92,7 +92,7 @@ class Message {
     model.Message message;
     try {
       content = await request.readAsString();
-      message = new model.Message.fromMap(
+      message = new model.Message.fromJson(
           JSON.decode(content) as Map<String, dynamic>)..sender = modifier;
       if (message.id == model.Message.noId) {
         return clientError('Refusing to update a non-existing message. '
@@ -211,7 +211,7 @@ class Message {
     model.Message message;
     try {
       content = await request.readAsString();
-      message = new model.Message.fromMap(
+      message = new model.Message.fromJson(
           JSON.decode(content) as Map<String, dynamic>)..sender = user;
 
       if ([model.Message.noId, null].contains(message.id)) {
@@ -260,7 +260,7 @@ class Message {
     model.Message message;
     try {
       content = await request.readAsString();
-      message = new model.Message.fromMap(
+      message = new model.Message.fromJson(
           JSON.decode(content) as Map<String, dynamic>)
         ..sender = modifier
         ..createdAt = new DateTime.now();

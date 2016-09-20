@@ -51,7 +51,7 @@ abstract class _EventCalendarChange {
 
   static void serializationDeserialization() {
     event.CalendarChange built = buildObject();
-    event.CalendarChange deserialized = new event.CalendarChange.fromMap(
+    event.CalendarChange deserialized = new event.CalendarChange.fromJson(
         JSON.decode(JSON.encode(built)) as Map<String, dynamic>);
 
     expect(built.eid, equals(deserialized.eid));

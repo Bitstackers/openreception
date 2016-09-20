@@ -23,7 +23,7 @@ class CallPark extends CallEvent {
   CallPark(model.Call call) : super(call);
 
   /// Create a new [CallPark] object from serialized data stored in [map].
-  CallPark.fromMap(Map<String, dynamic> map) : super.fromMap(map);
+  CallPark.fromJson(Map<String, dynamic> map) : super.fromJson(map);
 
   /// Returns an umodifiable map representation of the object, suitable for
   /// serialization.

@@ -82,7 +82,7 @@ class CallFlowControl {
 
     return _backend.get(uri).then(JSON.decode).then(
         (Iterable<Map<String, dynamic>> callMaps) => callMaps
-            .map((Map<String, dynamic> map) => new model.Call.fromMap(map)));
+            .map((Map<String, dynamic> map) => new model.Call.fromJson(map)));
   }
 
   /// Retrives the a specific channel as a Map.
@@ -102,7 +102,7 @@ class CallFlowControl {
     return _backend
         .get(uri)
         .then(JSON.decode)
-        .then((Map<String, dynamic> map) => new model.Call.fromMap(map));
+        .then((Map<String, dynamic> map) => new model.Call.fromJson(map));
   }
 
   /// Hangs up the call identified by [callID].
@@ -120,7 +120,7 @@ class CallFlowControl {
     uri = _appendToken(uri, token);
 
     return _backend.post(uri, '').then(JSON.decode).then(
-        (Map<String, dynamic> callMap) => new model.Call.fromMap(callMap));
+        (Map<String, dynamic> callMap) => new model.Call.fromJson(callMap));
   }
 
   /// Parks the call identified by [callID].
@@ -131,7 +131,7 @@ class CallFlowControl {
     return _backend
         .post(uri, '')
         .then(JSON.decode)
-        .then((Map<String, dynamic> map) => new model.Call.fromMap(map));
+        .then((Map<String, dynamic> map) => new model.Call.fromJson(map));
   }
 
   /// Retrives the current Peer list.
@@ -143,7 +143,7 @@ class CallFlowControl {
         .get(uri)
         .then((String response) => (JSON.decode(response)))
         .then((Iterable<Map<String, dynamic>> maps) => maps
-            .map((Map<String, dynamic> map) => new model.Peer.fromMap(map)));
+            .map((Map<String, dynamic> map) => new model.Peer.fromJson(map)));
   }
 
   /// Picks up the call identified by [callID].
@@ -152,7 +152,7 @@ class CallFlowControl {
     uri = _appendToken(uri, token);
 
     return _backend.post(uri, '').then(JSON.decode).then(
-        (Map<String, dynamic> callMap) => new model.Call.fromMap(callMap));
+        (Map<String, dynamic> callMap) => new model.Call.fromJson(callMap));
   }
 
   /// Asks the server to perform a reload.

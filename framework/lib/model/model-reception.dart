@@ -50,7 +50,7 @@ class Reception {
   /// Default initializing contructor
   Reception.empty();
 
-  Reception.fromMap(Map<String, dynamic> receptionMap) {
+  Reception.fromJson(Map<String, dynamic> receptionMap) {
     try {
       this
         ..id = receptionMap[key.id]
@@ -74,7 +74,7 @@ class Reception {
   }
 
   static Reception decode(Map<String, dynamic> map) =>
-      new Reception.fromMap(map);
+      new Reception.fromJson(map);
 
   static Stream<Reception> get onReceptionChange => _receptionChange.stream;
 
@@ -117,7 +117,7 @@ class Reception {
       ..miniWiki = attributes[key.miniWiki]
       ..phoneNumbers =
           (attributes[key.phoneNumbers] as Iterable<Map<String, dynamic>>)
-              .map((Map<String, dynamic> map) => new PhoneNumber.fromMap(map))
+              .map((Map<String, dynamic> map) => new PhoneNumber.fromJson(map))
               .toList()
       ..product = attributes[key.product] as String
       ..openingHours = attributes[key.openingHours] as List<String>

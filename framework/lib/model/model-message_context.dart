@@ -25,7 +25,7 @@ class MessageContext {
   /// Default deserializing constructor.
   ///
   /// Deserializes the object from Map representation.
-  MessageContext.fromMap(Map<String, dynamic> map)
+  MessageContext.fromJson(Map<String, dynamic> map)
       : cid = map[key.cid],
         contactName = map[key.contactName],
         rid = map[key.rid],

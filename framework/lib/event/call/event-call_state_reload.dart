@@ -25,7 +25,7 @@ class CallStateReload implements Event {
   CallStateReload() : this.timestamp = new DateTime.now();
 
   /// Create a new [CallStateReload] object from serialized data stored in [map].
-  CallStateReload.fromMap(Map<String, dynamic> map)
+  CallStateReload.fromJson(Map<String, dynamic> map)
       : this.timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 
   /// Returns an umodifiable map representation of the object, suitable for

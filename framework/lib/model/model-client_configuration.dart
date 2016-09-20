@@ -36,7 +36,7 @@ class ClientConfiguration {
   ClientConfiguration.empty();
 
   /// Build an object from a serialized map.
-  ClientConfiguration.fromMap(Map<String, dynamic> map)
+  ClientConfiguration.fromJson(Map<String, dynamic> map)
       : authServerUri = Uri.parse(map[key.authServerURI]),
         calendarServerUri = Uri.parse(map[key.calendarServerUri]),
         callFlowServerUri = Uri.parse(map[key.callFlowServerURI]),

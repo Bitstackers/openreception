@@ -38,7 +38,7 @@ class ContactChange implements Event {
         modifierUid = uid != null ? uid : model.User.noId;
 
   /// Create a new [ContactChange] object from serialized data stored in [map].
-  ContactChange.fromMap(Map<String, dynamic> map)
+  ContactChange.fromJson(Map<String, dynamic> map)
       : cid = map[_Key._calendarChange][_Key._cid],
         modifierUid = map[_Key._calendarChange][_Key._modifierUid],
         state = map[_Key._calendarChange][_Key._state],

@@ -52,7 +52,7 @@ class RESTUserStore implements storage.User {
         .get(url)
         .then((String reponse) => JSON.decode(reponse))
         .then(((Map<String, dynamic> userMap) =>
-            new model.User.fromMap(userMap)));
+            new model.User.fromJson(userMap)));
   }
 
   @override
@@ -61,7 +61,7 @@ class RESTUserStore implements storage.User {
     url = _appendToken(url, this.token);
 
     return _backend.get(url).then(JSON.decode).then(
-        ((Map<String, dynamic> userMap) => new model.User.fromMap(userMap)));
+        ((Map<String, dynamic> userMap) => new model.User.fromJson(userMap)));
   }
 
   @override
@@ -127,7 +127,7 @@ class RESTUserStore implements storage.User {
     return _backend
         .post(uri, '')
         .then(JSON.decode)
-        .then((Map<String, dynamic> map) => new model.UserStatus.fromMap(map));
+        .then((Map<String, dynamic> map) => new model.UserStatus.fromJson(map));
   }
 
   /// Returns an Iterable representation of the all the [model.UserStatus]
@@ -138,7 +138,7 @@ class RESTUserStore implements storage.User {
 
     return _backend.get(uri).then(JSON.decode).then(
         (Iterable<Map<String, dynamic>> maps) => maps.map(
-            (Map<String, dynamic> map) => new model.UserStatus.fromMap(map)));
+            (Map<String, dynamic> map) => new model.UserStatus.fromJson(map)));
   }
 
   /// Updates the [model.UserStatus] object associated with [userId] to
@@ -153,7 +153,7 @@ class RESTUserStore implements storage.User {
     return _backend
         .post(uri, '')
         .then(JSON.decode)
-        .then((Map<String, dynamic> map) => new model.UserStatus.fromMap(map));
+        .then((Map<String, dynamic> map) => new model.UserStatus.fromJson(map));
   }
 
   @override

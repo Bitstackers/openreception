@@ -35,7 +35,7 @@ class CalendarEntry {
   /// 'start' and 'stop' MUST be in a format that can be parsed by the
   /// [DateTime.parse] method. Please use the methods in the [util] library
   /// to help getting the right format. 'content' is the actual entry body.
-  CalendarEntry.fromMap(Map<String, dynamic> map)
+  CalendarEntry.fromJson(Map<String, dynamic> map)
       : id = map[key.id],
         lastAuthorId = map[key.uid],
         touched = util.unixTimestampToDateTime(map[key.touched]),
@@ -45,7 +45,7 @@ class CalendarEntry {
 
   /// Decoding factory.
   static CalendarEntry decode(Map<String, dynamic> map) => map.isNotEmpty
-      ? new CalendarEntry.fromMap(map)
+      ? new CalendarEntry.fromJson(map)
       : new CalendarEntry.empty();
 
   /// Return true if now is between after [start] and before [stop].

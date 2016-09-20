@@ -44,7 +44,7 @@ class MessageEndpoint {
   MessageEndpoint.empty();
 
   /// Deserializing constructor.
-  MessageEndpoint.fromMap(Map<String, dynamic> map) {
+  MessageEndpoint.fromJson(Map<String, dynamic> map) {
     type = map[key.type];
     name = map.containsKey(key.name) ? map[key.name] : '';
     address = map[key.address];
@@ -52,8 +52,9 @@ class MessageEndpoint {
   }
 
   /// Deserializing factory
+  @deprecated
   static MessageEndpoint decode(Map<String, dynamic> map) =>
-      new MessageEndpoint.fromMap(map);
+      new MessageEndpoint.fromJson(map);
 
   /// JSON encoding function.
   Map<String, dynamic> toJson() => <String, dynamic>{

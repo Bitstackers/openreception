@@ -24,7 +24,7 @@ void _testModelCalendarCommit() {
 abstract class _ModelCalendarEntryChange {
   static void deserialization() {
     model.Commit built = buildObject();
-    model.Commit deserialized = new model.Commit.fromMap(
+    model.Commit deserialized = new model.Commit.fromJson(
         JSON.decode(JSON.encode(built)) as Map<String, dynamic>);
 
     expect(built.toJson(), equals(deserialized.toJson()));

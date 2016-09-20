@@ -20,13 +20,14 @@ class AgentStatistics {
 
   const AgentStatistics(this.uid, this.recent, this.total);
 
-  AgentStatistics.fromMap(Map<String, dynamic> map)
+  AgentStatistics.fromJson(Map<String, dynamic> map)
       : uid = map[key.uid],
         recent = map[key.recent],
         total = map[key.total];
 
   static AgentStatistics decode(Map<String, dynamic> map) =>
-      new AgentStatistics.fromMap(map);
+      new AgentStatistics.fromJson(map);
 
-  Map<String, dynamic>  toJson() => <String, dynamic> {key.uid: uid, key.recent: recent, key.total: total};
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{key.uid: uid, key.recent: recent, key.total: total};
 }

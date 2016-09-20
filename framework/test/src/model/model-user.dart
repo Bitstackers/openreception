@@ -35,7 +35,7 @@ abstract class _ModelUser {
   static void deserialization() {
     model.User builtObject = buildObject();
     String serializedString = JSON.encode(builtObject);
-    model.User deserializedObject = new model.User.fromMap(
+    model.User deserializedObject = new model.User.fromJson(
         JSON.decode(serializedString) as Map<String, dynamic>);
 
     expect(builtObject.id, equals(deserializedObject.id));

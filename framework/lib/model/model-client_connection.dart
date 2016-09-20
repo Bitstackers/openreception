@@ -26,7 +26,7 @@ class ClientConnection {
   ClientConnection.empty();
 
   /// Deserializing constructor.
-  ClientConnection.fromMap(Map<String, dynamic> map) {
+  ClientConnection.fromJson(Map<String, dynamic> map) {
     userID = map[key.uid];
     connectionCount = map[key.connectionCount];
   }

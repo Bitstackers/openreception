@@ -50,7 +50,7 @@ class NotificationService {
     return await _httpClient.get(uri).then(JSON.decode).then(
         (Iterable<Map<String, dynamic>> maps) => maps.map(
             (Map<String, dynamic> map) =>
-                new model.ClientConnection.fromMap(map)));
+                new model.ClientConnection.fromJson(map)));
   }
 
   /// Retrieves the [ClientConnection] currently associated with [uid].
@@ -59,7 +59,7 @@ class NotificationService {
     uri = _appendToken(uri, _clientToken);
 
     return _httpClient.get(uri).then(JSON.decode).then(
-        (Map<String, dynamic> map) => new model.ClientConnection.fromMap(map));
+        (Map<String, dynamic> map) => new model.ClientConnection.fromJson(map));
   }
 
   /// Sends an event via the notification server to [recipients]

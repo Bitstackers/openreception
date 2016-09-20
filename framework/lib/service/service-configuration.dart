@@ -93,14 +93,14 @@ class RESTConfiguration {
     final Uri uri = resource.Config.get(this.host);
 
     return _backend.get(uri).then((String response) =>
-        new model.ClientConfiguration.fromMap(
+        new model.ClientConfiguration.fromJson(
             JSON.decode(response) as Map<String, dynamic>));
   }
 
   ///Registers a server in the config server registry.
   Future<Null> register(ServerType type, Uri registerUri) async {
     final Uri uri = resource.Config.register(this.host);
-    final Map<String, dynamic> body = <String,dynamic>{
+    final Map<String, dynamic> body = <String, dynamic>{
       'type': _encodeServerType(type),
       'uri': registerUri.toString()
     };

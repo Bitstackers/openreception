@@ -167,7 +167,7 @@ abstract class _ModelCall {
   static void deserialization() {
     model.Call builtCall = buildObject();
     String serializedObject = JSON.encode(builtCall);
-    model.Call decodedCall = new model.Call.fromMap(
+    model.Call decodedCall = new model.Call.fromJson(
         JSON.decode(serializedObject) as Map<String, dynamic>);
 
     expect(builtCall.id, equals(decodedCall.id));

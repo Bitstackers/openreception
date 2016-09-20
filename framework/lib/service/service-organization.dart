@@ -63,7 +63,7 @@ class RESTOrganizationStore implements storage.Organization {
     url = _appendToken(url, this.token);
 
     return this._backend.get(url).then((String response) =>
-        new model.Organization.fromMap(
+        new model.Organization.fromJson(
             JSON.decode(response) as Map<String, dynamic>));
   }
 

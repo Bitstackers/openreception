@@ -23,7 +23,7 @@ class CallOffer extends CallEvent {
   CallOffer(model.Call call) : super(call);
 
   /// Create a new [CallOffer] object from serialized data stored in [map].
-  CallOffer.fromMap(Map<String, dynamic> map) : super.fromMap(map);
+  CallOffer.fromJson(Map<String, dynamic> map) : super.fromJson(map);
 
   /// Returns an umodifiable map representation of the object, suitable for
   /// serialization.

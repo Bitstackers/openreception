@@ -29,9 +29,9 @@ class CallUnassign extends CallEvent {
   CallUnassign(model.Call call, this.uid) : super(call);
 
   /// Create a new [CallUnassign] object from serialized data stored in [map].
-  CallUnassign.fromMap(Map<String, dynamic> map)
+  CallUnassign.fromJson(Map<String, dynamic> map)
       : uid = map[_Key._modifierUid],
-        super.fromMap(map);
+        super.fromJson(map);
 
   /// Returns an umodifiable map representation of the object, suitable for
   /// serialization.

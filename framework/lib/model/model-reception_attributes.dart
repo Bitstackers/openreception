@@ -65,7 +65,7 @@ class ReceptionAttributes {
   List<String> departments = <String>[];
   List<String> infos = <String>[];
 
-  ReceptionAttributes.fromMap(Map<String, dynamic> map)
+  ReceptionAttributes.fromJson(Map<String, dynamic> map)
       : phoneNumbers =
             new List<PhoneNumber>.from(map[key.phones].map(PhoneNumber.decode)),
         endpoints = new List<MessageEndpoint>.from(
@@ -88,7 +88,7 @@ class ReceptionAttributes {
   ReceptionAttributes.empty();
 
   static ReceptionAttributes decode(Map<String, dynamic> map) =>
-      new ReceptionAttributes.fromMap(map);
+      new ReceptionAttributes.fromJson(map);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         key.cid: cid,

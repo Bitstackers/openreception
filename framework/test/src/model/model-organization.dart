@@ -34,7 +34,7 @@ abstract class _ModelOrganization {
     model.Organization builtObject = buildObject();
 
     String serializedObject = JSON.encode(builtObject);
-    model.Organization decodedObject = new model.Organization.fromMap(
+    model.Organization decodedObject = new model.Organization.fromJson(
         JSON.decode(serializedObject) as Map<String, dynamic>);
 
     expect(builtObject.notes, equals(decodedObject.notes));

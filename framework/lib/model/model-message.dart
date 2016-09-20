@@ -50,7 +50,7 @@ class Message {
   Message.empty();
 
   /// Deserializing constructor.
-  Message.fromMap(Map<String, dynamic> map) {
+  Message.fromJson(Map<String, dynamic> map) {
     Iterable<MessageEndpoint> iterRcp =
         (map[key.recipients] as Iterable<Map<String, dynamic>>)
             .map(MessageEndpoint.decode);
@@ -58,13 +58,13 @@ class Message {
     id = (map.containsKey(key.id) ? map[key.id] : noId);
     recipients.addAll(iterRcp);
     context =
-        new MessageContext.fromMap(map[key.context] as Map<String, dynamic>);
+        new MessageContext.fromJson(map[key.context] as Map<String, dynamic>);
     flag = new MessageFlag(map['flags'] as List<String>);
     callerInfo =
-        new CallerInfo.fromMap(map[key.caller] as Map<String, dynamic>);
+        new CallerInfo.fromJson(map[key.caller] as Map<String, dynamic>);
     body = map[key.body];
     callId = map[key.callId];
-    sender = User.decode(map[key.takenByAgent] as Map<String, dynamic>);
+    sender = new User.fromJson(map[key.takenByAgent] as Map<String, dynamic>);
     createdAt = util.unixTimestampToDateTime(map[key.createdAt]);
 
     if (map[key.state] == null) {

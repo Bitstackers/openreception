@@ -38,7 +38,7 @@ class CalendarChangelogEntry implements ChangelogEntry {
         entry = new CalendarEntry.empty()..id = eid,
         timestamp = new DateTime.now();
 
-  CalendarChangelogEntry.fromMap(Map<String, dynamic> map)
+  CalendarChangelogEntry.fromJson(Map<String, dynamic> map)
       : modifier =
             UserReference.decode(map['modifier'] as Map<String, dynamic>),
         entry = CalendarEntry.decode(map['entry'] as Map<String, dynamic>),
@@ -80,7 +80,7 @@ class ContactChangelogEntry implements ChangelogEntry {
         contact = new BaseContact.empty()..id = cid,
         timestamp = new DateTime.now();
 
-  ContactChangelogEntry.fromMap(Map<String, dynamic> map)
+  ContactChangelogEntry.fromJson(Map<String, dynamic> map)
       : modifier =
             UserReference.decode(map['modifier'] as Map<String, dynamic>),
         contact = BaseContact.decode(map['contact'] as Map<String, dynamic>),
@@ -124,7 +124,7 @@ class ReceptionDataChangelogEntry implements ChangelogEntry {
           ..receptionId = rid,
         timestamp = new DateTime.now();
 
-  ReceptionDataChangelogEntry.fromMap(Map<String, dynamic> map)
+  ReceptionDataChangelogEntry.fromJson(Map<String, dynamic> map)
       : modifier =
             UserReference.decode(map['modifier'] as Map<String, dynamic>),
         attributes = ReceptionAttributes
@@ -167,7 +167,7 @@ class IvrChangelogEntry implements ChangelogEntry {
         menu = new IvrMenu('', new Playback(''))..name = menuName,
         timestamp = new DateTime.now();
 
-  IvrChangelogEntry.fromMap(Map<String, dynamic> map)
+  IvrChangelogEntry.fromJson(Map<String, dynamic> map)
       : modifier =
             UserReference.decode(map['modifier'] as Map<String, dynamic>),
         menu = IvrMenu.decode(map['menu'] as Map<String, dynamic>),
@@ -209,7 +209,7 @@ class DialplanChangelogEntry implements ChangelogEntry {
         dialplan = new ReceptionDialplan()..extension = extension,
         timestamp = new DateTime.now();
 
-  DialplanChangelogEntry.fromMap(Map<String, dynamic> map)
+  DialplanChangelogEntry.fromJson(Map<String, dynamic> map)
       : modifier =
             UserReference.decode(map['modifier'] as Map<String, dynamic>),
         dialplan =
@@ -252,7 +252,7 @@ class ReceptionChangelogEntry implements ChangelogEntry {
         reception = new Reception.empty()..id = rid,
         timestamp = new DateTime.now();
 
-  ReceptionChangelogEntry.fromMap(Map<String, dynamic> map)
+  ReceptionChangelogEntry.fromJson(Map<String, dynamic> map)
       : modifier =
             UserReference.decode(map['modifier'] as Map<String, dynamic>),
         reception = Reception.decode(map['reception'] as Map<String, dynamic>),
@@ -294,7 +294,7 @@ class OrganizationChangelogEntry implements ChangelogEntry {
         organization = new Organization.empty()..id = oid,
         timestamp = new DateTime.now();
 
-  OrganizationChangelogEntry.fromMap(Map<String, dynamic> map)
+  OrganizationChangelogEntry.fromJson(Map<String, dynamic> map)
       : modifier =
             UserReference.decode(map['modifier'] as Map<String, dynamic>),
         organization =
@@ -337,7 +337,7 @@ class UserChangelogEntry implements ChangelogEntry {
         user = new User.empty()..id = uid,
         timestamp = new DateTime.now();
 
-  UserChangelogEntry.fromMap(Map<String, dynamic> map)
+  UserChangelogEntry.fromJson(Map<String, dynamic> map)
       : modifier =
             UserReference.decode(map['modifier'] as Map<String, dynamic>),
         user = User.decode(map['user'] as Map<String, dynamic>),
@@ -479,7 +479,7 @@ class Commit {
   Commit();
 
   /// Deserializing constructor.
-  Commit.fromMap(Map<String, dynamic> map)
+  Commit.fromJson(Map<String, dynamic> map)
       : changes = new List<ObjectChange>.from(
             (map[key.changes] as Iterable<Map<String, dynamic>>)
                 .map(ObjectChange.decode)),
@@ -489,7 +489,8 @@ class Commit {
         uid = map[key.uid];
 
   /// Decoding factory.
-  static Commit decode(Map<String, dynamic> map) => new Commit.fromMap(map);
+  @deprecated
+  static Commit decode(Map<String, dynamic> map) => new Commit.fromJson(map);
 
   /// Returns a map representation of the object.
   ///

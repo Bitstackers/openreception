@@ -23,7 +23,7 @@ class QueueLeave extends CallEvent {
   QueueLeave(model.Call call) : super(call);
 
   /// Create a new [QueueLeave] object from serialized data stored in [map].
-  QueueLeave.fromMap(Map<String, dynamic> map) : super.fromMap(map);
+  QueueLeave.fromJson(Map<String, dynamic> map) : super.fromJson(map);
 
   /// Returns an umodifiable map representation of the object, suitable for
   /// serialization.

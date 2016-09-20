@@ -29,7 +29,7 @@ class ChannelState implements Event {
   ChannelState(this.channelUuid) : timestamp = new DateTime.now();
 
   /// Create a new [ChannelState] object from serialized data stored in [map].
-  ChannelState.fromMap(Map<String, dynamic> map)
+  ChannelState.fromJson(Map<String, dynamic> map)
       : channelUuid = map[_Key._channel][_Key._id],
         timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 

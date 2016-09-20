@@ -113,7 +113,7 @@ class Phonenumbers {
     final List pnMaps = JSON.decode(_phonenumberInput.value);
 
     return pnMaps
-        .map((m) => new model.PhoneNumber.fromMap(m as Map<String, dynamic>));
+        .map((m) => new model.PhoneNumber.fromJson(m as Map<String, dynamic>));
   }
 
   void _resizeInput() {

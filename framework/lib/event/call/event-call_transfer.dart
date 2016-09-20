@@ -23,7 +23,7 @@ class CallTransfer extends CallEvent {
   CallTransfer(model.Call call) : super(call);
 
   /// Create a new [CallTransfer] object from serialized data stored in [map].
-  CallTransfer.fromMap(Map<String, dynamic> map) : super.fromMap(map);
+  CallTransfer.fromJson(Map<String, dynamic> map) : super.fromJson(map);
 
   /// Returns an umodifiable map representation of the object, suitable for
   /// serialization.

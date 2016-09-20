@@ -35,7 +35,7 @@ abstract class _ModelReceptionAttributes {
   static void deserialization() {
     model.ReceptionAttributes builtObject = buildObject();
     model.ReceptionAttributes deserializedObject =
-        new model.ReceptionAttributes.fromMap(
+        new model.ReceptionAttributes.fromJson(
             JSON.decode(JSON.encode(builtObject)) as Map<String, dynamic>);
 
     expect(builtObject.receptionId, equals(deserializedObject.receptionId));

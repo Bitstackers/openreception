@@ -24,7 +24,7 @@ void _testModelMessageEndpoint() {
 abstract class _ModelMessageEndpoint {
   static void deserialization() {
     model.MessageEndpoint obj = buildObject();
-    model.MessageEndpoint deserializedObj = new model.MessageEndpoint.fromMap(
+    model.MessageEndpoint deserializedObj = new model.MessageEndpoint.fromJson(
         JSON.decode(JSON.encode(obj)) as Map<String, dynamic>);
 
     expect(obj.address, equals(deserializedObj.address));

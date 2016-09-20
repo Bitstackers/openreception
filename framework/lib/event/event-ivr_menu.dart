@@ -47,7 +47,7 @@ class IvrMenuChange implements Event {
       new IvrMenuChange._internal(menuName, modifierUid, Change.deleted);
 
   /// Create a new [IvrMenuChange] object from serialized data stored in [map].
-  IvrMenuChange.fromMap(Map<String, dynamic> map)
+  IvrMenuChange.fromJson(Map<String, dynamic> map)
       : modifierUid = map[_Key._modifierUid],
         menuName = map[_Key._menuName],
         state = map[_Key._state],

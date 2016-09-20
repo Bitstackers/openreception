@@ -91,7 +91,7 @@ class User {
   User.empty();
 
   /// Deserializing constructor.
-  User.fromMap(Map<String, dynamic> map)
+  User.fromJson(Map<String, dynamic> map)
       : id = map[key.id],
         address = map[key.address],
         name = map[key.name],
@@ -105,7 +105,8 @@ class User {
             : '';
 
   /// Deserializing factory
-  static User decode(Map<String, dynamic> map) => new User.fromMap(map);
+  @deprecated
+  static User decode(Map<String, dynamic> map) => new User.fromJson(map);
 
   /// Serialization function.
   Map<String, dynamic> toJson() => <String, dynamic>{

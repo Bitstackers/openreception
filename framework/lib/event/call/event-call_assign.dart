@@ -31,9 +31,9 @@ class CallAssign extends CallEvent {
   CallAssign(model.Call call, this.uid) : super(call);
 
   /// Create a new [CallAssign] object from serialized data stored in [map].
-  CallAssign.fromMap(Map<String, dynamic> map)
+  CallAssign.fromJson(Map<String, dynamic> map)
       : uid = map[_Key._modifierUid],
-        super.fromMap(map);
+        super.fromJson(map);
 
   /// Returns an umodifiable map representation of the object, suitable for
   /// serialization.

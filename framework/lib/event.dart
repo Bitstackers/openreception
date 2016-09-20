@@ -145,85 +145,85 @@ abstract class Event {
     try {
       switch (eventName) {
         case _Key._widgetSelect:
-          return new WidgetSelect.fromMap(map);
+          return new WidgetSelect.fromJson(map);
 
         case _Key._focusChange:
-          return new FocusChange.fromMap(map);
+          return new FocusChange.fromJson(map);
 
         case _Key._peerState:
-          return new PeerState.fromMap(map);
+          return new PeerState.fromJson(map);
 
         case _Key._queueJoin:
-          return new QueueJoin.fromMap(map);
+          return new QueueJoin.fromJson(map);
 
         case _Key._queueLeave:
-          return new QueueLeave.fromMap(map);
+          return new QueueLeave.fromJson(map);
 
         case _Key._callLock:
-          return new CallLock.fromMap(map);
+          return new CallLock.fromJson(map);
 
         case _Key._callUnlock:
-          return new CallUnlock.fromMap(map);
+          return new CallUnlock.fromJson(map);
 
         case _Key._callOffer:
-          return new CallOffer.fromMap(map);
+          return new CallOffer.fromJson(map);
 
         case _Key._callTransfer:
-          return new CallTransfer.fromMap(map);
+          return new CallTransfer.fromJson(map);
 
         case _Key._callUnpark:
-          return new CallUnpark.fromMap(map);
+          return new CallUnpark.fromJson(map);
 
         case _Key._callPark:
-          return new CallPark.fromMap(map);
+          return new CallPark.fromJson(map);
 
         case _Key._callHangup:
-          return new CallHangup.fromMap(map);
+          return new CallHangup.fromJson(map);
 
         case _Key._callState:
-          return new CallStateChanged.fromMap(map);
+          return new CallStateChanged.fromJson(map);
 
         case _Key._callPickup:
-          return new CallPickup.fromMap(map);
+          return new CallPickup.fromJson(map);
 
         case _Key._channelState:
-          return new ChannelState.fromMap(map);
+          return new ChannelState.fromJson(map);
 
         case _Key._userState:
-          return new UserState.fromMap(map);
+          return new UserState.fromJson(map);
 
         case _Key._calendarChange:
-          return new CalendarChange.fromMap(map);
+          return new CalendarChange.fromJson(map);
 
         case _Key._contactChange:
-          return new ContactChange.fromMap(map);
+          return new ContactChange.fromJson(map);
 
         case _Key._organizationChange:
-          return new OrganizationChange.fromMap(map);
+          return new OrganizationChange.fromJson(map);
 
         case _Key._receptionChange:
-          return new ReceptionChange.fromMap(map);
+          return new ReceptionChange.fromJson(map);
 
         case _Key._receptionData:
-          return new ReceptionData.fromMap(map);
+          return new ReceptionData.fromJson(map);
 
         case _Key._connectionState:
-          return new ClientConnectionState.fromMap(map);
+          return new ClientConnectionState.fromJson(map);
 
         case _Key._messageChange:
-          return new MessageChange.fromMap(map);
+          return new MessageChange.fromJson(map);
 
         case _Key._userChange:
-          return new UserChange.fromMap(map);
+          return new UserChange.fromJson(map);
 
         case _Key._callStateReload:
-          return new CallStateReload.fromMap(map);
+          return new CallStateReload.fromJson(map);
 
         case _Key._dialplanChange:
-          return new DialplanChange.fromMap(map);
+          return new DialplanChange.fromJson(map);
 
         case _Key._ivrMenuChange:
-          return new IvrMenuChange.fromMap(map);
+          return new IvrMenuChange.fromJson(map);
 
         default:
           throw new FormatException('Unsupported event type: $eventName');

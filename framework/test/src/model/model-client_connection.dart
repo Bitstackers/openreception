@@ -25,7 +25,7 @@ abstract class _ModelClientConnection {
   static void deserialization() {
     model.ClientConnection builtObject = buildObject();
     String serializedObject = JSON.encode(builtObject);
-    model.ClientConnection decodedCall = new model.ClientConnection.fromMap(
+    model.ClientConnection decodedCall = new model.ClientConnection.fromJson(
         JSON.decode(serializedObject) as Map<String, dynamic>);
 
     expect(builtObject.connectionCount, equals(decodedCall.connectionCount));

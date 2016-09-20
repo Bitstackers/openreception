@@ -48,7 +48,7 @@ class OrganizationChange implements Event {
 
   /// Create a new [OrganizationChange] object from serialized data stored
   /// in [map].
-  OrganizationChange.fromMap(Map<String, dynamic> map)
+  OrganizationChange.fromJson(Map<String, dynamic> map)
       : this.oid = map[_Key._organizationChange][_Key._oid],
         this.state = map[_Key._organizationChange][_Key._state],
         this.modifierUid = map[_Key._organizationChange][_Key._modifierUid],

@@ -45,7 +45,7 @@ class FocusChange implements Event {
         timestamp = new DateTime.now();
 
   /// Create a new [FocusChange] object from serialized data stored in [map].
-  FocusChange.fromMap(Map<String, dynamic> map)
+  FocusChange.fromJson(Map<String, dynamic> map)
       : uid = map[_Key._changedBy],
         inFocus = map[_Key._inFocus],
         timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);

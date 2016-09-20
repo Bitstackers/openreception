@@ -47,7 +47,7 @@ class RESTReceptionStore implements storage.Reception {
     url = _appendToken(url, this.token);
 
     return this._backend.get(url).then((String response) =>
-        new model.Reception.fromMap(
+        new model.Reception.fromJson(
             JSON.decode(response) as Map<String, dynamic>));
   }
 

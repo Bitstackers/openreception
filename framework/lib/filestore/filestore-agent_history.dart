@@ -207,7 +207,7 @@ class AgentHistory {
     final File f = new File('$path/reports/${_dateKey(day)}.json.gz');
     if (f.existsSync()) {
       _log.finest('Loading existing report for ${_dateKey(day)}');
-      return new model.DailyReport.fromMap(
+      return new model.DailyReport.fromJson(
           unpackAndDeserializeObject(f.readAsBytesSync())
           as Map<String, dynamic>);
     } else {

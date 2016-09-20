@@ -60,7 +60,7 @@ class MessageChange implements Event {
       : timestamp = new DateTime.now();
 
   /// Create a new [MessageChange] object from serialized data stored in [map].
-  MessageChange.fromMap(Map<String, dynamic> map)
+  MessageChange.fromJson(Map<String, dynamic> map)
       : modifierUid = map.containsKey(_Key._modifierUid)
             ? map[_Key._modifierUid]
             : map.containsKey('messageChange')

@@ -25,7 +25,7 @@ class CallStateChanged extends CallEvent {
   CallStateChanged(model.Call call) : super(call);
 
   /// Create a new [CallStateChanged] object from serialized data stored in [map].
-  CallStateChanged.fromMap(Map<String, dynamic> map) : super.fromMap(map);
+  CallStateChanged.fromJson(Map<String, dynamic> map) : super.fromJson(map);
 
   /// Returns an umodifiable map representation of the object, suitable for
   /// serialization.

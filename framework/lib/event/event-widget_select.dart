@@ -33,7 +33,7 @@ class WidgetSelect implements Event {
   WidgetSelect(this.uid, this.widgetName) : timestamp = new DateTime.now();
 
   /// Create a new [WidgetSelect] object from serialized data stored in [map].
-  WidgetSelect.fromMap(Map<String, dynamic> map)
+  WidgetSelect.fromJson(Map<String, dynamic> map)
       : uid = map[_Key._changedBy],
         widgetName = map[_Key._widget],
         timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);

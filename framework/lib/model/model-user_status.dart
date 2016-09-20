@@ -33,12 +33,12 @@ class UserStatus {
 
   const UserStatus(this.paused, this.userId);
 
-  UserStatus.fromMap(Map<String, dynamic> map)
+  UserStatus.fromJson(Map<String, dynamic> map)
       : userId = map[key.uid],
         paused = map[key.paused];
 
   static UserStatus decode(Map<String, dynamic> map) =>
-      new UserStatus.fromMap(map);
+      new UserStatus.fromJson(map);
 
   Map<String, dynamic> toJson() =>
       <String, dynamic>{key.uid: userId, key.paused: paused};

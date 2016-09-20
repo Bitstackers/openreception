@@ -22,7 +22,7 @@ class CallerInfo {
 
   CallerInfo.empty();
 
-  CallerInfo.fromMap(Map<String, dynamic> map) {
+  CallerInfo.fromJson(Map<String, dynamic> map) {
     name = map[key.name];
     company = map[key.company];
     phone = map[key.phone];
@@ -31,7 +31,7 @@ class CallerInfo {
   }
 
   static CallerInfo decode(Map<String, dynamic> map) =>
-      new CallerInfo.fromMap(map);
+      new CallerInfo.fromJson(map);
 
   @deprecated
   Map<String, dynamic> get asMap => toJson();

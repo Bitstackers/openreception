@@ -59,7 +59,7 @@ class RESTContactStore implements storage.Contact {
     url = _appendToken(url, token);
 
     return _backend.get(url).then((String response) =>
-        new model.BaseContact.fromMap(
+        new model.BaseContact.fromJson(
             JSON.decode(response) as Map<String, dynamic>));
   }
 
@@ -106,7 +106,7 @@ class RESTContactStore implements storage.Contact {
     url = _appendToken(url, token);
 
     return _backend.get(url).then((String response) =>
-        new model.ReceptionAttributes.fromMap(
+        new model.ReceptionAttributes.fromJson(
             JSON.decode(response) as Map<String, dynamic>));
   }
 

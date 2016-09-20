@@ -26,7 +26,7 @@ class MessageFilter {
   MessageFilter.empty();
 
   /// Deserializing constructor.
-  MessageFilter.fromMap(Map<String, dynamic> map) {
+  MessageFilter.fromJson(Map<String, dynamic> map) {
     userId = map.containsKey(key.uid) ? map[key.uid] : userId;
 
     receptionId = map.containsKey(key.rid) ? map[key.rid] : receptionId;

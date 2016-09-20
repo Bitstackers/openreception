@@ -34,7 +34,7 @@ abstract class _ModelClientConfiguration {
   static void serializationDeserialization() {
     model.ClientConfiguration builtObject = buildObject();
     model.ClientConfiguration deserializedObject =
-        new model.ClientConfiguration.fromMap(
+        new model.ClientConfiguration.fromJson(
             JSON.decode(JSON.encode(builtObject)) as Map<String, dynamic>);
 
     expect(builtObject.authServerUri, equals(deserializedObject.authServerUri));

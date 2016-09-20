@@ -24,7 +24,7 @@ class PhoneNumber {
   PhoneNumber.empty();
 
   /// Deserializing constructor.
-  PhoneNumber.fromMap(Map<String, dynamic> map)
+  PhoneNumber.fromJson(Map<String, dynamic> map)
       : note = map[key.note],
         _destination = map[key.destination],
         confidential = map[key.confidential];
@@ -47,7 +47,7 @@ class PhoneNumber {
   String _normalize(String str) => str.replaceAll(' ', '').replaceAll('+', '');
 
   static PhoneNumber decode(Map<String, dynamic> map) =>
-      new PhoneNumber.fromMap(map);
+      new PhoneNumber.fromJson(map);
 
   /// A phone number is, by this definition, equal to another phone number,
   /// if both their endpoint and type is the same.

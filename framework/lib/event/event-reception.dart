@@ -47,7 +47,7 @@ class ReceptionChange implements Event {
         this.timestamp = new DateTime.now();
 
   /// Create a new [ReceptionChange] object from serialized data stored in [map].
-  ReceptionChange.fromMap(Map<String, dynamic> map)
+  ReceptionChange.fromJson(Map<String, dynamic> map)
       : rid = map[_Key._receptionChange][_Key._rid],
         state = map[_Key._receptionChange][_Key._state],
         modifierUid = map[_Key._receptionChange][_Key._modifierUid],

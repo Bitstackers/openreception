@@ -33,7 +33,7 @@ class RESTMessageStore implements storage.Message {
   Future<model.Message> get(int mid) => this
       ._backend
       .get(_appendToken(resource.Message.single(this.host, mid), this.token))
-      .then((String response) => new model.Message.fromMap(
+      .then((String response) => new model.Message.fromJson(
           JSON.decode(response) as Map<String, dynamic>));
 
   @override
@@ -83,7 +83,7 @@ class RESTMessageStore implements storage.Message {
               _appendToken(
                   resource.Message.single(this.host, message.id), this.token),
               JSON.encode(message.asMap))
-          .then((String response) => new model.Message.fromMap(
+          .then((String response) => new model.Message.fromJson(
               JSON.decode(response) as Map<String, dynamic>));
 
   Future<Iterable<model.Message>> list({model.MessageFilter filter}) => this
@@ -92,7 +92,7 @@ class RESTMessageStore implements storage.Message {
           resource.Message.list(this.host, filter: filter), this.token))
       .then((String response) => (JSON.decode(response)
               as Iterable<Map<String, dynamic>>)
-          .map((Map<String, dynamic> map) => new model.Message.fromMap(map)));
+          .map((Map<String, dynamic> map) => new model.Message.fromJson(map)));
 
   @override
   Future<Iterable<model.Message>> listDay(DateTime day,
@@ -100,9 +100,9 @@ class RESTMessageStore implements storage.Message {
     Uri uri = resource.Message.listDay(host, day, filter: filter);
     uri = _appendToken(uri, token);
 
-    return _backend.get(uri).then((String response) =>
-        (JSON.decode(response) as Iterable<Map<String, dynamic>>)
-            .map((Map<String, dynamic> map) => new model.Message.fromMap(map)));
+    return _backend.get(uri).then((String response) => (JSON.decode(response)
+            as Iterable<Map<String, dynamic>>)
+        .map((Map<String, dynamic> map) => new model.Message.fromJson(map)));
   }
 
   @override
@@ -110,9 +110,9 @@ class RESTMessageStore implements storage.Message {
     Uri uri = resource.Message.listDrafts(host, filter: filter);
     uri = _appendToken(uri, token);
 
-    return _backend.get(uri).then((String response) =>
-        (JSON.decode(response) as Iterable<Map<String, dynamic>>)
-            .map((Map<String, dynamic> map) => new model.Message.fromMap(map)));
+    return _backend.get(uri).then((String response) => (JSON.decode(response)
+            as Iterable<Map<String, dynamic>>)
+        .map((Map<String, dynamic> map) => new model.Message.fromJson(map)));
   }
 
   @override

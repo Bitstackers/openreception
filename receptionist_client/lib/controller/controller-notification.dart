@@ -162,7 +162,7 @@ class Notification {
    * Handle the [OREvent.UserState] [event].
    */
   void _userState(event.UserState event) {
-    _agentStateChangeBus.fire(new model.UserStatus.fromMap(event.toJson()));
+    _agentStateChangeBus.fire(new model.UserStatus.fromJson(event.toJson()));
   }
 
   /**

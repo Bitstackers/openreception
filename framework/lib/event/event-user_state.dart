@@ -33,7 +33,7 @@ class UserState implements Event {
   UserState(this.status) : this.timestamp = new DateTime.now();
 
   /// Create a new [UserState] object from serialized data stored in [map].
-  UserState.fromMap(Map<String, dynamic> map)
+  UserState.fromJson(Map<String, dynamic> map)
       : this.status = new model.UserStatus(map[_Key._uid], map[_Key._paused]),
         this.timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]);
 

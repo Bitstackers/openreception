@@ -40,7 +40,7 @@ class MessageHistory {
   MessageHistory(this.mid, this.uid, this.createdAt);
 
   /// Creates a new [MessageHistory] log entry from a decoded map.
-  factory MessageHistory.fromMap(Map<String, dynamic> map) {
+  factory MessageHistory.fromJson(Map<String, dynamic> map) {
     final int mid = map['mid'] != null ? map['mid'] : Message.noId;
     final int uid = map['uid'] != null ? map['uid'] : User.noId;
 
@@ -200,13 +200,13 @@ class DailyReport {
   /// Create a new empty report.
   DailyReport.empty();
 
-  DailyReport.fromMap(Map<String, dynamic> map) {
+  DailyReport.fromJson(Map<String, dynamic> map) {
     callHistory.addAll((map['calls'] as Iterable<Map<String, dynamic>>)
-        .map((Map<String, dynamic> chMap) => new HistoricCall.fromMap(chMap)));
+        .map((Map<String, dynamic> chMap) => new HistoricCall.fromJson(chMap)));
 
     messageHistory.addAll((map['messages'] as Iterable<Map<String, dynamic>>)
-        .map(
-            (Map<String, dynamic> chMap) => new MessageHistory.fromMap(chMap)));
+        .map((Map<String, dynamic> chMap) =>
+            new MessageHistory.fromJson(chMap)));
   }
 
   /// Idicated whether or not this report has actual history entries.
@@ -305,7 +305,7 @@ class HistoricCall {
     _events.addAll(ac._events.map(simplifyEvent));
   }
 
-  HistoricCall.fromMap(Map<String, dynamic> map)
+  HistoricCall.fromJson(Map<String, dynamic> map)
       : callId = map['id'],
         uid = map['uid'],
         rid = map['rid'],
@@ -481,7 +481,7 @@ class UserStateHistory {
   const UserStateHistory(this.uid, this.timestamp, this.pause);
 
   /// Deserializing constructor.
-  UserStateHistory.fromMap(Map<String, dynamic> map)
+  UserStateHistory.fromJson(Map<String, dynamic> map)
       : uid = map['uid'],
         timestamp = DateTime.parse(map['t']),
         pause = map['p'];

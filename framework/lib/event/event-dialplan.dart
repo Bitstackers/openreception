@@ -47,7 +47,7 @@ class DialplanChange implements Event {
       new DialplanChange._internal(extension, modifierUid, Change.deleted);
 
   /// Create a new [DialplanChange] object from serialized data stored in [map].
-  DialplanChange.fromMap(Map<String, dynamic> map)
+  DialplanChange.fromJson(Map<String, dynamic> map)
       : modifierUid = map[_Key._modifierUid],
         extension = map[_Key._extension],
         state = map[_Key._state],

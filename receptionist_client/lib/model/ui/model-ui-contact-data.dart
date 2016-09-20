@@ -239,7 +239,7 @@ class UIContactData extends UIModel {
 
       if (li != null) {
         li.classes.toggle('ringing');
-        _busRinging.fire(new model.PhoneNumber.fromMap(
+        _busRinging.fire(new model.PhoneNumber.fromJson(
             JSON.decode(li.dataset['object']) as Map<String, dynamic>));
       }
     }

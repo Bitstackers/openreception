@@ -140,7 +140,7 @@ class UIContactCalendar extends UIModel {
    */
   model.CalendarEntry get firstCalendarEntry {
     try {
-      return new model.CalendarEntry.fromMap(
+      return new model.CalendarEntry.fromJson(
           JSON.decode(_list.children.first.dataset['object'])
           as Map<String, dynamic>);
     } catch (_) {
@@ -177,7 +177,7 @@ class UIContactCalendar extends UIModel {
     final LIElement selected = _list.querySelector('.selected');
 
     if (selected != null) {
-      return new model.CalendarEntry.fromMap(
+      return new model.CalendarEntry.fromJson(
           JSON.decode(selected.dataset['object']) as Map<String, dynamic>);
     } else {
       return new model.CalendarEntry.empty();
@@ -217,7 +217,7 @@ class UIContactCalendar extends UIModel {
         LIElement found;
         for (LIElement li in _list.children) {
           final model.CalendarEntry foundEntry =
-              new model.CalendarEntry.fromMap(
+              new model.CalendarEntry.fromJson(
                   JSON.decode(li.dataset['object']) as Map<String, dynamic>);
           if (foundEntry.start.isAfter(entry.start) ||
               foundEntry.start.isAtSameMomentAs(entry.start)) {

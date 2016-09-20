@@ -23,7 +23,7 @@ class CallUnlock extends CallEvent {
   CallUnlock(model.Call call) : super(call);
 
   /// Create a new [CallUnlock] object from serialized data stored in [map].
-  CallUnlock.fromMap(Map<String, dynamic> map) : super.fromMap(map);
+  CallUnlock.fromJson(Map<String, dynamic> map) : super.fromJson(map);
 
   /// Returns an umodifiable map representation of the object, suitable for
   /// serialization.

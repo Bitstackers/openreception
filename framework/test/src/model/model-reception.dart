@@ -24,7 +24,7 @@ void _testModelReception() {
 abstract class _ModelReception {
   static void deserialization() {
     model.Reception builtObject = buildObject();
-    model.Reception deserializedObject = new model.Reception.fromMap(
+    model.Reception deserializedObject = new model.Reception.fromJson(
         JSON.decode(JSON.encode(builtObject)) as Map<String, dynamic>);
 
     expect(builtObject.addresses, equals(deserializedObject.addresses));

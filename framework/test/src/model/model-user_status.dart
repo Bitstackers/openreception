@@ -27,7 +27,7 @@ abstract class _ModelUserStatus {
   static void deserialization() {
     model.UserStatus built = buildObject();
     String serializedObject = JSON.encode(built);
-    model.UserStatus decoded = new model.UserStatus.fromMap(
+    model.UserStatus decoded = new model.UserStatus.fromJson(
         JSON.decode(serializedObject) as Map<String, dynamic>);
 
     expect(built.paused, equals(decoded.paused));

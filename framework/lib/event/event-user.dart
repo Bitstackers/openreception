@@ -44,7 +44,7 @@ class UserChange implements Event {
       new UserChange._internal(userID, Change.deleted, changedBy);
 
   /// Create a new [UserChange] object from serialized data stored in [map].
-  UserChange.fromMap(Map<String, dynamic> map)
+  UserChange.fromJson(Map<String, dynamic> map)
       : uid = map[_Key._userChange][_Key._modifierUid],
         state = map[_Key._userChange][_Key._state],
         modifierUid = map[_Key._userChange][_Key._changedBy],

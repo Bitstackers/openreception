@@ -28,7 +28,7 @@ class MessageQueueEntry {
   MessageQueueEntry.empty() : createdAt = new DateTime.now();
 
   /// Creates a message from the information given in [map].
-  MessageQueueEntry.fromMap(Map<String, dynamic> map)
+  MessageQueueEntry.fromJson(Map<String, dynamic> map)
       : createdAt = util.unixTimestampToDateTime(map[key.createdAt]),
         id = map[key.id],
         message = Message.decode(map[key.message] as Map<String, dynamic>),
@@ -42,7 +42,7 @@ class MessageQueueEntry {
 
   /// Decoding factory.
   static MessageQueueEntry decode(Map<String, dynamic> map) =>
-      new MessageQueueEntry.fromMap(map);
+      new MessageQueueEntry.fromJson(map);
 
   Iterable<MessageEndpoint> get handledRecipients => _handledRecipients;
 

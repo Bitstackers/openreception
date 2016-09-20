@@ -25,14 +25,14 @@ class Organization {
   Organization.empty();
 
   /// Constructor used for deserialization.
-  Organization.fromMap(Map<String, dynamic> map)
+  Organization.fromJson(Map<String, dynamic> map)
       : id = map[key.id],
         name = map[key.name],
         notes = map[key.notes] as List<String>;
 
   /// Deserializing factory.
   static Organization decode(Map<String, dynamic> map) =>
-      new Organization.fromMap(map);
+      new Organization.fromJson(map);
 
   OrganizationReference get reference => new OrganizationReference(id, name);
 

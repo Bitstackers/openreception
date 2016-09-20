@@ -33,9 +33,9 @@ class CallHangup extends CallEvent {
   CallHangup(model.Call call, {this.hangupCause: ''}) : super(call);
 
   /// Create a new [CallHangup] object from serialized data stored in [map].
-  CallHangup.fromMap(Map<String,dynamic> map)
+  CallHangup.fromJson(Map<String, dynamic> map)
       : hangupCause = map[_Key._hangupCause],
-        super.fromMap(map);
+        super.fromJson(map);
 
   /// Returns an umodifiable map representation of the object, suitable for
   /// serialization.

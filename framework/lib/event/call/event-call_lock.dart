@@ -23,7 +23,7 @@ class CallLock extends CallEvent {
   CallLock(model.Call call) : super(call);
 
   /// Create a new [CallLock] object from serialized data stored in [map].
-  CallLock.fromMap(Map<String, dynamic> map) : super.fromMap(map);
+  CallLock.fromJson(Map<String, dynamic> map) : super.fromJson(map);
 
   /// Returns an umodifiable map representation of the object, suitable for
   /// serialization.

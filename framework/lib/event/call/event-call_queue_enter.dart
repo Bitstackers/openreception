@@ -23,7 +23,7 @@ class QueueJoin extends CallEvent {
   QueueJoin(model.Call call) : super(call);
 
   /// Create a new [QueueJoin] object from serialized data stored in [map].
-  QueueJoin.fromMap(Map<String, dynamic> map) : super.fromMap(map);
+  QueueJoin.fromJson(Map<String, dynamic> map) : super.fromJson(map);
 
   /// Returns an umodifiable map representation of the object, suitable for
   /// serialization.

@@ -50,7 +50,7 @@ class CalendarChange implements Event {
         state = Change.deleted;
 
   /// Create a new [CalendarChange] object from serialized data stored in [map].
-  factory CalendarChange.fromMap(Map<String, dynamic> map) {
+  factory CalendarChange.fromJson(Map<String, dynamic> map) {
     int eid;
     int modifierUid;
     String state;

@@ -60,7 +60,7 @@ class Call {
   Call.empty(this._id);
 
   /// Default constructor.
-  factory Call.fromMap(Map<String, dynamic> map) => new Call.empty(map[key.id])
+  factory Call.fromJson(Map<String, dynamic> map) => new Call.empty(map[key.id])
     .._state = map[PbxKey.state]
     ..answeredAt = util.unixTimestampToDateTime(map[key.answeredAt])
     ..bLeg = map[key.bLeg]

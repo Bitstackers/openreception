@@ -189,7 +189,7 @@ class BaseContact {
   BaseContact.empty();
 
   /// Deserializing constructor.
-  BaseContact.fromMap(Map<String, dynamic> map)
+  BaseContact.fromJson(Map<String, dynamic> map)
       : id = map[key.id],
         name = map[key.name],
         type = map[key.contactType],
@@ -197,7 +197,7 @@ class BaseContact {
 
   /// Decoding factory.
   static BaseContact decode(Map<String, dynamic> map) =>
-      new BaseContact.fromMap(map);
+      new BaseContact.fromJson(map);
 
   /// Serilization function.
   Map<String, dynamic> toJson() => <String, dynamic>{

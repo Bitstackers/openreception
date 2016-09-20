@@ -24,7 +24,7 @@ void _testModelMessageFilter() {
 abstract class _ModelMessageFilter {
   static void deserialization() {
     model.MessageFilter obj = buildObject();
-    model.MessageFilter deserializedObj = new model.MessageFilter.fromMap(
+    model.MessageFilter deserializedObj = new model.MessageFilter.fromJson(
         JSON.decode(JSON.encode(obj)) as Map<String, dynamic>);
 
     expect(obj.contactId, equals(deserializedObj.contactId));
