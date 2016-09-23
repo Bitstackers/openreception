@@ -198,14 +198,22 @@ class UIContactSelector extends UIModel {
         });
         break;
       case filterState.tag:
+        final String inputValue = trimmedFilterInputValue;
         final List<String> parts = trimmedFilterInputValue.split(' ');
 
         _list.classes.toggle('zebra', false);
 
         _list.children.forEach((Element li) {
-          final List<String> hitTags = li.dataset['tags'].split('-|-').where(
-              (String tag) => parts.every((String part) => tag.contains(part)));
+          final List<String> tags = li.dataset['tags'].split('-|-');
 
+          final Set<String> exactHits =
+              tags.where((String tag) => inputValue == tag).toSet();
+          final Set<String> partialHits = tags
+              .where((String tag) =>
+                  parts.every((String part) => tag.contains(part)))
+              .toSet();
+
+          final Set<String> hitTags = exactHits.union(partialHits);
           if (hitTags.isNotEmpty) {
             li.classes.toggle('hide', false);
             hitTags.forEach(
@@ -220,20 +228,15 @@ class UIContactSelector extends UIModel {
         break;
     }
 
-    if (_list.querySelectorAll('.hide').length == _list.children.length) {
-      _bus.fire(new ContactWithFilterContext(new model.BaseContact.empty(),
-          new model.ReceptionAttributes.empty(), state, filterInputValue));
-    } else if (_list.children.isNotEmpty) {
-      final LIElement selected = _list.querySelector('.selected');
-      if (selected != null && selected.classes.contains('hide')) {
-        /// The selected item is hidden. Select the first visible item on the
-        /// remaining list
-        _markSelected(_scanForwardForVisibleElement(_list.children.first),
-            alwaysFire: true);
-      } else {
-        /// The selected item is visible
-        _contactSelectCallback(selected);
-      }
+    final List<Element> visible = _list.querySelectorAll('li:not(.hide)');
+    if (!visible.any((Element li) => li.classes.contains('selected'))) {
+      _markSelected(_scanForwardForVisibleElement(_list.children.first),
+          alwaysFire: true);
+    }
+
+    final LIElement selected = _list.querySelector('.selected');
+    if (selected != null) {
+      selected.scrollIntoView();
     }
   }
 
