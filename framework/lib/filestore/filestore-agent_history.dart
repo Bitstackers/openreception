@@ -184,8 +184,8 @@ class AgentHistory {
           try {
             if (e != null) _dispatchEvent(e, _dateLog);
           } catch (e, s) {
-            print(e);
-            print(s);
+            _log.shout(
+                'Failed to load line "$line" in file ${file.path}', e, s);
           }
         }
 
