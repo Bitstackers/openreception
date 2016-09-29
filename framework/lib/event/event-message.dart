@@ -60,19 +60,47 @@ class MessageChange implements Event {
       : timestamp = new DateTime.now();
 
   /// Create a new [MessageChange] object from serialized data stored in [map].
-  MessageChange.fromJson(Map<String, dynamic> map)
-      : modifierUid = map.containsKey(_Key._modifierUid)
-            ? map[_Key._modifierUid]
-            : map.containsKey('messageChange')
-                ? map['messageChange']['userID']
-                : model.User.noId,
-        mid = map[_Key._mid],
-        state = map[_Key._state],
-        messageState = map.containsKey(_Key._messageState)
-            ? model.MessageState.values[map[_Key._messageState]]
-            : model.MessageState.unknown,
-        timestamp = util.unixTimestampToDateTime(map[_Key._timestamp]),
-        createdAt = util.unixTimestampToDateTime(map[_Key._createdAt]);
+  factory MessageChange.fromJson(Map<String, dynamic> map) {
+    if (map.containsKey('messageChange')) {
+      return new MessageChange._oldformat(map);
+    }
+
+    final int modifierUid = map[_Key._modifierUid];
+    final int mid = map[_Key._mid];
+    final String state = map[_Key._state];
+    final model.MessageState messageState = map.containsKey(_Key._messageState)
+        ? model.MessageState.values[map[_Key._messageState]]
+        : model.MessageState.unknown;
+    final DateTime timestamp =
+        util.unixTimestampToDateTime(map[_Key._timestamp]);
+    final DateTime createdAt = map.containsKey(_Key._createdAt)
+        ? util.unixTimestampToDateTime(map[_Key._createdAt])
+        : util.never;
+
+    return new MessageChange._internalDecoder(
+        timestamp, mid, modifierUid, state, messageState, createdAt);
+  }
+
+  /// Create a new [MessageChange] object from version 1-serialized data
+  /// stored in [map].
+  factory MessageChange._oldformat(Map<String, dynamic> map) {
+    final int modifierUid = map['messageChange']['userID'];
+
+    final int mid = map['messageChange']['mid'];
+    final String state = map['messageChange']['state'];
+
+    final DateTime timestamp =
+        util.unixTimestampToDateTime(map[_Key._timestamp]);
+    final DateTime createdAt = map.containsKey(_Key._createdAt)
+        ? util.unixTimestampToDateTime(map[_Key._createdAt])
+        : util.never;
+
+    return new MessageChange._internalDecoder(timestamp, mid, modifierUid,
+        state, model.MessageState.unknown, createdAt);
+  }
+
+  MessageChange._internalDecoder(this.timestamp, this.mid, this.modifierUid,
+      this.state, this.messageState, this.createdAt);
 
   /// Determines if the object signifies a creation.
   bool get isCreate => state == Change.created;
