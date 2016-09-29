@@ -220,7 +220,7 @@ class Reception {
   }
 
   Future activateCreate(RouteEvent e) async {
-    _receptionView.reception = new model.Reception.empty();
+    _receptionView.reception = new model.Reception.empty()..enabled = true;
     _receptionView.element.hidden = false;
   }
 
