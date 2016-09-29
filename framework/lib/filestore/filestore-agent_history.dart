@@ -323,32 +323,7 @@ class AgentHistory {
   /// Convenience function for generating the map key for a date.
   String _dateKey(DateTime day) => _rfc3339.format(day);
 
-  //
-  // List<Map<String, dynamic>> agentSummay() {
-  //   List<Map<String, dynamic>> ret = [];
-  //   callsByAgent.forEach((k, v) {
-  //     ret.add({
-  //       'uid': k,
-  //       'answered': v,
-  //       'name': _userNameCache.containsKey(k) ? _userNameCache[k] : '??'
-  //     });
-  //   });
-  //
-  //   return ret;
-  // }
-  //
-  // String toString() => 'totalCalls:$totalCalls, '
-  //     'below20s:$callsAnsweredWithin20s, '
-  //     'oneminute:$callWaitingMoreThanOneMinute, '
-  //     'talktime:$talkTime, '
-  //     'unanswered:$callsUnAnswered,'
-  //     'agentSummary: ${agentSummay().join(', ')}';
-  //
-  // Map toJson() => {
-  //       'totalCalls': totalCalls,
-  //       'below20s': callsAnsweredWithin20s,
-  //       'oneminuteplus': callWaitingMoreThanOneMinute,
-  //       'unanswered': callsUnAnswered,
-  //       'agentSummary': agentSummay()
-  //     };
+  /// Retrieve the [model.DailySummary] for [day].
+  Future<model.DailySummary> agentSummay(DateTime day) async =>
+      new model.DailySummary(await get(day));
 }

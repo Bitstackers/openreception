@@ -62,4 +62,16 @@ abstract class User {
 
   static Uri changelog(Uri host, int uid) =>
       Uri.parse('$host/$_ns/$uid/changelog');
+
+  static Uri dailyReport(Uri host, DateTime day) {
+    final String dateString = day.toIso8601String().split('T').first;
+
+    return Uri.parse('$host/$_ns/statistics/$dateString');
+  }
+
+  static Uri dailySummary(Uri host, DateTime day) {
+    final String dateString = day.toIso8601String().split('T').first;
+
+    return Uri.parse('$host/$_ns/statistics/$dateString/summary');
+  }
 }
