@@ -153,7 +153,7 @@ class AgentHistory {
       if (_eventHistory[e.call.id].isDone) {
         reports[dateKey].addCallHistory(_eventHistory[e.call.id]);
       }
-    } else if (e is event.MessageChange) {
+    } else if (e is event.MessageChange && e.isCreate) {
       reports[dateKey].addMessageHistory(
           new model.MessageHistory(e.mid, e.modifierUid, e.timestamp));
     } else if (e is event.UserState) {
