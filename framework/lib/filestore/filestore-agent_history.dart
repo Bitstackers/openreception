@@ -239,15 +239,22 @@ class AgentHistory {
     if (_reports.length > 1) {
       _log.info('Day changed. Rerolling stats');
 
-      final Iterable<String> keysToRemove = _reports.keys
-          .where((String key) => key != _dateKey(new DateTime.now()));
+      final List<String> keysToRemove = _reports.keys
+          .where((String key) => key != _dateKey(new DateTime.now()))
+          .toList(growable: false);
 
       for (String key in keysToRemove) {
+        _log.finest('Removing memory cache for day $key');
         await _saveReport(_reports.remove(key));
       }
     } else {
       _log.finest('Updating daily report');
-      await _saveReport(_reports[_dateKey(new DateTime.now())]);
+      final DateTime day = new DateTime.now();
+      if (!_reports.containsKey(_dateKey(day))) {
+        _reports[_dateKey(day)] = _loadReport(day);
+      }
+
+      await _saveReport(_reports[_dateKey(day)]);
     }
   }
 
