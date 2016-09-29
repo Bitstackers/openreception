@@ -128,6 +128,9 @@ class AgentHistory {
   }
 
   /// Update the uid/username mapping file.
+  ///
+  /// The mapping file is a way of maintaining a knowledged of which name an
+  /// agent (with a given uid) has, prior to user deletion.
   Future<Null> _updateUidCache() async {
     Iterable<model.UserReference> uRefs = await _userStore.list();
 
