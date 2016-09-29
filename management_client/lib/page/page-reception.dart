@@ -194,13 +194,11 @@ class Reception {
           _makeContactNode(cRef.contact, receptionId)));
   }
 
-  /**
-   * TODO: Add function gear ⚙
-   */
+  /// Build an [LIElement] HTML node from a [model.BaseContact] object.
   LIElement _makeContactNode(model.BaseContact contact, int rid) {
     LIElement li = new LIElement()
       ..classes.add('clickable')
-      ..text = contact.name
+      ..text = contact.type == 'function' ? '⚙ ${contact.name}' : contact.name
       ..onClick
           .listen((_) => _router.go('contact.edit.id', {'cid': contact.id}));
     return li;
