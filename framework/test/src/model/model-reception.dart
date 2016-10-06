@@ -57,6 +57,7 @@ abstract class _ModelReception {
     expect(builtObject.phoneNumbers, equals(deserializedObject.phoneNumbers));
     expect(builtObject.vatNumbers, equals(deserializedObject.vatNumbers));
     expect(builtObject.websites, equals(deserializedObject.websites));
+    expect(builtObject.whenWhats, equals(deserializedObject.whenWhats));
   }
 
   /// Merely asserts that no exceptions arise during a serialization.
@@ -95,6 +96,10 @@ abstract class _ModelReception {
     ];
     final List<String> vatNumbers = <String>['123455'];
     final List<String> websites = <String>['www.over-the-rainbow'];
+    final List<model.WhenWhat> whenWhats = [
+      new model.WhenWhat('man-fri 08:00-09:00', 'Meeting'),
+      new model.WhenWhat('wed 12:00-12:30', 'lunch')
+    ];
 
     model.Reception buildObject = new model.Reception.empty()
       ..addresses = addresses
@@ -116,7 +121,8 @@ abstract class _ModelReception {
       ..shortGreeting = shortGreeting
       ..phoneNumbers = telephoneNumbers
       ..vatNumbers = vatNumbers
-      ..websites = websites;
+      ..websites = websites
+      ..whenWhats = whenWhats;
 
     expect(buildObject.addresses, equals(addresses));
     expect(buildObject.dialplan, equals(dialplan));
@@ -141,6 +147,7 @@ abstract class _ModelReception {
     expect(buildObject.phoneNumbers, equals(telephoneNumbers));
     expect(buildObject.vatNumbers, equals(vatNumbers));
     expect(buildObject.websites, equals(websites));
+    expect(buildObject.whenWhats, equals(whenWhats));
 
     return buildObject;
   }

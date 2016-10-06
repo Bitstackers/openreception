@@ -14,22 +14,22 @@
 part of orc.model;
 
 /**
- * Provides methods for manipulating the reception calendar UI widget.
+ * Provides methods for manipulating the calendar UI widget.
  */
-class UIReceptionCalendar extends UIModel {
+class UICalendar extends UIModel {
   final Map<String, String> _langMap;
   final DivElement _myRoot;
-  final util.WeekDays _weekDays;
   final NodeValidatorBuilder _validator = new NodeValidatorBuilder()
     ..allowTextElements()
     ..allowHtml5()
     ..allowInlineStyles()
     ..allowNavigation(new AllUriPolicy());
+  final util.WeekDays _weekDays;
 
   /**
    * Constructor.
    */
-  UIReceptionCalendar(DivElement this._myRoot, util.WeekDays this._weekDays,
+  UICalendar(DivElement this._myRoot, util.WeekDays this._weekDays,
       Map<String, String> this._langMap) {
     _setupLocalKeys();
     _observers();
@@ -49,9 +49,9 @@ class UIReceptionCalendar extends UIModel {
   OListElement get _list => _root.querySelector('.generic-widget-list');
 
   /**
-   * Construct a calendar entry LIElement from [entry]
+   * Construct a calendar entry LIElement from [ce]
    */
-  LIElement _buildEntryElement(model.CalendarEntry entry) {
+  LIElement _buildEntryElement(CalendarEntry ce) {
     final LIElement li = new LIElement();
     final DateTime now = new DateTime.now();
 
@@ -60,12 +60,24 @@ class UIReceptionCalendar extends UIModel {
         stamp.month == now.month &&
         stamp.year == now.year;
 
-    SpanElement labelElement(model.CalendarEntry item) {
+    String whenWhatLabel(model.CalendarEntry entry) {
+      final StringBuffer sb = new StringBuffer();
+      String l = entry.id == model.CalendarEntry.noId ? 'L' : '';
+      String r = ce.owner is model.OwningReception ? 'R' : '';
+
+      if (l.isNotEmpty || r.isNotEmpty) {
+        sb.write('**[$r$l]** ');
+      }
+
+      return sb.toString();
+    }
+
+    SpanElement labelElement(model.CalendarEntry entry) {
       final SpanElement label = new SpanElement();
 
-      if (!item.active) {
+      if (!entry.active) {
         final DateTime now = new DateTime.now();
-        if (item.start.isBefore(now)) {
+        if (entry.start.isBefore(now)) {
           label.classes.add('label-past');
           label.text = _langMap[Key.past];
         } else {
@@ -79,7 +91,9 @@ class UIReceptionCalendar extends UIModel {
 
     final DivElement content = new DivElement()
       ..classes.add('markdown')
-      ..setInnerHtml(markdown.markdownToHtml(entry.content),
+      ..setInnerHtml(
+          markdown.markdownToHtml(
+              '${whenWhatLabel(ce.calendarEntry)}${ce.calendarEntry.content}'),
           validator: _validator);
 
     content.querySelectorAll('a').forEach((elem) {
@@ -91,21 +105,22 @@ class UIReceptionCalendar extends UIModel {
       });
     });
 
-    String start = util.humanReadableTimestamp(entry.start, _weekDays);
-    String stop = util.humanReadableTimestamp(entry.stop, _weekDays);
+    String start =
+        util.humanReadableTimestamp(ce.calendarEntry.start, _weekDays);
+    String stop = util.humanReadableTimestamp(ce.calendarEntry.stop, _weekDays);
 
-    if (isToday(entry.start) && !isToday(entry.stop)) {
+    if (isToday(ce.calendarEntry.start) && !isToday(ce.calendarEntry.stop)) {
       start = '${_langMap[Key.today]} $start';
     }
 
-    if (isToday(entry.stop) && !isToday(entry.start)) {
+    if (isToday(ce.calendarEntry.stop) && !isToday(ce.calendarEntry.start)) {
       stop = '${_langMap[Key.today]} $stop';
     }
 
     final DivElement labelAndTimestamp = new DivElement()
       ..classes.add('label-and-timestamp')
       ..children.addAll([
-        labelElement(entry),
+        labelElement(ce.calendarEntry),
         new SpanElement()
           ..classes.add('timestamp')
           ..text = '$start - $stop'
@@ -113,16 +128,19 @@ class UIReceptionCalendar extends UIModel {
 
     return li
       ..children.addAll([content, labelAndTimestamp])
-      ..title = 'Id: ${entry.id.toString()}'
-      ..dataset['object'] = JSON.encode(entry)
-      ..dataset['id'] = entry.id.toString()
-      ..classes.toggle('active', entry.active);
+      ..title = ce.calendarEntry.id == model.CalendarEntry.noId
+          ? 'WhenWhat - ${_langMap[Key.lockedForEditing]}'
+          : 'Id: ${ce.calendarEntry.id.toString()}'
+      ..dataset['object'] = JSON.encode(ce)
+      ..dataset['editable'] = ce.editable.toString()
+      ..dataset['id'] = ce.calendarEntry.id.toString()
+      ..classes.toggle('active', ce.calendarEntry.active);
   }
 
   /**
-   * Add [items] to the entry list.
+   * Add [items] to the [CalendarEntry] list.
    */
-  set calendarEntries(Iterable<model.CalendarEntry> items) {
+  set calendarEntries(Iterable<CalendarEntry> items) {
     _list.children = items.map(_buildEntryElement).toList(growable: false);
   }
 
@@ -135,31 +153,19 @@ class UIReceptionCalendar extends UIModel {
   }
 
   /**
-   * Return the first [model.CalendarEntry]. Return empty entry if list is
-   * empty.
+   * Return the first editable [CalendarEntry]. Return empty entry if none is
+   * found.
    */
-  model.CalendarEntry get firstCalendarEntry {
-    try {
-      return new model.CalendarEntry.fromJson(
-          JSON.decode(_list.children.first.dataset['object'])
-          as Map<String, dynamic>);
-    } catch (_) {
-      return new model.CalendarEntry.empty();
-    }
-  }
+  CalendarEntry get firstEditableCalendarEntry {
+    final LIElement li = _list.children.firstWhere(
+        (Element elem) => elem.dataset['editable'] == 'true',
+        orElse: () => null);
 
-  /**
-   * Return currently selected [model.CalendarEntry].
-   * Return [model.CalendarEntry.empty] if nothing is selected.
-   */
-  model.CalendarEntry get selectedCalendarEntry {
-    final LIElement selected = _list.querySelector('.selected');
-
-    if (selected != null) {
-      return new model.CalendarEntry.fromJson(
-          JSON.decode(selected.dataset['object']) as Map<String, dynamic>);
+    if (li != null) {
+      return new CalendarEntry.fromJson(
+          JSON.decode(li.dataset['object']) as Map<String, dynamic>);
     } else {
-      return new model.CalendarEntry.empty();
+      return new CalendarEntry.empty();
     }
   }
 
@@ -177,11 +183,27 @@ class UIReceptionCalendar extends UIModel {
    *
    * The returned function re-instates the entry into the list when called.
    */
-  Function preDeleteEntry(model.CalendarEntry entry) {
-    final LIElement li = _list.querySelector('[data-id="${entry.id}"]');
+  Function preDeleteEntry(CalendarEntry entry) {
+    final LIElement li =
+        _list.querySelector('[data-id="${entry.calendarEntry.id}"]');
     li.style.display = 'none';
 
     return () => li.style.display = 'block';
+  }
+
+  /**
+   * Return currently selected [CalendarEntry]. Return empty entry if nothing is
+   * selected or if the selected item is not editable.
+   */
+  CalendarEntry get selectedCalendarEntry {
+    final LIElement selected = _list.querySelector('.selected');
+
+    if (selected == null || selected.dataset['editable'] != 'true') {
+      return new CalendarEntry.empty();
+    } else {
+      return new CalendarEntry.fromJson(
+          JSON.decode(selected.dataset['object']) as Map<String, dynamic>);
+    }
   }
 
   /**
@@ -202,25 +224,25 @@ class UIReceptionCalendar extends UIModel {
   }
 
   /**
-   * Either add or update the [entry] in the calendar entry listing. This does
+   * Either add or update the [ce] in the calendar entry listing. This does
    * not perform any actions on the server.
    *
    * The returned function removes the created/changed LIElement when called.
    */
-  Function unsavedEntry(model.CalendarEntry entry) {
-    final LIElement newLi = _buildEntryElement(entry);
+  Function unsavedEntry(CalendarEntry ce) {
+    final LIElement newLi = _buildEntryElement(ce);
 
-    if (entry.id == model.CalendarEntry.noId) {
+    if (ce.calendarEntry.id == model.CalendarEntry.noId) {
       if (_list.children.isEmpty) {
         _list.children.add(newLi);
       } else {
         LIElement found;
         for (LIElement li in _list.children) {
-          final model.CalendarEntry foundEntry =
-              new model.CalendarEntry.fromJson(
-                  JSON.decode(li.dataset['object']) as Map<String, dynamic>);
-          if (foundEntry.start.isAfter(entry.start) ||
-              foundEntry.start.isAtSameMomentAs(entry.start)) {
+          final CalendarEntry foundEntry = new CalendarEntry.fromJson(
+              JSON.decode(li.dataset['object']) as Map<String, dynamic>);
+          if (foundEntry.calendarEntry.start.isAfter(ce.calendarEntry.start) ||
+              foundEntry.calendarEntry.start
+                  .isAtSameMomentAs(ce.calendarEntry.start)) {
             found = li;
             break;
           }
@@ -233,7 +255,8 @@ class UIReceptionCalendar extends UIModel {
         }
       }
     } else {
-      final LIElement orgLi = _list.querySelector('[data-id="${entry.id}"]');
+      final LIElement orgLi =
+          _list.querySelector('[data-id="${ce.calendarEntry.id}"]');
       orgLi.replaceWith(newLi);
     }
 

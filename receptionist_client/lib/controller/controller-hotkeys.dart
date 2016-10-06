@@ -22,7 +22,6 @@ class HotKeys {
 
   final Keyboard _keyDown = new Keyboard();
 
-  final Bus<html.KeyboardEvent> _altA = new Bus<html.KeyboardEvent>();
   final Bus<html.KeyboardEvent> _altArrowDown = new Bus<html.KeyboardEvent>();
   final Bus<html.KeyboardEvent> _altArrowUp = new Bus<html.KeyboardEvent>();
   final Bus<html.KeyboardEvent> _altB = new Bus<html.KeyboardEvent>();
@@ -65,7 +64,6 @@ class HotKeys {
     html.window.document.onKeyDown.listen(_keyDown.press);
 
     final Map<dynamic, html.EventListener> preventDefaultBindings = {
-      'Alt+a': (event) => _altA.fire(event),
       'Alt+Down': (event) => _altArrowDown.fire(event),
       'Alt+Up': (event) => _altArrowUp.fire(event),
       'Alt+b': (event) => _altB.fire(event),
@@ -110,7 +108,6 @@ class HotKeys {
     registerKeysPreventDefault(_keyDown, preventDefaultBindings);
   }
 
-  Stream<html.KeyboardEvent> get onAltA => _altA.stream;
   Stream<html.KeyboardEvent> get onAltArrowDown => _altArrowDown.stream;
   Stream<html.KeyboardEvent> get onAltArrowUp => _altArrowUp.stream;
   Stream<html.KeyboardEvent> get onAltB => _altB.stream;
@@ -201,7 +198,6 @@ class SimulationHotKeys {
    */
   SimulationHotKeys(HotKeys this._hotKeys);
 
-  void altA() => _hotKeys._altA.fire(null);
   void altArrowDown() => _hotKeys._altArrowDown.fire(null);
   void altArrowUp() => _hotKeys._altArrowUp.fire(null);
   void altB() => _hotKeys._altB.fire(null);

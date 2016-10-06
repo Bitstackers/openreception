@@ -32,8 +32,8 @@ import 'package:orc/lang.dart';
 
 part 'model-app-state.dart';
 part 'ui/model-ui-agent-info.dart';
+part 'ui/model-ui-calendar.dart';
 part 'ui/model-ui-calendar-editor.dart';
-part 'ui/model-ui-contact-calendar.dart';
 part 'ui/model-ui-contact-data.dart';
 part 'ui/model-ui-contact-selector.dart';
 part 'ui/model-ui-contexts.dart';
@@ -48,7 +48,6 @@ part 'ui/model-ui-orc-ready.dart';
 part 'ui/model-ui-reception-addresses.dart';
 part 'ui/model-ui-reception-alt-names.dart';
 part 'ui/model-ui-reception-bank-info.dart';
-part 'ui/model-ui-reception-calendar.dart';
 part 'ui/model-ui-reception-commands.dart';
 part 'ui/model-ui-reception-email.dart';
 part 'ui/model-ui-reception-mini-wiki.dart';
@@ -79,10 +78,32 @@ class AllUriPolicy implements UriPolicy {
 }
 
 /**
+ * Wrapping the model.CalendarEntry to add various clientside necessities.
+ */
+class CalendarEntry {
+  model.CalendarEntry calendarEntry;
+  bool editable = true;
+  model.Owner owner;
+
+  CalendarEntry.empty();
+
+  CalendarEntry.fromJson(Map<String, dynamic> map) {
+    calendarEntry = new model.CalendarEntry.fromJson(
+        map['calendarEntry'] as Map<String, dynamic>);
+    editable = map['editable'];
+    owner = new model.Owner.parse(map['owner']);
+  }
+
+  Map<String, dynamic> toJson() =>
+      {'calendarEntry': calendarEntry, 'editable': editable, 'owner': owner};
+}
+
+/**
  * Base class for all UI model classes.
  */
 abstract class UIModel {
   final okeyee.Keyboard _keyboard = new okeyee.Keyboard();
+  DateTime _lastKeyUpDown = new DateTime.now();
 
   final TextAreaElement _copyTextArea = new TextAreaElement()
     ..style.position = 'absolute'
@@ -203,9 +224,17 @@ abstract class UIModel {
    * as the target list. If [_listTarget] is not empty, then scan forward
    * for "down" arrow and backwards for "up" arrow. Call [_markSelected] on the
    * first element found that is visible and not selected.
+   *
+   * Allows a maximum of 10 keypresses per second.
    */
   void _handleUpDown(Event event) {
-    if (_listTarget.children.isNotEmpty && event is KeyboardEvent) {
+    final DateTime now = new DateTime.now();
+
+    if (_listTarget.children.isNotEmpty &&
+        event is KeyboardEvent &&
+        now.difference(_lastKeyUpDown).inMilliseconds > 100) {
+      _lastKeyUpDown = now;
+
       final LIElement selected =
           _listTarget.querySelector('.selected:not(.hide)');
 

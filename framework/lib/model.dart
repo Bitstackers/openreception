@@ -62,6 +62,7 @@ part 'model/model-template_email.dart';
 part 'model/model-template_sms.dart';
 part 'model/model-user.dart';
 part 'model/model-user_status.dart';
+part 'model/model-when_what.dart';
 
 const String _libraryName = "openreception.model";
 

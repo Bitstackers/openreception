@@ -19,6 +19,7 @@ part of orc.model;
 class UIReceptionSelector extends UIModel {
   final Bus<model.Reception> _bus = new Bus<model.Reception>();
   final Map<String, String> _langMap;
+  DateTime _lastClick = new DateTime.now();
   final DivElement _myRoot;
   final controller.Popup _popup;
   final controller.Reception _receptionController;
@@ -216,9 +217,16 @@ class UIReceptionSelector extends UIModel {
   /**
    * Mark a [LIElement] in the reception list selected, if one such is the
    * target of the [event].
+   *
+   * Only allow one click per 100 milliseconds.
    */
   void _selectFromClick(MouseEvent event) {
-    if (event.target != _filter) {
+    final DateTime now = new DateTime.now();
+
+    if (event.target != _filter &&
+        now.difference(_lastClick).inMilliseconds > 100) {
+      _lastClick = now;
+
       /// NOTE (TL): This keeps focus on the _filter field, despite clicks on
       /// other elements.
       event.preventDefault();

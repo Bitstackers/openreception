@@ -18,12 +18,13 @@ part of orc.model;
  */
 class UICalendarEditor extends UIModel {
   final Map<String, String> _langMap;
-  model.CalendarEntry _loadedEntry;
+  CalendarEntry _loadedEntry;
   HtmlElement _myFirstTabElement;
   HtmlElement _myFocusElement;
   HtmlElement _myLastTabElement;
   final DivElement _myRoot;
   bool _newEntry = true;
+  final Bus<CalendarEntry> _saveReceptionBus = new Bus<CalendarEntry>();
   bool _stopDayEdit = false;
   bool _stopHourEdit = false;
   bool _stopMinuteEdit = false;
@@ -38,7 +39,7 @@ class UICalendarEditor extends UIModel {
       Map<String, String> this._langMap) {
     _myFocusElement = _textArea;
     _myFirstTabElement = _textArea;
-    _myLastTabElement = _cancelButton;
+    _myLastTabElement = _saveReceptionButton;
 
     _setupLocalKeys();
     _observers();
@@ -60,6 +61,8 @@ class UICalendarEditor extends UIModel {
       _root.querySelector('div.entry-duration-container .entry-duration');
   ElementList<InputElement> get _inputFields => _root.querySelectorAll('input');
   ButtonElement get _saveButton => _root.querySelector('.save');
+  ButtonElement get _saveReceptionButton =>
+      _root.querySelector('.save-reception');
   InputElement get _startHourInput =>
       _root.querySelector('div.entry-start-container .start-hour');
   InputElement get _startMinuteInput =>
@@ -106,12 +109,22 @@ class UICalendarEditor extends UIModel {
   }
 
   /**
-   * Harvest a [model.CalendarEntry] from the form.
+   * Return the current author stamp.
    */
-  model.CalendarEntry get harvestedEntry => _loadedEntry
-    ..start = _harvestStartDateTime
-    ..stop = _harvestStopDateTime
-    ..content = _textArea.value;
+  String get currentAuthorStamp => _authorStamp.text.trim();
+
+  /**
+   * Harvest a [CalendarEntry] from the form.
+   */
+  CalendarEntry get harvestedEntry {
+    final model.CalendarEntry ce = _loadedEntry.calendarEntry;
+    ce
+      ..start = _harvestStartDateTime
+      ..stop = _harvestStopDateTime
+      ..content = _textArea.value;
+    _loadedEntry.calendarEntry = ce;
+    return _loadedEntry;
+  }
 
   /**
    * Harvest the start [DateTime] from the form.
@@ -134,15 +147,28 @@ class UICalendarEditor extends UIModel {
       _stopMinuteInput.valueAsNumber.toInt());
 
   /**
-   * Get the currently loaded [model.CalendarEntry].
+   * Get the currently loaded [CalendarEntry].
    */
-  model.CalendarEntry get loadedEntry => _loadedEntry;
+  CalendarEntry get loadedEntry => _loadedEntry;
 
   /**
    * Observers.
    */
   void _observers() {
     _root.onKeyDown.listen(_keyboard.press);
+
+    _saveReceptionButton.onClick.listen((MouseEvent _) {
+      if (!_saveReceptionButton.hidden) {
+        if (_saveReceptionButton.classes.contains('first-click')) {
+          final CalendarEntry entry = harvestedEntry;
+          _saveReceptionBus.fire(entry);
+          _saveReceptionButton.classes.toggle('first-click', false);
+        } else {
+          _saveReceptionButton.classes.toggle('first-click', true);
+          _saveReceptionButton.text = _langMap[Key.calendarEditorAreYouSure];
+        }
+      }
+    });
 
     /// Enables focused element memory for this widget.
     _tabElements.forEach((Element element) {
@@ -240,6 +266,11 @@ class UICalendarEditor extends UIModel {
   Stream<MouseEvent> get onSave => _saveButton.onClick;
 
   /**
+   * Return the event stream for the save-reception button.
+   */
+  Stream<CalendarEntry> get onSaveReception => _saveReceptionBus.stream;
+
+  /**
    * Clear the widget of all data and reset focus element.
    */
   void reset() {
@@ -261,34 +292,41 @@ class UICalendarEditor extends UIModel {
 
     _deleteButton.disabled = true;
     _saveButton.disabled = true;
+    _saveReceptionButton.disabled = true;
   }
 
   /**
-   * Populate the calendar editor fields with [calendarEntry].
+   * Populate the calendar editor fields with [ce].
    */
-  void setCalendarEntry(model.CalendarEntry calendarEntry, bool isNew) {
+  void setCalendarEntry(CalendarEntry ce, bool isNew) {
+    _saveReceptionButton.classes.toggle('first-click', false);
+    _saveReceptionButton.hidden = !isNew;
+    _saveReceptionButton.disabled = !isNew;
+    _saveReceptionButton.text = _langMap[Key.saveReception];
+
     _stopDayEdit = false;
     _stopHourEdit = false;
     _stopMinuteEdit = false;
     _stopMonthEdit = false;
     _stopYearEdit = false;
+
     _newEntry = isNew;
 
-    _loadedEntry = calendarEntry;
+    _loadedEntry = ce;
 
-    _textArea.value = calendarEntry.content;
+    _textArea.value = ce.calendarEntry.content;
 
-    _startHourInput.value = calendarEntry.start.hour.toString();
-    _startMinuteInput.value = calendarEntry.start.minute.toString();
-    _startDayInput.value = calendarEntry.start.day.toString();
-    _startMonthInput.value = calendarEntry.start.month.toString();
-    _startYearInput.value = calendarEntry.start.year.toString();
+    _startHourInput.value = ce.calendarEntry.start.hour.toString();
+    _startMinuteInput.value = ce.calendarEntry.start.minute.toString();
+    _startDayInput.value = ce.calendarEntry.start.day.toString();
+    _startMonthInput.value = ce.calendarEntry.start.month.toString();
+    _startYearInput.value = ce.calendarEntry.start.year.toString();
 
-    _stopHourInput.value = calendarEntry.stop.hour.toString();
-    _stopMinuteInput.value = calendarEntry.stop.minute.toString();
-    _stopDayInput.value = calendarEntry.stop.day.toString();
-    _stopMonthInput.value = calendarEntry.stop.month.toString();
-    _stopYearInput.value = calendarEntry.stop.year.toString();
+    _stopHourInput.value = ce.calendarEntry.stop.hour.toString();
+    _stopMinuteInput.value = ce.calendarEntry.stop.minute.toString();
+    _stopDayInput.value = ce.calendarEntry.stop.day.toString();
+    _stopMonthInput.value = ce.calendarEntry.stop.month.toString();
+    _stopYearInput.value = ce.calendarEntry.stop.year.toString();
 
     _updateReadableAndDuration();
     _toggleButtons();
@@ -300,7 +338,8 @@ class UICalendarEditor extends UIModel {
   void _setupLocalKeys() {
     Map<String, EventListener> myKeys = {
       'Ctrl+Backspace': (_) => _deleteButton.click(),
-      'Ctrl+s': (_) => _saveButton.click()
+      'Ctrl+s': (_) => _saveButton.click(),
+      'Ctrl+Alt+s': (_) => _saveReceptionButton.click()
     };
 
     _hotKeys.registerKeys(_keyboard,
@@ -323,10 +362,14 @@ class UICalendarEditor extends UIModel {
         _harvestStartDateTime.isBefore(_harvestStopDateTime);
 
     _deleteButton.disabled = !toggle ||
-        (_loadedEntry != null && _loadedEntry.id == model.CalendarEntry.noId);
+        (_loadedEntry != null &&
+            _loadedEntry.calendarEntry.id == model.CalendarEntry.noId);
     _saveButton.disabled = !toggle;
+    _saveReceptionButton.disabled = !toggle && _newEntry;
 
-    _myLastTabElement = toggle ? _saveButton : _cancelButton;
+    _myLastTabElement = toggle
+        ? (_newEntry ? _saveReceptionButton : _saveButton)
+        : _cancelButton;
   }
 
   /**

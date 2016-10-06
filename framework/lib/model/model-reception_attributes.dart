@@ -65,12 +65,16 @@ class ReceptionAttributes {
   List<String> relations = <String>[];
   List<String> departments = <String>[];
   List<String> infos = <String>[];
+  List<WhenWhat> whenWhats = <WhenWhat>[];
 
   ReceptionAttributes.fromJson(Map<String, dynamic> map)
       : phoneNumbers = new List<PhoneNumber>.from(map[key.phones]
             .map((Map<String, dynamic> map) => new PhoneNumber.fromJson(map))),
         endpoints = new List<MessageEndpoint>.from(map[key.endpoints].map(
             (Map<String, dynamic> map) => new MessageEndpoint.fromJson(map))),
+        whenWhats = new List<WhenWhat>.from(
+            (map.containsKey(key.whenWhat) ? map[key.whenWhat] : [])
+                .map((Map<String, dynamic> map) => new WhenWhat.fromJson(map))),
         receptionId = map[key.rid],
         cid = map[key.cid],
         departments = map[key.departments] as List<String>,
@@ -100,6 +104,8 @@ class ReceptionAttributes {
             phoneNumbers.map((PhoneNumber p) => p.toJson())),
         key.endpoints: new List<Map<String, dynamic>>.from(
             endpoints.map((MessageEndpoint e) => e.toJson())),
+        key.whenWhat: new List<Map<String, dynamic>>.from(
+            whenWhats.map((WhenWhat w) => w.toJson())),
         key.backup: backupContacts,
         key.emailaddresses: emailaddresses,
         key.handling: handling,

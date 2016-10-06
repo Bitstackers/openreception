@@ -15,7 +15,8 @@ class Reception {
   final controller.Calendar _calendarController;
   Changelog _changelog;
 
-  bool get inputHasErrors => _phoneNumberView._validationError;
+  bool get inputHasErrors =>
+      _phoneNumberView._validationError && _whenWhatView._validationError;
 
   final LabelElement _oidLabel = new LabelElement()..text = 'rid:??';
   final HiddenInputElement _idInput = new HiddenInputElement()
@@ -108,6 +109,7 @@ class Reception {
     ..text = '';
 
   Phonenumbers _phoneNumberView;
+  WhenWhats _whenWhatView;
 
   final DivElement _organizationSelector = new DivElement();
 
@@ -137,6 +139,7 @@ class Reception {
     _activeInput.checked = r.enabled;
 
     _phoneNumberView.phoneNumbers = r.phoneNumbers;
+    _whenWhatView.whenWhats = r.whenWhats;
 
     _addressesInput.value = r.addresses != null ? r.addresses.join('\n') : '';
 
@@ -233,6 +236,7 @@ class Reception {
     ..salesMarketingHandling =
         _valuesFromListTextArea(_salesMarketingHandlingInput)
     ..phoneNumbers = _phoneNumberView.phoneNumbers.toList()
+    ..whenWhats = _whenWhatView.whenWhats.toList()
     ..vatNumbers = _valuesFromListTextArea(_vatNumbersInput)
     ..websites = _valuesFromListTextArea(_websitesInput);
 
@@ -244,6 +248,7 @@ class Reception {
     _changelog = new Changelog();
 
     _phoneNumberView = new Phonenumbers();
+    _whenWhatView = new WhenWhats();
     _calendarView = new Calendar(_calendarController);
 
     _calendarsContainer
@@ -370,6 +375,7 @@ class Reception {
                 ..htmlFor = _shortGreetingInput.id,
               _shortGreetingInput
             ],
+          _whenWhatView.element,
           new DivElement()
             ..children = [
               new LabelElement()
@@ -473,6 +479,12 @@ class Reception {
       }
 
       _phoneNumberView.onChange = () {
+        _saveButton.disabled = inputHasErrors;
+        _deleteButton.disabled = inputHasErrors || !_saveButton.disabled;
+        _deployDialplanButton.disabled = _deleteButton.disabled;
+      };
+
+      _whenWhatView.onChange = () {
         _saveButton.disabled = inputHasErrors;
         _deleteButton.disabled = inputHasErrors || !_saveButton.disabled;
         _deployDialplanButton.disabled = _deleteButton.disabled;
