@@ -392,7 +392,7 @@ class MigrationEnvironment {
    *
    */
   or_model.IvrMenu convertIvr(old_or_model.IvrMenu menu) =>
-      or_model.IvrMenu.decode(menu.toJson());
+      new or_model.IvrMenu.fromJson(menu.toJson());
 
   /**
    *
@@ -485,7 +485,8 @@ class MigrationEnvironment {
         ..responsibilities = oldCon.responsibilities
         ..relations = oldCon.relations
         ..departments = oldCon.departments
-        ..infos = oldCon.infos;
+        ..infos = oldCon.infos
+        ..whenWhats = oldCon.whenWhats.map(convertWhenWhat).toList();
 
   /**
    *
@@ -547,7 +548,8 @@ class MigrationEnvironment {
         ..otherData = oldRec.otherData
         ..product = oldRec.product
         ..enabled = oldRec.enabled
-        ..shortGreeting = oldRec.shortGreeting;
+        ..shortGreeting = oldRec.shortGreeting
+        ..whenWhats = oldRec.whenWhats.map(convertWhenWhat).toList();
 
   /**
    *
@@ -570,6 +572,12 @@ class MigrationEnvironment {
 
     return pn;
   }
+
+  /**
+   *
+   */
+  or_model.WhenWhat convertWhenWhat(old_or_model.WhenWhat oldWhenWhat) =>
+      new or_model.WhenWhat.fromJson(oldWhenWhat.toJson());
 
   /**
    *
