@@ -35,6 +35,28 @@ class AgentStatistics {
     return okJson(_agentHistory.getRaw(new DateTime.now()));
   }
 
+  Future<shelf.Response> summary(shelf.Request request) async {
+    final String dayStr = shelf_route.getPathParameter(request, 'day');
+    DateTime day;
+
+    try {
+      final List<String> part = dayStr.split('-');
+
+      day = new DateTime(
+          int.parse(part[0]), int.parse(part[1]), int.parse(part[2]));
+    } catch (e) {
+      final String msg = 'Day parsing failed: $dayStr';
+      _log.warning(msg, e);
+      return clientError(msg);
+    }
+
+    try {
+      return okJson(await _agentHistory.agentSummay(day));
+    } on NotFound {
+      return notFound('No stats for the day $dayStr');
+    }
+  }
+
   Future<shelf.Response> get(shelf.Request request) async {
     final String dayStr = shelf_route.getPathParameter(request, 'day');
     DateTime day;

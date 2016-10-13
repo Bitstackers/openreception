@@ -50,6 +50,7 @@ class User {
       ..delete('/user/cache', _userController.emptyCache)
       ..get('/user/statistics', _statsController.today)
       ..get('/user/statistics/{day}', _statsController.get)
+      ..get('/user/statistics/{day}/summary', _statsController.summary)
       ..get('/user', _userController.list)
       ..get('/user/history', _userController.history)
       ..get('/user/{uid}', _userController.get)
