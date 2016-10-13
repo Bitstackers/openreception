@@ -13,14 +13,24 @@
 
 part of orf.model.monitoring;
 
+/// Model class that contains a full report of which events occured at a given
+/// day.
+///
+/// Useful for extracting agent performance information.
 class DailyReport {
+  /// A set calls that was handled on the given day.
   final Set<HistoricCall> callHistory = new Set<HistoricCall>();
+
+  /// A set messages that was handled on the given day.
   final Set<MessageHistory> messageHistory = new Set<MessageHistory>();
+
+  /// A set user state changes that occured on the given day.
   final Set<UserStateHistory> userStateHistory = new Set<UserStateHistory>();
 
   /// Create a new empty report.
   DailyReport.empty();
 
+  /// Deserialization function.
   DailyReport.fromJson(Map<String, dynamic> map) {
     callHistory.addAll((map['calls'] as Iterable<Map<String, dynamic>>)
         .map((Map<String, dynamic> chMap) => new HistoricCall.fromJson(chMap)));
@@ -38,7 +48,7 @@ class DailyReport {
   bool get isEmpty =>
       callHistory.isEmpty && messageHistory.isEmpty && userStateHistory.isEmpty;
 
-  ///
+  /// Get the [DateTime] of the first event in any if the event history sets.
   DateTime get day {
     if (isEmpty) {
       return util.never;
@@ -148,6 +158,7 @@ class DailyReport {
       };
 }
 
+/// Internal helper class for extracting queue lengths.
 class _InternalCallEventRep {
   final String callId;
   final DateTime timestamp;
