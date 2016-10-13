@@ -1,5 +1,6 @@
 library orm.page;
 
+export 'package:orm/page/page-agent_history.dart';
 export 'package:orm/page/page-cdr.dart';
 export 'package:orm/page/page-contact.dart';
 export 'package:orm/page/page-dialplan.dart';

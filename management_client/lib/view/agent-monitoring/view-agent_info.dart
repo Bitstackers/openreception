@@ -126,15 +126,9 @@ String _prettyDuration(Duration d) {
   final int m = d.inMinutes % 60;
   final int s = d.inSeconds % 60;
 
-  if (h > 0) {
-    return '${h}:${m}:${s}s';
-  } else if (m > 0) {
-    if (s < 10) {
-      return '${m}:0${s}s';
-    } else {
-      return '${m}:${s}s';
-    }
-  } else {
-    return '${s}s';
-  }
+  final String hh = h > 0 ? 'h:' : '';
+  final String mm = m > 9 ? '$m' : '0$m';
+  final String ss = s > 9 ? '$s' : '0$s';
+
+  return '$hh$mm:${ss}s';
 }

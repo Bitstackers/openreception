@@ -515,3 +515,28 @@ button.save:enabled {
  .changed {
    background-color: yellow;
  }
+
+.historic-call {
+  position: absolute;
+  float: left;
+  height: 5pt;
+}
+
+.historic-call:hover  {
+  opacity: 0.3;
+}
+
+.historic-message {
+  cursor: default;
+  width: 5pt;
+  height: 5pt;
+  border-radius: 5pt;
+}
+
+.historic-message:hover {
+  opacity: 0.3;
+}
+
+.historic-pause:hover {
+  opacity: 0.3;
+}

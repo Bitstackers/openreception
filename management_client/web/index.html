@@ -17,6 +17,9 @@
   <link rel="stylesheet" href="/style/user.css">
   <link rel="stylesheet" href="/style/cdr.css">
   <link rel="stylesheet" href="/style/music.css">
+
+  <!-- Google charts import -->
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
   <div IgnoreClickFocus id="loading-screen">
@@ -102,6 +105,11 @@
       <li>
         <a href="/monitor" class="faded">
           <img alt="Monitor" title="Monitor" src="/image/stats.svg" draggable="false">
+        </a>
+      </li>
+      <li>
+        <a href="/history" class="faded">
+          <img alt="Agent History" title="Agent History" src="/image/stats.svg" draggable="false">
         </a>
       </li>
     </ul>
@@ -231,6 +239,12 @@
       - - - - - - MONITOR- - - - -
       - - - - - - - - - - - - - - -->
     <div id="monitor-page" class="hidden"></div>
+
+    <!-- - - - - - - - - - - - - -
+      - - - - - - HISTORY- - - - -
+      - - - - - - - - - - - - - - -->
+    <div id="history-page" class="hidden"></div>
+
 
   </div> <!-- page-main-screen -->
   <script type="application/dart" src="/main.dart"></script>

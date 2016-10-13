@@ -194,6 +194,16 @@ Future main() async {
           router)
       .element);
 
+  querySelector("#history-page").replaceWith(new page.AgentHistory(
+          callController,
+          userController,
+          notification.onUserState,
+          notification.onPeerState,
+          notification.onWidgetSelect,
+          notification.onFocusChange,
+          router)
+      .element);
+
   /// Verify that we support HTMl5 notifications
   loadingLog.text += 'Undersøger HTML5 understøttelse\n';
   loadingProgress.value++;

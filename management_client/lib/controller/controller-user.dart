@@ -30,6 +30,12 @@ class User {
   Future<Iterable<model.Commit>> changes([int uid]) =>
       _service.changes(uid).catchError(_handleError);
 
+  Future<model.DailyReport> dailyReport(DateTime day) =>
+      _service.dailyReport(day).catchError(_handleError);
+
+  Future<model.DailySummary> dailySummary(DateTime day) =>
+      _service.dailySummary(day).catchError(_handleError);
+
   Future<String> changelog(int uid) =>
       _service.changelog(uid).catchError(_handleError);
 }

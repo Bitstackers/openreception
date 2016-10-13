@@ -15,6 +15,8 @@ import 'package:orf/validation.dart';
 import 'package:random_string/random_string.dart' as random;
 
 export 'package:orm/view/view-agent_monitoring.dart';
+export 'package:orm/view/view-agent_history.dart';
+export 'package:orm/view/view-agent_timeline.dart';
 
 part 'view/view-calendar.dart';
 part 'view/view-changelog.dart';
