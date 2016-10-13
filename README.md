@@ -22,6 +22,7 @@ back-office application for datatore management.
 In order to install this software you need:
 
   - A computer running a recent Linux for the stack
+  - Dart SDK (version 1.14+)
   - The FreeSWITCH soft-PBX (version 1.4+)
   - A SIP-capable phone for each call-handling agent (hardware or software)
     with auto-answer feature
@@ -40,8 +41,12 @@ Please follow the official FreeSWITCH installation docs located at:
 
 ### SIP-Phones
 
-The system have been successfully depoyed using physical SNOM [1] phones
-
+The system have been successfully depoyed using physical SNOM [1] phones.
+Calls are proxied through the FreeSWITCH PBX by first dialing the phone of
+the agent, which is therefore expected to be able to answer this channel.
+The actual call pickup action is initiated from the web API, so the
+auto-answer is merely a feature to to abstract away the communication
+channel.
 
 ## Installation
 
