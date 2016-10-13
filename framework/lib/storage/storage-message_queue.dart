@@ -15,11 +15,18 @@ part of orf.storage;
 
 /// Storage interface for persistent storage of [model.MessageQueueEntry] objects.
 abstract class MessageQueue {
+  /// Enqueue a message.
+  ///
+  /// Returns the [model.MessageQueueEntry] object that was created as an
+  /// effect of the [enqueue] action.
   Future<model.MessageQueueEntry> enqueue(model.Message message);
 
-  Future<Null> update(model.MessageQueueEntry queueItem);
+  /// Update an existing [queueEntry].
+  Future<Null> update(model.MessageQueueEntry queueEntry);
 
+  /// Remove the [model.MessageQueueEntry] with [mqid].
   Future<Null> remove(int mqid);
 
+  /// List every [model.MessageQueueEntry] currently stored.
   Future<Iterable<model.MessageQueueEntry>> list();
 }

@@ -13,45 +13,26 @@
 
 part of orf.model;
 
+/// User groups "enum".
 abstract class UserGroups {
+  /// Receptionist group.
   static const String receptionist = 'Receptionist';
+
+  /// Administrator group.
   static const String administrator = 'Administrator';
+
+  /// Service agent group.
   static const String serviceAgent = 'Service agent';
 
+  /// List of all valid groups.
   static const Iterable<String> validGroups = const <String>[
     receptionist,
     administrator,
     serviceAgent
   ];
 
+  /// Determine if [group] is valid.
   static bool isValid(String group) => validGroups.toSet().contains(group);
-}
-
-class UserChange implements ObjectChange {
-  @override
-  final ChangeType changeType;
-
-  @override
-  final ObjectType objectType = ObjectType.user;
-  final int uid;
-
-  UserChange(this.changeType, this.uid);
-
-  UserChange.fromJson(Map<String, dynamic> map)
-      : changeType = changeTypeFromString(map[key.change]),
-        uid = map[key.uid];
-
-  @deprecated
-  static UserChange decode(Map<String, dynamic> map) =>
-      new UserChange(changeTypeFromString(map[key.change]), map[key.uid]);
-
-  /// Serialization function.
-  @override
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        key.change: changeTypeToString(changeType),
-        key.type: objectTypeToString(objectType),
-        key.uid: uid
-      };
 }
 
 class UserReference implements ObjectReference {
@@ -81,15 +62,32 @@ class UserReference implements ObjectReference {
   bool operator ==(Object other) => other is UserReference && other.id == id;
 }
 
+/// User model class.
 class User {
+  /// Static ID representing no user.
+  ///
+  /// Also used as special ID for system user.
   static const int noId = 0;
 
+  /// Primary email address
   String address;
+
+  /// ID of the user (uid)
   int id = noId;
+
+  /// Name of the user
   String name = '';
+
+  /// The current phone extension.
   String extension = '';
+
+  /// User portrait URI.
   String portrait = '';
+
+  /// The current groups that the user is member of
   Set<String> groups = new Set<String>();
+
+  /// Authentication identities
   Set<String> identities = new Set<String>();
 
   /// Constructor for creating an empty object.
@@ -123,5 +121,6 @@ class User {
         key.groups: groups.toList(growable: false)
       };
 
+  /// The short-hand reference object of the user.
   UserReference get reference => new UserReference(id, name);
 }

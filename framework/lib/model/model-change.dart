@@ -13,6 +13,34 @@
 
 part of orf.model;
 
+/// Object change specialization for [User] object changes
+class UserChange implements ObjectChange {
+  @override
+  final ChangeType changeType;
+
+  @override
+  final ObjectType objectType = ObjectType.user;
+  final int uid;
+
+  UserChange(this.changeType, this.uid);
+
+  UserChange.fromJson(Map<String, dynamic> map)
+      : changeType = changeTypeFromString(map[key.change]),
+        uid = map[key.uid];
+
+  @deprecated
+  static UserChange decode(Map<String, dynamic> map) =>
+      new UserChange(changeTypeFromString(map[key.change]), map[key.uid]);
+
+  /// Serialization function.
+  @override
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        key.change: changeTypeToString(changeType),
+        key.type: objectTypeToString(objectType),
+        key.uid: uid
+      };
+}
+
 class CalendarChangelogEntry implements ChangelogEntry {
   @override
   final DateTime timestamp;

@@ -16,6 +16,7 @@ part of orf.storage;
 /// Storage interface for persistent storage of [model.BaseContact] and
 /// [model.ReceptionAttributes] objects.
 abstract class Contact {
+  /// Add a set of [model.ReceptionAttributes] to a [model.BaseContact].
   Future<Null> addData(model.ReceptionAttributes attr, model.User modifier);
 
   /// Creates and stores a new [model.BaseContact] object persistently using

@@ -18,10 +18,13 @@ abstract class Message {
   /// Retrive a previously stored [model.Message] identified by [mid].
   Future<model.Message> get(int mid);
 
+  /// Get messages with [ids].
   Future<Iterable<model.Message>> getByIds(Iterable<int> ids);
 
+  /// List all messages that was created on given [day].
   Future<Iterable<model.Message>> listDay(DateTime day);
 
+  /// List all draft messages currently stored in this message store.
   Future<Iterable<model.Message>> listDrafts();
 
   /// Creates and stores a new [model.Message] object persistently

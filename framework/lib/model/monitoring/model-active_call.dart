@@ -13,30 +13,35 @@
 
 part of orf.model.monitoring;
 
+/// Model class for a call that is currently in progress (not yet hung up).
 class ActiveCall {
   final List<_event.CallEvent> _events = <_event.CallEvent>[];
 
+  /// Default empty constructor.
   ActiveCall.empty();
 
-  ///
+  /// Reception id of the call.
   int get rid => _events
       .firstWhere((_event.CallEvent ce) => ce.call.rid != Reception.noId,
           orElse: () => new _event.CallOffer(Call.noCall))
       .call
       .rid;
 
-  ///
+  /// Contact id of the call.
   int get cid => _events
       .firstWhere((_event.CallEvent ce) => ce.call.cid != BaseContact.noId,
           orElse: () => new _event.CallOffer(Call.noCall))
       .call
       .cid;
 
+  /// Call id of the call.
   String get callId => _events.isNotEmpty ? _events.first.call.id : Call.noId;
 
-  void addEvent(_event.Event e) {
+  /// Add an event to the internal list of historic [_event.CallEvent]s
+  /// that occurred with relevance to the [ActiveCall].
+  void addEvent(_event.CallEvent e) {
     _events.add(e);
-    _events.sort((_event.Event e1, _event.Event e2) =>
+    _events.sort((_event.CallEvent e1, _event.CallEvent e2) =>
         e1.timestamp.compareTo(e2.timestamp));
   }
 
@@ -49,12 +54,15 @@ class ActiveCall {
       .call
       .assignedTo;
 
+  /// Returns true if the call has not been assigned to an agent.
   bool get unAssigned => assignee == User.noId;
 
+  /// Returns a log-friendly string visualizing the current event stack.
   String eventString() =>
       '  events:\n' +
       _events.map((_event.Event e) => '  - ${_eventToString(e)}').join('\n');
 
+  /// Convert an event to a string.
   String _eventToString(_event.Event e) =>
       '${e.timestamp.millisecondsSinceEpoch~/1000}: ${e.eventName}';
 
@@ -65,14 +73,17 @@ class ActiveCall {
       'inbound:$inbound\n'
       '${eventString()}';
 
-  /// Determine if the call is inbound.
+  /// Determines if the call is inbound.
   bool get inbound => _events.first.call.inbound;
 
+  /// Determines if the call has been answered.
   bool get isAnswered =>
       _events.any((_event.CallEvent ce) => ce is _event.CallPickup);
 
+  /// Returns the timestamp of the first (in time) event that has occurred.
   DateTime get firstEventTime => _events.first.timestamp;
 
+  /// Returns true if that call is no longer active.
   bool get isDone => _events.any((_event.CallEvent ce) =>
       ce is _event.CallHangup || ce is _event.CallTransfer);
 
@@ -83,6 +94,7 @@ class ActiveCall {
   bool operator ==(Object other) =>
       other is ActiveCall && other.callId == callId;
 
+  /// The [Duration] a call has been progressing before it was picked up.
   Duration get answerLatency {
     if (!inbound) {
       return null;

@@ -18,8 +18,10 @@ import 'dart:io';
 import 'package:logging/logging.dart';
 //import '../lib/service.dart'  as Service;
 
+/// Log handler function definition.
 typedef void LogHandler(LogRecord r);
 
+/// Setup logging with optional custom [logFunction].
 void setupLogging([LogHandler logFunction]) {
   if (logFunction == null) {
     logFunction = (LogRecord record) {

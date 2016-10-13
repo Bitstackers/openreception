@@ -28,15 +28,27 @@ class FileChange {
   String toJson() => '$changeType $filename';
 }
 
+/// A change set representing a git commit.
 class Change {
+  /// The time the change occured.
   final DateTime changeTime;
+
+  /// The author of the change.
   final String author;
+
+  /// The commit message
   final String message;
+
+  /// The commit hash.
   final String commitHash;
+
+  /// The list of changes that was included in this change.
   List<FileChange> fileChanges = <FileChange>[];
 
+  /// Default constructor.
   Change(this.changeTime, this.author, this.commitHash, {this.message: ''});
 
+  /// Serialization function.
   Map<String, dynamic> toJson() => <String, dynamic>{
         'changed': changeTime.millisecondsSinceEpoch,
         'author': author,
@@ -46,6 +58,7 @@ class Change {
       };
 }
 
+/// Job holder-class for enabling enqueing of commands in the git engine.
 class _Job {
   final Completer<Null> completionTicket = new Completer<Null>();
   final Function work;
@@ -53,6 +66,7 @@ class _Job {
   _Job(this.work);
 }
 
+/// Git engine revisioning class.
 class GitEngine {
   /// Internal logger
   final Logger _log = new Logger('$_libraryName.GitEngine');
@@ -92,11 +106,14 @@ class GitEngine {
   /// Returns when the [GitEngine] is initialized.
   Future<Null> get initialized => _initialized.future;
 
+  /// Read contents from .gitignore file in [path].
   List<String> ignoredPaths(String path) =>
       new File('$path/.gitignore').readAsStringSync().split('\n');
 
-  void addIgnoredPath(String ignorePath) {
-    final File ignoreFile = new File('$path/.gitignore');
+  /// Add [ignorePath] contents to .gitignore file in [path] or [ignPath].
+  void addIgnoredPath(String ignorePath, [String ignPath]) {
+    final File ignoreFile =
+        new File('${ignPath == null ? path: ignPath}/.gitignore');
     Set<String> paths = ignoreFile.existsSync()
         ? ignoreFile.readAsStringSync().split('\n').toSet()
         : new Set<String>();
@@ -106,6 +123,7 @@ class GitEngine {
     ignoreFile.writeAsStringSync(paths.join('\n'));
   }
 
+  /// Initialize the [GitEngine].
   Future<Null> init() async {
     final Directory _storeDir = new Directory(path);
 
@@ -197,6 +215,7 @@ class GitEngine {
     return job;
   }
 
+  /// Add a change entry to [file] with [commitMsg] and [author].
   Future<Null> add(File file, String commitMsg, String author) async {
     await init();
     final bool locked = _lock();
@@ -214,6 +233,7 @@ class GitEngine {
     }
   }
 
+  /// Commit a change entry to [file] with [commitMsg] and [author].
   Future<Null> commit(File file, String commitMsg, String author) async {
     await init();
     if (!await _hasChanges(file)) {
@@ -263,6 +283,7 @@ class GitEngine {
     return true;
   }
 
+  /// Remove a [fse] from file system with [commitMsg] and [author].
   Future<Null> remove(
       FileSystemEntity fse, String commitMsg, String author) async {
     await init();
@@ -280,6 +301,7 @@ class GitEngine {
     }
   }
 
+  /// List [Change]s for [fse].
   Future<Iterable<Change>> changes(FileSystemEntity fse) async {
     final String gitBin = '/usr/bin/git';
     final List<String> arguments = <String>[

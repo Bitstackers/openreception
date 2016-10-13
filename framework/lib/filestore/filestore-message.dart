@@ -443,6 +443,8 @@ class Message implements storage.Message {
     return changes;
   }
 
+  /// List all [model.Commit]s by [day], optionally showing out only message
+  /// with [mid].
   Future<Iterable<model.Commit>> changesByDay(DateTime day, [int mid]) async {
     if (this._git == null) {
       throw new UnsupportedError(

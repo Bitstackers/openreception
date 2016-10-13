@@ -116,7 +116,15 @@ class Contact implements storage.Contact {
     }
   }
 
+  /// Contact change stream.
+  ///
+  /// Fires every time a [model.BaseContact] change happens within the filestore.
   Stream<event.ContactChange> get onContactChange => _changeBus.stream;
+
+  /// Refception data change stream.
+  ///
+  /// Fires every time a [model.ReceptionAttributes] change happens within the
+  /// filestore.
   Stream<event.ReceptionData> get onReceptionDataChange =>
       _receptionDataChangeBus.stream;
 
@@ -576,9 +584,12 @@ class Contact implements storage.Contact {
     return changes;
   }
 
+  /// Return the logged changelog values for [cid] as a raw string.
   Future<String> changeLog(int cid) async =>
       logChanges ? new ChangeLogger(_contactDir(cid).path).contents() : '';
 
+  /// Return the logged reception data changelog values for [cid] as a raw
+  /// string.
   Future<String> receptionChangeLog(int cid) async =>
       logChanges ? new ChangeLogger(_receptionDir(cid).path).contents() : '';
 
