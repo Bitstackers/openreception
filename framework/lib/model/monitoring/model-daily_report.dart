@@ -90,28 +90,44 @@ class DailyReport {
     userStateHistory.add(history);
   }
 
-  /// Playback the queue size over time
+  /// Playback the queue size over time and return a map with the queuesizes as
+  /// values and the time the registered value as key.
   Map<DateTime, int> queuesizes() {
     final Map<DateTime, int> queueSizes = <DateTime, int>{};
 
-    List<_HistoricCallEvent> orderedEvents = callHistory
-        .where((HistoricCall hc) => hc.inbound)
-        .fold(
-            <_HistoricCallEvent>[],
-            (List<_HistoricCallEvent> l, HistoricCall hc) =>
-                l..addAll(hc.events))
-          ..sort((_HistoricCallEvent a, _HistoricCallEvent b) =>
-              a.timestamp.compareTo(b.timestamp));
+    Iterable<HistoricCall> inboundCalls =
+        callHistory.where((HistoricCall hc) => hc.inbound);
+
+    List<_InternalCallEventRep> orderedEvents = <_InternalCallEventRep>[];
+
+    for (HistoricCall hc in inboundCalls) {
+      for (_HistoricCallEvent e in hc.events) {
+        orderedEvents.add(
+            new _InternalCallEventRep(hc.callId, e.timestamp, e.eventName));
+      }
+    }
+
+    orderedEvents.sort((_InternalCallEventRep a, _InternalCallEventRep b) =>
+        a.timestamp.compareTo(b.timestamp));
 
     int queueSize = 0;
 
-    for (_HistoricCallEvent callEvt in orderedEvents) {
-      if (callEvt.eventName == _callOfferKey) {
+    Set<String> seen = new Set<String>();
+    for (_InternalCallEventRep e in orderedEvents) {
+      if (e.eventName == _callOfferKey) {
         queueSize++;
-        queueSizes[callEvt.timestamp] = queueSize;
-      } else if (callEvt.eventName == _callHangupKey) {
-        queueSize--;
-        queueSizes[callEvt.timestamp] = queueSize;
+        queueSizes[e.timestamp] = queueSize;
+      } else if (e.eventName == _callPickupKey) {
+        if (!seen.contains(e.callId)) {
+          queueSize--;
+          queueSizes[e.timestamp] = queueSize;
+          seen.add(e.callId);
+        }
+      } else if (e.eventName == _callHangupKey) {
+        if (!seen.remove(e.callId)) {
+          queueSize--;
+          queueSizes[e.timestamp] = queueSize;
+        }
       }
     }
 
@@ -130,4 +146,12 @@ class DailyReport {
             .map((UserStateHistory ush) => ush.toJson())
             .toList(growable: false),
       };
+}
+
+class _InternalCallEventRep {
+  final String callId;
+  final DateTime timestamp;
+  final String eventName;
+
+  const _InternalCallEventRep(this.callId, this.timestamp, this.eventName);
 }
