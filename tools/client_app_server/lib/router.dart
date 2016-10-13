@@ -51,6 +51,8 @@ class FileRouter {
       ..get('/message', fileHandler)
       ..get('/speak', fileHandler)
       ..get('/user', fileHandler)
+      ..get('/monitor', fileHandler)
+      ..get('/history', fileHandler)
       ..get('/user/create', fileHandler)
       ..get('/user/edit/{uid}', fileHandler);
 
