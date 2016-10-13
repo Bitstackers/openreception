@@ -104,7 +104,8 @@ class Organization implements storage.Organization {
 
   @override
   Future<Map<String, Map<String, String>>> receptionMap() async {
-    final Map<String, Map<String, String>> map = {};
+    final Map<String, Map<String, String>> map =
+        <String, Map<String, String>>{};
 
     Iterable<model.ReceptionReference> rRefs = await _receptionFileStore.list();
 
@@ -114,7 +115,7 @@ class Organization implements storage.Organization {
             await _receptionFileStore.get(rRef.id);
         final model.Organization org = await get(reception.oid);
 
-        map[rRef.id.toString()] = {
+        map[rRef.id.toString()] = <String, String>{
           'organization': org.name,
           'reception': reception.name
         };
