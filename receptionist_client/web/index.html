@@ -156,6 +156,14 @@
               font-size: 1em;
             }
 
+            #calendar-editor .entry-buttons-container button.wide-button {
+              width: 10em;
+            }
+
+            #calendar-editor .entry-buttons-container button.first-click {
+              background-color: #ff5621;
+            }
+
             #calendar-editor input {
               padding-right: 0.3em;
               font-size: 1em;
@@ -216,6 +224,7 @@
               <button class="cancel" tabindex="-1" data-lang-text="cancel">::cancel::</button>
               <button class="delete" disabled tabindex="-1" data-lang-text="delete">::delete::</button>
               <button class="save" disabled tabindex="-1" data-lang-text="save">::save::</button>
+              <button class="wide-button save-reception" disabled tabindex="-1" data-lang-text="save-reception">::save-reception::</button>
             </div>
           </div>
         </div>
@@ -872,7 +881,7 @@
               <div id="reception-selector" class="generic-widget">
                 <style scoped>
                   #reception-selector {
-                    flex-grow: 0.7;
+                    flex-grow: 0.6;
                   }
 
                   #reception-selector .generic-widget-body div {
@@ -932,162 +941,6 @@
                   </div>
                   <ol class="generic-widget-list zebra" tabindex="-1"></ol>
                 </div>
-              </div>
-
-              <!--
-                #reception-calendar widget
-
-                Role:
-                  Show calendar entries for a reception.
-
-                Visibility:
-                  Is controlled by the visibility of #context-home.
-
-                Tabindex:
-                  ol element set to -1 on blur. MUST be updated on focus.
-              -->
-              <div id="reception-calendar" class="generic-widget layout-margin-top" tabindex="-1">
-                <style scoped>
-                  #reception-calendar {
-                    flex-grow: 0.7;
-                  }
-
-                  #reception-calendar,
-                  #reception-calendar .generic-widget-list,
-                  #reception-calendar .generic-widget-list:focus,
-                  #reception-calendar .generic-widget-list li:focus {
-                    outline: 0;
-                  }
-
-                  #reception-calendar .generic-widget-list li {
-                    border-left: solid 3px #f7f7f7;
-                  }
-
-                  #reception-calendar .generic-widget-list li.active {
-                    color: inherit;
-                  }
-
-                  #reception-calendar .generic-widget-list li:hover {
-                    cursor: pointer;
-                  }
-
-                  #reception-calendar .generic-widget-list .selected {
-                    border-left: solid 3px #ff5621;
-                  }
-
-                  #reception-calendar .generic-widget-list li .label-and-timestamp {
-                    display: flex;
-                    justify-content: space-between;
-                    margin-top: 0.3em;
-                    color: #999;
-                  }
-
-                  #reception-calendar .generic-widget-list li .label-and-timestamp .label-future {
-                    color: green;
-                    padding-top: 5px;
-                    font-size: 0.6em;
-                  }
-
-                  #reception-calendar .generic-widget-list li .label-and-timestamp .label-past {
-                    color: red;
-                    animation: pulse-label-past 0.7s infinite alternate;
-                  }
-
-                  @keyframes pulse-label-past {
-                    to {
-                      opacity: 0.1;
-                    }
-                  }
-
-                  #reception-calendar .generic-widget-list li.active .timestamp {
-                    color: #ff5621;
-                    font-weight: bold;
-                  }
-
-                  #reception-calendar .generic-widget-list li div,
-                  #reception-calendar .generic-widget-list li span {
-                    pointer-events: none;
-                  }
-
-                  #reception-calendar .generic-widget-list li div.markdown a {
-                    color: blue;
-                    pointer-events: auto;
-                  }
-
-                  #reception-calendar .generic-widget-list li div.markdown {
-                    color: #999;
-                  }
-
-                  #reception-calendar .generic-widget-list li.active div.markdown {
-                    color: inherit;
-                  }
-
-                  #reception-calendar .generic-widget-list li div.markdown * {
-                    margin: 5px 0;
-                  }
-
-                  #reception-calendar .generic-widget-list li div.markdown *:first-child {
-                    margin-top: 0;
-                  }
-
-                  #reception-calendar .generic-widget-list li div.markdown ul {
-                    padding: 0 26px;
-                  }
-
-                  #reception-calendar .generic-widget-list li div.markdown ol {
-                    padding: 0 30px;
-                  }
-
-                  #reception-calendar .generic-widget-list li div.markdown ul li {
-                    list-style-type: disc;
-                    border: 0;
-                  }
-
-                  #reception-calendar .generic-widget-list li div.markdown ol li {
-                      border: 0;
-                  }
-
-                  #reception-calendar .generic-widget-list li div.markdown li:nth-of-type(even) {
-                    background-color: inherit;
-                  }
-
-                  #reception-calendar .generic-widget-list li div.markdown blockquote {
-                    margin-left: 0.2em;
-                    padding-left: 0.1em;
-                    border-left: solid 3px orange;
-                  }
-
-                  #reception-calendar .generic-widget-list li div.markdown table {
-                    border-collapse: collapse;
-                    border: 1px solid #000;
-                    border-spacing: 0;
-                  }
-
-                  #reception-calendar .generic-widget-list li div.markdown tr:nth-child(odd) {
-                    background-color: #ddd;
-                  }
-
-                  #reception-calendar .generic-widget-list li div.markdown th {
-                    padding: 5px 20px;
-                    border: 1px solid #000;
-                  }
-
-                  #reception-calendar .generic-widget-list li div.markdown td {
-                    vertical-align: middle;
-                    border: 1px solid #000;
-                    text-align: left;
-                    padding: 5px 10px;
-                  }
-                </style>
-
-                <div class="spinning-focus-box"></div>
-                <div class="hint hidden"></div>
-
-                <h4 class="generic-widget-headline">
-                  <span data-lang-text="reception-calendar-header">::reception calendar::</span>
-                  <span class="extra-header"></span>
-                </h4>
-                <ol class="generic-widget-body generic-widget-list zebra" tabindex="-1"></ol>
               </div>
 
               <!--
@@ -1486,10 +1339,10 @@
                 </div>
 
                 <!--
-                  #contact-calendar widget
+                  #calendar widget
 
                   Role:
-                    Show calendar entries for a contact.
+                    Show calendar entries.
 
                   Visibility:
                     Is controlled by the visibility of #context-home.
@@ -1497,49 +1350,49 @@
                   Tabindex:
                     ol element set to -1 on blur. MUST be updated on focus.
                 -->
-                <div id="contact-calendar" class="generic-widget" tabindex="-1">
+                <div id="calendar" class="generic-widget" tabindex="-1">
                   <style scoped>
-                    #contact-calendar {
+                    #calendar {
                       flex-grow: 3;
                     }
 
-                    #contact-calendar,
-                    #contact-calendar .generic-widget-list,
-                    #contact-calendar .generic-widget-list:focus,
-                    #contact-calendar .generic-widget-list li:focus {
+                    #calendar,
+                    #calendar .generic-widget-list,
+                    #calendar .generic-widget-list:focus,
+                    #calendar .generic-widget-list li:focus {
                       outline: 0;
                     }
 
-                    #contact-calendar .generic-widget-list li {
+                    #calendar .generic-widget-list li {
                       border-left: solid 3px #f7f7f7;
                     }
 
-                    #contact-calendar .generic-widget-list li.active {
+                    #calendar .generic-widget-list li.active {
                       color: inherit;
                     }
 
-                    #contact-calendar .generic-widget-list li:hover {
+                    #calendar .generic-widget-list li:hover {
                       cursor: pointer;
                     }
 
-                    #contact-calendar .generic-widget-list .selected {
+                    #calendar .generic-widget-list .selected {
                       border-left: solid 3px #ff5621;
                     }
 
-                    #contact-calendar .generic-widget-list li .label-and-timestamp {
+                    #calendar .generic-widget-list li .label-and-timestamp {
                       display: flex;
                       justify-content: space-between;
                       margin-top: 0.3em;
                       color: #999;
                     }
 
-                    #contact-calendar .generic-widget-list li .label-and-timestamp .label-future {
+                    #calendar .generic-widget-list li .label-and-timestamp .label-future {
                       color: green;
                       padding-top: 5px;
                       font-size: 0.6em;
                     }
 
-                    #contact-calendar .generic-widget-list li .label-and-timestamp .label-past {
+                    #calendar .generic-widget-list li .label-and-timestamp .label-past {
                       color: red;
                       animation: pulse-label-past 0.7s infinite alternate;
                     }
@@ -1550,80 +1403,80 @@
                       }
                     }
 
-                    #contact-calendar .generic-widget-list li.active .timestamp {
+                    #calendar .generic-widget-list li.active .timestamp {
                       color: #ff5621;
                       font-weight: bold;
                     }
 
-                    #contact-calendar .generic-widget-list li div,
-                    #contact-calendar .generic-widget-list li span {
+                    #calendar .generic-widget-list li div,
+                    #calendar .generic-widget-list li span {
                       pointer-events: none;
                     }
 
-                    #contact-calendar .generic-widget-list li div.markdown a {
+                    #calendar .generic-widget-list li div.markdown a {
                       color: blue;
                       pointer-events: auto;
                     }
 
-                    #contact-calendar .generic-widget-list li div.markdown {
+                    #calendar .generic-widget-list li div.markdown {
                       color: #999;
                     }
 
-                    #contact-calendar .generic-widget-list li.active div.markdown {
+                    #calendar .generic-widget-list li.active div.markdown {
                       color: inherit;
                     }
 
-                    #contact-calendar .generic-widget-list li div.markdown * {
+                    #calendar .generic-widget-list li div.markdown * {
                       margin: 5px 0;
                     }
 
-                    #contact-calendar .generic-widget-list li div.markdown *:first-child {
+                    #calendar .generic-widget-list li div.markdown *:first-child {
                       margin-top: 0;
                     }
 
-                    #contact-calendar .generic-widget-list li div.markdown ul {
+                    #calendar .generic-widget-list li div.markdown ul {
                       padding: 0 26px;
                     }
 
-                    #contact-calendar .generic-widget-list li div.markdown ol {
+                    #calendar .generic-widget-list li div.markdown ol {
                       padding: 0 30px;
                     }
 
-                    #contact-calendar .generic-widget-list li div.markdown ul li {
+                    #calendar .generic-widget-list li div.markdown ul li {
                       list-style-type: disc;
                       border: 0;
                     }
 
-                    #contact-calendar .generic-widget-list li div.markdown ol li {
+                    #calendar .generic-widget-list li div.markdown ol li {
                         border: 0;
                     }
 
-                    #contact-calendar .generic-widget-list li div.markdown li:nth-of-type(even) {
+                    #calendar .generic-widget-list li div.markdown li:nth-of-type(even) {
                       background-color: inherit;
                     }
 
-                    #contact-calendar .generic-widget-list li div.markdown blockquote {
+                    #calendar .generic-widget-list li div.markdown blockquote {
                       margin-left: 0.2em;
                       padding-left: 0.1em;
                       border-left: solid 3px orange;
                     }
 
-                    #contact-calendar .generic-widget-list li div.markdown table {
+                    #calendar .generic-widget-list li div.markdown table {
                       border-collapse: collapse;
                       border: 1px solid #000;
                       border-spacing: 0;
                     }
 
-                    #contact-calendar .generic-widget-list li div.markdown tr:nth-child(odd) {
+                    #calendar .generic-widget-list li div.markdown tr:nth-child(odd) {
                       background-color: #ddd;
                     }
 
-                    #contact-calendar .generic-widget-list li div.markdown th {
+                    #calendar .generic-widget-list li div.markdown th {
                       padding: 5px 20px;
                       border: 1px solid #000;
                     }
 
-                    #contact-calendar .generic-widget-list li div.markdown td {
+                    #calendar .generic-widget-list li div.markdown td {
                       vertical-align: middle;
                       border: 1px solid #000;
                       text-align: left;
@@ -1635,7 +1488,7 @@
                   <div class="hint hidden"></div>
 
                   <h4 class="generic-widget-headline">
-                    <span data-lang-text="contact-calendar-header">::contact calendar::</span>
+                    <span data-lang-text="calendar-header">::calendar::</span>
                     <span class="extra-header"></span>
                   </h4>
                   <ol class="generic-widget-body generic-widget-list zebra"></ol>

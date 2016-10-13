@@ -134,7 +134,6 @@ String _prettyDuration(Duration d) {
     } else {
       return '${m}:${s}s';
     }
-    return '${m}:${s}s';
   } else {
     return '${s}s';
   }

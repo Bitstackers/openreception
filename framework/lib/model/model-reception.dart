@@ -33,6 +33,7 @@ class Reception {
   List<String> customerTypes = <String>[];
   List<PhoneNumber> phoneNumbers = <PhoneNumber>[];
   String miniWiki = '';
+  List<WhenWhat> whenWhats = <WhenWhat>[];
 
   String dialplan;
   String greeting;
@@ -102,10 +103,18 @@ class Reception {
         key.vatNumbers: vatNumbers,
         key.phoneNumbers: new List<Map<String, dynamic>>.from(
             phoneNumbers.map((PhoneNumber number) => number.toJson())),
-        key.websites: websites
+        key.websites: websites,
+        key.whenWhat: whenWhats.map((WhenWhat ww) => ww.asMap).toList()
       };
 
   set attributes(Map<String, dynamic> attributes) {
+    if (attributes.containsKey(key.whenWhat)) {
+      Iterable values = attributes[key.whenWhat];
+      whenWhats = values
+          .map((Map<String, dynamic> map) => new WhenWhat.fromJson(map))
+          .toList();
+    }
+
     this
       ..addresses = attributes[key.addresses] as List<String>
       ..alternateNames = attributes[key.alternateNames] as List<String>

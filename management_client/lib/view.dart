@@ -35,6 +35,7 @@ part 'view/view-reception_contact.dart';
 part 'view/view-user.dart';
 part 'view/view-user_groups.dart';
 part 'view/view-user_identities.dart';
+part 'view/view-when-whats.dart';
 //export 'package:orm/view/agent-monitoring/agent_monitoring.dart';
 
 const String _libraryName = 'orm.view';

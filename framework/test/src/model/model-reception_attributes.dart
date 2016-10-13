@@ -66,6 +66,7 @@ abstract class _ModelReceptionAttributes {
     expect(builtObject.workhours, equals(deserializedObject.workhours));
     expect(builtObject.messagePrerequisites,
         equals(deserializedObject.messagePrerequisites));
+    expect(builtObject.whenWhats, equals(deserializedObject.whenWhats));
   }
 
   static model.ReceptionAttributes buildObject() {
@@ -96,6 +97,11 @@ abstract class _ModelReceptionAttributes {
     final List<String> workhours = <String>['Quite frankly; never'];
     final List<String> messagePrerequisites = <String>['[fishcode]'];
 
+    final List<model.WhenWhat> whenWhats = [
+      new model.WhenWhat('man-fri 08:00-09:00', 'Meeting'),
+      new model.WhenWhat('wed 12:00-12:30', 'lunch')
+    ];
+
     model.ReceptionAttributes builtObject =
         new model.ReceptionAttributes.empty()
           ..receptionId = receptionId
@@ -111,7 +117,8 @@ abstract class _ModelReceptionAttributes {
           ..responsibilities = responsibilities
           ..tags = tags
           ..workhours = workhours
-          ..messagePrerequisites = messagePrerequisites;
+          ..messagePrerequisites = messagePrerequisites
+          ..whenWhats = whenWhats;
 
     expect(builtObject.receptionId, equals(receptionId));
     expect(builtObject.cid, equals(contactId));
@@ -128,6 +135,7 @@ abstract class _ModelReceptionAttributes {
     expect(builtObject.tags, equals(tags));
     expect(builtObject.workhours, equals(workhours));
     expect(builtObject.messagePrerequisites, equals(messagePrerequisites));
+    expect(builtObject.whenWhats, equals(whenWhats));
 
     return builtObject;
   }

@@ -20,6 +20,7 @@ abstract class Key {
   static const String active = 'active';
   static const String agent = 'agent';
 
+  static const String calendarEditorAreYouSure = 'calendar-editor-are-you-sure';
   static const String calendarEditorDelErrorTitle = 'calendar-editor-del-error';
   static const String calendarEditorDelSuccessTitle =
       'calendar-editor-del-success';
@@ -53,7 +54,7 @@ abstract class Key {
   static const String closed = 'closed';
   static const String company = 'company';
 
-  static const String contactCalendarHeader = 'contact-calendar-header';
+  static const String calendarHeader = 'calendar-header';
   static const String contactDataAddInfo = 'contact-data-add-info';
   static const String contactDataBackup = 'contact-data-backup';
   static const String contactDataCommands = 'contact-data-commands';
@@ -106,6 +107,8 @@ abstract class Key {
 
   static const String globalCallQueueHeader = 'global-call-queue-header';
 
+  static const String lockedForEditing = 'locked-for-editing';
+
   static const String message = 'message';
   static const String messageArchiveContact = 'message-archive-contact';
   static const String messageArchiveHeader = 'message-archive-header';
@@ -151,7 +154,6 @@ abstract class Key {
   static const String receptionAddressesHeader = 'reception-addresses-header';
   static const String receptionAltNamesHeader = 'reception-alt-names-header';
   static const String receptionBankInfoHeader = 'reception-bank-info-header';
-  static const String receptionCalendarHeader = 'reception-calendar-header';
   static const String receptionCommandsHeader = 'reception-commands-header';
   static const String receptionChanged = 'reception-changed';
   static const String receptionEmailHeader = 'reception-email-header';
@@ -169,6 +171,7 @@ abstract class Key {
   static const String receptionWebsitesHeader = 'reception-websites-header';
 
   static const String save = 'save';
+  static const String saveReception = 'save-reception';
   static const String send = 'send';
   static const String sent = 'sent';
   static const String standardGreeting = 'standard-greeting';
@@ -196,6 +199,7 @@ Map<String, String> da = {
   Key.active: 'Aktive',
   Key.agent: 'Agent',
 
+  Key.calendarEditorAreYouSure: 'Er du sikker?',
   Key.calendarEditorDelErrorTitle: 'Kalenderaftalen blev ikke slettet',
   Key.calendarEditorDelSuccessTitle: 'Kalenderaftalen blev slettet',
   Key.calendarEditorHeader: 'Kalenderaftale',
@@ -226,7 +230,7 @@ Map<String, String> da = {
   Key.closed: 'Lukket',
   Key.company: 'Virksomhed',
 
-  Key.contactCalendarHeader: 'Kontaktkalender',
+  Key.calendarHeader: 'Kalender',
   Key.contactDataAddInfo: 'Info',
   Key.contactDataBackup: 'Backup',
   Key.contactDataCommands: 'Kommandoer',
@@ -258,7 +262,7 @@ Map<String, String> da = {
   Key.duration: 'Varighed',
 
   Key.editDelete: 'ret/slet for',
-  Key.editorNew: 'ny for',
+  Key.editorNew: 'ny',
   Key.error: 'fejl',
   Key.errorCallControllerBusy: 'Kaldhåndtering midlertidigt optaget',
   Key.errorCallHangup: 'Kaldet kunne ikke afbrydes',
@@ -275,6 +279,8 @@ Map<String, String> da = {
   Key.future: 'fremtid',
 
   Key.globalCallQueueHeader: 'Kø',
+
+  Key.lockedForEditing: 'låst for rettelser',
 
   Key.message: 'Besked',
   Key.messageArchiveContact: 'Modtager',
@@ -318,7 +324,6 @@ Map<String, String> da = {
   Key.receptionAddressesHeader: 'Adresser',
   Key.receptionAltNamesHeader: 'Alternative navne',
   Key.receptionBankInfoHeader: 'Bank',
-  Key.receptionCalendarHeader: 'Receptionskalender',
   Key.receptionCommandsHeader: 'Kommandoer',
   Key.receptionChanged: 'Henter ny receptionsliste ved næste kaldbesvarelse',
   Key.receptionEmailHeader: 'Emailadresser',
@@ -333,6 +338,7 @@ Map<String, String> da = {
   Key.receptionWebsitesHeader: 'WWW',
 
   Key.save: 'Gem',
+  Key.saveReception: 'Gem (reception)',
   Key.send: 'Send',
   Key.sent: 'Sendt',
   Key.standardGreeting: 'Velkommen til....',
@@ -361,6 +367,7 @@ Map<String, String> en = {
   Key.active: 'Active',
   Key.agent: 'Agent',
 
+  Key.calendarEditorAreYouSure: 'Are you certain?',
   Key.calendarEditorDelErrorTitle: 'Calendar entry not deleted',
   Key.calendarEditorDelSuccessTitle: 'Calendar entry deleted',
   Key.calendarEditorHeader: 'Calendar event',
@@ -391,7 +398,7 @@ Map<String, String> en = {
   Key.closed: 'Closed',
   Key.company: 'Company',
 
-  Key.contactCalendarHeader: 'Contact calendar',
+  Key.calendarHeader: 'Calendar',
   Key.contactDataAddInfo: 'Miscellaneous',
   Key.contactDataBackup: 'Backup',
   Key.contactDataCommands: 'Commands',
@@ -423,7 +430,7 @@ Map<String, String> en = {
   Key.duration: 'Duration',
 
   Key.editDelete: 'edit/delete for',
-  Key.editorNew: 'new for',
+  Key.editorNew: 'new',
   Key.error: 'error',
   Key.errorCallControllerBusy: 'Call handling temporarily busy',
   Key.errorCallHangup: 'Hangup failed',
@@ -440,6 +447,8 @@ Map<String, String> en = {
   Key.future: 'future',
 
   Key.globalCallQueueHeader: 'Queue',
+
+  Key.lockedForEditing: 'locked for editing',
 
   Key.message: 'Message',
   Key.messageArchiveContact: 'Recipient',
@@ -475,7 +484,7 @@ Map<String, String> en = {
   Key.no: 'No',
   Key.now: 'now',
 
-  Key.past: 'past - please delete',
+  Key.past: 'past - do delete',
   Key.paused: 'Paused',
   Key.phone: 'Phone',
 
@@ -483,7 +492,6 @@ Map<String, String> en = {
   Key.receptionAddressesHeader: 'Addresses',
   Key.receptionAltNamesHeader: 'Alternative names',
   Key.receptionBankInfoHeader: 'Bank',
-  Key.receptionCalendarHeader: 'Reception Calendar',
   Key.receptionCommandsHeader: 'Commands',
   Key.receptionChanged: 'Reception list will be refreshed on next call answer',
   Key.receptionEmailHeader: 'Email addresses',
@@ -498,6 +506,7 @@ Map<String, String> en = {
   Key.receptionWebsitesHeader: 'WWW',
 
   Key.save: 'Save',
+  Key.saveReception: 'Save (reception)',
   Key.send: 'Send',
   Key.sent: 'Sent',
   Key.standardGreeting: 'You\'ve called....',

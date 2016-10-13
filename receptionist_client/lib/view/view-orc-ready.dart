@@ -22,7 +22,7 @@ class ORCReady {
   final controller.Calendar _calendarController;
   final controller.Call _callController;
   final model.ClientConfiguration _clientConfig;
-  ContactCalendar _contactCalendar;
+  ui_model.UICalendar _calendar;
   final controller.Contact _contactController;
   ContactSelector _contactSelector;
   Map<String, String> _langMap;
@@ -30,7 +30,6 @@ class ORCReady {
   controller.Message _messageController;
   controller.Notification _notification;
   controller.Popup _popup;
-  ReceptionCalendar _receptionCalendar;
   final controller.Reception _receptionController;
   ReceptionSelector _receptionSelector;
   static ORCReady _singleton;
@@ -119,9 +118,8 @@ class ORCReady {
         _langMap[Key.dayFriday],
         _langMap[Key.daySaturday],
         _langMap[Key.daySunday]);
-    ui_model.UIContactCalendar _uiContactCalendar =
-        new ui_model.UIContactCalendar(
-            querySelector('#contact-calendar'), _weekDays, _langMap);
+    ui_model.UICalendar _uiCalendar = new ui_model.UICalendar(
+        querySelector('#calendar'), _weekDays, _langMap);
     ui_model.UIContactData _uiContactData =
         new ui_model.UIContactData(querySelector('#contact-data'));
     ui_model.UIContactSelector _uiContactSelector =
@@ -131,9 +129,6 @@ class ORCReady {
         querySelector('#message-archive'), _weekDays, _langMap);
     ui_model.UIMessageCompose _uiMessageCompose =
         new ui_model.UIMessageCompose(querySelector('#message-compose'));
-    ui_model.UIReceptionCalendar _uiReceptionCalendar =
-        new ui_model.UIReceptionCalendar(
-            querySelector('#reception-calendar'), _weekDays, _langMap);
     ui_model.UIReceptionSelector _uiReceptionSelector =
         new ui_model.UIReceptionSelector(querySelector('#reception-selector'),
             _popup, _receptionController, _langMap);
@@ -162,10 +157,10 @@ class ORCReady {
           userStatus);
     });
 
-    _contactCalendar = new ContactCalendar(
-        _uiContactCalendar,
+    new Calendar(
+        _uiCalendar,
         new controller.Destination(
-            controller.Context.home, controller.Widget.contactCalendar),
+            controller.Context.home, controller.Widget.calendar),
         _uiContactSelector,
         _uiReceptionSelector,
         _contactController,
@@ -186,9 +181,8 @@ class ORCReady {
             querySelector('#calendar-editor'), _weekDays, _langMap),
         new controller.Destination(
             controller.Context.calendarEdit, controller.Widget.calendarEditor),
-        _uiContactCalendar,
+        _uiCalendar,
         _uiContactSelector,
-        _uiReceptionCalendar,
         _uiReceptionSelector,
         _calendarController,
         _popup,
@@ -260,14 +254,6 @@ class ORCReady {
         new controller.Destination(
             controller.Context.homePlus, controller.Widget.receptionBankInfo),
         _uiReceptionSelector);
-
-    _receptionCalendar = new ReceptionCalendar(
-        _uiReceptionCalendar,
-        new controller.Destination(
-            controller.Context.home, controller.Widget.receptionCalendar),
-        _uiReceptionSelector,
-        _calendarController,
-        _notification);
 
     new ReceptionCommands(
         new ui_model.UIReceptionCommands(querySelector('#reception-commands')),

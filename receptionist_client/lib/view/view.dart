@@ -25,8 +25,8 @@ import 'package:orf/model.dart' as model;
 import 'package:orf/util.dart' as util;
 
 part 'view-agent-info.dart';
+part 'view-calendar.dart';
 part 'view-calendar-editor.dart';
-part 'view-contact-calendar.dart';
 part 'view-contact-data.dart';
 part 'view-contact-selector.dart';
 part 'view-contexts.dart';
@@ -41,7 +41,6 @@ part 'view-orc-ready.dart';
 part 'view-reception-addresses.dart';
 part 'view-reception-alt-names.dart';
 part 'view-reception-bank-info.dart';
-part 'view-reception-calendar.dart';
 part 'view-reception-commands.dart';
 part 'view-reception-email.dart';
 part 'view-reception-mini-wiki.dart';
