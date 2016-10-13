@@ -43,7 +43,7 @@ class DailySummary {
 
     Map<int, Duration> pauseDurations = <int, Duration>{};
     {
-      Map<int, UserStateHistory> lastStates = {};
+      Map<int, UserStateHistory> lastStates = <int, UserStateHistory>{};
       for (UserStateHistory ush in report.userStateHistory) {
         if (ush.uid != User.noId && !seenUids.contains(ush.uid)) {
           seenUids.add(ush.uid);
@@ -54,7 +54,7 @@ class DailySummary {
         }
 
         if (lastStates.containsKey(ush.uid)) {
-          final lastState = lastStates[ush.uid];
+          final UserStateHistory lastState = lastStates[ush.uid];
           final Duration delta = ush.timestamp.difference(lastState.timestamp);
 
           if (lastState.pause && !ush.pause) {
@@ -140,7 +140,7 @@ class DailySummary {
       }
     }
 
-    final Map<int, AgentStatSummary> stats = {};
+    final Map<int, AgentStatSummary> stats = <int, AgentStatSummary>{};
 
     for (int uid in seenUids) {
       final int iCallCount =
@@ -191,7 +191,7 @@ class DailySummary {
       this.outboundHandleTime,
       this.agentStats);
 
-  DailySummary.fromJson(Map map)
+  DailySummary.fromJson(Map<String, dynamic> map)
       : this.inboundCount = map[_Key.inbound],
         this.outBoundCount = map[_Key.outbound],
         this.callsUnAnswered = map[_Key.unanswered],
@@ -201,16 +201,18 @@ class DailySummary {
             new Duration(milliseconds: map[_Key.inboundHandleTime]),
         this.outboundHandleTime =
             new Duration(milliseconds: map[_Key.outboundHandleTime]),
-        this.agentStats = {} {
-    List agentstats = map[_Key.agent];
-    for (Map stat in agentstats) {
+        this.agentStats = <int, AgentStatSummary>{} {
+    List<Map<String, dynamic>> agentstats =
+        map[_Key.agent] as List<Map<String, dynamic>>;
+    for (Map<String, dynamic> stat in agentstats) {
       AgentStatSummary summary = new AgentStatSummary.fromJson(stat);
 
       agentStats[summary.uid] = summary;
     }
   }
 
-  Map toJson() => new Map.unmodifiable({
+  Map<String, dynamic> toJson() =>
+      new Map<String, dynamic>.unmodifiable(<String, dynamic>{
         _Key.inbound: inboundCount,
         _Key.outbound: outBoundCount,
         _Key.inboundHandleTime: inboundHandleTime.inMilliseconds,

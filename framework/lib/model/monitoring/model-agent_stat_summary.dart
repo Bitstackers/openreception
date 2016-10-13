@@ -35,7 +35,7 @@ class AgentStatSummary {
       this.messagesSent,
       this.pauseDuration);
 
-  AgentStatSummary.fromJson(Map map)
+  AgentStatSummary.fromJson(Map<String, dynamic> map)
       : this.uid = map[_Key.uid],
         this.inboundCount = map[_Key.inbound],
         this.outBoundCount = map[_Key.outbound],
@@ -48,7 +48,8 @@ class AgentStatSummary {
         this.pauseDuration =
             new Duration(milliseconds: map[_Key.pauseDuration]);
 
-  Map toJson() => new Map.unmodifiable({
+  Map<String, dynamic> toJson() =>
+      new Map<String, dynamic>.unmodifiable(<String, dynamic>{
         _Key.uid: uid,
         _Key.inbound: inboundCount,
         _Key.outbound: outBoundCount,

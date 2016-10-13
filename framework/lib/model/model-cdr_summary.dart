@@ -32,7 +32,8 @@ class CdrAgentSummary {
   CdrAgentSummary();
 
   /// JSON constructor
-  CdrAgentSummary.fromJson(Map json, {bool alsoCdrFiles: true}) {
+  CdrAgentSummary.fromJson(Map<dynamic, dynamic> json,
+      {bool alsoCdrFiles: true}) {
     answered10 = json[key.CdrKey.answered10];
     answered10To20 = json[key.CdrKey.answered10to20];
     answered20To60 = json[key.CdrKey.answered20to60];
@@ -65,7 +66,7 @@ class CdrAgentSummary {
   int get answered =>
       answered10 + answered10To20 + answered20To60 + answeredAfter60;
 
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.CdrKey.answered10: answered10,
         key.CdrKey.answered10to20: answered10To20,
         key.CdrKey.answered20to60: answered20To60,
@@ -96,8 +97,9 @@ class CdrSummary {
   CdrSummary();
 
   /// JSON constructor.
-  CdrSummary.fromJson(Map json, {bool alsoCdrFiles: true}) {
-    (json[key.CdrKey.agentSummaries] as List).forEach((Map value) {
+  CdrSummary.fromJson(Map<dynamic, dynamic> json, {bool alsoCdrFiles: true}) {
+    (json[key.CdrKey.agentSummaries] as List<dynamic>)
+        .forEach((Map<dynamic, dynamic> value) {
       agentSummaries
           .add(new CdrAgentSummary.fromJson(value, alsoCdrFiles: alsoCdrFiles));
     });
@@ -152,7 +154,7 @@ class CdrSummary {
     agentSummaries.add(agentSummary);
   }
 
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.CdrKey.agentSummaries: agentSummaries,
         key.CdrKey.cdrFiles: cdrFiles,
         key.CdrKey.inboundNotNotified: inboundNotNotified,

@@ -14,7 +14,7 @@
 part of orf.model;
 
 // NOTE: First day of the week in Dart DateTime is Monday.
-final List<String> _validDays = [
+const List<String> _validDays = const <String>[
   'mon',
   'tue',
   'wed',
@@ -207,9 +207,11 @@ class WhenWhat {
   @override
   int get hashCode => toString().hashCode;
 
-  Map toJson() => this.asMap;
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{key.when: _when, key.what: _what};
 
-  Map get asMap => {key.when: _when, key.what: _what};
+  @deprecated
+  Map<String, dynamic> get asMap => toJson();
 
   @override
   String toString() => '$_when |  $_what';

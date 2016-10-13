@@ -97,7 +97,7 @@ abstract class _ModelReceptionAttributes {
     final List<String> workhours = <String>['Quite frankly; never'];
     final List<String> messagePrerequisites = <String>['[fishcode]'];
 
-    final List<model.WhenWhat> whenWhats = [
+    final List<model.WhenWhat> whenWhats = <model.WhenWhat>[
       new model.WhenWhat('man-fri 08:00-09:00', 'Meeting'),
       new model.WhenWhat('wed 12:00-12:30', 'lunch')
     ];

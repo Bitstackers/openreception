@@ -61,9 +61,9 @@ class CdrEntry {
   ///
   /// Creates a CdrEntry object from [rawCdrJson], which must be a
   /// FreeSWITCH CDR JSON.
-  CdrEntry(Map rawCdrJson, String cdrFilename) {
-    final Map vars = rawCdrJson['variables'];
-    final Map appLog =
+  CdrEntry(Map<dynamic, dynamic> rawCdrJson, String cdrFilename) {
+    final Map<dynamic, dynamic> vars = rawCdrJson['variables'];
+    final Map<dynamic, dynamic> appLog =
         rawCdrJson.containsKey('app_log') ? rawCdrJson['app_log'] : null;
 
     cid = vars.containsKey(ORPbxKey.contactId)
@@ -74,8 +74,9 @@ class CdrEntry {
         : 0;
     uuid = vars[PbxKey.uuid];
     if (appLog != null) {
-      callNotify = _callHasBeenNotified(appLog['applications'] as List<Map>);
-      ivr = _ivrApp(appLog['applications'] as List<Map>);
+      callNotify = _callHasBeenNotified(
+          appLog['applications'] as List<Map<dynamic, dynamic>>);
+      ivr = _ivrApp(appLog['applications'] as List<Map<dynamic, dynamic>>);
     }
 
     agentChannel = vars.containsKey(ORPbxKey.agentChannel)
@@ -161,7 +162,7 @@ class CdrEntry {
   }
 
   /// JSON constructor.
-  CdrEntry.fromJson(Map json) {
+  CdrEntry.fromJson(Map<dynamic, dynamic> json) {
     agentBeginEpoch = json[key.CdrKey.agentBeginEpoch];
     agentChannel = json[key.CdrKey.agentChannel];
     agentEndEpoch = json[key.CdrKey.agentEndEpoch];
@@ -194,9 +195,9 @@ class CdrEntry {
           application['app_data'].contains(ORPbxKey.callNotify));
 
   /// Try to locate the destination number.
-  String _extractDestination(Map json) {
-    final Map vars = json['variables'];
-    final List callFlow =
+  String _extractDestination(Map<dynamic, dynamic> json) {
+    final Map<dynamic, dynamic> vars = json['variables'];
+    final List<dynamic> callFlow =
         json.containsKey('callflow') ? json['callflow'] : null;
     String desti = '';
 
@@ -262,23 +263,24 @@ class CdrEntry {
 
     actionString.split('|:').forEach((String value) {
       final List<String> items = value.split(':');
-      actions.add({
+      actions.add(<String, String>{
         'epoch': items.first,
         'command': items[2],
         'destination': items.last
       });
     });
 
-    answeredByAgent = actions.any((Map action) =>
+    answeredByAgent = actions.any((Map<dynamic, dynamic> action) =>
         action['command'] == 'uuid_br' &&
         action['destination'].startsWith('agent-'));
     hungupByAgent = actions.last['command'] == 'uuid_br' &&
         actions.last['destination'].startsWith('agent-');
 
     if (answeredByAgent) {
-      agentBeginEpoch = int.parse(actions.firstWhere((Map action) =>
-          action['command'] == 'uuid_br' &&
-          (action['destination'] as String).startsWith('agent-'))['epoch']);
+      agentBeginEpoch = int.parse(actions.firstWhere(
+          (Map<dynamic, dynamic> action) =>
+              action['command'] == 'uuid_br' &&
+              (action['destination'] as String).startsWith('agent-'))['epoch']);
     }
 
     if (hungupByAgent) {
@@ -331,7 +333,7 @@ class CdrEntry {
     }
   }
 
-  Map toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         key.CdrKey.agentBeginEpoch: agentBeginEpoch,
         key.CdrKey.agentChannel: agentChannel,
         key.CdrKey.agentEndEpoch: agentEndEpoch,

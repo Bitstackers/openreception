@@ -57,7 +57,7 @@ class HourAction {
 
   /// Hash code follows convention from [==].
   @override
-  int get hashCode => ((new List.from(hours)..sort()).join('::') +
-          (new List.from(actions)..sort()).join('::'))
+  int get hashCode => ((new List<OpeningHour>.from(hours)..sort()).join('::') +
+          (new List<Action>.from(actions)..sort()).join('::'))
       .hashCode;
 }

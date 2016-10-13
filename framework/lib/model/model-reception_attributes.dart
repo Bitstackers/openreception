@@ -73,7 +73,7 @@ class ReceptionAttributes {
         endpoints = new List<MessageEndpoint>.from(map[key.endpoints].map(
             (Map<String, dynamic> map) => new MessageEndpoint.fromJson(map))),
         whenWhats = new List<WhenWhat>.from(
-            (map.containsKey(key.whenWhat) ? map[key.whenWhat] : [])
+            (map.containsKey(key.whenWhat) ? map[key.whenWhat] : <dynamic>[])
                 .map((Map<String, dynamic> map) => new WhenWhat.fromJson(map))),
         receptionId = map[key.rid],
         cid = map[key.cid],

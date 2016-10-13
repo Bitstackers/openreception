@@ -104,12 +104,12 @@ class Reception {
         key.phoneNumbers: new List<Map<String, dynamic>>.from(
             phoneNumbers.map((PhoneNumber number) => number.toJson())),
         key.websites: websites,
-        key.whenWhat: whenWhats.map((WhenWhat ww) => ww.asMap).toList()
+        key.whenWhat: whenWhats.map((WhenWhat ww) => ww.toJson()).toList()
       };
 
   set attributes(Map<String, dynamic> attributes) {
     if (attributes.containsKey(key.whenWhat)) {
-      Iterable values = attributes[key.whenWhat];
+      Iterable<dynamic> values = attributes[key.whenWhat];
       whenWhats = values
           .map((Map<String, dynamic> map) => new WhenWhat.fromJson(map))
           .toList();
