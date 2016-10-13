@@ -63,7 +63,7 @@ linter:
     - always_declare_return_types
 
     # Specify type annotations.
-    # - always_specify_types
+    - always_specify_types
 
     # Avoid using as.
     # - avoid_as
