@@ -55,6 +55,10 @@ class UICalendar extends UIModel {
     final LIElement li = new LIElement();
     final DateTime now = new DateTime.now();
 
+    String entryContent(CalendarEntry entry) => entry.otherActiveWarning
+        ? '${entry.calendarEntry.content}<p class="other-active-warning">${_langMap[Key.otherActiveWarning]}</p>'
+        : entry.calendarEntry.content;
+
     bool isToday(DateTime stamp) =>
         stamp.day == now.day &&
         stamp.month == now.month &&
@@ -93,7 +97,7 @@ class UICalendar extends UIModel {
       ..classes.add('markdown')
       ..setInnerHtml(
           markdown.markdownToHtml(
-              '${whenWhatLabel(ce.calendarEntry)}${ce.calendarEntry.content}'),
+              '${whenWhatLabel(ce.calendarEntry)}${entryContent(ce)}'),
           validator: _validator);
 
     content.querySelectorAll('a').forEach((elem) {
@@ -133,6 +137,7 @@ class UICalendar extends UIModel {
           : 'Id: ${ce.calendarEntry.id.toString()}'
       ..dataset['object'] = JSON.encode(ce)
       ..dataset['editable'] = ce.editable.toString()
+      ..dataset['otherActiveWarning'] = ce.otherActiveWarning.toString()
       ..dataset['id'] = ce.calendarEntry.id.toString()
       ..classes.toggle('active', ce.calendarEntry.active);
   }

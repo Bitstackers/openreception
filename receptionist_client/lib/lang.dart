@@ -146,6 +146,8 @@ abstract class Key {
   static const String no = 'no';
   static const String now = 'now';
 
+  static const String otherActiveWarning = 'other-active-warning';
+
   static const String past = 'past';
   static const String paused = 'paused';
   static const String phone = 'phone';
@@ -316,6 +318,8 @@ Map<String, String> da = {
   Key.no: 'Nej',
   Key.now: 'nu',
 
+  Key.otherActiveWarning: 'andre aftaler kan have højere prioritet',
+
   Key.past: 'fortid - slet gerne',
   Key.paused: 'Pause',
   Key.phone: 'Telefon',
@@ -483,6 +487,8 @@ Map<String, String> en = {
   Key.nameCopied: 'Name copied',
   Key.no: 'No',
   Key.now: 'now',
+
+  Key.otherActiveWarning: 'other appointments may have higher priority',
 
   Key.past: 'past - do delete',
   Key.paused: 'Paused',

@@ -65,18 +65,13 @@ class Calendar extends ViewWidget {
   void _fetchCalendars(
       ui_model.ContactWithFilterContext cwfc, model.ReceptionReference rr) {
     if (rr.id == _currentReception.id) {
-      final List<ui_model.CalendarEntry> allEntries =
-          <ui_model.CalendarEntry>[];
-
-      allEntries.addAll(_getWhenWhats(
-          _currentReception.whenWhats, new model.OwningReception(rr.id)));
-      allEntries.addAll(_getWhenWhats(
-          cwfc.attr.whenWhats, new model.OwningContact(cwfc.contact.id)));
+      final List<ui_model.CalendarEntry> entries = <ui_model.CalendarEntry>[];
+      final List<ui_model.CalendarEntry> whenWhats = <ui_model.CalendarEntry>[];
 
       Future rCalendars() => _calendarController
               .receptionCalendar(rr)
-              .then((Iterable<model.CalendarEntry> entries) {
-            allEntries.addAll(entries.map((model.CalendarEntry entry) =>
+              .then((Iterable<model.CalendarEntry> responses) {
+            entries.addAll(responses.map((model.CalendarEntry entry) =>
                 new ui_model.CalendarEntry.empty()
                   ..calendarEntry = entry
                   ..owner = new model.OwningReception(rr.id)));
@@ -84,17 +79,30 @@ class Calendar extends ViewWidget {
 
       Future cCalendars() => _calendarController
               .contactCalendar(cwfc.contact)
-              .then((Iterable<model.CalendarEntry> entries) {
-            allEntries.addAll(entries.map((model.CalendarEntry entry) =>
+              .then((Iterable<model.CalendarEntry> responses) {
+            entries.addAll(responses.map((model.CalendarEntry entry) =>
                 new ui_model.CalendarEntry.empty()
                   ..calendarEntry = entry
                   ..owner = new model.OwningContact(cwfc.contact.id)));
           });
 
       Future.wait([rCalendars(), cCalendars()]).then((_) {
-        _ui.calendarEntries = allEntries
-          ..sort(
-              (a, b) => a.calendarEntry.start.compareTo(b.calendarEntry.start));
+        entries.sort(
+            (a, b) => a.calendarEntry.start.compareTo(b.calendarEntry.start));
+
+        final bool activeEntry = entries
+            .any((ui_model.CalendarEntry entry) => entry.calendarEntry.active);
+
+        whenWhats.addAll(_getWhenWhats(activeEntry, _currentReception.whenWhats,
+            new model.OwningReception(rr.id)));
+        whenWhats.addAll(_getWhenWhats(activeEntry, cwfc.attr.whenWhats,
+            new model.OwningContact(cwfc.contact.id)));
+        whenWhats.sort(
+            (a, b) => a.calendarEntry.start.compareTo(b.calendarEntry.start));
+
+        entries.addAll(whenWhats);
+
+        _ui.calendarEntries = entries;
       });
     } else {
       _log.warning('Reception id mismatch. No calendars loaded.');
@@ -105,7 +113,7 @@ class Calendar extends ViewWidget {
    * Return a list of [ui_model.CalendarEntry] based on the given
    * [model.WhenWhat] list and [owner].
    */
-  List<ui_model.CalendarEntry> _getWhenWhats(
+  List<ui_model.CalendarEntry> _getWhenWhats(bool otherActiveEntry,
       List<model.WhenWhat> whenWhats, model.Owner owner) {
     final List<model.WhenWhatMatch> matches = <model.WhenWhatMatch>[];
     final DateTime now = new DateTime.now();
@@ -124,6 +132,7 @@ class Calendar extends ViewWidget {
         .map((model.WhenWhatMatch match) => new ui_model.CalendarEntry.empty()
           ..owner = owner
           ..editable = false
+          ..otherActiveWarning = otherActiveEntry
           ..calendarEntry = entry(match))
         .toList();
   }

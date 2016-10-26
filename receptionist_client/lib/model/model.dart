@@ -83,6 +83,7 @@ class AllUriPolicy implements UriPolicy {
 class CalendarEntry {
   model.CalendarEntry calendarEntry;
   bool editable = true;
+  bool otherActiveWarning = false;
   model.Owner owner;
 
   CalendarEntry.empty();
@@ -91,11 +92,16 @@ class CalendarEntry {
     calendarEntry = new model.CalendarEntry.fromJson(
         map['calendarEntry'] as Map<String, dynamic>);
     editable = map['editable'];
+    otherActiveWarning = map['otherActiveWarning'];
     owner = new model.Owner.parse(map['owner']);
   }
 
-  Map<String, dynamic> toJson() =>
-      {'calendarEntry': calendarEntry, 'editable': editable, 'owner': owner};
+  Map<String, dynamic> toJson() => {
+        'calendarEntry': calendarEntry,
+        'editable': editable,
+        'otherActiveWarning': otherActiveWarning,
+        'owner': owner
+      };
 }
 
 /**

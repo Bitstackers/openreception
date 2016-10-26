@@ -1397,7 +1397,20 @@
                       animation: pulse-label-past 0.7s infinite alternate;
                     }
 
+                    #calendar .generic-widget-list li .markdown .other-active-warning {
+                      font-weight: bold;
+                      margin-top: 1em;
+                      color: green;
+                      animation: other-active-warning 0.7s infinite alternate;
+                    }
+
                     @keyframes pulse-label-past {
+                      to {
+                        opacity: 0.1;
+                      }
+                    }
+
+                    @keyframes other-active-warning {
                       to {
                         opacity: 0.1;
                       }
