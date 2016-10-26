@@ -1520,26 +1520,34 @@
                     padding: 0.3em;
                   }
 
-                  #contact-data .cell {
+                  #contact-data .cell-left {
                     position: relative;
-                    height: 20%;
+                    height: 25%;
                     width: 100%;
                   }
 
-                  #contact-data .cell h5 {
+                  #contact-data .cell-right {
+                    position: relative;
+                    height: 16.66%;
+                    width: 100%;
+                  }
+
+                  #contact-data .cell-left h5,
+                  #contact-data .cell-right h5 {
                     position: relative;
                     margin: 0.1em 0.2em 0.2em 0;
                     height: 1.2em;
                   }
 
-                  #contact-data .cell ol,
-                  #contact-data .cell ol {
+                  #contact-data .cell-left ol,
+                  #contact-data .cell-right ol {
                     position: relative;
                     height: calc(100% - 1.8em);
                     margin: 0 0.3em 0 0;
                   }
 
-                  #contact-data .cell ol > li {
+                  #contact-data .cell-left ol > li,
+                  #contact-data .cell-right ol > li {
                     padding: 0.2em;
                   }
 
@@ -1552,42 +1560,42 @@
 
                   #contact-data,
                   #contact-data .telephone-number:focus,
-                  #contact-data .cell .telephone-number li:focus {
+                  #contact-data .cell-left .telephone-number li:focus {
                     outline: 0;
                   }
 
-                  #contact-data .cell .telephone-number li {
+                  #contact-data .cell-left .telephone-number li {
                     border-left: solid 3px #f7f7f7;
                     margin-left: 0.2em;
                     padding: 0.3em;
                   }
 
-                  #contact-data .cell .telephone-number li:hover {
+                  #contact-data .cell-left .telephone-number li:hover {
                     cursor: pointer;
                   }
 
-                  #contact-data .cell .telephone-number li span.label {
+                  #contact-data .cell-left .telephone-number li span.label {
                     padding-left: 0.5em;
                     font-size: 0.8em;
                     text-decoration: none;
                     pointer-events: none;
                   }
 
-                  #contact-data .cell .telephone-number li span.number {
+                  #contact-data .cell-left .telephone-number li span.number {
                     padding-left: 0.5em;
                     pointer-events: none;
                   }
 
-                  #contact-data .cell .telephone-number .selected {
+                  #contact-data .cell-left .telephone-number .selected {
                     border-left: solid 3px #ff5621;
                   }
 
-                  #contact-data .cell .telephone-number .secret {
+                  #contact-data .cell-left .telephone-number .secret {
                     text-decoration: line-through;
                     color: #ff2601;
                   }
 
-                  #contact-data .cell .telephone-number li:hover .secret {
+                  #contact-data .cell-left .telephone-number li:hover .secret {
                     text-decoration: none;
                     color: initial;
                   }
@@ -1684,55 +1692,54 @@
                   </div>
 
                   <div class="column">
-                    <div class="cell">
+                    <div class="cell-left">
                       <h5 data-lang-text="contact-data-commands">::commands::</h5>
                       <ol class="commands generic-widget-list"></ol>
                     </div>
 
-                    <div class="cell">
+                    <div class="cell-left">
                       <h5 data-lang-text="contact-data-work-hours">::work hours::</h5>
                       <ol class="work-hours generic-widget-list"></ol>
                     </div>
 
-                    <div class="cell">
+                    <div class="cell-left">
                       <h5 data-lang-text="contact-data-backup">::backup::</h5>
                       <ol class="backups generic-widget-list"></ol>
                     </div>
 
-                    <div class="cell">
-                      <h5 data-lang-text="contact-data-responsibility">::responsibility::</h5>
-                      <ol class="responsibility generic-widget-list"></ol>
-                    </div>
-
-                    <div class="cell">
+                    <div class="cell-left">
                       <h5 data-lang-text="contact-data-telephone-numbers">::telephone numbers::</h5>
                       <ol class="telephone-number zebra" tabindex="-1"></ol>
                     </div>
                   </div>
 
                   <div class="column">
-
-                    <div class="cell">
+                    <div class="cell-right">
                       <h5 data-lang-text="contact-data-title">::title::</h5>
                       <ol class="title generic-widget-list"></ol>
                     </div>
 
-                    <div class="cell">
+                    <div class="cell-right">
                       <h5 data-lang-text="contact-data-department">::department::</h5>
                       <ol class="department generic-widget-list"></ol>
                     </div>
 
-                    <div class="cell">
+                    <div class="cell-right">
+                      <h5 data-lang-text="contact-data-responsibility">::responsibility::</h5>
+                      <ol class="responsibility generic-widget-list"></ol>
+                    </div>
+
+                    <div class="cell-right">
                       <h5 data-lang-text="contact-data-relations">::relations::</h5>
                       <ol class="relations generic-widget-list"></ol>
                     </div>
 
-                    <div class="cell">
+                    <div class="cell-right">
                       <h5 data-lang-text="contact-data-add-info">::additional info::</h5>
                       <ol class="additional-info generic-widget-list"></ol>
                     </div>
 
-                    <div class="cell">
+                    <div class="cell-right">
                       <h5 data-lang-text="contact-data-email-addresses">::email addresses::</h5>
                       <ol class="email-addresses generic-widget-list"></ol>
                     </div>
