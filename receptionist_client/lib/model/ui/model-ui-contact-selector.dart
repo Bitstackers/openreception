@@ -229,10 +229,15 @@ class UIContactSelector extends UIModel {
     }
 
     final List<Element> visible = _list.querySelectorAll('li:not(.hide)');
-    if (_list.children.isNotEmpty &&
-        !visible.any((Element li) => li.classes.contains('selected'))) {
-      _markSelected(_scanForwardForVisibleElement(_list.children.first),
-          alwaysFire: true);
+
+    if (_list.children.isNotEmpty) {
+      if (!visible.any((Element li) => li.classes.contains('selected'))) {
+        _markSelected(_scanForwardForVisibleElement(_list.children.first),
+            alwaysFire: true);
+      } else {
+        final LIElement selected = _list.querySelector('.selected');
+        _contactSelectCallback(selected);
+      }
     }
 
     final LIElement selected = _list.querySelector('.selected');
