@@ -39,7 +39,7 @@ class Message {
   MessageState state = MessageState.unknown;
 
   CallerInfo callerInfo;
-  DateTime createdAt;
+  DateTime createdAt = new DateTime.now();
   String body = '';
   String callId = '';
 

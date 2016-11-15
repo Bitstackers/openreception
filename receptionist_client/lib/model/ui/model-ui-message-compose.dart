@@ -17,10 +17,14 @@ part of orc.model;
  * Provides methods to manipulate and extract data from the widget UX parts.
  */
 class UIMessageCompose extends UIModel {
+  final Bus<bool> _draftBus = new Bus<bool>();
+  int _draftButtonClickCount = 0;
   HtmlElement _myFirstTabElement;
   HtmlElement _myFocusElement;
   HtmlElement _myLastTabElement;
   final DivElement _myRoot;
+  final Bus<bool> _sendBus = new Bus<bool>();
+  int _sendButtonClickCount = 0;
 
   /**
    * Constructor.
@@ -206,6 +210,22 @@ class UIMessageCompose extends UIModel {
    * Observers.
    */
   void _observers() {
+    draftButton.onClick.listen((_) {
+      _draftButtonClickCount++;
+      if (_draftButtonClickCount < 2) {
+        _draftBus.fire(true);
+        draftButton.disabled = true;
+      }
+    });
+
+    sendButton.onClick.listen((_) {
+      _sendButtonClickCount++;
+      if (_sendButtonClickCount < 2) {
+        _sendBus.fire(true);
+        sendButton.disabled = true;
+      }
+    });
+
     _root.onKeyDown.listen(_keyboard.press);
 
     _root.onMouseDown.listen(_focusFromClick);
@@ -254,14 +274,14 @@ class UIMessageCompose extends UIModel {
   }
 
   /**
-   * Return the click event stream for the draft button.
+   * Fires true when draft is clicked
    */
-  Stream<MouseEvent> get onDraft => draftButton.onClick;
+  Stream<bool> get onDraft => _draftBus.stream;
 
   /**
-   * Return the click event stream for the send button.
+   * Fires true when send is clicked
    */
-  Stream<MouseEvent> get onSend => sendButton.onClick;
+  Stream<bool> get onSend => _sendBus.stream;
 
   /**
    * Return the Set of [model.MessageEndpoint]. May return the empty set.
@@ -357,6 +377,9 @@ class UIMessageCompose extends UIModel {
     _myFirstTabElement = _callerNameInput;
     _myLastTabElement = _urgentInput;
 
+    resetDraftButton();
+    resetSendButton();
+
     _toggleButtons();
 
     if (pristine) {
@@ -367,6 +390,22 @@ class UIMessageCompose extends UIModel {
       _showRecipientsText.hidden = true;
       _showNoRecipientsText.hidden = false;
     }
+  }
+
+  /**
+   * Resets the draft button to its original state.
+   */
+  void resetDraftButton() {
+    _draftButtonClickCount = 0;
+    draftButton.disabled = false;
+  }
+
+  /**
+   * Resets the send button to its original state.
+   */
+  void resetSendButton() {
+    _sendButtonClickCount = 0;
+    sendButton.disabled = false;
   }
 
   /**
